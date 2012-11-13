@@ -1,0 +1,1388 @@
+{
+  "type": "query",
+  "api_version": "2010-03-31",
+  "short_name": "sns",
+  "service_name": "AmazonSimpleNotificationServiceCallback",
+  "assembly": "com.amazon.cloudcast.onlines",
+  "xmlnamespace": "http://sns.amazonaws.com/doc/2010-03-31/",
+  "documentation": "",
+  "operations": [
+    {
+      "name": "AddPermission",
+      "input": {
+        "shape_name": "AddPermissionInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic whose access control policy you wish to modify.",
+            "required": true
+          },
+          "Label": {
+            "shape_name": "label",
+            "type": "string",
+            "documentation": "A unique identifier for the new policy statement.",
+            "required": true
+          },
+          "AWSAccountId": {
+            "shape_name": "DelegatesList",
+            "type": "list",
+            "members": {
+              "shape_name": "delegate",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "The AWS account IDs of the users (principals) who will be given access to the specified actions. The users must have AWS accounts, but do not need to be signed up for this service.",
+            "required": true
+          },
+          "ActionName": {
+            "shape_name": "ActionsList",
+            "type": "list",
+            "members": {
+              "shape_name": "action",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "The action you want to allow for the specified principal(s).",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        }
+      ],
+      "documentation": "The AddPermission action adds a statement to a topic's access control policy, granting access for the specified AWS accounts to the specified actions."
+    },
+    {
+      "name": "ConfirmSubscription",
+      "input": {
+        "shape_name": "ConfirmSubscriptionInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic for which you wish to confirm a subscription.",
+            "required": true
+          },
+          "Token": {
+            "shape_name": "token",
+            "type": "string",
+            "documentation": "Short-lived token sent to an endpoint during the Subscribe action.",
+            "required": true
+          },
+          "AuthenticateOnUnsubscribe": {
+            "shape_name": "authenticateOnUnsubscribe",
+            "type": "string",
+            "documentation": "Indicates that you want to disallow unauthenticated unsubscribes of the subscription. If value of this parameter is \"true\" and the request has an AWS signature then only the topic owner and the subscription owner will be permitted to unsubscribe the endpoint. The unsubscribe action will require AWS authentication."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ConfirmSubscriptionResponse",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {
+            "shape_name": "subscriptionARN",
+            "type": "string",
+            "documentation": "The ARN of the created subscription."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "SubscriptionLimitExceededException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the customer already owns the maximum allowed number of subscriptions."
+        },
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating the token sent to the endpoint by an earlier Subscribe action. If the token is valid, the action creates a new subscription and returns its Amazon Resource Name (ARN). This call requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set to \"true\"."
+    },
+    {
+      "name": "CreateTopic",
+      "input": {
+        "shape_name": "CreateTopicInput",
+        "type": "structure",
+        "members": {
+          "Name": {
+            "shape_name": "topicName",
+            "type": "string",
+            "documentation": "The name of the topic you want to create.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "CreateTopicResponse",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The Amazon Resource Name (ARN) assigned to the created topic."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "TopicLimitExceededException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the customer already owns the maximum allowed number of topics."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The CreateTopic action creates a topic to which notifications can be published. Users can create at most 25 topics. This action is idempotent, so if the requester already owns a topic with the specified name, that topic's ARN will be returned without creating a new topic."
+    },
+    {
+      "name": "DeleteTopic",
+      "input": {
+        "shape_name": "DeleteTopicInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic you want to delete.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        }
+      ],
+      "documentation": "The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might prevent some messages previously sent to the topic from being delivered to subscribers. This action is idempotent, so deleting a topic that does not exist will not result in an error."
+    },
+    {
+      "name": "GetSubscriptionAttributes",
+      "input": {
+        "shape_name": "GetSubscriptionAttributesInput",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {
+            "shape_name": "subscriptionARN",
+            "type": "string",
+            "documentation": "The ARN of the subscription whose properties you want to get.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "GetSubscriptionAttributesResponse",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape_name": "SubscriptionAttributesMap",
+            "type": "map",
+            "keys": {
+              "shape_name": "attributeName",
+              "type": "string",
+              "documentation": ""
+            },
+            "members": {
+              "shape_name": "attributeValue",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A map of the subscription's attributes. Attributes in this map include the following:"
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The GetSubscriptionAttribtues action returns all of the properties of a subscription."
+    },
+    {
+      "name": "GetTopicAttributes",
+      "input": {
+        "shape_name": "GetTopicAttributesInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic whose properties you want to get.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "GetTopicAttributesResponse",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape_name": "TopicAttributesMap",
+            "type": "map",
+            "keys": {
+              "shape_name": "attributeName",
+              "type": "string",
+              "documentation": ""
+            },
+            "members": {
+              "shape_name": "attributeValue",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A map of the topic's attributes. Attributes in this map include the following:"
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic properties returned might differ based on the authorization of the user."
+    },
+    {
+      "name": "ListSubscriptions",
+      "input": {
+        "shape_name": "ListSubscriptionsInput",
+        "type": "structure",
+        "members": {
+          "NextToken": {
+            "shape_name": "nextToken",
+            "type": "string",
+            "documentation": "Token returned by the previous ListSubscriptions request."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ListSubscriptionsResponse",
+        "type": "structure",
+        "members": {
+          "Subscriptions": {
+            "shape_name": "SubscriptionsList",
+            "type": "list",
+            "members": {
+              "shape_name": "Subscription",
+              "type": "structure",
+              "members": {
+                "SubscriptionArn": {
+                  "shape_name": "subscriptionARN",
+                  "type": "string",
+                  "documentation": "The subscription's ARN."
+                },
+                "Owner": {
+                  "shape_name": "account",
+                  "type": "string",
+                  "documentation": "The subscription's owner."
+                },
+                "Protocol": {
+                  "shape_name": "protocol",
+                  "type": "string",
+                  "documentation": "The subscription's protocol."
+                },
+                "Endpoint": {
+                  "shape_name": "endpoint",
+                  "type": "string",
+                  "documentation": "The subscription's endpoint (format depends on the protocol)."
+                },
+                "TopicArn": {
+                  "shape_name": "topicARN",
+                  "type": "string",
+                  "documentation": "The ARN of the subscription's topic."
+                }
+              },
+              "documentation": "A wrapper type for the attributes of an SNS subscription."
+            },
+            "documentation": "A list of subscriptions."
+          },
+          "NextToken": {
+            "shape_name": "nextToken",
+            "type": "string",
+            "documentation": "Token to pass along to the next ListSubscriptions request. This element is returned if there are more subscriptions to retrieve."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptions call to get further results."
+    },
+    {
+      "name": "ListSubscriptionsByTopic",
+      "input": {
+        "shape_name": "ListSubscriptionsByTopicInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic for which you wish to find subscriptions.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "nextToken",
+            "type": "string",
+            "documentation": "Token returned by the previous ListSubscriptionsByTopic request."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ListSubscriptionsByTopicResponse",
+        "type": "structure",
+        "members": {
+          "Subscriptions": {
+            "shape_name": "SubscriptionsList",
+            "type": "list",
+            "members": {
+              "shape_name": "Subscription",
+              "type": "structure",
+              "members": {
+                "SubscriptionArn": {
+                  "shape_name": "subscriptionARN",
+                  "type": "string",
+                  "documentation": "The subscription's ARN."
+                },
+                "Owner": {
+                  "shape_name": "account",
+                  "type": "string",
+                  "documentation": "The subscription's owner."
+                },
+                "Protocol": {
+                  "shape_name": "protocol",
+                  "type": "string",
+                  "documentation": "The subscription's protocol."
+                },
+                "Endpoint": {
+                  "shape_name": "endpoint",
+                  "type": "string",
+                  "documentation": "The subscription's endpoint (format depends on the protocol)."
+                },
+                "TopicArn": {
+                  "shape_name": "topicARN",
+                  "type": "string",
+                  "documentation": "The ARN of the subscription's topic."
+                }
+              },
+              "documentation": "A wrapper type for the attributes of an SNS subscription."
+            },
+            "documentation": "A list of subscriptions."
+          },
+          "NextToken": {
+            "shape_name": "nextToken",
+            "type": "string",
+            "documentation": "Token to pass along to the next ListSubscriptionsByTopic request. This element is returned if there are more subscriptions to retrieve."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a new ListSubscriptionsByTopic call to get further results."
+    },
+    {
+      "name": "ListTopics",
+      "input": {
+        "shape_name": "ListTopicsInput",
+        "type": "structure",
+        "members": {
+          "NextToken": {
+            "shape_name": "nextToken",
+            "type": "string",
+            "documentation": "Token returned by the previous ListTopics request."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ListTopicsResponse",
+        "type": "structure",
+        "members": {
+          "Topics": {
+            "shape_name": "TopicsList",
+            "type": "list",
+            "members": {
+              "shape_name": "Topic",
+              "type": "structure",
+              "members": {
+                "TopicArn": {
+                  "shape_name": "topicARN",
+                  "type": "string",
+                  "documentation": "The topic's ARN."
+                }
+              },
+              "documentation": "A wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a topic's attributes, use GetTopicAttributes."
+            },
+            "documentation": "A list of topic ARNs."
+          },
+          "NextToken": {
+            "shape_name": "nextToken",
+            "type": "string",
+            "documentation": "Token to pass along to the next ListTopics request. This element is returned if there are additional topics to retrieve."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics, up to 100. If there are more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get further results."
+    },
+    {
+      "name": "ProcessSms",
+      "http": {
+        "method": "POST",
+        "uri": "?Action=ProcessSms;&Token={Token}"
+      },
+      "input": {
+        "shape_name": "SmsInput",
+        "type": "structure",
+        "members": {
+          "Token": {
+            "shape_name": "string",
+            "type": "string",
+            "documentation": "",
+            "location": "uri"
+          },
+          "Payload": {
+            "shape_name": "blob",
+            "type": "blob",
+            "documentation": "",
+            "location": "body"
+          },
+          "Parameters": {
+            "shape_name": "stringMap",
+            "type": "map",
+            "keys": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            },
+            "members": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "",
+            "location": "querystring"
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": ""
+    },
+    {
+      "name": "Publish",
+      "input": {
+        "shape_name": "PublishInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The topic you want to publish to.",
+            "required": true
+          },
+          "Message": {
+            "shape_name": "message",
+            "type": "string",
+            "documentation": "The message you want to send to the topic.",
+            "required": true
+          },
+          "Subject": {
+            "shape_name": "subject",
+            "type": "string",
+            "documentation": "Optional parameter to be used as the \"Subject\" line of when the message is delivered to e-mail endpoints. This field will also be included, if present, in the standard JSON messages delivered to other endpoints."
+          },
+          "MessageStructure": {
+            "shape_name": "messageStructure",
+            "type": "string",
+            "documentation": "Optional parameter. It will have one valid value: \"json\". If this option, Message is present and set to \"json\", the value of Message must: be a syntactically valid JSON object. It must contain at least a top level JSON key of \"default\" with a value that is a string. For any other top level key that matches one of our transport protocols (e.g. \"http\"), then the corresponding value (if it is a string) will be used for the message published for that protocol"
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "PublishResponse",
+        "type": "structure",
+        "members": {
+          "MessageId": {
+            "shape_name": "messageId",
+            "type": "string",
+            "documentation": "Unique identifier assigned to the published message."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The Publish action sends a message to all of a topic's subscribed endpoints. When a messageId is returned, the message has been saved and Amazon SNS will attempt to deliver it to the topic's subscribers shortly. The format of the outgoing message to each subscribed endpoint depends on the notification protocol selected."
+    },
+    {
+      "name": "RemovePermission",
+      "input": {
+        "shape_name": "RemovePermissionInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic whose access control policy you wish to modify.",
+            "required": true
+          },
+          "Label": {
+            "shape_name": "label",
+            "type": "string",
+            "documentation": "The unique label of the statement you want to remove.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        }
+      ],
+      "documentation": "The RemovePermission action removes a statement from a topic's access control policy."
+    },
+    {
+      "name": "SetSubscriptionAttributes",
+      "input": {
+        "shape_name": "SetSubscriptionAttributesInput",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {
+            "shape_name": "subscriptionARN",
+            "type": "string",
+            "documentation": "The ARN of the subscription to modify.",
+            "required": true
+          },
+          "AttributeName": {
+            "shape_name": "attributeName",
+            "type": "string",
+            "documentation": "The name of the attribute you want to set. Only a subset of the subscriptions attributes are mutable.",
+            "required": true
+          },
+          "AttributeValue": {
+            "shape_name": "attributeValue",
+            "type": "string",
+            "documentation": "The new value for the attribute.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The SetSubscriptionAttributes action allows a subscription owner to set an attribute of the topic to a new value."
+    },
+    {
+      "name": "SetTopicAttributes",
+      "input": {
+        "shape_name": "SetTopicAttributesInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of the topic to modify.",
+            "required": true
+          },
+          "AttributeName": {
+            "shape_name": "attributeName",
+            "type": "string",
+            "documentation": "The name of the attribute you want to set. Only a subset of the topic's attributes are mutable.",
+            "required": true
+          },
+          "AttributeValue": {
+            "shape_name": "attributeValue",
+            "type": "string",
+            "documentation": "The new value for the attribute.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new value."
+    },
+    {
+      "name": "Subscribe",
+      "input": {
+        "shape_name": "SubscribeInput",
+        "type": "structure",
+        "members": {
+          "TopicArn": {
+            "shape_name": "topicARN",
+            "type": "string",
+            "documentation": "The ARN of topic you want to subscribe to.",
+            "required": true
+          },
+          "Protocol": {
+            "shape_name": "protocol",
+            "type": "string",
+            "documentation": "The protocol you want to use. Supported protocols include:",
+            "required": true
+          },
+          "Endpoint": {
+            "shape_name": "endpoint",
+            "type": "string",
+            "documentation": "The endpoint that you want to receive notifications. Endpoints vary by protocol:",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "SubscribeResponse",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {
+            "shape_name": "subscriptionARN",
+            "type": "string",
+            "documentation": "The ARN of the subscription, if the service was able to create a subscription immediately (without requiring endpoint owner confirmation)."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "SubscriptionLimitExceededException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the customer already owns the maximum allowed number of subscriptions."
+        },
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        }
+      ],
+      "documentation": "The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually create a subscription, the endpoint owner must call the ConfirmSubscription action with the token from the confirmation message. Confirmation tokens are valid for three days."
+    },
+    {
+      "name": "Unsubscribe",
+      "input": {
+        "shape_name": "UnsubscribeInput",
+        "type": "structure",
+        "members": {
+          "SubscriptionArn": {
+            "shape_name": "subscriptionARN",
+            "type": "string",
+            "documentation": "The ARN of the subscription to be deleted.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that a request parameter does not comply with the associated constraints."
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates an internal service error."
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the user has been denied access to the requested resource."
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "Indicates that the requested resource does not exist."
+        }
+      ],
+      "documentation": "The Unsubscribe action deletes a subscription. If the subscription requires authentication for deletion, only the owner of the subscription or the its topic's owner can unsubscribe, and an AWS signature is required. If the Unsubscribe call does not require authentication and the requester is not the subscription owner, a final cancellation message is delivered to the endpoint, so that the endpoint owner can easily resubscribe to the topic if the Unsubscribe request was unintended."
+    }
+  ]
+}

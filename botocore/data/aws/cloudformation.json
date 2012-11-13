@@ -1,0 +1,1165 @@
+{
+  "type": "query",
+  "api_version": "2010-05-15",
+  "short_name": "cloudformation",
+  "service_name": "CloudFormation",
+  "assembly": "amzn.aws21.activities",
+  "xmlnamespace": null,
+  "documentation": "AWS CloudFormation",
+  "operations": [
+    {
+      "name": "CreateStack",
+      "input": {
+        "shape_name": "CreateStackInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name associated with the stack. The name must be unique within your AWS account.",
+            "required": true
+          },
+          "TemplateBody": {
+            "shape_name": "TemplateBody",
+            "type": "string",
+            "min_length": 1,
+            "documentation": "Structure containing the template body. (For more information, go to the AWS CloudFormation User Guide.)"
+          },
+          "TemplateURL": {
+            "shape_name": "TemplateURL",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the AWS CloudFormation User Guide."
+          },
+          "Parameters": {
+            "shape_name": "Parameters",
+            "type": "list",
+            "members": {
+              "shape_name": "Parameter",
+              "type": "structure",
+              "members": {
+                "ParameterKey": {
+                  "shape_name": "ParameterKey",
+                  "type": "string",
+                  "documentation": "The key associated with the parameter."
+                },
+                "ParameterValue": {
+                  "shape_name": "ParameterValue",
+                  "type": "string",
+                  "documentation": "The value associated with the parameter."
+                }
+              },
+              "documentation": "The Parameter data type."
+            },
+            "documentation": "A list of Parameter structures that specify input parameters for the stack."
+          },
+          "DisableRollback": {
+            "shape_name": "DisableRollback",
+            "type": "boolean",
+            "documentation": "Boolean to enable or disable rollback on stack creation failures. Default: false"
+          },
+          "TimeoutInMinutes": {
+            "shape_name": "TimeoutMinutes",
+            "type": "integer",
+            "min_length": 1,
+            "documentation": "The amount of time that can pass before the stack status becomes CREATE_FAILED; if DisableRollback is not set or is set to false, the stack will be rolled back."
+          },
+          "NotificationARNs": {
+            "shape_name": "NotificationARNs",
+            "type": "list",
+            "members": {
+              "shape_name": "NotificationARN",
+              "type": "string",
+              "documentation": ""
+            },
+            "max_length": 5,
+            "documentation": "The Simple Notification Service (SNS) topic ARNs to publish stack related events. You can find your SNS topic ARNs using the SNS console or your Command Line Interface (CLI)."
+          },
+          "Capabilities": {
+            "shape_name": "Capabilities",
+            "type": "list",
+            "members": {
+              "shape_name": "Capability",
+              "type": "string",
+              "enum": [
+                "CAPABILITY_IAM"
+              ],
+              "documentation": ""
+            },
+            "documentation": "The list of capabilities that you want to allow in the stack. If your template contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter; otherwise, this action returns an InsufficientCapabilities error. IAM resources are the following: AWS::IAM::AccessKey, AWS::IAM::Group, AWS::IAM::Policy, AWS::IAM::User, and AWS::IAM::UserToGroupAddition."
+          }
+        },
+        "documentation": "The input for CreateStack action."
+      },
+      "output": {
+        "shape_name": "CreateStackOutput",
+        "type": "structure",
+        "members": {
+          "StackId": {
+            "shape_name": "StackId",
+            "type": "string",
+            "documentation": "Unique identifier of the stack."
+          }
+        },
+        "documentation": "The output for a CreateStack action."
+      },
+      "errors": [
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Quota for the resource has already been reached."
+        },
+        {
+          "shape_name": "AlreadyExistsException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Resource with the name requested already exists."
+        },
+        {
+          "shape_name": "InsufficientCapabilitiesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The template contains resources with capabilities that were not specified in the Capabilities parameter."
+        }
+      ],
+      "documentation": "Creates a stack as specified in the template. After the call completes successfully, the stack creation starts. You can check the status of the stack via the DescribeStacks API."
+    },
+    {
+      "name": "DeleteStack",
+      "input": {
+        "shape_name": "DeleteStackInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack.",
+            "required": true
+          }
+        },
+        "documentation": "The input for DeleteStack action."
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Deletes a specified stack. Once the call completes successfully, stack deletion starts. Deleted stacks do not show up in the DescribeStacks API if the deletion has been completed successfully."
+    },
+    {
+      "name": "DescribeStackEvents",
+      "input": {
+        "shape_name": "DescribeStackEventsInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack. Default: There is no default value."
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "String that identifies the start of the next list of events, if there is one. Default: There is no default value."
+          }
+        },
+        "documentation": "The input for DescribeStackEvents action."
+      },
+      "output": {
+        "shape_name": "DescribeStackEventsOutput",
+        "type": "structure",
+        "members": {
+          "StackEvents": {
+            "shape_name": "StackEvents",
+            "type": "list",
+            "members": {
+              "shape_name": "StackEvent",
+              "type": "structure",
+              "members": {
+                "StackId": {
+                  "shape_name": "StackId",
+                  "type": "string",
+                  "documentation": "The unique ID name of the instance of the stack.",
+                  "required": true
+                },
+                "EventId": {
+                  "shape_name": "EventId",
+                  "type": "string",
+                  "documentation": "The unique ID of this event.",
+                  "required": true
+                },
+                "StackName": {
+                  "shape_name": "StackName",
+                  "type": "string",
+                  "documentation": "The name associated with a stack.",
+                  "required": true
+                },
+                "LogicalResourceId": {
+                  "shape_name": "LogicalResourceId",
+                  "type": "string",
+                  "documentation": "The logical name of the resource specified in the template."
+                },
+                "PhysicalResourceId": {
+                  "shape_name": "PhysicalResourceId",
+                  "type": "string",
+                  "documentation": "The name or unique identifier associated with the physical instance of the resource."
+                },
+                "ResourceType": {
+                  "shape_name": "ResourceType",
+                  "type": "string",
+                  "documentation": "Type of the resource. (For more information, go to the AWS CloudFormation User Guide.)"
+                },
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "Time the status was updated.",
+                  "required": true
+                },
+                "ResourceStatus": {
+                  "shape_name": "ResourceStatus",
+                  "type": "string",
+                  "enum": [
+                    "CREATE_IN_PROGRESS",
+                    "CREATE_FAILED",
+                    "CREATE_COMPLETE",
+                    "DELETE_IN_PROGRESS",
+                    "DELETE_FAILED",
+                    "DELETE_COMPLETE",
+                    "UPDATE_IN_PROGRESS",
+                    "UPDATE_FAILED",
+                    "UPDATE_COMPLETE"
+                  ],
+                  "documentation": "Current status of the resource."
+                },
+                "ResourceStatusReason": {
+                  "shape_name": "ResourceStatusReason",
+                  "type": "string",
+                  "documentation": "Success/failure message associated with the resource."
+                },
+                "ResourceProperties": {
+                  "shape_name": "ResourceProperties",
+                  "type": "string",
+                  "documentation": "BLOB of the properties used to create the resource."
+                }
+              },
+              "documentation": "The StackEvent data type."
+            },
+            "documentation": "A list of StackEvents structures."
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "String that identifies the start of the next list of events, if there is one."
+          }
+        },
+        "documentation": "The output for a DescribeStackEvents action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns all the stack related events for the AWS account. If StackName is specified, returns events related to all the stacks with the given name. If StackName is not specified, returns all the events for the account. For more information about a stack's event history, go to the AWS CloudFormation User Guide."
+    },
+    {
+      "name": "DescribeStackResource",
+      "input": {
+        "shape_name": "DescribeStackResourceInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack.",
+            "required": true
+          },
+          "LogicalResourceId": {
+            "shape_name": "LogicalResourceId",
+            "type": "string",
+            "documentation": "The logical name of the resource as specified in the template. Default: There is on default value.",
+            "required": true
+          }
+        },
+        "documentation": "The input for DescribeStackResource action."
+      },
+      "output": {
+        "shape_name": "DescribeStackResourceOutput",
+        "type": "structure",
+        "members": {
+          "StackResourceDetail": {
+            "shape_name": "StackResourceDetail",
+            "type": "structure",
+            "members": {
+              "StackName": {
+                "shape_name": "StackName",
+                "type": "string",
+                "documentation": "The name associated with the stack."
+              },
+              "StackId": {
+                "shape_name": "StackId",
+                "type": "string",
+                "documentation": "Unique identifier of the stack."
+              },
+              "LogicalResourceId": {
+                "shape_name": "LogicalResourceId",
+                "type": "string",
+                "documentation": "The logical name of the resource specified in the template.",
+                "required": true
+              },
+              "PhysicalResourceId": {
+                "shape_name": "PhysicalResourceId",
+                "type": "string",
+                "documentation": "The name or unique identifier that corresponds to a physical instance ID of a resource supported by AWS CloudFormation."
+              },
+              "ResourceType": {
+                "shape_name": "ResourceType",
+                "type": "string",
+                "documentation": "Type of the resource. (For more information, go to the AWS CloudFormation User Guide.)",
+                "required": true
+              },
+              "LastUpdatedTimestamp": {
+                "shape_name": "Timestamp",
+                "type": "timestamp",
+                "documentation": "Time the status was updated.",
+                "required": true
+              },
+              "ResourceStatus": {
+                "shape_name": "ResourceStatus",
+                "type": "string",
+                "enum": [
+                  "CREATE_IN_PROGRESS",
+                  "CREATE_FAILED",
+                  "CREATE_COMPLETE",
+                  "DELETE_IN_PROGRESS",
+                  "DELETE_FAILED",
+                  "DELETE_COMPLETE",
+                  "UPDATE_IN_PROGRESS",
+                  "UPDATE_FAILED",
+                  "UPDATE_COMPLETE"
+                ],
+                "documentation": "Current status of the resource.",
+                "required": true
+              },
+              "ResourceStatusReason": {
+                "shape_name": "ResourceStatusReason",
+                "type": "string",
+                "documentation": "Success/failure message associated with the resource."
+              },
+              "Description": {
+                "shape_name": "Description",
+                "type": "string",
+                "documentation": "User defined description associated with the resource."
+              },
+              "Metadata": {
+                "shape_name": "Metadata",
+                "type": "string",
+                "documentation": "The JSON format content of the Metadata attribute declared for the resource. For more information, see Metadata Attribute in the AWS CloudFormation User Guide."
+              }
+            },
+            "documentation": "A StackResourceDetail structure containing the description of the specified resource in the specified stack."
+          }
+        },
+        "documentation": "The output for a DescribeStackResource action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns a description of the specified resource in the specified stack."
+    },
+    {
+      "name": "DescribeStackResources",
+      "input": {
+        "shape_name": "DescribeStackResourcesInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack."
+          },
+          "LogicalResourceId": {
+            "shape_name": "LogicalResourceId",
+            "type": "string",
+            "documentation": "The logical name of the resource as specified in the template. Default: There is on default value."
+          },
+          "PhysicalResourceId": {
+            "shape_name": "PhysicalResourceId",
+            "type": "string",
+            "documentation": "The name or unique identifier that corresponds to a physical instance ID of a resource supported by AWS CloudFormation."
+          }
+        },
+        "documentation": "The input for DescribeStackResources action."
+      },
+      "output": {
+        "shape_name": "DescribeStackResourcesOutput",
+        "type": "structure",
+        "members": {
+          "StackResources": {
+            "shape_name": "StackResources",
+            "type": "list",
+            "members": {
+              "shape_name": "StackResource",
+              "type": "structure",
+              "members": {
+                "StackName": {
+                  "shape_name": "StackName",
+                  "type": "string",
+                  "documentation": "The name associated with the stack."
+                },
+                "StackId": {
+                  "shape_name": "StackId",
+                  "type": "string",
+                  "documentation": "Unique identifier of the stack."
+                },
+                "LogicalResourceId": {
+                  "shape_name": "LogicalResourceId",
+                  "type": "string",
+                  "documentation": "The logical name of the resource specified in the template.",
+                  "required": true
+                },
+                "PhysicalResourceId": {
+                  "shape_name": "PhysicalResourceId",
+                  "type": "string",
+                  "documentation": "The name or unique identifier that corresponds to a physical instance ID of a resource supported by AWS CloudFormation."
+                },
+                "ResourceType": {
+                  "shape_name": "ResourceType",
+                  "type": "string",
+                  "documentation": "Type of the resource. (For more information, go to the AWS CloudFormation User Guide.)",
+                  "required": true
+                },
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "Time the status was updated.",
+                  "required": true
+                },
+                "ResourceStatus": {
+                  "shape_name": "ResourceStatus",
+                  "type": "string",
+                  "enum": [
+                    "CREATE_IN_PROGRESS",
+                    "CREATE_FAILED",
+                    "CREATE_COMPLETE",
+                    "DELETE_IN_PROGRESS",
+                    "DELETE_FAILED",
+                    "DELETE_COMPLETE",
+                    "UPDATE_IN_PROGRESS",
+                    "UPDATE_FAILED",
+                    "UPDATE_COMPLETE"
+                  ],
+                  "documentation": "Current status of the resource.",
+                  "required": true
+                },
+                "ResourceStatusReason": {
+                  "shape_name": "ResourceStatusReason",
+                  "type": "string",
+                  "documentation": "Success/failure message associated with the resource."
+                },
+                "Description": {
+                  "shape_name": "Description",
+                  "type": "string",
+                  "documentation": "User defined description associated with the resource."
+                }
+              },
+              "documentation": "The StackResource data type."
+            },
+            "documentation": "A list of StackResource structures."
+          }
+        },
+        "documentation": "The output for a DescribeStackResources action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns AWS resource descriptions for running and deleted stacks. If StackName is specified, all the associated resources that are part of the stack are returned. If PhysicalResourceId is specified, all the associated resources of the stack the resource belongs to are returned."
+    },
+    {
+      "name": "DescribeStacks",
+      "input": {
+        "shape_name": "DescribeStacksInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack."
+          }
+        },
+        "documentation": "The input for DescribeStacks action."
+      },
+      "output": {
+        "shape_name": "DescribeStacksOutput",
+        "type": "structure",
+        "members": {
+          "Stacks": {
+            "shape_name": "Stacks",
+            "type": "list",
+            "members": {
+              "shape_name": "Stack",
+              "type": "structure",
+              "members": {
+                "StackId": {
+                  "shape_name": "StackId",
+                  "type": "string",
+                  "documentation": "Unique identifier of the stack."
+                },
+                "StackName": {
+                  "shape_name": "StackName",
+                  "type": "string",
+                  "documentation": "The name associated with the stack.",
+                  "required": true
+                },
+                "Description": {
+                  "shape_name": "Description",
+                  "type": "string",
+                  "documentation": "User defined description associated with the stack."
+                },
+                "Parameters": {
+                  "shape_name": "Parameters",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Parameter",
+                    "type": "structure",
+                    "members": {
+                      "ParameterKey": {
+                        "shape_name": "ParameterKey",
+                        "type": "string",
+                        "documentation": "The key associated with the parameter."
+                      },
+                      "ParameterValue": {
+                        "shape_name": "ParameterValue",
+                        "type": "string",
+                        "documentation": "The value associated with the parameter."
+                      }
+                    },
+                    "documentation": "The Parameter data type."
+                  },
+                  "documentation": "A list of Parameter structures."
+                },
+                "CreationTime": {
+                  "shape_name": "CreationTime",
+                  "type": "timestamp",
+                  "documentation": "Time at which the stack was created.",
+                  "required": true
+                },
+                "LastUpdatedTime": {
+                  "shape_name": "LastUpdatedTime",
+                  "type": "timestamp",
+                  "documentation": ""
+                },
+                "StackStatus": {
+                  "shape_name": "StackStatus",
+                  "type": "string",
+                  "enum": [
+                    "CREATE_IN_PROGRESS",
+                    "CREATE_FAILED",
+                    "CREATE_COMPLETE",
+                    "ROLLBACK_IN_PROGRESS",
+                    "ROLLBACK_FAILED",
+                    "ROLLBACK_COMPLETE",
+                    "DELETE_IN_PROGRESS",
+                    "DELETE_FAILED",
+                    "DELETE_COMPLETE",
+                    "UPDATE_IN_PROGRESS",
+                    "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS",
+                    "UPDATE_COMPLETE",
+                    "UPDATE_ROLLBACK_IN_PROGRESS",
+                    "UPDATE_ROLLBACK_FAILED",
+                    "UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS",
+                    "UPDATE_ROLLBACK_COMPLETE"
+                  ],
+                  "documentation": "Current status of the stack.",
+                  "required": true
+                },
+                "StackStatusReason": {
+                  "shape_name": "StackStatusReason",
+                  "type": "string",
+                  "documentation": "Success/failure message associated with the stack status."
+                },
+                "DisableRollback": {
+                  "shape_name": "DisableRollback",
+                  "type": "boolean",
+                  "documentation": "Boolean to enable or disable rollback on stack creation failures:"
+                },
+                "NotificationARNs": {
+                  "shape_name": "NotificationARNs",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "NotificationARN",
+                    "type": "string",
+                    "documentation": ""
+                  },
+                  "max_length": 5,
+                  "documentation": "SNS topic ARNs to which stack related events are published."
+                },
+                "TimeoutInMinutes": {
+                  "shape_name": "TimeoutMinutes",
+                  "type": "integer",
+                  "min_length": 1,
+                  "documentation": "The amount of time within which stack creation should complete."
+                },
+                "Capabilities": {
+                  "shape_name": "Capabilities",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Capability",
+                    "type": "string",
+                    "enum": [
+                      "CAPABILITY_IAM"
+                    ],
+                    "documentation": ""
+                  },
+                  "documentation": "The capabilities allowed in the stack."
+                },
+                "Outputs": {
+                  "shape_name": "Outputs",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Output",
+                    "type": "structure",
+                    "members": {
+                      "OutputKey": {
+                        "shape_name": "OutputKey",
+                        "type": "string",
+                        "documentation": "The key associated with the output."
+                      },
+                      "OutputValue": {
+                        "shape_name": "OutputValue",
+                        "type": "string",
+                        "documentation": "The value associated with the output."
+                      },
+                      "Description": {
+                        "shape_name": "Description",
+                        "type": "string",
+                        "documentation": "User defined description associated with the output."
+                      }
+                    },
+                    "documentation": "The Output data type."
+                  },
+                  "documentation": "A list of output structures."
+                }
+              },
+              "documentation": "The Stack data type."
+            },
+            "documentation": "A list of stack structures."
+          }
+        },
+        "documentation": "The output for a DescribeStacks action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the description for the specified stack; if no stack name was specified, then it returns the description for all the stacks created."
+    },
+    {
+      "name": "EstimateTemplateCost",
+      "input": {
+        "shape_name": "EstimateTemplateCostInput",
+        "type": "structure",
+        "members": {
+          "TemplateBody": {
+            "shape_name": "TemplateBody",
+            "type": "string",
+            "min_length": 1,
+            "documentation": "Structure containing the template body. (For more information, go to the AWS CloudFormation User Guide.)"
+          },
+          "TemplateURL": {
+            "shape_name": "TemplateURL",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the AWS CloudFormation User Guide."
+          },
+          "Parameters": {
+            "shape_name": "Parameters",
+            "type": "list",
+            "members": {
+              "shape_name": "Parameter",
+              "type": "structure",
+              "members": {
+                "ParameterKey": {
+                  "shape_name": "ParameterKey",
+                  "type": "string",
+                  "documentation": "The key associated with the parameter."
+                },
+                "ParameterValue": {
+                  "shape_name": "ParameterValue",
+                  "type": "string",
+                  "documentation": "The value associated with the parameter."
+                }
+              },
+              "documentation": "The Parameter data type."
+            },
+            "documentation": "A list of Parameter structures that specify input parameters."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "EstimateTemplateCostOutput",
+        "type": "structure",
+        "members": {
+          "Url": {
+            "shape_name": "Url",
+            "type": "string",
+            "documentation": "An AWS Simple Monthly Calculator URL with a query string that describes the resources required to run the template."
+          }
+        },
+        "documentation": "The output for a EstimateTemplateCost action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the estimated monthly cost of a template. The return value is an AWS Simply Monthly Calculator URL with a query string that describes the resources required to run the template."
+    },
+    {
+      "name": "GetTemplate",
+      "input": {
+        "shape_name": "GetTemplateInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack.",
+            "required": true
+          }
+        },
+        "documentation": "The input for a GetTemplate action."
+      },
+      "output": {
+        "shape_name": "GetTemplateOutput",
+        "type": "structure",
+        "members": {
+          "TemplateBody": {
+            "shape_name": "TemplateBody",
+            "type": "string",
+            "min_length": 1,
+            "documentation": "Structure containing the template body. (For more information, go to the AWS CloudFormation User Guide.)"
+          }
+        },
+        "documentation": "The output for GetTemplate action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the template body for a specified stack name. You can get the template for running or deleted stacks."
+    },
+    {
+      "name": "ListStackResources",
+      "input": {
+        "shape_name": "ListStackResourcesInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or the unique identifier associated with the stack.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "String that identifies the start of the next list of events, if there is one."
+          }
+        },
+        "documentation": "The input for ListStackResource action."
+      },
+      "output": {
+        "shape_name": "ListStackResourcesOutput",
+        "type": "structure",
+        "members": {
+          "StackResourceSummaries": {
+            "shape_name": "StackResourceSummaries",
+            "type": "list",
+            "members": {
+              "shape_name": "StackResourceSummary",
+              "type": "structure",
+              "members": {
+                "LogicalResourceId": {
+                  "shape_name": "LogicalResourceId",
+                  "type": "string",
+                  "documentation": "The logical name of the resource specified in the template.",
+                  "required": true
+                },
+                "PhysicalResourceId": {
+                  "shape_name": "PhysicalResourceId",
+                  "type": "string",
+                  "documentation": "The name or unique identifier that corresponds to a physical instance ID of the resource."
+                },
+                "ResourceType": {
+                  "shape_name": "ResourceType",
+                  "type": "string",
+                  "documentation": "Type of the resource. (For more information, go to the AWS CloudFormation User Guide.)",
+                  "required": true
+                },
+                "LastUpdatedTimestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "Time the status was updated.",
+                  "required": true
+                },
+                "ResourceStatus": {
+                  "shape_name": "ResourceStatus",
+                  "type": "string",
+                  "enum": [
+                    "CREATE_IN_PROGRESS",
+                    "CREATE_FAILED",
+                    "CREATE_COMPLETE",
+                    "DELETE_IN_PROGRESS",
+                    "DELETE_FAILED",
+                    "DELETE_COMPLETE",
+                    "UPDATE_IN_PROGRESS",
+                    "UPDATE_FAILED",
+                    "UPDATE_COMPLETE"
+                  ],
+                  "documentation": "Current status of the resource.",
+                  "required": true
+                },
+                "ResourceStatusReason": {
+                  "shape_name": "ResourceStatusReason",
+                  "type": "string",
+                  "documentation": "Success/failure message associated with the resource."
+                }
+              },
+              "documentation": "Contains high-level information about the specified stack resource."
+            },
+            "documentation": "A list of StackResourceSummary structures."
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "String that identifies the start of the next list of events, if there is one."
+          }
+        },
+        "documentation": "The output for a ListStackResources action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns descriptions of all resources of the specified stack."
+    },
+    {
+      "name": "ListStacks",
+      "input": {
+        "shape_name": "ListStacksInput",
+        "type": "structure",
+        "members": {
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": ""
+          },
+          "StackStatusFilter": {
+            "shape_name": "StackStatusFilter",
+            "type": "list",
+            "members": {
+              "shape_name": "StackStatus",
+              "type": "string",
+              "enum": [
+                "CREATE_IN_PROGRESS",
+                "CREATE_FAILED",
+                "CREATE_COMPLETE",
+                "ROLLBACK_IN_PROGRESS",
+                "ROLLBACK_FAILED",
+                "ROLLBACK_COMPLETE",
+                "DELETE_IN_PROGRESS",
+                "DELETE_FAILED",
+                "DELETE_COMPLETE",
+                "UPDATE_IN_PROGRESS",
+                "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS",
+                "UPDATE_COMPLETE",
+                "UPDATE_ROLLBACK_IN_PROGRESS",
+                "UPDATE_ROLLBACK_FAILED",
+                "UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS",
+                "UPDATE_ROLLBACK_COMPLETE"
+              ],
+              "documentation": ""
+            },
+            "documentation": ""
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ListStacksOutput",
+        "type": "structure",
+        "members": {
+          "StackSummaries": {
+            "shape_name": "StackSummaries",
+            "type": "list",
+            "members": {
+              "shape_name": "StackSummary",
+              "type": "structure",
+              "members": {
+                "StackId": {
+                  "shape_name": "StackId",
+                  "type": "string",
+                  "documentation": "Unique stack identifier."
+                },
+                "StackName": {
+                  "shape_name": "StackName",
+                  "type": "string",
+                  "documentation": "The name associated with the stack.",
+                  "required": true
+                },
+                "TemplateDescription": {
+                  "shape_name": "TemplateDescription",
+                  "type": "string",
+                  "documentation": "The template description of the template used to create the stack."
+                },
+                "CreationTime": {
+                  "shape_name": "CreationTime",
+                  "type": "timestamp",
+                  "documentation": "The time the stack was created.",
+                  "required": true
+                },
+                "LastUpdatedTime": {
+                  "shape_name": "LastUpdatedTime",
+                  "type": "timestamp",
+                  "documentation": ""
+                },
+                "DeletionTime": {
+                  "shape_name": "DeletionTime",
+                  "type": "timestamp",
+                  "documentation": "The time the stack was deleted."
+                },
+                "StackStatus": {
+                  "shape_name": "StackStatus",
+                  "type": "string",
+                  "enum": [
+                    "CREATE_IN_PROGRESS",
+                    "CREATE_FAILED",
+                    "CREATE_COMPLETE",
+                    "ROLLBACK_IN_PROGRESS",
+                    "ROLLBACK_FAILED",
+                    "ROLLBACK_COMPLETE",
+                    "DELETE_IN_PROGRESS",
+                    "DELETE_FAILED",
+                    "DELETE_COMPLETE",
+                    "UPDATE_IN_PROGRESS",
+                    "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS",
+                    "UPDATE_COMPLETE",
+                    "UPDATE_ROLLBACK_IN_PROGRESS",
+                    "UPDATE_ROLLBACK_FAILED",
+                    "UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS",
+                    "UPDATE_ROLLBACK_COMPLETE"
+                  ],
+                  "documentation": "The status of the stack when it was deleted.",
+                  "required": true
+                },
+                "StackStatusReason": {
+                  "shape_name": "StackStatusReason",
+                  "type": "string",
+                  "documentation": ""
+                }
+              },
+              "documentation": "The StackSummary Data Type"
+            },
+            "documentation": ""
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": ""
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the summary information for stacks whose status matches the specified StackStatusFilter. Summary information for stacks that have been deleted is kept for 90 days after the stack is deleted. If no StackStatusFilter is specified, summary information for all stacks is returned (including existing stacks and stacks that have been deleted)."
+    },
+    {
+      "name": "UpdateStack",
+      "input": {
+        "shape_name": "UpdateStackInput",
+        "type": "structure",
+        "members": {
+          "StackName": {
+            "shape_name": "StackName",
+            "type": "string",
+            "documentation": "The name or stack ID of the stack to update.",
+            "required": true
+          },
+          "TemplateBody": {
+            "shape_name": "TemplateBody",
+            "type": "string",
+            "min_length": 1,
+            "documentation": "Structure containing the template body. (For more information, go to the AWS CloudFormation User Guide.)"
+          },
+          "TemplateURL": {
+            "shape_name": "TemplateURL",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the AWS CloudFormation User Guide."
+          },
+          "Parameters": {
+            "shape_name": "Parameters",
+            "type": "list",
+            "members": {
+              "shape_name": "Parameter",
+              "type": "structure",
+              "members": {
+                "ParameterKey": {
+                  "shape_name": "ParameterKey",
+                  "type": "string",
+                  "documentation": "The key associated with the parameter."
+                },
+                "ParameterValue": {
+                  "shape_name": "ParameterValue",
+                  "type": "string",
+                  "documentation": "The value associated with the parameter."
+                }
+              },
+              "documentation": "The Parameter data type."
+            },
+            "documentation": "A list of Parameter structures that specify input parameters for the stack."
+          },
+          "Capabilities": {
+            "shape_name": "Capabilities",
+            "type": "list",
+            "members": {
+              "shape_name": "Capability",
+              "type": "string",
+              "enum": [
+                "CAPABILITY_IAM"
+              ],
+              "documentation": ""
+            },
+            "documentation": "The list of capabilities that you want to allow in the stack. If your stack contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter; otherwise, this action returns an InsufficientCapabilities error. IAM resources are the following: AWS::IAM::AccessKey, AWS::IAM::Group, AWS::IAM::Policy, AWS::IAM::User, and AWS::IAM::UserToGroupAddition."
+          }
+        },
+        "documentation": "The input for UpdateStack action."
+      },
+      "output": {
+        "shape_name": "UpdateStackOutput",
+        "type": "structure",
+        "members": {
+          "StackId": {
+            "shape_name": "StackId",
+            "type": "string",
+            "documentation": "Unique identifier of the stack."
+          }
+        },
+        "documentation": "The output for a UpdateStack action."
+      },
+      "errors": [
+        {
+          "shape_name": "InsufficientCapabilitiesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The template contains resources with capabilities that were not specified in the Capabilities parameter."
+        }
+      ],
+      "documentation": "Updates a stack as specified in the template. After the call completes successfully, the stack update starts. You can check the status of the stack via the DescribeStacks action."
+    },
+    {
+      "name": "ValidateTemplate",
+      "input": {
+        "shape_name": "ValidateTemplateInput",
+        "type": "structure",
+        "members": {
+          "TemplateBody": {
+            "shape_name": "TemplateBody",
+            "type": "string",
+            "min_length": 1,
+            "documentation": "String containing the template body. (For more information, go to the AWS CloudFormation User Guide.)"
+          },
+          "TemplateURL": {
+            "shape_name": "TemplateURL",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "Location of file containing the template body. The URL must point to a template located in an S3 bucket in the same region as the stack. For more information, go to the AWS CloudFormation User Guide."
+          }
+        },
+        "documentation": "The input for ValidateTemplate action."
+      },
+      "output": {
+        "shape_name": "ValidateTemplateOutput",
+        "type": "structure",
+        "members": {
+          "Parameters": {
+            "shape_name": "TemplateParameters",
+            "type": "list",
+            "members": {
+              "shape_name": "TemplateParameter",
+              "type": "structure",
+              "members": {
+                "ParameterKey": {
+                  "shape_name": "ParameterKey",
+                  "type": "string",
+                  "documentation": "The name associated with the parameter."
+                },
+                "DefaultValue": {
+                  "shape_name": "ParameterValue",
+                  "type": "string",
+                  "documentation": "The default value associated with the parameter."
+                },
+                "NoEcho": {
+                  "shape_name": "NoEcho",
+                  "type": "boolean",
+                  "documentation": "Flag indicating whether the parameter should be displayed as plain text in logs and UIs."
+                },
+                "Description": {
+                  "shape_name": "Description",
+                  "type": "string",
+                  "documentation": "User defined description associated with the parameter."
+                }
+              },
+              "documentation": "The TemplateParameter data type."
+            },
+            "documentation": "A list of TemplateParameter structures."
+          },
+          "Description": {
+            "shape_name": "Description",
+            "type": "string",
+            "documentation": "The description found within the template."
+          },
+          "Capabilities": {
+            "shape_name": "Capabilities",
+            "type": "list",
+            "members": {
+              "shape_name": "Capability",
+              "type": "string",
+              "enum": [
+                "CAPABILITY_IAM"
+              ],
+              "documentation": ""
+            },
+            "documentation": "The capabitilites found within the template. Currently, CAPABILITY_IAM is the only capability detected. If your template contains IAM resources, you must specify the CAPABILITY_IAM value for this parameter when you use the CreateStack or UpdateStack actions with your template; otherwise, those actions return an InsufficientCapabilities error."
+          },
+          "CapabilitiesReason": {
+            "shape_name": "CapabilitiesReason",
+            "type": "string",
+            "documentation": "The capabilities reason found within the template."
+          }
+        },
+        "documentation": "The output for ValidateTemplate action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Validates a specified template."
+    }
+  ]
+}

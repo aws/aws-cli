@@ -1,0 +1,3195 @@
+{
+  "type": "query",
+  "api_version": "2011-01-01",
+  "short_name": "autoscaling",
+  "service_name": "AutoScaling_2011_01_01",
+  "assembly": "com.amazon.fws.csls.version_2011_01_01",
+  "xmlnamespace": null,
+  "documentation": "Auto Scaling",
+  "operations": [
+    {
+      "name": "CreateAutoScalingGroup",
+      "input": {
+        "shape_name": "CreateAutoScalingGroupType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The name of the Auto Scaling group.",
+            "required": true
+          },
+          "LaunchConfigurationName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the launch configuration to use with the Auto Scaling group.",
+            "required": true
+          },
+          "MinSize": {
+            "shape_name": "AutoScalingGroupMinSize",
+            "type": "integer",
+            "documentation": "The minimum size of the Auto Scaling group.",
+            "required": true
+          },
+          "MaxSize": {
+            "shape_name": "AutoScalingGroupMaxSize",
+            "type": "integer",
+            "documentation": "The maximum size of the Auto Scaling group.",
+            "required": true
+          },
+          "DesiredCapacity": {
+            "shape_name": "AutoScalingGroupDesiredCapacity",
+            "type": "integer",
+            "documentation": "The number of Amazon EC2 instances that should be running in the group."
+          },
+          "DefaultCooldown": {
+            "shape_name": "Cooldown",
+            "type": "integer",
+            "documentation": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start."
+          },
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "min_length": 1,
+            "documentation": "A list of Availability Zones for the Auto Scaling group.",
+            "required": true
+          },
+          "LoadBalancerNames": {
+            "shape_name": "LoadBalancerNames",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "A list of load balancers to use."
+          },
+          "HealthCheckType": {
+            "shape_name": "XmlStringMaxLen32",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 32,
+            "documentation": "The service you want the health status from, Amazon EC2 or Elastic Load Balancer. Valid values are EC2 or ELB."
+          },
+          "HealthCheckGracePeriod": {
+            "shape_name": "HealthCheckGracePeriod",
+            "type": "integer",
+            "documentation": "Length of time in seconds after a new Amazon EC2 instance comes into service that Auto Scaling starts checking its health."
+          },
+          "PlacementGroup": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "Physical location of your cluster placement group created in Amazon EC2. For more information about cluster placement group, see Using Cluster Instances"
+          },
+          "VPCZoneIdentifier": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "A comma-separated list of subnet identifiers of Amazon Virtual Private Clouds (Amazon VPCs)."
+          },
+          "TerminationPolicies": {
+            "shape_name": "TerminationPolicies",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen1600",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": ""
+          },
+          "Tags": {
+            "shape_name": "Tags",
+            "type": "list",
+            "members": {
+              "shape_name": "Tag",
+              "type": "structure",
+              "members": {
+                "ResourceId": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The name of the Auto Scaling group."
+                },
+                "ResourceType": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The kind of resource to which the tag is applied. Currently, Auto Scaling supports the auto-scaling-group resource type."
+                },
+                "Key": {
+                  "shape_name": "TagKey",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 128,
+                  "documentation": "The key of the tag.",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "TagValue",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 0,
+                  "max_length": 256,
+                  "documentation": "The value of the tag."
+                },
+                "PropagateAtLaunch": {
+                  "shape_name": "PropagateAtLaunch",
+                  "type": "boolean",
+                  "documentation": "Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change."
+                }
+              },
+              "documentation": "The tag applied to an Auto Scaling group."
+            },
+            "documentation": "The tag to be created or updated. Each tag should be defined by its resource type, resource ID, key, value, and a propagate flag. Valid values are: key=value, value=value, propagate=true or false. Value and propagate are optional parameters."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "AlreadyExistsFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The named Auto Scaling group or launch configuration already exists."
+        },
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The quota for capacity groups or launch configurations for this customer has already been reached."
+        }
+      ],
+      "documentation": "Creates a new Auto Scaling group with the specified name and other attributes. When the creation request is completed, the Auto Scaling group is ready to be used in other calls."
+    },
+    {
+      "name": "CreateLaunchConfiguration",
+      "input": {
+        "shape_name": "CreateLaunchConfigurationType",
+        "type": "structure",
+        "members": {
+          "LaunchConfigurationName": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The name of the launch configuration to create.",
+            "required": true
+          },
+          "ImageId": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "Unique ID of the Amazon Machine Image (AMI) which was assigned during registration. For more information about Amazon EC2 images, please see Amazon EC2 product documentation.",
+            "required": true
+          },
+          "KeyName": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The name of the Amazon EC2 key pair."
+          },
+          "SecurityGroups": {
+            "shape_name": "SecurityGroups",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlString",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "documentation": ""
+            },
+            "documentation": "The names of the security groups with which to associate Amazon EC2 or Amazon VPC instances. Specify Amazon EC2 security groups using security group names, such as websrv. Specify Amazon VPC security groups using security group IDs, such as sg-12345678. For more information about Amazon EC2 security groups, go to Using Security Groups in the Amazon EC2 product documentation. For more information about Amazon VPC security groups, go to Security Groups in the Amazon VPC product documentation."
+          },
+          "UserData": {
+            "shape_name": "XmlStringUserData",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "max_length": 21847,
+            "documentation": "The user data available to the launched Amazon EC2 instances. For more information about Amazon EC2 user data, please see Amazon EC2 product documentation."
+          },
+          "InstanceType": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The instance type of the Amazon EC2 instance. For more information about Amazon EC2 instance types, please see Amazon EC2 product documentation",
+            "required": true
+          },
+          "KernelId": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The ID of the kernel associated with the Amazon EC2 AMI."
+          },
+          "RamdiskId": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The ID of the RAM disk associated with the Amazon EC2 AMI."
+          },
+          "BlockDeviceMappings": {
+            "shape_name": "BlockDeviceMappings",
+            "type": "list",
+            "members": {
+              "shape_name": "BlockDeviceMapping",
+              "type": "structure",
+              "members": {
+                "VirtualName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The virtual name associated with the device."
+                },
+                "DeviceName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the device within Amazon EC2.",
+                  "required": true
+                },
+                "Ebs": {
+                  "shape_name": "Ebs",
+                  "type": "structure",
+                  "members": {
+                    "SnapshotId": {
+                      "shape_name": "XmlStringMaxLen255",
+                      "type": "string",
+                      "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                      "min_length": 1,
+                      "max_length": 255,
+                      "documentation": "The snapshot ID."
+                    },
+                    "VolumeSize": {
+                      "shape_name": "BlockDeviceEbsVolumeSize",
+                      "type": "integer",
+                      "min_length": 1,
+                      "max_length": 1024,
+                      "documentation": "The volume size, in gigabytes."
+                    }
+                  },
+                  "documentation": "The Elastic Block Storage volume information."
+                }
+              },
+              "documentation": "The BlockDeviceMapping data type."
+            },
+            "documentation": "A list of mappings that specify how block devices are exposed to the instance. Each mapping is made up of a VirtualName, a DeviceName, and an ebs data structure that contains information about the associated Elastic Block Storage volume. For more information about Amazon EC2 BlockDeviceMappings, go to Block Device Mapping in the Amazon EC2 product documentation."
+          },
+          "InstanceMonitoring": {
+            "shape_name": "InstanceMonitoring",
+            "type": "structure",
+            "members": {
+              "Enabled": {
+                "shape_name": "MonitoringEnabled",
+                "type": "boolean",
+                "documentation": "If True, instance monitoring is enabled."
+              }
+            },
+            "documentation": "Enables detailed monitoring, which is enabled by default."
+          },
+          "SpotPrice": {
+            "shape_name": "SpotPrice",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The maximum hourly price for any Spot Instance launched to fulfill the request. Spot Instances are launched when the maximum price you specify exceeds the current Spot price. For more information on launching Spot Instances, go to Using Auto Scaling to Launch Spot Instances in the Auto Scaling Developer Guide."
+          },
+          "IamInstanceProfile": {
+            "shape_name": "XmlStringMaxLen1600",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or the ARN of the instance profile associated with the IAM role for the instance. For information on launching EC2 instances with an IAM role, go to Launching Auto Scaling Instances With an IAM Role in the Auto Scaling Developer Guide."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "AlreadyExistsFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The named Auto Scaling group or launch configuration already exists."
+        },
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The quota for capacity groups or launch configurations for this customer has already been reached."
+        }
+      ],
+      "documentation": "Creates a new launch configuration. The launch configuration name must be unique within the scope of the client's AWS account. The maximum limit of launch configurations, which by default is 100, must not yet have been met; otherwise, the call will fail. When created, the new launch configuration is available for immediate use."
+    },
+    {
+      "name": "CreateOrUpdateTags",
+      "input": {
+        "shape_name": "CreateOrUpdateTagsType",
+        "type": "structure",
+        "members": {
+          "Tags": {
+            "shape_name": "Tags",
+            "type": "list",
+            "members": {
+              "shape_name": "Tag",
+              "type": "structure",
+              "members": {
+                "ResourceId": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The name of the Auto Scaling group."
+                },
+                "ResourceType": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The kind of resource to which the tag is applied. Currently, Auto Scaling supports the auto-scaling-group resource type."
+                },
+                "Key": {
+                  "shape_name": "TagKey",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 128,
+                  "documentation": "The key of the tag.",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "TagValue",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 0,
+                  "max_length": 256,
+                  "documentation": "The value of the tag."
+                },
+                "PropagateAtLaunch": {
+                  "shape_name": "PropagateAtLaunch",
+                  "type": "boolean",
+                  "documentation": "Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change."
+                }
+              },
+              "documentation": "The tag applied to an Auto Scaling group."
+            },
+            "documentation": "The tag to be created or updated. Each tag should be defined by its resource type, resource ID, key, value, and a propagate flag. The resource type and resource ID identify the type and name of resource for which the tag is created. Currently, auto-scaling-group is the only supported resource type. The valid value for the resource ID is groupname.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The quota for capacity groups or launch configurations for this customer has already been reached."
+        },
+        {
+          "shape_name": "AlreadyExistsFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The named Auto Scaling group or launch configuration already exists."
+        }
+      ],
+      "documentation": "Creates new tags or updates existing tags for an Auto Scaling group."
+    },
+    {
+      "name": "DeleteAutoScalingGroup",
+      "input": {
+        "shape_name": "DeleteAutoScalingGroupType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group.",
+            "required": true
+          },
+          "ForceDelete": {
+            "shape_name": "ForceDelete",
+            "type": "boolean",
+            "documentation": "Starting with API version 2011-01-01, specifies that the Auto Scaling group will be deleted along with all instances associated with the group, without waiting for all instances to be terminated."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ScalingActivityInProgressFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "You cannot delete an Auto Scaling group while there are scaling activities in progress for that group."
+        },
+        {
+          "shape_name": "ResourceInUseFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "This is returned when you cannot delete a launch configuration or Auto Scaling group because it is being used."
+        }
+      ],
+      "documentation": "Deletes the specified Auto Scaling group if the group has no instances and no scaling activities in progress."
+    },
+    {
+      "name": "DeleteLaunchConfiguration",
+      "input": {
+        "shape_name": "LaunchConfigurationNameType",
+        "type": "structure",
+        "members": {
+          "LaunchConfigurationName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the launch configuration.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ResourceInUseFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "This is returned when you cannot delete a launch configuration or Auto Scaling group because it is being used."
+        }
+      ],
+      "documentation": "Deletes the specified LaunchConfiguration."
+    },
+    {
+      "name": "DeleteNotificationConfiguration",
+      "input": {
+        "shape_name": "DeleteNotificationConfigurationType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group.",
+            "required": true
+          },
+          "TopicARN": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Deletes notifications created by PutNotificationConfiguration."
+    },
+    {
+      "name": "DeletePolicy",
+      "input": {
+        "shape_name": "DeletePolicyType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group."
+          },
+          "PolicyName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or PolicyARN of the policy you want to delete.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Deletes a policy created by PutScalingPolicy."
+    },
+    {
+      "name": "DeleteScheduledAction",
+      "input": {
+        "shape_name": "DeleteScheduledActionType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group."
+          },
+          "ScheduledActionName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the action you want to delete.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Deletes a scheduled action previously created using the PutScheduledUpdateGroupAction."
+    },
+    {
+      "name": "DeleteTags",
+      "input": {
+        "shape_name": "DeleteTagsType",
+        "type": "structure",
+        "members": {
+          "Tags": {
+            "shape_name": "Tags",
+            "type": "list",
+            "members": {
+              "shape_name": "Tag",
+              "type": "structure",
+              "members": {
+                "ResourceId": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The name of the Auto Scaling group."
+                },
+                "ResourceType": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The kind of resource to which the tag is applied. Currently, Auto Scaling supports the auto-scaling-group resource type."
+                },
+                "Key": {
+                  "shape_name": "TagKey",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 128,
+                  "documentation": "The key of the tag.",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "TagValue",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 0,
+                  "max_length": 256,
+                  "documentation": "The value of the tag."
+                },
+                "PropagateAtLaunch": {
+                  "shape_name": "PropagateAtLaunch",
+                  "type": "boolean",
+                  "documentation": "Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change."
+                }
+              },
+              "documentation": "The tag applied to an Auto Scaling group."
+            },
+            "documentation": "Each tag should be defined by its resource type, resource ID, key, value, and a propagate flag. Valid values are: Resource type = auto-scaling-group, Resource ID = AutoScalingGroupName, key=value, value=value, propagate=true or false.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Removes the specified tags or a set of tags from a set of resources."
+    },
+    {
+      "name": "DescribeAdjustmentTypes",
+      "input": null,
+      "output": {
+        "shape_name": "DescribeAdjustmentTypesAnswer",
+        "type": "structure",
+        "members": {
+          "AdjustmentTypes": {
+            "shape_name": "AdjustmentTypes",
+            "type": "list",
+            "members": {
+              "shape_name": "AdjustmentType",
+              "type": "structure",
+              "members": {
+                "AdjustmentType": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "A policy adjustment type. Valid values are ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity."
+                }
+              },
+              "documentation": "Specifies whether the PutScalingPolicy ScalingAdjustment parameter is an absolute number or a percentage of the current capacity."
+            },
+            "documentation": "A list of specific policy adjustment types."
+          }
+        },
+        "documentation": "The output of the DescribeAdjustmentTypes action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns policy adjustment types for use in the PutScalingPolicy action."
+    },
+    {
+      "name": "DescribeAutoScalingGroups",
+      "input": {
+        "shape_name": "AutoScalingGroupNamesType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupNames": {
+            "shape_name": "AutoScalingGroupNames",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": "A list of Auto Scaling group names."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of records to return."
+          }
+        },
+        "documentation": "The AutoScalingGroupNamesType data type."
+      },
+      "output": {
+        "shape_name": "AutoScalingGroupsType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroups": {
+            "shape_name": "AutoScalingGroups",
+            "type": "list",
+            "members": {
+              "shape_name": "AutoScalingGroup",
+              "type": "structure",
+              "members": {
+                "AutoScalingGroupName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Specifies the name of the group.",
+                  "required": true
+                },
+                "AutoScalingGroupARN": {
+                  "shape_name": "ResourceName",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "The Amazon Resource Name (ARN) of the Auto Scaling group."
+                },
+                "LaunchConfigurationName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Specifies the name of the associated LaunchConfiguration.",
+                  "required": true
+                },
+                "MinSize": {
+                  "shape_name": "AutoScalingGroupMinSize",
+                  "type": "integer",
+                  "documentation": "Contains the minimum size of the Auto Scaling group.",
+                  "required": true
+                },
+                "MaxSize": {
+                  "shape_name": "AutoScalingGroupMaxSize",
+                  "type": "integer",
+                  "documentation": "Contains the maximum size of the Auto Scaling group.",
+                  "required": true
+                },
+                "DesiredCapacity": {
+                  "shape_name": "AutoScalingGroupDesiredCapacity",
+                  "type": "integer",
+                  "documentation": "Specifies the desired capacity for the Auto Scaling group.",
+                  "required": true
+                },
+                "DefaultCooldown": {
+                  "shape_name": "Cooldown",
+                  "type": "integer",
+                  "documentation": "The number of seconds after a scaling activity completes before any further scaling activities can start.",
+                  "required": true
+                },
+                "AvailabilityZones": {
+                  "shape_name": "AvailabilityZones",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "XmlStringMaxLen255",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "min_length": 1,
+                    "max_length": 255,
+                    "documentation": ""
+                  },
+                  "min_length": 1,
+                  "documentation": "Contains a list of Availability Zones for the group.",
+                  "required": true
+                },
+                "LoadBalancerNames": {
+                  "shape_name": "LoadBalancerNames",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "XmlStringMaxLen255",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "min_length": 1,
+                    "max_length": 255,
+                    "documentation": ""
+                  },
+                  "documentation": "A list of load balancers associated with this Auto Scaling group."
+                },
+                "HealthCheckType": {
+                  "shape_name": "XmlStringMaxLen32",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 32,
+                  "documentation": "The service of interest for the health status check, either \"EC2\" for Amazon EC2 or \"ELB\" for Elastic Load Balancing.",
+                  "required": true
+                },
+                "HealthCheckGracePeriod": {
+                  "shape_name": "HealthCheckGracePeriod",
+                  "type": "integer",
+                  "documentation": "The length of time that Auto Scaling waits before checking an instance's health status. The grace period begins when an instance comes into service."
+                },
+                "Instances": {
+                  "shape_name": "Instances",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Instance",
+                    "type": "structure",
+                    "members": {
+                      "InstanceId": {
+                        "shape_name": "XmlStringMaxLen16",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 16,
+                        "documentation": "Specifies the ID of the Amazon EC2 instance.",
+                        "required": true
+                      },
+                      "AvailabilityZone": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "Availability Zones associated with this instance.",
+                        "required": true
+                      },
+                      "LifecycleState": {
+                        "shape_name": "LifecycleState",
+                        "type": "string",
+                        "enum": [
+                          "Pending",
+                          "Quarantined",
+                          "InService",
+                          "Terminating",
+                          "Terminated"
+                        ],
+                        "documentation": "Contains a description of the current lifecycle state.",
+                        "required": true
+                      },
+                      "HealthStatus": {
+                        "shape_name": "XmlStringMaxLen32",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 32,
+                        "documentation": "The instance's health status.",
+                        "required": true
+                      },
+                      "LaunchConfigurationName": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The launch configuration associated with this instance.",
+                        "required": true
+                      }
+                    },
+                    "documentation": "The Instance data type."
+                  },
+                  "documentation": "Provides a summary list of Amazon EC2 instances."
+                },
+                "CreatedTime": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "Specifies the date and time the Auto Scaling group was created.",
+                  "required": true
+                },
+                "SuspendedProcesses": {
+                  "shape_name": "SuspendedProcesses",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "SuspendedProcess",
+                    "type": "structure",
+                    "members": {
+                      "ProcessName": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The name of the suspended process."
+                      },
+                      "SuspensionReason": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The reason that the process was suspended."
+                      }
+                    },
+                    "documentation": "An Auto Scaling process that has been suspended. For more information, see ProcessType."
+                  },
+                  "documentation": "Suspended processes associated with this Auto Scaling group."
+                },
+                "PlacementGroup": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the cluster placement group, if applicable. For more information, go to Using Cluster Instances in the Amazon EC2 User Guide."
+                },
+                "VPCZoneIdentifier": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The subnet identifier for the Amazon VPC connection, if applicable. You can specify several subnets in a comma-separated list."
+                },
+                "EnabledMetrics": {
+                  "shape_name": "EnabledMetrics",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "EnabledMetric",
+                    "type": "structure",
+                    "members": {
+                      "Metric": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The name of the enabled metric."
+                      },
+                      "Granularity": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The granularity of the enabled metric."
+                      }
+                    },
+                    "documentation": "The EnabledMetric data type."
+                  },
+                  "documentation": "A list of metrics enabled for this Auto Scaling group."
+                },
+                "Status": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "A list of status conditions for the Auto Scaling group."
+                },
+                "Tags": {
+                  "shape_name": "TagDescriptionList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "TagDescription",
+                    "type": "structure",
+                    "members": {
+                      "ResourceId": {
+                        "shape_name": "XmlString",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "documentation": "The name of the Auto Scaling group."
+                      },
+                      "ResourceType": {
+                        "shape_name": "XmlString",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "documentation": "The kind of resource to which the tag is applied. Currently, Auto Scaling supports the auto-scaling-group resource type."
+                      },
+                      "Key": {
+                        "shape_name": "TagKey",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 128,
+                        "documentation": "The key of the tag."
+                      },
+                      "Value": {
+                        "shape_name": "TagValue",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 0,
+                        "max_length": 256,
+                        "documentation": "The value of the tag."
+                      },
+                      "PropagateAtLaunch": {
+                        "shape_name": "PropagateAtLaunch",
+                        "type": "boolean",
+                        "documentation": "Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change."
+                      }
+                    },
+                    "documentation": "The tag applied to an Auto Scaling group."
+                  },
+                  "documentation": "A list of tags for the Auto Scaling group."
+                },
+                "TerminationPolicies": {
+                  "shape_name": "TerminationPolicies",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "XmlStringMaxLen1600",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "min_length": 1,
+                    "max_length": 1600,
+                    "documentation": ""
+                  },
+                  "documentation": ""
+                }
+              },
+              "documentation": "The AutoScalingGroup data type."
+            },
+            "documentation": "A list of Auto Scaling groups.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          }
+        },
+        "documentation": "The AutoScalingGroupsType data type."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Returns a full description of each Auto Scaling group in the given list. This includes all Amazon EC2 instances that are members of the group. If a list of names is not provided, the service returns the full details of all Auto Scaling groups."
+    },
+    {
+      "name": "DescribeAutoScalingInstances",
+      "input": {
+        "shape_name": "DescribeAutoScalingInstancesType",
+        "type": "structure",
+        "members": {
+          "InstanceIds": {
+            "shape_name": "InstanceIds",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen16",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 16,
+              "documentation": ""
+            },
+            "documentation": "The list of Auto Scaling instances to describe. If this list is omitted, all auto scaling instances are described. The list of requested instances cannot contain more than 50 items. If unknown instances are requested, they are ignored with no error."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of Auto Scaling instances to be described with each call."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "The token returned by a previous call to indicate that there is more data available."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "AutoScalingInstancesType",
+        "type": "structure",
+        "members": {
+          "AutoScalingInstances": {
+            "shape_name": "AutoScalingInstances",
+            "type": "list",
+            "members": {
+              "shape_name": "AutoScalingInstanceDetails",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "XmlStringMaxLen16",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 16,
+                  "documentation": "The instance ID of the Amazon EC2 instance.",
+                  "required": true
+                },
+                "AutoScalingGroupName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the Auto Scaling group associated with this instance.",
+                  "required": true
+                },
+                "AvailabilityZone": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The Availability Zone in which this instance resides.",
+                  "required": true
+                },
+                "LifecycleState": {
+                  "shape_name": "XmlStringMaxLen32",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 32,
+                  "documentation": "The life cycle state of this instance.",
+                  "required": true
+                },
+                "HealthStatus": {
+                  "shape_name": "XmlStringMaxLen32",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 32,
+                  "documentation": "The health status of this instance. \"Healthy\" means that the instance is healthy and should remain in service. \"Unhealthy\" means that the instance is unhealthy. Auto Scaling should terminate and replace it.",
+                  "required": true
+                },
+                "LaunchConfigurationName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The launch configuration associated with this instance.",
+                  "required": true
+                }
+              },
+              "documentation": "The AutoScalingInstanceDetails data type."
+            },
+            "documentation": "A list of Auto Scaling instances."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          }
+        },
+        "documentation": "The AutoScalingInstancesType data type."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Returns a description of each Auto Scaling instance in the InstanceIds list. If a list is not provided, the service returns the full details of all instances up to a maximum of 50. By default, the service returns a list of 20 items."
+    },
+    {
+      "name": "DescribeAutoScalingNotificationTypes",
+      "input": null,
+      "output": {
+        "shape_name": "DescribeAutoScalingNotificationTypesAnswer",
+        "type": "structure",
+        "members": {
+          "AutoScalingNotificationTypes": {
+            "shape_name": "AutoScalingNotificationTypes",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "Notification types supported by Auto Scaling. They are: autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE, autoscaling:EC2_INSTANCE_TERMINATE_ERROR, autoscaling:TEST_NOTIFICATION"
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns a list of all notification types that are supported by Auto Scaling."
+    },
+    {
+      "name": "DescribeLaunchConfigurations",
+      "input": {
+        "shape_name": "LaunchConfigurationNamesType",
+        "type": "structure",
+        "members": {
+          "LaunchConfigurationNames": {
+            "shape_name": "LaunchConfigurationNames",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": "A list of launch configuration names."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of launch configurations. The default is 100."
+          }
+        },
+        "documentation": "The LaunchConfigurationNamesType data type."
+      },
+      "output": {
+        "shape_name": "LaunchConfigurationsType",
+        "type": "structure",
+        "members": {
+          "LaunchConfigurations": {
+            "shape_name": "LaunchConfigurations",
+            "type": "list",
+            "members": {
+              "shape_name": "LaunchConfiguration",
+              "type": "structure",
+              "members": {
+                "LaunchConfigurationName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Specifies the name of the launch configuration.",
+                  "required": true
+                },
+                "LaunchConfigurationARN": {
+                  "shape_name": "ResourceName",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "The launch configuration's Amazon Resource Name (ARN)."
+                },
+                "ImageId": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Provides the unique ID of the Amazon Machine Image (AMI) that was assigned during registration.",
+                  "required": true
+                },
+                "KeyName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Provides the name of the Amazon EC2 key pair."
+                },
+                "SecurityGroups": {
+                  "shape_name": "SecurityGroups",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "XmlString",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "documentation": ""
+                  },
+                  "documentation": "A description of the security groups to associate with the Amazon EC2 instances."
+                },
+                "UserData": {
+                  "shape_name": "XmlStringUserData",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "max_length": 21847,
+                  "documentation": "The user data available to the launched Amazon EC2 instances."
+                },
+                "InstanceType": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Specifies the instance type of the Amazon EC2 instance.",
+                  "required": true
+                },
+                "KernelId": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Provides the ID of the kernel associated with the Amazon EC2 AMI."
+                },
+                "RamdiskId": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Provides ID of the RAM disk associated with the Amazon EC2 AMI."
+                },
+                "BlockDeviceMappings": {
+                  "shape_name": "BlockDeviceMappings",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "BlockDeviceMapping",
+                    "type": "structure",
+                    "members": {
+                      "VirtualName": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The virtual name associated with the device."
+                      },
+                      "DeviceName": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The name of the device within Amazon EC2.",
+                        "required": true
+                      },
+                      "Ebs": {
+                        "shape_name": "Ebs",
+                        "type": "structure",
+                        "members": {
+                          "SnapshotId": {
+                            "shape_name": "XmlStringMaxLen255",
+                            "type": "string",
+                            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                            "min_length": 1,
+                            "max_length": 255,
+                            "documentation": "The snapshot ID."
+                          },
+                          "VolumeSize": {
+                            "shape_name": "BlockDeviceEbsVolumeSize",
+                            "type": "integer",
+                            "min_length": 1,
+                            "max_length": 1024,
+                            "documentation": "The volume size, in gigabytes."
+                          }
+                        },
+                        "documentation": "The Elastic Block Storage volume information."
+                      }
+                    },
+                    "documentation": "The BlockDeviceMapping data type."
+                  },
+                  "documentation": "Specifies how block devices are exposed to the instance. Each mapping is made up of a virtualName and a deviceName."
+                },
+                "InstanceMonitoring": {
+                  "shape_name": "InstanceMonitoring",
+                  "type": "structure",
+                  "members": {
+                    "Enabled": {
+                      "shape_name": "MonitoringEnabled",
+                      "type": "boolean",
+                      "documentation": "If True, instance monitoring is enabled."
+                    }
+                  },
+                  "documentation": "Controls whether instances in this group are launched with detailed monitoring or not."
+                },
+                "SpotPrice": {
+                  "shape_name": "SpotPrice",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Specifies the bid price for the Spot Instance."
+                },
+                "IamInstanceProfile": {
+                  "shape_name": "XmlStringMaxLen1600",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "Provides the name or the full ARN of the instance profile associated with the IAM role for the instance. The instance profile is the container for the IAM role."
+                },
+                "CreatedTime": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "Provides the creation date and time for this launch configuration.",
+                  "required": true
+                }
+              },
+              "documentation": "The LaunchConfiguration data type."
+            },
+            "documentation": "A list of launch configurations.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          }
+        },
+        "documentation": "The LaunchConfigurationsType data type."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Returns a full description of the launch configurations, or the specified launch configurations, if they exist."
+    },
+    {
+      "name": "DescribeMetricCollectionTypes",
+      "input": null,
+      "output": {
+        "shape_name": "DescribeMetricCollectionTypesAnswer",
+        "type": "structure",
+        "members": {
+          "Metrics": {
+            "shape_name": "MetricCollectionTypes",
+            "type": "list",
+            "members": {
+              "shape_name": "MetricCollectionType",
+              "type": "structure",
+              "members": {
+                "Metric": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": ""
+                }
+              },
+              "documentation": "The MetricCollectionType data type."
+            },
+            "documentation": "The list of Metrics collected.The following metrics are supported:"
+          },
+          "Granularities": {
+            "shape_name": "MetricGranularityTypes",
+            "type": "list",
+            "members": {
+              "shape_name": "MetricGranularityType",
+              "type": "structure",
+              "members": {
+                "Granularity": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The granularity of a Metric."
+                }
+              },
+              "documentation": "The MetricGranularityType data type."
+            },
+            "documentation": "A list of granularities for the listed Metrics."
+          }
+        },
+        "documentation": "The output of the DescribeMetricCollectionTypes action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns a list of metrics and a corresponding list of granularities for each metric."
+    },
+    {
+      "name": "DescribeNotificationConfigurations",
+      "input": {
+        "shape_name": "DescribeNotificationConfigurationsType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupNames": {
+            "shape_name": "AutoScalingGroupNames",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": "The name of the Auto Scaling group."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that is used to mark the start of the next batch of returned results for pagination."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "Maximum number of records to be returned."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "DescribeNotificationConfigurationsAnswer",
+        "type": "structure",
+        "members": {
+          "NotificationConfigurations": {
+            "shape_name": "NotificationConfigurations",
+            "type": "list",
+            "members": {
+              "shape_name": "NotificationConfiguration",
+              "type": "structure",
+              "members": {
+                "AutoScalingGroupName": {
+                  "shape_name": "ResourceName",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "Specifies the Auto Scaling group name."
+                },
+                "TopicARN": {
+                  "shape_name": "ResourceName",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic."
+                },
+                "NotificationType": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The types of events for an action to start."
+                }
+              },
+              "documentation": "The NotificationConfiguration data type."
+            },
+            "documentation": "The list of notification configurations.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that is used to mark the start of the next batch of returned results for pagination."
+          }
+        },
+        "documentation": "The output of the DescribeNotificationConfigurations action."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Returns a list of notification actions associated with Auto Scaling groups for specified events."
+    },
+    {
+      "name": "DescribePolicies",
+      "input": {
+        "shape_name": "DescribePoliciesType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group."
+          },
+          "PolicyNames": {
+            "shape_name": "PolicyNames",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": "A list of policy names or policy ARNs to be described. If this list is omitted, all policy names are described. If an auto scaling group name is provided, the results are limited to that group. The list of requested policy names cannot contain more than 50 items. If unknown policy names are requested, they are ignored with no error."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that is used to mark the start of the next batch of returned results for pagination."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of policies that will be described with each call."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "PoliciesType",
+        "type": "structure",
+        "members": {
+          "ScalingPolicies": {
+            "shape_name": "ScalingPolicies",
+            "type": "list",
+            "members": {
+              "shape_name": "ScalingPolicy",
+              "type": "structure",
+              "members": {
+                "AutoScalingGroupName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the Auto Scaling group associated with this scaling policy."
+                },
+                "PolicyName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the scaling policy."
+                },
+                "ScalingAdjustment": {
+                  "shape_name": "PolicyIncrement",
+                  "type": "integer",
+                  "documentation": "The number associated with the specified adjustment type. A positive value adds to the current capacity and a negative value removes from the current capacity."
+                },
+                "AdjustmentType": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Specifies whether the ScalingAdjustment is an absolute number or a percentage of the current capacity. Valid values are ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity."
+                },
+                "Cooldown": {
+                  "shape_name": "Cooldown",
+                  "type": "integer",
+                  "documentation": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start."
+                },
+                "PolicyARN": {
+                  "shape_name": "ResourceName",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "The Amazon Resource Name (ARN) of the policy."
+                },
+                "Alarms": {
+                  "shape_name": "Alarms",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Alarm",
+                    "type": "structure",
+                    "members": {
+                      "AlarmName": {
+                        "shape_name": "XmlStringMaxLen255",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "The name of the alarm."
+                      },
+                      "AlarmARN": {
+                        "shape_name": "ResourceName",
+                        "type": "string",
+                        "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                        "min_length": 1,
+                        "max_length": 1600,
+                        "documentation": "The Amazon Resource Name (ARN) of the alarm."
+                      }
+                    },
+                    "documentation": "The Alarm data type."
+                  },
+                  "documentation": "A list of CloudWatch Alarms related to the policy."
+                },
+                "MinAdjustmentStep": {
+                  "shape_name": "MinAdjustmentStep",
+                  "type": "integer",
+                  "documentation": "Changes the DesiredCapacity of the Auto Scaling group by at least the specified value."
+                }
+              },
+              "documentation": "The ScalingPolicy data type."
+            },
+            "documentation": "A list of scaling policies."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          }
+        },
+        "documentation": "The PoliciesType data type."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Returns descriptions of what each policy does. This action supports pagination. If the response includes a token, there are more records available. To get the additional records, repeat the request with the response token as the NextToken parameter."
+    },
+    {
+      "name": "DescribeScalingActivities",
+      "input": {
+        "shape_name": "DescribeScalingActivitiesType",
+        "type": "structure",
+        "members": {
+          "ActivityIds": {
+            "shape_name": "ActivityIds",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlString",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "documentation": ""
+            },
+            "documentation": "A list containing the activity IDs of the desired scaling activities. If this list is omitted, all activities are described. If an AutoScalingGroupName is provided, the results are limited to that group. The list of requested activities cannot contain more than 50 items. If unknown activities are requested, they are ignored with no error."
+          },
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the AutoScalingGroup."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of scaling activities to return."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results for pagination."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ActivitiesType",
+        "type": "structure",
+        "members": {
+          "Activities": {
+            "shape_name": "Activities",
+            "type": "list",
+            "members": {
+              "shape_name": "Activity",
+              "type": "structure",
+              "members": {
+                "ActivityId": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "Specifies the ID of the activity.",
+                  "required": true
+                },
+                "AutoScalingGroupName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the Auto Scaling group.",
+                  "required": true
+                },
+                "Description": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "Contains a friendly, more verbose description of the scaling activity."
+                },
+                "Cause": {
+                  "shape_name": "XmlStringMaxLen1023",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1023,
+                  "documentation": "Contains the reason the activity was begun.",
+                  "required": true
+                },
+                "StartTime": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "Provides the start time of this activity.",
+                  "required": true
+                },
+                "EndTime": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "Provides the end time of this activity."
+                },
+                "StatusCode": {
+                  "shape_name": "ScalingActivityStatusCode",
+                  "type": "string",
+                  "enum": [
+                    "WaitingForSpotInstanceRequestId",
+                    "WaitingForSpotInstanceId",
+                    "WaitingForInstanceId",
+                    "PreInService",
+                    "InProgress",
+                    "Successful",
+                    "Failed",
+                    "Cancelled"
+                  ],
+                  "documentation": "Contains the current status of the activity.",
+                  "required": true
+                },
+                "StatusMessage": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "Contains a friendly, more verbose description of the activity status."
+                },
+                "Progress": {
+                  "shape_name": "Progress",
+                  "type": "integer",
+                  "documentation": "Specifies a value between 0 and 100 that indicates the progress of the activity."
+                },
+                "Details": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "Contains details of the scaling activity."
+                }
+              },
+              "documentation": "A scaling Activity is a long-running process that represents a change to your AutoScalingGroup, such as changing the size of the group. It can also be a process to replace an instance, or a process to perform any other long-running operations supported by the API."
+            },
+            "documentation": "A list of the requested scaling activities.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "Acts as a paging mechanism for large result sets. Set to a non-empty string if there are additional results waiting to be returned. Pass this in to subsequent calls to return additional results."
+          }
+        },
+        "documentation": "The output for the DescribeScalingActivities action."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Returns the scaling activities for the specified Auto Scaling group."
+    },
+    {
+      "name": "DescribeScalingProcessTypes",
+      "input": null,
+      "output": {
+        "shape_name": "ProcessesType",
+        "type": "structure",
+        "members": {
+          "Processes": {
+            "shape_name": "Processes",
+            "type": "list",
+            "members": {
+              "shape_name": "ProcessType",
+              "type": "structure",
+              "members": {
+                "ProcessName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of a process.",
+                  "required": true
+                }
+              },
+              "documentation": "There are two primary Auto Scaling process types--Launch and Terminate. The Launch process creates a new Amazon EC2 instance for an Auto Scaling group, and the Terminate process removes an existing Amazon EC2 instance."
+            },
+            "documentation": "A list of ProcessType names."
+          }
+        },
+        "documentation": "The output of the DescribeScalingProcessTypes action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns scaling process types for use in the ResumeProcesses and SuspendProcesses actions."
+    },
+    {
+      "name": "DescribeScheduledActions",
+      "input": {
+        "shape_name": "DescribeScheduledActionsType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group."
+          },
+          "ScheduledActionNames": {
+            "shape_name": "ScheduledActionNames",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": "A list of scheduled actions to be described. If this list is omitted, all scheduled actions are described. The list of requested scheduled actions cannot contain more than 50 items. If an auto scaling group name is provided, the results are limited to that group. If unknown scheduled actions are requested, they are ignored with no error."
+          },
+          "StartTime": {
+            "shape_name": "TimestampType",
+            "type": "timestamp",
+            "documentation": "The earliest scheduled start time to return. If scheduled action names are provided, this field will be ignored."
+          },
+          "EndTime": {
+            "shape_name": "TimestampType",
+            "type": "timestamp",
+            "documentation": "The latest scheduled start time to return. If scheduled action names are provided, this field is ignored."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of scheduled actions to return."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ScheduledActionsType",
+        "type": "structure",
+        "members": {
+          "ScheduledUpdateGroupActions": {
+            "shape_name": "ScheduledUpdateGroupActions",
+            "type": "list",
+            "members": {
+              "shape_name": "ScheduledUpdateGroupAction",
+              "type": "structure",
+              "members": {
+                "AutoScalingGroupName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of the Auto Scaling group to be updated."
+                },
+                "ScheduledActionName": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The name of this scheduled action."
+                },
+                "ScheduledActionARN": {
+                  "shape_name": "ResourceName",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "The Amazon Resource Name (ARN) of this scheduled action."
+                },
+                "Time": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "Time is deprecated."
+                },
+                "StartTime": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "The time that the action is scheduled to begin. This value can be up to one month in the future."
+                },
+                "EndTime": {
+                  "shape_name": "TimestampType",
+                  "type": "timestamp",
+                  "documentation": "The time that the action is scheduled to end. This value can be up to one month in the future."
+                },
+                "Recurrence": {
+                  "shape_name": "XmlStringMaxLen255",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "The regular schedule that an action occurs."
+                },
+                "MinSize": {
+                  "shape_name": "AutoScalingGroupMinSize",
+                  "type": "integer",
+                  "documentation": "The minimum size of the Auto Scaling group."
+                },
+                "MaxSize": {
+                  "shape_name": "AutoScalingGroupMaxSize",
+                  "type": "integer",
+                  "documentation": "The maximum size of the Auto Scaling group."
+                },
+                "DesiredCapacity": {
+                  "shape_name": "AutoScalingGroupDesiredCapacity",
+                  "type": "integer",
+                  "documentation": "The number of instances you prefer to maintain in your Auto Scaling group."
+                }
+              },
+              "documentation": "This data type stores information about a scheduled update to an Auto Scaling group."
+            },
+            "documentation": "A list of scheduled actions designed to update an Auto Scaling group."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          }
+        },
+        "documentation": "A scaling action that is scheduled for a future time and date. An action can be scheduled up to thirty days in advance."
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Lists all the actions scheduled for your Auto Scaling group that haven't been executed. To see a list of actions already executed, see the activity record returned in DescribeScalingActivities."
+    },
+    {
+      "name": "DescribeTags",
+      "input": {
+        "shape_name": "DescribeTagsType",
+        "type": "structure",
+        "members": {
+          "Filters": {
+            "shape_name": "Filters",
+            "type": "list",
+            "members": {
+              "shape_name": "Filter",
+              "type": "structure",
+              "members": {
+                "Name": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The name of the filter. Valid Name values are: \"auto-scaling-group\", \"key\", \"value\", and \"propagate-at-launch\"."
+                },
+                "Values": {
+                  "shape_name": "Values",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "XmlString",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "documentation": ""
+                  },
+                  "documentation": "The value of the filter."
+                }
+              },
+              "documentation": "The Filter data type."
+            },
+            "documentation": "The value of the filter type used to identify the tags to be returned. For example, you can filter so that tags are returned according to Auto Scaling group, the key and value, or whether the new tag will be applied to instances launched after the tag is created (PropagateAtLaunch)."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string that marks the start of the next batch of returned results."
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 50,
+            "documentation": "The maximum number of records to return."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "TagsType",
+        "type": "structure",
+        "members": {
+          "Tags": {
+            "shape_name": "TagDescriptionList",
+            "type": "list",
+            "members": {
+              "shape_name": "TagDescription",
+              "type": "structure",
+              "members": {
+                "ResourceId": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The name of the Auto Scaling group."
+                },
+                "ResourceType": {
+                  "shape_name": "XmlString",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "documentation": "The kind of resource to which the tag is applied. Currently, Auto Scaling supports the auto-scaling-group resource type."
+                },
+                "Key": {
+                  "shape_name": "TagKey",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 128,
+                  "documentation": "The key of the tag."
+                },
+                "Value": {
+                  "shape_name": "TagValue",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 0,
+                  "max_length": 256,
+                  "documentation": "The value of the tag."
+                },
+                "PropagateAtLaunch": {
+                  "shape_name": "PropagateAtLaunch",
+                  "type": "boolean",
+                  "documentation": "Specifies whether the new tag will be applied to instances launched after the tag is created. The same behavior applies to updates: If you change a tag, the changed tag will be applied to all instances launched after you made the change."
+                }
+              },
+              "documentation": "The tag applied to an Auto Scaling group."
+            },
+            "documentation": "The list of tags."
+          },
+          "NextToken": {
+            "shape_name": "XmlString",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "documentation": "A string used to mark the start of the next batch of returned results."
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The NextToken value is invalid."
+        }
+      ],
+      "documentation": "Lists the Auto Scaling group tags."
+    },
+    {
+      "name": "DescribeTerminationPolicyTypes",
+      "input": null,
+      "output": {
+        "shape_name": "DescribeTerminationPolicyTypesAnswer",
+        "type": "structure",
+        "members": {
+          "TerminationPolicyTypes": {
+            "shape_name": "TerminationPolicies",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen1600",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": ""
+          }
+        },
+        "documentation": ""
+      },
+      "errors": [
+
+      ],
+      "documentation": ""
+    },
+    {
+      "name": "DisableMetricsCollection",
+      "input": {
+        "shape_name": "DisableMetricsCollectionQuery",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or ARN of the Auto Scaling Group.",
+            "required": true
+          },
+          "Metrics": {
+            "shape_name": "Metrics",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "The list of metrics to disable. If no metrics are specified, all metrics are disabled. The following metrics are supported:"
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Disables monitoring of group metrics for the Auto Scaling group specified in AutoScalingGroupName. You can specify the list of affected metrics with the Metrics parameter."
+    },
+    {
+      "name": "EnableMetricsCollection",
+      "input": {
+        "shape_name": "EnableMetricsCollectionQuery",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or ARN of the Auto Scaling group.",
+            "required": true
+          },
+          "Metrics": {
+            "shape_name": "Metrics",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "The list of metrics to collect. If no metrics are specified, all metrics are enabled. The following metrics are supported:"
+          },
+          "Granularity": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The granularity to associate with the metrics to collect. Currently, the only legal granularity is \"1Minute\".",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Enables monitoring of group metrics for the Auto Scaling group specified in AutoScalingGroupName. You can specify the list of enabled metrics with the Metrics parameter."
+    },
+    {
+      "name": "ExecutePolicy",
+      "input": {
+        "shape_name": "ExecutePolicyType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or ARN of the Auto Scaling group."
+          },
+          "PolicyName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or PolicyARN of the policy you want to run.",
+            "required": true
+          },
+          "HonorCooldown": {
+            "shape_name": "HonorCooldown",
+            "type": "boolean",
+            "documentation": "Set to True if you want Auto Scaling to reject this request when the Auto Scaling group is in cooldown."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ScalingActivityInProgressFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "You cannot delete an Auto Scaling group while there are scaling activities in progress for that group."
+        }
+      ],
+      "documentation": "Runs the policy you create for your Auto Scaling group in PutScalingPolicy."
+    },
+    {
+      "name": "PutNotificationConfiguration",
+      "input": {
+        "shape_name": "PutNotificationConfigurationType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group.",
+            "required": true
+          },
+          "TopicARN": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic.",
+            "required": true
+          },
+          "NotificationTypes": {
+            "shape_name": "AutoScalingNotificationTypes",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "The type of events that will trigger the notification. For more information, go to DescribeAutoScalingNotificationTypes.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The quota for capacity groups or launch configurations for this customer has already been reached."
+        }
+      ],
+      "documentation": "Configures an Auto Scaling group to send notifications when specified events take place. Subscribers to this topic can have messages for events delivered to an endpoint such as a web server or email address."
+    },
+    {
+      "name": "PutScalingPolicy",
+      "input": {
+        "shape_name": "PutScalingPolicyType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or ARN of the Auto Scaling group.",
+            "required": true
+          },
+          "PolicyName": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The name of the policy you want to create or update.",
+            "required": true
+          },
+          "ScalingAdjustment": {
+            "shape_name": "PolicyIncrement",
+            "type": "integer",
+            "documentation": "The number of instances by which to scale. AdjustmentType determines the interpretation of this number (e.g., as an absolute number or as a percentage of the existing Auto Scaling group size). A positive increment adds to the current capacity and a negative value removes from the current capacity.",
+            "required": true
+          },
+          "AdjustmentType": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "Specifies whether the ScalingAdjustment is an absolute number or a percentage of the current capacity. Valid values are ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity.",
+            "required": true
+          },
+          "Cooldown": {
+            "shape_name": "Cooldown",
+            "type": "integer",
+            "documentation": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start."
+          },
+          "MinAdjustmentStep": {
+            "shape_name": "MinAdjustmentStep",
+            "type": "integer",
+            "documentation": "Used with AdjustmentType with the value PercentChangeInCapacity, the scaling policy changes the DesiredCapacity of the Auto Scaling group by at least the specified value."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "PolicyARNType",
+        "type": "structure",
+        "members": {
+          "PolicyARN": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "A policy's Amazon Resource Name (ARN)."
+          }
+        },
+        "documentation": "The PolicyARNType data type."
+      },
+      "errors": [
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The quota for capacity groups or launch configurations for this customer has already been reached."
+        }
+      ],
+      "documentation": "Creates or updates a policy for an Auto Scaling group. To update an existing policy, use the existing policy name and set the parameter(s) you want to change. Any existing parameter not changed in an update to an existing policy is not changed in this update request."
+    },
+    {
+      "name": "PutScheduledUpdateGroupAction",
+      "input": {
+        "shape_name": "PutScheduledUpdateGroupActionType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or ARN of the Auto Scaling group.",
+            "required": true
+          },
+          "ScheduledActionName": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The name of this scaling action.",
+            "required": true
+          },
+          "Time": {
+            "shape_name": "TimestampType",
+            "type": "timestamp",
+            "documentation": "Time is deprecated."
+          },
+          "StartTime": {
+            "shape_name": "TimestampType",
+            "type": "timestamp",
+            "documentation": "The time for this action to start, as in --start-time 2010-06-01T00:00:00Z."
+          },
+          "EndTime": {
+            "shape_name": "TimestampType",
+            "type": "timestamp",
+            "documentation": "The time for this action to end."
+          },
+          "Recurrence": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The time when recurring future actions will start. Start time is specified by the user following the Unix cron syntax format. For information about cron syntax, go to Wikipedia, The Free Encyclopedia."
+          },
+          "MinSize": {
+            "shape_name": "AutoScalingGroupMinSize",
+            "type": "integer",
+            "documentation": "The minimum size for the new Auto Scaling group."
+          },
+          "MaxSize": {
+            "shape_name": "AutoScalingGroupMaxSize",
+            "type": "integer",
+            "documentation": "The maximum size for the Auto Scaling group."
+          },
+          "DesiredCapacity": {
+            "shape_name": "AutoScalingGroupDesiredCapacity",
+            "type": "integer",
+            "documentation": "The number of Amazon EC2 instances that should be running in the group."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "AlreadyExistsFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The named Auto Scaling group or launch configuration already exists."
+        },
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "The quota for capacity groups or launch configurations for this customer has already been reached."
+        }
+      ],
+      "documentation": "Creates a scheduled scaling action for an Auto Scaling group. If you leave a parameter unspecified, the corresponding value remains unchanged in the affected Auto Scaling group."
+    },
+    {
+      "name": "ResumeProcesses",
+      "input": {
+        "shape_name": "ScalingProcessQuery",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or Amazon Resource Name (ARN) of the Auto Scaling group.",
+            "required": true
+          },
+          "ScalingProcesses": {
+            "shape_name": "ProcessNames",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "The processes that you want to suspend or resume, which can include one or more of the following:"
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Resumes Auto Scaling processes for an Auto Scaling group. For more information, see SuspendProcesses and ProcessType."
+    },
+    {
+      "name": "SetDesiredCapacity",
+      "input": {
+        "shape_name": "SetDesiredCapacityType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group.",
+            "required": true
+          },
+          "DesiredCapacity": {
+            "shape_name": "AutoScalingGroupDesiredCapacity",
+            "type": "integer",
+            "documentation": "The new capacity setting for the Auto Scaling group.",
+            "required": true
+          },
+          "HonorCooldown": {
+            "shape_name": "HonorCooldown",
+            "type": "boolean",
+            "documentation": "By default, SetDesiredCapacity overrides any cooldown period. Set to True if you want Auto Scaling to reject this request when the Auto Scaling group is in cooldown."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ScalingActivityInProgressFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "You cannot delete an Auto Scaling group while there are scaling activities in progress for that group."
+        }
+      ],
+      "documentation": "Adjusts the desired size of the AutoScalingGroup by initiating scaling activities. When reducing the size of the group, it is not possible to define which Amazon EC2 instances will be terminated. This applies to any Auto Scaling decisions that might result in terminating instances."
+    },
+    {
+      "name": "SetInstanceHealth",
+      "input": {
+        "shape_name": "SetInstanceHealthQuery",
+        "type": "structure",
+        "members": {
+          "InstanceId": {
+            "shape_name": "XmlStringMaxLen16",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 16,
+            "documentation": "The identifier of the Amazon EC2 instance.",
+            "required": true
+          },
+          "HealthStatus": {
+            "shape_name": "XmlStringMaxLen32",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 32,
+            "documentation": "The health status of the instance. \"Healthy\" means that the instance is healthy and should remain in service. \"Unhealthy\" means that the instance is unhealthy. Auto Scaling should terminate and replace it.",
+            "required": true
+          },
+          "ShouldRespectGracePeriod": {
+            "shape_name": "ShouldRespectGracePeriod",
+            "type": "boolean",
+            "documentation": "If True, this call should respect the grace period associated with the group."
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Sets the health status of an instance."
+    },
+    {
+      "name": "SuspendProcesses",
+      "input": {
+        "shape_name": "ScalingProcessQuery",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name or Amazon Resource Name (ARN) of the Auto Scaling group.",
+            "required": true
+          },
+          "ScalingProcesses": {
+            "shape_name": "ProcessNames",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "documentation": "The processes that you want to suspend or resume, which can include one or more of the following:"
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Suspends Auto Scaling processes for an Auto Scaling group. To suspend specific process types, specify them by name with the ScalingProcesses.member.N parameter. To suspend all process types, omit the ScalingProcesses.member.N parameter."
+    },
+    {
+      "name": "TerminateInstanceInAutoScalingGroup",
+      "input": {
+        "shape_name": "TerminateInstanceInAutoScalingGroupType",
+        "type": "structure",
+        "members": {
+          "InstanceId": {
+            "shape_name": "XmlStringMaxLen16",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 16,
+            "documentation": "The ID of the Amazon EC2 instance to be terminated.",
+            "required": true
+          },
+          "ShouldDecrementDesiredCapacity": {
+            "shape_name": "ShouldDecrementDesiredCapacity",
+            "type": "boolean",
+            "documentation": "Specifies whether (true) or not (false) terminating this instance should also decrement the size of the AutoScalingGroup.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "ActivityType",
+        "type": "structure",
+        "members": {
+          "Activity": {
+            "shape_name": "Activity",
+            "type": "structure",
+            "members": {
+              "ActivityId": {
+                "shape_name": "XmlString",
+                "type": "string",
+                "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                "documentation": "Specifies the ID of the activity.",
+                "required": true
+              },
+              "AutoScalingGroupName": {
+                "shape_name": "XmlStringMaxLen255",
+                "type": "string",
+                "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                "min_length": 1,
+                "max_length": 255,
+                "documentation": "The name of the Auto Scaling group.",
+                "required": true
+              },
+              "Description": {
+                "shape_name": "XmlString",
+                "type": "string",
+                "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                "documentation": "Contains a friendly, more verbose description of the scaling activity."
+              },
+              "Cause": {
+                "shape_name": "XmlStringMaxLen1023",
+                "type": "string",
+                "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                "min_length": 1,
+                "max_length": 1023,
+                "documentation": "Contains the reason the activity was begun.",
+                "required": true
+              },
+              "StartTime": {
+                "shape_name": "TimestampType",
+                "type": "timestamp",
+                "documentation": "Provides the start time of this activity.",
+                "required": true
+              },
+              "EndTime": {
+                "shape_name": "TimestampType",
+                "type": "timestamp",
+                "documentation": "Provides the end time of this activity."
+              },
+              "StatusCode": {
+                "shape_name": "ScalingActivityStatusCode",
+                "type": "string",
+                "enum": [
+                  "WaitingForSpotInstanceRequestId",
+                  "WaitingForSpotInstanceId",
+                  "WaitingForInstanceId",
+                  "PreInService",
+                  "InProgress",
+                  "Successful",
+                  "Failed",
+                  "Cancelled"
+                ],
+                "documentation": "Contains the current status of the activity.",
+                "required": true
+              },
+              "StatusMessage": {
+                "shape_name": "XmlStringMaxLen255",
+                "type": "string",
+                "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                "min_length": 1,
+                "max_length": 255,
+                "documentation": "Contains a friendly, more verbose description of the activity status."
+              },
+              "Progress": {
+                "shape_name": "Progress",
+                "type": "integer",
+                "documentation": "Specifies a value between 0 and 100 that indicates the progress of the activity."
+              },
+              "Details": {
+                "shape_name": "XmlString",
+                "type": "string",
+                "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                "documentation": "Contains details of the scaling activity."
+              }
+            },
+            "documentation": "A scaling Activity."
+          }
+        },
+        "documentation": "The output for the TerminateInstanceInAutoScalingGroup action."
+      },
+      "errors": [
+        {
+          "shape_name": "ScalingActivityInProgressFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "You cannot delete an Auto Scaling group while there are scaling activities in progress for that group."
+        }
+      ],
+      "documentation": "Terminates the specified instance. Optionally, the desired group size can be adjusted."
+    },
+    {
+      "name": "UpdateAutoScalingGroup",
+      "input": {
+        "shape_name": "UpdateAutoScalingGroupType",
+        "type": "structure",
+        "members": {
+          "AutoScalingGroupName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the Auto Scaling group.",
+            "required": true
+          },
+          "LaunchConfigurationName": {
+            "shape_name": "ResourceName",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 1600,
+            "documentation": "The name of the launch configuration."
+          },
+          "MinSize": {
+            "shape_name": "AutoScalingGroupMinSize",
+            "type": "integer",
+            "documentation": "The minimum size of the Auto Scaling group."
+          },
+          "MaxSize": {
+            "shape_name": "AutoScalingGroupMaxSize",
+            "type": "integer",
+            "documentation": "The maximum size of the Auto Scaling group."
+          },
+          "DesiredCapacity": {
+            "shape_name": "AutoScalingGroupDesiredCapacity",
+            "type": "integer",
+            "documentation": "The desired capacity for the Auto Scaling group."
+          },
+          "DefaultCooldown": {
+            "shape_name": "Cooldown",
+            "type": "integer",
+            "documentation": "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start."
+          },
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            },
+            "min_length": 1,
+            "documentation": "Availability Zones for the group."
+          },
+          "HealthCheckType": {
+            "shape_name": "XmlStringMaxLen32",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 32,
+            "documentation": "The service of interest for the health status check, either \"EC2\" for Amazon EC2 or \"ELB\" for Elastic Load Balancing."
+          },
+          "HealthCheckGracePeriod": {
+            "shape_name": "HealthCheckGracePeriod",
+            "type": "integer",
+            "documentation": "The length of time that Auto Scaling waits before checking an instance's health status. The grace period begins when an instance comes into service."
+          },
+          "PlacementGroup": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The name of the cluster placement group, if applicable. For more information, go to Using Cluster Instances in the Amazon EC2 User Guide."
+          },
+          "VPCZoneIdentifier": {
+            "shape_name": "XmlStringMaxLen255",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "The subnet identifier for the Amazon VPC connection, if applicable. You can specify several subnets in a comma-separated list."
+          },
+          "TerminationPolicies": {
+            "shape_name": "TerminationPolicies",
+            "type": "list",
+            "members": {
+              "shape_name": "XmlStringMaxLen1600",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 1600,
+              "documentation": ""
+            },
+            "documentation": ""
+          }
+        },
+        "documentation": ""
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ScalingActivityInProgressFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "XmlStringMaxLen255",
+              "type": "string",
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": ""
+            }
+          },
+          "documentation": "You cannot delete an Auto Scaling group while there are scaling activities in progress for that group."
+        }
+      ],
+      "documentation": "Updates the configuration for the specified AutoScalingGroup."
+    }
+  ]
+}

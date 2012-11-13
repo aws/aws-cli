@@ -1,0 +1,2040 @@
+{
+  "type": "query",
+  "api_version": "2012-06-01",
+  "short_name": "elasticloadbalancing",
+  "service_name": "ElasticLoadBalancing_v7",
+  "assembly": "com.amazon.elb.version_2012_06_01",
+  "xmlnamespace": null,
+  "documentation": "Elastic Load Balancing",
+  "operations": [
+    {
+      "name": "ApplySecurityGroupsToLoadBalancer",
+      "input": {
+        "shape_name": "ApplySecurityGroupsToLoadBalancerInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "SecurityGroups": {
+            "shape_name": "SecurityGroups",
+            "type": "list",
+            "members": {
+              "shape_name": "SecurityGroupId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of security group IDs to associate with your LoadBalancer in VPC. The security group IDs must be provided as the ID and not the security group name (For example, sg-1234).",
+            "required": true
+          }
+        },
+        "documentation": "The input for the ApplySecurityGroupsToLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "ApplySecurityGroupsToLoadBalancerOutput",
+        "type": "structure",
+        "members": {
+          "SecurityGroups": {
+            "shape_name": "SecurityGroups",
+            "type": "list",
+            "members": {
+              "shape_name": "SecurityGroupId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of security group IDs associated with your LoadBalancer."
+          }
+        },
+        "documentation": "The out for the ApplySecurityGroupsToLoadBalancer action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        },
+        {
+          "shape_name": "InvalidSecurityGroupException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more specified security groups do not exist."
+        }
+      ],
+      "documentation": "Associates one or more security groups with your LoadBalancer in VPC. The provided security group IDs will override any currently applied security groups."
+    },
+    {
+      "name": "AttachLoadBalancerToSubnets",
+      "input": {
+        "shape_name": "AttachLoadBalancerToSubnetsInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "Subnets": {
+            "shape_name": "Subnets",
+            "type": "list",
+            "members": {
+              "shape_name": "SubnetId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of subnet IDs to add for the LoadBalancer.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the AttachLoadBalancerToSubnets action."
+      },
+      "output": {
+        "shape_name": "AttachLoadBalancerToSubnetsOutput",
+        "type": "structure",
+        "members": {
+          "Subnets": {
+            "shape_name": "Subnets",
+            "type": "list",
+            "members": {
+              "shape_name": "SubnetId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of subnet IDs added for the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the AttachLoadBalancerToSubnets action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        },
+        {
+          "shape_name": "SubnetNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more subnets were not found."
+        },
+        {
+          "shape_name": "InvalidSubnetException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The VPC has no Internet gateway."
+        }
+      ],
+      "documentation": "Adds one or more subnets to the set of configured subnets in the VPC for the LoadBalancer."
+    },
+    {
+      "name": "ConfigureHealthCheck",
+      "input": {
+        "shape_name": "ConfigureHealthCheckInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The mnemonic name associated with the LoadBalancer. This name must be unique within the client AWS account.",
+            "required": true
+          },
+          "HealthCheck": {
+            "shape_name": "HealthCheck",
+            "type": "structure",
+            "members": {
+              "Target": {
+                "shape_name": "HealthCheckTarget",
+                "type": "string",
+                "documentation": "Specifies the instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.",
+                "required": true
+              },
+              "Interval": {
+                "shape_name": "HealthCheckInterval",
+                "type": "integer",
+                "min_length": 1,
+                "max_length": 300,
+                "documentation": "Specifies the approximate interval, in seconds, between health checks of an individual instance.",
+                "required": true
+              },
+              "Timeout": {
+                "shape_name": "HealthCheckTimeout",
+                "type": "integer",
+                "min_length": 1,
+                "max_length": 300,
+                "documentation": "Specifies the amount of time, in seconds, during which no response means a failed health probe.",
+                "required": true
+              },
+              "UnhealthyThreshold": {
+                "shape_name": "UnhealthyThreshold",
+                "type": "integer",
+                "min_length": 2,
+                "max_length": 10,
+                "documentation": "Specifies the number of consecutive health probe failures required before moving the instance to the Unhealthy state.",
+                "required": true
+              },
+              "HealthyThreshold": {
+                "shape_name": "HealthyThreshold",
+                "type": "integer",
+                "min_length": 2,
+                "max_length": 10,
+                "documentation": "Specifies the number of consecutive health probe successes required before moving the instance to the Healthy state.",
+                "required": true
+              }
+            },
+            "documentation": "A structure containing the configuration information for the new healthcheck.",
+            "required": true
+          }
+        },
+        "documentation": "Input for the ConfigureHealthCheck action."
+      },
+      "output": {
+        "shape_name": "ConfigureHealthCheckOutput",
+        "type": "structure",
+        "members": {
+          "HealthCheck": {
+            "shape_name": "HealthCheck",
+            "type": "structure",
+            "members": {
+              "Target": {
+                "shape_name": "HealthCheckTarget",
+                "type": "string",
+                "documentation": "Specifies the instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.",
+                "required": true
+              },
+              "Interval": {
+                "shape_name": "HealthCheckInterval",
+                "type": "integer",
+                "min_length": 1,
+                "max_length": 300,
+                "documentation": "Specifies the approximate interval, in seconds, between health checks of an individual instance.",
+                "required": true
+              },
+              "Timeout": {
+                "shape_name": "HealthCheckTimeout",
+                "type": "integer",
+                "min_length": 1,
+                "max_length": 300,
+                "documentation": "Specifies the amount of time, in seconds, during which no response means a failed health probe.",
+                "required": true
+              },
+              "UnhealthyThreshold": {
+                "shape_name": "UnhealthyThreshold",
+                "type": "integer",
+                "min_length": 2,
+                "max_length": 10,
+                "documentation": "Specifies the number of consecutive health probe failures required before moving the instance to the Unhealthy state.",
+                "required": true
+              },
+              "HealthyThreshold": {
+                "shape_name": "HealthyThreshold",
+                "type": "integer",
+                "min_length": 2,
+                "max_length": 10,
+                "documentation": "Specifies the number of consecutive health probe successes required before moving the instance to the Healthy state.",
+                "required": true
+              }
+            },
+            "documentation": "The updated healthcheck for the instances."
+          }
+        },
+        "documentation": "The output for the ConfigureHealthCheck action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        }
+      ],
+      "documentation": "Enables the client to define an application healthcheck for the instances."
+    },
+    {
+      "name": "CreateAppCookieStickinessPolicy",
+      "input": {
+        "shape_name": "CreateAppCookieStickinessPolicyInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "PolicyName": {
+            "shape_name": "PolicyName",
+            "type": "string",
+            "documentation": "The name of the policy being created. The name must be unique within the set of policies for this LoadBalancer.",
+            "required": true
+          },
+          "CookieName": {
+            "shape_name": "CookieName",
+            "type": "string",
+            "documentation": "Name of the application cookie used for stickiness.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the CreateAppCookieStickinessPolicy action."
+      },
+      "output": {
+        "shape_name": "CreateAppCookieStickinessPolicyOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the CreateAppCookieStickinessPolicy action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "DuplicatePolicyNameException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Policy with the same name exists for this LoadBalancer. Please choose another name."
+        },
+        {
+          "shape_name": "TooManyPoliciesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Quota for number of policies for this LoadBalancer has already been reached."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Generates a stickiness policy with sticky session lifetimes that follow that of an application-generated cookie. This policy can be associated only with HTTP/HTTPS listeners."
+    },
+    {
+      "name": "CreateLBCookieStickinessPolicy",
+      "input": {
+        "shape_name": "CreateLBCookieStickinessPolicyInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "PolicyName": {
+            "shape_name": "PolicyName",
+            "type": "string",
+            "documentation": "The name of the policy being created. The name must be unique within the set of policies for this LoadBalancer.",
+            "required": true
+          },
+          "CookieExpirationPeriod": {
+            "shape_name": "CookieExpirationPeriod",
+            "type": "long",
+            "documentation": "The time period in seconds after which the cookie should be considered stale. Not specifying this parameter indicates that the sticky session will last for the duration of the browser session."
+          }
+        },
+        "documentation": "The input for the CreateLBCookieStickinessPolicy action."
+      },
+      "output": {
+        "shape_name": "CreateLBCookieStickinessPolicyOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the CreateLBCookieStickinessPolicy action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "DuplicatePolicyNameException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Policy with the same name exists for this LoadBalancer. Please choose another name."
+        },
+        {
+          "shape_name": "TooManyPoliciesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Quota for number of policies for this LoadBalancer has already been reached."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Generates a stickiness policy with sticky session lifetimes controlled by the lifetime of the browser (user-agent) or a specified expiration period. This policy can be associated only with HTTP/HTTPS listeners."
+    },
+    {
+      "name": "CreateLoadBalancer",
+      "input": {
+        "shape_name": "CreateAccessPointInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within your set of LoadBalancers.",
+            "required": true
+          },
+          "Listeners": {
+            "shape_name": "Listeners",
+            "type": "list",
+            "members": {
+              "shape_name": "Listener",
+              "type": "structure",
+              "members": {
+                "Protocol": {
+                  "shape_name": "Protocol",
+                  "type": "string",
+                  "documentation": "Specifies the LoadBalancer transport protocol to use for routing - HTTP, HTTPS, TCP or SSL. This property cannot be modified for the life of the LoadBalancer.",
+                  "required": true
+                },
+                "LoadBalancerPort": {
+                  "shape_name": "AccessPointPort",
+                  "type": "integer",
+                  "documentation": "Specifies the external LoadBalancer port number. This property cannot be modified for the life of the LoadBalancer.",
+                  "required": true
+                },
+                "InstanceProtocol": {
+                  "shape_name": "Protocol",
+                  "type": "string",
+                  "documentation": "Specifies the protocol to use for routing traffic to back-end instances - HTTP, HTTPS, TCP, or SSL. This property cannot be modified for the life of the LoadBalancer."
+                },
+                "InstancePort": {
+                  "shape_name": "InstancePort",
+                  "type": "integer",
+                  "min_length": 1,
+                  "max_length": 65535,
+                  "documentation": "Specifies the TCP port on which the instance server is listening. This property cannot be modified for the life of the LoadBalancer.",
+                  "required": true
+                },
+                "SSLCertificateId": {
+                  "shape_name": "SSLCertificateId",
+                  "type": "string",
+                  "documentation": "The ARN string of the server certificate. To get the ARN of the server certificate, call the AWS Identity and Access Management UploadServerCertificate API."
+                }
+              },
+              "documentation": "The Listener data type."
+            },
+            "documentation": "A list of the following tuples: LoadBalancerPort, InstancePort, and Protocol.",
+            "required": true
+          },
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "AvailabilityZone",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of Availability Zones."
+          },
+          "Subnets": {
+            "shape_name": "Subnets",
+            "type": "list",
+            "members": {
+              "shape_name": "SubnetId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of subnet IDs in your VPC to attach to your LoadBalancer."
+          },
+          "SecurityGroups": {
+            "shape_name": "SecurityGroups",
+            "type": "list",
+            "members": {
+              "shape_name": "SecurityGroupId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "The security groups assigned to your LoadBalancer within your VPC."
+          },
+          "Scheme": {
+            "shape_name": "LoadBalancerScheme",
+            "type": "string",
+            "documentation": "The type of a LoadBalancer. This option is only available for LoadBalancers attached to a Amazon VPC. By default, Elastic Load Balancer creates an internet-facing load balancer with publicly resolvable DNS name that resolves to public IP addresses. Specify the value internal for this option to create an internal load balancer with a DNS name that resolves to private IP addresses."
+          }
+        },
+        "documentation": "The input for the CreateLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "CreateAccessPointOutput",
+        "type": "structure",
+        "members": {
+          "DNSName": {
+            "shape_name": "DNSName",
+            "type": "string",
+            "documentation": "The DNS name for the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the CreateLoadBalancer action."
+      },
+      "errors": [
+        {
+          "shape_name": "DuplicateAccessPointNameException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "LoadBalancer name already exists for this account. Please choose another name."
+        },
+        {
+          "shape_name": "TooManyAccessPointsException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The quota for the number of LoadBalancers has already been reached."
+        },
+        {
+          "shape_name": "CertificateNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified SSL ID does not refer to a valid SSL certificate in the AWS Identity and Access Management Service."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        },
+        {
+          "shape_name": "SubnetNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more subnets were not found."
+        },
+        {
+          "shape_name": "InvalidSubnetException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The VPC has no Internet gateway."
+        },
+        {
+          "shape_name": "InvalidSecurityGroupException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more specified security groups do not exist."
+        },
+        {
+          "shape_name": "InvalidSchemeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Invalid value for scheme. Scheme can only be specified for load balancers in VPC."
+        }
+      ],
+      "documentation": "Creates a new LoadBalancer."
+    },
+    {
+      "name": "CreateLoadBalancerListeners",
+      "input": {
+        "shape_name": "CreateLoadBalancerListenerInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name of the new LoadBalancer. The name must be unique within your AWS account.",
+            "required": true
+          },
+          "Listeners": {
+            "shape_name": "Listeners",
+            "type": "list",
+            "members": {
+              "shape_name": "Listener",
+              "type": "structure",
+              "members": {
+                "Protocol": {
+                  "shape_name": "Protocol",
+                  "type": "string",
+                  "documentation": "Specifies the LoadBalancer transport protocol to use for routing - HTTP, HTTPS, TCP or SSL. This property cannot be modified for the life of the LoadBalancer.",
+                  "required": true
+                },
+                "LoadBalancerPort": {
+                  "shape_name": "AccessPointPort",
+                  "type": "integer",
+                  "documentation": "Specifies the external LoadBalancer port number. This property cannot be modified for the life of the LoadBalancer.",
+                  "required": true
+                },
+                "InstanceProtocol": {
+                  "shape_name": "Protocol",
+                  "type": "string",
+                  "documentation": "Specifies the protocol to use for routing traffic to back-end instances - HTTP, HTTPS, TCP, or SSL. This property cannot be modified for the life of the LoadBalancer."
+                },
+                "InstancePort": {
+                  "shape_name": "InstancePort",
+                  "type": "integer",
+                  "min_length": 1,
+                  "max_length": 65535,
+                  "documentation": "Specifies the TCP port on which the instance server is listening. This property cannot be modified for the life of the LoadBalancer.",
+                  "required": true
+                },
+                "SSLCertificateId": {
+                  "shape_name": "SSLCertificateId",
+                  "type": "string",
+                  "documentation": "The ARN string of the server certificate. To get the ARN of the server certificate, call the AWS Identity and Access Management UploadServerCertificate API."
+                }
+              },
+              "documentation": "The Listener data type."
+            },
+            "documentation": "A list of LoadBalancerPort, InstancePort, Protocol, and SSLCertificateId items.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the CreateLoadBalancerListeners action."
+      },
+      "output": {
+        "shape_name": "CreateLoadBalancerListenerOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the CreateLoadBalancerListeners action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "DuplicateListenerException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "A Listener already exists for the given LoadBalancerName and LoadBalancerPort, but with a different InstancePort, Protocol, or SSLCertificateId."
+        },
+        {
+          "shape_name": "CertificateNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified SSL ID does not refer to a valid SSL certificate in the AWS Identity and Access Management Service."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Creates one or more listeners on a LoadBalancer for the specified port. If a listener with the given port does not already exist, it will be created; otherwise, the properties of the new listener must match the properties of the existing listener."
+    },
+    {
+      "name": "CreateLoadBalancerPolicy",
+      "input": {
+        "shape_name": "CreateLoadBalancerPolicyInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer for which the policy is being created. This name must be unique within the client AWS account.",
+            "required": true
+          },
+          "PolicyName": {
+            "shape_name": "PolicyName",
+            "type": "string",
+            "documentation": "The name of the LoadBalancer policy being created. The name must be unique within the set of policies for this LoadBalancer.",
+            "required": true
+          },
+          "PolicyTypeName": {
+            "shape_name": "PolicyTypeName",
+            "type": "string",
+            "documentation": "The name of the base policy type being used to create this policy. To get the list of policy types, use the DescribeLoadBalancerPolicyTypes action.",
+            "required": true
+          },
+          "PolicyAttributes": {
+            "shape_name": "PolicyAttributes",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyAttribute",
+              "type": "structure",
+              "members": {
+                "AttributeName": {
+                  "shape_name": "AttributeName",
+                  "type": "string",
+                  "documentation": "The name of the attribute associated with the policy."
+                },
+                "AttributeValue": {
+                  "shape_name": "AttributeValue",
+                  "type": "string",
+                  "documentation": "The value of the attribute associated with the policy."
+                }
+              },
+              "documentation": "The PolicyAttribute data type. This data type contains a key/value pair that defines properties of a specific policy."
+            },
+            "documentation": "A list of attributes associated with the policy being created."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "CreateLoadBalancerPolicyOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the CreateLoadBalancerPolicy action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "PolicyTypeNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more of the specified policy types do not exist."
+        },
+        {
+          "shape_name": "DuplicatePolicyNameException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Policy with the same name exists for this LoadBalancer. Please choose another name."
+        },
+        {
+          "shape_name": "TooManyPoliciesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Quota for number of policies for this LoadBalancer has already been reached."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Creates a new policy that contains the necessary attributes depending on the policy type. Policies are settings that are saved for your Elastic LoadBalancer and that can be applied to the front-end listener, or the back-end application server, depending on your policy type."
+    },
+    {
+      "name": "DeleteLoadBalancer",
+      "input": {
+        "shape_name": "DeleteAccessPointInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the DeleteLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "DeleteAccessPointOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the DeleteLoadBalander action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Deletes the specified LoadBalancer."
+    },
+    {
+      "name": "DeleteLoadBalancerListeners",
+      "input": {
+        "shape_name": "DeleteLoadBalancerListenerInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The mnemonic name associated with the LoadBalancer.",
+            "required": true
+          },
+          "LoadBalancerPorts": {
+            "shape_name": "Ports",
+            "type": "list",
+            "members": {
+              "shape_name": "AccessPointPort",
+              "type": "integer",
+              "documentation": ""
+            },
+            "documentation": "The client port number(s) of the LoadBalancerListener(s) to be removed.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the DeleteLoadBalancerListeners action."
+      },
+      "output": {
+        "shape_name": "DeleteLoadBalancerListenerOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the DeleteLoadBalancerListeners action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        }
+      ],
+      "documentation": "Deletes listeners from the LoadBalancer for the specified port."
+    },
+    {
+      "name": "DeleteLoadBalancerPolicy",
+      "input": {
+        "shape_name": "DeleteLoadBalancerPolicyInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The mnemonic name associated with the LoadBalancer. The name must be unique within your AWS account.",
+            "required": true
+          },
+          "PolicyName": {
+            "shape_name": "PolicyName",
+            "type": "string",
+            "documentation": "The mnemonic name for the policy being deleted.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the DeleteLoadBalancerPolicy action."
+      },
+      "output": {
+        "shape_name": "DeleteLoadBalancerPolicyOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the DeleteLoadBalancerPolicy action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Deletes a policy from the LoadBalancer. The specified policy must not be enabled for any listeners."
+    },
+    {
+      "name": "DeregisterInstancesFromLoadBalancer",
+      "input": {
+        "shape_name": "DeregisterEndPointsInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "Instances": {
+            "shape_name": "Instances",
+            "type": "list",
+            "members": {
+              "shape_name": "Instance",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "InstanceId",
+                  "type": "string",
+                  "documentation": "Provides an EC2 instance ID."
+                }
+              },
+              "documentation": "The Instance data type."
+            },
+            "documentation": "A list of EC2 instance IDs consisting of all instances to be deregistered.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the DeregisterInstancesFromLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "DeregisterEndPointsOutput",
+        "type": "structure",
+        "members": {
+          "Instances": {
+            "shape_name": "Instances",
+            "type": "list",
+            "members": {
+              "shape_name": "Instance",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "InstanceId",
+                  "type": "string",
+                  "documentation": "Provides an EC2 instance ID."
+                }
+              },
+              "documentation": "The Instance data type."
+            },
+            "documentation": "An updated list of remaining instances registered with the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the DeregisterInstancesFromLoadBalancer action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidEndPointException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified EndPoint is not valid."
+        }
+      ],
+      "documentation": "Deregisters instances from the LoadBalancer. Once the instance is deregistered, it will stop receiving traffic from the LoadBalancer."
+    },
+    {
+      "name": "DescribeInstanceHealth",
+      "input": {
+        "shape_name": "DescribeEndPointStateInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "Instances": {
+            "shape_name": "Instances",
+            "type": "list",
+            "members": {
+              "shape_name": "Instance",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "InstanceId",
+                  "type": "string",
+                  "documentation": "Provides an EC2 instance ID."
+                }
+              },
+              "documentation": "The Instance data type."
+            },
+            "documentation": "A list of instance IDs whose states are being queried."
+          }
+        },
+        "documentation": "Returns the current state of the instances of the specified LoadBalancer. If no instances are specified, the state of all the instances for the LoadBalancer is returned."
+      },
+      "output": {
+        "shape_name": "DescribeEndPointStateOutput",
+        "type": "structure",
+        "members": {
+          "InstanceStates": {
+            "shape_name": "InstanceStates",
+            "type": "list",
+            "members": {
+              "shape_name": "InstanceState",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "InstanceId",
+                  "type": "string",
+                  "documentation": "Provides an EC2 instance ID."
+                },
+                "State": {
+                  "shape_name": "State",
+                  "type": "string",
+                  "documentation": "Specifies the current status of the instance."
+                },
+                "ReasonCode": {
+                  "shape_name": "ReasonCode",
+                  "type": "string",
+                  "documentation": "Provides information about the cause of OutOfService instances. Specifically, it indicates whether the cause is Elastic Load Balancing or the instance behind the LoadBalancer."
+                },
+                "Description": {
+                  "shape_name": "Description",
+                  "type": "string",
+                  "documentation": "Provides a description of the instance."
+                }
+              },
+              "documentation": "The InstanceState data type."
+            },
+            "documentation": "A list containing health information for the specified instances."
+          }
+        },
+        "documentation": "The output for the DescribeInstanceHealth action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidEndPointException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified EndPoint is not valid."
+        }
+      ],
+      "documentation": "Returns the current state of the instances of the specified LoadBalancer. If no instances are specified, the state of all the instances for the LoadBalancer is returned."
+    },
+    {
+      "name": "DescribeLoadBalancerPolicies",
+      "input": {
+        "shape_name": "DescribeLoadBalancerPoliciesInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The mnemonic name associated with the LoadBalancer. If no name is specified, the operation returns the attributes of either all the sample policies pre-defined by Elastic Load Balancing or the specified sample polices."
+          },
+          "PolicyNames": {
+            "shape_name": "PolicyNames",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyName",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "The names of LoadBalancer policies you've created or Elastic Load Balancing sample policy names."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "DescribeLoadBalancerPoliciesOutput",
+        "type": "structure",
+        "members": {
+          "PolicyDescriptions": {
+            "shape_name": "PolicyDescriptions",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyDescription",
+              "type": "structure",
+              "members": {
+                "PolicyName": {
+                  "shape_name": "PolicyName",
+                  "type": "string",
+                  "documentation": "The name mof the policy associated with the LoadBalancer."
+                },
+                "PolicyTypeName": {
+                  "shape_name": "PolicyTypeName",
+                  "type": "string",
+                  "documentation": "The name of the policy type associated with the LoadBalancer."
+                },
+                "PolicyAttributeDescriptions": {
+                  "shape_name": "PolicyAttributeDescriptions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "PolicyAttributeDescription",
+                    "type": "structure",
+                    "members": {
+                      "AttributeName": {
+                        "shape_name": "AttributeName",
+                        "type": "string",
+                        "documentation": "The name of the attribute associated with the policy."
+                      },
+                      "AttributeValue": {
+                        "shape_name": "AttributeValue",
+                        "type": "string",
+                        "documentation": "The value of the attribute associated with the policy."
+                      }
+                    },
+                    "documentation": "The PolicyAttributeDescription data type. This data type is used to describe the attributes and values associated with a policy."
+                  },
+                  "documentation": "A list of policy attribute description structures."
+                }
+              },
+              "documentation": "The PolicyDescription data type."
+            },
+            "documentation": "A list of policy description structures."
+          }
+        },
+        "documentation": "The output for the DescribeLoadBalancerPolicies action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "PolicyNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more specified policies were not found."
+        }
+      ],
+      "documentation": "Returns detailed descriptions of the policies. If you specify a LoadBalancer name, the operation returns either the descriptions of the specified policies, or descriptions of all the policies created for the LoadBalancer. If you don't specify a LoadBalancer name, the operation returns descriptions of the specified sample policies, or descriptions of all the sample policies. The names of the sample policies have the ELBSample- prefix."
+    },
+    {
+      "name": "DescribeLoadBalancerPolicyTypes",
+      "input": {
+        "shape_name": "DescribeLoadBalancerPolicyTypesInput",
+        "type": "structure",
+        "members": {
+          "PolicyTypeNames": {
+            "shape_name": "PolicyTypeNames",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyTypeName",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "Specifies the name of the policy types. If no names are specified, returns the description of all the policy types defined by Elastic Load Balancing service."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "DescribeLoadBalancerPolicyTypesOutput",
+        "type": "structure",
+        "members": {
+          "PolicyTypeDescriptions": {
+            "shape_name": "PolicyTypeDescriptions",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyTypeDescription",
+              "type": "structure",
+              "members": {
+                "PolicyTypeName": {
+                  "shape_name": "PolicyTypeName",
+                  "type": "string",
+                  "documentation": "The name of the policy type."
+                },
+                "Description": {
+                  "shape_name": "Description",
+                  "type": "string",
+                  "documentation": "A human-readable description of the policy type."
+                },
+                "PolicyAttributeTypeDescriptions": {
+                  "shape_name": "PolicyAttributeTypeDescriptions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "PolicyAttributeTypeDescription",
+                    "type": "structure",
+                    "members": {
+                      "AttributeName": {
+                        "shape_name": "AttributeName",
+                        "type": "string",
+                        "documentation": "The name of the attribute associated with the policy type."
+                      },
+                      "AttributeType": {
+                        "shape_name": "AttributeType",
+                        "type": "string",
+                        "documentation": "The type of attribute. For example, Boolean, Integer, etc."
+                      },
+                      "Description": {
+                        "shape_name": "Description",
+                        "type": "string",
+                        "documentation": "A human-readable description of the attribute."
+                      },
+                      "DefaultValue": {
+                        "shape_name": "DefaultValue",
+                        "type": "string",
+                        "documentation": "The default value of the attribute, if applicable."
+                      },
+                      "Cardinality": {
+                        "shape_name": "Cardinality",
+                        "type": "string",
+                        "documentation": "The cardinality of the attribute. Valid Values: ONE(1) : Single value required ZERO_OR_ONE(0..1) : Up to one value can be supplied ZERO_OR_MORE(0..*) : Optional. Multiple values are allowed ONE_OR_MORE(1..*0) : Required. Multiple values are allowed"
+                      }
+                    },
+                    "documentation": "The PolicyAttributeTypeDescription data type. This data type is used to describe values that are acceptable for the policy attribute."
+                  },
+                  "documentation": "The description of the policy attributes associated with the LoadBalancer policies defined by the Elastic Load Balancing service."
+                }
+              },
+              "documentation": "The PolicyTypeDescription data type."
+            },
+            "documentation": "List of policy type description structures of the specified policy type. If no policy type names are specified, returns the description of all the policy types defined by Elastic Load Balancing service."
+          }
+        },
+        "documentation": "The output for the DescribeLoadBalancerPolicyTypes action."
+      },
+      "errors": [
+        {
+          "shape_name": "PolicyTypeNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more of the specified policy types do not exist."
+        }
+      ],
+      "documentation": "Returns meta-information on the specified LoadBalancer policies defined by the Elastic Load Balancing service. The policy types that are returned from this action can be used in a CreateLoadBalancerPolicy action to instantiate specific policy configurations that will be applied to an Elastic LoadBalancer."
+    },
+    {
+      "name": "DescribeLoadBalancers",
+      "input": {
+        "shape_name": "DescribeAccessPointsInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerNames": {
+            "shape_name": "LoadBalancerNames",
+            "type": "list",
+            "members": {
+              "shape_name": "AccessPointName",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of names associated with the LoadBalancers at creation time."
+          },
+          "Marker": {
+            "shape_name": "Marker",
+            "type": "string",
+            "documentation": "An optional parameter reserved for future use."
+          }
+        },
+        "documentation": "The input for the DescribeLoadBalancers action."
+      },
+      "output": {
+        "shape_name": "DescribeAccessPointsOutput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerDescriptions": {
+            "shape_name": "LoadBalancerDescriptions",
+            "type": "list",
+            "members": {
+              "shape_name": "LoadBalancerDescription",
+              "type": "structure",
+              "members": {
+                "LoadBalancerName": {
+                  "shape_name": "AccessPointName",
+                  "type": "string",
+                  "documentation": "Specifies the name associated with the LoadBalancer."
+                },
+                "DNSName": {
+                  "shape_name": "DNSName",
+                  "type": "string",
+                  "documentation": "Specifies the external DNS name associated with the LoadBalancer."
+                },
+                "CanonicalHostedZoneName": {
+                  "shape_name": "DNSName",
+                  "type": "string",
+                  "documentation": "Provides the name of the Amazon Route 53 hosted zone that is associated with the LoadBalancer. For information on how to associate your load balancer with a hosted zone, go to Using Domain Names With Elastic Load Balancing in the Elastic Load Balancing Developer Guide."
+                },
+                "CanonicalHostedZoneNameID": {
+                  "shape_name": "DNSName",
+                  "type": "string",
+                  "documentation": "Provides the ID of the Amazon Route 53 hosted zone name that is associated with the LoadBalancer. For information on how to associate or disassociate your load balancer with a hosted zone, go to Using Domain Names With Elastic Load Balancing in the Elastic Load Balancing Developer Guide."
+                },
+                "ListenerDescriptions": {
+                  "shape_name": "ListenerDescriptions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ListenerDescription",
+                    "type": "structure",
+                    "members": {
+                      "Listener": {
+                        "shape_name": "Listener",
+                        "type": "structure",
+                        "members": {
+                          "Protocol": {
+                            "shape_name": "Protocol",
+                            "type": "string",
+                            "documentation": "Specifies the LoadBalancer transport protocol to use for routing - HTTP, HTTPS, TCP or SSL. This property cannot be modified for the life of the LoadBalancer.",
+                            "required": true
+                          },
+                          "LoadBalancerPort": {
+                            "shape_name": "AccessPointPort",
+                            "type": "integer",
+                            "documentation": "Specifies the external LoadBalancer port number. This property cannot be modified for the life of the LoadBalancer.",
+                            "required": true
+                          },
+                          "InstanceProtocol": {
+                            "shape_name": "Protocol",
+                            "type": "string",
+                            "documentation": "Specifies the protocol to use for routing traffic to back-end instances - HTTP, HTTPS, TCP, or SSL. This property cannot be modified for the life of the LoadBalancer."
+                          },
+                          "InstancePort": {
+                            "shape_name": "InstancePort",
+                            "type": "integer",
+                            "min_length": 1,
+                            "max_length": 65535,
+                            "documentation": "Specifies the TCP port on which the instance server is listening. This property cannot be modified for the life of the LoadBalancer.",
+                            "required": true
+                          },
+                          "SSLCertificateId": {
+                            "shape_name": "SSLCertificateId",
+                            "type": "string",
+                            "documentation": "The ARN string of the server certificate. To get the ARN of the server certificate, call the AWS Identity and Access Management UploadServerCertificate API."
+                          }
+                        },
+                        "documentation": ""
+                      },
+                      "PolicyNames": {
+                        "shape_name": "PolicyNames",
+                        "type": "list",
+                        "members": {
+                          "shape_name": "PolicyName",
+                          "type": "string",
+                          "documentation": ""
+                        },
+                        "documentation": "A list of policies enabled for this listener. An empty list indicates that no policies are enabled."
+                      }
+                    },
+                    "documentation": "The ListenerDescription data type."
+                  },
+                  "documentation": "LoadBalancerPort, InstancePort, Protocol, InstanceProtocol, and PolicyNames are returned in a list of tuples in the ListenerDescriptions element."
+                },
+                "Policies": {
+                  "shape_name": "Policies",
+                  "type": "structure",
+                  "members": {
+                    "AppCookieStickinessPolicies": {
+                      "shape_name": "AppCookieStickinessPolicies",
+                      "type": "list",
+                      "members": {
+                        "shape_name": "AppCookieStickinessPolicy",
+                        "type": "structure",
+                        "members": {
+                          "PolicyName": {
+                            "shape_name": "PolicyName",
+                            "type": "string",
+                            "documentation": "The mnemonic name for the policy being created. The name must be unique within a set of policies for this LoadBalancer."
+                          },
+                          "CookieName": {
+                            "shape_name": "CookieName",
+                            "type": "string",
+                            "documentation": "The name of the application cookie used for stickiness."
+                          }
+                        },
+                        "documentation": "The AppCookieStickinessPolicy data type."
+                      },
+                      "documentation": "A list of the AppCookieStickinessPolicy objects created with CreateAppCookieStickinessPolicy."
+                    },
+                    "LBCookieStickinessPolicies": {
+                      "shape_name": "LBCookieStickinessPolicies",
+                      "type": "list",
+                      "members": {
+                        "shape_name": "LBCookieStickinessPolicy",
+                        "type": "structure",
+                        "members": {
+                          "PolicyName": {
+                            "shape_name": "PolicyName",
+                            "type": "string",
+                            "documentation": "The name for the policy being created. The name must be unique within the set of policies for this LoadBalancer."
+                          },
+                          "CookieExpirationPeriod": {
+                            "shape_name": "CookieExpirationPeriod",
+                            "type": "long",
+                            "documentation": "The time period in seconds after which the cookie should be considered stale. Not specifying this parameter indicates that the stickiness session will last for the duration of the browser session."
+                          }
+                        },
+                        "documentation": "The LBCookieStickinessPolicy data type."
+                      },
+                      "documentation": "A list of LBCookieStickinessPolicy objects created with CreateAppCookieStickinessPolicy."
+                    },
+                    "OtherPolicies": {
+                      "shape_name": "PolicyNames",
+                      "type": "list",
+                      "members": {
+                        "shape_name": "PolicyName",
+                        "type": "string",
+                        "documentation": ""
+                      },
+                      "documentation": "A list of policy names other than the stickiness policies."
+                    }
+                  },
+                  "documentation": "Provides a list of policies defined for the LoadBalancer."
+                },
+                "BackendServerDescriptions": {
+                  "shape_name": "BackendServerDescriptions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "BackendServerDescription",
+                    "type": "structure",
+                    "members": {
+                      "InstancePort": {
+                        "shape_name": "InstancePort",
+                        "type": "integer",
+                        "min_length": 1,
+                        "max_length": 65535,
+                        "documentation": "Provides the port on which the back-end server is listening."
+                      },
+                      "PolicyNames": {
+                        "shape_name": "PolicyNames",
+                        "type": "list",
+                        "members": {
+                          "shape_name": "PolicyName",
+                          "type": "string",
+                          "documentation": ""
+                        },
+                        "documentation": "Provides a list of policy names enabled for the back-end server."
+                      }
+                    },
+                    "documentation": "This data type is used as a response element in the DescribeLoadBalancers action to describe the configuration of the back-end server."
+                  },
+                  "documentation": "Contains a list of back-end server descriptions."
+                },
+                "AvailabilityZones": {
+                  "shape_name": "AvailabilityZones",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "AvailabilityZone",
+                    "type": "string",
+                    "documentation": ""
+                  },
+                  "documentation": "Specifies a list of Availability Zones."
+                },
+                "Subnets": {
+                  "shape_name": "Subnets",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "SubnetId",
+                    "type": "string",
+                    "documentation": ""
+                  },
+                  "documentation": "Provides a list of VPC subnet IDs for the LoadBalancer."
+                },
+                "VPCId": {
+                  "shape_name": "VPCId",
+                  "type": "string",
+                  "documentation": "Provides the ID of the VPC attached to the LoadBalancer."
+                },
+                "Instances": {
+                  "shape_name": "Instances",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Instance",
+                    "type": "structure",
+                    "members": {
+                      "InstanceId": {
+                        "shape_name": "InstanceId",
+                        "type": "string",
+                        "documentation": "Provides an EC2 instance ID."
+                      }
+                    },
+                    "documentation": "The Instance data type."
+                  },
+                  "documentation": "Provides a list of EC2 instance IDs for the LoadBalancer."
+                },
+                "HealthCheck": {
+                  "shape_name": "HealthCheck",
+                  "type": "structure",
+                  "members": {
+                    "Target": {
+                      "shape_name": "HealthCheckTarget",
+                      "type": "string",
+                      "documentation": "Specifies the instance being checked. The protocol is either TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1) through 65535.",
+                      "required": true
+                    },
+                    "Interval": {
+                      "shape_name": "HealthCheckInterval",
+                      "type": "integer",
+                      "min_length": 1,
+                      "max_length": 300,
+                      "documentation": "Specifies the approximate interval, in seconds, between health checks of an individual instance.",
+                      "required": true
+                    },
+                    "Timeout": {
+                      "shape_name": "HealthCheckTimeout",
+                      "type": "integer",
+                      "min_length": 1,
+                      "max_length": 300,
+                      "documentation": "Specifies the amount of time, in seconds, during which no response means a failed health probe.",
+                      "required": true
+                    },
+                    "UnhealthyThreshold": {
+                      "shape_name": "UnhealthyThreshold",
+                      "type": "integer",
+                      "min_length": 2,
+                      "max_length": 10,
+                      "documentation": "Specifies the number of consecutive health probe failures required before moving the instance to the Unhealthy state.",
+                      "required": true
+                    },
+                    "HealthyThreshold": {
+                      "shape_name": "HealthyThreshold",
+                      "type": "integer",
+                      "min_length": 2,
+                      "max_length": 10,
+                      "documentation": "Specifies the number of consecutive health probe successes required before moving the instance to the Healthy state.",
+                      "required": true
+                    }
+                  },
+                  "documentation": "Specifies information regarding the various health probes conducted on the LoadBalancer."
+                },
+                "SourceSecurityGroup": {
+                  "shape_name": "SourceSecurityGroup",
+                  "type": "structure",
+                  "members": {
+                    "OwnerAlias": {
+                      "shape_name": "SecurityGroupOwnerAlias",
+                      "type": "string",
+                      "documentation": "Owner of the source security group. Use this value for the --source-group-user parameter of the ec2-authorize command in the Amazon EC2 command line tool."
+                    },
+                    "GroupName": {
+                      "shape_name": "SecurityGroupName",
+                      "type": "string",
+                      "documentation": "Name of the source security group. Use this value for the --source-group parameter of the ec2-authorize command in the Amazon EC2 command line tool."
+                    }
+                  },
+                  "documentation": "The security group that you can use as part of your inbound rules for your LoadBalancer's back-end Amazon EC2 application instances. To only allow traffic from LoadBalancers, add a security group rule to your back end instance that specifies this source security group as the inbound source."
+                },
+                "SecurityGroups": {
+                  "shape_name": "SecurityGroups",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "SecurityGroupId",
+                    "type": "string",
+                    "documentation": ""
+                  },
+                  "documentation": "The security groups the LoadBalancer is a member of (VPC only)."
+                },
+                "CreatedTime": {
+                  "shape_name": "CreatedTime",
+                  "type": "timestamp",
+                  "documentation": "Provides the date and time the LoadBalancer was created."
+                },
+                "Scheme": {
+                  "shape_name": "LoadBalancerScheme",
+                  "type": "string",
+                  "documentation": "Specifies the type of a load balancer. If it is internet-facing, the load balancer has a publicly resolvable DNS name that resolves to public IP addresses. If it is internal, the load balancer has a publicly resolvable DNS name that resolves to private IP addresses. This option is only available for load balancers attached to a VPC."
+                }
+              },
+              "documentation": "Contains the result of a successful invocation of DescribeLoadBalancers."
+            },
+            "documentation": "A list of LoadBalancer description structures."
+          },
+          "NextMarker": {
+            "shape_name": "Marker",
+            "type": "string",
+            "documentation": "An optional parameter reserved for future use."
+          }
+        },
+        "documentation": "The output for the DescribeLoadBalancers action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        }
+      ],
+      "documentation": "Returns detailed configuration information for the specified LoadBalancers. If no LoadBalancers are specified, the operation returns configuration information for all LoadBalancers created by the caller."
+    },
+    {
+      "name": "DetachLoadBalancerFromSubnets",
+      "input": {
+        "shape_name": "DetachLoadBalancerFromSubnetsInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer to be detached. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "Subnets": {
+            "shape_name": "Subnets",
+            "type": "list",
+            "members": {
+              "shape_name": "SubnetId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of subnet IDs to remove from the set of configured subnets for the LoadBalancer.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the DetachLoadBalancerFromSubnets action."
+      },
+      "output": {
+        "shape_name": "DetachLoadBalancerFromSubnetsOutput",
+        "type": "structure",
+        "members": {
+          "Subnets": {
+            "shape_name": "Subnets",
+            "type": "list",
+            "members": {
+              "shape_name": "SubnetId",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of subnet IDs removed from the configured set of subnets for the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the DetachLoadBalancerFromSubnets action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Removes subnets from the set of configured subnets in the VPC for the LoadBalancer."
+    },
+    {
+      "name": "DisableAvailabilityZonesForLoadBalancer",
+      "input": {
+        "shape_name": "RemoveAvailabilityZonesInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "AvailabilityZone",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of Availability Zones to be removed from the LoadBalancer.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the DisableAvailabilityZonesForLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "RemoveAvailabilityZonesOutput",
+        "type": "structure",
+        "members": {
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "AvailabilityZone",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of updated Availability Zones for the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the DisableAvailabilityZonesForLoadBalancer action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Removes the specified EC2 Availability Zones from the set of configured Availability Zones for the LoadBalancer."
+    },
+    {
+      "name": "EnableAvailabilityZonesForLoadBalancer",
+      "input": {
+        "shape_name": "AddAvailabilityZonesInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "AvailabilityZone",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of new Availability Zones for the LoadBalancer. Each Availability Zone must be in the same Region as the LoadBalancer.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the EnableAvailabilityZonesForLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "AddAvailabilityZonesOutput",
+        "type": "structure",
+        "members": {
+          "AvailabilityZones": {
+            "shape_name": "AvailabilityZones",
+            "type": "list",
+            "members": {
+              "shape_name": "AvailabilityZone",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "An updated list of Availability Zones for the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the EnableAvailabilityZonesForLoadBalancer action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        }
+      ],
+      "documentation": "Adds one or more EC2 Availability Zones to the LoadBalancer."
+    },
+    {
+      "name": "RegisterInstancesWithLoadBalancer",
+      "input": {
+        "shape_name": "RegisterEndPointsInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "Instances": {
+            "shape_name": "Instances",
+            "type": "list",
+            "members": {
+              "shape_name": "Instance",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "InstanceId",
+                  "type": "string",
+                  "documentation": "Provides an EC2 instance ID."
+                }
+              },
+              "documentation": "The Instance data type."
+            },
+            "documentation": "A list of instance IDs that should be registered with the LoadBalancer.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the RegisterInstancesWithLoadBalancer action."
+      },
+      "output": {
+        "shape_name": "RegisterEndPointsOutput",
+        "type": "structure",
+        "members": {
+          "Instances": {
+            "shape_name": "Instances",
+            "type": "list",
+            "members": {
+              "shape_name": "Instance",
+              "type": "structure",
+              "members": {
+                "InstanceId": {
+                  "shape_name": "InstanceId",
+                  "type": "string",
+                  "documentation": "Provides an EC2 instance ID."
+                }
+              },
+              "documentation": "The Instance data type."
+            },
+            "documentation": "An updated list of instances for the LoadBalancer."
+          }
+        },
+        "documentation": "The output for the RegisterInstancesWithLoadBalancer action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "InvalidEndPointException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified EndPoint is not valid."
+        }
+      ],
+      "documentation": "Adds new instances to the LoadBalancer."
+    },
+    {
+      "name": "SetLoadBalancerListenerSSLCertificate",
+      "input": {
+        "shape_name": "SetLoadBalancerListenerSSLCertificateInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name of the the LoadBalancer.",
+            "required": true
+          },
+          "LoadBalancerPort": {
+            "shape_name": "AccessPointPort",
+            "type": "integer",
+            "documentation": "The port that uses the specified SSL certificate.",
+            "required": true
+          },
+          "SSLCertificateId": {
+            "shape_name": "SSLCertificateId",
+            "type": "string",
+            "documentation": "The ID of the SSL certificate chain to use. For more information on SSL certificates, see Managing Server Certificates in the AWS Identity and Access Management documentation.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the SetLoadBalancerListenerSSLCertificate action."
+      },
+      "output": {
+        "shape_name": "SetLoadBalancerListenerSSLCertificateOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the SetLoadBalancerListenerSSLCertificate action."
+      },
+      "errors": [
+        {
+          "shape_name": "CertificateNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified SSL ID does not refer to a valid SSL certificate in the AWS Identity and Access Management Service."
+        },
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "ListenerNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "LoadBalancer does not have a listener configured at the given port."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Sets the certificate that terminates the specified listener's SSL connections. The specified certificate replaces any prior certificate that was used on the same LoadBalancer and port."
+    },
+    {
+      "name": "SetLoadBalancerPoliciesForBackendServer",
+      "input": {
+        "shape_name": "SetLoadBalancerPoliciesForBackendServerInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The mnemonic name associated with the LoadBalancer. This name must be unique within the client AWS account.",
+            "required": true
+          },
+          "InstancePort": {
+            "shape_name": "EndPointPort",
+            "type": "integer",
+            "documentation": "The port number associated with the back-end server.",
+            "required": true
+          },
+          "PolicyNames": {
+            "shape_name": "PolicyNames",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyName",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "List of policy names to be set. If the list is empty, then all current polices are removed from the back-end server.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "SetLoadBalancerPoliciesForBackendServerOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the SetLoadBalancerPoliciesForBackendServer action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "PolicyNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more specified policies were not found."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Replaces the current set of policies associated with a port on which the back-end server is listening with a new set of policies. After the policies have been created using CreateLoadBalancerPolicy, they can be applied here as a list. At this time, only the back-end server authentication policy type can be applied to the back-end ports; this policy type is composed of multiple public key policies."
+    },
+    {
+      "name": "SetLoadBalancerPoliciesOfListener",
+      "input": {
+        "shape_name": "SetLoadBalancerPoliciesOfListenerInput",
+        "type": "structure",
+        "members": {
+          "LoadBalancerName": {
+            "shape_name": "AccessPointName",
+            "type": "string",
+            "documentation": "The name associated with the LoadBalancer. The name must be unique within the client AWS account.",
+            "required": true
+          },
+          "LoadBalancerPort": {
+            "shape_name": "AccessPointPort",
+            "type": "integer",
+            "documentation": "The external port of the LoadBalancer with which this policy applies to.",
+            "required": true
+          },
+          "PolicyNames": {
+            "shape_name": "PolicyNames",
+            "type": "list",
+            "members": {
+              "shape_name": "PolicyName",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "List of policies to be associated with the listener. Currently this list can have at most one policy. If the list is empty, the current policy is removed from the listener.",
+            "required": true
+          }
+        },
+        "documentation": "The input for the SetLoadBalancerPoliciesOfListener action."
+      },
+      "output": {
+        "shape_name": "SetLoadBalancerPoliciesOfListenerOutput",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "The output for the SetLoadBalancerPoliciesOfListener action."
+      },
+      "errors": [
+        {
+          "shape_name": "AccessPointNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "The specified LoadBalancer could not be found."
+        },
+        {
+          "shape_name": "PolicyNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "One or more specified policies were not found."
+        },
+        {
+          "shape_name": "ListenerNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "LoadBalancer does not have a listener configured at the given port."
+        },
+        {
+          "shape_name": "InvalidConfigurationRequestException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "Requested configuration change is invalid."
+        }
+      ],
+      "documentation": "Associates, updates, or disables a policy with a listener on the LoadBalancer. You can associate multiple policies with a listener."
+    }
+  ]
+}

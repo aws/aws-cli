@@ -1,0 +1,887 @@
+{
+  "type": "query",
+  "api_version": "2012-12-01",
+  "short_name": "email",
+  "service_name": "BaconFrontendSvc",
+  "assembly": "com.amazon.bacon.frontend.svc",
+  "xmlnamespace": "http://ses.amazonaws.com/doc/2010-12-01/",
+  "documentation": "Amazon Simple Email Service",
+  "operations": [
+    {
+      "name": "DeleteIdentity",
+      "input": {
+        "shape_name": "DeleteIdentityRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "The identity to be removed from the list of identities for the AWS Account.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to delete an identity from the list of identities for the AWS Account."
+      },
+      "output": {
+        "shape_name": "DeleteIdentityResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "An empty element. Receiving this element indicates that the request completed successfully."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Deletes the specified identity (email address or domain) from the list of verified identities."
+    },
+    {
+      "name": "DeleteVerifiedEmailAddress",
+      "input": {
+        "shape_name": "DeleteVerifiedEmailAddressRequest",
+        "type": "structure",
+        "members": {
+          "EmailAddress": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "An email address to be removed from the list of verified addresses.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to delete an address from the list of verified email addresses."
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Deletes the specified email address from the list of verified addresses."
+    },
+    {
+      "name": "GetIdentityDkimAttributes",
+      "input": {
+        "shape_name": "GetIdentityDkimAttributesRequest",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of one or more verified identities - email addresses, domains, or both.",
+            "required": true
+          }
+        },
+        "documentation": "Given a list of verified identities, describes their DKIM attributes. The DKIM attributes of an email address identity includes whether DKIM signing is individually enabled or disabled for that address. The DKIM attributes of a domain name identity includes whether DKIM signing is enabled, as well as the DNS records (tokens) that must remain published in the domain name's DNS."
+      },
+      "output": {
+        "shape_name": "GetIdentityDkimAttributesResponse",
+        "type": "structure",
+        "members": {
+          "DkimAttributes": {
+            "shape_name": "DkimAttributes",
+            "type": "map",
+            "keys": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "members": {
+              "shape_name": "IdentityDkimAttributes",
+              "type": "structure",
+              "members": {
+                "DkimEnabled": {
+                  "shape_name": "Enabled",
+                  "type": "boolean",
+                  "documentation": "True if DKIM signing is enabled for email sent from the identity; false otherwise.",
+                  "required": true
+                },
+                "DkimVerificationStatus": {
+                  "shape_name": "VerificationStatus",
+                  "type": "string",
+                  "enum": [
+                    "Pending",
+                    "Success",
+                    "Failed",
+                    "TemporaryFailure"
+                  ],
+                  "documentation": "Describes whether Amazon SES has successfully verified the DKIM DNS records (tokens) published in the domain name's DNS. (This only applies to domain identities, not email address identities.)",
+                  "required": true
+                },
+                "DkimTokens": {
+                  "shape_name": "VerificationTokenList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "VerificationToken",
+                    "type": "string",
+                    "documentation": ""
+                  },
+                  "documentation": "A set of DNS records (tokens) that must be published in the domain name's DNS for DKIM verification to complete, and which must remain published in order for DKIM signing to succeed. The tokens are CNAME DNS records that point to DKIM public keys hosted by Amazon SES. (This only applies to domain entities, not email address identities.)"
+                }
+              },
+              "documentation": "Represents the DKIM attributes of a verified email address or a domain."
+            },
+            "documentation": "The DKIM attributes for an email address or a domain.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a list of all the DKIM attributes for the specified identity."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the DNS records, or tokens, that must be present in order for Easy DKIM to sign outgoing email messages."
+    },
+    {
+      "name": "GetIdentityNotificationAttributes",
+      "input": {
+        "shape_name": "GetIdentityNotificationAttributesRequest",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of one or more identities.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "GetIdentityNotificationAttributesResponse",
+        "type": "structure",
+        "members": {
+          "NotificationAttributes": {
+            "shape_name": "NotificationAttributes",
+            "type": "map",
+            "keys": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "members": {
+              "shape_name": "IdentityNotificationAttributes",
+              "type": "structure",
+              "members": {
+                "BounceTopic": {
+                  "shape_name": "NotificationTopic",
+                  "type": "string",
+                  "documentation": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic where Amazon SES will publish bounce notifications.",
+                  "required": true
+                },
+                "ComplaintTopic": {
+                  "shape_name": "NotificationTopic",
+                  "type": "string",
+                  "documentation": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic where Amazon SES will publish complaint notifications.",
+                  "required": true
+                },
+                "ForwardingEnabled": {
+                  "shape_name": "Enabled",
+                  "type": "boolean",
+                  "documentation": "Describes whether Amazon SES will forward feedback as email. true indicates that Amazon SES will forward feedback as email, while false indicates that feedback will be published only to the specified Bounce and Complaint topics.",
+                  "required": true
+                }
+              },
+              "documentation": "Represents the notification attributes of an identity, including whether a bounce or complaint topic are set, and whether feedback forwarding is enabled."
+            },
+            "documentation": "A map of Identity to IdentityNotificationAttributes.",
+            "required": true
+          }
+        },
+        "documentation": "Describes whether an identity has a bounce topic or complaint topic set, or feedback forwarding enabled."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Given a list of verified identities (email addresses and/or domains), returns a structure describing identity notification attributes. For more information about feedback notification, see the Amazon SES Developer Guide."
+    },
+    {
+      "name": "GetIdentityVerificationAttributes",
+      "input": {
+        "shape_name": "GetIdentityVerificationAttributesRequest",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of identities.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to provide the verification attributes for a list of identities."
+      },
+      "output": {
+        "shape_name": "GetIdentityVerificationAttributesResponse",
+        "type": "structure",
+        "members": {
+          "VerificationAttributes": {
+            "shape_name": "VerificationAttributes",
+            "type": "map",
+            "keys": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "members": {
+              "shape_name": "IdentityVerificationAttributes",
+              "type": "structure",
+              "members": {
+                "VerificationStatus": {
+                  "shape_name": "VerificationStatus",
+                  "type": "string",
+                  "enum": [
+                    "Pending",
+                    "Success",
+                    "Failed",
+                    "TemporaryFailure"
+                  ],
+                  "documentation": "The verification status of the identity: \"Pending\", \"Success\", \"Failed\", or \"TemporaryFailure\".",
+                  "required": true
+                },
+                "VerificationToken": {
+                  "shape_name": "VerificationToken",
+                  "type": "string",
+                  "documentation": "The verification token for a domain identity. Null for email address identities."
+                }
+              },
+              "documentation": "Represents the verification attributes of a single identity."
+            },
+            "documentation": "A map of Identities to IdentityVerificationAttributes objects.",
+            "required": true
+          }
+        },
+        "documentation": "Represents the verification attributes for a list of identities."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Given a list of identities (email addresses and/or domains), returns the verification status and (for domain identities) the verification token for each identity."
+    },
+    {
+      "name": "GetSendQuota",
+      "input": null,
+      "output": {
+        "shape_name": "GetSendQuotaResponse",
+        "type": "structure",
+        "members": {
+          "Max24HourSend": {
+            "shape_name": "Max24HourSend",
+            "type": "double",
+            "documentation": "The maximum number of emails the user is allowed to send in a 24-hour interval."
+          },
+          "MaxSendRate": {
+            "shape_name": "MaxSendRate",
+            "type": "double",
+            "documentation": "The maximum number of emails the user is allowed to send per second."
+          },
+          "SentLast24Hours": {
+            "shape_name": "SentLast24Hours",
+            "type": "double",
+            "documentation": "The number of emails sent during the previous 24 hours."
+          }
+        },
+        "documentation": "Represents the user's current activity limits returned from a successful GetSendQuota request."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the user's current sending limits."
+    },
+    {
+      "name": "GetSendStatistics",
+      "input": null,
+      "output": {
+        "shape_name": "GetSendStatisticsResponse",
+        "type": "structure",
+        "members": {
+          "SendDataPoints": {
+            "shape_name": "SendDataPointList",
+            "type": "list",
+            "members": {
+              "shape_name": "SendDataPoint",
+              "type": "structure",
+              "members": {
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "Time of the data point."
+                },
+                "DeliveryAttempts": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "Number of emails that have been enqueued for sending."
+                },
+                "Bounces": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "Number of emails that have bounced."
+                },
+                "Complaints": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "Number of unwanted emails that were rejected by recipients."
+                },
+                "Rejects": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "Number of emails rejected by Amazon SES."
+                }
+              },
+              "documentation": "Represents sending statistics data. Each SendDataPoint contains statistics for a 15-minute period of sending activity."
+            },
+            "documentation": "A list of data points, each of which represents 15 minutes of activity."
+          }
+        },
+        "documentation": "Represents a list of SendDataPoint items returned from a successful GetSendStatistics request. This list contains aggregated data from the previous two weeks of sending activity."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns the user's sending statistics. The result is a list of data points, representing the last two weeks of sending activity."
+    },
+    {
+      "name": "ListIdentities",
+      "input": {
+        "shape_name": "ListIdentitiesRequest",
+        "type": "structure",
+        "members": {
+          "IdentityType": {
+            "shape_name": "IdentityType",
+            "type": "string",
+            "enum": [
+              "EmailAddress",
+              "Domain"
+            ],
+            "documentation": "The type of the identities to list. Possible values are \"EmailAddress\" and \"Domain\". If this parameter is omitted, then all identities will be listed."
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "The token to use for pagination."
+          },
+          "MaxItems": {
+            "shape_name": "MaxItems",
+            "type": "integer",
+            "documentation": "The maximum number of identities per page. Possible values are 1-100 inclusive."
+          }
+        },
+        "documentation": "Represents a request instructing the service to list all identities for the AWS Account."
+      },
+      "output": {
+        "shape_name": "ListIdentitiesResponse",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of identities.",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "The token used for pagination."
+          }
+        },
+        "documentation": "Represents a list of all verified identities for the AWS Account."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns a list containing all of the identities (email addresses and domains) for a specific AWS Account, regardless of verification status."
+    },
+    {
+      "name": "ListVerifiedEmailAddresses",
+      "input": null,
+      "output": {
+        "shape_name": "ListVerifiedEmailAddressesResponse",
+        "type": "structure",
+        "members": {
+          "VerifiedEmailAddresses": {
+            "shape_name": "AddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "Address",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of email addresses that have been verified."
+          }
+        },
+        "documentation": "Represents a list of all the email addresses verified for the current user."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns a list containing all of the email addresses that have been verified."
+    },
+    {
+      "name": "SendEmail",
+      "input": {
+        "shape_name": "SendEmailRequest",
+        "type": "structure",
+        "members": {
+          "Source": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "The identity's email address.",
+            "required": true
+          },
+          "Destination": {
+            "shape_name": "Destination",
+            "type": "structure",
+            "members": {
+              "ToAddresses": {
+                "shape_name": "AddressList",
+                "type": "list",
+                "members": {
+                  "shape_name": "Address",
+                  "type": "string",
+                  "documentation": ""
+                },
+                "documentation": "The To: field(s) of the message."
+              },
+              "CcAddresses": {
+                "shape_name": "AddressList",
+                "type": "list",
+                "members": {
+                  "shape_name": "Address",
+                  "type": "string",
+                  "documentation": ""
+                },
+                "documentation": "The CC: field(s) of the message."
+              },
+              "BccAddresses": {
+                "shape_name": "AddressList",
+                "type": "list",
+                "members": {
+                  "shape_name": "Address",
+                  "type": "string",
+                  "documentation": ""
+                },
+                "documentation": "The BCC: field(s) of the message."
+              }
+            },
+            "documentation": "The destination for this email, composed of To:, CC:, and BCC: fields.",
+            "required": true
+          },
+          "Message": {
+            "shape_name": "Message",
+            "type": "structure",
+            "members": {
+              "Subject": {
+                "shape_name": "Content",
+                "type": "structure",
+                "members": {
+                  "Data": {
+                    "shape_name": "MessageData",
+                    "type": "string",
+                    "documentation": "The textual data of the content.",
+                    "required": true
+                  },
+                  "Charset": {
+                    "shape_name": "Charset",
+                    "type": "string",
+                    "documentation": "The character set of the content."
+                  }
+                },
+                "documentation": "The subject of the message: A short summary of the content, which will appear in the recipient's inbox.",
+                "required": true
+              },
+              "Body": {
+                "shape_name": "Body",
+                "type": "structure",
+                "members": {
+                  "Text": {
+                    "shape_name": "Content",
+                    "type": "structure",
+                    "members": {
+                      "Data": {
+                        "shape_name": "MessageData",
+                        "type": "string",
+                        "documentation": "The textual data of the content.",
+                        "required": true
+                      },
+                      "Charset": {
+                        "shape_name": "Charset",
+                        "type": "string",
+                        "documentation": "The character set of the content."
+                      }
+                    },
+                    "documentation": "The content of the message, in text format. Use this for text-based email clients, or clients on high-latency networks (such as mobile devices)."
+                  },
+                  "Html": {
+                    "shape_name": "Content",
+                    "type": "structure",
+                    "members": {
+                      "Data": {
+                        "shape_name": "MessageData",
+                        "type": "string",
+                        "documentation": "The textual data of the content.",
+                        "required": true
+                      },
+                      "Charset": {
+                        "shape_name": "Charset",
+                        "type": "string",
+                        "documentation": "The character set of the content."
+                      }
+                    },
+                    "documentation": "The content of the message, in HTML format. Use this for email clients that can process HTML. You can include clickable links, formatted text, and much more in an HTML message."
+                  }
+                },
+                "documentation": "The message body.",
+                "required": true
+              }
+            },
+            "documentation": "The message to be sent.",
+            "required": true
+          },
+          "ReplyToAddresses": {
+            "shape_name": "AddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "Address",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address will receive the reply."
+          },
+          "ReturnPath": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "The email address to which bounce notifications are to be forwarded. If the message cannot be delivered to the recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded to the email address specified by the ReturnPath parameter."
+          }
+        },
+        "documentation": "Represents a request instructing the service to send a single email message."
+      },
+      "output": {
+        "shape_name": "SendEmailResponse",
+        "type": "structure",
+        "members": {
+          "MessageId": {
+            "shape_name": "MessageId",
+            "type": "string",
+            "documentation": "The unique message identifier returned from the SendEmail action.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a unique message ID returned from a successful SendEmail request."
+      },
+      "errors": [
+        {
+          "shape_name": "MessageRejected",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": ""
+        }
+      ],
+      "documentation": "Composes an email message based on input data, and then immediately queues the message for sending."
+    },
+    {
+      "name": "SendRawEmail",
+      "input": {
+        "shape_name": "SendRawEmailRequest",
+        "type": "structure",
+        "members": {
+          "Source": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "The identity's email address."
+          },
+          "Destinations": {
+            "shape_name": "AddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "Address",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A list of destinations for the message."
+          },
+          "RawMessage": {
+            "shape_name": "RawMessage",
+            "type": "structure",
+            "members": {
+              "Data": {
+                "shape_name": "RawMessageData",
+                "type": "blob",
+                "documentation": "The raw data of the message. The client must ensure that the message format complies with Internet email standards regarding email header fields, MIME types, MIME encoding, and base64 encoding (if necessary).",
+                "required": true
+              }
+            },
+            "documentation": "The raw text of the message. The client is responsible for ensuring the following:",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to send a raw email message."
+      },
+      "output": {
+        "shape_name": "SendRawEmailResponse",
+        "type": "structure",
+        "members": {
+          "MessageId": {
+            "shape_name": "MessageId",
+            "type": "string",
+            "documentation": "The unique message identifier returned from the SendRawEmail action.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a unique message ID returned from a successful SendRawEmail request."
+      },
+      "errors": [
+        {
+          "shape_name": "MessageRejected",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": ""
+        }
+      ],
+      "documentation": "Sends an email message, with header and content specified by the client. The SendRawEmail action is useful for sending multipart MIME emails. The raw text of the message must comply with Internet email standards; otherwise, the message cannot be sent."
+    },
+    {
+      "name": "SetIdentityDkimEnabled",
+      "input": {
+        "shape_name": "SetIdentityDkimEnabledRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "The identity for which DKIM signing should be enabled or disabled.",
+            "required": true
+          },
+          "DkimEnabled": {
+            "shape_name": "Enabled",
+            "type": "boolean",
+            "documentation": "Sets whether DKIM signing is enabled for an identity. Set to true to enable DKIM signing for this identity; false to disable it.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to enable or disable DKIM signing for an identity."
+      },
+      "output": {
+        "shape_name": "SetIdentityDkimEnabledResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "An empty element. Receiving this element indicates that the request completed successfully."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Enables or disables Easy DKIM signing of email sent from an identity:"
+    },
+    {
+      "name": "SetIdentityFeedbackForwardingEnabled",
+      "input": {
+        "shape_name": "SetIdentityFeedbackForwardingEnabledRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "The identity for which to set feedback notification forwarding. Examples: user@example.com, example.com.",
+            "required": true
+          },
+          "ForwardingEnabled": {
+            "shape_name": "Enabled",
+            "type": "boolean",
+            "documentation": "Sets whether Amazon SES will forward feedback notifications as email. true specifies that Amazon SES will forward feedback notifications as email, in addition to any Amazon SNS topic publishing otherwise specified. false specifies that Amazon SES will publish feedback notifications only through Amazon SNS. This value can only be set to false when topics are specified for both Bounce and Complaint topic types.",
+            "required": true
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "SetIdentityFeedbackForwardingEnabledResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "An empty element. Receiving this element indicates that the request completed successfully."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Given an identity (email address or domain), enables or disables whether Amazon SES forwards feedback notifications as email. Feedback forwarding may only be disabled when both complaint and bounce topics are set. For more information about feedback notification, see the Amazon SES Developer Guide."
+    },
+    {
+      "name": "SetIdentityNotificationTopic",
+      "input": {
+        "shape_name": "SetIdentityNotificationTopicRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "The identity for which the topic will be set. Examples: user@example.com, example.com.",
+            "required": true
+          },
+          "NotificationType": {
+            "shape_name": "NotificationType",
+            "type": "string",
+            "enum": [
+              "Bounce",
+              "Complaint"
+            ],
+            "documentation": "The type of feedback notifications that will be published to the specified topic.",
+            "required": true
+          },
+          "SnsTopic": {
+            "shape_name": "NotificationTopic",
+            "type": "string",
+            "documentation": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (Amazon SNS) topic. If the parameter is ommited from the request or a null value is passed, the topic is cleared and publishing is disabled."
+          }
+        },
+        "documentation": "Represents a request to set or clear an identity's notification topic."
+      },
+      "output": {
+        "shape_name": "SetIdentityNotificationTopicResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "An empty element. Receiving this element indicates that the request completed successfully."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Given an identity (email address or domain), sets the Amazon SNS topic to which Amazon SES will publish bounce and complaint notifications for emails sent with that identity as the Source. Publishing to topics may only be disabled when feedback forwarding is enabled. For more information about feedback notification, see the Amazon SES Developer Guide."
+    },
+    {
+      "name": "VerifyDomainDkim",
+      "input": {
+        "shape_name": "VerifyDomainDkimRequest",
+        "type": "structure",
+        "members": {
+          "Domain": {
+            "shape_name": "Domain",
+            "type": "string",
+            "documentation": "The name of the domain to be verified for Easy DKIM signing.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to begin DKIM verification for a domain."
+      },
+      "output": {
+        "shape_name": "VerifyDomainDkimResponse",
+        "type": "structure",
+        "members": {
+          "DkimTokens": {
+            "shape_name": "VerificationTokenList",
+            "type": "list",
+            "members": {
+              "shape_name": "VerificationToken",
+              "type": "string",
+              "documentation": ""
+            },
+            "documentation": "A set of DNS records (tokens) that must be published in the domain name's DNS for DKIM verification to complete, and which must remain published in order for DKIM signing to succeed. The tokens are CNAME DNS records pointing to DKIM public keys hosted by Amazon SES.",
+            "required": true
+          }
+        },
+        "documentation": "Represents the DNS records that must be published in the domain name's DNS to complete DKIM setup."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Returns a set of DNS records, or tokens, that must be published in the domain name's DNS to complete the DKIM verification process. These tokens are DNS CNAME records that point to DKIM public keys hosted by Amazon SES. To complete the DKIM verification process, these tokens must be published in the domain's DNS. The tokens must remain published in order for Easy DKIM signing to function correctly."
+    },
+    {
+      "name": "VerifyDomainIdentity",
+      "input": {
+        "shape_name": "VerifyDomainIdentityRequest",
+        "type": "structure",
+        "members": {
+          "Domain": {
+            "shape_name": "Domain",
+            "type": "string",
+            "documentation": "The domain to be verified.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to begin domain verification."
+      },
+      "output": {
+        "shape_name": "VerifyDomainIdentityResponse",
+        "type": "structure",
+        "members": {
+          "VerificationToken": {
+            "shape_name": "VerificationToken",
+            "type": "string",
+            "documentation": "A TXT record that must be placed in the DNS settings for the domain, in order to complete domain verification.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a token used for domain ownership verification."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Verifies a domain."
+    },
+    {
+      "name": "VerifyEmailAddress",
+      "input": {
+        "shape_name": "VerifyEmailAddressRequest",
+        "type": "structure",
+        "members": {
+          "EmailAddress": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "The email address to be verified.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to begin email address verification."
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "Verifies an email address. This action causes a confirmation email message to be sent to the specified address."
+    },
+    {
+      "name": "VerifyEmailIdentity",
+      "input": {
+        "shape_name": "VerifyEmailIdentityRequest",
+        "type": "structure",
+        "members": {
+          "EmailAddress": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "The email address to be verified.",
+            "required": true
+          }
+        },
+        "documentation": "Represents a request instructing the service to begin email address verification."
+      },
+      "output": {
+        "shape_name": "VerifyEmailIdentityResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "An empty element. Receiving this element indicates that the request completed successfully."
+      },
+      "errors": [
+
+      ],
+      "documentation": "Verifies an email address. This action causes a confirmation email message to be sent to the specified address."
+    }
+  ]
+}

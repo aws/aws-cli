@@ -1,0 +1,221 @@
+{
+  "type": "query",
+  "api_version": "2011-06-15",
+  "short_name": "sts",
+  "service_name": "AWSSecurityTokenServiceV20110615",
+  "assembly": "com.amazon.its",
+  "xmlnamespace": "https://sts.amazonaws.com/doc/2011-06-15/",
+  "documentation": "AWS Security Token Service",
+  "operations": [
+    {
+      "name": "GetFederationToken",
+      "input": {
+        "shape_name": "GetFederationTokenRequest",
+        "type": "structure",
+        "members": {
+          "Name": {
+            "shape_name": "userNameType",
+            "type": "string",
+            "min_length": 2,
+            "max_length": 32,
+            "pattern": "[\\w+=,.@-]*",
+            "documentation": "The name of the federated user associated with the credentials. For information about limitations on user names, go to Limitations on IAM Entities in Using AWS Identity and Access Management.",
+            "required": true
+          },
+          "Policy": {
+            "shape_name": "sessionPolicyDocumentType",
+            "type": "string",
+            "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
+            "min_length": 1,
+            "max_length": 2048,
+            "documentation": "A policy specifying the permissions to associate with the credentials. The caller can delegate their own permissions by specifying a policy, and both policies will be checked when a service call is made. For more information about how permissions work in the context of temporary credentials, see Controlling Permissions in Temporary Credentials in Using AWS Identity and Access Management."
+          },
+          "DurationSeconds": {
+            "shape_name": "durationSecondsType",
+            "type": "integer",
+            "min_length": 3600,
+            "max_length": 129600,
+            "documentation": "The duration, in seconds, that the session should last. Acceptable durations for federation sessions range from 3600s (one hour) to 129600s (36 hours), with 43200s (12 hours) as the default."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "GetFederationTokenResponse",
+        "type": "structure",
+        "members": {
+          "Credentials": {
+            "shape_name": "Credentials",
+            "type": "structure",
+            "members": {
+              "AccessKeyId": {
+                "shape_name": "accessKeyIdType",
+                "type": "string",
+                "min_length": 16,
+                "max_length": 32,
+                "pattern": "[\\w]*",
+                "documentation": "AccessKeyId ID that identifies the temporary credentials.",
+                "required": true
+              },
+              "SecretAccessKey": {
+                "shape_name": "accessKeySecretType",
+                "type": "string",
+                "documentation": "The Secret Access Key to sign requests.",
+                "required": true
+              },
+              "SessionToken": {
+                "shape_name": "tokenType",
+                "type": "string",
+                "documentation": "The security token that users must pass to the service API to use the temporary credentials.",
+                "required": true
+              },
+              "Expiration": {
+                "shape_name": "dateType",
+                "type": "timestamp",
+                "documentation": "The date on which these credentials expire.",
+                "required": true
+              }
+            },
+            "documentation": "Credentials for the service API authentication."
+          },
+          "FederatedUser": {
+            "shape_name": "FederatedUser",
+            "type": "structure",
+            "members": {
+              "FederatedUserId": {
+                "shape_name": "federatedIdType",
+                "type": "string",
+                "min_length": 2,
+                "max_length": 96,
+                "pattern": "[\\w+=,.@-\\:]*",
+                "documentation": "The string identifying the federated user associated with the credentials, similar to the UserId of an IAM user.",
+                "required": true
+              },
+              "Arn": {
+                "shape_name": "arnType",
+                "type": "string",
+                "min_length": 20,
+                "max_length": 2048,
+                "documentation": "The ARN specifying the federated user associated with the credentials. For more information about ARNs and how to use them in policies, see Identifiers for IAM Entities in Using AWS Identity and Access Management.",
+                "required": true
+              }
+            },
+            "documentation": "Identifiers for the federated user associated with the credentials. You can use the federated user's ARN in your resource policies."
+          },
+          "PackedPolicySize": {
+            "shape_name": "nonNegativeIntegerType",
+            "type": "integer",
+            "min_length": 0,
+            "documentation": "A percentage value indicating the size of the policy in packed form. Policies for which the packed size is greater than 100% of the allowed value are rejected by the service."
+          }
+        },
+        "documentation": "Contains the result of a successful invocation of the GetFederationToken action."
+      },
+      "errors": [
+        {
+          "shape_name": "MalformedPolicyDocumentException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "malformedPolicyDocumentMessage",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "The request was rejected because the policy document was malformed. The error message describes the specific error."
+        },
+        {
+          "shape_name": "PackedPolicyTooLargeException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "packedPolicyTooLargeMessage",
+              "type": "string",
+              "documentation": ""
+            }
+          },
+          "documentation": "The request was rejected because the policy document was too large. The error message describes how big the policy document is, in packed form, as a percentage of what the API allows."
+        }
+      ],
+      "documentation": "The GetFederationToken action returns a set of temporary credentials for a federated user with the user name and policy specified in the request. The credentials consist of an Access Key ID, a Secret Access Key, and a security token. Credentials created by IAM users are valid for the specified duration, between one and 36 hours; credentials created using account credentials last one hour."
+    },
+    {
+      "name": "GetSessionToken",
+      "input": {
+        "shape_name": "GetSessionTokenRequest",
+        "type": "structure",
+        "members": {
+          "DurationSeconds": {
+            "shape_name": "durationSecondsType",
+            "type": "integer",
+            "min_length": 3600,
+            "max_length": 129600,
+            "documentation": "The duration, in seconds, that the credentials should remain valid. Acceptable durations for IAM user sessions range from 3600s (one hour) to 129600s (36 hours), with 43200s (12 hours) as the default. Sessions for AWS account owners are restricted to a maximum of 3600s (one hour)."
+          },
+          "SerialNumber": {
+            "shape_name": "serialNumberType",
+            "type": "string",
+            "min_length": 9,
+            "max_length": 256,
+            "pattern": "[\\w+=/:,.@-]*",
+            "documentation": "The identification number of the MFA device for the user. If the IAM user has a policy requiring MFA authentication (or is in a group requiring MFA authentication) to access resources, provide the device value here."
+          },
+          "TokenCode": {
+            "shape_name": "tokenCodeType",
+            "type": "string",
+            "min_length": 6,
+            "max_length": 6,
+            "pattern": "[\\d]*",
+            "documentation": "The value provided by the MFA device. If the user has an access policy requiring an MFA code (or is in a group requiring an MFA code), provide the value here to get permission to resources as specified in the access policy. If MFA authentication is required, and the user does not provide a code when requesting a set of temporary security credentials, the user will receive an \"access denied\" response when requesting resources that require MFA authentication. For more information, see Using Multi-Factor Authentication (MFA) Devices with AWS in Using IAM."
+          }
+        },
+        "documentation": ""
+      },
+      "output": {
+        "shape_name": "GetSessionTokenResponse",
+        "type": "structure",
+        "members": {
+          "Credentials": {
+            "shape_name": "Credentials",
+            "type": "structure",
+            "members": {
+              "AccessKeyId": {
+                "shape_name": "accessKeyIdType",
+                "type": "string",
+                "min_length": 16,
+                "max_length": 32,
+                "pattern": "[\\w]*",
+                "documentation": "AccessKeyId ID that identifies the temporary credentials.",
+                "required": true
+              },
+              "SecretAccessKey": {
+                "shape_name": "accessKeySecretType",
+                "type": "string",
+                "documentation": "The Secret Access Key to sign requests.",
+                "required": true
+              },
+              "SessionToken": {
+                "shape_name": "tokenType",
+                "type": "string",
+                "documentation": "The security token that users must pass to the service API to use the temporary credentials.",
+                "required": true
+              },
+              "Expiration": {
+                "shape_name": "dateType",
+                "type": "timestamp",
+                "documentation": "The date on which these credentials expire.",
+                "required": true
+              }
+            },
+            "documentation": "The session credentials for API authentication."
+          }
+        },
+        "documentation": "Contains the result of a successful invocation of the GetSessionToken action."
+      },
+      "errors": [
+
+      ],
+      "documentation": "The GetSessionToken action returns a set of temporary credentials for an AWS account or IAM user. The credentials consist of an Access Key ID, a Secret Access Key, and a security token. These credentials are valid for the specified duration only. The session duration for IAM users can be between one and 36 hours, with a default of 12 hours. The session duration for AWS account owners is restricted to one hour. Providing the AWS Multi-Factor Authentication (MFA) device serial number and the token code is optional."
+    }
+  ]
+}

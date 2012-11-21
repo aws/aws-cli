@@ -6,7 +6,7 @@ distutils/setuptools install script.
 
 import os
 import sys
-import uncle
+import botocore
 
 try:
     from setuptools import setup
@@ -28,7 +28,7 @@ requires = ['requests>=0.12.1',
 
 setup(
     name='botocore',
-    version=uncle.__version__,
+    version=botocore.__version__,
     description='Low-level, data-driven core of boto 3.',
     long_description=open('README.md').read(),
     author='Mitch Garnaat',

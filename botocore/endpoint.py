@@ -32,7 +32,7 @@ from .credentials import get_credentials
 from .response import Response
 from .operation import Operation
 from .logger import log
-from uncle import __version__
+from botocore import __version__
 
 
 def user_agent():

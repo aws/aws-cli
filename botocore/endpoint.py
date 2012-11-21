@@ -36,7 +36,7 @@ from uncle import __version__
 
 
 def user_agent():
-    return 'Boto/%s Python %s %s/%s' % (__version__,
+    return 'Boto/%s Python/%s %s/%s' % (__version__,
                                         platform.python_version(),
                                         platform.system(),
                                         platform.release())

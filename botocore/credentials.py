@@ -41,6 +41,7 @@ class Credentials(object):
         self.token = token
         self.hmac = hmac.new(self.secret_key.encode('utf-8'),
                              digestmod=sha256)
+        self.profiles = []
 
 
 def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
@@ -119,6 +120,7 @@ def search_file(**kwargs):
             secret_key = None
         if access_key and secret_key:
             credentials = Credentials(access_key, secret_key)
+            credentials.profiles.extend(cp.sections())
             return credentials
         else:
             return None

@@ -51,12 +51,19 @@ from .logger import log
 
 
 _data_cache = {}
+_data_paths = []
+
+
+def add_data_path(path):
+    path = os.path.expandvars(path)
+    path = os.path.expanduser(path)
+    _data_paths.append(path)
 
 
 def get_data_path():
     p = os.path.split(__file__)[0]
     p = os.path.split(p)[0]
-    p = [os.path.join(p, 'botocore/data')]
+    p = _data_paths + [os.path.join(p, 'botocore/data')]
     if 'BOTO_DATA_PATH' in os.environ:
         paths = []
         for path in os.environ['BOTO_DATA_PATH'].split(':'):

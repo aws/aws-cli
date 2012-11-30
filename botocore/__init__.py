@@ -21,8 +21,85 @@
 # IN THE SOFTWARE.
 #
 import re
+import platform
+import logging
 
 __version__ = '0.1.0'
+_user_agent_name = 'Boto'
+
+
+def set_user_agent_name(name):
+    global _user_agent_name
+    _user_agent_name = name
+
+
+def user_agent():
+    return '%s/%s Python/%s %s/%s' % (_user_agent_name,
+                                      __version__,
+                                      platform.python_version(),
+                                      platform.system(),
+                                      platform.release())
+
+
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+
+# Configure default logger to do nothing
+log = logging.getLogger(__name__)
+log.addHandler(NullHandler())
+fmt_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+
+def set_debug_logger():
+    """
+    Convenience function to quickly configure full debug output
+    to go to the console.
+    """
+    log.setLevel(logging.DEBUG)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = logging.Formatter(fmt_string)
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    log.addHandler(ch)
+
+
+def set_file_logger(log_level, path):
+    """
+    Convenience function to quickly configure any level of logging
+    to a file.
+
+    :type log_level: int
+    :param log_level: A log level as specified in the `logging` module
+
+    :type path: string
+    :param path: Path to the log file.  The file will be created
+        if it doesn't already exist.
+    """
+    log.setLevel(log_level)
+
+    # create console handler and set level to debug
+    ch = logging.FileHandler(path)
+    ch.setLevel(log_level)
+
+    # create formatter
+    fmt_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    formatter = logging.Formatter(fmt_string)
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    log.addHandler(ch)
+
 
 _first_cap_regex = re.compile('(.)([A-Z][a-z]+)')
 _number_cap_regex = re.compile('([a-z])([0-9]+)')

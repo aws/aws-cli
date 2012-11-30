@@ -24,8 +24,10 @@ import os
 from six.moves import configparser
 import requests
 import json
-import hmac
-from hashlib import sha256
+import logging
+import exceptions
+
+logger = logging.getLogger(__name__)
 
 
 class Credentials(object):
@@ -33,14 +35,23 @@ class Credentials(object):
     Holds the credentials needed to authenticate requests.  In addition
     the Credential object knows how to search for credentials and how
     to choose the right credentials when multiple credentials are found.
+
+    :ivar access_key: The access key part of the credentials.
+    :ivar secret_key: The secret key part of the credentials.
+    :ivar token: The security token, valid only for session credentials.
+    :ivar profiles: A list of available credentials profiles.
+    :ivar method: A string which identifies where the credentials
+        were found.  Valid values are: iam_role|env|config|boto.
+    :ivar config_path: If the method is `config` this contains the fully
+        qualified path to the config file used.
     """
 
     def __init__(self, access_key=None, secret_key=None, token=None):
         self.access_key = access_key
         self.secret_key = secret_key
         self.token = token
-        self.hmac = hmac.new(self.secret_key.encode('utf-8'),
-                             digestmod=sha256)
+        self.method = None
+        self.config_path = None
         self.profiles = []
 
 
@@ -75,6 +86,7 @@ def search_metadata(**kwargs):
         credentials = Credentials(metadata['AccessKeyId'],
                                   metadata['SecretAccessKey'],
                                   metadata['Token'])
+        credentials.method = 'role'
         return credentials
     else:
         return None
@@ -84,13 +96,13 @@ def search_environment(**kwargs):
     """
     Search for credentials in explicit environment variables.
     """
+    credentials = None
     access_key = os.environ.get('AWS_ACCESS_KEY_ID', None)
     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
-        return credentials
-    else:
-        return None
+        credentials.method = 'env'
+    return credentials
 
 
 def search_file(**kwargs):
@@ -107,23 +119,31 @@ def search_file(**kwargs):
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         cp = configparser.RawConfigParser()
-        cp.read(path)
-        if not cp.has_section(profile):
-            raise ValueError('Profile: %s not found' % profile)
-        if cp.has_option(profile, access_key_name):
-            access_key = cp.get(profile, access_key_name)
-        else:
-            access_key = None
-        if cp.has_option(profile, secret_key_name):
-            secret_key = cp.get(profile, secret_key_name)
-        else:
-            secret_key = None
-        if access_key and secret_key:
-            credentials = Credentials(access_key, secret_key)
-            credentials.profiles.extend(cp.sections())
-            return credentials
-        else:
-            return None
+        credentials = None
+        try:
+            cp.read(path)
+            if not cp.has_section(profile):
+                msg = 'The profile (%s) could not be found' % profile
+                logger.warning(msg)
+            else:
+                access_key = None
+                if cp.has_option(profile, access_key_name):
+                    access_key = cp.get(profile, access_key_name)
+                secret_key = None
+                if cp.has_option(profile, secret_key_name):
+                    secret_key = cp.get(profile, secret_key_name)
+                if access_key and secret_key:
+                    credentials = Credentials(access_key, secret_key)
+                    credentials.profiles.extend(cp.sections())
+                    credentials.method = 'config'
+                    credentials.config_path = path
+        except configparser.Error:
+            msg = 'Unable to parse config file: %s' % path
+            logger.warning(msg)
+        except:
+            msg = 'Unknown error encountered parsing: %s' % path
+            logger.warning(msg)
+        return credentials
 
 
 def search_boto_config(**kwargs):
@@ -145,6 +165,7 @@ def search_boto_config(**kwargs):
         secret_key = cp.get('Credentials', 'aws_secret_access_key')
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
+        credentials.method = 'boto'
     return credentials
 
 AllCredentialFunctions = [search_environment,
@@ -162,4 +183,7 @@ def get_credentials(profile=None):
                               secret_key_name='aws_secret_access_key')
         if credentials:
             break
+    if not credentials:
+        msg = 'No credentials could be found'
+        raise exceptions.NoCredentialsError(msg)
     return credentials

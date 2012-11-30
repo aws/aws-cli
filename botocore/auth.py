@@ -25,7 +25,9 @@ import sys
 import datetime
 from hashlib import sha256
 import hmac
-from .logger import log
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     from urllib.parse import quote
@@ -48,11 +50,12 @@ class SigV2Auth(object):
         split = urlsplit(args['url'])
         path = split.path
         if len(path) == 0:
-             path = "/"
+            path = '/'
         string_to_sign = '%s\n%s\n%s\n' % (args['method'],
                                            split.netloc,
                                            path)
-        hmac = self.credentials.hmac.copy()
+        hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
+                        digestmod=sha256)
         args['params']['SignatureMethod'] = 'HmacSHA256'
         if self.credentials.token:
             args['params']['SecurityToken'] = self.credentials.token
@@ -64,8 +67,8 @@ class SigV2Auth(object):
                          quote(value, safe='-_~'))
         qs = '&'.join(pairs)
         string_to_sign += qs
-        log.debug('string_to_sign')
-        log.debug(string_to_sign)
+        logger.debug('string_to_sign')
+        logger.debug(string_to_sign)
         hmac.update(string_to_sign.encode('utf-8'))
         b64 = base64.b64encode(hmac.digest()).strip().decode('utf-8')
         return (qs, b64)
@@ -87,8 +90,6 @@ PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
 class SigV4Auth(object):
     """
     Sign a request with Signature V4.
-
-    Not working yet, can't figure out why 8^(
     """
 
     def __init__(self, credentials, service_name=None, region_name=None):
@@ -99,13 +100,6 @@ class SigV4Auth(object):
         self.service_name = service_name
 
     def _sign(self, key, msg, hex=False):
-        # hmac = self.credentials.hmac.copy()
-        # hmac.update(msg.encode('utf-8'))
-        # if hex:
-        #     sig = hmac.hexdigest()
-        # else:
-        #     sig = hmac.digest()
-        # return sig
         if hex:
             sig = hmac.new(key, msg.encode('utf-8'), sha256).hexdigest()
         else:
@@ -184,7 +178,7 @@ class SigV4Auth(object):
         cr = [args['method'].upper()]
         path = self.split.path
         if len(path) == 0:
-             path = "/"
+            path = '/'
         cr.append(path)
         cr.append(self.canonical_query_string(args))
         headers_to_sign = self.headers_to_sign(args)
@@ -241,11 +235,11 @@ class SigV4Auth(object):
         if self.credentials.token:
             args['headers']['X-Amz-Security-Token'] = self.credentials.token
         canonical_request = self.canonical_request(args)
-        log.debug('CanonicalRequest:\n%s' % canonical_request)
+        logger.debug('CanonicalRequest:\n%s' % canonical_request)
         string_to_sign = self.string_to_sign(args, canonical_request)
-        log.debug('StringToSign:\n%s' % string_to_sign)
+        logger.debug('StringToSign:\n%s' % string_to_sign)
         signature = self.signature(args, string_to_sign)
-        log.debug('Signature:\n%s' % signature)
+        logger.debug('Signature:\n%s' % signature)
         headers_to_sign = self.headers_to_sign(args)
         l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(args)]
         l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))

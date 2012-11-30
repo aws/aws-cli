@@ -20,38 +20,36 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-from .base import get_data
 
 
-class BotoCoreException(Exception):
+class BotoCoreError(Exception):
     """
     The base exception class for BotoCore exceptions.
+    """
+    def __init__(self, msg, code=None):
+        self.msg = msg
+        self.code = code
 
-    The main job of this class is to lookup the format string
-    for the exception in the message database.  This format
-    string will use the standard Python formatting using named
-    variables in the format string.  It is then expected that
-    the required variable data will be passed as keyword parameters
-    to the class constructor.
+
+class DataNotFoundError(BotoCoreError):
+    """
+    The data associated with a particular path could not be loaded.
     """
 
-    @classmethod
-    def get_message_format(cls):
-        return get_data('messages/%s' % cls.__name__)
 
-    def __init__(self, message, **params):
-        Exception.__init__(self, message)
-        self.params = params
-
-    def __str__(self):
-        return self.get_message_format().format(**self.params)
+class NoCredentialsError(BotoCoreError):
+    """
+    No credentials could be found.
+    """
 
 
-class ValidationException(BotoCoreException):
+class ValidationError(BotoCoreError):
+    """
+    An exception occurred validating parameters.
+    """
 
-    pass
 
-
-class RangeException(BotoCoreException):
-
-    pass
+class RangeError(BotoCoreError):
+    """
+    A parameter value was out of the valid range.
+    """

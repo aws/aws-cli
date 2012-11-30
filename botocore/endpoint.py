@@ -20,26 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import platform
 
 # to enable detailed debugging from httplib layer
 #import httplib
 #httplib.HTTPConnection.debuglevel = 2
 
+import logging
 import requests
-from .auth import get_auth
-from .credentials import get_credentials
-from .response import Response
-from .operation import Operation
-from .logger import log
-from botocore import __version__
+import auth
+import credentials
+import response
+import operation
+from . import user_agent
 
-
-def user_agent():
-    return 'Boto/%s Python/%s %s/%s' % (__version__,
-                                        platform.python_version(),
-                                        platform.system(),
-                                        platform.release())
+logger = logging.getLogger(__name__)
 
 
 class Endpoint(object):
@@ -59,14 +53,14 @@ class Endpoint(object):
         self.region_name = region_name
         self.host = host
         self.profile = profile
-        self.credentials = get_credentials(profile=profile)
-        self.auth = get_auth(self.service.authentication,
-                             credentials=self.credentials,
-                             service_name=self.service.short_name,
-                             region_name=region_name)
+        self.credentials = credentials.get_credentials(profile=profile)
+        self.auth = auth.get_auth(self.service.authentication,
+                                  credentials=self.credentials,
+                                  service_name=self.service.short_name,
+                                  region_name=region_name)
         self.operations = []
         for operation in self.service.operations:
-            op = Operation(self, operation)
+            op = operation.Operation(self, operation)
             self.operations.append(op)
             setattr(self, op.py_name, op)
 
@@ -103,14 +97,14 @@ class QueryEndpoint(Endpoint):
         and return it and long with the HTTP response object
         from requests.
         """
-        log.debug(params)
+        logger.debug(params)
         http_response = requests.post(self.host, params=params,
                                       hooks={'args': self.auth.add_auth},
                                       headers={'User-Agent': user_agent()})
-        r = Response(operation)
+        r = response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
-        log.debug(body)
+        logger.debug(body)
         r.parse(body)
         return (http_response, r.get_value())
 

@@ -47,35 +47,17 @@ be found or loaded.
 """
 import os
 import json
-from .logger import log
+import logging
+import exceptions
 
+logger = logging.getLogger(__name__)
 
 _data_cache = {}
 _data_paths = []
 
 
-def add_data_path(path):
-    path = os.path.expandvars(path)
-    path = os.path.expanduser(path)
-    _data_paths.append(path)
-
-
-def get_data_path():
-    p = os.path.split(__file__)[0]
-    p = os.path.split(p)[0]
-    p = _data_paths + [os.path.join(p, 'botocore/data')]
-    if 'BOTO_DATA_PATH' in os.environ:
-        paths = []
-        for path in os.environ['BOTO_DATA_PATH'].split(':'):
-            path = os.path.expandvars(path)
-            path = os.path.expanduser(path)
-            paths.append(path)
-        p.extend(paths)
-    return p
-
-
 def _load_data(data_path):
-    log.debug('Attempting to Load: %s' % data_path)
+    logger.debug('Attempting to Load: %s' % data_path)
     data = {}
     file_name = data_path + '.json'
     for path in get_data_path():
@@ -85,10 +67,10 @@ def _load_data(data_path):
             try:
                 new_data = json.load(fp)
                 fp.close()
-                log.debug('Found data file: %s' % file_path)
+                logger.debug('Found data file: %s' % file_path)
                 data.update(new_data)
             except:
-                log.error('Unable to load file: %s' % file_path)
+                logger.error('Unable to load file: %s' % file_path)
     if data:
         _data_cache[data_path] = data
     return data
@@ -125,6 +107,39 @@ def _load_nested_data(data_path):
     return data
 
 
+def add_data_path(path):
+    """
+    Add a path to the data path.
+
+    :type path: string
+    :param path: A path to a directory containing additional
+        data files.  This function will call `os.path.expanduser`
+        and `os.path.expandvars` on the path prior to adding
+        it to the data path.
+    """
+    path = os.path.expandvars(path)
+    path = os.path.expanduser(path)
+    _data_paths.append(path)
+
+
+def get_data_path():
+    """
+    Return the complete data path used when searching for
+    data files.
+    """
+    p = os.path.split(__file__)[0]
+    p = os.path.split(p)[0]
+    p = _data_paths + [os.path.join(p, 'botocore/data')]
+    if 'BOTO_DATA_PATH' in os.environ:
+        paths = []
+        for path in os.environ['BOTO_DATA_PATH'].split(':'):
+            path = os.path.expandvars(path)
+            path = os.path.expanduser(path)
+            paths.append(path)
+        p.extend(paths)
+    return p
+
+
 def get_data(data_path):
     """
     Finds, loads and returns the data associated with ``data_path``.
@@ -135,13 +150,16 @@ def get_data(data_path):
     :type data_path: str
     :param data_path: The path to the desired data, relative to
         the root of the JSON data directory.
+
+    :raises `botocore.exceptions.DataNotFoundError`
     """
     if data_path not in _data_cache:
         data = _load_data(data_path)
         if not data:
             data = _load_nested_data(data_path)
         if data is None:
-            raise ValueError('Unable to load data for: %s' % data_path)
+            msg = 'Unable to load data for: %s' % data_path
+            raise exceptions.DataNotFoundError(msg)
     return _data_cache[data_path]
 
 

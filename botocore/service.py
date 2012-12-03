@@ -24,14 +24,13 @@ from .endpoint import get_endpoint
 from .base import get_service_data
 from .operation import Operation
 
+
 class Service(object):
     """
     A service, such as Elastic Compute Cloud (EC2).
 
     :ivar api_version: A string containing the API version this service
         is using.
-    :ivar endpoints: A list of Endpoint objects for each region in which
-        the service is supported.
     :ivar name: The full name of the service.
     :ivar service_name: The canonical name of the service.
     :ivar regions: A dict where each key is a region name and the
@@ -45,7 +44,6 @@ class Service(object):
         self.path = path
         self.port = port
         self.cli_name = self.short_name
-        self.endpoints = {rn: self._get_endpoint(rn) for rn in self.regions}
         self._operations_data = self.operations
         self.operations = []
         for operation_data in self._operations_data:
@@ -56,7 +54,11 @@ class Service(object):
     def __repr__(self):
         return 'Service(%s)' % self.name
 
-    def _get_endpoint(self, region_name, is_secure=True,
+    @property
+    def region_names(self):
+        return self.regions.keys()
+
+    def get_endpoint(self, region_name, is_secure=True,
                      profile=None, endpoint_url=None):
         """
         Return the Endpoint object for this service in a particular

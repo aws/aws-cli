@@ -14,7 +14,7 @@ import argparse
 import sys
 import botocore.base
 import botocore.service
-from botocore.logger import set_debug_logger
+from botocore import set_debug_logger
 from botocore import xform_name
 from .help import CLIHelp
 from .formatter import get_formatter
@@ -73,7 +73,7 @@ class CLIDriver(object):
     def create_op_map(self):
         if self.service:
             for op_data in self.service.operations:
-                op_name = op_data['name']
+                op_name = op_data.name
                 self.op_map[xform_name(op_name, '-')] = op_name
 
     def create_choice_help(self, choices):
@@ -118,7 +118,7 @@ class CLIDriver(object):
                           self.service.short_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                          add_help=False, prog=prog)
-        operations = [op.cli_name for op in self.endpoint.operations]
+        operations = [op.cli_name for op in self.service.operations]
         operations.append('help')
         parser.add_argument('operation', help='The operation',
                             metavar='operation',
@@ -127,7 +127,7 @@ class CLIDriver(object):
         if args.operation == 'help':
             self.help(self.endpoint)
             sys.exit(0)
-        self.operation = self.endpoint.get_operation(args.operation)
+        self.operation = self.service.get_operation(args.operation)
         self.create_operation_parser(remaining)
 
     def create_operation_parser(self, remaining):
@@ -162,7 +162,6 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
         if 'help' in remaining:
-            print(parser.format_usage())
             self.help(self.operation)
             sys.exit(0)
         args, remaining = parser.parse_known_args(remaining)
@@ -221,7 +220,8 @@ class CLIDriver(object):
         try:
             params = {}
             self.build_call_parameters(args, params)
-            http_response, response_data = self.operation(**params)
+            http_response, response_data = self.operation.call(self.endpoint,
+                                                               **params)
             self.formatter(self.operation, response_data)
             if http_response.status_code >= 500:
                 raise ServiceException(None, err_code=r.error_code,

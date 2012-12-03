@@ -47,9 +47,18 @@ class ValidationError(BotoCoreError):
     """
     An exception occurred validating parameters.
     """
+    def __init__(self, msg, value, type_name):
+        self.msg = msg
+        self.value = value
+        self.type_name = type_name
 
 
 class RangeError(BotoCoreError):
     """
     A parameter value was out of the valid range.
     """
+    def __init__(self, msg, value, min_value, max_value):
+        self.msg = msg
+        self.value = value
+        self.min = min_value
+        self.max = max_value

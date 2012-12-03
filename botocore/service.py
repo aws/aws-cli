@@ -22,7 +22,7 @@
 #
 from .endpoint import get_endpoint
 from .base import get_service_data
-
+from .operation import Operation
 
 class Service(object):
     """
@@ -45,12 +45,18 @@ class Service(object):
         self.path = path
         self.port = port
         self.cli_name = self.short_name
-        self.endpoints = [self.get_endpoint(rn) for rn in self.regions]
+        self.endpoints = {rn: self._get_endpoint(rn) for rn in self.regions}
+        self._operations_data = self.operations
+        self.operations = []
+        for operation_data in self._operations_data:
+            op = Operation(self, operation_data)
+            self.operations.append(op)
+            setattr(self, op.py_name, op)
 
     def __repr__(self):
         return 'Service(%s)' % self.name
 
-    def get_endpoint(self, region_name, is_secure=True,
+    def _get_endpoint(self, region_name, is_secure=True,
                      profile=None, endpoint_url=None):
         """
         Return the Endpoint object for this service in a particular
@@ -78,6 +84,21 @@ class Service(object):
             if self.port:
                 endpoint_url += ':%d' % self.port
         return get_endpoint(self, region_name, endpoint_url, profile)
+
+    def get_operation(self, operation_name):
+        """
+        Find an Operation object for a given operation_name.  The name
+        provided can be the original camel case name, the Python name or
+        the CLI name.
+
+        :type operation_name: str
+        :param operation_name: The name of the operation.
+        """
+        for operation in self.operations:
+            op_names = (operation.name, operation.py_name, operation.cli_name)
+            if operation_name in op_names:
+                return operation
+        return None
 
 
 def get_service(service_name, provider_name='aws'):

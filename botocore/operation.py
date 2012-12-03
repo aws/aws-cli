@@ -26,22 +26,22 @@ from . import BotoCoreObject
 
 class Operation(BotoCoreObject):
 
-    def __init__(self, endpoint, op_data):
+    def __init__(self, service, op_data):
         self.input = {}
         self.output = {}
         BotoCoreObject.__init__(self, **op_data)
-        self.endpoint = endpoint
+        self.service = service
         self.type = 'operation'
         self._get_parameters()
 
     def __repr__(self):
         return 'Operation:%s' % self.name
 
-    def __call__(self, **kwargs):
+    def call(self, endpoint, **kwargs):
         params = self.build_parameters(**kwargs)
         params['Action'] = self.name
-        params['Version'] = self.endpoint.service.api_version
-        return self.endpoint.make_request(self, params)
+        params['Version'] = self.service.api_version
+        return endpoint.make_request(self, params)
 
     def _get_parameters(self):
         """

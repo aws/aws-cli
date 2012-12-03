@@ -78,15 +78,19 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
     return d
 
 
-def search_metadata(**kwargs):
-    metadata = _search_md()
+def search_iam_role(**kwargs):
+    if 'metadata' in kwargs:
+        # to help with unit tests
+        metadata = kwargs['metadata']
+    else:
+        metadata = _search_md()
     # Assuming there's only one role on the instance profile.
     if metadata:
         metadata = metadata['iam']['security-credentials'].values()[0]
         credentials = Credentials(metadata['AccessKeyId'],
                                   metadata['SecretAccessKey'],
                                   metadata['Token'])
-        credentials.method = 'role'
+        credentials.method = 'iam-role'
         return credentials
     else:
         return None
@@ -171,16 +175,17 @@ def search_boto_config(**kwargs):
 AllCredentialFunctions = [search_environment,
                           search_file,
                           search_boto_config,
-                          search_metadata]
+                          search_iam_role]
 
 
-def get_credentials(profile=None):
+def get_credentials(profile=None, metadata=None):
     if not profile:
         profile = 'default'
     for cred_fn in AllCredentialFunctions:
         credentials = cred_fn(profile=profile,
                               access_key_name='aws_access_key_id',
-                              secret_key_name='aws_secret_access_key')
+                              secret_key_name='aws_secret_access_key',
+                              metadata=metadata)
         if credentials:
             break
     if not credentials:

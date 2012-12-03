@@ -35,7 +35,7 @@ class TimestampTest(unittest.TestCase):
         p.build_parameter(ts, d)
         assert d['foo'] == ts
         ts = '2012-10-1200:00'
-        with self.assertRaises(botocore.exceptions.ValidationException):
+        with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter(ts, d)
 
     def test_integer(self):
@@ -43,7 +43,7 @@ class TimestampTest(unittest.TestCase):
         d = {}
         p.build_parameter('123', d)
         assert d['foo'] == '123'
-        with self.assertRaises(botocore.exceptions.ValidationException):
+        with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter('123.4', d)
 
     def test_integer_range(self):
@@ -51,9 +51,9 @@ class TimestampTest(unittest.TestCase):
         d = {}
         p.build_parameter('9', d)
         assert d['foo'] == '9'
-        with self.assertRaises(botocore.exceptions.ValidationException):
+        with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter('8.4', d)
-        with self.assertRaises(botocore.exceptions.RangeException):
+        with self.assertRaises(botocore.exceptions.RangeError):
             p.build_parameter('100', d)
 
     def test_float(self):
@@ -61,7 +61,7 @@ class TimestampTest(unittest.TestCase):
         d = {}
         p.build_parameter('123.4', d)
         assert d['foo'] == '123.4'
-        with self.assertRaises(botocore.exceptions.ValidationException):
+        with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter('true', d)
 
     def test_float_range(self):
@@ -69,7 +69,7 @@ class TimestampTest(unittest.TestCase):
         d = {}
         p.build_parameter('9.0', d)
         assert d['foo'] == '9.0'
-        with self.assertRaises(botocore.exceptions.RangeException):
+        with self.assertRaises(botocore.exceptions.RangeError):
             p.build_parameter('100', d)
 
     def test_boolean(self):
@@ -87,7 +87,7 @@ class TimestampTest(unittest.TestCase):
         assert d['foo'] == 'false'
         p.build_parameter('FALSE', d)
         assert d['foo'] == 'false'
-        with self.assertRaises(botocore.exceptions.ValidationException):
+        with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter('100', d)
 
 

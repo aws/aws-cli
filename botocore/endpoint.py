@@ -30,7 +30,6 @@ import requests
 import auth
 import credentials
 import response
-import operation
 from . import user_agent
 
 logger = logging.getLogger(__name__)
@@ -58,29 +57,9 @@ class Endpoint(object):
                                   credentials=self.credentials,
                                   service_name=self.service.short_name,
                                   region_name=region_name)
-        self.operations = []
-        for operation in self.service.operations:
-            op = operation.Operation(self, operation)
-            self.operations.append(op)
-            setattr(self, op.py_name, op)
 
     def __repr__(self):
         return '%s(%s)' % (self.service.name, self.host)
-
-    def get_operation(self, operation_name):
-        """
-        Find an Operation object for a given operation_name.  The name
-        provided can be the original camel case name, the Python name or
-        the CLI name.
-
-        :type operation_name: str
-        :param operation_name: The name of the operation.
-        """
-        for operation in self.operations:
-            op_names = (operation.name, operation.py_name, operation.cli_name)
-            if operation_name in op_names:
-                return operation
-        return None
 
     def make_request(self, params, list_marker=None):
         pass

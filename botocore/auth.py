@@ -54,7 +54,7 @@ class SigV2Auth(object):
         string_to_sign = '%s\n%s\n%s\n' % (args['method'],
                                            split.netloc,
                                            path)
-        hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
+        lhmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
                         digestmod=sha256)
         args['params']['SignatureMethod'] = 'HmacSHA256'
         if self.credentials.token:
@@ -69,8 +69,8 @@ class SigV2Auth(object):
         string_to_sign += qs
         logger.debug('string_to_sign')
         logger.debug(string_to_sign)
-        hmac.update(string_to_sign.encode('utf-8'))
-        b64 = base64.b64encode(hmac.digest()).strip().decode('utf-8')
+        lhmac.update(string_to_sign.encode('utf-8'))
+        b64 = base64.b64encode(lhmac.digest()).strip().decode('utf-8')
         return (qs, b64)
 
     def add_auth(self, args):

@@ -56,7 +56,7 @@ class TestGetIdentityDkimAttributes(unittest.TestCase):
         self.service = botocore.service.get_service('ses', 'aws')
 
     def test_get_identity_dkim_attributes(self):
-        op = self.service.endpoints[0].get_operation('GetIdentityDkimAttributes')
+        op = self.service.get_operation('GetIdentityDkimAttributes')
         r = botocore.response.Response(op)
         r.parse(xml)
         self.assertEqual(r.get_value(), data)

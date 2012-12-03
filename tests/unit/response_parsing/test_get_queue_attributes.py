@@ -83,7 +83,7 @@ class TestGetQueueAttributes(unittest.TestCase):
         self.service = botocore.service.get_service('sqs', 'aws')
 
     def test_get_queue_attributes(self):
-        op = self.service.endpoints[0].get_operation('GetQueueAttributes')
+        op = self.service.get_operation('GetQueueAttributes')
         r = botocore.response.Response(op)
         r.parse(xml)
         self.assertEqual(r.get_value(), data)

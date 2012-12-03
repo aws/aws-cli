@@ -78,7 +78,7 @@ class TestDescribeInstances(unittest.TestCase):
         self.service = botocore.service.get_service('ec2', 'aws')
 
     def test_describe_instances(self):
-        op = self.service.endpoints[0].get_operation('DescribeInstances')
+        op = self.service.get_operation('DescribeInstances')
         r = botocore.response.Response(op)
         r.parse(xml)
         self.assertEqual(r.get_value(), data)

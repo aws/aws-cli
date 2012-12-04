@@ -125,7 +125,7 @@ class CLIDriver(object):
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            self.help(self.endpoint)
+            self.help(self.service)
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
         self.create_operation_parser(remaining)

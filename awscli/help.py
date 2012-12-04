@@ -11,12 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import fcntl
-import termios
+try:
+    import fcntl
+    import termios
+except:
+    pass
 import struct
 import textwrap
 from botocore import BotoCoreObject, ScalarTypes
-from botocore.endpoint import Endpoint
+from botocore.service import Service
 from botocore.base import get_data
 
 
@@ -53,65 +56,90 @@ class CLIHelp(object):
     def spaces(self, indent):
         return ' ' * self.indent_size(indent)
 
-    def _do_parameter(self, param, lines, max_len):
+    def _do_parameter(self, param, lines):
         # hack until we have a more formal way of marking
         # deprecated parameters
+        indent = 1
+        spaces = self.spaces(indent)
         if param.documentation.find('Deprecated') >= 0:
             return
         doc_lines = self.strip_docs(param.documentation)
+        lines.append('%s%s' % (spaces, param.cli_name))
         if len(doc_lines) > 0:
+            indent += 1
+            spaces = self.spaces(indent)
             line = doc_lines[0]
-            wrapped_lines = textwrap.wrap(line, self.width - max_len,
+            wrapped_lines = textwrap.wrap(line, self.width - len(spaces),
                                           drop_whitespace=True)
             if len(wrapped_lines) > 0:
-                line = '%s%s%s' % (' ' * self.indent_width,
-                                   param.cli_name.ljust(max_len - self.indent_width),
-                                   wrapped_lines[0])
-                lines.append(line)
-                for wline in wrapped_lines[1:]:
-                    lines.append('%s%s' % (' ' * max_len, wline))
-        else:
-            lines.append('%s%s' % (' ' * 4, param.cli_name))
+                for wline in wrapped_lines:
+                    lines.append('%s%s' % (spaces, wline))
+        lines.append('')
 
     def do_operation(self, op):
-        lines = []
-        lines.append(op.cli_name)
+        spaces = self.spaces(1)
         doc_lines = self.strip_docs(op.documentation)
-        if len(doc_lines) > 0:
-            lines.append(textwrap.fill(doc_lines[0].strip(),
-                                       self.width,
-                                       drop_whitespace=True))
+        lines = ['', 'NAME']
+        lines.append('%s%s' % (spaces, op.cli_name))
+        lines.append('')
+        lines.append('DESCRIPTION')
+        wlines = textwrap.wrap(doc_lines[0].strip(),
+                               self.width, initial_indent=spaces,
+                               subsequent_indent=spaces)
+        lines.extend(wlines)
+        lines.append('')
         # Now handle parameters
+        required = []
+        optional = []
         if op.params:
-            max_len = max([len(m.cli_name) for m in op.params])
-        else:
-            max_len = 1
-        max_len += 2 * self.indent_width
+            required = [p for p in op.params if p.required]
+            optional = [p for p in op.params if not p.required]
+        lines.append('SYNOPSIS')
+        lines.append('%saws %s %s' % (spaces,
+                                      op.service.short_name,
+                                      op.cli_name))
+        spaces = self.spaces(2)
+        for param in required:
+            line = '%s%s ' % (spaces, param.cli_name)
+            if param.type != 'boolean':
+                line += '<value>'
+            lines.append(line)
+        for param in optional:
+            line = '%s[%s ' % (spaces, param.cli_name)
+            if param.type != 'boolean':
+                line += '<value>]'
+            else:
+                line += ']'
+            lines.append(line)
         lines.append('')
         msg = get_data('messages/RequiredParameters')
         lines.append('%s:' % msg)
-        for param in op.params:
-            if param.required:
-                self._do_parameter(param, lines, max_len)
+        for param in required:
+            self._do_parameter(param, lines)
+        if not required:
+            lines.append('%sNone' % spaces)
+            lines.append('')
         msg = get_data('messages/OptionalParameters')
         lines.append('%s:' % msg)
-        for param in op.params:
-            if not param.required:
-                self._do_parameter(param, lines, max_len)
+        for param in optional:
+            self._do_parameter(param, lines)
+        if not optional:
+            lines.append('%sNone' % spaces)
+            lines.append('')
         return lines
 
-    def do_endpoint(self, endpoint):
+    def do_service(self, service):
         lines = []
-        lines.append(endpoint.service.cli_name)
-        doc_lines = self.strip_docs(endpoint.service.documentation)
+        lines.append(service.cli_name)
+        doc_lines = self.strip_docs(service.documentation)
         if len(doc_lines) > 0:
             lines.append(textwrap.fill(doc_lines[0].strip(),
                                        self.width,
                                        drop_whitespace=True))
         # Now handle operations
-        max_len = max([len(m.cli_name) for m in endpoint.operations])
+        max_len = max([len(m.cli_name) for m in service.operations])
         max_len += 2 * self.indent_width
-        for op in endpoint.operations:
+        for op in service.operations:
             doc_lines = self.strip_docs(op.documentation)
             if len(doc_lines) > 0:
                 line = doc_lines[0]
@@ -150,8 +178,8 @@ class CLIHelp(object):
         if isinstance(object, BotoCoreObject):
             if object.type == 'operation':
                 l = self.do_operation(object)
-        elif isinstance(object, Endpoint):
-            l = self.do_endpoint(object)
+        elif isinstance(object, Service):
+            l = self.do_service(object)
         return l
 
     def __call__(self, object, indent=0, fp=sys.stdout):

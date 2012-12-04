@@ -13,6 +13,7 @@
 
 import os
 import sys
+import awscli
 import botocore.base
 import botocore.operation
 import botocore.credentials
@@ -130,3 +131,9 @@ def complete(cmdline, point):
         param_names = [p.cli_name for p in operation.params]
         return_choices(param_names)
     return_no_choices()
+
+if __name__ == '__main__':
+    if len(sys.argv) == 3:
+        complete(sys.argv[1], int(sys.argv[2]))
+    else:
+        print 'usage: %s <cmdline> <point>' % sys.argv[0]

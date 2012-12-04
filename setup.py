@@ -34,7 +34,7 @@ setup(
     author='Mitch Garnaat',
     author_email='garnaat@amazon.com',
     url='http://awscli.amazon.com',
-    scripts=['bin/aws', 'bin/aws_completer', 'bin/aws.bat'],
+    scripts=['bin/aws', 'bin/aws_completer', 'bin/aws.cmd'],
     packages=packages,
     package_data={'awscli': ['data/*.json']},
     package_dir={'awscli': 'awscli'},

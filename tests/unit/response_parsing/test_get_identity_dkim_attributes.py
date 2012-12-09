@@ -22,7 +22,7 @@
 # IN THE SOFTWARE.
 #
 import unittest
-import botocore.service
+import botocore.session
 import botocore.response
 
 xml = """<GetIdentityDkimAttributesResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
@@ -53,7 +53,8 @@ data = {u'DkimAttributes': {u'amazon.com': {u'DkimTokens': [u'vvjuipp74whm76gqon
 class TestGetIdentityDkimAttributes(unittest.TestCase):
 
     def setUp(self):
-        self.service = botocore.service.get_service('ses', 'aws')
+        self.session = botocore.session.get_session()
+        self.service = self.session.get_service('ses', 'aws')
 
     def test_get_identity_dkim_attributes(self):
         op = self.service.get_operation('GetIdentityDkimAttributes')

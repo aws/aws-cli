@@ -28,9 +28,8 @@
 import logging
 import requests
 import auth
-import credentials
+import session
 import response
-from . import user_agent
 
 logger = logging.getLogger(__name__)
 
@@ -43,18 +42,16 @@ class Endpoint(object):
     :ivar service: The Service object that describes this endpoints
         service.
     :ivar host: The fully qualified endpoint hostname.
-    :ivar credentials: The credentials that will be used to authorize
-        requests.
+    :ivar session: The session object.
     """
 
-    def __init__(self, service, region_name, host, profile=None):
+    def __init__(self, service, region_name, host):
         self.service = service
+        self.session = self.service.session
         self.region_name = region_name
         self.host = host
-        self.profile = profile
-        self.credentials = credentials.get_credentials(profile=profile)
         self.auth = auth.get_auth(self.service.authentication,
-                                  credentials=self.credentials,
+                                  credentials=self.session.get_credentials(),
                                   service_name=self.service.short_name,
                                   region_name=region_name)
 
@@ -77,9 +74,10 @@ class QueryEndpoint(Endpoint):
         from requests.
         """
         logger.debug(params)
+        user_agent = self.session.user_agent()
         http_response = requests.post(self.host, params=params,
                                       hooks={'args': self.auth.add_auth},
-                                      headers={'User-Agent': user_agent()})
+                                      headers={'User-Agent': user_agent})
         r = response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
@@ -88,5 +86,5 @@ class QueryEndpoint(Endpoint):
         return (http_response, r.get_value())
 
 
-def get_endpoint(service, region_name, endpoint_url, profile=None):
-    return QueryEndpoint(service, region_name, endpoint_url, profile)
+def get_endpoint(service, region_name, endpoint_url):
+    return QueryEndpoint(service, region_name, endpoint_url)

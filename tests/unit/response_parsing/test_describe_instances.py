@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import unittest
-import botocore.service
+import botocore.session
 import botocore.response
 
 xml = """<DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2011-07-15/">
@@ -75,7 +75,8 @@ data = {u'reservationSet': [{u'ownerId': u'419278470775', u'groupSet': [{u'group
 class TestDescribeInstances(unittest.TestCase):
 
     def setUp(self):
-        self.service = botocore.service.get_service('ec2', 'aws')
+        self.session = botocore.session.get_session()
+        self.service = self.session.get_service('ec2', 'aws')
 
     def test_describe_instances(self):
         op = self.service.get_operation('DescribeInstances')

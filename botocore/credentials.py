@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import os
 from six.moves import configparser
+import os
 import requests
 import json
 import logging
-import exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -39,11 +38,8 @@ class Credentials(object):
     :ivar access_key: The access key part of the credentials.
     :ivar secret_key: The secret key part of the credentials.
     :ivar token: The security token, valid only for session credentials.
-    :ivar profiles: A list of available credentials profiles.
     :ivar method: A string which identifies where the credentials
         were found.  Valid values are: iam_role|env|config|boto.
-    :ivar config_path: If the method is `config` this contains the fully
-        qualified path to the config file used.
     """
 
     def __init__(self, access_key=None, secret_key=None, token=None):
@@ -51,7 +47,6 @@ class Credentials(object):
         self.secret_key = secret_key
         self.token = token
         self.method = None
-        self.config_path = None
         self.profiles = []
 
 
@@ -79,6 +74,7 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
 
 
 def search_iam_role(**kwargs):
+    credentials = None
     if 'metadata' in kwargs:
         # to help with unit tests
         metadata = kwargs['metadata']
@@ -91,9 +87,7 @@ def search_iam_role(**kwargs):
                                   metadata['SecretAccessKey'],
                                   metadata['Token'])
         credentials.method = 'iam-role'
-        return credentials
-    else:
-        return None
+    return credentials
 
 
 def search_environment(**kwargs):
@@ -111,43 +105,20 @@ def search_environment(**kwargs):
 
 def search_file(**kwargs):
     """
-    If the 'AWS_CONFIG_FILE' environment variable exists, parse that
-    file for credentials.
+    If there is are credentials in the configuration associated with
+    the session, use those.
     """
-    if 'AWS_CONFIG_FILE' in os.environ:
-        profile = kwargs.get('profile', 'default')
+    credentials = None
+    config = kwargs.get('config', None)
+    if config:
         access_key_name = kwargs['access_key_name']
         secret_key_name = kwargs['secret_key_name']
-        access_key = secret_key = None
-        path = os.getenv('AWS_CONFIG_FILE')
-        path = os.path.expandvars(path)
-        path = os.path.expanduser(path)
-        cp = configparser.RawConfigParser()
-        credentials = None
-        try:
-            cp.read(path)
-            if not cp.has_section(profile):
-                msg = 'The profile (%s) could not be found' % profile
-                logger.warning(msg)
-            else:
-                access_key = None
-                if cp.has_option(profile, access_key_name):
-                    access_key = cp.get(profile, access_key_name)
-                secret_key = None
-                if cp.has_option(profile, secret_key_name):
-                    secret_key = cp.get(profile, secret_key_name)
-                if access_key and secret_key:
-                    credentials = Credentials(access_key, secret_key)
-                    credentials.profiles.extend(cp.sections())
-                    credentials.method = 'config'
-                    credentials.config_path = path
-        except configparser.Error:
-            msg = 'Unable to parse config file: %s' % path
-            logger.warning(msg)
-        except:
-            msg = 'Unknown error encountered parsing: %s' % path
-            logger.warning(msg)
-        return credentials
+        if access_key_name in config:
+            if secret_key_name in config:
+                credentials = Credentials(config[access_key_name],
+                                          config[secret_key_name])
+                credentials.method = 'config'
+    return credentials
 
 
 def search_boto_config(**kwargs):
@@ -177,18 +148,20 @@ AllCredentialFunctions = [search_environment,
                           search_boto_config,
                           search_iam_role]
 
+_credential_methods = {'env': search_environment,
+                       'config': search_file,
+                       'boto': search_boto_config,
+                       'iam-role': search_iam_role}
 
-def get_credentials(profile=None, metadata=None):
-    if not profile:
-        profile = 'default'
-    for cred_fn in AllCredentialFunctions:
-        credentials = cred_fn(profile=profile,
+
+def get_credentials(config, metadata=None):
+    credentials = None
+    for cred_method in _credential_methods:
+        cred_fn = _credential_methods[cred_method]
+        credentials = cred_fn(config=config,
                               access_key_name='aws_access_key_id',
                               secret_key_name='aws_secret_access_key',
                               metadata=metadata)
         if credentials:
             break
-    if not credentials:
-        msg = 'No credentials could be found'
-        raise exceptions.NoCredentialsError(msg)
     return credentials

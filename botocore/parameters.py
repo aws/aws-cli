@@ -63,20 +63,15 @@ class IntegerParameter(Parameter):
             if not isinstance(value, six.integer_types):
                 value = int(value)
         except ValueError:
-            msg = 'Unable to convert value (%s) to type integer' % str(value)
-            raise ValidationError(msg, value=str(value), type_name='integer')
+            raise ValidationError(value=str(value), type_name='integer')
         if self.min:
             if value < self.min:
-                msg = ('Value out of range: %d <= %d <= %d'
-                       % (self.min, value, self.max))
-                raise RangeError(msg, value=value,
+                raise RangeError(value=value,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
-                msg = ('Value out of range: %d <= %d <= %d'
-                       % (self.min, value, self.max))
-                raise RangeError(msg, value=value,
+                raise RangeError(value=value,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -89,20 +84,15 @@ class FloatParameter(Parameter):
             if not isinstance(value, float):
                 value = float(value)
         except ValueError:
-            msg = 'Unable to convert value (%s) to type float' % str(value)
-            raise ValidationError(msg, value=str(value), type_name='float')
+            raise ValidationError(value=str(value), type_name='float')
         if self.min:
             if value < self.min:
-                msg = ('Value out of range: %f <= %f <= %f'
-                       % (self.min, value, self.max))
-                raise RangeError(msg, value=value,
+                raise RangeError(value=value,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
-                msg = ('Value out of range: %f <= %f <= %f'
-                       % (self.min, value, self.max))
-                raise RangeError(msg, value=value,
+                raise RangeError(value=value,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -122,8 +112,7 @@ class BooleanParameter(Parameter):
                         raise ValueError
             return value
         except ValueError:
-            msg = 'Unable to convert value (%s) to type bool' % str(value)
-            raise ValidationError(msg, value=str(value), type_name='boolean')
+            raise ValidationError(value=str(value), type_name='boolean')
 
     def build_parameter(self, value, built_params, label=''):
         value = self.validate(value)
@@ -143,8 +132,7 @@ class TimestampParameter(Parameter):
             dateutil.parser.parse(value)
             return value
         except ValueError:
-            msg = 'Unable to convert value (%s) to type timestamp' % str(value)
-            raise ValidationError(msg, value=str(value),
+            raise ValidationError(value=str(value),
                                   type_name='timestamp')
 
 
@@ -153,18 +141,12 @@ class StringParameter(Parameter):
     def validate(self, value):
         if self.min:
             if len(value) < self.min:
-                msg = ('Length of string must be between '
-                       '%d and %d.  Current length is %d'
-                       % (self.min, self.max, len(value)))
-                raise RangeError(msg, value=len(value),
+                raise RangeError(value=len(value),
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if len(value) > self.max:
-                msg = ('Length of string must be between '
-                       '%d and %d.  Current length is %d'
-                       % (self.min, self.max, len(value)))
-                raise RangeError(msg, value=len(value),
+                raise RangeError(value=len(value),
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -213,8 +195,7 @@ class StructParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, dict):
-            msg = 'Unable to convert value (%s) to type structure' % str(value)
-            raise ValidationError(msg, value=str(value), type_name='structure')
+            raise ValidationError(value=str(value), type_name='structure')
 
     def handle_subtypes(self):
         if self.members:

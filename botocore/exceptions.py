@@ -25,40 +25,74 @@
 class BotoCoreError(Exception):
     """
     The base exception class for BotoCore exceptions.
+
+    :ivar msg: The descriptive message associated with the error.
     """
-    def __init__(self, msg, code=None):
-        self.msg = msg
-        self.code = code
+    fmt = 'An unspecified error occured'
+
+    def __init__(self, **kwargs):
+        self.msg = self.fmt.format(**kwargs)
+        self.kwargs = kwargs
 
 
 class DataNotFoundError(BotoCoreError):
     """
     The data associated with a particular path could not be loaded.
+
+    :ivar path: The data path that the user attempted to load.
     """
 
 
-class NoCredentialsError(BotoCoreError):
+class NoCredentials(BotoCoreError):
     """
     No credentials could be found.
     """
 
 
+class ProfileNotFound(BotoCoreError):
+    """
+    The specified configuration profile was not found in the
+    configuration file.
+
+    :ivar profile: The name of the profile the user attempted to load.
+    """
+    fmt = 'The config profile ({profile}) could not be found'
+
+
+class ConfigParseError(BotoCoreError):
+    """
+    The configuration file could not be parsed.
+
+    :ivar path: The path to the configuration file.
+    """
+    fmt = 'Unable to parse config file: {path}'
+
+
+class ConfigNotFound(BotoCoreError):
+    """
+    The specified configuration file could not be found.
+
+    :ivar path: The path to the configuration file.
+    """
+    fmt = 'The specified config file ({path}) could not be found.'
+
+
 class ValidationError(BotoCoreError):
     """
     An exception occurred validating parameters.
+
+    :ivar value: The value that was being validated.
+    :ivar type_name: The name of the underlying type.
     """
-    def __init__(self, msg, value, type_name):
-        self.msg = msg
-        self.value = value
-        self.type_name = type_name
+    fmt = 'Unable to convert value ({value}) to type {type_name}'
 
 
 class RangeError(BotoCoreError):
     """
     A parameter value was out of the valid range.
+
+    :ivar value: The value that was being checked.
+    :ivar min_value: The specified minimum value.
+    :ivar max_value: The specified maximum value.
     """
-    def __init__(self, msg, value, min_value, max_value):
-        self.msg = msg
-        self.value = value
-        self.min = min_value
-        self.max = max_value
+    fmt = 'Value out of range: {min_value} <= {value} <= {max_value}'

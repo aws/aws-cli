@@ -38,8 +38,10 @@ class Service(object):
     :ivar protocols: A list of protocols supported by the service.
     """
 
-    def __init__(self, provider_name, service_name, path='/', port=None):
+    def __init__(self, session, provider_name, service_name,
+                 path='/', port=None):
         self.__dict__.update(get_service_data(service_name, provider_name))
+        self.session = session
         self.provider_name = provider_name
         self.path = path
         self.port = port
@@ -58,8 +60,7 @@ class Service(object):
     def region_names(self):
         return self.regions.keys()
 
-    def get_endpoint(self, region_name, is_secure=True,
-                     profile=None, endpoint_url=None):
+    def get_endpoint(self, region_name, is_secure=True, endpoint_url=None):
         """
         Return the Endpoint object for this service in a particular
         region.
@@ -85,7 +86,7 @@ class Service(object):
             endpoint_url = '%s://%s%s' % (scheme, host, self.path)
             if self.port:
                 endpoint_url += ':%d' % self.port
-        return get_endpoint(self, region_name, endpoint_url, profile)
+        return get_endpoint(self, region_name, endpoint_url)
 
     def get_operation(self, operation_name):
         """
@@ -103,7 +104,7 @@ class Service(object):
         return None
 
 
-def get_service(service_name, provider_name='aws'):
+def get_service(session, service_name, provider_name='aws'):
     """
     Return a Service object for a given provider name and service name.
 
@@ -113,4 +114,4 @@ def get_service(service_name, provider_name='aws'):
     :type provider_name: str
     :param provider_name: The name of the provider.
     """
-    return Service(provider_name, service_name)
+    return Service(session, provider_name, service_name)

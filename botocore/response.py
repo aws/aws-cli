@@ -98,6 +98,7 @@ class Response(xml.sax.ContentHandler):
         self.type_map = {}
         self.build_type_map(None, self.operation.output)
         self.map_map = {}
+        self.flattened_map = {}
 
     def build_type_map(self, name, type_dict):
         if not isinstance(type_dict, dict):
@@ -111,6 +112,9 @@ class Response(xml.sax.ContentHandler):
                 self.build_type_map(member_name,
                                     type_dict['members'][member_name])
         elif type_dict['type'] == 'list':
+            flattened = type_dict.get('flattened', False)
+            if flattened:
+                name = type_dict['members']['xmlname']
             self.type_map[name] = type_dict
             self.build_type_map(None, type_dict['members'])
         elif type_dict['type'] == 'map':
@@ -126,13 +130,20 @@ class Response(xml.sax.ContentHandler):
         if name in self.map_map:
             self.stack.append(self.map_map[name])
         current_element = self.stack[-1]
-        if not current_element.defn:
+        if name in self.flattened_map:
+            new_element_name = name
+            new_element = self.flattened_map[name]
+        elif not current_element.defn:
             for type_name in self.type_map:
                 type_dict = self.type_map[type_name]
                 xmlname = type_dict.get('xmlname', type_name)
                 if xmlname == name:
                     new_element = Element(xmlname, type_dict)
                     new_element_name = xmlname
+                    if type_dict['type'] == 'list':
+                        flattened = type_dict.get('flattened', False)
+                        if flattened:
+                            self.flattened_map[new_element_name] = new_element
         else:
             if current_element.defn['type'] == 'structure':
                 for member_name in current_element.defn['members']:

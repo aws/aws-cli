@@ -23,7 +23,7 @@
 #
 import unittest
 import os
-import botocore.credentials
+import botocore.session
 import botocore.exceptions
 
 metadata = {'instance-type': 't1.micro',
@@ -73,15 +73,20 @@ metadata = {'instance-type': 't1.micro',
 class EnvVarTest(unittest.TestCase):
 
     def test_envvar(self):
-        if 'AWS_CONFIG_FILE' in os.environ:
-            del os.environ['AWS_CONFIG_FILE']
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'aws_config_nocreds')
+        os.environ['AWS_CONFIG_FILE'] = config_path
         os.environ['BOTO_CONFIG'] = ''
         os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
         os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
-        credentials = botocore.credentials.get_credentials()
+        session = botocore.session.get_session()
+        credentials = session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'env'
+
+
+class ConfigTest(unittest.TestCase):
 
     def test_config(self):
         if 'AWS_ACCESS_KEY_ID' in os.environ:
@@ -89,17 +94,23 @@ class EnvVarTest(unittest.TestCase):
         if 'AWS_SECRET_ACCESS_KEY' in os.environ:
             del os.environ['AWS_SECRET_ACCESS_KEY']
         os.environ['BOTO_CONFIG'] = ''
-        os.environ['AWS_CONFIG_FILE'] = 'aws_config'
-        credentials = botocore.credentials.get_credentials()
+        config_path = os.path.join(os.path.dirname(__file__), 'aws_config')
+        os.environ['AWS_CONFIG_FILE'] = config_path
+        session = botocore.session.get_session()
+        credentials = session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'config'
-        assert credentials.profiles == ['default', 'personal']
-        credentials = botocore.credentials.get_credentials('personal')
+        assert session.available_profiles == ['default', 'personal']
+        session.profile = 'personal'
+        credentials = session.get_credentials()
         assert credentials.access_key == 'fie'
         assert credentials.secret_key == 'baz'
         assert credentials.method == 'config'
-        assert credentials.profiles == ['default', 'personal']
+        assert session.available_profiles == ['default', 'personal']
+
+
+class BotoConfigTest(unittest.TestCase):
 
     def test_boto_config(self):
         if 'AWS_ACCESS_KEY_ID' in os.environ:
@@ -108,11 +119,16 @@ class EnvVarTest(unittest.TestCase):
             del os.environ['AWS_SECRET_ACCESS_KEY']
         if 'AWS_CONFIG_FILE' in os.environ:
             del os.environ['AWS_CONFIG_FILE']
-        os.environ['BOTO_CONFIG'] = 'boto_config'
-        credentials = botocore.credentials.get_credentials()
+        config_path = os.path.join(os.path.dirname(__file__), 'boto_config')
+        os.environ['BOTO_CONFIG'] = config_path
+        session = botocore.session.get_session()
+        credentials = session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'boto'
+
+
+class IamRoleTest(unittest.TestCase):
 
     def test_iam_role(self):
         if 'AWS_ACCESS_KEY_ID' in os.environ:
@@ -122,7 +138,8 @@ class EnvVarTest(unittest.TestCase):
         if 'AWS_CONFIG_FILE' in os.environ:
             del os.environ['AWS_CONFIG_FILE']
         os.environ['BOTO_CONFIG'] = ''
-        credentials = botocore.credentials.get_credentials(metadata=metadata)
+        session = botocore.session.get_session()
+        credentials = session.get_credentials(metadata=metadata)
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'iam-role'

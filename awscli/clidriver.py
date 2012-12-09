@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import argparse
 import sys
-import botocore.base
-import botocore.service
-from botocore import set_debug_logger
+import traceback
+import botocore.session
 from botocore import xform_name
 from .help import CLIHelp
 from .formatter import get_formatter
@@ -51,6 +50,7 @@ class CLIDriver(object):
 
     type_map = {
         'structure': str,
+        'map': str,
         'timestamp': str,
         'list': str,
         'string': str,
@@ -62,6 +62,7 @@ class CLIDriver(object):
 
     def __init__(self, provider_name='aws'):
         self.provider_name = provider_name
+        self.session = botocore.session.get_session()
         self.help = CLIHelp()
         self.args = None
         self.region = None
@@ -86,7 +87,7 @@ class CLIDriver(object):
         """
         Create the main parser to handle the global arguments.
         """
-        self.cli_data = botocore.base.get_data('cli')
+        self.cli_data = self.session.get_data('cli')
         description = self.cli_data['description']
         self.parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                               description=description,
@@ -96,7 +97,7 @@ class CLIDriver(object):
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
-                    choices = botocore.base.get_data(option_data['choices'])
+                    choices = self.session.get_data(option_data['choices'])
                 if isinstance(choices, dict):
                     choices = list(choices.keys())
                 option_data['help'] = self.create_choice_help(choices)
@@ -112,7 +113,6 @@ class CLIDriver(object):
             not recognized by upstream parsers.
         """
         self.endpoint = self.service.get_endpoint(self.args.region,
-                                                  profile=self.args.profile,
                                                   endpoint_url=self.args.endpoint_url)
         prog = '%s %s' % (self.parser.prog,
                           self.service.short_name)
@@ -212,7 +212,9 @@ class CLIDriver(object):
                 param_dict[param.py_name] = self.unpack_cli_arg(param, value)
 
     def display_error_and_exit(self, ex):
-        if self.args.output != 'json':
+        if self.args.debug:
+            traceback.print_exc()
+        elif self.args.output != 'json':
             print(ex)
         sys.exit(1)
 
@@ -240,8 +242,8 @@ class CLIDriver(object):
             sys.exit(0)
         else:
             if self.args.debug:
-                set_debug_logger()
+                self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
-            self.service = botocore.service.get_service(self.args.service_name)
+            self.service = self.session.get_service(self.args.service_name)
             self.create_op_map()
             self.create_service_parser(remaining)

@@ -158,8 +158,7 @@ def get_data(data_path):
         if not data:
             data = _load_nested_data(data_path)
         if data is None:
-            msg = 'Unable to load data for: %s' % data_path
-            raise exceptions.DataNotFoundError(msg)
+            raise exceptions.DataNotFoundError(data_path=data_path)
     return _data_cache[data_path]
 
 

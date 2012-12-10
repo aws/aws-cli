@@ -31,7 +31,8 @@ class BotoCoreError(Exception):
     fmt = 'An unspecified error occured'
 
     def __init__(self, **kwargs):
-        self.msg = self.fmt.format(**kwargs)
+        msg = self.fmt.format(**kwargs)
+        Exception.__init__(self, msg)
         self.kwargs = kwargs
 
 
@@ -41,6 +42,7 @@ class DataNotFoundError(BotoCoreError):
 
     :ivar path: The data path that the user attempted to load.
     """
+    fmt = 'Unable to load data for: {data_path}'
 
 
 class NoCredentials(BotoCoreError):

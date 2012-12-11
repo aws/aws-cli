@@ -55,8 +55,7 @@ class Session(object):
 
     @property
     def available_profiles(self):
-        if self._config:
-            return self._config.keys()
+        return self.get_config().keys()
 
     @property
     def profile(self):
@@ -125,6 +124,10 @@ class Session(object):
                                           platform.python_version(),
                                           platform.system(),
                                           platform.release())
+
+    def add_search_path(self, search_paths):
+        for path in search_paths:
+            base.add_search_path(path)
 
     def get_data(self, data_path):
         """

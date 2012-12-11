@@ -53,14 +53,14 @@ import exceptions
 logger = logging.getLogger(__name__)
 
 _data_cache = {}
-_data_paths = []
+_search_paths = []
 
 
 def _load_data(data_path):
     logger.debug('Attempting to Load: %s' % data_path)
     data = {}
     file_name = data_path + '.json'
-    for path in get_data_path():
+    for path in get_search_path():
         file_path = os.path.join(path, file_name)
         if os.path.isfile(file_path):
             fp = open(file_path)
@@ -107,9 +107,9 @@ def _load_nested_data(data_path):
     return data
 
 
-def add_data_path(path):
+def add_search_path(path):
     """
-    Add a path to the data path.
+    Add a path to the data search path.
 
     :type path: string
     :param path: A path to a directory containing additional
@@ -119,20 +119,21 @@ def add_data_path(path):
     """
     path = os.path.expandvars(path)
     path = os.path.expanduser(path)
-    _data_paths.append(path)
+    _search_paths.append(path)
 
 
-def get_data_path():
+def get_search_path():
     """
     Return the complete data path used when searching for
     data files.
+
     """
     p = os.path.split(__file__)[0]
     p = os.path.split(p)[0]
-    p = _data_paths + [os.path.join(p, 'botocore/data')]
+    p = _search_paths + [os.path.join(p, 'botocore/data')]
     if 'BOTO_DATA_PATH' in os.environ:
-        paths = []
-        for path in os.environ['BOTO_DATA_PATH'].split(':'):
+        paths = os.environ['BOTO_DATA_PATH'].split(':')
+        for path in paths:
             path = os.path.expandvars(path)
             path = os.path.expanduser(path)
             paths.append(path)

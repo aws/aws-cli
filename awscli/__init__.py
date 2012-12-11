@@ -21,13 +21,13 @@ import os
 __version__ = '0.1.0'
 
 #
-# Get our data path added to botocore's search path
+# Get our data path to be added to botocore's search path
 #
 p = os.path.split(__file__)[0]
 p = os.path.split(p)[0]
-botocore.base.add_data_path(os.path.join(p, 'awscli/data'))
+awscli_data_path = [os.path.join(p, 'awscli/data')]
 if 'AWS_DATA_PATH' in os.environ:
     for path in os.environ['AWS_DATA_PATH'].split(':'):
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
-        botocore.base.add_data_path(path)
+        awscli_data_path.append(path)

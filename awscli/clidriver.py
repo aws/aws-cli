@@ -15,6 +15,7 @@ import sys
 import traceback
 import botocore.session
 from botocore import xform_name
+from awscli import awscli_data_path
 from .help import CLIHelp
 from .formatter import get_formatter
 
@@ -63,6 +64,7 @@ class CLIDriver(object):
     def __init__(self, provider_name='aws'):
         self.provider_name = provider_name
         self.session = botocore.session.get_session()
+        self.session.add_search_path(awscli_data_path)
         self.help = CLIHelp()
         self.args = None
         self.region = None

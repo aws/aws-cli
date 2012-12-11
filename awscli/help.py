@@ -11,13 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import string
 try:
     import fcntl
     import termios
+    _have_fcntl = True
 except:
+    _have_fcntl = False
     pass
 import struct
 import textwrap
+from six.moves import html_parser
+from six.moves import cStringIO
 from botocore import BotoCoreObject, ScalarTypes
 from botocore.service import Service
 from botocore.base import get_data
@@ -33,6 +38,87 @@ def get_terminal_size():
         width = 80
     return (height, width)
 
+class CLIHTMLParser(html_parser.HTMLParser):
+
+    def __init__(self, doc_string, use_ansi_codes):
+        html_parser.HTMLParser.__init__(self)
+        self.use_ansi_codes = use_ansi_codes
+        self.keep_data = True
+        self.paragraphs = []
+        self.add_new_paragraphs = True
+        self.unhandled_tags = []
+        if doc_string:
+            self.feed(doc_string)
+
+    def add_paragraph(self):
+        if self.add_new_paragraphs:
+            self.paragraphs.append(cStringIO())
+
+    def get_current_paragraph(self):
+        if len(self.paragraphs) == 0:
+            self.add_paragraph()
+        return self.paragraphs[-1]
+
+    def _handle_start_p(self, attrs):
+        self.add_paragraph()
+
+    def _handle_start_code(self, attrs):
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'\033[1m')
+
+    def _handle_end_code(self):
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'\033[0m')
+
+    def _handle_start_examples(self, attrs):
+        self.keep_data = False
+
+    def _handle_end_examples(self):
+        self.keep_data = True
+
+    def _handle_start_li(self, attrs):
+        self.add_paragraph()
+        self.add_new_paragraphs = False
+        paragraph = self.get_current_paragraph()
+        paragraph.write('* ')
+
+    def _handle_end_li(self):
+        self.add_new_paragraphs = True
+
+    def handle_starttag(self, tag, attrs):
+        handler_name = '_handle_start_%s' % tag
+        if hasattr(self, handler_name):
+            getattr(self, handler_name)(attrs)
+        else:
+            self.unhandled_tags.append(tag)
+
+    def handle_endtag(self, tag):
+        handler_name = '_handle_end_%s' % tag
+        if hasattr(self, handler_name):
+            getattr(self, handler_name)()
+
+    def handle_data(self, data):
+        data = data.replace('\n', '')
+        if len(data) == 0:
+            return
+        space_first = data[0] == ' '
+        space_last = data[-1] == ' '
+        data = ' '.join(data.split())
+        if space_first:
+            if len(data) > 0 and not data[0].isupper():
+                data = ' ' + data
+        if space_last:
+            if len(data) > 0 and data[-1] != '.':
+                data = data + ' '
+        if data and self.keep_data:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(data)
+
+    def get_paragraphs(self):
+        return [p.getvalue() for p in self.paragraphs]
+
 
 class CLIHelp(object):
 
@@ -40,54 +126,44 @@ class CLIHelp(object):
         self.height, self.width = get_terminal_size()
         self.indent_width = indent_width
 
-    def strip_docs(self, s):
-        if not s:
-            return []
-        s = s.replace('<p>', '')
-        s = s.strip()
-        l = s.split()
-        s = ' '.join(l)
-        l = s.split('</p>')
-        return l
-
     def indent_size(self, indent):
         return indent * self.indent_width
 
     def spaces(self, indent):
         return ' ' * self.indent_size(indent)
 
-    def _do_parameter(self, param, lines):
+    def _do_section(self, title, item, lines, indent):
+        spaces = self.spaces(indent)
         # hack until we have a more formal way of marking
         # deprecated parameters
-        indent = 1
-        spaces = self.spaces(indent)
-        if param.documentation.find('Deprecated') >= 0:
+        if item.documentation and item.documentation.find('Deprecated') >= 0:
             return
-        doc_lines = self.strip_docs(param.documentation)
-        lines.append('%s%s' % (spaces, param.cli_name))
-        if len(doc_lines) > 0:
+        lines.append('%s%s' % (spaces, title))
+        if not item.documentation:
+            lines.append('')
+            return
+        p = CLIHTMLParser(item.documentation, _have_fcntl)
+        paragraphs = p.get_paragraphs()
+        if len(paragraphs) > 0:
             indent += 1
             spaces = self.spaces(indent)
-            line = doc_lines[0]
-            wrapped_lines = textwrap.wrap(line, self.width - len(spaces),
-                                          drop_whitespace=True)
-            if len(wrapped_lines) > 0:
-                for wline in wrapped_lines:
-                    lines.append('%s%s' % (spaces, wline))
-        lines.append('')
+            for paragraph in paragraphs:
+                if paragraph[0] == '*':
+                    subsequent_indent = spaces + '  '
+                else:
+                    subsequent_indent = spaces
+                wlines = textwrap.wrap(paragraph, self.width - len(spaces),
+                                       initial_indent=spaces,
+                                       subsequent_indent=subsequent_indent)
+                lines.extend(wlines)
+                lines.append('')
 
-    def do_operation(self, op):
-        spaces = self.spaces(1)
-        doc_lines = self.strip_docs(op.documentation)
+    def do_operation(self, op, indent):
+        spaces = self.spaces(indent)
         lines = ['', 'NAME']
         lines.append('%s%s' % (spaces, op.cli_name))
         lines.append('')
-        lines.append('DESCRIPTION')
-        wlines = textwrap.wrap(doc_lines[0].strip(),
-                               self.width, initial_indent=spaces,
-                               subsequent_indent=spaces)
-        lines.extend(wlines)
-        lines.append('')
+        self._do_section('DESCRIPTION', op, lines, indent)
         # Now handle parameters
         required = []
         optional = []
@@ -98,7 +174,8 @@ class CLIHelp(object):
         lines.append('%saws %s %s' % (spaces,
                                       op.service.short_name,
                                       op.cli_name))
-        spaces = self.spaces(2)
+        indent += 1
+        spaces = self.spaces(indent)
         for param in required:
             line = '%s%s ' % (spaces, param.cli_name)
             if param.type != 'boolean':
@@ -115,69 +192,33 @@ class CLIHelp(object):
         msg = get_data('messages/RequiredParameters')
         lines.append('%s:' % msg)
         for param in required:
-            self._do_parameter(param, lines)
+            self._do_section(param.cli_name, param, lines, indent)
         if not required:
             lines.append('%sNone' % spaces)
             lines.append('')
         msg = get_data('messages/OptionalParameters')
         lines.append('%s:' % msg)
         for param in optional:
-            self._do_parameter(param, lines)
+            self._do_section(param.cli_name, param, lines, indent)
         if not optional:
             lines.append('%sNone' % spaces)
             lines.append('')
         return lines
 
     def do_service(self, service):
+        indent = 0
         lines = []
-        lines.append(service.cli_name)
-        doc_lines = self.strip_docs(service.documentation)
-        if len(doc_lines) > 0:
-            lines.append(textwrap.fill(doc_lines[0].strip(),
-                                       self.width,
-                                       drop_whitespace=True))
-        # Now handle operations
-        max_len = max([len(m.cli_name) for m in service.operations])
-        max_len += 2 * self.indent_width
+        self._do_section(service.cli_name, service, lines, indent)
+        indent += 1
         for op in service.operations:
-            doc_lines = self.strip_docs(op.documentation)
-            if len(doc_lines) > 0:
-                line = doc_lines[0]
-                wrapped_lines = textwrap.wrap(line, self.width - max_len,
-                                              drop_whitespace=True)
-                if len(wrapped_lines) > 0:
-                    line = '%s%s%s' % (' ' * self.indent_width,
-                                       op.cli_name.ljust(max_len - self.indent_width),
-                                       wrapped_lines[0])
-                    lines.append(line)
-                    for wline in wrapped_lines[1:]:
-                        lines.append('%s%s' % (' ' * max_len, wline))
-            else:
-                lines.append('%s%s' % (' ' * 4, op.cli_name))
-        return lines
-
-    def merge_docs(self, object, line):
-        lines = []
-        if object.documentation:
-            ntabs = len(line) / self.indent_width
-            if len(line) % self.indent_width > 0:
-                ntabs += 1
-            ntabs += 1
-            doc_lines = textwrap.wrap(self.strip_docs(object.documentation),
-                                      self.width - self.indent_size(ntabs))
-            spaces = ' ' * (self.indent_size(ntabs) - len(line))
-            lines.append(line + spaces + doc_lines[0])
-            for line in doc_lines[1:]:
-                lines.append(self.spaces(ntabs) + line)
-        else:
-            lines.append(line)
+            self._do_section(op.cli_name, op, lines, indent)
         return lines
 
     def _help(self, object):
         l = []
         if isinstance(object, BotoCoreObject):
             if object.type == 'operation':
-                l = self.do_operation(object)
+                l = self.do_operation(object, 1)
         elif isinstance(object, Service):
             l = self.do_service(object)
         return l

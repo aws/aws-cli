@@ -14,7 +14,7 @@ import argparse
 import sys
 import traceback
 import botocore.session
-from botocore import xform_name
+from botocore import __version__
 from awscli import awscli_data_path
 from .help import CLIHelp
 from .formatter import get_formatter
@@ -64,6 +64,8 @@ class CLIDriver(object):
     def __init__(self, provider_name='aws'):
         self.provider_name = provider_name
         self.session = botocore.session.get_session()
+        self.session.user_agent_name = 'aws-cli'
+        self.session.user_agent_version = __version__
         self.session.add_search_path(awscli_data_path)
         self.help = CLIHelp()
         self.args = None
@@ -71,13 +73,6 @@ class CLIDriver(object):
         self.service = None
         self.endpoint = None
         self.operation = None
-        self.op_map = {}
-
-    def create_op_map(self):
-        if self.service:
-            for op_data in self.service.operations:
-                op_name = op_data.name
-                self.op_map[xform_name(op_name, '-')] = op_name
 
     def create_choice_help(self, choices):
         help_str = ''
@@ -94,6 +89,8 @@ class CLIDriver(object):
         self.parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                               description=description,
                                               add_help=False)
+        self.parser.add_argument('--version', action="version",
+                                 version=self.session.user_agent())
         for option_name in self.cli_data['options']:
             option_data = self.cli_data['options'][option_name]
             if 'choices' in option_data:
@@ -127,7 +124,7 @@ class CLIDriver(object):
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            self.help(self.service)
+            self.help.help(self.service, None)
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
         self.create_operation_parser(remaining)
@@ -164,7 +161,7 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
         if 'help' in remaining:
-            self.help(self.operation)
+            self.help.help(self.service, self.operation)
             sys.exit(0)
         args, remaining = parser.parse_known_args(remaining)
         if remaining:
@@ -189,6 +186,8 @@ class CLIDriver(object):
                 s = s[0]
             return float(s)
         elif param.type == 'structure':
+            if isinstance(s, list) and len(s) == 1:
+                s = s[0]
             d = dict(v.split('=', 1) for v in s.split(':'))
             for member in param.members:
                 if member.py_name in d:
@@ -220,6 +219,18 @@ class CLIDriver(object):
             print(ex)
         sys.exit(1)
 
+    def get_error_code_and_message(self, response):
+        code = 'Unknown'
+        message = 'Unknown'
+        if 'Response' in response:
+            if 'Errors' in response['Response']:
+                if 'Error' in response['Response']['Errors']:
+                    if 'Message' in response['Response']['Errors']['Error']:
+                        message = response['Response']['Errors']['Error']['Message']
+                    if 'Code' in response['Response']['Errors']['Error']:
+                        code = response['Response']['Errors']['Error']['Code']
+        return (code, message)
+
     def call(self, args):
         try:
             params = {}
@@ -228,11 +239,17 @@ class CLIDriver(object):
                                                                **params)
             self.formatter(self.operation, response_data)
             if http_response.status_code >= 500:
-                raise ServiceException(None, err_code=r.error_code,
-                                       err_msg=r.error_message)
+                msg = self.session.get_data('messages/ServerError')
+                code, message = self.get_error_code_and_message(response_data)
+                print(msg.format(error_code=code,
+                                 error_message=message))
+                sys.exit(http_response.status_code - 399)
             if http_response.status_code >= 400:
-                raise ClientException(None, err_code=r.error_code,
-                                      err_msg=r.error_message)
+                msg = self.session.get_data('messages/ClientError')
+                code, message = self.get_error_code_and_message(response_data)
+                print(msg.format(error_code=code,
+                                 error_message=message))
+                sys.exit(http_response.status_code - 399)
         except Exception, ex:
             self.display_error_and_exit(ex)
 
@@ -247,5 +264,4 @@ class CLIDriver(object):
                 self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
             self.service = self.session.get_service(self.args.service_name)
-            self.create_op_map()
             self.create_service_parser(remaining)

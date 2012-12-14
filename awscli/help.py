@@ -38,17 +38,72 @@ def get_terminal_size():
         width = 80
     return (height, width)
 
-class CLIHTMLParser(html_parser.HTMLParser):
 
-    def __init__(self, doc_string, use_ansi_codes):
+class CLIHTMLParser(html_parser.HTMLParser):
+    """
+    A simple HTML -> Console converter.  Really focused only on
+    the subset of HTML that shows up in the documentation strings
+    found in the models.
+
+    :type html: str
+    :param html: The HTML to be converted.
+
+    :type use_ansi_codes: bool
+    :param use_ansi_codes: A flag to determine whether ANSI terminal
+        control codes should be inserted into the output strings or
+        not.  Thse codes work on many command shells but not in
+        Windows standard command prompt.
+    """
+
+    def __init__(self, use_ansi_codes, translation_table=None, width=80):
         html_parser.HTMLParser.__init__(self)
         self.use_ansi_codes = use_ansi_codes
+        self.translation_table = translation_table
+        self.width = width
+        self.indent_width = 4
+        self.do_translation = False
         self.keep_data = True
         self.paragraphs = []
         self.add_new_paragraphs = True
         self.unhandled_tags = []
-        if doc_string:
-            self.feed(doc_string)
+
+    @classmethod
+    def bold(self, s):
+        if _have_fcntl:
+            return u'\033[1m%s\033[0m' % s
+        else:
+            return s
+
+    @classmethod
+    def underline(self, s):
+        if _have_fcntl:
+            return u'\033[4m%s\033[0m' % s
+        else:
+            return s
+
+    @classmethod
+    def italics(self, s):
+        if _have_fcntl:
+            return u'\033[3m%s\033[0m' % s
+        else:
+            return s
+
+    def indent_size(self, indent):
+        return indent * self.indent_width
+
+    def spaces(self, indent):
+        return ' ' * self.indent_size(indent)
+
+    def translate_words(self, words):
+        if self.translation_table and self.do_translation:
+            new_words = []
+            for word in words:
+                if word in self.translation_table:
+                    new_words.append(self.translation_table[word])
+                else:
+                    new_words.append(word)
+            words = new_words
+        return words
 
     def add_paragraph(self):
         if self.add_new_paragraphs:
@@ -63,14 +118,34 @@ class CLIHTMLParser(html_parser.HTMLParser):
         self.add_paragraph()
 
     def _handle_start_code(self, attrs):
+        self.do_translation = True
         if self.use_ansi_codes:
             paragraph = self.get_current_paragraph()
             paragraph.write(u'\033[1m')
 
     def _handle_end_code(self):
+        self.do_translation = False
         if self.use_ansi_codes:
             paragraph = self.get_current_paragraph()
             paragraph.write(u'\033[0m')
+
+    def _handle_start_a(self, attrs):
+        self.do_translation = True
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'\033[4m')
+
+    def _handle_end_a(self):
+        self.do_translation = False
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'\033[0m')
+
+    def _handle_start_i(self, attrs):
+        self.do_translation = True
+
+    def _handle_end_i(self):
+        self.do_translation = False
 
     def _handle_start_examples(self, attrs):
         self.keep_data = False
@@ -105,7 +180,9 @@ class CLIHTMLParser(html_parser.HTMLParser):
             return
         space_first = data[0] == ' '
         space_last = data[-1] == ' '
-        data = ' '.join(data.split())
+        words = data.split()
+        words = self.translate_words(words)
+        data = ' '.join(words)
         if space_first:
             if len(data) > 0 and not data[0].isupper():
                 data = ' ' + data
@@ -117,33 +194,16 @@ class CLIHTMLParser(html_parser.HTMLParser):
             paragraph.write(data)
 
     def get_paragraphs(self):
-        return [p.getvalue() for p in self.paragraphs]
+        paragraphs = [p.getvalue() for p in self.paragraphs]
+        self.paragraphs = []
+        return paragraphs
 
-
-class CLIHelp(object):
-
-    def __init__(self, indent_width=4):
-        self.height, self.width = get_terminal_size()
-        self.indent_width = indent_width
-
-    def indent_size(self, indent):
-        return indent * self.indent_width
-
-    def spaces(self, indent):
-        return ' ' * self.indent_size(indent)
-
-    def _do_section(self, title, item, lines, indent):
-        spaces = self.spaces(indent)
-        # hack until we have a more formal way of marking
-        # deprecated parameters
-        if item.documentation and item.documentation.find('Deprecated') >= 0:
-            return
-        lines.append('%s%s' % (spaces, title))
-        if not item.documentation:
-            lines.append('')
-            return
-        p = CLIHTMLParser(item.documentation, _have_fcntl)
-        paragraphs = p.get_paragraphs()
+    def do_section(self, title, documentation, lines, indent):
+        lines.append('%s%s' % (self.spaces(indent),
+                               self.bold(title)))
+        if documentation:
+            self.feed(documentation)
+        paragraphs = self.get_paragraphs()
         if len(paragraphs) > 0:
             indent += 1
             spaces = self.spaces(indent)
@@ -152,79 +212,283 @@ class CLIHelp(object):
                     subsequent_indent = spaces + '  '
                 else:
                     subsequent_indent = spaces
-                wlines = textwrap.wrap(paragraph, self.width - len(spaces),
+                wlines = textwrap.wrap(paragraph, self.width,
                                        initial_indent=spaces,
-                                       subsequent_indent=subsequent_indent)
+                                       subsequent_indent=subsequent_indent,
+                                       break_on_hyphens=False)
                 lines.extend(wlines)
                 lines.append('')
 
-    def do_operation(self, op, indent):
-        spaces = self.spaces(indent)
-        lines = ['', 'NAME']
-        lines.append('%s%s' % (spaces, op.cli_name))
+
+class MarkdownHTMLParser(html_parser.HTMLParser):
+    """
+    A simple HTML -> Markdown converter.  Really focused only on
+    the subset of HTML that shows up in the documentation strings
+    found in the models.
+
+    :type html: str
+    :param html: The HTML to be converted.
+
+    :type use_ansi_codes: bool
+    :param use_ansi_codes: A flag to determine whether ANSI terminal
+        control codes should be inserted into the output strings or
+        not.  Thse codes work on many command shells but not in
+        Windows standard command prompt.
+    """
+
+    def __init__(self, use_ansi_codes, translation_table=None, width=80):
+        html_parser.HTMLParser.__init__(self)
+        self.use_ansi_codes = use_ansi_codes
+        self.translation_table = translation_table
+        self.width = width
+        self.indent_width = 0
+        self.do_translation = False
+        self.keep_data = True
+        self.paragraphs = []
+        self.add_new_paragraphs = True
+        self.unhandled_tags = []
+
+    @classmethod
+    def bold(self, s):
+        return u'**%s**' % s
+
+    @classmethod
+    def underline(self, s):
+        return u'_%s_' % s
+
+    @classmethod
+    def italics(self, s):
+        return u'*%s*' % s
+
+    def indent_size(self, indent):
+        return indent * self.indent_width
+
+    def spaces(self, indent):
+        return ' ' * self.indent_size(indent)
+
+    def translate_words(self, words):
+        if self.translation_table and self.do_translation:
+            new_words = []
+            for word in words:
+                if word in self.translation_table:
+                    new_words.append(self.translation_table[word])
+                else:
+                    new_words.append(word)
+            words = new_words
+        return words
+
+    def add_paragraph(self):
+        if self.add_new_paragraphs:
+            self.paragraphs.append(cStringIO())
+
+    def get_current_paragraph(self):
+        if len(self.paragraphs) == 0:
+            self.add_paragraph()
+        return self.paragraphs[-1]
+
+    def _handle_start_p(self, attrs):
+        self.add_paragraph()
+
+    def _handle_start_code(self, attrs):
+        self.do_translation = True
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'**')
+
+    def _handle_end_code(self):
+        self.do_translation = False
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'**')
+
+    def _handle_start_a(self, attrs):
+        self.do_translation = True
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'_')
+
+    def _handle_end_a(self):
+        self.do_translation = False
+        if self.use_ansi_codes:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(u'_')
+
+    def _handle_start_i(self, attrs):
+        self.do_translation = True
+
+    def _handle_end_i(self):
+        self.do_translation = False
+
+    def _handle_start_examples(self, attrs):
+        self.keep_data = False
+
+    def _handle_end_examples(self):
+        self.keep_data = True
+
+    def _handle_start_li(self, attrs):
+        self.add_paragraph()
+        self.add_new_paragraphs = False
+        paragraph = self.get_current_paragraph()
+        paragraph.write('* ')
+
+    def _handle_end_li(self):
+        self.add_new_paragraphs = True
+
+    def handle_starttag(self, tag, attrs):
+        handler_name = '_handle_start_%s' % tag
+        if hasattr(self, handler_name):
+            getattr(self, handler_name)(attrs)
+        else:
+            self.unhandled_tags.append(tag)
+
+    def handle_endtag(self, tag):
+        handler_name = '_handle_end_%s' % tag
+        if hasattr(self, handler_name):
+            getattr(self, handler_name)()
+
+    def handle_data(self, data):
+        data = data.replace('\n', '')
+        if len(data) == 0:
+            return
+        space_first = data[0] == ' '
+        space_last = data[-1] == ' '
+        words = data.split()
+        words = self.translate_words(words)
+        data = ' '.join(words)
+        if space_first:
+            if len(data) > 0 and not data[0].isupper():
+                data = ' ' + data
+        if space_last:
+            if len(data) > 0 and data[-1] != '.':
+                data = data + ' '
+        if data and self.keep_data:
+            paragraph = self.get_current_paragraph()
+            paragraph.write(data)
+
+    def get_paragraphs(self):
+        paragraphs = [p.getvalue() for p in self.paragraphs]
+        self.paragraphs = []
+        return paragraphs
+
+    def do_section(self, title, documentation, lines, indent):
+        lines.append('%s%s' % (self.spaces(indent),
+                               self.bold(title)))
         lines.append('')
-        self._do_section('DESCRIPTION', op, lines, indent)
+        if documentation:
+            self.feed(documentation)
+        paragraphs = self.get_paragraphs()
+        if len(paragraphs) > 0:
+            indent += 1
+            spaces = self.spaces(indent)
+            for paragraph in paragraphs:
+                if paragraph[0] == '*':
+                    subsequent_indent = spaces + '  '
+                else:
+                    subsequent_indent = spaces
+                wlines = textwrap.wrap(paragraph, self.width,
+                                       initial_indent=spaces,
+                                       subsequent_indent=subsequent_indent,
+                                       break_on_hyphens=False)
+                lines.extend(wlines)
+                lines.append('')
+
+
+class CLIHelp(object):
+
+    def __init__(self, indent_width=4, parser_cls=CLIHTMLParser):
+        self.height, self.width = get_terminal_size()
+        self.indent_width = indent_width
+        self.parser_cls = parser_cls
+        self.type_map = {}
+        self.parser = self.parser_cls(_have_fcntl, self.type_map, self.width)
+
+    def do_section(self, title, documentation, lines, indent):
+        self.parser.do_section(title, documentation, lines, indent)
+
+    def do_parameter(self, param, lines, indent, subitem=False):
+        # hack until we have a more formal way of marking
+        # deprecated parameters
+        if param.documentation and param.documentation.find('Deprecated') >= 0:
+            return
+        param_name = param.cli_name
+        if subitem:
+            param_name = param.py_name
+        self.do_section(param_name, param.documentation, lines, indent)
+        if param.type == 'structure':
+            for member in param.members:
+                self.do_parameter(member, lines, indent+1, subitem=True)
+        elif param.type == 'list':
+            self.do_parameter(param.members, lines, indent+1, subitem=True)
+
+    def do_operation(self, op, indent):
+        lines = []
+        self.do_section('NAME', op.cli_name, lines, indent)
+        self.do_section('DESCRIPTION',
+                        op.documentation, lines, indent)
         # Now handle parameters
         required = []
         optional = []
         if op.params:
             required = [p for p in op.params if p.required]
             optional = [p for p in op.params if not p.required]
-        lines.append('SYNOPSIS')
-        lines.append('%saws %s %s' % (spaces,
-                                      op.service.short_name,
-                                      op.cli_name))
+        self.do_section('SYNOPSIS',
+                        'aws %s %s' % (op.service.short_name, op.cli_name),
+                        lines, indent)
         indent += 1
-        spaces = self.spaces(indent)
+        spaces = self.parser.spaces(indent)
         for param in required:
             line = '%s%s ' % (spaces, param.cli_name)
             if param.type != 'boolean':
-                line += '<value>'
+                line += self.parser.italics('value')
             lines.append(line)
         for param in optional:
             line = '%s[%s ' % (spaces, param.cli_name)
             if param.type != 'boolean':
-                line += '<value>]'
-            else:
-                line += ']'
+                line += self.parser.italics('value')
+            line += ']'
             lines.append(line)
         lines.append('')
         msg = get_data('messages/RequiredParameters')
-        lines.append('%s:' % msg)
+        self.do_section(msg, None, lines, indent)
         for param in required:
-            self._do_section(param.cli_name, param, lines, indent)
+            self.do_parameter(param, lines, indent)
         if not required:
             lines.append('%sNone' % spaces)
             lines.append('')
         msg = get_data('messages/OptionalParameters')
-        lines.append('%s:' % msg)
+        self.do_section(msg, None, lines, indent)
         for param in optional:
-            self._do_section(param.cli_name, param, lines, indent)
+            self.do_parameter(param, lines, indent)
         if not optional:
             lines.append('%sNone' % spaces)
             lines.append('')
         return lines
 
-    def do_service(self, service):
-        indent = 0
+    def do_service(self, service, indent=0):
         lines = []
-        self._do_section(service.cli_name, service, lines, indent)
+        self.do_section(service.cli_name, service.documentation, lines, indent)
         indent += 1
         for op in service.operations:
-            self._do_section(op.cli_name, op, lines, indent)
+            self.do_section(op.cli_name, op.documentation, lines, indent)
         return lines
 
-    def _help(self, object):
-        l = []
-        if isinstance(object, BotoCoreObject):
-            if object.type == 'operation':
-                l = self.do_operation(object, 1)
-        elif isinstance(object, Service):
-            l = self.do_service(object)
-        return l
+    def build_type_map(self, service):
+        for op in service.operations:
+            self.type_map[op.name] = op.cli_name
+            for param in op.params:
+                self.type_map[param.name] = param.cli_name
 
-    def __call__(self, object, indent=0, fp=sys.stdout):
-        lines = self._help(object)
+    def build_type_map(self, service):
+        for op in service.operations:
+            self.type_map[op.name] = op.cli_name
+
+    def help(self, service, operation, fp=sys.stdout):
+        self.build_type_map(service)
+        lines = []
+        if operation:
+            lines = self.do_operation(operation, 0)
+        else:
+            lines = self.do_service(service, 0)
         if fp:
             for line in lines:
                 fp.write(line + '\n')

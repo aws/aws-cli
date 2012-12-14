@@ -1,5 +1,6 @@
 import sys
 import json
+import six
 from botocore import xform_name, ScalarTypes
 
 
@@ -148,8 +149,10 @@ class TextFormatter(Formatter):
                     non_scalars.append((key, val))
                 elif isinstance(val, list):
                     non_scalars.append((key, val))
-                else:
+                elif not isinstance(val, six.string_types):
                     scalars.append(str(val))
+                else:
+                    scalars.append(val)
             if label:
                 scalars.insert(0, label.upper())
             print('\t'.join(scalars))

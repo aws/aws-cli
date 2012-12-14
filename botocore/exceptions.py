@@ -98,3 +98,12 @@ class RangeError(BotoCoreError):
     :ivar max_value: The specified maximum value.
     """
     fmt = 'Value out of range: {min_value} <= {value} <= {max_value}'
+
+
+class UnknownServiceStyle(BotoCoreError):
+    """
+    Unknown style of service invocation.
+
+    :ivar service_style: The style requested.
+    """
+    fmt = 'The service style ({service_style}) is not understood.'

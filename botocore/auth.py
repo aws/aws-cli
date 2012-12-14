@@ -128,7 +128,7 @@ class SigV4Auth(object):
         When using SigV4, we need to convert the query parameters
         to a string and place that in the payload of the POST request.
         """
-        if args['method'] == 'POST':
+        if args['method'] == 'POST' and not args['data']:
             parameter_names = sorted(args['params'].keys())
             pairs = []
             for pname in parameter_names:

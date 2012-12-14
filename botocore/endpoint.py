@@ -26,6 +26,7 @@
 #httplib.HTTPConnection.debuglevel = 2
 
 import logging
+import json
 import requests
 import auth
 import session
@@ -74,6 +75,8 @@ class QueryEndpoint(Endpoint):
         from requests.
         """
         logger.debug(params)
+        params['Action'] = operation.name
+        params['Version'] = self.service.api_version
         user_agent = self.session.user_agent()
         http_response = requests.post(self.host, params=params,
                                       hooks={'args': self.auth.add_auth},
@@ -86,5 +89,36 @@ class QueryEndpoint(Endpoint):
         return (http_response, r.get_value())
 
 
+class JSONEndpoint(Endpoint):
+    """
+    This class handles only AWS/JSON style services.
+    """
+
+    def make_request(self, operation, params):
+        """
+        Send a request to the endpoint and parse the response
+        and return it and long with the HTTP response object
+        from requests.
+        """
+        logger.debug(params)
+        user_agent = self.session.user_agent()
+        target = '%s.%s' % (self.service.service_name, operation.name)
+        content_type = 'application/x-amz-json-1.1'
+        data = json.dumps(params)
+        http_response = requests.post(self.host, data=data,
+                                      hooks={'args': self.auth.add_auth},
+                                      headers={'User-Agent': user_agent,
+                                               'X-Amz-Target': target,
+                                               'Content-Type': content_type})
+        http_response.encoding = 'utf-8'
+        body = http_response.text.encode('utf=8')
+        logger.debug(body)
+        return (http_response, json.loads(body))
+
+
 def get_endpoint(service, region_name, endpoint_url):
-    return QueryEndpoint(service, region_name, endpoint_url)
+    if service.type == 'query':
+        return QueryEndpoint(service, region_name, endpoint_url)
+    if service.type == 'json':
+        return JSONEndpoint(service, region_name, endpoint_url)
+    raise exceptions.UnknownServiceStyle(service_style=service.type)

@@ -40,6 +40,7 @@ class Service(object):
 
     def __init__(self, session, provider_name, service_name,
                  path='/', port=None):
+        self.membered_lists = True
         self.__dict__.update(get_service_data(service_name, provider_name))
         self.session = session
         self.provider_name = provider_name

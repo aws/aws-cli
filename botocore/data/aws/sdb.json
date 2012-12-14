@@ -5,7 +5,7 @@
   "service_name": "AmazonSimpleDB",
   "assembly": "com.amazonaws.simpledb",
   "xmlnamespace": "http://sdb.amazonaws.com/doc/2009-04-15/",
-  "documentation": "",
+  "documentation": "\n        Amazon SimpleDB is a web service providing the core database functions of\n        data indexing and querying in the cloud. By offloading the time and effort associated with\n        building and operating a web-scale database, SimpleDB provides developers the freedom to focus\n        on application development.\n\n        <p>\n        A traditional, clustered relational database requires a sizable upfront capital outlay,\n        is complex to design, and often requires extensive and repetitive database administration.\n        Amazon SimpleDB is dramatically simpler, requiring no schema, automatically indexing your data\n        and providing a simple API for storage and access. This approach eliminates the administrative\n        burden of data modeling, index maintenance, and performance tuning. Developers gain access to\n        this functionality within Amazon's proven computing environment, are able to scale instantly,\n        and pay only for what they use.\n        </p>\n\n        <p>\n        Visit <a href=\"http://aws.amazon.com/simpledb/\">http://aws.amazon.com/simpledb/</a> for\n        more information.\n        </p>\n    ",
   "operations": [
     {
       "name": "BatchDeleteAttributes",
@@ -16,7 +16,7 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the domain in which the attributes are being deleted.\n    ",
             "required": true
           },
           "Items": {
@@ -29,7 +29,7 @@
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": null,
                   "required": true,
                   "xmlname": "ItemName"
                 },
@@ -43,48 +43,48 @@
                       "Name": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "",
+                        "documentation": "\n        The name of the attribute.\n    ",
                         "required": true
                       },
                       "AlternateNameEncoding": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": ""
+                        "documentation": "\n    <p></p>\n    "
                       },
                       "Value": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "",
+                        "documentation": "\n        The value of the attribute.\n    ",
                         "required": true
                       },
                       "AlternateValueEncoding": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": ""
+                        "documentation": "\n    <p></p>\n    "
                       }
                     },
-                    "documentation": "",
+                    "documentation": "\n    <p></p>\n   \t",
                     "xmlname": "Attribute"
                   },
                   "flattened": true,
-                  "documentation": ""
+                  "documentation": null
                 }
               },
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Item"
             },
             "flattened": true,
-            "documentation": "",
+            "documentation": "\n        A list of items on which to perform the operation.\n    ",
             "required": true
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": null,
       "errors": [
 
       ],
-      "documentation": "Performs multiple DeleteAttributes operations in a single call, which reduces round trips and latencies. This enables Amazon SimpleDB to optimize requests, which generally yields better throughput."
+      "documentation": "\n        <p>\n        Performs multiple DeleteAttributes operations in a single call, which reduces round trips and latencies.\n        This enables Amazon SimpleDB to optimize requests, which generally yields better throughput.\n        </p>\n        <note>\n            <p>\n            If you specify BatchDeleteAttributes without attributes or values,\n            all the attributes for the item are deleted.\n            </p>\n            <p>\n            BatchDeleteAttributes is an idempotent operation;\n            running it multiple times on the same item or attribute doesn't result in an error.\n            </p>\n            <p>\n            The BatchDeleteAttributes operation succeeds or fails in its entirety. There are no partial deletes.\n            You can execute multiple BatchDeleteAttributes operations and other operations in parallel.\n            However, large numbers of concurrent BatchDeleteAttributes calls can result in Service Unavailable (503) responses.\n            </p>\n            <p>\n            This operation is vulnerable to exceeding the maximum URL size when making a REST request using the HTTP GET method.\n            </p>\n            <p>\n            This operation does not support conditions using Expected.X.Name, Expected.X.Value, or Expected.X.Exists.\n            </p>\n        </note>\n        <p>\n        The following limitations are enforced for this operation:\n           <ul>\n               <li>1 MB request size</li>\n               <li>25 item limit per BatchDeleteAttributes operation</li>\n           </ul>\n        </p>\n    "
     },
     {
       "name": "BatchPutAttributes",
@@ -95,7 +95,7 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n\t\tThe name of the domain in which the attributes are being stored.\n\t",
             "required": true
           },
           "Items": {
@@ -108,7 +108,7 @@
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The name of the replaceable item.\n    ",
                   "required": true,
                   "xmlname": "ItemName"
                 },
@@ -122,38 +122,38 @@
                       "Name": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "",
+                        "documentation": "\n    \tThe name of the replaceable attribute.\n    ",
                         "required": true
                       },
                       "Value": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "",
+                        "documentation": "\n        The value of the replaceable attribute.\n    ",
                         "required": true
                       },
                       "Replace": {
                         "shape_name": "Boolean",
                         "type": "boolean",
-                        "documentation": ""
+                        "documentation": "\n        A flag specifying whether or not to replace the attribute/value pair or\n        to add a new attribute/value pair. The default setting is <code>false</code>.\n    "
                       }
                     },
-                    "documentation": "",
+                    "documentation": "\n    <p></p>\n    ",
                     "xmlname": "Attribute"
                   },
                   "flattened": true,
-                  "documentation": "",
+                  "documentation": "\n        The list of attributes for a replaceable item.\n    ",
                   "required": true
                 }
               },
-              "documentation": "",
+              "documentation": "\n    <p></p>\n    ",
               "xmlname": "Item"
             },
             "flattened": true,
-            "documentation": "",
+            "documentation": "\n\t\tA list of items on which to perform the operation.\n\t",
             "required": true
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": null,
       "errors": [
@@ -164,10 +164,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The item name was specified more than once."
+          "documentation": "\n    <p>The item name was specified more than once. </p>\n    "
         },
         {
           "shape_name": "InvalidParameterValue",
@@ -176,10 +176,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "MissingParameter",
@@ -188,10 +188,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NoSuchDomain",
@@ -200,10 +200,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified domain does not exist."
+          "documentation": "\n    <p>The specified domain does not exist.</p>\n    "
         },
         {
           "shape_name": "NumberItemAttributesExceeded",
@@ -212,10 +212,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many attributes in this item."
+          "documentation": "\n    <p>Too many attributes in this item.</p>\n    "
         },
         {
           "shape_name": "NumberDomainAttributesExceeded",
@@ -224,10 +224,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many attributes in this domain."
+          "documentation": "\n    <p>Too many attributes in this domain.</p>\n    "
         },
         {
           "shape_name": "NumberDomainBytesExceeded",
@@ -236,10 +236,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many bytes in this domain."
+          "documentation": "\n    <p>Too many bytes in this domain.</p>\n    "
         },
         {
           "shape_name": "NumberSubmittedItemsExceeded",
@@ -248,10 +248,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many items exist in a single call."
+          "documentation": "\n    <p>Too many items exist in a single call.</p>\n    "
         },
         {
           "shape_name": "NumberSubmittedAttributesExceeded",
@@ -260,13 +260,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many attributes exist in a single call."
+          "documentation": "\n    <p>Too many attributes exist in a single call.</p>\n    "
         }
       ],
-      "documentation": "The BatchPutAttributes operation creates or replaces attributes within one or more items. By using this operation, the client can perform multiple PutAttribute operation with a single call. This helps yield savings in round trips and latencies, enabling Amazon SimpleDB to optimize requests and generally produce better throughput."
+      "documentation": "\n\t\t<p>\n\t    The <code>BatchPutAttributes</code> operation creates or replaces attributes within\n\t\tone or more items.  By using this operation, the client can perform multiple\n\t\t<a>PutAttribute</a> operation with a single call.  This helps yield savings in round trips\n\t\tand latencies, enabling Amazon SimpleDB to optimize requests and generally produce better throughput.\n\t\t</p>\n\n        <p>\n\t\tThe client may specify the item name with the <code>Item.X.ItemName</code> parameter.\n\t\tThe client may specify new attributes using a combination of the\n\t\t<code>Item.X.Attribute.Y.Name</code> and <code>Item.X.Attribute.Y.Value</code>\n\t\tparameters. The client may specify the first attribute for the first item using the parameters\n\t\t<code>Item.0.Attribute.0.Name</code> and <code>Item.0.Attribute.0.Value</code>,\n\t\tand for the second attribute for the first item by the parameters\n\t\t<code>Item.0.Attribute.1.Name</code> and <code>Item.0.Attribute.1.Value</code>,\n\t\tand so on.\n        </p>\n\n        <p>\n\t\tAttributes are uniquely identified within an item by their name/value\n\t\tcombination. For example, a single item can have the attributes <code>{\n\t\t\"first_name\", \"first_value\" }</code> and <code>{ \"first_name\", \"second_value\" }</code>.\n\t\tHowever, it cannot have two attribute instances where both the\n\t\t<code>Item.X.Attribute.Y.Name</code> and <code>Item.X.Attribute.Y.Value</code>\n\t\tare the same.\n        </p>\n\n        <p>\n        Optionally, the requester can supply the <code>Replace</code> parameter for each\n\t\tindividual value. Setting this value to <code>true</code> will cause the new\n\t\tattribute values to replace the existing attribute values. For\n\t\texample, if an item <code>I</code> has the attributes <code>{ 'a', '1' }, { 'b', '2'}</code>\n\t\tand <code>{ 'b', '3' }</code> and the requester does a BatchPutAttributes of <code>{'I',\n\t\t'b', '4' }</code> with the Replace parameter set to true, the final\n\t\tattributes of the item will be <code>{ 'a', '1' }</code> and <code>{ 'b', '4' }</code>,\n\t\treplacing the previous values of the 'b' attribute with the new value.\n        </p>\n\n        <note>\n\t\tYou cannot specify an empty string as an item or as an attribute name.\n\t\tThe <code>BatchPutAttributes</code> operation succeeds or fails in its entirety.\n        There are no partial puts.\n        </note>\n\n        <important>\n        This operation is vulnerable to exceeding the maximum URL size when making\n        a REST request using the HTTP GET method.\n        This operation does not support conditions using <code>Expected.X.Name</code>,\n        <code>Expected.X.Value</code>, or\n        <code>Expected.X.Exists</code>.\n        </important>\n\n        <p>\n        You can execute multiple <code>BatchPutAttributes</code> operations and other operations in parallel.\n        However, large numbers of concurrent <code>BatchPutAttributes</code> calls can result in\n        Service Unavailable (503) responses.\n        </p>\n\n        <p>\n        The following limitations are enforced for this operation:\n        <ul>\n            <li>256 attribute name-value pairs per item</li>\n            <li>1 MB request size</li>\n            <li>1 billion attributes per domain</li>\n            <li>10 GB of total user data storage per domain</li>\n            <li>25 item limit per <code>BatchPutAttributes</code> operation</li>\n        </ul>\n        </p>\n\t"
     },
     {
       "name": "CreateDomain",
@@ -277,11 +277,11 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n\t\tThe name of the domain to create. The name can range between 3 and 255\n\t\tcharacters and can contain the following characters: a-z, A-Z, 0-9,\n\t\t'_', '-', and '.'.\n\t",
             "required": true
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": null,
       "errors": [
@@ -292,10 +292,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "MissingParameter",
@@ -304,10 +304,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NumberDomainsExceeded",
@@ -316,13 +316,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many domains exist per this account."
+          "documentation": "\n    <p>Too many domains exist per this account.</p>\n    "
         }
       ],
-      "documentation": "The CreateDomain operation creates a new domain. The domain name should be unique among the domains associated with the Access Key ID provided in the request. The CreateDomain operation may take 10 or more seconds to complete."
+      "documentation": "\n\t\t<p>\n\t\tThe <code>CreateDomain</code> operation creates a new domain. The domain name should\n\t\tbe unique among the domains associated with the Access Key ID provided\n\t\tin the request. The <code>CreateDomain</code> operation may take 10 or more seconds to complete.\n\t\t</p>\n\n        <note>\n\t\tCreateDomain is an idempotent operation; running it multiple times using the same\n\t\tdomain name will not result in an error response.\n        </note>\n\n        <p>\n        The client can create up to 100 domains per account.\n        </p>\n\n        <p>\n        If the client requires additional domains, go to\n        <a href=\"http://aws.amazon.com/contact-us/simpledb-limit-request/\">\n        http://aws.amazon.com/contact-us/simpledb-limit-request/</a>.\n        </p>\n\n  \t"
     },
     {
       "name": "DeleteAttributes",
@@ -333,13 +333,13 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the domain in which to perform the operation.\n    ",
             "required": true
           },
           "ItemName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the item. Similar to rows on a spreadsheet,\n        items represent individual objects that contain one or more\n        value-attribute pairs.\n    ",
             "required": true
           },
           "Attributes": {
@@ -352,31 +352,31 @@
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The name of the attribute.\n    ",
                   "required": true
                 },
                 "AlternateNameEncoding": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": ""
+                  "documentation": "\n    <p></p>\n    "
                 },
                 "Value": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The value of the attribute.\n    ",
                   "required": true
                 },
                 "AlternateValueEncoding": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": ""
+                  "documentation": "\n    <p></p>\n    "
                 }
               },
-              "documentation": "",
+              "documentation": "\n    <p></p>\n   \t",
               "xmlname": "Attribute"
             },
             "flattened": true,
-            "documentation": ""
+            "documentation": "\n        A list of Attributes. Similar to columns on a spreadsheet, attributes\n        represent categories of data that can be assigned to items.\n    "
           },
           "Expected": {
             "shape_name": "UpdateCondition",
@@ -385,23 +385,23 @@
               "Name": {
                 "shape_name": "String",
                 "type": "string",
-                "documentation": "The name of the attribute involved in the condition."
+                "documentation": "\n    \t<p>The name of the attribute involved in the condition.</p>\n    "
               },
               "Value": {
                 "shape_name": "String",
                 "type": "string",
-                "documentation": "The value of an attribute. This value can only be specified when the Exists parameter is equal to true."
+                "documentation": "\n        <p>The value of an attribute.  This value can only be\n        specified when the <code>Exists</code> parameter is equal to <code>true</code>.</p>\n    "
               },
               "Exists": {
                 "shape_name": "Boolean",
                 "type": "boolean",
-                "documentation": "A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify true if the attribute must exist for the update condition to be satisfied. Specify false if the attribute should not exist in order for the update condition to be satisfied."
+                "documentation": "\n        <p>A value specifying whether or not the specified attribute must exist with the specified\n        value in order for the update condition to be satisfied. Specify <code>true</code> if\n        the attribute must exist for the update condition to be satisfied. Specify <code>false</code>\n        if the attribute should not exist in order for the update condition to be satisfied.</p>\n    "
               }
             },
-            "documentation": ""
+            "documentation": "\n        The update condition which, if specified, determines whether the specified attributes\n        will be deleted or not.  The update condition must be satisfied in order for this\n        request to be processed and the attributes to be deleted.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": null,
       "errors": [
@@ -412,10 +412,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "MissingParameter",
@@ -424,10 +424,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NoSuchDomain",
@@ -436,10 +436,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified domain does not exist."
+          "documentation": "\n    <p>The specified domain does not exist.</p>\n    "
         },
         {
           "shape_name": "AttributeDoesNotExist",
@@ -448,13 +448,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified attribute does not exist."
+          "documentation": "\n    <p>The specified attribute does not exist.</p>\n    "
         }
       ],
-      "documentation": "Deletes one or more attributes associated with an item. If all attributes of the item are deleted, the item is deleted."
+      "documentation": "\n        <p>\n        Deletes one or more attributes associated with an item.\n        If all attributes of the item are deleted, the item is deleted.\n        </p>\n\n        <note>\n        If <code>DeleteAttributes</code> is called without being passed any attributes or values\n        specified, all the attributes for the item are deleted.\n        </note>\n\n        <p>\n        <code>DeleteAttributes</code> is an idempotent operation; running it multiple\n        times on the same item or attribute does not result in an error response.\n        </p>\n\n        <p>\n        Because Amazon SimpleDB makes multiple copies of item data and uses an\n        eventual consistency update model, performing a <a>GetAttributes</a> or\n        <a>Select</a> operation (read) immediately after a <code>DeleteAttributes</code> or\n        <a>PutAttributes</a> operation (write) might not return updated item data.\n        </p>\n\n    "
     },
     {
       "name": "DeleteDomain",
@@ -465,11 +465,11 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the domain to delete.\n    ",
             "required": true
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": null,
       "errors": [
@@ -480,13 +480,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         }
       ],
-      "documentation": "The DeleteDomain operation deletes a domain. Any items (and their attributes) in the domain are deleted as well. The DeleteDomain operation might take 10 or more seconds to complete."
+      "documentation": "\n\t\t<p>\n\t    The <code>DeleteDomain</code> operation deletes a domain. Any items\n\t\t(and their attributes) in the domain are deleted as well.\n\t\tThe <code>DeleteDomain</code> operation might take 10 or more seconds to complete.\n\t\t</p>\n\n        <note>\n        Running <code>DeleteDomain</code> on a domain that does not exist or running the\n\t\tfunction multiple times using the same domain name will not result in an error response.\n        </note>\n    "
     },
     {
       "name": "DomainMetadata",
@@ -497,11 +497,11 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the domain for which to display the metadata of.\n    ",
             "required": true
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": {
         "shape_name": "DomainMetadataResult",
@@ -510,40 +510,40 @@
           "ItemCount": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": ""
+            "documentation": "\n        The number of all items in the domain.\n    "
           },
           "ItemNamesSizeBytes": {
             "shape_name": "Long",
             "type": "long",
-            "documentation": ""
+            "documentation": "\n        The total size of all item names in the domain, in bytes.\n    "
           },
           "AttributeNameCount": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": ""
+            "documentation": "\n        The number of unique attribute names in the domain.\n    "
           },
           "AttributeNamesSizeBytes": {
             "shape_name": "Long",
             "type": "long",
-            "documentation": ""
+            "documentation": "\n        The total size of all unique attribute names in the domain, in bytes.\n    "
           },
           "AttributeValueCount": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": ""
+            "documentation": "\n        The number of all attribute name/value pairs in the domain.\n    "
           },
           "AttributeValuesSizeBytes": {
             "shape_name": "Long",
             "type": "long",
-            "documentation": ""
+            "documentation": "\n        The total size of all attribute values in the domain, in bytes.\n    "
           },
           "Timestamp": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": ""
+            "documentation": "\n        The data and time when metadata was calculated, in Epoch (UNIX) seconds.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "errors": [
         {
@@ -553,10 +553,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NoSuchDomain",
@@ -565,13 +565,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified domain does not exist."
+          "documentation": "\n    <p>The specified domain does not exist.</p>\n    "
         }
       ],
-      "documentation": "Returns information about the domain, including when the domain was created, the number of items and attributes in the domain, and the size of the attribute names and values."
+      "documentation": "\n    \t<p>\n\t\tReturns information about the domain, including when the domain was created,\n\t\tthe number of items and attributes in the domain,\n\t\tand the size of the attribute names and values.\n\t\t</p>\n    "
     },
     {
       "name": "GetAttributes",
@@ -582,13 +582,13 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the domain in which to perform the operation.\n    ",
             "required": true
           },
           "ItemName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the item.\n    ",
             "required": true
           },
           "AttributeNames": {
@@ -597,19 +597,19 @@
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "AttributeName"
             },
             "flattened": true,
-            "documentation": ""
+            "documentation": "\n        The names of the attributes.\n    "
           },
           "ConsistentRead": {
             "shape_name": "Boolean",
             "type": "boolean",
-            "documentation": ""
+            "documentation": "\n        Determines whether or not strong consistency should be enforced when data is read\n        from SimpleDB. If <code>true</code>, any data previously written to SimpleDB\n        will be returned.  Otherwise, results will be consistent eventually, and the client\n        may not see data that was written immediately before your read.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": {
         "shape_name": "GetAttributesResult",
@@ -625,34 +625,34 @@
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The name of the attribute.\n    ",
                   "required": true
                 },
                 "AlternateNameEncoding": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": ""
+                  "documentation": "\n    <p></p>\n    "
                 },
                 "Value": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The value of the attribute.\n    ",
                   "required": true
                 },
                 "AlternateValueEncoding": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": ""
+                  "documentation": "\n    <p></p>\n    "
                 }
               },
-              "documentation": "",
+              "documentation": "\n    <p></p>\n   \t",
               "xmlname": "Attribute"
             },
             "flattened": true,
-            "documentation": ""
+            "documentation": "\n        The list of attributes returned by the operation.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "errors": [
         {
@@ -662,10 +662,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "MissingParameter",
@@ -674,10 +674,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NoSuchDomain",
@@ -686,13 +686,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified domain does not exist."
+          "documentation": "\n    <p>The specified domain does not exist.</p>\n    "
         }
       ],
-      "documentation": "Returns all of the attributes associated with the specified item. Optionally, the attributes returned can be limited to one or more attributes by specifying an attribute name parameter."
+      "documentation": "\n    \t<p>\n        Returns all of the attributes associated with the specified item.\n        Optionally, the attributes returned can be limited to one or\n        more attributes by specifying an attribute name parameter.\n        </p>\n\n        <p>\n        If the item does not exist on the replica that was accessed\n        for this operation, an empty set is returned. The system does\n        not return an error as it cannot guarantee the item does\n        not exist on other replicas.\n        </p>\n\n        <note>\n        If GetAttributes is called without being passed any attribute names, all\n        the attributes for the item are returned.\n        </note>\n    "
     },
     {
       "name": "ListDomains",
@@ -703,15 +703,15 @@
           "MaxNumberOfDomains": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": ""
+            "documentation": "\n        The maximum number of domain names you want returned.\n\n        The range is 1 to 100.\n\n        The default setting is 100.\n    "
           },
           "NextToken": {
             "shape_name": "String",
             "type": "string",
-            "documentation": ""
+            "documentation": "\n        A string informing Amazon SimpleDB where to start the\n        next list of domain names.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": {
         "shape_name": "ListDomainsResult",
@@ -723,19 +723,19 @@
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "DomainName"
             },
             "flattened": true,
-            "documentation": ""
+            "documentation": "\n        A list of domain names that match the expression.\n    "
           },
           "NextToken": {
             "shape_name": "String",
             "type": "string",
-            "documentation": ""
+            "documentation": "\n        An opaque token indicating that there are more domains than the specified\n        <code>MaxNumberOfDomains</code> still available.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "errors": [
         {
@@ -745,10 +745,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "InvalidNextToken",
@@ -757,13 +757,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified NextToken is not valid."
+          "documentation": "\n    <p>The specified NextToken is not valid. </p>\n    "
         }
       ],
-      "documentation": "The ListDomains operation lists all domains associated with the Access Key ID. It returns domain names up to the limit set by MaxNumberOfDomains. A NextToken is returned if there are more than MaxNumberOfDomains domains. Calling ListDomains successive times with the NextToken provided by the operation returns up to MaxNumberOfDomains more domain names with each successive operation call."
+      "documentation": "\n    \t<p>\n        The <code>ListDomains</code> operation lists all domains associated with the\n        Access Key ID. It returns domain names up to the limit set by\n        <a href=\"#MaxNumberOfDomains\">MaxNumberOfDomains</a>.\n        A <a href=\"#NextToken\">NextToken</a> is returned if there are more\n    \tthan <code>MaxNumberOfDomains</code> domains. Calling <code>ListDomains</code> successive\n        times with the <code>NextToken</code> provided by the operation\n        returns up to <code>MaxNumberOfDomains</code> more domain names\n        with each successive operation call.\n        </p>\n    "
     },
     {
       "name": "PutAttributes",
@@ -774,13 +774,13 @@
           "DomainName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the domain in which to perform the operation.\n    ",
             "required": true
           },
           "ItemName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The name of the item.\n    ",
             "required": true
           },
           "Attributes": {
@@ -793,26 +793,26 @@
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n    \tThe name of the replaceable attribute.\n    ",
                   "required": true
                 },
                 "Value": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The value of the replaceable attribute.\n    ",
                   "required": true
                 },
                 "Replace": {
                   "shape_name": "Boolean",
                   "type": "boolean",
-                  "documentation": ""
+                  "documentation": "\n        A flag specifying whether or not to replace the attribute/value pair or\n        to add a new attribute/value pair. The default setting is <code>false</code>.\n    "
                 }
               },
-              "documentation": "",
+              "documentation": "\n    <p></p>\n    ",
               "xmlname": "Attribute"
             },
             "flattened": true,
-            "documentation": "",
+            "documentation": "\n        The list of attributes.\n    ",
             "required": true
           },
           "Expected": {
@@ -822,23 +822,23 @@
               "Name": {
                 "shape_name": "String",
                 "type": "string",
-                "documentation": "The name of the attribute involved in the condition."
+                "documentation": "\n    \t<p>The name of the attribute involved in the condition.</p>\n    "
               },
               "Value": {
                 "shape_name": "String",
                 "type": "string",
-                "documentation": "The value of an attribute. This value can only be specified when the Exists parameter is equal to true."
+                "documentation": "\n        <p>The value of an attribute.  This value can only be\n        specified when the <code>Exists</code> parameter is equal to <code>true</code>.</p>\n    "
               },
               "Exists": {
                 "shape_name": "Boolean",
                 "type": "boolean",
-                "documentation": "A value specifying whether or not the specified attribute must exist with the specified value in order for the update condition to be satisfied. Specify true if the attribute must exist for the update condition to be satisfied. Specify false if the attribute should not exist in order for the update condition to be satisfied."
+                "documentation": "\n        <p>A value specifying whether or not the specified attribute must exist with the specified\n        value in order for the update condition to be satisfied. Specify <code>true</code> if\n        the attribute must exist for the update condition to be satisfied. Specify <code>false</code>\n        if the attribute should not exist in order for the update condition to be satisfied.</p>\n    "
               }
             },
-            "documentation": ""
+            "documentation": "\n        The update condition which, if specified, determines whether the specified attributes\n        will be updated or not.  The update condition must be satisfied in order for this\n        request to be processed and the attributes to be updated.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": null,
       "errors": [
@@ -849,10 +849,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "MissingParameter",
@@ -861,10 +861,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NoSuchDomain",
@@ -873,10 +873,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified domain does not exist."
+          "documentation": "\n    <p>The specified domain does not exist.</p>\n    "
         },
         {
           "shape_name": "NumberDomainAttributesExceeded",
@@ -885,10 +885,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many attributes in this domain."
+          "documentation": "\n    <p>Too many attributes in this domain.</p>\n    "
         },
         {
           "shape_name": "NumberDomainBytesExceeded",
@@ -897,10 +897,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many bytes in this domain."
+          "documentation": "\n    <p>Too many bytes in this domain.</p>\n    "
         },
         {
           "shape_name": "NumberItemAttributesExceeded",
@@ -909,10 +909,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many attributes in this item."
+          "documentation": "\n    <p>Too many attributes in this item.</p>\n    "
         },
         {
           "shape_name": "AttributeDoesNotExist",
@@ -921,13 +921,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified attribute does not exist."
+          "documentation": "\n    <p>The specified attribute does not exist.</p>\n    "
         }
       ],
-      "documentation": "The PutAttributes operation creates or replaces attributes in an item. The client may specify new attributes using a combination of the Attribute.X.Name and Attribute.X.Value parameters. The client specifies the first attribute by the parameters Attribute.0.Name and Attribute.0.Value, the second attribute by the parameters Attribute.1.Name and Attribute.1.Value, and so on."
+      "documentation": "\n    \t<p>\n\t\tThe PutAttributes operation creates or replaces attributes\n\t\tin an item. The client may specify new attributes using a combination\n\t\tof the <code>Attribute.X.Name</code> and <code>Attribute.X.Value</code>\n\t\tparameters. The client specifies the first attribute by the parameters\n\t\t<code>Attribute.0.Name</code> and <code>Attribute.0.Value</code>,\n\t\tthe second attribute by the parameters <code>Attribute.1.Name</code>\n\t\tand <code>Attribute.1.Value</code>, and so on.\n\t\t</p>\n\n        <p>\n\t\tAttributes are uniquely identified in an item by their name/value\n\t\tcombination. For example, a single item can have the attributes\n\t\t<code>{ \"first_name\", \"first_value\" }</code> and <code>{ \"first_name\",\n\t\tsecond_value\" }</code>. However, it cannot have two attribute instances\n\t\twhere both the <code>Attribute.X.Name</code> and <code>Attribute.X.Value</code>\n\t\tare the same.\n        </p>\n\n        <p>\n        Optionally, the requestor can supply the <code>Replace</code> parameter for each\n\t\tindividual attribute. Setting this value to <code>true</code> causes the new\n\t\tattribute value to replace the existing attribute value(s).\n\t\tFor example, if an item has the attributes <code>{ 'a', '1' }</code>,\n\t\t<code>{ 'b', '2'}</code> and <code>{ 'b', '3' }</code> and the requestor\n        calls  <code>PutAttributes</code> using the attributes <code>{ 'b', '4' }</code> with\n        the <code>Replace</code> parameter set to true, the final attributes of the item are changed\n\t\tto <code>{ 'a', '1' }</code> and <code>{ 'b', '4' }</code>, which replaces the\n\t\tprevious values of the 'b' attribute with the new value.\n        </p>\n\n        <note>\n        Using <code>PutAttributes</code> to replace attribute values that do not exist will not\n\t\tresult in an error response.\n        </note>\n\n        <p>\n        You cannot specify an empty string as an attribute name.\n        </p>\n\n        <p>\n        Because Amazon SimpleDB makes multiple copies of client data and uses\n        an eventual consistency update model, an immediate <a>GetAttributes</a>\n        or <a>Select</a> operation (read) immediately after a <a>PutAttributes</a> or\n        <a>DeleteAttributes</a> operation (write) might not return the updated data.\n        </p>\n\n        <p>\n        The following limitations are enforced for this operation:\n\n        <ul>\n           <li>256 total attribute name-value pairs per item</li>\n           <li>One billion attributes per domain</li>\n           <li>10 GB of total user data storage per domain</li>\n        </ul>\n        </p>\n    "
     },
     {
       "name": "Select",
@@ -938,21 +938,21 @@
           "SelectExpression": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "",
+            "documentation": "\n        The expression used to query the domain.\n    ",
             "required": true
           },
           "NextToken": {
             "shape_name": "String",
             "type": "string",
-            "documentation": ""
+            "documentation": "\n        A string informing Amazon SimpleDB where to start the next\n        list of <code>ItemNames</code>.\n    "
           },
           "ConsistentRead": {
             "shape_name": "Boolean",
             "type": "boolean",
-            "documentation": ""
+            "documentation": "\n        Determines whether or not strong consistency should be enforced when data is read\n        from SimpleDB. If <code>true</code>, any data previously written to SimpleDB\n        will be returned.  Otherwise, results will be consistent eventually, and the client\n        may not see data that was written immediately before your read.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": {
         "shape_name": "SelectResult",
@@ -968,13 +968,13 @@
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "",
+                  "documentation": "\n        The name of the item.\n    ",
                   "required": true
                 },
                 "AlternateNameEncoding": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": ""
+                  "documentation": "\n    <p></p>\n    "
                 },
                 "Attributes": {
                   "shape_name": "AttributeList",
@@ -986,47 +986,47 @@
                       "Name": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "",
+                        "documentation": "\n        The name of the attribute.\n    ",
                         "required": true
                       },
                       "AlternateNameEncoding": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": ""
+                        "documentation": "\n    <p></p>\n    "
                       },
                       "Value": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "",
+                        "documentation": "\n        The value of the attribute.\n    ",
                         "required": true
                       },
                       "AlternateValueEncoding": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": ""
+                        "documentation": "\n    <p></p>\n    "
                       }
                     },
-                    "documentation": "",
+                    "documentation": "\n    <p></p>\n   \t",
                     "xmlname": "Attribute"
                   },
                   "flattened": true,
-                  "documentation": "",
+                  "documentation": "\n        A list of attributes.\n    ",
                   "required": true
                 }
               },
-              "documentation": "",
+              "documentation": "\n    <p></p>\n    ",
               "xmlname": "Item"
             },
             "flattened": true,
-            "documentation": ""
+            "documentation": "\n        A list of items that match the select expression.\n    "
           },
           "NextToken": {
             "shape_name": "String",
             "type": "string",
-            "documentation": ""
+            "documentation": "\n        An opaque token indicating that more items than <code>MaxNumberOfItems</code> were matched,\n        the response size exceeded 1 megabyte, or the execution time exceeded 5 seconds.\n    "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "errors": [
         {
@@ -1036,10 +1036,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The value for a parameter is invalid."
+          "documentation": "\n    <p>The value for a parameter is invalid.</p>\n    "
         },
         {
           "shape_name": "InvalidNextToken",
@@ -1048,10 +1048,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified NextToken is not valid."
+          "documentation": "\n    <p>The specified NextToken is not valid. </p>\n    "
         },
         {
           "shape_name": "InvalidNumberPredicates",
@@ -1060,10 +1060,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many predicates exist in the query expression."
+          "documentation": "\n    <p>Too many predicates exist in the query expression.</p>\n    "
         },
         {
           "shape_name": "InvalidNumberValueTests",
@@ -1072,10 +1072,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many predicates exist in the query expression."
+          "documentation": "\n    <p>Too many predicates exist in the query expression.</p>\n    "
         },
         {
           "shape_name": "InvalidQueryExpression",
@@ -1084,10 +1084,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified query expression syntax is not valid."
+          "documentation": "\n    <p>The specified query expression syntax is not valid.</p>\n    "
         },
         {
           "shape_name": "MissingParameter",
@@ -1096,10 +1096,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The request must contain the specified missing parameter."
+          "documentation": "\n    <p>The request must contain the specified missing parameter.</p>\n    "
         },
         {
           "shape_name": "NoSuchDomain",
@@ -1108,10 +1108,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "The specified domain does not exist."
+          "documentation": "\n    <p>The specified domain does not exist.</p>\n    "
         },
         {
           "shape_name": "RequestTimeout",
@@ -1120,10 +1120,10 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "A timeout occurred when attempting to query the specified domain with specified query expression."
+          "documentation": "\n    <p>A timeout occurred when attempting to\n    query the specified domain with specified query expression.</p>\n    "
         },
         {
           "shape_name": "TooManyRequestedAttributes",
@@ -1132,13 +1132,13 @@
             "BoxUsage": {
               "shape_name": "Float",
               "type": "float",
-              "documentation": ""
+              "documentation": null
             }
           },
-          "documentation": "Too many attributes requested."
+          "documentation": "\n    <p>Too many attributes requested.</p>\n    "
         }
       ],
-      "documentation": "The Select operation returns a set of attributes for ItemNames that match the select expression. Select is similar to the standard SQL SELECT statement."
+      "documentation": "\n    \t<p>\n        The <code>Select</code> operation returns a set of attributes for <code>ItemNames</code>\n        that match the select expression. <code>Select</code> is similar to the standard\n        SQL SELECT statement.\n        </p>\n\n        <p>\n        The total size of the response cannot exceed 1 MB in total size.\n        Amazon SimpleDB automatically adjusts the number of items\n        returned per page to enforce this limit. For example, if the client asks\n        to retrieve 2500 items, but each individual item\n        is 10 kB in size, the system returns 100 items and an\n        appropriate <code>NextToken</code> so the client can access the next page of results.\n        </p>\n\n        <p>\n        For information on how to construct select expressions,\n        see Using Select to Create Amazon SimpleDB Queries in the\n        Developer Guide.\n        </p>\n    "
     }
   ]
 }

@@ -28,9 +28,6 @@ from .exceptions import ValidationError, RangeError
 
 class Parameter(BotoCoreObject):
 
-    def validate(self, value):
-        pass
-
     def __init__(self, **kwargs):
         self.xmlname = None
         self.required = False
@@ -49,11 +46,26 @@ class Parameter(BotoCoreObject):
     def validate(self, value):
         return value
 
-    def build_parameter(self, value, built_params, label=''):
+    def build_parameter_query(self, value, built_params, label=''):
         value = self.validate(value)
         if not label:
             label = self.xmlname
         built_params[label] = str(value)
+
+    def build_parameter_json(self, value, built_params, label=''):
+        value = self.validate(value)
+        if isinstance(built_params, list):
+            built_params.append(value)
+        else:
+            if not label:
+                label = self.xmlname
+            built_params[label] = str(value)
+
+    def build_parameter(self, style, value, built_params, label=''):
+        if style == 'query':
+            self.build_parameter_query(value, built_params, label)
+        elif style == 'json':
+            self.build_parameter_json(value, built_params, label)
 
 
 class IntegerParameter(Parameter):
@@ -114,7 +126,7 @@ class BooleanParameter(Parameter):
         except ValueError:
             raise ValidationError(value=str(value), type_name='boolean')
 
-    def build_parameter(self, value, built_params, label=''):
+    def build_parameter_query(self, value, built_params, label=''):
         value = self.validate(value)
         if value:
             value = 'true'
@@ -123,6 +135,19 @@ class BooleanParameter(Parameter):
         if not label:
             label = self.xmlname
         built_params[label] = value
+
+    def build_parameter_json(self, value, built_params, label=''):
+        value = self.validate(value)
+        if value:
+            value = True
+        else:
+            value = False
+        if isinstance(built_params, list):
+            built_params.append(value)
+        else:
+            if not label:
+                label = self.xmlname
+            built_params[label] = value
 
 
 class TimestampParameter(Parameter):
@@ -163,7 +188,7 @@ class ListParameter(Parameter):
         if self.members:
             self.members = get_parameter(None, self.members)
 
-    def build_parameter(self, value, built_params, label=''):
+    def build_parameter_query(self, value, built_params, label=''):
         value = self.validate(value)
         if not label:
             label = self.xmlname
@@ -172,23 +197,53 @@ class ListParameter(Parameter):
             label = member_type.xmlname
         else:
             if member_type.xmlname:
-                label = '%s.%s' % (self.name, member_type.xmlname)
+                member_name = member_type.xmlname
+            else:
+                member_name = 'member'
+            label = '%s.%s' % (self.name, member_name)
         for i, v in enumerate(value, 1):
-            member_type.build_parameter(v, built_params,
-                                        '%s.%d' % (label, i))
+            member_type.build_parameter_query(v, built_params,
+                                              '%s.%d' % (label, i))
+
+    def build_parameter_json(self, value, built_params, label=''):
+        value = self.validate(value)
+        if not label:
+            label = self.xmlname
+        member_type = self.members
+        if self.flattened:
+            label = member_type.xmlname
+        else:
+            if member_type.xmlname:
+                member_name = member_type.xmlname
+            else:
+                member_name = 'member'
+            label = '%s.%s' % (self.name, member_name)
+        built_params[label] = []
+        for i, v in enumerate(value, 1):
+            member_type.build_parameter_json(v, built_params[label], None)
 
 
 class MapParameter(Parameter):
 
-    def build_parameter(self, value, built_params, label=''):
+    def build_parameter_query(self, value, built_params, label=''):
         if not isinstance(value, (list, tuple)):
             value = [value]
         if not label:
             label = self.xmlname
         member_type = self.members
         for i, v in enumerate(value, 1):
-            member_type.build_parameter(v, built_params,
-                                        '%s.%d' % (label, i))
+            member_type.build_parameter_query(v, built_params,
+                                              '%s.%d' % (label, i))
+
+    def build_parameter_json(self, value, built_params, label=''):
+        if not isinstance(value, (list, tuple)):
+            value = [value]
+        if not label:
+            label = self.xmlname
+        member_type = self.members
+        for i, v in enumerate(value, 1):
+            member_type.build_parameter_json(v, built_params,
+                                             '%s.%d' % (label, i))
 
 
 class StructParameter(Parameter):
@@ -204,7 +259,7 @@ class StructParameter(Parameter):
                 l.append(get_parameter(name, data))
             self.members = l
 
-    def build_parameter(self, value, built_params, label=''):
+    def build_parameter_query(self, value, built_params, label=''):
         if not label:
             label = self.xmlname
         for member in self.members:
@@ -215,6 +270,19 @@ class StructParameter(Parameter):
                 member.build_parameter(value[member.py_name],
                                        built_params,
                                        label + '.' + member.xmlname)
+
+    def build_parameter_json(self, value, built_params, label=''):
+        if not label:
+            label = self.xmlname
+        built_params[label] = value
+        for member in self.members:
+            if member.required and member.py_name not in value:
+                msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())
+                raise ValueError(msg)
+            if member.py_name in value:
+                member.build_parameter(value[member.py_name],
+                                       built_params[label],
+                                       member.xmlname)
 
 type_map = {
     'structure': StructParameter,

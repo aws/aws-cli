@@ -13,6 +13,7 @@
 import argparse
 import sys
 import traceback
+import json
 import botocore.session
 from botocore import __version__
 from awscli import awscli_data_path
@@ -188,11 +189,14 @@ class CLIDriver(object):
         elif param.type == 'structure':
             if isinstance(s, list) and len(s) == 1:
                 s = s[0]
-            d = dict(v.split('=', 1) for v in s.split(':'))
-            for member in param.members:
-                if member.py_name in d:
-                    d[member.py_name] = self.unpack_cli_arg(member,
-                                                       d[member.py_name])
+            if s[0] == '{':
+                d = json.loads(s)
+            else:
+                d = dict(v.split('=', 1) for v in s.split(':'))
+                for member in param.members:
+                    if member.py_name in d:
+                        d[member.py_name] = self.unpack_cli_arg(member,
+                                                           d[member.py_name])
             return d
         elif param.type == 'list':
             if not isinstance(s, list):
@@ -215,6 +219,8 @@ class CLIDriver(object):
     def display_error_and_exit(self, ex):
         if self.args.debug:
             traceback.print_exc()
+        elif isinstance(ex, Exception):
+            print(ex)
         elif self.args.output != 'json':
             print(ex)
         sys.exit(1)
@@ -261,6 +267,8 @@ class CLIDriver(object):
             sys.exit(0)
         else:
             if self.args.debug:
+                import httplib
+                httplib.HTTPConnection.debuglevel = 2
                 self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
             self.service = self.session.get_service(self.args.service_name)

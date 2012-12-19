@@ -70,7 +70,7 @@ class CLIDriver(object):
         self.session.add_search_path(awscli_data_path)
         self.help = CLIHelp()
         self.args = None
-        self.region = None
+        self.region = self.session.get_config().get('region', 'us-east-1')
         self.service = None
         self.endpoint = None
         self.operation = None
@@ -112,7 +112,11 @@ class CLIDriver(object):
         :param remaining: The list of command line parameters that were
             not recognized by upstream parsers.
         """
-        self.endpoint = self.service.get_endpoint(self.args.region,
+        if self.args.region is not None:
+            region = self.args.region
+        else:
+            region = self.region
+        self.endpoint = self.service.get_endpoint(region,
                                                   endpoint_url=self.args.endpoint_url)
         prog = '%s %s' % (self.parser.prog,
                           self.service.short_name)

@@ -21,10 +21,6 @@
 # IN THE SOFTWARE.
 #
 
-# to enable detailed debugging from httplib layer
-#import httplib
-#httplib.HTTPConnection.debuglevel = 2
-
 import logging
 import json
 import requests

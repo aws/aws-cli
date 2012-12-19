@@ -70,7 +70,9 @@ class CLIDriver(object):
         self.session.add_search_path(awscli_data_path)
         self.help = CLIHelp()
         self.args = None
-        self.region = self.session.get_config().get('region', 'us-east-1')
+        self.region = 'us-east-1'
+        if self.session.get_config():
+            self.region = self.session.get_config().get('region', 'us-east-1')
         self.service = None
         self.endpoint = None
         self.operation = None

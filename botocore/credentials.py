@@ -87,6 +87,7 @@ def search_iam_role(**kwargs):
                                   metadata['SecretAccessKey'],
                                   metadata['Token'])
         credentials.method = 'iam-role'
+        logger.info('Found credentials in IAM Role')
     return credentials
 
 
@@ -100,6 +101,7 @@ def search_environment(**kwargs):
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
         credentials.method = 'env'
+        logger.info('Found credentials in Environment variables')
     return credentials
 
 
@@ -118,6 +120,7 @@ def search_file(**kwargs):
                 credentials = Credentials(config[access_key_name],
                                           config[secret_key_name])
                 credentials.method = 'config'
+                logger.info('Found credentials in config file')
     return credentials
 
 
@@ -141,6 +144,7 @@ def search_boto_config(**kwargs):
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
         credentials.method = 'boto'
+        logger.info('Found credentials in boto config file')
     return credentials
 
 AllCredentialFunctions = [search_environment,

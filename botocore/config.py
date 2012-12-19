@@ -23,10 +23,7 @@
 
 from six.moves import configparser
 import os
-import logging
 import exceptions
-
-logger = logging.getLogger(__name__)
 
 
 def get_config():
@@ -56,6 +53,7 @@ def get_config():
         except configparser.Error:
             raise exceptions.ConfigParseError(path=path)
         else:
+            config['_path'] = path
             for section in cp.sections():
                 config[section] = {}
                 for option in cp.options(section):

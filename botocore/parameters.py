@@ -44,7 +44,7 @@ class Parameter(BotoCoreObject):
         pass
 
     def validate(self, value):
-        return value
+        return str(value)
 
     def build_parameter_query(self, value, built_params,
                               label='', flattened=False):
@@ -61,7 +61,7 @@ class Parameter(BotoCoreObject):
         else:
             if not label:
                 label = self.xmlname
-            built_params[label] = str(value)
+            built_params[label] = value
 
     def build_parameter(self, style, value, built_params, label=''):
         if style == 'query':

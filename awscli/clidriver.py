@@ -18,7 +18,7 @@ import json
 import botocore.session
 from botocore import __version__
 from awscli import awscli_data_path
-from .help import CLIHelp
+from .help import get_help
 from .formatter import get_formatter
 
 
@@ -69,11 +69,7 @@ class CLIDriver(object):
         self.session.user_agent_name = 'aws-cli'
         self.session.user_agent_version = __version__
         self.session.add_search_path(awscli_data_path)
-        self.help = CLIHelp()
         self.args = None
-        self.region = 'us-east-1'
-        if self.session.get_config():
-            self.region = self.session.get_config().get('region', 'us-east-1')
         self.service = None
         self.endpoint = None
         self.operation = None
@@ -115,10 +111,16 @@ class CLIDriver(object):
         :param remaining: The list of command line parameters that were
             not recognized by upstream parsers.
         """
+        if self.args.profile:
+            self.session.profile = self.args.profile
         if self.args.region is not None:
             region = self.args.region
-        else:
-            region = self.region
+        elif self.session.get_config():
+            region = self.session.get_config().get('region', None)
+        if region is None:
+            msg = self.session.get_data('messages/NoRegionError')
+            ex = ValueError(msg)
+            self.display_error_and_exit(ex)
         self.endpoint = self.service.get_endpoint(region,
                                                   endpoint_url=self.args.endpoint_url)
         prog = '%s %s' % (self.parser.prog,
@@ -132,7 +134,7 @@ class CLIDriver(object):
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            self.help.help(self.service, None)
+            get_help(self.session, self.service, style='cli')
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
         self.create_operation_parser(remaining)
@@ -169,7 +171,7 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
         if 'help' in remaining:
-            self.help.help(self.service, self.operation)
+            get_help(self.session, operation=self.operation, style='cli')
             sys.exit(0)
         args, remaining = parser.parse_known_args(remaining)
         if remaining:

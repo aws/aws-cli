@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import argparse
 import sys
+import os
 import traceback
 import json
 import botocore.session
@@ -197,12 +198,22 @@ class CLIDriver(object):
                 s = s[0]
             if s[0] == '{':
                 d = json.loads(s)
-            else:
+            elif '=' in s:
                 d = dict(v.split('=', 1) for v in s.split(':'))
                 for member in param.members:
                     if member.py_name in d:
                         d[member.py_name] = self.unpack_cli_arg(member,
                                                            d[member.py_name])
+            else:
+                s = os.path.expanduser(s)
+                s = os.path.expandvars(s)
+                if os.path.isfile(s):
+                    fp = open(s)
+                    d = json.load(fp)
+                    fp.close()
+                else:
+                    msg = 'Structure option value must be JSON or path to file.'
+                    raise ValueError(msg)
             return d
         elif param.type == 'list':
             if not isinstance(s, list):

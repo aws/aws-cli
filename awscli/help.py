@@ -177,7 +177,9 @@ class OperationDocument(Document):
             pname = parameter.py_name
         else:
             pname = parameter.cli_name
-        self.add_paragraph().write(self.style.bold(pname))
+        para = self.add_paragraph()
+        para.write(self.style.bold(pname))
+        para.write(' (%s)' % parameter.type)
         self.indent()
         if parameter.documentation:
             self.help_parser.feed(parameter.documentation)

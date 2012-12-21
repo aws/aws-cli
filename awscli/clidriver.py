@@ -59,10 +59,12 @@ class CLIDriver(object):
         'list': str,
         'string': str,
         'float': float,
-        'integer': int,
+        'integer': str,
         'long': int,
         'boolean': bool,
-        'double': float}
+        'double': float,
+        'jsondoc': str,
+        'file': str}
 
     def __init__(self, provider_name='aws'):
         self.provider_name = provider_name
@@ -199,18 +201,30 @@ class CLIDriver(object):
         elif param.type == 'jsondoc':
             if isinstance(s, list) and len(s) == 1:
                 s = s[0]
-            if s[0] == '{':
-                d = json.loads(s)
-            else:
+            if s[0] != '{':
                 s = os.path.expanduser(s)
                 s = os.path.expandvars(s)
                 if os.path.isfile(s):
                     fp = open(s)
-                    d = json.load(fp)
+                    s = fp.read()
                     fp.close()
                 else:
                     msg = 'JSON Document value must be JSON or path to file.'
                     raise ValueError(msg)
+            return s
+        elif param.type == 'file':
+            if isinstance(s, list) and len(s) == 1:
+                s = s[0]
+            s = os.path.expanduser(s)
+            s = os.path.expandvars(s)
+            if os.path.isfile(s):
+                fp = open(s)
+                s = fp.read()
+                fp.close()
+            else:
+                msg = 'File value must be path to file.'
+                raise ValueError(msg)
+            return s
         elif param.type == 'structure':
             if isinstance(s, list) and len(s) == 1:
                 s = s[0]

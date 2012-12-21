@@ -52,14 +52,18 @@ class HelpParser(html_parser.HTMLParser):
     def handle_starttag(self, tag, attrs):
         handler_name = 'start_%s' % tag
         if hasattr(self.doc.style, handler_name):
-            getattr(self.doc.style, handler_name)(attrs)
+            s = getattr(self.doc.style, handler_name)(attrs)
+            if s:
+                self.doc.get_current_paragraph().write(s)
         else:
             self.unhandled_tags.append(tag)
 
     def handle_endtag(self, tag):
         handler_name = 'end_%s' % tag
         if hasattr(self.doc.style, handler_name):
-            getattr(self.doc.style, handler_name)()
+            s = getattr(self.doc.style, handler_name)()
+            if s:
+                self.doc.get_current_paragraph().write(s)
 
     def handle_data(self, data):
         data = data.replace('\n', '')
@@ -76,6 +80,8 @@ class HelpParser(html_parser.HTMLParser):
         if space_last:
             if len(data) > 0 and data[-1] != '.':
                 data = data + ' '
+        if len(data) == 0:
+            data = ' '
         self.doc.handle_data(data)
 
 
@@ -248,19 +254,63 @@ class ServiceDocument(Document):
             self.do_operation_summary(operation)
 
 
-def get_help(session, service=None, operation=None, style='cli', fp=None):
+class ProviderDocument(Document):
+
+    def do_usage(self, title):
+        self.add_paragraph().write(self.style.h2('aws'))
+        self.indent()
+        self.help_parser.feed(title)
+
+    def do_service_names(self, provider_name):
+        msg = 'Available services:'
+        self.add_paragraph().write(self.style.h2(msg))
+        service_data = self.session.get_data('%s/_services' % provider_name)
+        for service_name in service_data:
+            self.style.start_li()
+            self.get_current_paragraph().write(service_name)
+            self.style.end_li()
+
+    def do_options(self, options):
+        self.add_paragraph().write(self.style.h2('Options'))
+        self.indent()
+        for option in options:
+            if option.startswith('--'):
+                option_data = options[option]
+                para = self.add_paragraph()
+                para.write(self.style.bold(option))
+                if 'metavar' in option_data:
+                    para.write(' <%s>' % option_data['metavar'])
+                if 'help' in option_data:
+                    self.indent()
+                    self.add_paragraph().write(option_data['help'])
+                    self.dedent()
+                if 'choices' in option_data:
+                    choices = option_data['choices']
+                    if not isinstance(choices, list):
+                        choices = self.session.get_data(choices)
+                    for choice in choices:
+                        self.style.start_li()
+                        self.get_current_paragraph().write(choice)
+                        self.style.end_li()
+        self.dedent()
+
+    def build(self, provider_name='aws'):
+        cli = self.session.get_data('cli')
+        self.do_usage(cli['description'])
+        self.do_service_names(provider_name)
+        self.do_options(cli['options'])
+
+
+def get_help(session, provider=None,
+             service=None, operation=None,
+             style='cli', fp=None):
     """
     Return a complete help document for the given object.
 
-    :type obj: Either a :class:`botocore.service.Service` object
-        or a :class:`botocore.operation.Operation`.
-    :param obj: The object you want to generate a help document for.
-
-    :type format: string
-    :param format: The format of help to be generated.  Choices are:
+    :type style: string
+    :param style: The style of help to be generated.  Choices are:
         * cli - help suitable for interactive CLI use
         * rst - help in reST format
-        * md - help in Markdown format
 
     :type fp: file pointer
     :param fp: If you pass in a file pointer, the help document will
@@ -269,6 +319,10 @@ def get_help(session, service=None, operation=None, style='cli', fp=None):
     """
     if fp is None:
         fp = sys.stdout
+    if provider:
+        doc = ProviderDocument(session, style)
+        doc.build(provider)
+        doc.render(fp)
     if operation:
         doc = OperationDocument(session, style)
         doc.build(operation)

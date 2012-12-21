@@ -39,6 +39,9 @@ class BaseStyle(object):
     def h2(self, s):
         return self.bold(s)
 
+    def h3(self, s):
+        return self.bold(s)
+
     def start_underline(self, attrs=None):
         return ''
 
@@ -61,37 +64,37 @@ class BaseStyle(object):
         self.doc.add_paragraph()
 
     def end_p(self):
-        pass
+        return ''
 
     def start_code(self, attrs=None):
         self.doc.do_translation = True
-        self.start_bold(attrs)
+        return self.start_bold(attrs)
 
     def end_code(self):
         self.doc.do_translation = False
-        self.end_bold()
+        return self.end_bold()
 
     def start_a(self, attrs=None):
         self.doc.do_translation = True
-        self.start_underline()
+        return self.start_underline()
 
     def end_a(self):
         self.doc.do_translation = False
-        self.end_underline()
+        return self.end_underline()
 
     def start_i(self, attrs=None):
         self.doc.do_translation = True
-        self.start_italic()
+        return self.start_italic()
 
     def end_i(self):
         self.doc.do_translation = False
-        self.end_italic()
+        return self.end_italic()
 
     def start_li(self, attrs):
-        pass
+        return ''
 
     def end_li(self):
-        pass
+        return ''
 
     def start_examples(self, attrs):
         self.doc.keep_data = False
@@ -130,9 +133,6 @@ class CLIStyle(BaseStyle):
         para = self.doc.add_paragraph()
         para.subsequent_indent = para.initial_indent + 1
         para.write('  * ')
-
-    def end_li(self):
-        pass
 
     def h2(self, s):
         para = self.doc.get_current_paragraph()

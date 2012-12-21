@@ -15,6 +15,7 @@ import sys
 import os
 import traceback
 import json
+import copy
 import botocore.session
 from botocore import __version__
 from awscli import awscli_data_path
@@ -88,11 +89,10 @@ class CLIDriver(object):
         description = self.cli_data['description']
         self.parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                               description=description,
-                                              add_help=False)
-        self.parser.add_argument('--version', action="version",
-                                 version=self.session.user_agent())
+                                              add_help=False,
+                                              conflict_handler='resolve')
         for option_name in self.cli_data['options']:
-            option_data = self.cli_data['options'][option_name]
+            option_data = copy.copy(self.cli_data['options'][option_name])
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
@@ -102,6 +102,8 @@ class CLIDriver(object):
                 option_data['help'] = self.create_choice_help(choices)
                 option_data['choices'] = choices + ['help']
             self.parser.add_argument(option_name, **option_data)
+        self.parser.add_argument('--version', action="version",
+                                 version=self.session.user_agent())
 
     def create_service_parser(self, remaining):
         """
@@ -134,7 +136,7 @@ class CLIDriver(object):
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            get_help(self.session, self.service, style='cli')
+            get_help(self.session, service=self.service, style='cli')
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
         self.create_operation_parser(remaining)
@@ -282,7 +284,7 @@ class CLIDriver(object):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args()
         if self.args.service_name == 'help':
-            self.parser.print_help()
+            get_help(self.session, provider='aws', style='cli')
             sys.exit(0)
         else:
             if self.args.debug:

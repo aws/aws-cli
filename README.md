@@ -1,7 +1,7 @@
 aws-cli
 =======
 
-This package provides a unified command line interface to a many
+This package provides a unified command line interface to many
 Amazon Web Services.
 
 The currently supported services include:

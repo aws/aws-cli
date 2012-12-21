@@ -72,6 +72,7 @@ class CLIDriver(object):
         self.session.add_search_path(awscli_data_path)
         self.args = None
         self.service = None
+        self.region = None
         self.endpoint = None
         self.operation = None
 
@@ -116,15 +117,13 @@ class CLIDriver(object):
         if self.args.profile:
             self.session.profile = self.args.profile
         if self.args.region is not None:
-            region = self.args.region
+            self.region = self.args.region
         elif self.session.get_config():
-            region = self.session.get_config().get('region', None)
-        if region is None:
+            self.region = self.session.get_config().get('region', None)
+        if self.region is None:
             msg = self.session.get_data('messages/NoRegionError')
             ex = ValueError(msg)
             self.display_error_and_exit(ex)
-        self.endpoint = self.service.get_endpoint(region,
-                                                  endpoint_url=self.args.endpoint_url)
         prog = '%s %s' % (self.parser.prog,
                           self.service.short_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
@@ -197,6 +196,21 @@ class CLIDriver(object):
             if isinstance(s, list):
                 s = s[0]
             return float(s)
+        elif param.type == 'jsondoc':
+            if isinstance(s, list) and len(s) == 1:
+                s = s[0]
+            if s[0] == '{':
+                d = json.loads(s)
+            else:
+                s = os.path.expanduser(s)
+                s = os.path.expandvars(s)
+                if os.path.isfile(s):
+                    fp = open(s)
+                    d = json.load(fp)
+                    fp.close()
+                else:
+                    msg = 'JSON Document value must be JSON or path to file.'
+                    raise ValueError(msg)
         elif param.type == 'structure':
             if isinstance(s, list) and len(s) == 1:
                 s = s[0]
@@ -262,6 +276,8 @@ class CLIDriver(object):
         try:
             params = {}
             self.build_call_parameters(args, params)
+            self.endpoint = self.service.get_endpoint(self.region,
+                                                      endpoint_url=self.args.endpoint_url)
             http_response, response_data = self.operation.call(self.endpoint,
                                                                **params)
             self.formatter(self.operation, response_data)

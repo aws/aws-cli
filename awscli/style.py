@@ -84,11 +84,11 @@ class BaseStyle(object):
 
     def start_i(self, attrs=None):
         self.doc.do_translation = True
-        return self.start_italic()
+        return self.start_italics()
 
     def end_i(self):
         self.doc.do_translation = False
-        return self.end_italic()
+        return self.end_italics()
 
     def start_li(self, attrs):
         return ''

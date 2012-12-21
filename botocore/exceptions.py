@@ -20,38 +20,90 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-from .base import get_data
 
 
-class BotoCoreException(Exception):
+class BotoCoreError(Exception):
     """
     The base exception class for BotoCore exceptions.
 
-    The main job of this class is to lookup the format string
-    for the exception in the message database.  This format
-    string will use the standard Python formatting using named
-    variables in the format string.  It is then expected that
-    the required variable data will be passed as keyword parameters
-    to the class constructor.
+    :ivar msg: The descriptive message associated with the error.
+    """
+    fmt = 'An unspecified error occured'
+
+    def __init__(self, **kwargs):
+        msg = self.fmt.format(**kwargs)
+        Exception.__init__(self, msg)
+        self.kwargs = kwargs
+
+
+class DataNotFoundError(BotoCoreError):
+    """
+    The data associated with a particular path could not be loaded.
+
+    :ivar path: The data path that the user attempted to load.
+    """
+    fmt = 'Unable to load data for: {data_path}'
+
+
+class NoCredentials(BotoCoreError):
+    """
+    No credentials could be found.
     """
 
-    @classmethod
-    def get_message_format(cls):
-        return get_data('messages/%s' % cls.__name__)
 
-    def __init__(self, message, **params):
-        Exception.__init__(self, message)
-        self.params = params
+class ProfileNotFound(BotoCoreError):
+    """
+    The specified configuration profile was not found in the
+    configuration file.
 
-    def __str__(self):
-        return self.get_message_format().format(**self.params)
-
-
-class ValidationException(BotoCoreException):
-
-    pass
+    :ivar profile: The name of the profile the user attempted to load.
+    """
+    fmt = 'The config profile ({profile}) could not be found'
 
 
-class RangeException(BotoCoreException):
+class ConfigParseError(BotoCoreError):
+    """
+    The configuration file could not be parsed.
 
-    pass
+    :ivar path: The path to the configuration file.
+    """
+    fmt = 'Unable to parse config file: {path}'
+
+
+class ConfigNotFound(BotoCoreError):
+    """
+    The specified configuration file could not be found.
+
+    :ivar path: The path to the configuration file.
+    """
+    fmt = 'The specified config file ({path}) could not be found.'
+
+
+class ValidationError(BotoCoreError):
+    """
+    An exception occurred validating parameters.
+
+    :ivar value: The value that was being validated.
+    :ivar type_name: The name of the underlying type.
+    """
+    fmt = 'Unable to convert value ({value}) to type {type_name}'
+
+
+class RangeError(BotoCoreError):
+    """
+    A parameter value was out of the valid range.
+
+    :ivar value: The value that was being checked.
+    :ivar min_value: The specified minimum value.
+    :ivar max_value: The specified maximum value.
+    """
+    fmt = 'Value out of range: {min_value} <= {value} <= {max_value}'
+
+
+class UnknownServiceStyle(BotoCoreError):
+    """
+    Unknown style of service invocation.
+
+    :ivar service_style: The style requested.
+    """
+    fmt = 'The service style ({service_style}) is not understood.'

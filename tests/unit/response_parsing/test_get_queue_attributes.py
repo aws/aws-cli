@@ -22,7 +22,7 @@
 # IN THE SOFTWARE.
 #
 import unittest
-import botocore.service
+import botocore.session
 import botocore.response
 
 xml = """<?xml version="1.0"?>
@@ -80,10 +80,11 @@ data = {u'Attribute': {u'ApproximateNumberOfMessagesNotVisible': u'0', u'Message
 class TestGetQueueAttributes(unittest.TestCase):
 
     def setUp(self):
-        self.service = botocore.service.get_service('sqs', 'aws')
+        self.session = botocore.session.get_session()
+        self.service = self.session.get_service('sqs', 'aws')
 
     def test_get_queue_attributes(self):
-        op = self.service.endpoints[0].get_operation('GetQueueAttributes')
+        op = self.service.get_operation('GetQueueAttributes')
         r = botocore.response.Response(op)
         r.parse(xml)
         self.assertEqual(r.get_value(), data)

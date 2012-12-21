@@ -20,26 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import platform
 
-# to enable detailed debugging from httplib layer
-#import httplib
-#httplib.HTTPConnection.debuglevel = 2
-
+import logging
+import json
 import requests
-from .auth import get_auth
-from .credentials import get_credentials
-from .response import Response
-from .operation import Operation
-from .logger import log
-from uncle import __version__
+import botocore.auth
+import botocore.response
 
-
-def user_agent():
-    return 'Boto/%s Python %s %s/%s' % (__version__,
-                                        platform.python_version(),
-                                        platform.system(),
-                                        platform.release())
+logger = logging.getLogger(__name__)
 
 
 class Endpoint(object):
@@ -50,43 +38,21 @@ class Endpoint(object):
     :ivar service: The Service object that describes this endpoints
         service.
     :ivar host: The fully qualified endpoint hostname.
-    :ivar credentials: The credentials that will be used to authorize
-        requests.
+    :ivar session: The session object.
     """
 
-    def __init__(self, service, region_name, host, profile=None):
+    def __init__(self, service, region_name, host):
         self.service = service
+        self.session = self.service.session
         self.region_name = region_name
         self.host = host
-        self.profile = profile
-        self.credentials = get_credentials(profile=profile)
-        self.auth = get_auth(self.service.authentication,
-                             credentials=self.credentials,
-                             service_name=self.service.short_name,
-                             region_name=region_name)
-        self.operations = []
-        for operation in self.service.operations:
-            op = Operation(self, operation)
-            self.operations.append(op)
-            setattr(self, op.py_name, op)
+        self.auth = botocore.auth.get_auth(self.service.authentication,
+                                           credentials=self.session.get_credentials(),
+                                           service_name=self.service.short_name,
+                                           region_name=region_name)
 
     def __repr__(self):
         return '%s(%s)' % (self.service.name, self.host)
-
-    def get_operation(self, operation_name):
-        """
-        Find an Operation object for a given operation_name.  The name
-        provided can be the original camel case name, the Python name or
-        the CLI name.
-
-        :type operation_name: str
-        :param operation_name: The name of the operation.
-        """
-        for operation in self.operations:
-            op_names = (operation.name, operation.py_name, operation.cli_name)
-            if operation_name in op_names:
-                return operation
-        return None
 
     def make_request(self, params, list_marker=None):
         pass
@@ -103,17 +69,51 @@ class QueryEndpoint(Endpoint):
         and return it and long with the HTTP response object
         from requests.
         """
-        log.debug(params)
+        logger.debug(params)
+        params['Action'] = operation.name
+        params['Version'] = self.service.api_version
+        user_agent = self.session.user_agent()
         http_response = requests.post(self.host, params=params,
                                       hooks={'args': self.auth.add_auth},
-                                      headers={'User-Agent': user_agent()})
-        r = Response(operation)
+                                      headers={'User-Agent': user_agent})
+        r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
-        log.debug(body)
+        logger.debug(body)
         r.parse(body)
         return (http_response, r.get_value())
 
 
-def get_endpoint(service, region_name, endpoint_url, profile=None):
-    return QueryEndpoint(service, region_name, endpoint_url, profile)
+class JSONEndpoint(Endpoint):
+    """
+    This class handles only AWS/JSON style services.
+    """
+
+    def make_request(self, operation, params):
+        """
+        Send a request to the endpoint and parse the response
+        and return it and long with the HTTP response object
+        from requests.
+        """
+        logger.debug(params)
+        user_agent = self.session.user_agent()
+        target = '%s.%s' % (self.service.service_name, operation.name)
+        content_type = 'application/x-amz-json-1.1'
+        data = json.dumps(params)
+        http_response = requests.post(self.host, data=data,
+                                      hooks={'args': self.auth.add_auth},
+                                      headers={'User-Agent': user_agent,
+                                               'X-Amz-Target': target,
+                                               'Content-Type': content_type})
+        http_response.encoding = 'utf-8'
+        body = http_response.text.encode('utf=8')
+        logger.debug(body)
+        return (http_response, json.loads(body))
+
+
+def get_endpoint(service, region_name, endpoint_url):
+    if service.type == 'query':
+        return QueryEndpoint(service, region_name, endpoint_url)
+    if service.type == 'json':
+        return JSONEndpoint(service, region_name, endpoint_url)
+    raise exceptions.UnknownServiceStyle(service_style=service.type)

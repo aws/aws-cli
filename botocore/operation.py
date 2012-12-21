@@ -26,22 +26,20 @@ from . import BotoCoreObject
 
 class Operation(BotoCoreObject):
 
-    def __init__(self, endpoint, op_data):
+    def __init__(self, service, op_data):
         self.input = {}
         self.output = {}
         BotoCoreObject.__init__(self, **op_data)
-        self.endpoint = endpoint
+        self.service = service
         self.type = 'operation'
         self._get_parameters()
 
     def __repr__(self):
         return 'Operation:%s' % self.name
 
-    def __call__(self, **kwargs):
+    def call(self, endpoint, **kwargs):
         params = self.build_parameters(**kwargs)
-        params['Action'] = self.name
-        params['Version'] = self.endpoint.service.api_version
-        return self.endpoint.make_request(self, params)
+        return endpoint.make_request(self, params)
 
     def _get_parameters(self):
         """
@@ -50,6 +48,8 @@ class Operation(BotoCoreObject):
         self.params = []
         if self.input and 'members' in self.input:
             for name, data in self.input['members'].items():
+                if self.service:
+                    data['flattened'] = not self.service.membered_lists
                 param = get_parameter(name, data)
                 self.params.append(param)
 
@@ -67,7 +67,8 @@ class Operation(BotoCoreObject):
             if param.py_name in kwargs:
                 if missing:
                     missing.pop()
-                param.build_parameter(kwargs[param.py_name],
+                param.build_parameter(self.service.type,
+                                      kwargs[param.py_name],
                                       built_params)
         if missing:
             msg = 'The following required parameters are missing:'

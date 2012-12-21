@@ -21,8 +21,19 @@
 # IN THE SOFTWARE.
 #
 import re
+import logging
 
-__version__ = '0.1.0'
+__version__ = '0.4.1'
+
+
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+
+# Configure default logger to do nothing
+log = logging.getLogger('botocore')
+log.addHandler(NullHandler())
+
 
 _first_cap_regex = re.compile('(.)([A-Z][a-z]+)')
 _number_cap_regex = re.compile('([a-z])([0-9]+)')

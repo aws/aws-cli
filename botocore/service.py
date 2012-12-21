@@ -22,6 +22,7 @@
 #
 from .endpoint import get_endpoint
 from .base import get_service_data
+from .operation import Operation
 
 
 class Service(object):
@@ -30,8 +31,6 @@ class Service(object):
 
     :ivar api_version: A string containing the API version this service
         is using.
-    :ivar endpoints: A list of Endpoint objects for each region in which
-        the service is supported.
     :ivar name: The full name of the service.
     :ivar service_name: The canonical name of the service.
     :ivar regions: A dict where each key is a region name and the
@@ -39,19 +38,30 @@ class Service(object):
     :ivar protocols: A list of protocols supported by the service.
     """
 
-    def __init__(self, provider_name, service_name, path='/', port=None):
+    def __init__(self, session, provider_name, service_name,
+                 path='/', port=None):
+        self.membered_lists = True
         self.__dict__.update(get_service_data(service_name, provider_name))
+        self.session = session
         self.provider_name = provider_name
         self.path = path
         self.port = port
         self.cli_name = self.short_name
-        self.endpoints = [self.get_endpoint(rn) for rn in self.regions]
+        self._operations_data = self.operations
+        self.operations = []
+        for operation_data in self._operations_data:
+            op = Operation(self, operation_data)
+            self.operations.append(op)
+            setattr(self, op.py_name, op)
 
     def __repr__(self):
         return 'Service(%s)' % self.name
 
-    def get_endpoint(self, region_name, is_secure=True,
-                     profile=None, endpoint_url=None):
+    @property
+    def region_names(self):
+        return self.regions.keys()
+
+    def get_endpoint(self, region_name, is_secure=True, endpoint_url=None):
         """
         Return the Endpoint object for this service in a particular
         region.
@@ -77,10 +87,25 @@ class Service(object):
             endpoint_url = '%s://%s%s' % (scheme, host, self.path)
             if self.port:
                 endpoint_url += ':%d' % self.port
-        return get_endpoint(self, region_name, endpoint_url, profile)
+        return get_endpoint(self, region_name, endpoint_url)
+
+    def get_operation(self, operation_name):
+        """
+        Find an Operation object for a given operation_name.  The name
+        provided can be the original camel case name, the Python name or
+        the CLI name.
+
+        :type operation_name: str
+        :param operation_name: The name of the operation.
+        """
+        for operation in self.operations:
+            op_names = (operation.name, operation.py_name, operation.cli_name)
+            if operation_name in op_names:
+                return operation
+        return None
 
 
-def get_service(service_name, provider_name='aws'):
+def get_service(session, service_name, provider_name='aws'):
     """
     Return a Service object for a given provider name and service name.
 
@@ -90,4 +115,4 @@ def get_service(service_name, provider_name='aws'):
     :type provider_name: str
     :param provider_name: The name of the provider.
     """
-    return Service(provider_name, service_name)
+    return Service(session, provider_name, service_name)

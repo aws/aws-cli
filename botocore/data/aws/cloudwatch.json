@@ -1,0 +1,1908 @@
+{
+  "type": "query",
+  "api_version": "2010-08-01",
+  "short_name": "cloudwatch",
+  "service_name": "GraniteServiceVersion20100801",
+  "assembly": "com.amazonaws.cloudwatch.v2010_08_01",
+  "xmlnamespace": "http://monitoring.amazonaws.com/doc/2010-08-01/",
+  "documentation": "\n\t\t<p>This is the <i>Amazon CloudWatch API Reference</i>. This guide provides detailed\n\t\t\tinformation about Amazon CloudWatch actions, data types, parameters, and\n\t\t\terrors. For detailed information about Amazon CloudWatch features and their associated API calls,\n\t\t\tgo to the <a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/DeveloperGuide\">Amazon CloudWatch Developer Guide</a>.\n\t\t</p>\n\t\t<p>Amazon CloudWatch is a web service that enables you to publish, monitor, and manage various metrics,\n\t\t\tas well as configure alarm actions based on data from metrics. For more information about this product\n\t\t\tgo to <a href=\"http://aws.amazon.com/cloudwatch\">http://aws.amazon.com/cloudwatch</a>.\n\t\t</p>\n\n\t\t<p>Use the following links to get started using the <i>Amazon CloudWatch API Reference</i>:</p>\n\t\t<ul>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Amazon CloudWatch actions.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Types.html\">Data Types</a>: An alphabetical list of all Amazon CloudWatch data types.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n\t\t\t<li>\n<a href=\"http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl\">WSDL Location</a>: http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl</li>\n\t\t</ul>\n\t",
+  "operations": [
+    {
+      "name": "DeleteAlarms",
+      "input": {
+        "shape_name": "DeleteAlarmsInput",
+        "type": "structure",
+        "members": {
+          "AlarmNames": {
+            "shape_name": "AlarmNames",
+            "type": "list",
+            "members": {
+              "shape_name": "AlarmName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": null
+            },
+            "max_length": 100,
+            "documentation": "\n\t\t<p>\n\t\tA list of alarms to be deleted.\n\t\t</p>\n\t",
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ResourceNotFound",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "documentation": "\n\t\t<p>\n\t\tThe named resource does not exist.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tDeletes all specified alarms.\n\t\tIn the event of an error, no alarms are deleted.\n\t\t</p>\n\t"
+    },
+    {
+      "name": "DescribeAlarmHistory",
+      "input": {
+        "shape_name": "DescribeAlarmHistoryInput",
+        "type": "structure",
+        "members": {
+          "AlarmName": {
+            "shape_name": "AlarmName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe name of the alarm.\n\t\t</p>\n\t"
+          },
+          "HistoryItemType": {
+            "shape_name": "HistoryItemType",
+            "type": "string",
+            "enum": [
+              "ConfigurationUpdate",
+              "StateUpdate",
+              "Action"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe type of alarm histories to retrieve.\n\t\t</p>\n\t"
+          },
+          "StartDate": {
+            "shape_name": "Timestamp",
+            "type": "timestamp",
+            "documentation": "\n\t\t<p>\n\t\tThe starting date to retrieve alarm history.\n\t\t</p>\n\t"
+          },
+          "EndDate": {
+            "shape_name": "Timestamp",
+            "type": "timestamp",
+            "documentation": "\n\t\t<p>\n\t\tThe ending date to retrieve alarm history.\n\t\t</p>\n\t"
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 100,
+            "documentation": "\n\t\t<p>\n\t\tThe maximum number of alarm history records to retrieve.\n\t\t</p>\n\t"
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tThe token returned by a previous call to indicate that there\n\t\tis more data available.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "DescribeAlarmHistoryOutput",
+        "type": "structure",
+        "members": {
+          "AlarmHistoryItems": {
+            "shape_name": "AlarmHistoryItems",
+            "type": "list",
+            "members": {
+              "shape_name": "AlarmHistoryItem",
+              "type": "structure",
+              "members": {
+                "AlarmName": {
+                  "shape_name": "AlarmName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe descriptive name for the alarm.\n\t\t</p>\n\t"
+                },
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\tThe time stamp for the alarm history item.\n\t\t</p>\n\t"
+                },
+                "HistoryItemType": {
+                  "shape_name": "HistoryItemType",
+                  "type": "string",
+                  "enum": [
+                    "ConfigurationUpdate",
+                    "StateUpdate",
+                    "Action"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe type of alarm history item.\n\t\t</p>\n\t"
+                },
+                "HistorySummary": {
+                  "shape_name": "HistorySummary",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tA human-readable summary of the alarm history.\n\t\t</p>\n\t"
+                },
+                "HistoryData": {
+                  "shape_name": "HistoryData",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 4095,
+                  "documentation": "\n\t\t<p>\n\t\tMachine-readable data about the alarm in JSON format.\n\t\t</p>\n\t"
+                }
+              },
+              "documentation": "\n\t\t<p>\n\t\t\tThe <code>AlarmHistoryItem</code> data type\n\t\t\tcontains descriptive information about\n\t\t\tthe history of a specific alarm.\n\t\t\tIf you call <a>DescribeAlarmHistory</a>,\n\t\t\tAmazon CloudWatch returns this data type as part of\n\t\t\tthe <a>DescribeAlarmHistoryResult</a> data type.\n\t\t</p>\n\t"
+            },
+            "documentation": "\n\t\t<p>\n\t\tA list of alarm histories in JSON format.\n\t\t</p>\n\t"
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tA string that marks the start of the next batch of returned results.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t\t<p>\n\t\tThe output for the <a>DescribeAlarmHistory</a> action.\n\t\t</p>\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "documentation": "\n\t\t<p>\n\t\tThe next token specified is invalid.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tRetrieves history for the specified alarm.\n\t\tFilter alarms by date range or item type.\n\t\tIf an alarm name is not specified,\n\t\tAmazon CloudWatch returns histories for\n\t\tall of the owner's alarms.\n\t\t</p>\n\t\t<note>\n\t\tAmazon CloudWatch retains the history of an alarm\n\t\tfor two weeks, whether or not you delete the alarm.\n\t\t</note>\n\t"
+    },
+    {
+      "name": "DescribeAlarms",
+      "input": {
+        "shape_name": "DescribeAlarmsInput",
+        "type": "structure",
+        "members": {
+          "AlarmNames": {
+            "shape_name": "AlarmNames",
+            "type": "list",
+            "members": {
+              "shape_name": "AlarmName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": null
+            },
+            "max_length": 100,
+            "documentation": "\n\t\t<p>\n\t\tA list of alarm names to retrieve information for.\n\t\t</p>\n\t"
+          },
+          "AlarmNamePrefix": {
+            "shape_name": "AlarmNamePrefix",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe alarm name prefix. <code>AlarmNames</code> cannot\n\t\tbe specified if this parameter is specified.\n\t\t</p>\n\t"
+          },
+          "StateValue": {
+            "shape_name": "StateValue",
+            "type": "string",
+            "enum": [
+              "OK",
+              "ALARM",
+              "INSUFFICIENT_DATA"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe state value to be used in matching alarms.\n\t\t</p>\n\t"
+          },
+          "ActionPrefix": {
+            "shape_name": "ActionPrefix",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 1024,
+            "documentation": "\n\t\t<p>\n\t\tThe action name prefix.\n\t\t</p>\n\t"
+          },
+          "MaxRecords": {
+            "shape_name": "MaxRecords",
+            "type": "integer",
+            "min_length": 1,
+            "max_length": 100,
+            "documentation": "\n\t\t<p>\n\t\tThe maximum number of alarm descriptions to retrieve.\n\t\t</p>\n\t"
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tThe token returned by a previous call to indicate that there\n\t\tis more data available.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "DescribeAlarmsOutput",
+        "type": "structure",
+        "members": {
+          "MetricAlarms": {
+            "shape_name": "MetricAlarms",
+            "type": "list",
+            "members": {
+              "shape_name": "MetricAlarm",
+              "type": "structure",
+              "members": {
+                "AlarmName": {
+                  "shape_name": "AlarmName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the alarm.\n\t\t</p>\n\t"
+                },
+                "AlarmArn": {
+                  "shape_name": "AlarmArn",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "\n\t\t<p>\n\t\tThe Amazon Resource Name (ARN) of the alarm.\n\t\t</p>\n\t"
+                },
+                "AlarmDescription": {
+                  "shape_name": "AlarmDescription",
+                  "type": "string",
+                  "min_length": 0,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe description for the alarm.\n\t\t</p>\n\t"
+                },
+                "AlarmConfigurationUpdatedTimestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\tThe time stamp of the last update to the alarm configuration.\n\t\t</p>\n\t"
+                },
+                "ActionsEnabled": {
+                  "shape_name": "ActionsEnabled",
+                  "type": "boolean",
+                  "documentation": "\n\t\t<p>\n\t\tIndicates whether actions should be executed\n\t\tduring any changes to the alarm's state.\n\t\t</p>\n\t"
+                },
+                "OKActions": {
+                  "shape_name": "ResourceList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ResourceName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 1024,
+                    "documentation": null
+                  },
+                  "max_length": 5,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>OK</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only actions supported are publishing\n\t\tto an Amazon SNS topic and triggering an Auto Scaling policy.\n\t\t</p>\n\t"
+                },
+                "AlarmActions": {
+                  "shape_name": "ResourceList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ResourceName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 1024,
+                    "documentation": null
+                  },
+                  "max_length": 5,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>ALARM</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only actions supported are publishing\n\t\tto an Amazon SNS topic and triggering an Auto Scaling policy.\n\t\t</p>\n\t"
+                },
+                "InsufficientDataActions": {
+                  "shape_name": "ResourceList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ResourceName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 1024,
+                    "documentation": null
+                  },
+                  "max_length": 5,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>INSUFFICIENT_DATA</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only actions supported are publishing\n\t\tto an Amazon SNS topic or triggering an Auto Scaling policy.\n\t\t</p>\n\t"
+                },
+                "StateValue": {
+                  "shape_name": "StateValue",
+                  "type": "string",
+                  "enum": [
+                    "OK",
+                    "ALARM",
+                    "INSUFFICIENT_DATA"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe state value for the alarm.\n\t\t</p>\n\t"
+                },
+                "StateReason": {
+                  "shape_name": "StateReason",
+                  "type": "string",
+                  "min_length": 0,
+                  "max_length": 1023,
+                  "documentation": "\n\t\t<p>\n\t\tA human-readable explanation for the alarm's state.\n\t\t</p>\n\t"
+                },
+                "StateReasonData": {
+                  "shape_name": "StateReasonData",
+                  "type": "string",
+                  "min_length": 0,
+                  "max_length": 4000,
+                  "documentation": "\n\t\t<p>\n\t\tAn explanation for the alarm's state in machine-readable JSON format\n\t\t</p>\n\t"
+                },
+                "StateUpdatedTimestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\tThe time stamp of the last update to the alarm's state.\n\t\t</p>\n\t"
+                },
+                "MetricName": {
+                  "shape_name": "MetricName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the alarm's metric.\n\t\t</p>\n\t"
+                },
+                "Namespace": {
+                  "shape_name": "Namespace",
+                  "type": "string",
+                  "pattern": "[^:].*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe namespace of alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "Statistic": {
+                  "shape_name": "Statistic",
+                  "type": "string",
+                  "enum": [
+                    "SampleCount",
+                    "Average",
+                    "Sum",
+                    "Minimum",
+                    "Maximum"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe statistic to apply to the alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "Dimensions": {
+                  "shape_name": "Dimensions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Dimension",
+                    "type": "structure",
+                    "members": {
+                      "Name": {
+                        "shape_name": "DimensionName",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                        "required": true
+                      },
+                      "Value": {
+                        "shape_name": "DimensionValue",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                        "required": true
+                      }
+                    },
+                    "member_order": [
+                      "Name",
+                      "Value"
+                    ],
+                    "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+                  },
+                  "max_length": 10,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of dimensions associated with the alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "Period": {
+                  "shape_name": "Period",
+                  "type": "integer",
+                  "min_length": 60,
+                  "documentation": "\n\t\t<p>\n\t\tThe period in seconds over which the statistic is applied.\n\t\t</p>\n\t"
+                },
+                "Unit": {
+                  "shape_name": "StandardUnit",
+                  "type": "string",
+                  "enum": [
+                    "Seconds",
+                    "Microseconds",
+                    "Milliseconds",
+                    "Bytes",
+                    "Kilobytes",
+                    "Megabytes",
+                    "Gigabytes",
+                    "Terabytes",
+                    "Bits",
+                    "Kilobits",
+                    "Megabits",
+                    "Gigabits",
+                    "Terabits",
+                    "Percent",
+                    "Count",
+                    "Bytes/Second",
+                    "Kilobytes/Second",
+                    "Megabytes/Second",
+                    "Gigabytes/Second",
+                    "Terabytes/Second",
+                    "Bits/Second",
+                    "Kilobits/Second",
+                    "Megabits/Second",
+                    "Gigabits/Second",
+                    "Terabits/Second",
+                    "Count/Second",
+                    "None"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe unit of the alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "EvaluationPeriods": {
+                  "shape_name": "EvaluationPeriods",
+                  "type": "integer",
+                  "min_length": 1,
+                  "documentation": "\n\t\t<p>\n\t\tThe number of periods over which data is compared to the\n\t\tspecified threshold.\n\t\t</p>\n\t"
+                },
+                "Threshold": {
+                  "shape_name": "Threshold",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe value against which the specified statistic is compared.\n\t\t</p>\n\t"
+                },
+                "ComparisonOperator": {
+                  "shape_name": "ComparisonOperator",
+                  "type": "string",
+                  "enum": [
+                    "GreaterThanOrEqualToThreshold",
+                    "GreaterThanThreshold",
+                    "LessThanThreshold",
+                    "LessThanOrEqualToThreshold"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe arithmetic operation to use when comparing the specified\n\t\t<code>Statistic</code> and <code>Threshold</code>. The specified\n\t\t<code>Statistic</code> value is used as the first operand.\n\t\t</p>\n\t"
+                }
+              },
+              "member_order": [
+                "AlarmName",
+                "AlarmArn",
+                "AlarmDescription",
+                "AlarmConfigurationUpdatedTimestamp",
+                "ActionsEnabled",
+                "OKActions",
+                "AlarmActions",
+                "InsufficientDataActions",
+                "StateValue",
+                "StateReason",
+                "StateReasonData",
+                "StateUpdatedTimestamp",
+                "MetricName",
+                "Namespace",
+                "Statistic",
+                "Dimensions",
+                "Period",
+                "Unit",
+                "EvaluationPeriods",
+                "Threshold",
+                "ComparisonOperator"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <a>MetricAlarm</a> data type represents\n\t\tan alarm. You can use <a>PutMetricAlarm</a>\n\t\tto create or update an alarm.\n\t\t</p>\n\t"
+            },
+            "documentation": "\n\t\t<p>\n\t\tA list of information for the specified alarms.\n\t\t</p>\n\t"
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tA string that marks the start of the next batch of returned results.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t\t<p>\n\t\tThe output for the <a>DescribeAlarms</a> action.\n\t\t</p>\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidNextToken",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "documentation": "\n\t\t<p>\n\t\tThe next token specified is invalid.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tRetrieves alarms with the specified names.\n\t\tIf no name is specified, all alarms for the user are returned.\n\t\tAlarms can be retrieved by using only a prefix for the alarm name,\n\t\tthe alarm state, or a prefix for any action.\n\t\t</p>\n\t"
+    },
+    {
+      "name": "DescribeAlarmsForMetric",
+      "input": {
+        "shape_name": "DescribeAlarmsForMetricInput",
+        "type": "structure",
+        "members": {
+          "MetricName": {
+            "shape_name": "MetricName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe name of the metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Namespace": {
+            "shape_name": "Namespace",
+            "type": "string",
+            "pattern": "[^:].*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe namespace of the metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Statistic": {
+            "shape_name": "Statistic",
+            "type": "string",
+            "enum": [
+              "SampleCount",
+              "Average",
+              "Sum",
+              "Minimum",
+              "Maximum"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe statistic for the metric.\n\t\t</p>\n\t"
+          },
+          "Dimensions": {
+            "shape_name": "Dimensions",
+            "type": "list",
+            "members": {
+              "shape_name": "Dimension",
+              "type": "structure",
+              "members": {
+                "Name": {
+                  "shape_name": "DimensionName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "DimensionValue",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                  "required": true
+                }
+              },
+              "member_order": [
+                "Name",
+                "Value"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+            },
+            "max_length": 10,
+            "documentation": "\n\t\t<p>\n\t\tThe list of dimensions associated with the metric.\n\t\t</p>\n\t"
+          },
+          "Period": {
+            "shape_name": "Period",
+            "type": "integer",
+            "min_length": 60,
+            "documentation": "\n\t\t<p>\n\t\tThe period in seconds over which the statistic is applied.\n\t\t</p>\n\t"
+          },
+          "Unit": {
+            "shape_name": "StandardUnit",
+            "type": "string",
+            "enum": [
+              "Seconds",
+              "Microseconds",
+              "Milliseconds",
+              "Bytes",
+              "Kilobytes",
+              "Megabytes",
+              "Gigabytes",
+              "Terabytes",
+              "Bits",
+              "Kilobits",
+              "Megabits",
+              "Gigabits",
+              "Terabits",
+              "Percent",
+              "Count",
+              "Bytes/Second",
+              "Kilobytes/Second",
+              "Megabytes/Second",
+              "Gigabytes/Second",
+              "Terabytes/Second",
+              "Bits/Second",
+              "Kilobits/Second",
+              "Megabits/Second",
+              "Gigabits/Second",
+              "Terabits/Second",
+              "Count/Second",
+              "None"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe unit for the metric.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "DescribeAlarmsForMetricOutput",
+        "type": "structure",
+        "members": {
+          "MetricAlarms": {
+            "shape_name": "MetricAlarms",
+            "type": "list",
+            "members": {
+              "shape_name": "MetricAlarm",
+              "type": "structure",
+              "members": {
+                "AlarmName": {
+                  "shape_name": "AlarmName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the alarm.\n\t\t</p>\n\t"
+                },
+                "AlarmArn": {
+                  "shape_name": "AlarmArn",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 1600,
+                  "documentation": "\n\t\t<p>\n\t\tThe Amazon Resource Name (ARN) of the alarm.\n\t\t</p>\n\t"
+                },
+                "AlarmDescription": {
+                  "shape_name": "AlarmDescription",
+                  "type": "string",
+                  "min_length": 0,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe description for the alarm.\n\t\t</p>\n\t"
+                },
+                "AlarmConfigurationUpdatedTimestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\tThe time stamp of the last update to the alarm configuration.\n\t\t</p>\n\t"
+                },
+                "ActionsEnabled": {
+                  "shape_name": "ActionsEnabled",
+                  "type": "boolean",
+                  "documentation": "\n\t\t<p>\n\t\tIndicates whether actions should be executed\n\t\tduring any changes to the alarm's state.\n\t\t</p>\n\t"
+                },
+                "OKActions": {
+                  "shape_name": "ResourceList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ResourceName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 1024,
+                    "documentation": null
+                  },
+                  "max_length": 5,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>OK</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only actions supported are publishing\n\t\tto an Amazon SNS topic and triggering an Auto Scaling policy.\n\t\t</p>\n\t"
+                },
+                "AlarmActions": {
+                  "shape_name": "ResourceList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ResourceName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 1024,
+                    "documentation": null
+                  },
+                  "max_length": 5,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>ALARM</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only actions supported are publishing\n\t\tto an Amazon SNS topic and triggering an Auto Scaling policy.\n\t\t</p>\n\t"
+                },
+                "InsufficientDataActions": {
+                  "shape_name": "ResourceList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ResourceName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 1024,
+                    "documentation": null
+                  },
+                  "max_length": 5,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>INSUFFICIENT_DATA</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only actions supported are publishing\n\t\tto an Amazon SNS topic or triggering an Auto Scaling policy.\n\t\t</p>\n\t"
+                },
+                "StateValue": {
+                  "shape_name": "StateValue",
+                  "type": "string",
+                  "enum": [
+                    "OK",
+                    "ALARM",
+                    "INSUFFICIENT_DATA"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe state value for the alarm.\n\t\t</p>\n\t"
+                },
+                "StateReason": {
+                  "shape_name": "StateReason",
+                  "type": "string",
+                  "min_length": 0,
+                  "max_length": 1023,
+                  "documentation": "\n\t\t<p>\n\t\tA human-readable explanation for the alarm's state.\n\t\t</p>\n\t"
+                },
+                "StateReasonData": {
+                  "shape_name": "StateReasonData",
+                  "type": "string",
+                  "min_length": 0,
+                  "max_length": 4000,
+                  "documentation": "\n\t\t<p>\n\t\tAn explanation for the alarm's state in machine-readable JSON format\n\t\t</p>\n\t"
+                },
+                "StateUpdatedTimestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\tThe time stamp of the last update to the alarm's state.\n\t\t</p>\n\t"
+                },
+                "MetricName": {
+                  "shape_name": "MetricName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the alarm's metric.\n\t\t</p>\n\t"
+                },
+                "Namespace": {
+                  "shape_name": "Namespace",
+                  "type": "string",
+                  "pattern": "[^:].*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe namespace of alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "Statistic": {
+                  "shape_name": "Statistic",
+                  "type": "string",
+                  "enum": [
+                    "SampleCount",
+                    "Average",
+                    "Sum",
+                    "Minimum",
+                    "Maximum"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe statistic to apply to the alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "Dimensions": {
+                  "shape_name": "Dimensions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Dimension",
+                    "type": "structure",
+                    "members": {
+                      "Name": {
+                        "shape_name": "DimensionName",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                        "required": true
+                      },
+                      "Value": {
+                        "shape_name": "DimensionValue",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                        "required": true
+                      }
+                    },
+                    "member_order": [
+                      "Name",
+                      "Value"
+                    ],
+                    "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+                  },
+                  "max_length": 10,
+                  "documentation": "\n\t\t<p>\n\t\tThe list of dimensions associated with the alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "Period": {
+                  "shape_name": "Period",
+                  "type": "integer",
+                  "min_length": 60,
+                  "documentation": "\n\t\t<p>\n\t\tThe period in seconds over which the statistic is applied.\n\t\t</p>\n\t"
+                },
+                "Unit": {
+                  "shape_name": "StandardUnit",
+                  "type": "string",
+                  "enum": [
+                    "Seconds",
+                    "Microseconds",
+                    "Milliseconds",
+                    "Bytes",
+                    "Kilobytes",
+                    "Megabytes",
+                    "Gigabytes",
+                    "Terabytes",
+                    "Bits",
+                    "Kilobits",
+                    "Megabits",
+                    "Gigabits",
+                    "Terabits",
+                    "Percent",
+                    "Count",
+                    "Bytes/Second",
+                    "Kilobytes/Second",
+                    "Megabytes/Second",
+                    "Gigabytes/Second",
+                    "Terabytes/Second",
+                    "Bits/Second",
+                    "Kilobits/Second",
+                    "Megabits/Second",
+                    "Gigabits/Second",
+                    "Terabits/Second",
+                    "Count/Second",
+                    "None"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe unit of the alarm's associated metric.\n\t\t</p>\n\t"
+                },
+                "EvaluationPeriods": {
+                  "shape_name": "EvaluationPeriods",
+                  "type": "integer",
+                  "min_length": 1,
+                  "documentation": "\n\t\t<p>\n\t\tThe number of periods over which data is compared to the\n\t\tspecified threshold.\n\t\t</p>\n\t"
+                },
+                "Threshold": {
+                  "shape_name": "Threshold",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe value against which the specified statistic is compared.\n\t\t</p>\n\t"
+                },
+                "ComparisonOperator": {
+                  "shape_name": "ComparisonOperator",
+                  "type": "string",
+                  "enum": [
+                    "GreaterThanOrEqualToThreshold",
+                    "GreaterThanThreshold",
+                    "LessThanThreshold",
+                    "LessThanOrEqualToThreshold"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe arithmetic operation to use when comparing the specified\n\t\t<code>Statistic</code> and <code>Threshold</code>. The specified\n\t\t<code>Statistic</code> value is used as the first operand.\n\t\t</p>\n\t"
+                }
+              },
+              "member_order": [
+                "AlarmName",
+                "AlarmArn",
+                "AlarmDescription",
+                "AlarmConfigurationUpdatedTimestamp",
+                "ActionsEnabled",
+                "OKActions",
+                "AlarmActions",
+                "InsufficientDataActions",
+                "StateValue",
+                "StateReason",
+                "StateReasonData",
+                "StateUpdatedTimestamp",
+                "MetricName",
+                "Namespace",
+                "Statistic",
+                "Dimensions",
+                "Period",
+                "Unit",
+                "EvaluationPeriods",
+                "Threshold",
+                "ComparisonOperator"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <a>MetricAlarm</a> data type represents\n\t\tan alarm. You can use <a>PutMetricAlarm</a>\n\t\tto create or update an alarm.\n\t\t</p>\n\t"
+            },
+            "documentation": "\n\t\t<p>\n\t\tA list of information for each alarm with the specified metric.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t\t<p>\n\t\tThe output for the <a>DescribeAlarmsForMetric</a> action.\n\t\t</p>\n\t"
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n\t\t<p>\n\t\tRetrieves all alarms for a single metric.\n\t\tSpecify a statistic, period, or unit to filter\n\t\tthe set of alarms further.\n\t\t</p>\n\t"
+    },
+    {
+      "name": "DisableAlarmActions",
+      "input": {
+        "shape_name": "DisableAlarmActionsInput",
+        "type": "structure",
+        "members": {
+          "AlarmNames": {
+            "shape_name": "AlarmNames",
+            "type": "list",
+            "members": {
+              "shape_name": "AlarmName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": null
+            },
+            "max_length": 100,
+            "documentation": "\n\t\t<p>\n\t\tThe names of the alarms to disable actions for.\n\t\t</p>\n\t",
+            "required": true
+          }
+        },
+        "documentation": "\n\t\t<p>\n\n\t\t</p>\n\t"
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "\n\t\t<p>\n\t\tDisables actions for the specified alarms.\n\t\tWhen an alarm's actions are disabled the\n\t\talarm's state may change, but none of the\n\t\talarm's actions will execute.\n\t\t</p>\n\t"
+    },
+    {
+      "name": "EnableAlarmActions",
+      "input": {
+        "shape_name": "EnableAlarmActionsInput",
+        "type": "structure",
+        "members": {
+          "AlarmNames": {
+            "shape_name": "AlarmNames",
+            "type": "list",
+            "members": {
+              "shape_name": "AlarmName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": null
+            },
+            "max_length": 100,
+            "documentation": "\n\t\t<p>\n\t\tThe names of the alarms to enable actions for.\n\t\t</p>\n\t",
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "\n\t\t<p>\n\t\tEnables actions for the specified alarms.\n\t\t</p>\n\t"
+    },
+    {
+      "name": "GetMetricStatistics",
+      "input": {
+        "shape_name": "GetMetricStatisticsInput",
+        "type": "structure",
+        "members": {
+          "Namespace": {
+            "shape_name": "Namespace",
+            "type": "string",
+            "pattern": "[^:].*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe namespace of the metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "MetricName": {
+            "shape_name": "MetricName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe name of the metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Dimensions": {
+            "shape_name": "Dimensions",
+            "type": "list",
+            "members": {
+              "shape_name": "Dimension",
+              "type": "structure",
+              "members": {
+                "Name": {
+                  "shape_name": "DimensionName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "DimensionValue",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                  "required": true
+                }
+              },
+              "member_order": [
+                "Name",
+                "Value"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+            },
+            "max_length": 10,
+            "documentation": "\n\t\t<p>\n\t\tA list of dimensions describing qualities of the metric.\n\t\t</p>\n\t"
+          },
+          "StartTime": {
+            "shape_name": "Timestamp",
+            "type": "timestamp",
+            "documentation": "\n\t\t<p>\n\t\tThe time stamp to use for determining the first datapoint to return.\n\t\tThe value specified is inclusive; results include datapoints\n\t\twith the time stamp specified.\n\t\t</p>\n\t\t<note>\n\t\tThe specified start time is rounded down to the nearest value.\n\t\tDatapoints are returned for start times up to two weeks in the past.\n\t\tSpecified start times that are more than two weeks in the past\n\t\twill not return datapoints for metrics that are\n\t\tolder than two weeks.\n\t\t</note>\n\t",
+            "required": true
+          },
+          "EndTime": {
+            "shape_name": "Timestamp",
+            "type": "timestamp",
+            "documentation": "\n\t\t<p>\n\t\tThe time stamp to use for determining the last\n\t\tdatapoint to return. The value specified is exclusive;\n\t\tresults will include datapoints up to the time stamp\n\t\tspecified.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Period": {
+            "shape_name": "Period",
+            "type": "integer",
+            "min_length": 60,
+            "documentation": "\n\t\t<p>\n\t\tThe granularity, in seconds, of the returned datapoints.\n\t\t<code>Period</code> must be at least 60 seconds and\n\t\tmust be a multiple of 60. The default value is 60.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Statistics": {
+            "shape_name": "Statistics",
+            "type": "list",
+            "members": {
+              "shape_name": "Statistic",
+              "type": "string",
+              "enum": [
+                "SampleCount",
+                "Average",
+                "Sum",
+                "Minimum",
+                "Maximum"
+              ],
+              "documentation": null
+            },
+            "min_length": 1,
+            "max_length": 5,
+            "documentation": "\n\t\t<p>\n\t\tThe metric statistics to return.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Unit": {
+            "shape_name": "StandardUnit",
+            "type": "string",
+            "enum": [
+              "Seconds",
+              "Microseconds",
+              "Milliseconds",
+              "Bytes",
+              "Kilobytes",
+              "Megabytes",
+              "Gigabytes",
+              "Terabytes",
+              "Bits",
+              "Kilobits",
+              "Megabits",
+              "Gigabits",
+              "Terabits",
+              "Percent",
+              "Count",
+              "Bytes/Second",
+              "Kilobytes/Second",
+              "Megabytes/Second",
+              "Gigabytes/Second",
+              "Terabytes/Second",
+              "Bits/Second",
+              "Kilobits/Second",
+              "Megabits/Second",
+              "Gigabits/Second",
+              "Terabits/Second",
+              "Count/Second",
+              "None"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe unit for the metric.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "GetMetricStatisticsOutput",
+        "type": "structure",
+        "members": {
+          "Label": {
+            "shape_name": "MetricLabel",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tA label describing the specified metric.\n\t\t</p>\n\t"
+          },
+          "Datapoints": {
+            "shape_name": "Datapoints",
+            "type": "list",
+            "members": {
+              "shape_name": "Datapoint",
+              "type": "structure",
+              "members": {
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\tThe time stamp used for the datapoint.\n\t\t</p>\n\t"
+                },
+                "SampleCount": {
+                  "shape_name": "DatapointValue",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe number of metric values that contributed to the aggregate value\n\t\tof this datapoint.\n\t\t</p>\n\t"
+                },
+                "Average": {
+                  "shape_name": "DatapointValue",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe average of metric values that correspond to the datapoint.\n\t\t</p>\n\t"
+                },
+                "Sum": {
+                  "shape_name": "DatapointValue",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe sum of metric values used for the datapoint.\n\t\t</p>\n\t"
+                },
+                "Minimum": {
+                  "shape_name": "DatapointValue",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe minimum metric value used for the datapoint.\n\t\t</p>\n\t"
+                },
+                "Maximum": {
+                  "shape_name": "DatapointValue",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\tThe maximum of the metric value used for the datapoint.\n\t\t</p>\n\t"
+                },
+                "Unit": {
+                  "shape_name": "StandardUnit",
+                  "type": "string",
+                  "enum": [
+                    "Seconds",
+                    "Microseconds",
+                    "Milliseconds",
+                    "Bytes",
+                    "Kilobytes",
+                    "Megabytes",
+                    "Gigabytes",
+                    "Terabytes",
+                    "Bits",
+                    "Kilobits",
+                    "Megabits",
+                    "Gigabits",
+                    "Terabits",
+                    "Percent",
+                    "Count",
+                    "Bytes/Second",
+                    "Kilobytes/Second",
+                    "Megabytes/Second",
+                    "Gigabytes/Second",
+                    "Terabytes/Second",
+                    "Bits/Second",
+                    "Kilobits/Second",
+                    "Megabits/Second",
+                    "Gigabits/Second",
+                    "Terabits/Second",
+                    "Count/Second",
+                    "None"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\tThe standard unit used for the datapoint.\n\t\t</p>\n\t"
+                }
+              },
+              "member_order": [
+                "Timestamp",
+                "SampleCount",
+                "Average",
+                "Sum",
+                "Minimum",
+                "Maximum",
+                "Unit"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <code>Datapoint</code> data type encapsulates the statistical data\n\t\tthat Amazon CloudWatch computes from metric data.\n\t\t</p>\n\t"
+            },
+            "documentation": "\n\t\t<p>\n\t\tThe datapoints for the specified metric.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t\t<p>\n\t\tThe output for the <a>GetMetricStatistics</a> action.\n\t\t</p>\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterValueException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "MissingRequiredParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "InvalidParameterCombinationException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "InternalServiceFault",
+          "type": "structure",
+          "members": {
+            "Message": {
+              "shape_name": "FaultDescription",
+              "type": "string",
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "member_order": [
+            "Message"
+          ],
+          "documentation": "\n\t\t<p>\n\t\tIndicates that the request processing has\n\t\tfailed due to some unknown error, exception, or failure.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tGets statistics for the specified metric.\n\t</p>\n\t<note>\n\tThe maximum number of data points returned from a single\n\t    <code>GetMetricStatistics</code> request is 1,440.\n\t    If a request is made that generates more than 1,440 data points,\n\t    Amazon CloudWatch returns an error.  In such a case,\n\t    alter the request by narrowing the specified time range\n\t    or increasing the specified period.  Alternatively,\n\t    make multiple requests across adjacent time ranges.\n\t</note>\n\t<p>\n\t\tAmazon CloudWatch aggregates data points based on the\n\t\tlength of the <code>period</code> that you specify.\n\t\tFor example, if you request statistics with a one-minute granularity,\n\t\tAmazon CloudWatch aggregates data points with time stamps that fall\n\t\twithin the same one-minute period. In such a case,\n\t\tthe data points queried can greatly outnumber the data points returned.\n\t</p>\n\t\t<note>\n\t\tThe maximum number of data points that can be queried is 50,850;\n\t\twhereas the maximum number of data points returned is 1,440.\n\t\t</note>\n\n\t\t<p>\n\t\tThe following examples show various statistics allowed by the data point query maximum of 50,850\n\t\twhen you call <code>GetMetricStatistics</code> on Amazon EC2 instances with\n\t\tdetailed (one-minute) monitoring enabled:\n\t\t</p>\n\t\t<ul>\n\t\t\t<li>Statistics for up to 400 instances for a span of one hour</li>\n\t\t\t<li>Statistics for up to 35 instances over a span of 24 hours</li>\n\t\t\t<li>Statistics for up to 2 instances over a span of 2 weeks</li>\n\t\t</ul>\n\n\t"
+    },
+    {
+      "name": "ListMetrics",
+      "input": {
+        "shape_name": "ListMetricsInput",
+        "type": "structure",
+        "members": {
+          "Namespace": {
+            "shape_name": "Namespace",
+            "type": "string",
+            "pattern": "[^:].*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe namespace to filter against.\n\t\t</p>\n\t"
+          },
+          "MetricName": {
+            "shape_name": "MetricName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe name of the metric to filter against.\n\t\t</p>\n\t"
+          },
+          "Dimensions": {
+            "shape_name": "DimensionFilters",
+            "type": "list",
+            "members": {
+              "shape_name": "DimensionFilter",
+              "type": "structure",
+              "members": {
+                "Name": {
+                  "shape_name": "DimensionName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe dimension name to be matched.\n\t\t</p>\n\t",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "DimensionValue",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe value of the dimension to be matched.\n\t\t</p>\n\t\t<note>\n\t\tSpecifying a <code>Name</code> without specifying a\n\t\t<code>Value</code> returns all values associated\n\t\twith that <code>Name</code>.\n\t\t</note>\n\t"
+                }
+              },
+              "documentation": "\n\t\t<p>\n\t\tThe <code>DimensionFilter</code> data type is used to filter\n\t\t<a>ListMetrics</a> results.\n\t\t</p>\n\t"
+            },
+            "max_length": 10,
+            "documentation": "\n\t\t<p>\n\t\tA list of dimensions to filter against.\n\t\t</p>\n\t"
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tThe token returned by a previous call to indicate that there\n\t\tis more data available.\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "ListMetricsOutput",
+        "type": "structure",
+        "members": {
+          "Metrics": {
+            "shape_name": "Metrics",
+            "type": "list",
+            "members": {
+              "shape_name": "Metric",
+              "type": "structure",
+              "members": {
+                "Namespace": {
+                  "shape_name": "Namespace",
+                  "type": "string",
+                  "pattern": "[^:].*",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe namespace of the metric.\n\t\t</p>\n\t"
+                },
+                "MetricName": {
+                  "shape_name": "MetricName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the metric.\n\t\t</p>\n\t"
+                },
+                "Dimensions": {
+                  "shape_name": "Dimensions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Dimension",
+                    "type": "structure",
+                    "members": {
+                      "Name": {
+                        "shape_name": "DimensionName",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                        "required": true
+                      },
+                      "Value": {
+                        "shape_name": "DimensionValue",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                        "required": true
+                      }
+                    },
+                    "member_order": [
+                      "Name",
+                      "Value"
+                    ],
+                    "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+                  },
+                  "max_length": 10,
+                  "documentation": "\n\t\t<p>\n\t\tA list of dimensions associated with the metric.\n\t\t</p>\n\t"
+                }
+              },
+              "member_order": [
+                "Namespace",
+                "MetricName",
+                "Dimensions"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <code>Metric</code> data type contains\n\t\tinformation about a specific metric. If you call\n\t\t<a>ListMetrics</a>, Amazon CloudWatch returns\n\t\tinformation contained by this data type.\n\t\t</p>\n\t"
+            },
+            "documentation": "\n\t\t<p>\n\t\tA list of metrics used to generate statistics for an AWS account.\n\t\t</p>\n\t"
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t\t<p>\n\t\tA string that marks the start of the next batch of returned results.\n\t\t</p>\n\t"
+          }
+        },
+        "member_order": [
+          "Metrics",
+          "NextToken"
+        ],
+        "documentation": "\n\t\t<p>\n\t\tThe output for the <a>ListMetrics</a> action.\n\t\t</p>\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServiceFault",
+          "type": "structure",
+          "members": {
+            "Message": {
+              "shape_name": "FaultDescription",
+              "type": "string",
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "member_order": [
+            "Message"
+          ],
+          "documentation": "\n\t\t<p>\n\t\tIndicates that the request processing has\n\t\tfailed due to some unknown error, exception, or failure.\n\t\t</p>\n\t"
+        },
+        {
+          "shape_name": "InvalidParameterValueException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tReturns a list of valid metrics stored for the AWS account owner.\n\t\tReturned metrics can be used with <code>GetMetricStatistics</code>\n\t\tto obtain statistical data for a given metric.\n\t\t</p>\n\t\t<note>\n\t\tUp to 500 results are returned for any one call.  To retrieve further\n\t\tresults, use returned <code>NextToken</code> values with subsequent\n\t\t<code>ListMetrics</code> operations.\n\t\t</note>\n\t\t<note>\n\t\t\tIf you create a metric with the <a>PutMetricData</a> action,\n\t\t\tallow up to fifteen minutes for the metric to appear in calls\n\t\t\tto the <code>ListMetrics</code> action.\n\t\t</note>\n\t"
+    },
+    {
+      "name": "PutMetricAlarm",
+      "input": {
+        "shape_name": "PutMetricAlarmInput",
+        "type": "structure",
+        "members": {
+          "AlarmName": {
+            "shape_name": "AlarmName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe descriptive name for the alarm.  This name\n\t\tmust be unique within the user's AWS account\n\t\t</p>\n\t",
+            "required": true
+          },
+          "AlarmDescription": {
+            "shape_name": "AlarmDescription",
+            "type": "string",
+            "min_length": 0,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe description for the alarm.\n\t\t</p>\n\t"
+          },
+          "ActionsEnabled": {
+            "shape_name": "ActionsEnabled",
+            "type": "boolean",
+            "documentation": "\n\t\t<p>\n\t\tIndicates whether or not actions should be executed\n\t\tduring any changes to the alarm's state.\n\t\t</p>\n\t"
+          },
+          "OKActions": {
+            "shape_name": "ResourceList",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 1024,
+              "documentation": null
+            },
+            "max_length": 5,
+            "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>OK</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only action supported is publishing\n\t\tto an Amazon SNS topic or an Amazon Auto Scaling policy.\n\t\t</p>\n\t"
+          },
+          "AlarmActions": {
+            "shape_name": "ResourceList",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 1024,
+              "documentation": null
+            },
+            "max_length": 5,
+            "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>ALARM</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only action supported is publishing\n\t\tto an Amazon SNS topic or an Amazon Auto Scaling policy.\n\t\t</p>\n\t"
+          },
+          "InsufficientDataActions": {
+            "shape_name": "ResourceList",
+            "type": "list",
+            "members": {
+              "shape_name": "ResourceName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 1024,
+              "documentation": null
+            },
+            "max_length": 5,
+            "documentation": "\n\t\t<p>\n\t\tThe list of actions to execute when this alarm\n\t\ttransitions into an <code>INSUFFICIENT_DATA</code> state\n\t\tfrom any other state. Each action is specified as an\n\t\tAmazon Resource Number (ARN).\n\t\tCurrently the only action supported is publishing\n\t\tto an Amazon SNS topic or an Amazon Auto Scaling policy.\n\t\t</p>\n\t"
+          },
+          "MetricName": {
+            "shape_name": "MetricName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe name for the alarm's associated metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Namespace": {
+            "shape_name": "Namespace",
+            "type": "string",
+            "pattern": "[^:].*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe namespace for the alarm's associated metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Statistic": {
+            "shape_name": "Statistic",
+            "type": "string",
+            "enum": [
+              "SampleCount",
+              "Average",
+              "Sum",
+              "Minimum",
+              "Maximum"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe statistic to apply to the alarm's associated metric.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Dimensions": {
+            "shape_name": "Dimensions",
+            "type": "list",
+            "members": {
+              "shape_name": "Dimension",
+              "type": "structure",
+              "members": {
+                "Name": {
+                  "shape_name": "DimensionName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                  "required": true
+                },
+                "Value": {
+                  "shape_name": "DimensionValue",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                  "required": true
+                }
+              },
+              "member_order": [
+                "Name",
+                "Value"
+              ],
+              "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+            },
+            "max_length": 10,
+            "documentation": "\n\t\t<p>\n\t\tThe dimensions for the alarm's associated metric.\n\t\t</p>\n\t"
+          },
+          "Period": {
+            "shape_name": "Period",
+            "type": "integer",
+            "min_length": 60,
+            "documentation": "\n\t\t<p>\n\t\tThe period in seconds over which the specified statistic\n\t\tis applied.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Unit": {
+            "shape_name": "StandardUnit",
+            "type": "string",
+            "enum": [
+              "Seconds",
+              "Microseconds",
+              "Milliseconds",
+              "Bytes",
+              "Kilobytes",
+              "Megabytes",
+              "Gigabytes",
+              "Terabytes",
+              "Bits",
+              "Kilobits",
+              "Megabits",
+              "Gigabits",
+              "Terabits",
+              "Percent",
+              "Count",
+              "Bytes/Second",
+              "Kilobytes/Second",
+              "Megabytes/Second",
+              "Gigabytes/Second",
+              "Terabytes/Second",
+              "Bits/Second",
+              "Kilobits/Second",
+              "Megabits/Second",
+              "Gigabits/Second",
+              "Terabits/Second",
+              "Count/Second",
+              "None"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe unit for the alarm's associated metric.\n\t\t</p>\n\t"
+          },
+          "EvaluationPeriods": {
+            "shape_name": "EvaluationPeriods",
+            "type": "integer",
+            "min_length": 1,
+            "documentation": "\n\t\t<p>\n\t\tThe number of periods over which data is compared to the\n\t\tspecified threshold.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "Threshold": {
+            "shape_name": "Threshold",
+            "type": "double",
+            "documentation": "\n\t\t<p>\n\t\tThe value against which the specified statistic is compared.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "ComparisonOperator": {
+            "shape_name": "ComparisonOperator",
+            "type": "string",
+            "enum": [
+              "GreaterThanOrEqualToThreshold",
+              "GreaterThanThreshold",
+              "LessThanThreshold",
+              "LessThanOrEqualToThreshold"
+            ],
+            "documentation": "\n\t\t<p>\n\t\tThe arithmetic operation to use when comparing the specified\n\t\t<code>Statistic</code> and <code>Threshold</code>. The specified\n\t\t<code>Statistic</code> value is used as the first operand.\n\t\t</p>\n\t",
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "LimitExceededFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "documentation": "\n\t\t<p>\n\t\tThe quota for alarms for this customer has\n\t\talready been reached.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tCreates or updates an alarm and associates it\n\t\twith the specified Amazon CloudWatch metric. Optionally,\n\t\tthis operation can associate one or more Amazon Simple\n\t\tNotification Service resources with the alarm.\n\t\t</p>\n\t\t<p>\n\t\tWhen this operation creates an alarm, the alarm state is immediately\n\t\tset to <code>INSUFFICIENT_DATA</code>.  The alarm is evaluated and its\n\t\t<code>StateValue</code> is set appropriately.  Any actions associated\n\t\twith the <code>StateValue</code> is then executed.\n\t\t</p>\n\t\t<note>\n\t\tWhen updating an existing alarm, its <code>StateValue</code>\n\t\tis left unchanged.\n\t\t</note>\n\t"
+    },
+    {
+      "name": "PutMetricData",
+      "input": {
+        "shape_name": "PutMetricDataInput",
+        "type": "structure",
+        "members": {
+          "Namespace": {
+            "shape_name": "Namespace",
+            "type": "string",
+            "pattern": "[^:].*",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe namespace for the metric data.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "MetricData": {
+            "shape_name": "MetricData",
+            "type": "list",
+            "members": {
+              "shape_name": "MetricDatum",
+              "type": "structure",
+              "members": {
+                "MetricName": {
+                  "shape_name": "MetricName",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 255,
+                  "documentation": "\n\t\t<p>\n\t\t\tThe name of the metric.\n\t\t</p>\n\t",
+                  "required": true
+                },
+                "Dimensions": {
+                  "shape_name": "Dimensions",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Dimension",
+                    "type": "structure",
+                    "members": {
+                      "Name": {
+                        "shape_name": "DimensionName",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe name of the dimension.\n\t\t</p>\n\t",
+                        "required": true
+                      },
+                      "Value": {
+                        "shape_name": "DimensionValue",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 255,
+                        "documentation": "\n\t\t<p>\n\t\tThe value representing the dimension measurement\n\t\t</p>\n\t",
+                        "required": true
+                      }
+                    },
+                    "member_order": [
+                      "Name",
+                      "Value"
+                    ],
+                    "documentation": "\n\t\t<p>\n\t\tThe <code>Dimension</code> data type further expands on the\n\t\tidentity of a metric using a Name, Value pair.\n\t\t</p>\n\t"
+                  },
+                  "max_length": 10,
+                  "documentation": "\n\t\t<p>\n\t\t\tA list of dimensions associated with the metric.\n\t\t</p>\n\t"
+                },
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n\t\t<p>\n\t\t\tThe time stamp used for the metric.\n\t\t\tIf not specified, the default value is set\n\t\t\tto the time the metric data was received.\n\t\t</p>\n\t"
+                },
+                "Value": {
+                  "shape_name": "DatapointValue",
+                  "type": "double",
+                  "documentation": "\n\t\t<p>\n\t\t\tThe value for the metric.\n\t\t</p>\n\t\t<important>Although the <code>Value</code> parameter accepts numbers of type <code>Double</code>,\n\t\t\tAmazon CloudWatch truncates values with very large exponents.\n\t\t\tValues with base-10 exponents greater than 126 (1 x 10^126) are truncated.\n\t\t\tLikewise, values with base-10 exponents less than -130 (1 x 10^-130) are also truncated.\n\t\t</important>\n\t"
+                },
+                "StatisticValues": {
+                  "shape_name": "StatisticSet",
+                  "type": "structure",
+                  "members": {
+                    "SampleCount": {
+                      "shape_name": "DatapointValue",
+                      "type": "double",
+                      "documentation": "\n\t\t<p>\n\t\t\tThe number of samples used for the statistic set.\n\t\t</p>\n\t",
+                      "required": true
+                    },
+                    "Sum": {
+                      "shape_name": "DatapointValue",
+                      "type": "double",
+                      "documentation": "\n\t\t<p>\n\t\t\tThe sum of values for the sample set.\n\t\t</p>\n\t",
+                      "required": true
+                    },
+                    "Minimum": {
+                      "shape_name": "DatapointValue",
+                      "type": "double",
+                      "documentation": "\n\t\t<p>\n\t\t\tThe minimum value of the sample set.\n\t\t</p>\n\t",
+                      "required": true
+                    },
+                    "Maximum": {
+                      "shape_name": "DatapointValue",
+                      "type": "double",
+                      "documentation": "\n\t\t<p>\n\t\t\tThe maximum value of the sample set.\n\t\t</p>\n\t",
+                      "required": true
+                    }
+                  },
+                  "documentation": "\n\t\t<p>\n\t\t\tA set of statistical values describing the metric.\n\t\t</p>\n\t"
+                },
+                "Unit": {
+                  "shape_name": "StandardUnit",
+                  "type": "string",
+                  "enum": [
+                    "Seconds",
+                    "Microseconds",
+                    "Milliseconds",
+                    "Bytes",
+                    "Kilobytes",
+                    "Megabytes",
+                    "Gigabytes",
+                    "Terabytes",
+                    "Bits",
+                    "Kilobits",
+                    "Megabits",
+                    "Gigabits",
+                    "Terabits",
+                    "Percent",
+                    "Count",
+                    "Bytes/Second",
+                    "Kilobytes/Second",
+                    "Megabytes/Second",
+                    "Gigabytes/Second",
+                    "Terabytes/Second",
+                    "Bits/Second",
+                    "Kilobits/Second",
+                    "Megabits/Second",
+                    "Gigabits/Second",
+                    "Terabits/Second",
+                    "Count/Second",
+                    "None"
+                  ],
+                  "documentation": "\n\t\t<p>\n\t\t\tThe unit of the metric.\n\t\t</p>\n\t"
+                }
+              },
+              "documentation": "\n\t\t<p>\n\t\t\tThe <code>MetricDatum</code> data type encapsulates the information\n\t\t\tsent with <a>PutMetricData</a> to either create a new metric or\n\t\t\tadd new values to be aggregated into an existing metric.\n\t\t</p>\n\t"
+            },
+            "documentation": "\n\t\t<p>\n\t\tA list of data describing the metric.\n\t\t</p>\n\t",
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterValueException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "MissingRequiredParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "InvalidParameterCombinationException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "AwsQueryErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "InternalServiceFault",
+          "type": "structure",
+          "members": {
+            "Message": {
+              "shape_name": "FaultDescription",
+              "type": "string",
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "member_order": [
+            "Message"
+          ],
+          "documentation": "\n\t\t<p>\n\t\tIndicates that the request processing has\n\t\tfailed due to some unknown error, exception, or failure.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tPublishes metric data points to Amazon CloudWatch. Amazon Cloudwatch\n\t\tassociates the data points with the specified metric. If the specified metric does not exist,\n\t\tAmazon CloudWatch creates the metric.\n\t\t</p>\n\t\t<note>\n\t\t\tIf you create a metric with the <code>PutMetricData</code> action,\n\t\t\tallow up to fifteen minutes for the metric to appear in calls\n\t\t\tto the <a>ListMetrics</a> action.\n\t\t</note>\n\t\t<p>\n\t\t\tThe size of a <function>PutMetricData</function> request is limited to 8 KB\n\t\t\tfor HTTP GET requests and 40 KB for HTTP POST requests.\n\t\t</p>\n\t\t<important>\n\t\t\tAlthough the <code>Value</code> parameter accepts numbers of type <code>Double</code>,\n\t\t\tAmazon CloudWatch truncates values with very large exponents.\n\t\t\tValues with base-10 exponents greater than 126 (1 x 10^126) are truncated.\n\t\t\tLikewise, values with base-10 exponents less than -130 (1 x 10^-130) are also truncated.\n\t\t</important>\n\n\t"
+    },
+    {
+      "name": "SetAlarmState",
+      "input": {
+        "shape_name": "SetAlarmStateInput",
+        "type": "structure",
+        "members": {
+          "AlarmName": {
+            "shape_name": "AlarmName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 255,
+            "documentation": "\n\t\t<p>\n\t\tThe descriptive name for the alarm.  This name\n\t\tmust be unique within the user's AWS account.\n\t\tThe maximum length is 255 characters.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "StateValue": {
+            "shape_name": "StateValue",
+            "type": "string",
+            "enum": [
+              "OK",
+              "ALARM",
+              "INSUFFICIENT_DATA"
+            ],
+            "documentation": "\n\t\t<p>\n\t\t\tThe value of the state.\n\t\t</p>\n\t",
+            "required": true
+          },
+          "StateReason": {
+            "shape_name": "StateReason",
+            "type": "string",
+            "min_length": 0,
+            "max_length": 1023,
+            "documentation": "\n\t\t<p>\n\t\tThe reason that this alarm is set to this specific state (in human-readable text format)\n\t\t</p>\n\t",
+            "required": true
+          },
+          "StateReasonData": {
+            "shape_name": "StateReasonData",
+            "type": "string",
+            "min_length": 0,
+            "max_length": 4000,
+            "documentation": "\n\t\t<p>\n\t\tThe reason that this alarm is set to this specific state (in machine-readable JSON format)\n\t\t</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ResourceNotFound",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "documentation": "\n\t\t<p>\n\t\tThe named resource does not exist.\n\t\t</p>\n\t"
+        },
+        {
+          "shape_name": "InvalidFormatFault",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 255,
+              "documentation": "\n\t\t<p></p>\n\t"
+            }
+          },
+          "documentation": "\n\t\t<p>\n\t\tData was not syntactically valid JSON.\n\t\t</p>\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>\n\t\tTemporarily sets the state of an alarm.\n\t\tWhen the updated <code>StateValue</code> differs\n\t\tfrom the previous value, the action configured for\n\t\tthe appropriate state is invoked. This is not a\n\t\tpermanent change. The next periodic alarm check\n\t\t(in about a minute) will set the alarm to its actual state.\n\t\t</p>\n\t"
+    }
+  ]
+}

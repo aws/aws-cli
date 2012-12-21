@@ -1,3 +1,4 @@
+#!/usr/bin/env
 # Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -20,31 +21,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import logging
+import unittest
+import os
+import botocore.session
+import botocore.exceptions
 
 
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
+class TestConfig(unittest.TestCase):
 
-# create logger
-log = logging.getLogger(__name__)
-log.addHandler(NullHandler())
+    def test_config_not_found(self):
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'aws_config_notfound')
+        os.environ['AWS_CONFIG_FILE'] = config_path
+        session = botocore.session.get_session()
+        with self.assertRaises(botocore.exceptions.ConfigNotFound):
+            config = session.get_config()
+
+    def test_config_parse_error(self):
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'aws_config_bad')
+        os.environ['AWS_CONFIG_FILE'] = config_path
+        session = botocore.session.get_session()
+        with self.assertRaises(botocore.exceptions.ConfigParseError):
+            config = session.get_config()
 
 
-def set_debug_logger():
-    log.setLevel(logging.DEBUG)
-
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-
-    # create formatter
-    fmt_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    formatter = logging.Formatter(fmt_string)
-
-    # add formatter to ch
-    ch.setFormatter(formatter)
-
-    # add ch to logger
-    log.addHandler(ch)
+if __name__ == "__main__":
+    unittest.main()

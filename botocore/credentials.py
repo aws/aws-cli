@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import os
 from six.moves import configparser
+import os
 import requests
 import json
-import hmac
-from hashlib import sha256
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Credentials(object):
@@ -33,14 +34,20 @@ class Credentials(object):
     Holds the credentials needed to authenticate requests.  In addition
     the Credential object knows how to search for credentials and how
     to choose the right credentials when multiple credentials are found.
+
+    :ivar access_key: The access key part of the credentials.
+    :ivar secret_key: The secret key part of the credentials.
+    :ivar token: The security token, valid only for session credentials.
+    :ivar method: A string which identifies where the credentials
+        were found.  Valid values are: iam_role|env|config|boto.
     """
 
     def __init__(self, access_key=None, secret_key=None, token=None):
         self.access_key = access_key
         self.secret_key = secret_key
         self.token = token
-        self.hmac = hmac.new(self.secret_key.encode('utf-8'),
-                             digestmod=sha256)
+        self.method = None
+        self.profiles = []
 
 
 def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
@@ -66,62 +73,55 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
     return d
 
 
-def search_metadata(**kwargs):
-    metadata = _search_md()
+def search_iam_role(**kwargs):
+    credentials = None
+    if 'metadata' in kwargs:
+        # to help with unit tests
+        metadata = kwargs['metadata']
+    else:
+        metadata = _search_md()
     # Assuming there's only one role on the instance profile.
     if metadata:
         metadata = metadata['iam']['security-credentials'].values()[0]
         credentials = Credentials(metadata['AccessKeyId'],
                                   metadata['SecretAccessKey'],
                                   metadata['Token'])
-        return credentials
-    else:
-        return None
+        credentials.method = 'iam-role'
+        logger.info('Found credentials in IAM Role')
+    return credentials
 
 
 def search_environment(**kwargs):
     """
     Search for credentials in explicit environment variables.
     """
+    credentials = None
     access_key = os.environ.get('AWS_ACCESS_KEY_ID', None)
     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
-        return credentials
-    else:
-        return None
+        credentials.method = 'env'
+        logger.info('Found credentials in Environment variables')
+    return credentials
 
 
 def search_file(**kwargs):
     """
-    If the 'AWS_CONFIG_FILE' environment variable exists, parse that
-    file for credentials.
+    If there is are credentials in the configuration associated with
+    the session, use those.
     """
-    if 'AWS_CONFIG_FILE' in os.environ:
-        profile = kwargs.get('profile', 'default')
+    credentials = None
+    config = kwargs.get('config', None)
+    if config:
         access_key_name = kwargs['access_key_name']
         secret_key_name = kwargs['secret_key_name']
-        access_key = secret_key = None
-        path = os.getenv('AWS_CONFIG_FILE')
-        path = os.path.expandvars(path)
-        path = os.path.expanduser(path)
-        cp = configparser.RawConfigParser()
-        cp.read(path)
-        if not cp.has_section(profile):
-            raise ValueError('Profile: %s not found' % profile)
-        if cp.has_option(profile, access_key_name):
-            access_key = cp.get(profile, access_key_name)
-        else:
-            access_key = None
-        if cp.has_option(profile, secret_key_name):
-            secret_key = cp.get(profile, secret_key_name)
-        else:
-            secret_key = None
-        if access_key and secret_key:
-            credentials = Credentials(access_key, secret_key)
-            return credentials
-        else:
-            return None
+        if access_key_name in config:
+            if secret_key_name in config:
+                credentials = Credentials(config[access_key_name],
+                                          config[secret_key_name])
+                credentials.method = 'config'
+                logger.info('Found credentials in config file')
+    return credentials
 
 
 def search_boto_config(**kwargs):
@@ -143,21 +143,29 @@ def search_boto_config(**kwargs):
         secret_key = cp.get('Credentials', 'aws_secret_access_key')
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
+        credentials.method = 'boto'
+        logger.info('Found credentials in boto config file')
     return credentials
 
 AllCredentialFunctions = [search_environment,
                           search_file,
                           search_boto_config,
-                          search_metadata]
+                          search_iam_role]
+
+_credential_methods = {'env': search_environment,
+                       'config': search_file,
+                       'boto': search_boto_config,
+                       'iam-role': search_iam_role}
 
 
-def get_credentials(profile=None):
-    if not profile:
-        profile = 'default'
-    for cred_fn in AllCredentialFunctions:
-        credentials = cred_fn(profile=profile,
+def get_credentials(config, metadata=None):
+    credentials = None
+    for cred_method in _credential_methods:
+        cred_fn = _credential_methods[cred_method]
+        credentials = cred_fn(config=config,
                               access_key_name='aws_access_key_id',
-                              secret_key_name='aws_secret_access_key')
+                              secret_key_name='aws_secret_access_key',
+                              metadata=metadata)
         if credentials:
             break
     return credentials

@@ -3,9 +3,10 @@
   "api_version": "2011-10-01",
   "short_name": "sqs",
   "service_name": "AmazonSQS",
+  "membered_lists": false,
   "assembly": "com.amazonaws.sqs",
   "xmlnamespace": "http://queue.amazonaws.com/doc/2011-10-01/",
-  "documentation": "Amazon Simple Queue Service (Amazon SQS) offers a reliable, highly scalable, hosted queue for storing messages as they travel between computers. By using Amazon SQS, developers can simply move data between distributed components of their applications that perform different tasks, without losing messages or requiring each component to be always available. Amazon SQS makes it easy to build an automated workflow, working in close conjunction with the Amazon Elastic Compute Cloud (Amazon EC2) and the other AWS infrastructure web services.",
+  "documentation": "\n    <p>Amazon Simple Queue Service (Amazon SQS) offers a reliable, highly scalable,\n      hosted queue for storing messages as they travel between computers. By using\n      Amazon SQS, developers can simply move data between distributed components of\n      their applications that perform different tasks, without losing messages or\n      requiring each component to be always available. Amazon SQS makes it easy to\n      build an automated workflow, working in close conjunction with the Amazon\n      Elastic Compute Cloud (Amazon EC2) and the other AWS infrastructure web\n      services.</p>\n\n    <p>Amazon SQS works by exposing Amazon's web-scale messaging infrastructure as\n      a web service. Any computer on the Internet can add or read messages without\n      any installed software or special firewall configurations. Components of\n      applications using Amazon SQS can run independently, and do not need to be on\n      the same network, developed with the same technologies, or running at the same\n      time.</p>\n\n    <p>Visit <a href=\"http://aws.amazon.com/sqs/\">http://aws.amazon.com/sqs/</a>\n      for more information.</p>\n  ",
   "operations": [
     {
       "name": "AddPermission",
@@ -16,13 +17,13 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "Label": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The unique identification of the permission you're setting (e.g., AliceSendMessage). Constraints: Maximum 80 characters; alphanumeric characters, hyphens (-), and underscores (_) are allowed.",
+            "documentation": "\n    <p>The unique identification of the permission you're setting (e.g.,\n      <code>AliceSendMessage</code>). Constraints: Maximum 80 characters;\n      alphanumeric characters, hyphens (-), and underscores (_) are allowed.</p>\n  ",
             "required": true
           },
           "AWSAccountIds": {
@@ -31,11 +32,11 @@
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "AWSAccountId"
             },
             "flattened": true,
-            "documentation": "The AWS account number of the principal who will be given permission. The principal must have an AWS account, but does not need to be signed up for Amazon SQS.",
+            "documentation": "\n    <p>The AWS account number of the <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/APIReference/Glossary.html\">principal</a>\n      who will be given permission. The principal must have an AWS account, but does\n      not need to be signed up for Amazon SQS.</p>\n  ",
             "required": true
           },
           "Actions": {
@@ -44,11 +45,11 @@
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "ActionName"
             },
             "flattened": true,
-            "documentation": "The action the client wants to allow for the specified principal.",
+            "documentation": "\n    <p>The action the client wants to allow for the specified principal.</p>\n  ",
             "required": true
           }
         },
@@ -61,10 +62,10 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The operation that you requested would violate a limit. For example, ReceiveMessage returns this error if the maximum number of messages inflight has already been reached. AddPermission returns this error if the maximum number of permissions for the queue has already been reached."
+          "documentation": "\n    <p>The operation that you requested would violate a limit. For example,\n      ReceiveMessage returns this error if the maximum number of messages\n      inflight has already been reached. AddPermission returns this error if\n      the maximum number of permissions for the queue has already been reached.\n    </p>\n  "
         }
       ],
-      "documentation": "The AddPermission action adds a permission to a queue for a specific principal. This allows for sharing access to the queue."
+      "documentation": "\n    <p>The AddPermission action adds a permission to a queue for a specific \n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/APIReference/Glossary.html#d0e3892\">principal</a>.\n      This allows for sharing access to the queue.</p>\n\n    <p>When you create a queue, you have full control access rights for the queue.\n      Only you (as owner of the queue) can grant or deny permissions to the queue.\n      For more information about these permissions, see\n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?acp-overview.html\">Shared\n      Queues</a> in the Amazon SQS Developer Guide.</p>\n\n    <p><code>AddPermission</code> writes an SQS-generated policy. If you want to\n      write your own policy, use SetQueueAttributes to upload your policy. For more\n      information about writing your own policy, see\n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?AccessPolicyLanguage.html\">Appendix:\n      The Access Policy Language</a> in the Amazon SQS Developer Guide.</p>\n  "
     },
     {
       "name": "ChangeMessageVisibility",
@@ -75,19 +76,19 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "ReceiptHandle": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The receipt handle associated with the message whose visibility timeout should be changed.",
+            "documentation": "\n    <p>The receipt handle associated with the message whose visibility timeout\n      should be changed.</p>\n  ",
             "required": true
           },
           "VisibilityTimeout": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": "The new value (in seconds) for the message's visibility timeout.",
+            "documentation": "\n    <p>The new value (in seconds) for the message's visibility timeout.</p>\n  ",
             "required": true
           }
         },
@@ -100,17 +101,17 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The message referred to is not in flight."
+          "documentation": "\n    <p>The message referred to is not in flight.</p>\n  "
         },
         {
           "shape_name": "ReceiptHandleIsInvalid",
           "type": "structure",
           "members": {
           },
-          "documentation": "The receipt handle provided is not valid."
+          "documentation": "\n    <p>The receipt handle provided is not valid.</p>\n  "
         }
       ],
-      "documentation": "The ChangeMessageVisibility action changes the visibility timeout of a specified message in a queue to a new value. The maximum allowed timeout value you can set the value to is 12 hours. This means you can't extend the timeout of a message in an existing queue to more than a total visibility timeout of 12 hours. (For more information visibility timeout, see Visibility Timeout in the Amazon SQS Developer Guide.)"
+      "documentation": "\n    <p>The <code>ChangeMessageVisibility</code> action changes the visibility\n      timeout of a specified message in a queue to a new value. The maximum allowed\n      timeout value you can set the value to is 12 hours. This means you can't extend\n      the timeout of a message in an existing queue to more than a total visibility\n      timeout of 12 hours. (For more information visibility timeout, see <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/AboutVT.html\">Visibility\n        Timeout</a> in the Amazon SQS Developer Guide.)</p>\n\n    <p>For example, let's say you have a message and its default message visibility\n      timeout is 30 minutes. You could call <code>ChangeMessageVisiblity</code> with\n      a value of two hours and the effective timeout would be two hours and 30\n      minutes. When that time comes near you could again extend the time out by\n      calling ChangeMessageVisiblity, but this time the maximum allowed timeout would\n      be 9 hours and 30 minutes.</p>\n\n    <important>If you attempt to set the <code>VisibilityTimeout</code> to an\n      amount more than the maximum time left, Amazon SQS returns an error. It will\n      not automatically recalculate and increase the timeout to the maximum time\n      remaining.</important>\n\n    <important>Unlike with a queue, when you change the visibility timeout for a\n      specific message, that timeout value is applied immediately but is not saved in\n      memory for that message. If you don't delete a message after it is received,\n      the visibility timeout for the message the next time it is received reverts to\n      the original timeout value, not the value you set with the\n      ChangeMessageVisibility action.</important>\n  "
     },
     {
       "name": "ChangeMessageVisibilityBatch",
@@ -121,7 +122,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "Entries": {
@@ -134,26 +135,26 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An identifier for this particular receipt handle. This is used to communicate the result. Note that the Ids of a batch request need to be unique within the request.",
+                  "documentation": "\n    <p>An identifier for this particular receipt handle. This is used to communicate\n      the result. Note that the <code>Id</code>s of a batch request need to be\n      unique within the request.</p>\n  ",
                   "required": true
                 },
                 "ReceiptHandle": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "A receipt handle.",
+                  "documentation": "\n    <p>A receipt handle.</p>\n  ",
                   "required": true
                 },
                 "VisibilityTimeout": {
                   "shape_name": "Integer",
                   "type": "integer",
-                  "documentation": "The new value (in seconds) for the message's visibility timeout."
+                  "documentation": "\n    <p>The new value (in seconds) for the message's visibility timeout.</p>\n  "
                 }
               },
-              "documentation": "Encloses a receipt handle and an entry id for each message in ChangeMessageVisibilityBatchRequest.",
+              "documentation": "\n    <p>Encloses a receipt handle and an entry id for each message in\n      <a>ChangeMessageVisibilityBatchRequest</a>.</p>\n  ",
               "xmlname": "ChangeMessageVisibilityBatchRequestEntry"
             },
             "flattened": true,
-            "documentation": "A list of receipt handles of the messages for which the visibility timeout must be changed.",
+            "documentation": "\n    <p>A list of receipt handles of the messages for which the visibility timeout\n      must be changed.</p>\n  ",
             "required": true
           }
         },
@@ -173,15 +174,15 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "Represents a message whose visibility timeout has been changed successfully.",
+                  "documentation": "\n    <p>Represents a message whose visibility timeout has been changed\n      successfully.</p>\n  ",
                   "required": true
                 }
               },
-              "documentation": "Encloses the id of an entry in ChangeMessageVisibilityBatchRequest.",
+              "documentation": "\n    <p>Encloses the id of an entry in <a>ChangeMessageVisibilityBatchRequest</a>.</p>\n  ",
               "xmlname": "ChangeMessageVisibilityBatchResultEntry"
             },
             "flattened": true,
-            "documentation": "A list of ChangeMessageVisibilityBatchResultEntrys.",
+            "documentation": "\n    <p>A list of <a>ChangeMessageVisibilityBatchResultEntry</a>s.</p>\n  ",
             "required": true
           },
           "Failed": {
@@ -194,32 +195,32 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "The id of an entry in a batch request.",
+                  "documentation": "\n    <p>The id of an entry in a batch request.</p>\n  ",
                   "required": true
                 },
                 "SenderFault": {
                   "shape_name": "Boolean",
                   "type": "boolean",
-                  "documentation": "Whether the error happened due to the sender's fault.",
+                  "documentation": "\n    <p>Whether the error happened due to the sender's fault.</p>\n  ",
                   "required": true
                 },
                 "Code": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An error code representing why the operation failed on this entry.",
+                  "documentation": "\n    <p>An error code representing why the operation failed on this entry.</p>\n  ",
                   "required": true
                 },
                 "Message": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "A message explaining why the operation failed on this entry."
+                  "documentation": "\n    <p>A message explaining why the operation failed on this entry.</p>\n  "
                 }
               },
-              "documentation": "This is used in the responses of batch API to give a detailed description of the result of an operation on each entry in the request.",
+              "documentation": "\n    <p>This is used in the responses of batch API to give a detailed description\n      of the result of an operation on each entry in the request.</p>\n  ",
               "xmlname": "BatchResultErrorEntry"
             },
             "flattened": true,
-            "documentation": "A list of BatchResultErrorEntrys.",
+            "documentation": "\n    <p>A list of <a>BatchResultErrorEntry</a>s.</p>\n  ",
             "required": true
           }
         },
@@ -231,31 +232,31 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "Batch request contains more number of entries than permissible."
+          "documentation": "\n    <p>Batch request contains more number of entries than permissible.</p>\n  "
         },
         {
           "shape_name": "EmptyBatchRequest",
           "type": "structure",
           "members": {
           },
-          "documentation": "Batch request does not contain an entry."
+          "documentation": "\n    <p>Batch request does not contain an entry.</p>\n  "
         },
         {
           "shape_name": "BatchEntryIdsNotDistinct",
           "type": "structure",
           "members": {
           },
-          "documentation": "Two or more batch entries have the same Id in the request."
+          "documentation": "\n    <p>Two or more batch entries have the same <code>Id</code> in the request.</p>\n  "
         },
         {
           "shape_name": "InvalidBatchEntryId",
           "type": "structure",
           "members": {
           },
-          "documentation": "The Id of a batch entry in a batch request does not abide by the specification."
+          "documentation": "\n    <p>The <code>Id</code> of a batch entry in a batch request does not abide\n      by the specification.</p>\n  "
         }
       ],
-      "documentation": "This is a batch version of ChangeMessageVisibility. It takes multiple receipt handles and performs the operation on each of the them. The result of the operation on each message is reported individually in the response."
+      "documentation": "\n    <p>This is a batch version of <a>ChangeMessageVisibility</a>. It takes\n      multiple receipt handles and performs the operation on each of the them. The\n      result of the operation on each message is reported individually in the\n      response.</p>\n  "
     },
     {
       "name": "CreateQueue",
@@ -266,7 +267,7 @@
           "QueueName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The name for the queue to be created.",
+            "documentation": "\n    <p>The name for the queue to be created.</p>\n  ",
             "required": true
           },
           "attributes": {
@@ -288,18 +289,18 @@
                 "ApproximateNumberOfMessagesDelayed",
                 "DelaySeconds"
               ],
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Name"
             },
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Value"
             },
             "flattened": true,
             "xmlname": "Attribute",
-            "documentation": "A map of attributes with their corresponding values."
+            "documentation": "\n    <p>A map of attributes with their corresponding values.</p>\n  "
           }
         },
         "documentation": ""
@@ -311,7 +312,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL for the created SQS queue."
+            "documentation": "\n    <p>The URL for the created SQS queue.</p>\n  "
           }
         },
         "documentation": ""
@@ -322,17 +323,17 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "You must wait 60 seconds after deleting a queue before you can create another with the same name."
+          "documentation": "\n    <p>You must wait 60 seconds after deleting a queue before you can create another\n      with the same name.</p>\n  "
         },
         {
           "shape_name": "QueueNameExists",
           "type": "structure",
           "members": {
           },
-          "documentation": "A queue already exists with this name. SQS returns this error only if the request includes attributes whose values differ from those of the existing queue."
+          "documentation": "\n    <p>A queue already exists with this name. SQS returns this error only if the request includes\n      attributes whose values differ from those of the existing queue.</p>\n  "
         }
       ],
-      "documentation": "The CreateQueue action creates a new queue, or returns the URL of an existing one. When you request CreateQueue, you provide a name for the queue. To successfully create a new queue, you must provide a name that is unique within the scope of your own queues."
+      "documentation": "\n    <p>The <code>CreateQueue</code> action creates a new queue, or returns the URL\n      of an existing one. When you request <code>CreateQueue</code>, you provide a\n      name for the queue. To successfully create a new queue, you must provide a name\n      that is unique within the scope of your own queues.</p>\n\n    <p>You may pass one or more attributes in the request. If you do not\n      provide a value for any attribute, the queue will have the default value\n      for that attribute. Permitted attributes are the same that can be set\n      using <a>SetQueueAttributes</a>.</p>\n\n    <p>If you provide the name of an existing queue, a new queue isn't created.\n      If the values of attributes provided with the request match up with those\n      on the existing queue, the queue URL is returned. Otherwise, a\n      <code>QueueNameExists</code> error is returned.</p>\n  "
     },
     {
       "name": "DeleteMessage",
@@ -343,13 +344,13 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "ReceiptHandle": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The receipt handle associated with the message to delete.",
+            "documentation": "\n    <p>The receipt handle associated with the message to delete.</p>\n  ",
             "required": true
           }
         },
@@ -362,17 +363,17 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The receipt handle is not valid for the current version."
+          "documentation": "\n    <p>The receipt handle is not valid for the current version.</p>\n  "
         },
         {
           "shape_name": "ReceiptHandleIsInvalid",
           "type": "structure",
           "members": {
           },
-          "documentation": "The receipt handle provided is not valid."
+          "documentation": "\n    <p>The receipt handle provided is not valid.</p>\n  "
         }
       ],
-      "documentation": "The DeleteMessage action unconditionally removes the specified message from the specified queue. Even if the message is locked by another reader due to the visibility timeout setting, it is still deleted from the queue."
+      "documentation": "\n    <p>The <code>DeleteMessage</code> action unconditionally removes the specified\n      message from the specified queue. Even if the message is locked by another\n      reader due to the visibility timeout setting, it is still deleted from the\n      queue.</p>\n  "
     },
     {
       "name": "DeleteMessageBatch",
@@ -383,7 +384,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "Entries": {
@@ -396,21 +397,21 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An identifier for this particular receipt handle. This is used to communicate the result. Note that the Ids of a batch request need to be unique within the request.",
+                  "documentation": "\n    <p>An identifier for this particular receipt handle. This is used to\n      communicate the result. Note that the <code>Id</code>s of a batch request\n      need to be unique within the request.</p>\n  ",
                   "required": true
                 },
                 "ReceiptHandle": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "A receipt handle.",
+                  "documentation": "\n    <p>A receipt handle.</p>\n  ",
                   "required": true
                 }
               },
-              "documentation": "Encloses a receipt handle and an identifier for it.",
+              "documentation": "\n    <p>Encloses a receipt handle and an identifier for it.</p>\n  ",
               "xmlname": "DeleteMessageBatchRequestEntry"
             },
             "flattened": true,
-            "documentation": "A list of receipt handles for the messages to be deleted.",
+            "documentation": "\n    <p>A list of receipt handles for the messages to be deleted.</p>\n  ",
             "required": true
           }
         },
@@ -430,15 +431,15 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "Represents a successfully deleted message.",
+                  "documentation": "\n    <p>Represents a successfully deleted message.</p>\n  ",
                   "required": true
                 }
               },
-              "documentation": "Encloses the id an entry in DeleteMessageBatchRequest.",
+              "documentation": "\n    <p>Encloses the id an entry in <a>DeleteMessageBatchRequest</a>.</p>\n  ",
               "xmlname": "DeleteMessageBatchResultEntry"
             },
             "flattened": true,
-            "documentation": "A list of DeleteMessageBatchResultEntrys.",
+            "documentation": "\n    <p>A list of <a>DeleteMessageBatchResultEntry</a>s.</p>\n  ",
             "required": true
           },
           "Failed": {
@@ -451,32 +452,32 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "The id of an entry in a batch request.",
+                  "documentation": "\n    <p>The id of an entry in a batch request.</p>\n  ",
                   "required": true
                 },
                 "SenderFault": {
                   "shape_name": "Boolean",
                   "type": "boolean",
-                  "documentation": "Whether the error happened due to the sender's fault.",
+                  "documentation": "\n    <p>Whether the error happened due to the sender's fault.</p>\n  ",
                   "required": true
                 },
                 "Code": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An error code representing why the operation failed on this entry.",
+                  "documentation": "\n    <p>An error code representing why the operation failed on this entry.</p>\n  ",
                   "required": true
                 },
                 "Message": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "A message explaining why the operation failed on this entry."
+                  "documentation": "\n    <p>A message explaining why the operation failed on this entry.</p>\n  "
                 }
               },
-              "documentation": "This is used in the responses of batch API to give a detailed description of the result of an operation on each entry in the request.",
+              "documentation": "\n    <p>This is used in the responses of batch API to give a detailed description\n      of the result of an operation on each entry in the request.</p>\n  ",
               "xmlname": "BatchResultErrorEntry"
             },
             "flattened": true,
-            "documentation": "A list of BatchResultErrorEntrys.",
+            "documentation": "\n    <p>A list of <a>BatchResultErrorEntry</a>s.</p>\n  ",
             "required": true
           }
         },
@@ -488,31 +489,31 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "Batch request contains more number of entries than permissible."
+          "documentation": "\n    <p>Batch request contains more number of entries than permissible.</p>\n  "
         },
         {
           "shape_name": "EmptyBatchRequest",
           "type": "structure",
           "members": {
           },
-          "documentation": "Batch request does not contain an entry."
+          "documentation": "\n    <p>Batch request does not contain an entry.</p>\n  "
         },
         {
           "shape_name": "BatchEntryIdsNotDistinct",
           "type": "structure",
           "members": {
           },
-          "documentation": "Two or more batch entries have the same Id in the request."
+          "documentation": "\n    <p>Two or more batch entries have the same <code>Id</code> in the request.</p>\n  "
         },
         {
           "shape_name": "InvalidBatchEntryId",
           "type": "structure",
           "members": {
           },
-          "documentation": "The Id of a batch entry in a batch request does not abide by the specification."
+          "documentation": "\n    <p>The <code>Id</code> of a batch entry in a batch request does not abide\n      by the specification.</p>\n  "
         }
       ],
-      "documentation": "This is a batch version of DeleteMessage. It takes multiple receipt handles and deletes each one of the messages. The result of the delete operation on each message is reported individually in the response."
+      "documentation": "\n    <p>This is a batch version of <a>DeleteMessage</a>. It takes multiple\n      receipt handles and deletes each one of the messages. The result of the delete\n      operation on each message is reported individually in the response.</p>\n  "
     },
     {
       "name": "DeleteQueue",
@@ -523,7 +524,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           }
         },
@@ -533,7 +534,7 @@
       "errors": [
 
       ],
-      "documentation": "This action unconditionally deletes the queue specified by the queue URL. Use this operation WITH CARE! The queue is deleted even if it is NOT empty."
+      "documentation": "\n    <p>This action unconditionally deletes the queue specified by the queue URL. Use\n      this operation WITH CARE! The queue is deleted even if it is NOT empty.</p>\n    <p>Once a queue has been deleted, the queue name is unavailable for use with new\n      queues for 60 seconds.</p>\n  "
     },
     {
       "name": "GetQueueAttributes",
@@ -544,7 +545,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "attributeNames": {
@@ -566,14 +567,14 @@
                 "ApproximateNumberOfMessagesDelayed",
                 "DelaySeconds"
               ],
-              "documentation": "",
+              "documentation": null,
               "xmlname": "AttributeName"
             },
             "flattened": true,
-            "documentation": "A list of attributes to retrieve information for."
+            "documentation": "\n    <p>A list of attributes to retrieve information for. </p>\n  "
           }
         },
-        "documentation": ""
+        "documentation": null
       },
       "output": {
         "shape_name": "GetQueueAttributesResult",
@@ -598,18 +599,18 @@
                 "ApproximateNumberOfMessagesDelayed",
                 "DelaySeconds"
               ],
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Name"
             },
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Value"
             },
             "flattened": true,
             "xmlname": "Attribute",
-            "documentation": "A map of attributes to the respective values."
+            "documentation": "\n    <p>A map of attributes to the respective values.</p>\n  "
           }
         },
         "documentation": ""
@@ -620,10 +621,10 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The attribute referred to does not exist."
+          "documentation": "\n    <p>The attribute referred to does not exist.</p>\n  "
         }
       ],
-      "documentation": "Gets attributes for the specified queue. The following attributes are supported: All - returns all values. ApproximateNumberOfMessages - returns the approximate number of visible messages in a queue. For more information, see Resources Required to Process Messages in the Amazon SQS Developer Guide. ApproximateNumberOfMessagesNotVisible - returns the approximate number of messages that are not timed-out and not deleted. For more information, see Resources Required to Process Messages in the Amazon SQS Developer Guide. VisibilityTimeout - returns the visibility timeout for the queue. For more information about visibility timeout, see Visibility Timeout in the Amazon SQS Developer Guide. CreatedTimestamp - returns the time when the queue was created (epoch time in seconds). LastModifiedTimestamp - returns the time when the queue was last changed (epoch time in seconds). Policy - returns the queue's policy. MaximumMessageSize - returns the limit of how many bytes a message can contain before Amazon SQS rejects it. MessageRetentionPeriod - returns the number of seconds Amazon SQS retains a message. QueueArn - returns the queue's Amazon resource name (ARN). ApproximateNumberOfMessagesDelayed - returns the approximate number of messages that are pending to be added to the queue. DelaySeconds - returns the default delay on the queue in seconds."
+      "documentation": "\n    <p>Gets attributes for the specified queue. The following attributes are supported:\n      <ul>\n        <li>\n<code>All</code> - returns all values.</li>\n        <li>\n<code>ApproximateNumberOfMessages</code> - returns the approximate\n          number of visible messages in a queue. For more information, see\n          Resources Required to Process Messages in the Amazon SQS Developer\n          Guide.</li>\n        <li>\n<code>ApproximateNumberOfMessagesNotVisible</code> - returns the\n          approximate number of messages that are not timed-out and not deleted. \n          For more information, see Resources Required to Process Messages in the\n          Amazon SQS Developer Guide.</li>\n        <li>\n<code>VisibilityTimeout</code> - returns the visibility timeout for\n          the queue. For more information about visibility timeout, see\n          Visibility Timeout in the Amazon SQS Developer Guide.</li>\n        <li>\n<code>CreatedTimestamp</code> - returns the time when the queue was\n          created (epoch time in seconds).</li>\n        <li>\n<code>LastModifiedTimestamp</code> - returns the time when the queue\n          was last changed (epoch time in seconds).</li>\n        <li>\n<code>Policy</code> - returns the queue's policy.</li>\n        <li>\n<code>MaximumMessageSize</code> - returns the limit of how many bytes\n          a message can contain before Amazon SQS rejects it.</li>\n        <li>\n<code>MessageRetentionPeriod</code> - returns the number of seconds\n          Amazon SQS retains a message.</li>\n        <li>\n<code>QueueArn</code> - returns the queue's Amazon resource name\n          (ARN).</li>\n        <li>\n<code>ApproximateNumberOfMessagesDelayed</code> - returns the\n          approximate number of messages that are pending to be added to the\n          queue.</li>\n        <li>\n<code>DelaySeconds</code> - returns the default delay on the queue\n          in seconds.</li>\n      </ul> \n    </p>\n  "
     },
     {
       "name": "GetQueueUrl",
@@ -634,13 +635,13 @@
           "QueueName": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The name of the queue whose URL must be fetched.",
+            "documentation": "\n    <p>The name of the queue whose URL must be fetched.</p>\n  ",
             "required": true
           },
           "QueueOwnerAWSAccountId": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The AWS account number of the queue's owner."
+            "documentation": "\n    <p>The AWS account number of the queue's owner.</p>\n  "
           }
         },
         "documentation": ""
@@ -652,7 +653,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL for the queue."
+            "documentation": "\n    <p>The URL for the queue.</p>\n  "
           }
         },
         "documentation": ""
@@ -663,10 +664,10 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The queue referred to does not exist."
+          "documentation": "\n    <p>The queue referred to does not exist.</p>\n  "
         }
       ],
-      "documentation": "The GetQueueUrl action returns the URL of an existing queue."
+      "documentation": "\n    <p>The <code>GetQueueUrl</code> action returns the URL of an existing queue.</p>\n  "
     },
     {
       "name": "ListQueues",
@@ -677,7 +678,7 @@
           "QueueNamePrefix": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "A string to use for filtering the list results. Only those queues whose name begins with the specified string are returned."
+            "documentation": "\n    <p>A string to use for filtering the list results. Only those queues whose name\n      begins with the specified string are returned.</p>\n  "
           }
         },
         "documentation": ""
@@ -692,11 +693,11 @@
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "QueueUrl"
             },
             "flattened": true,
-            "documentation": "A list of queue URLs, up to 1000 entries."
+            "documentation": "\n    <p>A list of queue URLs, up to 1000 entries.</p>\n  "
           }
         },
         "documentation": ""
@@ -704,7 +705,7 @@
       "errors": [
 
       ],
-      "documentation": "Returns a list of your queues."
+      "documentation": "\n    <p>Returns a list of your queues.</p>\n  "
     },
     {
       "name": "ReceiveMessage",
@@ -715,7 +716,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "AttributeNames": {
@@ -737,21 +738,21 @@
                 "ApproximateNumberOfMessagesDelayed",
                 "DelaySeconds"
               ],
-              "documentation": "",
+              "documentation": null,
               "xmlname": "AttributeName"
             },
             "flattened": true,
-            "documentation": "A list of attributes to retrieve information for."
+            "documentation": "\n    <p>A list of attributes to retrieve information for.</p>\n  "
           },
           "MaxNumberOfMessages": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": "The maximum number of messages to return. Amazon SQS never returns more messages than this value but may return fewer."
+            "documentation": "\n    <p>The maximum number of messages to return. Amazon SQS never returns more\n      messages than this value but may return fewer.</p>\n\n    <p>All of the messages are not necessarily returned.</p>\n  "
           },
           "VisibilityTimeout": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": "The duration (in seconds) that the received messages are hidden from subsequent retrieve requests after being retrieved by a ReceiveMessage request."
+            "documentation": "\n    <p>The duration (in seconds) that the received messages are hidden from\n      subsequent retrieve requests after being retrieved by a\n      <code>ReceiveMessage</code> request.</p>\n  "
           }
         },
         "documentation": ""
@@ -806,13 +807,13 @@
                       "ApproximateNumberOfMessagesDelayed",
                       "DelaySeconds"
                     ],
-                    "documentation": "",
+                    "documentation": null,
                     "xmlname": "Name"
                   },
                   "members": {
                     "shape_name": "String",
                     "type": "string",
-                    "documentation": "",
+                    "documentation": null,
                     "xmlname": "Value"
                   },
                   "flattened": true,
@@ -824,7 +825,7 @@
               "xmlname": "Message"
             },
             "flattened": true,
-            "documentation": "A list of messages."
+            "documentation": "\n    <p>A list of messages.</p>\n  "
           }
         },
         "documentation": ""
@@ -835,10 +836,10 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The operation that you requested would violate a limit. For example, ReceiveMessage returns this error if the maximum number of messages inflight has already been reached. AddPermission returns this error if the maximum number of permissions for the queue has already been reached."
+          "documentation": "\n    <p>The operation that you requested would violate a limit. For example,\n      ReceiveMessage returns this error if the maximum number of messages\n      inflight has already been reached. AddPermission returns this error if\n      the maximum number of permissions for the queue has already been reached.\n    </p>\n  "
         }
       ],
-      "documentation": "Retrieves one or more messages from the specified queue, including the message body and message ID of each message. Messages returned by this action stay in the queue until you delete them. However, once a message is returned to a ReceiveMessage request, it is not returned on subsequent ReceiveMessage requests for the duration of the VisibilityTimeout. If you do not specify a VisibilityTimeout in the request, the overall visibility timeout for the queue is used for the returned messages."
+      "documentation": "\n    <p>Retrieves one or more messages from the specified queue, including the\n      message body and message ID of each message. Messages returned by this action\n      stay in the queue until you delete them. However, once a message is returned to\n      a <code>ReceiveMessage</code> request, it is not returned on subsequent\n      <code>ReceiveMessage</code> requests for the duration of the\n      <code>VisibilityTimeout</code>. If you do not specify a\n      <code>VisibilityTimeout</code> in the request, the overall visibility timeout\n      for the queue is used for the returned messages.</p>\n  "
     },
     {
       "name": "RemovePermission",
@@ -849,13 +850,13 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "Label": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The identification of the permission to remove. This is the label added with the AddPermission operation.",
+            "documentation": "\n    <p>The identification of the permission to remove. This is the label added with\n      the <a>AddPermission</a> operation.</p>\n  ",
             "required": true
           }
         },
@@ -865,7 +866,7 @@
       "errors": [
 
       ],
-      "documentation": "The RemovePermission action revokes any permissions in the queue policy that matches the specified Label parameter. Only the owner of the queue can remove permissions."
+      "documentation": "\n    <p>The <code>RemovePermission</code> action revokes any permissions in the queue\n      policy that matches the specified <code>Label</code> parameter. Only the owner\n      of the queue can remove permissions.</p>\n  "
     },
     {
       "name": "SendMessage",
@@ -876,19 +877,19 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "MessageBody": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The message to send.",
+            "documentation": "\n    <p>The message to send.</p>\n  ",
             "required": true
           },
           "DelaySeconds": {
             "shape_name": "Integer",
             "type": "integer",
-            "documentation": "The number of seconds the message has to be delayed."
+            "documentation": "\n    <p>The number of seconds the message has to be delayed.</p>\n  "
           }
         },
         "documentation": ""
@@ -900,12 +901,12 @@
           "MD5OfMessageBody": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "An MD5 digest of the non-URL-encoded message body string. This can be used to verify that SQS received the message correctly. SQS first URL decodes the message before creating the MD5 digest. For information about MD5, go to http://faqs.org/rfcs/rfc1321.html."
+            "documentation": "\n    <p>An MD5 digest of the non-URL-encoded message body string. This can be used to\n      verify that SQS received the message correctly. SQS first URL decodes the\n      message before creating the MD5 digest. For information about MD5, go to <a href=\"http://faqs.org/rfcs/rfc1321.html\">http://faqs.org/rfcs/rfc1321.html</a>.</p>\n  "
           },
           "MessageId": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The message ID of the message added to the queue."
+            "documentation": "\n    <p>The message ID of the message added to the queue.</p>\n  "
           }
         },
         "documentation": ""
@@ -916,10 +917,10 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The message contains characters outside the allowed set."
+          "documentation": "\n    <p>The message contains characters outside the allowed set.</p>\n  "
         }
       ],
-      "documentation": "The SendMessage action delivers a message to the specified queue."
+      "documentation": "\n    <p>The <code>SendMessage</code> action delivers a message to the specified\n      queue.</p>\n  "
     },
     {
       "name": "SendMessageBatch",
@@ -930,7 +931,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "Entries": {
@@ -943,26 +944,26 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An identifier for the message in this batch. This is used to communicate the result. Note that the the Ids of a batch request need to be unique within the request.",
+                  "documentation": "\n    <p>An identifier for the message in this batch. This is used to communicate\n      the result. Note that the the <code>Id</code>s of a batch request need to\n      be unique within the request.</p>\n  ",
                   "required": true
                 },
                 "MessageBody": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "Body of the message.",
+                  "documentation": "\n    <p>Body of the message.</p>\n  ",
                   "required": true
                 },
                 "DelaySeconds": {
                   "shape_name": "Integer",
                   "type": "integer",
-                  "documentation": "The number of seconds for which the message has to be delayed."
+                  "documentation": "\n    <p>The number of seconds for which the message has to be delayed.</p>\n  "
                 }
               },
-              "documentation": "Contains the details of a single SQS message along with a Id.",
+              "documentation": "\n    <p>Contains the details of a single SQS message along with a <code>Id</code>. </p>\n  ",
               "xmlname": "SendMessageBatchRequestEntry"
             },
             "flattened": true,
-            "documentation": "A list of SendMessageBatchRequestEntrys.",
+            "documentation": "\n    <p>A list of <a>SendMessageBatchRequestEntry</a>s.</p>\n  ",
             "required": true
           }
         },
@@ -982,27 +983,27 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An identifier for the message in this batch.",
+                  "documentation": "\n    <p>An identifier for the message in this batch.</p>\n  ",
                   "required": true
                 },
                 "MessageId": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An identifier for the message.",
+                  "documentation": "\n    <p>An identifier for the message.</p>\n  ",
                   "required": true
                 },
                 "MD5OfMessageBody": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An MD5 digest of the non-URL-encoded message body string. This can be used to verify that SQS received the message correctly. SQS first URL decodes the message before creating the MD5 digest. For information about MD5, go to http://faqs.org/rfcs/rfc1321.html.",
+                  "documentation": "\n    <p>An MD5 digest of the non-URL-encoded message body string. This can be used to\n      verify that SQS received the message correctly. SQS first URL decodes the\n      message before creating the MD5 digest. For information about MD5, go to <a href=\"http://faqs.org/rfcs/rfc1321.html\">http://faqs.org/rfcs/rfc1321.html</a>.</p>\n  ",
                   "required": true
                 }
               },
-              "documentation": "Encloses a message ID for successfully enqueued message of a SendMessageBatchRequest.",
+              "documentation": "\n    <p>Encloses a message ID for successfully enqueued message of a\n      <a>SendMessageBatchRequest</a>.</p>\n  ",
               "xmlname": "SendMessageBatchResultEntry"
             },
             "flattened": true,
-            "documentation": "A list of SendMessageBatchResultEntrys.",
+            "documentation": "\n    <p>A list of <a>SendMessageBatchResultEntry</a>s.</p>\n  ",
             "required": true
           },
           "Failed": {
@@ -1015,32 +1016,32 @@
                 "Id": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "The id of an entry in a batch request.",
+                  "documentation": "\n    <p>The id of an entry in a batch request.</p>\n  ",
                   "required": true
                 },
                 "SenderFault": {
                   "shape_name": "Boolean",
                   "type": "boolean",
-                  "documentation": "Whether the error happened due to the sender's fault.",
+                  "documentation": "\n    <p>Whether the error happened due to the sender's fault.</p>\n  ",
                   "required": true
                 },
                 "Code": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "An error code representing why the operation failed on this entry.",
+                  "documentation": "\n    <p>An error code representing why the operation failed on this entry.</p>\n  ",
                   "required": true
                 },
                 "Message": {
                   "shape_name": "String",
                   "type": "string",
-                  "documentation": "A message explaining why the operation failed on this entry."
+                  "documentation": "\n    <p>A message explaining why the operation failed on this entry.</p>\n  "
                 }
               },
-              "documentation": "This is used in the responses of batch API to give a detailed description of the result of an operation on each entry in the request.",
+              "documentation": "\n    <p>This is used in the responses of batch API to give a detailed description\n      of the result of an operation on each entry in the request.</p>\n  ",
               "xmlname": "BatchResultErrorEntry"
             },
             "flattened": true,
-            "documentation": "A list of BatchResultErrorEntrys with the error detail about each message that could not be enqueued.",
+            "documentation": "\n    <p>A list of <a>BatchResultErrorEntry</a>s with the error detail about each\n      message that could not be enqueued.</p>\n  ",
             "required": true
           }
         },
@@ -1052,38 +1053,38 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "Batch request contains more number of entries than permissible."
+          "documentation": "\n    <p>Batch request contains more number of entries than permissible.</p>\n  "
         },
         {
           "shape_name": "EmptyBatchRequest",
           "type": "structure",
           "members": {
           },
-          "documentation": "Batch request does not contain an entry."
+          "documentation": "\n    <p>Batch request does not contain an entry.</p>\n  "
         },
         {
           "shape_name": "BatchEntryIdsNotDistinct",
           "type": "structure",
           "members": {
           },
-          "documentation": "Two or more batch entries have the same Id in the request."
+          "documentation": "\n    <p>Two or more batch entries have the same <code>Id</code> in the request.</p>\n  "
         },
         {
           "shape_name": "BatchRequestTooLong",
           "type": "structure",
           "members": {
           },
-          "documentation": "The length of all the messages put together is more than the limit."
+          "documentation": "\n    <p>The length of all the messages put together is more than the limit.</p>\n  "
         },
         {
           "shape_name": "InvalidBatchEntryId",
           "type": "structure",
           "members": {
           },
-          "documentation": "The Id of a batch entry in a batch request does not abide by the specification."
+          "documentation": "\n    <p>The <code>Id</code> of a batch entry in a batch request does not abide\n      by the specification.</p>\n  "
         }
       ],
-      "documentation": "This is a batch version of SendMessage. It takes multiple messages and adds each of them to the queue. The result of each add operation is reported individually in the response."
+      "documentation": "\n    <p>This is a batch version of <a>SendMessage</a>. It takes\n      multiple messages and adds each of them to the queue. The result of each \n      add operation is reported individually in the response.</p>\n  "
     },
     {
       "name": "SetQueueAttributes",
@@ -1094,7 +1095,7 @@
           "QueueUrl": {
             "shape_name": "String",
             "type": "string",
-            "documentation": "The URL of the SQS queue to take action on.",
+            "documentation": "\n    <p>The URL of the SQS queue to take action on.</p>\n  ",
             "required": true
           },
           "attributes": {
@@ -1116,18 +1117,18 @@
                 "ApproximateNumberOfMessagesDelayed",
                 "DelaySeconds"
               ],
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Name"
             },
             "members": {
               "shape_name": "String",
               "type": "string",
-              "documentation": "",
+              "documentation": null,
               "xmlname": "Value"
             },
             "flattened": true,
             "xmlname": "Attribute",
-            "documentation": "A map of attributes to set.",
+            "documentation": "\n    <p>A map of attributes to set.</p>\n  ",
             "required": true
           }
         },
@@ -1140,10 +1141,10 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "The attribute referred to does not exist."
+          "documentation": "\n    <p>The attribute referred to does not exist.</p>\n  "
         }
       ],
-      "documentation": "Sets an attribute of a queue. The set of attributes that can be set are - DelaySeconds, MessageRetentionPeriod, MaximumMessageSize, VisibilityTimeout and Policy."
+      "documentation": "\n    <p>Sets an attribute of a queue. The set of attributes that can be set are\n      - DelaySeconds, MessageRetentionPeriod, MaximumMessageSize,\n      VisibilityTimeout and Policy.</p>\n  "
     }
   ]
 }

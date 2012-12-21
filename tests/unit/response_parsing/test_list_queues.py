@@ -25,41 +25,35 @@ import unittest
 import botocore.session
 import botocore.response
 
-xml = """<GetIdentityDkimAttributesResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
-  <GetIdentityDkimAttributesResult>
-    <DkimAttributes>
-      <entry>
-        <key>amazon.com</key>
-	<value>
-          <DkimEnabled>true</DkimEnabled>
-          <DkimVerificationStatus>Success</DkimVerificationStatus>
-          <DkimTokens>
-            <member>vvjuipp74whm76gqoni7qmwwn4w4qusjiainivf6f</member>
-            <member>3frqe7jn4obpuxjpwpolz6ipb3k5nvt2nhjpik2oy</member>
-            <member>wrqplteh7oodxnad7hsl4mixg2uavzneazxv5sxi2</member>
-          </DkimTokens>
-	</value>
-      </entry>
-    </DkimAttributes>
-  </GetIdentityDkimAttributesResult>
+xml = """<?xml version="1.0"?>
+<ListQueuesResponse xmlns="http://queue.amazonaws.com/doc/2011-10-01/">
+  <ListQueuesResult>
+    <QueueUrl>https://queue.amazonaws.com/419278470775/blat</QueueUrl>
+    <QueueUrl>https://queue.amazonaws.com/419278470775/test1348104148</QueueUrl>
+    <QueueUrl>https://queue.amazonaws.com/419278470775/test1348112370</QueueUrl>
+    <QueueUrl>https://queue.amazonaws.com/419278470775/test1351037239</QueueUrl>
+    <QueueUrl>https://queue.amazonaws.com/419278470775/test1351044153</QueueUrl>
+    <QueueUrl>https://queue.amazonaws.com/419278470775/testcli</QueueUrl>
+  </ListQueuesResult>
   <ResponseMetadata>
-    <RequestId>bb5a105d-c468-11e1-82eb-dff885ccc06a</RequestId>
+    <RequestId>6447266c-d0e0-5c10-8e26-6f57c3adec51</RequestId>
   </ResponseMetadata>
-</GetIdentityDkimAttributesResponse>"""
+</ListQueuesResponse>"""
 
-data = {u'DkimAttributes': {u'amazon.com': {u'DkimTokens': [u'vvjuipp74whm76gqoni7qmwwn4w4qusjiainivf6f', u'3frqe7jn4obpuxjpwpolz6ipb3k5nvt2nhjpik2oy', u'wrqplteh7oodxnad7hsl4mixg2uavzneazxv5sxi2'], u'DkimEnabled': True, u'DkimVerificationStatus': u'Success'}}, u'ResponseMetadata': {u'RequestId': u'bb5a105d-c468-11e1-82eb-dff885ccc06a'}}
+data = {u'QueueUrl': [u'https://queue.amazonaws.com/419278470775/blat', u'https://queue.amazonaws.com/419278470775/test1348104148', u'https://queue.amazonaws.com/419278470775/test1348112370', u'https://queue.amazonaws.com/419278470775/test1351037239', u'https://queue.amazonaws.com/419278470775/test1351044153', u'https://queue.amazonaws.com/419278470775/testcli'], u'ResponseMetadata': {u'RequestId': u'6447266c-d0e0-5c10-8e26-6f57c3adec51'}}
 
 
-class TestGetIdentityDkimAttributes(unittest.TestCase):
+class TestListQueuesAttributes(unittest.TestCase):
 
     def setUp(self):
         self.session = botocore.session.get_session()
-        self.service = self.session.get_service('ses', 'aws')
+        self.service = self.session.get_service('sqs', 'aws')
 
-    def test_get_identity_dkim_attributes(self):
-        op = self.service.get_operation('GetIdentityDkimAttributes')
+    def test_list_queues(self):
+        op = self.service.get_operation('ListQueues')
         r = botocore.response.Response(op)
         r.parse(xml)
+        print r.get_value()
         self.assertEqual(r.get_value(), data)
 
 

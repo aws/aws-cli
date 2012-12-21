@@ -306,7 +306,9 @@ type_map = {
     'long': IntegerParameter,
     'boolean': BooleanParameter,
     'double': FloatParameter,
-    'member': Parameter}
+    'member': Parameter,
+    'jsondoc': StringParameter,
+    'file': StringParameter}
 
 
 def get_parameter(name, type_data):

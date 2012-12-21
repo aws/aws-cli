@@ -114,7 +114,7 @@ class Document(object):
     def __init__(self, session, style_name):
         self.session = session
         if style_name == 'cli':
-            self.style = CLIStyle(self, do_ansi=True)
+            self.style = CLIStyle(self, do_ansi=_have_fcntl)
         self.width = get_terminal_size()[1]
         self.help_parser = HelpParser(self)
         self.paragraphs = []

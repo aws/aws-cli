@@ -81,9 +81,14 @@ To use a config file, create a configuration file like this:
 As you can see, you can have multiple ``profiles`` defined in this
 configuration file and specify which profile to use by using the
 ``--profile`` option.  If no profile is specified the ``default``
-profile is used.
+profile is used.  Once you have created the config file, you need to
+tell aws-cli where to find it.  Do this by setting the appropriate
+environment variable.
 
-Finally, if you are using aws-cli on an EC2 instance, IAM Roles are
+    $ export AWS_CONFIG_FILE=/path/to/config_file
+
+The final option for credentials is highly recommended if you are
+using aws-cli on an EC2 instance.  IAM Roles are
 a great way to have credentials installed automatically on your
 instance.  If you are using IAM Roles, aws-cli will find them and use
 them automatically.

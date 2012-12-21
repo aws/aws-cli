@@ -70,7 +70,7 @@ To use a config file, create a configuration file like this:
 
     [default]
     aws_access_key_id=<default access key>
-    aws_secret_access_key=<defaul secret key>
+    aws_secret_access_key=<default secret key>
     region=us-west-1  # optional, to define default region for this profile
 
     [testing]

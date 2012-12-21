@@ -159,7 +159,7 @@ def get_data(data_path):
         if not data:
             data = _load_nested_data(data_path)
         if data is None:
-            raise exceptions.DataNotFoundError(data_path=data_path)
+            raise botocore.exceptions.DataNotFoundError(data_path=data_path)
     return _data_cache[data_path]
 
 

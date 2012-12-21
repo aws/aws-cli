@@ -107,26 +107,32 @@ class CLIStyle(BaseStyle):
     def start_bold(self, attrs=None):
         if self.kwargs.get('do_ansi', False):
             return '\033[1m'
+        return ''
 
     def end_bold(self):
         if self.kwargs.get('do_ansi', False):
             return '\033[0m'
+        return ''
 
     def start_underline(self, attrs=None):
         if self.kwargs.get('do_ansi', False):
             return '\033[4m'
+        return ''
 
     def end_underline(self):
         if self.kwargs.get('do_ansi', False):
             return '\033[0m'
+        return ''
 
     def start_italics(self, attrs=None):
         if self.kwargs.get('do_ansi', False):
             return '\033[3m'
+        return ''
 
     def end_italics(self):
         if self.kwargs.get('do_ansi', False):
             return '\033[0m'
+        return ''
 
     def start_li(self, attrs=None):
         para = self.doc.add_paragraph()

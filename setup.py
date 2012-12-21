@@ -6,7 +6,6 @@ distutils/setuptools install script.
 
 import os
 import sys
-import awscli
 
 try:
     from setuptools import setup
@@ -18,14 +17,14 @@ packages = [
     'awscli',
 ]
 
-requires = ['botocore>=0.0.1',
+requires = ['botocore>=0.4.0',
             'six>=1.1.0',
             'argparse>=1.1']
 
 
 setup(
     name='awscli',
-    version=awscli.__version__,
+    version='0.4.1',
     description='Universal Command Line Environment for AWS.',
     long_description=open('README.md').read(),
     author='Mitch Garnaat',

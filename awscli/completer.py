@@ -13,10 +13,12 @@
 
 import os
 import sys
+import botocore.session
 import botocore.base
 import botocore.operation
 import botocore.credentials
 from botocore import xform_name
+from awscli import awscli_data_path
 
 
 def return_choices(choices):
@@ -28,16 +30,15 @@ def return_no_choices():
     sys.exit(0)
 
 
-def complete_std_option_value(option_name, option_data, prefix=''):
+def complete_std_option_value(session, option_name, option_data, prefix=''):
     if option_name == '--region':
-        regions = botocore.base.get_data('aws/_regions')
+        regions = session.get_data('aws/_regions')
         l = [rn for rn in regions.keys() if rn.startswith(prefix)]
         return_choices(l)
     elif option_name == '--output':
         return_choices(option_data[option_name]['choices'])
     elif option_name == '--profile':
-        credentials = botocore.credentials.get_credentials()
-        return_choices(credentials.profiles)
+        return_choices(session.available_profiles())
     else:
         return_no_choices()
 
@@ -47,6 +48,8 @@ def complete_parameter_value(param_name, operation):
 
 
 def complete(cmdline, point):
+    session = botocore.session.get_session()
+    session.add_search_path(awscli_data_path)
     operation_map = {}
     service_name = None
     operation_name = None
@@ -56,8 +59,8 @@ def complete(cmdline, point):
         previous_word = words[-2]
     else:
         previous_word = None
-    std_options = botocore.base.get_data('cli/options')
-    service_names = botocore.base.get_data('aws/_services').keys()
+    std_options = session.get_data('cli/options')
+    service_names = session.get_data('aws/_services').keys()
     # First find all non-options words in command line
     non_options = [w for w in words if not w.startswith('-')]
     # Look for a service name in the non_options
@@ -68,7 +71,7 @@ def complete(cmdline, point):
     # If we found a service name, look for an operation name
     if service_name:
         data_path = 'aws/%s/operations' % service_name
-        all_op_data = botocore.base.get_data(data_path)
+        all_op_data = session.get_data(data_path)
         for op_data in all_op_data:
             operation_map[xform_name(op_data['name'], '-')] = op_data
         for w in non_options:
@@ -78,7 +81,7 @@ def complete(cmdline, point):
     if current_word.startswith('-'):
         # Is the current word a completed standard option?
         if current_word in std_options:
-            complete_std_option_value(current_word, std_options)
+            complete_std_option_value(session, current_word, std_options)
         all_options = std_options.keys()
         if operation_name:
             op_data = operation_map[operation_name]
@@ -120,7 +123,8 @@ def complete(cmdline, point):
         # Is the previous word a non-boolean standard option?
         opt_data = std_options[previous_word]
         if opt_data.get('action', '') != 'store_true':
-            complete_std_option_value(previous_word,
+            complete_std_option_value(session,
+                                      previous_word,
                                       std_options,
                                       current_word)
     if service_name and operation_name:
@@ -130,3 +134,9 @@ def complete(cmdline, point):
         param_names = [p.cli_name for p in operation.params]
         return_choices(param_names)
     return_no_choices()
+
+if __name__ == '__main__':
+    if len(sys.argv) == 3:
+        complete(sys.argv[1], int(sys.argv[2]))
+    else:
+        print('usage: %s <cmdline> <point>' % sys.argv[0])

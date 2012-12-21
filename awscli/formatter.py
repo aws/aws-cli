@@ -1,5 +1,6 @@
 import sys
 import json
+import six
 from botocore import xform_name, ScalarTypes
 
 
@@ -80,7 +81,7 @@ class TableFormatter(Formatter):
         Print a list of similar dictionaries.  Headers are extracted
         from the keys of the first dictionary.
         """
-        print l
+        print(l)
         values = []
         sub_dicts = []
         sub_lists = []
@@ -114,15 +115,15 @@ class TableFormatter(Formatter):
         v = []
         for i in range(len(headers)):
             h.append(headers[i].center(lens[i]))
-        print separator
-        print hpattern % tuple(h)
-        print separator
+        print(separator)
+        print(hpattern % tuple(h))
+        print(separator)
         for vl in values:
             v = []
             for i in range(len(vl)):
                 v.append(vl[i].center(lens[i]))
-            print pattern % tuple(v)
-            print separator
+            print(pattern % tuple(v))
+            print(separator)
         if sub_dicts:
             self._output(sub_dicts)
         if sub_lists:
@@ -148,8 +149,10 @@ class TextFormatter(Formatter):
                     non_scalars.append((key, val))
                 elif isinstance(val, list):
                     non_scalars.append((key, val))
-                else:
+                elif not isinstance(val, six.string_types):
                     scalars.append(str(val))
+                else:
+                    scalars.append(val)
             if label:
                 scalars.insert(0, label.upper())
             print('\t'.join(scalars))

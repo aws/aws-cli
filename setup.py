@@ -14,16 +14,13 @@ try:
 except ImportError:
     from distutils.core import setup
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
-
 packages = [
     'awscli',
 ]
 
 requires = ['botocore>=0.0.1',
-            'six>=1.1.0']
+            'six>=1.1.0',
+            'argparse>=1.1']
 
 
 setup(
@@ -33,8 +30,8 @@ setup(
     long_description=open('README.md').read(),
     author='Mitch Garnaat',
     author_email='garnaat@amazon.com',
-    url='http://awscli.amazon.com',
-    scripts=['bin/aws', 'bin/aws_completer'],
+    url='http://aws.amazon.com/cli/',
+    scripts=['bin/aws', 'bin/aws_completer', 'bin/aws.cmd'],
     packages=packages,
     package_data={'awscli': ['data/*.json']},
     package_dir={'awscli': 'awscli'},

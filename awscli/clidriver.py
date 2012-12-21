@@ -12,11 +12,14 @@
 # language governing permissions and limitations under the License.
 import argparse
 import sys
-import botocore.base
-import botocore.service
-from botocore.logger import set_debug_logger
-from botocore import xform_name
-from .help import CLIHelp
+import os
+import traceback
+import json
+import copy
+import botocore.session
+from botocore import __version__
+from awscli import awscli_data_path
+from .help import get_help
 from .formatter import get_formatter
 
 
@@ -51,30 +54,29 @@ class CLIDriver(object):
 
     type_map = {
         'structure': str,
+        'map': str,
         'timestamp': str,
         'list': str,
         'string': str,
         'float': float,
-        'integer': int,
+        'integer': str,
         'long': int,
         'boolean': bool,
-        'double': float}
+        'double': float,
+        'jsondoc': str,
+        'file': str}
 
     def __init__(self, provider_name='aws'):
         self.provider_name = provider_name
-        self.help = CLIHelp()
+        self.session = botocore.session.get_session()
+        self.session.user_agent_name = 'aws-cli'
+        self.session.user_agent_version = __version__
+        self.session.add_search_path(awscli_data_path)
         self.args = None
-        self.region = None
         self.service = None
+        self.region = None
         self.endpoint = None
         self.operation = None
-        self.op_map = {}
-
-    def create_op_map(self):
-        if self.service:
-            for op_data in self.service.operations:
-                op_name = op_data['name']
-                self.op_map[xform_name(op_name, '-')] = op_name
 
     def create_choice_help(self, choices):
         help_str = ''
@@ -86,22 +88,25 @@ class CLIDriver(object):
         """
         Create the main parser to handle the global arguments.
         """
-        self.cli_data = botocore.base.get_data('cli')
+        self.cli_data = self.session.get_data('cli')
         description = self.cli_data['description']
         self.parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                               description=description,
-                                              add_help=False)
+                                              add_help=False,
+                                              conflict_handler='resolve')
         for option_name in self.cli_data['options']:
-            option_data = self.cli_data['options'][option_name]
+            option_data = copy.copy(self.cli_data['options'][option_name])
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
-                    choices = botocore.base.get_data(option_data['choices'])
+                    choices = self.session.get_data(option_data['choices'])
                 if isinstance(choices, dict):
                     choices = list(choices.keys())
                 option_data['help'] = self.create_choice_help(choices)
                 option_data['choices'] = choices + ['help']
             self.parser.add_argument(option_name, **option_data)
+        self.parser.add_argument('--version', action="version",
+                                 version=self.session.user_agent())
 
     def create_service_parser(self, remaining):
         """
@@ -111,23 +116,30 @@ class CLIDriver(object):
         :param remaining: The list of command line parameters that were
             not recognized by upstream parsers.
         """
-        self.endpoint = self.service.get_endpoint(self.args.region,
-                                                  profile=self.args.profile,
-                                                  endpoint_url=self.args.endpoint_url)
+        if self.args.profile:
+            self.session.profile = self.args.profile
+        if self.args.region is not None:
+            self.region = self.args.region
+        elif self.session.get_config():
+            self.region = self.session.get_config().get('region', None)
+        if self.region is None:
+            msg = self.session.get_data('messages/NoRegionError')
+            ex = ValueError(msg)
+            self.display_error_and_exit(ex)
         prog = '%s %s' % (self.parser.prog,
                           self.service.short_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                          add_help=False, prog=prog)
-        operations = [op.cli_name for op in self.endpoint.operations]
+        operations = [op.cli_name for op in self.service.operations]
         operations.append('help')
         parser.add_argument('operation', help='The operation',
                             metavar='operation',
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            self.help(self.endpoint)
+            get_help(self.session, service=self.service, style='cli')
             sys.exit(0)
-        self.operation = self.endpoint.get_operation(args.operation)
+        self.operation = self.service.get_operation(args.operation)
         self.create_operation_parser(remaining)
 
     def create_operation_parser(self, remaining):
@@ -162,8 +174,7 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
         if 'help' in remaining:
-            print(parser.format_usage())
-            self.help(self.operation)
+            get_help(self.session, operation=self.operation, style='cli')
             sys.exit(0)
         args, remaining = parser.parse_known_args(remaining)
         if remaining:
@@ -187,12 +198,54 @@ class CLIDriver(object):
             if isinstance(s, list):
                 s = s[0]
             return float(s)
+        elif param.type == 'jsondoc':
+            if isinstance(s, list) and len(s) == 1:
+                s = s[0]
+            if s[0] != '{':
+                s = os.path.expanduser(s)
+                s = os.path.expandvars(s)
+                if os.path.isfile(s):
+                    fp = open(s)
+                    s = fp.read()
+                    fp.close()
+                else:
+                    msg = 'JSON Document value must be JSON or path to file.'
+                    raise ValueError(msg)
+            return s
+        elif param.type == 'file':
+            if isinstance(s, list) and len(s) == 1:
+                s = s[0]
+            s = os.path.expanduser(s)
+            s = os.path.expandvars(s)
+            if os.path.isfile(s):
+                fp = open(s)
+                s = fp.read()
+                fp.close()
+            else:
+                msg = 'File value must be path to file.'
+                raise ValueError(msg)
+            return s
         elif param.type == 'structure':
-            d = dict(v.split('=', 1) for v in s.split(':'))
-            for member in param.members:
-                if member.py_name in d:
-                    d[member.py_name] = self.unpack_cli_arg(member,
-                                                       d[member.py_name])
+            if isinstance(s, list) and len(s) == 1:
+                s = s[0]
+            if s[0] == '{':
+                d = json.loads(s)
+            elif '=' in s:
+                d = dict(v.split('=', 1) for v in s.split(':'))
+                for member in param.members:
+                    if member.py_name in d:
+                        d[member.py_name] = self.unpack_cli_arg(member,
+                                                           d[member.py_name])
+            else:
+                s = os.path.expanduser(s)
+                s = os.path.expandvars(s)
+                if os.path.isfile(s):
+                    fp = open(s)
+                    d = json.load(fp)
+                    fp.close()
+                else:
+                    msg = 'Structure option value must be JSON or path to file.'
+                    raise ValueError(msg)
             return d
         elif param.type == 'list':
             if not isinstance(s, list):
@@ -213,35 +266,61 @@ class CLIDriver(object):
                 param_dict[param.py_name] = self.unpack_cli_arg(param, value)
 
     def display_error_and_exit(self, ex):
-        if self.args.output != 'json':
+        if self.args.debug:
+            traceback.print_exc()
+        elif isinstance(ex, Exception):
+            print(ex)
+        elif self.args.output != 'json':
             print(ex)
         sys.exit(1)
+
+    def get_error_code_and_message(self, response):
+        code = 'Unknown'
+        message = 'Unknown'
+        if 'Response' in response:
+            if 'Errors' in response['Response']:
+                if 'Error' in response['Response']['Errors']:
+                    if 'Message' in response['Response']['Errors']['Error']:
+                        message = response['Response']['Errors']['Error']['Message']
+                    if 'Code' in response['Response']['Errors']['Error']:
+                        code = response['Response']['Errors']['Error']['Code']
+        return (code, message)
 
     def call(self, args):
         try:
             params = {}
             self.build_call_parameters(args, params)
-            http_response, response_data = self.operation(**params)
+            self.endpoint = self.service.get_endpoint(self.region,
+                                                      endpoint_url=self.args.endpoint_url)
+            http_response, response_data = self.operation.call(self.endpoint,
+                                                               **params)
             self.formatter(self.operation, response_data)
             if http_response.status_code >= 500:
-                raise ServiceException(None, err_code=r.error_code,
-                                       err_msg=r.error_message)
+                msg = self.session.get_data('messages/ServerError')
+                code, message = self.get_error_code_and_message(response_data)
+                print(msg.format(error_code=code,
+                                 error_message=message))
+                sys.exit(http_response.status_code - 399)
             if http_response.status_code >= 400:
-                raise ClientException(None, err_code=r.error_code,
-                                      err_msg=r.error_message)
-        except Exception, ex:
+                msg = self.session.get_data('messages/ClientError')
+                code, message = self.get_error_code_and_message(response_data)
+                print(msg.format(error_code=code,
+                                 error_message=message))
+                sys.exit(http_response.status_code - 399)
+        except Exception as ex:
             self.display_error_and_exit(ex)
 
     def main(self):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args()
         if self.args.service_name == 'help':
-            self.parser.print_help()
+            get_help(self.session, provider='aws', style='cli')
             sys.exit(0)
         else:
             if self.args.debug:
-                set_debug_logger()
+                import httplib
+                httplib.HTTPConnection.debuglevel = 2
+                self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
-            self.service = botocore.service.get_service(self.args.service_name)
-            self.create_op_map()
+            self.service = self.session.get_service(self.args.service_name)
             self.create_service_parser(remaining)

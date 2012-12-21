@@ -24,9 +24,8 @@
 import logging
 import json
 import requests
-import auth
-import session
-import response
+import botocore.auth
+import botocore.response
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +46,10 @@ class Endpoint(object):
         self.session = self.service.session
         self.region_name = region_name
         self.host = host
-        self.auth = auth.get_auth(self.service.authentication,
-                                  credentials=self.session.get_credentials(),
-                                  service_name=self.service.short_name,
-                                  region_name=region_name)
+        self.auth = botocore.auth.get_auth(self.service.authentication,
+                                           credentials=self.session.get_credentials(),
+                                           service_name=self.service.short_name,
+                                           region_name=region_name)
 
     def __repr__(self):
         return '%s(%s)' % (self.service.name, self.host)
@@ -77,7 +76,7 @@ class QueryEndpoint(Endpoint):
         http_response = requests.post(self.host, params=params,
                                       hooks={'args': self.auth.add_auth},
                                       headers={'User-Agent': user_agent})
-        r = response.Response(operation)
+        r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
         logger.debug(body)

@@ -24,11 +24,10 @@
 import os
 import logging
 import platform
-import config
-import credentials
-import exceptions
-import base
-import service
+import botocore.config
+import botocore.credentials
+import botocore.base
+import botocore.service
 from . import __version__
 
 
@@ -77,7 +76,7 @@ class Session(object):
         :raises: ConfigNotFound, ConfigParseError
         """
         if self._config is None:
-            self._config = config.get_config()
+            self._config = botocore.config.get_config()
         return self._config.get(self._profile, None)
 
     def get_credentials(self, metadata=None):
@@ -97,7 +96,8 @@ class Session(object):
         """
         if self._credentials is None:
             cfg = self.get_config()
-            self._credentials = credentials.get_credentials(cfg, metadata)
+            self._credentials = botocore.credentials.get_credentials(cfg,
+                                                                     metadata)
         return self._credentials
 
     def user_agent(self):
@@ -127,7 +127,7 @@ class Session(object):
 
     def add_search_path(self, search_paths):
         for path in search_paths:
-            base.add_search_path(path)
+            botocore.base.add_search_path(path)
 
     def get_data(self, data_path):
         """
@@ -136,7 +136,7 @@ class Session(object):
         :type data_path: str
         :param data_path: The path to the data you wish to retrieve.
         """
-        return base.get_data(data_path)
+        return botocore.base.get_data(data_path)
 
     def get_service(self, service_name, provider_name='aws'):
         """
@@ -151,7 +151,7 @@ class Session(object):
 
         :returns: :class:`botocore.service.Service`
         """
-        return service.get_service(self, service_name, provider_name)
+        return botocore.service.get_service(self, service_name, provider_name)
 
     def set_debug_logger(self):
         """

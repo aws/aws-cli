@@ -23,7 +23,7 @@
 
 from six.moves import configparser
 import os
-import exceptions
+import botocore.exceptions
 
 
 def get_config():
@@ -46,12 +46,12 @@ def get_config():
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         if not os.path.isfile(path):
-            raise exceptions.ConfigNotFound(path=path)
+            raise botocore.exceptions.ConfigNotFound(path=path)
         cp = configparser.RawConfigParser()
         try:
             cp.read(path)
         except configparser.Error:
-            raise exceptions.ConfigParseError(path=path)
+            raise botocore.exceptions.ConfigParseError(path=path)
         else:
             config['_path'] = path
             for section in cp.sections():

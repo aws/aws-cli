@@ -48,7 +48,7 @@ be found or loaded.
 import os
 import json
 import logging
-import exceptions
+import botocore.exceptions
 
 logger = logging.getLogger(__name__)
 

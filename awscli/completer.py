@@ -139,4 +139,4 @@ if __name__ == '__main__':
     if len(sys.argv) == 3:
         complete(sys.argv[1], int(sys.argv[2]))
     else:
-        print 'usage: %s <cmdline> <point>' % sys.argv[0]
+        print('usage: %s <cmdline> <point>' % sys.argv[0])

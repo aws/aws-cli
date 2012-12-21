@@ -13,7 +13,6 @@
 
 import textwrap
 from six.moves import cStringIO
-from awscli.newhelp import HelpParser
 
 
 class BaseStyle(object):
@@ -107,27 +106,27 @@ class CLIStyle(BaseStyle):
 
     def start_bold(self, attrs=None):
         if self.kwargs.get('do_ansi', False):
-            return u'\033[1m'
+            return '\033[1m'
 
     def end_bold(self):
         if self.kwargs.get('do_ansi', False):
-            return u'\033[0m'
+            return '\033[0m'
 
     def start_underline(self, attrs=None):
         if self.kwargs.get('do_ansi', False):
-            return u'\033[4m'
+            return '\033[4m'
 
     def end_underline(self):
         if self.kwargs.get('do_ansi', False):
-            return u'\033[0m'
+            return '\033[0m'
 
     def start_italics(self, attrs=None):
         if self.kwargs.get('do_ansi', False):
-            return u'\033[3m'
+            return '\033[3m'
 
     def end_italics(self):
         if self.kwargs.get('do_ansi', False):
-            return u'\033[0m'
+            return '\033[0m'
 
     def start_li(self, attrs=None):
         para = self.doc.add_paragraph()

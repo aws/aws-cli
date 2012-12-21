@@ -307,7 +307,7 @@ class CLIDriver(object):
                 print(msg.format(error_code=code,
                                  error_message=message))
                 sys.exit(http_response.status_code - 399)
-        except Exception, ex:
+        except Exception as ex:
             self.display_error_and_exit(ex)
 
     def main(self):

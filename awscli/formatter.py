@@ -1,7 +1,6 @@
 import sys
 import json
 import six
-from botocore import xform_name, ScalarTypes
 
 
 class Formatter(object):

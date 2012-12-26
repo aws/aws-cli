@@ -21,7 +21,6 @@
 # IN THE SOFTWARE.
 #
 
-import os
 import logging
 import platform
 import botocore.config

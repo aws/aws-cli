@@ -21,7 +21,6 @@
 # IN THE SOFTWARE.
 #
 import base64
-import sys
 import datetime
 from hashlib import sha256
 import hmac

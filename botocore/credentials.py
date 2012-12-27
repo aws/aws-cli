@@ -58,7 +58,7 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
             fields = r.content.split('\n')
             for field in fields:
                 if field.endswith('/'):
-                    d[field[0:-1]] = get_iam_role(url + field)
+                    d[field[0:-1]] = _search_md(url + field)
                 else:
                     val = requests.get(url + field).content
                     if val[0] == '{':
@@ -75,14 +75,12 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
 
 def search_iam_role(**kwargs):
     credentials = None
-    if 'metadata' in kwargs:
-        # to help with unit tests
-        metadata = kwargs['metadata']
-    else:
+    metadata = kwargs.get('metadata', None)
+    if metadata is None:
         metadata = _search_md()
     # Assuming there's only one role on the instance profile.
     if metadata:
-        metadata = metadata['iam']['security-credentials'].values()[0]
+        metadata = metadata['security-credentials'].values()[0]
         credentials = Credentials(metadata['AccessKeyId'],
                                   metadata['SecretAccessKey'],
                                   metadata['Token'])

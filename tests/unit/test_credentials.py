@@ -27,18 +27,18 @@ import botocore.session
 import botocore.exceptions
 
 metadata = {'info':
-            {u'InstanceProfileArn': u'arn:aws:iam::444444444444:instance-profile/foobar',
-             u'InstanceProfileId': u'FOOBAR',
-             u'Code': u'Success',
-             u'LastUpdated': u'2012-12-03T14:36:50Z'},
+            {'InstanceProfileArn': 'arn:aws:iam::444444444444:instance-profile/foobar',
+             'InstanceProfileId': 'FOOBAR',
+             'Code': 'Success',
+             'LastUpdated': '2012-12-03T14:36:50Z'},
             'security-credentials': {'foobar':
-                                     {u'Code': u'Success',
-                                      u'LastUpdated': u'2012-12-03T14:38:21Z',
-                                      u'AccessKeyId': u'foo',
-                                      u'SecretAccessKey': u'bar',
-                                      u'Token': u'foobar',
-                                      u'Expiration': u'2012-12-03T20:48:03Z',
-                                      u'Type': u'AWS-HMAC'}}}
+                                     {'Code': 'Success',
+                                      'LastUpdated': '2012-12-03T14:38:21Z',
+                                      'AccessKeyId': 'foo',
+                                      'SecretAccessKey': 'bar',
+                                      'Token': 'foobar',
+                                      'Expiration': '2012-12-03T20:48:03Z',
+                                      'Type': 'AWS-HMAC'}}}
 
 
 class EnvVarTest(unittest.TestCase):

@@ -1,7 +1,7 @@
 botocore
 ========
 
-[![Build Status](https://travis-ci.org/boto/botocore.png)](https://travis-ci.org/boto/botocore])
+[![Build Status](https://travis-ci.org/boto/botocore.png?branch=develop)](https://travis-ci.org/boto/botocore)
 
 The low-level, core functionality of boto 3.
 

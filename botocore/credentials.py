@@ -78,14 +78,14 @@ def search_iam_role(**kwargs):
     metadata = kwargs.get('metadata', None)
     if metadata is None:
         metadata = _search_md()
-    # Assuming there's only one role on the instance profile.
     if metadata:
-        metadata = metadata['security-credentials'].values()[0]
-        credentials = Credentials(metadata['AccessKeyId'],
-                                  metadata['SecretAccessKey'],
-                                  metadata['Token'])
-        credentials.method = 'iam-role'
-        logger.info('Found credentials in IAM Role')
+        metadata = metadata['security-credentials']
+        for role_name in metadata:
+            credentials = Credentials(metadata[role_name]['AccessKeyId'],
+                                      metadata[role_name]['SecretAccessKey'],
+                                      metadata[role_name]['Token'])
+            credentials.method = 'iam-role'
+            logger.info('Found IAM Role: %s' % role_name)
     return credentials
 
 

@@ -26,7 +26,7 @@ import json
 import requests
 import botocore.auth
 import botocore.response
-import exceptions
+import botocore.exceptions
 
 logger = logging.getLogger(__name__)
 

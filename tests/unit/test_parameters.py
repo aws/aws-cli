@@ -32,63 +32,63 @@ class TimestampTest(unittest.TestCase):
         p = botocore.parameters.TimestampParameter(name='foo')
         d = {}
         ts = '2012-10-12T00:00'
-        p.build_parameter(ts, d)
+        p.build_parameter_query(ts, d)
         assert d['foo'] == ts
         ts = '2012-10-1200:00'
         with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter(ts, d)
+            p.build_parameter_query(ts, d)
 
     def test_integer(self):
         p = botocore.parameters.IntegerParameter(name='foo')
         d = {}
-        p.build_parameter('123', d)
+        p.build_parameter_query('123', d)
         assert d['foo'] == '123'
         with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter('123.4', d)
+            p.build_parameter_query('123.4', d)
 
     def test_integer_range(self):
         p = botocore.parameters.IntegerParameter(name='foo', min=0, max=10)
         d = {}
-        p.build_parameter('9', d)
+        p.build_parameter_query('9', d)
         assert d['foo'] == '9'
         with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter('8.4', d)
+            p.build_parameter_query('8.4', d)
         with self.assertRaises(botocore.exceptions.RangeError):
-            p.build_parameter('100', d)
+            p.build_parameter_query('100', d)
 
     def test_float(self):
         p = botocore.parameters.FloatParameter(name='foo')
         d = {}
-        p.build_parameter('123.4', d)
+        p.build_parameter_query('123.4', d)
         assert d['foo'] == '123.4'
         with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter('true', d)
+            p.build_parameter_query('true', d)
 
     def test_float_range(self):
         p = botocore.parameters.FloatParameter(name='foo', min=0, max=10)
         d = {}
-        p.build_parameter('9.0', d)
+        p.build_parameter_query('9.0', d)
         assert d['foo'] == '9.0'
         with self.assertRaises(botocore.exceptions.RangeError):
-            p.build_parameter('100', d)
+            p.build_parameter_query('100', d)
 
     def test_boolean(self):
         p = botocore.parameters.BooleanParameter(name='foo')
         d = {}
-        p.build_parameter('true', d)
+        p.build_parameter_query('true', d)
         assert d['foo'] == 'true'
-        p.build_parameter('True', d)
+        p.build_parameter_query('True', d)
         assert d['foo'] == 'true'
-        p.build_parameter('TRUE', d)
+        p.build_parameter_query('TRUE', d)
         assert d['foo'] == 'true'
-        p.build_parameter('false', d)
+        p.build_parameter_query('false', d)
         assert d['foo'] == 'false'
-        p.build_parameter('False', d)
+        p.build_parameter_query('False', d)
         assert d['foo'] == 'false'
-        p.build_parameter('FALSE', d)
+        p.build_parameter_query('FALSE', d)
         assert d['foo'] == 'false'
         with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter('100', d)
+            p.build_parameter_query('100', d)
 
 
 if __name__ == "__main__":

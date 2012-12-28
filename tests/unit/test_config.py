@@ -34,16 +34,16 @@ class TestConfig(unittest.TestCase):
                                    'aws_config_notfound')
         os.environ['AWS_CONFIG_FILE'] = config_path
         session = botocore.session.get_session()
-        with self.assertRaises(botocore.exceptions.ConfigNotFound):
-            config = session.get_config()
+        self.assertRaises(botocore.exceptions.ConfigNotFound,
+                          session.get_config)
 
     def test_config_parse_error(self):
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_config_bad')
         os.environ['AWS_CONFIG_FILE'] = config_path
         session = botocore.session.get_session()
-        with self.assertRaises(botocore.exceptions.ConfigParseError):
-            config = session.get_config()
+        self.assertRaises(botocore.exceptions.ConfigParseError,
+                          session.get_config)
 
 
 if __name__ == "__main__":

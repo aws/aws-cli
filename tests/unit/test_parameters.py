@@ -35,42 +35,48 @@ class TimestampTest(unittest.TestCase):
         p.build_parameter_query(ts, d)
         assert d['foo'] == ts
         ts = '2012-10-1200:00'
-        with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter_query(ts, d)
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value=ts, built_params=d)
 
     def test_integer(self):
         p = botocore.parameters.IntegerParameter(name='foo')
         d = {}
         p.build_parameter_query('123', d)
         assert d['foo'] == '123'
-        with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter_query('123.4', d)
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='123.4', built_params=d)
 
     def test_integer_range(self):
         p = botocore.parameters.IntegerParameter(name='foo', min=0, max=10)
         d = {}
         p.build_parameter_query('9', d)
         assert d['foo'] == '9'
-        with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter_query('8.4', d)
-        with self.assertRaises(botocore.exceptions.RangeError):
-            p.build_parameter_query('100', d)
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='8.4', built_params=d)
+        self.assertRaises(botocore.exceptions.RangeError,
+                          p.build_parameter_query,
+                          value='100', built_params=d)
 
     def test_float(self):
         p = botocore.parameters.FloatParameter(name='foo')
         d = {}
         p.build_parameter_query('123.4', d)
         assert d['foo'] == '123.4'
-        with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter_query('true', d)
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='true', built_params=d)
 
     def test_float_range(self):
         p = botocore.parameters.FloatParameter(name='foo', min=0, max=10)
         d = {}
         p.build_parameter_query('9.0', d)
         assert d['foo'] == '9.0'
-        with self.assertRaises(botocore.exceptions.RangeError):
-            p.build_parameter_query('100', d)
+        self.assertRaises(botocore.exceptions.RangeError,
+                          p.build_parameter_query,
+                          value='100', built_params=d)
 
     def test_boolean(self):
         p = botocore.parameters.BooleanParameter(name='foo')
@@ -87,8 +93,9 @@ class TimestampTest(unittest.TestCase):
         assert d['foo'] == 'false'
         p.build_parameter_query('FALSE', d)
         assert d['foo'] == 'false'
-        with self.assertRaises(botocore.exceptions.ValidationError):
-            p.build_parameter_query('100', d)
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='100', built_params=d)
 
 
 if __name__ == "__main__":

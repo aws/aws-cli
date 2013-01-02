@@ -56,11 +56,11 @@ _data_cache = {}
 _search_paths = []
 
 
-def _load_data(data_path):
+def _load_data(session, data_path):
     logger.debug('Attempting to Load: %s' % data_path)
     data = {}
     file_name = data_path + '.json'
-    for path in get_search_path():
+    for path in get_search_path(session):
         file_path = os.path.join(path, file_name)
         if os.path.isfile(file_path):
             fp = open(file_path)
@@ -76,14 +76,14 @@ def _load_data(data_path):
     return data
 
 
-def _load_nested_data(data_path):
+def _load_nested_data(session, data_path):
     # First we need to prime the pump, so to speak.
     # We need to make sure the parents of the nested reference have
     # been loaded before we attempt to get the nested data.
     mod_names = data_path.split('/')
     for i, md in enumerate(mod_names):
         mod_name = '/'.join(mod_names[0:i + 1])
-        d = _load_data(mod_name)
+        d = _load_data(session, mod_name)
     data = None
     prefixes = [dp for dp in _data_cache.keys() if data_path.startswith(dp)]
     if prefixes:
@@ -107,22 +107,7 @@ def _load_nested_data(data_path):
     return data
 
 
-def add_search_path(path):
-    """
-    Add a path to the data search path.
-
-    :type path: string
-    :param path: A path to a directory containing additional
-        data files.  This function will call `os.path.expanduser`
-        and `os.path.expandvars` on the path prior to adding
-        it to the data path.
-    """
-    path = os.path.expandvars(path)
-    path = os.path.expanduser(path)
-    _search_paths.append(path)
-
-
-def get_search_path():
+def get_search_path(session):
     """
     Return the complete data path used when searching for
     data files.
@@ -131,17 +116,17 @@ def get_search_path():
     p = os.path.split(__file__)[0]
     p = os.path.split(p)[0]
     p = _search_paths + [os.path.join(p, 'botocore/data')]
-    if 'BOTO_DATA_PATH' in os.environ:
-        paths = os.environ['BOTO_DATA_PATH'].split(':')
+    env_var = session.env_vars['data_path']
+    if env_var in os.environ:
+        paths = os.environ[env_var].split(':')
         for path in paths:
             path = os.path.expandvars(path)
             path = os.path.expanduser(path)
-            paths.append(path)
-        p.extend(paths)
+            p.append(path)
     return p
 
 
-def get_data(data_path):
+def get_data(session, data_path):
     """
     Finds, loads and returns the data associated with ``data_path``.
     If the file is found, the JSON data is parsed and returned.  The
@@ -155,21 +140,23 @@ def get_data(data_path):
     :raises `botocore.exceptions.DataNotFoundError`
     """
     if data_path not in _data_cache:
-        data = _load_data(data_path)
+        data = _load_data(session, data_path)
         if not data:
-            data = _load_nested_data(data_path)
+            data = _load_nested_data(session, data_path)
         if data is None:
             raise botocore.exceptions.DataNotFoundError(data_path=data_path)
     return _data_cache[data_path]
 
 
-def get_service_data(service_name, provider_name='aws'):
+def get_service_data(session, service_name, provider_name='aws'):
     """
     Get full data for a service.  This merges the full service data
     with the metadata stored in the services.json file.
     """
-    meta_data = get_data('%s/_services/%s' % (provider_name, service_name))
-    service_data = get_data('%s/%s' % (provider_name, service_name))
+    meta_data = get_data(session,
+                         '%s/_services/%s' % (provider_name, service_name))
+    service_data = get_data(session,
+                            '%s/%s' % (provider_name, service_name))
     # Merge metadata about service
     service_data.update(meta_data)
     return service_data

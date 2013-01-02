@@ -20,14 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+"""
+This module contains the main interface to the botocore package, the
+Session object.
+"""
 
 import logging
 import platform
+import os
 import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
 from . import __version__
+
+
+EnvironmentVariables = {
+    'profile': 'BOTO_DEFAULT_PROFILE',
+    'region': 'BOTO_DEFAULT_REGION',
+    'data_path': 'BOTO_DATA_PATH',
+    'config_file': 'BOTO_CONFIG_FILE',
+    'access_key': 'AWS_ACCESS_KEY_ID',
+    'secret_key': 'AWS_SECRET_ACCESS_KEY'
+    }
+"""
+A dictionary mapping logical names to specific environment variable
+names.  When creating a new Session object, you can pass in your own
+dictionary to remap the logical names to the environment variable names
+you want to use for your application.  The logical variable names are:
+
+* profile - Default profile name you want to use.
+* region - Default region name to use, if not otherwise specified.
+* data_path - Additional directories to search for data files.
+* config_file - Location of a Boto config file.
+* access_key - The AWS access key part of your credentials.
+* secret_key - The AWS secret key part of your credentials.
+
+"""
 
 
 class Session(object):
@@ -36,18 +65,29 @@ class Session(object):
     from `botocore` as well as important data such as configuration
     information and credentials into a single, easy-to-use object.
 
-    :ivar user_agent_name: The name used when constructing the User-Agent
-        header when making HTTP requests.
-    :ivar user_agent_version: The version used when constructing the
-        User-Agent header when making HTTP requests.
+    :ivar available_profiles: A list of profiles defined in the config
+        file associated with this session.
+    :ivar profile: The current profile.
     """
 
     FmtString = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    def __init__(self):
+    def __init__(self, env_vars=None):
+        """
+        Create a new Session object.
+
+        :type env_vars: dict
+        :param env_vars: A dictionary that is used to override some or all
+            of the environment variables associated with this session.  The
+            key/value pairs defined in this dictionary will override the
+            corresponding variables defined in `EnvironmentVariables`.
+        """
+        self.env_vars = EnvironmentVariables
+        if env_vars:
+            self.env_vars.update(env_vars)
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
-        self._profile = 'default'
+        self._profile = os.environ.get(self.env_vars['profile'], 'default')
         self._config = None
         self._credentials = None
 
@@ -80,7 +120,7 @@ class Session(object):
         :raises: ConfigNotFound, ConfigParseError
         """
         if self._config is None:
-            self._config = botocore.config.get_config()
+            self._config = botocore.config.get_config(self)
         return self._config.get(self._profile, None)
 
     def get_credentials(self, metadata=None):
@@ -129,10 +169,6 @@ class Session(object):
                                           platform.system(),
                                           platform.release())
 
-    def add_search_path(self, search_paths):
-        for path in search_paths:
-            botocore.base.add_search_path(path)
-
     def get_data(self, data_path):
         """
         Retrieve the data associated with `data_path`.
@@ -140,7 +176,14 @@ class Session(object):
         :type data_path: str
         :param data_path: The path to the data you wish to retrieve.
         """
-        return botocore.base.get_data(data_path)
+        return botocore.base.get_data(self, data_path)
+
+    def get_service_data(self, service_name, provider_name='aws'):
+        """
+        Retrieve the fully merged data associated with a service.
+        """
+        return botocore.base.get_service_data(self, service_name,
+                                              provider_name)
 
     def get_service(self, service_name, provider_name='aws'):
         """
@@ -207,8 +250,8 @@ class Session(object):
         log.addHandler(ch)
 
 
-def get_session():
+def get_session(env_vars=None):
     """
     Return a new session  object.
     """
-    return Session()
+    return Session(env_vars)

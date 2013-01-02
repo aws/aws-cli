@@ -33,7 +33,7 @@ class TestConfig(unittest.TestCase):
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_config_notfound')
         os.environ['AWS_CONFIG_FILE'] = config_path
-        session = botocore.session.get_session()
+        session = botocore.session.get_session(env_vars={'config_file': 'AWS_CONFIG_FILE'})
         self.assertRaises(botocore.exceptions.ConfigNotFound,
                           session.get_config)
 
@@ -41,7 +41,7 @@ class TestConfig(unittest.TestCase):
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_config_bad')
         os.environ['AWS_CONFIG_FILE'] = config_path
-        session = botocore.session.get_session()
+        session = botocore.session.get_session(env_vars={'config_file': 'AWS_CONFIG_FILE'})
         self.assertRaises(botocore.exceptions.ConfigParseError,
                           session.get_config)
 

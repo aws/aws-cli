@@ -21,7 +21,6 @@
 # IN THE SOFTWARE.
 #
 from .endpoint import get_endpoint
-from .base import get_service_data
 from .operation import Operation
 
 
@@ -41,7 +40,8 @@ class Service(object):
     def __init__(self, session, provider_name, service_name,
                  path='/', port=None):
         self.membered_lists = True
-        self.__dict__.update(get_service_data(service_name, provider_name))
+        sdata = session.get_service_data(service_name, provider_name)
+        self.__dict__.update(sdata)
         self.session = session
         self.provider_name = provider_name
         self.path = path

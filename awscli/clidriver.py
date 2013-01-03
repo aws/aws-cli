@@ -16,9 +16,9 @@ import os
 import traceback
 import json
 import copy
+import base64
 import botocore.session
-from botocore import __version__
-from awscli import awscli_data_path
+from awscli import EnvironmentVariables, __version__
 from .help import get_help
 from .formatter import get_formatter
 
@@ -68,10 +68,9 @@ class CLIDriver(object):
 
     def __init__(self, provider_name='aws'):
         self.provider_name = provider_name
-        self.session = botocore.session.get_session()
+        self.session = botocore.session.get_session(EnvironmentVariables)
         self.session.user_agent_name = 'aws-cli'
         self.session.user_agent_version = __version__
-        self.session.add_search_path(awscli_data_path)
         self.args = None
         self.service = None
         self.region = None
@@ -118,14 +117,6 @@ class CLIDriver(object):
         """
         if self.args.profile:
             self.session.profile = self.args.profile
-        if self.args.region is not None:
-            self.region = self.args.region
-        elif self.session.get_config():
-            self.region = self.session.get_config().get('region', None)
-        if self.region is None:
-            msg = self.session.get_data('messages/NoRegionError')
-            ex = ValueError(msg)
-            self.display_error_and_exit(ex)
         prog = '%s %s' % (self.parser.prog,
                           self.service.short_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
@@ -140,7 +131,7 @@ class CLIDriver(object):
             get_help(self.session, service=self.service, style='cli')
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
-        self.create_operation_parser(remaining)
+        return self.create_operation_parser(remaining)
 
     def create_operation_parser(self, remaining):
         """
@@ -181,8 +172,7 @@ class CLIDriver(object):
             print('Something is wrong.  We have leftover options')
             print(remaining)
             sys.exit(-1)
-        else:
-            self.call(args)
+        return args
 
     def unpack_cli_arg(self, param, s):
         """
@@ -224,6 +214,9 @@ class CLIDriver(object):
             else:
                 msg = 'File value must be path to file.'
                 raise ValueError(msg)
+            if hasattr(param, 'encoding'):
+                if param.encoding == 'base64':
+                    s = base64.b64encode(s)
             return s
         elif param.type == 'structure':
             if isinstance(s, list) and len(s) == 1:
@@ -288,6 +281,13 @@ class CLIDriver(object):
 
     def call(self, args):
         try:
+            if self.args.region is not None:
+                self.region = self.args.region
+            elif self.session.get_config():
+                self.region = self.session.get_config().get('region', None)
+            if self.region is None:
+                msg = self.session.get_data('messages/NoRegionError')
+                raise ValueError(msg)
             params = {}
             self.build_call_parameters(args, params)
             self.endpoint = self.service.get_endpoint(self.region,
@@ -310,6 +310,28 @@ class CLIDriver(object):
         except Exception as ex:
             self.display_error_and_exit(ex)
 
+    def test(self, cmdline):
+        """
+        Useful for unit tests.  Pass in a command line as you would
+        type it on the command line (e.g.):
+
+        ``aws ec2 describe-instances --instance-id i-12345678``
+
+        and this method will return the
+        dictionary of parameters that will be passed to the operation.
+
+        :type cmdline: str
+        :param cmdline: The command line.
+        """
+        self.create_main_parser()
+        self.args, remaining = self.parser.parse_known_args(cmdline.split()[1:])
+        self.service = self.session.get_service(self.args.service_name)
+        self.formatter = get_formatter(self.args.output)
+        args = self.create_service_parser(remaining)
+        params = {}
+        self.build_call_parameters(args, params)
+        return self.operation.build_parameters(**params)
+
     def main(self):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args()
@@ -323,4 +345,5 @@ class CLIDriver(object):
                 self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
             self.service = self.session.get_service(self.args.service_name)
-            self.create_service_parser(remaining)
+            args = self.create_service_parser(remaining)
+            self.call(args)

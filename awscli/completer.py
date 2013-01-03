@@ -11,14 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import os
 import sys
 import botocore.session
-import botocore.base
 import botocore.operation
-import botocore.credentials
 from botocore import xform_name
-from awscli import awscli_data_path
+from awscli import EnvironmentVariables
 
 
 def return_choices(choices):
@@ -48,8 +45,7 @@ def complete_parameter_value(param_name, operation):
 
 
 def complete(cmdline, point):
-    session = botocore.session.get_session()
-    session.add_search_path(awscli_data_path)
+    session = botocore.session.get_session(env_vars=EnvironmentVariables)
     operation_map = {}
     service_name = None
     operation_name = None

@@ -1,12 +1,12 @@
 aws-cli
 =======
 
-This package provides a unified command line interface to a many
+This package provides a unified command line interface to many
 Amazon Web Services.
 
 The currently supported services include:
 
-* Amazon Elastic Compute Cloud (Amazon EC2)
+* Amazon Elastic Compute Cloud (Amazon EC2) including VPC
 * Elastic Load Balancing
 * Auto Scaling
 * AWS CloudFormation
@@ -39,16 +39,24 @@ or:
 
     $ sudo pip install awscli
 
-This will install the aws-cli package as well as all dependencies.
+This will install the aws-cli package as well as all dependencies.  You can
+also just clone the git repo or download the tarball.  Once you have the
+awscli directory structure on your workstation, you can just:
+
+    $ cd <path_to_awscli>
+    $ python setup.py install
 
 Command Completion
 ------------------
-The aws-cli package includes a very useful command completion feature
-that for ``bash`` users.  Currently, this feature is not automatically
-installed so you need to configure it manually.  To enable tab completion use
-the bash built-in command ``complete``.
+The aws-cli package includes a very useful command completion feature.
+This feature is not automatically installed so you need to configure it manually.
+To enable tab completion for bash use the built-in command ``complete``.
 
     $ complete -C aws_completer aws
+
+For tcsh:
+
+    $ complete aws 'p/*/`aws_completer`/'
 
 You should add this to your startup scripts to enable it for future sessions.
 
@@ -70,7 +78,7 @@ To use a config file, create a configuration file like this:
 
     [default]
     aws_access_key_id=<default access key>
-    aws_secret_access_key=<defaul secret key>
+    aws_secret_access_key=<default secret key>
     region=us-west-1  # optional, to define default region for this profile
 
     [testing]
@@ -92,6 +100,23 @@ using aws-cli on an EC2 instance.  IAM Roles are
 a great way to have credentials installed automatically on your
 instance.  If you are using IAM Roles, aws-cli will find them and use
 them automatically.
+
+Other Important Environment Variables
+-------------------------------------
+The following additional environment variables can be useful in
+configuring and customizing your environment.
+
+AWS_DEFAULT_REGION can be used to specify a default region to use
+if one is not provided explicitly on the command line with the
+``--region`` option or in a config file.
+
+    $ export AWS_DEFAULT_REGION=us-west-2
+
+AWS_DEFAULT_PROFILE can be used to specify which profile to use
+if one is not explicitly specified on the command line via the
+``--profile`` option.
+
+    $ export AWS_DEFAULT_PROFILE=testing
 
 Complex Parameter Input
 -----------------------

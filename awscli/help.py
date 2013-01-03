@@ -267,7 +267,7 @@ class ProviderDocument(Document):
         msg = 'Available services:'
         self.add_paragraph().write(self.style.h2(msg))
         service_data = self.session.get_data('%s/_services' % provider_name)
-        for service_name in service_data:
+        for service_name in sorted(service_data):
             self.style.start_li()
             self.get_current_paragraph().write(service_name)
             self.style.end_li()
@@ -290,7 +290,7 @@ class ProviderDocument(Document):
                     choices = option_data['choices']
                     if not isinstance(choices, list):
                         choices = self.session.get_data(choices)
-                    for choice in choices:
+                    for choice in sorted(choices):
                         self.style.start_li()
                         self.get_current_paragraph().write(choice)
                         self.style.end_li()

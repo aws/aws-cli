@@ -57,6 +57,22 @@ class EnvVarTest(unittest.TestCase):
         assert credentials.method == 'env'
 
 
+class CredentialsFileTest(unittest.TestCase):
+
+    def test_credentials_file(self):
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'aws_credentials')
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE'):
+            os.environ.pop(var, None)
+        os.environ['AWS_CREDENTIAL_FILE'] = config_path
+        session = botocore.session.get_session()
+        credentials = session.get_credentials()
+        assert credentials.access_key == 'foo'
+        assert credentials.secret_key == 'bar'
+        assert credentials.method == 'credentials-file'
+
+
 class ConfigTest(unittest.TestCase):
 
     def test_config(self):
@@ -109,6 +125,7 @@ class IamRoleTest(unittest.TestCase):
         if 'AWS_CONFIG_FILE' in os.environ:
             del os.environ['AWS_CONFIG_FILE']
         os.environ['BOTO_CONFIG'] = ''
+        os.environ['AWS_CREDENTIAL_FILE'] = ''
         session = botocore.session.get_session()
         credentials = session.get_credentials(metadata=metadata)
         assert credentials.access_key == 'foo'

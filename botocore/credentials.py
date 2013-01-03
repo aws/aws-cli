@@ -103,6 +103,25 @@ def search_environment(**kwargs):
     return credentials
 
 
+def search_credentials_file(**kwargs):
+    credentials = None
+    if 'AWS_CREDENTIAL_FILE' in os.environ:
+        full_path = os.path.expanduser(os.environ['AWS_CREDENTIAL_FILE'])
+        try:
+            lines = map(str.strip, open(full_path).readlines())
+        except IOError:
+            logger.warn('Unable to load AWS_CREDENTIAL_FILE (%s)', full_path)
+        else:
+            config = dict(line.split('=', 1) for line in lines if '=' in line)
+            access_key = config.get('AWSAccessKeyId')
+            secret_key = config.get('AWSSecretKey')
+            if access_key and secret_key:
+                credentials = Credentials(access_key, secret_key)
+                credentials.method = 'credentials-file'
+                logger.info('Found credentials in AWS_CREDENTIAL_FILE')
+    return credentials
+
+
 def search_file(**kwargs):
     """
     If there is are credentials in the configuration associated with
@@ -146,20 +165,21 @@ def search_boto_config(**kwargs):
     return credentials
 
 AllCredentialFunctions = [search_environment,
+                          search_credentials_file,
                           search_file,
                           search_boto_config,
                           search_iam_role]
 
-_credential_methods = {'env': search_environment,
-                       'config': search_file,
-                       'boto': search_boto_config,
-                       'iam-role': search_iam_role}
+_credential_methods = (('env', search_environment),
+                       ('credentials-file', search_credentials_file),
+                       ('config', search_file),
+                       ('boto', search_boto_config),
+                       ('iam-role', search_iam_role))
 
 
 def get_credentials(config, metadata=None):
     credentials = None
-    for cred_method in _credential_methods:
-        cred_fn = _credential_methods[cred_method]
+    for cred_method, cred_fn in _credential_methods:
         credentials = cred_fn(config=config,
                               access_key_name='aws_access_key_id',
                               secret_key_name='aws_secret_access_key',

@@ -104,6 +104,9 @@ def search_environment(**kwargs):
 
 
 def search_credentials_file(**kwargs):
+    """
+    Search for a credential file used by original CLI tools.
+    """
     credentials = None
     if 'AWS_CREDENTIAL_FILE' in os.environ:
         full_path = os.path.expanduser(os.environ['AWS_CREDENTIAL_FILE'])
@@ -171,8 +174,8 @@ AllCredentialFunctions = [search_environment,
                           search_iam_role]
 
 _credential_methods = (('env', search_environment),
-                       ('credentials-file', search_credentials_file),
                        ('config', search_file),
+                       ('credentials-file', search_credentials_file),
                        ('boto', search_boto_config),
                        ('iam-role', search_iam_role))
 

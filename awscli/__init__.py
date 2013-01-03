@@ -15,10 +15,16 @@ AWSCLI
 ----
 A Universal Command Line Environment for Amazon Web Services.
 """
-import botocore.base
 import os
 
-__version__ = '0.4.1'
+__version__ = '0.4.4'
+
+EnvironmentVariables = {
+    'profile': 'AWS_DEFAULT_PROFILE',
+    'region': 'AWS_DEFAULT_REGION',
+    'data_path': 'AWS_DATA_PATH',
+    'config_file': 'AWS_CONFIG_FILE'
+    }
 
 #
 # Get our data path to be added to botocore's search path
@@ -31,3 +37,4 @@ if 'AWS_DATA_PATH' in os.environ:
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         awscli_data_path.append(path)
+os.environ['AWS_DATA_PATH'] = ':'.join(awscli_data_path)

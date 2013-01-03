@@ -58,7 +58,7 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
             fields = r.content.split('\n')
             for field in fields:
                 if field.endswith('/'):
-                    d[field[0:-1]] = get_iam_role(url + field)
+                    d[field[0:-1]] = _search_md(url + field)
                 else:
                     val = requests.get(url + field).content
                     if val[0] == '{':
@@ -75,19 +75,17 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
 
 def search_iam_role(**kwargs):
     credentials = None
-    if 'metadata' in kwargs:
-        # to help with unit tests
-        metadata = kwargs['metadata']
-    else:
+    metadata = kwargs.get('metadata', None)
+    if metadata is None:
         metadata = _search_md()
-    # Assuming there's only one role on the instance profile.
     if metadata:
-        metadata = metadata['iam']['security-credentials'].values()[0]
-        credentials = Credentials(metadata['AccessKeyId'],
-                                  metadata['SecretAccessKey'],
-                                  metadata['Token'])
-        credentials.method = 'iam-role'
-        logger.info('Found credentials in IAM Role')
+        metadata = metadata['security-credentials']
+        for role_name in metadata:
+            credentials = Credentials(metadata[role_name]['AccessKeyId'],
+                                      metadata[role_name]['SecretAccessKey'],
+                                      metadata[role_name]['Token'])
+            credentials.method = 'iam-role'
+            logger.info('Found IAM Role: %s' % role_name)
     return credentials
 
 
@@ -102,6 +100,28 @@ def search_environment(**kwargs):
         credentials = Credentials(access_key, secret_key)
         credentials.method = 'env'
         logger.info('Found credentials in Environment variables')
+    return credentials
+
+
+def search_credentials_file(**kwargs):
+    """
+    Search for a credential file used by original CLI tools.
+    """
+    credentials = None
+    if 'AWS_CREDENTIAL_FILE' in os.environ:
+        full_path = os.path.expanduser(os.environ['AWS_CREDENTIAL_FILE'])
+        try:
+            lines = map(str.strip, open(full_path).readlines())
+        except IOError:
+            logger.warn('Unable to load AWS_CREDENTIAL_FILE (%s)', full_path)
+        else:
+            config = dict(line.split('=', 1) for line in lines if '=' in line)
+            access_key = config.get('AWSAccessKeyId')
+            secret_key = config.get('AWSSecretKey')
+            if access_key and secret_key:
+                credentials = Credentials(access_key, secret_key)
+                credentials.method = 'credentials-file'
+                logger.info('Found credentials in AWS_CREDENTIAL_FILE')
     return credentials
 
 
@@ -148,20 +168,21 @@ def search_boto_config(**kwargs):
     return credentials
 
 AllCredentialFunctions = [search_environment,
+                          search_credentials_file,
                           search_file,
                           search_boto_config,
                           search_iam_role]
 
-_credential_methods = {'env': search_environment,
-                       'config': search_file,
-                       'boto': search_boto_config,
-                       'iam-role': search_iam_role}
+_credential_methods = (('env', search_environment),
+                       ('config', search_file),
+                       ('credentials-file', search_credentials_file),
+                       ('boto', search_boto_config),
+                       ('iam-role', search_iam_role))
 
 
 def get_credentials(config, metadata=None):
     credentials = None
-    for cred_method in _credential_methods:
-        cred_fn = _credential_methods[cred_method]
+    for cred_method, cred_fn in _credential_methods:
         credentials = cred_fn(config=config,
                               access_key_name='aws_access_key_id',
                               secret_key_name='aws_secret_access_key',

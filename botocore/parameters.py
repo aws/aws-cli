@@ -198,7 +198,7 @@ class ListParameter(Parameter):
             label = self.xmlname
         member_type = self.members
         if self.flattened or flattened:
-            if not label:
+            if member_type.xmlname:
                 label = member_type.xmlname
         else:
             if member_type.xmlname:

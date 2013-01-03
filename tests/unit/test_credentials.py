@@ -26,48 +26,19 @@ import os
 import botocore.session
 import botocore.exceptions
 
-metadata = {'instance-type': 't1.micro',
-            'instance-id': 'i-c4bb5fba',
-            'iam': {'info':
-                    {u'InstanceProfileArn': u'arn:aws:iam::444444444444:instance-profile/foobar',
-                     u'InstanceProfileId': u'FOOBAR',
-                     u'Code': u'Success',
-                     u'LastUpdated': u'2012-12-03T14:36:50Z'},
-                    'security-credentials': {'foobar':
-                                             {u'Code': u'Success',
-                                              u'LastUpdated': u'2012-12-03T14:38:21Z',
-                                              u'AccessKeyId': u'foo',
-                                              u'SecretAccessKey': u'bar',
-                                              u'Token': u'foobar',
-                                              u'Expiration': u'2012-12-03T20:48:03Z',
-                                              u'Type': u'AWS-HMAC'}}},
-            'local-hostname': 'domU-12-31-39-09-FA-87.compute-1.internal',
-            'network': {'interfaces':
-                        {'macs': {'12:31:39:09:fa:87':
-                                  {'local-hostname': 'domU-12-31-39-09-FA-87.compute-1.internal',
-                                   'public-hostname': 'ec2-107-22-36-64.compute-1.amazonaws.com',
-                                   'public-ipv4s': '107.22.36.64',
-                                   'mac': '12:31:39:09:fa:87',
-                                   'owner-id': '419278470775',
-                                   'local-ipv4s': '10.210.253.113',
-                                   'device-number': '0'}}}},
-            'hostname': 'domU-12-31-39-09-FA-87.compute-1.internal',
-            'ami-id': 'ami-1b814f72',
-            'kernel-id': 'aki-825ea7eb',
-            'instance-action': 'none',
-            'profile': 'default-paravirtual',
-            'reservation-id': 'r-dd7d7fa4',
-            'security-groups': 'foobar',
-            'metrics': {'vhostmd': '<?xml version="1.0" encoding="UTF-8"?>'},
-            'mac': '12:31:39:09:FA:87',
-            'public-ipv4': '107.22.36.64',
-            'ami-manifest-path': '(unknown)',
-            'local-ipv4': '10.210.253.113',
-            'placement': {'availability-zone': 'us-east-1d'},
-            'ami-launch-index': '0',
-            'public-hostname': 'ec2-107-22-36-64.compute-1.amazonaws.com',
-            'public-keys': {'foobar': ['ssh-rsa FOOBAR']},
-            'block-device-mapping': {'ami': '/dev/sda1', 'root': '/dev/sda1'}}
+metadata = {'info':
+            {'InstanceProfileArn': 'arn:aws:iam::444444444444:instance-profile/foobar',
+             'InstanceProfileId': 'FOOBAR',
+             'Code': 'Success',
+             'LastUpdated': '2012-12-03T14:36:50Z'},
+            'security-credentials': {'foobar':
+                                     {'Code': 'Success',
+                                      'LastUpdated': '2012-12-03T14:38:21Z',
+                                      'AccessKeyId': 'foo',
+                                      'SecretAccessKey': 'bar',
+                                      'Token': 'foobar',
+                                      'Expiration': '2012-12-03T20:48:03Z',
+                                      'Type': 'AWS-HMAC'}}}
 
 
 class EnvVarTest(unittest.TestCase):
@@ -84,6 +55,22 @@ class EnvVarTest(unittest.TestCase):
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'env'
+
+
+class CredentialsFileTest(unittest.TestCase):
+
+    def test_credentials_file(self):
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'aws_credentials')
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE'):
+            os.environ.pop(var, None)
+        os.environ['AWS_CREDENTIAL_FILE'] = config_path
+        session = botocore.session.get_session()
+        credentials = session.get_credentials()
+        assert credentials.access_key == 'foo'
+        assert credentials.secret_key == 'bar'
+        assert credentials.method == 'credentials-file'
 
 
 class ConfigTest(unittest.TestCase):
@@ -138,6 +125,7 @@ class IamRoleTest(unittest.TestCase):
         if 'AWS_CONFIG_FILE' in os.environ:
             del os.environ['AWS_CONFIG_FILE']
         os.environ['BOTO_CONFIG'] = ''
+        os.environ['AWS_CREDENTIAL_FILE'] = ''
         session = botocore.session.get_session()
         credentials = session.get_credentials(metadata=metadata)
         assert credentials.access_key == 'foo'

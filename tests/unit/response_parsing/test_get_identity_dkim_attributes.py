@@ -22,6 +22,7 @@
 # IN THE SOFTWARE.
 #
 import unittest
+import six
 import botocore.session
 import botocore.response
 
@@ -47,7 +48,7 @@ xml = """<GetIdentityDkimAttributesResponse xmlns="http://ses.amazonaws.com/doc/
   </ResponseMetadata>
 </GetIdentityDkimAttributesResponse>"""
 
-data = {u'DkimAttributes': {u'amazon.com': {u'DkimTokens': [u'vvjuipp74whm76gqoni7qmwwn4w4qusjiainivf6f', u'3frqe7jn4obpuxjpwpolz6ipb3k5nvt2nhjpik2oy', u'wrqplteh7oodxnad7hsl4mixg2uavzneazxv5sxi2'], u'DkimEnabled': True, u'DkimVerificationStatus': u'Success'}}, u'ResponseMetadata': {u'RequestId': u'bb5a105d-c468-11e1-82eb-dff885ccc06a'}}
+data = {'DkimAttributes': {'amazon.com': {'DkimTokens': ['vvjuipp74whm76gqoni7qmwwn4w4qusjiainivf6f', '3frqe7jn4obpuxjpwpolz6ipb3k5nvt2nhjpik2oy', 'wrqplteh7oodxnad7hsl4mixg2uavzneazxv5sxi2'], 'DkimEnabled': True, 'DkimVerificationStatus': 'Success'}}, 'ResponseMetadata': {'RequestId': 'bb5a105d-c468-11e1-82eb-dff885ccc06a'}}
 
 
 class TestGetIdentityDkimAttributes(unittest.TestCase):
@@ -59,7 +60,7 @@ class TestGetIdentityDkimAttributes(unittest.TestCase):
     def test_get_identity_dkim_attributes(self):
         op = self.service.get_operation('GetIdentityDkimAttributes')
         r = botocore.response.Response(op)
-        r.parse(xml)
+        r.parse(six.b(xml))
         self.assertEqual(r.get_value(), data)
 
 

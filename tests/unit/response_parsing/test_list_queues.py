@@ -22,6 +22,7 @@
 # IN THE SOFTWARE.
 #
 import unittest
+import six
 import botocore.session
 import botocore.response
 
@@ -40,7 +41,7 @@ xml = """<?xml version="1.0"?>
   </ResponseMetadata>
 </ListQueuesResponse>"""
 
-data = {u'QueueUrl': [u'https://queue.amazonaws.com/419278470775/blat', u'https://queue.amazonaws.com/419278470775/test1348104148', u'https://queue.amazonaws.com/419278470775/test1348112370', u'https://queue.amazonaws.com/419278470775/test1351037239', u'https://queue.amazonaws.com/419278470775/test1351044153', u'https://queue.amazonaws.com/419278470775/testcli'], u'ResponseMetadata': {u'RequestId': u'6447266c-d0e0-5c10-8e26-6f57c3adec51'}}
+data = {'QueueUrl': ['https://queue.amazonaws.com/419278470775/blat', 'https://queue.amazonaws.com/419278470775/test1348104148', 'https://queue.amazonaws.com/419278470775/test1348112370', 'https://queue.amazonaws.com/419278470775/test1351037239', 'https://queue.amazonaws.com/419278470775/test1351044153', 'https://queue.amazonaws.com/419278470775/testcli'], 'ResponseMetadata': {'RequestId': '6447266c-d0e0-5c10-8e26-6f57c3adec51'}}
 
 
 class TestListQueuesAttributes(unittest.TestCase):
@@ -52,8 +53,7 @@ class TestListQueuesAttributes(unittest.TestCase):
     def test_list_queues(self):
         op = self.service.get_operation('ListQueues')
         r = botocore.response.Response(op)
-        r.parse(xml)
-        print r.get_value()
+        r.parse(six.b(xml))
         self.assertEqual(r.get_value(), data)
 
 

@@ -26,7 +26,7 @@ import os
 import botocore.exceptions
 
 
-def get_config():
+def get_config(session):
     """
     If the 'AWS_CONFIG_FILE' environment variable exists, parse that
     file and return all of the data found within the file as a
@@ -41,8 +41,9 @@ def get_config():
     """
     config = {}
     path = None
-    if 'AWS_CONFIG_FILE' in os.environ:
-        path = os.getenv('AWS_CONFIG_FILE')
+    env_var = session.env_vars['config_file']
+    if env_var in os.environ:
+        path = os.getenv(env_var)
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         if not os.path.isfile(path):

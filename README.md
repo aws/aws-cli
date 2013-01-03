@@ -43,12 +43,15 @@ This will install the aws-cli package as well as all dependencies.
 
 Command Completion
 ------------------
-The aws-cli package includes a very useful command completion feature
-that for ``bash`` users.  Currently, this feature is not automatically
-installed so you need to configure it manually.  To enable tab completion use
-the bash built-in command ``complete``.
+The aws-cli package includes a very useful command completion feature.  
+This feature is not automatically installed so you need to configure it manually.
+To enable tab completion for bash use the built-in command ``complete``.
 
     $ complete -C aws_completer aws
+
+For tcsh:
+
+    $ complete aws 'p/*/`aws_completer`/'
 
 You should add this to your startup scripts to enable it for future sessions.
 

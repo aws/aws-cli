@@ -86,6 +86,9 @@ class CLIDriver(object):
         """
         Create the main parser to handle the global arguments.
         """
+        if self.session.get_config():
+            self.provider_name = self.session.get_config().get('provider_name', 'aws')
+
         self.cli_data = self.session.get_data('cli')
         description = self.cli_data['description']
         self.parser = argparse.ArgumentParser(formatter_class=self.Formatter,
@@ -97,7 +100,7 @@ class CLIDriver(object):
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
-                    choices = self.session.get_data(option_data['choices'])
+                    choices = self.session.get_data(option_data['choices'] % { "provider": self.provider_name })
                 if isinstance(choices, dict):
                     choices = list(choices.keys())
                 option_data['help'] = self.create_choice_help(choices)
@@ -331,8 +334,9 @@ class CLIDriver(object):
     def main(self):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args()
+
         if self.args.service_name == 'help':
-            get_help(self.session, provider='aws', style='cli')
+            get_help(self.session, provider=self.provider_name, style='cli')
             sys.exit(0)
         else:
             if self.args.debug:
@@ -340,6 +344,6 @@ class CLIDriver(object):
                 httplib.HTTPConnection.debuglevel = 2
                 self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
-            self.service = self.session.get_service(self.args.service_name)
+            self.service = self.session.get_service(self.args.service_name, provider_name=self.provider_name)
             args = self.create_service_parser(remaining)
             self.call(args)

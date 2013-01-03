@@ -17,7 +17,7 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 import os
 
-__version__ = '0.4.4'
+__version__ = '0.4.5'
 
 EnvironmentVariables = {
     'profile': 'AWS_DEFAULT_PROFILE',

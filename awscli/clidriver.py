@@ -16,6 +16,7 @@ import os
 import traceback
 import json
 import copy
+import base64
 import botocore.session
 from awscli import EnvironmentVariables, __version__
 from .help import get_help
@@ -213,6 +214,9 @@ class CLIDriver(object):
             else:
                 msg = 'File value must be path to file.'
                 raise ValueError(msg)
+            if hasattr(param, 'encoding'):
+                if param.encoding == 'base64':
+                    s = base64.b64encode(s)
             return s
         elif param.type == 'structure':
             if isinstance(s, list) and len(s) == 1:

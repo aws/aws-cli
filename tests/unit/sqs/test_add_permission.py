@@ -28,7 +28,7 @@ class TestAddPermission(unittest.TestCase):
         cmdline += ' --aws-account-ids 888888888888'
         cmdline += ' --actions SendMessage'
         cmdline += ' --label FooBarLabel'
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli',
+        result = {'QueueUrl': self.queue_url,
                   'ActionName.1': 'SendMessage',
                   'AWSAccountId.1': '888888888888',
                   'Label': 'FooBarLabel'}
@@ -41,7 +41,7 @@ class TestAddPermission(unittest.TestCase):
         cmdline += ' --aws-account-ids 888888888888 999999999999'
         cmdline += ' --actions SendMessage'
         cmdline += ' --label FooBarLabel'
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli',
+        result = {'QueueUrl': self.queue_url,
                   'ActionName.1': 'SendMessage',
                   'AWSAccountId.1': '888888888888',
                   'AWSAccountId.2': '999999999999',
@@ -55,7 +55,7 @@ class TestAddPermission(unittest.TestCase):
         cmdline += ' --aws-account-ids 888888888888'
         cmdline += ' --actions SendMessage ReceiveMessage'
         cmdline += ' --label FooBarLabel'
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli',
+        result = {'QueueUrl': self.queue_url,
                   'ActionName.1': 'SendMessage',
                   'ActionName.2': 'ReceiveMessage',
                   'AWSAccountId.1': '888888888888',

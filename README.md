@@ -1,6 +1,8 @@
 aws-cli
 =======
 
+[![Build Status](https://travis-ci.org/aws/aws-cli.png?branch=master)](https://travis-ci.org/aws/aws-cli)
+
 This package provides a unified command line interface to many
 Amazon Web Services.
 

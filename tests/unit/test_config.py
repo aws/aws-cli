@@ -29,21 +29,37 @@ import botocore.exceptions
 
 class TestConfig(unittest.TestCase):
 
+    def setUp(self):
+        self.env_vars={'config_file': 'FOO_CONFIG_FILE'}
+
     def test_config_not_found(self):
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_config_notfound')
-        os.environ['AWS_CONFIG_FILE'] = config_path
-        session = botocore.session.get_session(env_vars={'config_file': 'AWS_CONFIG_FILE'})
+        os.environ['FOO_CONFIG_FILE'] = config_path
+        session = botocore.session.get_session(self.env_vars)
         self.assertRaises(botocore.exceptions.ConfigNotFound,
                           session.get_config)
 
     def test_config_parse_error(self):
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_config_bad')
-        os.environ['AWS_CONFIG_FILE'] = config_path
-        session = botocore.session.get_session(env_vars={'config_file': 'AWS_CONFIG_FILE'})
+        os.environ['FOO_CONFIG_FILE'] = config_path
+        session = botocore.session.get_session(self.env_vars)
         self.assertRaises(botocore.exceptions.ConfigParseError,
                           session.get_config)
+
+    def test_config(self):
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'aws_config')
+        os.environ['FOO_CONFIG_FILE'] = config_path
+        session = botocore.session.get_session(self.env_vars)
+        session.get_config()
+        assert len(session.available_profiles) == 2
+        assert 'default' in session.available_profiles
+        assert 'personal' in session.available_profiles
+
+    def tearDown(self):
+        del os.environ['FOO_CONFIG_FILE']
 
 
 if __name__ == "__main__":

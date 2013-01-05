@@ -43,94 +43,139 @@ metadata = {'info':
 
 class EnvVarTest(unittest.TestCase):
 
-    def test_envvar(self):
+    def setUp(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_config_nocreds')
         os.environ['AWS_CONFIG_FILE'] = config_path
         os.environ['BOTO_CONFIG'] = ''
         os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
         os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
-        session = botocore.session.get_session()
-        credentials = session.get_credentials()
+        self.session = botocore.session.get_session()
+
+    def test_envvar(self):
+        credentials = self.session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'env'
 
+    def tearDown(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
+
 
 class CredentialsFileTest(unittest.TestCase):
 
-    def test_credentials_file(self):
+    def setUp(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_credentials')
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE'):
-            os.environ.pop(var, None)
         os.environ['AWS_CREDENTIAL_FILE'] = config_path
-        session = botocore.session.get_session()
-        credentials = session.get_credentials()
+        os.environ['BOTO_CONFIG'] = ''
+        self.session = botocore.session.get_session()
+
+    def test_credentials_file(self):
+        credentials = self.session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'credentials-file'
 
+    def tearDown(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
+
 
 class ConfigTest(unittest.TestCase):
 
-    def test_config(self):
-        if 'AWS_ACCESS_KEY_ID' in os.environ:
-            del os.environ['AWS_ACCESS_KEY_ID']
-        if 'AWS_SECRET_ACCESS_KEY' in os.environ:
-            del os.environ['AWS_SECRET_ACCESS_KEY']
-        os.environ['BOTO_CONFIG'] = ''
+    def setUp(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
         config_path = os.path.join(os.path.dirname(__file__), 'aws_config')
         os.environ['AWS_CONFIG_FILE'] = config_path
-        session = botocore.session.get_session()
-        credentials = session.get_credentials()
+        os.environ['BOTO_CONFIG'] = ''
+        self.session = botocore.session.get_session()
+
+    def test_config(self):
+        credentials = self.session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'config'
-        assert session.available_profiles == ['default', 'personal']
-        session.profile = 'personal'
-        credentials = session.get_credentials()
+        assert len(self.session.available_profiles) == 2
+        assert 'default' in self.session.available_profiles
+        assert 'personal' in self.session.available_profiles
+        self.session.profile = 'personal'
+        credentials = self.session.get_credentials()
         assert credentials.access_key == 'fie'
         assert credentials.secret_key == 'baz'
         assert credentials.method == 'config'
-        assert session.available_profiles == ['default', 'personal']
+        assert len(self.session.available_profiles) == 2
+        assert 'default' in self.session.available_profiles
+        assert 'personal' in self.session.available_profiles
+
+    def tearDown(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
 
 
 class BotoConfigTest(unittest.TestCase):
 
-    def test_boto_config(self):
-        if 'AWS_ACCESS_KEY_ID' in os.environ:
-            del os.environ['AWS_ACCESS_KEY_ID']
-        if 'AWS_SECRET_ACCESS_KEY' in os.environ:
-            del os.environ['AWS_SECRET_ACCESS_KEY']
-        if 'AWS_CONFIG_FILE' in os.environ:
-            del os.environ['AWS_CONFIG_FILE']
+    def setUp(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
         config_path = os.path.join(os.path.dirname(__file__), 'boto_config')
         os.environ['BOTO_CONFIG'] = config_path
-        session = botocore.session.get_session()
-        credentials = session.get_credentials()
+        self.session = botocore.session.get_session()
+
+    def test_boto_config(self):
+        credentials = self.session.get_credentials()
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'boto'
 
+    def tearDown(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
+
 
 class IamRoleTest(unittest.TestCase):
 
-    def test_iam_role(self):
-        if 'AWS_ACCESS_KEY_ID' in os.environ:
-            del os.environ['AWS_ACCESS_KEY_ID']
-        if 'AWS_SECRET_ACCESS_KEY' in os.environ:
-            del os.environ['AWS_SECRET_ACCESS_KEY']
-        if 'AWS_CONFIG_FILE' in os.environ:
-            del os.environ['AWS_CONFIG_FILE']
+    def setUp(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
         os.environ['BOTO_CONFIG'] = ''
-        os.environ['AWS_CREDENTIAL_FILE'] = ''
-        session = botocore.session.get_session()
-        credentials = session.get_credentials(metadata=metadata)
+        self.session = botocore.session.get_session()
+
+    def test_iam_role(self):
+        credentials = self.session.get_credentials(metadata=metadata)
+        assert credentials.method == 'iam-role'
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
-        assert credentials.method == 'iam-role'
+
+    def tearDown(self):
+        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
+                    'AWS_CREDENTIAL_FILE'):
+            os.environ.pop(var, None)
 
 
 if __name__ == "__main__":

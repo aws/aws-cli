@@ -28,6 +28,7 @@ Session object.
 import logging
 import platform
 import os
+import copy
 import botocore.config
 import botocore.credentials
 import botocore.base
@@ -82,7 +83,7 @@ class Session(object):
             key/value pairs defined in this dictionary will override the
             corresponding variables defined in `EnvironmentVariables`.
         """
-        self.env_vars = EnvironmentVariables
+        self.env_vars = copy.copy(EnvironmentVariables)
         if env_vars:
             self.env_vars.update(env_vars)
         self.user_agent_name = 'Boto'

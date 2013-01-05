@@ -39,7 +39,7 @@ EnvironmentVariables = {
     'profile': 'BOTO_DEFAULT_PROFILE',
     'region': 'BOTO_DEFAULT_REGION',
     'data_path': 'BOTO_DATA_PATH',
-    'config_file': 'BOTO_CONFIG_FILE',
+    'config_file': 'AWS_CONFIG_FILE',
     'access_key': 'AWS_ACCESS_KEY_ID',
     'secret_key': 'AWS_SECRET_ACCESS_KEY'
     }

@@ -116,9 +116,9 @@ def get_search_path(session):
     p = os.path.split(__file__)[0]
     p = os.path.split(p)[0]
     p = _search_paths + [os.path.join(p, 'botocore/data')]
-    env_var = session.env_vars['data_path']
-    if env_var in os.environ:
-        paths = os.environ[env_var].split(':')
+    paths = session.get_envvar('data_path')
+    if paths is not None:
+        paths = paths.split(':')
         for path in paths:
             path = os.path.expandvars(path)
             path = os.path.expanduser(path)

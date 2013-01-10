@@ -56,7 +56,6 @@ you want to use for your application.  The logical variable names are:
 * config_file - Location of a Boto config file.
 * access_key - The AWS access key part of your credentials.
 * secret_key - The AWS secret key part of your credentials.
-
 """
 
 
@@ -110,6 +109,30 @@ class Session(object):
         if profile != self._profile:
             self._credentials = None
         self._profile = profile
+
+    def get_envvar(self, logical_name):
+        """
+        Retrieve the value associated with the specified logical_name
+        from the environment.
+
+        :type logical_name: str
+        :param logical_name: The logical name of the environment variable
+            you want to retrieve.  This name will be mapped to the
+            appropriate environment variable name for this session.
+
+            * profile - Default profile name you want to use.
+            * region - Default region name to use, if not otherwise specified.
+            * data_path - Additional directories to search for data files.
+            * config_file - Location of a Boto config file.
+            * access_key - The AWS access key part of your credentials.
+            * secret_key - The AWS secret key part of your credentials.
+
+        :returns: str value of variable of None if not defined.
+        """
+        value = None
+        if logical_name in self.env_vars:
+            value = os.environ.get(self.env_vars[logical_name], None)
+        return value
 
     def get_config(self):
         """

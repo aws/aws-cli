@@ -61,7 +61,8 @@ class Service(object):
     def region_names(self):
         return self.regions.keys()
 
-    def get_endpoint(self, region_name, is_secure=True, endpoint_url=None):
+    def get_endpoint(self, region_name=None, is_secure=True,
+                     endpoint_url=None):
         """
         Return the Endpoint object for this service in a particular
         region.
@@ -71,7 +72,17 @@ class Service(object):
 
         :type is_secure: bool
         :param is_secure: True if you want the secure (HTTPS) endpoint.
+
+        :type endpoint_url: str
+        :param endpoint_url: You can explicitly override the default
+            computed endpoint name with this parameter.
         """
+        if region_name is None:
+            region_name = self.session.get_envvar('region')
+        if region_name is None:
+            envvar_name = self.session.env_vars['region']
+            raise ValueError('You must specify a region or set the '
+                             '%s environment variable.' % envvar_name)
         if region_name not in self.regions:
             raise ValueError('Service: %s not available in region: %s' %
                              (self.service_name, region_name))

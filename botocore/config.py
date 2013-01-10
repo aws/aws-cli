@@ -41,9 +41,8 @@ def get_config(session):
     """
     config = {}
     path = None
-    env_var = session.env_vars['config_file']
-    if env_var in os.environ:
-        path = os.getenv(env_var)
+    path = session.get_envvar('config_file')
+    if path is not None:
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         if not os.path.isfile(path):

@@ -35,7 +35,7 @@ def complete_std_option_value(session, option_name, option_data, prefix=''):
     elif option_name == '--output':
         return_choices(option_data[option_name]['choices'])
     elif option_name == '--profile':
-        return_choices(session.available_profiles())
+        return_choices(session.available_profiles)
     else:
         return_no_choices()
 

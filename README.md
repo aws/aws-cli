@@ -5,3 +5,5 @@ botocore
 
 A low-level interface to a growing number of Amazon Web Services.  The
 botocore package is the foundation for [AWS-CLI](https://github.com/aws/aws-cli).
+
+[Documentation](https://botocore.readthedocs.org/en/latest/)

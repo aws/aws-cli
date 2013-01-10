@@ -94,10 +94,10 @@ class Session(object):
     @property
     def available_profiles(self):
         profiles = []
-        if self._config:
-            for key in self._config.keys():
-                if not key.startswith('_'):
-                    profiles.append(key)
+        self.get_config()
+        for key in self._config.keys():
+            if not key.startswith('_'):
+                profiles.append(key)
         return profiles
 
     @property

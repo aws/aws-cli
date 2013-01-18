@@ -285,6 +285,8 @@ class CLIDriver(object):
                 self.region = self.args.region
             elif self.session.get_config():
                 self.region = self.session.get_config().get('region', None)
+            elif os.environ.get(self.session.env_vars['region'], None) is not None:
+                self.region = os.environ.get(self.session.env_vars['region'])
             if self.region is None:
                 msg = self.session.get_data('messages/NoRegionError')
                 raise ValueError(msg)

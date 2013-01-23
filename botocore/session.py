@@ -147,6 +147,20 @@ class Session(object):
             self._config = botocore.config.get_config(self)
         return self._config.get(self._profile, None)
 
+    def set_credentials(self, access_key, secret_key):
+        """
+        Create the :class:`botocore.credential.Credential` object
+        associated with this session using the supplied AccessKey and SecretKey
+
+        :type access_key: str
+        :param access_key: The access key part of the credentials.
+
+        :type secret_key: str
+        :param secret_key: The secret key part of the credentials.
+        """
+        self._credentials = botocore.credentials.Credentials(access_key,
+                                                             secret_key)
+
     def get_credentials(self, metadata=None):
         """
         Return the :class:`botocore.credential.Credential` object

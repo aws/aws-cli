@@ -39,7 +39,7 @@ _first_cap_regex = re.compile('(.)([A-Z][a-z]+)')
 _number_cap_regex = re.compile('([a-z])([0-9]+)')
 _end_cap_regex = re.compile('([a-z0-9])([A-Z])')
 
-ScalarTypes = ('string', 'integer', 'boolean', 'timestamp', 'float')
+ScalarTypes = ('string', 'integer', 'boolean', 'timestamp', 'float', 'double')
 
 
 def xform_name(name, sep='_'):

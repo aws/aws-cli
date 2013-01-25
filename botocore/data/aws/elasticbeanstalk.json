@@ -1,11 +1,14 @@
 {
+  "service_full_name": "AWS Elastic Beanstalk",
+  "service_abbreviation": "Elastic Beanstalk",
   "type": "query",
+  "signature_version": "v4",
+  "result_wrapped": true,
+  "membered_lists": true,
   "api_version": "2010-12-01",
-  "short_name": "elasticbeanstalk",
-  "service_name": "AWSElasticBeanstalkService",
-  "assembly": "com.amazonaws.elasticbeanstalk",
+  "endpoint_prefix": "elasticbeanstalk",
   "xmlnamespace": "http://elasticbeanstalk.amazonaws.com/docs/2010-12-01/",
-  "documentation": "\n      <fullname>AWS Elastic Beanstalk</fullname>\n\n      <p>\n         This is the &servicelong; API Reference. This guide provides detailed information \n         about &servicelong; actions, data types, parameters, and errors.\n      </p>\n\n      <p>&servicelong;\n         is a tool that makes it easy for you to create,\n         deploy, and manage scalable, fault-tolerant applications running on\n         Amazon Web Services cloud resources.\n      </p>\n\n      <p>\n         For more information about this product, go to the <a href=\"http://aws.amazon.com/elasticbeanstalk/\">&servicelong;</a> details page.  \n         The location of the lastest AWS Elastic Beanstalk WSDL is \n         <a href=\"http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl\">http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>.\n      </p>\n       <p><b>Endpoints</b></p>\n       <p>&service; supports the following region-specific endpoint:</p>\n      <ul>\n         <li>\n            https://elasticbeanstalk.us-east-1.amazonaws.com\n         </li>\n      </ul> \n   ",
+  "documentation": "\n      <fullname>AWS Elastic Beanstalk</fullname>\n\n      <p>\n         This is the &servicelong; API Reference. This guide provides detailed information \n         about &servicelong; actions, data types, parameters, and errors.\n      </p>\n\n      <p>&servicelong;\n         is a tool that makes it easy for you to create,\n         deploy, and manage scalable, fault-tolerant applications running on\n         Amazon Web Services cloud resources.\n      </p>\n\n      <p>\n         For more information about this product, go to the <a href=\"http://aws.amazon.com/elasticbeanstalk/\">&servicelong;</a> details page.  \n         The location of the lastest AWS Elastic Beanstalk WSDL is \n         <a href=\"http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl\">http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>.\n      </p>\n       <p><b>Endpoints</b></p>\n       <p>For a list of region-specific endpoints that &service; supports, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/rande.html#elasticbeanstalk_region\">Regions and Endpoints</a> in the \n<i>Amazon Web Services Glossary</i>.</p>\n   ",
   "operations": [
     {
       "name": "CheckDNSAvailability",
@@ -138,7 +141,7 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The caller has exceeded the limit on the number of applications associated with their account.</p>\n    "
+          "documentation": "\n    <p>The caller has exceeded the limit on the number of applications associated with their account.</p>\n  "
         }
       ],
       "documentation": "\n      <p>\n         Creates an application that has one configuration\n         template named\n         <code>default</code>\n         and no application versions.\n      </p>\n      <note>\n         The\n         <code>default</code>\n         configuration template is for a 32-bit version of the\n         Amazon Linux\n         operating system running the Tomcat 6 application container.\n      </note>\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&Description=Sample%20Description\n&Operation=CreateApplication\n&AuthParams         </queryrequest>\n\n         <queryresponse><CreateApplicationResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <CreateApplicationResult>\n    <Application>\n      <Versions/>\n      <Description>Sample Description</Description>\n      <ApplicationName>SampleApp</ApplicationName>\n      <DateCreated>2010-11-16T23:09:20.256Z</DateCreated>\n      <DateUpdated>2010-11-16T23:09:20.256Z</DateUpdated>\n      <ConfigurationTemplates>\n        <member>Default</member>\n      </ConfigurationTemplates>\n    </Application>\n  </CreateApplicationResult>\n  <ResponseMetadata>\n    <RequestId>8b00e053-f1d6-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</CreateApplicationResponse>      </queryresponse>\n      </examples>\n   "
@@ -267,14 +270,28 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The caller has exceeded the limit on the number of applications associated with their account.</p>\n    "
+          "documentation": "\n    <p>The caller has exceeded the limit on the number of applications associated with their account.</p>\n  "
         },
         {
           "shape_name": "TooManyApplicationVersionsException",
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The caller has exceeded the limit on the number of application versions associated with their account.</p>\n    "
+          "documentation": "\n    <p>The caller has exceeded the limit on the number of application versions associated with their account.</p>\n  "
+        },
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        },
+        {
+          "shape_name": "S3LocationNotInServiceRegionException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>The specified S3 bucket does not belong to the S3 region in which the service is running.</p>\n  "
         }
       ],
       "documentation": "\n      <p>Creates an application version for the specified\n         application.</p>\n      <note>Once you create an application version with a specified Amazon S3\n         bucket\n         and key location, you cannot change that Amazon S3 location. If you change the\n         Amazon S3 location,\n         you receive an exception when you attempt to launch an environment from the\n         application version. </note>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&VersionLabel=Version1\n&Description=description\n&SourceBundle.S3Bucket=amazonaws.com\n&SourceBundle.S3Key=sample.war\n&AutoCreateApplication=true\n&Operation=CreateApplicationVersion\n&AuthParams         </queryrequest>\n\n         <queryresponse><CreateApplicationVersionResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <CreateApplicationVersionResult>\n    <ApplicationVersion>\n      <SourceBundle>\n        <S3Bucket>amazonaws.com</S3Bucket>\n        <S3Key>sample.war</S3Key>\n      </SourceBundle>\n      <VersionLabel>Version1</VersionLabel>\n      <Description>description</Description>\n      <ApplicationName>SampleApp</ApplicationName>\n      <DateCreated>2010-11-17T03:21:59.161Z</DateCreated>\n      <DateUpdated>2010-11-17T03:21:59.161Z</DateUpdated>\n    </ApplicationVersion>\n  </CreateApplicationVersionResult>\n  <ResponseMetadata>\n    <RequestId>d653efef-f1f9-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</CreateApplicationVersionResponse>         </queryresponse>\n      </examples>\n\n   "
@@ -458,11 +475,18 @@
       },
       "errors": [
         {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        },
+        {
           "shape_name": "TooManyConfigurationTemplatesException",
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The caller has exceeded the limit on the number of configuration templates associated with their account.</p>\n    "
+          "documentation": "\n    <p>The caller has exceeded the limit on the number of configuration templates associated with their account.</p>\n  "
         }
       ],
       "documentation": "\n      <p>Creates a configuration template. Templates are associated with a\n         specific application\n         and are used to deploy different versions of the\n         application with\n         the same configuration settings.</p>\n\n      <p>Related Topics</p>\n      <ul>\n\n         <li>\n            <a>DescribeConfigurationOptions</a>\n         </li>\n         <li>\n            <a>DescribeConfigurationSettings</a>\n         </li>\n         <li>\n            <a>ListAvailableSolutionStacks</a>\n         </li>\n      </ul>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&TemplateName=AppTemplate\n&SolutionStackName=32bit%20Amazon%20Linux%20running%20Tomcat%207\n&Description=ConfigTemplateDescription\n&Operation=CreateConfigurationTemplate\n&AuthParams          </queryrequest>\n\n         <queryresponse><CreateConfigurationTemplateResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <CreateConfigurationTemplateResult>\n    <SolutionStackName>32bit Amazon Linux running Tomcat 7</SolutionStackName>\n    <OptionSettings>\n      <member>\n        <OptionName>ImageId</OptionName>\n        <Value>ami-f2f0069b</Value>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Endpoint</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM4</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>JDBC_CONNECTION_STRING</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>SecurityGroups</OptionName>\n        <Value>elasticbeanstalk-default</Value>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>UnhealthyThreshold</OptionName>\n        <Value>5</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>InstanceType</OptionName>\n        <Value>t1.micro</Value>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>Statistic</OptionName>\n        <Value>Average</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>LoadBalancerHTTPSPort</OptionName>\n        <Value>OFF</Value>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n      <member>\n        <OptionName>Stickiness Cookie Expiration</OptionName>\n        <Value>0</Value>\n        <Namespace>aws:elb:policies</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM5</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>MeasureName</OptionName>\n        <Value>NetworkOut</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Interval</OptionName>\n        <Value>30</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>Application Healthcheck URL</OptionName>\n        <Value>/</Value>\n        <Namespace>aws:elasticbeanstalk:application</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Topic ARN</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>LowerBreachScaleIncrement</OptionName>\n        <Value>-1</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>XX:MaxPermSize</OptionName>\n        <Value>64m</Value>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>UpperBreachScaleIncrement</OptionName>\n        <Value>1</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>MinSize</OptionName>\n        <Value>1</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>Custom Availability Zones</OptionName>\n        <Value>us-east-1a</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>Availability Zones</OptionName>\n        <Value>Any 1</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>LogPublicationControl</OptionName>\n        <Value>false</Value>\n        <Namespace>aws:elasticbeanstalk:hostmanager</Namespace>\n      </member>\n      <member>\n        <OptionName>JVM Options</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Topic Name</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM2</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>LoadBalancerHTTPPort</OptionName>\n        <Value>80</Value>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n      <member>\n        <OptionName>Timeout</OptionName>\n        <Value>5</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>BreachDuration</OptionName>\n        <Value>2</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>MonitoringInterval</OptionName>\n        <Value>5 minute</Value>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM1</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>MaxSize</OptionName>\n        <Value>4</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>LowerThreshold</OptionName>\n        <Value>2000000</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>AWS_SECRET_KEY</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>AWS_ACCESS_KEY_ID</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>UpperThreshold</OptionName>\n        <Value>6000000</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Protocol</OptionName>\n        <Value>email</Value>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>Unit</OptionName>\n        <Value>Bytes</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Xmx</OptionName>\n        <Value>256m</Value>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>Cooldown</OptionName>\n        <Value>360</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>Period</OptionName>\n        <Value>1</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Xms</OptionName>\n        <Value>256m</Value>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>EC2KeyName</OptionName>\n        <Value/>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>Stickiness Policy</OptionName>\n        <Value>false</Value>\n        <Namespace>aws:elb:policies</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM3</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>HealthyThreshold</OptionName>\n        <Value>3</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>SSLCertificateId</OptionName>\n        <Value/>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n    </OptionSettings>\n    <Description>ConfigTemplateDescription</Description>\n    <ApplicationName>SampleApp</ApplicationName>\n    <DateCreated>2010-11-17T03:48:19.640Z</DateCreated>\n    <TemplateName>AppTemplate</TemplateName>\n    <DateUpdated>2010-11-17T03:48:19.640Z</DateUpdated>\n  </CreateConfigurationTemplateResult>\n  <ResponseMetadata>\n    <RequestId>846cd905-f1fd-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</CreateConfigurationTemplateResponse>  </queryresponse>\n      </examples>\n\n   "
@@ -723,7 +747,14 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The caller has exceeded the limit of allowed environments associated with the account.</p>\n    "
+          "documentation": "\n    <p>The caller has exceeded the limit of allowed environments associated with the account.</p>\n  "
+        },
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
         }
       ],
       "documentation": "\n      <p>\n         Launches an environment for the specified application using\n         the specified configuration.\n\t\t</p>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&EnvironmentName=SampleApp\n&SolutionStackName=32bit%20Amazon%20Linux%20running%20Tomcat%207\n&Description=EnvDescrip\n&Operation=CreateEnvironment\n&AuthParams             </queryrequest>\n\n         <queryresponse><CreateEnvironmentResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <CreateEnvironmentResult>\n    <VersionLabel>Version1</VersionLabel>\n    <Status>Deploying</Status>\n    <ApplicationName>SampleApp</ApplicationName>\n    <Health>Grey</Health>\n    <EnvironmentId>e-icsgecu3wf</EnvironmentId>\n    <DateUpdated>2010-11-17T03:59:33.520Z</DateUpdated>\n    <SolutionStackName>32bit Amazon Linux running Tomcat 7</SolutionStackName>\n    <Description>EnvDescrip</Description>\n    <EnvironmentName>SampleApp</EnvironmentName>\n    <DateCreated>2010-11-17T03:59:33.520Z</DateCreated>\n  </CreateEnvironmentResult>\n  <ResponseMetadata>\n    <RequestId>15db925e-f1ff-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</CreateEnvironmentResponse> </queryresponse>\n      </examples>\n\n   "
@@ -750,14 +781,21 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The web service attempted to create a bucket in an Amazon S3 account that already has 100 buckets.</p>\n    "
+          "documentation": "\n    <p>The web service attempted to create a bucket in an Amazon S3 account that already has 100 buckets.</p>\n  "
         },
         {
           "shape_name": "S3SubscriptionRequiredException",
           "type": "structure",
           "members": {
           },
-          "documentation": "\n        <p>The caller does not have a subscription to Amazon S3.</p> \n    "
+          "documentation": "\n    <p>The caller does not have a subscription to Amazon S3.</p>\n  "
+        },
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
         }
       ],
       "documentation": "\n      <p>\n         Creates the Amazon S3 storage location for the account.\n\t\t</p>\n      <p>\n         This location is used to store user log files.\n\t\t</p>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?Operation=CreateStorageLocation\n&AuthParams                   </queryrequest>\n\n         <queryresponse> <CreateStorageLocationResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <CreateStorageLocationResult>\n    <S3Bucket>elasticbeanstalk-us-east-1-780612358023</S3Bucket>\n  </CreateStorageLocationResult>\n  <ResponseMetadata>\n    <RequestId>ef51b94a-f1d6-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</CreateStorageLocationResponse>         </queryresponse>\n      </examples>\n\n   "
@@ -775,15 +813,26 @@
             "max_length": 100,
             "documentation": "\n      <p>The name of the application to delete.</p>\n   ",
             "required": true
+          },
+          "TerminateEnvByForce": {
+            "shape_name": "TerminateEnvForce",
+            "type": "boolean",
+            "documentation": "\n      <p>When set to true, running environments will be terminated before deleting the application.</p>\n   "
           }
         },
         "documentation": "\n      <p>This documentation target is not reported in the API reference.</p>\n   "
       },
       "output": null,
       "errors": [
-
+        {
+          "shape_name": "OperationInProgressException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because another operation is already in progress affecting an an element in this activity.</p>\n  "
+        }
       ],
-      "documentation": "\n      <p>\n         Deletes the specified application along with all\n         associated versions and\n         configurations.\n      </p>\n      <note>You cannot delete an application that has a running environment.\n      </note>\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&Operation=DeleteApplication\n&AuthParams         </queryrequest>\n\n         <queryresponse><DeleteApplicationResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>1f155abd-f1d7-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</DeleteApplicationResponse>         </queryresponse>\n      </examples>\n   "
+      "documentation": "\n      <p>\n         Deletes the specified application along with all\n         associated versions and\n         configurations. The application versions will not be deleted from your Amazon S3 bucket.\n      </p>\n      <note>You cannot delete an application that has a running environment.\n      </note>\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&Operation=DeleteApplication\n&AuthParams         </queryrequest>\n\n         <queryresponse><DeleteApplicationResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>1f155abd-f1d7-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</DeleteApplicationResponse>         </queryresponse>\n      </examples>\n   "
     },
     {
       "name": "DeleteApplicationVersion",
@@ -822,7 +871,28 @@
           "type": "structure",
           "members": {
           },
-          "documentation": "\n\t\t<p>Unable to delete the Amazon S3 source bundle associated with the\n\t\t\tapplication version, although the application version deleted successfully.</p>\n\t"
+          "documentation": "\n    <p>Unable to delete the Amazon S3 source bundle associated with the application version, although the application version deleted successfully.</p>\n  "
+        },
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        },
+        {
+          "shape_name": "OperationInProgressException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because another operation is already in progress affecting an an element in this activity.</p>\n  "
+        },
+        {
+          "shape_name": "S3LocationNotInServiceRegionException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>The specified S3 bucket does not belong to the S3 region in which the service is running.</p>\n  "
         }
       ],
       "documentation": "\n      <p>\n         Deletes the specified version from the specified\n         application.\n      </p>\n      <note>You cannot delete an application version that is associated with a\n         running environment.</note>\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&VersionLabel=First%20Release\n&Operation=DeleteApplicationVersion\n&AuthParams         </queryrequest>\n\n         <queryresponse><DeleteApplicationVersionResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>58dc7339-f272-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</DeleteApplicationVersionResponse>          </queryresponse>\n      </examples>\n   "
@@ -854,7 +924,13 @@
       },
       "output": null,
       "errors": [
-
+        {
+          "shape_name": "OperationInProgressException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because another operation is already in progress affecting an an element in this activity.</p>\n  "
+        }
       ],
       "documentation": "\n      <p>Deletes the specified configuration template.</p>\n      <note>When you launch an environment using a configuration template, the\n         environment\n         gets a copy of the template. You can delete or modify the environment's copy of\n         the template without\n         affecting the running environment.</note>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&TemplateName=SampleAppTemplate\n&Operation=DeleteConfigurationTemplate\n&AuthParams         </queryrequest>\n\n         <queryresponse><DeleteConfigurationTemplateResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>af9cf1b6-f25e-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</DeleteConfigurationTemplateResponse>   </queryresponse>\n      </examples>\n\n   "
     },
@@ -1509,7 +1585,13 @@
         "documentation": "\n      <p>Result message containing a list of environment resource\n         descriptions.\n      </p>\n   "
       },
       "errors": [
-
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        }
       ],
       "documentation": "\n      <p>Returns AWS resources for this environment.</p>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?EnvironmentId=e-hc8mvnayrx\n&EnvironmentName=SampleAppVersion\n&Operation=DescribeEnvironmentResources\n&AuthParams         </queryrequest>\n\n         <queryresponse><DescribeEnvironmentResourcesResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <DescribeEnvironmentResourcesResult>\n    <EnvironmentResources>\n      <LoadBalancers>\n        <member>\n          <Name>elasticbeanstalk-SampleAppVersion</Name>\n        </member>\n      </LoadBalancers>\n      <LaunchConfigurations>\n        <member>\n          <Name>elasticbeanstalk-SampleAppVersion-hbAc8cSZH7</Name>\n        </member>\n      </LaunchConfigurations>\n      <AutoScalingGroups>\n        <member>\n          <Name>elasticbeanstalk-SampleAppVersion-us-east-1c</Name>\n        </member>\n      </AutoScalingGroups>\n      <EnvironmentName>SampleAppVersion</EnvironmentName>\n      <Triggers>\n        <member>\n          <Name>elasticbeanstalk-SampleAppVersion-us-east-1c</Name>\n        </member>\n      </Triggers>\n      <Instances/>\n    </EnvironmentResources>\n  </DescribeEnvironmentResourcesResult>\n  <ResponseMetadata>\n    <RequestId>e1cb7b96-f287-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</DescribeEnvironmentResourcesResponse>        </queryresponse>\n      </examples>\n\n   "
     },
@@ -1974,7 +2056,13 @@
       },
       "output": null,
       "errors": [
-
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        }
       ],
       "documentation": "\n      <p>\n         Deletes and recreates all of the AWS resources (for example: the Auto Scaling group, load\n         balancer, etc.)\n         for a specified environment and forces a restart.  \n\t\t</p>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?EnvironmentId=e-hc8mvnayrx\n&EnvironmentName=SampleAppVersion\n&Operation=RebuildEnvironment\n&AuthParams         </queryrequest>\n\n         <queryresponse><RebuildEnvironmentResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>a7d6606e-f289-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</RebuildEnvironmentResponse>      </queryresponse>\n      </examples>\n\n   "
     },
@@ -2327,7 +2415,13 @@
         "documentation": "\n      <p>Describes the properties of an environment.</p>\n\n\n   "
       },
       "errors": [
-
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        }
       ],
       "documentation": "\n      <p>\n         Terminates the specified environment.\n\t\t</p>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?EnvironmentId=e-icsgecu3wf\n&EnvironmentName=SampleApp\n&TerminateResources=true\n&Operation=TerminateEnvironment\n&AuthParams </queryrequest>\n\n         <queryresponse><TerminateEnvironmentResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <TerminateEnvironmentResult>\n    <VersionLabel>Version1</VersionLabel>\n    <Status>Terminating</Status>\n    <ApplicationName>SampleApp</ApplicationName>\n    <EndpointURL>elasticbeanstalk-SampleApp-1394386994.us-east-1.elb.amazonaws.com</EndpointURL>\n    <CNAME>SampleApp-jxb293wg7n.elasticbeanstalk.amazonaws.com</CNAME>\n    <Health>Grey</Health>\n    <EnvironmentId>e-icsgecu3wf</EnvironmentId>\n    <DateUpdated>2010-11-17T17:10:41.976Z</DateUpdated>\n    <SolutionStackName>32bit Amazon Linux running Tomcat 7</SolutionStackName>\n    <Description>EnvDescrip</Description>\n    <EnvironmentName>SampleApp</EnvironmentName>\n    <DateCreated>2010-11-17T03:59:33.520Z</DateCreated>\n  </TerminateEnvironmentResult>\n  <ResponseMetadata>\n    <RequestId>9b71af21-f26d-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</TerminateEnvironmentResponse> </queryresponse>\n      </examples>\n\n   "
     },
@@ -2687,7 +2781,13 @@
         "documentation": "\n      <p>\n         Describes the settings for a configuration set.\n\t\t</p>\n\n   "
       },
       "errors": [
-
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        }
       ],
       "documentation": "\n      <p>\n         Updates the specified configuration template to have the specified\n         properties or configuration option values.\n\t  </p>\n      <note>\n         If a property (for example,\n         <code>ApplicationName</code>) is not provided, its\n         value remains unchanged. To clear such\n         properties, specify an empty string.\n      </note>\n      <p>Related Topics</p>\n      <ul>\n         <li>\n            <a>DescribeConfigurationOptions</a>\n         </li>\n      </ul>\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&TemplateName=default\n&Description=changed%20description\n&OptionSettings.member.1.Namespace=aws%3Aautoscaling%3Atrigger\n&OptionSettings.member.1.OptionName=LowerThreshold\n&OptionSettings.member.1.Value=1000000\n&Operation=UpdateConfigurationTemplate\n&AuthParams          </queryrequest>\n         <queryresponse><UpdateConfigurationTemplateResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <UpdateConfigurationTemplateResult>\n    <SolutionStackName>32bit Amazon Linux running Tomcat 7</SolutionStackName>\n    <OptionSettings>\n      <member>\n        <OptionName>Availability Zones</OptionName>\n        <Value>Any 1</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM5</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>LowerThreshold</OptionName>\n        <Value>1000000</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>UpperThreshold</OptionName>\n        <Value>9000000</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>LowerBreachScaleIncrement</OptionName>\n        <Value>-1</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>MeasureName</OptionName>\n        <Value>NetworkOut</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Period</OptionName>\n        <Value>60</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Xmx</OptionName>\n        <Value>256m</Value>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM3</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>EC2KeyName</OptionName>\n        <Value/>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>MinSize</OptionName>\n        <Value>1</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>JVM Options</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>XX:MaxPermSize</OptionName>\n        <Value>64m</Value>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n      <member>\n        <OptionName>AWS_SECRET_KEY</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>UpperBreachScaleIncrement</OptionName>\n        <Value>1</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Topic ARN</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>InstanceType</OptionName>\n        <Value>t1.micro</Value>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>Custom Availability Zones</OptionName>\n        <Value>us-east-1a</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>Statistic</OptionName>\n        <Value>Average</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Protocol</OptionName>\n        <Value>email</Value>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>JDBC_CONNECTION_STRING</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM2</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>Stickiness Cookie Expiration</OptionName>\n        <Value>0</Value>\n        <Namespace>aws:elb:policies</Namespace>\n      </member>\n      <member>\n        <OptionName>SSLCertificateId</OptionName>\n        <Value/>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n      <member>\n        <OptionName>MaxSize</OptionName>\n        <Value>4</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>Stickiness Policy</OptionName>\n        <Value>false</Value>\n        <Namespace>aws:elb:policies</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Topic Name</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>SecurityGroups</OptionName>\n        <Value>elasticbeanstalk-default</Value>\n        <Namespace>aws:autoscaling:launchconfiguration</Namespace>\n      </member>\n      <member>\n        <OptionName>LoadBalancerHTTPPort</OptionName>\n        <Value>80</Value>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n      <member>\n        <OptionName>Unit</OptionName>\n        <Value>None</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>AWS_ACCESS_KEY_ID</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM4</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>Application Healthcheck URL</OptionName>\n        <Value>/</Value>\n        <Namespace>aws:elasticbeanstalk:application</Namespace>\n      </member>\n      <member>\n        <OptionName>LoadBalancerHTTPSPort</OptionName>\n        <Value>OFF</Value>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n      <member>\n        <OptionName>HealthyThreshold</OptionName>\n        <Value>3</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>Timeout</OptionName>\n        <Value>5</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>Cooldown</OptionName>\n        <Value>0</Value>\n        <Namespace>aws:autoscaling:asg</Namespace>\n      </member>\n      <member>\n        <OptionName>UnhealthyThreshold</OptionName>\n        <Value>5</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>Interval</OptionName>\n        <Value>30</Value>\n        <Namespace>aws:elb:healthcheck</Namespace>\n      </member>\n      <member>\n        <OptionName>LogPublicationControl</OptionName>\n        <Value>false</Value>\n        <Namespace>aws:elasticbeanstalk:hostmanager</Namespace>\n      </member>\n      <member>\n        <OptionName>BreachDuration</OptionName>\n        <Value>120</Value>\n        <Namespace>aws:autoscaling:trigger</Namespace>\n      </member>\n      <member>\n        <OptionName>PARAM1</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:application:environment</Namespace>\n      </member>\n      <member>\n        <OptionName>Notification Endpoint</OptionName>\n        <Value/>\n        <Namespace>aws:elasticbeanstalk:sns:topics</Namespace>\n      </member>\n      <member>\n        <OptionName>Protocol</OptionName>\n        <Value>HTTP</Value>\n        <Namespace>aws:elb:loadbalancer</Namespace>\n      </member>\n      <member>\n        <OptionName>Xms</OptionName>\n        <Value>256m</Value>\n        <Namespace>aws:elasticbeanstalk:container:tomcat:jvmoptions</Namespace>\n      </member>\n    </OptionSettings>\n    <Description>changed description</Description>\n    <ApplicationName>SampleApp</ApplicationName>\n    <DateCreated>2010-11-17T19:26:20.420Z</DateCreated>\n    <TemplateName>Default</TemplateName>\n    <DateUpdated>2010-11-17T20:58:27.508Z</DateUpdated>\n  </UpdateConfigurationTemplateResult>\n  <ResponseMetadata>\n    <RequestId>6cbcb09a-f28d-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</UpdateConfigurationTemplateResponse>    </queryresponse>\n      </examples>\n\n   "
     },
@@ -2925,7 +3025,13 @@
         "documentation": "\n      <p>Describes the properties of an environment.</p>\n\n\n   "
       },
       "errors": [
-
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        }
       ],
       "documentation": "\n      <p>\n         Updates the environment description, deploys a new application\n         version, updates the configuration settings to an entirely new configuration\n         template, or updates select configuration option values in the running\n         environment.\n\t\t</p>\n      <p>\n         Attempting to update both the release and configuration is\n         not allowed and &service;\n         returns an\n         <code>InvalidParameterCombination</code>\n         error.\n      </p>\n      <p>\n         When updating the configuration settings to a new template or\n         individual settings,\n         a draft configuration is created and\n         <a>DescribeConfigurationSettings</a>\n         for this\n         environment returns two setting descriptions with different\n         <code>DeploymentStatus</code>\n         values.\n      </p>\n\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?EnvironmentId=e-hc8mvnayrx\n&EnvironmentName=SampleAppVersion\n&TemplateName=default\n&OptionsToRemove.member.1.Namespace=aws%3Aautoscaling%3Atrigger\n&OptionsToRemove.member.1.OptionName=MeasureName\n&Operation=UpdateEnvironment\n&AuthParams         </queryrequest>\n\n         <queryresponse><UpdateEnvironmentResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <UpdateEnvironmentResult>\n    <VersionLabel>New Version</VersionLabel>\n    <Status>Deploying</Status>\n    <ApplicationName>SampleApp</ApplicationName>\n    <EndpointURL>elasticbeanstalk-SampleAppVersion-246126201.us-east-1.elb.amazonaws.com</EndpointURL>\n    <CNAME>SampleApp.elasticbeanstalk.amazonaws.com</CNAME>\n    <Health>Grey</Health>\n    <EnvironmentId>e-hc8mvnayrx</EnvironmentId>\n    <DateUpdated>2010-11-17T21:05:55.251Z</DateUpdated>\n    <SolutionStackName>32bit Amazon Linux running Tomcat 7</SolutionStackName>\n    <Description>SampleAppDescription</Description>\n    <EnvironmentName>SampleAppVersion</EnvironmentName>\n    <DateCreated>2010-11-17T20:17:42.339Z</DateCreated>\n  </UpdateEnvironmentResult>\n  <ResponseMetadata>\n    <RequestId>7705f0bc-f28e-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</UpdateEnvironmentResponse>          </queryresponse>\n      </examples>\n\n   "
     },
@@ -3032,7 +3138,13 @@
         "documentation": "\n      <p>Provides a list of validation messages.</p>\n   "
       },
       "errors": [
-
+        {
+          "shape_name": "InsufficientPrivilegesException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>Unable to perform the specified operation because the user does not have enough privileges for one of more downstream aws services</p>\n  "
+        }
       ],
       "documentation": "\n      <p>\n         Takes a set of configuration settings and either a configuration\n         template or environment, and determines whether those values are valid.\n\t\t</p>\n      <p>\n         This action returns a list of messages indicating any errors or warnings\n         associated\n         with the selection of option values.\n\t\t</p>\n      <examples>\n         <queryrequest>https://elasticbeanstalk.us-east-1.amazon.com/?ApplicationName=SampleApp\n&EnvironmentName=SampleAppVersion\n&OptionSettings.member.1.Namespace=aws%3Aautoscaling%3Atrigger\n&OptionSettings.member.1.OptionName=LowerThreshold\n&OptionSettings.member.1.Value=1000000\n&Operation=ValidateConfigurationSettings\n&AuthParams                   </queryrequest>\n\n         <queryresponse><ValidateConfigurationSettingsResponse xmlns=\"https://elasticbeanstalk.amazonaws.com/docs/2010-12-01/\">\n  <ValidateConfigurationSettingsResult>\n    <Messages/>\n  </ValidateConfigurationSettingsResult>\n  <ResponseMetadata>\n    <RequestId>06f1cfff-f28f-11df-8a78-9f77047e0d0c</RequestId>\n  </ResponseMetadata>\n</ValidateConfigurationSettingsResponse>           </queryresponse>\n      </examples>\n   "
     }

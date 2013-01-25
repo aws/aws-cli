@@ -1,6 +1,6 @@
 #!/usr/bin/env
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -24,47 +24,62 @@
 import unittest
 import botocore.parameters
 import botocore.exceptions
+import dateutil.parser
 
 
-class TimestampTest(unittest.TestCase):
+class TestParameters(unittest.TestCase):
 
     def test_timestamp(self):
         p = botocore.parameters.TimestampParameter(name='foo')
         d = {}
         ts = '2012-10-12T00:00'
+        dt = dateutil.parser.parse(ts)
         p.build_parameter_query(ts, d)
-        assert d['foo'] == ts
-        ts = '2012-10-1200:00'
+        assert d['foo'] == dt.isoformat()
         self.assertRaises(botocore.exceptions.ValidationError,
                           p.build_parameter_query,
-                          value=ts, built_params=d)
+                          value='not a date string', built_params=d)
+
+    def test_string(self):
+        p = botocore.parameters.StringParameter(name='foo')
+        d = {}
+        value = 'This is a test'
+        p.build_parameter_query(value, d)
+        assert d['foo'] == value
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value=1, built_params=d)
 
     def test_integer(self):
         p = botocore.parameters.IntegerParameter(name='foo')
         d = {}
-        p.build_parameter_query('123', d)
+        p.build_parameter_query(123, d)
         assert d['foo'] == '123'
+        p.build_parameter_json(123, d)
+        assert d['foo'] == 123
         self.assertRaises(botocore.exceptions.ValidationError,
                           p.build_parameter_query,
-                          value='123.4', built_params=d)
+                          value=123.4, built_params=d)
 
     def test_integer_range(self):
         p = botocore.parameters.IntegerParameter(name='foo', min=0, max=10)
         d = {}
-        p.build_parameter_query('9', d)
+        p.build_parameter_query(9, d)
         assert d['foo'] == '9'
         self.assertRaises(botocore.exceptions.ValidationError,
                           p.build_parameter_query,
-                          value='8.4', built_params=d)
+                          value=8.4, built_params=d)
         self.assertRaises(botocore.exceptions.RangeError,
                           p.build_parameter_query,
-                          value='100', built_params=d)
+                          value=100, built_params=d)
 
     def test_float(self):
         p = botocore.parameters.FloatParameter(name='foo')
         d = {}
-        p.build_parameter_query('123.4', d)
+        p.build_parameter_query(123.4, d)
         assert d['foo'] == '123.4'
+        p.build_parameter_json(123.4, d)
+        assert d['foo'] == 123.4
         self.assertRaises(botocore.exceptions.ValidationError,
                           p.build_parameter_query,
                           value='true', built_params=d)
@@ -72,11 +87,13 @@ class TimestampTest(unittest.TestCase):
     def test_float_range(self):
         p = botocore.parameters.FloatParameter(name='foo', min=0, max=10)
         d = {}
-        p.build_parameter_query('9.0', d)
+        p.build_parameter_query(9.0, d)
         assert d['foo'] == '9.0'
+        p.build_parameter_json(9.0, d)
+        assert d['foo'] == 9.0
         self.assertRaises(botocore.exceptions.RangeError,
                           p.build_parameter_query,
-                          value='100', built_params=d)
+                          value=100.0, built_params=d)
 
     def test_boolean(self):
         p = botocore.parameters.BooleanParameter(name='foo')
@@ -93,9 +110,43 @@ class TimestampTest(unittest.TestCase):
         assert d['foo'] == 'false'
         p.build_parameter_query('FALSE', d)
         assert d['foo'] == 'false'
+        p.build_parameter_query(True, d)
+        assert d['foo'] == 'true'
+        p.build_parameter_json(True, d)
+        assert d['foo'] == True
         self.assertRaises(botocore.exceptions.ValidationError,
                           p.build_parameter_query,
                           value='100', built_params=d)
+
+    def test_list(self):
+        p = botocore.parameters.ListParameter(name='foo')
+        p.members = {'shape_name': 'String',
+                     'type': 'string',
+                     'xmlname': 'bar'}
+        p.handle_subtypes()
+        d = {}
+        value = ['This', 'is', 'a', 'test']
+        p.build_parameter_query(value, d)
+        assert d == {'foo.bar.4': 'test',
+                     'foo.bar.2': 'is',
+                     'foo.bar.3': 'a',
+                     'foo.bar.1': 'This'}
+        d = {}
+        p.build_parameter_json(value, d)
+        assert d == {'foo.bar': ['This', 'is', 'a', 'test']}
+        p.flattened = True
+        d = {}
+        p.build_parameter_query(value, d)
+        assert d == {'bar.4': 'test',
+                     'bar.1': 'This',
+                     'bar.2': 'is',
+                     'bar.3': 'a'}
+        d = {}
+        p.build_parameter_json(value, d)
+        assert d == {'bar': ['This', 'is', 'a', 'test']}
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value=1, built_params=d)
 
 
 if __name__ == "__main__":

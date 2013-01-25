@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -104,7 +104,8 @@ class Response(xml.sax.ContentHandler):
         if not isinstance(type_dict, dict):
             return
         if not name:
-            name = type_dict['shape_name']
+            if 'shape_name' in type_dict:
+                name = type_dict['shape_name']
         name = type_dict.get('xmlname', name)
         if type_dict['type'] == 'structure':
             self.type_map[name] = type_dict
@@ -114,7 +115,7 @@ class Response(xml.sax.ContentHandler):
         elif type_dict['type'] == 'list':
             flattened = type_dict.get('flattened', False)
             if flattened:
-                name = type_dict['members']['xmlname']
+                name = type_dict['members'].get('xmlname', name)
             self.type_map[name] = type_dict
             self.build_type_map(None, type_dict['members'])
         elif type_dict['type'] == 'map':

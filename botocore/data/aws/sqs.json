@@ -1,11 +1,12 @@
 {
+  "service_full_name": "Amazon Simple Queue Service",
+  "service_abbreviation": "Amazon SQS",
   "type": "query",
+  "signature_version": "v2",
+  "result_wrapped": true,
   "api_version": "2011-10-01",
-  "short_name": "sqs",
-  "service_name": "AmazonSQS",
-  "membered_lists": false,
-  "assembly": "com.amazonaws.sqs",
-  "xmlnamespace": "http://queue.amazonaws.com/doc/2011-10-01/",
+  "endpoint_prefix": "sqs",
+  "xmlnamespace": "http://queue.amazonaws.com/doc/2012-11-05/",
   "documentation": "\n    <p>Amazon Simple Queue Service (Amazon SQS) offers a reliable, highly scalable,\n      hosted queue for storing messages as they travel between computers. By using\n      Amazon SQS, developers can simply move data between distributed components of\n      their applications that perform different tasks, without losing messages or\n      requiring each component to be always available. Amazon SQS makes it easy to\n      build an automated workflow, working in close conjunction with the Amazon\n      Elastic Compute Cloud (Amazon EC2) and the other AWS infrastructure web\n      services.</p>\n\n    <p>Amazon SQS works by exposing Amazon's web-scale messaging infrastructure as\n      a web service. Any computer on the Internet can add or read messages without\n      any installed software or special firewall configurations. Components of\n      applications using Amazon SQS can run independently, and do not need to be on\n      the same network, developed with the same technologies, or running at the same\n      time.</p>\n\n    <p>Visit <a href=\"http://aws.amazon.com/sqs/\">http://aws.amazon.com/sqs/</a>\n      for more information.</p>\n  ",
   "operations": [
     {
@@ -287,7 +288,8 @@
                 "LastModifiedTimestamp",
                 "QueueArn",
                 "ApproximateNumberOfMessagesDelayed",
-                "DelaySeconds"
+                "DelaySeconds",
+                "ReceiveMessageWaitTimeSeconds"
               ],
               "documentation": null,
               "xmlname": "Name"
@@ -565,7 +567,8 @@
                 "LastModifiedTimestamp",
                 "QueueArn",
                 "ApproximateNumberOfMessagesDelayed",
-                "DelaySeconds"
+                "DelaySeconds",
+                "ReceiveMessageWaitTimeSeconds"
               ],
               "documentation": null,
               "xmlname": "AttributeName"
@@ -597,7 +600,8 @@
                 "LastModifiedTimestamp",
                 "QueueArn",
                 "ApproximateNumberOfMessagesDelayed",
-                "DelaySeconds"
+                "DelaySeconds",
+                "ReceiveMessageWaitTimeSeconds"
               ],
               "documentation": null,
               "xmlname": "Name"
@@ -624,7 +628,7 @@
           "documentation": "\n    <p>The attribute referred to does not exist.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>Gets attributes for the specified queue. The following attributes are supported:\n      <ul>\n        <li>\n<code>All</code> - returns all values.</li>\n        <li>\n<code>ApproximateNumberOfMessages</code> - returns the approximate\n          number of visible messages in a queue. For more information, see\n          Resources Required to Process Messages in the Amazon SQS Developer\n          Guide.</li>\n        <li>\n<code>ApproximateNumberOfMessagesNotVisible</code> - returns the\n          approximate number of messages that are not timed-out and not deleted. \n          For more information, see Resources Required to Process Messages in the\n          Amazon SQS Developer Guide.</li>\n        <li>\n<code>VisibilityTimeout</code> - returns the visibility timeout for\n          the queue. For more information about visibility timeout, see\n          Visibility Timeout in the Amazon SQS Developer Guide.</li>\n        <li>\n<code>CreatedTimestamp</code> - returns the time when the queue was\n          created (epoch time in seconds).</li>\n        <li>\n<code>LastModifiedTimestamp</code> - returns the time when the queue\n          was last changed (epoch time in seconds).</li>\n        <li>\n<code>Policy</code> - returns the queue's policy.</li>\n        <li>\n<code>MaximumMessageSize</code> - returns the limit of how many bytes\n          a message can contain before Amazon SQS rejects it.</li>\n        <li>\n<code>MessageRetentionPeriod</code> - returns the number of seconds\n          Amazon SQS retains a message.</li>\n        <li>\n<code>QueueArn</code> - returns the queue's Amazon resource name\n          (ARN).</li>\n        <li>\n<code>ApproximateNumberOfMessagesDelayed</code> - returns the\n          approximate number of messages that are pending to be added to the\n          queue.</li>\n        <li>\n<code>DelaySeconds</code> - returns the default delay on the queue\n          in seconds.</li>\n      </ul> \n    </p>\n  "
+      "documentation": "\n    <p>Gets attributes for the specified queue. The following attributes are supported:\n      <ul>\n        <li>\n<code>All</code> - returns all values.</li>\n        <li>\n<code>ApproximateNumberOfMessages</code> - returns the approximate\n          number of visible messages in a queue. For more information, see\n          Resources Required to Process Messages in the Amazon SQS Developer\n          Guide.</li>\n        <li>\n<code>ApproximateNumberOfMessagesNotVisible</code> - returns the\n          approximate number of messages that are not timed-out and not deleted. \n          For more information, see Resources Required to Process Messages in the\n          Amazon SQS Developer Guide.</li>\n        <li>\n<code>VisibilityTimeout</code> - returns the visibility timeout for\n          the queue. For more information about visibility timeout, see\n          Visibility Timeout in the Amazon SQS Developer Guide.</li>\n        <li>\n<code>CreatedTimestamp</code> - returns the time when the queue was\n          created (epoch time in seconds).</li>\n        <li>\n<code>LastModifiedTimestamp</code> - returns the time when the queue\n          was last changed (epoch time in seconds).</li>\n        <li>\n<code>Policy</code> - returns the queue's policy.</li>\n        <li>\n<code>MaximumMessageSize</code> - returns the limit of how many bytes\n          a message can contain before Amazon SQS rejects it.</li>\n        <li>\n<code>MessageRetentionPeriod</code> - returns the number of seconds\n          Amazon SQS retains a message.</li>\n        <li>\n<code>QueueArn</code> - returns the queue's Amazon resource name\n          (ARN).</li>\n        <li>\n<code>ApproximateNumberOfMessagesDelayed</code> - returns the\n          approximate number of messages that are pending to be added to the\n          queue.</li>\n        <li>\n<code>DelaySeconds</code> - returns the default delay on the queue\n          in seconds.</li>\n        <li>\n<code>ReceiveMessageWaitTimeSeconds</code> - returns the time for which a\n          ReceiveMessage call will wait for a message to arrive.</li>\n      </ul> \n    </p>\n  "
     },
     {
       "name": "GetQueueUrl",
@@ -687,7 +691,7 @@
         "shape_name": "ListQueuesResult",
         "type": "structure",
         "members": {
-          "queueUrls": {
+          "QueueUrls": {
             "shape_name": "QueueUrlList",
             "type": "list",
             "members": {
@@ -736,13 +740,14 @@
                 "LastModifiedTimestamp",
                 "QueueArn",
                 "ApproximateNumberOfMessagesDelayed",
-                "DelaySeconds"
+                "DelaySeconds",
+                "ReceiveMessageWaitTimeSeconds"
               ],
               "documentation": null,
               "xmlname": "AttributeName"
             },
             "flattened": true,
-            "documentation": "\n    <p>A list of attributes to retrieve information for.</p>\n  "
+            "documentation": "\n    <p>A list of attributes that need to be returned along with each message.\n       The set of valid attributes are [SenderId, ApproximateFirstReceiveTimestamp,\n       ApproximateReceiveCount, SentTimestamp].\n    </p>\n  "
           },
           "MaxNumberOfMessages": {
             "shape_name": "Integer",
@@ -753,6 +758,11 @@
             "shape_name": "Integer",
             "type": "integer",
             "documentation": "\n    <p>The duration (in seconds) that the received messages are hidden from\n      subsequent retrieve requests after being retrieved by a\n      <code>ReceiveMessage</code> request.</p>\n  "
+          },
+          "WaitTimeSeconds": {
+            "shape_name": "Integer",
+            "type": "integer",
+            "documentation": "\n    <p>The duration (in seconds) for which the call will wait for a message to arrive\n      in the queue before returning.  If a message is available, the call will\n      return sooner than WaitTimeSeconds.</p>\n  "
           }
         },
         "documentation": ""
@@ -805,7 +815,8 @@
                       "LastModifiedTimestamp",
                       "QueueArn",
                       "ApproximateNumberOfMessagesDelayed",
-                      "DelaySeconds"
+                      "DelaySeconds",
+                      "ReceiveMessageWaitTimeSeconds"
                     ],
                     "documentation": null,
                     "xmlname": "Name"
@@ -839,7 +850,7 @@
           "documentation": "\n    <p>The operation that you requested would violate a limit. For example,\n      ReceiveMessage returns this error if the maximum number of messages\n      inflight has already been reached. AddPermission returns this error if\n      the maximum number of permissions for the queue has already been reached.\n    </p>\n  "
         }
       ],
-      "documentation": "\n    <p>Retrieves one or more messages from the specified queue, including the\n      message body and message ID of each message. Messages returned by this action\n      stay in the queue until you delete them. However, once a message is returned to\n      a <code>ReceiveMessage</code> request, it is not returned on subsequent\n      <code>ReceiveMessage</code> requests for the duration of the\n      <code>VisibilityTimeout</code>. If you do not specify a\n      <code>VisibilityTimeout</code> in the request, the overall visibility timeout\n      for the queue is used for the returned messages.</p>\n  "
+      "documentation": "\n    <p>Retrieves one or more messages from the specified queue, including the message\n      body and message ID of each message. Messages returned by this action stay in\n      the queue until you delete them. However, once a message is returned to a\n      <code>ReceiveMessage</code> request, it is not returned on subsequent\n      <code>ReceiveMessage</code> requests\n      for the duration of the <code>VisibilityTimeout</code>. If you do not specify a\n      <code>VisibilityTimeout</code> in the request, the overall visibility timeout for the queue\n      is used for the returned messages.</p>\n\n    <p>If a message is available in the queue, the call will return immediately. Otherwise,\n      it will wait up to <code>WaitTimeSeconds</code> for a message to arrive. If you do not specify\n      <code>WaitTimeSeconds</code> in the request, the queue attribute\n      ReceiveMessageWaitTimeSeconds is used to determine how long to wait.</p>\n\n    <p>You could ask for additional information about each message through the attributes.\n       Attributes that can be requested are <code>[SenderId, ApproximateFirstReceiveTimestamp,\n       ApproximateReceiveCount, SentTimestamp]</code>.</p>\n  "
     },
     {
       "name": "RemovePermission",
@@ -1115,7 +1126,8 @@
                 "LastModifiedTimestamp",
                 "QueueArn",
                 "ApproximateNumberOfMessagesDelayed",
-                "DelaySeconds"
+                "DelaySeconds",
+                "ReceiveMessageWaitTimeSeconds"
               ],
               "documentation": null,
               "xmlname": "Name"
@@ -1144,7 +1156,7 @@
           "documentation": "\n    <p>The attribute referred to does not exist.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>Sets an attribute of a queue. The set of attributes that can be set are\n      - DelaySeconds, MessageRetentionPeriod, MaximumMessageSize,\n      VisibilityTimeout and Policy.</p>\n  "
+      "documentation": "\n    <p>Sets the value of one or more queue attributes. Valid attributes that\n       can be set are [VisibilityTimeout, Policy, MaximumMessageSize,\n       MessageRetentionPeriod, ReceiveMessageWaitTimeSeconds].</p>\n  "
     }
   ]
 }

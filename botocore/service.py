@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -39,14 +39,14 @@ class Service(object):
 
     def __init__(self, session, provider_name, service_name,
                  path='/', port=None):
-        self.membered_lists = True
+        self.membered_lists = False
         sdata = session.get_service_data(service_name, provider_name)
         self.__dict__.update(sdata)
         self.session = session
         self.provider_name = provider_name
         self.path = path
         self.port = port
-        self.cli_name = self.short_name
+        self.cli_name = service_name
         self._operations_data = self.operations
         self.operations = []
         for operation_data in self._operations_data:
@@ -55,7 +55,7 @@ class Service(object):
             setattr(self, op.py_name, op)
 
     def __repr__(self):
-        return 'Service(%s)' % self.name
+        return 'Service(%s)' % self.service_abbreviation
 
     @property
     def region_names(self):
@@ -78,14 +78,14 @@ class Service(object):
             computed endpoint name with this parameter.
         """
         if region_name is None:
-            region_name = self.session.get_envvar('region')
+            region_name = self.session.get_variable('region')
         if region_name is None:
-            envvar_name = self.session.env_vars['region']
+            envvar_name = self.session.env_vars['region'][1]
             raise ValueError('You must specify a region or set the '
                              '%s environment variable.' % envvar_name)
         if region_name not in self.regions:
             raise ValueError('Service: %s not available in region: %s' %
-                             (self.service_name, region_name))
+                             (self.cli_name, region_name))
         endpoint_url = endpoint_url or self.regions[region_name]
         if endpoint_url is None:
             if is_secure:
@@ -94,7 +94,7 @@ class Service(object):
                 scheme = 'http'
             if scheme not in self.protocols:
                 raise ValueError('Unsupported protocol: %s' % scheme)
-            host = '%s.%s.amazonaws.com' % (self.short_name, region_name)
+            host = '%s.%s.amazonaws.com' % (self.endpoint_prefix, region_name)
             endpoint_url = '%s://%s%s' % (scheme, host, self.path)
             if self.port:
                 endpoint_url += ':%d' % self.port

@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -23,8 +23,10 @@
 import base64
 import datetime
 from hashlib import sha256
+from hashlib import sha1
 import hmac
 import logging
+from email.utils import formatdate
 
 logger = logging.getLogger(__name__)
 
@@ -246,9 +248,111 @@ class SigV4Auth(object):
         args['headers']['Authorization'] = ','.join(l)
 
 
-def get_auth(auth_name, *args, **kw):
-    if auth_name == 'sigv2':
+class HmacV1Auth(object):
+
+    # List of Query String Arguments of Interest
+    QSAOfInterest = ['acl', 'cors', 'defaultObjectAcl', 'location', 'logging',
+                     'partNumber', 'policy', 'requestPayment', 'torrent',
+                     'versioning', 'versionId', 'versions', 'website',
+                     'uploads', 'uploadId', 'response-content-type',
+                     'response-content-language', 'response-expires',
+                     'response-cache-control', 'response-content-disposition',
+                     'response-content-encoding', 'delete', 'lifecycle',
+                     'tagging', 'restore', 'storageClass']
+
+    def __init__(self, credentials, service_name=None, region_name=None):
+        self.credentials = credentials
+        self.service_name = service_name
+        self.region_name = region_name
+
+    def sign_string(self, string_to_sign):
+        new_hmac = hmac.new(self.credentials.secret_key,
+                            digestmod=sha1)
+        new_hmac.update(string_to_sign)
+        return base64.encodestring(new_hmac.digest()).strip()
+
+    def canonical_standard_headers(self, headers):
+        interesting_headers = ['content-md5', 'content-type', 'date']
+        hoi = []
+        if 'Date' not in headers:
+            headers['Date'] = formatdate(usegmt=True)
+        for ih in interesting_headers:
+            found = False
+            for key in headers:
+                lk = key.lower()
+                if headers[key] != None and lk == ih:
+                    hoi.append(headers[key].strip())
+                    found = True
+            if not found:
+                hoi.append('')
+        return '\n'.join(hoi)
+
+    def canonical_custom_headers(self, headers):
+        custom_headers = {}
+        for key in headers:
+            lk = key.lower()
+            if headers[key] != None:
+                # TODO: move hardcoded prefix to provider
+                if lk.startswith('x-amz-'):
+                    custom_headers[lk] = headers[key].strip()
+        sorted_header_keys = sorted(custom_headers.keys())
+        hoi = []
+        for key in sorted_header_keys:
+            hoi.append("%s:%s" % (key, custom_headers[key]))
+        return '\n'.join(hoi)
+
+    def canonical_resource(self, path):
+        # don't include anything after the first ? in the resource...
+        # unless it is one of the QSA of interest, defined above
+        buf = ''
+        t = path.split('?')
+        buf += t[0]
+
+        if len(t) > 1:
+            qsa = t[1].split('&')
+            qsa = [a.split('=', 1) for a in qsa]
+            qsa = [unquote_v(a) for a in qsa if a[0] in self.QSAOfInterest]
+            if len(qsa) > 0:
+                qsa.sort(cmp=lambda x, y:cmp(x[0], y[0]))
+                qsa = ['='.join(a) for a in qsa]
+                buf += '?'
+                buf += '&'.join(qsa)
+
+        return buf
+
+    def canonical_string(self, method, path, headers, expires=None):
+        cs = method.upper() + '\n'
+        cs += self.canonical_standard_headers(headers) + '\n'
+        custom_headers = self.canonical_custom_headers(headers)
+        if custom_headers:
+            cs += custom_headers + '\n'
+        cs += self.canonical_resource(path)
+        return cs
+
+    def get_signature(self, method, path, headers, expires=None):
+        if self.credentials.token:
+            #TODO: remove hardcoded header name
+            headers['security_token'] = self.credentials.token
+        string_to_sign = self.canonical_string(method,
+                                               path,
+                                               headers)
+        logger.debug('StringToSign:\n%s' % string_to_sign)
+        return self.sign_string(string_to_sign)
+
+    def add_auth(self, args):
+        split = urlsplit(args['url'])
+        path = split.path
+        signature = self.get_signature(args['method'], path,
+                                       args['headers'])
+        args['headers']['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
+                                                           signature))
+
+
+def get_auth(signature_version, *args, **kw):
+    if signature_version == 'v2':
         return SigV2Auth(*args, **kw)
-    if auth_name == 'sigv4':
+    if signature_version == 'v4':
         return SigV4Auth(*args, **kw)
+    if signature_version == 's3':
+        return HmacV1Auth(*args, **kw)
     raise ValueError('Unknown auth scheme: %s' % auth_name)

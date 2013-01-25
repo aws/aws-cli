@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -116,7 +116,7 @@ def get_search_path(session):
     p = os.path.split(__file__)[0]
     p = os.path.split(p)[0]
     p = _search_paths + [os.path.join(p, 'botocore/data')]
-    paths = session.get_envvar('data_path')
+    paths = session.get_variable('data_path')
     if paths is not None:
         paths = paths.split(':')
         for path in paths:
@@ -146,17 +146,3 @@ def get_data(session, data_path):
         if data is None:
             raise botocore.exceptions.DataNotFoundError(data_path=data_path)
     return _data_cache[data_path]
-
-
-def get_service_data(session, service_name, provider_name='aws'):
-    """
-    Get full data for a service.  This merges the full service data
-    with the metadata stored in the services.json file.
-    """
-    meta_data = get_data(session,
-                         '%s/_services/%s' % (provider_name, service_name))
-    service_data = get_data(session,
-                            '%s/%s' % (provider_name, service_name))
-    # Merge metadata about service
-    service_data.update(meta_data)
-    return service_data

@@ -1,6 +1,6 @@
 #!/usr/bin/env
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -78,6 +78,8 @@ class CredentialsFileTest(unittest.TestCase):
             os.environ.pop(var, None)
         config_path = os.path.join(os.path.dirname(__file__),
                                    'aws_credentials')
+        self.bad_config_path = os.path.join(os.path.dirname(__file__),
+                                            'no_aws_credentials')
         os.environ['AWS_CREDENTIAL_FILE'] = config_path
         os.environ['BOTO_CONFIG'] = ''
         self.session = botocore.session.get_session()
@@ -87,6 +89,11 @@ class CredentialsFileTest(unittest.TestCase):
         assert credentials.access_key == 'foo'
         assert credentials.secret_key == 'bar'
         assert credentials.method == 'credentials-file'
+
+    def test_bad_file(self):
+        os.environ['AWS_CREDENTIAL_FILE'] = self.bad_config_path
+        credentials = self.session.get_credentials()
+        assert credentials == None
 
     def tearDown(self):
         for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
@@ -115,14 +122,15 @@ class ConfigTest(unittest.TestCase):
         assert len(self.session.available_profiles) == 2
         assert 'default' in self.session.available_profiles
         assert 'personal' in self.session.available_profiles
-        self.session.profile = 'personal'
-        credentials = self.session.get_credentials()
+        os.environ['BOTO_DEFAULT_PROFILE'] = 'personal'
+        session = botocore.session.get_session()
+        credentials = session.get_credentials()
         assert credentials.access_key == 'fie'
         assert credentials.secret_key == 'baz'
         assert credentials.method == 'config'
-        assert len(self.session.available_profiles) == 2
-        assert 'default' in self.session.available_profiles
-        assert 'personal' in self.session.available_profiles
+        assert len(session.available_profiles) == 2
+        assert 'default' in session.available_profiles
+        assert 'personal' in session.available_profiles
 
     def tearDown(self):
         for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',

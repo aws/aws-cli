@@ -1,9 +1,11 @@
 {
+  "service_full_name": "Auto Scaling",
   "type": "query",
+  "signature_version": "v4",
+  "result_wrapped": true,
+  "membered_lists": true,
   "api_version": "2011-01-01",
-  "short_name": "autoscaling",
-  "service_name": "AutoScaling_2011_01_01",
-  "assembly": "com.amazon.fws.csls.version_2011_01_01",
+  "endpoint_prefix": "autoscaling",
   "xmlnamespace": null,
   "documentation": "\n        <fullname>Auto Scaling</fullname>\n        <p>\n        This guide provides detailed information \n        about Auto Scaling actions, data types, parameters, and errors. For detailed information \n        about Auto Scaling features and their associated API calls, go to the \n        <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/\">Auto Scaling Developer Guide</a>.\n        </p>\n        <p>\n        Auto Scaling is a web service designed\n        to automatically launch or terminate Amazon Elastic Compute Cloud (Amazon EC2) instances based on\n        user-defined policies, schedules, and health checks. \n        This service is used in conjunction with Amazon CloudWatch \n        and Elastic Load Balancing services.\n        </p>\n        <p>This reference is based on the current WSDL, which is available at:</p>\n        <p><a href=\"http://autoscaling.amazonaws.com/doc/2011-01-01/AutoScaling.wsdl\">http://autoscaling.amazonaws.com/doc/2011-01-01/AutoScaling.wsdl</a>\n        </p>\n        <p><b>Endpoints</b></p>\n        <p>For information about this product's regions and endpoints, go to \n            <a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a> \n            in the Amazon Web Services General Reference.\n        </p>\n    ",
   "operations": [
@@ -65,8 +67,7 @@
               "documentation": null
             },
             "min_length": 1,
-            "documentation": "\n        <p>\n            A list of Availability Zones for the Auto Scaling group.\n        </p>\n    ",
-            "required": true
+            "documentation": "\n        <p>\n            A list of Availability Zones for the Auto Scaling group.\n        </p>\n    "
           },
           "LoadBalancerNames": {
             "shape_name": "LoadBalancerNames",
@@ -121,7 +122,7 @@
               "max_length": 1600,
               "documentation": null
             },
-            "documentation": null
+            "documentation": "\n        <p>A standalone termination policy or a list of termination policies used to select the instance to terminate. \n            The policies are executed in the order that they are listed.\n        </p>\n        <p>\n            For more information on configuring a termination policy for your Auto Scaling group, go to \n            <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html\">Instance Termination Policy for Your Auto Scaling Group</a> in the \n            the <i>Auto Scaling Developer Guide</i>.    \n        </p>\n        \n    "
           },
           "Tags": {
             "shape_name": "Tags",
@@ -167,7 +168,7 @@
               },
               "documentation": "\n        <p>\n            The tag applied to an Auto Scaling group.\n        </p>\n    "
             },
-            "documentation": "\n        <p>\n            The tag to be created or updated. Each tag should be defined by its resource type, resource ID, key, value, \n            and a propagate flag. Valid values are: key=<i>value</i>, value=<i>value</i>, propagate=<i>true</i> or <i>false</i>.  Value and propagate are optional parameters.\n        </p>\n    "
+            "documentation": "\n        <p>\n            The tag to be created or updated. Each tag should be defined by its resource type, resource ID, key, value, \n            and a propagate flag. Valid values: key=<i>value</i>, value=<i>value</i>, propagate=<i>true</i> or <i>false</i>.  Value and propagate are optional parameters.\n        </p>\n    "
           }
         },
         "documentation": "\n        <p>\n\n        </p>\n    "
@@ -350,7 +351,7 @@
             "type": "string",
             "min_length": 1,
             "max_length": 255,
-            "documentation": "\n    <p>The maximum hourly price for any Spot Instance launched to fulfill the request. Spot Instances are launched when the \n    maximum price you specify exceeds the current Spot price. For more information on launching Spot Instances, go to\n        <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/US-SpotInstances.html\"> Using Auto Scaling to Launch Spot Instances</a> in the <i>Auto Scaling Developer Guide</i>.\n    </p>  \n    "
+            "documentation": "\n    <p>The maximum hourly price to be paid for any Spot Instance launched to fulfill the request. Spot Instances are launched when the \n    price you specify exceeds the current Spot market price. For more information on launching Spot Instances, go to\n        <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/US-SpotInstances.html\"> Using Auto Scaling to Launch Spot Instances</a> in the <i>Auto Scaling Developer Guide</i>.\n    </p>  \n    "
           },
           "IamInstanceProfile": {
             "shape_name": "XmlStringMaxLen1600",
@@ -358,7 +359,12 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 1,
             "max_length": 1600,
-            "documentation": "\n        <p>The name or the ARN of the instance profile associated with the IAM role for the instance. \n            For information on launching EC2 instances with an IAM role, go to <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-iam-role.html\">Launching Auto Scaling Instances With an IAM Role</a>\n            in the <i>Auto Scaling Developer Guide</i>.</p>\n    "
+            "documentation": "\n        <p>The name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance. \n            For information on launching EC2 instances with an IAM role, go to <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-iam-role.html\">Launching Auto Scaling Instances With an IAM Role</a>\n            in the <i>Auto Scaling Developer Guide</i>.</p>\n    "
+          },
+          "EbsOptimized": {
+            "shape_name": "EbsOptimized",
+            "type": "boolean",
+            "documentation": null
           }
         },
         "documentation": "\n        <p>\n\n        </p>\n    "
@@ -1120,7 +1126,7 @@
                     "max_length": 1600,
                     "documentation": null
                   },
-                  "documentation": null
+                  "documentation": "\n     <p>\n         A standalone termination policy or a list of termination policies for this Auto Scaling group.\n     </p>   \n    "
                 }
               },
               "documentation": "\n        <p>\n        The AutoScalingGroup data type.\n        </p>\n    "
@@ -1310,7 +1316,7 @@
             "documentation": "\n        <p>\n         Notification types supported by Auto Scaling. They are:  \n         autoscaling:EC2_INSTANCE_LAUNCH, autoscaling:EC2_INSTANCE_LAUNCH_ERROR, autoscaling:EC2_INSTANCE_TERMINATE, \n         autoscaling:EC2_INSTANCE_TERMINATE_ERROR, autoscaling:TEST_NOTIFICATION   \n        </p>\n    "
           }
         },
-        "documentation": "\n    "
+        "documentation": "\n        <p>The <code>AutoScalingNotificationTypes</code> data type.</p>\n    "
       },
       "errors": [
 
@@ -1508,7 +1514,7 @@
                   "type": "string",
                   "min_length": 1,
                   "max_length": 255,
-                  "documentation": "\n    <p>Specifies the bid price for the Spot Instance.</p>\n    "
+                  "documentation": "\n    <p>Specifies the price to bid when launching Spot Instances.</p>\n    "
                 },
                 "IamInstanceProfile": {
                   "shape_name": "XmlStringMaxLen1600",
@@ -1516,13 +1522,18 @@
                   "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
                   "min_length": 1,
                   "max_length": 1600,
-                  "documentation": "\n    \n        <p>Provides the name or the full ARN of the instance profile associated with the IAM role for the instance. The instance profile is the container for the IAM role.\n        </p>\n    "
+                  "documentation": "\n    \n        <p>Provides the name or the Amazon Resource Name (ARN) of the \n            instance profile associated with the IAM role for the instance. \n            The instance profile contains the IAM role.\n        </p>\n    "
                 },
                 "CreatedTime": {
                   "shape_name": "TimestampType",
                   "type": "timestamp",
                   "documentation": "\n        <p>\n        Provides the creation date and time for this launch configuration.\n        </p>\n    ",
                   "required": true
+                },
+                "EbsOptimized": {
+                  "shape_name": "EbsOptimized",
+                  "type": "boolean",
+                  "documentation": null
                 }
               },
               "documentation": "\n        <p>\n            The <code>LaunchConfiguration</code> data type.\n        </p>\n    "
@@ -1844,7 +1855,7 @@
                 "MinAdjustmentStep": {
                   "shape_name": "MinAdjustmentStep",
                   "type": "integer",
-                  "documentation": "\n        <p>\n             Changes the <code>DesiredCapacity</code> of the Auto Scaling group by at least the specified value.\n        </p>      \n        "
+                  "documentation": "\n        <p>\n             Changes the <code>DesiredCapacity</code> of the Auto Scaling group by at least the specified number of instances.\n        </p>      \n        "
                 }
               },
               "documentation": "\n        <p>\n            The <code>ScalingPolicy</code> data type.\n        </p>\n    "
@@ -2383,15 +2394,15 @@
               "max_length": 1600,
               "documentation": null
             },
-            "documentation": null
+            "documentation": "\n     <p>\n         Termination policies supported by Auto Scaling. They are:\n         <code>OldestInstance</code>, <code>OldestLaunchConfiguration</code>, <code>NewestInstance</code>, <code>ClosestToNextInstanceHour</code>, \n         <code>Default</code>\n     </p>   \n    "
           }
         },
-        "documentation": null
+        "documentation": "   \n    <p>The <code>TerminationPolicyTypes</code> data type.</p>       \n    "
       },
       "errors": [
 
       ],
-      "documentation": null
+      "documentation": "\n        <p>\n          Returns a list of all termination policies supported by Auto Scaling.             \n        </p>        \n    "
     },
     {
       "name": "DisableMetricsCollection",
@@ -2635,7 +2646,7 @@
           "MinAdjustmentStep": {
             "shape_name": "MinAdjustmentStep",
             "type": "integer",
-            "documentation": "\n     <p>\n     Used with <code>AdjustmentType</code> with the value <code>PercentChangeInCapacity</code>, \n        the scaling policy changes the <code>DesiredCapacity</code> of the Auto Scaling group by at least the specified value.\n     </p>\n     <p>\n         You will get a <code>ValidationError</code> if you use <code>MinAdjustmentStep</code> on a policy with an <code>AdjustmentType</code>\n         other than <code>PercentChangeInCapacity</code>.\n     </p>\n         \n     "
+            "documentation": "\n     <p>\n     Used with <code>AdjustmentType</code> with the value <code>PercentChangeInCapacity</code>, \n        the scaling policy changes the <code>DesiredCapacity</code> of the Auto Scaling group by at least the number of instances specified in the value.\n     </p>\n     <p>\n         You will get a <code>ValidationError</code> if you use <code>MinAdjustmentStep</code> on a policy with an <code>AdjustmentType</code>\n         other than <code>PercentChangeInCapacity</code>.\n     </p>\n         \n     "
           }
         },
         "documentation": "\n    "
@@ -3166,7 +3177,7 @@
               "max_length": 1600,
               "documentation": null
             },
-            "documentation": null
+            "documentation": "\n          <p>\n              A standalone termination policy or a list of termination policies used to select the instance to terminate. \n                The policies are executed in the order that they are listed. \n          </p>\n          <p>\n              For more information on creating a termination policy for your Auto Scaling group, go to \n              <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html\">Instance Termination Policy for Your Auto Scaling Group</a> in the \n              the <i>Auto Scaling Developer Guide</i>.\n          </p>        \n    "
           }
         },
         "documentation": "\n        <p>\n            \n        </p>\n    "

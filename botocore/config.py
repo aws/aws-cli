@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -28,7 +28,7 @@ import botocore.exceptions
 
 def get_config(session):
     """
-    If the 'AWS_CONFIG_FILE' environment variable exists, parse that
+    If the ``config_file`` session variable exists, parse that
     file and return all of the data found within the file as a
     dictionary of dictionaries, one for each profile section found
     in the configuration file.
@@ -41,7 +41,7 @@ def get_config(session):
     """
     config = {}
     path = None
-    path = session.get_envvar('config_file')
+    path = session.get_variable('config_file')
     if path is not None:
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)

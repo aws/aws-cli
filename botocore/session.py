@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -37,18 +37,23 @@ from . import __version__
 
 
 EnvironmentVariables = {
-    'profile': 'BOTO_DEFAULT_PROFILE',
-    'region': 'BOTO_DEFAULT_REGION',
-    'data_path': 'BOTO_DATA_PATH',
-    'config_file': 'AWS_CONFIG_FILE',
-    'access_key': 'AWS_ACCESS_KEY_ID',
-    'secret_key': 'AWS_SECRET_ACCESS_KEY'
+    'profile': (None, 'BOTO_DEFAULT_PROFILE'),
+    'region': ('region', 'BOTO_DEFAULT_REGION'),
+    'data_path': ('data_path', 'BOTO_DATA_PATH'),
+    'config_file': (None, 'AWS_CONFIG_FILE'),
+    'access_key': ('aws_access_key_id', 'AWS_ACCESS_KEY_ID'),
+    'secret_key': ('aws_secret_access_key', 'AWS_SECRET_ACCESS_KEY')
     }
 """
-A dictionary mapping logical names to specific environment variable
-names.  When creating a new Session object, you can pass in your own
-dictionary to remap the logical names to the environment variable names
-you want to use for your application.  The logical variable names are:
+A default dictionary that maps the logical names for session variables
+to the specific environment variables and configuration file names
+that contain the values for these variables.
+
+When creating a new Session object, you can pass in your own
+dictionary to remap the logical names or to add new logical names.
+You can then get the current value for these variables by using the
+``get_variable`` method of the :class:`botocore.session.Session` class.
+The default set of logical variable names are:
 
 * profile - Default profile name you want to use.
 * region - Default region name to use, if not otherwise specified.
@@ -56,6 +61,13 @@ you want to use for your application.  The logical variable names are:
 * config_file - Location of a Boto config file.
 * access_key - The AWS access key part of your credentials.
 * secret_key - The AWS secret key part of your credentials.
+
+These form the keys of the dictionary.  The values in the dictionary
+are tuples of (<config_name>, <environment variable>).  The ``profile``
+and ``config_file`` variables should always have a None value for the
+first entry in the tuple because it doesn't make sense to look inside
+the config file for the location of the config file or for the default
+profile to use.
 """
 
 
@@ -87,7 +99,6 @@ class Session(object):
             self.env_vars.update(env_vars)
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
-        self._profile = os.environ.get(self.env_vars['profile'], 'default')
         self._config = None
         self._credentials = None
 
@@ -100,52 +111,56 @@ class Session(object):
                 profiles.append(key)
         return profiles
 
-    @property
-    def profile(self):
-        return self._profile
-
-    @profile.setter
-    def profile(self, profile):
-        if profile != self._profile:
-            self._credentials = None
-        self._profile = profile
-
-    def get_envvar(self, logical_name):
+    def get_variable(self, logical_name, methods=('env', 'config')):
         """
         Retrieve the value associated with the specified logical_name
-        from the environment.
+        from the environment or the config file.  Values found in the
+        environment variable take precedence of values found in the
+        config file.  If no value can be found, a None will be returned.
 
         :type logical_name: str
-        :param logical_name: The logical name of the environment variable
+        :param logical_name: The logical name of the session variable
             you want to retrieve.  This name will be mapped to the
-            appropriate environment variable name for this session.
+            appropriate environment variable name for this session as
+            well as the appropriate config file entry.
 
-            * profile - Default profile name you want to use.
-            * region - Default region name to use, if not otherwise specified.
-            * data_path - Additional directories to search for data files.
-            * config_file - Location of a Boto config file.
-            * access_key - The AWS access key part of your credentials.
-            * secret_key - The AWS secret key part of your credentials.
+        :type method: tuple
+        :param method: Defines which methods will be used to find
+            the variable value.  By default, all available methods
+            are tried but you can limit which methods are used
+            by supplying a different value to this parameter.
+            Valid choices are: both|env|config
 
         :returns: str value of variable of None if not defined.
         """
         value = None
         if logical_name in self.env_vars:
-            value = os.environ.get(self.env_vars[logical_name], None)
+            config_name, envvar_name = self.env_vars[logical_name]
+            if logical_name in ('config_file', 'profile'):
+                config_name = None
+            if 'env' in methods and envvar_name and envvar_name in os.environ:
+                value = os.environ[envvar_name]
+            elif 'config' in methods:
+                if config_name:
+                    config = self.get_config()
+                    value = config.get(config_name)
         return value
 
     def get_config(self):
         """
         Returns the configuration associated with this session.  If
         the configuration has not yet been loaded, it will be loaded
-        using the current `profile` attribute value.  If it has already been
+        using the default ``profile`` session variable.  If it has already been
         loaded, the cached configuration will be returned.
 
         :raises: ConfigNotFound, ConfigParseError
         """
         if self._config is None:
             self._config = botocore.config.get_config(self)
-        return self._config.get(self._profile, None)
+        profile_name = self.get_variable('profile')
+        if not profile_name:
+            profile_name = 'default'
+        return self._config.get(profile_name, dict())
 
     def get_credentials(self, metadata=None):
         """
@@ -163,8 +178,7 @@ class Session(object):
             for unit testing.
         """
         if self._credentials is None:
-            cfg = self.get_config()
-            self._credentials = botocore.credentials.get_credentials(cfg,
+            self._credentials = botocore.credentials.get_credentials(self,
                                                                      metadata)
         return self._credentials
 
@@ -202,12 +216,30 @@ class Session(object):
         """
         return botocore.base.get_data(self, data_path)
 
+    def get_service_metadata(self, service_name, provider_name='aws'):
+        """
+        Get metadata for a service.
+        """
+        data_path = '%s/_services/%s' % (provider_name, service_name)
+        return self.get_data(data_path)
+
     def get_service_data(self, service_name, provider_name='aws'):
         """
         Retrieve the fully merged data associated with a service.
         """
-        return botocore.base.get_service_data(self, service_name,
-                                              provider_name)
+        meta_data = self.get_service_metadata(service_name, provider_name)
+        data_path = '%s/%s' % (provider_name, service_name)
+        service_data = self.get_data(data_path)
+        # Merge metadata about service
+        service_data.update(meta_data)
+        return service_data
+
+    def get_available_services(self, provider_name='aws'):
+        """
+        Return a list of names of available services.
+        """
+        data_path = '%s/_services' % provider_name
+        return self.get_data(data_path).keys()
 
     def get_service(self, service_name, provider_name='aws'):
         """

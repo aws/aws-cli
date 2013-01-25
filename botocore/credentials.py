@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -93,9 +93,10 @@ def search_environment(**kwargs):
     """
     Search for credentials in explicit environment variables.
     """
+    session = kwargs.get('session')
     credentials = None
-    access_key = os.environ.get('AWS_ACCESS_KEY_ID', None)
-    secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
+    access_key = session.get_variable('access_key', ('env',))
+    secret_key = session.get_variable('secret_key', ('env',))
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
         credentials.method = 'env'
@@ -105,7 +106,7 @@ def search_environment(**kwargs):
 
 def search_credentials_file(**kwargs):
     """
-    Search for a credential file used by original CLI tools.
+    Search for a credential file used by original EC2 CLI tools.
     """
     credentials = None
     if 'AWS_CREDENTIAL_FILE' in os.environ:
@@ -131,23 +132,19 @@ def search_file(**kwargs):
     the session, use those.
     """
     credentials = None
-    config = kwargs.get('config', None)
-    if config:
-        access_key_name = kwargs['access_key_name']
-        secret_key_name = kwargs['secret_key_name']
-        if access_key_name in config:
-            if secret_key_name in config:
-                credentials = Credentials(config[access_key_name],
-                                          config[secret_key_name])
-                credentials.method = 'config'
-                logger.info('Found credentials in config file')
+    session = kwargs.get('session')
+    access_key = session.get_variable('access_key', ('config',))
+    secret_key = session.get_variable('secret_key', ('config',))
+    if access_key and secret_key:
+        credentials = Credentials(access_key, secret_key)
+        credentials.method = 'config'
+        logger.info('Found credentials in config file')
     return credentials
 
 
 def search_boto_config(**kwargs):
     """
     Look for credentials in boto config file.
-    I'm leaving this off the search path for now to avoid confusion.
     """
     credentials = access_key = secret_key = None
     if 'BOTO_CONFIG' in os.environ:
@@ -180,12 +177,10 @@ _credential_methods = (('env', search_environment),
                        ('iam-role', search_iam_role))
 
 
-def get_credentials(config, metadata=None):
+def get_credentials(session, metadata=None):
     credentials = None
     for cred_method, cred_fn in _credential_methods:
-        credentials = cred_fn(config=config,
-                              access_key_name='aws_access_key_id',
-                              secret_key_name='aws_secret_access_key',
+        credentials = cred_fn(session=session,
                               metadata=metadata)
         if credentials:
             break

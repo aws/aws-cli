@@ -1,3 +1,4 @@
+#!/usr/bin/env
 # Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -20,47 +21,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import re
-import logging
+import unittest
+import botocore.auth
+import botocore.credentials
 
-__version__ = '0.4.2'
-
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
-# Configure default logger to do nothing
-log = logging.getLogger('botocore')
-log.addHandler(NullHandler())
+CS1 = """PUT\nc8fdb181845a4ca6b8fec737b3581d76\ntext/html\nThu, 17 Nov 2005 18:49:58 GMT\nx-amz-magic:abracadabra\nx-amz-meta-author:foo@bar.com\n/quotes/nelson"""
+SIG1 = 'jZNOcbfWmD/A/f3hSvVzXZjM2HU='
 
 
-_first_cap_regex = re.compile('(.)([A-Z][a-z]+)')
-_number_cap_regex = re.compile('([a-z])([0-9]+)')
-_end_cap_regex = re.compile('([a-z0-9])([A-Z])')
+class TestHMACV1(unittest.TestCase):
 
-ScalarTypes = ('string', 'integer', 'boolean', 'timestamp', 'float', 'double')
+    def setUp(self):
+        access_key = '44CF9590006BF252F707'
+        secret_key = 'OtxrzxIsfpFjA7SwPzILwy8Bw21TLhquhboDYROV'
+        self.credentials = botocore.credentials.Credentials(access_key,
+                                                            secret_key)
+        self.hmacv1 = botocore.auth.HmacV1Auth(self.credentials, None, None)
 
-
-def xform_name(name, sep='_'):
-    """
-    Convert camel case to a "pythonic" name.
-    """
-    s1 = _first_cap_regex.sub(r'\1' + sep + r'\2', name)
-    s2 = _number_cap_regex.sub(r'\1' + sep + r'\2', s1)
-    return _end_cap_regex.sub(r'\1' + sep + r'\2', s2).lower()
-
-
-class BotoCoreObject(object):
-
-    def __init__(self, **kwargs):
-        self.name = ''
-        self.type = None
-        self.members = []
-        self.documentation = ''
-        self.__dict__.update(kwargs)
-        self.py_name = xform_name(self.name, '_')
-        self.cli_name = xform_name(self.name, '-')
-
-    def __repr__(self):
-        return '%s:%s' % (self.type, self.name)
+    def test_put(self):
+        headers = {'Date': 'Thu, 17 Nov 2005 18:49:58 GMT',
+                   'Content-Md5': 'c8fdb181845a4ca6b8fec737b3581d76',
+                   'Content-Type': 'text/html',
+                   'X-Amz-Meta-Author': 'foo@bar.com',
+                   'X-Amz-Magic': 'abracadabra'}
+        cs = self.hmacv1.canonical_string('PUT', '/quotes/nelson', headers)
+        assert cs == CS1
+        sig = self.hmacv1.get_signature('PUT', '/quotes/nelson', headers)
+        assert sig == SIG1

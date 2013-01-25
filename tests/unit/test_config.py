@@ -1,6 +1,6 @@
 #!/usr/bin/env
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -30,7 +30,7 @@ import botocore.exceptions
 class TestConfig(unittest.TestCase):
 
     def setUp(self):
-        self.env_vars={'config_file': 'FOO_CONFIG_FILE'}
+        self.env_vars = {'config_file': (None, 'FOO_CONFIG_FILE')}
 
     def test_config_not_found(self):
         config_path = os.path.join(os.path.dirname(__file__),

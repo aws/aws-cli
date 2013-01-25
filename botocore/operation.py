@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -20,8 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import logging
 from .parameters import get_parameter
 from . import BotoCoreObject
+
+logger = logging.getLogger(__name__)
 
 
 class Operation(BotoCoreObject):
@@ -38,6 +41,7 @@ class Operation(BotoCoreObject):
         return 'Operation:%s' % self.name
 
     def call(self, endpoint, **kwargs):
+        logger.debug(kwargs)
         params = self.build_parameters(**kwargs)
         return endpoint.make_request(self, params)
 
@@ -53,13 +57,22 @@ class Operation(BotoCoreObject):
                 param = get_parameter(name, data)
                 self.params.append(param)
 
+    def _get_built_params(self):
+        d = {}
+        if self.service.type == 'rest-xml':
+            d['uri_params'] = {}
+            d['headers'] = {}
+            d['payload'] = None
+        return d
+
     def build_parameters(self, **kwargs):
         """
         Returns a dictionary containing the kwargs for the
         given operation formatted as required to pass to the service
         in a request.
         """
-        built_params = {}
+        logger.debug(kwargs)
+        built_params = self._get_built_params()
         missing = []
         for param in self.params:
             if param.required:

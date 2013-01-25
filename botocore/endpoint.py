@@ -1,5 +1,5 @@
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -28,6 +28,11 @@ import botocore.auth
 import botocore.response
 import botocore.exceptions
 
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
+
 logger = logging.getLogger(__name__)
 
 
@@ -47,9 +52,13 @@ class Endpoint(object):
         self.session = self.service.session
         self.region_name = region_name
         self.host = host
-        self.auth = botocore.auth.get_auth(self.service.authentication,
+        if hasattr(self.service, 'signing_name'):
+            signing_name = self.service.signing_name
+        else:
+            signing_name = self.service.endpoint_prefix
+        self.auth = botocore.auth.get_auth(self.service.signature_version,
                                            credentials=self.session.get_credentials(),
-                                           service_name=self.service.short_name,
+                                           service_name=signing_name,
                                            region_name=region_name)
 
     def __repr__(self):
@@ -98,7 +107,7 @@ class JSONEndpoint(Endpoint):
         """
         logger.debug(params)
         user_agent = self.session.user_agent()
-        target = '%s.%s' % (self.service.service_name, operation.name)
+        target = '%s.%s' % (self.service.target_prefix, operation.name)
         content_type = 'application/x-amz-json-1.1'
         data = json.dumps(params)
         http_response = requests.post(self.host, data=data,
@@ -112,9 +121,61 @@ class JSONEndpoint(Endpoint):
         return (http_response, json.loads(body))
 
 
+class RestXMLEndpoint(Endpoint):
+
+    def get_path_and_query_params(self, operation, params):
+        uri = operation.http['uri']
+        if '?' in uri:
+            path, query_params = uri.split('?')
+        else:
+            path = uri
+            query_params = ''
+        logger.debug('path: %s' % path)
+        logger.debug('query_params: %s' % query_params)
+        path_components = []
+        for pc in path.split('/'):
+            if pc:
+                pc = pc.format(**params['uri_params'])
+            path_components.append(pc)
+        path = '/'.join(path_components)
+        query_param_components = {}
+        for qpc in query_params.split('&'):
+            if qpc:
+                key_name, value_name = qpc.split('=')
+                value_name = value_name.strip('{}')
+                if value_name in params['uri_params']:
+                    query_param_components[key_name] = params['uri_params'][value_name]
+        logger.debug('path: %s' % path)
+        logger.debug('query_params: %s' % query_param_components)
+        return path, query_param_components
+
+    def make_request(self, operation, params):
+        """
+        Send a request to the endpoint and parse the response
+        and return it and long with the HTTP response object
+        from requests.
+        """
+        logger.debug(params)
+        user_agent = self.session.user_agent()
+        request_method = getattr(requests, operation.http['method'].lower())
+        path, query_params = self.get_path_and_query_params(operation, params)
+        uri = urljoin(self.host, path)
+        http_response = request_method(uri, params=query_params,
+                                       hooks={'args': self.auth.add_auth},
+                                       headers={'User-Agent': user_agent})
+        r = botocore.response.Response(operation)
+        http_response.encoding = 'utf-8'
+        body = http_response.text.encode('utf=8')
+        logger.debug(body)
+        r.parse(body)
+        return (http_response, r.get_value())
+
+
 def get_endpoint(service, region_name, endpoint_url):
     if service.type == 'query':
         return QueryEndpoint(service, region_name, endpoint_url)
     if service.type == 'json':
         return JSONEndpoint(service, region_name, endpoint_url)
-    raise exceptions.UnknownServiceStyle(service_style=service.type)
+    if service.type == 'rest-xml':
+        return RestXMLEndpoint(service, region_name, endpoint_url)
+    raise botocore.exceptions.UnknownServiceStyle(service_style=service.type)

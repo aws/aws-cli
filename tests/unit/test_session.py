@@ -1,6 +1,6 @@
 #!/usr/bin/env
-# Copyright (c) 2012 Mitch Garnaat http://garnaat.org/
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2012-2013 Mitch Garnaat http://garnaat.org/
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the
@@ -23,6 +23,7 @@
 #
 import unittest
 import os
+import logging
 import botocore.session
 import botocore.exceptions
 
@@ -30,11 +31,45 @@ import botocore.exceptions
 class SessionTest(unittest.TestCase):
 
     def setUp(self):
-        self.session = botocore.session.get_session()
+        self.env_vars = {'profile': (None, 'FOO_PROFILE'),
+                         'region': ('foo_region', 'FOO_REGION'),
+                         'data_path': ('data_path', 'FOO_DATA_PATH'),
+                         'config_file': (None, 'FOO_CONFIG_FILE'),
+                         'access_key': ('foo_access_key', None),
+                         'secret_key': ('foo_secret_key', None)}
+        os.environ['FOO_PROFILE'] = 'foo'
+        os.environ['FOO_REGION'] = 'moon-west-1'
+        data_path = os.path.join(os.path.dirname(__file__), 'data')
+        os.environ['FOO_DATA_PATH'] = data_path
+        config_path = os.path.join(os.path.dirname(__file__),
+                                   'foo_config')
+        os.environ['FOO_CONFIG_FILE'] = config_path
+        self.session = botocore.session.get_session(self.env_vars)
 
-    def test_data(self):
-        pass
+    def test_profile(self):
+        assert self.session.get_variable('profile') == 'foo'
+        assert self.session.get_variable('region') == 'moon-west-1'
+        self.session.get_variable('profile') == 'default'
+        saved_region = os.environ['FOO_REGION']
+        del os.environ['FOO_REGION']
+        saved_profile = os.environ['FOO_PROFILE']
+        del os.environ['FOO_PROFILE']
+        session = botocore.session.get_session(self.env_vars)
+        assert session.get_variable('profile') == None
+        assert session.get_variable('region') == 'us-west-1'
+        os.environ['FOO_REGION'] = saved_region
+        os.environ['FOO_PROFILE'] = saved_profile
 
+    def test_file_logger(self):
+        log_path = os.path.join(os.path.dirname(__file__), 'foo_log')
+        self.session.set_file_logger(logging.DEBUG, log_path)
+        self.session.get_credentials()
+        assert os.path.isfile(log_path)
+        fp = open(log_path)
+        s = fp.read()
+        fp.close()
+        assert len(s) > 0
+        os.unlink(log_path)
 
 if __name__ == "__main__":
     unittest.main()

@@ -21,6 +21,7 @@ Contents:
 
   reference/index
   tutorial/index
+  complex_datatypes
 
 Indices and tables
 ==================

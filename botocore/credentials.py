@@ -54,7 +54,7 @@ def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
     d = {}
     try:
         r = requests.get(url, timeout=.1)
-        if r.content:
+        if r.status_code == 200 and r.content:
             fields = r.content.split('\n')
             for field in fields:
                 if field.endswith('/'):

@@ -266,9 +266,9 @@ class HmacV1Auth(object):
         self.region_name = region_name
 
     def sign_string(self, string_to_sign):
-        new_hmac = hmac.new(self.credentials.secret_key,
+        new_hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
                             digestmod=sha1)
-        new_hmac.update(string_to_sign)
+        new_hmac.update(string_to_sign.encode('utf-8'))
         return base64.encodestring(new_hmac.digest()).strip()
 
     def canonical_standard_headers(self, headers):

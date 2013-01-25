@@ -66,8 +66,7 @@ class CLIDriver(object):
         'jsondoc': str,
         'file': str}
 
-    def __init__(self, provider_name='aws'):
-        self.provider_name = provider_name
+    def __init__(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
         self.session.user_agent_name = 'aws-cli'
         self.session.user_agent_version = __version__
@@ -98,7 +97,9 @@ class CLIDriver(object):
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
-                    choices = self.session.get_data(option_data['choices'])
+                    provider = self.session.get_variable('provider')
+                    choices_path = choices.format(provider=provider)
+                    choices = self.session.get_data(choices_path)
                 if isinstance(choices, dict):
                     choices = list(choices.keys())
                 option_data['help'] = self.create_choice_help(choices)
@@ -281,17 +282,11 @@ class CLIDriver(object):
 
     def call(self, args):
         try:
-            if self.args.region is not None:
-                self.region = self.args.region
-            elif self.session.get_config():
-                self.region = self.session.get_config().get('region', None)
-            if self.region is None:
-                msg = self.session.get_data('messages/NoRegionError')
-                raise ValueError(msg)
             params = {}
             self.build_call_parameters(args, params)
-            self.endpoint = self.service.get_endpoint(self.region,
+            self.endpoint = self.service.get_endpoint(self.args.region,
                                                       endpoint_url=self.args.endpoint_url)
+            self.endpoint.verify = not self.args.no_verify_ssl
             http_response, response_data = self.operation.call(self.endpoint,
                                                                **params)
             self.formatter(self.operation, response_data)
@@ -336,7 +331,8 @@ class CLIDriver(object):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args()
         if self.args.service_name == 'help':
-            get_help(self.session, provider='aws', style='cli')
+            provider = self.session.get_variable('provider')
+            get_help(self.session, provider=provider, style='cli')
             sys.exit(0)
         else:
             if self.args.debug:

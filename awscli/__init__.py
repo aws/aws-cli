@@ -19,13 +19,6 @@ import os
 
 __version__ = '0.4.5'
 
-EnvironmentVariables = {
-    'profile': (None, 'AWS_DEFAULT_PROFILE'),
-    'region': ('region', 'AWS_DEFAULT_REGION'),
-    'data_path': ('data_path', 'AWS_DATA_PATH'),
-    'config_file': (None, 'AWS_CONFIG_FILE')
-    }
-
 #
 # Get our data path to be added to botocore's search path
 #
@@ -38,3 +31,11 @@ if 'AWS_DATA_PATH' in os.environ:
         path = os.path.expanduser(path)
         awscli_data_path.append(path)
 os.environ['AWS_DATA_PATH'] = ':'.join(awscli_data_path)
+
+
+EnvironmentVariables = {
+    'profile': (None, 'AWS_DEFAULT_PROFILE', None),
+    'region': ('region', 'AWS_DEFAULT_REGION', None),
+    'data_path': ('data_path', 'AWS_DATA_PATH', None),
+    'config_file': (None, 'AWS_CONFIG_FILE', None)
+    }

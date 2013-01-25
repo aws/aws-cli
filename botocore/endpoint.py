@@ -52,6 +52,7 @@ class Endpoint(object):
         self.session = self.service.session
         self.region_name = region_name
         self.host = host
+        self.verify = True
         if hasattr(self.service, 'signing_name'):
             signing_name = self.service.signing_name
         else:
@@ -80,12 +81,14 @@ class QueryEndpoint(Endpoint):
         from requests.
         """
         logger.debug(params)
+        logger.debug('SSL Verify: %s' % self.verify)
         params['Action'] = operation.name
         params['Version'] = self.service.api_version
         user_agent = self.session.user_agent()
         http_response = requests.post(self.host, params=params,
                                       hooks={'args': self.auth.add_auth},
-                                      headers={'User-Agent': user_agent})
+                                      headers={'User-Agent': user_agent},
+                                      verify=self.verify)
         r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
@@ -106,6 +109,7 @@ class JSONEndpoint(Endpoint):
         from requests.
         """
         logger.debug(params)
+        logger.debug('SSL Verify: %s' % self.verify)
         user_agent = self.session.user_agent()
         target = '%s.%s' % (self.service.target_prefix, operation.name)
         content_type = 'application/x-amz-json-1.1'
@@ -114,7 +118,8 @@ class JSONEndpoint(Endpoint):
                                       hooks={'args': self.auth.add_auth},
                                       headers={'User-Agent': user_agent,
                                                'X-Amz-Target': target,
-                                               'Content-Type': content_type})
+                                               'Content-Type': content_type},
+                                      verify=self.verify)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
         logger.debug(body)
@@ -156,13 +161,15 @@ class RestXMLEndpoint(Endpoint):
         from requests.
         """
         logger.debug(params)
+        logger.debug('SSL Verify: %s' % self.verify)
         user_agent = self.session.user_agent()
         request_method = getattr(requests, operation.http['method'].lower())
         path, query_params = self.get_path_and_query_params(operation, params)
         uri = urljoin(self.host, path)
         http_response = request_method(uri, params=query_params,
                                        hooks={'args': self.auth.add_auth},
-                                       headers={'User-Agent': user_agent})
+                                       headers={'User-Agent': user_agent},
+                                       verify=self.verify)
         r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')

@@ -108,7 +108,6 @@ class Service(object):
         if endpoint_url is None:
             host = '%s.%s.amazonaws.com' % (self.endpoint_prefix, region_name)
             endpoint_url = self.build_endpoint_url(host, is_secure)
-        print 'endpoint_url: %s' % endpoint_url
         return get_endpoint(self, region_name, endpoint_url)
 
     def get_operation(self, operation_name):

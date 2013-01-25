@@ -30,7 +30,7 @@ import botocore.exceptions
 class TestConfig(unittest.TestCase):
 
     def setUp(self):
-        self.env_vars = {'config_file': (None, 'FOO_CONFIG_FILE')}
+        self.env_vars = {'config_file': (None, 'FOO_CONFIG_FILE', None)}
 
     def test_config_not_found(self):
         config_path = os.path.join(os.path.dirname(__file__),

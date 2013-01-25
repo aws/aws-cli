@@ -37,12 +37,13 @@ from . import __version__
 
 
 EnvironmentVariables = {
-    'profile': (None, 'BOTO_DEFAULT_PROFILE'),
-    'region': ('region', 'BOTO_DEFAULT_REGION'),
-    'data_path': ('data_path', 'BOTO_DATA_PATH'),
-    'config_file': (None, 'AWS_CONFIG_FILE'),
-    'access_key': ('aws_access_key_id', 'AWS_ACCESS_KEY_ID'),
-    'secret_key': ('aws_secret_access_key', 'AWS_SECRET_ACCESS_KEY')
+    'profile': (None, 'BOTO_DEFAULT_PROFILE', 'default'),
+    'region': ('region', 'BOTO_DEFAULT_REGION', None),
+    'data_path': ('data_path', 'BOTO_DATA_PATH', None),
+    'config_file': (None, 'AWS_CONFIG_FILE', None),
+    'access_key': ('aws_access_key_id', 'AWS_ACCESS_KEY_ID', None),
+    'secret_key': ('aws_secret_access_key', 'AWS_SECRET_ACCESS_KEY', None),
+    'provider': ('provider', 'BOTO_PROVIDER_NAME', 'aws')
     }
 """
 A default dictionary that maps the logical names for session variables
@@ -61,13 +62,14 @@ The default set of logical variable names are:
 * config_file - Location of a Boto config file.
 * access_key - The AWS access key part of your credentials.
 * secret_key - The AWS secret key part of your credentials.
+* provider - The name of the service provider (e.g. aws)
 
 These form the keys of the dictionary.  The values in the dictionary
-are tuples of (<config_name>, <environment variable>).  The ``profile``
-and ``config_file`` variables should always have a None value for the
-first entry in the tuple because it doesn't make sense to look inside
-the config file for the location of the config file or for the default
-profile to use.
+are tuples of (<config_name>, <environment variable>, <default value).
+The ``profile`` and ``config_file`` variables should always have a
+None value for the first entry in the tuple because it doesn't make
+sense to look inside the config file for the location of the config
+file or for the default profile to use.
 """
 
 
@@ -144,7 +146,7 @@ class Session(object):
         """
         value = None
         if logical_name in self.env_vars:
-            config_name, envvar_name = self.env_vars[logical_name]
+            config_name, envvar_name, default = self.env_vars[logical_name]
             if logical_name in ('config_file', 'profile'):
                 config_name = None
             if logical_name == 'profile' and self._profile:
@@ -154,7 +156,7 @@ class Session(object):
             elif 'config' in methods:
                 if config_name:
                     config = self.get_config()
-                    value = config.get(config_name)
+                    value = config.get(config_name, default)
         return value
 
     def get_config(self):

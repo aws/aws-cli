@@ -66,6 +66,16 @@ class TestELBOperations(unittest.TestCase):
                   'LoadBalancerName': 'foobar'}
         self.assertEqual(params, result)
 
+    def test_register_instances_with_load_balancer(self):
+        op = self.elb.get_operation('RegisterInstancesWithLoadBalancer')
+        params = op.build_parameters(load_balancer_name='foobar',
+                                     instances=[{'instance_id': 'i-12345678'},
+                                                {'instance_id': 'i-87654321'}])
+        result = {'LoadBalancerName': 'foobar',
+                  'Instances.member.1.InstanceId': 'i-12345678',
+                  'Instances.member.2.InstanceId': 'i-87654321'}
+        self.assertEqual(params, result)
+
 
 if __name__ == "__main__":
     unittest.main()

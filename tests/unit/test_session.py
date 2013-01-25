@@ -31,12 +31,12 @@ import botocore.exceptions
 class SessionTest(unittest.TestCase):
 
     def setUp(self):
-        self.env_vars = {'profile': (None, 'FOO_PROFILE'),
-                         'region': ('foo_region', 'FOO_REGION'),
-                         'data_path': ('data_path', 'FOO_DATA_PATH'),
-                         'config_file': (None, 'FOO_CONFIG_FILE'),
-                         'access_key': ('foo_access_key', None),
-                         'secret_key': ('foo_secret_key', None)}
+        self.env_vars = {'profile': (None, 'FOO_PROFILE', None),
+                         'region': ('foo_region', 'FOO_REGION', None),
+                         'data_path': ('data_path', 'FOO_DATA_PATH', None),
+                         'config_file': (None, 'FOO_CONFIG_FILE', None),
+                         'access_key': ('foo_access_key', None, None),
+                         'secret_key': ('foo_secret_key', None, None)}
         os.environ['FOO_PROFILE'] = 'foo'
         os.environ['FOO_REGION'] = 'moon-west-1'
         data_path = os.path.join(os.path.dirname(__file__), 'data')

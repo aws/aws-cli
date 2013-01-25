@@ -24,9 +24,10 @@
 import unittest
 import botocore.auth
 import botocore.credentials
+import six
 
 CS1 = """PUT\nc8fdb181845a4ca6b8fec737b3581d76\ntext/html\nThu, 17 Nov 2005 18:49:58 GMT\nx-amz-magic:abracadabra\nx-amz-meta-author:foo@bar.com\n/quotes/nelson"""
-SIG1 = 'jZNOcbfWmD/A/f3hSvVzXZjM2HU='
+SIG1 = six.b('jZNOcbfWmD/A/f3hSvVzXZjM2HU=')
 
 
 class TestHMACV1(unittest.TestCase):

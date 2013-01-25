@@ -1,4 +1,4 @@
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -118,7 +118,7 @@ class CLIDriver(object):
         if self.args.profile:
             self.session.profile = self.args.profile
         prog = '%s %s' % (self.parser.prog,
-                          self.service.short_name)
+                          self.service.cli_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                          add_help=False, prog=prog)
         operations = [op.cli_name for op in self.service.operations]
@@ -142,7 +142,7 @@ class CLIDriver(object):
             not recognized by upstream parsers.
         """
         prog = '%s %s %s' % (self.parser.prog,
-                             self.service.short_name,
+                             self.service.cli_name,
                              self.operation.cli_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                          add_help=False, prog=prog)
@@ -218,7 +218,7 @@ class CLIDriver(object):
                 if param.encoding == 'base64':
                     s = base64.b64encode(s)
             return s
-        elif param.type == 'structure':
+        elif param.type == 'structure' or param.type == 'map':
             if isinstance(s, list) and len(s) == 1:
                 s = s[0]
             if s[0] == '{':

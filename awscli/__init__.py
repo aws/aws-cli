@@ -1,4 +1,4 @@
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -20,10 +20,10 @@ import os
 __version__ = '0.4.5'
 
 EnvironmentVariables = {
-    'profile': 'AWS_DEFAULT_PROFILE',
-    'region': 'AWS_DEFAULT_REGION',
-    'data_path': 'AWS_DATA_PATH',
-    'config_file': 'AWS_CONFIG_FILE'
+    'profile': (None, 'AWS_DEFAULT_PROFILE'),
+    'region': ('region', 'AWS_DEFAULT_REGION'),
+    'data_path': ('data_path', 'AWS_DATA_PATH'),
+    'config_file': (None, 'AWS_CONFIG_FILE')
     }
 
 #

@@ -1,4 +1,4 @@
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -154,6 +154,7 @@ class Document(object):
         self.add_paragraph().write(self.style.h2(msg))
         self.indent()
         if operation.documentation:
+            self.add_paragraph()
             self.help_parser.feed(operation.documentation)
         self.dedent()
 
@@ -199,7 +200,7 @@ class OperationDocument(Document):
         msg = self.session.get_data('messages/Synopsis')
         self.add_paragraph().write(self.style.h2(msg))
         self.indent()
-        self.add_paragraph().write('aws %s %s' % (operation.service.short_name,
+        self.add_paragraph().write('aws %s %s' % (operation.service.cli_name,
                                                   operation.cli_name))
         self.indent()
         for param in required:
@@ -245,6 +246,7 @@ class ServiceDocument(Document):
         self.add_paragraph().write(self.style.bold(operation.cli_name))
         if operation.documentation:
             self.indent()
+            self.add_paragraph()
             self.help_parser.feed(operation.documentation)
             self.dedent()
         self.dedent()

@@ -15,18 +15,19 @@ import unittest
 import awscli.clidriver
 
 
-class TestDescribeInstanceAttribute(unittest.TestCase):
+class TestSetQueueAttributes(unittest.TestCase):
 
     def setUp(self):
         self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 describe-instance-attribute'
+        self.prefix = 'aws sqs set-queue-attributes'
+        self.queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
-    def test_both_params(self):
-        cmdline = self.prefix
-        cmdline += ' --instance-id i-12345678'
-        cmdline += ' --attribute blockDeviceMapping'
-        result = {'InstanceId': 'i-12345678',
-                  'Attribute': 'blockDeviceMapping'}
+    def test_one(self):
+        cmdline = self.prefix + ' --queue-url %s' % self.queue_url
+        cmdline += ' --attributes {"VisibilityTimeout":"15"}'
+        result = {'QueueUrl': self.queue_url,
+                  'Attribute.1.Name': 'VisibilityTimeout',
+                  'Attribute.1.Value': '15'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 

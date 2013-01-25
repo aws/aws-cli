@@ -99,6 +99,7 @@ class Session(object):
             self.env_vars.update(env_vars)
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
+        self._profile = None
         self._config = None
         self._credentials = None
 
@@ -110,6 +111,14 @@ class Session(object):
             if not key.startswith('_'):
                 profiles.append(key)
         return profiles
+
+    @property
+    def profile(self):
+        return self._profile
+
+    @profile.setter
+    def profile(self, profile):
+        self._profile = profile
 
     def get_variable(self, logical_name, methods=('env', 'config')):
         """
@@ -138,7 +147,9 @@ class Session(object):
             config_name, envvar_name = self.env_vars[logical_name]
             if logical_name in ('config_file', 'profile'):
                 config_name = None
-            if 'env' in methods and envvar_name and envvar_name in os.environ:
+            if logical_name == 'profile' and self._profile:
+                value = self._profile
+            elif 'env' in methods and envvar_name and envvar_name in os.environ:
                 value = os.environ[envvar_name]
             elif 'config' in methods:
                 if config_name:

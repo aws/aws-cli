@@ -51,6 +51,26 @@ class NoCredentials(BotoCoreError):
     """
 
 
+class NoRegionError(BotoCoreError):
+    """
+    No region was specified
+
+    :ivar env_var: The name of the environment variable to use to
+        specify the default region.
+    """
+    fmt = 'You must specify a region or set the {env_var} environment variable.'
+
+
+class ServiceNotInRegionError(BotoCoreError):
+    """
+    The service is not available in requested region.
+
+    :ivar service_name: The name of the service.
+    :ivar region_name: The name of the region.
+    """
+    fmt = 'Service {service_name} not available in region {region_name}'
+
+
 class ProfileNotFound(BotoCoreError):
     """
     The specified configuration profile was not found in the

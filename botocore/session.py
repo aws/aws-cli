@@ -173,19 +173,27 @@ class Session(object):
             profile_name = 'default'
         return self._config.get(profile_name, dict())
 
-    def set_credentials(self, access_key, secret_key):
+    def set_credentials(self, access_key, secret_key, token=None):
         """
-        Create the :class:`botocore.credential.Credential` object
-        associated with this session using the supplied AccessKey and SecretKey
+        Manually create credentials for this session.  If you would
+        prefer to use botocore without a config file, environment variables,
+        or IAM roles, you can pass explicit credentials into this
+        method to establish credentials for this session.
 
         :type access_key: str
         :param access_key: The access key part of the credentials.
 
         :type secret_key: str
         :param secret_key: The secret key part of the credentials.
+
+        :type token: str
+        :param token: An option session token used by STS session
+            credentials.
         """
         self._credentials = botocore.credentials.Credentials(access_key,
-                                                             secret_key)
+                                                             secret_key,
+                                                             token)
+        self._credentials.method = 'explicit'
 
     def get_credentials(self, metadata=None):
         """

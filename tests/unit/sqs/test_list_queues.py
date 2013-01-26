@@ -15,18 +15,21 @@ import unittest
 import awscli.clidriver
 
 
-class TestDescribeInstanceAttribute(unittest.TestCase):
+class TestListQueues(unittest.TestCase):
 
     def setUp(self):
         self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 describe-instance-attribute'
+        self.prefix = 'aws sqs list-queues'
 
-    def test_both_params(self):
+    def test_no_param(self):
         cmdline = self.prefix
-        cmdline += ' --instance-id i-12345678'
-        cmdline += ' --attribute blockDeviceMapping'
-        result = {'InstanceId': 'i-12345678',
-                  'Attribute': 'blockDeviceMapping'}
+        result = {}
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
+    def test_prefix(self):
+        cmdline = self.prefix + ' --queue-name-prefix test'
+        result = {'QueueNamePrefix': 'test'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 

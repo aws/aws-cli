@@ -1,6 +1,8 @@
 aws-cli
 =======
 
+[![Build Status](https://travis-ci.org/aws/aws-cli.png?branch=develop)](https://travis-ci.org/aws/aws-cli)
+
 This package provides a unified command line interface to many
 Amazon Web Services.
 
@@ -59,6 +61,14 @@ For tcsh:
     $ complete aws 'p/*/`aws_completer`/'
 
 You should add this to your startup scripts to enable it for future sessions.
+
+For zsh please refer to bin/zsh_complete.sh.  Source that file:
+
+    $ source bin/zsh_complete.sh
+
+For now the bash compatibility auto completion (bashcompinit) is used.
+For further details please refer to the top of bin/zsh_complete.sh.
+
 
 Getting Started
 ---------------

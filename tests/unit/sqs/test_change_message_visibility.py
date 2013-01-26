@@ -15,18 +15,22 @@ import unittest
 import awscli.clidriver
 
 
-class TestDescribeInstanceAttribute(unittest.TestCase):
+class TestChangeMessageVisibility(unittest.TestCase):
 
     def setUp(self):
         self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 describe-instance-attribute'
+        self.prefix = 'aws sqs change-message-visibility'
+        self.queue_url = 'https://queue.amazonaws.com/4444/testcli'
+        self.receipt_handle = 'abcedfghijklmnopqrstuvwxyz'
 
-    def test_both_params(self):
+    def test_all_params(self):
         cmdline = self.prefix
-        cmdline += ' --instance-id i-12345678'
-        cmdline += ' --attribute blockDeviceMapping'
-        result = {'InstanceId': 'i-12345678',
-                  'Attribute': 'blockDeviceMapping'}
+        cmdline += ' --queue-url %s' % self.queue_url
+        cmdline += ' --receipt-handle %s' % self.receipt_handle
+        cmdline += ' --visibility-timeout 30'
+        result = {'QueueUrl': self.queue_url,
+                  'ReceiptHandle': self.receipt_handle,
+                  'VisibilityTimeout': '30'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 

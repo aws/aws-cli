@@ -18,7 +18,7 @@ packages = [
     'awscli',
 ]
 
-requires = ['botocore>=0.4.2',
+requires = ['botocore>=0.5.0',
             'six>=1.1.0',
             'argparse>=1.1']
 
@@ -31,7 +31,8 @@ setup(
     author='Mitch Garnaat',
     author_email='garnaat@amazon.com',
     url='http://aws.amazon.com/cli/',
-    scripts=['bin/aws', 'bin/aws_completer', 'bin/aws.cmd'],
+    scripts=['bin/aws', 'bin/aws.cmd',
+             'bin/aws_completer', 'bin/zsh_complete.sh'],
     packages=packages,
     package_data={'awscli': ['data/*.json']},
     package_dir={'awscli': 'awscli'},

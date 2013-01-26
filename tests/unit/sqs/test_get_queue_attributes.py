@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -24,14 +24,14 @@ class TestGetQueueAttributes(unittest.TestCase):
 
     def test_no_attr(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli'}
+        result = {'QueueUrl': self.queue_url}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
     def test_all(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attribute-names All'
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli',
+        result = {'QueueUrl': self.queue_url,
                   'AttributeName.1': 'All'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
@@ -39,7 +39,7 @@ class TestGetQueueAttributes(unittest.TestCase):
     def test_one(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attribute-names VisibilityTimeout'
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli',
+        result = {'QueueUrl': self.queue_url,
                   'AttributeName.1': 'VisibilityTimeout'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
@@ -47,7 +47,7 @@ class TestGetQueueAttributes(unittest.TestCase):
     def test_two(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attribute-names VisibilityTimeout QueueArn'
-        result = {'QueueUrl': 'https://queue.amazonaws.com/4444/testcli',
+        result = {'QueueUrl': self.queue_url,
                   'AttributeName.1': 'VisibilityTimeout',
                   'AttributeName.2': 'QueueArn'}
         params = self.driver.test(cmdline)

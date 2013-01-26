@@ -1,4 +1,4 @@
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -17,14 +17,7 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 import os
 
-__version__ = '0.4.5'
-
-EnvironmentVariables = {
-    'profile': 'AWS_DEFAULT_PROFILE',
-    'region': 'AWS_DEFAULT_REGION',
-    'data_path': 'AWS_DATA_PATH',
-    'config_file': 'AWS_CONFIG_FILE'
-    }
+__version__ = '0.5.0'
 
 #
 # Get our data path to be added to botocore's search path
@@ -38,3 +31,11 @@ if 'AWS_DATA_PATH' in os.environ:
         path = os.path.expanduser(path)
         awscli_data_path.append(path)
 os.environ['AWS_DATA_PATH'] = ':'.join(awscli_data_path)
+
+
+EnvironmentVariables = {
+    'profile': (None, 'AWS_DEFAULT_PROFILE', None),
+    'region': ('region', 'AWS_DEFAULT_REGION', None),
+    'data_path': ('data_path', 'AWS_DATA_PATH', None),
+    'config_file': (None, 'AWS_CONFIG_FILE', None)
+    }

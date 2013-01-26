@@ -1,4 +1,4 @@
-# Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -154,6 +154,7 @@ class Document(object):
         self.add_paragraph().write(self.style.h2(msg))
         self.indent()
         if operation.documentation:
+            self.add_paragraph()
             self.help_parser.feed(operation.documentation)
         self.dedent()
 
@@ -199,8 +200,10 @@ class OperationDocument(Document):
         msg = self.session.get_data('messages/Synopsis')
         self.add_paragraph().write(self.style.h2(msg))
         self.indent()
-        self.add_paragraph().write('aws %s %s' % (operation.service.short_name,
-                                                  operation.cli_name))
+        provider_name = self.session.get_variable('provider')
+        self.add_paragraph().write('%s %s %s' % (provider_name,
+                                                 operation.service.cli_name,
+                                                 operation.cli_name))
         self.indent()
         for param in required:
             para = self.add_paragraph()
@@ -245,6 +248,7 @@ class ServiceDocument(Document):
         self.add_paragraph().write(self.style.bold(operation.cli_name))
         if operation.documentation:
             self.indent()
+            self.add_paragraph()
             self.help_parser.feed(operation.documentation)
             self.dedent()
         self.dedent()
@@ -272,7 +276,7 @@ class ProviderDocument(Document):
             self.get_current_paragraph().write(service_name)
             self.style.end_li()
 
-    def do_options(self, options):
+    def do_options(self, options, provider_name):
         self.add_paragraph().write(self.style.h2('Options'))
         self.indent()
         for option in options:
@@ -289,18 +293,19 @@ class ProviderDocument(Document):
                 if 'choices' in option_data:
                     choices = option_data['choices']
                     if not isinstance(choices, list):
-                        choices = self.session.get_data(choices)
+                        choices_path = choices.format(provider=provider_name)
+                        choices = self.session.get_data(choices_path)
                     for choice in sorted(choices):
                         self.style.start_li()
                         self.get_current_paragraph().write(choice)
                         self.style.end_li()
         self.dedent()
 
-    def build(self, provider_name='aws'):
+    def build(self, provider_name):
         cli = self.session.get_data('cli')
         self.do_usage(cli['description'])
         self.do_service_names(provider_name)
-        self.do_options(cli['options'])
+        self.do_options(cli['options'], provider_name)
 
 
 def get_help(session, provider=None,

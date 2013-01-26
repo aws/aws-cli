@@ -128,6 +128,26 @@ if one is not explicitly specified on the command line via the
 
     $ export AWS_DEFAULT_PROFILE=testing
 
+Accessing Services With Global Endpoints
+----------------------------------------
+
+Some services, such as AWS Identity and Access Management (IAM),
+AWS Security Token Service (STS), and Amazon Simple Email Service (SES)
+have a single, global endpoint rather than different endpoints for
+each region.
+
+To make access to these services simpler, aws-cli will automatically
+use the global endpoint unless you explicitly supply a region (using
+the ``--region`` option) or a profile (using the ``--profile`` option).
+Therefore, the following:
+
+    $ aws iam list-users
+
+Will automatically use the global endpoint for the IAM service
+regardless of the value of the ``AWS_DEFAULT_REGION`` environment
+variable or the ``region`` variable specified in your profile.
+
+
 Complex Parameter Input
 -----------------------
 Many options that need to be provided are simple string or numeric

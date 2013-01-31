@@ -185,7 +185,8 @@ class CLIDriver(object):
             if isinstance(s, list):
                 s = s[0]
             return int(s)
-        elif param.type == 'float':
+        elif param.type == 'float' or param.type == 'double':
+            # TODO: losing precision on double types
             if isinstance(s, list):
                 s = s[0]
             return float(s)

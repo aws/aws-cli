@@ -81,7 +81,12 @@ class SigV2Auth(object):
         # Because of this we have to parse the query params
         # from the request body so we can update them with
         # the sigv2 auth params.
-        params = dict(parse_qsl(request.body))
+        if request.data:
+            # POST
+            params = request.data
+        else:
+            # GET
+            params = request.param
         params['AWSAccessKeyId'] = self.credentials.access_key
         params['SignatureVersion'] = '2'
         params['SignatureMethod'] = 'HmacSHA256'
@@ -89,9 +94,7 @@ class SigV2Auth(object):
         if self.credentials.token:
             params['SecurityToken'] = self.credentials.token
         qs, signature = self.calc_signature(request, params)
-        # Re-encode the updated params into the request body.
-        body = qs + '&' + "Signature=" + quote(signature, safe='-_~')
-        request.prepare_body(body, None)
+        params['Signature'] = signature
         return request
 
 
@@ -133,19 +136,6 @@ class SigV4Auth(object):
                 headers_to_sign[name] = value
         return headers_to_sign
 
-    def encode_payload(self, request):
-        if request.method == 'POST':
-            params = dict(parse_qsl(request.body))
-            parameter_names = sorted(params)
-            pairs = []
-            for pname in parameter_names:
-                pval = str(params[pname]).encode('utf-8')
-                pairs.append(quote(pname, safe='') + '=' +
-                             quote(pval, safe='-_~'))
-            body = '&'.join(pairs)
-            request.prepare_body(body, None)
-            request.headers['Content-Type'] = PostContentType
-
     def canonical_query_string(self, request):
         cqs = ''
         if request.method == 'GET':
@@ -184,7 +174,7 @@ class SigV4Auth(object):
 
     def canonical_request(self, request):
         cr = [request.method.upper()]
-        path = request.path_url
+        path = urlsplit(request.url).path
         cr.append(path)
         cr.append(self.canonical_query_string(request))
         headers_to_sign = self.headers_to_sign(request)
@@ -234,7 +224,6 @@ class SigV4Auth(object):
         # This could be a retry.  Make sure the previous
         # authorization header is removed first.
         split = urlsplit(request.url)
-        self.encode_payload(request)
         if 'Authorization' in request.headers:
             del request.headers['Authorization']
         request.headers['X-Amz-Date'] = self.timestamp
@@ -254,6 +243,7 @@ class SigV4Auth(object):
         return request
 
 
+# TODO: This has not been updated to work with the new request 1.0 auth.
 class HmacV1Auth(object):
 
     # List of Query String Arguments of Interest

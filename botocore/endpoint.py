@@ -85,8 +85,8 @@ class QueryEndpoint(Endpoint):
         params['Action'] = operation.name
         params['Version'] = self.service.api_version
         user_agent = self.session.user_agent()
-        http_response = requests.post(self.host, params=params,
-                                      hooks={'args': self.auth.add_auth},
+        http_response = requests.post(self.host, data=params,
+                                      auth=self.auth.add_auth,
                                       headers={'User-Agent': user_agent},
                                       verify=self.verify)
         r = botocore.response.Response(operation)

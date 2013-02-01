@@ -35,10 +35,12 @@ try:
     from urllib.parse import quote
     from urllib.parse import unquote
     from urllib.parse import urlsplit
+    from urllib.parse import parse_qsl
 except ImportError:
     from urllib import quote
     from urllib import unquote
     from urlparse import urlsplit
+    from urlparse import parse_qsl
 
 
 class SigV2Auth(object):
@@ -50,23 +52,19 @@ class SigV2Auth(object):
         self.service_name = service_name
         self.region_name = region_name
 
-    def calc_signature(self, args):
-        split = urlsplit(args['url'])
+    def calc_signature(self, request, params):
+        split = urlsplit(request.url)
         path = split.path
         if len(path) == 0:
             path = '/'
-        string_to_sign = '%s\n%s\n%s\n' % (args['method'],
+        string_to_sign = '%s\n%s\n%s\n' % (request.method,
                                            split.netloc,
                                            path)
         lhmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
-                        digestmod=sha256)
-        args['params']['SignatureMethod'] = 'HmacSHA256'
-        if self.credentials.token:
-            args['params']['SecurityToken'] = self.credentials.token
-        sorted_params = sorted(args['params'])
+                         digestmod=sha256)
         pairs = []
-        for key in sorted_params:
-            value = args['params'][key]
+        for key in sorted(params):
+            value = params[key]
             pairs.append(quote(key, safe='') + '=' +
                          quote(value, safe='-_~'))
         qs = '&'.join(pairs)
@@ -77,15 +75,24 @@ class SigV2Auth(object):
         b64 = base64.b64encode(lhmac.digest()).strip().decode('utf-8')
         return (qs, b64)
 
-    def add_auth(self, args):
-        args['params']['AWSAccessKeyId'] = self.credentials.access_key
-        args['params']['SignatureVersion'] = '2'
-        args['params']['Timestamp'] = datetime.datetime.utcnow().isoformat()
-        qs, signature = self.calc_signature(args)
-        args['params']['Signature'] = signature
-        if args['method'] == 'POST':
-            args['data'] = args['params']
-            args['params'] = {}
+    def add_auth(self, request):
+        # The auth handler is the last thing called in the
+        # preparation phase of a prepared request.
+        # Because of this we have to parse the query params
+        # from the request body so we can update them with
+        # the sigv2 auth params.
+        params = dict(parse_qsl(request.body))
+        params['AWSAccessKeyId'] = self.credentials.access_key
+        params['SignatureVersion'] = '2'
+        params['SignatureMethod'] = 'HmacSHA256'
+        params['Timestamp'] = datetime.datetime.utcnow().isoformat()
+        if self.credentials.token:
+            params['SecurityToken'] = self.credentials.token
+        qs, signature = self.calc_signature(request, params)
+        # Re-encode the updated params into the request body.
+        body = qs + '&' + "Signature=" + quote(signature, safe='-_~')
+        request.prepare_body(body, None)
+        return request
 
 
 PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -110,14 +117,15 @@ class SigV4Auth(object):
             sig = hmac.new(key, msg.encode('utf-8'), sha256).digest()
         return sig
 
-    def headers_to_sign(self, args):
+    def headers_to_sign(self, request):
         """
         Select the headers from the request that need to be included
         in the StringToSign.
         """
         headers_to_sign = {}
-        headers_to_sign = {'Host': self.split.netloc}
-        for name, value in args['headers'].items():
+        split = urlsplit(request.url)
+        headers_to_sign = {'Host': split.netloc}
+        for name, value in request.headers.items():
             lname = name.lower()
             if lname.startswith('x-amz'):
                 headers_to_sign[name] = value
@@ -125,30 +133,26 @@ class SigV4Auth(object):
                 headers_to_sign[name] = value
         return headers_to_sign
 
-    def build_payload(self, args):
-        """
-        For all Query-style requests, we will use POST.
-
-        When using SigV4, we need to convert the query parameters
-        to a string and place that in the payload of the POST request.
-        """
-        if args['method'] == 'POST' and not args['data']:
-            parameter_names = sorted(args['params'].keys())
+    def encode_payload(self, request):
+        if request.method == 'POST':
+            params = dict(parse_qsl(request.body))
+            parameter_names = sorted(params)
             pairs = []
             for pname in parameter_names:
-                pval = str(args['params'][pname]).encode('utf-8')
+                pval = str(params[pname]).encode('utf-8')
                 pairs.append(quote(pname, safe='') + '=' +
                              quote(pval, safe='-_~'))
-            args['data'] = '&'.join(pairs)
-            args['params'] = {}
-            args['headers']['content-type'] = PostContentType
+            body = '&'.join(pairs)
+            request.prepare_body(body, None)
+            request.headers['Content-Type'] = PostContentType
 
-    def canonical_query_string(self, args):
+    def canonical_query_string(self, request):
         cqs = ''
-        if args['method'] == 'GET':
+        if request.method == 'GET':
+            params = dict(parse_qsl(urlsplit(request.url).query))
             l = []
-            for param in args['params']:
-                value = str(args['params'][param])
+            for param in params:
+                value = str(params[param])
                 l.append('%s=%s' % (quote(param, safe='-_.~'),
                                     quote(value, safe='-_.~')))
             l = sorted(l)
@@ -172,23 +176,21 @@ class SigV4Auth(object):
         l = sorted(l)
         return ';'.join(l)
 
-    def payload(self, args):
-        if args['data']:
-            return sha256(args['data']).hexdigest()
+    def payload(self, request):
+        if request.body:
+            return sha256(request.body).hexdigest()
         else:
             return sha256('').hexdigest()
 
-    def canonical_request(self, args):
-        cr = [args['method'].upper()]
-        path = self.split.path
-        if len(path) == 0:
-            path = '/'
+    def canonical_request(self, request):
+        cr = [request.method.upper()]
+        path = request.path_url
         cr.append(path)
-        cr.append(self.canonical_query_string(args))
-        headers_to_sign = self.headers_to_sign(args)
+        cr.append(self.canonical_query_string(request))
+        headers_to_sign = self.headers_to_sign(request)
         cr.append(self.canonical_headers(headers_to_sign) + '\n')
         cr.append(self.signed_headers(headers_to_sign))
-        cr.append(self.payload(args))
+        cr.append(self.payload(request))
         return '\n'.join(cr)
 
     def scope(self, args):
@@ -207,19 +209,19 @@ class SigV4Auth(object):
         scope.append('aws4_request')
         return '/'.join(scope)
 
-    def string_to_sign(self, args, canonical_request):
+    def string_to_sign(self, request, canonical_request):
         """
         Return the canonical StringToSign as well as a dict
         containing the original version of all headers that
         were included in the StringToSign.
         """
         sts = ['AWS4-HMAC-SHA256']
-        sts.append(args['headers']['X-Amz-Date'])
-        sts.append(self.credential_scope(args))
+        sts.append(request.headers['X-Amz-Date'])
+        sts.append(self.credential_scope(request))
         sts.append(sha256(canonical_request).hexdigest())
         return '\n'.join(sts)
 
-    def signature(self, args, string_to_sign):
+    def signature(self, string_to_sign):
         key = self.credentials.secret_key
         k_date = self._sign(('AWS4' + key).encode('utf-8'),
                             self.timestamp[0:8])
@@ -228,27 +230,28 @@ class SigV4Auth(object):
         k_signing = self._sign(k_service, 'aws4_request')
         return self._sign(k_signing, string_to_sign, hex=True)
 
-    def add_auth(self, args):
+    def add_auth(self, request):
         # This could be a retry.  Make sure the previous
         # authorization header is removed first.
-        self.split = urlsplit(args['url'])
-        self.build_payload(args)
-        if 'X-Amzn-Authorization' in args['headers']:
-            del args['headers']['X-Amzn-Authorization']
-        args['headers']['X-Amz-Date'] = self.timestamp
+        split = urlsplit(request.url)
+        self.encode_payload(request)
+        if 'Authorization' in request.headers:
+            del request.headers['Authorization']
+        request.headers['X-Amz-Date'] = self.timestamp
         if self.credentials.token:
-            args['headers']['X-Amz-Security-Token'] = self.credentials.token
-        canonical_request = self.canonical_request(args)
+            request.headers['X-Amz-Security-Token'] = self.credentials.token
+        canonical_request = self.canonical_request(request)
         logger.debug('CanonicalRequest:\n%s' % canonical_request)
-        string_to_sign = self.string_to_sign(args, canonical_request)
+        string_to_sign = self.string_to_sign(request, canonical_request)
         logger.debug('StringToSign:\n%s' % string_to_sign)
-        signature = self.signature(args, string_to_sign)
+        signature = self.signature(string_to_sign)
         logger.debug('Signature:\n%s' % signature)
-        headers_to_sign = self.headers_to_sign(args)
-        l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(args)]
+        l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
+        headers_to_sign = self.headers_to_sign(request)
         l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
         l.append('Signature=%s' % signature)
-        args['headers']['Authorization'] = ','.join(l)
+        request.headers['Authorization'] = ','.join(l)
+        return request
 
 
 class HmacV1Auth(object):

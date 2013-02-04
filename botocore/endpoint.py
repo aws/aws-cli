@@ -63,7 +63,7 @@ class Endpoint(object):
                                            region_name=region_name)
 
     def __repr__(self):
-        return '%s(%s)' % (self.service.name, self.host)
+        return '%s(%s)' % (self.service.endpoint_prefix, self.host)
 
     def make_request(self, params, list_marker=None):
         pass
@@ -128,7 +128,7 @@ class JSONEndpoint(Endpoint):
 
 class RestXMLEndpoint(Endpoint):
 
-    def get_path_and_query_params(self, operation, params):
+    def build_uri(self, operation, params):
         uri = operation.http['uri']
         if '?' in uri:
             path, query_params = uri.split('?')
@@ -143,16 +143,26 @@ class RestXMLEndpoint(Endpoint):
                 pc = pc.format(**params['uri_params'])
             path_components.append(pc)
         path = '/'.join(path_components)
-        query_param_components = {}
+        query_param_components = []
         for qpc in query_params.split('&'):
             if qpc:
-                key_name, value_name = qpc.split('=')
-                value_name = value_name.strip('{}')
-                if value_name in params['uri_params']:
-                    query_param_components[key_name] = params['uri_params'][value_name]
+                if '=' in qpc:
+                    key_name, value_name = qpc.split('=')
+                else:
+                    key_name = qpc
+                    value_name = None
+                if value_name:
+                    value_name = value_name.strip('{}')
+                    if value_name in params['uri_params']:
+                        value = params['uri_params'][value_name]
+                        query_param_components.append('%s=%s' % (key_name,
+                                                                 value))
+                else:
+                    query_param_components.append(key_name)
+        query_params = '&'.join(query_param_components)
         logger.debug('path: %s' % path)
-        logger.debug('query_params: %s' % query_param_components)
-        return path, query_param_components
+        logger.debug('query_params: %s' % query_params)
+        return path + '?' +  query_params
 
     def make_request(self, operation, params):
         """
@@ -164,9 +174,9 @@ class RestXMLEndpoint(Endpoint):
         logger.debug('SSL Verify: %s' % self.verify)
         user_agent = self.session.user_agent()
         request_method = getattr(requests, operation.http['method'].lower())
-        path, query_params = self.get_path_and_query_params(operation, params)
-        uri = urljoin(self.host, path)
-        http_response = request_method(uri, params=query_params,
+        uri = self.build_uri(operation, params)
+        uri = urljoin(self.host, uri)
+        http_response = request_method(uri,
                                        hooks={'args': self.auth.add_auth},
                                        headers={'User-Agent': user_agent},
                                        verify=self.verify)

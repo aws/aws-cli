@@ -61,6 +61,15 @@ class NoRegionError(BotoCoreError):
     fmt = 'You must specify a region or set the {env_var} environment variable.'
 
 
+class UnknownSignatureVersionError(BotoCoreError):
+    """
+    Requested Signature Version is not known.
+
+    :ivar signature_version: The name of the requested signature version.
+    """
+    fmt = 'Unknown Signature Version: {signature_version}.'
+
+
 class ServiceNotInRegionError(BotoCoreError):
     """
     The service is not available in requested region.
@@ -97,6 +106,16 @@ class ConfigNotFound(BotoCoreError):
     :ivar path: The path to the configuration file.
     """
     fmt = 'The specified config file ({path}) could not be found.'
+
+
+class MissingParametersError(BotoCoreError):
+    """
+    One or more required parameters were not supplied.
+
+    :ivar missing: str
+    :ivar missing: The names of the missing parameters
+    """
+    fmt = 'The following required parameters are missing: {missing}'
 
 
 class ValidationError(BotoCoreError):

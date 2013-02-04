@@ -29,7 +29,10 @@ the response data.
 
 """
 import xml.sax
+import logging
 from botocore import ScalarTypes
+
+logger = logging.getLogger(__name__)
 
 
 class Element(object):
@@ -178,7 +181,7 @@ class Response(xml.sax.ContentHandler):
             elif current_element.defn['type'] == 'list':
                 data = current_element.defn['members']
                 xmlname = data.get('xmlname', 'member')
-                if name == xmlname:
+                if name == xmlname or current_element.defn.get('flattened'):
                     new_element = Element(xmlname, data)
                     new_element_name = xmlname
         if new_element is None:
@@ -189,6 +192,7 @@ class Response(xml.sax.ContentHandler):
             self.map_map[name] = new_element
 
     def startElement(self, name, attrs):
+        logger.debug('startElement: %s' % name)
         self.current_text = ''
         if name.startswith(self.operation.name):
             pass
@@ -196,6 +200,7 @@ class Response(xml.sax.ContentHandler):
             self.add_element(name)
 
     def endElement(self, name):
+        logger.debug('endElement: %s' % name)
         if name.startswith(self.operation.name):
             pass
         else:

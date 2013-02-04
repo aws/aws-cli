@@ -26,6 +26,11 @@ import botocore.auth
 import botocore.credentials
 import six
 
+try:
+    from urllib.parse import urlsplit
+except ImportError:
+    from urlparse import urlsplit
+
 CS1 = """PUT\nc8fdb181845a4ca6b8fec737b3581d76\ntext/html\nThu, 17 Nov 2005 18:49:58 GMT\nx-amz-magic:abracadabra\nx-amz-meta-author:foo@bar.com\n/quotes/nelson"""
 SIG1 = six.b('jZNOcbfWmD/A/f3hSvVzXZjM2HU=')
 
@@ -45,7 +50,8 @@ class TestHMACV1(unittest.TestCase):
                    'Content-Type': 'text/html',
                    'X-Amz-Meta-Author': 'foo@bar.com',
                    'X-Amz-Magic': 'abracadabra'}
-        cs = self.hmacv1.canonical_string('PUT', '/quotes/nelson', headers)
+        split = urlsplit('/quotes/nelson')
+        cs = self.hmacv1.canonical_string('PUT', split, headers)
         assert cs == CS1
-        sig = self.hmacv1.get_signature('PUT', '/quotes/nelson', headers)
+        sig = self.hmacv1.get_signature('PUT', split, headers)
         assert sig == SIG1

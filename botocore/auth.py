@@ -27,14 +27,17 @@ from hashlib import sha1
 import hmac
 import logging
 from email.utils import formatdate
+from exceptions import UnknownSignatureVersionError
 
 logger = logging.getLogger(__name__)
 
 try:
     from urllib.parse import quote
+    from urllib.parse import unquote
     from urllib.parse import urlsplit
 except ImportError:
     from urllib import quote
+    from urllib import unquote
     from urlparse import urlsplit
 
 
@@ -301,17 +304,24 @@ class HmacV1Auth(object):
             hoi.append("%s:%s" % (key, custom_headers[key]))
         return '\n'.join(hoi)
 
-    def canonical_resource(self, path):
+    def unquote_v(self, nv):
+        """
+        TODO: Do we need this?
+        """
+        if len(nv) == 1:
+            return nv
+        else:
+            return (nv[0], unquote(nv[1]))
+
+    def canonical_resource(self, split):
         # don't include anything after the first ? in the resource...
         # unless it is one of the QSA of interest, defined above
-        buf = ''
-        t = path.split('?')
-        buf += t[0]
+        buf = split.path
 
-        if len(t) > 1:
-            qsa = t[1].split('&')
+        if split.query:
+            qsa = split.query.split('&')
             qsa = [a.split('=', 1) for a in qsa]
-            qsa = [unquote_v(a) for a in qsa if a[0] in self.QSAOfInterest]
+            qsa = [self.unquote_v(a) for a in qsa if a[0] in self.QSAOfInterest]
             if len(qsa) > 0:
                 qsa.sort(cmp=lambda x, y:cmp(x[0], y[0]))
                 qsa = ['='.join(a) for a in qsa]
@@ -320,29 +330,28 @@ class HmacV1Auth(object):
 
         return buf
 
-    def canonical_string(self, method, path, headers, expires=None):
+    def canonical_string(self, method, split, headers, expires=None):
         cs = method.upper() + '\n'
         cs += self.canonical_standard_headers(headers) + '\n'
         custom_headers = self.canonical_custom_headers(headers)
         if custom_headers:
             cs += custom_headers + '\n'
-        cs += self.canonical_resource(path)
+        cs += self.canonical_resource(split)
         return cs
 
-    def get_signature(self, method, path, headers, expires=None):
+    def get_signature(self, method, split, headers, expires=None):
         if self.credentials.token:
             #TODO: remove hardcoded header name
             headers['security_token'] = self.credentials.token
         string_to_sign = self.canonical_string(method,
-                                               path,
+                                               split,
                                                headers)
         logger.debug('StringToSign:\n%s' % string_to_sign)
         return self.sign_string(string_to_sign)
 
     def add_auth(self, args):
         split = urlsplit(args['url'])
-        path = split.path
-        signature = self.get_signature(args['method'], path,
+        signature = self.get_signature(args['method'], split,
                                        args['headers'])
         args['headers']['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
                                                            signature))
@@ -355,4 +364,4 @@ def get_auth(signature_version, *args, **kw):
         return SigV4Auth(*args, **kw)
     if signature_version == 's3':
         return HmacV1Auth(*args, **kw)
-    raise ValueError('Unknown auth scheme: %s' % auth_name)
+    raise UnknownSignatureVersionError(signature_version=signature_version)

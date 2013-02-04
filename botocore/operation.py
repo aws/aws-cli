@@ -22,6 +22,7 @@
 #
 import logging
 from .parameters import get_parameter
+from .exceptions import MissingParametersError
 from . import BotoCoreObject
 
 logger = logging.getLogger(__name__)
@@ -84,7 +85,6 @@ class Operation(BotoCoreObject):
                                       kwargs[param.py_name],
                                       built_params)
         if missing:
-            msg = 'The following required parameters are missing:'
-            msg += ','.join([p.py_name for p in missing])
-            raise ValueError(msg)
+            missing_str = ','.join([p.py_name for p in missing])
+            raise MissingParametersError(missing=missing_str)
         return built_params

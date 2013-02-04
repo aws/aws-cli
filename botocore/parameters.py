@@ -59,7 +59,7 @@ class Parameter(BotoCoreObject):
 
     def build_parameter_query(self, value, built_params,
                               label='', flattened=False):
-        logger.debug('label=%s' % label)
+        logger.debug('name=%s, label=%s' % (self.name, label))
         value = self.validate(value)
         label = self.get_label(label)
         built_params[label] = str(value)
@@ -211,6 +211,7 @@ class ListParameter(Parameter):
 
     def build_parameter_query(self, value, built_params,
                               label='', flattened=False):
+        logger.debug('list: name=%s, label=%s' % (self.name, label))
         value = self.validate(value)
         label = self.get_label(label)
         member_type = self.members
@@ -299,7 +300,7 @@ class StructParameter(Parameter):
     def build_parameter_query(self, value, built_params,
                               label='', flattened=False):
         label = self.get_label(label)
-        logger.debug('label=%s' % label)
+        logger.debug('struct: name=%s, label=%s' % (self.name, label))
         for member in self.members:
             if member.required and member.py_name not in value:
                 msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())

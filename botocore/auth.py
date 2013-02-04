@@ -43,6 +43,9 @@ except ImportError:
     from urlparse import parse_qsl
 
 
+PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
+
+
 class SigV2Auth(object):
     """
     Sign a request with Signature V2.
@@ -98,7 +101,25 @@ class SigV2Auth(object):
         return request
 
 
-PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
+class SigV3Auth(object):
+    def __init__(self, credentials, service_name=None, region_name=None):
+        self.credentials = credentials
+        self.service_name = service_name
+        self.region_name = region_name
+
+    def add_auth(self, request):
+        if 'Date' not in request.headers:
+            request.headers['Date'] = formatdate(usegmt=True)
+        if self.credentials.token:
+            request.headers['X-Amz-Security-Token'] = self.credentials.token
+        new_hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
+                            digestmod=sha256)
+        new_hmac.update(request.headers['Date'].encode('utf-8'))
+        encoded_signature = base64.encodestring(new_hmac.digest()).strip()
+        signature = ('AWS3-HTTPS AWSAccessKeyId=%s,Algorithm=%s,Signature=%s' %
+                     (self.credentials.access_key, 'HmacSHA256',
+                      encoded_signature))
+        request.headers['X-Amzn-Authorization'] = signature
 
 
 class SigV4Auth(object):
@@ -342,19 +363,21 @@ class HmacV1Auth(object):
         logger.debug('StringToSign:\n%s' % string_to_sign)
         return self.sign_string(string_to_sign)
 
-    def add_auth(self, args):
-        split = urlsplit(args['url'])
-        signature = self.get_signature(args['method'], split,
-                                       args['headers'])
-        args['headers']['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
+    def add_auth(self, request):
+        split = urlsplit(request.url)
+        signature = self.get_signature(request.method, split,
+                                       request.headers)
+        request.headers['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
                                                            signature))
 
 
 def get_auth(signature_version, *args, **kw):
     if signature_version == 'v2':
         return SigV2Auth(*args, **kw)
-    if signature_version == 'v4':
+    elif signature_version == 'v4':
         return SigV4Auth(*args, **kw)
-    if signature_version == 's3':
+    elif signature_version == 's3':
         return HmacV1Auth(*args, **kw)
+    elif signature_version == 'v3https':
+        return SigV3Auth(*args, **kw)
     raise UnknownSignatureVersionError(signature_version=signature_version)

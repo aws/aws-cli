@@ -27,7 +27,7 @@ from hashlib import sha1
 import hmac
 import logging
 from email.utils import formatdate
-from exceptions import UnknownSignatureVersionError
+from botocore.exceptions import UnknownSignatureVersionError
 
 logger = logging.getLogger(__name__)
 

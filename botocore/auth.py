@@ -118,7 +118,7 @@ class SigV3Auth(object):
         encoded_signature = base64.encodestring(new_hmac.digest()).strip()
         signature = ('AWS3-HTTPS AWSAccessKeyId=%s,Algorithm=%s,Signature=%s' %
                      (self.credentials.access_key, 'HmacSHA256',
-                      encoded_signature))
+                      encoded_signature.decode('utf-8')))
         request.headers['X-Amzn-Authorization'] = signature
 
 

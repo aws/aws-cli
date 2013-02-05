@@ -127,6 +127,7 @@ class ConfigTest(unittest.TestCase):
         credentials = session.get_credentials()
         assert credentials.access_key == 'fie'
         assert credentials.secret_key == 'baz'
+        assert credentials.token == 'fiebaz'
         assert credentials.method == 'config'
         assert len(session.available_profiles) == 2
         assert 'default' in session.available_profiles

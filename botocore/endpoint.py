@@ -102,6 +102,9 @@ class JSONEndpoint(Endpoint):
     This class handles only AWS/JSON style services.
     """
 
+    ResponseContentTypes = ['application/x-amz-json-1.1',
+                            'application/json']
+
     def make_request(self, operation, params):
         """
         Send a request to the endpoint and parse the response
@@ -112,18 +115,28 @@ class JSONEndpoint(Endpoint):
         logger.debug('SSL Verify: %s' % self.verify)
         user_agent = self.session.user_agent()
         target = '%s.%s' % (self.service.target_prefix, operation.name)
-        content_type = 'application/x-amz-json-1.1'
+        json_version = '1.0'
+        if hasattr(self.service, 'json_version'):
+            json_version = str(self.service.json_version)
+        content_type = 'application/x-amz-json-%s' % json_version
+        content_encoding = 'amz-1.0'
         data = json.dumps(params)
         http_response = requests.post(self.host, data=data,
                                       hooks={'args': self.auth.add_auth},
                                       headers={'User-Agent': user_agent,
                                                'X-Amz-Target': target,
-                                               'Content-Type': content_type},
+                                               'Content-Type': content_type,
+                                               'Content-Encoding': content_encoding},
                                       verify=self.verify)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
+        logger.debug(http_response.headers)
         logger.debug(body)
-        return (http_response, json.loads(body))
+        try:
+            body = json.loads(body)
+        except:
+            pass
+        return (http_response, body)
 
 
 class RestXMLEndpoint(Endpoint):
@@ -182,7 +195,7 @@ class RestXMLEndpoint(Endpoint):
                                        verify=self.verify)
         r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf=8')
+        body = http_response.text.encode('utf-8')
         logger.debug(body)
         r.parse(body)
         return (http_response, r.get_value())
@@ -195,4 +208,6 @@ def get_endpoint(service, region_name, endpoint_url):
         return JSONEndpoint(service, region_name, endpoint_url)
     if service.type == 'rest-xml':
         return RestXMLEndpoint(service, region_name, endpoint_url)
+    if service.type == 'rest-json':
+        logger.debug('rest-json not yet supported')
     raise botocore.exceptions.UnknownServiceStyle(service_style=service.type)

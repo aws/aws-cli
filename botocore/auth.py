@@ -189,7 +189,7 @@ class SigV4Auth(object):
 
     def payload(self, request):
         if request.body:
-            return sha256(request.body).hexdigest()
+            return sha256(request.body.encode('utf-8')).hexdigest()
         else:
             return sha256('').hexdigest()
 
@@ -229,7 +229,7 @@ class SigV4Auth(object):
         sts = ['AWS4-HMAC-SHA256']
         sts.append(request.headers['X-Amz-Date'])
         sts.append(self.credential_scope(request))
-        sts.append(sha256(canonical_request).hexdigest())
+        sts.append(sha256(canonical_request.encode('utf-8')).hexdigest())
         return '\n'.join(sts)
 
     def signature(self, string_to_sign):

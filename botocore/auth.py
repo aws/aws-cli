@@ -264,7 +264,6 @@ class SigV4Auth(object):
         return request
 
 
-# TODO: This has not been updated to work with the new request 1.0 auth.
 class HmacV1Auth(object):
 
     # List of Query String Arguments of Interest

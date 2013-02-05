@@ -23,10 +23,12 @@
 
 import logging
 import json
-import requests
+from requests.sessions import Session
+
 import botocore.auth
 import botocore.response
 import botocore.exceptions
+from botocore.awsrequest import AWSRequest
 
 try:
     from urllib.parse import urljoin
@@ -61,12 +63,18 @@ class Endpoint(object):
                                            credentials=self.session.get_credentials(),
                                            service_name=signing_name,
                                            region_name=region_name)
+        self.http_session = Session()
 
     def __repr__(self):
         return '%s(%s)' % (self.service.endpoint_prefix, self.host)
 
     def make_request(self, params, list_marker=None):
-        pass
+        raise NotImplementedError("make_request")
+
+    def prepare_request(self, request):
+        self.auth.add_auth(request=request)
+        prepared_request = request.prepare()
+        return prepared_request
 
 
 class QueryEndpoint(Endpoint):
@@ -85,10 +93,10 @@ class QueryEndpoint(Endpoint):
         params['Action'] = operation.name
         params['Version'] = self.service.api_version
         user_agent = self.session.user_agent()
-        http_response = requests.post(self.host, params=params,
-                                      hooks={'args': self.auth.add_auth},
-                                      headers={'User-Agent': user_agent},
-                                      verify=self.verify)
+        request = AWSRequest(method='POST', url=self.host,
+                             data=params, headers={'User-Agent': user_agent})
+        prepared_request = self.prepare_request(request)
+        http_response = self.http_session.send(prepared_request, verify=self.verify)
         r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf=8')
@@ -121,15 +129,17 @@ class JSONEndpoint(Endpoint):
         content_type = 'application/x-amz-json-%s' % json_version
         content_encoding = 'amz-1.0'
         data = json.dumps(params)
-        http_response = requests.post(self.host, data=data,
-                                      hooks={'args': self.auth.add_auth},
-                                      headers={'User-Agent': user_agent,
-                                               'X-Amz-Target': target,
-                                               'Content-Type': content_type,
-                                               'Content-Encoding': content_encoding},
-                                      verify=self.verify)
+        request = AWSRequest(
+            method='POST', url=self.host,
+            data=data, headers={'User-Agent': user_agent,
+                                'X-Amz-Target': target,
+                                'Content-Type': content_type,
+                                'Content-Encoding': content_encoding})
+        prepared_request = request.prepare()
+        http_response = self.http_session.send(prepared_request,
+                                               verify=self.verify)
         http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf=8')
+        body = http_response.text.encode('utf-8')
         logger.debug(http_response.headers)
         logger.debug(body)
         try:
@@ -186,13 +196,15 @@ class RestXMLEndpoint(Endpoint):
         logger.debug(params)
         logger.debug('SSL Verify: %s' % self.verify)
         user_agent = self.session.user_agent()
-        request_method = getattr(requests, operation.http['method'].lower())
+        headers = {'User-Agent': user_agent}
         uri = self.build_uri(operation, params)
         uri = urljoin(self.host, uri)
-        http_response = request_method(uri,
-                                       hooks={'args': self.auth.add_auth},
-                                       headers={'User-Agent': user_agent},
-                                       verify=self.verify)
+        request = AWSRequest(method=operation.http['method'],
+                             url=uri, headers=headers)
+        prepared_request = self.prepare_request(request)
+        http_response = self.http_session.send(prepared_request, verify=self.verify)
+        http_response.encoding = 'utf-8'
+        body = http_response.text.encode('utf-8')
         r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf-8')

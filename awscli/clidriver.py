@@ -337,8 +337,8 @@ class CLIDriver(object):
             sys.exit(0)
         else:
             if self.args.debug:
-                import httplib
-                httplib.HTTPConnection.debuglevel = 2
+                from six.moves import http_client
+                http_client.HTTPConnection.debuglevel = 2
                 self.session.set_debug_logger()
             self.formatter = get_formatter(self.args.output)
             self.service = self.session.get_service(self.args.service_name)

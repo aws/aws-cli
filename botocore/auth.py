@@ -27,7 +27,7 @@ from hashlib import sha1
 import hmac
 import logging
 from email.utils import formatdate
-from exceptions import UnknownSignatureVersionError
+import botocore.exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -364,4 +364,4 @@ def get_auth(signature_version, *args, **kw):
         return SigV4Auth(*args, **kw)
     if signature_version == 's3':
         return HmacV1Auth(*args, **kw)
-    raise UnknownSignatureVersionError(signature_version=signature_version)
+    raise botocore.exceptionsUnknownSignatureVersionError(signature_version=signature_version)

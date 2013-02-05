@@ -13,7 +13,6 @@ def main():
     op = s3.get_operation('ListObjects')
     response = botocore.response.Response(op)
     response.parse(xml)
-    print response.get_value()
 
 
 if __name__ == '__main__':

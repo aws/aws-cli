@@ -28,7 +28,7 @@ import hmac
 import logging
 from email.utils import formatdate
 import botocore.exceptions
-from botocore.utils import remove_dot_segments
+from botocore.utils import normalize_url_path
 from botocore.compat import HTTPHeaders
 from six.moves import http_client
 
@@ -201,7 +201,7 @@ class SigV4Auth(object):
 
     def canonical_request(self, request):
         cr = [request.method.upper()]
-        path = remove_dot_segments(urlsplit(request.url).path)
+        path = normalize_url_path(urlsplit(request.url).path)
         cr.append(path)
         cr.append(self.canonical_query_string(request))
         headers_to_sign = self.headers_to_sign(request)

@@ -21,6 +21,12 @@
 #
 
 
+def normalize_url_path(path):
+    if not path:
+        return '/'
+    return remove_dot_segments(path)
+
+
 def remove_dot_segments(url):
     # RFC 2986, section 5.2.4 "Remove Dot Segments"
     output = []

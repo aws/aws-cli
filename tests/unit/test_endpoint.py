@@ -27,6 +27,7 @@ from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \
     RestXMLEndpoint
 from botocore.auth import SigV4Auth
 from botocore.exceptions import UnknownServiceStyle
+from botocore.exceptions import UnknownSignatureVersionError
 
 
 class TestGetEdnpoint(unittest.TestCase):
@@ -71,6 +72,12 @@ class TestGetEdnpoint(unittest.TestCase):
         endpoint = get_endpoint(service, 'us-west-2',
                                 'https://service.region.amazonaws.com')
         self.assertIsInstance(endpoint.auth, SigV4Auth)
+
+    def test_unknown_auth_handler(self):
+        service = self.create_mock_service('query', signature_version='v5000')
+        with self.assertRaises(UnknownSignatureVersionError):
+            endpoint = get_endpoint(service, 'us-west-2',
+                                    'https://service.region.amazonaws.com')
 
 
 if __name__ == '__main__':

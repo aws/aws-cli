@@ -27,7 +27,7 @@ from hashlib import sha1
 import hmac
 import logging
 from email.utils import formatdate
-import botocore.exceptions
+from botocore.exceptions import UnknownSignatureVersionError
 from botocore.utils import normalize_url_path
 from botocore.compat import HTTPHeaders
 from six.moves import http_client

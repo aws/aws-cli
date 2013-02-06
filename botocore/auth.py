@@ -181,7 +181,7 @@ class SigV4Auth(object):
         them into a string, separated by newlines.
         """
         headers = []
-        for key in set(headers_to_sign.keys()):
+        for key in set(headers_to_sign):
             value = ','.join(v.strip() for v in
                             sorted(headers_to_sign.get_all(key)))
             headers.append('%s:%s' % (key, value))
@@ -189,7 +189,7 @@ class SigV4Auth(object):
         return '\n'.join(headers)
 
     def signed_headers(self, headers_to_sign):
-        l = ['%s' % n.lower().strip() for n in set(headers_to_sign.keys())]
+        l = ['%s' % n.lower().strip() for n in set(headers_to_sign)]
         l = sorted(l)
         return ';'.join(l)
 
@@ -292,7 +292,7 @@ class HmacV1Auth(object):
         new_hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
                             digestmod=sha1)
         new_hmac.update(string_to_sign.encode('utf-8'))
-        return base64.encodestring(new_hmac.digest()).strip()
+        return base64.encodestring(new_hmac.digest()).strip().decode('utf-8')
 
     def canonical_standard_headers(self, headers):
         interesting_headers = ['content-md5', 'content-type', 'date']
@@ -317,7 +317,8 @@ class HmacV1Auth(object):
             if headers[key] != None:
                 # TODO: move hardcoded prefix to provider
                 if lk.startswith('x-amz-'):
-                    custom_headers[lk] = headers[key].strip()
+                    custom_headers[lk] = ','.join(v.strip() for v in
+                                                   headers.get_all(key))
         sorted_header_keys = sorted(custom_headers.keys())
         hoi = []
         for key in sorted_header_keys:

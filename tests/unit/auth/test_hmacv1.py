@@ -24,6 +24,7 @@
 import unittest
 import botocore.auth
 import botocore.credentials
+from botocore.compat import HTTPHeaders
 import six
 
 try:
@@ -31,8 +32,10 @@ try:
 except ImportError:
     from urlparse import urlsplit
 
-CS1 = """PUT\nc8fdb181845a4ca6b8fec737b3581d76\ntext/html\nThu, 17 Nov 2005 18:49:58 GMT\nx-amz-magic:abracadabra\nx-amz-meta-author:foo@bar.com\n/quotes/nelson"""
-SIG1 = six.b('jZNOcbfWmD/A/f3hSvVzXZjM2HU=')
+CS1 = ("PUT\nc8fdb181845a4ca6b8fec737b3581d76\ntext/html\n"
+       "Thu, 17 Nov 2005 18:49:58 GMT\nx-amz-magic:abracadabra\n"
+       "x-amz-meta-author:foo@bar.com\n/quotes/nelson")
+SIG1 = 'jZNOcbfWmD/A/f3hSvVzXZjM2HU='
 
 
 class TestHMACV1(unittest.TestCase):
@@ -50,8 +53,22 @@ class TestHMACV1(unittest.TestCase):
                    'Content-Type': 'text/html',
                    'X-Amz-Meta-Author': 'foo@bar.com',
                    'X-Amz-Magic': 'abracadabra'}
+        http_headers = HTTPHeaders.from_dict(headers)
         split = urlsplit('/quotes/nelson')
-        cs = self.hmacv1.canonical_string('PUT', split, headers)
+        cs = self.hmacv1.canonical_string('PUT', split, http_headers)
         assert cs == CS1
-        sig = self.hmacv1.get_signature('PUT', split, headers)
+        sig = self.hmacv1.get_signature('PUT', split, http_headers)
         assert sig == SIG1
+
+    def test_duplicate_headers(self):
+        pairs = [('Date', 'Thu, 17 Nov 2005 18:49:58 GMT'),
+                 ('Content-Md5', 'c8fdb181845a4ca6b8fec737b3581d76'),
+                 ('Content-Type', 'text/html'),
+                 ('X-Amz-Meta-Author', 'bar@baz.com'),
+                 ('X-Amz-Meta-Author', 'foo@bar.com'),
+                 ('X-Amz-Magic', 'abracadabra')]
+
+        http_headers = HTTPHeaders.from_pairs(pairs)
+        split = urlsplit('/quotes/nelson')
+        sig = self.hmacv1.get_signature('PUT', split, http_headers)
+        self.assertEqual(sig, 'kIdMxyiYB+F+83zYGR6sSb3ICcE=')

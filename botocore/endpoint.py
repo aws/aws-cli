@@ -72,6 +72,7 @@ class Endpoint(object):
         raise NotImplementedError("make_request")
 
     def prepare_request(self, request):
+        logger.debug('prepare_request')
         self.auth.add_auth(request=request)
         prepared_request = request.prepare()
         return prepared_request
@@ -96,10 +97,11 @@ class QueryEndpoint(Endpoint):
         request = AWSRequest(method='POST', url=self.host,
                              data=params, headers={'User-Agent': user_agent})
         prepared_request = self.prepare_request(request)
-        http_response = self.http_session.send(prepared_request, verify=self.verify)
+        http_response = self.http_session.send(prepared_request,
+                                               verify=self.verify)
         r = botocore.response.Response(operation)
         http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf=8')
+        body = http_response.text.encode('utf-8')
         logger.debug(body)
         r.parse(body)
         return (http_response, r.get_value())
@@ -129,13 +131,13 @@ class JSONEndpoint(Endpoint):
         content_type = 'application/x-amz-json-%s' % json_version
         content_encoding = 'amz-1.0'
         data = json.dumps(params)
-        request = AWSRequest(
-            method='POST', url=self.host,
-            data=data, headers={'User-Agent': user_agent,
-                                'X-Amz-Target': target,
-                                'Content-Type': content_type,
-                                'Content-Encoding': content_encoding})
-        prepared_request = request.prepare()
+        request = AWSRequest(method='POST', url=self.host,
+                             data=data,
+                             headers={'User-Agent': user_agent,
+                                      'X-Amz-Target': target,
+                                      'Content-Type': content_type,
+                                      'Content-Encoding': content_encoding})
+        prepared_request = self.prepare_request(request)
         http_response = self.http_session.send(prepared_request,
                                                verify=self.verify)
         http_response.encoding = 'utf-8'

@@ -25,10 +25,33 @@ if six.PY3:
     from six.moves import http_client
     class HTTPHeaders(http_client.HTTPMessage):
         pass
+
 else:
     from email.message import Message
     class HTTPHeaders(Message):
-        pass
+
+        # The __iter__ method is not available in python2.x, so we have
+        # to port the py3 version.
+        def __iter__(self):
+            for field, value in self._headers:
+                yield field
+
+@classmethod
+def from_dict(cls, d):
+    new_instance = cls()
+    for key, value in d.items():
+        new_instance[key] = value
+    return new_instance
+
+@classmethod
+def from_pairs(cls, pairs):
+    new_instance = cls()
+    for key, value in pairs:
+        new_instance[key] = value
+    return new_instance
+
+HTTPHeaders.from_dict = from_dict
+HTTPHeaders.from_pairs = from_pairs
 
 
 # The unittest module got a significant overhaul

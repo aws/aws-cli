@@ -1,7 +1,18 @@
 from requests import models
+from requests.structures import CaseInsensitiveDict
+
+from botocore.compat import HTTPHeaders
 
 
 class AWSRequest(models.RequestEncodingMixin, models.Request):
+    def __init__(self, *args, **kwargs):
+        models.Request.__init__(self, *args, **kwargs)
+        headers = HTTPHeaders()
+        if self.headers is not None:
+            for key, value in self.headers.items():
+                headers[key] = value
+        self.headers = headers
+
     def prepare(self):
         """Constructs a :class:`AWSPreparedRequest <AWSPreparedRequest>`."""
         # Eventually I think it would be nice to add hooks into this process.

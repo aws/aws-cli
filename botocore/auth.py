@@ -28,6 +28,9 @@ import hmac
 import logging
 from email.utils import formatdate
 import botocore.exceptions
+from botocore.utils import remove_dot_segments
+from botocore.compat import HTTPHeaders
+from six.moves import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,9 @@ except ImportError:
 
 
 PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
+EMPTY_SHA256_HASH = (
+    'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
+
 
 
 class SigV2Auth(object):
@@ -146,21 +152,19 @@ class SigV4Auth(object):
         Select the headers from the request that need to be included
         in the StringToSign.
         """
-        headers_to_sign = {}
+        header_map = HTTPHeaders()
         split = urlsplit(request.url)
-        headers_to_sign = {'Host': split.netloc}
         for name, value in request.headers.items():
             lname = name.lower()
-            if lname.startswith('x-amz'):
-                headers_to_sign[name] = value
-            elif lname == 'content-type':
-                headers_to_sign[name] = value
-        return headers_to_sign
+            header_map[lname] = value
+        if 'host' not in header_map:
+            header_map['host'] = split.netloc
+        return header_map
 
     def canonical_query_string(self, request):
         cqs = ''
-        if request.method == 'GET':
-            params = dict(parse_qsl(urlsplit(request.url).query))
+        if request.params:
+            params = request.params
             l = []
             for param in params:
                 value = str(params[param])
@@ -177,13 +181,16 @@ class SigV4Auth(object):
         case, sorting them in alphabetical order and then joining
         them into a string, separated by newlines.
         """
-        l = ['%s:%s' % (n.lower().strip(),
-                      headers_to_sign[n].strip()) for n in headers_to_sign]
-        l = sorted(l)
-        return '\n'.join(l)
+        headers = []
+        for key in set(headers_to_sign.keys()):
+            value = ','.join(v.strip() for v in
+                            sorted(headers_to_sign.get_all(key)))
+            headers.append('%s:%s' % (key, value))
+        headers.sort()
+        return '\n'.join(headers)
 
     def signed_headers(self, headers_to_sign):
-        l = ['%s' % n.lower().strip() for n in headers_to_sign]
+        l = ['%s' % n.lower().strip() for n in set(headers_to_sign.keys())]
         l = sorted(l)
         return ';'.join(l)
 
@@ -191,11 +198,11 @@ class SigV4Auth(object):
         if request.body:
             return sha256(request.body.encode('utf-8')).hexdigest()
         else:
-            return sha256('').hexdigest()
+            return EMPTY_SHA256_HASH
 
     def canonical_request(self, request):
         cr = [request.method.upper()]
-        path = urlsplit(request.url).path
+        path = remove_dot_segments(urlsplit(request.url).path)
         cr.append(path)
         cr.append(self.canonical_query_string(request))
         headers_to_sign = self.headers_to_sign(request)
@@ -227,7 +234,7 @@ class SigV4Auth(object):
         were included in the StringToSign.
         """
         sts = ['AWS4-HMAC-SHA256']
-        sts.append(request.headers['X-Amz-Date'])
+        sts.append(self.timestamp)
         sts.append(self.credential_scope(request))
         sts.append(sha256(canonical_request.encode('utf-8')).hexdigest())
         return '\n'.join(sts)
@@ -247,7 +254,8 @@ class SigV4Auth(object):
         split = urlsplit(request.url)
         if 'Authorization' in request.headers:
             del request.headers['Authorization']
-        request.headers['X-Amz-Date'] = self.timestamp
+        if 'Date' not in request.headers:
+            request.headers['X-Amz-Date'] = self.timestamp
         if self.credentials.token:
             request.headers['X-Amz-Security-Token'] = self.credentials.token
         canonical_request = self.canonical_request(request)
@@ -260,7 +268,7 @@ class SigV4Auth(object):
         headers_to_sign = self.headers_to_sign(request)
         l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
         l.append('Signature=%s' % signature)
-        request.headers['Authorization'] = ','.join(l)
+        request.headers['Authorization'] = ', '.join(l)
         return request
 
 

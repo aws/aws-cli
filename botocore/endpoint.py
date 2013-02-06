@@ -49,20 +49,13 @@ class Endpoint(object):
     :ivar session: The session object.
     """
 
-    def __init__(self, service, region_name, host):
+    def __init__(self, service, region_name, host, auth):
         self.service = service
         self.session = self.service.session
         self.region_name = region_name
         self.host = host
         self.verify = True
-        if hasattr(self.service, 'signing_name'):
-            signing_name = self.service.signing_name
-        else:
-            signing_name = self.service.endpoint_prefix
-        self.auth = botocore.auth.get_auth(self.service.signature_version,
-                                           credentials=self.session.get_credentials(),
-                                           service_name=signing_name,
-                                           region_name=region_name)
+        self.auth = auth
         self.http_session = Session()
 
     def __repr__(self):
@@ -216,12 +209,23 @@ class RestXMLEndpoint(Endpoint):
 
 
 def get_endpoint(service, region_name, endpoint_url):
-    if service.type == 'query':
-        return QueryEndpoint(service, region_name, endpoint_url)
-    if service.type == 'json':
-        return JSONEndpoint(service, region_name, endpoint_url)
-    if service.type == 'rest-xml':
-        return RestXMLEndpoint(service, region_name, endpoint_url)
-    if service.type == 'rest-json':
-        logger.debug('rest-json not yet supported')
-    raise botocore.exceptions.UnknownServiceStyle(service_style=service.type)
+    service_to_endpoint = {
+        'query': QueryEndpoint,
+        'json': JSONEndpoint,
+        'rest-xml': RestXMLEndpoint,
+        'rest-json': None,
+    }
+    service_type = service.type
+    if service_type not in service_to_endpoint:
+        raise botocore.exceptions.UnknownServiceStyle(
+            service_style=service.type)
+    cls = service_to_endpoint.get(service_type)
+    if cls is None:
+        raise NotImplementedError("%s service type is not yet implemented" %
+                                  service_type)
+    service_name = getattr(service, 'signing_name', service.endpoint_prefix)
+    auth = botocore.auth.get_auth(service.signature_version,
+                                  credentials=service.session.get_credentials(),
+                                  service_name=service_name,
+                                  region_name=region_name)
+    return cls(service, region_name, endpoint_url, auth=auth)

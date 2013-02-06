@@ -187,7 +187,7 @@ class RestXMLEndpoint(Endpoint):
         query_params = '&'.join(query_param_components)
         logger.debug('path: %s' % path)
         logger.debug('query_params: %s' % query_params)
-        return path + '?' +  query_params
+        return path + '?' + query_params
 
     def make_request(self, operation, params):
         """

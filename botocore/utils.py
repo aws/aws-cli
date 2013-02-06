@@ -20,6 +20,7 @@
 # IN THE SOFTWARE.
 #
 
+
 def remove_dot_segments(url):
     # RFC 2986, section 5.2.4 "Remove Dot Segments"
     output = []
@@ -59,5 +60,3 @@ def remove_dot_segments(url):
                 output.append(url[:next_slash])
                 url = url[next_slash:]
     return ''.join(output)
-        
-

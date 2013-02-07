@@ -23,6 +23,7 @@
 import unittest
 
 from botocore.utils import remove_dot_segments
+from botocore.utils import normalize_url_path
 
 
 class TestURINormalization(unittest.TestCase):
@@ -41,6 +42,9 @@ class TestURINormalization(unittest.TestCase):
         self.assertEqual(remove_dot_segments('/.'), '/')
         # I don't think this is RFC compliant...
         self.assertEqual(remove_dot_segments('//foo//'), '/foo/')
+
+    def test_empty_url_normalization(self):
+        self.assertEqual(normalize_url_path(''), '/')
 
 
 if __name__ == '__main__':

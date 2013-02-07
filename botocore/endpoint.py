@@ -204,7 +204,8 @@ class RestXMLEndpoint(Endpoint):
         request = AWSRequest(method=operation.http['method'],
                              url=uri, headers=headers)
         prepared_request = self.prepare_request(request)
-        http_response = self.http_session.send(prepared_request, verify=self.verify)
+        http_response = self.http_session.send(prepared_request,
+                                               verify=self.verify)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf-8')
         r = botocore.response.Response(operation)

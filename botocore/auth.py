@@ -296,16 +296,15 @@ class HmacV1Auth(object):
 
     def canonical_standard_headers(self, headers):
         interesting_headers = ['content-md5', 'content-type', 'date']
-        logger.debug(headers)
         hoi = []
         if 'Date' not in headers:
             headers['Date'] = formatdate(usegmt=True)
         for ih in interesting_headers:
             found = False
-            for name, value in headers.items():
-                lk = name.lower()
-                if headers[name] != None and lk == ih:
-                    hoi.append(value.strip())
+            for key in headers:
+                lk = key.lower()
+                if headers[key] != None and lk == ih:
+                    hoi.append(headers[key].strip())
                     found = True
             if not found:
                 hoi.append('')
@@ -313,9 +312,9 @@ class HmacV1Auth(object):
 
     def canonical_custom_headers(self, headers):
         custom_headers = {}
-        for name, value in headers.items():
-            lk = name.lower()
-            if headers[name] != None:
+        for key in headers:
+            lk = key.lower()
+            if headers[key] != None:
                 # TODO: move hardcoded prefix to provider
                 if lk.startswith('x-amz-'):
                     custom_headers[lk] = ','.join(v.strip() for v in

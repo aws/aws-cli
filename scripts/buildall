@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+"""Builds all the models in ./services.
+
+Run this with no args.  It will rebuild every model
+in ./services and place them in botocore/data/aws/.
+It will also copy the _services.json and _regions.json
+into botocore/data/aws.
+
+This script can probably be folded into scripts/buildmodel.
+
+"""
+import shutil
+import os
+from subprocess import check_output
+
+SERVICES_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'services')
+BUILD_MODELS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modelbuild')
+DEST_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    'botocore', 'data', 'aws')
+
+assert os.path.isdir(SERVICES_DIR)
+assert os.path.isfile(BUILD_MODELS)
+assert os.path.isdir(DEST_DIR)
+
+
+for filename in os.listdir(SERVICES_DIR):
+    if not os.path.isfile(os.path.join(SERVICES_DIR, filename)):
+        print("Skipping file: %s" % filename)
+        continue
+    if filename.startswith('_') and filename.endswith('.json'):
+        # Copy it unchanged to the destination directory.
+        src = os.path.join(SERVICES_DIR, filename)
+        dst = os.path.join(DEST_DIR, filename)
+        print("Copying '%s' to '%s'" % (src, dst))
+        shutil.copyfile(src=src, dst=dst)
+    elif filename.endswith('.json') and filename.count('.') == 1:
+        full_cmd = '%s %s' % (BUILD_MODELS,
+                                    os.path.join(SERVICES_DIR, filename))
+        print("Running command: %s" % full_cmd)
+        new_model = check_output(full_cmd, shell=True).decode('utf-8')
+        with open(os.path.join(DEST_DIR, filename), 'w') as f:
+            f.write(new_model)

@@ -51,8 +51,10 @@ class Service(object):
         self.cli_name = service_name
         self._operations_data = self.operations
         self.operations = []
-        for operation_data in self._operations_data:
-            op = Operation(self, operation_data)
+        for operation_name in self._operations_data:
+            data = self._operations_data[operation_name]
+            data['name'] = operation_name
+            op = Operation(self, data)
             self.operations.append(op)
             setattr(self, op.py_name, op)
 

@@ -1,0 +1,43 @@
+#!/usr/bin/env PYTHONHASHSEED=0 python
+import os
+import sys
+import json
+import argparse
+from collections import OrderedDict
+
+import botocore.translate
+
+
+def generate_python_model(args):
+    model_files = botocore.translate.load_model_files(args)
+    translated = botocore.translate.translate(model_files)
+    args.output.write(json.dumps(translated, indent=4, separators=(',', ': ')))
+
+
+def add_defaults_args(args):
+    directory = os.path.dirname(os.path.abspath(args.modelfile))
+    if args.services_file is None:
+        args.services_file = os.path.join(directory, '_services.json')
+    if args.regions_file is None:
+        args.regions_file = os.path.join(directory, '_regions.json')
+    if args.enhancements_file is None:
+        args.enhancements_file = args.modelfile.replace('.json', '.extra.json')
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('modelfile', help="The filename of the json model.")
+    parser.add_argument('-o', '--output', type=argparse.FileType('w'),
+                        default=sys.stdout)
+    # Normally don't need to specify these, they'll default to the right
+    # values.
+    parser.add_argument('-s', '--services-file', help="The filename of the services json file.")
+    parser.add_argument('-r', '--regions-file', help="The filename of the region file.")
+    parser.add_argument('-e', '--enhancements-file', help="The filename of the region file.")
+    args = parser.parse_args()
+    add_defaults_args(args)
+    generate_python_model(args)
+
+
+if __name__ == '__main__':
+    main()

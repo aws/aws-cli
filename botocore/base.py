@@ -44,6 +44,27 @@ The main interface into this module is the ``get_data`` function which
 takes a path specificiation as it's only parameter.  This function will
 either return the specified data or raise an exception if the data cannot
 be found or loaded.
+
+
+Examples
+========
+
+Get the service description for ec2::
+
+    data = get_data('aws/ec2')
+
+Get the operations for ec2::
+
+    data = get_data('aws/ec2/operations')
+
+Get a specific operation::
+
+    data = get_data('aws/ec2/operations/DescribeInstances')
+
+Get the member args for an operations::
+
+    data = get_data('aws/ec2/operations/DescribeInstances/input/members')
+
 """
 import os
 import json

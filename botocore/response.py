@@ -70,7 +70,13 @@ class Element(object):
             elif self.defn['type'] in ScalarTypes:
                 self.value = value
             elif self.defn['type'] == 'list':
-                self.value.append(value)
+                if self.to_be_flattened:
+                    if self.defn['members']['type'] == 'structure':
+                        self.value[-1][name] = value
+                    else:
+                        self.value.append(value)
+                else:
+                    self.value.append(value)
             elif self.defn['type'] == 'map':
                 if self.to_be_flattened:
                     self.value = value
@@ -137,6 +143,9 @@ class Response(xml.sax.ContentHandler):
         if name in self.flattened_map:
             new_element_name = name
             new_element = self.flattened_map[name]
+            if new_element.defn['type'] == 'list':
+                if new_element.defn['members']['type'] == 'structure':
+                    new_element.value.append({})
         elif not current_element.defn:
             for type_name in self.type_map:
                 type_dict = self.type_map[type_name]
@@ -147,7 +156,11 @@ class Response(xml.sax.ContentHandler):
                     if type_dict['type'] == 'list':
                         flattened = type_dict.get('flattened', False)
                         if flattened:
+                            new_element.to_be_flattened = True
                             self.flattened_map[new_element_name] = new_element
+                            if new_element.defn['type'] == 'list':
+                                if new_element.defn['members']['type'] == 'structure':
+                                    new_element.value.append({})
         else:
             if current_element.defn['type'] == 'structure':
                 for member_name in current_element.defn['members']:
@@ -179,11 +192,20 @@ class Response(xml.sax.ContentHandler):
                             new_element = Element(xmlname, data)
                             new_element_name = xmlname
             elif current_element.defn['type'] == 'list':
-                data = current_element.defn['members']
-                xmlname = data.get('xmlname', 'member')
-                if name == xmlname or current_element.defn.get('flattened'):
-                    new_element = Element(xmlname, data)
-                    new_element_name = xmlname
+                if current_element.defn.get('flattened'):
+                    member_data = current_element.defn['members']
+                    for member_name in member_data['members']:
+                        data = member_data['members'][member_name]
+                        xmlname = data.get('xmlname', member_name)
+                        if name == xmlname:
+                            new_element = Element(xmlname, data)
+                            new_element_name = xmlname
+                else:
+                    data = current_element.defn['members']
+                    xmlname = data.get('xmlname', 'member')
+                    if name == xmlname or current_element.defn.get('flattened'):
+                        new_element = Element(xmlname, data)
+                        new_element_name = xmlname
         if new_element is None:
             new_element = Element(name, None)
             new_element_name = name
@@ -192,7 +214,6 @@ class Response(xml.sax.ContentHandler):
             self.map_map[name] = new_element
 
     def startElement(self, name, attrs):
-        logger.debug('startElement: %s' % name)
         self.current_text = ''
         if name.startswith(self.operation.name):
             pass
@@ -200,7 +221,6 @@ class Response(xml.sax.ContentHandler):
             self.add_element(name)
 
     def endElement(self, name):
-        logger.debug('endElement: %s' % name)
         if name.startswith(self.operation.name):
             pass
         else:

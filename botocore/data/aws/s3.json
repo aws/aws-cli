@@ -69,11 +69,6 @@
             "required": true,
             "location": "uri"
           },
-          "UploadId": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
           "MultipartUpload": {
             "type": "structure",
             "payload": true,
@@ -86,18 +81,23 @@
                 "members": {
                   "type": "structure",
                   "members": {
-                    "PartNumber": {
-                      "type": "integer",
-                      "documentation": "Part number that identifies the part."
-                    },
                     "ETag": {
                       "type": "string",
                       "documentation": "Entity tag returned when the part was uploaded."
+                    },
+                    "PartNumber": {
+                      "type": "integer",
+                      "documentation": "Part number that identifies the part."
                     }
                   }
                 }
               }
             }
+          },
+          "UploadId": {
+            "type": "string",
+            "required": true,
+            "location": "uri"
           }
         }
       },
@@ -158,31 +158,30 @@
       "input": {
         "type": "structure",
         "members": {
+          "ACL": {
+            "type": "string",
+            "enum": [
+              "private",
+              "public-read",
+              "public-read-write",
+              "authenticated-read",
+              "bucket-owner-read",
+              "bucket-owner-full-control"
+            ],
+            "location": "header",
+            "location_name": "x-amz-acl",
+            "documentation": "The canned ACL to apply to the object."
+          },
           "Bucket": {
             "type": "string",
             "required": true,
             "location": "uri"
           },
-          "Key": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "MetadataDirective": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-metadata-directive",
-            "documentation": "Specifies whether the metadata is copied from the source object or replaced with metadata provided in the request.",
-            "enum": [
-              "COPY",
-              "REPLACE"
-            ]
-          },
           "CacheControl": {
             "type": "string",
             "location": "header",
             "location_name": "Cache-Control",
-            "documentation": "Can be used to specify caching behavior along the request/reply chain."
+            "documentation": "Specifies caching behavior along the request/reply chain."
           },
           "ContentDisposition": {
             "type": "string",
@@ -196,23 +195,17 @@
             "location_name": "Content-Encoding",
             "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
           },
+          "ContentLanguage": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Language",
+            "documentation": "The language the content is in."
+          },
           "ContentType": {
             "type": "string",
             "location": "header",
             "location_name": "Content-Type",
             "documentation": "A standard MIME type describing the format of the object data."
-          },
-          "Expires": {
-            "type": "timestamp",
-            "location": "header",
-            "location_name": "Expires",
-            "documentation": "The date and time at which the object is no longer cacheable."
-          },
-          "WebsiteRedirectLocation": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-website-redirect-location",
-            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
           },
           "CopySource": {
             "type": "string",
@@ -228,6 +221,12 @@
             "location_name": "x-amz-copy-source-if-match",
             "documentation": "Copies the object if its entity tag (ETag) matches the specified tag."
           },
+          "CopySourceIfModifiedSince": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "x-amz-copy-source-if-modified-since",
+            "documentation": "Copies the object if it has been modified since the specified time."
+          },
           "CopySourceIfNoneMatch": {
             "type": "timestamp",
             "location": "header",
@@ -240,35 +239,17 @@
             "location_name": "x-amz-copy-source-if-unmodified-since",
             "documentation": "Copies the object if it hasn''t been modified since the specified time."
           },
-          "CopySourceIfModifiedSince": {
+          "Expires": {
             "type": "timestamp",
             "location": "header",
-            "location_name": "x-amz-copy-source-if-modified-since",
-            "documentation": "Copies the object if it has been modified since the specified time."
+            "location_name": "Expires",
+            "documentation": "The date and time at which the object is no longer cacheable."
           },
-          "StorageClass": {
+          "GrantFullControl": {
             "type": "string",
-            "enum": [
-              "STANDARD",
-              "REDUCED_REDUNDANCY"
-            ],
             "location": "header",
-            "location_name": "x-amz-storage-class",
-            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
-          },
-          "ACL": {
-            "type": "string",
-            "enum": [
-              "private",
-              "public-read",
-              "public-read-write",
-              "authenticated-read",
-              "bucket-owner-read",
-              "bucket-owner-full-control"
-            ],
-            "location": "header",
-            "location_name": "x-amz-acl",
-            "documentation": "The canned ACL to apply to the object."
+            "location_name": "x-amz-grant-full-control",
+            "documentation": "Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object."
           },
           "GrantRead": {
             "type": "string",
@@ -288,20 +269,10 @@
             "location_name": "x-amz-grant-write-acp",
             "documentation": "Allows grantee to write the ACL for the applicable object."
           },
-          "GrantFullControl": {
+          "Key": {
             "type": "string",
-            "location": "header",
-            "location_name": "x-amz-grant-full-control",
-            "documentation": "Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object."
-          },
-          "ServerSideEncryption": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-server-side-encryption",
-            "enum": [
-              "AES256"
-            ],
-            "documentation": "The Server-side encryption algorithm used when storing this object in S3."
+            "required": true,
+            "location": "uri"
           },
           "Metadata": {
             "type": "map",
@@ -316,6 +287,41 @@
               "type": "string",
               "documentation": "The metadata value."
             }
+          },
+          "MetadataDirective": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-metadata-directive",
+            "documentation": "Specifies whether the metadata is copied from the source object or replaced with metadata provided in the request.",
+            "enum": [
+              "COPY",
+              "REPLACE"
+            ]
+          },
+          "ServerSideEncryption": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-server-side-encryption",
+            "enum": [
+              "AES256"
+            ],
+            "documentation": "The Server-side encryption algorithm used when storing this object in S3."
+          },
+          "StorageClass": {
+            "type": "string",
+            "enum": [
+              "STANDARD",
+              "REDUCED_REDUNDANCY"
+            ],
+            "location": "header",
+            "location_name": "x-amz-storage-class",
+            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
+          },
+          "WebsiteRedirectLocation": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-website-redirect-location",
+            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
           }
         }
       },
@@ -377,6 +383,20 @@
       "input": {
         "type": "structure",
         "members": {
+          "ACL": {
+            "type": "string",
+            "documentation": "The canned ACL to apply to the bucket.",
+            "enum": [
+              "private",
+              "public-read",
+              "public-read-write",
+              "authenticated-read",
+              "bucket-owner-read",
+              "bucket-owner-full-control"
+            ],
+            "location": "header",
+            "location_name": "x-amz-acl"
+          },
           "Bucket": {
             "type": "string",
             "required": true,
@@ -402,19 +422,11 @@
               }
             }
           },
-          "ACL": {
+          "GrantFullControl": {
             "type": "string",
-            "documentation": "The canned ACL to apply to the bucket.",
-            "enum": [
-              "private",
-              "public-read",
-              "public-read-write",
-              "authenticated-read",
-              "bucket-owner-read",
-              "bucket-owner-full-control"
-            ],
+            "documentation": "Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.",
             "location": "header",
-            "location_name": "x-amz-acl"
+            "location_name": "x-amz-grant-full-control"
           },
           "GrantRead": {
             "type": "string",
@@ -422,29 +434,23 @@
             "location": "header",
             "location_name": "x-amz-grant-read"
           },
-          "GrantWrite": {
-            "type": "string",
-            "documentation": "Allows grantee to create, overwrite, and delete any object in the bucket.",
-            "location": "header",
-            "location_name": "x-amz-grant-write"
-          },
           "GrantReadACP": {
             "type": "string",
             "documentation": "Allows grantee to read the bucket ACL.",
             "location": "header",
             "location_name": "x-amz-grant-read-acp"
           },
+          "GrantWrite": {
+            "type": "string",
+            "documentation": "Allows grantee to create, overwrite, and delete any object in the bucket.",
+            "location": "header",
+            "location_name": "x-amz-grant-write"
+          },
           "GrantWriteACP": {
             "type": "string",
             "documentation": "Allows grantee to write the ACL for the applicable bucket.",
             "location": "header",
             "location_name": "x-amz-grant-write-acp"
-          },
-          "GrantFullControl": {
-            "type": "string",
-            "documentation": "Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.",
-            "location": "header",
-            "location_name": "x-amz-grant-full-control"
           }
         }
       },
@@ -479,62 +485,6 @@
       "input": {
         "type": "structure",
         "members": {
-          "Bucket": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "Key": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "CacheControl": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Cache-Control",
-            "documentation": "Can be used to specify caching behavior along the request/reply chain."
-          },
-          "ContentDisposition": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Disposition",
-            "documentation": "Specifies presentational information for the object."
-          },
-          "ContentEncoding": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Encoding",
-            "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
-          },
-          "ContentType": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Type",
-            "documentation": "A standard MIME type describing the format of the object data."
-          },
-          "Expires": {
-            "type": "timestamp",
-            "location": "header",
-            "location_name": "Expires",
-            "documentation": "The date and time at which the object is no longer cacheable."
-          },
-          "WebsiteRedirectLocation": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-website-redirect-location",
-            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
-          },
-          "StorageClass": {
-            "type": "string",
-            "enum": [
-              "STANDARD",
-              "REDUCED_REDUNDANCY"
-            ],
-            "location": "header",
-            "location_name": "x-amz-storage-class",
-            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
-          },
           "ACL": {
             "type": "string",
             "enum": [
@@ -548,6 +498,53 @@
             "location": "header",
             "location_name": "x-amz-acl",
             "documentation": "The canned ACL to apply to the object."
+          },
+          "Bucket": {
+            "type": "string",
+            "required": true,
+            "location": "uri"
+          },
+          "CacheControl": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Cache-Control",
+            "documentation": "Specifies caching behavior along the request/reply chain."
+          },
+          "ContentDisposition": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Disposition",
+            "documentation": "Specifies presentational information for the object."
+          },
+          "ContentEncoding": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Encoding",
+            "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
+          },
+          "ContentLanguage": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Language",
+            "documentation": "The language the content is in."
+          },
+          "ContentType": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Type",
+            "documentation": "A standard MIME type describing the format of the object data."
+          },
+          "Expires": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "Expires",
+            "documentation": "The date and time at which the object is no longer cacheable."
+          },
+          "GrantFullControl": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-grant-full-control",
+            "documentation": "Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object."
           },
           "GrantRead": {
             "type": "string",
@@ -567,20 +564,10 @@
             "location_name": "x-amz-grant-write-acp",
             "documentation": "Allows grantee to write the ACL for the applicable object."
           },
-          "GrantFullControl": {
+          "Key": {
             "type": "string",
-            "location": "header",
-            "location_name": "x-amz-grant-full-control",
-            "documentation": "Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object."
-          },
-          "ServerSideEncryption": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-server-side-encryption",
-            "enum": [
-              "AES256"
-            ],
-            "documentation": "The Server-side encryption algorithm used when storing this object in S3."
+            "required": true,
+            "location": "uri"
           },
           "Metadata": {
             "type": "map",
@@ -595,6 +582,31 @@
               "type": "string",
               "documentation": "The metadata value."
             }
+          },
+          "ServerSideEncryption": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-server-side-encryption",
+            "enum": [
+              "AES256"
+            ],
+            "documentation": "The Server-side encryption algorithm used when storing this object in S3."
+          },
+          "StorageClass": {
+            "type": "string",
+            "enum": [
+              "STANDARD",
+              "REDUCED_REDUNDANCY"
+            ],
+            "location": "header",
+            "location_name": "x-amz-storage-class",
+            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
+          },
+          "WebsiteRedirectLocation": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-website-redirect-location",
+            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
           }
         }
       },
@@ -835,10 +847,6 @@
             "required": true,
             "payload": true,
             "members": {
-              "Quiet": {
-                "type": "boolean",
-                "documentation": "Element to enable quiet mode for the request. When you add this element, you must set its value to true."
-              },
               "Objects": {
                 "type": "list",
                 "flattened": true,
@@ -858,6 +866,10 @@
                     }
                   }
                 }
+              },
+              "Quiet": {
+                "type": "boolean",
+                "documentation": "Element to enable quiet mode for the request. When you add this element, you must set its value to true."
               }
             }
           },
@@ -1633,25 +1645,39 @@
             "required": true,
             "location": "uri"
           },
+          "IfMatch": {
+            "type": "string",
+            "location": "header",
+            "location_name": "If-Match",
+            "documentation": "Return the object only if its entity tag (ETag) is the same as the one specified, otherwise return a 412 (precondition failed)."
+          },
+          "IfModifiedSince": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "If-Modified-Since",
+            "documentation": "Return the object only if it has been modified since the specified time, otherwise return a 304 (not modified)."
+          },
+          "IfNoneMatch": {
+            "type": "string",
+            "location": "header",
+            "location_name": "If-None-Match",
+            "documentation": "Return the object only if its entity tag (ETag) is different from the one specified, otherwise return a 304 (not modified)."
+          },
+          "IfUnmodifiedSince": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "If-Unmodified-Since",
+            "documentation": "Return the object only if it has not been modified since the specified time, otherwise return a 412 (precondition failed)."
+          },
           "Key": {
             "type": "string",
             "required": true,
             "location": "uri"
           },
-          "ResponseContentType": {
+          "Range": {
             "type": "string",
-            "location": "uri",
-            "documentation": "Sets the Content-Type header of the response."
-          },
-          "ResponseContentLanguage": {
-            "type": "string",
-            "location": "uri",
-            "documentation": "Sets the Content-Language header of the response."
-          },
-          "ResponseExpires": {
-            "type": "timestamp",
-            "location": "uri",
-            "documentation": "Sets the Expires header of the response."
+            "location": "header",
+            "documentation": "Downloads the specified range bytes of an object. For more information about the HTTP Range header, go to http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35."
           },
           "ResponseCacheControl": {
             "type": "string",
@@ -1668,40 +1694,26 @@
             "location": "uri",
             "documentation": "Sets the Content-Encoding header of the response."
           },
+          "ResponseContentLanguage": {
+            "type": "string",
+            "location": "uri",
+            "documentation": "Sets the Content-Language header of the response."
+          },
+          "ResponseContentType": {
+            "type": "string",
+            "location": "uri",
+            "documentation": "Sets the Content-Type header of the response."
+          },
+          "ResponseExpires": {
+            "type": "timestamp",
+            "location": "uri",
+            "documentation": "Sets the Expires header of the response."
+          },
           "VersionId": {
             "type": "string",
             "location": "uri",
             "location_name": "versionId",
             "documentation": "VersionId used to reference a specific version of the object."
-          },
-          "Range": {
-            "type": "string",
-            "location": "header",
-            "documentation": "Downloads the specified range bytes of an object. For more information about the HTTP Range header, go to http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35."
-          },
-          "IfModifiedSince": {
-            "type": "timestamp",
-            "location": "header",
-            "location_name": "If-Modified-Since",
-            "documentation": "Return the object only if it has been modified since the specified time, otherwise return a 304 (not modified)."
-          },
-          "IfUnmodifiedSince": {
-            "type": "timestamp",
-            "location": "header",
-            "location_name": "If-Unmodified-Since",
-            "documentation": "Return the object only if it has not been modified since the specified time, otherwise return a 412 (precondition failed)."
-          },
-          "IfMatch": {
-            "type": "string",
-            "location": "header",
-            "location_name": "If-Match",
-            "documentation": "Return the object only if its entity tag (ETag) is the same as the one specified, otherwise return a 412 (precondition failed)."
-          },
-          "IfNoneMatch": {
-            "type": "string",
-            "location": "header",
-            "location_name": "If-None-Match",
-            "documentation": "Return the object only if its entity tag (ETag) is different from the one specified, otherwise return a 304 (not modified)."
           }
         }
       },
@@ -1736,23 +1748,11 @@
             "location_name": "x-amz-restore",
             "documentation": "Provides information about object restoration operation and expiration time of the restored object copy."
           },
-          "WebsiteRedirectLocation": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-redirect-location",
-            "documentation": "When a bucket is configured as a website, you can set this metadata on the object so the website endpoint will evaluate the request for the object as a 301 redirect to another object in the same bucket or an external URL."
-          },
           "LastModified": {
             "type": "timestamp",
             "location": "header",
             "location_name": "Last-Modified",
             "documentation": "Last modified date of the object"
-          },
-          "ContentType": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Type",
-            "documentation": "Content type of the object"
           },
           "ContentLength": {
             "type": "integer",
@@ -1771,6 +1771,54 @@
             "location_name": "x-amz-missing-meta",
             "documentation": "This is set to the number of metadata entries not returned in x-amz-meta headers. This can happen if you create metadata using an API like SOAP that supports more flexible metadata than the REST API. For example, using SOAP, you can create metadata whose values are not legal HTTP headers."
           },
+          "VersionId": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-version-id",
+            "documentation": "Version of the object."
+          },
+          "CacheControl": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Cache-Control",
+            "documentation": "Specifies caching behavior along the request/reply chain."
+          },
+          "ContentDisposition": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Disposition",
+            "documentation": "Specifies presentational information for the object."
+          },
+          "ContentEncoding": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Encoding",
+            "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
+          },
+          "ContentLanguage": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Language",
+            "documentation": "The language the content is in."
+          },
+          "ContentType": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Type",
+            "documentation": "A standard MIME type describing the format of the object data."
+          },
+          "Expires": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "Expires",
+            "documentation": "The date and time at which the object is no longer cacheable."
+          },
+          "WebsiteRedirectLocation": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-website-redirect-location",
+            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
+          },
           "ServerSideEncryption": {
             "type": "string",
             "location": "header",
@@ -1779,12 +1827,6 @@
               "AES256"
             ],
             "documentation": "The Server-side encryption algorithm used when storing this object in S3."
-          },
-          "VersionId": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-version-id",
-            "documentation": "Version of the object."
           },
           "Metadata": {
             "type": "map",
@@ -2004,21 +2046,11 @@
             "required": true,
             "location": "uri"
           },
-          "Key": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "VersionId": {
-            "type": "string",
-            "location": "uri",
-            "location_name": "versionId",
-            "documentation": "VersionId used to reference a specific version of the object."
-          },
-          "Range": {
+          "IfMatch": {
             "type": "string",
             "location": "header",
-            "documentation": "Downloads the specified range bytes of an object. For more information about the HTTP Range header, go to http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35."
+            "location_name": "If-Match",
+            "documentation": "Return the object only if its entity tag (ETag) is the same as the one specified, otherwise return a 412 (precondition failed)."
           },
           "IfModifiedSince": {
             "type": "timestamp",
@@ -2026,23 +2058,33 @@
             "location_name": "If-Modified-Since",
             "documentation": "Return the object only if it has been modified since the specified time, otherwise return a 304 (not modified)."
           },
+          "IfNoneMatch": {
+            "type": "string",
+            "location": "header",
+            "location_name": "If-None-Match",
+            "documentation": "Return the object only if its entity tag (ETag) is different from the one specified, otherwise return a 304 (not modified)."
+          },
           "IfUnmodifiedSince": {
             "type": "timestamp",
             "location": "header",
             "location_name": "If-Unmodified-Since",
             "documentation": "Return the object only if it has not been modified since the specified time, otherwise return a 412 (precondition failed)."
           },
-          "IfMatch": {
+          "Key": {
             "type": "string",
-            "location": "header",
-            "location_name": "If-Match",
-            "documentation": "Return the object only if its entity tag (ETag) is the same as the one specified, otherwise return a 412 (precondition failed)."
+            "required": true,
+            "location": "uri"
           },
-          "IfNoneMatch": {
+          "Range": {
             "type": "string",
             "location": "header",
-            "location_name": "If-None-Match",
-            "documentation": "Return the object only if its entity tag (ETag) is different from the one specified, otherwise return a 304 (not modified)."
+            "documentation": "Downloads the specified range bytes of an object. For more information about the HTTP Range header, go to http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35."
+          },
+          "VersionId": {
+            "type": "string",
+            "location": "uri",
+            "location_name": "versionId",
+            "documentation": "VersionId used to reference a specific version of the object."
           }
         }
       },
@@ -2071,23 +2113,11 @@
             "location_name": "x-amz-restore",
             "documentation": "Provides information about object restoration operation and expiration time of the restored object copy."
           },
-          "WebsiteRedirectLocation": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-redirect-location",
-            "documentation": "When a bucket is configured as a website, you can set this metadata on the object so the website endpoint will evaluate the request for the object as a 301 redirect to another object in the same bucket or an external URL."
-          },
           "LastModified": {
             "type": "timestamp",
             "location": "header",
             "location_name": "Last-Modified",
             "documentation": "Last modified date of the object"
-          },
-          "ContentType": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Type",
-            "documentation": "Content type of the object"
           },
           "ContentLength": {
             "type": "integer",
@@ -2106,6 +2136,54 @@
             "location_name": "x-amz-missing-meta",
             "documentation": "This is set to the number of metadata entries not returned in x-amz-meta headers. This can happen if you create metadata using an API like SOAP that supports more flexible metadata than the REST API. For example, using SOAP, you can create metadata whose values are not legal HTTP headers."
           },
+          "VersionId": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-version-id",
+            "documentation": "Version of the object."
+          },
+          "CacheControl": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Cache-Control",
+            "documentation": "Specifies caching behavior along the request/reply chain."
+          },
+          "ContentDisposition": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Disposition",
+            "documentation": "Specifies presentational information for the object."
+          },
+          "ContentEncoding": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Encoding",
+            "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
+          },
+          "ContentLanguage": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Language",
+            "documentation": "The language the content is in."
+          },
+          "ContentType": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Type",
+            "documentation": "A standard MIME type describing the format of the object data."
+          },
+          "Expires": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "Expires",
+            "documentation": "The date and time at which the object is no longer cacheable."
+          },
+          "WebsiteRedirectLocation": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-website-redirect-location",
+            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
+          },
           "ServerSideEncryption": {
             "type": "string",
             "location": "header",
@@ -2114,12 +2192,6 @@
               "AES256"
             ],
             "documentation": "The Server-side encryption algorithm used when storing this object in S3."
-          },
-          "VersionId": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-version-id",
-            "documentation": "Version of the object."
           },
           "Metadata": {
             "type": "map",
@@ -2214,14 +2286,14 @@
             "required": true,
             "location": "uri"
           },
-          "Prefix": {
-            "type": "string",
-            "documentation": "Lists in-progress uploads only for those keys that begin with the specified prefix.",
-            "location": "uri"
-          },
           "Delimiter": {
             "type": "string",
             "documentation": "Character you use to group keys.",
+            "location": "uri"
+          },
+          "KeyMarker": {
+            "type": "string",
+            "documentation": "Together with upload-id-marker, this parameter specifies the multipart upload after which listing should begin.",
             "location": "uri"
           },
           "MaxUploads": {
@@ -2229,9 +2301,9 @@
             "documentation": "Sets the maximum number of multipart uploads, from 1 to 1,000, to return in the response body. 1,000 is the maximum number of uploads that can be returned in a response.",
             "location": "uri"
           },
-          "KeyMarker": {
+          "Prefix": {
             "type": "string",
-            "documentation": "Together with upload-id-marker, this parameter specifies the multipart upload after which listing should begin.",
+            "documentation": "Lists in-progress uploads only for those keys that begin with the specified prefix.",
             "location": "uri"
           },
           "UploadIdMarker": {
@@ -2352,14 +2424,14 @@
             "required": true,
             "location": "uri"
           },
+          "Delimiter": {
+            "type": "string",
+            "documentation": "A delimiter is a character you use to group keys.",
+            "location": "uri"
+          },
           "KeyMarker": {
             "type": "string",
             "documentation": "Specifies the key to start with when listing objects in a bucket.",
-            "location": "uri"
-          },
-          "VersionIdMarker": {
-            "type": "string",
-            "documentation": "Specifies the object version you want to start listing from.",
             "location": "uri"
           },
           "MaxKeys": {
@@ -2367,14 +2439,14 @@
             "documentation": "Sets the maximum number of keys returned in the response. The response might contain fewer keys but will never contain more.",
             "location": "uri"
           },
-          "Delimiter": {
-            "type": "string",
-            "documentation": "A delimiter is a character you use to group keys.",
-            "location": "uri"
-          },
           "Prefix": {
             "type": "string",
             "documentation": "Limits the response to keys that begin with the specified prefix.",
+            "location": "uri"
+          },
+          "VersionIdMarker": {
+            "type": "string",
+            "documentation": "Specifies the object version you want to start listing from.",
             "location": "uri"
           }
         }
@@ -2382,6 +2454,10 @@
       "output": {
         "type": "structure",
         "members": {
+          "IsTruncated": {
+            "type": "boolean",
+            "documentation": "A flag that indicates whether or not Amazon S3 returned all of the results that satisfied the search criteria. If your results were truncated, you can make a follow-up paginated request using the NextKeyMarker and NextVersionIdMarker response parameters as a starting place in another request to return the rest of the results."
+          },
           "KeyMarker": {
             "type": "string",
             "documentation": "Marks the last Key returned in a truncated response."
@@ -2496,10 +2572,6 @@
           "MaxKeys": {
             "type": "integer"
           },
-          "IsTruncated": {
-            "type": "boolean",
-            "documentation": "A flag that indicates whether (true) or not (false) Amazon S3 returned all of the results that satisfied the search criteria. If your results were truncated, you can make a follow-up paginated request using the NextKeyMarker and NextVersionIdMarker response parameters as a starting place in another request to return the rest of the results."
-          },
           "CommonPrefixes": {
             "type": "list",
             "flattened": true,
@@ -2536,6 +2608,11 @@
             "required": true,
             "location": "uri"
           },
+          "Delimiter": {
+            "type": "string",
+            "documentation": "A delimiter is a character you use to group keys.",
+            "location": "uri"
+          },
           "Marker": {
             "type": "string",
             "documentation": "Specifies the key to start with when listing objects in a bucket.",
@@ -2544,11 +2621,6 @@
           "MaxKeys": {
             "type": "integer",
             "documentation": "Sets the maximum number of keys returned in the response. The response might contain fewer keys but will never contain more.",
-            "location": "uri"
-          },
-          "Delimiter": {
-            "type": "string",
-            "documentation": "A delimiter is a character you use to group keys.",
             "location": "uri"
           },
           "Prefix": {
@@ -2561,6 +2633,10 @@
       "output": {
         "type": "structure",
         "members": {
+          "IsTruncated": {
+            "type": "boolean",
+            "documentation": "A flag that indicates whether or not Amazon S3 returned all of the results that satisfied the search criteria."
+          },
           "Marker": {
             "type": "string"
           },
@@ -2614,10 +2690,6 @@
           "MaxKeys": {
             "type": "integer"
           },
-          "IsTruncated": {
-            "type": "boolean",
-            "documentation": "A flag that indicates whether (true) or not (false) Amazon S3 returned all of the results that satisfied the search criteria. If your results were truncated, you can make a follow-up paginated request using the NextKeyMarker and NextVersionIdMarker response parameters as a starting place in another request to return the rest of the results."
-          },
           "CommonPrefixes": {
             "type": "list",
             "flattened": true,
@@ -2662,12 +2734,6 @@
             "required": true,
             "location": "uri"
           },
-          "UploadId": {
-            "type": "string",
-            "required": true,
-            "location": "uri",
-            "documentation": "Upload ID identifying the multipart upload whose parts are being listed."
-          },
           "MaxParts": {
             "type": "integer",
             "location": "uri",
@@ -2677,6 +2743,12 @@
             "type": "string",
             "location": "uri",
             "documentation": "Specifies the part after which listing should begin. Only parts with higher part numbers will be listed."
+          },
+          "UploadId": {
+            "type": "string",
+            "required": true,
+            "location": "uri",
+            "documentation": "Upload ID identifying the multipart upload whose parts are being listed."
           }
         }
       },
@@ -2789,26 +2861,24 @@
       "input": {
         "type": "structure",
         "members": {
-          "Bucket": {
+          "ACL": {
             "type": "string",
-            "required": true,
-            "location": "uri"
+            "documentation": "The canned ACL to apply to the bucket.",
+            "enum": [
+              "private",
+              "public-read",
+              "public-read-write",
+              "authenticated-read",
+              "bucket-owner-read",
+              "bucket-owner-full-control"
+            ],
+            "location": "header",
+            "location_name": "x-amz-acl"
           },
           "AccessControlPolicy": {
             "type": "structure",
             "payload": true,
             "members": {
-              "Owner": {
-                "type": "structure",
-                "members": {
-                  "ID": {
-                    "type": "string"
-                  },
-                  "DisplayName": {
-                    "type": "string"
-                  }
-                }
-              },
               "Grants": {
                 "type": "list",
                 "documentation": "A list of grants.",
@@ -2824,6 +2894,18 @@
                         "uri": "http://www.w3.org/2001/XMLSchema-instance"
                       },
                       "members": {
+                        "DisplayName": {
+                          "type": "string",
+                          "documentation": "Screen name of the grantee."
+                        },
+                        "EmailAddress": {
+                          "type": "string",
+                          "documentation": "Email address of the grantee."
+                        },
+                        "ID": {
+                          "type": "string",
+                          "documentation": "The canonical user ID of the grantee."
+                        },
                         "Type": {
                           "type": "string",
                           "required": true,
@@ -2835,18 +2917,6 @@
                             "AmazonCustomerByEmail",
                             "Group"
                           ]
-                        },
-                        "ID": {
-                          "type": "string",
-                          "documentation": "The canonical user ID of the grantee."
-                        },
-                        "DisplayName": {
-                          "type": "string",
-                          "documentation": "Screen name of the grantee."
-                        },
-                        "EmailAddress": {
-                          "type": "string",
-                          "documentation": "Email address of the grantee."
                         },
                         "URI": {
                           "type": "string",
@@ -2867,22 +2937,35 @@
                     }
                   }
                 }
+              },
+              "Owner": {
+                "type": "structure",
+                "members": {
+                  "DisplayName": {
+                    "type": "string"
+                  },
+                  "ID": {
+                    "type": "string"
+                  }
+                }
               }
             }
           },
-          "ACL": {
+          "Bucket": {
             "type": "string",
-            "documentation": "The canned ACL to apply to the bucket.",
-            "enum": [
-              "private",
-              "public-read",
-              "public-read-write",
-              "authenticated-read",
-              "bucket-owner-read",
-              "bucket-owner-full-control"
-            ],
+            "required": true,
+            "location": "uri"
+          },
+          "ContentMD5": {
+            "type": "string",
             "location": "header",
-            "location_name": "x-amz-acl"
+            "location_name": "Content-MD5"
+          },
+          "GrantFullControl": {
+            "type": "string",
+            "documentation": "Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.",
+            "location": "header",
+            "location_name": "x-amz-grant-full-control"
           },
           "GrantRead": {
             "type": "string",
@@ -2890,29 +2973,23 @@
             "location": "header",
             "location_name": "x-amz-grant-read"
           },
-          "GrantWrite": {
-            "type": "string",
-            "documentation": "Allows grantee to create, overwrite, and delete any object in the bucket.",
-            "location": "header",
-            "location_name": "x-amz-grant-write"
-          },
           "GrantReadACP": {
             "type": "string",
             "documentation": "Allows grantee to read the bucket ACL.",
             "location": "header",
             "location_name": "x-amz-grant-read-acp"
           },
+          "GrantWrite": {
+            "type": "string",
+            "documentation": "Allows grantee to create, overwrite, and delete any object in the bucket.",
+            "location": "header",
+            "location_name": "x-amz-grant-write"
+          },
           "GrantWriteACP": {
             "type": "string",
             "documentation": "Allows grantee to write the ACL for the applicable bucket.",
             "location": "header",
             "location_name": "x-amz-grant-write-acp"
-          },
-          "GrantFullControl": {
-            "type": "string",
-            "documentation": "Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.",
-            "location": "header",
-            "location_name": "x-amz-grant-full-control"
           }
         }
       },
@@ -2948,15 +3025,6 @@
                 "members": {
                   "type": "structure",
                   "members": {
-                    "AllowedOrigins": {
-                      "type": "list",
-                      "flattened": true,
-                      "xmlname": "AllowedOrigin",
-                      "documentation": "One or more origins you want customers to be able to access the bucket from.",
-                      "members": {
-                        "type": "string"
-                      }
-                    },
                     "AllowedMethods": {
                       "type": "list",
                       "flattened": true,
@@ -2966,9 +3034,14 @@
                         "type": "string"
                       }
                     },
-                    "MaxAgeSeconds": {
-                      "type": "integer",
-                      "documentation": "The time in seconds that your browser is to cache the preflight response for the specified resource."
+                    "AllowedOrigins": {
+                      "type": "list",
+                      "flattened": true,
+                      "xmlname": "AllowedOrigin",
+                      "documentation": "One or more origins you want customers to be able to access the bucket from.",
+                      "members": {
+                        "type": "string"
+                      }
                     },
                     "ExposeHeaders": {
                       "type": "list",
@@ -2978,11 +3051,20 @@
                       "members": {
                         "type": "string"
                       }
+                    },
+                    "MaxAgeSeconds": {
+                      "type": "integer",
+                      "documentation": "The time in seconds that your browser is to cache the preflight response for the specified resource."
                     }
                   }
                 }
               }
             }
+          },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
           }
         }
       },
@@ -3007,6 +3089,11 @@
             "required": true,
             "location": "uri"
           },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
+          },
           "LifecycleConfiguration": {
             "type": "structure",
             "payload": true,
@@ -3019,6 +3106,21 @@
                 "members": {
                   "type": "structure",
                   "members": {
+                    "Expiration": {
+                      "type": "structure",
+                      "members": {
+                        "Date": {
+                          "type": "timestamp",
+                          "timestamp_format": "iso8601",
+                          "documentation": "Indicates at what date the object is to be moved or deleted. Should be in GMT ISO 8601 Format."
+                        },
+                        "Days": {
+                          "type": "integer",
+                          "required": true,
+                          "documentation": "Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer."
+                        }
+                      }
+                    },
                     "ID": {
                       "type": "string",
                       "documentation": "Unique identifier for the rule. The value cannot be longer than 255 characters."
@@ -3040,14 +3142,14 @@
                     "Transition": {
                       "type": "structure",
                       "members": {
-                        "Days": {
-                          "type": "integer",
-                          "documentation": "Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer."
-                        },
                         "Date": {
                           "type": "timestamp",
                           "timestamp_format": "iso8601",
                           "documentation": "Indicates at what date the object is to be moved or deleted. Should be in GMT ISO 8601 Format."
+                        },
+                        "Days": {
+                          "type": "integer",
+                          "documentation": "Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer."
                         },
                         "StorageClass": {
                           "type": "string",
@@ -3057,21 +3159,6 @@
                             "GLACIER"
                           ],
                           "documentation": "The class of storage used to store the object."
-                        }
-                      }
-                    },
-                    "Expiration": {
-                      "type": "structure",
-                      "members": {
-                        "Days": {
-                          "type": "integer",
-                          "required": true,
-                          "documentation": "Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer."
-                        },
-                        "Date": {
-                          "type": "timestamp",
-                          "timestamp_format": "iso8601",
-                          "documentation": "Indicates at what date the object is to be moved or deleted. Should be in GMT ISO 8601 Format."
                         }
                       }
                     }
@@ -3116,10 +3203,6 @@
                     "type": "string",
                     "documentation": "Specifies the bucket where you want Amazon S3 to store server access logs. You can have your logs delivered to any bucket that you own, including the same bucket that is being logged. You can also configure multiple buckets to deliver their logs to the same target bucket. In this case you should choose a different TargetPrefix for each source bucket so that the delivered log files can be distinguished by key."
                   },
-                  "TargetPrefix": {
-                    "type": "string",
-                    "documentation": "This element lets you specify a prefix for the keys that the log files will be stored under."
-                  },
                   "TargetGrants": {
                     "type": "list",
                     "members": {
@@ -3133,6 +3216,18 @@
                             "uri": "http://www.w3.org/2001/XMLSchema-instance"
                           },
                           "members": {
+                            "DisplayName": {
+                              "type": "string",
+                              "documentation": "Screen name of the grantee."
+                            },
+                            "EmailAddress": {
+                              "type": "string",
+                              "documentation": "Email address of the grantee."
+                            },
+                            "ID": {
+                              "type": "string",
+                              "documentation": "The canonical user ID of the grantee."
+                            },
                             "Type": {
                               "type": "string",
                               "required": true,
@@ -3145,18 +3240,6 @@
                                 "Group"
                               ]
                             },
-                            "ID": {
-                              "type": "string",
-                              "documentation": "The canonical user ID of the grantee."
-                            },
-                            "DisplayName": {
-                              "type": "string",
-                              "documentation": "Screen name of the grantee."
-                            },
-                            "EmailAddress": {
-                              "type": "string",
-                              "documentation": "Email address of the grantee."
-                            },
                             "URI": {
                               "type": "string",
                               "documentation": "URI of the grantee group."
@@ -3168,10 +3251,19 @@
                         }
                       }
                     }
+                  },
+                  "TargetPrefix": {
+                    "type": "string",
+                    "documentation": "This element lets you specify a prefix for the keys that the log files will be stored under."
                   }
                 }
               }
             }
+          },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
           }
         }
       },
@@ -3196,6 +3288,11 @@
             "required": true,
             "location": "uri"
           },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
+          },
           "NotificationConfiguration": {
             "type": "structure",
             "required": true,
@@ -3205,16 +3302,16 @@
                 "type": "structure",
                 "required": true,
                 "members": {
-                  "Topic": {
-                    "type": "string",
-                    "documentation": "Amazon SNS topic to which Amazon S3 will publish a message to report the specified events for the bucket."
-                  },
                   "Event": {
                     "type": "string",
                     "enum": [
                       "s3:ReducedRedundancyLostObject"
                     ],
                     "documentation": "Bucket event for which to send notifications."
+                  },
+                  "Topic": {
+                    "type": "string",
+                    "documentation": "Amazon SNS topic to which Amazon S3 will publish a message to report the specified events for the bucket."
                   }
                 }
               }
@@ -3242,6 +3339,11 @@
             "type": "string",
             "required": true,
             "location": "uri"
+          },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
           },
           "Policy": {
             "type": "string",
@@ -3271,6 +3373,11 @@
             "type": "string",
             "required": true,
             "location": "uri"
+          },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
           },
           "RequestPaymentConfiguration": {
             "type": "structure",
@@ -3310,6 +3417,11 @@
             "type": "string",
             "required": true,
             "location": "uri"
+          },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
           },
           "Tagging": {
             "type": "structure",
@@ -3362,19 +3474,22 @@
             "required": true,
             "location": "uri"
           },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
+          },
+          "MFA": {
+            "type": "string",
+            "documentation": "The value is the concatenation of the authentication device''s serial number, a space, and the value displayed on your authentication device.",
+            "location": "header",
+            "location_name": "x-amz-mfa"
+          },
           "VersioningConfiguration": {
             "type": "structure",
             "required": true,
             "payload": true,
             "members": {
-              "Status": {
-                "type": "string",
-                "enum": [
-                  "Enabled",
-                  "Disabled"
-                ],
-                "documentation": "The versioning state of the bucket."
-              },
               "MFADelete": {
                 "type": "string",
                 "enum": [
@@ -3382,14 +3497,16 @@
                   "Disabled"
                 ],
                 "documentation": "Specifies whether MFA delete is enabled in the bucket versioning configuration. This element is only returned if the bucket has been configured with MFA delete. If the bucket has never been so configured, this element is not returned."
+              },
+              "Status": {
+                "type": "string",
+                "enum": [
+                  "Enabled",
+                  "Disabled"
+                ],
+                "documentation": "The versioning state of the bucket."
               }
             }
-          },
-          "MFA": {
-            "type": "string",
-            "documentation": "The value is the concatenation of the authentication device''s serial number, a space, and the value displayed on your authentication device.",
-            "location": "header",
-            "location_name": "x-amz-mfa"
           }
         }
       },
@@ -3414,11 +3531,36 @@
             "required": true,
             "location": "uri"
           },
+          "ContentMD5": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-MD5"
+          },
           "WebsiteConfiguration": {
             "type": "structure",
             "required": true,
             "payload": true,
             "members": {
+              "ErrorDocument": {
+                "type": "structure",
+                "members": {
+                  "Key": {
+                    "type": "string",
+                    "required": true,
+                    "documentation": "The object key name to use when a 4XX class error occurs."
+                  }
+                }
+              },
+              "IndexDocument": {
+                "type": "structure",
+                "members": {
+                  "Suffix": {
+                    "type": "string",
+                    "required": true,
+                    "documentation": "A suffix that is appended to a request that is for a directory on the website endpoint (e.g. if the suffix is index.html and you make a request to samplebucket/images/ the data that is returned will be for the object with the key name images/index.html) The suffix must not be empty and must not include a slash character."
+                  }
+                }
+              },
               "RedirectAllRequestsTo": {
                 "type": "structure",
                 "members": {
@@ -3437,26 +3579,6 @@
                   }
                 }
               },
-              "IndexDocument": {
-                "type": "structure",
-                "members": {
-                  "Suffix": {
-                    "type": "string",
-                    "required": true,
-                    "documentation": "A suffix that is appended to a request that is for a directory on the website endpoint (e.g. if the suffix is index.html and you make a request to samplebucket/images/ the data that is returned will be for the object with the key name images/index.html) The suffix must not be empty and must not include a slash character."
-                  }
-                }
-              },
-              "ErrorDocument": {
-                "type": "structure",
-                "members": {
-                  "Key": {
-                    "type": "string",
-                    "required": true,
-                    "documentation": "The object key name to use when a 4XX class error occurs."
-                  }
-                }
-              },
               "RoutingRules": {
                 "type": "list",
                 "members": {
@@ -3467,32 +3589,13 @@
                       "type": "structure",
                       "documentation": "A container for describing a condition that must be met for the specified redirect to apply. For example, 1. If request is for pages in the /docs folder, redirect to the /documents folder. 2. If request results in HTTP error 4xx, redirect request to another host where you might process the error.",
                       "members": {
-                        "KeyPrefixEquals": {
-                          "type": "string",
-                          "documentation": "The object key name prefix when the redirect is applied. For example, to redirect requests for ExamplePage.html, the key prefix will be ExamplePage.html. To redirect request for all pages with the prefix docs/, the key prefix will be /docs, which identifies all objects in the docs/ folder. Required when the parent element Condition is specified and sibling HttpErrorCodeReturnedEquals is not specified. If both conditions are specified, both must be true for the redirect to be applied."
-                        },
                         "HttpErrorCodeReturnedEquals": {
                           "type": "string",
                           "documentation": "The HTTP error code when the redirect is applied. In the event of an error, if the error code equals this value, then the specified redirect is applied. Required when parent element Condition is specified and sibling KeyPrefixEquals is not specified. If both are specified, then both must be true for the redirect to be applied."
-                        }
-                      }
-                    },
-                    "Redirect": {
-                      "type": "structure",
-                      "required": true,
-                      "documentation": "Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can can specify a different error code to return.",
-                      "members": {
-                        "ReplaceKeyPrefixWith": {
-                          "type": "string",
-                          "documentation": "The object key prefix to use in the redirect request. For example, to redirect requests for all pages with prefix docs/ (objects in the docs/ folder) to documents/, you can set a condition block with KeyPrefixEquals set to docs/ and in the Redirect set ReplaceKeyPrefixWith to /documents. Not required if one of the siblings is present. Can be present only if ReplaceKeyWith is not provided."
                         },
-                        "ReplaceKeyWith": {
+                        "KeyPrefixEquals": {
                           "type": "string",
-                          "documentation": "The specific object key to use in the redirect request. For example, redirect request to error.html. Not required if one of the sibling is present. Can be present only if ReplaceKeyPrefixWith is not provided."
-                        },
-                        "HttpRedirectCode": {
-                          "type": "string",
-                          "documentation": "The HTTP redirect code to use on the response. Not required if one of the siblings is present."
+                          "documentation": "The object key name prefix when the redirect is applied. For example, to redirect requests for ExamplePage.html, the key prefix will be ExamplePage.html. To redirect request for all pages with the prefix docs/, the key prefix will be /docs, which identifies all objects in the docs/ folder. Required when the parent element Condition is specified and sibling HttpErrorCodeReturnedEquals is not specified. If both conditions are specified, both must be true for the redirect to be applied."
                         }
                       }
                     },
@@ -3508,6 +3611,25 @@
                         "https"
                       ],
                       "documentation": "Protocol to use (http, https) when redirecting requests. The default is the protocol that is used in the original request."
+                    },
+                    "Redirect": {
+                      "type": "structure",
+                      "required": true,
+                      "documentation": "Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can can specify a different error code to return.",
+                      "members": {
+                        "HttpRedirectCode": {
+                          "type": "string",
+                          "documentation": "The HTTP redirect code to use on the response. Not required if one of the siblings is present."
+                        },
+                        "ReplaceKeyPrefixWith": {
+                          "type": "string",
+                          "documentation": "The object key prefix to use in the redirect request. For example, to redirect requests for all pages with prefix docs/ (objects in the docs/ folder) to documents/, you can set a condition block with KeyPrefixEquals set to docs/ and in the Redirect set ReplaceKeyPrefixWith to /documents. Not required if one of the siblings is present. Can be present only if ReplaceKeyWith is not provided."
+                        },
+                        "ReplaceKeyWith": {
+                          "type": "string",
+                          "documentation": "The specific object key to use in the redirect request. For example, redirect request to error.html. Not required if one of the sibling is present. Can be present only if ReplaceKeyPrefixWith is not provided."
+                        }
+                      }
                     }
                   }
                 }
@@ -3532,67 +3654,6 @@
       "input": {
         "type": "structure",
         "members": {
-          "Bucket": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "Key": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "CacheControl": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Cache-Control",
-            "documentation": "Can be used to specify caching behavior along the request/reply chain."
-          },
-          "ContentDisposition": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Disposition",
-            "documentation": "Specifies presentational information for the object."
-          },
-          "ContentEncoding": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Encoding",
-            "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
-          },
-          "ContentType": {
-            "type": "string",
-            "location": "header",
-            "location_name": "Content-Type",
-            "documentation": "A standard MIME type describing the format of the object data."
-          },
-          "Expires": {
-            "type": "timestamp",
-            "location": "header",
-            "location_name": "Expires",
-            "documentation": "The date and time at which the object is no longer cacheable."
-          },
-          "WebsiteRedirectLocation": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-website-redirect-location",
-            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
-          },
-          "Body": {
-            "type": "blob",
-            "payload": true,
-            "streaming": true
-          },
-          "StorageClass": {
-            "type": "string",
-            "enum": [
-              "STANDARD",
-              "REDUCED_REDUNDANCY"
-            ],
-            "location": "header",
-            "location_name": "x-amz-storage-class",
-            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
-          },
           "ACL": {
             "type": "string",
             "enum": [
@@ -3606,6 +3667,58 @@
             "location": "header",
             "location_name": "x-amz-acl",
             "documentation": "The canned ACL to apply to the object."
+          },
+          "Body": {
+            "type": "blob",
+            "payload": true,
+            "streaming": true
+          },
+          "Bucket": {
+            "type": "string",
+            "required": true,
+            "location": "uri"
+          },
+          "CacheControl": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Cache-Control",
+            "documentation": "Specifies caching behavior along the request/reply chain."
+          },
+          "ContentDisposition": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Disposition",
+            "documentation": "Specifies presentational information for the object."
+          },
+          "ContentEncoding": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Encoding",
+            "documentation": "Specifies what content encodings have been applied to the object and thus what decoding mechanisms must be applied to obtain the media-type referenced by the Content-Type header field."
+          },
+          "ContentLanguage": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Language",
+            "documentation": "The language the content is in."
+          },
+          "ContentType": {
+            "type": "string",
+            "location": "header",
+            "location_name": "Content-Type",
+            "documentation": "A standard MIME type describing the format of the object data."
+          },
+          "Expires": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "Expires",
+            "documentation": "The date and time at which the object is no longer cacheable."
+          },
+          "GrantFullControl": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-grant-full-control",
+            "documentation": "Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object."
           },
           "GrantRead": {
             "type": "string",
@@ -3625,20 +3738,10 @@
             "location_name": "x-amz-grant-write-acp",
             "documentation": "Allows grantee to write the ACL for the applicable object."
           },
-          "GrantFullControl": {
+          "Key": {
             "type": "string",
-            "location": "header",
-            "location_name": "x-amz-grant-full-control",
-            "documentation": "Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object."
-          },
-          "ServerSideEncryption": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-server-side-encryption",
-            "enum": [
-              "AES256"
-            ],
-            "documentation": "The Server-side encryption algorithm used when storing this object in S3."
+            "required": true,
+            "location": "uri"
           },
           "Metadata": {
             "type": "map",
@@ -3653,6 +3756,31 @@
               "type": "string",
               "documentation": "The metadata value."
             }
+          },
+          "ServerSideEncryption": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-server-side-encryption",
+            "enum": [
+              "AES256"
+            ],
+            "documentation": "The Server-side encryption algorithm used when storing this object in S3."
+          },
+          "StorageClass": {
+            "type": "string",
+            "enum": [
+              "STANDARD",
+              "REDUCED_REDUNDANCY"
+            ],
+            "location": "header",
+            "location_name": "x-amz-storage-class",
+            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
+          },
+          "WebsiteRedirectLocation": {
+            "type": "string",
+            "location": "header",
+            "location_name": "x-amz-website-redirect-location",
+            "documentation": "If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or to an external URL. Amazon S3 stores the value of this header in the object metadata."
           }
         }
       },
@@ -3704,31 +3832,24 @@
       "input": {
         "type": "structure",
         "members": {
-          "Bucket": {
+          "ACL": {
             "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "Key": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
+            "documentation": "The canned ACL to apply to the bucket.",
+            "enum": [
+              "private",
+              "public-read",
+              "public-read-write",
+              "authenticated-read",
+              "bucket-owner-read",
+              "bucket-owner-full-control"
+            ],
+            "location": "header",
+            "location_name": "x-amz-acl"
           },
           "AccessControlPolicy": {
             "type": "structure",
             "payload": true,
             "members": {
-              "Owner": {
-                "type": "structure",
-                "members": {
-                  "ID": {
-                    "type": "string"
-                  },
-                  "DisplayName": {
-                    "type": "string"
-                  }
-                }
-              },
               "Grants": {
                 "type": "list",
                 "documentation": "A list of grants.",
@@ -3744,6 +3865,18 @@
                         "uri": "http://www.w3.org/2001/XMLSchema-instance"
                       },
                       "members": {
+                        "DisplayName": {
+                          "type": "string",
+                          "documentation": "Screen name of the grantee."
+                        },
+                        "EmailAddress": {
+                          "type": "string",
+                          "documentation": "Email address of the grantee."
+                        },
+                        "ID": {
+                          "type": "string",
+                          "documentation": "The canonical user ID of the grantee."
+                        },
                         "Type": {
                           "type": "string",
                           "required": true,
@@ -3755,18 +3888,6 @@
                             "AmazonCustomerByEmail",
                             "Group"
                           ]
-                        },
-                        "ID": {
-                          "type": "string",
-                          "documentation": "The canonical user ID of the grantee."
-                        },
-                        "DisplayName": {
-                          "type": "string",
-                          "documentation": "Screen name of the grantee."
-                        },
-                        "EmailAddress": {
-                          "type": "string",
-                          "documentation": "Email address of the grantee."
                         },
                         "URI": {
                           "type": "string",
@@ -3787,22 +3908,35 @@
                     }
                   }
                 }
+              },
+              "Owner": {
+                "type": "structure",
+                "members": {
+                  "DisplayName": {
+                    "type": "string"
+                  },
+                  "ID": {
+                    "type": "string"
+                  }
+                }
               }
             }
           },
-          "ACL": {
+          "Bucket": {
             "type": "string",
-            "documentation": "The canned ACL to apply to the bucket.",
-            "enum": [
-              "private",
-              "public-read",
-              "public-read-write",
-              "authenticated-read",
-              "bucket-owner-read",
-              "bucket-owner-full-control"
-            ],
+            "required": true,
+            "location": "uri"
+          },
+          "ContentMD5": {
+            "type": "string",
             "location": "header",
-            "location_name": "x-amz-acl"
+            "location_name": "Content-MD5"
+          },
+          "GrantFullControl": {
+            "type": "string",
+            "documentation": "Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.",
+            "location": "header",
+            "location_name": "x-amz-grant-full-control"
           },
           "GrantRead": {
             "type": "string",
@@ -3810,17 +3944,17 @@
             "location": "header",
             "location_name": "x-amz-grant-read"
           },
-          "GrantWrite": {
-            "type": "string",
-            "documentation": "Allows grantee to create, overwrite, and delete any object in the bucket.",
-            "location": "header",
-            "location_name": "x-amz-grant-write"
-          },
           "GrantReadACP": {
             "type": "string",
             "documentation": "Allows grantee to read the bucket ACL.",
             "location": "header",
             "location_name": "x-amz-grant-read-acp"
+          },
+          "GrantWrite": {
+            "type": "string",
+            "documentation": "Allows grantee to create, overwrite, and delete any object in the bucket.",
+            "location": "header",
+            "location_name": "x-amz-grant-write"
           },
           "GrantWriteACP": {
             "type": "string",
@@ -3828,11 +3962,10 @@
             "location": "header",
             "location_name": "x-amz-grant-write-acp"
           },
-          "GrantFullControl": {
+          "Key": {
             "type": "string",
-            "documentation": "Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.",
-            "location": "header",
-            "location_name": "x-amz-grant-full-control"
+            "required": true,
+            "location": "uri"
           }
         }
       },
@@ -3900,6 +4033,11 @@
       "input": {
         "type": "structure",
         "members": {
+          "Body": {
+            "type": "blob",
+            "payload": true,
+            "streaming": true
+          },
           "Bucket": {
             "type": "string",
             "required": true,
@@ -3910,22 +4048,17 @@
             "required": true,
             "location": "uri"
           },
-          "UploadId": {
-            "type": "string",
-            "required": true,
-            "location": "uri",
-            "documentation": "Upload ID identifying the multipart upload whose part is being uploaded."
-          },
           "PartNumber": {
             "type": "string",
             "required": true,
             "location": "uri",
             "documentation": "Part number of part being uploaded."
           },
-          "Body": {
-            "type": "blob",
-            "payload": true,
-            "streaming": true
+          "UploadId": {
+            "type": "string",
+            "required": true,
+            "location": "uri",
+            "documentation": "Upload ID identifying the multipart upload whose part is being uploaded."
           }
         }
       },
@@ -3970,29 +4103,6 @@
             "required": true,
             "location": "uri"
           },
-          "Key": {
-            "type": "string",
-            "required": true,
-            "location": "uri"
-          },
-          "UploadId": {
-            "type": "string",
-            "required": true,
-            "location": "uri",
-            "documentation": "Upload ID identifying the multipart upload whose part is being copied."
-          },
-          "PartNumber": {
-            "type": "string",
-            "required": true,
-            "location": "uri",
-            "documentation": "Part number of part being copied."
-          },
-          "CopySourceRange": {
-            "type": "string",
-            "location": "header",
-            "location_name": "x-amz-copy-source-range",
-            "documentation": "The range of bytes to copy from the source object. The range value must use the form bytes=first-last, where the first and last are the zero-based byte offsets to copy. For example, bytes=0-9 indicates that you want to copy the first ten bytes of the source. You can copy a range only if the source object is greater than 5 GB."
-          },
           "CopySource": {
             "type": "string",
             "location": "header",
@@ -4007,6 +4117,12 @@
             "location_name": "x-amz-copy-source-if-match",
             "documentation": "Copies the object if its entity tag (ETag) matches the specified tag."
           },
+          "CopySourceIfModifiedSince": {
+            "type": "timestamp",
+            "location": "header",
+            "location_name": "x-amz-copy-source-if-modified-since",
+            "documentation": "Copies the object if it has been modified since the specified time."
+          },
           "CopySourceIfNoneMatch": {
             "type": "timestamp",
             "location": "header",
@@ -4019,11 +4135,28 @@
             "location_name": "x-amz-copy-source-if-unmodified-since",
             "documentation": "Copies the object if it hasn''t been modified since the specified time."
           },
-          "CopySourceIfModifiedSince": {
-            "type": "timestamp",
+          "CopySourceRange": {
+            "type": "string",
             "location": "header",
-            "location_name": "x-amz-copy-source-if-modified-since",
-            "documentation": "Copies the object if it has been modified since the specified time."
+            "location_name": "x-amz-copy-source-range",
+            "documentation": "The range of bytes to copy from the source object. The range value must use the form bytes=first-last, where the first and last are the zero-based byte offsets to copy. For example, bytes=0-9 indicates that you want to copy the first ten bytes of the source. You can copy a range only if the source object is greater than 5 GB."
+          },
+          "Key": {
+            "type": "string",
+            "required": true,
+            "location": "uri"
+          },
+          "PartNumber": {
+            "type": "string",
+            "required": true,
+            "location": "uri",
+            "documentation": "Part number of part being copied."
+          },
+          "UploadId": {
+            "type": "string",
+            "required": true,
+            "location": "uri",
+            "documentation": "Upload ID identifying the multipart upload whose part is being copied."
           }
         }
       },

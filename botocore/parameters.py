@@ -308,10 +308,11 @@ class StructParameter(Parameter):
 
     def build_parameter_json(self, value, built_params, label=''):
         label = self.get_label(label)
+        new_value = {}
         if isinstance(built_params, list):
-            built_params.append({})
+            built_params.append(new_value)
         else:
-            built_params[label] = {}
+            built_params[label] = new_value
         for member in self.members:
             if member.required and member.py_name not in value:
                 msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())
@@ -319,7 +320,7 @@ class StructParameter(Parameter):
             if member.py_name in value:
                 member_label = member.get_label()
                 member.build_parameter_json(value[member.py_name],
-                                            built_params[label],
+                                            new_value,
                                             member_label)
 
 type_map = {

@@ -191,21 +191,21 @@ class RestXMLEndpoint(Endpoint):
         logger.debug(params)
         logger.debug('SSL Verify: %s' % self.verify)
         user_agent = self.session.user_agent()
-        headers = {'User-Agent': user_agent}
+        params['headers']['User-Agent'] = user_agent
         uri = self.build_uri(operation, params)
         uri = urljoin(self.host, uri)
         request = AWSRequest(method=operation.http['method'],
-                             url=uri, headers=headers)
+                             url=uri, headers=params['headers'],
+                             data=params['payload'])
         prepared_request = self.prepare_request(request)
         http_response = self.http_session.send(prepared_request,
                                                verify=self.verify)
         http_response.encoding = 'utf-8'
         body = http_response.text.encode('utf-8')
         r = botocore.response.Response(operation)
-        http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf-8')
         logger.debug(body)
-        r.parse(body)
+        if body:
+            r.parse(body)
         return (http_response, r.get_value())
 
 

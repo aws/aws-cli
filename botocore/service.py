@@ -57,7 +57,7 @@ class Service(object):
             setattr(self, op.py_name, op)
 
     def __repr__(self):
-        return 'Service(%s)' % self.service_abbreviation
+        return 'Service(%s)' % self.endpoint_prefix
 
     @property
     def region_names(self):

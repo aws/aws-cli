@@ -35,6 +35,7 @@ class Parameter(BotoCoreObject):
         self.xmlname = None
         self.required = False
         self.flattened = False
+        self.allow_file = False
         self.min = None
         self.max = None
         BotoCoreObject.__init__(self, **kwargs)
@@ -78,11 +79,13 @@ class Parameter(BotoCoreObject):
         logger.debug('value=%s' % value)
         logger.debug(built_params)
         logger.debug(label)
-        logger.debug(self.location)
-        if self.location == 'uri':
-            built_params['uri_params'][self.name] = value
-        elif self.location == 'header':
-            built_params['headers'][self.name] = value
+        if hasattr(self, 'location'):
+            if self.location == 'uri':
+                built_params['uri_params'][self.name] = value
+            elif self.location == 'header':
+                built_params['headers'][self.name] = value
+        else:
+            built_params['payload'] = value
 
     def build_parameter(self, style, value, built_params, label=''):
         if style == 'query':
@@ -234,18 +237,9 @@ class ListParameter(Parameter):
     def build_parameter_json(self, value, built_params, label=''):
         value = self.validate(value)
         label = self.get_label(label)
-        member_type = self.members
-        if self.flattened:
-            label = member_type.xmlname
-        else:
-            if member_type.xmlname:
-                member_name = member_type.xmlname
-            else:
-                member_name = 'member'
-            label = '%s.%s' % (self.name, member_name)
         built_params[label] = []
-        for i, v in enumerate(value, 1):
-            member_type.build_parameter_json(v, built_params[label], None)
+        for v in value:
+            self.members.build_parameter_json(v, built_params[label], None)
 
 
 class MapParameter(Parameter):
@@ -314,7 +308,10 @@ class StructParameter(Parameter):
 
     def build_parameter_json(self, value, built_params, label=''):
         label = self.get_label(label)
-        built_params[label] = value
+        if isinstance(built_params, list):
+            built_params.append({})
+        else:
+            built_params[label] = {}
         for member in self.members:
             if member.required and member.py_name not in value:
                 msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())

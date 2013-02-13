@@ -1,5 +1,4 @@
 from requests import models
-from requests.structures import CaseInsensitiveDict
 
 from botocore.compat import HTTPHeaders
 

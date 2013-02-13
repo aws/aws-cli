@@ -53,8 +53,6 @@ class Operation(BotoCoreObject):
         self.params = []
         if self.input and 'members' in self.input:
             for name, data in self.input['members'].items():
-                if self.service:
-                    data['flattened'] = not self.service.membered_lists
                 param = get_parameter(name, data)
                 self.params.append(param)
 

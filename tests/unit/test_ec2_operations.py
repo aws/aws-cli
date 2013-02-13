@@ -77,6 +77,32 @@ class TestEC2Operations(unittest.TestCase):
                   'Tag.2.Key': 'key2', 'Tag.2.Value': 'value2'}
         self.assertEqual(params, result)
 
+    def test_request_spot_instances(self):
+        op = self.ec2.get_operation('RequestSpotInstances')
+        params = op.build_parameters(spot_price='1.00',
+                                     instance_count=1,
+                                     launch_specification={
+                                         'image_id': 'ami-33ec795a',
+                                         'instance_type': 'cc2.8xlarge',
+                                         'block_device_mappings': [
+                                             {"device_name": "/dev/sdb", "virtual_name": "ephemeral0"},
+                                             {"device_name": "/dev/sdc", "virtual_name": "ephemeral1"},
+                                             {"device_name": "/dev/sdd", "virtual_name": "ephemeral2"},
+                                             {"device_name": "/dev/sde", "virtual_name": "ephemeral3"}]})
+        result = {'SpotPrice': '1.00',
+                  'InstanceCount': '1',
+                  'LaunchSpecification.ImageId': 'ami-33ec795a',
+                  'LaunchSpecification.InstanceType': 'cc2.8xlarge',
+                  'LaunchSpecification.BlockDeviceMapping.1.DeviceName': '/dev/sdb',
+                  'LaunchSpecification.BlockDeviceMapping.2.DeviceName': '/dev/sdc',
+                  'LaunchSpecification.BlockDeviceMapping.3.DeviceName': '/dev/sdd',
+                  'LaunchSpecification.BlockDeviceMapping.4.DeviceName': '/dev/sde',
+                  'LaunchSpecification.BlockDeviceMapping.1.VirtualName': 'ephemeral0',
+                  'LaunchSpecification.BlockDeviceMapping.2.VirtualName': 'ephemeral1',
+                  'LaunchSpecification.BlockDeviceMapping.3.VirtualName': 'ephemeral2',
+                  'LaunchSpecification.BlockDeviceMapping.4.VirtualName': 'ephemeral3'}
+        self.maxDiff = None
+        self.assertEqual(params, result)
 
 if __name__ == "__main__":
     unittest.main()

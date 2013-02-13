@@ -127,23 +127,23 @@ class TestParameters(unittest.TestCase):
         d = {}
         value = ['This', 'is', 'a', 'test']
         p.build_parameter_query(value, d)
-        assert d == {'foo.bar.4': 'test',
-                     'foo.bar.2': 'is',
-                     'foo.bar.3': 'a',
-                     'foo.bar.1': 'This'}
+        self.assertEquals(d, {'foo.bar.4': 'test',
+                              'foo.bar.2': 'is',
+                              'foo.bar.3': 'a',
+                              'foo.bar.1': 'This'})
         d = {}
         p.build_parameter_json(value, d)
-        assert d == {'foo.bar': ['This', 'is', 'a', 'test']}
+        self.assertEquals(d, {'foo': ['This', 'is', 'a', 'test']})
         p.flattened = True
         d = {}
         p.build_parameter_query(value, d)
-        assert d == {'bar.4': 'test',
-                     'bar.1': 'This',
-                     'bar.2': 'is',
-                     'bar.3': 'a'}
+        self.assertEquals(d, {'bar.4': 'test',
+                              'bar.1': 'This',
+                              'bar.2': 'is',
+                              'bar.3': 'a'})
         d = {}
         p.build_parameter_json(value, d)
-        assert d == {'bar': ['This', 'is', 'a', 'test']}
+        self.assertEquals(d, {'foo': ['This', 'is', 'a', 'test']})
         self.assertRaises(botocore.exceptions.ValidationError,
                           p.build_parameter_query,
                           value=1, built_params=d)

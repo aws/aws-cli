@@ -17,10 +17,12 @@ import traceback
 import json
 import copy
 import base64
+import six
 import botocore.session
 from awscli import EnvironmentVariables, __version__
 from .help import get_help
 from .formatter import get_formatter
+from .paramfile import get_paramfile
 
 
 def split_list(s):
@@ -63,8 +65,7 @@ class CLIDriver(object):
         'long': int,
         'boolean': bool,
         'double': float,
-        'jsondoc': str,
-        'file': str}
+        'blob': str}
 
     def __init__(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
@@ -190,61 +191,22 @@ class CLIDriver(object):
             if isinstance(s, list):
                 s = s[0]
             return float(s)
-        elif param.type == 'jsondoc':
-            if isinstance(s, list) and len(s) == 1:
-                s = s[0]
-            if s[0] != '{':
-                s = os.path.expanduser(s)
-                s = os.path.expandvars(s)
-                if os.path.isfile(s):
-                    fp = open(s)
-                    s = fp.read()
-                    fp.close()
-                else:
-                    msg = 'JSON Document value must be JSON or path to file.'
-                    raise ValueError(msg)
-            return s
-        elif param.type == 'file':
-            if isinstance(s, list) and len(s) == 1:
-                s = s[0]
-            s = os.path.expanduser(s)
-            s = os.path.expandvars(s)
-            if os.path.isfile(s):
-                fp = open(s)
-                s = fp.read()
-                fp.close()
-            else:
-                msg = 'File value must be path to file.'
-                raise ValueError(msg)
-            if hasattr(param, 'encoding'):
-                if param.encoding == 'base64':
-                    s = base64.b64encode(s)
-            return s
         elif param.type == 'structure' or param.type == 'map':
             if isinstance(s, list) and len(s) == 1:
                 s = s[0]
             if s[0] == '{':
                 d = json.loads(s)
-            elif '=' in s:
-                d = dict(v.split('=', 1) for v in s.split(':'))
-                for member in param.members:
-                    if member.py_name in d:
-                        d[member.py_name] = self.unpack_cli_arg(member,
-                                                           d[member.py_name])
             else:
-                s = os.path.expanduser(s)
-                s = os.path.expandvars(s)
-                if os.path.isfile(s):
-                    fp = open(s)
-                    d = json.load(fp)
-                    fp.close()
-                else:
-                    msg = 'Structure option value must be JSON or path to file.'
-                    raise ValueError(msg)
+                msg = 'Structure option value must be JSON or path to file.'
+                raise ValueError(msg)
             return d
         elif param.type == 'list':
-            if not isinstance(s, list):
-                s = split_list(s)
+            if isinstance(s, six.string_types):
+                if s[0] == '[':
+                    return json.loads(s)
+            elif isinstance(s, list) and len(s) == 1:
+                if s[0][0] == '[':
+                    return json.loads(s[0])
             return [self.unpack_cli_arg(param.members, v) for v in s]
         else:
             if isinstance(s, list):
@@ -258,6 +220,13 @@ class CLIDriver(object):
             else:
                 value = getattr(args, param.cli_name)
             if value:
+                if isinstance(value, list) and len(value) == 1:
+                    temp = value[0]
+                else:
+                    temp = value
+                temp = get_paramfile(self.session, temp)
+                if temp:
+                    value = temp
                 param_dict[param.py_name] = self.unpack_cli_arg(param, value)
 
     def display_error_and_exit(self, ex):

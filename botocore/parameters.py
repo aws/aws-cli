@@ -232,11 +232,7 @@ class ListParameter(Parameter):
                 label.format(label=self.get_label())
             else:
                 label = self.get_label()
-            if member_type.xmlname:
-                member_name = member_type.xmlname
-            else:
-                member_name = 'member'
-            label = '%s.%s' % (label, member_name)
+            label = '%s.%s' % (label, 'member')
         for i, v in enumerate(value, 1):
             member_type.build_parameter_query(v, built_params,
                                               '%s.%d' % (label, i))

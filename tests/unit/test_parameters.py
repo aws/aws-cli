@@ -119,6 +119,9 @@ class TestParameters(unittest.TestCase):
                           value='100', built_params=d)
 
     def test_list(self):
+        #
+        # Test a plain vanilla list
+        #
         p = botocore.parameters.ListParameter(name='foo')
         p.members = {'type': 'string'}
         p.handle_subtypes()
@@ -129,7 +132,10 @@ class TestParameters(unittest.TestCase):
                               'foo.member.2': 'is',
                               'foo.member.3': 'a',
                               'foo.member.1': 'This'})
-
+        #
+        # Test a list where the member specifies an xmlname.
+        # This should be ignored.
+        #
         p = botocore.parameters.ListParameter(name='foo')
         p.members = {'type': 'string',
                      'xmlname': 'bar'}
@@ -137,27 +143,17 @@ class TestParameters(unittest.TestCase):
         d = {}
         value = ['This', 'is', 'a', 'test']
         p.build_parameter_query(value, d)
-        self.assertEquals(d, {'foo.bar.4': 'test',
-                              'foo.bar.2': 'is',
-                              'foo.bar.3': 'a',
-                              'foo.bar.1': 'This'})
+        self.assertEquals(d, {'foo.member.4': 'test',
+                              'foo.member.2': 'is',
+                              'foo.member.3': 'a',
+                              'foo.member.1': 'This'})
         d = {}
         p.build_parameter_json(value, d)
         self.assertEquals(d, {'foo': ['This', 'is', 'a', 'test']})
-
-        p.flattened = True
-        d = {}
-        p.build_parameter_query(value, d)
-        self.assertEquals(d, {'bar.4': 'test',
-                              'bar.1': 'This',
-                              'bar.2': 'is',
-                              'bar.3': 'a'})
-        d = {}
-        p.build_parameter_json(value, d)
-        self.assertEquals(d, {'foo': ['This', 'is', 'a', 'test']})
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value=1, built_params=d)
+        #
+        # Test a flattened list.  Member should always define
+        # and xmlname attribute.
+        #
         p = botocore.parameters.ListParameter(name='foo')
         p.flattened = True
         p.members = {'type': 'string',

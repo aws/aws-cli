@@ -1,0 +1,890 @@
+{
+  "service_full_name": "Amazon Simple Email Service",
+  "service_abbreviation": "Amazon SES",
+  "type": "query",
+  "signature_version": "v4",
+  "signing_name": "ses",
+  "result_wrapped": true,
+  "api_version": "2010-12-01",
+  "endpoint_prefix": "email",
+  "xmlnamespace": "http://ses.amazonaws.com/doc/2010-12-01/",
+  "documentation": "\n        <fullname>Amazon Simple Email Service</fullname>\n        <p>\n            This is the API Reference for Amazon Simple Email Service (Amazon SES). This documentation is intended to be\n            used in conjunction with the Amazon SES Getting Started Guide and the Amazon SES Developer Guide.\n        </p>\n        <p>\n            For specific details on how to construct a service request, please consult the <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.\n        </p>\n        <note>The endpoint for Amazon SES is located at:\n            <code>https://email.us-east-1.amazonaws.com</code>\n        </note>\n    ",
+  "operations": [
+    {
+      "name": "DeleteIdentity",
+      "input": {
+        "shape_name": "DeleteIdentityRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "\n        <p>The identity to be removed from the list of identities for the AWS Account.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to delete an identity from the list of identities for the AWS Account.</p>\n    "
+      },
+      "output": {
+        "shape_name": "DeleteIdentityResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "\n        <p>An empty element.  Receiving this element indicates that the request completed successfully.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Deletes the specified identity (email address or domain) from the list of verified identities.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:25:58 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=w943pl3zIvtszwzZxypi+LsgjzquvhYhnG42S6b2WLo=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 135\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=DeleteIdentity\n&Identity=domain.com\n&Timestamp=2012-05-12T05%3A25%3A58.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<DeleteIdentityResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <DeleteIdentityResult/>\n  <ResponseMetadata>\n    <RequestId>d96bd874-9bf2-11e1-8ee7-c98a0037a2b6</RequestId>\n  </ResponseMetadata>\n</DeleteIdentityResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "DeleteVerifiedEmailAddress",
+      "input": {
+        "shape_name": "DeleteVerifiedEmailAddressRequest",
+        "type": "structure",
+        "members": {
+          "EmailAddress": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "\n        <p>An email address to be removed from the list of verified addresses.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to delete an address from the list of verified email addresses.</p>\n    "
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Deletes the specified email address from the list of verified addresses.</p>\n        <important>The DeleteVerifiedEmailAddress action is deprecated as of the May 15, 2012 release\n         of Domain Verification. The DeleteIdentity action is now preferred.</important>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:20:50 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=Rxzyd6cQe/YjkV4yoQAZ243OzzNjFgrsclizTKwRIRc=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 142\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=DeleteVerifiedEmailAddress\n&EmailAddress=user%40example.com\n&Timestamp=2011-08-18T22%3A20%3A50.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<DeleteVerifiedEmailAddressResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>5634af08-c865-11e0-8986-3f99a698f914</RequestId>\n  </ResponseMetadata>\n</DeleteVerifiedEmailAddressResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "GetIdentityDkimAttributes",
+      "input": {
+        "shape_name": "GetIdentityDkimAttributesRequest",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>A list of one or more verified identities - email addresses, domains, or both.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Given a list of verified identities, describes their DKIM attributes. The DKIM attributes of an email address\n        identity includes whether DKIM signing is individually enabled or disabled for that address. The DKIM attributes\n        of a domain name identity includes whether DKIM signing is enabled, as well as the DNS records (tokens)\n        that must remain published in the domain name's DNS.</p>\n    "
+      },
+      "output": {
+        "shape_name": "GetIdentityDkimAttributesResponse",
+        "type": "structure",
+        "members": {
+          "DkimAttributes": {
+            "shape_name": "DkimAttributes",
+            "type": "map",
+            "keys": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "IdentityDkimAttributes",
+              "type": "structure",
+              "members": {
+                "DkimEnabled": {
+                  "shape_name": "Enabled",
+                  "type": "boolean",
+                  "documentation": "\n        <p>True if DKIM signing is enabled for email sent from the identity; false otherwise.</p>\n    ",
+                  "required": true
+                },
+                "DkimVerificationStatus": {
+                  "shape_name": "VerificationStatus",
+                  "type": "string",
+                  "enum": [
+                    "Pending",
+                    "Success",
+                    "Failed",
+                    "TemporaryFailure"
+                  ],
+                  "documentation": "\n        <p>Describes whether Amazon SES has successfully verified the DKIM DNS records\n            (tokens) published in the domain name's DNS.  (This only applies to domain identities, not email address identities.)</p>\n    ",
+                  "required": true
+                },
+                "DkimTokens": {
+                  "shape_name": "VerificationTokenList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "VerificationToken",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": "\n        <p>A set of DNS records (tokens) that must be published in the\n        domain name's DNS for DKIM verification to complete, and which must remain published in order for DKIM signing to succeed. \n        The tokens are <code>CNAME</code> DNS records that point to DKIM public keys hosted by Amazon SES.  (This only applies to domain entities, not email address identities.)</p>\n    "
+                }
+              },
+              "documentation": "\n        <p>Represents the DKIM attributes of a verified email address or a domain.</p>\n    "
+            },
+            "documentation": "\n        <p>The DKIM attributes for an email address or a domain. </p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a list of all the DKIM attributes for the specified identity.</p>\n        \n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Returns the DNS records, or <i>tokens</i>, that must be present in order for Easy DKIM to sign outgoing email messages.</p>\n        <p>This action takes a list of verified identities as input.  It then returns the following information for each identity:</p>\n        <ul>\n            <li>Whether Easy DKIM signing is enabled or disabled.</li>\n            <li>The set of tokens that are required for Easy DKIM signing.  These tokens must be published in the domain name's DNS records in order for DKIM verification to complete, and must remain published in order for Easy DKIM signing to operate correctly.  (This information is only returned for domain name identities, not for email addresses.)</li>\n            <li>Whether Amazon SES has successfully verified the DKIM tokens published in the domain name's DNS. (This information is only returned for domain name identities, not for email addresses.)</li>\n        </ul>\n        <p>For more information about Easy DKIM signing, go to the\n            <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Fri, 29 Jun 2012 22:41:32 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE, \n Signature=MJdhrIAt3c4BRC6jdzueMM+AJLEx17bnIHjZwlSenyk=, \n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 165\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=GetIdentityDkimAttributes\n&Identities.member.1=example.com\n&Timestamp=2012-06-29T22%3A41%3A32.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<GetIdentityDkimAttributesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <GetIdentityDkimAttributesResult>\n    <DkimAttributes>\n      <entry>\n        <key>amazon.com</key>\n      <value>\n        <DkimEnabled>true</DkimEnabled>\n        <DkimVerificationStatus>Success</DkimVerificationStatus>\n        <DkimTokens>\n          <member>vvjuipp74whm76gqoni7qmwwn4w4qusjiainivf6f</member>\n          <member>3frqe7jn4obpuxjpwpolz6ipb3k5nvt2nhjpik2oy</member>\n          <member>wrqplteh7oodxnad7hsl4mixg2uavzneazxv5sxi2</member>\n        </DkimTokens>\n      </value>\n    </entry>\n    </DkimAttributes>\n  </GetIdentityDkimAttributesResult>\n  <ResponseMetadata>\n    <RequestId>bb5a105d-c468-11e1-82eb-dff885ccc06a</RequestId>\n  </ResponseMetadata>\n</GetIdentityDkimAttributesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "GetIdentityNotificationAttributes",
+      "input": {
+        "shape_name": "GetIdentityNotificationAttributesRequest",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n         <p>A list of one or more identities.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n         <!-- p>Returns the notification attributes for a given list of identities (email address or domain names).</p -->\n    "
+      },
+      "output": {
+        "shape_name": "GetIdentityNotificationAttributesResponse",
+        "type": "structure",
+        "members": {
+          "NotificationAttributes": {
+            "shape_name": "NotificationAttributes",
+            "type": "map",
+            "keys": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "IdentityNotificationAttributes",
+              "type": "structure",
+              "members": {
+                "BounceTopic": {
+                  "shape_name": "NotificationTopic",
+                  "type": "string",
+                  "documentation": "\n        <p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic \n        where Amazon SES will publish bounce notifications.</p>\n    ",
+                  "required": true
+                },
+                "ComplaintTopic": {
+                  "shape_name": "NotificationTopic",
+                  "type": "string",
+                  "documentation": "\n        <p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic \n        where Amazon SES will publish complaint notifications.</p>\n    ",
+                  "required": true
+                },
+                "ForwardingEnabled": {
+                  "shape_name": "Enabled",
+                  "type": "boolean",
+                  "documentation": "\n        <p>Describes whether Amazon SES will forward feedback as email. <code>true</code> indicates \n        that Amazon SES will forward feedback as email, while <code>false</code> indicates that \n        feedback will be published only to the specified Bounce and Complaint topics.</p>\n    ",
+                  "required": true
+                }
+              },
+              "documentation": "\n        <p>Represents the notification attributes of an identity, including whether a bounce \n        or complaint topic are set, and whether feedback forwarding is enabled.</p>\n    "
+            },
+            "documentation": "\n        <p>A map of Identity to IdentityNotificationAttributes.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Describes whether an identity has a bounce topic or complaint topic set, or feedback \n        forwarding enabled.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Given a list of verified identities (email addresses and/or domains), returns a structure describing identity \n        notification attributes. For more information about feedback notification, see the \n        <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.</p>\n        <examples>\n             <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Fri, 15 Jun 2012 20:51:42 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=ee9aH6tUW5wBPoh01Tz3w4H+z4avrMmvmRYbfORC7OI=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 173\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=GetIdentityNotificationAttributes\n&Identities.member.1=user%40example.com\n&Timestamp=2012-06-15T20%3A51%3A42.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<GetIdentityNotificationAttributesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <GetIdentityNotificationAttributesResult>\n    <NotificationAttributes>\n      <entry>\n        <key>user@example.com</key>\n        <value>\n          <ForwardingEnabled>true</ForwardingEnabled>\n          <BounceTopic>arn:aws:sns:us-east-1:123456789012:example</BounceTopic>\n          <ComplaintTopic>arn:aws:sns:us-east-1:123456789012:example</ComplaintTopic>\n        </value>\n      </entry>\n    </NotificationAttributes>\n  </GetIdentityNotificationAttributesResult>\n  <ResponseMetadata>\n    <RequestId>e038e509-b72a-11e1-901f-1fbd90e8104f</RequestId>\n  </ResponseMetadata>\n</GetIdentityNotificationAttributesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "GetIdentityVerificationAttributes",
+      "input": {
+        "shape_name": "GetIdentityVerificationAttributesRequest",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>A list of identities.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to provide the verification attributes for a list of identities.</p>\n    "
+      },
+      "output": {
+        "shape_name": "GetIdentityVerificationAttributesResponse",
+        "type": "structure",
+        "members": {
+          "VerificationAttributes": {
+            "shape_name": "VerificationAttributes",
+            "type": "map",
+            "keys": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "IdentityVerificationAttributes",
+              "type": "structure",
+              "members": {
+                "VerificationStatus": {
+                  "shape_name": "VerificationStatus",
+                  "type": "string",
+                  "enum": [
+                    "Pending",
+                    "Success",
+                    "Failed",
+                    "TemporaryFailure"
+                  ],
+                  "documentation": "\n        <p>The verification status of the identity: \"Pending\", \"Success\", \"Failed\", or \"TemporaryFailure\".</p>\n    ",
+                  "required": true
+                },
+                "VerificationToken": {
+                  "shape_name": "VerificationToken",
+                  "type": "string",
+                  "documentation": "\n        <p>The verification token for a domain identity. Null for email address identities.</p>\n    "
+                }
+              },
+              "documentation": "\n        <p>Represents the verification attributes of a single identity.</p>\n    "
+            },
+            "documentation": "\n        <p>A map of Identities to IdentityVerificationAttributes objects.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents the verification attributes for a list of identities.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Given a list of identities (email addresses and/or domains), returns the verification\n         status and (for domain identities) the verification token for each identity.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:27:54 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=3+KQ4VHx991T7Kb41HmFcZJxuHz4/6mf2H5FxY+tuLc=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 203\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=GetIdentityVerificationAttributes\n&Identities.member.1=user%40domain.com\n&Identities.member.2=domain.com\n&Timestamp=2012-05-12T05%3A27%3A54.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<GetIdentityVerificationAttributesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <GetIdentityVerificationAttributesResult>\n    <VerificationAttributes>\n      <entry>\n        <key>domain.com</key>\n        <value>\n          <VerificationStatus>Pending</VerificationStatus>\n          <VerificationToken>QTKknzFg2J4ygwa+XvHAxUl1hyHoY0gVfZdfjIedHZ0=</VerificationToken>\n        </value>\n      </entry>\n      <entry>\n        <key>user@domain.com</key>\n        <value>\n          <VerificationStatus>Pending</VerificationStatus>\n        </value>\n      </entry>\n    </VerificationAttributes>\n  </GetIdentityVerificationAttributesResult>\n  <ResponseMetadata>\n    <RequestId>1d0c29f1-9bf3-11e1-8ee7-c98a0037a2b6</RequestId>\n  </ResponseMetadata>\n</GetIdentityVerificationAttributesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "GetSendQuota",
+      "input": null,
+      "output": {
+        "shape_name": "GetSendQuotaResponse",
+        "type": "structure",
+        "members": {
+          "Max24HourSend": {
+            "shape_name": "Max24HourSend",
+            "type": "double",
+            "documentation": "\n        <p>The maximum number of emails the user is allowed to send in a 24-hour interval.</p>\n    "
+          },
+          "MaxSendRate": {
+            "shape_name": "MaxSendRate",
+            "type": "double",
+            "documentation": "\n        <p>The maximum number of emails the user is allowed to send per second.</p>\n    "
+          },
+          "SentLast24Hours": {
+            "shape_name": "SentLast24Hours",
+            "type": "double",
+            "documentation": "\n        <p>The number of emails sent during the previous 24 hours.</p>\n    "
+          }
+        },
+        "documentation": "\n        <p>Represents the user's current activity limits returned from a successful\n            <code>GetSendQuota</code>\n            request.\n        </p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Returns the user's current sending limits.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:22:36 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=W1YdiNOtf0jN3t7Lv63qhz7UZc3RrcmQpkGbopvnj/Y=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 94\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=GetSendQuota\n&Timestamp=2011-08-18T22%3A22%3A36.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<GetSendQuotaResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <GetSendQuotaResult>\n    <SentLast24Hours>127.0</SentLast24Hours>\n    <Max24HourSend>200.0</Max24HourSend>\n    <MaxSendRate>1.0</MaxSendRate>\n  </GetSendQuotaResult>\n  <ResponseMetadata>\n    <RequestId>273021c6-c866-11e0-b926-699e21c3af9e</RequestId>\n  </ResponseMetadata>\n</GetSendQuotaResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "GetSendStatistics",
+      "input": null,
+      "output": {
+        "shape_name": "GetSendStatisticsResponse",
+        "type": "structure",
+        "members": {
+          "SendDataPoints": {
+            "shape_name": "SendDataPointList",
+            "type": "list",
+            "members": {
+              "shape_name": "SendDataPoint",
+              "type": "structure",
+              "members": {
+                "Timestamp": {
+                  "shape_name": "Timestamp",
+                  "type": "timestamp",
+                  "documentation": "\n        <p>Time of the data point.</p>\n    "
+                },
+                "DeliveryAttempts": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "\n        <p>Number of emails that have been enqueued for sending.</p>\n    "
+                },
+                "Bounces": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "\n        <p>Number of emails that have bounced.</p>\n    "
+                },
+                "Complaints": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "\n        <p>Number of unwanted emails that were rejected by recipients.</p>\n    "
+                },
+                "Rejects": {
+                  "shape_name": "Counter",
+                  "type": "long",
+                  "documentation": "\n        <p>Number of emails rejected by Amazon SES.</p>\n    "
+                }
+              },
+              "documentation": "\n        <p>Represents sending statistics data. Each\n            <code>SendDataPoint</code>\n            contains statistics for a 15-minute period of sending activity.\n        </p>\n    "
+            },
+            "documentation": "\n        <p>A list of data points, each of which represents 15 minutes of activity.</p>\n    "
+          }
+        },
+        "documentation": "\n        <p>Represents a list of\n            <code>SendDataPoint</code>\n            items returned from a successful\n            <code>GetSendStatistics</code>\n            request. This list contains aggregated data from the previous two weeks of sending activity.\n        </p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Returns the user's sending statistics. The result is a list of data points, representing the last two weeks of\n            sending activity.\n        </p>\n        <p>Each data point in the list contains statistics for a 15-minute interval.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:23:01 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=kwuk4eraA9HSfHySflgDKR6xK0JXjATIE7Uu5/FB4x4=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 99\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=GetSendStatistics\n&Timestamp=2011-08-18T22%3A23%3A01.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<GetSendStatisticsResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <GetSendStatisticsResult>\n    <SendDataPoints>\n      <member>\n        <DeliveryAttempts>8</DeliveryAttempts>\n        <Timestamp>2011-08-03T19:23:00Z</Timestamp>\n        <Rejects>0</Rejects>\n        <Bounces>0</Bounces>\n        <Complaints>0</Complaints>\n      </member>\n      <member>\n        <DeliveryAttempts>7</DeliveryAttempts>\n        <Timestamp>2011-08-03T06:53:00Z</Timestamp>\n        <Rejects>0</Rejects>\n        <Bounces>0</Bounces>\n        <Complaints>0</Complaints>\n      </member>\n\t  .\n\t  .\n\t  .\n\t  .\n  </GetSendStatisticsResult>\n  <ResponseMetadata>\n    <RequestId>c2b66ee5-c866-11e0-b17f-cddb0ab334db</RequestId>\n  </ResponseMetadata>\n</GetSendStatisticsResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "ListIdentities",
+      "input": {
+        "shape_name": "ListIdentitiesRequest",
+        "type": "structure",
+        "members": {
+          "IdentityType": {
+            "shape_name": "IdentityType",
+            "type": "string",
+            "enum": [
+              "EmailAddress",
+              "Domain"
+            ],
+            "documentation": "\n\t<p>The type of the identities to list. Possible values are \"EmailAddress\" and \"Domain\". If this parameter is omitted, then all identities will be listed.</p>\n    "
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n\t<p>The token to use for pagination.</p>\n    "
+          },
+          "MaxItems": {
+            "shape_name": "MaxItems",
+            "type": "integer",
+            "documentation": "\n\t<p>The maximum number of identities per page. Possible values are 1-100 inclusive.</p>\n    "
+          }
+        },
+        "documentation": "\n\t<p>Represents a request instructing the service to list all identities for the AWS Account.</p>\n    "
+      },
+      "output": {
+        "shape_name": "ListIdentitiesResponse",
+        "type": "structure",
+        "members": {
+          "Identities": {
+            "shape_name": "IdentityList",
+            "type": "list",
+            "members": {
+              "shape_name": "Identity",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>A list of identities.</p>\n    ",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": "\n        <p>The token used for pagination.</p>\n    "
+          }
+        },
+        "documentation": "\n\t<p>Represents a list of all verified identities for the AWS Account.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Returns a list containing all of the identities (email addresses and domains) for \n        a specific AWS Account, regardless of verification status.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:18:45 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=OruiFNV26DCZicLDaQmULHGbjbU8MbC/c5aIo/MMIuM=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 115\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=ListIdentities\n&Timestamp=2012-05-12T05%3A18%3A45.000Z&\nVersion=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<ListIdentitiesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ListIdentitiesResult>\n    <Identities>\n      <member>example.com</member>\n      <member>user@example.com</member>\n    </Identities>\n  </ListIdentitiesResult>\n  <ResponseMetadata>\n    <RequestId>cacecf23-9bf1-11e1-9279-0100e8cf109a</RequestId>\n  </ResponseMetadata>\n</ListIdentitiesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "ListVerifiedEmailAddresses",
+      "input": null,
+      "output": {
+        "shape_name": "ListVerifiedEmailAddressesResponse",
+        "type": "structure",
+        "members": {
+          "VerifiedEmailAddresses": {
+            "shape_name": "AddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "Address",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>A list of email addresses that have been verified.</p>\n    "
+          }
+        },
+        "documentation": "\n        <p>Represents a list of all the email addresses verified for the current user.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Returns a list containing all of the email addresses that have been verified.</p>\n        <important>The ListVerifiedEmailAddresses action is deprecated as of the May 15, 2012 release of \n        Domain Verification. The ListIdentities action is now preferred.</important>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:05:09 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=II0+vvDKGMv71vToBwzR6vZ1hxe/VUE8tWEFUNTUqgE=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 108\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=ListVerifiedEmailAddresses\n&Timestamp=2011-08-18T22%3A05%3A09.000Z%\n          \n            </queryrequest>\n            <queryresponse>\n                \n<ListVerifiedEmailAddressesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ListVerifiedEmailAddressesResult>\n    <VerifiedEmailAddresses>\n      <member>example@amazon.com</member>\n    </VerifiedEmailAddresses>\n  </ListVerifiedEmailAddressesResult>\n  <ResponseMetadata>\n    <RequestId>3dd50e97-c865-11e0-b235-099eb63d928d</RequestId>\n  </ResponseMetadata>\n</ListVerifiedEmailAddressesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "SendEmail",
+      "input": {
+        "shape_name": "SendEmailRequest",
+        "type": "structure",
+        "members": {
+          "Source": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "\n        <p>The identity's email address.</p>\n    ",
+            "required": true
+          },
+          "Destination": {
+            "shape_name": "Destination",
+            "type": "structure",
+            "members": {
+              "ToAddresses": {
+                "shape_name": "AddressList",
+                "type": "list",
+                "members": {
+                  "shape_name": "Address",
+                  "type": "string",
+                  "documentation": null
+                },
+                "documentation": "\n        <p>The To: field(s) of the message.</p>\n    "
+              },
+              "CcAddresses": {
+                "shape_name": "AddressList",
+                "type": "list",
+                "members": {
+                  "shape_name": "Address",
+                  "type": "string",
+                  "documentation": null
+                },
+                "documentation": "\n        <p>The CC: field(s) of the message.</p>\n    "
+              },
+              "BccAddresses": {
+                "shape_name": "AddressList",
+                "type": "list",
+                "members": {
+                  "shape_name": "Address",
+                  "type": "string",
+                  "documentation": null
+                },
+                "documentation": "\n        <p>The BCC: field(s) of the message.</p>\n    "
+              }
+            },
+            "documentation": "\n        <p>The destination for this email, composed of To:, CC:, and BCC: fields.</p>\n    ",
+            "required": true
+          },
+          "Message": {
+            "shape_name": "Message",
+            "type": "structure",
+            "members": {
+              "Subject": {
+                "shape_name": "Content",
+                "type": "structure",
+                "members": {
+                  "Data": {
+                    "shape_name": "MessageData",
+                    "type": "string",
+                    "documentation": "\n        <p>The textual data of the content.</p>\n    ",
+                    "required": true
+                  },
+                  "Charset": {
+                    "shape_name": "Charset",
+                    "type": "string",
+                    "documentation": "\n        <p>The character set of the content.</p>\n    "
+                  }
+                },
+                "documentation": "\n        <p>The subject of the message: A short summary of the content, which will appear in the recipient's inbox.</p>\n    ",
+                "required": true
+              },
+              "Body": {
+                "shape_name": "Body",
+                "type": "structure",
+                "members": {
+                  "Text": {
+                    "shape_name": "Content",
+                    "type": "structure",
+                    "members": {
+                      "Data": {
+                        "shape_name": "MessageData",
+                        "type": "string",
+                        "documentation": "\n        <p>The textual data of the content.</p>\n    ",
+                        "required": true
+                      },
+                      "Charset": {
+                        "shape_name": "Charset",
+                        "type": "string",
+                        "documentation": "\n        <p>The character set of the content.</p>\n    "
+                      }
+                    },
+                    "documentation": "\n        <p>The content of the message, in text format. Use this for text-based email clients, or clients on high-latency networks (such as mobile\n            devices).\n        </p>\n    "
+                  },
+                  "Html": {
+                    "shape_name": "Content",
+                    "type": "structure",
+                    "members": {
+                      "Data": {
+                        "shape_name": "MessageData",
+                        "type": "string",
+                        "documentation": "\n        <p>The textual data of the content.</p>\n    ",
+                        "required": true
+                      },
+                      "Charset": {
+                        "shape_name": "Charset",
+                        "type": "string",
+                        "documentation": "\n        <p>The character set of the content.</p>\n    "
+                      }
+                    },
+                    "documentation": "\n        <p>The content of the message, in HTML format. Use this for email clients that can process HTML. You can include clickable links, formatted\n            text, and much more in an HTML message.\n        </p>\n    "
+                  }
+                },
+                "documentation": "\n        <p>The message body.</p>\n    ",
+                "required": true
+              }
+            },
+            "documentation": "\n        <p>The message to be sent.</p>\n    ",
+            "required": true
+          },
+          "ReplyToAddresses": {
+            "shape_name": "AddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "Address",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>The reply-to email address(es) for the message. If the recipient replies to the message, each reply-to address\n            will receive the reply.\n        </p>\n    "
+          },
+          "ReturnPath": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "\n        <p>The email address to which bounce notifications are to be forwarded. If the message cannot be delivered to the\n            recipient, then an error message will be returned from the recipient's ISP; this message will then be forwarded\n            to the email address specified by the\n            <code>ReturnPath</code>\n            parameter.\n        </p>\n    "
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to send a single email message.</p>\n        <p>This datatype can be used in application code to compose a message consisting of source, destination, message, reply-to, and return-path\n            parts. This object can then be sent using the\n            <code>SendEmail</code>\n            action.\n        </p>\n    "
+      },
+      "output": {
+        "shape_name": "SendEmailResponse",
+        "type": "structure",
+        "members": {
+          "MessageId": {
+            "shape_name": "MessageId",
+            "type": "string",
+            "documentation": "\n        <p>The unique message identifier returned from the\n            <code>SendEmail</code>\n            action.\n        </p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a unique message ID returned from a successful\n            <code>SendEmail</code>\n            request.\n        </p>\n    "
+      },
+      "errors": [
+        {
+          "shape_name": "MessageRejected",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n        Indicates that the action failed, and the message could not be sent. Check the error stack for more\n        information about what caused the error.\n    "
+        }
+      ],
+      "documentation": "\n        <p>Composes an email message based on input data, and then immediately queues the message\n            for sending.\n        </p>\n        <important>If you have not yet requested production access to Amazon SES, then you will only\n            be able to send email to and from verified email addresses and domains. For more information, go to the\n            <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES\n                Developer Guide</a>.\n        </important>\n        <p>The total size of the message cannot exceed 10 MB.</p>\n        <p>Amazon SES has a limit on the total number of recipients per message: The combined number\n            of To:, CC: and BCC: email addresses cannot exceed 50. If you need to send an email\n            message to a larger audience, you can divide your recipient list into groups of 50 or\n            fewer, and then call Amazon SES repeatedly to send the message to each group.\n        </p>\n        <p>For every message that you send, the total number of recipients (To:, CC: and BCC:) is\n            counted against your\n            <i>sending quota</i>\n            - the maximum number of emails you can send in\n            a 24-hour period. For information about your sending quota, go to the \"Managing Your Sending\n            Activity\" section of the<a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES\n                Developer Guide</a>.\n        </p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:25:27 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=yXx/wM1bESLuDErJ6HpZg9JK8Gjau7EUe4FWEfmhodo=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 230\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=SendEmail\n&Destination.ToAddresses.member.1=allan%40example.com\n&Message.Body.Text.Data=body\n&Message.Subject.Data=Example&Source=user%40example.com\n&Timestamp=2011-08-18T22%3A25%3A27.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<SendEmailResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <SendEmailResult>\n    <MessageId>00000131d51d2292-159ad6eb-077c-46e6-ad09-ae7c05925ed4-000000</MessageId>\n  </SendEmailResult>\n  <ResponseMetadata>\n    <RequestId>d5964849-c866-11e0-9beb-01a62d68c57f</RequestId>\n  </ResponseMetadata>\n</SendEmailResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "SendRawEmail",
+      "input": {
+        "shape_name": "SendRawEmailRequest",
+        "type": "structure",
+        "members": {
+          "Source": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "\n        <p>The identity's email address.</p>\n        <note>If you specify the\n            <code>Source</code>\n            parameter, then bounce notifications and\n            complaints will be sent to this email address. This takes precedence over any\n            <i>Return-Path</i>\n            header that you might include in the raw text of the message.\n        </note>\n    "
+          },
+          "Destinations": {
+            "shape_name": "AddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "Address",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>A list of destinations for the message.</p>\n    "
+          },
+          "RawMessage": {
+            "shape_name": "RawMessage",
+            "type": "structure",
+            "members": {
+              "Data": {
+                "shape_name": "RawMessageData",
+                "type": "blob",
+                "documentation": "\n        <p>The raw data of the message. The client must ensure that the message format complies with Internet email\n            standards regarding email header fields, MIME types, MIME encoding, and base64 encoding (if necessary).\n        </p>\n        <p>For more information, go to the<a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.\n        </p>\n    ",
+                "required": true
+              }
+            },
+            "documentation": "\n        <p>The raw text of the message. The client is responsible for ensuring the following:</p>\n        <p>\n            <ul>\n                <li>Message must contain a header and a body, separated by a blank line.</li>\n                <li>All required header fields must be present.</li>\n                <li>Each part of a multipart MIME message must be formatted properly.</li>\n                <li>MIME content types must be among those supported by Amazon SES. Refer to the\n                    <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>\n                    for more details.\n                </li>\n                <li>Content must be base64-encoded, if MIME requires it.</li>\n            </ul>\n        </p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to send a raw email message.</p>\n        <p>This datatype can be used in application code to compose a message consisting of source, destination, and raw message text. This object can\n            then be sent using the\n            <code>SendRawEmail</code>\n            action.\n        </p>\n    "
+      },
+      "output": {
+        "shape_name": "SendRawEmailResponse",
+        "type": "structure",
+        "members": {
+          "MessageId": {
+            "shape_name": "MessageId",
+            "type": "string",
+            "documentation": "\n        <p>The unique message identifier returned from the\n            <code>SendRawEmail</code>\n            action.\n        </p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a unique message ID returned from a successful\n            <code>SendRawEmail</code>\n            request.\n        </p>\n    "
+      },
+      "errors": [
+        {
+          "shape_name": "MessageRejected",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n        Indicates that the action failed, and the message could not be sent. Check the error stack for more\n        information about what caused the error.\n    "
+        }
+      ],
+      "documentation": "\n        <p>Sends an email message, with header and content specified by the client. The\n            <code>SendRawEmail</code>\n            action is useful for sending multipart MIME emails. The raw text of the message must comply with Internet\n            email standards; otherwise, the message cannot be sent.\n        </p>\n        <important>If you have not yet requested production access to Amazon SES, then you will only\n            be able to send email to and from verified email addresses and domains. For more information, go to the\n            <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES\n                Developer Guide</a>.\n        </important>\n        <p>The total size of the message cannot exceed 10 MB. This includes any attachments that are part of the message.</p>\n        <p>Amazon SES has a limit on the total number of recipients per message: The combined number\n            of To:, CC: and BCC: email addresses cannot exceed 50. If you need to send an email\n            message to a larger audience, you can divide your recipient list into groups of 50 or\n            fewer, and then call Amazon SES repeatedly to send the message to each group.\n        </p>\n        <p>For every message that you send, the total number of recipients (To:, CC: and BCC:) is\n            counted against your\n            <i>sending quota</i>\n            - the maximum number of emails you can send in\n            a 24-hour period. For information about your sending quota, go to the \"Managing Your Sending\n            Activity\" section of the<a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES\n                Developer Guide</a>.\n        </p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Wed, 17 Aug 2011 00:21:38 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=uN0lHIf14tmMBzwnkHzaWBLrBFvJAvyXCsfSYAvwLuc=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 230\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=SendRawEmail\n&RawMessage.Data=U3ViamVjdDogRXhhbXBsZQpGcm9tOiBleGFtcGxlQGFtYXpvbi5jb20KVG8\n6IGV4YW1wbGVAYW1h%0Aem9uLmNvbQpDb250ZW50LVR5cGU6IG11bHRpcGFydC9hbHRlcm5hdGl2\nZTsgYm91bmRhcnk9MDAx%0ANmU2OGY5ZDkyOWNiMDk2MDRhYWE4MzA0MgoKLS0wMDE2ZTY4ZjlkO\nTI5Y2IwOTYwNGFhYTgzMDQy%0ACkNvbnRlbnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1JU0\n8tODg1OS0xCgpCb2R5LgoKLS0w%0AMDE2ZTY4ZjlkOTI5Y2IwOTYwNGFhYTgzMDQyCkNvbnRlbnQ\ntVHlwZTogdGV4dC9odG1sOyBjaGFy%0Ac2V0PUlTTy04ODU5LTEKCkJvZHkuPGJyPgoKLS0wMDE2\nZTY4ZjlkOTI5Y2IwOTYwNGFhYTgzMDQy%0ALS0%3D%0A\n&Timestamp=2011-08-17T00%3A21%3A38.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<SendRawEmailResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <SendRawEmailResult>\n    <MessageId>00000131d51d6b36-1d4f9293-0aee-4503-b573-9ae4e70e9e38-000000</MessageId>\n  </SendRawEmailResult>\n  <ResponseMetadata>\n    <RequestId>e0abcdfa-c866-11e0-b6d0-273d09173b49</RequestId>\n  </ResponseMetadata>\n</SendRawEmailResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "SetIdentityDkimEnabled",
+      "input": {
+        "shape_name": "SetIdentityDkimEnabledRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "\n        <p>The identity for which DKIM signing should be enabled or disabled.</p>\n    ",
+            "required": true
+          },
+          "DkimEnabled": {
+            "shape_name": "Enabled",
+            "type": "boolean",
+            "documentation": "\n        <p>Sets whether DKIM signing is enabled for an identity.  Set to <code>true</code> to enable DKIM signing for this identity; \n            <code>false</code> to disable it. </p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to enable or disable DKIM signing for an identity.</p>\n    "
+      },
+      "output": {
+        "shape_name": "SetIdentityDkimEnabledResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "\n        <p>An empty element.  Receiving this element indicates that the request completed successfully.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Enables or disables Easy DKIM signing of email sent from an identity:</p>\n            <ul>\n                <li>If Easy DKIM\n            signing is enabled for a domain name identity (e.g., <code>example.com</code>), then Amazon SES will DKIM-sign\n            all email sent by addresses under that domain name (e.g.,\n                    <code>user@example.com</code>).</li>\n                <li>If Easy DKIM signing is enabled for an email address, then Amazon SES will DKIM-sign\n            all email sent by that email address.</li>\n            </ul>\n        <p>For email addresses (e.g., <code>user@example.com</code>), you can only enable Easy DKIM signing  if the\n        corresponding domain (e.g., <code>example.com</code>) has been set up for Easy DKIM using the AWS Console or \n            the <code>VerifyDomainDkim</code> action.</p>\n        <p>For more information about Easy DKIM signing, go to the \n        <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.</p>\n            \n        <examples>\n                <queryrequest>\n                    \nPOST / HTTP/1.1\nDate: Fri, 29 Jun 2012 22:42:08 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=u/hDNhYm87AV7LAPzouTBz6HJxUEuE5k96sLzYHjR24=, \n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 168\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=SetIdentityDkimEnabled\n&DkimEnabled=true&Identity=user%40example.com\n&Timestamp=2012-06-29T22%3A42%3A08.000Z\n&Version=2010-12-01\n          \n                </queryrequest>\n            <queryresponse>\n                \n<SetIdentityDkimEnabledResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <SetIdentityDkimEnabledResult/>\n  <ResponseMetadata>\n    <RequestId>7aa61362-c469-11e1-aee5-6bbb4608fbcc</RequestId>\n  </ResponseMetadata>\n</SetIdentityDkimEnabledResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "SetIdentityFeedbackForwardingEnabled",
+      "input": {
+        "shape_name": "SetIdentityFeedbackForwardingEnabledRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "\n         <p>The identity for which to set feedback notification forwarding. \n         Examples: <code>user@example.com</code>, <code>example.com</code>.</p>\n    ",
+            "required": true
+          },
+          "ForwardingEnabled": {
+            "shape_name": "Enabled",
+            "type": "boolean",
+            "documentation": "\n         <p>Sets whether Amazon SES will forward feedback notifications as email. <code>true</code> specifies \n         that Amazon SES will forward feedback notifications as email, in addition to any Amazon SNS topic publishing \n         otherwise specified. <code>false</code> specifies that Amazon SES\n         will publish feedback notifications only through Amazon SNS. This value can only be \n         set to <code>false</code> when  topics are specified for both <code>Bounce</code> and \n         <code>Complaint</code> topic types.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n    "
+      },
+      "output": {
+        "shape_name": "SetIdentityFeedbackForwardingEnabledResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "\n        <p>An empty element.  Receiving this element indicates that the request completed successfully.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Given an identity (email address or domain), enables or disables whether Amazon SES forwards \n        feedback notifications as email. Feedback forwarding may only be disabled when both complaint \n        and bounce topics are set. For more information about feedback notification, \n        see the <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.</p>\n        <examples>\n             <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Fri, 15 Jun 2012 20:31:21 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=juNpmD6UJaN+r7gcLa2ZNZpO3AmF1ZfOkD6PgxgNhRA=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 188\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=SetIdentityFeedbackForwardingEnabled\n&ForwardingEnabled=true\n&Identity=user%40example.com\n&Timestamp=2012-06-15T20%3A31%3A21.000Z\n&Version=2010-12-01\n\n          \n            </queryrequest>\n            <queryresponse>\n                \n<SetIdentityFeedbackForwardingEnabledResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <SetIdentityFeedbackForwardingEnabledResult/>\n  <ResponseMetadata>\n    <RequestId>299f4af4-b72a-11e1-901f-1fbd90e8104f</RequestId>\n  </ResponseMetadata>\n</SetIdentityFeedbackForwardingEnabledResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "SetIdentityNotificationTopic",
+      "input": {
+        "shape_name": "SetIdentityNotificationTopicRequest",
+        "type": "structure",
+        "members": {
+          "Identity": {
+            "shape_name": "Identity",
+            "type": "string",
+            "documentation": "\n        <p>The identity for which the topic will be set.  Examples: <code>user@example.com</code>, <code>example.com</code>.</p>\n    ",
+            "required": true
+          },
+          "NotificationType": {
+            "shape_name": "NotificationType",
+            "type": "string",
+            "enum": [
+              "Bounce",
+              "Complaint"
+            ],
+            "documentation": "\n        <p>The type of feedback notifications that will be published to the specified topic.</p>\n    ",
+            "required": true
+          },
+          "SnsTopic": {
+            "shape_name": "NotificationTopic",
+            "type": "string",
+            "documentation": "\n        <p>The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (Amazon SNS) topic. \n        If the parameter is ommited from the request or a null value is passed, the topic is cleared and publishing is disabled.</p>\n    "
+          }
+        },
+        "documentation": "\n        <p>Represents a request to set or clear an identity's notification topic.</p>\n    "
+      },
+      "output": {
+        "shape_name": "SetIdentityNotificationTopicResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "\n        <p>An empty element.  Receiving this element indicates that the request completed successfully.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Given an identity (email address or domain), sets the Amazon SNS topic to which Amazon SES will publish \n        bounce and complaint notifications for emails sent with that identity as the <code>Source</code>. \n        Publishing to topics may only be disabled when feedback forwarding is enabled. For more information about\n         feedback notification, see the\n          <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES Developer Guide</a>.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:27:54 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=3+KQ4VHx991T7Kb41HmFcZJxuHz4/6mf2H5FxY+tuLc=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 203\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=SetIdentityNotificationTopic\n&Identity=user@example.com\n&NotificationTopic=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3Aexample\nNotificationType=Bounce\n&Timestamp=2012-05-12T05%3A27%3A54.000Z&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<SetIdentityNotificationTopicResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <SetIdentityNotificationTopicResult/>\n  <ResponseMetadata>\n    <RequestId>299f4af4-b72a-11e1-901f-1fbd90e8104f</RequestId>\n  </ResponseMetadata>\n</SetIdentityNotificationTopicResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "VerifyDomainDkim",
+      "input": {
+        "shape_name": "VerifyDomainDkimRequest",
+        "type": "structure",
+        "members": {
+          "Domain": {
+            "shape_name": "Domain",
+            "type": "string",
+            "documentation": "\n        <p>The name of the domain to be verified for Easy DKIM signing.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to begin DKIM verification for a domain.</p>\n    "
+      },
+      "output": {
+        "shape_name": "VerifyDomainDkimResponse",
+        "type": "structure",
+        "members": {
+          "DkimTokens": {
+            "shape_name": "VerificationTokenList",
+            "type": "list",
+            "members": {
+              "shape_name": "VerificationToken",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n        <p>A set of DNS records (tokens) that must be published in the domain name's DNS for DKIM verification to complete, and which must remain published in order for DKIM signing to succeed. The tokens are CNAME DNS records pointing to DKIM public keys hosted by Amazon SES.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents the DNS records that must be published in the domain name's DNS to complete\n        DKIM setup.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Returns a set of DNS records, or <i>tokens</i>, that must be published in the domain\n            name's DNS to complete the DKIM verification process. These tokens are DNS\n                <code>CNAME</code> records that point to DKIM public keys hosted by Amazon SES. To\n            complete the DKIM verification process, these tokens must be published in the domain's\n            DNS.  The tokens must remain published in order for Easy DKIM signing to\n            function correctly.</p>\n\n        <p>After the tokens are added to the domain's DNS, Amazon SES will be able to\n            DKIM-sign email originating from that domain. To enable or disable Easy DKIM signing for\n            a domain, use the <code>SetIdentityDkimEnabled</code> action.</p>\n        <p>For more information about Easy DKIM, go to the <a href=\"http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\">Amazon SES\n                Developer Guide</a>.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Fri, 29 Jun 2012 22:43:30 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=roXhd+JhEjeBBo5tSERhrptRHSw4XHz6Ra4BXyHIduk=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 136\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyDomainDkim\n&Domain=example.com\n&Timestamp=2012-06-29T22%3A43%3A30.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyDomainDkimResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <VerifyDomainDkimResult>\n    <DkimTokens>\n      <member>vvjuipp74whm76gqoni7qmwwn4w4qusjiainivf6sf</member>\n      <member>3frqe7jn4obpuxjpwpolz6ipb3k5nvt2nhjpik2oy</member>\n      <member>wrqplteh7oodxnad7hsl4mixg2uavzneazxv5sxi2</member>\n    </DkimTokens>\n    </VerifyDomainDkimResult>\n    <ResponseMetadata>\n      <RequestId>9662c15b-c469-11e1-99d1-797d6ecd6414</RequestId>\n    </ResponseMetadata>\n</VerifyDomainDkimResponse>\n\n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "VerifyDomainIdentity",
+      "input": {
+        "shape_name": "VerifyDomainIdentityRequest",
+        "type": "structure",
+        "members": {
+          "Domain": {
+            "shape_name": "Domain",
+            "type": "string",
+            "documentation": "\n        <p>The domain to be verified.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to begin domain verification.</p>\n    "
+      },
+      "output": {
+        "shape_name": "VerifyDomainIdentityResponse",
+        "type": "structure",
+        "members": {
+          "VerificationToken": {
+            "shape_name": "VerificationToken",
+            "type": "string",
+            "documentation": "\n        <p>A TXT record that must be placed in the DNS settings for the domain, in order to complete domain verification.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a token used for domain ownership verification.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Verifies a domain.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:24:02 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=Wr+6RCfV+QgjLki2dtIrlecMK9+RrsDaTG5uWneDAu8=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 139\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyDomainIdentity\n&Domain=domain.com\n&Timestamp=2012-05-12T05%3A24%3A02.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyDomainIdentityResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <VerifyDomainIdentityResult>\n    <VerificationToken>QTKknzFg2J4ygwa+XvHAxUl1hyHoY0gVfZdfjIedHZ0=</VerificationToken>\n  </VerifyDomainIdentityResult>\n  <ResponseMetadata>\n    <RequestId>94f6368e-9bf2-11e1-8ee7-c98a0037a2b6</RequestId>\n  </ResponseMetadata>\n</VerifyDomainIdentityResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "VerifyEmailAddress",
+      "input": {
+        "shape_name": "VerifyEmailAddressRequest",
+        "type": "structure",
+        "members": {
+          "EmailAddress": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "\n        <p>The email address to be verified.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to begin email address verification.</p>\n    "
+      },
+      "output": null,
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Verifies an email address. This action causes a confirmation email message to be \n        sent to the specified address.</p>\n        <important>The VerifyEmailAddress action is deprecated as of the May 15, 2012 release\n         of Domain Verification. The VerifyEmailIdentity action is now preferred.</important>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:28:27 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=o9NK68jraFg5BnaTQiQhpxj2x1dGONOEFHHgsM6o5as=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 132\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyEmailAddress\n&EmailAddress=user%40example.com\n&Timestamp=2011-08-18T22%3A28%3A27.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyEmailAddressResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>8edd7eb2-c864-11e0-9f8f-3da8fc215a7e</RequestId>\n  </ResponseMetadata>\n</VerifyEmailAddressResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    },
+    {
+      "name": "VerifyEmailIdentity",
+      "input": {
+        "shape_name": "VerifyEmailIdentityRequest",
+        "type": "structure",
+        "members": {
+          "EmailAddress": {
+            "shape_name": "Address",
+            "type": "string",
+            "documentation": "\n        <p>The email address to be verified.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n        <p>Represents a request instructing the service to begin email address verification.</p>\n    "
+      },
+      "output": {
+        "shape_name": "VerifyEmailIdentityResponse",
+        "type": "structure",
+        "members": {
+        },
+        "documentation": "\n        <p>An empty element.  Receiving this element indicates that the request completed successfully.</p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>Verifies an email address. This action causes a confirmation email message\n         to be sent to the specified address.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:21:58 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=hQJj2pxypqJHQgU/BW1EZGUiNIYGhkQDf7tI6UgQ2qw=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 151\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyEmailIdentity\n&EmailAddress=user%40domain.com\n&Timestamp=2012-05-12T05%3A21%3A58.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyEmailIdentityResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <VerifyEmailIdentityResult/>\n  <ResponseMetadata>\n    <RequestId>47e0ef1a-9bf2-11e1-9279-0100e8cf109a</RequestId>\n  </ResponseMetadata>\n</VerifyEmailIdentityResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+    }
+  ]
+}

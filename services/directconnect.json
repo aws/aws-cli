@@ -1,0 +1,1346 @@
+{
+  "service_full_name": "AWS Direct Connect",
+  "type": "json",
+  "json_version": 1.1,
+  "signature_version": "v4",
+  "target_prefix": "OvertureService",
+  "api_version": "2012-10-25",
+  "endpoint_prefix": "directconnect",
+  "xmlnamespace": "http://directconnect.amazonaws.com/doc/2012-10-25/",
+  "documentation": "\n\t\t<p>AWS Direct Connect makes it easy to establish a dedicated network connection from your premises to Amazon Web Services (AWS).  Using AWS Direct Connect, you can establish private connectivity between AWS and your data center, office, or colocation environment, which in many cases can reduce your network costs, increase bandwidth throughput, and provide a more consistent network experience than Internet-based connections.</p>\n\n <p>The AWS Direct Connect API Reference provides descriptions, syntax, and usage examples for each of the actions and data types for AWS Direct Connect. Use the following links to get started using the <i>AWS Direct Connect API Reference</i>:</p>\n    <ul>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all AWS Direct Connect actions.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/API_Types.html\">Data Types</a>: An alphabetical list of all AWS Direct Connect data types.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n    </ul>\n\t",
+  "operations": [
+    {
+      "name": "CreateConnection",
+      "input": {
+        "shape_name": "CreateConnectionRequest",
+        "type": "structure",
+        "members": {
+          "offeringId": {
+            "shape_name": "OfferingId",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "connectionName": {
+            "shape_name": "ConnectionName",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "Connection",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionName": {
+            "shape_name": "ConnectionName",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionState": {
+            "shape_name": "ConnectionState",
+            "type": "string",
+            "enum": [
+              "requested",
+              "pending",
+              "available",
+              "deleted"
+            ],
+            "documentation": null
+          },
+          "region": {
+            "shape_name": "Region",
+            "type": "string",
+            "documentation": null
+          },
+          "location": {
+            "shape_name": "Location",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": "\n        A connection represents the physical network connection between the Direct Connect location and the customer.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n            <p>Creates a new network connection between the customer network and a specific AWS Direct Connect location.</p>\n\n            <p>A connection links your internal network to an AWS Direct Connect location over a standard 1 gigabit or 10 gigabit Ethernet fiber-optic cable. One end of the cable is connected to your router, the other to an AWS Direct Connect router. A Direct Connect location provides access to Amazon Web Services in the region it is associated with. You can establish connections with AWS Direct Connect locations in multiple regions, but a connection in one region does not provide connectivity to other regions.</p>\n\t"
+    },
+    {
+      "name": "CreatePrivateVirtualInterface",
+      "input": {
+        "shape_name": "CreatePrivateVirtualInterfaceRequest",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "newPrivateVirtualInterface": {
+            "shape_name": "NewPrivateVirtualInterface",
+            "type": "structure",
+            "members": {
+              "virtualInterfaceName": {
+                "shape_name": "VirtualInterfaceName",
+                "type": "string",
+                "documentation": null
+              },
+              "vlan": {
+                "shape_name": "VLAN",
+                "type": "integer",
+                "documentation": null
+              },
+              "asn": {
+                "shape_name": "ASN",
+                "type": "integer",
+                "documentation": null
+              },
+              "authKey": {
+                "shape_name": "BGPAuthKey",
+                "type": "string",
+                "documentation": null
+              },
+              "amazonAddress": {
+                "shape_name": "AmazonAddress",
+                "type": "string",
+                "documentation": null
+              },
+              "customerAddress": {
+                "shape_name": "CustomerAddress",
+                "type": "string",
+                "documentation": null
+              },
+              "virtualGatewayId": {
+                "shape_name": "VirtualGatewayId",
+                "type": "string",
+                "documentation": null
+              }
+            },
+            "documentation": "\n\t\t<p>Detailed information of the private virtual interface to be created.</p>\n\t\t<p>Default: None</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "VirtualInterface",
+        "type": "structure",
+        "members": {
+          "virtualInterfaceId": {
+            "shape_name": "VirtualInterfaceId",
+            "type": "string",
+            "documentation": null
+          },
+          "location": {
+            "shape_name": "Location",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "virtualInterfaceType": {
+            "shape_name": "VirtualInterfaceType",
+            "type": "string",
+            "documentation": null
+          },
+          "virtualInterfaceName": {
+            "shape_name": "VirtualInterfaceName",
+            "type": "string",
+            "documentation": null
+          },
+          "vlan": {
+            "shape_name": "VLAN",
+            "type": "integer",
+            "documentation": null
+          },
+          "asn": {
+            "shape_name": "ASN",
+            "type": "integer",
+            "documentation": null
+          },
+          "authKey": {
+            "shape_name": "BGPAuthKey",
+            "type": "string",
+            "documentation": null
+          },
+          "amazonAddress": {
+            "shape_name": "AmazonAddress",
+            "type": "string",
+            "documentation": null
+          },
+          "customerAddress": {
+            "shape_name": "CustomerAddress",
+            "type": "string",
+            "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2</p>\n\t"
+          },
+          "virtualInterfaceState": {
+            "shape_name": "VirtualInterfaceState",
+            "type": "string",
+            "enum": [
+              "verifying",
+              "pending",
+              "available",
+              "deleting",
+              "deleted"
+            ],
+            "documentation": null
+          },
+          "customerRouterConfig": {
+            "shape_name": "RouterConfig",
+            "type": "string",
+            "documentation": "\n                Information for generating the customer router configuration.\n\t"
+          },
+          "virtualGatewayId": {
+            "shape_name": "VirtualGatewayId",
+            "type": "string",
+            "documentation": null
+          },
+          "routeFilterPrefixes": {
+            "shape_name": "RouteFilterPrefixList",
+            "type": "list",
+            "members": {
+              "shape_name": "RouteFilterPrefix",
+              "type": "structure",
+              "members": {
+                "cidr": {
+                  "shape_name": "CIDR",
+                  "type": "string",
+                  "documentation": "\n                <p>CIDR notation for the advertised route. Multiple routes are separated by commas</p>\n                <p>Example: 10.10.10.0/24,10.10.11.0/24</p>\n\t"
+                }
+              },
+              "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
+            },
+            "documentation": null
+          }
+        },
+        "documentation": "\n                A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n\t\tCreates a new private virtual interface.  A virtual interface is the VLAN that transports AWS Direct Connect traffic.  A private virtual interface supports sending traffic to a single Virtual Private Cloud (VPC).\n\t"
+    },
+    {
+      "name": "CreatePublicVirtualInterface",
+      "input": {
+        "shape_name": "CreatePublicVirtualInterfaceRequest",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "newPublicVirtualInterface": {
+            "shape_name": "NewPublicVirtualInterface",
+            "type": "structure",
+            "members": {
+              "virtualInterfaceName": {
+                "shape_name": "VirtualInterfaceName",
+                "type": "string",
+                "documentation": null
+              },
+              "vlan": {
+                "shape_name": "VLAN",
+                "type": "integer",
+                "documentation": null
+              },
+              "asn": {
+                "shape_name": "ASN",
+                "type": "integer",
+                "documentation": null
+              },
+              "authKey": {
+                "shape_name": "BGPAuthKey",
+                "type": "string",
+                "documentation": null
+              },
+              "amazonAddress": {
+                "shape_name": "AmazonAddress",
+                "type": "string",
+                "documentation": null
+              },
+              "customerAddress": {
+                "shape_name": "CustomerAddress",
+                "type": "string",
+                "documentation": null
+              },
+              "routeFilterPrefixes": {
+                "shape_name": "RouteFilterPrefixList",
+                "type": "list",
+                "members": {
+                  "shape_name": "RouteFilterPrefix",
+                  "type": "structure",
+                  "members": {
+                    "cidr": {
+                      "shape_name": "CIDR",
+                      "type": "string",
+                      "documentation": "\n                <p>CIDR notation for the advertised route. Multiple routes are separated by commas</p>\n                <p>Example: 10.10.10.0/24,10.10.11.0/24</p>\n\t"
+                    }
+                  },
+                  "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
+                },
+                "documentation": null
+              }
+            },
+            "documentation": "\n\t\t<p>Detailed information of the public virtual interface to be created.</p>\n\t\t<p>Default: None</p>\n\t"
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "VirtualInterface",
+        "type": "structure",
+        "members": {
+          "virtualInterfaceId": {
+            "shape_name": "VirtualInterfaceId",
+            "type": "string",
+            "documentation": null
+          },
+          "location": {
+            "shape_name": "Location",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "virtualInterfaceType": {
+            "shape_name": "VirtualInterfaceType",
+            "type": "string",
+            "documentation": null
+          },
+          "virtualInterfaceName": {
+            "shape_name": "VirtualInterfaceName",
+            "type": "string",
+            "documentation": null
+          },
+          "vlan": {
+            "shape_name": "VLAN",
+            "type": "integer",
+            "documentation": null
+          },
+          "asn": {
+            "shape_name": "ASN",
+            "type": "integer",
+            "documentation": null
+          },
+          "authKey": {
+            "shape_name": "BGPAuthKey",
+            "type": "string",
+            "documentation": null
+          },
+          "amazonAddress": {
+            "shape_name": "AmazonAddress",
+            "type": "string",
+            "documentation": null
+          },
+          "customerAddress": {
+            "shape_name": "CustomerAddress",
+            "type": "string",
+            "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2</p>\n\t"
+          },
+          "virtualInterfaceState": {
+            "shape_name": "VirtualInterfaceState",
+            "type": "string",
+            "enum": [
+              "verifying",
+              "pending",
+              "available",
+              "deleting",
+              "deleted"
+            ],
+            "documentation": null
+          },
+          "customerRouterConfig": {
+            "shape_name": "RouterConfig",
+            "type": "string",
+            "documentation": "\n                Information for generating the customer router configuration.\n\t"
+          },
+          "virtualGatewayId": {
+            "shape_name": "VirtualGatewayId",
+            "type": "string",
+            "documentation": null
+          },
+          "routeFilterPrefixes": {
+            "shape_name": "RouteFilterPrefixList",
+            "type": "list",
+            "members": {
+              "shape_name": "RouteFilterPrefix",
+              "type": "structure",
+              "members": {
+                "cidr": {
+                  "shape_name": "CIDR",
+                  "type": "string",
+                  "documentation": "\n                <p>CIDR notation for the advertised route. Multiple routes are separated by commas</p>\n                <p>Example: 10.10.10.0/24,10.10.11.0/24</p>\n\t"
+                }
+              },
+              "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
+            },
+            "documentation": null
+          }
+        },
+        "documentation": "\n                A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n\t\tCreates a new public virtual interface.  A virtual interface is the VLAN that transports AWS Direct Connect traffic. A public virtual interface supports sending traffic to public services of AWS such as Amazon Simple Storage Service (Amazon S3). \n\t"
+    },
+    {
+      "name": "DeleteConnection",
+      "input": {
+        "shape_name": "DeleteConnectionRequest",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "Connection",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionName": {
+            "shape_name": "ConnectionName",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionState": {
+            "shape_name": "ConnectionState",
+            "type": "string",
+            "enum": [
+              "requested",
+              "pending",
+              "available",
+              "deleted"
+            ],
+            "documentation": null
+          },
+          "region": {
+            "shape_name": "Region",
+            "type": "string",
+            "documentation": null
+          },
+          "location": {
+            "shape_name": "Location",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": "\n        A connection represents the physical network connection between the Direct Connect location and the customer.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n            <p>Deletes the connection.</p>\n            <p>Deleting a connection only stops the AWS Direct Connect port and data transfer charges. You separately need to cancel any services or charges for cross-connects or network circuits that connect you to the AWS Direct Connect location with the providers of those services.</p>\n\t"
+    },
+    {
+      "name": "DeleteVirtualInterface",
+      "input": {
+        "shape_name": "DeleteVirtualInterfaceRequest",
+        "type": "structure",
+        "members": {
+          "virtualInterfaceId": {
+            "shape_name": "VirtualInterfaceId",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "DeleteVirtualInterfaceResponse",
+        "type": "structure",
+        "members": {
+          "virtualInterfaceState": {
+            "shape_name": "VirtualInterfaceState",
+            "type": "string",
+            "enum": [
+              "verifying",
+              "pending",
+              "available",
+              "deleting",
+              "deleted"
+            ],
+            "documentation": null
+          }
+        },
+        "documentation": "\n\t\tThe response received when DeleteVirtualInterface is called.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n\t\tDeletes a virtual interface.\n\t"
+    },
+    {
+      "name": "DescribeConnectionDetail",
+      "input": {
+        "shape_name": "DescribeConnectionDetailRequest",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "ConnectionDetail",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionName": {
+            "shape_name": "ConnectionName",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionState": {
+            "shape_name": "ConnectionState",
+            "type": "string",
+            "enum": [
+              "requested",
+              "pending",
+              "available",
+              "deleted"
+            ],
+            "documentation": null
+          },
+          "region": {
+            "shape_name": "Region",
+            "type": "string",
+            "documentation": null
+          },
+          "location": {
+            "shape_name": "Location",
+            "type": "string",
+            "documentation": null
+          },
+          "bandwidth": {
+            "shape_name": "Bandwidth",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionCosts": {
+            "shape_name": "ConnectionCostList",
+            "type": "list",
+            "members": {
+              "shape_name": "ConnectionCost",
+              "type": "structure",
+              "members": {
+                "name": {
+                  "shape_name": "CostName",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The name of the cost item.</p>\n\t\t<p>Example: Inbound data transfer</p>\n\t"
+                },
+                "unit": {
+                  "shape_name": "CostUnit",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The unit used in cost calculation.</p>\n\t\t<p>Example: \"Gbps,\" if the price is calculated based on Gbps.</p>\n\t"
+                },
+                "currencyCode": {
+                  "shape_name": "CostCurrencyCode",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Currency code based on ISO 4217.</p>\n\t\t<p>Example: \"USD\" for US dollar.</p>\n\t"
+                },
+                "amount": {
+                  "shape_name": "CostAmount",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The amount of charge per unit.</p>\n\t\t<p>Example: 0.01</p>\n\t"
+                }
+              },
+              "documentation": "\n\t\tCost description.\n\t"
+            },
+            "documentation": null
+          },
+          "orderSteps": {
+            "shape_name": "ConnectionOrderSteps",
+            "type": "list",
+            "members": {
+              "shape_name": "ConnectionOrderStep",
+              "type": "structure",
+              "members": {
+                "number": {
+                  "shape_name": "StepNumber",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Number of an order step.</p>\n\t\t<p>Example: 1</p>\n\t"
+                },
+                "name": {
+                  "shape_name": "StepName",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Name of the order step.</p>\n                <p>Example: Authorize cross connect</p>\n\t"
+                },
+                "description": {
+                  "shape_name": "StepDescription",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>More detailed description of the order step.</p>\n                <p>Example: \"<i>AWS will prepare your connection and send you an email with an LOA to provide to the colocation provider</i>\"</p>\n\t"
+                },
+                "owner": {
+                  "shape_name": "StepOwner",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The entity who owns the completion of the order step.</p>\n                <p>Example: AWS, Customer</p>\n\t"
+                },
+                "sla": {
+                  "shape_name": "StepSLA",
+                  "type": "integer",
+                  "documentation": "\n\t\t<p>Time to complete the order step in minutes.</p>\n                <p>Example: 60</p>\n\t"
+                },
+                "stepState": {
+                  "shape_name": "StepState",
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "completed"
+                  ],
+                  "documentation": "\n\t\tState of the connection step.\n\t\t<ul>\n                <li>\n<b>Pending</b>: This step is not yet completed.</li>\n                <li>\n<b>Completed</b>: This step has been completed</li>\n                </ul>\n\t"
+                }
+              },
+              "documentation": "\n\t\tA step in the connection order process.\n\t"
+            },
+            "documentation": null
+          }
+        },
+        "documentation": "\n\t\tAdditional information about connection order steps.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n                <p>Displays details about a specific connection including the order steps for the connection and the current state of the connection order.</p>\n\t"
+    },
+    {
+      "name": "DescribeConnections",
+      "input": {
+        "shape_name": "DescribeConnectionsRequest",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "Connections",
+        "type": "structure",
+        "members": {
+          "connections": {
+            "shape_name": "ConnectionList",
+            "type": "list",
+            "members": {
+              "shape_name": "Connection",
+              "type": "structure",
+              "members": {
+                "connectionId": {
+                  "shape_name": "ConnectionId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "connectionName": {
+                  "shape_name": "ConnectionName",
+                  "type": "string",
+                  "documentation": null
+                },
+                "connectionState": {
+                  "shape_name": "ConnectionState",
+                  "type": "string",
+                  "enum": [
+                    "requested",
+                    "pending",
+                    "available",
+                    "deleted"
+                  ],
+                  "documentation": null
+                },
+                "region": {
+                  "shape_name": "Region",
+                  "type": "string",
+                  "documentation": null
+                },
+                "location": {
+                  "shape_name": "Location",
+                  "type": "string",
+                  "documentation": null
+                }
+              },
+              "documentation": "\n        A connection represents the physical network connection between the Direct Connect location and the customer.\n\t"
+            },
+            "documentation": "\n\t\tA list of connections.\n\t"
+          }
+        },
+        "documentation": "\n\t\tA structure containing a list of connections.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>Displays all connections in this region.</p>\n\t\t<p>If a connection ID is provided, it will only return this particular connection.</p>\n\t"
+    },
+    {
+      "name": "DescribeOfferingDetail",
+      "input": {
+        "shape_name": "DescribeOfferingDetailRequest",
+        "type": "structure",
+        "members": {
+          "offeringId": {
+            "shape_name": "OfferingId",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "OfferingDetail",
+        "type": "structure",
+        "members": {
+          "offeringId": {
+            "shape_name": "OfferingId",
+            "type": "string",
+            "documentation": null
+          },
+          "region": {
+            "shape_name": "Region",
+            "type": "string",
+            "documentation": null
+          },
+          "location": {
+            "shape_name": "Location",
+            "type": "string",
+            "documentation": null
+          },
+          "offeringName": {
+            "shape_name": "OfferingName",
+            "type": "string",
+            "documentation": null
+          },
+          "description": {
+            "shape_name": "Description",
+            "type": "string",
+            "documentation": null
+          },
+          "bandwidth": {
+            "shape_name": "Bandwidth",
+            "type": "string",
+            "documentation": null
+          },
+          "connectionCosts": {
+            "shape_name": "ConnectionCostList",
+            "type": "list",
+            "members": {
+              "shape_name": "ConnectionCost",
+              "type": "structure",
+              "members": {
+                "name": {
+                  "shape_name": "CostName",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The name of the cost item.</p>\n\t\t<p>Example: Inbound data transfer</p>\n\t"
+                },
+                "unit": {
+                  "shape_name": "CostUnit",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The unit used in cost calculation.</p>\n\t\t<p>Example: \"Gbps,\" if the price is calculated based on Gbps.</p>\n\t"
+                },
+                "currencyCode": {
+                  "shape_name": "CostCurrencyCode",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Currency code based on ISO 4217.</p>\n\t\t<p>Example: \"USD\" for US dollar.</p>\n\t"
+                },
+                "amount": {
+                  "shape_name": "CostAmount",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The amount of charge per unit.</p>\n\t\t<p>Example: 0.01</p>\n\t"
+                }
+              },
+              "documentation": "\n\t\tCost description.\n\t"
+            },
+            "documentation": null
+          },
+          "orderSteps": {
+            "shape_name": "OfferingOrderSteps",
+            "type": "list",
+            "members": {
+              "shape_name": "OfferingOrderStep",
+              "type": "structure",
+              "members": {
+                "number": {
+                  "shape_name": "StepNumber",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Number of an order step.</p>\n\t\t<p>Example: 1</p>\n\t"
+                },
+                "name": {
+                  "shape_name": "StepName",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Name of the order step.</p>\n                <p>Example: Authorize cross connect</p>\n\t"
+                },
+                "description": {
+                  "shape_name": "StepDescription",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>More detailed description of the order step.</p>\n                <p>Example: \"<i>AWS will prepare your connection and send you an email with an LOA to provide to the colocation provider</i>\"</p>\n\t"
+                },
+                "owner": {
+                  "shape_name": "StepOwner",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>The entity who owns the completion of the order step.</p>\n                <p>Example: AWS</p>\n\t"
+                },
+                "sla": {
+                  "shape_name": "StepSLA",
+                  "type": "integer",
+                  "documentation": "\n\t\t<p>Time to complete the order step in minutes.</p>\n                <p>Example: 60</p>\n\t"
+                }
+              },
+              "documentation": "\n\t\tA step in the offering order process.\n\t"
+            },
+            "documentation": null
+          }
+        },
+        "documentation": "\n\t\tA structure containing detailed information about an offering.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n                <p>Displays additional ordering step details for a specified offering.</p>\n\t"
+    },
+    {
+      "name": "DescribeOfferings",
+      "input": null,
+      "output": {
+        "shape_name": "Offerings",
+        "type": "structure",
+        "members": {
+          "offerings": {
+            "shape_name": "OfferingList",
+            "type": "list",
+            "members": {
+              "shape_name": "Offering",
+              "type": "structure",
+              "members": {
+                "offeringId": {
+                  "shape_name": "OfferingId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "region": {
+                  "shape_name": "Region",
+                  "type": "string",
+                  "documentation": null
+                },
+                "location": {
+                  "shape_name": "Location",
+                  "type": "string",
+                  "documentation": null
+                },
+                "offeringName": {
+                  "shape_name": "OfferingName",
+                  "type": "string",
+                  "documentation": "\n\t\t<p>Name of the offering.</p>\n                <p>Example: \"<i>1Gbps Cross Connect in us-east-1 via Equinix</i>\"</p>\n                <p>Default: None</p>\n\t"
+                },
+                "description": {
+                  "shape_name": "Description",
+                  "type": "string",
+                  "documentation": null
+                },
+                "bandwidth": {
+                  "shape_name": "Bandwidth",
+                  "type": "string",
+                  "documentation": null
+                },
+                "connectionCosts": {
+                  "shape_name": "ConnectionCostList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ConnectionCost",
+                    "type": "structure",
+                    "members": {
+                      "name": {
+                        "shape_name": "CostName",
+                        "type": "string",
+                        "documentation": "\n\t\t<p>The name of the cost item.</p>\n\t\t<p>Example: Inbound data transfer</p>\n\t"
+                      },
+                      "unit": {
+                        "shape_name": "CostUnit",
+                        "type": "string",
+                        "documentation": "\n\t\t<p>The unit used in cost calculation.</p>\n\t\t<p>Example: \"Gbps,\" if the price is calculated based on Gbps.</p>\n\t"
+                      },
+                      "currencyCode": {
+                        "shape_name": "CostCurrencyCode",
+                        "type": "string",
+                        "documentation": "\n\t\t<p>Currency code based on ISO 4217.</p>\n\t\t<p>Example: \"USD\" for US dollar.</p>\n\t"
+                      },
+                      "amount": {
+                        "shape_name": "CostAmount",
+                        "type": "string",
+                        "documentation": "\n\t\t<p>The amount of charge per unit.</p>\n\t\t<p>Example: 0.01</p>\n\t"
+                      }
+                    },
+                    "documentation": "\n\t\tCost description.\n\t"
+                  },
+                  "documentation": null
+                }
+              },
+              "documentation": "\n\t\tAn offer to create a new connection for a specific price and terms.\n\t"
+            },
+            "documentation": "\n\t\tA list of offerings.\n\t"
+          }
+        },
+        "documentation": "\n\t\tA structure containing a list of offerings.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>Describes one or more of the offerings that are currently available for creating new connections.  The results include offerings for all regions.</p>\n                <p>To order a new connection you need to select a specific offering ID.</p>\n\t"
+    },
+    {
+      "name": "DescribeVirtualGateways",
+      "input": null,
+      "output": {
+        "shape_name": "VirtualGateways",
+        "type": "structure",
+        "members": {
+          "virtualGateways": {
+            "shape_name": "VirtualGatewayList",
+            "type": "list",
+            "members": {
+              "shape_name": "VirtualGateway",
+              "type": "structure",
+              "members": {
+                "virtualGatewayId": {
+                  "shape_name": "VirtualGatewayId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "virtualGatewayState": {
+                  "shape_name": "VirtualGatewayState",
+                  "type": "string",
+                  "documentation": null
+                }
+              },
+              "documentation": "\n\t\t<p>You can create one or more Direct Connect private virtual interfaces linking to your virtual private gateway.</p>\n\t\t<p>Virtual private gateway can be managed via AWS Virtual Private Cloud Console or the <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway API</a>.</p>\n\t"
+            },
+            "documentation": "\n\t\tA list of virtual gateways.\n\t"
+          }
+        },
+        "documentation": "\n\t\tA structure containing a list of virtual gateways.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n\t\t<p>Returns a list of virtual private gateways owned by the AWS account.</p>\n\t\t<p>You can create one or more AWS Direct Connect private virtual interfaces linking to a virtual private gateway. A virtual private gateway can be managed via Amazon Virtual Private Cloud (VPC) console or the <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway</a> action.</p>\n\t"
+    },
+    {
+      "name": "DescribeVirtualInterfaces",
+      "input": {
+        "shape_name": "DescribeVirtualInterfacesRequest",
+        "type": "structure",
+        "members": {
+          "connectionId": {
+            "shape_name": "ConnectionId",
+            "type": "string",
+            "documentation": null
+          },
+          "virtualInterfaceId": {
+            "shape_name": "VirtualInterfaceId",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": "\n\t"
+      },
+      "output": {
+        "shape_name": "VirtualInterfaces",
+        "type": "structure",
+        "members": {
+          "virtualInterfaces": {
+            "shape_name": "VirtualInterfaceList",
+            "type": "list",
+            "members": {
+              "shape_name": "VirtualInterface",
+              "type": "structure",
+              "members": {
+                "virtualInterfaceId": {
+                  "shape_name": "VirtualInterfaceId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "location": {
+                  "shape_name": "Location",
+                  "type": "string",
+                  "documentation": null
+                },
+                "connectionId": {
+                  "shape_name": "ConnectionId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "virtualInterfaceType": {
+                  "shape_name": "VirtualInterfaceType",
+                  "type": "string",
+                  "documentation": null
+                },
+                "virtualInterfaceName": {
+                  "shape_name": "VirtualInterfaceName",
+                  "type": "string",
+                  "documentation": null
+                },
+                "vlan": {
+                  "shape_name": "VLAN",
+                  "type": "integer",
+                  "documentation": null
+                },
+                "asn": {
+                  "shape_name": "ASN",
+                  "type": "integer",
+                  "documentation": null
+                },
+                "authKey": {
+                  "shape_name": "BGPAuthKey",
+                  "type": "string",
+                  "documentation": null
+                },
+                "amazonAddress": {
+                  "shape_name": "AmazonAddress",
+                  "type": "string",
+                  "documentation": null
+                },
+                "customerAddress": {
+                  "shape_name": "CustomerAddress",
+                  "type": "string",
+                  "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2</p>\n\t"
+                },
+                "virtualInterfaceState": {
+                  "shape_name": "VirtualInterfaceState",
+                  "type": "string",
+                  "enum": [
+                    "verifying",
+                    "pending",
+                    "available",
+                    "deleting",
+                    "deleted"
+                  ],
+                  "documentation": null
+                },
+                "customerRouterConfig": {
+                  "shape_name": "RouterConfig",
+                  "type": "string",
+                  "documentation": "\n                Information for generating the customer router configuration.\n\t"
+                },
+                "virtualGatewayId": {
+                  "shape_name": "VirtualGatewayId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "routeFilterPrefixes": {
+                  "shape_name": "RouteFilterPrefixList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "RouteFilterPrefix",
+                    "type": "structure",
+                    "members": {
+                      "cidr": {
+                        "shape_name": "CIDR",
+                        "type": "string",
+                        "documentation": "\n                <p>CIDR notation for the advertised route. Multiple routes are separated by commas</p>\n                <p>Example: 10.10.10.0/24,10.10.11.0/24</p>\n\t"
+                      }
+                    },
+                    "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
+                  },
+                  "documentation": null
+                }
+              },
+              "documentation": "\n                A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.\n\t"
+            },
+            "documentation": "\n\t\tA list of virtual interfaces.\n\t"
+          }
+        },
+        "documentation": "\n\t\tA structure containing a list of virtual interfaces.\n\t"
+      },
+      "errors": [
+        {
+          "shape_name": "DirectConnectServerException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tA server-side error occurred during the API call.  The error message will contain additional details about the cause.\n\t"
+        },
+        {
+          "shape_name": "DirectConnectClientException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
+        }
+      ],
+      "documentation": "\n        <p>Displays all virtual interfaces for an AWS account. Virtual interfaces deleted fewer than 15 minutes before DescribeVirtualInterfaces is called are also returned.  If a virtual interface ID is included then only a single virtual interface will be returned.</p>\n        <p> A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.</p>\n\t"
+    }
+  ]
+}

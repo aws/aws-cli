@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-from botocore.compat import unittest
+from tests import unittest
 from botocore.translate import ModelFiles, translate, merge_dicts
 
 

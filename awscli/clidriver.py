@@ -220,13 +220,14 @@ class CLIDriver(object):
             else:
                 value = getattr(args, param.cli_name)
             if value:
-                if isinstance(value, list) and len(value) == 1:
-                    temp = value[0]
-                else:
-                    temp = value
-                temp = get_paramfile(self.session, temp)
-                if temp:
-                    value = temp
+                if not hasattr(param, 'no_paramfile'):
+                    if isinstance(value, list) and len(value) == 1:
+                        temp = value[0]
+                    else:
+                        temp = value
+                    temp = get_paramfile(self.session, temp)
+                    if temp:
+                        value = temp
                 param_dict[param.py_name] = self.unpack_cli_arg(param, value)
 
     def display_error_and_exit(self, ex):

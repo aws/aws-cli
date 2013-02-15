@@ -5,3 +5,4 @@ Botocore Development
    :maxdepth: 2
 
    modelbuild
+   modelannotate

@@ -147,3 +147,7 @@ class UnknownServiceStyle(BotoCoreError):
     :ivar service_style: The style requested.
     """
     fmt = 'The service style ({service_style}) is not understood.'
+
+
+class PaginationError(BotoCoreError):
+    fmt = 'Error during pagination: {message}'

@@ -23,6 +23,7 @@
 import logging
 from .parameters import get_parameter
 from .exceptions import MissingParametersError
+from .paginate import Paginator
 from . import BotoCoreObject
 
 logger = logging.getLogger(__name__)
@@ -30,13 +31,18 @@ logger = logging.getLogger(__name__)
 
 class Operation(BotoCoreObject):
 
-    def __init__(self, service, op_data):
+    _DEFAULT_PAGINATOR_CLS = Paginator
+
+    def __init__(self, service, op_data, paginator_cls=None):
         self.input = {}
         self.output = {}
         BotoCoreObject.__init__(self, **op_data)
         self.service = service
         self.type = 'operation'
         self._get_parameters()
+        if paginator_cls is None:
+            paginator_cls = self._DEFAULT_PAGINATOR_CLS
+        self._paginator_cls = paginator_cls
 
     def __repr__(self):
         return 'Operation:%s' % self.name
@@ -45,6 +51,16 @@ class Operation(BotoCoreObject):
         logger.debug(kwargs)
         params = self.build_parameters(**kwargs)
         return endpoint.make_request(self, params)
+
+    @property
+    def can_paginate(self):
+        return hasattr(self, 'pagination')
+
+    def paginate(self, endpoint, **kwargs):
+        if not self.can_paginate:
+            raise TypeError("Operation cannot be paginated: %s" % self)
+        paginator = self._paginator_cls(self)
+        return paginator.paginate(endpoint, **kwargs)
 
     def _get_parameters(self):
         """

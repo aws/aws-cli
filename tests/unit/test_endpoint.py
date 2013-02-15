@@ -20,7 +20,7 @@
 # IN THE SOFTWARE.
 #
 
-from botocore.compat import unittest
+from tests import unittest
 
 from mock import Mock
 from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \

@@ -19,9 +19,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-  reference/index
-  tutorial/index
-  complex_datatypes
+   reference/index
+   tutorial/index
+   development/index
+
 
 Indices and tables
 ==================

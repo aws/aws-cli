@@ -166,6 +166,45 @@ and use this:
 
     $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions /path/to/port22.json
 
+File-based Parameter Input
+--------------------------
+Some parameter values are so large or so complex that it would be easier
+to place the parameter value in a file and refer to that file rather than
+entering the value directly on the command line.
+
+Let's use the ``authorize-security-group-ingress`` command shown above.
+Rather than provide the value of the ``--ip-permissions`` parameter directly
+in the command, you could first store the values in a file.  Let's call
+the file ip_perms.json.
+
+    {"from_port":22,
+     "to_port":22,
+     "ip_protocol":"tcp",
+     "ip_ranges":["0.0.0.0/0"]}
+
+Then, we could make the same call as above like this:
+
+    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions file:ip_perms.json
+
+The ``file:`` prefix on the parameter value signals that the parameter value
+is actually a reference to a file that contains the actual parameter value.
+aws-cli will open the file, read the value and pass use that value as the
+parameter value.
+
+This is also useful when the parameter is really referring to file-based
+data.  For example, the ``--user-data`` option of the ``aws ec2 run-instances``
+command or the ``--public-key-material`` parameter of the
+``aws ec2 import-key-pair`` command.
+
+
+URI-based Parameter Input
+-------------------------
+Similar to the file-based input described above, aws-cli also includes a
+way to use data from a URI as the value of a parameter.  The idea is exactly
+the same except the prefix used is ``https:`` or ``http:``.
+
+    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
+
 Command Output
 ==============
 

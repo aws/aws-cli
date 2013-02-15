@@ -1,1343 +1,1345 @@
 {
-  "service_full_name": "Amazon Simple Notification Service",
-  "service_abbreviation": "Amazon SNS",
-  "type": "query",
-  "signature_version": "v2",
-  "result_wrapped": true,
-  "api_version": "2010-03-31",
-  "endpoint_prefix": "sns",
-  "xmlnamespace": "http://sns.amazonaws.com/doc/2010-03-31/",
-  "documentation": "\n    <fullname>Amazon Simple Notification Service</fullname>\n    \n   \t<p>This is the <i>Amazon Simple Notification Service (Amazon SNS) API Reference</i>. This guide provides detailed\n\t\tinformation about Amazon SNS actions, data types, parameters, and\n\t\terrors. For detailed information about Amazon SNS features and their associated API calls,\n\t\tgo to the <a href=\"http://docs.amazonwebservices.com/sns/latest/gsg/\">Amazon SNS Getting Started Guide</a>.\n\t</p>\n\t<p>Amazon Simple Notification Service is a web service that enables you to build distributed web-enabled applications. \n    \tApplications can use Amazon SNS to easily push real-time notification messages \n    \tto interested subscribers over multiple delivery protocols. For more information about this product\n\t\tgo to <a href=\"http://aws.amazon.com/sns/\">http://aws.amazon.com/sns</a>.\n\t</p>\n\n\t<p>Use the following links to get started using the <i>Amazon Simple Notification Service API Reference</i>:</p>\n\t<ul>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/API_Operations.html\">Actions</a>: An alphabetical list of all Amazon SNS actions.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/API_Types.html\">Data Types</a>: An alphabetical list of all Amazon SNS data types.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n\t\t<li>\n<a href=\"http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl\">WSDL Location</a>: http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl</li>\n\t</ul>\n  ",
-  "operations": [
-    {
-      "name": "AddPermission",
-      "input": {
-        "shape_name": "AddPermissionInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic whose access control policy you wish to modify.</p>\n  ",
-            "required": true
-          },
-          "Label": {
-            "shape_name": "label",
-            "type": "string",
-            "documentation": "\n    <p>A unique identifier for the new policy statement.</p>\n  ",
-            "required": true
-          },
-          "AWSAccountId": {
-            "shape_name": "DelegatesList",
-            "type": "list",
-            "members": {
-              "shape_name": "delegate",
-              "type": "string",
-              "documentation": null
-            },
-            "documentation": "\n    <p>The AWS account IDs of the users (principals) who will be given access to the specified\n    actions. The users must have AWS accounts, but do not need to be signed up \n    for this service. <!--For information about locating the AWS\n        account identification, see <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/index.html?AWSCredentials.html\">Your\n        AWS Identifiers</aulink> in the &service; Developer Guide.--></p>\n  ",
-            "required": true
-          },
-          "ActionName": {
-            "shape_name": "ActionsList",
-            "type": "list",
-            "members": {
-              "shape_name": "action",
-              "type": "string",
-              "documentation": null
-            },
-            "documentation": "\n    <p>The action you want to allow for the specified principal(s).</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": null,
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The AddPermission action adds a statement to a topic's access control policy, granting access for the specified AWS accounts to the specified actions.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Test\n  &ActionName.member.1=Publish\n  &ActionName.member.2=GetTopicAttributes\n  &Label=NewPermission\n  &AWSAccountId.member.1=987654321000\n  &AWSAccountId.member.2=876543210000\n  &Action=AddPermission\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=k%2FAU%2FKp13pjndwJ7rr1sZszy6MZMlOhRBCHx1ZaZFiw%3D\n\n </queryrequest>\n <queryresponse>\n  \n<AddPermissionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>6a213e4e-33a8-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</AddPermissionResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "ConfirmSubscription",
-      "input": {
-        "shape_name": "ConfirmSubscriptionInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic for which you wish to confirm a subscription.</p>\n  ",
-            "required": true
-          },
-          "Token": {
-            "shape_name": "token",
-            "type": "string",
-            "documentation": "\n    <p>Short-lived token sent to an endpoint during the Subscribe action.</p>\n  ",
-            "required": true
-          },
-          "AuthenticateOnUnsubscribe": {
-            "shape_name": "authenticateOnUnsubscribe",
-            "type": "string",
-            "documentation": "\n    <p>Indicates that you want to disallow unauthenticated unsubscribes of the subscription. \n    If value of this parameter is \"true\" and the request has an AWS signature then only the topic owner\n    and the subscription owner will be permitted to unsubscribe the endpoint.  The unsubscribe\n    action will require AWS authentication. </p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "ConfirmSubscriptionResponse",
-        "type": "structure",
-        "members": {
-          "SubscriptionArn": {
-            "shape_name": "subscriptionARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the created subscription.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "SubscriptionLimitExceededException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the customer already owns the maximum allowed number of subscriptions.</p>\n  "
-        },
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating\n      the token sent to the endpoint by an earlier Subscribe action. If the\n      token is valid, the action creates a new subscription and returns its\n      Amazon Resource Name (ARN). This call requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set to \"true\".</p>\n<examples>\n <queryrequest>\n\n  https://sns.us-east-1.amazonaws.com/\n  ?Action=ConfirmSubscription\n  &TopicArn=arn:aws:sns:us-east-1:123456789012:My-Topic\n  &Token=51b2ff3edb475b7d91550e0ab6edf0c1de2a34e6ebaf6\n   c2262a001bcb7e051c43aa00022ceecce70bd2a67b2042da8d8\n   eb47fef7a4e4e942d23e7fa56146b9ee35da040b4b8af564cc4\n   184a7391c834cb75d75c22981f776ad1ce8805e9bab29da2329\n   985337bb8095627907b46c8577c8440556b6f86582a95475802\n   6f41fc62041c4b3f67b0f5921232b5dae5aaca1\n\n </queryrequest>\n <queryresponse>\n  \n<ConfirmSubscriptionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ConfirmSubscriptionResult>\n    <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n  </ConfirmSubscriptionResult>\n  <ResponseMetadata>\n    <RequestId>7a50221f-3774-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</ConfirmSubscriptionResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
-    },
-    {
-      "name": "CreateTopic",
-      "input": {
-        "shape_name": "CreateTopicInput",
-        "type": "structure",
-        "members": {
-          "Name": {
-            "shape_name": "topicName",
-            "type": "string",
-            "documentation": "\n    <p>The name of the topic you want to create.</p>\n    <p>Constraints: Topic names must be made up of \n    only uppercase and lowercase ASCII letters, numbers, and hyphens, and must be \n    between 1 and 256 characters long. </p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "CreateTopicResponse",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The Amazon Resource Name (ARN) assigned to the created topic.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "TopicLimitExceededException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the customer already owns the maximum allowed number of topics.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The CreateTopic action creates a topic to which notifications can be published. Users can create\n     at most 25 topics. This action is idempotent, so if the requester \n     already owns a topic with the specified name, that topic's ARN will be \n     returned without creating a new topic.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?Name=My-Topic\n  &Action=CreateTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=gfzIF53exFVdpSNb8AiwN3Lv%2FNYXh6S%2Br3yySK70oX4%3D\n\n </queryrequest>\n <queryresponse>\n  \n   <CreateTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n     <CreateTopicResult>\n       <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n     </CreateTopicResult>\n     <ResponseMetadata>\n       <RequestId>a8dec8b3-33a4-11df-8963-01868b7c937a</RequestId>\n     </ResponseMetadata>\n   </CreateTopicResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "DeleteTopic",
-      "input": {
-        "shape_name": "DeleteTopicInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic you want to delete.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=DeleteTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=DjHBa%2BbYCKQAzctOPnLP7MbHnrHT3%2FK3kFEZjwcf9%2FU%3D\n\n </queryrequest>\n <queryresponse>\n  \n<DeleteTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>fba800b9-3765-11df-8cf3-c58c53254dfb</RequestId>\n  </ResponseMetadata>\n</DeleteTopicResponse>\n  \n </queryresponse>\n</examples>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": null,
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might\n      prevent some messages previously sent to the topic from being delivered to\n      subscribers. This action is idempotent, so deleting a topic that does not\n      exist will not result in an error.</p>\n<examples>\n<queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=DeleteTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n</queryrequest>\n<queryresponse>\n\n<DeleteTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>f3aa9ac9-3c3d-11df-8235-9dab105e9c32</RequestId>\n  </ResponseMetadata>\n</DeleteTopicResponse>\n\n</queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "GetSubscriptionAttributes",
-      "input": {
-        "shape_name": "GetSubscriptionAttributesInput",
-        "type": "structure",
-        "members": {
-          "SubscriptionArn": {
-            "shape_name": "subscriptionARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the subscription whose properties you want to get.</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "GetSubscriptionAttributesResponse",
-        "type": "structure",
-        "members": {
-          "Attributes": {
-            "shape_name": "SubscriptionAttributesMap",
-            "type": "map",
-            "keys": {
-              "shape_name": "attributeName",
-              "type": "string",
-              "documentation": null
-            },
-            "members": {
-              "shape_name": "attributeValue",
-              "type": "string",
-              "documentation": null
-            },
-            "documentation": "\n    <p>A map of the subscription's attributes. Attributes in this map include the following:</p>\n    <ul>\n    <li>SubscriptionArn -- the subscription's ARN</li>\n    <li>TopicArn -- the topic ARN which the subscription is associated with</li>\n    <li>Owner -- the AWS account ID of the subscription's owner</li>\n    <li>ConfirmationWasAuthenticated -- True if the subscription confirmation request was authenticated</li>\n    <li>DeliveryPolicy -- the JSON serialization of the subscription's delivery policy</li>\n    <li>EffectiveDeliveryPolicy -- the JSON serialization of the effective delivery policy which takes \n    into the topic delivery policy and account system defaults</li>\n    </ul>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The GetSubscriptionAttribtues action returns all of the properties of a subscription.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &Action=GetSubscriptionAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=92lBGRVq0%2BxhaACaBGqtdemy%2Bi9isfgyTljCbJM80Yk%3D\n\n </queryrequest>\n <queryresponse>\n  \n<GetSubscriptionAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetSubscriptionAttributesResult>\n    <Attributes>\n      <entry>\n        <key>Owner</key>\n        <value>123456789012</value>\n      </entry>\n      <entry>\n        <key>DeliveryPolicy</key>\n        <value>{&quot;healthyRetryPolicy&quot;:{&quot;numRetries&quot;:10}}</value>\n      </entry>\n      <entry>\n        <key>SubscriptionArn</key>\n        <value>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</value>\n      </entry>\n    </Attributes>\n  </GetSubscriptionAttributesResult>\n  <ResponseMetadata>\n    <RequestId>057f074c-33a7-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</GetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "GetTopicAttributes",
-      "input": {
-        "shape_name": "GetTopicAttributesInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic whose properties you want to get.</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "GetTopicAttributesResponse",
-        "type": "structure",
-        "members": {
-          "Attributes": {
-            "shape_name": "TopicAttributesMap",
-            "type": "map",
-            "keys": {
-              "shape_name": "attributeName",
-              "type": "string",
-              "documentation": null
-            },
-            "members": {
-              "shape_name": "attributeValue",
-              "type": "string",
-              "documentation": null
-            },
-            "documentation": "\n    <p>A map of the topic's attributes. Attributes in this map include the following:</p>\n    <ul>\n    <li>TopicArn -- the topic's ARN</li>\n    <li>Owner -- the AWS account ID of the topic's owner</li>\n    <li>Policy -- the JSON serialization of the topic's access control policy</li>\n    <li>DisplayName -- the human-readable name used in the \"From\" field for notifications to email and email-json endpoints</li>\n    <li>SubscriptionsPending -- the number of subscriptions pending confirmation on this topic</li>\n    <li>SubscriptionsConfirmed -- the number of confirmed subscriptions on this topic</li>\n    <li>SubscriptionsDeleted -- the number of deleted subscriptions on this topic</li>\n    <li>DeliveryPolicy -- the JSON serialization of the topic's delivery policy</li>\n    <li>EffectiveDeliveryPolicy -- the JSON serialization of the effective delivery policy which takes into account system defaults</li>\n    </ul>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic\n      properties returned might differ based on the authorization of the user. </p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=GetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=92lBGRVq0%2BxhaACaBGqtdemy%2Bi9isfgyTljCbJM80Yk%3D\n\n </queryrequest>\n <queryresponse>\n  \n<GetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetTopicAttributesResult>\n    <Attributes>\n      <entry>\n        <key>Owner</key>\n        <value>123456789012</value>\n      </entry>\n      <entry>\n        <key>Policy</key>\n        <value>{\n&quot;Version&quot;:&quot;2008-10-17&quot;,&quot;Id&quot;:&quot;us-east-1/698519295917/test__default_policy_ID&quot;,&quot;Statement&quot; : [{&quot;Effect&quot;:&quot;Allow&quot;,&quot;Sid&quot;:&quot;us-east-1/698519295917/test__default_statement_ID&quot;,&quot;Principal&quot; : {&quot;AWS&quot;: &quot;*&quot;},&quot;Action&quot;:[&quot;SNS:GetTopicAttributes&quot;,&quot;SNS:SetTopicAttributes&quot;,&quot;SNS:AddPermission&quot;,&quot;SNS:RemovePermission&quot;,&quot;SNS:DeleteTopic&quot;,&quot;SNS:Subscribe&quot;,&quot;SNS:ListSubscriptionsByTopic&quot;,&quot;SNS:Publish&quot;,&quot;SNS:Receive&quot;],&quot;Resource&quot;:&quot;arn:aws:sns:us-east-1:698519295917:test&quot;,&quot;Condition&quot; : {&quot;StringLike&quot; : {&quot;AWS:SourceArn&quot;: &quot;arn:aws:*:*:698519295917:*&quot;}}}]}</value>\n      </entry>\n      <entry>\n        <key>TopicArn</key>\n        <value>arn:aws:sns:us-east-1:123456789012:My-Topic</value>\n      </entry>\n    </Attributes>\n  </GetTopicAttributesResult>\n  <ResponseMetadata>\n    <RequestId>057f074c-33a7-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</GetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "ListSubscriptions",
-      "input": {
-        "shape_name": "ListSubscriptionsInput",
-        "type": "structure",
-        "members": {
-          "NextToken": {
-            "shape_name": "nextToken",
-            "type": "string",
-            "documentation": "\n    <p>Token returned by the previous ListSubscriptions request.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "ListSubscriptionsResponse",
-        "type": "structure",
-        "members": {
-          "Subscriptions": {
-            "shape_name": "SubscriptionsList",
-            "type": "list",
-            "members": {
-              "shape_name": "Subscription",
-              "type": "structure",
-              "members": {
-                "SubscriptionArn": {
-                  "shape_name": "subscriptionARN",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's ARN.</p>\n  "
+    "service_full_name": "Amazon Simple Notification Service",
+    "service_abbreviation": "Amazon SNS",
+    "type": "query",
+    "signature_version": "v2",
+    "result_wrapped": true,
+    "api_version": "2010-03-31",
+    "endpoint_prefix": "sns",
+    "xmlnamespace": "http://sns.amazonaws.com/doc/2010-03-31/",
+    "documentation": "\n    <fullname>Amazon Simple Notification Service</fullname>\n    \n   \t<p>This is the <i>Amazon Simple Notification Service (Amazon SNS) API Reference</i>. This guide provides detailed\n\t\tinformation about Amazon SNS actions, data types, parameters, and\n\t\terrors. For detailed information about Amazon SNS features and their associated API calls,\n\t\tgo to the <a href=\"http://docs.amazonwebservices.com/sns/latest/gsg/\">Amazon SNS Getting Started Guide</a>.\n\t</p>\n\t<p>Amazon Simple Notification Service is a web service that enables you to build distributed web-enabled applications. \n    \tApplications can use Amazon SNS to easily push real-time notification messages \n    \tto interested subscribers over multiple delivery protocols. For more information about this product\n\t\tgo to <a href=\"http://aws.amazon.com/sns/\">http://aws.amazon.com/sns</a>.\n\t</p>\n\n\t<p>Use the following links to get started using the <i>Amazon Simple Notification Service API Reference</i>:</p>\n\t<ul>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/API_Operations.html\">Actions</a>: An alphabetical list of all Amazon SNS actions.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/API_Types.html\">Data Types</a>: An alphabetical list of all Amazon SNS data types.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/sns/latest/api/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n\t\t<li>\n<a href=\"http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl\">WSDL Location</a>: http://sns.us-east-1.amazonaws.com/doc/2010-03-31/SimpleNotificationService.wsdl</li>\n\t</ul>\n  ",
+    "operations": {
+        "AddPermission": {
+            "input": {
+                "shape_name": "AddPermissionInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic whose access control policy you wish to modify.</p>\n  ",
+                        "required": true
+                    },
+                    "Label": {
+                        "shape_name": "label",
+                        "type": "string",
+                        "documentation": "\n    <p>A unique identifier for the new policy statement.</p>\n  ",
+                        "required": true
+                    },
+                    "AWSAccountId": {
+                        "shape_name": "DelegatesList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "delegate",
+                            "type": "string",
+                            "documentation": null
+                        },
+                        "documentation": "\n    <p>The AWS account IDs of the users (principals) who will be given access to the specified\n    actions. The users must have AWS accounts, but do not need to be signed up \n    for this service. <!--For information about locating the AWS\n        account identification, see <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/index.html?AWSCredentials.html\">Your\n        AWS Identifiers</aulink> in the &service; Developer Guide.--></p>\n  ",
+                        "required": true
+                    },
+                    "ActionName": {
+                        "shape_name": "ActionsList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "action",
+                            "type": "string",
+                            "documentation": null
+                        },
+                        "documentation": "\n    <p>The action you want to allow for the specified principal(s).</p>\n  ",
+                        "required": true
+                    }
                 },
-                "Owner": {
-                  "shape_name": "account",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's owner.</p>\n  "
+                "documentation": null
+            },
+            "output": null,
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
                 },
-                "Protocol": {
-                  "shape_name": "protocol",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's protocol.</p>\n  "
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
                 },
-                "Endpoint": {
-                  "shape_name": "endpoint",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's endpoint (format depends on the protocol).</p>\n  "
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
                 },
-                "TopicArn": {
-                  "shape_name": "topicARN",
-                  "type": "string",
-                  "documentation": "\n    <p>The ARN of the subscription's topic.</p>\n  "
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
                 }
-              },
-              "documentation": "<p>A wrapper type for the attributes of an SNS subscription.</p>"
+            ],
+            "documentation": "\n    <p>The AddPermission action adds a statement to a topic's access control policy, granting access for the specified AWS accounts to the specified actions.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Test\n  &ActionName.member.1=Publish\n  &ActionName.member.2=GetTopicAttributes\n  &Label=NewPermission\n  &AWSAccountId.member.1=987654321000\n  &AWSAccountId.member.2=876543210000\n  &Action=AddPermission\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=k%2FAU%2FKp13pjndwJ7rr1sZszy6MZMlOhRBCHx1ZaZFiw%3D\n\n </queryrequest>\n <queryresponse>\n  \n<AddPermissionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>6a213e4e-33a8-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</AddPermissionResponse>\n  \n </queryresponse>\n</examples>\n  "
+        },
+        "ConfirmSubscription": {
+            "input": {
+                "shape_name": "ConfirmSubscriptionInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic for which you wish to confirm a subscription.</p>\n  ",
+                        "required": true
+                    },
+                    "Token": {
+                        "shape_name": "token",
+                        "type": "string",
+                        "documentation": "\n    <p>Short-lived token sent to an endpoint during the Subscribe action.</p>\n  ",
+                        "required": true
+                    },
+                    "AuthenticateOnUnsubscribe": {
+                        "shape_name": "authenticateOnUnsubscribe",
+                        "type": "string",
+                        "documentation": "\n    <p>Indicates that you want to disallow unauthenticated unsubscribes of the subscription. \n    If value of this parameter is \"true\" and the request has an AWS signature then only the topic owner\n    and the subscription owner will be permitted to unsubscribe the endpoint.  The unsubscribe\n    action will require AWS authentication. </p>\n  "
+                    }
+                },
+                "documentation": null
             },
-            "documentation": "\n    <p>A list of subscriptions.</p>\n  "
-          },
-          "NextToken": {
-            "shape_name": "nextToken",
-            "type": "string",
-            "documentation": "\n    <p>Token to pass along to the next ListSubscriptions request. This element is returned if there are more subscriptions to retrieve.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list\n     of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a \n     new ListSubscriptions call to get further results.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  &Action=ListSubscriptions\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=SZmBxEPqfs9R7xxhSt6C1b7PnOEvg%2BSVyyMYJfLRFCA%3D\n\n </queryrequest>\n <queryresponse>\n  \n<ListSubscriptionsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListSubscriptionsResult>\n    <Subscriptions>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:698519295917:My-Topic</TopicArn>\n        <Protocol>email</Protocol>\n        <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n        <Owner>123456789012</Owner>\n        <Endpoint>example@amazon.com</Endpoint>\n      </member>\n    </Subscriptions>\n  </ListSubscriptionsResult>\n  <ResponseMetadata>\n    <RequestId>384ac68d-3775-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</ListSubscriptionsResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "ListSubscriptionsByTopic",
-      "input": {
-        "shape_name": "ListSubscriptionsByTopicInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic for which you wish to find subscriptions.</p>\n  ",
-            "required": true
-          },
-          "NextToken": {
-            "shape_name": "nextToken",
-            "type": "string",
-            "documentation": "\n    <p>Token returned by the previous ListSubscriptionsByTopic request.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "ListSubscriptionsByTopicResponse",
-        "type": "structure",
-        "members": {
-          "Subscriptions": {
-            "shape_name": "SubscriptionsList",
-            "type": "list",
-            "members": {
-              "shape_name": "Subscription",
-              "type": "structure",
-              "members": {
-                "SubscriptionArn": {
-                  "shape_name": "subscriptionARN",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's ARN.</p>\n  "
+            "output": {
+                "shape_name": "ConfirmSubscriptionResponse",
+                "type": "structure",
+                "members": {
+                    "SubscriptionArn": {
+                        "shape_name": "subscriptionARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the created subscription.</p>\n  "
+                    }
                 },
-                "Owner": {
-                  "shape_name": "account",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's owner.</p>\n  "
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "SubscriptionLimitExceededException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the customer already owns the maximum allowed number of subscriptions.</p>\n  "
                 },
-                "Protocol": {
-                  "shape_name": "protocol",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's protocol.</p>\n  "
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
                 },
-                "Endpoint": {
-                  "shape_name": "endpoint",
-                  "type": "string",
-                  "documentation": "\n    <p>The subscription's endpoint (format depends on the protocol).</p>\n  "
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
                 },
-                "TopicArn": {
-                  "shape_name": "topicARN",
-                  "type": "string",
-                  "documentation": "\n    <p>The ARN of the subscription's topic.</p>\n  "
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
                 }
-              },
-              "documentation": "<p>A wrapper type for the attributes of an SNS subscription.</p>"
+            ],
+            "documentation": "\n    <p>The ConfirmSubscription action verifies an endpoint owner's intent to receive messages by validating\n      the token sent to the endpoint by an earlier Subscribe action. If the\n      token is valid, the action creates a new subscription and returns its\n      Amazon Resource Name (ARN). This call requires an AWS signature only when the AuthenticateOnUnsubscribe flag is set to \"true\".</p>\n<examples>\n <queryrequest>\n\n  https://sns.us-east-1.amazonaws.com/\n  ?Action=ConfirmSubscription\n  &TopicArn=arn:aws:sns:us-east-1:123456789012:My-Topic\n  &Token=51b2ff3edb475b7d91550e0ab6edf0c1de2a34e6ebaf6\n   c2262a001bcb7e051c43aa00022ceecce70bd2a67b2042da8d8\n   eb47fef7a4e4e942d23e7fa56146b9ee35da040b4b8af564cc4\n   184a7391c834cb75d75c22981f776ad1ce8805e9bab29da2329\n   985337bb8095627907b46c8577c8440556b6f86582a95475802\n   6f41fc62041c4b3f67b0f5921232b5dae5aaca1\n\n </queryrequest>\n <queryresponse>\n  \n<ConfirmSubscriptionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ConfirmSubscriptionResult>\n    <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n  </ConfirmSubscriptionResult>\n  <ResponseMetadata>\n    <RequestId>7a50221f-3774-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</ConfirmSubscriptionResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
+        },
+        "CreateTopic": {
+            "input": {
+                "shape_name": "CreateTopicInput",
+                "type": "structure",
+                "members": {
+                    "Name": {
+                        "shape_name": "topicName",
+                        "type": "string",
+                        "documentation": "\n    <p>The name of the topic you want to create.</p>\n    <p>Constraints: Topic names must be made up of \n    only uppercase and lowercase ASCII letters, numbers, and hyphens, and must be \n    between 1 and 256 characters long. </p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
             },
-            "documentation": "\n    <p>A list of subscriptions.</p>\n  "
-          },
-          "NextToken": {
-            "shape_name": "nextToken",
-            "type": "string",
-            "documentation": "\n    <p>Token to pass along to the next ListSubscriptionsByTopic request. This element is returned if there are more subscriptions to retrieve.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns \n      a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken \n      parameter in a new ListSubscriptionsByTopic call to get further results.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=ListSubscriptionsByTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=SZmBxEPqfs9R7xxhSt6C1b7PnOEvg%2BSVyyMYJfLRFCA%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<ListSubscriptionsByTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListSubscriptionsByTopicResult>\n    <Subscriptions>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n        <Protocol>email</Protocol>\n        <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n        <Owner>123456789012</Owner>\n        <Endpoint>example@amazon.com</Endpoint>\n      </member>\n    </Subscriptions>\n  </ListSubscriptionsByTopicResult>\n  <ResponseMetadata>\n    <RequestId>b9275252-3774-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</ListSubscriptionsByTopicResponse>\n  \n      </queryresponse>\n    </examples>\n  "
-    },
-    {
-      "name": "ListTopics",
-      "input": {
-        "shape_name": "ListTopicsInput",
-        "type": "structure",
-        "members": {
-          "NextToken": {
-            "shape_name": "nextToken",
-            "type": "string",
-            "documentation": "\n    <p>Token returned by the previous ListTopics request.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "ListTopicsResponse",
-        "type": "structure",
-        "members": {
-          "Topics": {
-            "shape_name": "TopicsList",
-            "type": "list",
-            "members": {
-              "shape_name": "Topic",
-              "type": "structure",
-              "members": {
-                "TopicArn": {
-                  "shape_name": "topicARN",
-                  "type": "string",
-                  "documentation": "\n    <p>The topic's ARN.</p>\n  "
+            "output": {
+                "shape_name": "CreateTopicResponse",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The Amazon Resource Name (ARN) assigned to the created topic.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "TopicLimitExceededException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the customer already owns the maximum allowed number of topics.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
                 }
-              },
-              "documentation": "<p>A wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a topic's attributes, use GetTopicAttributes.</p>"
+            ],
+            "documentation": "\n    <p>The CreateTopic action creates a topic to which notifications can be published. Users can create\n     at most 25 topics. This action is idempotent, so if the requester \n     already owns a topic with the specified name, that topic's ARN will be \n     returned without creating a new topic.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?Name=My-Topic\n  &Action=CreateTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=gfzIF53exFVdpSNb8AiwN3Lv%2FNYXh6S%2Br3yySK70oX4%3D\n\n </queryrequest>\n <queryresponse>\n  \n   <CreateTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n     <CreateTopicResult>\n       <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n     </CreateTopicResult>\n     <ResponseMetadata>\n       <RequestId>a8dec8b3-33a4-11df-8963-01868b7c937a</RequestId>\n     </ResponseMetadata>\n   </CreateTopicResponse>\n  \n </queryresponse>\n</examples>\n  "
+        },
+        "DeleteTopic": {
+            "input": {
+                "shape_name": "DeleteTopicInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic you want to delete.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=DeleteTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=DjHBa%2BbYCKQAzctOPnLP7MbHnrHT3%2FK3kFEZjwcf9%2FU%3D\n\n </queryrequest>\n <queryresponse>\n  \n<DeleteTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>fba800b9-3765-11df-8cf3-c58c53254dfb</RequestId>\n  </ResponseMetadata>\n</DeleteTopicResponse>\n  \n </queryresponse>\n</examples>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
             },
-            "documentation": "\n    <p>A list of topic ARNs.</p>\n    "
-          },
-          "NextToken": {
-            "shape_name": "nextToken",
-            "type": "string",
-            "documentation": "\n      <p>Token to pass along to the next ListTopics request. This element is returned if there are additional topics to retrieve.</p>\n    "
-          }
+            "output": null,
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The DeleteTopic action deletes a topic and all its subscriptions. Deleting a topic might\n      prevent some messages previously sent to the topic from being delivered to\n      subscribers. This action is idempotent, so deleting a topic that does not\n      exist will not result in an error.</p>\n<examples>\n<queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=DeleteTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n</queryrequest>\n<queryresponse>\n\n<DeleteTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>f3aa9ac9-3c3d-11df-8235-9dab105e9c32</RequestId>\n  </ResponseMetadata>\n</DeleteTopicResponse>\n\n</queryresponse>\n</examples>\n  "
         },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        "GetSubscriptionAttributes": {
+            "input": {
+                "shape_name": "GetSubscriptionAttributesInput",
+                "type": "structure",
+                "members": {
+                    "SubscriptionArn": {
+                        "shape_name": "subscriptionARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the subscription whose properties you want to get.</p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "GetSubscriptionAttributesResponse",
+                "type": "structure",
+                "members": {
+                    "Attributes": {
+                        "shape_name": "SubscriptionAttributesMap",
+                        "type": "map",
+                        "keys": {
+                            "shape_name": "attributeName",
+                            "type": "string",
+                            "documentation": null
+                        },
+                        "members": {
+                            "shape_name": "attributeValue",
+                            "type": "string",
+                            "documentation": null
+                        },
+                        "documentation": "\n    <p>A map of the subscription's attributes. Attributes in this map include the following:</p>\n    <ul>\n    <li>SubscriptionArn -- the subscription's ARN</li>\n    <li>TopicArn -- the topic ARN which the subscription is associated with</li>\n    <li>Owner -- the AWS account ID of the subscription's owner</li>\n    <li>ConfirmationWasAuthenticated -- True if the subscription confirmation request was authenticated</li>\n    <li>DeliveryPolicy -- the JSON serialization of the subscription's delivery policy</li>\n    <li>EffectiveDeliveryPolicy -- the JSON serialization of the effective delivery policy which takes \n    into the topic delivery policy and account system defaults</li>\n    </ul>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The GetSubscriptionAttribtues action returns all of the properties of a subscription.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &Action=GetSubscriptionAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=92lBGRVq0%2BxhaACaBGqtdemy%2Bi9isfgyTljCbJM80Yk%3D\n\n </queryrequest>\n <queryresponse>\n  \n<GetSubscriptionAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetSubscriptionAttributesResult>\n    <Attributes>\n      <entry>\n        <key>Owner</key>\n        <value>123456789012</value>\n      </entry>\n      <entry>\n        <key>DeliveryPolicy</key>\n        <value>{&quot;healthyRetryPolicy&quot;:{&quot;numRetries&quot;:10}}</value>\n      </entry>\n      <entry>\n        <key>SubscriptionArn</key>\n        <value>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</value>\n      </entry>\n    </Attributes>\n  </GetSubscriptionAttributesResult>\n  <ResponseMetadata>\n    <RequestId>057f074c-33a7-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</GetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n  "
         },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        "GetTopicAttributes": {
+            "input": {
+                "shape_name": "GetTopicAttributesInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic whose properties you want to get.</p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "GetTopicAttributesResponse",
+                "type": "structure",
+                "members": {
+                    "Attributes": {
+                        "shape_name": "TopicAttributesMap",
+                        "type": "map",
+                        "keys": {
+                            "shape_name": "attributeName",
+                            "type": "string",
+                            "documentation": null
+                        },
+                        "members": {
+                            "shape_name": "attributeValue",
+                            "type": "string",
+                            "documentation": null
+                        },
+                        "documentation": "\n    <p>A map of the topic's attributes. Attributes in this map include the following:</p>\n    <ul>\n    <li>TopicArn -- the topic's ARN</li>\n    <li>Owner -- the AWS account ID of the topic's owner</li>\n    <li>Policy -- the JSON serialization of the topic's access control policy</li>\n    <li>DisplayName -- the human-readable name used in the \"From\" field for notifications to email and email-json endpoints</li>\n    <li>SubscriptionsPending -- the number of subscriptions pending confirmation on this topic</li>\n    <li>SubscriptionsConfirmed -- the number of confirmed subscriptions on this topic</li>\n    <li>SubscriptionsDeleted -- the number of deleted subscriptions on this topic</li>\n    <li>DeliveryPolicy -- the JSON serialization of the topic's delivery policy</li>\n    <li>EffectiveDeliveryPolicy -- the JSON serialization of the effective delivery policy which takes into account system defaults</li>\n    </ul>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The GetTopicAttribtues action returns all of the properties of a topic customers have created. Topic\n      properties returned might differ based on the authorization of the user. </p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=GetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=92lBGRVq0%2BxhaACaBGqtdemy%2Bi9isfgyTljCbJM80Yk%3D\n\n </queryrequest>\n <queryresponse>\n  \n<GetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetTopicAttributesResult>\n    <Attributes>\n      <entry>\n        <key>Owner</key>\n        <value>123456789012</value>\n      </entry>\n      <entry>\n        <key>Policy</key>\n        <value>{\n&quot;Version&quot;:&quot;2008-10-17&quot;,&quot;Id&quot;:&quot;us-east-1/698519295917/test__default_policy_ID&quot;,&quot;Statement&quot; : [{&quot;Effect&quot;:&quot;Allow&quot;,&quot;Sid&quot;:&quot;us-east-1/698519295917/test__default_statement_ID&quot;,&quot;Principal&quot; : {&quot;AWS&quot;: &quot;*&quot;},&quot;Action&quot;:[&quot;SNS:GetTopicAttributes&quot;,&quot;SNS:SetTopicAttributes&quot;,&quot;SNS:AddPermission&quot;,&quot;SNS:RemovePermission&quot;,&quot;SNS:DeleteTopic&quot;,&quot;SNS:Subscribe&quot;,&quot;SNS:ListSubscriptionsByTopic&quot;,&quot;SNS:Publish&quot;,&quot;SNS:Receive&quot;],&quot;Resource&quot;:&quot;arn:aws:sns:us-east-1:698519295917:test&quot;,&quot;Condition&quot; : {&quot;StringLike&quot; : {&quot;AWS:SourceArn&quot;: &quot;arn:aws:*:*:698519295917:*&quot;}}}]}</value>\n      </entry>\n      <entry>\n        <key>TopicArn</key>\n        <value>arn:aws:sns:us-east-1:123456789012:My-Topic</value>\n      </entry>\n    </Attributes>\n  </GetTopicAttributesResult>\n  <ResponseMetadata>\n    <RequestId>057f074c-33a7-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</GetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n  "
         },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        "ListSubscriptions": {
+            "input": {
+                "shape_name": "ListSubscriptionsInput",
+                "type": "structure",
+                "members": {
+                    "NextToken": {
+                        "shape_name": "nextToken",
+                        "type": "string",
+                        "documentation": "\n    <p>Token returned by the previous ListSubscriptions request.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "ListSubscriptionsResponse",
+                "type": "structure",
+                "members": {
+                    "Subscriptions": {
+                        "shape_name": "SubscriptionsList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "Subscription",
+                            "type": "structure",
+                            "members": {
+                                "SubscriptionArn": {
+                                    "shape_name": "subscriptionARN",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's ARN.</p>\n  "
+                                },
+                                "Owner": {
+                                    "shape_name": "account",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's owner.</p>\n  "
+                                },
+                                "Protocol": {
+                                    "shape_name": "protocol",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's protocol.</p>\n  "
+                                },
+                                "Endpoint": {
+                                    "shape_name": "endpoint",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's endpoint (format depends on the protocol).</p>\n  "
+                                },
+                                "TopicArn": {
+                                    "shape_name": "topicARN",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The ARN of the subscription's topic.</p>\n  "
+                                }
+                            },
+                            "documentation": "<p>A wrapper type for the attributes of an SNS subscription.</p>"
+                        },
+                        "documentation": "\n    <p>A list of subscriptions.</p>\n  "
+                    },
+                    "NextToken": {
+                        "shape_name": "nextToken",
+                        "type": "string",
+                        "documentation": "\n    <p>Token to pass along to the next ListSubscriptions request. This element is returned if there are more subscriptions to retrieve.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list\n     of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a \n     new ListSubscriptions call to get further results.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  &Action=ListSubscriptions\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=SZmBxEPqfs9R7xxhSt6C1b7PnOEvg%2BSVyyMYJfLRFCA%3D\n\n </queryrequest>\n <queryresponse>\n  \n<ListSubscriptionsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListSubscriptionsResult>\n    <Subscriptions>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:698519295917:My-Topic</TopicArn>\n        <Protocol>email</Protocol>\n        <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n        <Owner>123456789012</Owner>\n        <Endpoint>example@amazon.com</Endpoint>\n      </member>\n    </Subscriptions>\n  </ListSubscriptionsResult>\n  <ResponseMetadata>\n    <RequestId>384ac68d-3775-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</ListSubscriptionsResponse>\n  \n </queryresponse>\n</examples>\n  "
+        },
+        "ListSubscriptionsByTopic": {
+            "input": {
+                "shape_name": "ListSubscriptionsByTopicInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic for which you wish to find subscriptions.</p>\n  ",
+                        "required": true
+                    },
+                    "NextToken": {
+                        "shape_name": "nextToken",
+                        "type": "string",
+                        "documentation": "\n    <p>Token returned by the previous ListSubscriptionsByTopic request.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "ListSubscriptionsByTopicResponse",
+                "type": "structure",
+                "members": {
+                    "Subscriptions": {
+                        "shape_name": "SubscriptionsList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "Subscription",
+                            "type": "structure",
+                            "members": {
+                                "SubscriptionArn": {
+                                    "shape_name": "subscriptionARN",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's ARN.</p>\n  "
+                                },
+                                "Owner": {
+                                    "shape_name": "account",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's owner.</p>\n  "
+                                },
+                                "Protocol": {
+                                    "shape_name": "protocol",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's protocol.</p>\n  "
+                                },
+                                "Endpoint": {
+                                    "shape_name": "endpoint",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The subscription's endpoint (format depends on the protocol).</p>\n  "
+                                },
+                                "TopicArn": {
+                                    "shape_name": "topicARN",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The ARN of the subscription's topic.</p>\n  "
+                                }
+                            },
+                            "documentation": "<p>A wrapper type for the attributes of an SNS subscription.</p>"
+                        },
+                        "documentation": "\n    <p>A list of subscriptions.</p>\n  "
+                    },
+                    "NextToken": {
+                        "shape_name": "nextToken",
+                        "type": "string",
+                        "documentation": "\n    <p>Token to pass along to the next ListSubscriptionsByTopic request. This element is returned if there are more subscriptions to retrieve.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns \n      a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken \n      parameter in a new ListSubscriptionsByTopic call to get further results.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=ListSubscriptionsByTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=SZmBxEPqfs9R7xxhSt6C1b7PnOEvg%2BSVyyMYJfLRFCA%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<ListSubscriptionsByTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListSubscriptionsByTopicResult>\n    <Subscriptions>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n        <Protocol>email</Protocol>\n        <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n        <Owner>123456789012</Owner>\n        <Endpoint>example@amazon.com</Endpoint>\n      </member>\n    </Subscriptions>\n  </ListSubscriptionsByTopicResult>\n  <ResponseMetadata>\n    <RequestId>b9275252-3774-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</ListSubscriptionsByTopicResponse>\n  \n      </queryresponse>\n    </examples>\n  "
+        },
+        "ListTopics": {
+            "input": {
+                "shape_name": "ListTopicsInput",
+                "type": "structure",
+                "members": {
+                    "NextToken": {
+                        "shape_name": "nextToken",
+                        "type": "string",
+                        "documentation": "\n    <p>Token returned by the previous ListTopics request.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "ListTopicsResponse",
+                "type": "structure",
+                "members": {
+                    "Topics": {
+                        "shape_name": "TopicsList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "Topic",
+                            "type": "structure",
+                            "members": {
+                                "TopicArn": {
+                                    "shape_name": "topicARN",
+                                    "type": "string",
+                                    "documentation": "\n    <p>The topic's ARN.</p>\n  "
+                                }
+                            },
+                            "documentation": "<p>A wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a topic's attributes, use GetTopicAttributes.</p>"
+                        },
+                        "documentation": "\n    <p>A list of topic ARNs.</p>\n    "
+                    },
+                    "NextToken": {
+                        "shape_name": "nextToken",
+                        "type": "string",
+                        "documentation": "\n      <p>Token to pass along to the next ListTopics request. This element is returned if there are additional topics to retrieve.</p>\n    "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics, up to 100. If\n     there are more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get \n     further results.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?Action=ListTopics\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=tPg1qKNTNVPydnL3Yx5Fqm2O9GxCr9vh3EF5r9%2F5%2BJs%3D\n\n </queryrequest>\n <queryresponse>\n  \n<ListTopicsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListTopicsResult>\n    <Topics>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n      </member>\n    </Topics>\n  </ListTopicsResult>\n  <ResponseMetadata>\n    <RequestId>3f1478c7-33a9-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</ListTopicsResponse>\n  \n </queryresponse>\n</examples>\n  "
+        },
+        "Publish": {
+            "input": {
+                "shape_name": "PublishInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The topic you want to publish to.</p>\n  ",
+                        "required": true
+                    },
+                    "Message": {
+                        "shape_name": "message",
+                        "type": "string",
+                        "documentation": "\n    <p>The message you want to send to the topic.</p>\n    <p>Constraints: Messages must be UTF-8 encoded\n      strings at most 8 KB in size (8192 bytes, not 8192 characters).</p>\n  ",
+                        "required": true
+                    },
+                    "Subject": {
+                        "shape_name": "subject",
+                        "type": "string",
+                        "documentation": "\n    <p>Optional parameter to be used as the \"Subject\" line of when the message is\n      delivered to e-mail endpoints. This field will also be included, if present, \n      in the standard JSON messages delivered to other endpoints.</p>\n    <p>Constraints: Subjects must be ASCII text that begins with a letter, number \n      or punctuation mark; must not include line breaks or control characters; and \n      must be less than 100 characters long.</p>\n  "
+                    },
+                    "MessageStructure": {
+                        "shape_name": "messageStructure",
+                        "type": "string",
+                        "documentation": "\n    <p>Optional parameter. It will have one valid value: \"json\".\n      If this option, Message is present and set to \"json\", the value of Message must:\n      be a syntactically valid JSON object. It must contain at least a top level JSON\n      key of \"default\" with a value that is a string. For any other top level key that\n      matches one of our transport protocols (e.g. \"http\"), then the corresponding value\n      (if it is a string) will be used for the message published for that protocol</p>\n    <p>Constraints: Keys in the JSON object that correspond to supported transport\n      protocols must have simple JSON string values. The values will be parsed (unescaped)\n      before they are used in outgoing messages. Typically, outbound notifications are JSON\n      encoded (meaning, the characters will be reescaped for sending). JSON strings are \n      UTF-8. Values have a minimum length of 0 (the empty string, \"\", is allowed).\n      Values have a maximum length bounded by the overall message size (so, including\n      multiple protocols may limit message sizes). Non-string values will cause the key\n      to be ignored. Keys that do not correspond to supported transport protocols will be\n      ignored. Duplicate keys are not allowed. Failure to parse or validate any key or\n      value in the message will cause the Publish call to return an error (no partial\n      delivery).</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "PublishResponse",
+                "type": "structure",
+                "members": {
+                    "MessageId": {
+                        "shape_name": "messageId",
+                        "type": "string",
+                        "documentation": "\n    <p>Unique identifier assigned to the published message.</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The Publish action sends a message to all of a topic's subscribed endpoints. When a\n      messageId is returned, the message has been saved and Amazon SNS will attempt to deliver it \n      to the topic's subscribers shortly. The format of the outgoing message to each\n      subscribed endpoint depends on the notification protocol selected.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?Subject=My%20first%20message\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A698519295917%3AMy-Topic\n  &Message=Hello%20world%21\n  &Action=Publish\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=AKIAJHS4T6XPF7XIURNA\n  &Signature=9GZysQ4Jpnz%2BHklqM7VFTvEcjR2LIUtn6jW47054xxE%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<PublishResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <PublishResult>\n    <MessageId>94f20ce6-13c5-43a0-9a9e-ca52d816e90b</MessageId>\n  </PublishResult>\n  <ResponseMetadata>\n    <RequestId>f187a3c1-376f-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</PublishResponse>\n  \n      </queryresponse>\n    </examples>\n  "
+        },
+        "RemovePermission": {
+            "input": {
+                "shape_name": "RemovePermissionInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic whose access control policy you wish to modify.</p>\n  ",
+                        "required": true
+                    },
+                    "Label": {
+                        "shape_name": "label",
+                        "type": "string",
+                        "documentation": "\n    <p>The unique label of the statement you want to remove.</p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": null,
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The RemovePermission action removes a statement from a topic's access control policy.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Test\n  &Label=NewPermission\n  &Action=RemovePermission\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=N1abwRY9i7zaSQmbAlm71pPf9EEFOqNbQL1alzw2yCg%3D\n\n </queryrequest>\n <queryresponse>\n  \n<RemovePermissionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>d170b150-33a8-11df-995a-2d6fbe836cc1</RequestId>\n  </ResponseMetadata>\n</RemovePermissionResponse>\n  \n </queryresponse>\n</examples>\n  "
+        },
+        "SetSubscriptionAttributes": {
+            "input": {
+                "shape_name": "SetSubscriptionAttributesInput",
+                "type": "structure",
+                "members": {
+                    "SubscriptionArn": {
+                        "shape_name": "subscriptionARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the subscription to modify.</p>\n  ",
+                        "required": true
+                    },
+                    "AttributeName": {
+                        "shape_name": "attributeName",
+                        "type": "string",
+                        "documentation": "\n    <p>The name of the attribute you want to set. Only a subset of the subscriptions attributes are mutable.</p>\n    <p>Valid values: DeliveryPolicy</p>\n  ",
+                        "required": true
+                    },
+                    "AttributeValue": {
+                        "shape_name": "attributeValue",
+                        "type": "string",
+                        "documentation": "\n    <p>The new value for the attribute.</p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": null,
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The SetSubscriptionAttributes action allows a subscription owner to set an attribute of the topic to a new value.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue={\"healthyRetryPolicy\":{\"numRetries\":5}}\n  &SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &AttributeName=DeliveryPolicy\n  &Action=SetSubscriptionAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n </queryrequest>\n <queryresponse>\n  \n<SetSubscriptionAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetSubscriptionAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
+        },
+        "SetTopicAttributes": {
+            "input": {
+                "shape_name": "SetTopicAttributesInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the topic to modify.</p>\n  ",
+                        "required": true
+                    },
+                    "AttributeName": {
+                        "shape_name": "attributeName",
+                        "type": "string",
+                        "documentation": "\n    <p>The name of the attribute you want to set. Only a subset of the topic's attributes are mutable.</p>\n    <p>Valid values: Policy | DisplayName</p>\n  ",
+                        "required": true
+                    },
+                    "AttributeValue": {
+                        "shape_name": "attributeValue",
+                        "type": "string",
+                        "documentation": "\n    <p>The new value for the attribute.</p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": null,
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new value.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue=MyTopicName\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &AttributeName=DisplayName\n  &Action=SetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n </queryrequest>\n <queryresponse>\n  \n<SetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
+        },
+        "Subscribe": {
+            "input": {
+                "shape_name": "SubscribeInput",
+                "type": "structure",
+                "members": {
+                    "TopicArn": {
+                        "shape_name": "topicARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of topic you want to subscribe to.</p>\n  ",
+                        "required": true
+                    },
+                    "Protocol": {
+                        "shape_name": "protocol",
+                        "type": "string",
+                        "documentation": "\n    <p>The protocol you want to use. Supported protocols include:</p>\n    <ul>\n    <li>http -- delivery of JSON-encoded message via HTTP POST</li>\n    <li>https -- delivery of JSON-encoded message via HTTPS POST</li>\n    <li>email -- delivery of message via SMTP</li>\n    <li>email-json -- delivery of JSON-encoded message via SMTP</li>\n    <li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li>\n    </ul>\n  ",
+                        "required": true
+                    },
+                    "Endpoint": {
+                        "shape_name": "endpoint",
+                        "type": "string",
+                        "documentation": "\n    <p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p>\n    <ul>\n    <li>For the http protocol, the endpoint is an URL beginning with \"http://\"</li>\n    <li>For the https protocol, the endpoint is a URL beginning with \"https://\"</li>\n    <li>For the email protocol, the endpoint is an e-mail address</li>\n    <li>For the email-json protocol, the endpoint is an e-mail address</li>\n    <li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li>\n    </ul>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "SubscribeResponse",
+                "type": "structure",
+                "members": {
+                    "SubscriptionArn": {
+                        "shape_name": "subscriptionARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the subscription, if the service was able to create a \n    subscription immediately (without requiring endpoint owner confirmation).</p>\n  "
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [
+                {
+                    "shape_name": "SubscriptionLimitExceededException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the customer already owns the maximum allowed number of subscriptions.</p>\n  "
+                },
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually create a\n      subscription, the endpoint owner must call the ConfirmSubscription\n      action with the token from the confirmation message. Confirmation tokens are\n      valid for three days.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Endpoint=example%40amazon.com\n  &Protocol=email\n  &Action=Subscribe\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=1%2FeGaDphxXq%2Fa89x6HvKh%2Fc1yLGXzuhS7vS2MslToDM%3D\n\n </queryrequest>\n <queryresponse>\n  \n<SubscribeResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <SubscribeResult>\n    <SubscriptionArn>pending confirmation</SubscriptionArn>\n  </SubscribeResult>\n  <ResponseMetadata>\n    <RequestId>a169c740-3766-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</SubscribeResponse>\n  \n </queryresponse>\n</examples>\n  "
+        },
+        "Unsubscribe": {
+            "input": {
+                "shape_name": "UnsubscribeInput",
+                "type": "structure",
+                "members": {
+                    "SubscriptionArn": {
+                        "shape_name": "subscriptionARN",
+                        "type": "string",
+                        "documentation": "\n    <p>The ARN of the subscription to be deleted.</p>\n  ",
+                        "required": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": null,
+            "errors": [
+                {
+                    "shape_name": "InvalidParameterException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+                },
+                {
+                    "shape_name": "InternalErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+                },
+                {
+                    "shape_name": "AuthorizationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+                },
+                {
+                    "shape_name": "NotFoundException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "string",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+                }
+            ],
+            "documentation": "\n    <p>The Unsubscribe action deletes a subscription. If the subscription requires authentication for \n      deletion, only the owner of the subscription or the its topic's owner \n      can unsubscribe, and an AWS signature is required. If the \n      Unsubscribe call does not require authentication and the requester is not \n      the subscription owner, a final cancellation message is delivered to the \n      endpoint, so that the endpoint owner can easily resubscribe to the topic if \n      the Unsubscribe request was unintended.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &Action=Unsubscribe\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=e8IwhPzuWeMvPDVrN7jUVxasd3Wv2LuO8x6rE23VCv8%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<UnsubscribeResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>18e0ac39-3776-11df-84c0-b93cc1666b84</RequestId>\n  </ResponseMetadata>\n</UnsubscribeResponse>\n  \n      </queryresponse>\n    </examples>\n  "
         }
-      ],
-      "documentation": "\n    <p>The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics, up to 100. If\n     there are more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get \n     further results.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?Action=ListTopics\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=tPg1qKNTNVPydnL3Yx5Fqm2O9GxCr9vh3EF5r9%2F5%2BJs%3D\n\n </queryrequest>\n <queryresponse>\n  \n<ListTopicsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListTopicsResult>\n    <Topics>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n      </member>\n    </Topics>\n  </ListTopicsResult>\n  <ResponseMetadata>\n    <RequestId>3f1478c7-33a9-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</ListTopicsResponse>\n  \n </queryresponse>\n</examples>\n  "
     },
-    {
-      "name": "Publish",
-      "input": {
-        "shape_name": "PublishInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The topic you want to publish to.</p>\n  ",
-            "required": true
-          },
-          "Message": {
-            "shape_name": "message",
-            "type": "string",
-            "documentation": "\n    <p>The message you want to send to the topic.</p>\n    <p>Constraints: Messages must be UTF-8 encoded\n      strings at most 8 KB in size (8192 bytes, not 8192 characters).</p>\n  ",
-            "required": true
-          },
-          "Subject": {
-            "shape_name": "subject",
-            "type": "string",
-            "documentation": "\n    <p>Optional parameter to be used as the \"Subject\" line of when the message is\n      delivered to e-mail endpoints. This field will also be included, if present, \n      in the standard JSON messages delivered to other endpoints.</p>\n    <p>Constraints: Subjects must be ASCII text that begins with a letter, number \n      or punctuation mark; must not include line breaks or control characters; and \n      must be less than 100 characters long.</p>\n  "
-          },
-          "MessageStructure": {
-            "shape_name": "messageStructure",
-            "type": "string",
-            "documentation": "\n    <p>Optional parameter. It will have one valid value: \"json\".\n      If this option, Message is present and set to \"json\", the value of Message must:\n      be a syntactically valid JSON object. It must contain at least a top level JSON\n      key of \"default\" with a value that is a string. For any other top level key that\n      matches one of our transport protocols (e.g. \"http\"), then the corresponding value\n      (if it is a string) will be used for the message published for that protocol</p>\n    <p>Constraints: Keys in the JSON object that correspond to supported transport\n      protocols must have simple JSON string values. The values will be parsed (unescaped)\n      before they are used in outgoing messages. Typically, outbound notifications are JSON\n      encoded (meaning, the characters will be reescaped for sending). JSON strings are \n      UTF-8. Values have a minimum length of 0 (the empty string, \"\", is allowed).\n      Values have a maximum length bounded by the overall message size (so, including\n      multiple protocols may limit message sizes). Non-string values will cause the key\n      to be ignored. Keys that do not correspond to supported transport protocols will be\n      ignored. Duplicate keys are not allowed. Failure to parse or validate any key or\n      value in the message will cause the Publish call to return an error (no partial\n      delivery).</p>\n  "
-          }
+    "metadata": {
+        "regions": {
+            "us-east-1": null,
+            "ap-northeast-1": null,
+            "sa-east-1": null,
+            "ap-southeast-1": null,
+            "ap-southeast-2": null,
+            "us-west-2": null,
+            "us-west-1": null,
+            "eu-west-1": null,
+            "us-gov-west-1": null
         },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "PublishResponse",
-        "type": "structure",
-        "members": {
-          "MessageId": {
-            "shape_name": "messageId",
-            "type": "string",
-            "documentation": "\n    <p>Unique identifier assigned to the published message.</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The Publish action sends a message to all of a topic's subscribed endpoints. When a\n      messageId is returned, the message has been saved and Amazon SNS will attempt to deliver it \n      to the topic's subscribers shortly. The format of the outgoing message to each\n      subscribed endpoint depends on the notification protocol selected.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?Subject=My%20first%20message\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A698519295917%3AMy-Topic\n  &Message=Hello%20world%21\n  &Action=Publish\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=AKIAJHS4T6XPF7XIURNA\n  &Signature=9GZysQ4Jpnz%2BHklqM7VFTvEcjR2LIUtn6jW47054xxE%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<PublishResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <PublishResult>\n    <MessageId>94f20ce6-13c5-43a0-9a9e-ca52d816e90b</MessageId>\n  </PublishResult>\n  <ResponseMetadata>\n    <RequestId>f187a3c1-376f-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</PublishResponse>\n  \n      </queryresponse>\n    </examples>\n  "
-    },
-    {
-      "name": "RemovePermission",
-      "input": {
-        "shape_name": "RemovePermissionInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic whose access control policy you wish to modify.</p>\n  ",
-            "required": true
-          },
-          "Label": {
-            "shape_name": "label",
-            "type": "string",
-            "documentation": "\n    <p>The unique label of the statement you want to remove.</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": null,
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The RemovePermission action removes a statement from a topic's access control policy.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Test\n  &Label=NewPermission\n  &Action=RemovePermission\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=N1abwRY9i7zaSQmbAlm71pPf9EEFOqNbQL1alzw2yCg%3D\n\n </queryrequest>\n <queryresponse>\n  \n<RemovePermissionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>d170b150-33a8-11df-995a-2d6fbe836cc1</RequestId>\n  </ResponseMetadata>\n</RemovePermissionResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "SetSubscriptionAttributes",
-      "input": {
-        "shape_name": "SetSubscriptionAttributesInput",
-        "type": "structure",
-        "members": {
-          "SubscriptionArn": {
-            "shape_name": "subscriptionARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the subscription to modify.</p>\n  ",
-            "required": true
-          },
-          "AttributeName": {
-            "shape_name": "attributeName",
-            "type": "string",
-            "documentation": "\n    <p>The name of the attribute you want to set. Only a subset of the subscriptions attributes are mutable.</p>\n    <p>Valid values: DeliveryPolicy</p>\n  ",
-            "required": true
-          },
-          "AttributeValue": {
-            "shape_name": "attributeValue",
-            "type": "string",
-            "documentation": "\n    <p>The new value for the attribute.</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": null,
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The SetSubscriptionAttributes action allows a subscription owner to set an attribute of the topic to a new value.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue={\"healthyRetryPolicy\":{\"numRetries\":5}}\n  &SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &AttributeName=DeliveryPolicy\n  &Action=SetSubscriptionAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n </queryrequest>\n <queryresponse>\n  \n<SetSubscriptionAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetSubscriptionAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
-    },
-    {
-      "name": "SetTopicAttributes",
-      "input": {
-        "shape_name": "SetTopicAttributesInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the topic to modify.</p>\n  ",
-            "required": true
-          },
-          "AttributeName": {
-            "shape_name": "attributeName",
-            "type": "string",
-            "documentation": "\n    <p>The name of the attribute you want to set. Only a subset of the topic's attributes are mutable.</p>\n    <p>Valid values: Policy | DisplayName</p>\n  ",
-            "required": true
-          },
-          "AttributeValue": {
-            "shape_name": "attributeValue",
-            "type": "string",
-            "documentation": "\n    <p>The new value for the attribute.</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": null,
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The SetTopicAttributes action allows a topic owner to set an attribute of the topic to a new value.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue=MyTopicName\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &AttributeName=DisplayName\n  &Action=SetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n </queryrequest>\n <queryresponse>\n  \n<SetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
-    },
-    {
-      "name": "Subscribe",
-      "input": {
-        "shape_name": "SubscribeInput",
-        "type": "structure",
-        "members": {
-          "TopicArn": {
-            "shape_name": "topicARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of topic you want to subscribe to.</p>\n  ",
-            "required": true
-          },
-          "Protocol": {
-            "shape_name": "protocol",
-            "type": "string",
-            "documentation": "\n    <p>The protocol you want to use. Supported protocols include:</p>\n    <ul>\n    <li>http -- delivery of JSON-encoded message via HTTP POST</li>\n    <li>https -- delivery of JSON-encoded message via HTTPS POST</li>\n    <li>email -- delivery of message via SMTP</li>\n    <li>email-json -- delivery of JSON-encoded message via SMTP</li>\n    <li>sqs -- delivery of JSON-encoded message to an Amazon SQS queue</li>\n    </ul>\n  ",
-            "required": true
-          },
-          "Endpoint": {
-            "shape_name": "endpoint",
-            "type": "string",
-            "documentation": "\n    <p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p>\n    <ul>\n    <li>For the http protocol, the endpoint is an URL beginning with \"http://\"</li>\n    <li>For the https protocol, the endpoint is a URL beginning with \"https://\"</li>\n    <li>For the email protocol, the endpoint is an e-mail address</li>\n    <li>For the email-json protocol, the endpoint is an e-mail address</li>\n    <li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li>\n    </ul>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": {
-        "shape_name": "SubscribeResponse",
-        "type": "structure",
-        "members": {
-          "SubscriptionArn": {
-            "shape_name": "subscriptionARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the subscription, if the service was able to create a \n    subscription immediately (without requiring endpoint owner confirmation).</p>\n  "
-          }
-        },
-        "documentation": null
-      },
-      "errors": [
-        {
-          "shape_name": "SubscriptionLimitExceededException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the customer already owns the maximum allowed number of subscriptions.</p>\n  "
-        },
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The Subscribe action prepares to subscribe an endpoint by sending the endpoint a confirmation message. To actually create a\n      subscription, the endpoint owner must call the ConfirmSubscription\n      action with the token from the confirmation message. Confirmation tokens are\n      valid for three days.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Endpoint=example%40amazon.com\n  &Protocol=email\n  &Action=Subscribe\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=1%2FeGaDphxXq%2Fa89x6HvKh%2Fc1yLGXzuhS7vS2MslToDM%3D\n\n </queryrequest>\n <queryresponse>\n  \n<SubscribeResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <SubscribeResult>\n    <SubscriptionArn>pending confirmation</SubscriptionArn>\n  </SubscribeResult>\n  <ResponseMetadata>\n    <RequestId>a169c740-3766-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</SubscribeResponse>\n  \n </queryresponse>\n</examples>\n  "
-    },
-    {
-      "name": "Unsubscribe",
-      "input": {
-        "shape_name": "UnsubscribeInput",
-        "type": "structure",
-        "members": {
-          "SubscriptionArn": {
-            "shape_name": "subscriptionARN",
-            "type": "string",
-            "documentation": "\n    <p>The ARN of the subscription to be deleted.</p>\n  ",
-            "required": true
-          }
-        },
-        "documentation": null
-      },
-      "output": null,
-      "errors": [
-        {
-          "shape_name": "InvalidParameterException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
-        },
-        {
-          "shape_name": "InternalErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
-        },
-        {
-          "shape_name": "AuthorizationErrorException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
-        },
-        {
-          "shape_name": "NotFoundException",
-          "type": "structure",
-          "members": {
-            "message": {
-              "shape_name": "string",
-              "type": "string",
-              "documentation": null
-            }
-          },
-          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
-        }
-      ],
-      "documentation": "\n    <p>The Unsubscribe action deletes a subscription. If the subscription requires authentication for \n      deletion, only the owner of the subscription or the its topic's owner \n      can unsubscribe, and an AWS signature is required. If the \n      Unsubscribe call does not require authentication and the requester is not \n      the subscription owner, a final cancellation message is delivered to the \n      endpoint, so that the endpoint owner can easily resubscribe to the topic if \n      the Unsubscribe request was unintended.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &Action=Unsubscribe\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=e8IwhPzuWeMvPDVrN7jUVxasd3Wv2LuO8x6rE23VCv8%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<UnsubscribeResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>18e0ac39-3776-11df-84c0-b93cc1666b84</RequestId>\n  </ResponseMetadata>\n</UnsubscribeResponse>\n  \n      </queryresponse>\n    </examples>\n  "
+        "protocols": [
+            "https",
+            "http"
+        ]
     }
-  ]
 }

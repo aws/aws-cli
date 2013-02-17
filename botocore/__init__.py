@@ -55,12 +55,16 @@ class BotoCoreObject(object):
 
     def __init__(self, **kwargs):
         self.name = ''
+        self.py_name = None
+        self.cli_name = None
         self.type = None
         self.members = []
         self.documentation = ''
         self.__dict__.update(kwargs)
-        self.py_name = xform_name(self.name, '_')
-        self.cli_name = xform_name(self.name, '-')
+        if self.py_name is None:
+            self.py_name = xform_name(self.name, '_')
+        if self.cli_name is None:
+            self.cli_name = xform_name(self.name, '-')
 
     def __repr__(self):
         return '%s:%s' % (self.type, self.name)

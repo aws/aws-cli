@@ -127,6 +127,24 @@ class FloatParameter(Parameter):
         return value
 
 
+class DoubleParameter(Parameter):
+
+    def validate(self, value):
+        if not isinstance(value, double):
+            raise ValidationError(value=str(value), type_name='double')
+        if self.min:
+            if value < self.min:
+                raise RangeError(value=value,
+                                 min_value=self.min,
+                                 max_value=self.max)
+        if self.max:
+            if value > self.max:
+                raise RangeError(value=value,
+                                 min_value=self.min,
+                                 max_value=self.max)
+        return value
+
+
 class BooleanParameter(Parameter):
 
     def validate(self, value):
@@ -267,13 +285,16 @@ class MapParameter(Parameter):
                                               '%s.%d.%s' % (label, i, member_type.xmlname))
 
     def build_parameter_json(self, value, built_params, label=''):
-        if not isinstance(value, (list, tuple)):
-            value = [value]
         label = self.get_label()
+        key_type = self.keys
         member_type = self.members
-        for i, v in enumerate(value, 1):
-            member_type.build_parameter_json(v, built_params,
-                                             '%s.%d' % (label, i))
+        new_value = {}
+        if isinstance(built_params, list):
+            built_params.append(new_value)
+        else:
+            built_params[label] = new_value
+        for key in value:
+            new_value[key] = value[key]
 
 
 class StructParameter(Parameter):
@@ -329,6 +350,7 @@ type_map = {
     'string': StringParameter,
     'blob': StringParameter,
     'float': FloatParameter,
+    'double': DoubleParameter,
     'integer': IntegerParameter,
     'long': IntegerParameter,
     'boolean': BooleanParameter,

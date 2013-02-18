@@ -68,8 +68,8 @@ def complete(cmdline, point):
     if service_name:
         data_path = 'aws/%s/operations' % service_name
         all_op_data = session.get_data(data_path)
-        for op_data in all_op_data:
-            operation_map[xform_name(op_data['name'], '-')] = op_data
+        for op_name, op_data in all_op_data.items():
+            operation_map[xform_name(op_name, '-')] = op_data
         for w in non_options:
             if w in operation_map:
                 operation_name = w

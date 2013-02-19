@@ -11,6 +11,7 @@
     "documentation": "\n    <fullname>AWS Identity and Access Management</fullname>\n\n    <p>This guide provides descriptions of the Identity and Access Management (IAM) API \n      as well as links to related content in the guide, <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/\" target=\"_blank\">Using IAM</a>.</p>\n\n    <p>IAM is a web service that enables AWS customers to manage users and user permissions under their AWS account.\n      For more information about this product go to <a href=\"http://aws.amazon.com/iam/\" target=\"_blank\">AWS Identity and Access Management (IAM)</a>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</p>\n      \n       <p>If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's\ntechnical documentation at <a href=\"http://aws.amazon.com/documentation/\" target=\"_blank\">http://aws.amazon.com/documentation/</a>.</p>\n\t\t\n ",
     "operations": {
         "AddRoleToInstanceProfile": {
+            "name": "AddRoleToInstanceProfile",
             "input": {
                 "shape_name": "AddRoleToInstanceProfileRequest",
                 "type": "structure",
@@ -78,6 +79,7 @@
             "documentation": "\n  \t<p>Adds the specified role to the specified instance profile. \n  For more information about roles, go to \n  \t\t\t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>. For more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=AddRoleToInstanceProfile\n&InstanceProfileName=Webserver\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n  <ResponseMetadata>\n  </ResponseMetadata>\n\n      <queryresponse>\n<AddRoleToInstanceProfileResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ResponseMetadata>\n    <RequestId>12657608-99f2-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</AddRoleToInstanceProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "AddUserToGroup": {
+            "name": "AddUserToGroup",
             "input": {
                 "shape_name": "AddUserToGroupRequest",
                 "type": "structure",
@@ -133,6 +135,7 @@
             "documentation": "\n    <p>Adds the specified user to the specified group.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=AddUserToGroup\n&GroupName=Managers\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<AddUserToGroupResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</AddUserToGroupResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ChangePassword": {
+            "name": "ChangePassword",
             "input": {
                 "shape_name": "ChangePasswordRequest",
                 "type": "structure",
@@ -188,6 +191,7 @@
             "documentation": "\n  \t<p>Changes the password of the IAM user calling <code>ChangePassword</code>. The root account \n  \t\tpassword is not affected by this action. For information about modifying passwords, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingLogins.html\" target=\"_blank\">Managing Passwords</a>.</p>\n       \n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ChangePassword\n&OldPassword=U79}kgds4?\n&NewPassword=Lb0*1(9xpN\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ChangePasswordResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ChangePasswordResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateAccessKey": {
+            "name": "CreateAccessKey",
             "input": {
                 "shape_name": "CreateAccessKeyRequest",
                 "type": "structure",
@@ -286,6 +290,7 @@
             "documentation": "\n    <p>Creates a new AWS Secret Access Key and corresponding AWS Access Key ID for the specified user. The default\n\tstatus for new keys is <code>Active</code>.</p>\n\n\t<p>If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n    Access Key ID signing the request. Because this action works for access keys under the AWS account,\n    you can use this API to manage root credentials even if the AWS account has no associated users.</p>\n\n    <p>For information about limits on the number of keys you can create, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n    \n    <important>To ensure the security of your AWS account, the Secret Access Key is accessible\n\t\t\t\t\tonly during key and user creation.  You must save the key (for example, in a text\n\t\t\t\t\tfile) if you want to be able to access it again.  If a secret key is lost, you\n\t\t\t\t\tcan delete the access keys for the associated user and then create new keys.</important>\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateAccessKey\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<CreateAccessKeyResponse>\n   <CreateAccessKeyResult>\n     <AccessKey>\n         <UserName>Bob</UserName>\n         <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n         <Status>Active</Status>\n         <SecretAccessKey>wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n         </SecretAccessKey>\n      </AccessKey>\n   </CreateAccessKeyResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</CreateAccessKeyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateAccountAlias": {
+            "name": "CreateAccountAlias",
             "input": {
                 "shape_name": "CreateAccountAliasRequest",
                 "type": "structure",
@@ -320,6 +325,7 @@
             "documentation": "\n    <p>This action creates an alias for your AWS account. For information about using an AWS account \n    alias, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html\" target=\"_blank\">Using an Alias for Your AWS Account ID</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateAccountAlias\n&AccountAlias=foocorporation\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<CreateAccountAliasResponse>\n  <ResponseMetadata>\n    <RequestId>36b5db08-f1b0-11df-8fbe-45274EXAMPLE</RequestId>\n  </ResponseMetadata>\n</CreateAccountAliasResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateGroup": {
+            "name": "CreateGroup",
             "input": {
                 "shape_name": "CreateGroupRequest",
                 "type": "structure",
@@ -441,6 +447,7 @@
             "documentation": "\n    <p>Creates a new group.</p>\n\n    <p>For information about the number of groups you can create, \n    see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateGroup\n&Path=/\n&GroupName=Admins\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<CreateGroupResponse>\n   <CreateGroupResult>\n      <Group>\n         <Path>/</Path>\n         <GroupName>Admins</GroupName>\n         <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n         <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n      </Group>\n   </CreateGroupResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</CreateGroupResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateInstanceProfile": {
+            "name": "CreateInstanceProfile",
             "input": {
                 "shape_name": "CreateInstanceProfileRequest",
                 "type": "structure",
@@ -612,6 +619,7 @@
             "documentation": "\n    <p>Creates a new instance profile.\n    \tFor information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n  \t\n    <p>For information about the number of instance profiles you can create, \n    see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateInstanceProfile\n&InstanceProfileName=Webserver\n&Path=/application_abc/component_xyz/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<CreateInstanceProfileResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <CreateInstanceProfileResult>\n    <InstanceProfile>\n      <InstanceProfileId>AIPAD5ARO2C5EXAMPLE3G</InstanceProfileId>\n      <Roles/>\n      <InstanceProfileName>Webserver</InstanceProfileName>\n      <Path>/application_abc/component_xyz/</Path>\n      <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n      <CreateDate>2012-05-09T16:11:10.222Z</CreateDate>\n    </InstanceProfile>\n  </CreateInstanceProfileResult>\n  <ResponseMetadata>\n    <RequestId>974142ee-99f1-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</CreateInstanceProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateLoginProfile": {
+            "name": "CreateLoginProfile",
             "input": {
                 "shape_name": "CreateLoginProfileRequest",
                 "type": "structure",
@@ -708,6 +716,7 @@
             "documentation": "\n    <p>Creates a password for the specified user, giving the user the ability to access AWS services\n       through the AWS Management Console.  For more information about managing passwords, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_ManagingLogins.html\" target=\"_blank\">Managing Passwords</a> in <i>Using IAM</i>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateLoginProfile\n&UserName=Bob\n&Password=Password1\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<CreateLoginProfileResponse>\n   <CreateUserResult>\n      <LoginProfile>\n         <UserName>Bob</UserName>\n         <CreateDate>2011-09-19T23:00:56Z</CreateDate>\n      </LoginProfile>\n   </CreateUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</CreateLoginProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateRole": {
+            "name": "CreateRole",
             "input": {
                 "shape_name": "CreateRoleRequest",
                 "type": "structure",
@@ -846,6 +855,7 @@
             "documentation": "\n  \t<p>Creates a new role for your AWS account. For more information about roles, go to \n  \t\t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>. \n  \t\tFor information about limitations on role names and the number of roles you can create, go to \n    <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>The policy grants permission to an EC2 instance to assume the role. The policy is URL-encoded according to RFC 3986. For more information about\n       RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>. Currently, only EC2 instances \n    can assume roles.</p>\n\n    <examples>\n<queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateRole\n&RoleName=S3Access\n&Path=/application_abc/component_xyz/\n&AssumeRolePolicyDocument={\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}\n&Version=2010-05-08\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<CreateRoleResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <CreateRoleResult>\n    <Role>\n      <Path>/application_abc/component_xyz/</Path>\n      <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n      <RoleName>S3Access</RoleName>\n      <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n      <CreateDate>2012-05-08T23:34:01.495Z</CreateDate>\n      <RoleId>AROADBQP57FF2AEXAMPLE</RoleId>\n    </Role>\n  </CreateRoleResult>\n  <ResponseMetadata>\n    <RequestId>4a93ceee-9966-11e1-b624-b1aEXAMPLE7c</RequestId>\n  </ResponseMetadata>\n</CreateRoleResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateUser": {
+            "name": "CreateUser",
             "input": {
                 "shape_name": "CreateUserRequest",
                 "type": "structure",
@@ -966,6 +976,7 @@
             "documentation": "\n    <p>Creates a new user for your AWS account.</p>\n\n    <p>For information about limitations on the number of users you can create, see \n    <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n<queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateUser\n&Path=/division_abc/subdivision_xyz/\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<CreateUserResponse>\n   <CreateUserResult>\n      <User>\n         <Path>/division_abc/subdivision_xyz/</Path>\n         <UserName>Bob</UserName>\n         <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n         <Arn>arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Bob\n         </Arn>\n     </User>\n   </CreateUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</CreateUserResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "CreateVirtualMFADevice": {
+            "name": "CreateVirtualMFADevice",
             "input": {
                 "shape_name": "CreateVirtualMFADeviceRequest",
                 "type": "structure",
@@ -1105,6 +1116,7 @@
             "documentation": "\n    <p>Creates a new virtual MFA device for the AWS account. After creating the virtual MFA, use \n      <a href=\"http://docs.amazonwebservices.com/IAM/latest/APIReference/API_EnableMFADevice.html\" target=\"_blank\">EnableMFADevice</a>\n      to attach the MFA device to an IAM user. For more information about creating and working with virtual MFA devices, go to \n      <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_VirtualMFA.html\" target=\"_blank\">Using a Virtual MFA Device</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>For information about limits on the number of MFA devices you can create, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n    \n    <important>The seed information contained in the QR code and the Base32 \n      string should be treated like any other secret access information, such as your AWS access keys or your passwords. After you \n      provision your virtual device, you\n      should ensure that the information is destroyed following secure procedures.</important>\n    \n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=CreateVirtualMFADevice\n&VirtualMFADeviceName=ExampleName\n&Path=/\n&Version=2010-05-08\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<CreateVirtualMFADeviceResponse>\n  <CreateVirtualMFADeviceResult>\n    <VirtualMFADevice>\n      <SerialNumber>arn:aws:iam::123456789012:mfa/ExampleName</SerialNumber>\n      <Base32StringSeed>2K5K5XTLA7GGE75TQLYEXAMPLEEXAMPLEEXAMPLECHDFW4KJYZ6\n      UFQ75LL7COCYKM</Base32StringSeed>\n      <QRCodePNG>89504E470D0A1A0AASDFAHSDFKJKLJFKALSDFJASDF</QRCodePNG> <!-- byte array of png file -->\n    </VirtualMFADevice>\n  </CreateVirtualMFADeviceResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</CreateVirtualMFADeviceResponse>\n</queryresponse>\n    </examples>\n  "
         },
         "DeactivateMFADevice": {
+            "name": "DeactivateMFADevice",
             "input": {
                 "shape_name": "DeactivateMFADeviceRequest",
                 "type": "structure",
@@ -1160,6 +1172,7 @@
             "documentation": "\n    <p>Deactivates the specified MFA device and removes it from association with the\n\tuser name for which it was originally enabled.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeactivateMFADevice\n&UserName=Bob\n&SerialNumber=R1234\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeactivateMFADeviceResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeactivateMFADeviceResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteAccessKey": {
+            "name": "DeleteAccessKey",
             "input": {
                 "shape_name": "DeleteAccessKeyRequest",
                 "type": "structure",
@@ -1202,6 +1215,7 @@
             "documentation": "\n    <p>Deletes the access key associated with the specified user.</p>\n\n<p>If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n    Access Key ID signing the request. Because this action works for access keys under the AWS account,\n    you can use this API to manage root credentials even if the AWS account has no associated users.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteAccessKey\n&UserName=Bob\n&AccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteAccessKeyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteAccessKeyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteAccountAlias": {
+            "name": "DeleteAccountAlias",
             "input": {
                 "shape_name": "DeleteAccountAliasRequest",
                 "type": "structure",
@@ -1236,6 +1250,7 @@
             "documentation": "\n    <p>Deletes the specified AWS account alias. For information about using an AWS account \n    alias, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html\" target=\"_blank\">Using an Alias for Your AWS Account ID</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteAccountAlias\n&AccountAlias=foocorporation\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteAccountAliasResponse>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</DeleteAccountAliasResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteAccountPasswordPolicy": {
+            "name": "DeleteAccountPasswordPolicy",
             "input": null,
             "output": null,
             "errors": [
@@ -1255,6 +1270,7 @@
             "documentation": "\n    <p>Deletes the password policy for the AWS account.</p>\n\n   <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteAccountPasswordPolicy\n&Version=2010-05-08\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<DeleteAccountPasswordPolicyResponse>\n   <ResponseMetadata>\n\t   <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n\t</ResponseMetadata>\n</DeleteAccountPasswordPolicy>\n</queryresponse>\n    </examples>\n  "
         },
         "DeleteGroup": {
+            "name": "DeleteGroup",
             "input": {
                 "shape_name": "DeleteGroupRequest",
                 "type": "structure",
@@ -1301,6 +1317,7 @@
             "documentation": "\n    <p>Deletes the specified group. The group must not contain any users or have any attached policies.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteGroup\n&Group=Test\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteGroupResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteGroupResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteGroupPolicy": {
+            "name": "DeleteGroupPolicy",
             "input": {
                 "shape_name": "DeleteGroupPolicyRequest",
                 "type": "structure",
@@ -1344,6 +1361,7 @@
             "documentation": "\n    <p>Deletes the specified policy that is associated with the specified group.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteGroupPolicy\n&GroupName=Admins\n&PolicyName=AdminRoot\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteGroupPolicyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteGroupPolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteInstanceProfile": {
+            "name": "DeleteInstanceProfile",
             "input": {
                 "shape_name": "DeleteInstanceProfileRequest",
                 "type": "structure",
@@ -1390,6 +1408,7 @@
             "documentation": "\n    <p>Deletes the specified instance profile. The instance profile must not have an associated role.</p>\n\n  \t<important>Make sure you do not have any Amazon EC2 instances running with the instance profile you are \n  \t\tabout to delete. Deleting a role or instance profile that is associated with \n  \t\ta running instance will break any applications running on the instance.</important>\n  \t\n  \t<p>For more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n  \t\n  \t<examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteInstanceProfile\n&InstanceProfileName=Webserver\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n      <queryresponse>\n<DeleteInstanceProfileResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ResponseMetadata>\n    <RequestId>90c18667-99f3-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</DeleteInstanceProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteLoginProfile": {
+            "name": "DeleteLoginProfile",
             "input": {
                 "shape_name": "DeleteLoginProfileRequest",
                 "type": "structure",
@@ -1436,6 +1455,7 @@
             "documentation": "\n    <p>Deletes the password for the specified user, which terminates the user's ability to access AWS\n       services through the AWS Management Console.</p>\n    <important>Deleting a user's password does not prevent a user from accessing IAM through the\n    command line interface or the API.  To prevent all user access you must also either make the access\n\tkey inactive or delete it.  For more information about making keys inactive or deleting them, see\n\t<a>UpdateAccessKey</a> and <a>DeleteAccessKey</a>.\n    </important>\n       \n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteLoginProfile\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteLoginProfileResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteLoginProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteRole": {
+            "name": "DeleteRole",
             "input": {
                 "shape_name": "DeleteRoleRequest",
                 "type": "structure",
@@ -1482,6 +1502,7 @@
             "documentation": "\n    <p>Deletes the specified role. The role must not have any policies attached.\n    \tFor more information about roles, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n\n  \t<important>Make sure you do not have any Amazon EC2 instances running with the role you are \n  \t\tabout to delete. Deleting a role or instance profile that is associated with \n  \t\ta running instance will break any applications running on the instance.</important>\n  \t\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteRole\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteRoleResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ResponseMetadata>\n    <RequestId>913e3f37-99ed-11e1-a4c3-270EXAMPLE04</RequestId>\n  </ResponseMetadata>\n</DeleteRoleResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteRolePolicy": {
+            "name": "DeleteRolePolicy",
             "input": {
                 "shape_name": "DeleteRolePolicyRequest",
                 "type": "structure",
@@ -1525,6 +1546,7 @@
             "documentation": "\n    <p>Deletes the specified policy associated with the specified role.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteRolePolicy\n&PolicyName=S3AccessPolicy\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteRolePolicyResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ResponseMetadata>\n    <RequestId>c749ee7f-99ef-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</DeleteRolePolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteServerCertificate": {
+            "name": "DeleteServerCertificate",
             "input": {
                 "shape_name": "DeleteServerCertificateRequest",
                 "type": "structure",
@@ -1571,6 +1593,7 @@
             "documentation": "\n    <p>Deletes the specified server certificate.</p>\n\n    <important>If you are using a server certificate with Elastic Load Balancing, deleting \n    the certificate could have implications for your application. If Elastic Load Balancing \n    doesn't detect the deletion of bound certificates, it may continue to use the certificates.  This could\n    cause Elastic Load Balancing to stop accepting traffic.  We recommend that you remove the reference to the certificate from\n    Elastic Load Balancing before using this command to delete the certificate. For more information, go to <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/APIReference/API_DeleteLoadBalancerListeners.html\" target=\"blank\">DeleteLoadBalancerListeners</a> in \n    the <i>Elastic Load Balancing API Reference</i>.</important>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteServerCertificate\n&ServerCertificateName=ProdServerCert\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteServerCertificateResponse>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</DeleteServerCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteSigningCertificate": {
+            "name": "DeleteSigningCertificate",
             "input": {
                 "shape_name": "DeleteSigningCertificateRequest",
                 "type": "structure",
@@ -1613,6 +1636,7 @@
             "documentation": "\n    <p>Deletes the specified signing certificate associated with the specified user.</p>\n\n<p>If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n    Access Key ID signing the request. Because this action works for access keys under the AWS account,\n    you can use this API to manage root credentials even if the AWS account has no associated users.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteSigningCertificate\n&UserName=Bob\n&CertificateId=TA7SMP42TDN5Z26OBPJE7EXAMPLE\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteSigningCertificateResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteSigningCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteUser": {
+            "name": "DeleteUser",
             "input": {
                 "shape_name": "DeleteUserRequest",
                 "type": "structure",
@@ -1659,6 +1683,7 @@
             "documentation": "\n    <p>Deletes the specified user. The user must not belong to any groups, have any keys or\n    signing certificates, or have any attached policies.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteUser\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteUserResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteUserResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteUserPolicy": {
+            "name": "DeleteUserPolicy",
             "input": {
                 "shape_name": "DeleteUserPolicyRequest",
                 "type": "structure",
@@ -1702,6 +1727,7 @@
             "documentation": "\n    <p>Deletes the specified policy associated with the specified user.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteUserPolicy\n&UserName=Bob\n&PolicyName=AllAccessPolicy\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<DeleteUserPolicyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</DeleteUserPolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "DeleteVirtualMFADevice": {
+            "name": "DeleteVirtualMFADevice",
             "input": {
                 "shape_name": "DeleteVirtualMFADeviceRequest",
                 "type": "structure",
@@ -1748,6 +1774,7 @@
             "documentation": "\n    <p>Deletes a virtual MFA device.</p>\n\n    <note>You must deactivate a user's virtual MFA device before you can delete it. For information about \n      deactivating MFA devices, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/APIReference/API_DeactivateMFADevice.html\">DeactivateMFADevice</a>.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=DeleteVirtualMFADevice\n&SerialNumber=arn:aws:iam::123456789012:mfa/ExampleName\n&Version=2010-05-08\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<DeleteVirtualMFADeviceResponse>\n  <DeleteVirtualMFADeviceResult>\n    <VirtualMFADevice>\n      <SerialNumber>arn:aws:iam::123456789012:mfa/ExampleName</SerialNumber>\n    </VirtualMFADevice>\n  </DeleteVirtualMFADeviceResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</DeleteVirtualMFADeviceResponse>\n</queryresponse>\n    </examples>\n  "
         },
         "EnableMFADevice": {
+            "name": "EnableMFADevice",
             "input": {
                 "shape_name": "EnableMFADeviceRequest",
                 "type": "structure",
@@ -1857,6 +1884,7 @@
             "documentation": "\n    <p>Enables the specified MFA device and associates it with the specified user name. When enabled, the\n       MFA device is required for every subsequent login by the user name associated with the device.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=EnableMFADevice\n&UserName=Bob\n&SerialNumber=R1234\n&AuthenticationCode1=234567\n&AuthenticationCode2=987654\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<EnableMFADeviceResponse>\n   <ResponseMetadata>\n     <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</EnableMFADeviceResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetAccountPasswordPolicy": {
+            "name": "GetAccountPasswordPolicy",
             "input": null,
             "output": {
                 "shape_name": "GetAccountPasswordPolicyResponse",
@@ -1922,6 +1950,7 @@
             "documentation": "\n  \t<p>Retrieves the password policy for the AWS account. For more information about \n  \t\tusing a password policy, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html\">Managing an IAM Password Policy</a>.</p>\n\n   <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetAccountPasswordPolicy\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetAccountPasswordPolicyResponse>\n  <GetAccountPasswordPolicyResult>\n    <PasswordPolicy> \n        <MinimumPasswordLength>6</MinimumPasswordLength>, \n        <RequireUppercaseCharacters>false</RequireUppercaseCharacters>\n        <RequireLowercaseCharacters>false</RequireLowercaseCharacters> \n        <RequireNumbers>false</RequireNumbers> \n        <RequireSymbols>false</RequireSymbols>\n        <AllowUsersToChangePassword>true</AllowUsersToChangePassword>\n    </PasswordPolicy>\t\n  </GetAccountPasswordPolicyResult>\n  <ResponseMetadata> \n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</GetAccountPasswordPolicyResponse>\t\n</queryresponse>\n    </examples>\n  "
         },
         "GetAccountSummary": {
+            "name": "GetAccountSummary",
             "input": null,
             "output": {
                 "shape_name": "GetAccountSummaryResponse",
@@ -1965,6 +1994,7 @@
             "documentation": "\n    <p>Retrieves account level information about account entity usage and IAM quotas.</p>\n    <p>For information about limitations on IAM entities, see \n    <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetAccountSummary\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetAccountSummaryResponse>\n  <GetAccountSummaryResult>\n    <SummaryMap>\n      <entry>\n        <key>Groups</key>\n        <value>31</value>\n      </entry>\n      <entry>\n        <key>GroupsQuota</key>\n        <value>50</value>\n      </entry>\n      <entry>\n        <key>UsersQuota</key>\n        <value>150</value>\n      </entry>\n      <entry>\n        <key>Users</key>\n        <value>35</value>\n      </entry>\n      <entry>\n        <key>GroupPolicySizeQuota</key>\n        <value>10240</value>\n      </entry>\n      <entry>\n        <key>AccessKeysPerUserQuota</key>\n        <value>2</value>\n      </entry>\n      <entry>\n        <key>GroupsPerUserQuota</key>\n        <value>10</value>\n      </entry>\n      <entry>\n        <key>UserPolicySizeQuota</key>\n        <value>10240</value>\n      </entry>\n      <entry>\n        <key>SigningCertificatesPerUserQuota</key>\n        <value>2</value>\n      </entry>\n      <entry>\n        <key>ServerCertificates</key>\n        <value>0</value>\n      </entry>\n      <entry>\n        <key>ServerCertificatesQuota</key>\n        <value>10</value>\n      </entry>\n      <entry>\n        <key>AccountMFAEnabled</key>\n        <value>0</value>\n      </entry>\n      <entry>\n        <key>MFADevicesInUse</key>\n        <value>10</value>\n      </entry>\n      <entry>\n        <key>MFADevices</key>\n        <value>20</value>\n      </entry>\n    </SummaryMap>\n  </GetAccountSummaryResult>\n  <ResponseMetadata>\n    <RequestId>f1e38443-f1ad-11df-b1ef-a9265EXAMPLE</RequestId>\n  </ResponseMetadata>\n</GetAccountSummaryResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetGroup": {
+            "name": "GetGroup",
             "input": {
                 "shape_name": "GetGroupRequest",
                 "type": "structure",
@@ -2136,6 +2166,7 @@
             "documentation": "\n    <p>Returns a list of users that are in the specified group. You can paginate the results using the <code>MaxItems</code> \n    and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetGroup\n&GroupName=Admins\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetGroupResponse>\n   <GetGroupResult>\n      <Group>\n         <Path>/</Path>\n         <GroupName>Admins</GroupName>\n         <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n         <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n      </Group>\n      <Users>      \n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <UserName>Bob</UserName>\n            <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n            <Arn>\n            arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Bob\n            </Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <UserName>Susan</UserName>\n            <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n            <Arn>\n            arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Susan\n            </Arn>\n         </member>\n      </Users>\n      <IsTruncated>false</IsTruncated>\n   </GetGroupResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetGroupResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetGroupPolicy": {
+            "name": "GetGroupPolicy",
             "input": {
                 "shape_name": "GetGroupPolicyRequest",
                 "type": "structure",
@@ -2212,6 +2243,7 @@
             "documentation": "\n    <p>Retrieves the specified policy document for the specified group. The returned policy is URL-encoded\n    according to RFC 3986. For more information about RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetGroupPolicy\n&GroupName=Admins\n&PolicyName=AdminRoot\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetGroupPolicyResponse>\n   <GetGroupPolicyResult>\n      <GroupName>Admins</GroupName>\n      <PolicyName>AdminRoot</PolicyName>\n      <PolicyDocument>\n      {\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"*\",\"Resource\":\"*\"}]}\n      </PolicyDocument>\n   </GetGroupPolicyResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetGroupPolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetInstanceProfile": {
+            "name": "GetInstanceProfile",
             "input": {
                 "shape_name": "GetInstanceProfileRequest",
                 "type": "structure",
@@ -2363,6 +2395,7 @@
             "documentation": "\n    <p>Retrieves information about the specified instance profile, including the instance profile's\n    path, GUID, ARN, and role. For more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>. For more information about ARNs, go to \n  \t\t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_Identifiers.html#Identifiers_ARNs\">ARNs</a>.</p>\n  \t\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetInstanceProfile\n&InstanceProfileName=Webserver\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetInstanceProfileResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <GetInstanceProfileResult>\n    <InstanceProfile>\n      <InstanceProfileId>AIPAD5ARO2C5EXAMPLE3G</InstanceProfileId>\n      <Roles>\n        <member>\n          <Path>/application_abc/component_xyz/</Path>\n          <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n          <RoleName>S3Access</RoleName>\n          <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n          <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n          <RoleId>AROACVYKSVTSZFEXAMPLE</RoleId>\n        </member>\n      </Roles>\n      <InstanceProfileName>Webserver</InstanceProfileName>\n      <Path>/application_abc/component_xyz/</Path>\n      <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n      <CreateDate>2012-05-09T16:11:10Z</CreateDate>\n    </InstanceProfile>\n  </GetInstanceProfileResult>\n  <ResponseMetadata>\n    <RequestId>37289fda-99f2-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</GetInstanceProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetLoginProfile": {
+            "name": "GetLoginProfile",
             "input": {
                 "shape_name": "GetLoginProfileRequest",
                 "type": "structure",
@@ -2426,6 +2459,7 @@
             "documentation": "\n    <p>Retrieves the user name and password create date for the specified user.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetLoginProfile\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetLoginProfileResponse>\n   <GetLoginProfileResult>\n      <LoginProfile>\n         <UserName>Bob</UserName>\n         <CreateDate>2011-09-19T23:00:56Z</CreateDate>\n      </LoginProfile>\n   </GetLoginProfileResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetLoginProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetRole": {
+            "name": "GetRole",
             "input": {
                 "shape_name": "GetRoleRequest",
                 "type": "structure",
@@ -2523,6 +2557,7 @@
             "documentation": "\n    <p>Retrieves information about the specified role, including the role's path, GUID, ARN, and the policy granting permission to EC2 \n    \tto assume the role. For more information about ARNs, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_Identifiers.html#Identifiers_ARNs\">ARNs</a>.\n    \tFor more information about roles, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n\n    <p>The returned policy is URL-encoded according to RFC 3986. For more information about\n       RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetRole\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetRoleResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <GetRoleResult>\n    <Role>\n      <Path>/application_abc/component_xyz/</Path>\n      <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n      <RoleName>S3Access</RoleName>\n      <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n      <CreateDate>2012-05-08T23:34:01Z</CreateDate>\n      <RoleId>AROADBQP57FF2AEXAMPLE</RoleId>\n    </Role>\n  </GetRoleResult>\n  <ResponseMetadata>\n    <RequestId>df37e965-9967-11e1-a4c3-270EXAMPLE04</RequestId>\n  </ResponseMetadata>\n</GetRoleResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetRolePolicy": {
+            "name": "GetRolePolicy",
             "input": {
                 "shape_name": "GetRolePolicyRequest",
                 "type": "structure",
@@ -2599,6 +2634,7 @@
             "documentation": "\n  \t<p>Retrieves the specified policy document for the specified role. For more information about roles, go to \n  \t\t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n  \t\t<p>The returned policy is URL-encoded\n    according to RFC 3986. For more information about RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetRolePolicy\n&PolicyName=S3AccessPolicy\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetRolePolicyResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <GetRolePolicyResult>\n    <PolicyName>S3AccessPolicy</PolicyName>\n    <RoleName>S3Access</RoleName>\n    <PolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"s3:*\"],\"Resource\":[\"*\"]}]}</PolicyDocument>\n  </GetRolePolicyResult>\n  <ResponseMetadata>\n    <RequestId>7e7cd8bc-99ef-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</GetRolePolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetServerCertificate": {
+            "name": "GetServerCertificate",
             "input": {
                 "shape_name": "GetServerCertificateRequest",
                 "type": "structure",
@@ -2712,6 +2748,7 @@
             "documentation": "\n    <p>Retrieves information about the specified server certificate.</p>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetServerCertificate\n&ServerCertificateName=ProdServerCert\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetServerCertificateResponse>\n  <GetServerCertificateResult>\n    <ServerCertificate>\n      <ServerCertificateMetadata>\n        <ServerCertificateName>ProdServerCert</ServerCertificateName>\n        <Path>/company/servercerts/</Path>\n        <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert</Arn>\n        <UploadDate>2010-05-08T01:02:03.004Z</UploadDate>\n        <ServerCertificateId>ASCACKCEVSQ6C2EXAMPLE</ServerCertificateId>\n      </ServerCertificateMetadata>\n      <CertificateBody>-----BEGIN CERTIFICATE-----\nMIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\nAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\nGEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\nMDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\nFQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\nMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\ndqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\nywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\nsuDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\nCgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\nCAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\nwr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\nwFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\nAEaHzTpmEXAMPLE=\n-----END CERTIFICATE-----\n      </CertificateBody>\n    </ServerCertificate>\n  </GetServerCertificateResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</GetServerCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetUser": {
+            "name": "GetUser",
             "input": {
                 "shape_name": "GetUserRequest",
                 "type": "structure",
@@ -2800,6 +2837,7 @@
             "documentation": "\n    <p>Retrieves information about the specified user, including the user's path, GUID, and ARN.</p>\n\n    <p>If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n    Access Key ID signing the request.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetUser\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetUserResponse>\n   <GetUserResult>\n      <User>\n         <Path>/division_abc/subdivision_xyz/</Path>\n         <UserName>Bob</UserName>\n         <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n         <Arn>\n         arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Bob\n         </Arn>\n      </User>\n   </GetUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetUserResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "GetUserPolicy": {
+            "name": "GetUserPolicy",
             "input": {
                 "shape_name": "GetUserPolicyRequest",
                 "type": "structure",
@@ -2876,6 +2914,7 @@
             "documentation": "\n    <p>Retrieves the specified policy document for the specified user. The returned policy is URL-encoded\n    according to RFC 3986. For more information about RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetUserPolicy\n&UserName=Bob\n&PolicyName=AllAccessPolicy\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetUserPolicyResponse>\n   <GetUserPolicyResult>\n      <UserName>Bob</UserName>\n      <PolicyName>AllAccessPolicy</PolicyName>\n      <PolicyDocument>\n      {\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"*\",\"Resource\":\"*\"}]}\n      </PolicyDocument>\n   </GetUserPolicyResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetUserPolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListAccessKeys": {
+            "name": "ListAccessKeys",
             "input": {
                 "shape_name": "ListAccessKeysRequest",
                 "type": "structure",
@@ -2986,6 +3025,7 @@
             "documentation": "\n    <p>Returns information about the Access Key IDs associated with the specified user. If there are none,\n    the action returns an empty list.</p>\n\n    <p>Although each user is limited to a small number of keys, you can still paginate the results\n    using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n    \n\t<p>If the <code>UserName</code> field is not specified, the UserName is determined implicitly based\n\ton the AWS Access Key ID used to sign the request. Because this action works for access keys under\n\tthe AWS account, this API can be used to manage root credentials even if the AWS account has no associated users.</p>\n\n<note>To ensure the security of your AWS account, the secret access key is accessible only during key and user creation.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListAccessKeys\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListAccessKeysResponse>\n   <ListAccessKeysResult>\n      <UserName>Bob</UserName>\n      <AccessKeyMetadata>\n         <member>\n            <UserName>Bob</UserName>\n            <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n            <Status>Active</Status>\n         </member>\n         <member>\n            <UserName>Bob</UserName>\n            <AccessKeyId>AKIAI44QH8DHBEXAMPLE</AccessKeyId>\n            <Status>Inactive</Status>\n         </member>\n      </AccessKeyMetadata>\n      <IsTruncated>false</IsTruncated>\n   </ListAccessKeysResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListAccessKeysResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListAccountAliases": {
+            "name": "ListAccountAliases",
             "input": {
                 "shape_name": "ListAccountAliasesRequest",
                 "type": "structure",
@@ -3046,6 +3086,7 @@
             "documentation": "\n    <p>Lists the account aliases associated with the account. For information about using an AWS account \n    alias, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html\" target=\"_blank\">Using an Alias for Your AWS Account ID</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>    \n    \n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListAccountAliases\n&Version=2010-05-08\n&AUTHPARAMS      \n      </queryrequest>\n\n      <queryresponse>\n<ListAccountAliasesResponse>\n  <ListAccountAliasesResult>\n    <IsTruncated>false</IsTruncated>\n    <AccountAliases>\n      <member>foocorporation</member>\n    </AccountAliases>\n  </ListAccountAliasesResult>\n  <ResponseMetadata>\n    <RequestId>c5a076e9-f1b0-11df-8fbe-45274EXAMPLE</RequestId>\n  </ResponseMetadata>\n</ListAccountAliasesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListGroupPolicies": {
+            "name": "ListGroupPolicies",
             "input": {
                 "shape_name": "ListGroupPoliciesRequest",
                 "type": "structure",
@@ -3128,6 +3169,7 @@
             "documentation": "\n    <p>Lists the names of the policies associated with the specified group. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListGroupPolicies\n&GroupName=Admins\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListGroupPoliciesResponse>\n   <ListGroupPoliciesResult>\n      <PolicyNames>\n         <member>AdminRoot</member>\n         <member>KeyPolicy</member>\n      </PolicyNames>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupPoliciesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupPoliciesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListGroups": {
+            "name": "ListGroups",
             "input": {
                 "shape_name": "ListGroupsRequest",
                 "type": "structure",
@@ -3236,6 +3278,7 @@
             "documentation": "\n    <p>Lists the groups that have the specified path prefix.</p>\n     \n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListGroups\n&PathPrefix=/division_abc/subdivision_xyz/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListGroupsResponse>\n   <ListGroupsResult>\n      <Groups>\n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <GroupName>Admins</GroupName>\n            <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/product_1234/engineering/\n            </Path>\n            <GroupName>Test</GroupName>\n            <GroupId>AGP2MAB8DPLSRHEXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group\n            /division_abc/subdivision_xyz/product_1234/engineering/Test</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/product_1234/</Path>\n            <GroupName>Managers</GroupName>\n            <GroupId>AGPIODR4TAW7CSEXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012\n            :group/division_abc/subdivision_xyz/product_1234/Managers</Arn>\n         </member>\n      </Groups>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupsResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupsResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListGroupsForUser": {
+            "name": "ListGroupsForUser",
             "input": {
                 "shape_name": "ListGroupsForUserRequest",
                 "type": "structure",
@@ -3358,6 +3401,7 @@
             "documentation": "\n    <p>Lists the groups the specified user belongs to.</p>\n     \n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest> \nhttps://iam.amazonaws.com/\n?Action=ListGroupsForUser\n&UserName=Bob\n&AUTHPARAMS\n       </queryrequest>\n\n      <queryresponse> \n<ListGroupsForUserResponse> \n   <ListGroupsForUserResult>\n      <Groups>\n         <member>\n            <Path>/</Path>\n            <GroupName>Admins</GroupName>\n            <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n         </member>\n      </Groups>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupsForUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupsForUserResponse>\n</queryresponse>\n    </examples>\n  "
         },
         "ListInstanceProfiles": {
+            "name": "ListInstanceProfiles",
             "input": {
                 "shape_name": "ListInstanceProfilesRequest",
                 "type": "structure",
@@ -3528,6 +3572,7 @@
             "documentation": "\n    <p>Lists the instance profiles that have the specified path prefix. If there are none, the action returns an empty list.\n    \tFor more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListInstanceProfiles\n&MaxItems=100\n&PathPrefix=/application_abc/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListInstanceProfilesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListInstanceProfilesResult>\n    <IsTruncated>false</IsTruncated>\n    <InstanceProfiles>\n      <member>\n        <Id>AIPACIFN4OZXG7EXAMPLE</Id>\n        <Roles/>\n        <InstanceProfileName>Database</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Database</Arn>\n        <CreateDate>2012-05-09T16:27:03Z</CreateDate>\n      </member>\n      <member>\n        <Id>AIPACZLSXM2EYYEXAMPLE</Id>\n        <Roles/>\n        <InstanceProfileName>Webserver</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n        <CreateDate>2012-05-09T16:27:11Z</CreateDate>\n      </member>\n    </InstanceProfiles>\n  </ListInstanceProfilesResult>\n  <ResponseMetadata>\n    <RequestId>fd74fa8d-99f3-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListInstanceProfilesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListInstanceProfilesForRole": {
+            "name": "ListInstanceProfilesForRole",
             "input": {
                 "shape_name": "ListInstanceProfilesForRoleRequest",
                 "type": "structure",
@@ -3712,6 +3757,7 @@
             "documentation": "\n    <p>Lists the instance profiles that have the specified associated role. If there are none, the action returns an empty list.\n    \tFor more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListInstanceProfilesForRole\n&MaxItems=100\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n      <queryresponse>\n<ListInstanceProfilesForRoleResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListInstanceProfilesForRoleResult>\n    <IsTruncated>false</IsTruncated>\n    <InstanceProfiles>\n      <member>\n        <Id>AIPACZLS2EYYXMEXAMPLE</Id>\n        <Roles>\n          <member>\n            <Path>/application_abc/component_xyz/</Path>\n            <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n            <RoleName>S3Access</RoleName>\n            <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n            <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n            <RoleId>AROACVSVTSZYK3EXAMPLE</RoleId>\n          </member>\n        </Roles>\n        <InstanceProfileName>Webserver</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n        <CreateDate>2012-05-09T16:27:11Z</CreateDate>\n      </member>\n    </InstanceProfiles>\n  </ListInstanceProfilesForRoleResult>\n  <ResponseMetadata>\n    <RequestId>6a8c3992-99f4-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListInstanceProfilesForRoleResponse>\n\n      </queryresponse>\n    </examples>\n  "
         },
         "ListMFADevices": {
+            "name": "ListMFADevices",
             "input": {
                 "shape_name": "ListMFADevicesRequest",
                 "type": "structure",
@@ -3816,6 +3862,7 @@
             "documentation": "\n    <p>Lists the MFA devices. If the request includes the user name, then this action lists all the MFA devices associated with the specified \n      user name. If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n      Access Key ID signing the request.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListMFADevices\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListMFADevicesResponse>\n   <ListMFADevicesResult>\n      <MFADevices>\n         <member>\n            <UserName>Bob</UserName>\n            <SerialNumber>R1234</SerialNumber>\n         </member>\n      </MFADevices>\n      <IsTruncated>false</IsTruncated>\n   </ListMFADevicesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListMFADevicesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListRolePolicies": {
+            "name": "ListRolePolicies",
             "input": {
                 "shape_name": "ListRolePoliciesRequest",
                 "type": "structure",
@@ -3898,6 +3945,7 @@
             "documentation": "\n    <p>Lists the names of the policies associated with the specified role. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListRolePolicies\n&MaxItems=100\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListRolePoliciesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListRolePoliciesResult>\n    <PolicyNames>\n      <member>CloudwatchPutMetricPolicy</member>\n      <member>S3AccessPolicy</member>\n    </PolicyNames>\n    <IsTruncated>false</IsTruncated>\n  </ListRolePoliciesResult>\n  <ResponseMetadata>\n    <RequestId>8c7e1816-99f0-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListRolePoliciesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListRoles": {
+            "name": "ListRoles",
             "input": {
                 "shape_name": "ListRolesRequest",
                 "type": "structure",
@@ -4014,6 +4062,7 @@
             "documentation": "\n    <p>Lists the roles that have the specified path prefix. If there are none, the action returns an empty list.\n    \tFor more information about roles, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <p>The returned policy is URL-encoded according to RFC 3986. For more information about\n       RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListRoles\n&MaxItems=100\n&PathPrefix=/application_abc/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListRolesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListRolesResult>\n    <IsTruncated>false</IsTruncated>\n    <Roles>\n      <member>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n        <RoleName>S3Access</RoleName>\n        <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n        <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n        <RoleId>AROACVSVTSZYEXAMPLEYK</RoleId>\n      </member>\n      <member>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/SDBAccess</Arn>\n        <RoleName>SDBAccess</RoleName>\n        <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n        <CreateDate>2012-05-09T15:45:45Z</CreateDate>\n        <RoleId>AROAC2ICXG32EXAMPLEWK</RoleId>\n      </member>\n    </Roles>\n  </ListRolesResult>\n  <ResponseMetadata>\n    <RequestId>20f7279f-99ee-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListRolesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListServerCertificates": {
+            "name": "ListServerCertificates",
             "input": {
                 "shape_name": "ListServerCertificatesRequest",
                 "type": "structure",
@@ -4121,6 +4170,7 @@
             "documentation": "\n    <p>Lists the server certificates that have the specified path prefix. If none exist, the\n    action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListServerCertificates\n&PathPrefix=/company/servercerts\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListServerCertificatesResponse>\n  <ListServerCertificatesResult>\n    <IsTruncated>false</IsTruncated>\n    <ServerCertificateMetadataList>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>ProdServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert</Arn>\n          <UploadDate>2010-05-08T01:02:03.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE1</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>BetaServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/BetaServerCert</Arn>\n          <UploadDate>2010-05-08T02:03:01.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE2</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>TestServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/TestServerCert</Arn>\n          <UploadDate>2010-05-08T03:01:02.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE3</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n    </ServerCertificateMetadataList>\n  </ListServerCertificatesResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</ListServerCertificatesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListSigningCertificates": {
+            "name": "ListSigningCertificates",
             "input": {
                 "shape_name": "ListSigningCertificatesRequest",
                 "type": "structure",
@@ -4243,6 +4293,7 @@
             "documentation": "\n    <p>Returns information about the signing certificates associated with the specified user. If there\n    are none, the action returns an empty list.</p>\n\n    <p>Although each user is limited to a small number of signing certificates, you can still paginate\n      the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the user name is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account has\n\tno associated users.</p>\n\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListSigningCertificates\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListSigningCertificatesResponse>\n   <ListSigningCertificatesResult>\n      <UserName>Bob</UserName>\n      <Certificates>\n         <member>\n            <UserName>Bob</UserName>\n            <CertificateId>TA7SMP42TDN5Z26OBPJE7EXAMPLE</CertificateId>\n            <CertificateBody>-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----</CertificateBody>\n            <Status>Active</Status>\n         </member>\n      </Certificates>\n      <IsTruncated>false</IsTruncated>\n   </ListSigningCertificatesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListSigningCertificatesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListUserPolicies": {
+            "name": "ListUserPolicies",
             "input": {
                 "shape_name": "ListUserPoliciesRequest",
                 "type": "structure",
@@ -4325,6 +4376,7 @@
             "documentation": "\n    <p>Lists the names of the policies associated with the specified user. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListUserPolicies\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListUserPoliciesResponse>\n   <ListUserPoliciesResult>\n      <PolicyNames>\n         <member>AllAccessPolicy</member>\n         <member>KeyPolicy</member>\n      </PolicyNames>\n      <IsTruncated>false</IsTruncated>\n   </ListUserPoliciesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListUserPoliciesResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListUsers": {
+            "name": "ListUsers",
             "input": {
                 "shape_name": "ListUsersRequest",
                 "type": "structure",
@@ -4433,6 +4485,7 @@
             "documentation": "\n    <p>Lists the users that have the specified path prefix. If there are none, the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListUsers\n&PathPrefix=/division_abc/subdivision_xyz/product_1234/engineering/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListUsersResponse>\n   <ListUsersResult>\n      <Users>\n         <member>\n            <Path>/division_abc/subdivision_xyz/engineering/</Path>\n            <UserName>Andrew</UserName>\n            <UserId>AID2MAB8DPLSRHEXAMPLE</UserId>\n            <Arn>arn:aws:iam::123456789012:user\n            /division_abc/subdivision_xyz/engineering/Andrew</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/engineering/</Path>\n            <UserName>Jackie</UserName>\n            <UserId>AIDIODR4TAW7CSEXAMPLE</UserId>\n            <Arn>arn:aws:iam::123456789012:user\n            /division_abc/subdivision_xyz/engineering/Jackie</Arn>\n         </member>\n      </Users>\n      <IsTruncated>false</IsTruncated>\n   </ListUsersResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListUsersResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ListVirtualMFADevices": {
+            "name": "ListVirtualMFADevices",
             "input": {
                 "shape_name": "ListVirtualMFADevicesRequest",
                 "type": "structure",
@@ -4574,6 +4627,7 @@
             "documentation": "\n    <p>\n      Lists the virtual MFA devices under the AWS account by assignment status. If you do not specify an\n      assignment status, the action returns a list of all virtual MFA devices. Assignment status can be <code>Assigned</code>, \n      <code>Unassigned</code>, or <code>Any</code>.\n    </p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n      \n<queryrequest>\n<!-- This example shows the request where \n     the AssignmentStatus is Any -->\n  \nhttps://iam.amazonaws.com/\n?Action=ListVirtualMFADevices\n&AssignmentStatus=Any\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<!-- The action returns all three virtual MFA devices\n     associated with the account: the first device is\n     unassigned, the second is assigned to the root \n     account, and the third is assigned to a user \n     named ExampleUser under the account. -->\n\n<ListVirtualMFADevicesResponse>\n  <ListVirtualMFADevicesResult>\n    <IsTruncated>false</IsTruncated>\n    <VirtualMFADevices>\n      <member>\n        <SerialNumber>\n        arn:aws:iam::123456789012:mfa/MFAdeviceName\n        </SerialNumber>\n      </member>\n      <member>\n        <SerialNumber>\n        arn:aws:iam::123456789012:mfa/RootMFAdeviceName\n        </SerialNumber>\n        <EnableDate>2011-10-20T20:49:03Z</EnableDate>\n        <User>\n          <UserId>123456789012</UserId>\n          <Arn>arn:aws:iam::123456789012:root</Arn>\n          <CreateDate>2009-10-13T22:00:36Z</CreateDate>\n        </User>\n      </member>\n      <member>\n        <SerialNumber>\n        arn:aws:iam:::mfa/ExampleUserMFAdeviceName\n        </SerialNumber>\n        <EnableDate>2011-10-31T20:45:02Z</EnableDate>\n        <User>\n          <UserId>AIDEXAMPLE4EXAMPLEXYZ</UserId>\n          <Path>/</Path>\n          <UserName>ExampleUser</UserName>\n          <Arn>arn:aws:iam::111122223333:user/ExampleUser</Arn>\n          <CreateDate>2011-07-01T17:23:07Z</CreateDate>\n        </User>\n      </member>\n    </VirtualMFADevices>\n  </ListVirtualMFADevicesResult>\n  <ResponseMetadata>\n    <RequestId>b61ce1b1-0401-11e1-b2f8-2dEXAMPLEbfc</RequestId>\n  </ResponseMetadata>\n</ListVirtualMFADevicesResponse>\n</queryresponse>\n    </examples>\n  "
         },
         "PutGroupPolicy": {
+            "name": "PutGroupPolicy",
             "input": {
                 "shape_name": "PutGroupPolicyRequest",
                 "type": "structure",
@@ -4650,6 +4704,7 @@
             "documentation": "\n    <p>Adds (or updates) a policy document associated with the specified group. For information about\n    policies, refer to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html\" target=\"_blank\">Overview of Policies</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>For information about limits on the number of policies you can associate with a group, see\n    <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <note>Because policy documents can be large, you should use POST rather than GET when\n    \tcalling <code>PutGroupPolicy</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=PutGroupPolicy\n&GroupName=Admins\n&PolicyName=AdminRoot\n&PolicyDocument={\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"*\",\"Resource\":\"*\"}]}\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<PutGroupPolicyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</PutGroupPolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "PutRolePolicy": {
+            "name": "PutRolePolicy",
             "input": {
                 "shape_name": "PutRolePolicyRequest",
                 "type": "structure",
@@ -4726,6 +4781,7 @@
             "documentation": "\n    <p>Adds (or updates) a policy document associated with the specified role. For information about\n    policies, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html\" target=\"_blank\">Overview of Policies</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>For information about limits on the policies you can associate with a role, see\n     <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <note>Because policy documents can be large, you should use POST rather than GET when\n    \tcalling <code>PutRolePolicy</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=PutRolePolicy\n&RoleName=S3Access\n&PolicyName=S3AccessPolicy\n&PolicyDocument={\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"s3:*\",\"Resource\":\"*\"}]}\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<PutRolePolicyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</PutRolePolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "PutUserPolicy": {
+            "name": "PutUserPolicy",
             "input": {
                 "shape_name": "PutUserPolicyRequest",
                 "type": "structure",
@@ -4750,7 +4806,7 @@
                     },
                     "PolicyDocument": {
                         "shape_name": "policyDocumentType",
-                        "type": "jsondoc",
+                        "type": "string",
                         "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
                         "min_length": 1,
                         "max_length": 131072,
@@ -4802,6 +4858,7 @@
             "documentation": "\n    <p>Adds (or updates) a policy document associated with the specified user. For information about\n    policies, refer to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?PoliciesOverview.html\" target=\"_blank\">Overview of Policies</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>For information about limits on the number of policies you can associate with a user, see\n     <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <note>Because policy documents can be large, you should use POST rather than GET when\n    \tcalling <code>PutUserPolicy</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=PutUserPolicy\n&UserName=Bob\n&PolicyName=AllAccessPolicy\n&PolicyDocument={\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"*\",\"Resource\":\"*\"}]}\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<PutUserPolicyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</PutUserPolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "RemoveRoleFromInstanceProfile": {
+            "name": "RemoveRoleFromInstanceProfile",
             "input": {
                 "shape_name": "RemoveRoleFromInstanceProfileRequest",
                 "type": "structure",
@@ -4845,6 +4902,7 @@
             "documentation": "\n    <p>Removes the specified role from the specified instance profile.</p>\n\n  \t<important>Make sure you do not have any Amazon EC2 instances running with the role you are \n  \t\tabout to remove from the instance profile. Removing a role from an instance profile that is associated with \n  \t\ta running instance will break any applications running on the instance.</important>\n  \t\n\n  \t<p>For more information about roles, go to \n  \t\t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>. For more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=RemoveRoleFromInstanceProfile\n&InstanceProfileName=Webserver\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<RemoveRoleFromInstanceProfileResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ResponseMetadata>\n    <RequestId>29f47818-99f5-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</RemoveRoleFromInstanceProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "RemoveUserFromGroup": {
+            "name": "RemoveUserFromGroup",
             "input": {
                 "shape_name": "RemoveUserFromGroupRequest",
                 "type": "structure",
@@ -4888,6 +4946,7 @@
             "documentation": "\n    <p>Removes the specified user from the specified group.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=RemoveUserFromGroup\n&GroupName=Managers\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<RemoveUserFromGroupResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</RemoveUserFromGroupResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "ResyncMFADevice": {
+            "name": "ResyncMFADevice",
             "input": {
                 "shape_name": "ResyncMFADeviceRequest",
                 "type": "structure",
@@ -4961,6 +5020,7 @@
             "documentation": "\n    <p>Synchronizes the specified MFA device with AWS servers.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ResyncMFADevice\n&UserName=Bob\n&SerialNumber=R1234\n&AuthenticationCode1=234567\n&AuthenticationCode2=987654\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ResyncMFADeviceResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ResyncMFADeviceResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateAccessKey": {
+            "name": "UpdateAccessKey",
             "input": {
                 "shape_name": "UpdateAccessKeyRequest",
                 "type": "structure",
@@ -5013,6 +5073,7 @@
             "documentation": "\n    <p>Changes the status of the specified access key from Active to Inactive, or vice versa.\n    This action can be used to disable a user's key as part of a key rotation work flow.</p>\n    \n\t<p>If the <code>UserName</code> field is not specified, the UserName is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account\n\thas no associated users.</p>\n\n    <p>For information about rotating keys, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html\" target=\"_blank\">Managing Keys and Certificates</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateAccessKey\n&UserName=Bob\n&AccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Status=Inactive\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateAccessKeyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UpdateAccessKeyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateAccountPasswordPolicy": {
+            "name": "UpdateAccountPasswordPolicy",
             "input": {
                 "shape_name": "UpdateAccountPasswordPolicyRequest",
                 "type": "structure",
@@ -5082,6 +5143,7 @@
             "documentation": "\n    <p>Updates the password policy settings for the account. For more information about \n    \tusing a password policy, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html\">Managing an IAM Password Policy</a>.</p>\n\n   <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateAccountPasswordPolicy\n&MinimumPasswordLength=9\n&RequireSymbols=true\n&RequireNumbers=false\n&RequireUppercaseCharacters=true\n&RequireLowercaseCharacters=true\n&AllowUsersToChangePassword=true\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateAccountPasswordPolicyResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UpdateAccountPasswordPolicyResponse>\n</queryresponse>\n    </examples>\n  "
         },
         "UpdateAssumeRolePolicy": {
+            "name": "UpdateAssumeRolePolicy",
             "input": {
                 "shape_name": "UpdateAssumeRolePolicyRequest",
                 "type": "structure",
@@ -5137,6 +5199,7 @@
             "documentation": "\n    <p>Updates the policy that grants an entity permission to assume a role. Currently, \n    \tonly an Amazon EC2 instance can assume a role. For more information about roles, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateAssumeRolePolicy\n&PolicyDocument={\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateAssumeRolePolicyResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ResponseMetadata>\n    <RequestId>309c1671-99ed-11e1-a4c3-270EXAMPLE04</RequestId>\n  </ResponseMetadata>\n</UpdateAssumeRolePolicyResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateGroup": {
+            "name": "UpdateGroup",
             "input": {
                 "shape_name": "UpdateGroupRequest",
                 "type": "structure",
@@ -5199,6 +5262,7 @@
             "documentation": "\n    <p>Updates the name and/or the path of the specified group.</p>\n    \n    <important>\n    You should understand the implications of changing a group's path or name. For more information,\n    see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html\" target=\"_blank\">Renaming Users and Groups</a> in <i>Using AWS Identity and Access Management</i>.\n    </important>\n\n\t<note>To change a group name the requester must have appropriate permissions on both the source object and\n\tthe target object.  For example, to change Managers to MGRs, the entity making the request must have permission\n\ton Managers and MGRs, or must have permission on all (*).  For more information about permissions, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/PermissionsAndPolicies.html\" target=\"blank\">Permissions and Policies</a>.\n\t</note>\n\n\n\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateGroup\n&GroupName=Test\n&NewGroupName=Test_1\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateGroupResponse>\n   <UpdateGroupResult>\n      <Group xmlns=\"http://iam.amazonaws.com/doc/2010-05-08/\">\n         <Path>/division_abc/subdivision_xyz/product_1234/engineering/</Path>\n         <GroupName>Test_1</GroupName>\n         <GroupId>AGP2MAB8DPLSRHEXAMPLE</GroupId>\n         <Arn>arn:aws:iam::123456789012:group/division_abc/subdivision_xyz/\n         product_1234/engineering/Test_1</Arn>\n      </Group>\n   </UpdateGroupResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UpdateGroupResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateLoginProfile": {
+            "name": "UpdateLoginProfile",
             "input": {
                 "shape_name": "UpdateLoginProfileRequest",
                 "type": "structure",
@@ -5265,6 +5329,7 @@
             "documentation": "\n    <p>Changes the password for the specified user.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateLoginProfile\n&UserName=Bob\n&Password=NewPassword\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateLoginProfileResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UpdateLoginProfileResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateServerCertificate": {
+            "name": "UpdateServerCertificate",
             "input": {
                 "shape_name": "UpdateServerCertificateRequest",
                 "type": "structure",
@@ -5327,6 +5392,7 @@
             "documentation": "\n    <p>Updates the name and/or the path of the specified server certificate.</p>\n\n    <important>\n    You should understand the implications of changing a server certificate's path or name. For more\n    information, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/ManagingServerCerts.html\" target=\"_blank\">Managing Server Certificates</a> in <i>Using AWS Identity and Access Management</i>.\n    </important>\n\n    <note>To change a server certificate name the requester must have appropriate permissions on both\n    the source object and the target object.  For example, to change the name from ProductionCert to\n    ProdCert, the entity making the request must have permission on ProductionCert and ProdCert, or\n    must have permission on all (*). For more information about permissions,\n    see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/PermissionsAndPolicies.html\" target=\"blank\">Permissions and Policies</a>.\n    </note>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateServerCertificate\n&ServerCertificateName=ProdServerCert\n&NewServerCertificateName=ProdServerCertName\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateServerCertificateResponse>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</UpdateServerCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateSigningCertificate": {
+            "name": "UpdateSigningCertificate",
             "input": {
                 "shape_name": "UpdateSigningCertificateRequest",
                 "type": "structure",
@@ -5379,6 +5445,7 @@
             "documentation": "\n    <p>Changes the status of the specified signing certificate from active to disabled, or vice versa.\n    This action can be used to disable a user's signing certificate as part of a certificate rotation\n    work flow.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the UserName is determined implicitly based\n\ton the AWS Access Key ID used to sign the request. Because this action works for access keys under\n\tthe AWS account, this API can be used to manage root credentials even if the AWS account has no associated\n\tusers.</p>\n\n\n    <p>For information about rotating certificates, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?ManagingCredentials.html\" target=\"_blank\">Managing Keys and Certificates</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateSigningCertificate\n&UserName=Bob\n&CertificateId=TA7SMP42TDN5Z26OBPJE7EXAMPLE\n&Status=Inactive\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateSigningCertificateResponse>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UpdateSigningCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UpdateUser": {
+            "name": "UpdateUser",
             "input": {
                 "shape_name": "UpdateUserRequest",
                 "type": "structure",
@@ -5453,6 +5520,7 @@
             "documentation": "\n    <p>Updates the name and/or the path of the specified user.</p>\n    \n    <important>\n    You should understand the implications of changing a user's path or name. For more information,\n    see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?Using_Renaming.html\" target=\"_blank\">Renaming\n     Users and Groups</a> in <i>Using AWS Identity and Access Management</i>.\n    </important>\n\n\t<note>To change a user name the requester must have appropriate permissions on both the source object and\n\tthe target object.  For example, to change Bob to Robert, the entity making the request must have permission\n\ton Bob and Robert, or must have permission on all (*).  For more information about permissions, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/PermissionsAndPolicies.html\" target=\"blank\">Permissions and Policies</a>.\n\t</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UpdateUser\n&UserName=Bob\n&NewUserName=Robert\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UpdateUserResponse>\n   <UpdateUserResult>\n   <User>\n      <Path>/division_abc/subdivision_xyz/</Path>\n      <UserName>Robert</UserName>\n      <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n      <Arn>arn:aws::123456789012:user/division_abc/subdivision_xyz/Robert\n      </Arn>\n   </User>\n   </UpdateUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UpdateUserResponse>\n      </queryresponse>\n    </examples>\n  "
         },
         "UploadServerCertificate": {
+            "name": "UploadServerCertificate",
             "input": {
                 "shape_name": "UploadServerCertificateRequest",
                 "type": "structure",
@@ -5610,6 +5678,7 @@
             "documentation": "\n    <p>Uploads a server certificate entity for the AWS account. The server certificate entity includes a\n    public key certificate, a private key, and an optional certificate chain, which should all be PEM-encoded.</p>\n\n    <p>For information about the number of server certificates you can upload, see \n    <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?LimitationsOnEntities.html\" target=\"_blank\">Limitations on IAM Entities</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <note>Because the body of the public key certificate, private key, and the certificate chain can be large,\n    \tyou should use POST rather than GET when calling <code>UploadServerCertificate</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n          <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=UploadServerCertificate\n&ServerCertificateName=ProdServerCert\n&Path=/company/servercerts/\n&CertificateBody=-----BEGIN CERTIFICATE-----\nMIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\nAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\nGEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\nMDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\nFQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\nMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\ndqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\nywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\nsuDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\nCgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\nCAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\nwr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\nwFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\nAEaHzTpmEXAMPLE=\n-----END CERTIFICATE-----\n&PrivateKey=-----BEGIN DSA PRIVATE KEY-----\nMIIBugIBTTKBgQD33xToSXPJ6hr37L3+KNi3/7DgywlBcvlFPPSHIw3ORuO/22mT\n8Cy5fT89WwNvZ3BPKWU6OZ38TQv3eWjNc/3U3+oqVNG2poX5nCPOtO1b96HYX2mR\n3FTdH6FRKbQEhpDzZ6tRrjTHjMX6sT3JRWkBd2c4bGu+HUHO1H7QvrCTeQIVTKMs\nTCKCyrLiGhUWuUGNJUMU6y6zToGTHl84Tz7TPwDGDXuy/Dk5s4jTVr+xibROC/gS\nQrs4Dzz3T1ze6lvU8S1KT9UsOB5FUJNTTPCPey+Lo4mmK6b23XdTyCIT8e2fsm2j\njHHC1pIPiTkdLS3j6ZYjF8LY6TENFng+LDY/xwPOl7TJVoD3J/WXC2J9CEYq9o34\nkq6WWn3CgYTuo54nXUgnoCb3xdG8COFrg+oTbIkHTSzs3w5o/GGgKK7TDF3UlJjq\nvHNyJQ6kWBrQRR1Xp5KYQ4c/Dm5kef+62mH53HpcCELguWVcffuVQpmq3EWL9Zp9\njobTJQ2VHjb5IVxiO6HRSd27di3njyrzUuJCyHSDTqwLJmTThpd6OTIUTL3Tc4m2\n62TITdw53KWJEXAMPLE=\n-----END DSA PRIVATE KEY-----\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UploadServerCertificateResponse>\n  <UploadServerCertificateResult>\n    <ServerCertificateMetadata>\n      <ServerCertificateName>ProdServerCert</ServerCertificateName>\n      <Path>/company/servercerts/</Path>\n      <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert</Arn>\n      <UploadDate>2010-05-08T01:02:03.004Z</UploadDate>\n      <ServerCertificateId>ASCACKCEVSQ6C2EXAMPLE</ServerCertificateId>\n    </ServerCertificateMetadata>\n  </UploadServerCertificateResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</UploadServerCertificateResponse>\n      </queryresponse>\n\n    </examples>\n  "
         },
         "UploadSigningCertificate": {
+            "name": "UploadSigningCertificate",
             "input": {
                 "shape_name": "UploadSigningCertificateRequest",
                 "type": "structure",

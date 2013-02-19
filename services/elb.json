@@ -1,14 +1,14 @@
 {
   "service_full_name": "Elastic Load Balancing",
   "type": "query",
-  "signature_version": "v2",
+  "signature_version": "v4",
   "result_wrapped": true,
   "api_version": "2012-06-01",
   "endpoint_prefix": "elasticloadbalancing",
   "xmlnamespace": null,
   "documentation": "\n    \t<fullname>Elastic Load Balancing</fullname>\n        \n        <p>\n        Elastic Load Balancing is a cost-effective and easy\n        to use web service to help you improve availability and\n        scalability of your application. It makes it easy for\n        you to distribute application loads between two or more\n        EC2 instances. Elastic Load Balancing enables availability\n        through redundancy and supports traffic growth of your application.\n        </p>\n        \n        <p>This guide provides detailed information about Elastic Load Balancing actions, data types, parameters, and errors.</p>\n        \n        <p>Query requests are HTTP or HTTPS requests that use the HTTP verb GET or POST and a Query parameter named Action or Operation. \n        Action is used throughout this documentation, although Operation is supported for backward compatibility with other AWS Query APIs.</p>\n       \n        <p>This reference guide is based on the current WSDL, which is available at:\n            <a href=\"elasticloadbalancing.amazonaws.com/doc/2012-06-01/ElasticLoadBalancing.wsdl\"></a>   \n        </p>\n        \n        <p>For detailed information on constructing a query request using the actions, data types, and parameters mentioned in this guide,\n            go to <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-query-api.html\">Using the Query API</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n                   \n        <p>For detailed information about Elastic Load Balancing features and their associated API calls, go to \n            <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html\">Using Elastic Load Balancing</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n            \n    ",
-  "operations": [
-    {
+  "operations": {
+    "ApplySecurityGroupsToLoadBalancer": {
       "name": "ApplySecurityGroupsToLoadBalancer",
       "input": {
         "shape_name": "ApplySecurityGroupsToLoadBalancerInput",
@@ -76,7 +76,7 @@
       ],
       "documentation": "\n       <p>\n         Associates one or more security groups with your LoadBalancer in VPC. \n         The provided security group IDs will override any currently applied security groups.\n       </p> \n    "
     },
-    {
+    "AttachLoadBalancerToSubnets": {
       "name": "AttachLoadBalancerToSubnets",
       "input": {
         "shape_name": "AttachLoadBalancerToSubnetsInput",
@@ -151,7 +151,7 @@
       ],
       "documentation": "\n     <p>\n         Adds one or more subnets to the set of configured subnets in the VPC for the LoadBalancer.\n     </p>  \n       <p>\n           The Loadbalancers evenly distribute requests across all of the registered subnets. \n       </p>\n    "
     },
-    {
+    "ConfigureHealthCheck": {
       "name": "ConfigureHealthCheck",
       "input": {
         "shape_name": "ConfigureHealthCheckInput",
@@ -275,7 +275,7 @@
       ],
       "documentation": "\n        <p>\n        Enables the client to define an application\n        healthcheck for the instances.\n        </p>\n    "
     },
-    {
+    "CreateAppCookieStickinessPolicy": {
       "name": "CreateAppCookieStickinessPolicy",
       "input": {
         "shape_name": "CreateAppCookieStickinessPolicyInput",
@@ -341,7 +341,7 @@
       ],
       "documentation": "\n        <p>\n        Generates a stickiness policy with sticky session lifetimes that follow \n        that of an application-generated cookie. This policy can be associated\n        only with HTTP/HTTPS listeners.\n        </p>\n        <p>\n        This policy is similar to the policy created by CreateLBCookieStickinessPolicy, \n        except that the lifetime of the special Elastic Load Balancing cookie follows the\n        lifetime of the application-generated cookie specified in the policy configuration. \n        The LoadBalancer only inserts a new stickiness cookie when the application response\n        includes a new application cookie. \n        </p>\n        <p>\n        If the application cookie is explicitly removed or expires, the session stops being\n        sticky until a new application cookie is issued. \n        </p>\n        <note>\n            An application client must receive and send two cookies: the application-generated \n            cookie and the special Elastic Load Balancing cookie named <code>AWSELB</code>. \n            This is the default behavior for many common web browsers.\n        </note>\n    "
     },
-    {
+    "CreateLBCookieStickinessPolicy": {
       "name": "CreateLBCookieStickinessPolicy",
       "input": {
         "shape_name": "CreateLBCookieStickinessPolicyInput",
@@ -406,7 +406,7 @@
       ],
       "documentation": "\n        <p>\n        Generates a stickiness policy with sticky session lifetimes controlled by the \n        lifetime of the browser (user-agent) or a specified expiration period. This \n        policy can be associated only with HTTP/HTTPS listeners.\n        </p>\n        <p>\n        When a LoadBalancer implements this policy, the LoadBalancer uses a special\n        cookie to track the backend server instance for each request. When the LoadBalancer\n        receives a request, it first checks to see if this cookie is present in the request. \n        If so, the LoadBalancer sends the request to the application server specified in the\n        cookie. If not, the LoadBalancer sends the request to a server that is chosen based on\n        the existing load balancing algorithm.\n        </p>\n        <p>\n        A cookie is inserted into the response for binding subsequent requests from the same user to\n        that server. The validity of the cookie is based on the cookie expiration time, which is \n        specified in the policy configuration. \n        </p>\n    "
     },
-    {
+    "CreateLoadBalancer": {
       "name": "CreateLoadBalancer",
       "input": {
         "shape_name": "CreateAccessPointInput",
@@ -571,7 +571,7 @@
       ],
       "documentation": "\n        <p>\n        Creates a new LoadBalancer.\n        </p>\n        <p>\n        After the call has completed successfully, a new LoadBalancer\n        is created; however, it will not be usable until at least\n        one instance has been registered.\n        When the LoadBalancer creation is completed,\n        the client can check whether or not it is usable by\n        using the DescribeInstanceHealth API.\n        The LoadBalancer is usable as soon as any registered instance\n        is <i>InService</i>.\n        </p>\n        <note>\n        Currently, the client's quota of LoadBalancers is\n        limited to ten per Region.\n        </note>\n        <note>\n            <p>\n            LoadBalancer DNS names vary depending on the Region\n            they're created in. For LoadBalancers created in the United States,\n            the DNS name ends with:\n            </p>\n            <ul>\n                <li>\n                <i>us-east-1.elb.amazonaws.com</i> (for the US Standard Region)\n                </li>\n                <li>\n                <i>us-west-1.elb.amazonaws.com</i> (for the Northern California Region)\n                </li>\n            </ul>\n            <p>\n            For LoadBalancers created in the EU (Ireland) Region,\n            the DNS name ends with:\n            </p>\n            <ul>\n                <li>\n                <i>eu-west-1.elb.amazonaws.com</i>\n                </li>\n            </ul>\n        </note>\n    "
     },
-    {
+    "CreateLoadBalancerListeners": {
       "name": "CreateLoadBalancerListeners",
       "input": {
         "shape_name": "CreateLoadBalancerListenerInput",
@@ -668,7 +668,7 @@
       ],
       "documentation": "\n   \t<p>\n   \tCreates one or more listeners on a LoadBalancer for the specified port. \n   \tIf a listener with the given port does not already exist, it will be created; \n   \totherwise, the properties of the new listener must match the properties \n   \tof the existing listener. \n   \t</p>\n   "
     },
-    {
+    "CreateLoadBalancerPolicy": {
       "name": "CreateLoadBalancerPolicy",
       "input": {
         "shape_name": "CreateLoadBalancerPolicyInput",
@@ -763,7 +763,7 @@
       ],
       "documentation": "\n   \t<p>\n   \tCreates a new policy that contains the necessary attributes depending on the policy type.\n   \tPolicies are settings that are saved for your Elastic LoadBalancer and that can be applied to the\n   \tfront-end listener, or the back-end application server, depending on your policy type.\n   \t</p>\n   "
     },
-    {
+    "DeleteLoadBalancer": {
       "name": "DeleteLoadBalancer",
       "input": {
         "shape_name": "DeleteAccessPointInput",
@@ -790,7 +790,7 @@
       ],
       "documentation": "\n        <p>\n        Deletes the specified LoadBalancer.\n        </p>\n        <p>\n        If attempting to recreate the LoadBalancer,\n        the client must reconfigure all the settings.\n        The DNS name associated with a deleted LoadBalancer\n        will no longer be usable.\n        Once deleted, the name and associated DNS record of the\n        LoadBalancer no longer exist and traffic sent to any of its\n        IP addresses will no longer be delivered to client instances.\n        The client will not receive the same DNS name even if a\n        new LoadBalancer with same LoadBalancerName is created.\n        </p>\n        <p>\n        To successfully call this API, the client must provide the same\n        account credentials as were used to create the LoadBalancer.\n        </p>\n        <note>\n        By design, if the LoadBalancer does not exist or has already been deleted,\n        DeleteLoadBalancer still succeeds.\n        </note>\n    "
     },
-    {
+    "DeleteLoadBalancerListeners": {
       "name": "DeleteLoadBalancerListeners",
       "input": {
         "shape_name": "DeleteLoadBalancerListenerInput",
@@ -834,7 +834,7 @@
       ],
       "documentation": "\n   \t<p>\n   \tDeletes listeners from the LoadBalancer for the specified port.\n   \t</p>\n   "
     },
-    {
+    "DeleteLoadBalancerPolicy": {
       "name": "DeleteLoadBalancerPolicy",
       "input": {
         "shape_name": "DeleteLoadBalancerPolicyInput",
@@ -880,7 +880,7 @@
       ],
       "documentation": "\n   \t<p>\n   \tDeletes a policy from the LoadBalancer. \n   \tThe specified policy must not be enabled for any listeners.\n   \t</p>\n   "
     },
-    {
+    "DeregisterInstancesFromLoadBalancer": {
       "name": "DeregisterInstancesFromLoadBalancer",
       "input": {
         "shape_name": "DeregisterEndPointsInput",
@@ -955,7 +955,7 @@
       ],
       "documentation": "\n        <p>\n        Deregisters instances from the LoadBalancer.\n        Once the instance is deregistered,\n        it will stop receiving traffic from the LoadBalancer.\n        </p>\n        <p>\n        In order to successfully call this API,\n        the same account credentials as those\n        used to create the LoadBalancer must be provided.\n        </p>\n    "
     },
-    {
+    "DescribeInstanceHealth": {
       "name": "DescribeInstanceHealth",
       "input": {
         "shape_name": "DescribeEndPointStateInput",
@@ -1044,7 +1044,7 @@
       ],
       "documentation": "\n        <p>\n        Returns the current state of the instances of the specified LoadBalancer.\n        If no instances are specified, the state of all the instances for the\n        LoadBalancer is returned.\n        </p>\n        <note>\n        The client must have created the specified input\n        LoadBalancer in order to retrieve this information;\n        the client must provide the same account credentials\n        as those that were used to create the LoadBalancer.\n        </note>\n    "
     },
-    {
+    "DescribeLoadBalancerPolicies": {
       "name": "DescribeLoadBalancerPolicies",
       "input": {
         "shape_name": "DescribeLoadBalancerPoliciesInput",
@@ -1137,7 +1137,7 @@
       ],
       "documentation": "\n   <p>Returns detailed descriptions of the policies.\n   If you specify a LoadBalancer name, the operation returns either the descriptions of the specified policies, or descriptions of all the policies created for the LoadBalancer.\n   If you don't specify a LoadBalancer name, the operation returns descriptions of the specified sample policies, or descriptions of all the sample policies.\n   The names of the sample policies have the <code>ELBSample-</code> prefix.\n   </p>\n   "
     },
-    {
+    "DescribeLoadBalancerPolicyTypes": {
       "name": "DescribeLoadBalancerPolicyTypes",
       "input": {
         "shape_name": "DescribeLoadBalancerPolicyTypesInput",
@@ -1233,7 +1233,7 @@
       ],
       "documentation": "\n   \t<p>\n   \tReturns meta-information on the specified LoadBalancer policies defined by the\n   \tElastic Load Balancing service.  The policy types that are\n   \treturned from this action can be used in a <a>CreateLoadBalancerPolicy</a> action to\n   \tinstantiate specific policy configurations that will be applied to an Elastic LoadBalancer.\n   \t</p>\n   "
     },
-    {
+    "DescribeLoadBalancers": {
       "name": "DescribeLoadBalancers",
       "input": {
         "shape_name": "DescribeAccessPointsInput",
@@ -1585,7 +1585,7 @@
       ],
       "documentation": "\n        <p>\n        Returns detailed configuration information\n        for the specified LoadBalancers. If no LoadBalancers are specified,\n        the operation returns configuration information\n        for all LoadBalancers created by the caller.\n        </p>\n        <note>\n        The client must have created the specified input\n        LoadBalancers in order to retrieve this information;\n        the client must provide the same account credentials\n        as those that were used to create the LoadBalancer.\n        </note>\n    "
     },
-    {
+    "DetachLoadBalancerFromSubnets": {
       "name": "DetachLoadBalancerFromSubnets",
       "input": {
         "shape_name": "DetachLoadBalancerFromSubnetsInput",
@@ -1646,7 +1646,7 @@
       ],
       "documentation": "\n       <p>\n           Removes subnets from the set of configured subnets in the VPC for the LoadBalancer.  \n       </p> \n        <p>\n            After a subnet is removed all of the EndPoints registered with the LoadBalancer that are \n            in the removed subnet will go into the <i>OutOfService</i> state. When a subnet is removed, the LoadBalancer\n            will balance the traffic among the remaining routable subnets for the LoadBalancer.    \n        </p>\n    "
     },
-    {
+    "DisableAvailabilityZonesForLoadBalancer": {
       "name": "DisableAvailabilityZonesForLoadBalancer",
       "input": {
         "shape_name": "RemoveAvailabilityZonesInput",
@@ -1707,7 +1707,7 @@
       ],
       "documentation": "\n        <p>\n        Removes the specified EC2 Availability Zones from\n        the set of configured Availability Zones for the LoadBalancer.\n        </p>\n        <p>\n        There must be at least one Availability Zone registered\n        with a LoadBalancer at all times. A client cannot remove all\n        the Availability Zones from a LoadBalancer.\n        Once an Availability Zone is removed, all the instances\n        registered with the LoadBalancer that are in the removed\n        Availability Zone go into the OutOfService state. Upon Availability\n        Zone removal, the LoadBalancer attempts to equally balance\n        the traffic among its remaining usable Availability Zones.\n        Trying to remove an Availability Zone that was not associated with\n        the LoadBalancer does nothing.\n        </p>\n        <note>\n        In order for this call to be successful, the client\n        must have created the LoadBalancer.\n        The client must provide the same account credentials\n        as those that were used to create the LoadBalancer.\n        </note>\n    "
     },
-    {
+    "EnableAvailabilityZonesForLoadBalancer": {
       "name": "EnableAvailabilityZonesForLoadBalancer",
       "input": {
         "shape_name": "AddAvailabilityZonesInput",
@@ -1761,7 +1761,7 @@
       ],
       "documentation": "\n        <p>\n        Adds one or more EC2 Availability Zones to the LoadBalancer.\n        </p>\n        <p>\n        The LoadBalancer evenly distributes requests across all\n        its registered Availability Zones that contain instances.\n        As a result, the client must ensure that its LoadBalancer is\n        appropriately scaled for each registered Availability Zone.\n        </p>\n        <note>\n        The new EC2 Availability Zones to be added must be in the same\n        EC2 Region as the Availability Zones for which the\n        LoadBalancer was created.\n        </note>\n    "
     },
-    {
+    "RegisterInstancesWithLoadBalancer": {
       "name": "RegisterInstancesWithLoadBalancer",
       "input": {
         "shape_name": "RegisterEndPointsInput",
@@ -1836,7 +1836,7 @@
       ],
       "documentation": "\n        <p>\n        Adds new instances to the LoadBalancer.\n        </p>\n        <p>\n        Once the instance is registered, it starts receiving traffic\n        and requests from the LoadBalancer. Any instance that is not\n        in any of the Availability Zones registered for the LoadBalancer\n        will be moved to the <i>OutOfService</i> state. It will move to the\n        <i>InService</i> state when the Availability Zone is added to the LoadBalancer.\n        </p>\n        <note>\n        In order for this call to be successful, the client\n        must have created the LoadBalancer.\n        The client must provide the same account credentials\n        as those that were used to create the LoadBalancer.\n        </note>\n        <note>\n        Completion of this API does not guarantee that operation has completed.\n        Rather, it means that the request has been registered and the\n        changes will happen shortly.\n        </note>\n        \n    "
     },
-    {
+    "SetLoadBalancerListenerSSLCertificate": {
       "name": "SetLoadBalancerListenerSSLCertificate",
       "input": {
         "shape_name": "SetLoadBalancerListenerSSLCertificateInput",
@@ -1902,7 +1902,7 @@
       ],
       "documentation": "\n   \t<p>\n   \tSets the certificate that terminates the specified listener's SSL connections. \n   \tThe specified certificate replaces any prior certificate that was used on the same LoadBalancer and port. \n   \t</p>\n   "
     },
-    {
+    "SetLoadBalancerPoliciesForBackendServer": {
       "name": "SetLoadBalancerPoliciesForBackendServer",
       "input": {
         "shape_name": "SetLoadBalancerPoliciesForBackendServerInput",
@@ -1966,7 +1966,7 @@
       ],
       "documentation": "\n    <p>\n    Replaces the current set of policies associated with a port on which the back-end server is listening with a new set of policies. After the policies have been created using <a>CreateLoadBalancerPolicy</a>, \n    they can be applied here as a list. At this time, only the back-end server authentication policy type can be applied to the back-end ports; this policy type is composed of multiple public key policies.\n    </p>\n   "
     },
-    {
+    "SetLoadBalancerPoliciesOfListener": {
       "name": "SetLoadBalancerPoliciesOfListener",
       "input": {
         "shape_name": "SetLoadBalancerPoliciesOfListenerInput",
@@ -2037,5 +2037,5 @@
       ],
       "documentation": "\n        <p>\n        Associates, updates, or disables a policy with a listener on the LoadBalancer. \n        You can associate multiple policies with a listener. \n        </p>\n    "
     }
-  ]
+  }
 }

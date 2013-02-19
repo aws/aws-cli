@@ -102,8 +102,8 @@ def transform_operations_list(new_model):
     """
     operations = new_model.get('operations', [])
     operations_map = OrderedDict()
-    for operation in operations:
-        name = operation.pop('name')
+    for name in operations:
+        operation = operations[name]
         operations_map[name] = operation
     new_model['operations'] = operations_map
 

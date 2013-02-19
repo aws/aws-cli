@@ -18,7 +18,7 @@ packages = [
     'awscli',
 ]
 
-requires = ['botocore>=0.5.4',
+requires = ['botocore>=0.6.0',
             'six>=1.1.0',
             'argparse>=1.1']
 

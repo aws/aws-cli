@@ -394,6 +394,6 @@ def get_auth(signature_version, *args, **kw):
         return SigV4Auth(*args, **kw)
     elif signature_version == 's3':
         return HmacV1Auth(*args, **kw)
-    elif signature_version == 'v3https':
+    elif signature_version == 'v3':
         return SigV3Auth(*args, **kw)
     raise UnknownSignatureVersionError(signature_version=signature_version)

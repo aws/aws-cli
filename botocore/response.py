@@ -104,27 +104,25 @@ class Response(xml.sax.ContentHandler):
         self.root_element = Element('root', None)
         self.stack = [self.root_element]
         self.current_text = ''
-        self.xmlname_map = {}
-        self.build_xmlname_map(None, self.operation.output)
         self.type_map = {}
         self.build_type_map(None, self.operation.output)
         self.map_map = {}
         self.flattened_map = {}
+        self.create_key_names(None, operation.output)
 
-    def build_xmlname_map(self, name, type_dict):
+    def create_key_names(self, name, type_dict):
         if type_dict:
-            xmlname = type_dict.get('xmlname')
-            if name and xmlname:
-                self.xmlname_map[xmlname] = name
+            if name:
+                type_dict['key_name'] = name
             if type_dict['type'] == 'structure':
                 for member_name in type_dict['members']:
-                    self.build_xmlname_map(member_name,
-                                           type_dict['members'][member_name])
+                    self.create_key_names(member_name,
+                                          type_dict['members'][member_name])
             elif type_dict['type'] == 'list':
-                self.build_xmlname_map(None, type_dict['members'])
+                self.create_key_names(None, type_dict['members'])
             elif type_dict['type'] == 'map':
-                self.build_xmlname_map(None, type_dict['keys'])
-                self.build_xmlname_map(None, type_dict['members'])
+                self.create_key_names(None, type_dict['keys'])
+                self.create_key_names(None, type_dict['members'])
 
     def build_type_map(self, name, type_dict):
         if not isinstance(type_dict, dict):
@@ -247,7 +245,10 @@ class Response(xml.sax.ContentHandler):
                 current_element.set_value(None, self.current_text)
                 self.current_text = ''
             parent_element = self.stack[-1]
-            real_name = self.xmlname_map.get(name, name)
+            real_name = name
+            if current_element.defn:
+                if 'key_name' in current_element.defn:
+                    real_name = current_element.defn['key_name']
             parent_element.set_value(real_name, current_element.value)
 
     def characters(self, content):

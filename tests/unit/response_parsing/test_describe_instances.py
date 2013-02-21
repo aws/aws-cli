@@ -93,7 +93,7 @@ xml = """<DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2011-07-
     </reservationSet>
 </DescribeInstancesResponse>"""
 
-data = {'Reservations': [{'OwnerId': '419278470775', 'ReservationId': 'r-765eaa10', 'Groups': [{'GroupName': 'default', 'GroupId': 'sg-2c9e7544'}], 'Instances': [{'Monitoring': {'State': 'disabled'}, 'PublicDnsName': 'ec2-107-21-77-162.compute-1.amazonaws.com', 'RootDeviceType': 'ebs', 'State': {'Code': 16, 'Name': 'running'}, 'LaunchTime': '2012-10-04T15:32:50.000Z', 'PublicIpAddress': '107.21.77.162', 'PrivateIpAddress': '10.208.45.119', 'ProductCodes': [], 'StateTransitionReason': '', 'InstanceId': 'i-5578ec28', 'ImageId': 'ami-e565ba8c', 'PrivateDnsName': 'domU-12-31-39-06-2A-8D.compute-1.internal', 'Groups': [{'GroupName': 'default', 'GroupId': 'sg-2c9e7544'}], 'ClientToken': '', 'InstanceType': 'm1.small', 'Placement': {'Tenancy': 'default', 'GroupName': '', 'AvailabilityZone': 'us-east-1d'}, 'Hypervisor': 'xen', 'BlockDeviceMappings': [{'DeviceName': '/dev/sda1', 'Ebs': {'Status': 'attached', 'DeleteOnTermination': True, 'VolumeId': 'vol-c94909b3', 'AttachTime': '2012-10-04T15:32:54.000Z'}}], 'Architecture': 'x86_64', 'KernelId': 'aki-88aa75e1', 'RootDeviceName': '/dev/sda1', 'VirtualizationType': 'paravirtual', 'AmiLaunchIndex': 0}]}], 'requestId': '931a86ce-1415-4105-a851-79520622d582'}
+data = {'Reservations': [{'OwnerId': '419278470775', 'ReservationId': 'r-765eaa10', 'Groups': [{'GroupName': 'default', 'GroupId': 'sg-2c9e7544'}], 'Instances': [{'Monitoring': {'State': 'disabled'}, 'PublicDnsName': 'ec2-107-21-77-162.compute-1.amazonaws.com', 'RootDeviceType': 'ebs', 'State': {'Code': 16, 'Name': 'running'}, 'LaunchTime': '2012-10-04T15:32:50.000Z', 'PublicIpAddress': '107.21.77.162', 'PrivateIpAddress': '10.208.45.119', 'ProductCodes': [], 'StateTransitionReason': '', 'InstanceId': 'i-5578ec28', 'ImageId': 'ami-e565ba8c', 'PrivateDnsName': 'domU-12-31-39-06-2A-8D.compute-1.internal', 'SecurityGroups': [{'GroupName': 'default', 'GroupId': 'sg-2c9e7544'}], 'ClientToken': '', 'InstanceType': 'm1.small', 'Placement': {'Tenancy': 'default', 'GroupName': '', 'AvailabilityZone': 'us-east-1d'}, 'Hypervisor': 'xen', 'BlockDeviceMappings': [{'DeviceName': '/dev/sda1', 'Ebs': {'Status': 'attached', 'DeleteOnTermination': True, 'VolumeId': 'vol-c94909b3', 'AttachTime': '2012-10-04T15:32:54.000Z'}}], 'Architecture': 'x86_64', 'KernelId': 'aki-88aa75e1', 'RootDeviceName': '/dev/sda1', 'VirtualizationType': 'paravirtual', 'AmiLaunchIndex': 0}]}], 'requestId': '931a86ce-1415-4105-a851-79520622d582'}
 
 class TestDescribeInstances(unittest.TestCase):
 
@@ -105,6 +105,7 @@ class TestDescribeInstances(unittest.TestCase):
         op = self.service.get_operation('DescribeInstances')
         r = botocore.response.Response(op)
         r.parse(six.b(xml))
+        self.maxDiff = None
         self.assertEqual(r.get_value(), data)
 
 

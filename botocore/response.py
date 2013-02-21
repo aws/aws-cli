@@ -104,10 +104,26 @@ class Response(xml.sax.ContentHandler):
         self.root_element = Element('root', None)
         self.stack = [self.root_element]
         self.current_text = ''
+        self.xmlname_map = {}
+        self.build_xmlname_map(None, self.operation.output)
         self.type_map = {}
         self.build_type_map(None, self.operation.output)
         self.map_map = {}
         self.flattened_map = {}
+
+    def build_xmlname_map(self, name, type_dict):
+        xmlname = type_dict.get('xmlname')
+        if name and xmlname:
+            self.xmlname_map[xmlname] = name
+        if type_dict['type'] == 'structure':
+            for member_name in type_dict['members']:
+                self.build_xmlname_map(member_name,
+                                       type_dict['members'][member_name])
+        elif type_dict['type'] == 'list':
+            self.build_xmlname_map(None, type_dict['members'])
+        elif type_dict['type'] == 'map':
+            self.build_xmlname_map(None, type_dict['keys'])
+            self.build_xmlname_map(None, type_dict['members'])
 
     def build_type_map(self, name, type_dict):
         if not isinstance(type_dict, dict):
@@ -230,7 +246,8 @@ class Response(xml.sax.ContentHandler):
                 current_element.set_value(None, self.current_text)
                 self.current_text = ''
             parent_element = self.stack[-1]
-            parent_element.set_value(name, current_element.value)
+            real_name = self.xmlname_map.get(name, name)
+            parent_element.set_value(real_name, current_element.value)
 
     def characters(self, content):
         self.current_text += content

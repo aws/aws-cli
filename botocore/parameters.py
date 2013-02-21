@@ -242,12 +242,12 @@ class ListParameter(Parameter):
                     label = member_type.xmlname
             else:
                 if label:
-                    label = label.format(label=self.get_label)
+                    label = label.format(label=self.get_label())
                 else:
                     label = self.get_label()
         else:
             if label:
-                label.format(label=self.get_label())
+                label = label.format(label=self.get_label())
             else:
                 label = self.get_label()
             label = '%s.%s' % (label, 'member')

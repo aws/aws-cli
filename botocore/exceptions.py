@@ -45,10 +45,11 @@ class DataNotFoundError(BotoCoreError):
     fmt = 'Unable to load data for: {data_path}'
 
 
-class NoCredentials(BotoCoreError):
+class NoCredentialsError(BotoCoreError):
     """
-    No credentials could be found.
+    No credentials could be found
     """
+    fmt = 'Unable to locate credentials'
 
 
 class NoRegionError(BotoCoreError):

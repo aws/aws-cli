@@ -34,8 +34,8 @@ SERVICES = {
   "endpoint_prefix": "sts",
   "xmlnamespace": "https://sts.amazonaws.com/doc/2011-06-15/",
   "documentation": "docs",
-  "operations": [
-    {
+  "operations": {
+    "AssumeRole": {
       "name": "AssumeRole",
       "input": {
         "shape_name": "AssumeRoleRequest",
@@ -195,7 +195,7 @@ SERVICES = {
       ],
       "documentation": "docs"
     },
-  ]
+  }
 }
 
 

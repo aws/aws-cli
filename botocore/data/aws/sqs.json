@@ -2,14 +2,15 @@
     "service_full_name": "Amazon Simple Queue Service",
     "service_abbreviation": "Amazon SQS",
     "type": "query",
-    "signature_version": "v2",
+    "signature_version": "v4",
     "result_wrapped": true,
-    "api_version": "2011-10-01",
+    "api_version": "2012-11-05",
     "endpoint_prefix": "sqs",
     "xmlnamespace": "http://queue.amazonaws.com/doc/2012-11-05/",
     "documentation": "\n    <p>Amazon Simple Queue Service (Amazon SQS) offers a reliable, highly scalable,\n      hosted queue for storing messages as they travel between computers. By using\n      Amazon SQS, developers can simply move data between distributed components of\n      their applications that perform different tasks, without losing messages or\n      requiring each component to be always available. Amazon SQS makes it easy to\n      build an automated workflow, working in close conjunction with the Amazon\n      Elastic Compute Cloud (Amazon EC2) and the other AWS infrastructure web\n      services.</p>\n\n    <p>Amazon SQS works by exposing Amazon's web-scale messaging infrastructure as\n      a web service. Any computer on the Internet can add or read messages without\n      any installed software or special firewall configurations. Components of\n      applications using Amazon SQS can run independently, and do not need to be on\n      the same network, developed with the same technologies, or running at the same\n      time.</p>\n\n    <p>Visit <a href=\"http://aws.amazon.com/sqs/\">http://aws.amazon.com/sqs/</a>\n      for more information.</p>\n  ",
     "operations": {
         "AddPermission": {
+            "name": "AddPermission",
             "input": {
                 "shape_name": "AddPermissionRequest",
                 "type": "structure",
@@ -68,6 +69,7 @@
             "documentation": "\n    <p>The AddPermission action adds a permission to a queue for a specific \n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/APIReference/Glossary.html#d0e3892\">principal</a>.\n      This allows for sharing access to the queue.</p>\n\n    <p>When you create a queue, you have full control access rights for the queue.\n      Only you (as owner of the queue) can grant or deny permissions to the queue.\n      For more information about these permissions, see\n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?acp-overview.html\">Shared\n      Queues</a> in the Amazon SQS Developer Guide.</p>\n\n    <p><code>AddPermission</code> writes an SQS-generated policy. If you want to\n      write your own policy, use SetQueueAttributes to upload your policy. For more\n      information about writing your own policy, see\n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?AccessPolicyLanguage.html\">Appendix:\n      The Access Policy Language</a> in the Amazon SQS Developer Guide.</p>\n  "
         },
         "ChangeMessageVisibility": {
+            "name": "ChangeMessageVisibility",
             "input": {
                 "shape_name": "ChangeMessageVisibilityRequest",
                 "type": "structure",
@@ -112,6 +114,7 @@
             "documentation": "\n    <p>The <code>ChangeMessageVisibility</code> action changes the visibility\n      timeout of a specified message in a queue to a new value. The maximum allowed\n      timeout value you can set the value to is 12 hours. This means you can't extend\n      the timeout of a message in an existing queue to more than a total visibility\n      timeout of 12 hours. (For more information visibility timeout, see <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/AboutVT.html\">Visibility\n        Timeout</a> in the Amazon SQS Developer Guide.)</p>\n\n    <p>For example, let's say you have a message and its default message visibility\n      timeout is 30 minutes. You could call <code>ChangeMessageVisiblity</code> with\n      a value of two hours and the effective timeout would be two hours and 30\n      minutes. When that time comes near you could again extend the time out by\n      calling ChangeMessageVisiblity, but this time the maximum allowed timeout would\n      be 9 hours and 30 minutes.</p>\n\n    <important>If you attempt to set the <code>VisibilityTimeout</code> to an\n      amount more than the maximum time left, Amazon SQS returns an error. It will\n      not automatically recalculate and increase the timeout to the maximum time\n      remaining.</important>\n\n    <important>Unlike with a queue, when you change the visibility timeout for a\n      specific message, that timeout value is applied immediately but is not saved in\n      memory for that message. If you don't delete a message after it is received,\n      the visibility timeout for the message the next time it is received reverts to\n      the original timeout value, not the value you set with the\n      ChangeMessageVisibility action.</important>\n  "
         },
         "ChangeMessageVisibilityBatch": {
+            "name": "ChangeMessageVisibilityBatch",
             "input": {
                 "shape_name": "ChangeMessageVisibilityBatchRequest",
                 "type": "structure",
@@ -253,6 +256,7 @@
             "documentation": "\n    <p>This is a batch version of <a>ChangeMessageVisibility</a>. It takes\n      multiple receipt handles and performs the operation on each of the them. The\n      result of the operation on each message is reported individually in the\n      response.</p>\n  "
         },
         "CreateQueue": {
+            "name": "CreateQueue",
             "input": {
                 "shape_name": "CreateQueueRequest",
                 "type": "structure",
@@ -263,7 +267,7 @@
                         "documentation": "\n    <p>The name for the queue to be created.</p>\n  ",
                         "required": true
                     },
-                    "attributes": {
+                    "Attributes": {
                         "shape_name": "AttributeMap",
                         "type": "map",
                         "keys": {
@@ -328,6 +332,7 @@
             "documentation": "\n    <p>The <code>CreateQueue</code> action creates a new queue, or returns the URL\n      of an existing one. When you request <code>CreateQueue</code>, you provide a\n      name for the queue. To successfully create a new queue, you must provide a name\n      that is unique within the scope of your own queues.</p>\n\n    <p>You may pass one or more attributes in the request. If you do not\n      provide a value for any attribute, the queue will have the default value\n      for that attribute. Permitted attributes are the same that can be set\n      using <a>SetQueueAttributes</a>.</p>\n\n    <p>If you provide the name of an existing queue, a new queue isn't created.\n      If the values of attributes provided with the request match up with those\n      on the existing queue, the queue URL is returned. Otherwise, a\n      <code>QueueNameExists</code> error is returned.</p>\n  "
         },
         "DeleteMessage": {
+            "name": "DeleteMessage",
             "input": {
                 "shape_name": "DeleteMessageRequest",
                 "type": "structure",
@@ -366,6 +371,7 @@
             "documentation": "\n    <p>The <code>DeleteMessage</code> action unconditionally removes the specified\n      message from the specified queue. Even if the message is locked by another\n      reader due to the visibility timeout setting, it is still deleted from the\n      queue.</p>\n  "
         },
         "DeleteMessageBatch": {
+            "name": "DeleteMessageBatch",
             "input": {
                 "shape_name": "DeleteMessageBatchRequest",
                 "type": "structure",
@@ -502,6 +508,7 @@
             "documentation": "\n    <p>This is a batch version of <a>DeleteMessage</a>. It takes multiple\n      receipt handles and deletes each one of the messages. The result of the delete\n      operation on each message is reported individually in the response.</p>\n  "
         },
         "DeleteQueue": {
+            "name": "DeleteQueue",
             "input": {
                 "shape_name": "DeleteQueueRequest",
                 "type": "structure",
@@ -521,6 +528,7 @@
             "documentation": "\n    <p>This action unconditionally deletes the queue specified by the queue URL. Use\n      this operation WITH CARE! The queue is deleted even if it is NOT empty.</p>\n    <p>Once a queue has been deleted, the queue name is unavailable for use with new\n      queues for 60 seconds.</p>\n  "
         },
         "GetQueueAttributes": {
+            "name": "GetQueueAttributes",
             "input": {
                 "shape_name": "GetQueueAttributesRequest",
                 "type": "structure",
@@ -532,7 +540,7 @@
                         "required": true,
                         "no_paramfile": true
                     },
-                    "attributeNames": {
+                    "AttributeNames": {
                         "shape_name": "AttributeNameList",
                         "type": "list",
                         "members": {
@@ -565,7 +573,7 @@
                 "shape_name": "GetQueueAttributesResult",
                 "type": "structure",
                 "members": {
-                    "attributes": {
+                    "Attributes": {
                         "shape_name": "AttributeMap",
                         "type": "map",
                         "keys": {
@@ -612,6 +620,7 @@
             "documentation": "\n    <p>Gets attributes for the specified queue. The following attributes are supported:\n      <ul>\n        <li>\n<code>All</code> - returns all values.</li>\n        <li>\n<code>ApproximateNumberOfMessages</code> - returns the approximate\n          number of visible messages in a queue. For more information, see\n          Resources Required to Process Messages in the Amazon SQS Developer\n          Guide.</li>\n        <li>\n<code>ApproximateNumberOfMessagesNotVisible</code> - returns the\n          approximate number of messages that are not timed-out and not deleted. \n          For more information, see Resources Required to Process Messages in the\n          Amazon SQS Developer Guide.</li>\n        <li>\n<code>VisibilityTimeout</code> - returns the visibility timeout for\n          the queue. For more information about visibility timeout, see\n          Visibility Timeout in the Amazon SQS Developer Guide.</li>\n        <li>\n<code>CreatedTimestamp</code> - returns the time when the queue was\n          created (epoch time in seconds).</li>\n        <li>\n<code>LastModifiedTimestamp</code> - returns the time when the queue\n          was last changed (epoch time in seconds).</li>\n        <li>\n<code>Policy</code> - returns the queue's policy.</li>\n        <li>\n<code>MaximumMessageSize</code> - returns the limit of how many bytes\n          a message can contain before Amazon SQS rejects it.</li>\n        <li>\n<code>MessageRetentionPeriod</code> - returns the number of seconds\n          Amazon SQS retains a message.</li>\n        <li>\n<code>QueueArn</code> - returns the queue's Amazon resource name\n          (ARN).</li>\n        <li>\n<code>ApproximateNumberOfMessagesDelayed</code> - returns the\n          approximate number of messages that are pending to be added to the\n          queue.</li>\n        <li>\n<code>DelaySeconds</code> - returns the default delay on the queue\n          in seconds.</li>\n        <li>\n<code>ReceiveMessageWaitTimeSeconds</code> - returns the time for which a\n          ReceiveMessage call will wait for a message to arrive.</li>\n      </ul> \n    </p>\n  "
         },
         "GetQueueUrl": {
+            "name": "GetQueueUrl",
             "input": {
                 "shape_name": "GetQueueUrlRequest",
                 "type": "structure",
@@ -653,6 +662,7 @@
             "documentation": "\n    <p>The <code>GetQueueUrl</code> action returns the URL of an existing queue.</p>\n  "
         },
         "ListQueues": {
+            "name": "ListQueues",
             "input": {
                 "shape_name": "ListQueuesRequest",
                 "type": "structure",
@@ -688,6 +698,7 @@
             "documentation": "\n    <p>Returns a list of your queues.</p>\n  "
         },
         "ReceiveMessage": {
+            "name": "ReceiveMessage",
             "input": {
                 "shape_name": "ReceiveMessageRequest",
                 "type": "structure",
@@ -747,7 +758,7 @@
                 "shape_name": "ReceiveMessageResult",
                 "type": "structure",
                 "members": {
-                    "messages": {
+                    "Messages": {
                         "shape_name": "MessageList",
                         "type": "list",
                         "members": {
@@ -828,6 +839,7 @@
             "documentation": "\n    <p>Retrieves one or more messages from the specified queue, including the message\n      body and message ID of each message. Messages returned by this action stay in\n      the queue until you delete them. However, once a message is returned to a\n      <code>ReceiveMessage</code> request, it is not returned on subsequent\n      <code>ReceiveMessage</code> requests\n      for the duration of the <code>VisibilityTimeout</code>. If you do not specify a\n      <code>VisibilityTimeout</code> in the request, the overall visibility timeout for the queue\n      is used for the returned messages.</p>\n\n    <p>If a message is available in the queue, the call will return immediately. Otherwise,\n      it will wait up to <code>WaitTimeSeconds</code> for a message to arrive. If you do not specify\n      <code>WaitTimeSeconds</code> in the request, the queue attribute\n      ReceiveMessageWaitTimeSeconds is used to determine how long to wait.</p>\n\n    <p>You could ask for additional information about each message through the attributes.\n       Attributes that can be requested are <code>[SenderId, ApproximateFirstReceiveTimestamp,\n       ApproximateReceiveCount, SentTimestamp]</code>.</p>\n  "
         },
         "RemovePermission": {
+            "name": "RemovePermission",
             "input": {
                 "shape_name": "RemovePermissionRequest",
                 "type": "structure",
@@ -853,6 +865,7 @@
             "documentation": "\n    <p>The <code>RemovePermission</code> action revokes any permissions in the queue\n      policy that matches the specified <code>Label</code> parameter. Only the owner\n      of the queue can remove permissions.</p>\n  "
         },
         "SendMessage": {
+            "name": "SendMessage",
             "input": {
                 "shape_name": "SendMessageRequest",
                 "type": "structure",
@@ -906,6 +919,7 @@
             "documentation": "\n    <p>The <code>SendMessage</code> action delivers a message to the specified\n      queue.</p>\n  "
         },
         "SendMessageBatch": {
+            "name": "SendMessageBatch",
             "input": {
                 "shape_name": "SendMessageBatchRequest",
                 "type": "structure",
@@ -1065,6 +1079,7 @@
             "documentation": "\n    <p>This is a batch version of <a>SendMessage</a>. It takes\n      multiple messages and adds each of them to the queue. The result of each \n      add operation is reported individually in the response.</p>\n  "
         },
         "SetQueueAttributes": {
+            "name": "SetQueueAttributes",
             "input": {
                 "shape_name": "SetQueueAttributesRequest",
                 "type": "structure",
@@ -1076,7 +1091,7 @@
                         "required": true,
                         "no_paramfile": true
                     },
-                    "attributes": {
+                    "Attributes": {
                         "shape_name": "AttributeMap",
                         "type": "map",
                         "keys": {

@@ -8,8 +8,8 @@
   "endpoint_prefix": "directconnect",
   "xmlnamespace": "http://directconnect.amazonaws.com/doc/2012-10-25/",
   "documentation": "\n\t\t<p>AWS Direct Connect makes it easy to establish a dedicated network connection from your premises to Amazon Web Services (AWS).  Using AWS Direct Connect, you can establish private connectivity between AWS and your data center, office, or colocation environment, which in many cases can reduce your network costs, increase bandwidth throughput, and provide a more consistent network experience than Internet-based connections.</p>\n\n <p>The AWS Direct Connect API Reference provides descriptions, syntax, and usage examples for each of the actions and data types for AWS Direct Connect. Use the following links to get started using the <i>AWS Direct Connect API Reference</i>:</p>\n    <ul>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all AWS Direct Connect actions.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/API_Types.html\">Data Types</a>: An alphabetical list of all AWS Direct Connect data types.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n    </ul>\n\t",
-  "operations": [
-    {
+  "operations": {
+    "CreateConnection": {
       "name": "CreateConnection",
       "input": {
         "shape_name": "CreateConnectionRequest",
@@ -96,7 +96,7 @@
       ],
       "documentation": "\n            <p>Creates a new network connection between the customer network and a specific AWS Direct Connect location.</p>\n\n            <p>A connection links your internal network to an AWS Direct Connect location over a standard 1 gigabit or 10 gigabit Ethernet fiber-optic cable. One end of the cable is connected to your router, the other to an AWS Direct Connect router. A Direct Connect location provides access to Amazon Web Services in the region it is associated with. You can establish connections with AWS Direct Connect locations in multiple regions, but a connection in one region does not provide connectivity to other regions.</p>\n\t"
     },
-    {
+    "CreatePrivateVirtualInterface": {
       "name": "CreatePrivateVirtualInterface",
       "input": {
         "shape_name": "CreatePrivateVirtualInterfaceRequest",
@@ -276,7 +276,7 @@
       ],
       "documentation": "\n\t\tCreates a new private virtual interface.  A virtual interface is the VLAN that transports AWS Direct Connect traffic.  A private virtual interface supports sending traffic to a single Virtual Private Cloud (VPC).\n\t"
     },
-    {
+    "CreatePublicVirtualInterface": {
       "name": "CreatePublicVirtualInterface",
       "input": {
         "shape_name": "CreatePublicVirtualInterfaceRequest",
@@ -468,7 +468,7 @@
       ],
       "documentation": "\n\t\tCreates a new public virtual interface.  A virtual interface is the VLAN that transports AWS Direct Connect traffic. A public virtual interface supports sending traffic to public services of AWS such as Amazon Simple Storage Service (Amazon S3). \n\t"
     },
-    {
+    "DeleteConnection": {
       "name": "DeleteConnection",
       "input": {
         "shape_name": "DeleteConnectionRequest",
@@ -549,7 +549,7 @@
       ],
       "documentation": "\n            <p>Deletes the connection.</p>\n            <p>Deleting a connection only stops the AWS Direct Connect port and data transfer charges. You separately need to cancel any services or charges for cross-connects or network circuits that connect you to the AWS Direct Connect location with the providers of those services.</p>\n\t"
     },
-    {
+    "DeleteVirtualInterface": {
       "name": "DeleteVirtualInterface",
       "input": {
         "shape_name": "DeleteVirtualInterfaceRequest",
@@ -610,7 +610,7 @@
       ],
       "documentation": "\n\t\tDeletes a virtual interface.\n\t"
     },
-    {
+    "DescribeConnectionDetail": {
       "name": "DescribeConnectionDetail",
       "input": {
         "shape_name": "DescribeConnectionDetailRequest",
@@ -774,7 +774,7 @@
       ],
       "documentation": "\n                <p>Displays details about a specific connection including the order steps for the connection and the current state of the connection order.</p>\n\t"
     },
-    {
+    "DescribeConnections": {
       "name": "DescribeConnections",
       "input": {
         "shape_name": "DescribeConnectionsRequest",
@@ -866,7 +866,7 @@
       ],
       "documentation": "\n\t\t<p>Displays all connections in this region.</p>\n\t\t<p>If a connection ID is provided, it will only return this particular connection.</p>\n\t"
     },
-    {
+    "DescribeOfferingDetail": {
       "name": "DescribeOfferingDetail",
       "input": {
         "shape_name": "DescribeOfferingDetailRequest",
@@ -1015,7 +1015,7 @@
       ],
       "documentation": "\n                <p>Displays additional ordering step details for a specified offering.</p>\n\t"
     },
-    {
+    "DescribeOfferings": {
       "name": "DescribeOfferings",
       "input": null,
       "output": {
@@ -1127,7 +1127,7 @@
       ],
       "documentation": "\n\t\t<p>Describes one or more of the offerings that are currently available for creating new connections.  The results include offerings for all regions.</p>\n                <p>To order a new connection you need to select a specific offering ID.</p>\n\t"
     },
-    {
+    "DescribeVirtualGateways": {
       "name": "DescribeVirtualGateways",
       "input": null,
       "output": {
@@ -1187,7 +1187,7 @@
       ],
       "documentation": "\n\t\t<p>Returns a list of virtual private gateways owned by the AWS account.</p>\n\t\t<p>You can create one or more AWS Direct Connect private virtual interfaces linking to a virtual private gateway. A virtual private gateway can be managed via Amazon Virtual Private Cloud (VPC) console or the <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway</a> action.</p>\n\t"
     },
-    {
+    "DescribeVirtualInterfaces": {
       "name": "DescribeVirtualInterfaces",
       "input": {
         "shape_name": "DescribeVirtualInterfacesRequest",
@@ -1342,5 +1342,5 @@
       ],
       "documentation": "\n        <p>Displays all virtual interfaces for an AWS account. Virtual interfaces deleted fewer than 15 minutes before DescribeVirtualInterfaces is called are also returned.  If a virtual interface ID is included then only a single virtual interface will be returned.</p>\n        <p> A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.</p>\n\t"
     }
-  ]
+  }
 }

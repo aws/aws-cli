@@ -57,8 +57,11 @@ def _load_enhancements_file(file_path):
 
 def translate(model):
     new_model = deepcopy(model.model)
-    transform_operations_list(new_model)
     new_model.update(model.enhancements.get('extra', {}))
+    try:
+        del new_model['pagination']
+    except KeyError:
+        pass
     service_info = model.services.get(model.name, {})
     add_pagination_configs(
         new_model,
@@ -81,31 +84,6 @@ def add_pagination_configs(new_model, pagination):
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)
         operation['pagination'] = config.copy()
-
-
-def transform_operations_list(new_model):
-    """Transforms list of operations into a dict.
-
-    This mutates the passed in new_model.
-
-    From:
-
-        {'operations': [{'Name': 'Foo'}, {'Name': 'Bar'}]}
-
-    To:
-
-        {'operations': {'Foo': {}, 'Bar': {}}}
-
-    The 'Name' key is extracted out of the per operation dict,
-    but all the other fields are left in tact.
-
-    """
-    operations = new_model.get('operations', [])
-    operations_map = OrderedDict()
-    for name in operations:
-        operation = operations[name]
-        operations_map[name] = operation
-    new_model['operations'] = operations_map
 
 
 def merge_dicts(dict1, dict2):

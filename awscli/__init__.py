@@ -17,7 +17,7 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 import os
 
-__version__ = '0.6.0'
+__version__ = '0.7.0'
 
 #
 # Get our data path to be added to botocore's search path

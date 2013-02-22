@@ -30,7 +30,7 @@ class TestCreateLayer(unittest.TestCase):
         cmdline += ' --type rails-app'
         cmdline += ' --name Rails_App_Server'
         cmdline += ' --enable-auto-healing'
-        cmdline += ' --attributes file:create_layer_attributes.json'
+        cmdline += ' --attributes file:%s' % data_path
         result = {'StackId': '35959772-cd1e-4082-8346-79096d4179f2',
                   'Type': 'rails-app',
                   'Name': 'Rails_App_Server',

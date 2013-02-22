@@ -156,10 +156,23 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
             elif param.type == 'boolean':
-                parser.add_argument(param.cli_name,
-                                    help=param.documentation,
-                                    action='store_true',
-                                    required=param.required)
+                if param.required:
+                    dest = param.cli_name[2:].replace('-', '_')
+                    mutex = parser.add_mutually_exclusive_group(required=True)
+                    mutex.add_argument(param.cli_name,
+                                       help=param.documentation,
+                                       dest=dest,
+                                       action='store_true')
+                    false_name = '--no-' + param.cli_name[2:]
+                    mutex.add_argument(false_name,
+                                       help=param.documentation,
+                                       dest=dest,
+                                       action='store_false')
+                else:
+                    parser.add_argument(param.cli_name,
+                                        help=param.documentation,
+                                        action='store_true',
+                                        required=param.required)
             else:
                 parser.add_argument(param.cli_name,
                                     help=param.documentation,
@@ -219,7 +232,7 @@ class CLIDriver(object):
                 value = getattr(args, param.py_name)
             else:
                 value = getattr(args, param.cli_name)
-            if value:
+            if value is not None:
                 if not hasattr(param, 'no_paramfile'):
                     if isinstance(value, list) and len(value) == 1:
                         temp = value[0]

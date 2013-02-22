@@ -181,6 +181,11 @@ class OperationDocument(Document):
         para = self.add_paragraph()
         para.write(self.style.bold(pname))
         para.write(' (%s)' % parameter.type)
+        if parameter.type == 'boolean' and parameter.required:
+            false_name = '--no-' + pname[2:]
+            para = self.add_paragraph()
+            para.write(self.style.bold(false_name))
+            para.write(' (%s)' % parameter.type)
         self.indent()
         if parameter.documentation:
             self.help_parser.feed(parameter.documentation)
@@ -210,6 +215,10 @@ class OperationDocument(Document):
             para.write('%s ' % param.cli_name)
             if param.type != 'boolean':
                 para.write(self.style.italics('value'))
+            else:
+                para = self.add_paragraph()
+                false_name = '--no-' + param.cli_name[2:]
+                para.write('%s ' % false_name)
         for param in optional:
             para = self.add_paragraph()
             para.write('[%s ' % param.cli_name)

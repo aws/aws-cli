@@ -8741,5 +8741,20 @@
             "documentation": "\n\t\t<p>\n\t\t\tRecords a <code>WorkflowExecutionTerminated</code> event and forces closure of the\n\t\t\tworkflow execution identified by the given domain, runId, and workflowId.\n\t\t\tThe child policy, registered with the workflow type or specified when starting this execution,\n\t\t\tis applied to any open child workflow executions of this\n\t\t\tworkflow execution.\n\t\t</p>\n\t\t<important>\n\t\t\tIf the identified workflow execution was in progress, it is terminated immediately.\n\t\t</important>\n\t\t<note>\n\t\t\tIf a runId is not specified, then the <code>WorkflowExecutionTerminated</code>\n\t\t\tevent is recorded in the history of the current open workflow with the matching workflowId in the domain.\n\t\t</note>\n\t\t<note>\n\t\t\tYou should consider using <a>RequestCancelWorkflowExecution</a> action instead because it allows the workflow to gracefully close while\n\t\t\t<a>TerminateWorkflowExecution</a> does not.\n\t</note>\n     \n     <p><b>Access Control</b></p>\n     <p>You can use IAM policies to control this action's access to Amazon SWF resources as follows:</p>\n     <ul>\n       <li>Use a <code>Resource</code> element with the domain name to limit the action to only specified domains.</li>\n       <li>Use an <code>Action</code> element to allow or deny permission to call this action.</li>\n       <li>You cannot use an IAM policy to constrain this action's parameters.</li>\n     </ul>\n     <p>If the caller does not have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails by throwing <code>OperationNotPermitted</code>. For details and example IAM policies,\n       see <a href=\"http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html\">Using IAM to Manage Access to Amazon SWF Workflows</a>.</p>     \n     \n<examples>\n\t <example>  \n\t\t <name> TerminateWorkflowExecution Example </name>   \n<request>\nPOST / HTTP/1.1\nHost: swf.us-east-1.amazonaws.com\nUser-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.25) Gecko/20111212 Firefox/3.6.25 ( .NET CLR 3.5.30729; .NET4.0E)\nAccept: application/json, text/javascript, */*\nAccept-Language: en-us,en;q=0.5\nAccept-Encoding: gzip,deflate\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\nKeep-Alive: 115\nConnection: keep-alive\nContent-Type: application/x-amz-json-1.0\nX-Requested-With: XMLHttpRequest\nX-Amz-Date: Mon, 16 Jan 2012 04:56:34 GMT\nX-Amz-Target: SimpleWorkflowService.TerminateWorkflowExecution\nContent-Encoding: amz-1.0\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,Algorithm=HmacSHA256,SignedHeaders=Host;X-Amz-Date;X-Amz-Target;Content-Encoding,Signature=JHMRAjN6JGPawEuhiANHfiCil9KOGfDF/cuXYmuu9S4=\nReferer: http://swf.us-east-1.amazonaws.com/explorer/index.html\nContent-Length: 218\nPragma: no-cache\nCache-Control: no-cache\n\n{\"domain\": \"867530901\",\n \"workflowId\": \"20110927-T-1\",\n \"runId\": \"94861fda-a714-4126-95d7-55ba847da8ab\",\n \"reason\": \"transaction canceled\",\n \"details\": \"customer credit card declined\",\n \"childPolicy\": \"TERMINATE\"}\n</request>  \n\n<response>\nHTTP/1.1 200 OK\nContent-Length: 0\nContent-Type: application/json\nx-amzn-RequestId: 76d68a47-3ffe-11e1-b118-3bfa5e8e7fc3\n</response>  \n      </example>\n    </examples>\n  "
         }
     },
-    "metadata": {}
+    "metadata": {
+        "regions": {
+            "us-east-1": null,
+            "ap-northeast-1": null,
+            "sa-east-1": null,
+            "ap-southeast-1": null,
+            "ap-southeast-2": null,
+            "us-west-2": null,
+            "us-west-1": null,
+            "eu-west-1": null,
+            "us-gov-west-1": null
+        },
+        "protocols": [
+            "https"
+        ]
+    }
 }

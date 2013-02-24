@@ -62,12 +62,12 @@ For tcsh:
 
 You should add this to your startup scripts to enable it for future sessions.
 
-For zsh please refer to bin/zsh_complete.sh.  Source that file:
+For zsh please refer to bin/aws_zsh_completer.sh.  Source that file:
 
-    $ source bin/zsh_complete.sh
+    $ source bin/aws_zsh_completer.sh
 
 For now the bash compatibility auto completion (bashcompinit) is used.
-For further details please refer to the top of bin/zsh_complete.sh.
+For further details please refer to the top of bin/aws_zsh_completer.sh.
 
 
 Getting Started

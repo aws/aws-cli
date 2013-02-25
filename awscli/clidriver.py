@@ -233,6 +233,10 @@ class CLIDriver(object):
             else:
                 value = getattr(args, param.cli_name)
             if value is not None:
+                # Don't include non-required boolean params whose
+                # values are False
+                if param.type == 'boolean' and not param.required and value is False:
+                    continue
                 if not hasattr(param, 'no_paramfile'):
                     if isinstance(value, list) and len(value) == 1:
                         temp = value[0]

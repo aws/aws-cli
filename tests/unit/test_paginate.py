@@ -33,7 +33,7 @@ class TestPagination(unittest.TestCase):
         self.operation = mock.Mock()
         self.paginate_config = {
             'output_tokens': ['NextToken'],
-            'input_token': 'NextToken',
+            'py_input_token': 'NextToken',
         }
         self.operation.pagination = self.paginate_config
         self.paginator = Paginator(self.operation)
@@ -81,7 +81,7 @@ class TestPagination(unittest.TestCase):
     def test_next_tokens_are_lists(self):
         self.operation.pagination = {
             'output_tokens': ['NextToken', 'NextToken2'],
-            'input_token': 'NextToken',
+            'py_input_token': 'NextToken',
         }
         self.paginator = Paginator(self.operation)
         # Verify that despite varying between NextToken and NextToken2
@@ -135,7 +135,7 @@ class TestPaginatorWithPathExpressions(unittest.TestCase):
         self.paginate_config = {
             'output_tokens': ['NextMarker',
                               'ListBucketResult.Contents[-1].Key'],
-            'input_token': 'next_marker',
+            'py_input_token': 'next_marker',
         }
         self.operation.pagination = self.paginate_config
         self.paginator = Paginator(self.operation)

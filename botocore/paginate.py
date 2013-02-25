@@ -30,7 +30,7 @@ class Paginator(object):
         self._operation = operation
         self._pagination_cfg = operation.pagination
         self._output_tokens = self._get_output_tokens(self._pagination_cfg)
-        self._input_token = self._pagination_cfg['input_token']
+        self._input_token = self._pagination_cfg['py_input_token']
 
     def _get_output_tokens(self, config):
         output = []

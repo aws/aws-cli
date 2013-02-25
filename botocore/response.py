@@ -146,8 +146,6 @@ class Response(xml.sax.ContentHandler):
             self.type_map[name] = type_dict
             self.build_type_map('key', type_dict['keys'])
             self.build_type_map('value', type_dict['members'])
-        else:
-            self.type_map[name] = type_dict
 
     def get_value(self):
         return self.root_element.value

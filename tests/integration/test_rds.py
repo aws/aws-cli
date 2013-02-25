@@ -25,33 +25,26 @@ import itertools
 import botocore.session
 
 
-class TestEC2(unittest.TestCase):
+class TestRDSPagination(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
-
-    def test_can_make_request(self):
-        # Basic smoke test to ensure we can talk to ec2.
-        service = self.session.get_service('ec2')
-        endpoint = service.get_endpoint('us-west-2')
-        operation = service.get_operation('DescribeAvailabilityZones')
-        http, result = operation.call(endpoint)
-        zones = list(sorted(a['ZoneName'] for a in result['AvailabilityZones']))
-        self.assertEqual(zones, ['us-west-2a', 'us-west-2b', 'us-west-2c'])
-
-
-class TestEC2Pagination(unittest.TestCase):
-    def setUp(self):
-        self.session = botocore.session.get_session()
-        self.service = self.session.get_service('ec2')
+        self.service = self.session.get_service('rds')
         self.endpoint = self.service.get_endpoint('us-west-2')
 
-    def test_can_paginate(self):
+    def test_can_paginate_reserved_instances(self):
         # Using an operation that we know will paginate.
-        operation = self.service.get_operation('DescribeReservedInstancesOfferings')
+        operation = self.service.get_operation('DescribeReservedDBInstancesOfferings')
         generator = operation.paginate(self.endpoint)
         results = list(itertools.islice(generator, 0, 3))
         self.assertEqual(len(results), 3)
-        self.assertTrue(results[0][1]['NextToken'] != results[1][1]['NextToken'])
+        self.assertTrue(results[0][1]['Marker'] != results[1][1]['Marker'])
+
+    def test_can_paginate_orderable_db(self):
+        operation = self.service.get_operation('DescribeOrderableDBInstanceOptions')
+        generator = operation.paginate(self.endpoint, engine='mysql')
+        results = list(itertools.islice(generator, 0, 2))
+        self.assertEqual(len(results), 2)
+        self.assertTrue(results[0][1].get('Marker') != results[1][1].get('Marker'))
 
 
 if __name__ == '__main__':

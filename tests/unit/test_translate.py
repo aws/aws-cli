@@ -300,9 +300,8 @@ class TestTranslateModel(unittest.TestCase):
             'pagination': {
                 'AssumeRole': {
                     'input_token': 'NextToken',
-                    'output_token': 'NextToken',
+                    'output_tokens': ['NextToken'],
                     'max_results': 'MaxResults',
-                    'merge_key': 'reservedInstancesListingsSet',
                 }
             }
         }
@@ -312,9 +311,35 @@ class TestTranslateModel(unittest.TestCase):
         self.assertDictEqual(
             op['pagination'], {
                 'input_token': 'NextToken',
-                'output_token': 'NextToken',
+                'py_input_token': 'next_token',
+                'output_tokens': ['NextToken'],
                 'max_results': 'MaxResults',
-                'merge_key': 'reservedInstancesListingsSet',
+            })
+
+    def test_py_input_name_is_not_added_if_it_exists(self):
+        # This may or may not pan out, but if a pagination config is
+        # specified, that info is merged into the specific operations.
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': 'NextToken',
+                    'output_tokens': ['NextToken'],
+                    'py_input_token': 'other_value',
+                    'max_results': 'MaxResults',
+                }
+            }
+        }
+        self.model.enhancements = extra
+        new_model = translate(self.model)
+        op = new_model['operations']['AssumeRole']
+        # Note how 'py_input_token' is left untouched.  This allows us
+        # to override this naming if we need to.
+        self.assertDictEqual(
+            op['pagination'], {
+                'input_token': 'NextToken',
+                'py_input_token': 'other_value',
+                'output_tokens': ['NextToken'],
+                'max_results': 'MaxResults',
             })
 
     def test_paginators_are_validated(self):
@@ -324,9 +349,8 @@ class TestTranslateModel(unittest.TestCase):
             'pagination': {
                 'UnknownOperation': {
                     'input_token': 'NextToken',
-                    'output_token': 'NextToken',
+                    'output_tokens': ['NextToken'],
                     'max_results': 'MaxResults',
-                    'merge_key': 'reservedInstancesListingsSet',
                 }
             }
         }
@@ -339,7 +363,7 @@ class TestTranslateModel(unittest.TestCase):
             'pagination': {
                 'AssumeRole': {
                     'input_token': 'NextToken',
-                    'output_token': 'NextToken',
+                    'output_tokens': ['NextToken'],
                 }
             }
         }

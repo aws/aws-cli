@@ -2163,7 +2163,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Returns a list of users that are in the specified group. You can paginate the results using the <code>MaxItems</code> \n    and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetGroup\n&GroupName=Admins\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetGroupResponse>\n   <GetGroupResult>\n      <Group>\n         <Path>/</Path>\n         <GroupName>Admins</GroupName>\n         <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n         <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n      </Group>\n      <Users>      \n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <UserName>Bob</UserName>\n            <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n            <Arn>\n            arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Bob\n            </Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <UserName>Susan</UserName>\n            <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n            <Arn>\n            arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Susan\n            </Arn>\n         </member>\n      </Users>\n      <IsTruncated>false</IsTruncated>\n   </GetGroupResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetGroupResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Returns a list of users that are in the specified group. You can paginate the results using the <code>MaxItems</code> \n    and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=GetGroup\n&GroupName=Admins\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<GetGroupResponse>\n   <GetGroupResult>\n      <Group>\n         <Path>/</Path>\n         <GroupName>Admins</GroupName>\n         <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n         <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n      </Group>\n      <Users>      \n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <UserName>Bob</UserName>\n            <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n            <Arn>\n            arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Bob\n            </Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <UserName>Susan</UserName>\n            <UserId>AIDACKCEVSQ6C2EXAMPLE</UserId>\n            <Arn>\n            arn:aws:iam::123456789012:user/division_abc/subdivision_xyz/Susan\n            </Arn>\n         </member>\n      </Users>\n      <IsTruncated>false</IsTruncated>\n   </GetGroupResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</GetGroupResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "GetGroupPolicy": {
             "name": "GetGroupPolicy",
@@ -3022,7 +3030,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Returns information about the Access Key IDs associated with the specified user. If there are none,\n    the action returns an empty list.</p>\n\n    <p>Although each user is limited to a small number of keys, you can still paginate the results\n    using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n    \n\t<p>If the <code>UserName</code> field is not specified, the UserName is determined implicitly based\n\ton the AWS Access Key ID used to sign the request. Because this action works for access keys under\n\tthe AWS account, this API can be used to manage root credentials even if the AWS account has no associated users.</p>\n\n<note>To ensure the security of your AWS account, the secret access key is accessible only during key and user creation.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListAccessKeys\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListAccessKeysResponse>\n   <ListAccessKeysResult>\n      <UserName>Bob</UserName>\n      <AccessKeyMetadata>\n         <member>\n            <UserName>Bob</UserName>\n            <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n            <Status>Active</Status>\n         </member>\n         <member>\n            <UserName>Bob</UserName>\n            <AccessKeyId>AKIAI44QH8DHBEXAMPLE</AccessKeyId>\n            <Status>Inactive</Status>\n         </member>\n      </AccessKeyMetadata>\n      <IsTruncated>false</IsTruncated>\n   </ListAccessKeysResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListAccessKeysResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Returns information about the Access Key IDs associated with the specified user. If there are none,\n    the action returns an empty list.</p>\n\n    <p>Although each user is limited to a small number of keys, you can still paginate the results\n    using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n    \n\t<p>If the <code>UserName</code> field is not specified, the UserName is determined implicitly based\n\ton the AWS Access Key ID used to sign the request. Because this action works for access keys under\n\tthe AWS account, this API can be used to manage root credentials even if the AWS account has no associated users.</p>\n\n<note>To ensure the security of your AWS account, the secret access key is accessible only during key and user creation.</note>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListAccessKeys\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListAccessKeysResponse>\n   <ListAccessKeysResult>\n      <UserName>Bob</UserName>\n      <AccessKeyMetadata>\n         <member>\n            <UserName>Bob</UserName>\n            <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n            <Status>Active</Status>\n         </member>\n         <member>\n            <UserName>Bob</UserName>\n            <AccessKeyId>AKIAI44QH8DHBEXAMPLE</AccessKeyId>\n            <Status>Inactive</Status>\n         </member>\n      </AccessKeyMetadata>\n      <IsTruncated>false</IsTruncated>\n   </ListAccessKeysResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListAccessKeysResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListAccountAliases": {
             "name": "ListAccountAliases",
@@ -3083,7 +3099,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListAccountAliases</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>Lists the account aliases associated with the account. For information about using an AWS account \n    alias, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html\" target=\"_blank\">Using an Alias for Your AWS Account ID</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>    \n    \n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListAccountAliases\n&Version=2010-05-08\n&AUTHPARAMS      \n      </queryrequest>\n\n      <queryresponse>\n<ListAccountAliasesResponse>\n  <ListAccountAliasesResult>\n    <IsTruncated>false</IsTruncated>\n    <AccountAliases>\n      <member>foocorporation</member>\n    </AccountAliases>\n  </ListAccountAliasesResult>\n  <ResponseMetadata>\n    <RequestId>c5a076e9-f1b0-11df-8fbe-45274EXAMPLE</RequestId>\n  </ResponseMetadata>\n</ListAccountAliasesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the account aliases associated with the account. For information about using an AWS account \n    alias, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AccountAlias.html\" target=\"_blank\">Using an Alias for Your AWS Account ID</a> in <i>Using AWS Identity and Access Management</i>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>    \n    \n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListAccountAliases\n&Version=2010-05-08\n&AUTHPARAMS      \n      </queryrequest>\n\n      <queryresponse>\n<ListAccountAliasesResponse>\n  <ListAccountAliasesResult>\n    <IsTruncated>false</IsTruncated>\n    <AccountAliases>\n      <member>foocorporation</member>\n    </AccountAliases>\n  </ListAccountAliasesResult>\n  <ResponseMetadata>\n    <RequestId>c5a076e9-f1b0-11df-8fbe-45274EXAMPLE</RequestId>\n  </ResponseMetadata>\n</ListAccountAliasesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListGroupPolicies": {
             "name": "ListGroupPolicies",
@@ -3166,7 +3190,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Lists the names of the policies associated with the specified group. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListGroupPolicies\n&GroupName=Admins\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListGroupPoliciesResponse>\n   <ListGroupPoliciesResult>\n      <PolicyNames>\n         <member>AdminRoot</member>\n         <member>KeyPolicy</member>\n      </PolicyNames>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupPoliciesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupPoliciesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the names of the policies associated with the specified group. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListGroupPolicies\n&GroupName=Admins\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListGroupPoliciesResponse>\n   <ListGroupPoliciesResult>\n      <PolicyNames>\n         <member>AdminRoot</member>\n         <member>KeyPolicy</member>\n      </PolicyNames>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupPoliciesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupPoliciesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListGroups": {
             "name": "ListGroups",
@@ -3275,7 +3307,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListGroups</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>Lists the groups that have the specified path prefix.</p>\n     \n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListGroups\n&PathPrefix=/division_abc/subdivision_xyz/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListGroupsResponse>\n   <ListGroupsResult>\n      <Groups>\n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <GroupName>Admins</GroupName>\n            <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/product_1234/engineering/\n            </Path>\n            <GroupName>Test</GroupName>\n            <GroupId>AGP2MAB8DPLSRHEXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group\n            /division_abc/subdivision_xyz/product_1234/engineering/Test</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/product_1234/</Path>\n            <GroupName>Managers</GroupName>\n            <GroupId>AGPIODR4TAW7CSEXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012\n            :group/division_abc/subdivision_xyz/product_1234/Managers</Arn>\n         </member>\n      </Groups>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupsResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupsResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the groups that have the specified path prefix.</p>\n     \n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListGroups\n&PathPrefix=/division_abc/subdivision_xyz/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListGroupsResponse>\n   <ListGroupsResult>\n      <Groups>\n         <member>\n            <Path>/division_abc/subdivision_xyz/</Path>\n            <GroupName>Admins</GroupName>\n            <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/product_1234/engineering/\n            </Path>\n            <GroupName>Test</GroupName>\n            <GroupId>AGP2MAB8DPLSRHEXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group\n            /division_abc/subdivision_xyz/product_1234/engineering/Test</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/product_1234/</Path>\n            <GroupName>Managers</GroupName>\n            <GroupId>AGPIODR4TAW7CSEXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012\n            :group/division_abc/subdivision_xyz/product_1234/Managers</Arn>\n         </member>\n      </Groups>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupsResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupsResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListGroupsForUser": {
             "name": "ListGroupsForUser",
@@ -3398,7 +3438,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Lists the groups the specified user belongs to.</p>\n     \n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest> \nhttps://iam.amazonaws.com/\n?Action=ListGroupsForUser\n&UserName=Bob\n&AUTHPARAMS\n       </queryrequest>\n\n      <queryresponse> \n<ListGroupsForUserResponse> \n   <ListGroupsForUserResult>\n      <Groups>\n         <member>\n            <Path>/</Path>\n            <GroupName>Admins</GroupName>\n            <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n         </member>\n      </Groups>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupsForUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupsForUserResponse>\n</queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the groups the specified user belongs to.</p>\n     \n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest> \nhttps://iam.amazonaws.com/\n?Action=ListGroupsForUser\n&UserName=Bob\n&AUTHPARAMS\n       </queryrequest>\n\n      <queryresponse> \n<ListGroupsForUserResponse> \n   <ListGroupsForUserResult>\n      <Groups>\n         <member>\n            <Path>/</Path>\n            <GroupName>Admins</GroupName>\n            <GroupId>AGPACKCEVSQ6C2EXAMPLE</GroupId>\n            <Arn>arn:aws:iam::123456789012:group/Admins</Arn>\n         </member>\n      </Groups>\n      <IsTruncated>false</IsTruncated>\n   </ListGroupsForUserResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListGroupsForUserResponse>\n</queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListInstanceProfiles": {
             "name": "ListInstanceProfiles",
@@ -3569,7 +3617,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListInstanceProfiles</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>Lists the instance profiles that have the specified path prefix. If there are none, the action returns an empty list.\n    \tFor more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListInstanceProfiles\n&MaxItems=100\n&PathPrefix=/application_abc/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListInstanceProfilesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListInstanceProfilesResult>\n    <IsTruncated>false</IsTruncated>\n    <InstanceProfiles>\n      <member>\n        <Id>AIPACIFN4OZXG7EXAMPLE</Id>\n        <Roles/>\n        <InstanceProfileName>Database</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Database</Arn>\n        <CreateDate>2012-05-09T16:27:03Z</CreateDate>\n      </member>\n      <member>\n        <Id>AIPACZLSXM2EYYEXAMPLE</Id>\n        <Roles/>\n        <InstanceProfileName>Webserver</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n        <CreateDate>2012-05-09T16:27:11Z</CreateDate>\n      </member>\n    </InstanceProfiles>\n  </ListInstanceProfilesResult>\n  <ResponseMetadata>\n    <RequestId>fd74fa8d-99f3-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListInstanceProfilesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the instance profiles that have the specified path prefix. If there are none, the action returns an empty list.\n    \tFor more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListInstanceProfiles\n&MaxItems=100\n&PathPrefix=/application_abc/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListInstanceProfilesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListInstanceProfilesResult>\n    <IsTruncated>false</IsTruncated>\n    <InstanceProfiles>\n      <member>\n        <Id>AIPACIFN4OZXG7EXAMPLE</Id>\n        <Roles/>\n        <InstanceProfileName>Database</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Database</Arn>\n        <CreateDate>2012-05-09T16:27:03Z</CreateDate>\n      </member>\n      <member>\n        <Id>AIPACZLSXM2EYYEXAMPLE</Id>\n        <Roles/>\n        <InstanceProfileName>Webserver</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n        <CreateDate>2012-05-09T16:27:11Z</CreateDate>\n      </member>\n    </InstanceProfiles>\n  </ListInstanceProfilesResult>\n  <ResponseMetadata>\n    <RequestId>fd74fa8d-99f3-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListInstanceProfilesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListInstanceProfilesForRole": {
             "name": "ListInstanceProfilesForRole",
@@ -3754,7 +3810,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Lists the instance profiles that have the specified associated role. If there are none, the action returns an empty list.\n    \tFor more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListInstanceProfilesForRole\n&MaxItems=100\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n      <queryresponse>\n<ListInstanceProfilesForRoleResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListInstanceProfilesForRoleResult>\n    <IsTruncated>false</IsTruncated>\n    <InstanceProfiles>\n      <member>\n        <Id>AIPACZLS2EYYXMEXAMPLE</Id>\n        <Roles>\n          <member>\n            <Path>/application_abc/component_xyz/</Path>\n            <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n            <RoleName>S3Access</RoleName>\n            <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n            <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n            <RoleId>AROACVSVTSZYK3EXAMPLE</RoleId>\n          </member>\n        </Roles>\n        <InstanceProfileName>Webserver</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n        <CreateDate>2012-05-09T16:27:11Z</CreateDate>\n      </member>\n    </InstanceProfiles>\n  </ListInstanceProfilesForRoleResult>\n  <ResponseMetadata>\n    <RequestId>6a8c3992-99f4-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListInstanceProfilesForRoleResponse>\n\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the instance profiles that have the specified associated role. If there are none, the action returns an empty list.\n    \tFor more information about instance profiles, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/AboutInstanceProfiles.html\">About Instance Profiles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListInstanceProfilesForRole\n&MaxItems=100\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n      <queryresponse>\n<ListInstanceProfilesForRoleResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListInstanceProfilesForRoleResult>\n    <IsTruncated>false</IsTruncated>\n    <InstanceProfiles>\n      <member>\n        <Id>AIPACZLS2EYYXMEXAMPLE</Id>\n        <Roles>\n          <member>\n            <Path>/application_abc/component_xyz/</Path>\n            <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n            <RoleName>S3Access</RoleName>\n            <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n            <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n            <RoleId>AROACVSVTSZYK3EXAMPLE</RoleId>\n          </member>\n        </Roles>\n        <InstanceProfileName>Webserver</InstanceProfileName>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:instance-profile/application_abc/component_xyz/Webserver</Arn>\n        <CreateDate>2012-05-09T16:27:11Z</CreateDate>\n      </member>\n    </InstanceProfiles>\n  </ListInstanceProfilesForRoleResult>\n  <ResponseMetadata>\n    <RequestId>6a8c3992-99f4-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListInstanceProfilesForRoleResponse>\n\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListMFADevices": {
             "name": "ListMFADevices",
@@ -3859,7 +3923,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Lists the MFA devices. If the request includes the user name, then this action lists all the MFA devices associated with the specified \n      user name. If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n      Access Key ID signing the request.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListMFADevices\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListMFADevicesResponse>\n   <ListMFADevicesResult>\n      <MFADevices>\n         <member>\n            <UserName>Bob</UserName>\n            <SerialNumber>R1234</SerialNumber>\n         </member>\n      </MFADevices>\n      <IsTruncated>false</IsTruncated>\n   </ListMFADevicesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListMFADevicesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the MFA devices. If the request includes the user name, then this action lists all the MFA devices associated with the specified \n      user name. If you do not specify a user name, IAM determines the user name implicitly based on the AWS\n      Access Key ID signing the request.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListMFADevices\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListMFADevicesResponse>\n   <ListMFADevicesResult>\n      <MFADevices>\n         <member>\n            <UserName>Bob</UserName>\n            <SerialNumber>R1234</SerialNumber>\n         </member>\n      </MFADevices>\n      <IsTruncated>false</IsTruncated>\n   </ListMFADevicesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListMFADevicesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListRolePolicies": {
             "name": "ListRolePolicies",
@@ -3942,7 +4014,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Lists the names of the policies associated with the specified role. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListRolePolicies\n&MaxItems=100\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListRolePoliciesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListRolePoliciesResult>\n    <PolicyNames>\n      <member>CloudwatchPutMetricPolicy</member>\n      <member>S3AccessPolicy</member>\n    </PolicyNames>\n    <IsTruncated>false</IsTruncated>\n  </ListRolePoliciesResult>\n  <ResponseMetadata>\n    <RequestId>8c7e1816-99f0-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListRolePoliciesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the names of the policies associated with the specified role. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListRolePolicies\n&MaxItems=100\n&RoleName=S3Access\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListRolePoliciesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListRolePoliciesResult>\n    <PolicyNames>\n      <member>CloudwatchPutMetricPolicy</member>\n      <member>S3AccessPolicy</member>\n    </PolicyNames>\n    <IsTruncated>false</IsTruncated>\n  </ListRolePoliciesResult>\n  <ResponseMetadata>\n    <RequestId>8c7e1816-99f0-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListRolePoliciesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListRoles": {
             "name": "ListRoles",
@@ -4059,7 +4139,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListRoles</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>Lists the roles that have the specified path prefix. If there are none, the action returns an empty list.\n    \tFor more information about roles, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <p>The returned policy is URL-encoded according to RFC 3986. For more information about\n       RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListRoles\n&MaxItems=100\n&PathPrefix=/application_abc/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListRolesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListRolesResult>\n    <IsTruncated>false</IsTruncated>\n    <Roles>\n      <member>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n        <RoleName>S3Access</RoleName>\n        <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n        <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n        <RoleId>AROACVSVTSZYEXAMPLEYK</RoleId>\n      </member>\n      <member>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/SDBAccess</Arn>\n        <RoleName>SDBAccess</RoleName>\n        <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n        <CreateDate>2012-05-09T15:45:45Z</CreateDate>\n        <RoleId>AROAC2ICXG32EXAMPLEWK</RoleId>\n      </member>\n    </Roles>\n  </ListRolesResult>\n  <ResponseMetadata>\n    <RequestId>20f7279f-99ee-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListRolesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the roles that have the specified path prefix. If there are none, the action returns an empty list.\n    \tFor more information about roles, go to \n    \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Working with Roles</a>.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <p>The returned policy is URL-encoded according to RFC 3986. For more information about\n       RFC 3986, go to <a href=\"http://www.faqs.org/rfcs/rfc3986.html\">http://www.faqs.org/rfcs/rfc3986.html</a>.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListRoles\n&MaxItems=100\n&PathPrefix=/application_abc/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListRolesResponse xmlns=\"https://iam.amazonaws.com/doc/2010-05-08/\">\n  <ListRolesResult>\n    <IsTruncated>false</IsTruncated>\n    <Roles>\n      <member>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/S3Access</Arn>\n        <RoleName>S3Access</RoleName>\n        <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n        <CreateDate>2012-05-09T15:45:35Z</CreateDate>\n        <RoleId>AROACVSVTSZYEXAMPLEYK</RoleId>\n      </member>\n      <member>\n        <Path>/application_abc/component_xyz/</Path>\n        <Arn>arn:aws:iam::123456789012:role/application_abc/component_xyz/SDBAccess</Arn>\n        <RoleName>SDBAccess</RoleName>\n        <AssumeRolePolicyDocument>{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"ec2.amazonaws.com\"]},\"Action\":[\"sts:AssumeRole\"]}]}</AssumeRolePolicyDocument>\n        <CreateDate>2012-05-09T15:45:45Z</CreateDate>\n        <RoleId>AROAC2ICXG32EXAMPLEWK</RoleId>\n      </member>\n    </Roles>\n  </ListRolesResult>\n  <ResponseMetadata>\n    <RequestId>20f7279f-99ee-11e1-a4c3-27EXAMPLE804</RequestId>\n  </ResponseMetadata>\n</ListRolesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListServerCertificates": {
             "name": "ListServerCertificates",
@@ -4167,7 +4255,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListServerCertificates</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>Lists the server certificates that have the specified path prefix. If none exist, the\n    action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListServerCertificates\n&PathPrefix=/company/servercerts\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListServerCertificatesResponse>\n  <ListServerCertificatesResult>\n    <IsTruncated>false</IsTruncated>\n    <ServerCertificateMetadataList>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>ProdServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert</Arn>\n          <UploadDate>2010-05-08T01:02:03.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE1</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>BetaServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/BetaServerCert</Arn>\n          <UploadDate>2010-05-08T02:03:01.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE2</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>TestServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/TestServerCert</Arn>\n          <UploadDate>2010-05-08T03:01:02.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE3</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n    </ServerCertificateMetadataList>\n  </ListServerCertificatesResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</ListServerCertificatesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the server certificates that have the specified path prefix. If none exist, the\n    action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListServerCertificates\n&PathPrefix=/company/servercerts\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListServerCertificatesResponse>\n  <ListServerCertificatesResult>\n    <IsTruncated>false</IsTruncated>\n    <ServerCertificateMetadataList>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>ProdServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert</Arn>\n          <UploadDate>2010-05-08T01:02:03.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE1</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>BetaServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/BetaServerCert</Arn>\n          <UploadDate>2010-05-08T02:03:01.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE2</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n      <member>\n        <ServerCertificateMetadata>\n          <ServerCertificateName>TestServerCert</ServerCertificateName>\n          <Path>/company/servercerts/</Path>\n          <Arn>arn:aws:iam::123456789012:server-certificate/company/servercerts/TestServerCert</Arn>\n          <UploadDate>2010-05-08T03:01:02.004Z</UploadDate>\n          <ServerCertificateId>ASCACKCEVSQ6CEXAMPLE3</ServerCertificateId>\n        </ServerCertificateMetadata>\n      </member>\n    </ServerCertificateMetadataList>\n  </ListServerCertificatesResult>\n  <ResponseMetadata>\n    <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n  </ResponseMetadata>\n</ListServerCertificatesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListSigningCertificates": {
             "name": "ListSigningCertificates",
@@ -4290,7 +4386,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Returns information about the signing certificates associated with the specified user. If there\n    are none, the action returns an empty list.</p>\n\n    <p>Although each user is limited to a small number of signing certificates, you can still paginate\n      the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the user name is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account has\n\tno associated users.</p>\n\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListSigningCertificates\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListSigningCertificatesResponse>\n   <ListSigningCertificatesResult>\n      <UserName>Bob</UserName>\n      <Certificates>\n         <member>\n            <UserName>Bob</UserName>\n            <CertificateId>TA7SMP42TDN5Z26OBPJE7EXAMPLE</CertificateId>\n            <CertificateBody>-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----</CertificateBody>\n            <Status>Active</Status>\n         </member>\n      </Certificates>\n      <IsTruncated>false</IsTruncated>\n   </ListSigningCertificatesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListSigningCertificatesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Returns information about the signing certificates associated with the specified user. If there\n    are none, the action returns an empty list.</p>\n\n    <p>Although each user is limited to a small number of signing certificates, you can still paginate\n      the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the user name is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account has\n\tno associated users.</p>\n\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListSigningCertificates\n&UserName=Bob\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListSigningCertificatesResponse>\n   <ListSigningCertificatesResult>\n      <UserName>Bob</UserName>\n      <Certificates>\n         <member>\n            <UserName>Bob</UserName>\n            <CertificateId>TA7SMP42TDN5Z26OBPJE7EXAMPLE</CertificateId>\n            <CertificateBody>-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----</CertificateBody>\n            <Status>Active</Status>\n         </member>\n      </Certificates>\n      <IsTruncated>false</IsTruncated>\n   </ListSigningCertificatesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListSigningCertificatesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListUserPolicies": {
             "name": "ListUserPolicies",
@@ -4373,7 +4477,15 @@
                     "documentation": "\n    <p>The request was rejected because it referenced an entity that does not exist. The \n    error message describes the entity.</p>\n  "
                 }
             ],
-            "documentation": "\n    <p>Lists the names of the policies associated with the specified user. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListUserPolicies\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListUserPoliciesResponse>\n   <ListUserPoliciesResult>\n      <PolicyNames>\n         <member>AllAccessPolicy</member>\n         <member>KeyPolicy</member>\n      </PolicyNames>\n      <IsTruncated>false</IsTruncated>\n   </ListUserPoliciesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListUserPoliciesResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the names of the policies associated with the specified user. If there are none,\n    the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListUserPolicies\n&UserName=Bob\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListUserPoliciesResponse>\n   <ListUserPoliciesResult>\n      <PolicyNames>\n         <member>AllAccessPolicy</member>\n         <member>KeyPolicy</member>\n      </PolicyNames>\n      <IsTruncated>false</IsTruncated>\n   </ListUserPoliciesResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListUserPoliciesResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListUsers": {
             "name": "ListUsers",
@@ -4482,7 +4594,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListUsers</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>Lists the users that have the specified path prefix. If there are none, the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListUsers\n&PathPrefix=/division_abc/subdivision_xyz/product_1234/engineering/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListUsersResponse>\n   <ListUsersResult>\n      <Users>\n         <member>\n            <Path>/division_abc/subdivision_xyz/engineering/</Path>\n            <UserName>Andrew</UserName>\n            <UserId>AID2MAB8DPLSRHEXAMPLE</UserId>\n            <Arn>arn:aws:iam::123456789012:user\n            /division_abc/subdivision_xyz/engineering/Andrew</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/engineering/</Path>\n            <UserName>Jackie</UserName>\n            <UserId>AIDIODR4TAW7CSEXAMPLE</UserId>\n            <Arn>arn:aws:iam::123456789012:user\n            /division_abc/subdivision_xyz/engineering/Jackie</Arn>\n         </member>\n      </Users>\n      <IsTruncated>false</IsTruncated>\n   </ListUsersResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListUsersResponse>\n      </queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>Lists the users that have the specified path prefix. If there are none, the action returns an empty list.</p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n\n      <queryrequest>\nhttps://iam.amazonaws.com/\n?Action=ListUsers\n&PathPrefix=/division_abc/subdivision_xyz/product_1234/engineering/\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<ListUsersResponse>\n   <ListUsersResult>\n      <Users>\n         <member>\n            <Path>/division_abc/subdivision_xyz/engineering/</Path>\n            <UserName>Andrew</UserName>\n            <UserId>AID2MAB8DPLSRHEXAMPLE</UserId>\n            <Arn>arn:aws:iam::123456789012:user\n            /division_abc/subdivision_xyz/engineering/Andrew</Arn>\n         </member>\n         <member>\n            <Path>/division_abc/subdivision_xyz/engineering/</Path>\n            <UserName>Jackie</UserName>\n            <UserId>AIDIODR4TAW7CSEXAMPLE</UserId>\n            <Arn>arn:aws:iam::123456789012:user\n            /division_abc/subdivision_xyz/engineering/Jackie</Arn>\n         </member>\n      </Users>\n      <IsTruncated>false</IsTruncated>\n   </ListUsersResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</ListUsersResponse>\n      </queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "ListVirtualMFADevices": {
             "name": "ListVirtualMFADevices",
@@ -4624,7 +4744,15 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>ListVirtualMFADevices</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n    <p>\n      Lists the virtual MFA devices under the AWS account by assignment status. If you do not specify an\n      assignment status, the action returns a list of all virtual MFA devices. Assignment status can be <code>Assigned</code>, \n      <code>Unassigned</code>, or <code>Any</code>.\n    </p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n      \n<queryrequest>\n<!-- This example shows the request where \n     the AssignmentStatus is Any -->\n  \nhttps://iam.amazonaws.com/\n?Action=ListVirtualMFADevices\n&AssignmentStatus=Any\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<!-- The action returns all three virtual MFA devices\n     associated with the account: the first device is\n     unassigned, the second is assigned to the root \n     account, and the third is assigned to a user \n     named ExampleUser under the account. -->\n\n<ListVirtualMFADevicesResponse>\n  <ListVirtualMFADevicesResult>\n    <IsTruncated>false</IsTruncated>\n    <VirtualMFADevices>\n      <member>\n        <SerialNumber>\n        arn:aws:iam::123456789012:mfa/MFAdeviceName\n        </SerialNumber>\n      </member>\n      <member>\n        <SerialNumber>\n        arn:aws:iam::123456789012:mfa/RootMFAdeviceName\n        </SerialNumber>\n        <EnableDate>2011-10-20T20:49:03Z</EnableDate>\n        <User>\n          <UserId>123456789012</UserId>\n          <Arn>arn:aws:iam::123456789012:root</Arn>\n          <CreateDate>2009-10-13T22:00:36Z</CreateDate>\n        </User>\n      </member>\n      <member>\n        <SerialNumber>\n        arn:aws:iam:::mfa/ExampleUserMFAdeviceName\n        </SerialNumber>\n        <EnableDate>2011-10-31T20:45:02Z</EnableDate>\n        <User>\n          <UserId>AIDEXAMPLE4EXAMPLEXYZ</UserId>\n          <Path>/</Path>\n          <UserName>ExampleUser</UserName>\n          <Arn>arn:aws:iam::111122223333:user/ExampleUser</Arn>\n          <CreateDate>2011-07-01T17:23:07Z</CreateDate>\n        </User>\n      </member>\n    </VirtualMFADevices>\n  </ListVirtualMFADevicesResult>\n  <ResponseMetadata>\n    <RequestId>b61ce1b1-0401-11e1-b2f8-2dEXAMPLEbfc</RequestId>\n  </ResponseMetadata>\n</ListVirtualMFADevicesResponse>\n</queryresponse>\n    </examples>\n  "
+            "documentation": "\n    <p>\n      Lists the virtual MFA devices under the AWS account by assignment status. If you do not specify an\n      assignment status, the action returns a list of all virtual MFA devices. Assignment status can be <code>Assigned</code>, \n      <code>Unassigned</code>, or <code>Any</code>.\n    </p>\n\n    <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters.</p>\n\n    <examples>\n      \n<queryrequest>\n<!-- This example shows the request where \n     the AssignmentStatus is Any -->\n  \nhttps://iam.amazonaws.com/\n?Action=ListVirtualMFADevices\n&AssignmentStatus=Any\n&AUTHPARAMS\n</queryrequest>\n\n      <queryresponse>\n<!-- The action returns all three virtual MFA devices\n     associated with the account: the first device is\n     unassigned, the second is assigned to the root \n     account, and the third is assigned to a user \n     named ExampleUser under the account. -->\n\n<ListVirtualMFADevicesResponse>\n  <ListVirtualMFADevicesResult>\n    <IsTruncated>false</IsTruncated>\n    <VirtualMFADevices>\n      <member>\n        <SerialNumber>\n        arn:aws:iam::123456789012:mfa/MFAdeviceName\n        </SerialNumber>\n      </member>\n      <member>\n        <SerialNumber>\n        arn:aws:iam::123456789012:mfa/RootMFAdeviceName\n        </SerialNumber>\n        <EnableDate>2011-10-20T20:49:03Z</EnableDate>\n        <User>\n          <UserId>123456789012</UserId>\n          <Arn>arn:aws:iam::123456789012:root</Arn>\n          <CreateDate>2009-10-13T22:00:36Z</CreateDate>\n        </User>\n      </member>\n      <member>\n        <SerialNumber>\n        arn:aws:iam:::mfa/ExampleUserMFAdeviceName\n        </SerialNumber>\n        <EnableDate>2011-10-31T20:45:02Z</EnableDate>\n        <User>\n          <UserId>AIDEXAMPLE4EXAMPLEXYZ</UserId>\n          <Path>/</Path>\n          <UserName>ExampleUser</UserName>\n          <Arn>arn:aws:iam::111122223333:user/ExampleUser</Arn>\n          <CreateDate>2011-07-01T17:23:07Z</CreateDate>\n        </User>\n      </member>\n    </VirtualMFADevices>\n  </ListVirtualMFADevicesResult>\n  <ResponseMetadata>\n    <RequestId>b61ce1b1-0401-11e1-b2f8-2dEXAMPLEbfc</RequestId>\n  </ResponseMetadata>\n</ListVirtualMFADevicesResponse>\n</queryresponse>\n    </examples>\n  ",
+            "pagination": {
+                "more_key": "IsTruncated",
+                "output_tokens": [
+                    "Marker"
+                ],
+                "input_token": "Marker",
+                "py_input_token": "marker"
+            }
         },
         "PutGroupPolicy": {
             "name": "PutGroupPolicy",
@@ -5835,6 +5963,136 @@
                 }
             ],
             "documentation": "\n    <p>Uploads an X.509 signing certificate and associates it with the specified user. Some AWS services\n\tuse X.509 signing certificates to validate requests that are signed with a\n    corresponding private key. When you upload the certificate, its default status is <code>Active</code>.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the user name is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account\n\thas no associated users.</p>\n\n    <note>Because the body of a X.509 certificate can be large, you should use POST rather than GET when\n    \tcalling <code>UploadSigningCertificate</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n\n      <queryrequest>\nPOST / HTTP/1.1\nHost: iam.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\n\nAction=UploadSigningCertificate\n&UserName=Bob\n&CertificateBody=-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UploadSigningCertificateResponse>\n   <UploadSigningCertificateResult>\n      <Certificate>\n         <UserName>Bob</UserName>\n         <CertificateId>TA7SMP42TDN5Z26OBPJE7EXAMPLE</CertificateId>\n         <CertificateBody>-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----</CertificateBody>\n         <Status>Active</Status>\n      </Certificate>\n   </UploadSigningCertificateResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UploadSigningCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
+        }
+    },
+    "pagination": {
+        "GetGroup": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListAccessKeys": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListAccountAliases": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListGroupPolicies": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListGroups": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListGroupsForUser": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListInstanceProfiles": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListInstanceProfilesForRole": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListMFADevices": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListRolePolicies": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListRoles": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListServerCertificates": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListSigningCertificates": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListUserPolicies": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListUsers": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
+        },
+        "ListVirtualMFADevices": {
+            "more_key": "IsTruncated",
+            "output_tokens": [
+                "Marker"
+            ],
+            "input_token": "Marker",
+            "py_input_token": "marker"
         }
     },
     "metadata": {

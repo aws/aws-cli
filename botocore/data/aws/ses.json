@@ -390,7 +390,14 @@
                 "documentation": "\n\t<p>Represents a list of all verified identities for the AWS Account.</p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>Returns a list containing all of the identities (email addresses and domains) for \n        a specific AWS Account, regardless of verification status.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:18:45 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=OruiFNV26DCZicLDaQmULHGbjbU8MbC/c5aIo/MMIuM=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 115\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=ListIdentities\n&Timestamp=2012-05-12T05%3A18%3A45.000Z&\nVersion=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<ListIdentitiesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ListIdentitiesResult>\n    <Identities>\n      <member>example.com</member>\n      <member>user@example.com</member>\n    </Identities>\n  </ListIdentitiesResult>\n  <ResponseMetadata>\n    <RequestId>cacecf23-9bf1-11e1-9279-0100e8cf109a</RequestId>\n  </ResponseMetadata>\n</ListIdentitiesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+            "documentation": "\n        <p>Returns a list containing all of the identities (email addresses and domains) for \n        a specific AWS Account, regardless of verification status.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:18:45 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=OruiFNV26DCZicLDaQmULHGbjbU8MbC/c5aIo/MMIuM=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 115\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=ListIdentities\n&Timestamp=2012-05-12T05%3A18%3A45.000Z&\nVersion=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<ListIdentitiesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ListIdentitiesResult>\n    <Identities>\n      <member>example.com</member>\n      <member>user@example.com</member>\n    </Identities>\n  </ListIdentitiesResult>\n  <ResponseMetadata>\n    <RequestId>cacecf23-9bf1-11e1-9279-0100e8cf109a</RequestId>\n  </ResponseMetadata>\n</ListIdentitiesResponse>\n          \n            </queryresponse>\n        </examples>\n    ",
+            "pagination": {
+                "output_tokens": [
+                    "NextToken"
+                ],
+                "input_token": "NextToken",
+                "py_input_token": "next_token"
+            }
         },
         "ListVerifiedEmailAddresses": {
             "name": "ListVerifiedEmailAddresses",
@@ -846,6 +853,15 @@
             },
             "errors": [],
             "documentation": "\n        <p>Verifies an email address. This action causes a confirmation email message\n         to be sent to the specified address.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:21:58 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=hQJj2pxypqJHQgU/BW1EZGUiNIYGhkQDf7tI6UgQ2qw=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 151\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyEmailIdentity\n&EmailAddress=user%40domain.com\n&Timestamp=2012-05-12T05%3A21%3A58.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyEmailIdentityResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <VerifyEmailIdentityResult/>\n  <ResponseMetadata>\n    <RequestId>47e0ef1a-9bf2-11e1-9279-0100e8cf109a</RequestId>\n  </ResponseMetadata>\n</VerifyEmailIdentityResponse>\n          \n            </queryresponse>\n        </examples>\n    "
+        }
+    },
+    "pagination": {
+        "ListIdentities": {
+            "output_tokens": [
+                "NextToken"
+            ],
+            "input_token": "NextToken",
+            "py_input_token": "next_token"
         }
     },
     "metadata": {

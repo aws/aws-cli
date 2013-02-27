@@ -104,6 +104,34 @@ class TestPagination(unittest.TestCase):
              mock.call(None, NextToken='token2'),
              mock.call(None, NextToken='token3'),])
 
+    def test_more_tokens(self):
+        # Some pagination configs have a 'more_token' key that
+        # indicate whether or not the results are being paginated.
+        self.paginate_config = {
+            'more_results': 'IsTruncated',
+            'output_tokens': ['NextToken'],
+            'py_input_token': 'NextToken',
+        }
+        self.operation.pagination = self.paginate_config
+        self.paginator = Paginator(self.operation)
+        responses = [
+            (None, {'IsTruncated': True, 'NextToken': 'token1'}),
+            (None, {'IsTruncated': True, 'NextToken': 'token2'}),
+            # The first match found wins, so because NextToken is
+            # listed before NextToken2 in the 'output_tokens' config,
+            # 'token3' is chosen over 'token4'.
+            (None, {'IsTruncated': False, 'NextToken': 'token3'}),
+            (None, {'not_next_token': 'foo'}),
+        ]
+        self.operation.call.side_effect = responses
+        list(self.paginator.paginate(None))
+        self.assertEqual(
+            self.operation.call.call_args_list,
+            [mock.call(None),
+             mock.call(None, NextToken='token1'),
+             mock.call(None, NextToken='token2'),])
+
+
 
 class TestPaginatorObjectConstruction(unittest.TestCase):
     def test_pagination_delegates_to_paginator(self):

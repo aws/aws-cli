@@ -31,6 +31,7 @@ class Paginator(object):
         self._pagination_cfg = operation.pagination
         self._output_tokens = self._get_output_tokens(self._pagination_cfg)
         self._input_token = self._pagination_cfg['py_input_token']
+        self._more_results = self._pagination_cfg.get('more_results')
 
     def _get_output_tokens(self, config):
         output = []
@@ -69,6 +70,9 @@ class Paginator(object):
             previous_next_token = next_token
 
     def _get_next_token(self, parsed):
+        if self._more_results is not None:
+            if self._more_results in parsed and not parsed[self._more_results]:
+                return None
         for token in self._output_tokens:
             next_token = token.search(parsed)
             if next_token is not None:

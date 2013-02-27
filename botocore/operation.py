@@ -57,6 +57,14 @@ class Operation(BotoCoreObject):
         return hasattr(self, 'pagination')
 
     def paginate(self, endpoint, **kwargs):
+        """Iterate over the responses of an operation.
+
+        This will return an iterator with each element
+        being a tuple of (``http_response``, ``parsed_response``).
+        If the operation does not paginate, a ``TypeError`` will
+        be raised.  You can check if an operation can be paginated
+        by using the ``can_paginate`` arg.
+        """
         if not self.can_paginate:
             raise TypeError("Operation cannot be paginated: %s" % self)
         paginator = self._paginator_cls(self)

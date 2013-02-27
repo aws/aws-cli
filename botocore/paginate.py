@@ -39,6 +39,18 @@ class Paginator(object):
         return output
 
     def paginate(self, endpoint, **kwargs):
+        """Paginate responses to an operation.
+
+        The responses to some operations are too large for a single response.
+        When this happens, the service will indicate that there are more
+        results in its response.  This method handles the details of how
+        to detect when this happens and how to retrieve more results.
+
+        This method returns an iterator.  Each element in the iterator
+        is the result of an ``Operation.call`` call, so each element is
+        a tuple of (``http_response``, ``parsed_result``).
+
+        """
         current_kwargs = kwargs
         previous_next_token = None
         while True:

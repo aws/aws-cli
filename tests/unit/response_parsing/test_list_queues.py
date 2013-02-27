@@ -52,7 +52,7 @@ class TestListQueuesAttributes(unittest.TestCase):
 
     def test_list_queues(self):
         op = self.service.get_operation('ListQueues')
-        r = botocore.response.Response(op)
+        r = botocore.response.XmlResponse(op)
         r.parse(six.b(xml))
         self.maxDiff = None
         self.assertEqual(r.get_value(), data)

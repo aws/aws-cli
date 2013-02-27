@@ -91,13 +91,9 @@ class QueryEndpoint(Endpoint):
                              data=params, headers={'User-Agent': user_agent})
         prepared_request = self.prepare_request(request)
         http_response = self.http_session.send(prepared_request,
-                                               verify=self.verify)
-        r = botocore.response.Response(operation)
-        http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf-8')
-        logger.debug(body)
-        r.parse(body)
-        return (http_response, r.get_value())
+                                               verify=self.verify,
+                                               stream=operation.is_streaming())
+        return botocore.response.get_response(operation, http_response)
 
 
 class JSONEndpoint(Endpoint):
@@ -132,19 +128,12 @@ class JSONEndpoint(Endpoint):
                                       'Content-Encoding': content_encoding})
         prepared_request = self.prepare_request(request)
         http_response = self.http_session.send(prepared_request,
-                                               verify=self.verify)
-        http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf-8')
-        logger.debug(http_response.headers)
-        logger.debug(body)
-        try:
-            body = json.loads(body)
-        except:
-            pass
-        return (http_response, body)
+                                               verify=self.verify,
+                                               stream=operation.is_streaming())
+        return botocore.response.get_response(operation, http_response)
 
 
-class RestXMLEndpoint(Endpoint):
+class RestEndpoint(Endpoint):
 
     def build_uri(self, operation, params):
         uri = operation.http['uri']
@@ -199,22 +188,17 @@ class RestXMLEndpoint(Endpoint):
                              data=params['payload'])
         prepared_request = self.prepare_request(request)
         http_response = self.http_session.send(prepared_request,
-                                               verify=self.verify)
-        http_response.encoding = 'utf-8'
-        body = http_response.text.encode('utf-8')
-        r = botocore.response.Response(operation)
-        logger.debug(body)
-        if body:
-            r.parse(body)
-        return (http_response, r.get_value())
+                                               verify=self.verify,
+                                               stream=operation.is_streaming())
+        return botocore.response.get_response(operation, http_response)
 
 
 def get_endpoint(service, region_name, endpoint_url):
     service_to_endpoint = {
         'query': QueryEndpoint,
         'json': JSONEndpoint,
-        'rest-xml': RestXMLEndpoint,
-        'rest-json': None,
+        'rest-xml': RestEndpoint,
+        'rest-json': RestEndpoint,
     }
     service_type = service.type
     if service_type not in service_to_endpoint:

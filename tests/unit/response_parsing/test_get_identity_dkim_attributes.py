@@ -59,7 +59,7 @@ class TestGetIdentityDkimAttributes(unittest.TestCase):
 
     def test_get_identity_dkim_attributes(self):
         op = self.service.get_operation('GetIdentityDkimAttributes')
-        r = botocore.response.Response(op)
+        r = botocore.response.XmlResponse(op)
         r.parse(six.b(xml))
         self.assertEqual(r.get_value(), data)
 

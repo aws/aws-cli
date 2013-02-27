@@ -29,10 +29,24 @@ the response data.
 
 """
 import xml.sax
+import json
 import logging
 from botocore import ScalarTypes
 
 logger = logging.getLogger(__name__)
+
+
+class Response(object):
+
+    def __init__(self, operation):
+        self.operation = operation
+        self.value = None
+
+    def parse(self, s):
+        pass
+
+    def get_value(self):
+        return self.value
 
 
 class Element(object):
@@ -97,10 +111,10 @@ class Element(object):
                 self.value[name] = value
 
 
-class Response(xml.sax.ContentHandler):
+class XmlResponse(Response, xml.sax.ContentHandler):
 
     def __init__(self, operation):
-        self.operation = operation
+        Response.__init__(self, operation)
         self.root_element = Element('root', None)
         self.stack = [self.root_element]
         self.current_text = ''
@@ -258,4 +272,59 @@ class Response(xml.sax.ContentHandler):
         self.current_text += content
 
     def parse(self, s):
-        xml.sax.parseString(s, self)
+        if s:
+            xml.sax.parseString(s, self)
+
+
+class JSONResponse(Response):
+
+    def parse(self, s):
+        try:
+            self.value = json.loads(s)
+        except:
+            logger.debug('Error loading JSON response body')
+
+
+class StreamingResponse(Response):
+
+    def __init__(self, operation):
+        Response.__init__(self, operation)
+        self.value = {}
+
+    def parse(self, headers, stream):
+        for member_name in self.operation.output['members']:
+            member_dict = self.operation.output['members'][member_name]
+            if member_dict.get('location') == 'header':
+                header_name = member_dict.get('location_name')
+                if header_name and header_name in headers:
+                    self.value[member_name] = headers[header_name]
+            elif member_dict.get('type') == 'blob':
+                if member_dict.get('payload'):
+                    if member_dict.get('streaming'):
+                        self.value[member_name] = stream
+
+
+def get_response(operation, http_response):
+    encoding = 'utf-8'
+    if http_response.encoding:
+        encoding = http_response.encoding
+    content_type = http_response.headers['content-type']
+    if content_type and ';' in content_type:
+        content_type = content_type.split(';')[0]
+    logger.debug('content-type=%s' % content_type)
+    if operation.is_streaming():
+        streaming_response = StreamingResponse(operation)
+        streaming_response.parse(http_response.headers, http_response.raw)
+        return (http_response, streaming_response.get_value())
+    body = http_response.text.encode(encoding.lower())
+    logger.debug(body)
+    if content_type in ('application/x-amz-json-1.1', 'application/json'):
+        json_response = JSONResponse(operation)
+        json_response.parse(body)
+        return (http_response, json_response.get_value())
+    # We are defaulting to an XML response handler because many query
+    # services send XML error responses but do not include a Content-Type
+    # header.
+    xml_response = XmlResponse(operation)
+    xml_response.parse(body)
+    return (http_response, xml_response.get_value())

@@ -86,7 +86,7 @@ class TestGetQueueAttributes(unittest.TestCase):
 
     def test_get_queue_attributes(self):
         op = self.service.get_operation('GetQueueAttributes')
-        r = botocore.response.Response(op)
+        r = botocore.response.XmlResponse(op)
         r.parse(six.b(xml))
         self.maxDiff = None
         self.assertEqual(r.get_value(), data)

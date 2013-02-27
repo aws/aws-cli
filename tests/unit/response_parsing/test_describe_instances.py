@@ -150,7 +150,7 @@ class TestDescribeInstances(unittest.TestCase):
 
     def test_describe_instances(self):
         op = self.service.get_operation('DescribeInstances')
-        r = botocore.response.Response(op)
+        r = botocore.response.XmlResponse(op)
         r.parse(six.b(xml))
         self.maxDiff = None
         self.assertEqual(r.get_value(), data)

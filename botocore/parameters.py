@@ -78,7 +78,7 @@ class Parameter(BotoCoreObject):
             if self.location == 'uri':
                 built_params['uri_params'][self.name] = value
             elif self.location == 'header':
-                built_params['headers'][self.name] = value
+                built_params['headers'][self.location_name] = value
         else:
             built_params['payload'] = value
 

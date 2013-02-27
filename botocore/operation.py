@@ -82,7 +82,7 @@ class Operation(BotoCoreObject):
 
     def _get_built_params(self):
         d = {}
-        if self.service.type == 'rest-xml':
+        if self.service.type in ('rest-xml', 'rest-json'):
             d['uri_params'] = {}
             d['headers'] = {}
             d['payload'] = None
@@ -110,3 +110,14 @@ class Operation(BotoCoreObject):
             missing_str = ','.join([p.py_name for p in missing])
             raise MissingParametersError(missing=missing_str)
         return built_params
+
+    def is_streaming(self):
+        is_streaming = False
+        if self.output:
+            for member_name in self.output['members']:
+                member_dict = self.output['members'][member_name]
+                if member_dict['type'] == 'blob':
+                    if member_dict.get('payload', False):
+                        if member_dict.get('streaming', False):
+                            is_streaming = True
+        return is_streaming

@@ -32,7 +32,7 @@ setup(
     author_email='garnaat@amazon.com',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
-             'bin/aws_completer', 'bin/zsh_complete.sh'],
+             'bin/aws_completer', 'bin/aws_zsh_complete.sh'],
     packages=packages,
     package_data={'awscli': ['data/*.json']},
     package_dir={'awscli': 'awscli'},

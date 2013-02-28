@@ -244,7 +244,7 @@ class BlobParameter(Parameter):
                 raise ValidationError(value=str(value), type_name='string')
             if not hasattr(self, 'payload') or self.payload is False:
                 # Blobs that are not in the payload should be base64-encoded
-                value = base64.b64encode(six.b(value))
+                value = base64.b64encode(six.b(value)).decode('utf-8')
         return value
 
 

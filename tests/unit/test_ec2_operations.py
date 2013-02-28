@@ -108,6 +108,7 @@ class TestEC2Operations(unittest.TestCase):
 
     def test_run_instances_userdata(self):
         user_data = 'This is a test'
+        b64_user_data = base64.b64encode(six.b(user_data)).decode('utf-8')
         op = self.ec2.get_operation('RunInstances')
         params = op.build_parameters(image_id='img-12345678',
                                      min_count=1, max_count=5,
@@ -115,7 +116,7 @@ class TestEC2Operations(unittest.TestCase):
         result = {'ImageId': 'img-12345678',
                   'MinCount': '1',
                   'MaxCount': '5',
-                  'UserData': base64.b64encode(six.b(user_data))}
+                  'UserData': b64_user_data}
         self.assertEqual(params, result)
 
 

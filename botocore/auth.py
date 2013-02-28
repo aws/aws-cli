@@ -312,7 +312,6 @@ class HmacV1Auth(object):
             found = False
             for key in headers:
                 lk = key.lower()
-                logger.debug('lk=%s, ih=%s' % (lk, ih))
                 if headers[key] != None and lk == ih:
                     hoi.append(headers[key].strip())
                     found = True

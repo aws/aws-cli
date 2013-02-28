@@ -22,6 +22,7 @@
 #
 import logging
 import base64
+import hashlib
 import six
 import dateutil.parser
 from . import BotoCoreObject
@@ -39,6 +40,8 @@ class Parameter(BotoCoreObject):
         self.allow_file = False
         self.min = None
         self.max = None
+        self.payload = False
+        self.streaming = False
         BotoCoreObject.__init__(self, **kwargs)
         self.cli_name = '--' + self.cli_name
         self.handle_subtypes()
@@ -219,12 +222,29 @@ class StringParameter(Parameter):
 
 class BlobParameter(Parameter):
 
+    # I'm not actually sure where this goes.  I'm going to leave it
+    # right here for now, even though I'm not calling it anywhere.
+    def _calculate_md5(self, fp):
+        pos = fp.tell()
+        md5 = hashlib.md5()
+        s = fp.read(BUFFERSIZE)
+        while s:
+            md5.update(s)
+            s = fp.read(BUFFERSIZE)
+        fp.seek(pos)
+        return base64.b64encode(md5.digest())
+
     def validate(self, value):
-        if not isinstance(value, six.string_types):
-            raise ValidationError(value=str(value), type_name='string')
-        if not hasattr(self, 'payload') or self.payload is False:
-            # Blobs that are not in the payload should be base64-encoded
-            value = base64.b64encode(six.b(value))
+        if self.payload and self.streaming:
+            # Streaming blobs should be file-like objects
+            if not hasattr(value, 'read'):
+                raise ValidationError(value=str(value), type_name='blob')
+        else:
+            if not isinstance(value, six.string_types):
+                raise ValidationError(value=str(value), type_name='string')
+            if not hasattr(self, 'payload') or self.payload is False:
+                # Blobs that are not in the payload should be base64-encoded
+                value = base64.b64encode(six.b(value))
         return value
 
 

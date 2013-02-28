@@ -21,6 +21,7 @@
 # IN THE SOFTWARE.
 #
 import logging
+import base64
 import six
 import dateutil.parser
 from . import BotoCoreObject
@@ -216,6 +217,17 @@ class StringParameter(Parameter):
         return value
 
 
+class BlobParameter(Parameter):
+
+    def validate(self, value):
+        if not isinstance(value, six.string_types):
+            raise ValidationError(value=str(value), type_name='string')
+        if not hasattr(self, 'payload') or self.payload is False:
+            # Blobs that are not in the payload should be base64-encoded
+            value = base64.b64encode(six.b(value))
+        return value
+
+
 class ListParameter(Parameter):
 
     def validate(self, value):
@@ -348,7 +360,7 @@ type_map = {
     'timestamp': TimestampParameter,
     'list': ListParameter,
     'string': StringParameter,
-    'blob': StringParameter,
+    'blob': BlobParameter,
     'float': FloatParameter,
     'double': DoubleParameter,
     'integer': IntegerParameter,

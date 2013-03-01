@@ -29,6 +29,8 @@ import botocore.session
 class TestS3Operations(unittest.TestCase):
 
     def setUp(self):
+        os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
+        os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
         self.session = botocore.session.get_session()
         self.s3 = self.session.get_service('s3')
         self.bucket_name = 'foo'

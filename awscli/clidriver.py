@@ -19,6 +19,7 @@ import copy
 import base64
 import six
 import botocore.session
+from botocore.compat import copy_kwargs
 from awscli import EnvironmentVariables, __version__
 from .help import get_help
 from .formatter import get_formatter
@@ -94,7 +95,7 @@ class CLIDriver(object):
                                               add_help=False,
                                               conflict_handler='resolve')
         for option_name in self.cli_data['options']:
-            option_data = copy.copy(self.cli_data['options'][option_name])
+            option_data = copy_kwargs(self.cli_data['options'][option_name])
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
@@ -221,6 +222,15 @@ class CLIDriver(object):
                 if s[0][0] == '[':
                     return json.loads(s[0])
             return [self.unpack_cli_arg(param.members, v) for v in s]
+        elif param.type == 'blob' and param.payload and param.streaming:
+            if isinstance(s, list) and len(s) == 1:
+                file_path = s[0]
+            file_path = os.path.expandvars(file_path)
+            file_path = os.path.expanduser(file_path)
+            if not os.path.isfile(file_path):
+                msg = 'Blob values must be a path to a file.'
+                raise ValueError(msg)
+            return open(file_path, 'rb')
         else:
             if isinstance(s, list):
                 s = s[0]

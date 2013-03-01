@@ -53,7 +53,7 @@ class TestS3Operations(unittest.TestCase):
                    'Content-Language': 'piglatin',
                    'Content-Type': 'text/plain'},
                   'payload': fp,
-                  'uri_params': {u'Bucket': 'foo', u'Key': 'bar'}}
+                  'uri_params': {'Bucket': 'foo', 'Key': 'bar'}}
         self.assertEqual(params, result)
 
 

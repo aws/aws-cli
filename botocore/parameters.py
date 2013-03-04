@@ -82,7 +82,11 @@ class Parameter(BotoCoreObject):
             if self.location == 'uri':
                 built_params['uri_params'][self.name] = value
             elif self.location == 'header':
-                built_params['headers'][self.location_name] = value
+                if hasattr(self, 'location_name'):
+                    key = self.location_name
+                else:
+                    key = self.name
+                built_params['headers'][key] = value
         else:
             built_params['payload'] = value
 

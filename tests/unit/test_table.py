@@ -74,12 +74,14 @@ class TestSection(unittest.TestCase):
         self.section.add_row(['one', 'two', 'three'])
         self.section.add_row(['1234567', '1234567', '1234567'])
         self.assertEqual(self.section.total_width(padding=2), 27)
-        self.assertEqual(self.section.total_width(padding=2, outer_padding=1), 29)
+        self.assertEqual(
+            self.section.total_width(padding=2, outer_padding=1), 29)
 
     def test_title_accounts_for_outer_padding(self):
         self.section.add_row(['a', 'b', 'c'])
         self.section.add_title('123456789')
-        self.assertEqual(self.section.total_width(padding=2, outer_padding=3), 17)
+        self.assertEqual(
+            self.section.total_width(padding=2, outer_padding=3), 17)
 
 
 class TestMultiTable(unittest.TestCase):

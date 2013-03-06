@@ -15,6 +15,15 @@ import os
 import unittest
 import awscli.clidriver
 
+# file is gone in python3, so instead IOBase must be used.
+# Given this test module is the only place that cares about
+# this type check, we do the check directly in this test module.
+try:
+    file_type = file
+except NameError:
+    import io
+    file_type = io.IOBase
+
 
 class TestGetObject(unittest.TestCase):
 
@@ -35,7 +44,7 @@ class TestGetObject(unittest.TestCase):
         params = self.driver.test(cmdline)
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['headers'], headers)
-        self.assertIsInstance(params['payload'], file)
+        self.assertIsInstance(params['payload'], file_type)
 
     def test_headers(self):
         cmdline = self.prefix

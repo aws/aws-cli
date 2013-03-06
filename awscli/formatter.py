@@ -12,12 +12,16 @@
 # language governing permissions and limitations under the License.
 import sys
 import json
+
 import six
+import blessings
+
+from awscli.table import MultiTable, Styler, ColorizedStyler
 
 
 class Formatter(object):
 
-    def __init__(self):
+    def __init__(self, args):
         pass
 
 
@@ -29,120 +33,111 @@ class JSONFormatter(Formatter):
 
 
 class TableFormatter(Formatter):
+    """Pretty print a table from a given response.
 
-    def label(self, s, n):
-        separator = '+' + '-+-'.join(['-' * n]) + '+'
-        format = "%%-%ds" % n
-        pattern = '|' + format + '|'
-        print(separator)
-        print(pattern % s.center(n))
+    The table formatter is able to take any generic response
+    and generate a pretty printed table.  It does this without
+    using the output definition from the model.
 
-    def _output(self, d, label=None):
-        values = []
-        sub_dicts = []
-        sub_lists = []
-        headers = []
-        for key in d:
-            val = d[key]
-            if isinstance(val, dict):
-                sub_dicts.append((key, val))
-            elif isinstance(val, list):
-                sub_lists.append((key, val))
+    """
+    def __init__(self, args, table=None):
+        if args.color == 'auto':
+            self.table = MultiTable(initial_section=False,
+                                    column_separator='|')
+        elif args.color == 'off':
+            # Setting force_styling to None disables any colorized output.
+            terminal = blessings.Terminal(force_styling=None)
+            styler = Styler()
+            self.table = MultiTable(initial_section=False,
+                                    column_separator='|', terminal=terminal,
+                                    styler=styler)
+        elif args.color == 'on':
+            # The configuration here is really to facilitate
+            # "aws ... | less -r" which lets you take the
+            # unpaged output and be able to send it to a pager
+            # unchanged.
+            terminal = blessings.Terminal(force_styling=True)
+            styler = ColorizedStyler(terminal)
+            self.table = MultiTable(initial_section=False,
+                                    column_separator='|', terminal=terminal,
+                                    styler=styler, auto_reformat=True)
+        else:
+            raise ValueError("Unknown color option: %s" % args.color)
+
+    def __call__(self, operation, response, stream=sys.stdout):
+        self._build_table(operation.name, response)
+        try:
+            self.table.render(stream)
+        except IOError:
+            # If they're piping stdout to another process which exits before
+            # we're done writing all of our output, we'll get an error about a
+            # closed pipe which we can safely ignore.
+            pass
+
+
+    def _build_table(self, title, current, indent_level=0):
+        if not current:
+            return
+        self.table.new_section(title, indent_level=indent_level)
+        if isinstance(current, list):
+            if isinstance(current[0], dict):
+                self._build_sub_table_from_list(current, indent_level, title)
             else:
-                values.append(str(val))
-                headers.append(key)
-        lens = [(len(h) + 2) for h in headers]
-        for i in range(len(values)):
-            if len(values[i]) + 2 > lens[i]:
-                lens[i] = len(values[i]) + 2
-        print('Total length=%d' % sum(lens))
-        formats = []
-        hformats = []
-        for i in range(len(values)):
-            formats.append("%%-%ds" % lens[i])
-            hformats.append("%%-%ds" % lens[i])
-        pattern = '|' + '|'.join(formats) + '|'
-        hpattern = '|' + '|'.join(hformats) + '|'
-        separator = '+' + '+'.join(['-' * n for n in lens]) + '+'
-        h = []
-        v = []
-        for i in range(len(headers)):
-            h.append(headers[i].center(lens[i]))
-        if label:
-            self.label(label, (sum(lens) + len(lens) - 1))
-        print(separator)
-        print(hpattern % tuple(h))
-        print(separator)
-        v = []
-        for i in range(len(values)):
-            v.append(values[i].center(lens[i]))
-        print(pattern % tuple(v))
-        print(separator)
-        if sub_dicts:
-            for label, sub_dict in sub_dicts:
-                self._output(sub_dict, label)
-        if sub_lists:
-            for label, sub_list in sub_lists:
-                for item in sub_list:
-                    if isinstance(item, dict):
-                        self._output(item, label)
+                for item in current:
+                    self.table.add_row([item])
+        if isinstance(current, dict):
+            # Render a single row section with keys as header
+            # and the row as the values, unless the value
+            # is a list.
+            self._build_sub_table_from_dict(current, indent_level)
 
-    def _output1(self, l):
-        """
-        Print a list of similar dictionaries.  Headers are extracted
-        from the keys of the first dictionary.
-        """
-        print(l)
-        values = []
-        sub_dicts = []
-        sub_lists = []
-        for d in l:
-            v = []
-            headers = []
-            for key in d:
-                val = d[key]
-                if isinstance(val, dict):
-                    sub_dicts.append(val)
-                elif isinstance(val, list):
-                    sub_lists.append(val)
-                else:
-                    v.append(str(val))
-                    headers.append(key)
-            values.append(v)
-        lens = [(len(h) + 2) for h in headers]
-        for vl in values:
-            for i in range(len(vl)):
-                if len(vl[i]) + 2 > lens[i]:
-                    lens[i] = len(vl[i]) + 2
-        formats = []
-        hformats = []
-        for i in range(len(values[0])):
-            formats.append("%%-%ds" % lens[i])
-            hformats.append("%%-%ds" % lens[i])
-        pattern = '|' + " | ".join(formats) + '|'
-        hpattern = '|' + ' | '.join(hformats) + '|'
-        separator = '+' + '-+-'.join(['-' * n for n in lens]) + '+'
-        h = []
-        v = []
-        for i in range(len(headers)):
-            h.append(headers[i].center(lens[i]))
-        print(separator)
-        print(hpattern % tuple(h))
-        print(separator)
-        for vl in values:
-            v = []
-            for i in range(len(vl)):
-                v.append(vl[i].center(lens[i]))
-            print(pattern % tuple(v))
-            print(separator)
-        if sub_dicts:
-            self._output(sub_dicts)
-        if sub_lists:
-            for sub_list in sub_lists:
-                self._output(sub_list)
+    def _build_sub_table_from_dict(self, current, indent_level):
+        # Render a single row section with keys as header
+        # and the row as the values, unless the value
+        # is a list.
+        headers, more = self._group_scalar_keys(current)
+        if len(headers) == 1:
+            # Special casing if a dict has a single scalar key/value pair.
+            self.table.add_row([headers[0], current[headers[0]]])
+        elif headers:
+            self.table.add_row_header(headers)
+            self.table.add_row([current[k] for k in headers])
+        for remaining in more:
+            self._build_table(remaining, current[remaining],
+                              indent_level=indent_level + 1)
 
-    def __call__(self, operation, response):
-        self._output(response)
+    def _build_sub_table_from_list(self, current, indent_level, title):
+        headers, more = self._group_scalar_keys(current[0])
+        self.table.add_row_header(headers)
+        first = True
+        for element in current:
+            if not first and more:
+                self.table.new_section(title,
+                                       indent_level=indent_level)
+                self.table.add_row_header(headers)
+            first = False
+            self.table.add_row([element[header] for header in headers])
+            for remaining in more:
+                self._build_table(remaining, element[remaining],
+                                  indent_level=indent_level + 1)
+
+    def _scalar_type(self, element):
+        return not isinstance(element, (list, dict))
+
+    def _group_scalar_keys(self, current):
+        # Given a dict, separate the keys into those whose values are
+        # scalar, and those whose values aren't.  Return two lists,
+        # one is the scalar value keys, the second is the remaining keys.
+        more = []
+        headers = []
+        for element in current:
+            if self._scalar_type(current[element]):
+                headers.append(element)
+            else:
+                more.append(element)
+        headers.sort()
+        more.sort()
+        return headers, more
 
 
 class TextFormatter(Formatter):
@@ -177,9 +172,11 @@ class TextFormatter(Formatter):
         self._output(response)
 
 
-def get_formatter(format_type):
+def get_formatter(format_type, args):
     if format_type == 'json':
-        return JSONFormatter()
-    if format_type == 'text':
-        return TextFormatter()
+        return JSONFormatter(args)
+    elif format_type == 'text':
+        return TextFormatter(args)
+    elif format_type == 'table':
+        return TableFormatter(args)
     return None

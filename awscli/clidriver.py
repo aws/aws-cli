@@ -319,7 +319,7 @@ class CLIDriver(object):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args(cmdline.split()[1:])
         self.service = self.session.get_service(self.args.service_name)
-        self.formatter = get_formatter(self.args.output)
+        self.formatter = get_formatter(self.args.output, self.args)
         args = self.create_service_parser(remaining)
         params = {}
         self.build_call_parameters(args, params)
@@ -337,7 +337,7 @@ class CLIDriver(object):
                 from six.moves import http_client
                 http_client.HTTPConnection.debuglevel = 2
                 self.session.set_debug_logger()
-            self.formatter = get_formatter(self.args.output)
+            self.formatter = get_formatter(self.args.output, self.args)
             self.service = self.session.get_service(self.args.service_name)
             args = self.create_service_parser(remaining)
             self.call(args)

@@ -37,5 +37,6 @@ EnvironmentVariables = {
     'profile': (None, 'AWS_DEFAULT_PROFILE', None),
     'region': ('region', 'AWS_DEFAULT_REGION', None),
     'data_path': ('data_path', 'AWS_DATA_PATH', None),
-    'config_file': (None, 'AWS_CONFIG_FILE', None)
+    'config_file': (None, 'AWS_CONFIG_FILE', None),
+    'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json'),
     }

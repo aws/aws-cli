@@ -140,6 +140,9 @@ class Styler(object):
     def style_row_element(self, text):
         return text
 
+    def style_indentation_char(self, text):
+        return text
+
 
 class ColorizedStyler(Styler):
     def __init__(self, terminal):
@@ -153,6 +156,9 @@ class ColorizedStyler(Styler):
 
     def style_row_element(self, text):
         return self._terminal.bright_blue(text)
+
+    def style_indentation_char(self, text):
+        return self._terminal.bright_yellow(text)
 
 
 class MultiTable(object):
@@ -229,8 +235,8 @@ class MultiTable(object):
 
     def _render_section(self, section, max_width, stream):
         stream = IndentedStream(stream, section.indent_level,
-                                self._terminal.bright_yellow('|'),
-                                self._terminal.bright_yellow('|'))
+                                self._styler.style_indentation_char('|'),
+                                self._styler.style_indentation_char('|'))
         max_width -= (section.indent_level * 2)
         self._render_title(section, max_width, stream)
         self._render_column_titles(section, max_width, stream)

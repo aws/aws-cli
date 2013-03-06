@@ -40,7 +40,7 @@ class TableFormatter(Formatter):
     using the output definition from the model.
 
     """
-    def __init__(self, args):
+    def __init__(self, args, table=None):
         if args.color == 'auto':
             self.table = MultiTable(initial_section=False,
                                     column_separator='|')

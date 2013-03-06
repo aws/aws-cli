@@ -14,6 +14,7 @@ import unittest
 import six
 
 from awscli.formatter import TableFormatter
+from awscli.table import MultiTable, Styler
 
 SIMPLE_LIST = {
     "QueueUrls": [
@@ -46,44 +47,33 @@ SIMPLE_LIST_TABLE = """\
 |+-----------+-----------------------------------------+|
 """
 
-SIMPLE_DICT = {
-    "Attributes": {
-        "ApproximateNumberOfMessagesNotVisible": "0",
-        "MessageRetentionPeriod": "345600",
-        "ApproximateNumberOfMessagesDelayed": "0",
-        "MaximumMessageSize": "65536",
-        "CreatedTimestamp": "1351044153",
-        "ApproximateNumberOfMessages": "0",
-        "DelaySeconds": "0",
-        "VisibilityTimeout": "45",
-        "LastModifiedTimestamp": "1351044214",
-        "QueueArn": "arn:aws:sqs:us-east-1:1:test1"},
-        "ResponseMetadata": {
-            "RequestId": "0c8d2786-b7b4-56e2-a823-6e80a404d6fd"}
+SIMPLE_DICT = {"Attributes":
+  {"a": "0",
+   "b": "345600",
+   "c": "0",
+   "d": "65536",
+   "e": "1351044153",
+   "f": "0",
+   "ResponseMetadata": {"RequestId": "0c8d2786-b7b4-56e2-a823-6e80a404d6fd"}}
 }
 
+
 SIMPLE_DICT_TABLE = """\
-------------------------------------------------------------------------------
-|                                OperationName                               |
-+----------------------------------------------------------------------------+
-||                                Attributes                                ||
-|+----------------------------------------+---------------------------------+|
-||  ApproximateNumberOfMessages           |  0                              ||
-||  ApproximateNumberOfMessagesDelayed    |  0                              ||
-||  ApproximateNumberOfMessagesNotVisible |  0                              ||
-||  CreatedTimestamp                      |  1351044153                     ||
-||  DelaySeconds                          |  0                              ||
-||  LastModifiedTimestamp                 |  1351044214                     ||
-||  MaximumMessageSize                    |  65536                          ||
-||  MessageRetentionPeriod                |  345600                         ||
-||  QueueArn                              |  arn:aws:sqs:us-east-1:1:test1  ||
-||  VisibilityTimeout                     |  45                             ||
-|+----------------------------------------+---------------------------------+|
-||                             ResponseMetadata                             ||
-|+-----------------+--------------------------------------------------------+|
-||  RequestId      |  0c8d2786-b7b4-56e2-a823-6e80a404d6fd                  ||
-|+-----------------+--------------------------------------------------------+|
+-----------------------------------------------------------
+|                      OperationName                      |
++---------------------------------------------------------+
+||                      Attributes                       ||
+|+---+-----------+-----+----------+----------------+-----+|
+|| a |     b     |  c  |    d     |       e        |  f  ||
+|+---+-----------+-----+----------+----------------+-----+|
+||  0|  345600   |  0  |  65536   |  1351044153    |  0  ||
+|+---+-----------+-----+----------+----------------+-----+|
+|||                  ResponseMetadata                   |||
+||+-----------+-----------------------------------------+||
+|||  RequestId|  0c8d2786-b7b4-56e2-a823-6e80a404d6fd   |||
+||+-----------+-----------------------------------------+||
 """
+
 
 LIST_OF_DICTS = {
     "OrderableDBInstanceOptions": [
@@ -197,7 +187,12 @@ class TestTableFormatter(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
+        styler = Styler()
+        self.table = MultiTable(initial_section=False,
+                                column_separator='|', styler=styler,
+                                auto_reformat=False)
         self.formatter = TableFormatter(Object(color='off'))
+        self.formatter.table = self.table
         self.stream = six.StringIO()
 
     def assert_data_renders_to(self, data, table):

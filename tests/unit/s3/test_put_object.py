@@ -12,7 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import unittest
+from tests import unittest
 import awscli.clidriver
 
 # file is gone in python3, so instead IOBase must be used.

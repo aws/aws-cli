@@ -35,6 +35,9 @@ class BaseStyle(object):
     def bold(self, s):
         return self.start_bold() + s + self.end_bold()
 
+    def ref(self, link, title=None):
+        self.bold(link)
+
     def h2(self, s):
         return self.bold(s)
 
@@ -89,7 +92,7 @@ class BaseStyle(object):
         self.doc.do_translation = False
         return self.end_italics()
 
-    def start_li(self, attrs):
+    def start_li(self, attrs=None):
         return ''
 
     def end_li(self):
@@ -147,3 +150,187 @@ class CLIStyle(BaseStyle):
     def end_p(self):
         para = self.doc.get_current_paragraph()
         para.lines_after = 2
+
+
+class ReSTStyle(object):
+
+    def __init__(self, doc, indent_width=2, **kwargs):
+        self.doc = doc
+        self.indent_width = indent_width
+        self.kwargs = kwargs
+        self.keep_data = True
+        self.do_p = True
+
+    def spaces(self, indent):
+        return ' ' * (indent * self.indent_width)
+
+    def start_bold(self, attrs=None):
+        return '**'
+
+    def end_bold(self):
+        return '** '
+
+    def start_b(self, attrs=None):
+        self.doc.do_translation = True
+        return self.start_bold(attrs)
+
+    def end_b(self):
+        self.doc.do_translation = False
+        return '** '
+
+    def bold(self, s):
+        retval = ''
+        if s:
+            retval = self.start_bold() + s + self.end_bold()
+        return retval
+
+    def ref(self, title, link=None):
+        if link is None:
+            link = title
+        return ':doc:`%s <%s>`' % (title, link)
+
+    def h1(self, s):
+        para = self.doc.add_paragraph()
+        para = self.doc.get_current_paragraph()
+        para.write(s)
+        para = self.doc.add_paragraph()
+        para.write('*' * len(s))
+        para = self.doc.add_paragraph()
+        return ''
+
+    def h2(self, s):
+        para = self.doc.add_paragraph()
+        para = self.doc.get_current_paragraph()
+        para.write(s)
+        para = self.doc.add_paragraph()
+        para.write('=' * len(s))
+        para = self.doc.add_paragraph()
+        return ''
+
+    def h3(self, s):
+        para = self.doc.add_paragraph()
+        para = self.doc.get_current_paragraph()
+        para.write(s)
+        para = self.doc.add_paragraph()
+        para.write('-' * len(s))
+        para = self.doc.add_paragraph()
+        return ''
+
+    def start_underline(self, attrs=None):
+        return ''
+
+    def end_underline(self):
+        return ''
+
+    def underline(self, s):
+        retval = ''
+        if s:
+            retval = self.start_underline() + s + self.end_underline()
+        return retval
+
+    def start_italics(self, attrs=None):
+        return '*'
+
+    def end_italics(self):
+        return '*'
+
+    def italics(self, s):
+        retval = ''
+        if s:
+            retval = self.start_italics() + s + self.end_italics()
+        return retval
+
+    def start_p(self, attrs=None):
+        if self.do_p:
+            self.doc.add_paragraph()
+
+    def end_p(self):
+        if self.do_p:
+            self.doc.add_paragraph()
+
+    def start_code(self, attrs=None):
+        self.doc.do_translation = True
+        s = '``'
+        para = self.doc.get_current_paragraph()
+        if para.current_char and not para.current_char.isspace():
+            s = ' ' + s
+        return s
+
+    def end_code(self):
+        self.doc.do_translation = False
+        return '`` '
+
+    def code(self, s):
+        retval = ''
+        if s:
+            retval = self.start_code() + s + self.end_code()
+        return retval
+
+    def start_note(self, attrs=None):
+        para = self.doc.add_paragraph()
+        para.write('.. note::')
+        self.doc.indent()
+        para = self.doc.add_paragraph()
+        para = self.doc.add_paragraph()
+
+    def end_note(self):
+        self.doc.dedent()
+        self.doc.add_paragraph()
+
+    def start_important(self, attrs=None):
+        para = self.doc.add_paragraph()
+        para.write('.. warning::')
+        self.doc.indent()
+        para = self.doc.add_paragraph()
+        para = self.doc.add_paragraph()
+
+    def end_important(self):
+        self.doc.dedent()
+        self.doc.add_paragraph()
+
+    def start_a(self, attrs=None):
+        self.doc.do_translation = True
+        self.doc.get_current_paragraph().write(' ')
+        return self.start_underline()
+
+    def end_a(self):
+        self.doc.do_translation = False
+        self.doc.get_current_paragraph().write(' ')
+        return self.end_underline()
+
+    def start_i(self, attrs=None):
+        self.doc.do_translation = True
+        return self.start_italics()
+
+    def end_i(self):
+        self.doc.do_translation = False
+        return self.end_italics()
+
+    def start_li(self, attrs=None):
+        para = self.doc.add_paragraph()
+        para.subsequent_indent = para.initial_indent + 1
+        para.write('* ')
+        para.current_char = None
+        self.do_p = False
+
+    def end_li(self):
+        self.do_p = True
+        return ''
+
+    def start_ul(self, attrs=None):
+        self.doc.add_paragraph()
+
+    def end_ul(self):
+        self.doc.add_paragraph()
+
+    def start_examples(self, attrs=None):
+        self.doc.keep_data = False
+
+    def end_examples(self):
+        self.doc.keep_data = True
+
+    def start_fullname(self, attrs=None):
+        self.doc.keep_data = False
+
+    def end_fullname(self):
+        self.doc.keep_data = True

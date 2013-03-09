@@ -1,0 +1,60 @@
+
+authorize-cluster-security-group-ingress
+****************************************
+
+
+DESCRIPTION
+===========
+
+Adds an inbound (ingress) rule to an security group. Depending on
+whether the application accessing your cluster is running on the
+Internet or an EC2 instance, you can authorize inbound access to
+either a Classless Interdomain Routing (CIDR) IP address range or an
+EC2 security group. You can add as many as 20 ingress rules to an
+security group.
+
+Note: The EC2 security group must be defined in the AWS region where the
+  cluster resides.
+
+For an overview of CIDR blocks, see the Wikipedia article on Classless
+Inter-Domain Routing .
+
+You must also associate the security group with a cluster so that
+clients running on these IP addresses or the EC2 instance are
+authorized to connect to the cluster. For information about managing
+security groups, go to Working with Security Groups in the *Amazon
+Redshift Management Guide* .
+
+
+SYNOPSIS
+========
+
+   aws redshift authorize-cluster-security-group-ingress
+     --cluster-security-group-name <value>
+     [--ec2-security-group-name <value>]
+     [--ec2-security-group-owner-id <value>]
+     [--cidrip <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--cluster-security-group-name"  (string)
+   The name of the security group to which the ingress rule is added.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--ec2-security-group-name"  (string)
+   The EC2 security group to be added the security group.
+
+"--ec2-security-group-owner-id"  (string)
+   The AWS account number of the owner of the security group specified
+   by the *--ec2-security-group-name* parameter. The AWS Access Key ID
+   is not an acceptable value.
+
+   Example: "111122223333"
+
+"--cidrip"  (string)
+   The IP range to be added the security group.

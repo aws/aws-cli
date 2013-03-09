@@ -1,0 +1,56 @@
+
+delete-message-batch
+********************
+
+
+DESCRIPTION
+===========
+
+This is a batch version of  delete-message . It takes multiple receipt
+handles and deletes each one of the messages. The result of the delete
+operation on each message is reported individually in the response.
+
+
+SYNOPSIS
+========
+
+   aws sqs delete-message-batch
+     --queue-url <value>
+     --entries <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--queue-url"  (string)
+   The URL of the SQS queue to take action on.
+
+"--entries"  (list)
+   A list of receipt handles for the messages to be deleted.
+
+      (structure)
+         Encloses a receipt handle and an identifier for it.
+
+         "receipt_handle"  (string)
+            A receipt handle.
+
+         "id"  (string)
+            An identifier for this particular receipt handle. This is
+            used to communicate the result. Note that the "Id" s of a
+            batch request need to be unique within the request.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "receipt_handle": "string",
+          "id": "string"
+        }
+        ...
+      ]
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

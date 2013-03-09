@@ -1,0 +1,106 @@
+
+put-bucket-lifecycle
+********************
+
+
+DESCRIPTION
+===========
+
+Sets lifecycle configuration for your bucket. If a lifecycle
+configuration exists, it replaces it.
+
+
+SYNOPSIS
+========
+
+   aws s3 put-bucket-lifecycle
+     --bucket <value>
+     [--lifecycle-configuration <value>]
+     [--content-md5 <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--bucket"  (string)
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--lifecycle-configuration"  (structure)
+   "rules"  (list)
+      (structure)
+         "status"  (string)If 'Enabled', the rule is currently being
+         applied. If 'Disabled', the rule is not currently being
+         applied.
+
+         "prefix"  (string)Prefix identifying one or more objects to
+         which the rule applies.
+
+         "transition"  (structure)
+            "date"  (timestamp)Indicates at what date the object is to
+            be moved or deleted. Should be in GMT ISO 8601 Format.
+
+            "days"  (integer)Indicates the lifetime, in days, of the
+            objects that are subject to the rule. The value must be a
+            non-zero positive integer.
+
+            "storage_class"  (string)The class of storage used to
+            store the object.
+
+         "expiration"  (structure)
+            "date"  (timestamp)Indicates at what date the object is to
+            be moved or deleted. Should be in GMT ISO 8601 Format.
+
+            "days"  (integer)Indicates the lifetime, in days, of the
+            objects that are subject to the rule. The value must be a
+            non-zero positive integer.
+
+         "id"  (string)Unique identifier for the rule. The value
+         cannot be longer than 255 characters.
+
+   *Parameter Syntax*
+
+      {
+        "rules":
+        [
+          {
+            "status": "Enabled"|"Disabled",
+            "prefix": "string",
+            "transition": {
+              {
+                "date": timestamp,
+                "days": integer,
+                "storage_class": "STANDARD"|"REDUCED_REDUDANCY"|"GLACIER"
+              },
+            "expiration": {
+              {
+                "date": timestamp,
+                "days": integer
+              },
+            "id": "string"
+          }
+          ...
+        ]
+          {
+            "status": "Enabled"|"Disabled",
+            "prefix": "string",
+            "transition": {
+              {
+                "date": timestamp,
+                "days": integer,
+                "storage_class": "STANDARD"|"REDUCED_REDUDANCY"|"GLACIER"
+              },
+            "expiration": {
+              {
+                "date": timestamp,
+                "days": integer
+              },
+            "id": "string"
+          }
+          ...
+        ]
+      }
+
+"--content-md5"  (string)

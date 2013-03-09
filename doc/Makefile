@@ -7,7 +7,8 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
 SOURCEDIR     = source
-MANBUILDDIR   = ../man/man1
+MANBUILDDIR   = ../doc/man/man1
+TEXTBUILDDIR  = ../doc/text
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -114,9 +115,9 @@ latexpdf:
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 text:
-	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(BUILDDIR)/text
+	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(TEXTBUILDDIR)
 	@echo
-	@echo "Build finished. The text files are in $(BUILDDIR)/text."
+	@echo "Build finished. The text files are in $(TEXTBUILDDIR)."
 
 man:
 	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(MANBUILDDIR)
@@ -157,4 +158,4 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-all: html man
+all: html man text

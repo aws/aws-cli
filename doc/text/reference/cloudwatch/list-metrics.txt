@@ -1,0 +1,75 @@
+
+list-metrics
+************
+
+
+DESCRIPTION
+===========
+
+Returns a list of valid metrics stored for the AWS account owner.
+Returned metrics can be used with "get-metric-statistics" to obtain
+statistical data for a given metric.
+
+Note: Up to 500 results are returned for any one call. To retrieve further
+  results, use returned "--next-token" values with subsequent "list-
+  metrics" operations.
+
+Note: If you create a metric with the  put-metric-data action, allow up to
+  fifteen minutes for the metric to appear in calls to the "list-
+  metrics" action.
+
+
+SYNOPSIS
+========
+
+   aws cloudwatch list-metrics
+     [--next-token <value>]
+     [--namespace <value>]
+     [--dimensions <value>]
+     [--metric-name <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--next-token"  (string)
+   The token returned by a previous call to indicate that there is
+   more data available.
+
+"--namespace"  (string)
+   The namespace to filter against.
+
+"--dimensions"  (list)
+   A list of dimensions to filter against.
+
+      (structure)
+         The "DimensionFilter" data type is used to filter  list-
+         metrics results.
+
+         "name"  (string)
+            The dimension name to be matched.
+
+         "value"  (string)
+            The value of the dimension to be matched.
+
+            Note: Specifying a "Name" without specifying a "Value" returns
+              all values associated with that "Name" .
+
+   *Parameter Syntax*
+
+      [
+        {
+          "name": "string",
+          "value": "string"
+        }
+        ...
+      ]
+
+"--metric-name"  (string)
+   The name of the metric to filter against.

@@ -1,0 +1,161 @@
+
+query-objects
+*************
+
+
+DESCRIPTION
+===========
+
+Queries a pipeline for the names of objects that match a specified set
+of conditions.
+
+The objects returned by QueryResults are paginated and then filtered
+by the value you set for query. This means the action may return an
+empty result set with a value set for marker. If "HasMoreResults" is
+set to "True" , you should continue to call QueryObjects, passing in
+the returned value for marker, until "HasMoreResults" returns "False"
+.
+
+
+SYNOPSIS
+========
+
+   aws datapipeline query-objects
+     --pipeline-id <value>
+     --sphere <value>
+     [--marker <value>]
+     [--query <value>]
+     [--limit <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--pipeline-id"  (string)
+   Identifier of the pipeline to be queried for object names.
+
+"--sphere"  (string)
+   Specifies whether the --query applies to components or instances.
+   Allowable values: COMPONENT, INSTANCE, ATTEMPT.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--marker"  (string)
+   The starting point for the results to be returned. The first time
+   you call QueryObjects, this value should be empty. As long as the
+   action returns "HasMoreResults" as "True" , you can call query-
+   objects again and pass the --marker value from the response to
+   retrieve the next set of results.
+
+"--query"  (structure)
+   Query that defines the objects to be returned. The Query object can
+   contain a maximum of ten selectors. The conditions in the --query
+   are limited to top-level String fields in the object. These filters
+   can be applied to components, instances, and attempts.
+
+   "selectors"  (list)
+      List of selectors that define the query. An object must satisfy
+      all of the selectors to match the query.
+
+         (structure)
+            A comparision that is used to determine whether a --query
+            should return this object.
+
+            "operator"  (structure)
+               "values"  (list of string)
+                  The value that the actual field value will be
+                  compared with.
+
+               "type"  (string)
+                  The logical operation to be performed: equal (EQ),
+                  equal reference (REF_EQ), less than or equal (LE),
+                  greater than or equal (GE), or between (BETWEEN).
+                  Equal reference (REF_EQ) can be used only with
+                  reference fields. The other comparison types can be
+                  used only with String fields. The comparison types
+                  you can use apply only to certain object fields, as
+                  detailed below.
+
+                  The comparison operators EQ and REF_EQ act on the
+                  following fields:
+
+                  * name
+
+                  * @sphere
+
+                  * parent
+
+                  * @componentParent
+
+                  * @instanceParent
+
+                  * @status
+
+                  * @scheduledStartTime
+
+                  * @scheduledEndTime
+
+                  * @actualStartTime
+
+                  * @actualEndTime
+
+                  The comparison operators GE, LE, and BETWEEN act on
+                  the following fields:
+
+                  * @scheduledStartTime
+
+                  * @scheduledEndTime
+
+                  * @actualStartTime
+
+                  * @actualEndTime
+
+                  Note that fields beginning with the at sign (@) are
+                  read-only and set by the web service. When you name
+                  fields, you should choose names containing only
+                  alpha-numeric values, as symbols may be reserved by
+                  AWS Data Pipeline. A best practice for user-defined
+                  fields that you add to a pipeline is to prefix their
+                  name with the string "my".
+
+            "field_name"  (string)
+               The name of the field that the operator will be applied
+               to. The field name is the "key" portion of the field
+               definition in the pipeline definition syntax that is
+               used by the AWS Data Pipeline API. If the field is not
+               set on the object, the condition fails.
+
+   *Parameter Syntax*
+
+      {
+        "selectors":
+        [
+          {
+            "operator": {
+              {
+                "values": "string", ...]
+                ["string", ...],
+                "type": "EQ"|"REF_EQ"|"LE"|"GE"|"BETWEEN"
+              },
+            "field_name": "string"
+          }
+          ...
+        ]
+          {
+            "operator": {
+              {
+                "values": "string", ...]
+                ["string", ...],
+                "type": "EQ"|"REF_EQ"|"LE"|"GE"|"BETWEEN"
+              },
+            "field_name": "string"
+          }
+          ...
+        ]
+      }
+
+"--limit"  (integer)
+   Specifies the maximum number of object names that query-objects
+   will return in a single call. The default value is 100.

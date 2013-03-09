@@ -1,0 +1,78 @@
+
+modify-option-group
+*******************
+
+
+DESCRIPTION
+===========
+
+Modifies an existing Option Group.
+
+
+SYNOPSIS
+========
+
+   aws rds modify-option-group
+     --option-group-name <value>
+     [--options-to-remove <value>]
+     [--options-to-include <value>]
+     [--apply-immediately ]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--option-group-name"  (string)
+   The name of the option group to be modified.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--options-to-remove"  (list of string)
+   Options in this list are removed from the Option Group.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--options-to-include"  (list)
+   Options in this list are added to the Option Group or, if already
+   present, the specified configuration is used to update the existing
+   configuration.
+
+      (structure)
+         A list of all available options
+
+         "vpc_security_group_memberships"  (list of string)
+            A list of VpcSecurityGroupMemebrship name strings used for
+            this option.
+
+         "option_name"  (string)
+            The configuration of options to include in a group.
+
+         "port"  (integer)
+            The optional port for the option.
+
+         "db_security_group_memberships"  (list of string)
+            A list of DBSecurityGroupMemebrship name strings used for
+            this option.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "vpc_security_group_memberships": "string", ...]
+          ["string", ...],
+          "option_name": "string",
+          "port": integer,
+          "db_security_group_memberships": "string", ...]
+          ["string", ...]
+        }
+        ...
+      ]
+
+"--apply-immediately"  (boolean)
+   Indicates whether the changes should be applied immediately, or
+   during the next maintenance window for each instance associated
+   with the Option Group.

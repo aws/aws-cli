@@ -1,0 +1,98 @@
+
+put-bucket-logging
+******************
+
+
+DESCRIPTION
+===========
+
+Set the logging parameters for a bucket and to specify permissions for
+who can view and modify the logging parameters. To set the logging
+status of a bucket, you must be the bucket owner.
+
+
+SYNOPSIS
+========
+
+   aws s3 put-bucket-logging
+     --bucket-logging-status <value>
+     --bucket <value>
+     [--content-md5 <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--bucket-logging-status"  (structure)
+   "logging_enabled"  (structure)
+      "target_prefix"  (string)This element lets you specify a prefix
+      for the keys that the log files will be stored under.
+
+      "target_bucket"  (string)Specifies the bucket where you want
+      Amazon S3 to store server access logs. You can have your logs
+      delivered to any bucket that you own, including the same bucket
+      that is being logged. You can also configure multiple buckets to
+      deliver their logs to the same target bucket. In this case you
+      should choose a different TargetPrefix for each source bucket so
+      that the delivered log files can be distinguished by key.
+
+      "target_grants"  (list)
+         (structure)
+            "grantee"  (structure)
+               "email_address"  (string)Email address of the grantee.
+
+               "type"  (string)Type of grantee
+
+               "display_name"  (string)Screen name of the grantee.
+
+               "id"  (string)The canonical user ID of the grantee.
+
+               "uri"  (string)URI of the grantee group.
+
+            "permission"  (string)
+
+   *Parameter Syntax*
+
+      {
+        "logging_enabled": {
+          {
+            "target_prefix": "string",
+            "target_bucket": "string",
+            "target_grants":
+            [
+              {
+                "grantee": {
+                  {
+                    "email_address": "string",
+                    "type": "CanonicalUser"|"AmazonCustomerByEmail"|"Group",
+                    "display_name": "string",
+                    "id": "string",
+                    "uri": "string"
+                  },
+                "permission": "string"
+              }
+              ...
+            ]
+              {
+                "grantee": {
+                  {
+                    "email_address": "string",
+                    "type": "CanonicalUser"|"AmazonCustomerByEmail"|"Group",
+                    "display_name": "string",
+                    "id": "string",
+                    "uri": "string"
+                  },
+                "permission": "string"
+              }
+              ...
+            ]
+          }
+      }
+
+"--bucket"  (string)
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--content-md5"  (string)

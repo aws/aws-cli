@@ -1,0 +1,406 @@
+
+create-preset
+*************
+
+
+DESCRIPTION
+===========
+
+To create a preset, send a POST request to the "/2012-09-25/presets"
+resource.
+
+Warning: Elastic Transcoder checks the settings that you specify to ensure
+  that they meet Elastic Transcoder requirements and to determine
+  whether they comply with H.264 standards. If your settings are not
+  valid for Elastic Transcoder, Elastic Transcoder returns an HTTP 400
+  response ( "ValidationException" ) and does not create the preset.
+  If the settings are valid for Elastic Transcoder but aren't strictly
+  compliant with the H.264 standard, Elastic Transcoder creates the
+  preset and returns a warning message in the response. This helps you
+  determine whether your settings comply with the H.264 standard while
+  giving you greater flexibility with respect to the video that
+  Elastic Transcoder produces.
+
+Elastic Transcoder uses the H.264 video-compression format. For more
+information, see the International Telecommunication Union publication
+*Recommendation ITU-T H.264: Advanced video coding for generic
+audiovisual services* .
+
+
+SYNOPSIS
+========
+
+   aws elastictranscoder create-preset
+     --container <value>
+     --thumbnails <value>
+     --video <value>
+     --audio <value>
+     --name <value>
+     [--description <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--container"  (string)
+   The container type for the output file. This value must be "mp4" .
+
+"--thumbnails"  (structure)
+   A section of the request body that specifies the thumbnail
+   parameters, if any.
+
+   "aspect_ratio"  (string)
+      The aspect ratio of thumbnails. Valid values include:
+
+      "auto" , "1:1" , "4:3" , "3:2" , "16:9"
+
+      If you specify "auto" , Elastic Transcoder tries to preserve the
+      aspect ratio of the video in the output file.
+
+   "interval"  (string)
+      The number of seconds between thumbnails. Specify an integer
+      value.
+
+   "resolution"  (string)
+      The width and height of thumbnail files in pixels. Specify a
+      value in the format "*width* `` x ``*height* `` where both
+      values are even integers. The values cannot exceed the width and
+      height that you specified in the ``Video:Resolution" object.
+
+   "format"  (string)
+      The format of thumbnails, if any. Valid values are "jpg" and
+      "png" .
+
+      You specify whether you want Elastic Transcoder to create
+      thumbnails when you create a job.
+
+   *Parameter Syntax*
+
+      {
+        "aspect_ratio": "string",
+        "interval": "string",
+        "resolution": "string",
+        "format": "string"
+      }
+
+"--video"  (structure)
+   A section of the request body that specifies the video parameters.
+
+   "resolution"  (string)
+      The width and height of the video in the output file, in pixels.
+      Valid values are "auto" and *width* x *height* :
+
+      * "auto" : Elastic Transcoder attempts to preserve the width and
+        height of the input file, subject to the following rules.
+
+      * >>``<<*width* x *height* `` : The width and height of the
+        output video in pixels.
+
+      Note the following about specifying the width and height:
+
+      * The width must be an even integer between 128 and 4096,
+        inclusive.
+
+      * The height must be an even integer between 96 and 3072,
+        inclusive.
+
+      * If you specify a resolution that is less than the resolution
+        of the input file, Elastic Transcoder rescales the output file
+        to the lower resolution.
+
+      * If you specify a resolution that is greater than the
+        resolution of the input file, Elastic Transcoder rescales the
+        output to the higher resolution.
+
+      * We recommend that you specify a resolution for which the
+        product of width and height is less than or equal to the
+        applicable value in the following list (*List - Max width x
+        height value* ):
+
+      * 1 - 25344
+
+      * 1b - 25344
+
+      * 1.1 - 101376
+
+      * 1.2 - 101376
+
+      * 1.3 - 101376
+
+      * 2 - 101376
+
+      * 2.1 - 202752
+
+      * 2.2 - 404720
+
+      * 3 - 404720
+
+      * 3.1 - 921600
+
+      * 3.2 - 1310720
+
+      * 4 - 2097152
+
+      * 4.1 - 2097152
+
+   "frame_rate"  (string)
+      The frames per second for the video stream in the output file.
+      Valid values include:
+
+      "auto" , "10" , "15" , "23.97" , "24" , "25" , "29.97" , "30" ,
+      "60"
+
+      If you specify "auto" , Elastic Transcoder uses the detected
+      frame rate of the input source. If you specify a frame rate, we
+      recommend that you perform the following calculation:
+
+      "Frame rate = maximum recommended decoding speed in luma
+      samples/second / (width in pixels * height in pixels)"
+
+      where:
+
+      * *width in pixels* and *height in pixels* represent the
+        Resolution of the output video.
+
+      * *maximum recommended decoding speed in Luma samples/second* is
+        less than or equal to the maximum value listed in the
+        following table, based on the value that you specified for
+        Level.
+
+      The maximum recommended decoding speed in Luma samples/second
+      for each level is described in the following list (*Level -
+      Decoding speed* ):
+
+      * 1 - 380160
+
+      * 1b - 380160
+
+      * 1.1 - 76800
+
+      * 1.2 - 1536000
+
+      * 1.3 - 3041280
+
+      * 2 - 3041280
+
+      * 2.1 - 5068800
+
+      * 2.2 - 5184000
+
+      * 3 - 10368000
+
+      * 3.1 - 27648000
+
+      * 3.2 - 55296000
+
+      * 4 - 62914560
+
+      * 4.1 - 62914560
+
+   "keyframes_max_dist"  (string)
+      The maximum number of frames between key frames. Key frames are
+      fully encoded frames; the frames between key frames are encoded
+      based, in part, on the content of the key frames. The value is
+      an integer formatted as a string; valid values are between 1 and
+      100000, inclusive. A higher value results in higher compression
+      but may also discernibly decrease video quality.
+
+   "fixed_gop"  (string)
+      Whether to use a fixed value for "FixedGOP" . Valid values are
+      "true" and "false" :
+
+      * "true" : Elastic Transcoder uses the value of
+        "KeyframesMaxDist" for the distance between key frames (the
+        number of frames in a group of pictures, or GOP).
+
+      * "false" : The distance between key frames can vary.
+
+   "codec"  (string)
+      The video codec for the output file. This value must be "H.264"
+      .
+
+   "codec_options"  (map)
+      **Profile**
+
+      The H.264 profile that you want to use for the output file.
+      Elastic Transcoder supports the following profiles:
+
+      * "baseline" : The profile most commonly used for
+        videoconferencing and for mobile applications.
+
+      * "main" : The profile used for standard-definition digital TV
+        broadcasts.
+
+      * "high" : The profile used for high-definition digital TV
+        broadcasts and for Blu-ray discs.
+
+      **Level**
+
+      The H.264 level that you want to use for the output file.
+      Elastic Transcoder supports the following levels:
+
+      "1" , "1b" , "1.1" , "1.2" , "1.3" , "2" , "2.1" , "2.2" , "3" ,
+      "3.1" , "3.2" , "4" , "4.1"
+
+      **MaxReferenceFrames**
+
+      The maximum number of previously decoded frames to use as a
+      reference for decoding future frames. Valid values are integers
+      0 through 16, but we recommend that you not use a value greater
+      than the following:
+
+      "Min(Floor(Maximum decoded picture buffer in macroblocks * 256 /
+      (Width in pixels * Height in pixels)), 16)"
+
+      where *Width in pixels* and *Height in pixels* represent the
+      resolution of the output video and *Maximum decoded picture
+      buffer in macroblocks* depends on the value of the "Level"
+      object. (A macroblock is a block of pixels measuring 16x16.)
+
+      Note that the calculation for maximum decoded picture buffer,
+      which is similar to the calculation for maximum reference
+      frames, uses macroblocks instead of pixels for the width and
+      height of the video.
+
+      To determine the value of maximum decoded picture buffer in
+      macroblocks, see the following list (*Level* - *Maximum decoded
+      picture buffer* ):
+
+      * 1 - 396
+
+      * 1b - 396
+
+      * 1.1 - 900
+
+      * 1.2 - 2376
+
+      * 1.3 - 2376
+
+      * 2 - 2376
+
+      * 2.1 - 4752
+
+      * 2.2 - 8100
+
+      * 3 - 8100
+
+      * 3.1 - 18000
+
+      * 3.2 - 20480
+
+      * 4 - 32768
+
+      * 4.1 - 32768
+
+   "aspect_ratio"  (string)
+      The display aspect ratio of the video in the output file. Valid
+      values include:
+
+      "auto" , "1:1" , "4:3" , "3:2" , "16:9"
+
+      If you specify "auto" , Elastic Transcoder tries to preserve the
+      aspect ratio of the input file.
+
+      If you specify an aspect ratio for the output file that differs
+      from aspect ratio of the input file, Elastic Transcoder adds
+      pillarboxing (black bars on the sides) or letterboxing (black
+      bars on the top and bottom) to maintain the aspect ratio of the
+      active region of the video.
+
+   "bit_rate"  (string)
+      The bit rate of the video stream in the output file, in
+      kilobits/second. Valid values depend on the values of "Level"
+      and "Profile" . We recommend that you specify a value less than
+      or equal to the maximum H.264-compliant value listed in the
+      following list for your level and profile:
+
+      *Level - Maximum video bit rate in kilobits/second (baseline and
+      main Profile) : maximum video bit rate in kilobits/second (high
+      Profile)*
+
+      * 1 - 64 : 80
+
+      * 1b - 128 : 160
+
+      * 1.1 - 192 : 240
+
+      * 1.2 - 384 : 480
+
+      * 1.3 - 768 : 960
+
+      * 2 - 2000 : 2500
+
+      * 3 - 10000 : 12500
+
+      * 3.1 - 14000 : 17500
+
+      * 3.2 - 20000 : 25000
+
+      * 4 - 20000 : 25000
+
+      * 4.1 - 50000 : 62500
+
+   *Parameter Syntax*
+
+      {
+        "resolution": "string",
+        "frame_rate": "string",
+        "keyframes_max_dist": "string",
+        "fixed_gop": "string",
+        "codec": "string",
+        "codec_options":
+        {
+          "string": "string"
+          ...
+        },
+        "aspect_ratio": "string",
+        "bit_rate": "string"
+      }
+
+"--audio"  (structure)
+   A section of the request body that specifies the audio parameters
+
+   "channels"  (string)
+      The number of audio channels in the output file. Valid values
+      include:
+
+      "auto" , "0" , "1" , "2"
+
+      If you specify "auto" , Elastic Transcoder automatically detects
+      the number of channels in the input file.
+
+   "sample_rate"  (string)
+      The sample rate of the audio stream in the output file, in
+      Hertz. Valid values include:
+
+      "auto" , "22050" , "32000" , "44100" , "48000" , "96000"
+
+      If you specify "auto" , Elastic Transcoder automatically detects
+      the sample rate.
+
+   "codec"  (string)
+      The audio codec for the output file. This value must be "AAC" .
+
+   "bit_rate"  (string)
+      The bit rate of the audio stream in the output file, in
+      kilobits/second. Enter an integer between 64 and 320, inclusive.
+
+   *Parameter Syntax*
+
+      {
+        "channels": "string",
+        "sample_rate": "string",
+        "codec": "string",
+        "bit_rate": "string"
+      }
+
+"--name"  (string)
+   The name of the preset. We recommend that the name be unique within
+   the AWS account, but uniqueness is not enforced.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--description"  (string)
+   A description of the preset.

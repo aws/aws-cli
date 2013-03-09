@@ -1,0 +1,74 @@
+
+bundle-instance
+***************
+
+
+DESCRIPTION
+===========
+
+The bundle-instance operation request that an instance is bundled the
+next time it boots. The bundling process creates a new image from a
+running instance and stores the AMI data in S3. Once bundled, the
+image must be registered in the normal way using the register-image
+API.
+
+
+SYNOPSIS
+========
+
+   aws ec2 bundle-instance
+     --instance-id <value>
+     --storage <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--instance-id"  (string)
+   The ID of the instance to bundle.
+
+"--storage"  (structure)
+
+   "s3"  (structure)
+      The details of S3 storage for bundling a Windows instance.
+
+      "upload_policy_signature"  (string)
+         The signature of the Base64 encoded JSON document.
+
+      "prefix"  (string)
+         The prefix to use when storing the AMI in S3.
+
+      "aws_access_key_id"  (string)
+         The Access Key ID of the owner of the Amazon S3 bucket.
+
+      "bucket"  (string)
+         The bucket in which to store the AMI. You can specify a
+         bucket that you already own or a new bucket that Amazon EC2
+         creates on your behalf.
+
+         If you specify a bucket that belongs to someone else, Amazon
+         EC2 returns an error.
+
+      "upload_policy"  (string)
+         A Base64-encoded Amazon S3 upload policy that gives Amazon
+         EC2 permission to upload items into Amazon S3 on the user's
+         behalf.
+
+   *Parameter Syntax*
+
+      {
+        "s3": {
+          {
+            "upload_policy_signature": "string",
+            "prefix": "string",
+            "aws_access_key_id": "string",
+            "bucket": "string",
+            "upload_policy": "string"
+          }
+      }
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

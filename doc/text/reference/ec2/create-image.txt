@@ -1,0 +1,101 @@
+
+create-image
+************
+
+
+DESCRIPTION
+===========
+
+Creates an Amazon EBS-backed AMI from a "running" or "stopped"
+instance. AMIs that use an Amazon EBS root device boot faster than
+AMIs that use instance stores. They can be up to 1 TiB in size, use
+storage that persists on instance failure, and can be stopped and
+started.
+
+
+SYNOPSIS
+========
+
+   aws ec2 create-image
+     --instance-id <value>
+     --name <value>
+     [--block-device-mappings <value>]
+     [--no-reboot ]
+     [--description <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--instance-id"  (string)
+   The ID of the instance from which to create the new image.
+
+"--name"  (string)
+   The name for the new AMI being created.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--block-device-mappings"  (list)
+      (structure)
+         The BlockDeviceMappingItemType data type.
+
+         "device_name"  (string)
+            Specifies the device name (e.g., "/dev/sdh" ).
+
+         "virtual_name"  (string)
+            Specifies the virtual device name.
+
+         "no_device"  (string)
+            Specifies the device name to suppress during instance
+            launch.
+
+         "ebs"  (structure)
+            Specifies parameters used to automatically setup Amazon
+            EBS volumes when the instance is launched.
+
+            "delete_on_termination"  (boolean)
+               Specifies whether the Amazon EBS volume is deleted on
+               instance termination.
+
+            "snapshot_id"  (string)
+               The ID of the snapshot from which the volume will be
+               created.
+
+            "volume_size"  (integer)
+               The size of the volume, in gigabytes.
+
+            "volume_type"  (string)
+
+            "iops"  (integer)
+
+   *Parameter Syntax*
+
+      [
+        {
+          "device_name": "string",
+          "virtual_name": "string",
+          "no_device": "string",
+          "ebs": {
+            {
+              "delete_on_termination": true|false,
+              "snapshot_id": "string",
+              "volume_size": integer,
+              "volume_type": "standard"|"io1",
+              "iops": integer
+            }
+        }
+        ...
+      ]
+
+"--no-reboot"  (boolean)
+   By default this property is set to "false" , which means Amazon EC2
+   attempts to cleanly shut down the instance before image creation
+   and reboots the instance afterwards. When set to true, Amazon EC2
+   will not shut down the instance before creating the image. When
+   this option is used, file system integrity on the created image
+   cannot be guaranteed.
+
+"--description"  (string)
+   The description for the new AMI being created.

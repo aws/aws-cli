@@ -1,0 +1,72 @@
+
+describe-workflow-type
+**********************
+
+
+DESCRIPTION
+===========
+
+Returns information about the specified *workflow type* . This
+includes configuration settings specified when the type was registered
+and other information such as creation date, current status, etc.
+
+**Access Control**
+
+You can use IAM policies to control this action's access to Amazon SWF
+resources as follows:
+
+* Use a "Resource" element with the --domain name to limit the action
+  to only specified domains.
+
+* Use an "Action" element to allow or deny permission to call this
+  action.
+
+* Constrain the following parameters by using a "Condition" element
+  with the appropriate keys.
+
+* "workflowType.name" : String constraint. The key is
+  "swf:workflowType.name" .
+
+* "workflowType.version" : String constraint. The key is
+  "swf:workflowType.version" .
+
+If the caller does not have sufficient permissions to invoke the
+action, or the parameter values fall outside the specified
+constraints, the action fails by throwing "OperationNotPermitted" .
+For details and example IAM policies, see Using IAM to Manage Access
+to Amazon SWF Workflows .
+
+
+SYNOPSIS
+========
+
+   aws swf describe-workflow-type
+     --domain <value>
+     --workflow-type <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--domain"  (string)
+   The name of the --domain in which this workflow type is registered.
+
+"--workflow-type"  (structure)
+   The workflow type to describe.
+
+   "version"  (string)
+
+   "name"  (string)
+
+   *Parameter Syntax*
+
+      {
+        "version": "string",
+        "name": "string"
+      }
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

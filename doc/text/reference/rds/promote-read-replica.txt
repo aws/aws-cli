@@ -1,0 +1,76 @@
+
+promote-read-replica
+********************
+
+
+DESCRIPTION
+===========
+
+Promotes a Read Replica DB Instance to a standalone DB Instance.
+
+
+SYNOPSIS
+========
+
+   aws rds promote-read-replica
+     --db-instance-identifier <value>
+     [--preferred-backup-window <value>]
+     [--backup-retention-period <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--db-instance-identifier"  (string)
+   The DB Instance identifier. This value is stored as a lowercase
+   string.
+
+   Constraints:
+
+   * Must be the identifier for an existing Read Replica DB Instance
+
+   * Must contain from 1 to 63 alphanumeric characters or hyphens
+
+   * First character must be a letter
+
+   * Cannot end with a hyphen or contain two consecutive hyphens
+
+   Example: mydbinstance
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--preferred-backup-window"  (string)
+   The daily time range during which automated backups are created if
+   automated backups are enabled, using the "--backup-retention-
+   period" parameter.
+
+   Default: A 30-minute window selected at random from an 8-hour block
+   of time per region. The following list shows the time blocks for
+   each region from which the default backup windows are assigned.
+
+   * **US-East (Northern Virginia) Region:** 03:00-11:00 UTC
+
+   * **US-West (Northern California) Region:** 06:00-14:00 UTC
+
+   * **EU (Ireland) Region:** 22:00-06:00 UTC
+
+   * **Asia Pacific (Singapore) Region:** 14:00-22:00 UTC
+
+   * >>**<<Asia Pacific (Tokyo) Region: ** 17:00-03:00 UTC
+
+   Constraints: Must be in the format "hh24:mi-hh24:mi" . Times should
+   be Universal Time Coordinated (UTC). Must not conflict with the
+   preferred maintenance window. Must be at least 30 minutes.
+
+"--backup-retention-period"  (integer)
+   The number of days to retain automated backups. Setting this
+   parameter to a positive number enables backups. Setting this
+   parameter to 0 disables automated backups.
+
+   Default: 1
+
+   Constraints:
+
+   * Must be a value from 0 to 8

@@ -1,0 +1,85 @@
+
+describe-internet-gateways
+**************************
+
+
+DESCRIPTION
+===========
+
+Gives you information about your Internet gateways. You can filter the
+results to return information only about Internet gateways that match
+criteria you specify. For example, you could get information only
+about gateways with particular tags. The Internet gateway must match
+at least one of the specified values for it to be included in the
+results.
+
+You can specify multiple filters (e.g., the Internet gateway is
+attached to a particular VPC and is tagged with a particular value).
+The result includes information for a particular Internet gateway only
+if the gateway matches all your filters. If there's no match, no
+special message is returned; the response is simply empty.
+
+You can use wildcards with the filter values: an asterisk matches zero
+or more characters, and "?" matches exactly one character. You can
+escape special characters using a backslash before the character. For
+example, a value of "\*amazon\?\\" searches for the literal string
+"*amazon?\" .
+
+
+SYNOPSIS
+========
+
+   aws ec2 describe-internet-gateways
+     [--internet-gateway-ids <value>]
+     [--filters <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--internet-gateway-ids"  (list of string)
+   One or more Internet gateway IDs.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--filters"  (list)
+   A list of filters used to match properties for Internet Gateways.
+   For a complete reference to the available filter keys for this
+   operation, see the Amazon EC2 API reference .
+
+      (structure)
+         A filter used to limit results when describing tags. Multiple
+         values can be specified per filter. A tag must match at least
+         one of the specified values for it to be returned from an
+         operation.
+
+         Wildcards can be included in filter values; "*" specifies
+         that zero or more characters must match, and "?" specifies
+         that exactly one character must match. Use a backslash to
+         escape special characters. For example, a filter value of
+         "\*amazon\?\\" specifies the literal string "*amazon?\" .
+
+         "values"  (list of string)
+            Contains one or more values for the filter.
+
+         "name"  (string)
+            Specifies the name of the filter.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "values": "string", ...]
+          ["string", ...],
+          "name": "string"
+        }
+        ...
+      ]

@@ -1,0 +1,104 @@
+
+put-pipeline-definition
+***********************
+
+
+DESCRIPTION
+===========
+
+Adds tasks, schedules, and preconditions that control the behavior of
+the pipeline. You can use put-pipeline-definition to populate a new
+pipeline or to update an existing pipeline that has not yet been
+activated.
+
+put-pipeline-definition also validates the configuration as it adds it
+to the pipeline. Changes to the pipeline are saved unless one of the
+following three validation errors exists in the pipeline. * An object
+is missing a name or identifier field. * A string or reference field
+is empty. * The number of objects in the pipeline exceeds the maximum
+allowed objects.
+
+Pipeline object definitions are passed to the put-pipeline-definition
+action and returned by the  get-pipeline-definition action.
+
+
+SYNOPSIS
+========
+
+   aws datapipeline put-pipeline-definition
+     --pipeline-objects <value>
+     --pipeline-id <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--pipeline-objects"  (list)
+   The objects that define the pipeline. These will overwrite the
+   existing pipeline definition.
+
+      (structure)
+         Contains information about a pipeline object. This can be a
+         logical, physical, or physical attempt pipeline object. The
+         complete set of components of a pipeline defines the
+         pipeline.
+
+         "fields"  (list)
+            Key-value pairs that define the properties of the object.
+
+               (structure)
+                  A key-value pair that describes a property of a
+                  pipeline object. The value is specified as either a
+                  string value (StringValue) or a reference to another
+                  object (RefValue) but not as both.
+
+                  "string_value"  (string)
+                     The field value, expressed as a String.
+
+                  "ref_value"  (string)
+                     The field value, expressed as the identifier of
+                     another object.
+
+                  "key"  (string)
+                     The field identifier.
+
+         "id"  (string)
+            Identifier of the object.
+
+         "name"  (string)
+            Name of the object.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "fields":
+          [
+            {
+              "string_value": "string",
+              "ref_value": "string",
+              "key": "string"
+            }
+            ...
+          ]
+            {
+              "string_value": "string",
+              "ref_value": "string",
+              "key": "string"
+            }
+            ...
+          ],
+          "id": "string",
+          "name": "string"
+        }
+        ...
+      ]
+
+"--pipeline-id"  (string)
+   The identifier of the pipeline to be configured.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

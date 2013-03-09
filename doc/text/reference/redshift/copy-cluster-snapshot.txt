@@ -1,0 +1,59 @@
+
+copy-cluster-snapshot
+*********************
+
+
+DESCRIPTION
+===========
+
+Copies the specified automated cluster snapshot to a new manual
+cluster snapshot. The source must be an automated snapshot and it must
+be in the available state.
+
+When you delete a cluster, Amazon Redshift deletes any automated
+snapshots of the cluster. Also, when the retention period of the
+snapshot expires, Amazon Redshift automatically deletes it. If you
+want to keep an automated snapshot for a longer period, you can make a
+manual copy of the snapshot. Manual snapshots are retained until you
+delete them.
+
+
+SYNOPSIS
+========
+
+   aws redshift copy-cluster-snapshot
+     --source-snapshot-identifier <value>
+     --target-snapshot-identifier <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--source-snapshot-identifier"  (string)
+   The identifier for the source snapshot.
+
+   Constraints:
+
+   * Must be the identifier for a valid automated snapshot whose state
+     is "available".
+
+"--target-snapshot-identifier"  (string)
+   The identifier given to the new manual snapshot.
+
+   Constraints:
+
+   * Cannot be null, empty, or blank.
+
+   * Must contain from 1 to 255 alphanumeric characters or hyphens.
+
+   * First character must be a letter.
+
+   * Cannot end with a hyphen or contain two consecutive hyphens.
+
+   * Must be unique for the AWS account that is making the request.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

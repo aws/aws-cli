@@ -1,0 +1,83 @@
+
+configure-health-check
+**********************
+
+
+DESCRIPTION
+===========
+
+Enables the client to define an application healthcheck for the
+instances.
+
+
+SYNOPSIS
+========
+
+   aws elb configure-health-check
+     --health-check <value>
+     --load-balancer-name <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--health-check"  (structure)
+   A structure containing the configuration information for the new
+   healthcheck.
+
+   "healthy_threshold"  (integer)
+      Specifies the number of consecutive health probe successes
+      required before moving the instance to the *Healthy* state.
+
+   "interval"  (integer)
+      Specifies the approximate interval, in seconds, between health
+      checks of an individual instance.
+
+   "target"  (string)
+      Specifies the instance being checked. The protocol is either
+      TCP, HTTP, HTTPS, or SSL. The range of valid ports is one (1)
+      through 65535.
+
+      Note: TCP is the default, specified as a TCP: port pair, for example
+        "TCP:5000". In this case a healthcheck simply attempts to open
+        a TCP connection to the instance on the specified port.
+        Failure to connect within the configured timeout is considered
+        unhealthy.SSL is also specified as SSL: port pair, for
+        example, SSL:5000.For HTTP or HTTPS protocol, the situation is
+        different. You have to include a ping path in the string. HTTP
+        is specified as a HTTP:port;/;PathToPing; grouping, for
+        example "HTTP:80/weather/us/wa/seattle". In this case, a HTTP
+        GET request is issued to the instance on the given port and
+        path. Any answer other than "200 OK" within the timeout period
+        is considered unhealthy.The total length of the HTTP ping
+        target needs to be 1024 16-bit Unicode characters or less.
+
+   "timeout"  (integer)
+      Specifies the amount of time, in seconds, during which no
+      response means a failed health probe.
+
+      Note: This value must be less than the *Interval* value.
+
+   "unhealthy_threshold"  (integer)
+      Specifies the number of consecutive health probe failures
+      required before moving the instance to the *Unhealthy* state.
+
+   *Parameter Syntax*
+
+      {
+        "healthy_threshold": integer,
+        "interval": integer,
+        "target": "string",
+        "timeout": integer,
+        "unhealthy_threshold": integer
+      }
+
+"--load-balancer-name"  (string)
+   The mnemonic name associated with the LoadBalancer. This name must
+   be unique within the client AWS account.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

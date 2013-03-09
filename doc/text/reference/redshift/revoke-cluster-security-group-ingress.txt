@@ -1,0 +1,53 @@
+
+revoke-cluster-security-group-ingress
+*************************************
+
+
+DESCRIPTION
+===========
+
+Revokes an ingress rule in an security group for a previously
+authorized IP range or Amazon EC2 security group. To add an ingress
+rule, see authorize-cluster-security-group-ingress .
+
+
+SYNOPSIS
+========
+
+   aws redshift revoke-cluster-security-group-ingress
+     --cluster-security-group-name <value>
+     [--ec2-security-group-name <value>]
+     [--ec2-security-group-owner-id <value>]
+     [--cidrip <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--cluster-security-group-name"  (string)
+   The name of the security Group from which to revoke the ingress
+   rule.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--ec2-security-group-name"  (string)
+   The name of the EC2 Security Group whose access is to be revoked.
+   If "--ec2-security-group-name" is specified, "--ec2-security-group-
+   owner-id" must also be provided and "--cidrip" cannot be provided.
+
+"--ec2-security-group-owner-id"  (string)
+   The AWS account number of the owner of the security group specified
+   in the "--ec2-security-group-name" parameter. The AWS access key ID
+   is not an acceptable value. If "--ec2-security-group-owner-id" is
+   specified, "--ec2-security-group-name" must also be provided. and "
+   --cidrip" cannot be provided.
+
+   Example: "111122223333"
+
+"--cidrip"  (string)
+   The IP range for which to revoke access. This range must be a valid
+   Classless Inter-Domain Routing (CIDR) block of IP addresses. If "--
+   cidrip" is specified, "--ec2-security-group-name" and "--ec2
+   -security-group-owner-id" cannot be provided.

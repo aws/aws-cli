@@ -1,0 +1,118 @@
+
+get-metric-statistics
+*********************
+
+
+DESCRIPTION
+===========
+
+Gets statistics for the specified metric.
+
+Note: The maximum number of data points returned from a single "get-
+  metric-statistics" request is 1,440. If a request is made that
+  generates more than 1,440 data points, Amazon CloudWatch returns an
+  error. In such a case, alter the request by narrowing the specified
+  time range or increasing the specified period. Alternatively, make
+  multiple requests across adjacent time ranges.
+
+Amazon CloudWatch aggregates data points based on the length of the
+"period" that you specify. For example, if you request statistics with
+a one-minute granularity, Amazon CloudWatch aggregates data points
+with time stamps that fall within the same one-minute period. In such
+a case, the data points queried can greatly outnumber the data points
+returned.
+
+Note: The maximum number of data points that can be queried is 50,850;
+  whereas the maximum number of data points returned is 1,440.
+
+The following examples show various statistics allowed by the data
+point query maximum of 50,850 when you call "get-metric-statistics" on
+Amazon EC2 instances with detailed (one-minute) monitoring enabled:
+
+* --statistics for up to 400 instances for a span of one hour
+
+* --statistics for up to 35 instances over a span of 24 hours
+
+* --statistics for up to 2 instances over a span of 2 weeks
+
+
+SYNOPSIS
+========
+
+   aws cloudwatch get-metric-statistics
+     --statistics <value>
+     --namespace <value>
+     --period <value>
+     --start-time <value>
+     --end-time <value>
+     --metric-name <value>
+     [--dimensions <value>]
+     [--unit <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--statistics"  (list of string)
+   The metric statistics to return.
+
+   *Parameter Syntax*
+
+      ["SampleCount"|"Average"|"Sum"|"Minimum"|"Maximum", ...]
+
+"--namespace"  (string)
+   The namespace of the metric.
+
+"--period"  (integer)
+   The granularity, in seconds, of the returned datapoints. "--period"
+   must be at least 60 seconds and must be a multiple of 60. The
+   default value is 60.
+
+"--start-time"  (timestamp)
+   The time stamp to use for determining the first datapoint to
+   return. The value specified is inclusive; results include
+   datapoints with the time stamp specified.
+
+   Note: The specified start time is rounded down to the nearest value.
+     Datapoints are returned for start times up to two weeks in the
+     past. Specified start times that are more than two weeks in the
+     past will not return datapoints for metrics that are older than
+     two weeks.
+
+"--end-time"  (timestamp)
+   The time stamp to use for determining the last datapoint to return.
+   The value specified is exclusive; results will include datapoints
+   up to the time stamp specified.
+
+"--metric-name"  (string)
+   The name of the metric.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--dimensions"  (list)
+   A list of dimensions describing qualities of the metric.
+
+      (structure)
+         The "Dimension" data type further expands on the identity of
+         a metric using a Name, Value pair.
+
+         "name"  (string)
+            The name of the dimension.
+
+         "value"  (string)
+            The value representing the dimension measurement
+
+   *Parameter Syntax*
+
+      [
+        {
+          "name": "string",
+          "value": "string"
+        }
+        ...
+      ]
+
+"--unit"  (string)
+   The unit for the metric.

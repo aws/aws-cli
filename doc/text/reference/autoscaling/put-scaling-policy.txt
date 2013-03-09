@@ -1,0 +1,65 @@
+
+put-scaling-policy
+******************
+
+
+DESCRIPTION
+===========
+
+Creates or updates a policy for an Auto Scaling group. To update an
+existing policy, use the existing policy name and set the parameter(s)
+you want to change. Any existing parameter not changed in an update to
+an existing policy is not changed in this update request.
+
+
+SYNOPSIS
+========
+
+   aws autoscaling put-scaling-policy
+     --policy-name <value>
+     --auto-scaling-group-name <value>
+     --adjustment-type <value>
+     --scaling-adjustment <value>
+     [--min-adjustment-step <value>]
+     [--cooldown <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--policy-name"  (string)
+   The name of the policy you want to create or update.
+
+"--auto-scaling-group-name"  (string)
+   The name or ARN of the Auto Scaling group.
+
+"--adjustment-type"  (string)
+   Specifies whether the "--scaling-adjustment" is an absolute number
+   or a percentage of the current capacity. Valid values are
+   "ChangeInCapacity" , "ExactCapacity" , and
+   "PercentChangeInCapacity" .
+
+"--scaling-adjustment"  (integer)
+   The number of instances by which to scale. "--adjustment-type"
+   determines the interpretation of this number (e.g., as an absolute
+   number or as a percentage of the existing Auto Scaling group size).
+   A positive increment adds to the current capacity and a negative
+   value removes from the current capacity.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--min-adjustment-step"  (integer)
+   Used with "--adjustment-type" with the value
+   "PercentChangeInCapacity" , the scaling policy changes the
+   "DesiredCapacity" of the Auto Scaling group by at least the number
+   of instances specified in the value.
+
+   You will get a "ValidationError" if you use "--min-adjustment-step"
+   on a policy with an "--adjustment-type" other than
+   "PercentChangeInCapacity" .
+
+"--cooldown"  (integer)
+   The amount of time, in seconds, after a scaling activity completes
+   before any further trigger-related scaling activities can start.

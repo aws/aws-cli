@@ -1,0 +1,56 @@
+
+create-app-cookie-stickiness-policy
+***********************************
+
+
+DESCRIPTION
+===========
+
+Generates a stickiness policy with sticky session lifetimes that
+follow that of an application-generated cookie. This policy can be
+associated only with HTTP/HTTPS listeners.
+
+This policy is similar to the policy created by
+CreateLBCookieStickinessPolicy, except that the lifetime of the
+special Elastic Load Balancing cookie follows the lifetime of the
+application-generated cookie specified in the policy configuration.
+The LoadBalancer only inserts a new stickiness cookie when the
+application response includes a new application cookie.
+
+If the application cookie is explicitly removed or expires, the
+session stops being sticky until a new application cookie is issued.
+
+Note: An application client must receive and send two cookies: the
+  application-generated cookie and the special Elastic Load Balancing
+  cookie named "AWSELB" . This is the default behavior for many common
+  web browsers.
+
+
+SYNOPSIS
+========
+
+   aws elb create-app-cookie-stickiness-policy
+     --policy-name <value>
+     --cookie-name <value>
+     --load-balancer-name <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--policy-name"  (string)
+   The name of the policy being created. The name must be unique
+   within the set of policies for this LoadBalancer.
+
+"--cookie-name"  (string)
+   Name of the application cookie used for stickiness.
+
+"--load-balancer-name"  (string)
+   The name associated with the LoadBalancer. The name must be unique
+   within the client AWS account.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

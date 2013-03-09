@@ -1,0 +1,58 @@
+
+test-role
+*********
+
+
+DESCRIPTION
+===========
+
+To test the IAM role that's used by Elastic Transcoder to create the
+pipeline, send a POST request to the "/2012-09-25/roleTests" resource.
+
+The "test-role" action lets you determine whether the IAM role you are
+using has sufficient permissions to let Elastic Transcoder perform
+tasks associated with the transcoding process. The action attempts to
+assume the specified IAM role, checks read access to the input and
+output buckets, and tries to send a test notification to Amazon SNS
+topics that you specify.
+
+
+SYNOPSIS
+========
+
+   aws elastictranscoder test-role
+     --output-bucket <value>
+     --topics <value>
+     --role <value>
+     --input-bucket <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--output-bucket"  (string)
+   The Amazon S3 bucket that Elastic Transcoder will write transcoded
+   media files to. The action attempts to read from this bucket.
+
+"--topics"  (list of string)
+   The ARNs of one or more Amazon Simple Notification Service (Amazon
+   SNS) topics that you want the action to send a test notification
+   to.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--role"  (string)
+   The IAM Amazon Resource Name (ARN) for the role that you want
+   Elastic Transcoder to test.
+
+"--input-bucket"  (string)
+   The Amazon S3 bucket that contains media files to be transcoded.
+   The action attempts to read from this bucket.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

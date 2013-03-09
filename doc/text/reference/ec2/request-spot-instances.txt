@@ -1,0 +1,317 @@
+
+request-spot-instances
+**********************
+
+
+DESCRIPTION
+===========
+
+Creates a Spot Instance request.
+
+Spot Instances are instances that Amazon EC2 starts on your behalf
+when the maximum price that you specify exceeds the current Spot
+Price. Amazon EC2 periodically sets the Spot Price based on available
+Spot Instance capacity and current spot instance requests.
+
+For conceptual information about Spot Instances, refer to the Amazon
+Elastic Compute Cloud Developer Guide  or Amazon Elastic Compute Cloud
+User Guide.
+
+
+SYNOPSIS
+========
+
+   aws ec2 request-spot-instances
+     --spot-price <value>
+     [--instance-count <value>]
+     [--valid-until <value>]
+     [--launch-group <value>]
+     [--availability-zone-group <value>]
+     [--launch-specification <value>]
+     [--valid-from <value>]
+     [--type <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--spot-price"  (string)
+   Specifies the maximum hourly price for any Spot Instance launched
+   to fulfill the request.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--instance-count"  (integer)
+   Specifies the maximum number of Spot Instances to launch.
+
+"--valid-until"  (timestamp)
+   End date of the request.
+
+   If this is a one-time request, the request remains active until all
+   instances launch, the request is canceled, or this date is reached.
+   If the request is persistent, it remains active until it is
+   canceled or this date and time is reached.
+
+"--launch-group"  (string)
+   Specifies the instance launch group. Launch groups are Spot
+   Instances that launch and terminate together.
+
+"--availability-zone-group"  (string)
+   Specifies the Availability Zone group.
+
+   When specifying the same Availability Zone group for all Spot
+   Instance requests, all Spot Instances are launched in the same
+   Availability Zone.
+
+"--launch-specification"  (structure)
+   Specifies additional launch instance information.
+
+   "user_data"  (string)
+      Optional data, specific to a user's application, to provide in
+      the launch request. All instances that collectively comprise the
+      launch request have access to this data. User data is never
+      returned through API responses.
+
+   "placement"  (structure)
+      Defines a placement item.
+
+      "group_name"  (string)
+         The name of the  PlacementGroup in which an Amazon EC2
+         instance runs. Placement groups are primarily used for
+         launching High Performance Computing instances in the same
+         group to ensure fast connection speeds.
+
+      "availability_zone"  (string)
+         The availability zone in which an Amazon EC2 instance runs.
+
+   "ebs_optimized"  (boolean)
+
+   "image_id"  (string)
+      The AMI ID.
+
+   "subnet_id"  (string)
+      Specifies the Amazon VPC subnet ID within which to launch the
+      instance(s) for Amazon Virtual Private Cloud.
+
+   "block_device_mappings"  (list)
+      Specifies how block devices are exposed to the instance. Each
+      mapping is made up of a virtualName and a deviceName.
+
+         (structure)
+            The BlockDeviceMappingItemType data type.
+
+            "device_name"  (string)
+               Specifies the device name (e.g., "/dev/sdh" ).
+
+            "virtual_name"  (string)
+               Specifies the virtual device name.
+
+            "no_device"  (string)
+               Specifies the device name to suppress during instance
+               launch.
+
+            "ebs"  (structure)
+               Specifies parameters used to automatically setup Amazon
+               EBS volumes when the instance is launched.
+
+               "delete_on_termination"  (boolean)
+                  Specifies whether the Amazon EBS volume is deleted
+                  on instance termination.
+
+               "snapshot_id"  (string)
+                  The ID of the snapshot from which the volume will be
+                  created.
+
+               "volume_size"  (integer)
+                  The size of the volume, in gigabytes.
+
+               "volume_type"  (string)
+
+               "iops"  (integer)
+
+   "key_name"  (string)
+      The name of the key pair.
+
+   "security_groups"  (list of string)
+
+   "security_group_ids"  (list of string)
+
+   "kernel_id"  (string)
+      Specifies the ID of the kernel to select.
+
+   "ramdisk_id"  (string)
+      Specifies the ID of the RAM disk to select. Some kernels require
+      additional drivers at launch. Check the kernel requirements for
+      information on whether or not you need to specify a RAM disk and
+      search for the kernel ID.
+
+   "iam_instance_profile"  (structure)
+      "name"  (string)
+
+      "arn"  (string)
+
+   "monitoring_enabled"  (boolean)
+      Enables monitoring for the instance.
+
+   "instance_type"  (string)
+      Specifies the instance type.
+
+   "addressing_type"  (string)
+      Deprecated.
+
+   "network_interfaces"  (list)
+      (structure)
+         "device_index"  (integer)
+
+         "description"  (string)
+
+         "network_interface_id"  (string)
+
+         "private_ip_addresses"  (list)
+            (structure)
+               "primary"  (boolean)
+
+               "private_ip_address"  (string)
+
+         "delete_on_termination"  (boolean)
+
+         "groups"  (list of string)
+
+         "subnet_id"  (string)
+
+         "private_ip_address"  (string)
+
+         "secondary_private_ip_address_count"  (integer)
+
+   *Parameter Syntax*
+
+      {
+        "user_data": "string",
+        "placement": {
+          {
+            "group_name": "string",
+            "availability_zone": "string"
+          },
+        "ebs_optimized": true|false,
+        "image_id": "string",
+        "subnet_id": "string",
+        "block_device_mappings":
+        [
+          {
+            "device_name": "string",
+            "virtual_name": "string",
+            "no_device": "string",
+            "ebs": {
+              {
+                "delete_on_termination": true|false,
+                "snapshot_id": "string",
+                "volume_size": integer,
+                "volume_type": "standard"|"io1",
+                "iops": integer
+              }
+          }
+          ...
+        ]
+          {
+            "device_name": "string",
+            "virtual_name": "string",
+            "no_device": "string",
+            "ebs": {
+              {
+                "delete_on_termination": true|false,
+                "snapshot_id": "string",
+                "volume_size": integer,
+                "volume_type": "standard"|"io1",
+                "iops": integer
+              }
+          }
+          ...
+        ],
+        "key_name": "string",
+        "security_groups": "string", ...]
+        ["string", ...],
+        "security_group_ids": "string", ...]
+        ["string", ...],
+        "kernel_id": "string",
+        "ramdisk_id": "string",
+        "iam_instance_profile": {
+          {
+            "name": "string",
+            "arn": "string"
+          },
+        "monitoring_enabled": true|false,
+        "instance_type": "t1.micro"|"m1.small"|"m1.medium"|"m1.large"|"m1.xlarge"|
+        "m2.xlarge"|"m2.2xlarge"|"m2.4xlarge"|"m3.xlarge"|"m3.2xlarge"|"c1.medium"
+        |"c1.xlarge"|"hi1.4xlarge"|"cc1.4xlarge"|"cc2.8xlarge"|"cg1.4xlarge",
+        "addressing_type": "string",
+        "network_interfaces":
+        [
+          {
+            "device_index": integer,
+            "description": "string",
+            "network_interface_id": "string",
+            "private_ip_addresses":
+            [
+              {
+                "primary": true|false,
+                "private_ip_address": "string"
+              }
+              ...
+            ]
+              {
+                "primary": true|false,
+                "private_ip_address": "string"
+              }
+              ...
+            ],
+            "delete_on_termination": true|false,
+            "groups": "string", ...]
+            ["string", ...],
+            "subnet_id": "string",
+            "private_ip_address": "string",
+            "secondary_private_ip_address_count": integer
+          }
+          ...
+        ]
+          {
+            "device_index": integer,
+            "description": "string",
+            "network_interface_id": "string",
+            "private_ip_addresses":
+            [
+              {
+                "primary": true|false,
+                "private_ip_address": "string"
+              }
+              ...
+            ]
+              {
+                "primary": true|false,
+                "private_ip_address": "string"
+              }
+              ...
+            ],
+            "delete_on_termination": true|false,
+            "groups": "string", ...]
+            ["string", ...],
+            "subnet_id": "string",
+            "private_ip_address": "string",
+            "secondary_private_ip_address_count": integer
+          }
+          ...
+        ]
+      }
+
+"--valid-from"  (timestamp)
+   Defines the start date of the request.
+
+   If this is a one-time request, the request becomes active at this
+   date and time and remains active until all instances launch, the
+   request expires, or the request is canceled. If the request is
+   persistent, the request becomes active at this date and time and
+   remains active until it expires or is canceled.
+
+"--type"  (string)
+   Specifies the Spot Instance type.

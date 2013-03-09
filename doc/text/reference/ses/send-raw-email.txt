@@ -1,0 +1,97 @@
+
+send-raw-email
+**************
+
+
+DESCRIPTION
+===========
+
+Sends an email message, with header and content specified by the
+client. The "send-raw-email" action is useful for sending multipart
+MIME emails. The raw text of the message must comply with Internet
+email standards; otherwise, the message cannot be sent.
+
+Warning: If you have not yet requested production access to Amazon SES, then
+  you will only be able to send email to and from verified email
+  addresses and domains. For more information, go to the Amazon SES
+  Developer Guide .
+
+The total size of the message cannot exceed 10 MB. This includes any
+attachments that are part of the message.
+
+Amazon SES has a limit on the total number of recipients per message:
+The combined number of To:, CC: and BCC: email addresses cannot exceed
+50. If you need to send an email message to a larger audience, you can
+divide your recipient list into groups of 50 or fewer, and then call
+Amazon SES repeatedly to send the message to each group.
+
+For every message that you send, the total number of recipients (To:,
+CC: and BCC:) is counted against your *sending quota* - the maximum
+number of emails you can send in a 24-hour period. For information
+about your sending quota, go to the "Managing Your Sending Activity"
+section of the`Amazon SES Developer Guide
+<http://docs.amazonwebservices.com/ses/latest/DeveloperGuide>`_ .
+
+
+SYNOPSIS
+========
+
+   aws ses send-raw-email
+     --raw-message <value>
+     [--source <value>]
+     [--destinations <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--raw-message"  (structure)
+   The raw text of the message. The client is responsible for ensuring
+   the following:
+
+   * Message must contain a header and a body, separated by a blank
+     line.
+
+   * All required header fields must be present.
+
+   * Each part of a multipart MIME message must be formatted properly.
+
+   * MIME content types must be among those supported by Amazon SES.
+     Refer to the Amazon SES Developer Guide for more details.
+
+   * Content must be base64-encoded, if MIME requires it.
+
+   "data"  (blob)
+      The raw data of the message. The client must ensure that the
+      message format complies with Internet email standards regarding
+      email header fields, MIME types, MIME encoding, and base64
+      encoding (if necessary).
+
+      For more information, go to the`Amazon SES Developer Guide
+      <http://docs.amazonwebservices.com/ses/latest/DeveloperGuide>`_
+      .
+
+   *Parameter Syntax*
+
+      {
+
+      }
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--source"  (string)
+   The identity's email address.
+
+   Note: If you specify the "--source" parameter, then bounce
+     notifications and complaints will be sent to this email address.
+     This takes precedence over any *Return-Path* header that you
+     might include in the raw text of the message.
+
+"--destinations"  (list of string)
+   A list of destinations for the message.
+
+   *Parameter Syntax*
+
+      ["string", ...]

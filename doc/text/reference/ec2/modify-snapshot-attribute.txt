@@ -1,0 +1,126 @@
+
+modify-snapshot-attribute
+*************************
+
+
+DESCRIPTION
+===========
+
+Adds or remove permission settings for the specified snapshot.
+
+
+SYNOPSIS
+========
+
+   aws ec2 modify-snapshot-attribute
+     --snapshot-id <value>
+     [--attribute <value>]
+     [--user-ids <value>]
+     [--group-names <value>]
+     [--create-volume-permission <value>]
+     [--operation-type <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--snapshot-id"  (string)
+   The ID of the EBS snapshot whose attributes are being modified.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--attribute"  (string)
+   The name of the attribute being modified.
+
+   Available attribute names: "createVolumePermission"
+
+"--user-ids"  (list of string)
+   The AWS user IDs to add to or remove from the list of users that
+   have permission to create EBS volumes from the specified snapshot.
+   Currently supports "all".
+
+   Note: Only valid when the "createVolumePermission" attribute is being
+     modified.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--group-names"  (list of string)
+   The AWS group names to add to or remove from the list of groups
+   that have permission to create EBS volumes from the specified
+   snapshot. Currently supports "all".
+
+   Note: Only valid when the "createVolumePermission" attribute is being
+     modified.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--create-volume-permission"  (structure)
+   "add"  (list)
+      (structure)
+         Describes a permission allowing either a user or group to
+         create a new EBS volume from a snapshot.
+
+         "group"  (string)
+            The group that is allowed to create volumes from the
+            snapshot (currently supports "all").
+
+         "user_id"  (string)
+            The user ID of the user that can create volumes from the
+            snapshot.
+
+   "remove"  (list)
+      (structure)
+         Describes a permission allowing either a user or group to
+         create a new EBS volume from a snapshot.
+
+         "group"  (string)
+            The group that is allowed to create volumes from the
+            snapshot (currently supports "all").
+
+         "user_id"  (string)
+            The user ID of the user that can create volumes from the
+            snapshot.
+
+   *Parameter Syntax*
+
+      {
+        "add":
+        [
+          {
+            "group": "string",
+            "user_id": "string"
+          }
+          ...
+        ]
+          {
+            "group": "string",
+            "user_id": "string"
+          }
+          ...
+        ],
+        "remove":
+        [
+          {
+            "group": "string",
+            "user_id": "string"
+          }
+          ...
+        ]
+          {
+            "group": "string",
+            "user_id": "string"
+          }
+          ...
+        ]
+      }
+
+"--operation-type"  (string)
+   The operation to perform on the attribute.
+
+   Available operation names: "add" , "remove"

@@ -1,0 +1,68 @@
+
+authorize-db-security-group-ingress
+***********************************
+
+
+DESCRIPTION
+===========
+
+Enables ingress to a DBSecurityGroup using one of two forms of
+authorization. First, EC2 or VPC Security Groups can be added to the
+DBSecurityGroup if the application using the database is running on
+EC2 or VPC instances. Second, IP ranges are available if the
+application accessing your database is running on the Internet.
+Required parameters for this API are one of CIDR range, --ec2
+-security-group-id for VPC, or (EC2SecurityGroupOwnerId and either
+--ec2-security-group-name or --ec2-security-group-id for non-VPC).
+
+Note: You cannot authorize ingress from an EC2 security group in one
+  Region to an Amazon RDS DB Instance in another. You cannot authorize
+  ingress from a VPC security group in one VPC to an Amazon RDS DB
+  Instance in another.
+
+For an overview of CIDR ranges, go to the Wikipedia Tutorial .
+
+
+SYNOPSIS
+========
+
+   aws rds authorize-db-security-group-ingress
+     --db-security-group-name <value>
+     [--ec2-security-group-name <value>]
+     [--ec2-security-group-owner-id <value>]
+     [--cidrip <value>]
+     [--ec2-security-group-id <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--db-security-group-name"  (string)
+   The name of the DB Security Group to add authorization to.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--ec2-security-group-name"  (string)
+   Name of the EC2 Security Group to authorize. For VPC DB Security
+   Groups, "--ec2-security-group-id" must be provided. Otherwise,
+   --ec2-security-group-owner-id and either "--ec2-security-group-
+   name" or "--ec2-security-group-id" must be provided.
+
+"--ec2-security-group-owner-id"  (string)
+   AWS Account Number of the owner of the EC2 Security Group specified
+   in the --ec2-security-group-name parameter. The AWS Access Key ID
+   is not an acceptable value. For VPC DB Security Groups, "--ec2
+   -security-group-id" must be provided. Otherwise, --ec2-security-
+   group-owner-id and either "--ec2-security-group-name" or "--ec2
+   -security-group-id" must be provided.
+
+"--cidrip"  (string)
+   The IP range to authorize.
+
+"--ec2-security-group-id"  (string)
+   Id of the EC2 Security Group to authorize. For VPC DB Security
+   Groups, "--ec2-security-group-id" must be provided. Otherwise,
+   --ec2-security-group-owner-id and either "--ec2-security-group-
+   name" or "--ec2-security-group-id" must be provided.

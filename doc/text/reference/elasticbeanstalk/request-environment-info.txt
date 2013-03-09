@@ -1,0 +1,59 @@
+
+request-environment-info
+************************
+
+
+DESCRIPTION
+===========
+
+Initiates a request to compile the specified type of information of
+the deployed environment.
+
+Setting the "--info-type" to "tail" compiles the last lines from the
+application server log files of every Amazon EC2 instance in your
+environment. Use  retrieve-environment-info to access the compiled
+information.
+
+Related Topics
+
+* retrieve-environment-info
+
+
+SYNOPSIS
+========
+
+   aws elasticbeanstalk request-environment-info
+     --info-type <value>
+     [--environment-id <value>]
+     [--environment-name <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--info-type"  (string)
+   The type of information to request.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--environment-id"  (string)
+   The ID of the environment of the requested data.
+
+   If no such environment is found, "request-environment-info" returns
+   an "InvalidParameterValue" error.
+
+   Condition: You must specify either this or an EnvironmentName, or
+   both. If you do not specify either, AWS Elastic Beanstalk returns
+   "MissingRequiredParameter" error.
+
+"--environment-name"  (string)
+   The name of the environment of the requested data.
+
+   If no such environment is found, "request-environment-info" returns
+   an "InvalidParameterValue" error.
+
+   Condition: You must specify either this or an EnvironmentId, or
+   both. If you do not specify either, AWS Elastic Beanstalk returns
+   "MissingRequiredParameter" error.

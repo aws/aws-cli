@@ -1,0 +1,63 @@
+
+create-route
+************
+
+
+DESCRIPTION
+===========
+
+Creates a new route in a route table within a VPC. The route's target
+can be either a gateway attached to the VPC or a NAT instance in the
+VPC.
+
+When determining how to route traffic, we use the route with the most
+specific match. For example, let's say the traffic is destined for
+"192.0.2.3" , and the route table includes the following two routes:
+
+* "192.0.2.0/24" (goes to some target A)
+
+* "192.0.2.0/28" (goes to some target B)
+
+Both routes apply to the traffic destined for "192.0.2.3" . However,
+the second route in the list is more specific, so we use that route to
+determine where to target the traffic.
+
+For more information about route tables, go to Route Tables in the
+Amazon Virtual Private Cloud User Guide.
+
+
+SYNOPSIS
+========
+
+   aws ec2 create-route
+     --destination-cidr-block <value>
+     --route-table-id <value>
+     [--gateway-id <value>]
+     [--instance-id <value>]
+     [--network-interface-id <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--destination-cidr-block"  (string)
+   The CIDR address block used for the destination match. For example:
+   "0.0.0.0/0" . Routing decisions are based on the most specific
+   match.
+
+"--route-table-id"  (string)
+   The ID of the route table where the route will be added.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--gateway-id"  (string)
+   The ID of a VPN or Internet gateway attached to your VPC. You must
+   provide either "--gateway-id" or "--instance-id" , but not both.
+
+"--instance-id"  (string)
+   The ID of a NAT instance in your VPC. You must provide either
+   "--gateway-id" or "--instance-id" , but not both.
+
+"--network-interface-id"  (string)

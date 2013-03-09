@@ -1,0 +1,59 @@
+
+create-snapshot-from-volume-recovery-point
+******************************************
+
+
+DESCRIPTION
+===========
+
+This operation initiates a snapshot of a gateway from a volume
+recovery point. This operation is supported only for the gateway-
+cached volume architecture (see StorageGatewayConcepts ).
+
+A volume recovery point is a point in time at which all data of the
+volume is consistent and from which you can create a snapshot. To get
+a list of volume recovery point for gateway-cached volumes, use  list-
+volume-recovery-points .
+
+In the "create-snapshot-from-volume-recovery-point" request, you
+identify the volume by providing its Amazon Resource Name (ARN). You
+must also provide a description for the snapshot. When AWS Storage
+Gateway takes a snapshot of the specified volume, the snapshot and its
+description appear in the AWS Storage Gateway console. In response,
+AWS Storage Gateway returns you a snapshot ID. You can use this
+snapshot ID to check the snapshot progress or later use it when you
+want to create a volume from a snapshot.
+
+Note: To list or delete a snapshot, you must use the Amazon EC2 API. For
+  more information, go to DeleteSnapshot and DescribeSnapshots in
+  *Amazon Elastic Compute Cloud API Reference* .
+
+
+SYNOPSIS
+========
+
+   aws storagegateway create-snapshot-from-volume-recovery-point
+     --snapshot-description <value>
+     --volume-arn <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--snapshot-description"  (string)
+   A textual description of the snapshot that appears in the Amazon
+   EC2 console, Elastic Block Store snapshots panel in the
+   **Description** field, and in the AWS Storage Gateway snapshot
+   **Details** pane, **Description** field.
+
+   *Length* : Minimum length of 1. Maximum length of 255.
+
+"--volume-arn"  (string)
+   The Amazon Resource Name (ARN) of the volume. Use the  list-volumes
+   operation to return a list of gateway volumes.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

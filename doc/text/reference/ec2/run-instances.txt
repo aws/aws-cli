@@ -1,0 +1,342 @@
+
+run-instances
+*************
+
+
+DESCRIPTION
+===========
+
+The run-instances operation launches a specified number of instances.
+
+If Amazon EC2 cannot launch the minimum number AMIs you request, no
+instances launch. If there is insufficient capacity to launch the
+maximum number of AMIs you request, Amazon EC2 launches as many as
+possible to satisfy the requested maximum values.
+
+Every instance is launched in a security group. If you do not specify
+a security group at launch, the instances start in your default
+security group. For more information on creating security groups, see
+CreateSecurityGroup.
+
+An optional instance type can be specified. For information about
+instance types, see Instance Types.
+
+You can provide an optional key pair ID for each image in the launch
+request (for more information, see CreateKeyPair). All instances that
+are created from images that use this key pair will have access to the
+associated public key at boot. You can use this key to provide secure
+access to an instance of an image on a per-instance basis. Amazon EC2
+public images use this feature to provide secure access without
+passwords.
+
+Warning: Launching public images without a key pair ID will leave them
+  inaccessible.The public key material is made available to the
+  instance at boot time by placing it in the "openssh_id.pub" file on
+  a logical device that is exposed to the instance as "/dev/sda2" (the
+  ephemeral store). The format of this file is suitable for use as an
+  entry within "~/.ssh/authorized_keys" (the OpenSSH format). This can
+  be done at boot (e.g., as part of "rc.local" ) allowing for secure
+  access without passwords.Optional user data can be provided in the
+  launch request. All instances that collectively comprise the launch
+  request have access to this data For more information, see Instance
+  Metadata.
+
+Note: If any of the AMIs have a product code attached for which the user
+  has not subscribed, the run-instances call will fail.
+
+Warning: We strongly recommend using the 2.6.18 Xen stock kernel with the
+  "c1.medium" and "c1.xlarge" instances. Although the default Amazon
+  EC2 kernels will work, the new kernels provide greater stability and
+  performance for these instance types. For more information about
+  kernels, see Kernels, RAM Disks, and Block Device Mappings.
+
+
+SYNOPSIS
+========
+
+   aws ec2 run-instances
+     --min-count <value>
+     --image-id <value>
+     --max-count <value>
+     [--monitoring <value>]
+     [--ebs-optimized ]
+     [--ramdisk-id <value>]
+     [--private-ip-address <value>]
+     [--key-name <value>]
+     [--security-groups <value>]
+     [--client-token <value>]
+     [--subnet-id <value>]
+     [--instance-type <value>]
+     [--addressing-type <value>]
+     [--network-interfaces <value>]
+     [--additional-info <value>]
+     [--placement <value>]
+     [--license <value>]
+     [--instance-initiated-shutdown-behavior <value>]
+     [--security-group-ids <value>]
+     [--block-device-mappings <value>]
+     [--kernel-id <value>]
+     [--iam-instance-profile <value>]
+     [--user-data <value>]
+     [--disable-api-termination ]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--min-count"  (integer)
+   Minimum number of instances to launch. If the value is more than
+   Amazon EC2 can launch, no instances are launched at all.
+
+"--image-id"  (string)
+   Unique ID of a machine image, returned by a call to DescribeImages.
+
+"--max-count"  (integer)
+   Maximum number of instances to launch. If the value is more than
+   Amazon EC2 can launch, the largest possible number above minCount
+   will be launched instead.
+
+   Between 1 and the maximum number allowed for your account (default:
+   20).
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--monitoring"  (structure)
+   Enables monitoring for the instance.
+
+   "enabled"  | "--no-enabled"  (boolean)
+
+   *Parameter Syntax*
+
+      {
+        "enabled": true|false
+      }
+
+"--ebs-optimized"  (boolean)
+
+"--ramdisk-id"  (string)
+   The ID of the RAM disk with which to launch the instance. Some
+   kernels require additional drivers at launch. Check the kernel
+   requirements for information on whether you need to specify a RAM
+   disk. To find kernel requirements, go to the Resource Center and
+   search for the kernel ID.
+
+"--private-ip-address"  (string)
+   If you're using Amazon Virtual Private Cloud, you can optionally
+   use this parameter to assign the instance a specific available IP
+   address from the subnet.
+
+"--key-name"  (string)
+   The name of the key pair.
+
+"--security-groups"  (list of string)
+   The names of the security groups into which the instances will be
+   launched.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--client-token"  (string)
+   Unique, case-sensitive identifier you provide to ensure idempotency
+   of the request. For more information, go to How to Ensure
+   Idempotency in the Amazon Elastic Compute Cloud User Guide.
+
+"--subnet-id"  (string)
+   Specifies the subnet ID within which to launch the instance(s) for
+   Amazon Virtual Private Cloud.
+
+"--instance-type"  (string)
+   Specifies the instance type for the launched instances.
+
+"--addressing-type"  (string)
+
+"--network-interfaces"  (list)
+      (structure)
+         "device_index"  (integer)
+
+         "description"  (string)
+
+         "network_interface_id"  (string)
+
+         "private_ip_addresses"  (list)
+            (structure)
+               "primary"  (boolean)
+
+               "private_ip_address"  (string)
+
+         "delete_on_termination"  (boolean)
+
+         "groups"  (list of string)
+
+         "subnet_id"  (string)
+
+         "private_ip_address"  (string)
+
+         "secondary_private_ip_address_count"  (integer)
+
+   *Parameter Syntax*
+
+      [
+        {
+          "device_index": integer,
+          "description": "string",
+          "network_interface_id": "string",
+          "private_ip_addresses":
+          [
+            {
+              "primary": true|false,
+              "private_ip_address": "string"
+            }
+            ...
+          ]
+            {
+              "primary": true|false,
+              "private_ip_address": "string"
+            }
+            ...
+          ],
+          "delete_on_termination": true|false,
+          "groups": "string", ...]
+          ["string", ...],
+          "subnet_id": "string",
+          "private_ip_address": "string",
+          "secondary_private_ip_address_count": integer
+        }
+        ...
+      ]
+
+"--additional-info"  (string)
+
+"--placement"  (structure)
+   Specifies the placement constraints (Availability Zones) for
+   launching the instances.
+
+   "tenancy"  (string)
+      The allowed tenancy of instances launched into the VPC. A value
+      of default means instances can be launched with any tenancy; a
+      value of dedicated means all instances launched into the VPC
+      will be launched as dedicated tenancy regardless of the tenancy
+      assigned to the instance at launch.
+
+   "group_name"  (string)
+      The name of the  PlacementGroup in which an Amazon EC2 instance
+      runs. --placement groups are primarily used for launching High
+      Performance Computing instances in the same group to ensure fast
+      connection speeds.
+
+   "availability_zone"  (string)
+      The availability zone in which an Amazon EC2 instance runs.
+
+   *Parameter Syntax*
+
+      {
+        "tenancy": "string",
+        "group_name": "string",
+        "availability_zone": "string"
+      }
+
+"--license"  (structure)
+   Specifies active licenses in use and attached to an Amazon EC2
+   instance.
+
+   "pool"  (string)
+      The license pool from which to take a license when starting
+      Amazon EC2 instances in the associated "run-instances" request.
+
+   *Parameter Syntax*
+
+      {
+        "pool": "string"
+      }
+
+"--instance-initiated-shutdown-behavior"  (string)
+   Specifies whether the instance's Amazon EBS volumes are stopped or
+   terminated when the instance is shut down.
+
+"--security-group-ids"  (list of string)
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--block-device-mappings"  (list)
+   Specifies how block devices are exposed to the instance. Each
+   mapping is made up of a virtualName and a deviceName.
+
+      (structure)
+         The BlockDeviceMappingItemType data type.
+
+         "device_name"  (string)
+            Specifies the device name (e.g., "/dev/sdh" ).
+
+         "virtual_name"  (string)
+            Specifies the virtual device name.
+
+         "no_device"  (string)
+            Specifies the device name to suppress during instance
+            launch.
+
+         "ebs"  (structure)
+            Specifies parameters used to automatically setup Amazon
+            EBS volumes when the instance is launched.
+
+            "delete_on_termination"  (boolean)
+               Specifies whether the Amazon EBS volume is deleted on
+               instance termination.
+
+            "snapshot_id"  (string)
+               The ID of the snapshot from which the volume will be
+               created.
+
+            "volume_size"  (integer)
+               The size of the volume, in gigabytes.
+
+            "volume_type"  (string)
+
+            "iops"  (integer)
+
+   *Parameter Syntax*
+
+      [
+        {
+          "device_name": "string",
+          "virtual_name": "string",
+          "no_device": "string",
+          "ebs": {
+            {
+              "delete_on_termination": true|false,
+              "snapshot_id": "string",
+              "volume_size": integer,
+              "volume_type": "standard"|"io1",
+              "iops": integer
+            }
+        }
+        ...
+      ]
+
+"--kernel-id"  (string)
+   The ID of the kernel with which to launch the instance.
+
+"--iam-instance-profile"  (structure)
+   "name"  (string)
+
+   "arn"  (string)
+
+   *Parameter Syntax*
+
+      {
+        "name": "string",
+        "arn": "string"
+      }
+
+"--user-data"  (blob)
+   Specifies additional information to make available to the
+   instance(s).
+
+"--disable-api-termination"  (boolean)
+   Specifies whether the instance can be terminated using the APIs.
+   You must modify this attribute before you can terminate any
+   "locked" instances from the APIs.

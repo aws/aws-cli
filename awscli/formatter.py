@@ -54,7 +54,12 @@ class TableFormatter(Formatter):
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 
-    def __call__(self, operation, response, stream=sys.stdout):
+    def __call__(self, operation, response, stream=None):
+        if stream is None:
+            # Retrieve stdout on invocation instead of at import time
+            # so that if anything wraps stdout we'll pick up those changes
+            # (specifically colorama on windows wraps stdout).
+            stream = sys.stdout
         self._build_table(operation.name, response)
         try:
             self.table.render(stream)

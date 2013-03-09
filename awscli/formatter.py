@@ -14,7 +14,6 @@ import sys
 import json
 
 import six
-import blessings
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
 
@@ -45,22 +44,14 @@ class TableFormatter(Formatter):
             self.table = MultiTable(initial_section=False,
                                     column_separator='|')
         elif args.color == 'off':
-            # Setting force_styling to None disables any colorized output.
-            terminal = blessings.Terminal(force_styling=None)
             styler = Styler()
             self.table = MultiTable(initial_section=False,
-                                    column_separator='|', terminal=terminal,
-                                    styler=styler)
+                                    column_separator='|', styler=styler)
         elif args.color == 'on':
-            # The configuration here is really to facilitate
-            # "aws ... | less -r" which lets you take the
-            # unpaged output and be able to send it to a pager
-            # unchanged.
-            terminal = blessings.Terminal(force_styling=True)
-            styler = ColorizedStyler(terminal)
+            styler = ColorizedStyler()
             self.table = MultiTable(initial_section=False,
-                                    column_separator='|', terminal=terminal,
-                                    styler=styler, auto_reformat=True)
+                                    column_separator='|', styler=styler,
+                                    auto_reformat=True)
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 

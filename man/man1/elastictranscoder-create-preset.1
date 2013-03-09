@@ -1,0 +1,455 @@
+.TH "ELASTICTRANSCODER-CREATE-PRESET" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+elastictranscoder-create-preset \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+To create a preset, send a POST request to the \fB/2012\-09\-25/presets\fP resource.
+.IP Warning
+Elastic Transcoder checks the settings that you specify to ensure that they
+meet Elastic Transcoder requirements and to determine whether they comply with
+H.264 standards. If your settings are not valid for Elastic Transcoder,
+Elastic Transcoder returns an HTTP 400 response ( \fBValidationException\fP )
+and does not create the preset. If the settings are valid for Elastic
+Transcoder but aren\(aqt strictly compliant with the H.264 standard, Elastic
+Transcoder creates the preset and returns a warning message in the response.
+This helps you determine whether your settings comply with the H.264 standard
+while giving you greater flexibility with respect to the video that Elastic
+Transcoder produces.
+.RE
+.sp
+Elastic Transcoder uses the H.264 video\-compression format. For more
+information, see the International Telecommunication Union publication
+\fIRecommendation ITU\-T H.264: Advanced video coding for generic audiovisual
+services\fP .
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws elastictranscoder create\-preset
+  \-\-container <value>
+  \-\-thumbnails <value>
+  \-\-video <value>
+  \-\-audio <value>
+  \-\-name <value>
+  [\-\-description <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-container\fP  (string)
+The container type for the output file. This value must be \fBmp4\fP .
+.TP
+.B \fB\-\-thumbnails\fP  (structure)
+A section of the request body that specifies the thumbnail parameters, if any.
+.INDENT 7.0
+.TP
+.B \fBaspect_ratio\fP  (string)
+The aspect ratio of thumbnails. Valid values include:
+.sp
+\fBauto\fP , \fB1:1\fP , \fB4:3\fP , \fB3:2\fP , \fB16:9\fP
+.sp
+If you specify \fBauto\fP , Elastic Transcoder tries to preserve the aspect
+ratio of the video in the output file.
+.TP
+.B \fBinterval\fP  (string)
+The number of seconds between thumbnails. Specify an integer value.
+.TP
+.B \fBresolution\fP  (string)
+The width and height of thumbnail files in pixels. Specify a value in the
+format \fB*width* \(ga\(ga x \(ga\(ga*height* \(ga\(ga where both values are even integers. The
+values cannot exceed the width and height that you specified in the
+\(ga\(gaVideo:Resolution\fP object.
+.TP
+.B \fBformat\fP  (string)
+The format of thumbnails, if any. Valid values are \fBjpg\fP and \fBpng\fP .
+.sp
+You specify whether you want Elastic Transcoder to create thumbnails when
+you create a job.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "aspect_ratio": "string",
+  "interval": "string",
+  "resolution": "string",
+  "format": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-video\fP  (structure)
+A section of the request body that specifies the video parameters.
+.INDENT 7.0
+.TP
+.B \fBresolution\fP  (string)
+The width and height of the video in the output file, in pixels. Valid
+values are \fBauto\fP and \fIwidth\fP x \fIheight\fP :
+.INDENT 7.0
+.IP \(bu 2
+\fBauto\fP : Elastic Transcoder attempts to preserve the width and height of
+the input file, subject to the following rules.
+.IP \(bu 2
+
+.nf
+\(ga\(ga
+.fi
+\fIwidth\fP x \fIheight\fP \(ga\(ga : The width and height of the output video in
+pixels.
+.UNINDENT
+.sp
+Note the following about specifying the width and height:
+.INDENT 7.0
+.IP \(bu 2
+The width must be an even integer between 128 and 4096, inclusive.
+.IP \(bu 2
+The height must be an even integer between 96 and 3072, inclusive.
+.IP \(bu 2
+If you specify a resolution that is less than the resolution of the input
+file, Elastic Transcoder rescales the output file to the lower resolution.
+.IP \(bu 2
+If you specify a resolution that is greater than the resolution of the
+input file, Elastic Transcoder rescales the output to the higher
+resolution.
+.IP \(bu 2
+We recommend that you specify a resolution for which the product of width
+and height is less than or equal to the applicable value in the following
+list (\fIList \- Max width x height value\fP ):
+.IP \(bu 2
+1 \- 25344
+.IP \(bu 2
+1b \- 25344
+.IP \(bu 2
+1.1 \- 101376
+.IP \(bu 2
+1.2 \- 101376
+.IP \(bu 2
+1.3 \- 101376
+.IP \(bu 2
+2 \- 101376
+.IP \(bu 2
+2.1 \- 202752
+.IP \(bu 2
+2.2 \- 404720
+.IP \(bu 2
+3 \- 404720
+.IP \(bu 2
+3.1 \- 921600
+.IP \(bu 2
+3.2 \- 1310720
+.IP \(bu 2
+4 \- 2097152
+.IP \(bu 2
+4.1 \- 2097152
+.UNINDENT
+.TP
+.B \fBframe_rate\fP  (string)
+The frames per second for the video stream in the output file. Valid values
+include:
+.sp
+\fBauto\fP , \fB10\fP , \fB15\fP , \fB23.97\fP , \fB24\fP , \fB25\fP , \fB29.97\fP ,
+\fB30\fP , \fB60\fP
+.sp
+If you specify \fBauto\fP , Elastic Transcoder uses the detected frame rate of
+the input source. If you specify a frame rate, we recommend that you perform
+the following calculation:
+.sp
+\fBFrame rate = maximum recommended decoding speed in luma samples/second /
+(width in pixels * height in pixels)\fP
+.sp
+where:
+.INDENT 7.0
+.IP \(bu 2
+\fIwidth in pixels\fP and \fIheight in pixels\fP represent the Resolution of the
+output video.
+.IP \(bu 2
+\fImaximum recommended decoding speed in Luma samples/second\fP is less than
+or equal to the maximum value listed in the following table, based on the
+value that you specified for Level.
+.UNINDENT
+.sp
+The maximum recommended decoding speed in Luma samples/second for each level
+is described in the following list (\fILevel \- Decoding speed\fP ):
+.INDENT 7.0
+.IP \(bu 2
+1 \- 380160
+.IP \(bu 2
+1b \- 380160
+.IP \(bu 2
+1.1 \- 76800
+.IP \(bu 2
+1.2 \- 1536000
+.IP \(bu 2
+1.3 \- 3041280
+.IP \(bu 2
+2 \- 3041280
+.IP \(bu 2
+2.1 \- 5068800
+.IP \(bu 2
+2.2 \- 5184000
+.IP \(bu 2
+3 \- 10368000
+.IP \(bu 2
+3.1 \- 27648000
+.IP \(bu 2
+3.2 \- 55296000
+.IP \(bu 2
+4 \- 62914560
+.IP \(bu 2
+4.1 \- 62914560
+.UNINDENT
+.TP
+.B \fBkeyframes_max_dist\fP  (string)
+The maximum number of frames between key frames. Key frames are fully
+encoded frames; the frames between key frames are encoded based, in part, on
+the content of the key frames. The value is an integer formatted as a
+string; valid values are between 1 and 100000, inclusive. A higher value
+results in higher compression but may also discernibly decrease video
+quality.
+.TP
+.B \fBfixed_gop\fP  (string)
+Whether to use a fixed value for \fBFixedGOP\fP . Valid values are \fBtrue\fP
+and \fBfalse\fP :
+.INDENT 7.0
+.IP \(bu 2
+\fBtrue\fP : Elastic Transcoder uses the value of \fBKeyframesMaxDist\fP for
+the distance between key frames (the number of frames in a group of
+pictures, or GOP).
+.IP \(bu 2
+\fBfalse\fP : The distance between key frames can vary.
+.UNINDENT
+.TP
+.B \fBcodec\fP  (string)
+The video codec for the output file. This value must be \fBH.264\fP .
+.TP
+.B \fBcodec_options\fP  (map)
+\fBProfile\fP
+.sp
+The H.264 profile that you want to use for the output file. Elastic
+Transcoder supports the following profiles:
+.INDENT 7.0
+.IP \(bu 2
+\fBbaseline\fP : The profile most commonly used for videoconferencing and
+for mobile applications.
+.IP \(bu 2
+\fBmain\fP : The profile used for standard\-definition digital TV broadcasts.
+.IP \(bu 2
+\fBhigh\fP : The profile used for high\-definition digital TV broadcasts and
+for Blu\-ray discs.
+.UNINDENT
+.sp
+\fBLevel\fP
+.sp
+The H.264 level that you want to use for the output file. Elastic Transcoder
+supports the following levels:
+.sp
+\fB1\fP , \fB1b\fP , \fB1.1\fP , \fB1.2\fP , \fB1.3\fP , \fB2\fP , \fB2.1\fP , \fB2.2\fP ,
+\fB3\fP , \fB3.1\fP , \fB3.2\fP , \fB4\fP , \fB4.1\fP
+.sp
+\fBMaxReferenceFrames\fP
+.sp
+The maximum number of previously decoded frames to use as a reference for
+decoding future frames. Valid values are integers 0 through 16, but we
+recommend that you not use a value greater than the following:
+.sp
+\fBMin(Floor(Maximum decoded picture buffer in macroblocks * 256 / (Width in
+pixels * Height in pixels)), 16)\fP
+.sp
+where \fIWidth in pixels\fP and \fIHeight in pixels\fP represent the resolution of
+the output video and \fIMaximum decoded picture buffer in macroblocks\fP depends
+on the value of the \fBLevel\fP object. (A macroblock is a block of pixels
+measuring 16x16.)
+.sp
+Note that the calculation for maximum decoded picture buffer, which is
+similar to the calculation for maximum reference frames, uses macroblocks
+instead of pixels for the width and height of the video.
+.sp
+To determine the value of maximum decoded picture buffer in macroblocks, see
+the following list (\fILevel\fP \- \fIMaximum decoded picture buffer\fP ):
+.INDENT 7.0
+.IP \(bu 2
+1 \- 396
+.IP \(bu 2
+1b \- 396
+.IP \(bu 2
+1.1 \- 900
+.IP \(bu 2
+1.2 \- 2376
+.IP \(bu 2
+1.3 \- 2376
+.IP \(bu 2
+2 \- 2376
+.IP \(bu 2
+2.1 \- 4752
+.IP \(bu 2
+2.2 \- 8100
+.IP \(bu 2
+3 \- 8100
+.IP \(bu 2
+3.1 \- 18000
+.IP \(bu 2
+3.2 \- 20480
+.IP \(bu 2
+4 \- 32768
+.IP \(bu 2
+4.1 \- 32768
+.UNINDENT
+.TP
+.B \fBaspect_ratio\fP  (string)
+The display aspect ratio of the video in the output file. Valid values
+include:
+.sp
+\fBauto\fP , \fB1:1\fP , \fB4:3\fP , \fB3:2\fP , \fB16:9\fP
+.sp
+If you specify \fBauto\fP , Elastic Transcoder tries to preserve the aspect
+ratio of the input file.
+.sp
+If you specify an aspect ratio for the output file that differs from aspect
+ratio of the input file, Elastic Transcoder adds pillarboxing (black bars on
+the sides) or letterboxing (black bars on the top and bottom) to maintain
+the aspect ratio of the active region of the video.
+.TP
+.B \fBbit_rate\fP  (string)
+The bit rate of the video stream in the output file, in kilobits/second.
+Valid values depend on the values of \fBLevel\fP and \fBProfile\fP . We
+recommend that you specify a value less than or equal to the maximum
+H.264\-compliant value listed in the following list for your level and
+profile:
+.sp
+\fILevel \- Maximum video bit rate in kilobits/second (baseline and main
+Profile) : maximum video bit rate in kilobits/second (high Profile)\fP
+.INDENT 7.0
+.IP \(bu 2
+1 \- 64 : 80
+.IP \(bu 2
+1b \- 128 : 160
+.IP \(bu 2
+1.1 \- 192 : 240
+.IP \(bu 2
+1.2 \- 384 : 480
+.IP \(bu 2
+1.3 \- 768 : 960
+.IP \(bu 2
+2 \- 2000 : 2500
+.IP \(bu 2
+3 \- 10000 : 12500
+.IP \(bu 2
+3.1 \- 14000 : 17500
+.IP \(bu 2
+3.2 \- 20000 : 25000
+.IP \(bu 2
+4 \- 20000 : 25000
+.IP \(bu 2
+4.1 \- 50000 : 62500
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "resolution": "string",
+  "frame_rate": "string",
+  "keyframes_max_dist": "string",
+  "fixed_gop": "string",
+  "codec": "string",
+  "codec_options":
+  {
+    "string": "string"
+    ...
+  },
+  "aspect_ratio": "string",
+  "bit_rate": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-audio\fP  (structure)
+A section of the request body that specifies the audio parameters
+.INDENT 7.0
+.TP
+.B \fBchannels\fP  (string)
+The number of audio channels in the output file. Valid values include:
+.sp
+\fBauto\fP , \fB0\fP , \fB1\fP , \fB2\fP
+.sp
+If you specify \fBauto\fP , Elastic Transcoder automatically detects the
+number of channels in the input file.
+.TP
+.B \fBsample_rate\fP  (string)
+The sample rate of the audio stream in the output file, in Hertz. Valid
+values include:
+.sp
+\fBauto\fP , \fB22050\fP , \fB32000\fP , \fB44100\fP , \fB48000\fP , \fB96000\fP
+.sp
+If you specify \fBauto\fP , Elastic Transcoder automatically detects the
+sample rate.
+.TP
+.B \fBcodec\fP  (string)
+The audio codec for the output file. This value must be \fBAAC\fP .
+.TP
+.B \fBbit_rate\fP  (string)
+The bit rate of the audio stream in the output file, in kilobits/second.
+Enter an integer between 64 and 320, inclusive.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "channels": "string",
+  "sample_rate": "string",
+  "codec": "string",
+  "bit_rate": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-name\fP  (string)
+The name of the preset. We recommend that the name be unique within the AWS
+account, but uniqueness is not enforced.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-description\fP  (string)
+A description of the preset.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

@@ -1,0 +1,249 @@
+.TH "REDSHIFT-MODIFY-CLUSTER" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+redshift-modify-cluster \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Modifies the settings for a cluster. For example, you can add another security
+or parameter group, update the preferred maintenance window, or change the
+master user password. Resetting a cluster password or modifying the security
+groups associated with a cluster do not need a reboot. However, modifying
+parameter group requires a reboot for parameters to take effect.
+.sp
+You can also change node type and the number of nodes to scale up or down the
+cluster. When resizing a cluster, you must specify both the number of nodes and
+the node type even if one of the parameters does not change. If you specify the
+same number of nodes and node type that are already configured for the cluster,
+an error is returned.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws redshift modify\-cluster
+  \-\-cluster\-identifier <value>
+  [\-\-node\-type <value>]
+  [\-\-cluster\-parameter\-group\-name <value>]
+  [\-\-cluster\-type <value>]
+  [\-\-master\-user\-password <value>]
+  [\-\-vpc\-security\-group\-ids <value>]
+  [\-\-allow\-version\-upgrade ]
+  [\-\-preferred\-maintenance\-window <value>]
+  [\-\-automated\-snapshot\-retention\-period <value>]
+  [\-\-cluster\-security\-groups <value>]
+  [\-\-number\-of\-nodes <value>]
+  [\-\-cluster\-version <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-cluster\-identifier\fP  (string)
+The unique identifier of the cluster to be modified.
+.sp
+Example: \fBexamplecluster\fP
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-node\-type\fP  (string)
+The new node type of the cluster. If you specify a new node type, you must
+also specify the number of nodes parameter also.
+.sp
+When you submit your request to resize a cluster, Amazon Redshift sets access
+permissions for the cluster to read\-only. After Amazon Redshift provisions a
+new cluster according to your resize requirements, there will be a temporary
+outage while the old cluster is deleted and your connection is switched to the
+new cluster. When the new connection is complete, the original access
+permissions for the cluster are restored. You can use the  describe\-resize to
+track the progress of the resize request.
+.sp
+Valid Values: \fBdw.hs1.xlarge\fP | \fBdw.hs1.8xlarge\fP
+.TP
+.B \fB\-\-cluster\-parameter\-group\-name\fP  (string)
+The name of the cluster parameter group to apply to this cluster. This change
+is applied only after the cluster is rebooted. To reboot a cluster use
+reboot\-cluster .
+.sp
+Default: Uses existing setting.
+.sp
+Constraints: The cluster parameter group must be in the same parameter group
+family that matches the cluster version.
+.TP
+.B \fB\-\-cluster\-type\fP  (string)
+The new cluster type.
+.sp
+When you submit your cluster resize request, your existing cluster goes into a
+read\-only mode. After Amazon Redshift provisions a new cluster based on your
+resize requirements, there will be outage for a period while the old cluster
+is deleted and your connection is switched to the new cluster. You can use
+describe\-resize to track the progress of the resize request.
+.sp
+Valid Values: 
+.nf
+\(ga\(ga
+.fi
+multi\-node | single\-node \(ga\(ga
+.TP
+.B \fB\-\-master\-user\-password\fP  (string)
+The new password for the cluster master user. This change is asynchronously
+applied as soon as possible. Between the time of the request and the
+completion of the request, the \fB\-\-master\-user\-password\fP element exists in
+the \fBPendingModifiedValues\fP element of the operation response.
+.. note:
+.sp
+.nf
+.ft C
+Operations never return the password, so this operation provides a way to
+regain access to the master user account for a cluster if the password is
+lost.
+.ft P
+.fi
+.sp
+Default: Uses existing setting.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be between 8 and 64 characters in length.
+.IP \(bu 2
+Must contain at least one uppercase letter.
+.IP \(bu 2
+Must contain at least one lowercase letter.
+.IP \(bu 2
+Must contain one number.
+.IP \(bu 2
+Can be any printable ASCII character (ASCII code 33 to 126) except \(aq (single
+quote), " (double quote), , /, @, or space.
+.UNINDENT
+.TP
+.B \fB\-\-vpc\-security\-group\-ids\fP  (list of string)
+A list of Virtual Private Cloud (VPC) security groups to be associated with
+the cluster.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-allow\-version\-upgrade\fP  (boolean)
+If \fBtrue\fP , upgrades will be applied automatically to the cluster during the
+maintenance window.
+.sp
+Default: \fBfalse\fP
+.TP
+.B \fB\-\-preferred\-maintenance\-window\fP  (string)
+The weekly time range (in UTC) during which system maintenance can occur, if
+necessary. If system maintenance is necessary during the window, it may result
+in an outage.
+.sp
+This maintenance window change is made immediately. If the new maintenance
+window indicates the current time, there must be at least 120 minutes between
+the current time and end of the window in order to ensure that pending changes
+are applied.
+.sp
+Default: Uses existing setting.
+.sp
+Format: ddd:hh24:mi\-ddd:hh24:mi, for example \fBwed:07:30\-wed:08:00\fP .
+.sp
+Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun
+.sp
+Constraints: Must be at least 30 minutes.
+.TP
+.B \fB\-\-automated\-snapshot\-retention\-period\fP  (integer)
+The number of days that automated snapshots are retained. If the value is 0,
+automated snapshots are disabled. Even if automated snapshots are disabled,
+you can still create manual snapshots when you want with
+create\-cluster\-snapshot .
+.sp
+If you decrease the automated snapshot retention period from its current
+value, existing automated snapshots which fall outside of the new retention
+period will be immediately deleted.
+.sp
+Default: Uses existing setting.
+.sp
+Constraints: Must be a value from 0 to 35.
+.TP
+.B \fB\-\-cluster\-security\-groups\fP  (list of string)
+A list of cluster security groups to be authorized on this cluster. This
+change is asynchronously applied as soon as possible.
+.sp
+Security groups currently associated with the cluster and not in the list of
+groups to apply, will be revoked from the cluster.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 to 255 alphanumeric characters or hyphens
+.IP \(bu 2
+First character must be a letter
+.IP \(bu 2
+Cannot end with a hyphen or contain two consecutive hyphens
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-number\-of\-nodes\fP  (integer)
+The new number of nodes of the cluster. If you specify a new number of nodes,
+you must also specify the node type parameter also.
+.sp
+When you submit your request to resize a cluster, Amazon Redshift sets access
+permissions for the cluster to read\-only. After Amazon Redshift provisions a
+new cluster according to your resize requirements, there will be a temporary
+outage while the old cluster is deleted and your connection is switched to the
+new cluster. When the new connection is complete, the original access
+permissions for the cluster are restored. You can use  describe\-resize to
+track the progress of the resize request.
+.sp
+Valid Values: Integer greater than \fB0\fP .
+.TP
+.B \fB\-\-cluster\-version\fP  (string)
+The new version number of the Amazon Redshift engine to upgrade to.
+.sp
+For major version upgrades, if a non\-default cluster parameter group is
+currently in use, a new cluster parameter group in the cluster parameter group
+family for the new version must be specified. The new cluster parameter group
+can be the default for that cluster parameter group family.
+.sp
+Example: \fB1.0\fP
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

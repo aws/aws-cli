@@ -1,0 +1,181 @@
+.TH "SWF-REGISTER-ACTIVITY-TYPE" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+swf-register-activity-type \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Registers a new \fIactivity type\fP along with its configuration settings in the
+specified domain.
+.IP Warning
+A \fBTypeAlreadyExists\fP fault is returned if the type already exists in the
+domain. You cannot change any configuration settings of the type after its
+registration, and it must be registered as a new version.
+.RE
+.sp
+\fBAccess Control\fP
+.sp
+You can use IAM policies to control this action\(aqs access to Amazon SWF resources
+as follows:
+.INDENT 0.0
+.IP \(bu 2
+Use a \fBResource\fP element with the \-\-domain \-\-name to limit the action to
+only specified domains.
+.IP \(bu 2
+Use an \fBAction\fP element to allow or deny permission to call this action.
+.IP \(bu 2
+Constrain the following parameters by using a \fBCondition\fP element with the
+appropriate keys.
+.IP \(bu 2
+\fB\-\-default\-task\-list\fP : String constraint. The key is
+\fBswf:defaultTaskList.name\fP .
+.IP \(bu 2
+\fB\-\-name\fP : String constraint. The key is \fBswf:name\fP .
+.IP \(bu 2
+\fB\-\-version\fP : String constraint. The key is \fBswf:version\fP .
+.UNINDENT
+.sp
+If the caller does not have sufficient permissions to invoke the action, or the
+parameter values fall outside the specified constraints, the action fails by
+throwing \fBOperationNotPermitted\fP . For details and example IAM policies, see
+\fI\%Using IAM to Manage Access to Amazon SWF Workflows\fP
+.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws swf register\-activity\-type
+  \-\-domain <value>
+  \-\-name <value>
+  \-\-version <value>
+  [\-\-default\-task\-schedule\-to\-start\-timeout <value>]
+  [\-\-default\-task\-heartbeat\-timeout <value>]
+  [\-\-default\-task\-start\-to\-close\-timeout <value>]
+  [\-\-default\-task\-schedule\-to\-close\-timeout <value>]
+  [\-\-default\-task\-list <value>]
+  [\-\-description <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-domain\fP  (string)
+The \-\-name of the \-\-domain in which this activity is to be registered.
+.TP
+.B \fB\-\-name\fP  (string)
+The \-\-name of the activity type within the domain.
+.sp
+The specified string must not start or end with whitespace. It must not
+contain a \fB:\fP (colon), \fB/\fP (slash), \fB|\fP (vertical bar), or any control
+characters (u0000\-u001f | u007f \- u009f). Also, it must not contain the
+literal string arn.
+.TP
+.B \fB\-\-version\fP  (string)
+The \-\-version of the activity type.
+.IP Note
+The activity type consists of the \-\-name and version, the combination of
+which must be unique within the domain.
+.RE
+.sp
+The specified string must not start or end with whitespace. It must not
+contain a \fB:\fP (colon), \fB/\fP (slash), \fB|\fP (vertical bar), or any control
+characters (u0000\-u001f | u007f \- u009f). Also, it must not contain the
+literal string arn.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-default\-task\-schedule\-to\-start\-timeout\fP  (string)
+If set, specifies the default maximum duration that a task of this activity
+type can wait before being assigned to a worker. This default can be
+overridden when scheduling an activity task using the \fBScheduleActivityTask\fP
+Decision .
+.sp
+The valid values are integers greater than or equal to \fB0\fP . An integer
+value can be used to specify the duration in seconds while \fBNONE\fP can be
+used to specify unlimited duration.
+.TP
+.B \fB\-\-default\-task\-heartbeat\-timeout\fP  (string)
+If set, specifies the default maximum time before which a worker processing a
+task of this type must report progress by calling
+record\-activity\-task\-heartbeat . If the timeout is exceeded, the activity task
+is automatically timed out. This default can be overridden when scheduling an
+activity task using the \fBScheduleActivityTask\fP   Decision . If the activity
+worker subsequently attempts to record a heartbeat or returns a result, the
+activity worker receives an \fBUnknownResource\fP fault. In this case, Amazon
+SWF no longer considers the activity task to be valid; the activity worker
+should clean up the activity task.
+.sp
+The valid values are integers greater than or equal to \fB0\fP . An integer
+value can be used to specify the duration in seconds while \fBNONE\fP can be
+used to specify unlimited duration.
+.TP
+.B \fB\-\-default\-task\-start\-to\-close\-timeout\fP  (string)
+If set, specifies the default maximum duration that a worker can take to
+process tasks of this activity type. This default can be overridden when
+scheduling an activity task using the \fBScheduleActivityTask\fP   Decision .
+.sp
+The valid values are integers greater than or equal to \fB0\fP . An integer
+value can be used to specify the duration in seconds while \fBNONE\fP can be
+used to specify unlimited duration.
+.TP
+.B \fB\-\-default\-task\-schedule\-to\-close\-timeout\fP  (string)
+If set, specifies the default maximum duration for a task of this activity
+type. This default can be overridden when scheduling an activity task using
+the \fBScheduleActivityTask\fP   Decision .
+.sp
+The valid values are integers greater than or equal to \fB0\fP . An integer
+value can be used to specify the duration in seconds while \fBNONE\fP can be
+used to specify unlimited duration.
+.TP
+.B \fB\-\-default\-task\-list\fP  (structure)
+If set, specifies the default task list to use for scheduling tasks of this
+activity type. This default task list is used if a task list is not provided
+when a task is scheduled through the \fBScheduleActivityTask\fP   Decision .
+.sp
+\fBname\fP  (string)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "name": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-description\fP  (string)
+A textual \-\-description of the activity type.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

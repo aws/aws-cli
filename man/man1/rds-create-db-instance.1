@@ -1,0 +1,424 @@
+.TH "RDS-CREATE-DB-INSTANCE" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+rds-create-db-instance \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Creates a new DB instance.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws rds create\-db\-instance
+  \-\-master\-username <value>
+  \-\-engine <value>
+  \-\-allocated\-storage <value>
+  \-\-master\-user\-password <value>
+  \-\-db\-instance\-class <value>
+  \-\-db\-instance\-identifier <value>
+  [\-\-db\-parameter\-group\-name <value>]
+  [\-\-publicly\-accessible ]
+  [\-\-license\-model <value>]
+  [\-\-vpc\-security\-group\-ids <value>]
+  [\-\-multi\-az ]
+  [\-\-db\-security\-groups <value>]
+  [\-\-auto\-minor\-version\-upgrade ]
+  [\-\-preferred\-backup\-window <value>]
+  [\-\-db\-subnet\-group\-name <value>]
+  [\-\-db\-name <value>]
+  [\-\-preferred\-maintenance\-window <value>]
+  [\-\-engine\-version <value>]
+  [\-\-backup\-retention\-period <value>]
+  [\-\-option\-group\-name <value>]
+  [\-\-character\-set\-name <value>]
+  [\-\-availability\-zone <value>]
+  [\-\-iops <value>]
+  [\-\-port <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-master\-username\fP  (string)
+The name of master user for the client DB Instance.
+.sp
+\fBMySQL\fP
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 to 16 alphanumeric characters.
+.IP \(bu 2
+First character must be a letter.
+.IP \(bu 2
+Cannot be a reserved word for the chosen database engine.
+.UNINDENT
+.sp
+Type: String
+.sp
+\fBOracle\fP
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 to 30 alphanumeric characters.
+.IP \(bu 2
+First character must be a letter.
+.IP \(bu 2
+Cannot be a reserved word for the chosen database engine.
+.UNINDENT
+.sp
+\fBSQL Server\fP
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 to 128 alphanumeric characters.
+.IP \(bu 2
+First character must be a letter.
+.IP \(bu 2
+Cannot be a reserved word for the chosen database engine.
+.UNINDENT
+.TP
+.B \fB\-\-engine\fP  (string)
+The name of the database engine to be used for this instance.
+.sp
+Valid Values: \fBMySQL\fP | \fBoracle\-se1\fP | \fBoracle\-se\fP | \fBoracle\-ee\fP |
+\fBsqlserver\-ee\fP | \fBsqlserver\-se\fP | \fBsqlserver\-ex\fP | \fBsqlserver\-web\fP
+.TP
+.B \fB\-\-allocated\-storage\fP  (integer)
+The amount of storage (in gigabytes) to be initially allocated for the
+database instance.
+.sp
+\fBMySQL\fP
+.sp
+Constraints: Must be an integer from 5 to 1024.
+.sp
+Type: Integer
+.sp
+\fBOracle\fP
+.sp
+Constraints: Must be an integer from 10 to 1024.
+.sp
+\fBSQL Server\fP
+.sp
+Constraints: Must be an integer from 200 to 1024 (Standard Edition and
+Enterprise Edition) or from 30 to 1024 (Express Edition and Web Edition)
+.TP
+.B \fB\-\-master\-user\-password\fP  (string)
+The password for the master database user. Can be any printable ASCII
+character except "/", "", or "@".
+.sp
+Type: String
+.sp
+\fBMySQL\fP
+.sp
+Constraints: Must contain from 8 to 41 alphanumeric characters.
+.sp
+\fBOracle\fP
+.sp
+Constraints: Must contain from 8 to 30 alphanumeric characters.
+.sp
+\fBSQL Server\fP
+.sp
+Constraints: Must contain from 8 to 128 alphanumeric characters.
+.TP
+.B \fB\-\-db\-instance\-class\fP  (string)
+The compute and memory capacity of the DB Instance.
+.sp
+Valid Values: \fBdb.t1.micro | db.m1.small | db.m1.medium | db.m1.large |
+db.m1.xlarge | db.m2.xlarge |db.m2.2xlarge | db.m2.4xlarge\fP
+.TP
+.B \fB\-\-db\-instance\-identifier\fP  (string)
+The DB Instance identifier. This parameter is stored as a lowercase string.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must contain from 1 to 63 alphanumeric characters or hyphens (1 to 15 for
+SQL Server).
+.IP \(bu 2
+First character must be a letter.
+.IP \(bu 2
+Cannot end with a hyphen or contain two consecutive hyphens.
+.UNINDENT
+.sp
+Example: \fBmydbinstance\fP
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-db\-parameter\-group\-name\fP  (string)
+The name of the DB Parameter Group to associate with this DB instance. If this
+argument is omitted, the default DBParameterGroup for the specified engine
+will be used.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 to 255 alphanumeric characters
+.IP \(bu 2
+First character must be a letter
+.IP \(bu 2
+Cannot end with a hyphen or contain two consecutive hyphens
+.UNINDENT
+.UNINDENT
+.sp
+\fB\-\-publicly\-accessible\fP  (boolean)
+.INDENT 0.0
+.TP
+.B \fB\-\-license\-model\fP  (string)
+License model information for this DB Instance.
+.sp
+Valid values: \fBlicense\-included\fP | \fBbring\-your\-own\-license\fP |
+\fBgeneral\-public\-license\fP
+.TP
+.B \fB\-\-vpc\-security\-group\-ids\fP  (list of string)
+A list of EC2 VPC Security Groups to associate with this DB Instance.
+.sp
+Default: The default EC2 VPC Security Group for the DB Subnet group\(aqs VPC.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-multi\-az\fP  (boolean)
+Specifies if the DB Instance is a Multi\-AZ deployment. You cannot set the
+\-\-availability\-zone parameter if the \-\-multi\-az parameter is set to true.
+.TP
+.B \fB\-\-db\-security\-groups\fP  (list of string)
+A list of DB Security Groups to associate with this DB Instance.
+.sp
+Default: The default DB Security Group for the database engine.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-auto\-minor\-version\-upgrade\fP  (boolean)
+Indicates that minor engine upgrades will be applied automatically to the DB
+Instance during the maintenance window.
+.sp
+Default: \fBtrue\fP
+.TP
+.B \fB\-\-preferred\-backup\-window\fP  (string)
+The daily time range during which automated backups are created if automated
+backups are enabled, using the \fB\-\-backup\-retention\-period\fP parameter.
+.sp
+Default: A 30\-minute window selected at random from an 8\-hour block of time
+per region. The following list shows the time blocks for each region from
+which the default backup windows are assigned.
+.INDENT 7.0
+.IP \(bu 2
+\fBUS\-East (Northern Virginia) Region:\fP 03:00\-11:00 UTC
+.IP \(bu 2
+\fBUS\-West (Northern California) Region:\fP 06:00\-14:00 UTC
+.IP \(bu 2
+\fBEU (Ireland) Region:\fP 22:00\-06:00 UTC
+.IP \(bu 2
+\fBAsia Pacific (Singapore) Region:\fP 14:00\-22:00 UTC
+.IP \(bu 2
+
+.nf
+**
+.fi
+Asia Pacific (Tokyo) Region: ** 17:00\-03:00 UTC
+.UNINDENT
+.sp
+Constraints: Must be in the format \fBhh24:mi\-hh24:mi\fP . Times should be
+Universal Time Coordinated (UTC). Must not conflict with the preferred
+maintenance window. Must be at least 30 minutes.
+.TP
+.B \fB\-\-db\-subnet\-group\-name\fP  (string)
+A DB Subnet Group to associate with this DB Instance.
+.sp
+If there is no DB Subnet Group, then it is a non\-VPC DB instance.
+.TP
+.B \fB\-\-db\-name\fP  (string)
+The meaning of this parameter differs according to the database engine you
+use.
+.sp
+\fBMySQL\fP
+.sp
+The name of the database to create when the DB Instance is created. If this
+parameter is not specified, no database is created in the DB Instance.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must contain 1 to 64 alphanumeric characters
+.IP \(bu 2
+Cannot be a word reserved by the specified database engine
+.UNINDENT
+.sp
+Type: String
+.sp
+\fBOracle\fP
+.sp
+The Oracle System ID (SID) of the created DB Instance.
+.sp
+Default: \fBORCL\fP
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Cannot be longer than 8 characters
+.UNINDENT
+.sp
+\fBSQL Server\fP
+.sp
+Not applicable. Must be null.
+.TP
+.B \fB\-\-preferred\-maintenance\-window\fP  (string)
+The weekly time range (in UTC) during which system maintenance can occur.
+.sp
+Format: \fBddd:hh24:mi\-ddd:hh24:mi\fP
+.sp
+Default: A 30\-minute window selected at random from an 8\-hour block of time
+per region, occurring on a random day of the week. The following list shows
+the time blocks for each region from which the default maintenance windows are
+assigned.
+.INDENT 7.0
+.IP \(bu 2
+\fBUS\-East (Northern Virginia) Region:\fP 03:00\-11:00 UTC
+.IP \(bu 2
+\fBUS\-West (Northern California) Region:\fP 06:00\-14:00 UTC
+.IP \(bu 2
+\fBEU (Ireland) Region:\fP 22:00\-06:00 UTC
+.IP \(bu 2
+\fBAsia Pacific (Singapore) Region:\fP 14:00\-22:00 UTC
+.IP \(bu 2
+
+.nf
+**
+.fi
+Asia Pacific (Tokyo) Region: ** 17:00\-03:00 UTC
+.UNINDENT
+.sp
+Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+.sp
+Constraints: Minimum 30\-minute window.
+.TP
+.B \fB\-\-engine\-version\fP  (string)
+The version number of the database engine to use.
+.sp
+\fBMySQL\fP
+.sp
+Example: \fB5.1.42\fP
+.sp
+Type: String
+.sp
+\fBOracle\fP
+.sp
+Example: \fB11.2.0.2.v2\fP
+.sp
+Type: String
+.sp
+\fBSQL Server\fP
+.sp
+Example: \fB10.50.2789.0.v1\fP
+.TP
+.B \fB\-\-backup\-retention\-period\fP  (integer)
+The number of days for which automated backups are retained. Setting this
+parameter to a positive number enables backups. Setting this parameter to 0
+disables automated backups.
+.sp
+Default: 1
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be a value from 0 to 8
+.IP \(bu 2
+Cannot be set to 0 if the DB Instance is a master instance with read
+replicas
+.UNINDENT
+.TP
+.B \fB\-\-option\-group\-name\fP  (string)
+Indicates that the DB Instance should be associated with the specified option
+group.
+.TP
+.B \fB\-\-character\-set\-name\fP  (string)
+For supported engines, indicates that the DB Instance should be associated
+with the specified CharacterSet.
+.TP
+.B \fB\-\-availability\-zone\fP  (string)
+The EC2 Availability Zone that the database instance will be created in.
+.sp
+Default: A random, system\-chosen Availability Zone in the endpoint\(aqs region.
+.sp
+Example: \fBus\-east\-1d\fP
+.sp
+Constraint: The \-\-availability\-zone parameter cannot be specified if the
+\-\-multi\-az parameter is set to \fBtrue\fP . The specified Availability Zone must
+be in the same region as the current endpoint.
+.TP
+.B \fB\-\-iops\fP  (integer)
+The amount of Provisioned IOPS (input/output operations per second) to be
+initially allocated for the DB Instance.
+.sp
+Constraints: Must be an integer greater than 1000.
+.TP
+.B \fB\-\-port\fP  (integer)
+The port number on which the database accepts connections.
+.sp
+\fBMySQL\fP
+.sp
+Default: \fB3306\fP
+.sp
+Valid Values: \fB1150\-65535\fP
+.sp
+Type: Integer
+.sp
+\fBOracle\fP
+.sp
+Default: \fB1521\fP
+.sp
+Valid Values: \fB1150\-65535\fP
+.sp
+\fBSQL Server\fP
+.sp
+Default: \fB1433\fP
+.sp
+Valid Values: \fB1150\-65535\fP except for \fB1434\fP and \fB3389\fP .
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

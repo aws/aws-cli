@@ -1,0 +1,207 @@
+.TH "OPSWORKS-CLONE-STACK" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+opsworks-clone-stack \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Creates a clone of a specified stack.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws opsworks clone\-stack
+  [\-\-service\-role\-arn <value>]
+  [\-\-name <value>]
+  [\-\-hostname\-theme <value>]
+  [\-\-use\-custom\-cookbooks ]
+  [\-\-default\-availability\-zone <value>]
+  [\-\-stack\-region <value>]
+  [\-\-source\-stack\-id <value>]
+  [\-\-custom\-cookbooks\-source <value>]
+  [\-\-default\-ssh\-key\-name <value>]
+  [\-\-clone\-app\-ids <value>]
+  [\-\-clone\-permissions ]
+  [\-\-default\-instance\-profile\-arn <value>]
+  [\-\-attributes <value>]
+  [\-\-custom\-json <value>]
+  [\-\-default\-os <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.sp
+None
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-service\-role\-arn\fP  (string)
+The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks
+to work with AWS resources on your behalf. You must set this parameter to the
+Amazon Resource \-\-name (ARN) for an existing IAM role. If you create a stack
+by using the OpsWorks console, it creates the role for you. You can obtain an
+existing stack\(aqs IAM ARN programmatically by calling  describe\-permissions .
+For more information about IAM ARNs, see \fI\%Using Identifiers\fP .
+.TP
+.B \fB\-\-name\fP  (string)
+The cloned stack name.
+.TP
+.B \fB\-\-hostname\-theme\fP  (string)
+The cloned stack host name theme, with spaces replaced by underscores. For
+example: Bud_Spencer. OpsWorks uses this string to generate host names for the
+stack instances.
+.TP
+.B \fB\-\-use\-custom\-cookbooks\fP  (boolean)
+Whether to use custom cookbooks.
+.TP
+.B \fB\-\-default\-availability\-zone\fP  (string)
+The cloned stack Availability Zone. For more information, see \fI\%Regions and
+Endpoints\fP .
+.TP
+.B \fB\-\-stack\-region\fP  (string)
+The cloned stack AWS region, such as "us\-east\-1". For more information about
+AWS regions, see \fI\%Regions and Endpoints\fP
+.TP
+.B \fB\-\-source\-stack\-id\fP  (string)
+The source stack ID.
+.TP
+.B \fB\-\-custom\-cookbooks\-source\fP  (structure)
+.INDENT 7.0
+.TP
+.B \fBusername\fP  (string)
+The user name.
+.TP
+.B \fBssh_key\fP  (string)
+The repository\(aqs SSH key.
+.TP
+.B \fBurl\fP  (string)
+The source URI. For example, the source URI for the OpsWorks MySQL cookbook
+is: \fBhttps://github.com/scalarium/cookbooks.git\fP
+.sp
+For Github repositories, you can also use the "git://..." format. For
+example:
+\fBgit://github.com/scalarium/cookbooks.git\fP
+.TP
+.B \fBpassword\fP  (string)
+The repository\(aqs password.
+.TP
+.B \fBtype\fP  (string)
+The repository type.
+.TP
+.B \fBrevision\fP  (string)
+The application\(aqs version. OpsWorks enables you to easily deploy new
+versions of an application. One of the simplest approaches is to have
+branches or revisions in your repository that represent different versions
+that can potentially be deployed.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "username": "string",
+  "ssh_key": "string",
+  "url": "string",
+  "password": "string",
+  "type": "git"|"svn"|"archive"|"s3",
+  "revision": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-default\-ssh\-key\-name\fP  (string)
+A default SSH key for the stack instances. You can override this value when
+you create or update an instance.
+.TP
+.B \fB\-\-clone\-app\-ids\fP  (list of string)
+A list of source stack app IDs to be included in the cloned stack.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-clone\-permissions\fP  (boolean)
+Whether to clone the source stack\(aqs permissions.
+.TP
+.B \fB\-\-default\-instance\-profile\-arn\fP  (string)
+TBD
+.TP
+.B \fB\-\-attributes\fP  (map)
+A list of stack attributes and values as key/value pairs to be added to the
+cloned stack.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "Color": "string"
+  ...
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-custom\-json\fP  (string)
+A string that contains user\-defined, custom JSON. It is used to override the
+corresponding default stack configuration JSON values. The string should be in
+the following format and must escape characters such as \(aq"\(aq.:
+\fB"{\e"key1\e": \e"value1\e", \e"key2\e": \e"value2\e",...}"\fP
+.TP
+.B \fB\-\-default\-os\fP  (string)
+The cloned stack default operating system, which must be one of the following:
+.INDENT 7.0
+.IP \(bu 2
+m1.small
+.IP \(bu 2
+m1.medium
+.IP \(bu 2
+m1.large
+.IP \(bu 2
+m1.xlarge
+.IP \(bu 2
+c1.medium
+.IP \(bu 2
+c1.xlarge
+.IP \(bu 2
+m2.xlarge
+.IP \(bu 2
+m2.2xlarge
+.IP \(bu 2
+m2.4xlarge
+.UNINDENT
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

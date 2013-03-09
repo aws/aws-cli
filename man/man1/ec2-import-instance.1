@@ -1,0 +1,246 @@
+.TH "EC2-IMPORT-INSTANCE" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+ec2-import-instance \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws ec2 import\-instance
+  \-\-platform <value>
+  [\-\-disk\-images <value>]
+  [\-\-description <value>]
+  [\-\-launch\-specification <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.sp
+\fB\-\-platform\fP  (string)
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-disk\-images\fP  (list)
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+.INDENT 7.0
+.TP
+.B \fBvolume\fP  (structure)
+\fBsize\fP  (long)
+.TP
+.B \fBimage\fP  (structure)
+\fBbytes\fP  (long)
+.sp
+\fBimport_manifest_url\fP  (string)
+.sp
+\fBformat\fP  (string)
+.UNINDENT
+.sp
+\fBdescription\fP  (string)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "volume": {
+      {
+
+      },
+    "image": {
+      {
+        ,
+        "import_manifest_url": "string",
+        "format": "string"
+      },
+    "description": "string"
+  }
+  ...
+]
+.ft P
+.fi
+.UNINDENT
+.sp
+\fB\-\-description\fP  (string)
+.INDENT 0.0
+.TP
+.B \fB\-\-launch\-specification\fP  (structure)
+\fBadditional_info\fP  (string)
+.INDENT 7.0
+.TP
+.B \fBplacement\fP  (structure)
+.INDENT 7.0
+.TP
+.B \fBtenancy\fP  (string)
+The allowed tenancy of instances launched into the VPC. A value of default
+means instances can be launched with any tenancy; a value of dedicated
+means all instances launched into the VPC will be launched as dedicated
+tenancy regardless of the tenancy assigned to the instance at launch.
+.TP
+.B \fBgroup_name\fP  (string)
+The name of the  PlacementGroup in which an Amazon EC2 instance runs.
+Placement groups are primarily used for launching High Performance
+Computing instances in the same group to ensure fast connection speeds.
+.TP
+.B \fBavailability_zone\fP  (string)
+The availability zone in which an Amazon EC2 instance runs.
+.UNINDENT
+.UNINDENT
+.sp
+\fBuser_data\fP  (string)
+.sp
+\fBinstance_initiated_shutdown_behavior\fP  (string)
+.INDENT 7.0
+.TP
+.B \fBblock_device_mappings\fP  (list)
+.INDENT 7.0
+.TP
+.B (structure)
+The BlockDeviceMappingItemType data type.
+.INDENT 7.0
+.TP
+.B \fBdevice_name\fP  (string)
+Specifies the device name (e.g., \fB/dev/sdh\fP ).
+.TP
+.B \fBvirtual_name\fP  (string)
+Specifies the virtual device name.
+.TP
+.B \fBno_device\fP  (string)
+Specifies the device name to suppress during instance launch.
+.TP
+.B \fBebs\fP  (structure)
+Specifies parameters used to automatically setup Amazon EBS volumes when
+the instance is launched.
+.INDENT 7.0
+.TP
+.B \fBdelete_on_termination\fP  (boolean)
+Specifies whether the Amazon EBS volume is deleted on instance
+termination.
+.TP
+.B \fBsnapshot_id\fP  (string)
+The ID of the snapshot from which the volume will be created.
+.TP
+.B \fBvolume_size\fP  (integer)
+The size of the volume, in gigabytes.
+.UNINDENT
+.sp
+\fBvolume_type\fP  (string)
+.sp
+\fBiops\fP  (integer)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fBsecurity_groups\fP  (list of string)
+.sp
+\fBarchitecture\fP  (string)
+.sp
+\fBsubnet_id\fP  (string)
+.sp
+\fBmonitoring\fP  (boolean)
+.sp
+\fBdisable_api_termination\fP  (boolean)
+.sp
+\fBinstance_type\fP  (string)
+.sp
+\fBprivate_ip_address\fP  (string)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "additional_info": "string",
+  "placement": {
+    {
+      "tenancy": "string",
+      "group_name": "string",
+      "availability_zone": "string"
+    },
+  "user_data": "string",
+  "instance_initiated_shutdown_behavior": "string",
+  "block_device_mappings":
+  [
+    {
+      "device_name": "string",
+      "virtual_name": "string",
+      "no_device": "string",
+      "ebs": {
+        {
+          "delete_on_termination": true|false,
+          "snapshot_id": "string",
+          "volume_size": integer,
+          "volume_type": "standard"|"io1",
+          "iops": integer
+        }
+    }
+    ...
+  ]
+    {
+      "device_name": "string",
+      "virtual_name": "string",
+      "no_device": "string",
+      "ebs": {
+        {
+          "delete_on_termination": true|false,
+          "snapshot_id": "string",
+          "volume_size": integer,
+          "volume_type": "standard"|"io1",
+          "iops": integer
+        }
+    }
+    ...
+  ],
+  "security_groups": "string", ...]
+  ["string", ...],
+  "architecture": "string",
+  "subnet_id": "string",
+  "monitoring": true|false,
+  "disable_api_termination": true|false,
+  "instance_type": "t1.micro"|"m1.small"|"m1.medium"|"m1.large"|"m1.xlarge"|
+  "m2.xlarge"|"m2.2xlarge"|"m2.4xlarge"|"m3.xlarge"|"m3.2xlarge"|"c1.medium"
+  |"c1.xlarge"|"hi1.4xlarge"|"cc1.4xlarge"|"cc2.8xlarge"|"cg1.4xlarge",
+  "private_ip_address": "string"
+}
+.ft P
+.fi
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

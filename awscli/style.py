@@ -105,53 +105,6 @@ class BaseStyle(object):
         self.doc.keep_data = True
 
 
-class CLIStyle(BaseStyle):
-
-    def start_bold(self, attrs=None):
-        if self.kwargs.get('do_ansi', False):
-            return '\033[1m'
-        return ''
-
-    def end_bold(self):
-        if self.kwargs.get('do_ansi', False):
-            return '\033[0m'
-        return ''
-
-    def start_underline(self, attrs=None):
-        if self.kwargs.get('do_ansi', False):
-            return '\033[4m'
-        return ''
-
-    def end_underline(self):
-        if self.kwargs.get('do_ansi', False):
-            return '\033[0m'
-        return ''
-
-    def start_italics(self, attrs=None):
-        if self.kwargs.get('do_ansi', False):
-            return '\033[3m'
-        return ''
-
-    def end_italics(self):
-        if self.kwargs.get('do_ansi', False):
-            return '\033[0m'
-        return ''
-
-    def start_li(self, attrs=None):
-        para = self.doc.add_paragraph()
-        para.subsequent_indent = para.initial_indent + 1
-        para.write('  * ')
-
-    def h2(self, s):
-        para = self.doc.get_current_paragraph()
-        para.lines_before = 1
-        return self.bold(s)
-
-    def end_p(self):
-        para = self.doc.get_current_paragraph()
-        para.lines_after = 2
-
-
 class ReSTStyle(object):
 
     def __init__(self, doc, indent_width=2, **kwargs):
@@ -160,6 +113,7 @@ class ReSTStyle(object):
         self.kwargs = kwargs
         self.keep_data = True
         self.do_p = True
+        self.a_href = None
 
     def spaces(self, indent):
         return ' ' * (indent * self.indent_width)
@@ -232,7 +186,7 @@ class ReSTStyle(object):
         return '*'
 
     def end_italics(self):
-        return '*'
+        return '* '
 
     def italics(self, s):
         retval = ''
@@ -289,14 +243,23 @@ class ReSTStyle(object):
         self.doc.add_paragraph()
 
     def start_a(self, attrs=None):
+        if attrs:
+            for attr_key, attr_value in attrs:
+                if attr_key == 'href':
+                    self.a_href = attr_value
+                    self.doc.get_current_paragraph().write('`')
+        else:
+            self.doc.get_current_paragraph().write(' ')
         self.doc.do_translation = True
-        self.doc.get_current_paragraph().write(' ')
-        return self.start_underline()
 
     def end_a(self):
         self.doc.do_translation = False
+        para = self.doc.get_current_paragraph()
+        if self.a_href:
+            para.write(' <%s>' % self.a_href)
+            self.a_href = None
+            para.write('`_')
         self.doc.get_current_paragraph().write(' ')
-        return self.end_underline()
 
     def start_i(self, attrs=None):
         self.doc.do_translation = True

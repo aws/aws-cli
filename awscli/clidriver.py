@@ -21,7 +21,7 @@ import six
 import botocore.session
 from botocore.compat import copy_kwargs
 from awscli import EnvironmentVariables, __version__
-from .help import get_help
+from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
 
@@ -131,7 +131,7 @@ class CLIDriver(object):
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            get_help(self.session, service=self.service, style='cli')
+            get_service_help(self.service)
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
         return self.create_operation_parser(remaining)
@@ -181,7 +181,7 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
         if 'help' in remaining:
-            get_help(self.session, operation=self.operation, style='cli')
+            get_operation_help(self.operation)
             sys.exit(0)
         args, remaining = parser.parse_known_args(remaining)
         if remaining:
@@ -333,7 +333,7 @@ class CLIDriver(object):
         self.args, remaining = self.parser.parse_known_args()
         if self.args.service_name == 'help':
             provider = self.session.get_variable('provider')
-            get_help(self.session, provider=provider, style='cli')
+            get_provider_help(provider=provider)
             sys.exit(0)
         else:
             if self.args.debug:

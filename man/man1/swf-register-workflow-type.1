@@ -1,0 +1,186 @@
+.TH "SWF-REGISTER-WORKFLOW-TYPE" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+swf-register-workflow-type \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Registers a new \fIworkflow type\fP and its configuration settings in the specified
+domain.
+.sp
+The retention period for the workflow history is set by the  register\-domain
+action.
+.IP Warning
+If the type already exists, then a \fBTypeAlreadyExists\fP fault is returned.
+You cannot change the configuration settings of a workflow type once it is
+registered and it must be registered as a new version.
+.RE
+.sp
+\fBAccess Control\fP
+.sp
+You can use IAM policies to control this action\(aqs access to Amazon SWF resources
+as follows:
+.INDENT 0.0
+.IP \(bu 2
+Use a \fBResource\fP element with the \-\-domain \-\-name to limit the action to
+only specified domains.
+.IP \(bu 2
+Use an \fBAction\fP element to allow or deny permission to call this action.
+.IP \(bu 2
+Constrain the following parameters by using a \fBCondition\fP element with the
+appropriate keys.
+.IP \(bu 2
+\fB\-\-default\-task\-list\fP : String constraint. The key is
+\fBswf:defaultTaskList.name\fP .
+.IP \(bu 2
+\fB\-\-name\fP : String constraint. The key is \fBswf:name\fP .
+.IP \(bu 2
+\fB\-\-version\fP : String constraint. The key is \fBswf:version\fP .
+.UNINDENT
+.sp
+If the caller does not have sufficient permissions to invoke the action, or the
+parameter values fall outside the specified constraints, the action fails by
+throwing \fBOperationNotPermitted\fP . For details and example IAM policies, see
+\fI\%Using IAM to Manage Access to Amazon SWF Workflows\fP
+.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws swf register\-workflow\-type
+  \-\-domain <value>
+  \-\-name <value>
+  \-\-version <value>
+  [\-\-default\-execution\-start\-to\-close\-timeout <value>]
+  [\-\-default\-child\-policy <value>]
+  [\-\-default\-task\-start\-to\-close\-timeout <value>]
+  [\-\-default\-task\-list <value>]
+  [\-\-description <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-domain\fP  (string)
+The \-\-name of the \-\-domain in which to register the workflow type.
+.TP
+.B \fB\-\-name\fP  (string)
+The \-\-name of the workflow type.
+.sp
+The specified string must not start or end with whitespace. It must not
+contain a \fB:\fP (colon), \fB/\fP (slash), \fB|\fP (vertical bar), or any control
+characters (u0000\-u001f | u007f \- u009f). Also, it must not contain the
+literal string arn.
+.TP
+.B \fB\-\-version\fP  (string)
+The \-\-version of the workflow type.
+.IP Note
+The workflow type consists of the \-\-name and version, the combination of
+which must be unique within the domain. To get a list of all currently
+registered workflow types, use the  list\-workflow\-types action.
+.RE
+.sp
+The specified string must not start or end with whitespace. It must not
+contain a \fB:\fP (colon), \fB/\fP (slash), \fB|\fP (vertical bar), or any control
+characters (u0000\-u001f | u007f \- u009f). Also, it must not contain the
+literal string arn.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-default\-execution\-start\-to\-close\-timeout\fP  (string)
+If set, specifies the default maximum duration for executions of this workflow
+type. You can override this default when starting an execution through the
+start\-workflow\-execution Action or \fBStartChildWorkflowExecution\fP   Decision
+.
+.sp
+The duration is specified in seconds. The valid values are integers greater
+than or equal to 0. Unlike some of the other timeout parameters in Amazon SWF,
+you cannot specify a value of "NONE" for
+\fB\-\-default\-execution\-start\-to\-close\-timeout\fP ; there is a one\-year max limit
+on the time that a workflow execution can run. Exceeding this limit will
+always cause the workflow execution to time out.
+.TP
+.B \fB\-\-default\-child\-policy\fP  (string)
+If set, specifies the default policy to use for the child workflow executions
+when a workflow execution of this type is terminated, by calling the
+terminate\-workflow\-execution action explicitly or due to an expired timeout.
+This default can be overridden when starting a workflow execution using the
+start\-workflow\-execution action or the \fBStartChildWorkflowExecution\fP
+Decision . The supported child policies are:
+.INDENT 7.0
+.IP \(bu 2
+\fBTERMINATE:\fP the child executions will be terminated.
+.IP \(bu 2
+\fBREQUEST_CANCEL:\fP a request to cancel will be attempted for each child
+execution by recording a \fBWorkflowExecutionCancelRequested\fP event in its
+history. It is up to the decider to take appropriate actions when it
+receives an execution history with this event.
+.IP \(bu 2
+\fBABANDON:\fP no action will be taken. The child executions will continue to
+run.
+.UNINDENT
+.TP
+.B \fB\-\-default\-task\-start\-to\-close\-timeout\fP  (string)
+If set, specifies the default maximum duration of decision tasks for this
+workflow type. This default can be overridden when starting a workflow
+execution using the  start\-workflow\-execution action or the
+\fBStartChildWorkflowExecution\fP   Decision .
+.sp
+The valid values are integers greater than or equal to \fB0\fP . An integer
+value can be used to specify the duration in seconds while \fBNONE\fP can be
+used to specify unlimited duration.
+.TP
+.B \fB\-\-default\-task\-list\fP  (structure)
+If set, specifies the default task list to use for scheduling decision tasks
+for executions of this workflow type. This default is used only if a task list
+is not provided when starting the execution through the
+start\-workflow\-execution Action or \fBStartChildWorkflowExecution\fP   Decision
+.
+.sp
+\fBname\fP  (string)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "name": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-description\fP  (string)
+Textual \-\-description of the workflow type.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

@@ -1,0 +1,212 @@
+.TH "EC2-REVOKE-SECURITY-GROUP-EGRESS" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+ec2-revoke-security-group-egress \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+This action applies only to security groups in a VPC. It doesn\(aqt work with EC2
+security groups. For information about Amazon Virtual Private Cloud and VPC
+security groups, go to the Amazon Virtual Private Cloud User Guide.
+.sp
+The action removes one or more egress rules from a VPC security group. The
+values that you specify in the revoke request (e.g., ports, etc.) must match the
+existing rule\(aqs values in order for the rule to be revoked.
+.sp
+Each rule consists of the protocol, and the CIDR range or destination security
+group. For the TCP and UDP protocols, you must also specify the destination port
+or range of ports. For the ICMP protocol, you must also specify the ICMP type
+and code.
+.sp
+Rule changes are propagated to instances within the security group as quickly as
+possible. However, a small delay might occur.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws ec2 revoke\-security\-group\-egress
+  \-\-group\-id <value>
+  [\-\-cidr\-ip <value>]
+  [\-\-ip\-permissions <value>]
+  [\-\-from\-port <value>]
+  [\-\-source\-security\-group\-owner\-id <value>]
+  [\-\-source\-security\-group\-name <value>]
+  [\-\-to\-port <value>]
+  [\-\-ip\-protocol <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-group\-id\fP  (string)
+ID of the VPC security group to modify.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-cidr\-ip\fP  (string)
+Deprecated.
+.TP
+.B \fB\-\-ip\-permissions\fP  (list)
+List of IP permissions to authorize on the specified security group.
+Specifying permissions through IP permissions is the preferred way of
+authorizing permissions since it offers more flexibility and control.
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+An IP permission describing allowed incoming IP traffic to an Amazon EC2
+security group.
+.INDENT 7.0
+.TP
+.B \fBto_port\fP  (integer)
+End of port range for the TCP and UDP protocols, or an ICMP code. An ICMP
+code of \fB\-1\fP indicates a wildcard (i.e., any ICMP code).
+.TP
+.B \fBip_protocol\fP  (string)
+The IP protocol of this permission.
+.sp
+Valid protocol values: \fBtcp\fP , \fBudp\fP , \fBicmp\fP
+.TP
+.B \fBip_ranges\fP  (list)
+The list of CIDR IP ranges included in this permission.
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+Contains a list of CIRD IP ranges.
+.INDENT 7.0
+.TP
+.B \fBcidr_ip\fP  (string)
+The list of CIDR IP ranges.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.TP
+.B \fBuser_id_group_pairs\fP  (list)
+The list of AWS user IDs and groups included in this permission.
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+An AWS user ID identifiying an AWS account, and the name of a security
+group within that account.
+.INDENT 7.0
+.TP
+.B \fBgroup_name\fP  (string)
+Name of the security group in the specified AWS account. Cannot be
+used when specifying a CIDR IP address range.
+.TP
+.B \fBuser_id\fP  (string)
+The AWS user ID of an account.
+.TP
+.B \fBgroup_id\fP  (string)
+ID of the security group in the specified AWS account. Cannot be used
+when specifying a CIDR IP address range.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.TP
+.B \fBfrom_port\fP  (integer)
+Start of port range for the TCP and UDP protocols, or an ICMP type number.
+An ICMP type number of \fB\-1\fP indicates a wildcard (i.e., any ICMP type
+number).
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "to_port": integer,
+    "ip_protocol": "string",
+    "ip_ranges":
+    [
+      {
+        "cidr_ip": "string"
+      }
+      ...
+    ]
+      {
+        "cidr_ip": "string"
+      }
+      ...
+    ],
+    "user_id_group_pairs":
+    [
+      {
+        "group_name": "string",
+        "user_id": "string",
+        "group_id": "string"
+      }
+      ...
+    ]
+      {
+        "group_name": "string",
+        "user_id": "string",
+        "group_id": "string"
+      }
+      ...
+    ],
+    "from_port": integer
+  }
+  ...
+]
+.ft P
+.fi
+.TP
+.B \fB\-\-from\-port\fP  (integer)
+Deprecated.
+.TP
+.B \fB\-\-source\-security\-group\-owner\-id\fP  (string)
+Deprecated.
+.TP
+.B \fB\-\-source\-security\-group\-name\fP  (string)
+Deprecated.
+.TP
+.B \fB\-\-to\-port\fP  (integer)
+Deprecated.
+.TP
+.B \fB\-\-ip\-protocol\fP  (string)
+Deprecated.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

@@ -1,0 +1,159 @@
+.TH "AUTOSCALING-UPDATE-AUTO-SCALING-GROUP" "1" "March 09, 2013" "0.8" "aws-cli"
+.SH NAME
+autoscaling-update-auto-scaling-group \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Updates the configuration for the specified  AutoScalingGroup .
+.IP Note
+To update an Auto Scaling group with a launch configuration that has the
+\fBInstanceMonitoring\fP flag set to \fBFalse\fP , you must first ensure that
+collection of group metrics is disabled. Otherwise, calls to
+update\-auto\-scaling\-group will fail. If you have previously enabled group
+metrics collection, you can disable collection of all group metrics by calling
+disable\-metrics\-collection .
+.RE
+.sp
+The new settings are registered upon the completion of this call. Any launch
+configuration settings take effect on any triggers after this call returns.
+Triggers that are currently in progress aren\(aqt affected.
+.IP Note
+.INDENT 0.0
+.IP \(bu 2
+If a new value is specified for \fI\-\-min\-size\fP without specifying the value
+for \fI\-\-desired\-capacity\fP , and if the new \fI\-\-min\-size\fP is larger than the
+current size of the Auto Scaling Group, there will be an implicit call to
+set\-desired\-capacity to set the group to the new \fI\-\-min\-size\fP .
+.IP \(bu 2
+If a new value is specified for \fI\-\-max\-size\fP without specifying the value
+for \fI\-\-desired\-capacity\fP , and the new \fI\-\-max\-size\fP is smaller than the
+current size of the Auto Scaling Group, there will be an implicit call to
+set\-desired\-capacity to set the group to the new \fI\-\-max\-size\fP .
+.IP \(bu 2
+All other optional parameters are left unchanged if not passed in the
+request.
+.UNINDENT
+.RE
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws autoscaling update\-auto\-scaling\-group
+  \-\-auto\-scaling\-group\-name <value>
+  [\-\-health\-check\-grace\-period <value>]
+  [\-\-placement\-group <value>]
+  [\-\-desired\-capacity <value>]
+  [\-\-termination\-policies <value>]
+  [\-\-default\-cooldown <value>]
+  [\-\-min\-size <value>]
+  [\-\-max\-size <value>]
+  [\-\-vpc\-zone\-identifier <value>]
+  [\-\-launch\-configuration\-name <value>]
+  [\-\-availability\-zones <value>]
+  [\-\-health\-check\-type <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-auto\-scaling\-group\-name\fP  (string)
+The name of the Auto Scaling group.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-health\-check\-grace\-period\fP  (integer)
+The length of time that Auto Scaling waits before checking an instance\(aqs
+health status. The grace period begins when an instance comes into service.
+.TP
+.B \fB\-\-placement\-group\fP  (string)
+The name of the cluster placement group, if applicable. For more information,
+go to \fI\%Using Cluster Instances\fP in the Amazon EC2 User Guide.
+.TP
+.B \fB\-\-desired\-capacity\fP  (integer)
+The desired capacity for the Auto Scaling group.
+.TP
+.B \fB\-\-termination\-policies\fP  (list of string)
+A standalone termination policy or a list of termination policies used to
+select the instance to terminate. The policies are executed in the order that
+they are listed.
+.sp
+For more information on creating a termination policy for your Auto Scaling
+group, go to \fI\%Instance Termination Policy for Your Auto Scaling Group\fP in the the \fIAuto Scaling Developer Guide\fP .
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-default\-cooldown\fP  (integer)
+The amount of time, in seconds, after a scaling activity completes before any
+further trigger\-related scaling activities can start.
+.TP
+.B \fB\-\-min\-size\fP  (integer)
+The minimum size of the Auto Scaling group.
+.TP
+.B \fB\-\-max\-size\fP  (integer)
+The maximum size of the Auto Scaling group.
+.TP
+.B \fB\-\-vpc\-zone\-identifier\fP  (string)
+The subnet identifier for the Amazon VPC connection, if applicable. You can
+specify several subnets in a comma\-separated list.
+.sp
+When you specify \fB\-\-vpc\-zone\-identifier\fP with \fB\-\-availability\-zones\fP ,
+ensure that the subnets\(aq Availability Zones match the values you specify for
+\fB\-\-availability\-zones\fP .
+.TP
+.B \fB\-\-launch\-configuration\-name\fP  (string)
+The name of the launch configuration.
+.TP
+.B \fB\-\-availability\-zones\fP  (list of string)
+Availability Zones for the group.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-health\-check\-type\fP  (string)
+The service of interest for the health status check, either "EC2" for Amazon
+EC2 or "ELB" for Elastic Load Balancing.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

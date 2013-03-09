@@ -20,6 +20,7 @@ packages = [
 
 requires = ['botocore>=0.7.0',
             'six>=1.1.0',
+            'colorama==0.2.5',
             'argparse>=1.1']
 
 

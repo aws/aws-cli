@@ -14,7 +14,6 @@ import sys
 import json
 
 import six
-import blessings
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
 
@@ -45,26 +44,22 @@ class TableFormatter(Formatter):
             self.table = MultiTable(initial_section=False,
                                     column_separator='|')
         elif args.color == 'off':
-            # Setting force_styling to None disables any colorized output.
-            terminal = blessings.Terminal(force_styling=None)
             styler = Styler()
             self.table = MultiTable(initial_section=False,
-                                    column_separator='|', terminal=terminal,
-                                    styler=styler)
+                                    column_separator='|', styler=styler)
         elif args.color == 'on':
-            # The configuration here is really to facilitate
-            # "aws ... | less -r" which lets you take the
-            # unpaged output and be able to send it to a pager
-            # unchanged.
-            terminal = blessings.Terminal(force_styling=True)
-            styler = ColorizedStyler(terminal)
+            styler = ColorizedStyler()
             self.table = MultiTable(initial_section=False,
-                                    column_separator='|', terminal=terminal,
-                                    styler=styler, auto_reformat=True)
+                                    column_separator='|', styler=styler)
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 
-    def __call__(self, operation, response, stream=sys.stdout):
+    def __call__(self, operation, response, stream=None):
+        if stream is None:
+            # Retrieve stdout on invocation instead of at import time
+            # so that if anything wraps stdout we'll pick up those changes
+            # (specifically colorama on windows wraps stdout).
+            stream = sys.stdout
         self._build_table(operation.name, response)
         try:
             self.table.render(stream)

@@ -193,6 +193,13 @@ class BooleanParameter(Parameter):
             label = label + self.get_label()
             built_params[label] = value
 
+    @property
+    def false_name(self):
+        false_name = ''
+        if self.required:
+            false_name = '--no-' + self.cli_name[2:]
+        return false_name
+
 
 class TimestampParameter(Parameter):
 

@@ -50,8 +50,7 @@ class TableFormatter(Formatter):
         elif args.color == 'on':
             styler = ColorizedStyler()
             self.table = MultiTable(initial_section=False,
-                                    column_separator='|', styler=styler,
-                                    auto_reformat=True)
+                                    column_separator='|', styler=styler)
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 

@@ -168,7 +168,7 @@ class ColorizedStyler(Styler):
 class MultiTable(object):
     def __init__(self, terminal_width=None, initial_section=True,
                  column_separator='|', terminal=None,
-                 styler=None, auto_reformat=False):
+                 styler=None, auto_reformat=True):
         self._auto_reformat = auto_reformat
         if initial_section:
             self._current_section = Section()

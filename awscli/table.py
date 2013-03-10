@@ -34,7 +34,10 @@ def determine_terminal_width(default_width=80):
 
 
 def is_a_tty():
-    return os.isatty(sys.stdout.fileno())
+    try:
+        return os.isatty(sys.stdout.fileno())
+    except Exception:
+        return False
 
 
 def center_text(text, length=80, left_edge='|', right_edge='|',

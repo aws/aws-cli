@@ -10,34 +10,34 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sys
-import blessings
+import struct
+
+import colorama
 
 
-def determine_terminal_width():
-    # This is a best effort atttempt at finding the terminal width.  This
-    # approach can probably been improved.
-
-    # Maybe it just works?
-    t = blessings.Terminal()
-    width = t.width
-    if width is not None:
-        return width
-    # By default, Terminal() will assume stdout as the controlling
-    # terminal.  We're going to try stdin and stderr
-    # and see if any of those work.
-    for stream in (sys.__stdin__, sys.__stderr__):
-        width = blessings.Terminal(stream=stream).width
-        if width is not None:
-            return width
-    # As a last ditch effort, we can try /dev/tty which won't work
-    # on Windows, but will work on linux/Mac.
+def determine_terminal_width(default_width=80):
+    # If we can't detect the terminal width, the default_width is returned.
     try:
-        with open('/dev/tty') as f:
-            width = blessings.Terminal(stream=f).width
-            return width
+        from termios import TIOCGWINSZ
+        from fcntl import ioctl
+    except ImportError:
+        return default_width
+    try:
+        height, width = struct.unpack('hhhh', ioctl(sys.stdout,
+                                                    TIOCGWINSZ, '\000' * 8))[0:2]
     except Exception:
-        return None
+        return default_width
+    else:
+        return width
+
+
+def is_a_tty():
+    try:
+        return os.isatty(sys.stdout.fileno())
+    except Exception:
+        return False
 
 
 def center_text(text, length=80, left_edge='|', right_edge='|',
@@ -145,26 +145,33 @@ class Styler(object):
 
 
 class ColorizedStyler(Styler):
-    def __init__(self, terminal):
-        self._terminal = terminal
+    def __init__(self):
+        # autoreset allows us to not have to sent
+        # reset sequences for every string.
+        colorama.init(autoreset=True)
 
     def style_title(self, text):
-        return self._terminal.bold_underline(text)
+        # Originally bold + underline
+        return text
+        #return colorama.Style.BOLD + text + colorama.Style.RESET_ALL
 
     def style_header_column(self, text):
-        return self._terminal.underline(text)
+        # Originally underline
+        return text
 
     def style_row_element(self, text):
-        return self._terminal.bright_blue(text)
+        return (colorama.Style.BRIGHT + colorama.Fore.BLUE +
+                text + colorama.Style.RESET_ALL)
 
     def style_indentation_char(self, text):
-        return self._terminal.bright_yellow(text)
+        return (colorama.Style.DIM + colorama.Fore.YELLOW +
+                text + colorama.Style.RESET_ALL)
 
 
 class MultiTable(object):
     def __init__(self, terminal_width=None, initial_section=True,
                  column_separator='|', terminal=None,
-                 styler=None, auto_reformat=None):
+                 styler=None, auto_reformat=True):
         self._auto_reformat = auto_reformat
         if initial_section:
             self._current_section = Section()
@@ -172,13 +179,10 @@ class MultiTable(object):
         else:
             self._current_section = None
             self._sections = []
-        if terminal is None:
-            self._terminal = blessings.Terminal()
-        else:
-            self._terminal = terminal
         if styler is None:
-            if self._terminal.is_a_tty:
-                self._styler = ColorizedStyler(self._terminal)
+            # Move out to factory.
+            if is_a_tty():
+                self._styler = ColorizedStyler()
             else:
                 self._styler = Styler()
         else:
@@ -216,16 +220,8 @@ class MultiTable(object):
     def _determine_conversion_needed(self, max_width):
         # If we don't know the width of the controlling terminal,
         # then we don't try to resize the table.
-        if self._terminal_width is None:
-            return False
         if max_width > self._terminal_width:
-            # Provided that calculated width of the table is greater than
-            # the terminal width then the auto_reformat flag will determine
-            # what we do.
-            if self._auto_reformat is None:
-                return self._terminal.is_a_tty
-            else:
-                return self._auto_reformat
+            return self._auto_reformat
 
     def _calculate_max_width(self):
         max_width = max(s.total_width(padding=4, with_border=True,

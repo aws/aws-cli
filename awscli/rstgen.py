@@ -234,20 +234,14 @@ class OperationDocument(Document):
                     self.dedent()
                 elif member.type == 'map':
                     para.write('"%s": ' % member.py_name)
+                    self.indent()
                     self._do_example(member)
+                    self.dedent()
                 elif member.type == 'list':
                     para.write('"%s": ' % member.py_name)
+                    self.indent()
                     self._do_example(member)
-                    if member.members.type in ScalarTypes:
-                        para.write('%s, ...' % self.example_value_name(member.members))
-                    else:
-                        self.indent()
-                        self._do_example(member.members)
-                        para = self.add_paragraph()
-                        para.write('...')
-                        self.dedent()
-                        para = self.add_paragraph()
-                    para.write(']')
+                    self.dedent()
                 if i < len(param.members) - 1:
                     para = self.get_current_paragraph()
                     para.write(',')

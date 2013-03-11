@@ -15,20 +15,28 @@ try:
 except ImportError:
     from distutils.core import setup
 
-def visitfn(l, dirname, names):
-    fqn = [os.path.join(dirname, name) for name in names]
-    l.append((dirname, [n for n in fqn if os.path.isfile(n)]))
+def build_package_data():
+    text_files = _get_text_files()
+    package_data = {
+        'awscli': ['data/*.json', 'doc/man/man1/*.1'] + text_files
+    }
+    return package_data
 
-def build_doclist():
-    doclist = [('doc/man/man1', glob.glob('doc/man/man1/*.1'))]
-    os.path.walk('doc/text', visitfn, doclist)
-    return doclist
+
+def _get_text_files():
+    filenames = []
+    for root, dirs, files in os.walk('awscli/doc/text'):
+        for filename in files:
+            # Strip off the 'awscli/'
+            filenames.append(os.path.join(root, filename)[7:])
+    return filenames
+
 
 packages = [
     'awscli',
 ]
 
-requires = ['botocore>=0.8.0',
+requires = ['botocore>=0.8.1',
             'six>=1.1.0',
             'colorama==0.2.5',
             'argparse>=1.1']
@@ -44,9 +52,8 @@ setup(
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
-    data_files=build_doclist(),
     packages=packages,
-    package_data={'awscli': ['data/*.json']},
+    package_data=build_package_data(),
     package_dir={'awscli': 'awscli'},
     include_package_data=True,
     install_requires=requires,

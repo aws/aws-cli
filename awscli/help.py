@@ -17,7 +17,6 @@ import platform
 
 def get_text_path():
     textpath = os.path.split(__file__)[0]
-    textpath = os.path.split(textpath)[0]
     textpath = os.path.join(textpath, 'doc')
     textpath = os.path.join(textpath, 'text')
     textpath = os.path.join(textpath, 'reference')
@@ -54,7 +53,6 @@ def do_text_operation(operation):
 
 def do_man(man_page):
     manpath = os.path.split(__file__)[0]
-    manpath = os.path.split(manpath)[0]
     manpath = os.path.join(manpath, 'doc')
     manpath = os.path.join(manpath, 'man')
     args = ['man', '-M', manpath, man_page]

@@ -2,11 +2,12 @@
     "service_full_name": "Amazon Elastic Compute Cloud",
     "service_abbreviation": "Amazon EC2",
     "type": "query",
-    "signature_version": "v2",
-    "result_wrapped": false,
     "api_version": "2012-12-01",
     "endpoint_prefix": "ec2",
-    "xmlnamespace": "http://ec2.amazonaws.com/doc/2012-12-01",
+    "result_wrapped": "false",
+    "membered_lists": "false",
+    "signature_version": "v2",
+    "xmlnamespace": "http://ec2.amazonaws.com/doc/2013-02-01",
     "documentation": "\n        <p>\n        Amazon Elastic Compute Cloud (Amazon EC2) is a web service that provides\n        resizable compute capacity in the cloud.\n        It is designed to make web-scale computing easier for developers.\n        </p>\n        <p>\n        Amazon EC2's simple web service interface allows you to obtain and configure\n        capacity with minimal friction. It provides you with complete control of your\n        computing resources and lets you run on Amazon's proven computing environment.\n        Amazon EC2 reduces the time required to obtain and boot new server instances to\n        minutes, allowing you to quickly scale capacity, both up and down, as your\n        computing requirements change. Amazon EC2 changes the economics of computing by\n        allowing you to pay only for capacity that you actually use. Amazon EC2 provides\n        developers the tools to build failure resilient applications and isolate\n        themselves from common failure scenarios.\n        </p>\n        <p>\n        Visit <a href=\"http://aws.amazon.com/ec2/\">http://aws.amazon.com/ec2/</a> for\n        more information.\n        </p>\n    ",
     "operations": {
         "ActivateLicense": {
@@ -1308,6 +1309,59 @@
             "errors": [],
             "documentation": "\n        <p>\n        The ConfirmProductInstance operation returns true if the specified product code\n        is attached to the specified instance. The operation returns false if the\n        product code is not attached to the instance.\n        </p>\n        <p>\n        The ConfirmProductInstance operation can only be executed by the owner of the\n        AMI. This feature is useful when an AMI owner is providing support and wants to\n        verify whether a user's instance is eligible.\n        </p>\n    "
         },
+        "CopyImage": {
+            "name": "CopyImage",
+            "input": {
+                "shape_name": "CopyImageRequest",
+                "type": "structure",
+                "members": {
+                    "SourceRegion": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "required": true
+                    },
+                    "SourceImageId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "required": true
+                    },
+                    "Name": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "required": true
+                    },
+                    "Description": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null
+                    },
+                    "ClientToken": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "CopyImageResult",
+                "type": "structure",
+                "members": {
+                    "ImageId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "xmlname": "imageId"
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [],
+            "documentation": null
+        },
         "CopySnapshot": {
             "name": "CopySnapshot",
             "input": {
@@ -2575,6 +2629,12 @@
                                             "documentation": null,
                                             "xmlname": "privateIpAddress"
                                         },
+                                        "PrivateDnsName": {
+                                            "shape_name": "String",
+                                            "type": "string",
+                                            "documentation": null,
+                                            "xmlname": "privateDnsName"
+                                        },
                                         "Primary": {
                                             "shape_name": "Boolean",
                                             "type": "boolean",
@@ -3078,44 +3138,6 @@
                                 },
                                 "documentation": null,
                                 "xmlname": "propagatingVgwSet"
-                            },
-                            "PropagatedRoutes": {
-                                "shape_name": "PropagatedRouteList",
-                                "type": "list",
-                                "members": {
-                                    "shape_name": "PropagatedRoute",
-                                    "type": "structure",
-                                    "members": {
-                                        "DestinationCidrBlock": {
-                                            "shape_name": "String",
-                                            "type": "string",
-                                            "documentation": null,
-                                            "xmlname": "destinationCidrBlock"
-                                        },
-                                        "GatewayId": {
-                                            "shape_name": "String",
-                                            "type": "string",
-                                            "documentation": null,
-                                            "xmlname": "gatewayId"
-                                        },
-                                        "Status": {
-                                            "shape_name": "String",
-                                            "type": "string",
-                                            "documentation": null,
-                                            "xmlname": "status"
-                                        },
-                                        "SourceId": {
-                                            "shape_name": "String",
-                                            "type": "string",
-                                            "documentation": null,
-                                            "xmlname": "sourceId"
-                                        }
-                                    },
-                                    "documentation": null,
-                                    "xmlname": "item"
-                                },
-                                "documentation": null,
-                                "xmlname": "propagatedRouteSet"
                             }
                         },
                         "documentation": null,
@@ -3437,6 +3459,18 @@
                                 "type": "string",
                                 "documentation": "\n        <p>\n        Specifies the Availability Zone the subnet is in.\n        </p>\n    ",
                                 "xmlname": "availabilityZone"
+                            },
+                            "DefaultForAz": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": null,
+                                "xmlname": "defaultForAz"
+                            },
+                            "MapPublicIpOnLaunch": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": null,
+                                "xmlname": "mapPublicIpOnLaunch"
                             },
                             "Tags": {
                                 "shape_name": "TagList",
@@ -3799,6 +3833,12 @@
                                 "type": "string",
                                 "documentation": "\n        <p>\n        The allowed tenancy of instances launched into the VPC.\n        </p>\n    ",
                                 "xmlname": "instanceTenancy"
+                            },
+                            "IsDefault": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": "\n        <p>\n\n        </p>\n    ",
+                                "xmlname": "isDefault"
                             }
                         },
                         "documentation": "\n        <p>\n        Information about the VPC.\n        </p>\n    ",
@@ -4633,6 +4673,77 @@
             "output": null,
             "errors": [],
             "documentation": "\n        <p>\n        The DeregisterImage operation deregisters an AMI. Once deregistered, instances\n        of the AMI can no longer be launched.\n        </p>\n    "
+        },
+        "DescribeAccountAttributes": {
+            "name": "DescribeAccountAttributes",
+            "input": {
+                "shape_name": "DescribeAccountAttributesRequest",
+                "type": "structure",
+                "members": {
+                    "AttributeNames": {
+                        "shape_name": "AccountAttributeNameStringList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "String",
+                            "type": "string",
+                            "documentation": null,
+                            "xmlname": "AttributeName"
+                        },
+                        "documentation": null,
+                        "flattened": true
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "DescribeAccountAttributesResult",
+                "type": "structure",
+                "members": {
+                    "AccountAttributes": {
+                        "shape_name": "AccountAttributeList",
+                        "type": "list",
+                        "members": {
+                            "shape_name": "AccountAttribute",
+                            "type": "structure",
+                            "members": {
+                                "AttributeName": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": null,
+                                    "xmlname": "attributeName"
+                                },
+                                "AttributeValues": {
+                                    "shape_name": "AccountAttributeValueList",
+                                    "type": "list",
+                                    "members": {
+                                        "shape_name": "AccountAttributeValue",
+                                        "type": "structure",
+                                        "members": {
+                                            "AttributeValue": {
+                                                "shape_name": "String",
+                                                "type": "string",
+                                                "documentation": null,
+                                                "xmlname": "attributeValue"
+                                            }
+                                        },
+                                        "documentation": null,
+                                        "xmlname": "item"
+                                    },
+                                    "documentation": null,
+                                    "xmlname": "attributeValueSet"
+                                }
+                            },
+                            "documentation": null,
+                            "xmlname": "item"
+                        },
+                        "documentation": null,
+                        "xmlname": "accountAttributeSet"
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [],
+            "documentation": null
         },
         "DescribeAddresses": {
             "name": "DescribeAddresses",
@@ -7123,6 +7234,7 @@
                                                     "c1.medium",
                                                     "c1.xlarge",
                                                     "hi1.4xlarge",
+                                                    "hs1.8xlarge",
                                                     "cc1.4xlarge",
                                                     "cc2.8xlarge",
                                                     "cg1.4xlarge"
@@ -7553,6 +7665,12 @@
                                                                     "documentation": null,
                                                                     "xmlname": "publicIp"
                                                                 },
+                                                                "PublicDnsName": {
+                                                                    "shape_name": "String",
+                                                                    "type": "string",
+                                                                    "documentation": null,
+                                                                    "xmlname": "publicDnsName"
+                                                                },
                                                                 "IpOwnerId": {
                                                                     "shape_name": "String",
                                                                     "type": "string",
@@ -7562,6 +7680,64 @@
                                                             },
                                                             "documentation": null,
                                                             "xmlname": "association"
+                                                        },
+                                                        "PrivateIpAddresses": {
+                                                            "shape_name": "InstancePrivateIpAddressList",
+                                                            "type": "list",
+                                                            "members": {
+                                                                "shape_name": "InstancePrivateIpAddress",
+                                                                "type": "structure",
+                                                                "members": {
+                                                                    "PrivateIpAddress": {
+                                                                        "shape_name": "String",
+                                                                        "type": "string",
+                                                                        "documentation": null,
+                                                                        "xmlname": "privateIpAddress"
+                                                                    },
+                                                                    "PrivateDnsName": {
+                                                                        "shape_name": "String",
+                                                                        "type": "string",
+                                                                        "documentation": null,
+                                                                        "xmlname": "privateDnsName"
+                                                                    },
+                                                                    "Primary": {
+                                                                        "shape_name": "Boolean",
+                                                                        "type": "boolean",
+                                                                        "documentation": null,
+                                                                        "xmlname": "primary"
+                                                                    },
+                                                                    "Association": {
+                                                                        "shape_name": "InstanceNetworkInterfaceAssociation",
+                                                                        "type": "structure",
+                                                                        "members": {
+                                                                            "PublicIp": {
+                                                                                "shape_name": "String",
+                                                                                "type": "string",
+                                                                                "documentation": null,
+                                                                                "xmlname": "publicIp"
+                                                                            },
+                                                                            "PublicDnsName": {
+                                                                                "shape_name": "String",
+                                                                                "type": "string",
+                                                                                "documentation": null,
+                                                                                "xmlname": "publicDnsName"
+                                                                            },
+                                                                            "IpOwnerId": {
+                                                                                "shape_name": "String",
+                                                                                "type": "string",
+                                                                                "documentation": null,
+                                                                                "xmlname": "ipOwnerId"
+                                                                            }
+                                                                        },
+                                                                        "documentation": null,
+                                                                        "xmlname": "association"
+                                                                    }
+                                                                },
+                                                                "documentation": null,
+                                                                "xmlname": "item"
+                                                            },
+                                                            "documentation": null,
+                                                            "xmlname": "privateIpAddressesSet"
                                                         }
                                                     },
                                                     "documentation": null,
@@ -8680,6 +8856,12 @@
                                                 "documentation": null,
                                                 "xmlname": "privateIpAddress"
                                             },
+                                            "PrivateDnsName": {
+                                                "shape_name": "String",
+                                                "type": "string",
+                                                "documentation": null,
+                                                "xmlname": "privateDnsName"
+                                            },
                                             "Primary": {
                                                 "shape_name": "Boolean",
                                                 "type": "boolean",
@@ -9020,6 +9202,7 @@
                                         "c1.medium",
                                         "c1.xlarge",
                                         "hi1.4xlarge",
+                                        "hs1.8xlarge",
                                         "cc1.4xlarge",
                                         "cc2.8xlarge",
                                         "cg1.4xlarge"
@@ -9398,6 +9581,7 @@
                             "c1.medium",
                             "c1.xlarge",
                             "hi1.4xlarge",
+                            "hs1.8xlarge",
                             "cc1.4xlarge",
                             "cc2.8xlarge",
                             "cg1.4xlarge"
@@ -9502,6 +9686,7 @@
                                         "c1.medium",
                                         "c1.xlarge",
                                         "hi1.4xlarge",
+                                        "hs1.8xlarge",
                                         "cc1.4xlarge",
                                         "cc2.8xlarge",
                                         "cg1.4xlarge"
@@ -9850,44 +10035,6 @@
                                     },
                                     "documentation": null,
                                     "xmlname": "propagatingVgwSet"
-                                },
-                                "PropagatedRoutes": {
-                                    "shape_name": "PropagatedRouteList",
-                                    "type": "list",
-                                    "members": {
-                                        "shape_name": "PropagatedRoute",
-                                        "type": "structure",
-                                        "members": {
-                                            "DestinationCidrBlock": {
-                                                "shape_name": "String",
-                                                "type": "string",
-                                                "documentation": null,
-                                                "xmlname": "destinationCidrBlock"
-                                            },
-                                            "GatewayId": {
-                                                "shape_name": "String",
-                                                "type": "string",
-                                                "documentation": null,
-                                                "xmlname": "gatewayId"
-                                            },
-                                            "Status": {
-                                                "shape_name": "String",
-                                                "type": "string",
-                                                "documentation": null,
-                                                "xmlname": "status"
-                                            },
-                                            "SourceId": {
-                                                "shape_name": "String",
-                                                "type": "string",
-                                                "documentation": null,
-                                                "xmlname": "sourceId"
-                                            }
-                                        },
-                                        "documentation": null,
-                                        "xmlname": "item"
-                                    },
-                                    "documentation": null,
-                                    "xmlname": "propagatedRouteSet"
                                 }
                             },
                             "documentation": null,
@@ -10794,6 +10941,7 @@
                                                 "c1.medium",
                                                 "c1.xlarge",
                                                 "hi1.4xlarge",
+                                                "hs1.8xlarge",
                                                 "cc1.4xlarge",
                                                 "cc2.8xlarge",
                                                 "cg1.4xlarge"
@@ -11143,6 +11291,7 @@
                                 "c1.medium",
                                 "c1.xlarge",
                                 "hi1.4xlarge",
+                                "hs1.8xlarge",
                                 "cc1.4xlarge",
                                 "cc2.8xlarge",
                                 "cg1.4xlarge"
@@ -11242,6 +11391,7 @@
                                         "c1.medium",
                                         "c1.xlarge",
                                         "hi1.4xlarge",
+                                        "hs1.8xlarge",
                                         "cc1.4xlarge",
                                         "cc2.8xlarge",
                                         "cg1.4xlarge"
@@ -11398,6 +11548,18 @@
                                     "type": "string",
                                     "documentation": "\n        <p>\n        Specifies the Availability Zone the subnet is in.\n        </p>\n    ",
                                     "xmlname": "availabilityZone"
+                                },
+                                "DefaultForAz": {
+                                    "shape_name": "Boolean",
+                                    "type": "boolean",
+                                    "documentation": null,
+                                    "xmlname": "defaultForAz"
+                                },
+                                "MapPublicIpOnLaunch": {
+                                    "shape_name": "Boolean",
+                                    "type": "boolean",
+                                    "documentation": null,
+                                    "xmlname": "mapPublicIpOnLaunch"
                                 },
                                 "Tags": {
                                     "shape_name": "TagList",
@@ -12070,6 +12232,75 @@
             "errors": [],
             "documentation": "\n        <p>\n        Describes the status of the indicated volume or, in lieu of any specified,\n        all volumes belonging to the caller. Volumes that have been deleted\n        are not described.\n        </p>\n    "
         },
+        "DescribeVpcAttribute": {
+            "name": "DescribeVpcAttribute",
+            "input": {
+                "shape_name": "DescribeVpcAttributeRequest",
+                "type": "structure",
+                "members": {
+                    "VpcId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "required": true
+                    },
+                    "EnableDnsSupport": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null
+                    },
+                    "EnableDnsHostnames": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "DescribeVpcAttributeResult",
+                "type": "structure",
+                "members": {
+                    "VpcId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "xmlname": "vpcId"
+                    },
+                    "EnableDnsSupport": {
+                        "shape_name": "AttributeBooleanValue",
+                        "type": "structure",
+                        "members": {
+                            "Value": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": "Boolean value",
+                                "xmlname": "value"
+                            }
+                        },
+                        "documentation": null,
+                        "xmlname": "enableDnsSupport"
+                    },
+                    "EnableDnsHostnames": {
+                        "shape_name": "AttributeBooleanValue",
+                        "type": "structure",
+                        "members": {
+                            "Value": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": "Boolean value",
+                                "xmlname": "value"
+                            }
+                        },
+                        "documentation": null,
+                        "xmlname": "enableDnsHostnames"
+                    }
+                },
+                "documentation": null
+            },
+            "errors": [],
+            "documentation": null
+        },
         "DescribeVpcs": {
             "name": "DescribeVpcs",
             "input": {
@@ -12188,6 +12419,12 @@
                                     "type": "string",
                                     "documentation": "\n        <p>\n        The allowed tenancy of instances launched into the VPC.\n        </p>\n    ",
                                     "xmlname": "instanceTenancy"
+                                },
+                                "IsDefault": {
+                                    "shape_name": "Boolean",
+                                    "type": "boolean",
+                                    "documentation": "\n        <p>\n\n        </p>\n    ",
+                                    "xmlname": "isDefault"
                                 }
                             },
                             "documentation": "\n        <p>\n        The Vpc data type.\n        </p>\n    ",
@@ -12995,6 +13232,7 @@
                                     "c1.medium",
                                     "c1.xlarge",
                                     "hi1.4xlarge",
+                                    "hs1.8xlarge",
                                     "cc1.4xlarge",
                                     "cc2.8xlarge",
                                     "cg1.4xlarge"
@@ -14397,6 +14635,48 @@
             "errors": [],
             "documentation": null
         },
+        "ModifyVpcAttribute": {
+            "name": "ModifyVpcAttribute",
+            "input": {
+                "shape_name": "ModifyVpcAttributeRequest",
+                "type": "structure",
+                "members": {
+                    "VpcId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null
+                    },
+                    "EnableDnsSupport": {
+                        "shape_name": "AttributeBooleanValue",
+                        "type": "structure",
+                        "members": {
+                            "Value": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": "Boolean value"
+                            }
+                        },
+                        "documentation": null
+                    },
+                    "EnableDnsHostnames": {
+                        "shape_name": "AttributeBooleanValue",
+                        "type": "structure",
+                        "members": {
+                            "Value": {
+                                "shape_name": "Boolean",
+                                "type": "boolean",
+                                "documentation": "Boolean value"
+                            }
+                        },
+                        "documentation": null
+                    }
+                },
+                "documentation": null
+            },
+            "output": null,
+            "errors": [],
+            "documentation": null
+        },
         "MonitorInstances": {
             "name": "MonitorInstances",
             "input": {
@@ -15037,6 +15317,7 @@
                                     "c1.medium",
                                     "c1.xlarge",
                                     "hi1.4xlarge",
+                                    "hs1.8xlarge",
                                     "cc1.4xlarge",
                                     "cc2.8xlarge",
                                     "cg1.4xlarge"
@@ -15455,6 +15736,7 @@
                                                 "c1.medium",
                                                 "c1.xlarge",
                                                 "hi1.4xlarge",
+                                                "hs1.8xlarge",
                                                 "cc1.4xlarge",
                                                 "cc2.8xlarge",
                                                 "cg1.4xlarge"
@@ -16195,11 +16477,6 @@
                         "type": "blob",
                         "documentation": "\n        <p>\n        Specifies additional information to make available to the instance(s).\n        </p>\n    "
                     },
-                    "AddressingType": {
-                        "shape_name": "String",
-                        "type": "string",
-                        "documentation": null
-                    },
                     "InstanceType": {
                         "shape_name": "InstanceType",
                         "type": "string",
@@ -16217,6 +16494,7 @@
                             "c1.medium",
                             "c1.xlarge",
                             "hi1.4xlarge",
+                            "hs1.8xlarge",
                             "cc1.4xlarge",
                             "cc2.8xlarge",
                             "cg1.4xlarge"
@@ -16654,6 +16932,7 @@
                                         "c1.medium",
                                         "c1.xlarge",
                                         "hi1.4xlarge",
+                                        "hs1.8xlarge",
                                         "cc1.4xlarge",
                                         "cc2.8xlarge",
                                         "cg1.4xlarge"
@@ -17084,6 +17363,12 @@
                                                         "documentation": null,
                                                         "xmlname": "publicIp"
                                                     },
+                                                    "PublicDnsName": {
+                                                        "shape_name": "String",
+                                                        "type": "string",
+                                                        "documentation": null,
+                                                        "xmlname": "publicDnsName"
+                                                    },
                                                     "IpOwnerId": {
                                                         "shape_name": "String",
                                                         "type": "string",
@@ -17093,6 +17378,64 @@
                                                 },
                                                 "documentation": null,
                                                 "xmlname": "association"
+                                            },
+                                            "PrivateIpAddresses": {
+                                                "shape_name": "InstancePrivateIpAddressList",
+                                                "type": "list",
+                                                "members": {
+                                                    "shape_name": "InstancePrivateIpAddress",
+                                                    "type": "structure",
+                                                    "members": {
+                                                        "PrivateIpAddress": {
+                                                            "shape_name": "String",
+                                                            "type": "string",
+                                                            "documentation": null,
+                                                            "xmlname": "privateIpAddress"
+                                                        },
+                                                        "PrivateDnsName": {
+                                                            "shape_name": "String",
+                                                            "type": "string",
+                                                            "documentation": null,
+                                                            "xmlname": "privateDnsName"
+                                                        },
+                                                        "Primary": {
+                                                            "shape_name": "Boolean",
+                                                            "type": "boolean",
+                                                            "documentation": null,
+                                                            "xmlname": "primary"
+                                                        },
+                                                        "Association": {
+                                                            "shape_name": "InstanceNetworkInterfaceAssociation",
+                                                            "type": "structure",
+                                                            "members": {
+                                                                "PublicIp": {
+                                                                    "shape_name": "String",
+                                                                    "type": "string",
+                                                                    "documentation": null,
+                                                                    "xmlname": "publicIp"
+                                                                },
+                                                                "PublicDnsName": {
+                                                                    "shape_name": "String",
+                                                                    "type": "string",
+                                                                    "documentation": null,
+                                                                    "xmlname": "publicDnsName"
+                                                                },
+                                                                "IpOwnerId": {
+                                                                    "shape_name": "String",
+                                                                    "type": "string",
+                                                                    "documentation": null,
+                                                                    "xmlname": "ipOwnerId"
+                                                                }
+                                                            },
+                                                            "documentation": null,
+                                                            "xmlname": "association"
+                                                        }
+                                                    },
+                                                    "documentation": null,
+                                                    "xmlname": "item"
+                                                },
+                                                "documentation": null,
+                                                "xmlname": "privateIpAddressesSet"
                                             }
                                         },
                                         "documentation": null,

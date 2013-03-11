@@ -25,7 +25,7 @@ def get_text_path():
 
 def do_text_provider(provider):
     textpath = get_text_path()
-    textpath = os.path.join('index.txt')
+    textpath = os.path.join(textpath, 'index.txt')
     fp = open(textpath, 'r')
     sys.stdout.write(fp.read())
     sys.stdout.write('\n')
@@ -64,21 +64,21 @@ def do_man(man_page):
 
 
 def get_provider_help(provider='aws'):
-    if platform.system() == 'Windows':
+    if True or platform.system() == 'Windows':
         do_text_provider(provider)
     else:
         do_man(provider)
 
 
 def get_service_help(service):
-    if platform.system() == 'Windows':
+    if True or platform.system() == 'Windows':
         do_text_service(service)
     else:
         do_man(service.cli_name)
 
 
 def get_operation_help(operation):
-    if platform.system() == 'Windows':
+    if True or platform.system() == 'Windows':
         do_text_operation(operation)
     else:
         do_man(operation.service.cli_name + '-' + operation.cli_name)

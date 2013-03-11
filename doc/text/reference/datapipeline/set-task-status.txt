@@ -1,0 +1,58 @@
+
+set-task-status
+***************
+
+
+DESCRIPTION
+===========
+
+Notifies AWS Data Pipeline that a task is completed and provides
+information about the final status. The task runner calls this action
+regardless of whether the task was sucessful. The task runner does not
+need to call  set-task-status for tasks that are canceled by the web
+service during a call to report-task-progress .
+
+
+SYNOPSIS
+========
+
+   aws datapipeline set-task-status
+     --task-id <value>
+     --task-status <value>
+     [--error-code <value>]
+     [--error-message <value>]
+     [--error-stack-trace <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--task-id"  (string)
+   Identifies the task assigned to the task runner. This value is set
+   in the TaskObject that is returned by the  poll-for-task action.
+
+"--task-status"  (string)
+   If FINISHED, the task successfully completed. If FAILED the task
+   ended unsuccessfully. The FALSE value is used by preconditions.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--error-code"  (integer)
+   If an error occurred during the task, specifies a numerical value
+   that represents the error. This value is set on the physical
+   attempt object. It is used to display error information to the
+   user. The web service does not parse this value.
+
+"--error-message"  (string)
+   If an error occurred during the task, specifies a text description
+   of the error. This value is set on the physical attempt object. It
+   is used to display error information to the user. The web service
+   does not parse this value.
+
+"--error-stack-trace"  (string)
+   If an error occurred during the task, specifies the stack trace
+   associated with the error. This value is set on the physical
+   attempt object. It is used to display error information to the
+   user. The web service does not parse this value.

@@ -1,0 +1,78 @@
+
+get-queue-attributes
+********************
+
+
+DESCRIPTION
+===========
+
+Gets attributes for the specified queue. The following attributes are
+supported:
+
+* "All" - returns all values.
+
+* "ApproximateNumberOfMessages" - returns the approximate number of
+  visible messages in a queue. For more information, see Resources
+  Required to Process Messages in the Amazon SQS Developer Guide.
+
+* "ApproximateNumberOfMessagesNotVisible" - returns the approximate
+  number of messages that are not timed-out and not deleted. For more
+  information, see Resources Required to Process Messages in the
+  Amazon SQS Developer Guide.
+
+* "VisibilityTimeout" - returns the visibility timeout for the queue.
+  For more information about visibility timeout, see Visibility
+  Timeout in the Amazon SQS Developer Guide.
+
+* "CreatedTimestamp" - returns the time when the queue was created
+  (epoch time in seconds).
+
+* "LastModifiedTimestamp" - returns the time when the queue was last
+  changed (epoch time in seconds).
+
+* "Policy" - returns the queue's policy.
+
+* "MaximumMessageSize" - returns the limit of how many bytes a message
+  can contain before Amazon SQS rejects it.
+
+* "MessageRetentionPeriod" - returns the number of seconds Amazon SQS
+  retains a message.
+
+* "QueueArn" - returns the queue's Amazon resource name (ARN).
+
+* "ApproximateNumberOfMessagesDelayed" - returns the approximate
+  number of messages that are pending to be added to the queue.
+
+* "DelaySeconds" - returns the default delay on the queue in seconds.
+
+* "ReceiveMessageWaitTimeSeconds" - returns the time for which a
+  receive-message call will wait for a message to arrive.
+
+
+SYNOPSIS
+========
+
+   aws sqs get-queue-attributes
+     --queue-url <value>
+     [--attribute-names <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--queue-url"  (string)
+   The URL of the SQS queue to take action on.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--attribute-names"  (list of string)
+   A list of attributes to retrieve information for.
+
+   *Parameter Syntax*
+
+      ["Policy"|"VisibilityTimeout"|"MaximumMessageSize"|"MessageRetentionPeriod"|
+      "ApproximateNumberOfMessages"|"ApproximateNumberOfMessagesNotVisible"|"Creat
+      edTimestamp"|"LastModifiedTimestamp"|"QueueArn"|"ApproximateNumberOfMessages
+      Delayed"|"DelaySeconds"|"ReceiveMessageWaitTimeSeconds", ...]

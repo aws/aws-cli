@@ -1,0 +1,125 @@
+
+update-stack
+************
+
+
+DESCRIPTION
+===========
+
+Updates a specified stack.
+
+
+SYNOPSIS
+========
+
+   aws opsworks update-stack
+     [--stack-id <value>]
+     [--service-role-arn <value>]
+     [--name <value>]
+     [--hostname-theme <value>]
+     [--use-custom-cookbooks ]
+     [--custom-json <value>]
+     [--default-availability-zone <value>]
+     [--custom-cookbooks-source <value>]
+     [--default-ssh-key-name <value>]
+     [--default-instance-profile-arn <value>]
+     [--attributes <value>]
+     [--default-os <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--stack-id"  (string)
+   The stack ID.
+
+"--service-role-arn"  (string)
+   The stack AWS Identity and Access Management (IAM) role, which
+   allows OpsWorks to work with AWS resources on your behalf. You must
+   set this parameter to the Amazon Resource --name (ARN) for an
+   existing IAM role. For more information about IAM ARNs, see Using
+   Identifiers .
+
+"--name"  (string)
+   The stack's new name.
+
+"--hostname-theme"  (string)
+   The stack's new host name theme.
+
+"--use-custom-cookbooks"  (boolean)
+   Whether the stack uses custom cookbooks.
+
+"--custom-json"  (string)
+   A string that contains user-defined, custom JSON. It is used to
+   override the corresponding default stack configuration JSON values.
+   The string should be in the following format and must escape
+   characters such as '"'.: ""{\"key1\": \"value1\", \"key2\":
+   \"value2\",...}""
+
+"--default-availability-zone"  (string)
+   The stack new default Availability Zone. For more information, see
+   Regions and Endpoints .
+
+"--custom-cookbooks-source"  (structure)
+   "username"  (string)
+      The user name.
+
+   "ssh_key"  (string)
+      The repository's SSH key.
+
+   "url"  (string)
+      The source URI. For example, the source URI for the OpsWorks
+      MySQL cookbook is: "https://github.com/scalarium/cookbooks.git"
+
+      For Github repositories, you can also use the "git://..."
+      format. For example: "git://github.com/scalarium/cookbooks.git"
+
+   "password"  (string)
+      The repository's password.
+
+   "type"  (string)
+      The repository type.
+
+   "revision"  (string)
+      The application's version. OpsWorks enables you to easily deploy
+      new versions of an application. One of the simplest approaches
+      is to have branches or revisions in your repository that
+      represent different versions that can potentially be deployed.
+
+   *Parameter Syntax*
+
+      {
+        "username": "string",
+        "ssh_key": "string",
+        "url": "string",
+        "password": "string",
+        "type": "git"|"svn"|"archive"|"s3",
+        "revision": "string"
+      }
+
+"--default-ssh-key-name"  (string)
+   A default SSH key for the stack instances. You can override this
+   value when you create or update an instance.
+
+"--default-instance-profile-arn"  (string)
+   TBD
+
+"--attributes"  (map)
+   One or more user-defined key/value pairs to be added to the stack
+   attributes bag.
+
+   *Parameter Syntax*
+
+      {
+        "Color": "string"
+        ...
+      }
+
+"--default-os"  (string)
+   The stack's new default operating system.

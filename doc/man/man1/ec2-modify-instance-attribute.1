@@ -1,0 +1,266 @@
+.TH "EC2-MODIFY-INSTANCE-ATTRIBUTE" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+ec2-modify-instance-attribute \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Modifies an attribute of an instance.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws ec2 modify\-instance\-attribute
+  \-\-instance\-id <value>
+  [\-\-ramdisk <value>]
+  [\-\-kernel <value>]
+  [\-\-source\-dest\-check <value>]
+  [\-\-user\-data <value>]
+  [\-\-attribute <value>]
+  [\-\-instance\-initiated\-shutdown\-behavior <value>]
+  [\-\-value <value>]
+  [\-\-block\-device\-mappings <value>]
+  [\-\-groups <value>]
+  [\-\-ebs\-optimized <value>]
+  [\-\-disable\-api\-termination <value>]
+  [\-\-instance\-type <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-instance\-id\fP  (string)
+The ID of the instance whose attribute is being modified.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-ramdisk\fP  (structure)
+\fBvalue\fP  (string)String value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-kernel\fP  (structure)
+\fBvalue\fP  (string)String value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-source\-dest\-check\fP  (structure)
+\fBvalue\fP  (boolean)Boolean value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": true|false
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-user\-data\fP  (structure)
+\fBvalue\fP  (string)String value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-attribute\fP  (string)
+The name of the attribute being modified.
+.sp
+Available attribute names: \fBinstanceType\fP , \fBkernel\fP , \fBramdisk\fP ,
+\fBuserData\fP , \fBdisableApiTermination\fP ,
+\fBinstanceInitiatedShutdownBehavior\fP , \fBrootDevice\fP ,
+\fBblockDeviceMapping\fP
+.TP
+.B \fB\-\-instance\-initiated\-shutdown\-behavior\fP  (structure)
+\fBvalue\fP  (string)String value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-value\fP  (string)
+The new value of the instance attribute being modified.
+.sp
+Only valid when \fBkernel\fP , \fBramdisk\fP , \fBuserData\fP ,
+\fBdisableApiTermination\fP or \fBinstanceInitiateShutdownBehavior\fP is specified
+as the attribute being modified.
+.TP
+.B \fB\-\-block\-device\-mappings\fP  (list)
+The new block device mappings for the instance whose attributes are being
+modified.
+.sp
+Only valid when blockDeviceMapping is specified as the attribute being
+modified.
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+Specifies how an instance\(aqs block devices should be mapped on a running
+instance.
+.INDENT 7.0
+.TP
+.B \fBdevice_name\fP  (string)
+The device name (e.g., \fB/dev/sdh\fP ) at which the block device is exposed
+on the instance.
+.TP
+.B \fBvirtual_name\fP  (string)
+The virtual device name.
+.TP
+.B \fBno_device\fP  (string)
+When set to the empty string, specifies that the device name in this
+object should not be mapped to any real device.
+.TP
+.B \fBebs\fP  (structure)
+The EBS instance block device specification describing the EBS block
+device to map to the specified device name on a running instance.
+.INDENT 7.0
+.TP
+.B \fBdelete_on_termination\fP  (boolean)
+Specifies whether the Amazon EBS volume is deleted on instance
+termination.
+.TP
+.B \fBvolume_id\fP  (string)
+The ID of the EBS volume that should be mounted as a block device on an
+Amazon EC2 instance.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "device_name": "string",
+    "virtual_name": "string",
+    "no_device": "string",
+    "ebs": {
+      {
+        "delete_on_termination": true|false,
+        "volume_id": "string"
+      }
+  }
+  ...
+]
+.ft P
+.fi
+.UNINDENT
+.sp
+\fB\-\-groups\fP  (list of string)
+.INDENT 0.0
+.INDENT 3.5
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-ebs\-optimized\fP  (structure)
+\fBvalue\fP  (boolean)Boolean value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": true|false
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-disable\-api\-termination\fP  (structure)
+\fBvalue\fP  (boolean)Boolean value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": true|false
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-instance\-type\fP  (structure)
+\fBvalue\fP  (string)String value
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "value": "string"
+}
+.ft P
+.fi
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

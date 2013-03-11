@@ -1,0 +1,154 @@
+
+authorize-security-group-egress
+*******************************
+
+
+DESCRIPTION
+===========
+
+This action applies only to security groups in a VPC; it's not
+supported for EC2 security groups. For information about Amazon
+Virtual Private Cloud and VPC security groups, go to the Amazon
+Virtual Private Cloud User Guide.
+
+The action adds one or more egress rules to a VPC security group.
+Specifically, this permits instances in a security group to send
+traffic to either one or more destination CIDR IP address ranges, or
+to one or more destination security groups in the same VPC.
+
+Each rule consists of the protocol (e.g., TCP), plus either a CIDR
+range, or a source group. For the TCP and UDP protocols, you must also
+specify the destination port or port range. For the ICMP protocol, you
+must also specify the ICMP type and code. You can use "-1" as a
+wildcard for the ICMP type or code.
+
+Rule changes are propagated to instances within the security group as
+quickly as possible. However, a small delay might occur.
+
+**Important:** For VPC security groups: You can have up to 50 rules
+total per group (covering both ingress and egress).
+
+
+SYNOPSIS
+========
+
+   aws ec2 authorize-security-group-egress
+     --group-id <value>
+     [--cidr-ip <value>]
+     [--ip-permissions <value>]
+     [--from-port <value>]
+     [--source-security-group-owner-id <value>]
+     [--source-security-group-name <value>]
+     [--to-port <value>]
+     [--ip-protocol <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--group-id"  (string)
+   ID of the VPC security group to modify.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--cidr-ip"  (string)
+   Deprecated.
+
+"--ip-permissions"  (list)
+   List of IP permissions to authorize on the specified security
+   group. Specifying permissions through IP permissions is the
+   preferred way of authorizing permissions since it offers more
+   flexibility and control.
+
+      (structure)
+         An IP permission describing allowed incoming IP traffic to an
+         Amazon EC2 security group.
+
+         "to_port"  (integer)
+            End of port range for the TCP and UDP protocols, or an
+            ICMP code. An ICMP code of "-1" indicates a wildcard
+            (i.e., any ICMP code).
+
+         "ip_protocol"  (string)
+            The IP protocol of this permission.
+
+            Valid protocol values: "tcp" , "udp" , "icmp"
+
+         "ip_ranges"  (list)
+            The list of CIDR IP ranges included in this permission.
+
+               (structure)
+                  Contains a list of CIRD IP ranges.
+
+                  "cidr_ip"  (string)
+                     The list of CIDR IP ranges.
+
+         "user_id_group_pairs"  (list)
+            The list of AWS user IDs and groups included in this
+            permission.
+
+               (structure)
+                  An AWS user ID identifiying an AWS account, and the
+                  name of a security group within that account.
+
+                  "group_name"  (string)
+                     Name of the security group in the specified AWS
+                     account. Cannot be used when specifying a CIDR IP
+                     address range.
+
+                  "user_id"  (string)
+                     The AWS user ID of an account.
+
+                  "group_id"  (string)
+                     ID of the security group in the specified AWS
+                     account. Cannot be used when specifying a CIDR IP
+                     address range.
+
+         "from_port"  (integer)
+            Start of port range for the TCP and UDP protocols, or an
+            ICMP type number. An ICMP type number of "-1" indicates a
+            wildcard (i.e., any ICMP type number).
+
+   *Parameter Syntax*
+
+      [
+        {
+          "to_port": integer,
+          "ip_protocol": "string",
+          "ip_ranges":
+            [
+              {
+                "cidr_ip": "string"
+              }
+              ...
+            ],
+          "user_id_group_pairs":
+            [
+              {
+                "group_name": "string",
+                "user_id": "string",
+                "group_id": "string"
+              }
+              ...
+            ],
+          "from_port": integer
+        }
+        ...
+      ]
+
+"--from-port"  (integer)
+   Deprecated.
+
+"--source-security-group-owner-id"  (string)
+   Deprecated.
+
+"--source-security-group-name"  (string)
+   Deprecated.
+
+"--to-port"  (integer)
+   Deprecated.
+
+"--ip-protocol"  (string)
+   Deprecated.

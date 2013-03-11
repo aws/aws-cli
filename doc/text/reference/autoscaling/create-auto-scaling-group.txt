@@ -1,0 +1,156 @@
+
+create-auto-scaling-group
+*************************
+
+
+DESCRIPTION
+===========
+
+Creates a new Auto Scaling group with the specified name and other
+attributes. When the creation request is completed, the Auto Scaling
+group is ready to be used in other calls.
+
+Note: The Auto Scaling group name must be unique within the scope of your
+  AWS account, and under the quota of Auto Scaling groups allowed for
+  your account.
+
+
+SYNOPSIS
+========
+
+   aws autoscaling create-auto-scaling-group
+     --auto-scaling-group-name <value>
+     --min-size <value>
+     --max-size <value>
+     --launch-configuration-name <value>
+     [--health-check-grace-period <value>]
+     [--placement-group <value>]
+     [--desired-capacity <value>]
+     [--tags <value>]
+     [--load-balancer-names <value>]
+     [--default-cooldown <value>]
+     [--vpc-zone-identifier <value>]
+     [--termination-policies <value>]
+     [--availability-zones <value>]
+     [--health-check-type <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--auto-scaling-group-name"  (string)
+   The name of the Auto Scaling group.
+
+"--min-size"  (integer)
+   The minimum size of the Auto Scaling group.
+
+"--max-size"  (integer)
+   The maximum size of the Auto Scaling group.
+
+"--launch-configuration-name"  (string)
+   The name of the launch configuration to use with the Auto Scaling
+   group.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--health-check-grace-period"  (integer)
+   Length of time in seconds after a new Amazon EC2 instance comes
+   into service that Auto Scaling starts checking its health.
+
+"--placement-group"  (string)
+   Physical location of your cluster placement group created in Amazon
+   EC2. For more information about cluster placement group, see
+   >>`Using Cluster Instances < http://docs.amazonwebservices.com/AWSE
+   C2/latest/UserGuide/using_cluster_comput ing.html>`_<<
+
+"--desired-capacity"  (integer)
+   The number of Amazon EC2 instances that should be running in the
+   group.
+
+"--tags"  (list)
+   The tag to be created or updated. Each tag should be defined by its
+   resource type, resource ID, key, value, and a propagate flag. Valid
+   values: key=*value* , value=*value* , propagate=*true* or *false* .
+   Value and propagate are optional parameters.
+
+      (structure)
+         The tag applied to an Auto Scaling group.
+
+         "resource_type"  (string)
+            The kind of resource to which the tag is applied.
+            Currently, Auto Scaling supports the "auto-scaling-group"
+            resource type.
+
+         "resource_id"  (string)
+            The name of the Auto Scaling group.
+
+         "propagate_at_launch"  (boolean)
+            Specifies whether the new tag will be applied to instances
+            launched after the tag is created. The same behavior
+            applies to updates: If you change a tag, the changed tag
+            will be applied to all instances launched after you made
+            the change.
+
+         "value"  (string)
+            The value of the tag.
+
+         "key"  (string)
+            The key of the tag.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "resource_type": "string",
+          "resource_id": "string",
+          "propagate_at_launch": true|false,
+          "value": "string",
+          "key": "string"
+        }
+        ...
+      ]
+
+"--load-balancer-names"  (list of string)
+   A list of load balancers to use.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--default-cooldown"  (integer)
+   The amount of time, in seconds, after a scaling activity completes
+   before any further trigger-related scaling activities can start.
+
+"--vpc-zone-identifier"  (string)
+   A comma-separated list of subnet identifiers of Amazon Virtual
+   Private Clouds (Amazon VPCs).
+
+   When you specify subnets and Availability Zones with this call,
+   ensure that the subnets' Availability Zones match the Availability
+   Zones specified.
+
+"--termination-policies"  (list of string)
+   A standalone termination policy or a list of termination policies
+   used to select the instance to terminate. The policies are executed
+   in the order that they are listed.
+
+   For more information on configuring a termination policy for your
+   Auto Scaling group, go to Instance Termination Policy for Your Auto
+   Scaling Group in the the *Auto Scaling Developer Guide* .
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--availability-zones"  (list of string)
+   A list of Availability Zones for the Auto Scaling group.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--health-check-type"  (string)
+   The service you want the health status from, Amazon EC2 or Elastic
+   Load Balancer. Valid values are "EC2" or "ELB" .

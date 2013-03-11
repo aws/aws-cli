@@ -1,0 +1,89 @@
+
+create-or-update-tags
+*********************
+
+
+DESCRIPTION
+===========
+
+Creates new tags or updates existing tags for an Auto Scaling group.
+
+Note: A tag's definition is composed of a resource ID, resource type, key
+  and value, and the propagate flag. Value and the propagate flag are
+  optional parameters. See the Request Parameters for more
+  information.
+
+
+SYNOPSIS
+========
+
+   aws autoscaling create-or-update-tags
+     --tags <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--tags"  (list)
+   The tag to be created or updated. Each tag should be defined by its
+   resource type, resource ID, key, value, and a propagate flag. The
+   resource type and resource ID identify the type and name of
+   resource for which the tag is created. Currently, "auto-scaling-
+   group" is the only supported resource type. The valid value for the
+   resource ID is *groupname* .
+
+   The "PropagateAtLaunch" flag defines whether the new tag will be
+   applied to instances launched by the Auto Scaling group. Valid
+   values are "true" or "false" . However, instances that are already
+   running will not get the new or updated tag. Likewise, when you
+   modify a tag, the updated version will be applied only to new
+   instances launched by the Auto Scaling group after the change.
+   Running instances that had the previous version of the tag will
+   continue to have the older tag.
+
+   When you create a tag and a tag of the same name already exists,
+   the operation overwrites the previous tag definition, but you will
+   not get an error message.
+
+      (structure)
+         The tag applied to an Auto Scaling group.
+
+         "resource_type"  (string)
+            The kind of resource to which the tag is applied.
+            Currently, Auto Scaling supports the "auto-scaling-group"
+            resource type.
+
+         "resource_id"  (string)
+            The name of the Auto Scaling group.
+
+         "propagate_at_launch"  (boolean)
+            Specifies whether the new tag will be applied to instances
+            launched after the tag is created. The same behavior
+            applies to updates: If you change a tag, the changed tag
+            will be applied to all instances launched after you made
+            the change.
+
+         "value"  (string)
+            The value of the tag.
+
+         "key"  (string)
+            The key of the tag.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "resource_type": "string",
+          "resource_id": "string",
+          "propagate_at_launch": true|false,
+          "value": "string",
+          "key": "string"
+        }
+        ...
+      ]
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

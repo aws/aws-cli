@@ -1,0 +1,201 @@
+.TH "SES-SEND-EMAIL" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+ses-send-email \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Composes an email message based on input data, and then immediately queues the
+message for sending.
+.IP Warning
+If you have not yet requested production access to Amazon SES, then you will
+only be able to send email to and from verified email addresses and domains.
+For more information, go to the \fI\%Amazon SES Developer Guide\fP .
+.RE
+.sp
+The total size of the message cannot exceed 10 MB.
+.sp
+Amazon SES has a limit on the total number of recipients per message: The
+combined number of To:, CC: and BCC: email addresses cannot exceed 50. If you
+need to send an email message to a larger audience, you can divide your
+recipient list into groups of 50 or fewer, and then call Amazon SES repeatedly
+to send the message to each group.
+.sp
+For every message that you send, the total number of recipients (To:, CC: and
+BCC:) is counted against your \fIsending quota\fP \- the maximum number of emails you
+can send in a 24\-hour period. For information about your sending quota, go to
+the "Managing Your Sending Activity" section of the\(gaAmazon SES Developer Guide
+<\fI\%http://docs.amazonwebservices.com/ses/latest/DeveloperGuide\fP>\(ga_ .
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws ses send\-email
+  \-\-source <value>
+  \-\-message <value>
+  \-\-destination <value>
+  [\-\-return\-path <value>]
+  [\-\-reply\-to\-addresses <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-source\fP  (string)
+The identity\(aqs email address.
+.TP
+.B \fB\-\-message\fP  (structure)
+The message to be sent.
+.INDENT 7.0
+.TP
+.B \fBbody\fP  (structure)
+The message body.
+.INDENT 7.0
+.TP
+.B \fBtext\fP  (structure)
+The content of the message, in text format. Use this for text\-based email
+clients, or clients on high\-latency networks (such as mobile devices).
+.INDENT 7.0
+.TP
+.B \fBcharset\fP  (string)
+The character set of the content.
+.TP
+.B \fBdata\fP  (string)
+The textual data of the content.
+.UNINDENT
+.TP
+.B \fBhtml\fP  (structure)
+The content of the message, in HTML format. Use this for email clients
+that can process HTML. You can include clickable links, formatted text,
+and much more in an HTML message.
+.INDENT 7.0
+.TP
+.B \fBcharset\fP  (string)
+The character set of the content.
+.TP
+.B \fBdata\fP  (string)
+The textual data of the content.
+.UNINDENT
+.UNINDENT
+.TP
+.B \fBsubject\fP  (structure)
+The subject of the message: A short summary of the content, which will
+appear in the recipient\(aqs inbox.
+.INDENT 7.0
+.TP
+.B \fBcharset\fP  (string)
+The character set of the content.
+.TP
+.B \fBdata\fP  (string)
+The textual data of the content.
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "body": {
+    {
+      "text": {
+        {
+          "charset": "string",
+          "data": "string"
+        },
+      "html": {
+        {
+          "charset": "string",
+          "data": "string"
+        }
+    },
+  "subject": {
+    {
+      "charset": "string",
+      "data": "string"
+    }
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-destination\fP  (structure)
+The destination for this email, composed of To:, CC:, and BCC: fields.
+.INDENT 7.0
+.TP
+.B \fBcc_addresses\fP  (list of string)
+The CC: field(s) of the message.
+.TP
+.B \fBbcc_addresses\fP  (list of string)
+The BCC: field(s) of the message.
+.TP
+.B \fBto_addresses\fP  (list of string)
+The To: field(s) of the message.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "cc_addresses":
+    ["string", ...],
+  "bcc_addresses":
+    ["string", ...],
+  "to_addresses":
+    ["string", ...]
+}
+.ft P
+.fi
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-return\-path\fP  (string)
+The email address to which bounce notifications are to be forwarded. If the
+message cannot be delivered to the recipient, then an error message will be
+returned from the recipient\(aqs ISP; this message will then be forwarded to the
+email address specified by the \fB\-\-return\-path\fP parameter.
+.TP
+.B \fB\-\-reply\-to\-addresses\fP  (list of string)
+The reply\-to email address(es) for the message. If the recipient replies to
+the message, each reply\-to address will receive the reply.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

@@ -1,0 +1,200 @@
+
+start-workflow-execution
+************************
+
+
+DESCRIPTION
+===========
+
+Starts an execution of the workflow type in the specified --domain
+using the provided "--workflow-id" and --input data.
+
+This action returns the newly started workflow execution.
+
+**Access Control**
+
+You can use IAM policies to control this action's access to Amazon SWF
+resources as follows:
+
+* Use a "Resource" element with the --domain name to limit the action
+  to only specified domains.
+
+* Use an "Action" element to allow or deny permission to call this
+  action.
+
+* Constrain the following parameters by using a "Condition" element
+  with the appropriate keys.
+
+* "tagList.member.0" : The key is "swf:tagList.member.0" .
+
+* "tagList.member.1" : The key is "swf:tagList.member.1" .
+
+* "tagList.member.2" : The key is "swf:tagList.member.2" .
+
+* "tagList.member.3" : The key is "swf:tagList.member.3" .
+
+* "tagList.member.4" : The key is "swf:tagList.member.4" .
+
+* "--task-list" : String constraint. The key is "swf:taskList.name" .
+
+* "name" : String constraint. The key is "swf:workflowType.name" .
+
+* "version" : String constraint. The key is "swf:workflowType.version"
+  .
+
+If the caller does not have sufficient permissions to invoke the
+action, or the parameter values fall outside the specified
+constraints, the action fails by throwing "OperationNotPermitted" .
+For details and example IAM policies, see Using IAM to Manage Access
+to Amazon SWF Workflows .
+
+
+SYNOPSIS
+========
+
+   aws swf start-workflow-execution
+     --domain <value>
+     --workflow-id <value>
+     --workflow-type <value>
+     [--task-list <value>]
+     [--task-start-to-close-timeout <value>]
+     [--child-policy <value>]
+     [--execution-start-to-close-timeout <value>]
+     [--input <value>]
+     [--tag-list <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--domain"  (string)
+   The name of the --domain in which the workflow execution is
+   created.
+
+"--workflow-id"  (string)
+   The user defined identifier associated with the workflow execution.
+   You can use this to associate a custom identifier with the workflow
+   execution. You may specify the same identifier if a workflow
+   execution is logically a *restart* of a previous execution. You
+   cannot have two open workflow executions with the same "--workflow-
+   id" at the same time.
+
+   The specified string must not start or end with whitespace. It must
+   not contain a ":" (colon), "/" (slash), "|" (vertical bar), or any
+   control characters (u0000-u001f | u007f - u009f). Also, it must not
+   contain the literal string arn.
+
+"--workflow-type"  (structure)
+   The type of the workflow to start.
+
+   "version"  (string)
+
+   "name"  (string)
+
+   *Parameter Syntax*
+
+      {
+        "version": "string",
+        "name": "string"
+      }
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--task-list"  (structure)
+   The task list to use for the decision tasks generated for this
+   workflow execution. This overrides the "defaultTaskList" specified
+   when registering the workflow type.
+
+   Note: A task list for this workflow execution must be specified either
+     as a default for the workflow type or through this parameter. If
+     neither this parameter is set nor a default task list was
+     specified at registration time then a fault will be returned.
+
+   The specified string must not start or end with whitespace. It must
+   not contain a ":" (colon), "/" (slash), "|" (vertical bar), or any
+   control characters (u0000-u001f | u007f - u009f). Also, it must not
+   contain the literal string arn.
+
+   "name"  (string)
+
+   *Parameter Syntax*
+
+      {
+        "name": "string"
+      }
+
+"--task-start-to-close-timeout"  (string)
+   Specifies the maximum duration of decision tasks for this workflow
+   execution. This parameter overrides the
+   "defaultTaskStartToCloseTimout" specified when registering the
+   workflow type using  register-workflow-type .
+
+   The valid values are integers greater than or equal to "0" . An
+   integer value can be used to specify the duration in seconds while
+   "NONE" can be used to specify unlimited duration.
+
+   Note: A task start-to-close timeout for this workflow execution must be
+     specified either as a default for the workflow type or through
+     this parameter. If neither this parameter is set nor a default
+     task start-to-close timeout was specified at registration time
+     then a fault will be returned.
+
+"--child-policy"  (string)
+   If set, specifies the policy to use for the child workflow
+   executions of this workflow execution if it is terminated, by
+   calling the terminate-workflow-execution action explicitly or due
+   to an expired timeout. This policy overrides the default child
+   policy specified when registering the workflow type using
+   register-workflow-type . The supported child policies are:
+
+   * **TERMINATE:** the child executions will be terminated.
+
+   * **REQUEST_CANCEL:** a request to cancel will be attempted for
+     each child execution by recording a
+     "WorkflowExecutionCancelRequested" event in its history. It is up
+     to the decider to take appropriate actions when it receives an
+     execution history with this event.
+
+   * **ABANDON:** no action will be taken. The child executions will
+     continue to run.
+
+   Note: A child policy for this workflow execution must be specified
+     either as a default for the workflow type or through this
+     parameter. If neither this parameter is set nor a default child
+     policy was specified at registration time then a fault will be
+     returned.
+
+"--execution-start-to-close-timeout"  (string)
+   The total duration for this workflow execution. This overrides the
+   defaultExecutionStartToCloseTimeout specified when registering the
+   workflow type.
+
+   The duration is specified in seconds. The valid values are integers
+   greater than or equal to 0. Exceeding this limit will cause the
+   workflow execution to time out. Unlike some of the other timeout
+   parameters in Amazon SWF, you cannot specify a value of "NONE" for
+   this timeout; there is a one-year max limit on the time that a
+   workflow execution can run.
+
+   Note: An execution start-to-close timeout must be specified either
+     through this parameter or as a default when the workflow type is
+     registered. If neither this parameter nor a default execution
+     start-to-close timeout is specified, a fault is returned.
+
+"--input"  (string)
+   The --input for the workflow execution. This is a free form string
+   which should be meaningful to the workflow you are starting. This "
+   --input" is made available to the new workflow execution in the
+   "WorkflowExecutionStarted" history event.
+
+"--tag-list"  (list of string)
+   The list of tags to associate with the workflow execution. You can
+   specify a maximum of 5 tags. You can list workflow executions with
+   a specific tag by calling  list-open-workflow-executions or  list-
+   closed-workflow-executions and specifying a  TagFilter .
+
+   *Parameter Syntax*
+
+      ["string", ...]

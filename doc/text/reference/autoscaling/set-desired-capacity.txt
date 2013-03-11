@@ -1,0 +1,62 @@
+
+set-desired-capacity
+********************
+
+
+DESCRIPTION
+===========
+
+Adjusts the desired size of the  AutoScalingGroup by initiating
+scaling activities. When reducing the size of the group, it is not
+possible to define which Amazon EC2 instances will be terminated. This
+applies to any Auto Scaling decisions that might result in terminating
+instances.
+
+There are two common use cases for "set-desired-capacity" : one for
+users of the Auto Scaling triggering system, and another for
+developers who write their own triggering systems. Both use cases
+relate to the concept of cooldown.
+
+In the first case, if you use the Auto Scaling triggering system,
+"set-desired-capacity" changes the size of your Auto Scaling group
+without regard to the cooldown period. This could be useful, for
+example, if Auto Scaling did something unexpected for some reason. If
+your cooldown period is 10 minutes, Auto Scaling would normally reject
+requests to change the size of the group for that entire 10-minute
+period. The "set-desired-capacity" command allows you to circumvent
+this restriction and change the size of the group before the end of
+the cooldown period.
+
+In the second case, if you write your own triggering system, you can
+use "set-desired-capacity" to control the size of your Auto Scaling
+group. If you want the same cooldown functionality that Auto Scaling
+offers, you can configure "set-desired-capacity" to honor cooldown by
+setting the "--honor-cooldown" parameter to "true" .
+
+
+SYNOPSIS
+========
+
+   aws autoscaling set-desired-capacity
+     --auto-scaling-group-name <value>
+     --desired-capacity <value>
+     [--honor-cooldown ]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--auto-scaling-group-name"  (string)
+   The name of the Auto Scaling group.
+
+"--desired-capacity"  (integer)
+   The new capacity setting for the Auto Scaling group.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--honor-cooldown"  (boolean)
+   By default, "set-desired-capacity" overrides any cooldown period.
+   Set to "True" if you want Auto Scaling to reject this request when
+   the Auto Scaling group is in cooldown.

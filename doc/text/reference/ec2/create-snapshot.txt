@@ -1,0 +1,39 @@
+
+create-snapshot
+***************
+
+
+DESCRIPTION
+===========
+
+Create a snapshot of the volume identified by volume ID. A volume does
+not have to be detached at the time the snapshot is taken.
+
+Note: Snapshot creation requires that the system is in a consistent state.
+  For instance, this means that if taking a snapshot of a database,
+  the tables must be read-only locked to ensure that the snapshot will
+  not contain a corrupted version of the database. Therefore, be
+  careful when using this API to ensure that the system remains in the
+  consistent state until the create snapshot status has returned.
+
+
+SYNOPSIS
+========
+
+   aws ec2 create-snapshot
+     --volume-id <value>
+     [--description <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--volume-id"  (string)
+   The ID of the volume from which to create the snapshot.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--description"  (string)
+   The description for the new snapshot.

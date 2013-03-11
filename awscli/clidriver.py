@@ -19,8 +19,9 @@ import copy
 import base64
 import six
 import botocore.session
+from botocore.compat import copy_kwargs
 from awscli import EnvironmentVariables, __version__
-from .help import get_help
+from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
 
@@ -94,7 +95,7 @@ class CLIDriver(object):
                                               add_help=False,
                                               conflict_handler='resolve')
         for option_name in self.cli_data['options']:
-            option_data = copy.copy(self.cli_data['options'][option_name])
+            option_data = copy_kwargs(self.cli_data['options'][option_name])
             if 'choices' in option_data:
                 choices = option_data['choices']
                 if not isinstance(choices, list):
@@ -130,7 +131,7 @@ class CLIDriver(object):
                             choices=operations)
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
-            get_help(self.session, service=self.service, style='cli')
+            get_service_help(self.service)
             sys.exit(0)
         self.operation = self.service.get_operation(args.operation)
         return self.create_operation_parser(remaining)
@@ -180,7 +181,7 @@ class CLIDriver(object):
                                     type=self.type_map[param.type],
                                     required=param.required)
         if 'help' in remaining:
-            get_help(self.session, operation=self.operation, style='cli')
+            get_operation_help(self.operation)
             sys.exit(0)
         args, remaining = parser.parse_known_args(remaining)
         if remaining:
@@ -221,6 +222,15 @@ class CLIDriver(object):
                 if s[0][0] == '[':
                     return json.loads(s[0])
             return [self.unpack_cli_arg(param.members, v) for v in s]
+        elif param.type == 'blob' and param.payload and param.streaming:
+            if isinstance(s, list) and len(s) == 1:
+                file_path = s[0]
+            file_path = os.path.expandvars(file_path)
+            file_path = os.path.expanduser(file_path)
+            if not os.path.isfile(file_path):
+                msg = 'Blob values must be a path to a file.'
+                raise ValueError(msg)
+            return open(file_path, 'rb')
         else:
             if isinstance(s, list):
                 s = s[0]
@@ -233,6 +243,10 @@ class CLIDriver(object):
             else:
                 value = getattr(args, param.cli_name)
             if value is not None:
+                # Don't include non-required boolean params whose
+                # values are False
+                if param.type == 'boolean' and not param.required and value is False:
+                    continue
                 if not hasattr(param, 'no_paramfile'):
                     if isinstance(value, list) and len(value) == 1:
                         temp = value[0]
@@ -305,7 +319,10 @@ class CLIDriver(object):
         self.create_main_parser()
         self.args, remaining = self.parser.parse_known_args(cmdline.split()[1:])
         self.service = self.session.get_service(self.args.service_name)
-        self.formatter = get_formatter(self.args.output)
+        output = self.args.output
+        if output is None:
+            output = self.session.get_variable('output')
+        self.formatter = get_formatter(output, self.args)
         args = self.create_service_parser(remaining)
         params = {}
         self.build_call_parameters(args, params)
@@ -316,14 +333,17 @@ class CLIDriver(object):
         self.args, remaining = self.parser.parse_known_args()
         if self.args.service_name == 'help':
             provider = self.session.get_variable('provider')
-            get_help(self.session, provider=provider, style='cli')
+            get_provider_help(provider=provider)
             sys.exit(0)
         else:
             if self.args.debug:
                 from six.moves import http_client
                 http_client.HTTPConnection.debuglevel = 2
                 self.session.set_debug_logger()
-            self.formatter = get_formatter(self.args.output)
+            output = self.args.output
+            if output is None:
+                output = self.session.get_variable('output')
+            self.formatter = get_formatter(output, self.args)
             self.service = self.session.get_service(self.args.service_name)
             args = self.create_service_parser(remaining)
             self.call(args)

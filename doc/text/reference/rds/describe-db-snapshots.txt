@@ -1,0 +1,80 @@
+
+describe-db-snapshots
+*********************
+
+
+DESCRIPTION
+===========
+
+Returns information about DBSnapshots. This API supports pagination.
+
+
+SYNOPSIS
+========
+
+   aws rds describe-db-snapshots
+     [--snapshot-type <value>]
+     [--marker <value>]
+     [--max-records <value>]
+     [--db-snapshot-identifier <value>]
+     [--db-instance-identifier <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--snapshot-type"  (string)
+   An optional snapshot type for which snapshots will be returned. If
+   not specified, the returned results will include snapshots of all
+   types.
+
+"--marker"  (string)
+   An optional pagination token provided by a previous describe-db-
+   snapshots request. If this parameter is specified, the response
+   includes only records beyond the marker, up to the value specified
+   by "--max-records" .
+
+"--max-records"  (integer)
+   The maximum number of records to include in the response. If more
+   records exist than the specified "--max-records" value, a
+   pagination token called a marker is included in the response so
+   that the remaining results may be retrieved.
+
+   Default: 100
+
+   Constraints: minimum 20, maximum 100
+
+"--db-snapshot-identifier"  (string)
+   A specific DB Snapshot Identifier to describe. Cannot be used in
+   conjunction with DBInstanceIdentifier. This value is stored as a
+   lowercase string.
+
+   Constraints:
+
+   * Must be 1 to 255 alphanumeric characters
+
+   * First character must be a letter
+
+   * Cannot end with a hyphen or contain two consecutive hyphens
+
+   * If this is the identifier of an automated snapshot, the
+     "--snapshot-type" parameter must also be specified.
+
+"--db-instance-identifier"  (string)
+   A DB Instance Identifier to retrieve the list of DB Snapshots for.
+   Cannot be used in conjunction with DBSnapshotIdentifier. This
+   parameter isn't case sensitive.
+
+   Constraints:
+
+   * Must contain from 1 to 63 alphanumeric characters or hyphens
+
+   * First character must be a letter
+
+   * Cannot end with a hyphen or contain two consecutive hyphens

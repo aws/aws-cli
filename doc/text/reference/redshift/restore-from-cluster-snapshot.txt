@@ -1,0 +1,81 @@
+
+restore-from-cluster-snapshot
+*****************************
+
+
+DESCRIPTION
+===========
+
+Creates a new cluster from a snapshot. Amazon Redshift creates the
+resulting cluster with the same configuration as the original cluster
+from which the snapshot was created, except that the new cluster is
+created with the default cluster security and parameter group. After
+Amazon Redshift creates the cluster you can use the  modify-cluster
+API to associate a different security group and different parameter
+group with the restored cluster.
+
+If a snapshot is taken of a cluster in VPC, you can restore it only in
+VPC. In this case, you must provide a cluster subnet group where you
+want the cluster restored. If snapshot is taken of a cluster outside
+VPC, then you can restore it only outside VPC.
+
+
+SYNOPSIS
+========
+
+   aws redshift restore-from-cluster-snapshot
+     --cluster-identifier <value>
+     --snapshot-identifier <value>
+     [--availability-zone <value>]
+     [--publicly-accessible ]
+     [--allow-version-upgrade ]
+     [--cluster-subnet-group-name <value>]
+     [--port <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--cluster-identifier"  (string)
+   The identifier of the cluster that will be created from restoring
+   the snapshot.
+
+"--snapshot-identifier"  (string)
+   The name of the snapshot from which to create the new cluster. This
+   parameter isn't case sensitive.
+
+   Example: "my-snapshot-id"
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--availability-zone"  (string)
+   The Amazon EC2 Availability Zone in which to restore the cluster.
+
+   Default: A random, system-chosen Availability Zone.
+
+   Example: "us-east-1a"
+
+"--publicly-accessible"  (boolean)
+   If "true" , the cluster can be accessed from a public network.
+
+"--allow-version-upgrade"  (boolean)
+   If "true" , upgrades can be applied during the maintenance window
+   to the engine that is running on the cluster.
+
+   Default: "true"
+
+"--cluster-subnet-group-name"  (string)
+   The name of the subnet group where you want to cluster restored.
+
+   A snapshot of cluster in VPC can be restored only in VPC.
+   Therefore, you must provide subnet group name where you want the
+   cluster restored.
+
+"--port"  (integer)
+   The port number on which the cluster accepts connections.
+
+   Default: The same port as the original cluster.
+
+   Constraints: Must be between "1115" and "65535" .

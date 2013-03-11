@@ -1,0 +1,215 @@
+.TH "AUTOSCALING-CREATE-LAUNCH-CONFIGURATION" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+autoscaling-create-launch-configuration \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Creates a new launch configuration. The launch configuration name must be unique
+within the scope of the client\(aqs AWS account. The maximum limit of launch
+configurations, which by default is 100, must not yet have been met; otherwise,
+the call will fail. When created, the new launch configuration is available for
+immediate use.
+.sp
+You can create a launch configuration with Amazon EC2 security groups or with
+Amazon VPC security groups. However, you can\(aqt use Amazon EC2 security groups
+together with Amazon VPC security groups, or vice versa.
+.IP Note
+At this time, Auto Scaling launch configurations don\(aqt support compressed
+(e.g. zipped) user data files.
+.RE
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws autoscaling create\-launch\-configuration
+  \-\-image\-id <value>
+  \-\-launch\-configuration\-name <value>
+  \-\-instance\-type <value>
+  [\-\-user\-data <value>]
+  [\-\-ebs\-optimized ]
+  [\-\-instance\-monitoring <value>]
+  [\-\-block\-device\-mappings <value>]
+  [\-\-key\-name <value>]
+  [\-\-security\-groups <value>]
+  [\-\-kernel\-id <value>]
+  [\-\-ramdisk\-id <value>]
+  [\-\-iam\-instance\-profile <value>]
+  [\-\-spot\-price <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-image\-id\fP  (string)
+Unique ID of the \fIAmazon Machine Image\fP (AMI) which was assigned during
+registration. For more information about Amazon EC2 images, please see \fI\%Amazon
+EC2 product documentation\fP .
+.TP
+.B \fB\-\-launch\-configuration\-name\fP  (string)
+The name of the launch configuration to create.
+.TP
+.B \fB\-\-instance\-type\fP  (string)
+The instance type of the Amazon EC2 instance. For more information about
+Amazon EC2 instance types, please see \fI\%Amazon EC2 product documentation\fP
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-user\-data\fP  (blob)
+The user data available to the launched Amazon EC2 instances. For more
+information about Amazon EC2 user data, please see \fI\%Amazon EC2 product
+documentation\fP .
+.UNINDENT
+.sp
+\fB\-\-ebs\-optimized\fP  (boolean)
+.INDENT 0.0
+.TP
+.B \fB\-\-instance\-monitoring\fP  (structure)
+Enables detailed monitoring, which is enabled by default.
+.sp
+When detailed monitoring is enabled, CloudWatch will generate metrics every
+minute and your account will be charged a fee. When you disable detailed
+monitoring, by specifying \fBFalse\fP , Cloudwatch will generate metrics every 5
+minutes. For information about monitoring, see the \fI\%Amazon CloudWatch\fP product page.
+.INDENT 7.0
+.TP
+.B \fBenabled\fP  (boolean)
+If \fBTrue\fP , instance monitoring is enabled.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "enabled": true|false
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-block\-device\-mappings\fP  (list)
+A list of mappings that specify how block devices are exposed to the instance.
+Each mapping is made up of a \fIVirtualName\fP , a \fIDeviceName\fP , and an \fIebs\fP
+data structure that contains information about the associated Elastic Block
+Storage volume. For more information about Amazon EC2 BlockDeviceMappings, go
+to \fI\%Block Device Mapping\fP in the Amazon EC2
+product documentation.
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+The \fBBlockDeviceMapping\fP data type.
+.INDENT 7.0
+.TP
+.B \fBdevice_name\fP  (string)
+The name of the device within Amazon EC2.
+.TP
+.B \fBvirtual_name\fP  (string)
+The virtual name associated with the device.
+.TP
+.B \fBebs\fP  (structure)
+The Elastic Block Storage volume information.
+.INDENT 7.0
+.TP
+.B \fBsnapshot_id\fP  (string)
+The snapshot ID.
+.TP
+.B \fBvolume_size\fP  (integer)
+The volume size, in gigabytes.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "device_name": "string",
+    "virtual_name": "string",
+    "ebs": {
+      {
+        "snapshot_id": "string",
+        "volume_size": integer
+      }
+  }
+  ...
+]
+.ft P
+.fi
+.TP
+.B \fB\-\-key\-name\fP  (string)
+The name of the Amazon EC2 key pair.
+.TP
+.B \fB\-\-security\-groups\fP  (list of string)
+The names of the security groups with which to associate Amazon EC2 or Amazon
+VPC instances. Specify Amazon EC2 security groups using security group names,
+such as \fBwebsrv\fP . Specify Amazon VPC security groups using security group
+IDs, such as \fBsg\-12345678\fP . For more information about Amazon EC2 security
+groups, go to \fI\%Using Security Groups\fP in the Amazon EC2
+product documentation. For more information about Amazon VPC security groups,
+go to \fI\%Security Groups\fP in the Amazon VPC product
+documentation.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-kernel\-id\fP  (string)
+The ID of the kernel associated with the Amazon EC2 AMI.
+.TP
+.B \fB\-\-ramdisk\-id\fP  (string)
+The ID of the RAM disk associated with the Amazon EC2 AMI.
+.TP
+.B \fB\-\-iam\-instance\-profile\fP  (string)
+The name or the Amazon Resource Name (ARN) of the instance profile associated
+with the IAM role for the instance. For information on launching EC2 instances
+with an IAM role, go to \fI\%Launching Auto Scaling Instances With an IAM Role\fP in the \fIAuto Scaling Developer Guide\fP .
+.TP
+.B \fB\-\-spot\-price\fP  (string)
+The maximum hourly price to be paid for any Spot Instance launched to fulfill
+the request. Spot Instances are launched when the price you specify exceeds
+the current Spot market price. For more information on launching Spot
+Instances, go to \fI\%Using Auto Scaling to Launch Spot Instances\fP
+in the \fIAuto Scaling Developer Guide\fP .
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

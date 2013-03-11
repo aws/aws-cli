@@ -1,0 +1,139 @@
+
+modify-image-attribute
+**********************
+
+
+DESCRIPTION
+===========
+
+The modify-image-attribute operation modifies an attribute of an AMI.
+
+
+SYNOPSIS
+========
+
+   aws ec2 modify-image-attribute
+     --image-id <value>
+     [--product-codes <value>]
+     [--user-groups <value>]
+     [--description <value>]
+     [--attribute <value>]
+     [--user-ids <value>]
+     [--value <value>]
+     [--operation-type <value>]
+     [--launch-permission <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--image-id"  (string)
+   The ID of the AMI whose attribute you want to modify.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--product-codes"  (list of string)
+   The list of product codes being added to or removed from the
+   specified AMI. Only valid when the productCodes attribute is being
+   modified.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--user-groups"  (list of string)
+   The user group being added to or removed from the list of user
+   groups with launch permissions for this AMI. Only valid when the
+   launchPermission attribute is being modified.
+
+   Available user groups: "all"
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--description"  (structure)
+   "value"  (string)String value
+
+   *Parameter Syntax*
+
+      {
+        "value": "string"
+      }
+
+"--attribute"  (string)
+   The name of the AMI attribute you want to modify.
+
+   Available attributes: "launchPermission" , "productCodes"
+
+"--user-ids"  (list of string)
+   The AWS user ID being added to or removed from the list of users
+   with launch permissions for this AMI. Only valid when the
+   launchPermission attribute is being modified.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--value"  (string)
+   The value of the attribute being modified. Only valid when the
+   description attribute is being modified.
+
+"--operation-type"  (string)
+   The type of operation being requested.
+
+   Available operation types: "add" , "remove"
+
+"--launch-permission"  (structure)
+   "add"  (list)
+      (structure)
+         Describes a permission to launch an Amazon Machine Image
+         (AMI).
+
+         "group"  (string)
+            The AWS group of the user involved in this launch
+            permission.
+
+            Available groups: "all"
+
+         "user_id"  (string)
+            The AWS user ID of the user involved in this launch
+            permission.
+
+   "remove"  (list)
+      (structure)
+         Describes a permission to launch an Amazon Machine Image
+         (AMI).
+
+         "group"  (string)
+            The AWS group of the user involved in this launch
+            permission.
+
+            Available groups: "all"
+
+         "user_id"  (string)
+            The AWS user ID of the user involved in this launch
+            permission.
+
+   *Parameter Syntax*
+
+      {
+        "add":
+          [
+            {
+              "group": "string",
+              "user_id": "string"
+            }
+            ...
+          ],
+        "remove":
+          [
+            {
+              "group": "string",
+              "user_id": "string"
+            }
+            ...
+          ]
+      }

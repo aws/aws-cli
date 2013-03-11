@@ -1,0 +1,72 @@
+
+describe-activity-type
+**********************
+
+
+DESCRIPTION
+===========
+
+Returns information about the specified activity type. This includes
+configuration settings provided at registration time as well as other
+general information about the type.
+
+**Access Control**
+
+You can use IAM policies to control this action's access to Amazon SWF
+resources as follows:
+
+* Use a "Resource" element with the --domain name to limit the action
+  to only specified domains.
+
+* Use an "Action" element to allow or deny permission to call this
+  action.
+
+* Constrain the following parameters by using a "Condition" element
+  with the appropriate keys.
+
+* "activityType.name" : String constraint. The key is
+  "swf:activityType.name" .
+
+* "activityType.version" : String constraint. The key is
+  "swf:activityType.version" .
+
+If the caller does not have sufficient permissions to invoke the
+action, or the parameter values fall outside the specified
+constraints, the action fails by throwing "OperationNotPermitted" .
+For details and example IAM policies, see Using IAM to Manage Access
+to Amazon SWF Workflows .
+
+
+SYNOPSIS
+========
+
+   aws swf describe-activity-type
+     --domain <value>
+     --activity-type <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--domain"  (string)
+   The name of the --domain in which the activity type is registered.
+
+"--activity-type"  (structure)
+   The activity type to describe.
+
+   "version"  (string)
+
+   "name"  (string)
+
+   *Parameter Syntax*
+
+      {
+        "version": "string",
+        "name": "string"
+      }
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

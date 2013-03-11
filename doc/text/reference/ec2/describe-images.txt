@@ -1,0 +1,132 @@
+
+describe-images
+***************
+
+
+DESCRIPTION
+===========
+
+The describe-images operation returns information about AMIs, AKIs,
+and ARIs available to the user. Information returned includes image
+type, product codes, architecture, and kernel and RAM disk IDs. Images
+available to the user include public images available for any user to
+launch, private images owned by the user making the request, and
+private images owned by other users for which the user has explicit
+launch permissions.
+
+Launch permissions fall into three categories:
+
+* **Public:** The owner of the AMI granted launch permissions for the
+  AMI to the all group. All users have launch permissions for these
+  AMIs.
+
+* **Explicit:** The owner of the AMI granted launch permissions to a
+  specific user.
+
+* **Implicit:** A user has implicit launch permissions for all AMIs he
+  or she owns.
+
+The list of AMIs returned can be modified by specifying AMI IDs, AMI
+owners, or users with launch permissions. If no options are specified,
+Amazon EC2 returns all AMIs for which the user has launch permissions.
+
+If you specify one or more AMI IDs, only AMIs that have the specified
+IDs are returned. If you specify an invalid AMI ID, a fault is
+returned. If you specify an AMI ID for which you do not have access,
+it will not be included in the returned results.
+
+If you specify one or more AMI owners, only AMIs from the specified
+owners and for which you have access are returned. The results can
+include the account IDs of the specified owners, amazon for AMIs owned
+by Amazon or self for AMIs that you own.
+
+If you specify a list of executable users, only users that have launch
+permissions for the AMIs are returned. You can specify account IDs (if
+you own the AMI(s)), self for AMIs for which you own or have explicit
+permissions, or all for public AMIs.
+
+Note: Deregistered images are included in the returned results for an
+  unspecified interval after deregistration.
+
+
+SYNOPSIS
+========
+
+   aws ec2 describe-images
+     [--owners <value>]
+     [--image-ids <value>]
+     [--filters <value>]
+     [--executable-users <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--owners"  (list of string)
+   The optional list of owners for the described AMIs. The IDs amazon,
+   self, and explicit can be used to include AMIs owned by Amazon,
+   AMIs owned by the user, and AMIs for which the user has explicit
+   launch permissions, respectively.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--image-ids"  (list of string)
+   An optional list of the AMI IDs to describe. If not specified, all
+   AMIs will be described.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--filters"  (list)
+   A list of filters used to match properties for Images. For a
+   complete reference to the available filter keys for this operation,
+   see the Amazon EC2 API reference .
+
+      (structure)
+         A filter used to limit results when describing tags. Multiple
+         values can be specified per filter. A tag must match at least
+         one of the specified values for it to be returned from an
+         operation.
+
+         Wildcards can be included in filter values; "*" specifies
+         that zero or more characters must match, and "?" specifies
+         that exactly one character must match. Use a backslash to
+         escape special characters. For example, a filter value of
+         "\*amazon\?\\" specifies the literal string "*amazon?\" .
+
+         "values"  (list of string)
+            Contains one or more values for the filter.
+
+         "name"  (string)
+            Specifies the name of the filter.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "values":
+            ["string", ...],
+          "name": "string"
+        }
+        ...
+      ]
+
+"--executable-users"  (list of string)
+   The optional list of users with explicit launch permissions for the
+   described AMIs. The user ID can be a user's account ID, 'self' to
+   return AMIs for which the sender of the request has explicit launch
+   permissions, or 'all' to return AMIs with public launch
+   permissions.
+
+   *Parameter Syntax*
+
+      ["string", ...]

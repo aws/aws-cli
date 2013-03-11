@@ -1,0 +1,42 @@
+
+terminate-job-flows
+*******************
+
+
+DESCRIPTION
+===========
+
+terminate-job-flows shuts a list of job flows down. When a job flow is
+shut down, any step not yet completed is canceled and the EC2
+instances on which the job flow is running are stopped. Any log files
+not already saved are uploaded to Amazon S3 if a LogUri was specified
+when the job flow was created.
+
+The call to terminate-job-flows is asynchronous. Depending on the
+configuration of the job flow, it may take up to 5-20 minutes for the
+job flow to completely terminate and release allocated resources, such
+as Amazon EC2 instances.
+
+
+SYNOPSIS
+========
+
+   aws emr terminate-job-flows
+     --job-flow-ids <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--job-flow-ids"  (list of string)
+   A list of job flows to be shutdown.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

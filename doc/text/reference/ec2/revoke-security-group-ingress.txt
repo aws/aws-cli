@@ -1,0 +1,156 @@
+
+revoke-security-group-ingress
+*****************************
+
+
+DESCRIPTION
+===========
+
+The revoke-security-group-ingress operation revokes permissions from a
+security group. The permissions used to revoke must be specified using
+the same values used to grant the permissions.
+
+Permissions are specified by IP protocol (TCP, UDP, or ICMP), the
+source of the request (by IP range or an Amazon EC2 user-group pair),
+the source and destination port ranges (for TCP and UDP), and the ICMP
+codes and types (for ICMP).
+
+Permission changes are quickly propagated to instances within the
+security group. However, depending on the number of instances in the
+group, a small delay might occur.
+
+
+SYNOPSIS
+========
+
+   aws ec2 revoke-security-group-ingress
+     [--from-port <value>]
+     [--cidr-ip <value>]
+     [--ip-permissions <value>]
+     [--group-name <value>]
+     [--source-security-group-owner-id <value>]
+     [--source-security-group-name <value>]
+     [--to-port <value>]
+     [--ip-protocol <value>]
+     [--group-id <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--from-port"  (integer)
+   Deprecated
+
+"--cidr-ip"  (string)
+   Deprecated
+
+"--ip-permissions"  (list)
+   List of IP permissions to revoke on the specified security group.
+   For an IP permission to be removed, it must exactly match one of
+   the IP permissions you specify in this list. Specifying permissions
+   through IP permissions is the preferred way of revoking permissions
+   since it offers more flexibility and control.
+
+      (structure)
+         An IP permission describing allowed incoming IP traffic to an
+         Amazon EC2 security group.
+
+         "to_port"  (integer)
+            End of port range for the TCP and UDP protocols, or an
+            ICMP code. An ICMP code of "-1" indicates a wildcard
+            (i.e., any ICMP code).
+
+         "ip_protocol"  (string)
+            The IP protocol of this permission.
+
+            Valid protocol values: "tcp" , "udp" , "icmp"
+
+         "ip_ranges"  (list)
+            The list of CIDR IP ranges included in this permission.
+
+               (structure)
+                  Contains a list of CIRD IP ranges.
+
+                  "cidr_ip"  (string)
+                     The list of CIDR IP ranges.
+
+         "user_id_group_pairs"  (list)
+            The list of AWS user IDs and groups included in this
+            permission.
+
+               (structure)
+                  An AWS user ID identifiying an AWS account, and the
+                  name of a security group within that account.
+
+                  "group_name"  (string)
+                     Name of the security group in the specified AWS
+                     account. Cannot be used when specifying a CIDR IP
+                     address range.
+
+                  "user_id"  (string)
+                     The AWS user ID of an account.
+
+                  "group_id"  (string)
+                     ID of the security group in the specified AWS
+                     account. Cannot be used when specifying a CIDR IP
+                     address range.
+
+         "from_port"  (integer)
+            Start of port range for the TCP and UDP protocols, or an
+            ICMP type number. An ICMP type number of "-1" indicates a
+            wildcard (i.e., any ICMP type number).
+
+   *Parameter Syntax*
+
+      [
+        {
+          "to_port": integer,
+          "ip_protocol": "string",
+          "ip_ranges":
+            [
+              {
+                "cidr_ip": "string"
+              }
+              ...
+            ],
+          "user_id_group_pairs":
+            [
+              {
+                "group_name": "string",
+                "user_id": "string",
+                "group_id": "string"
+              }
+              ...
+            ],
+          "from_port": integer
+        }
+        ...
+      ]
+
+"--group-name"  (string)
+   Name of the standard (EC2) security group to modify. The group must
+   belong to your account. Can be used instead of GroupID for standard
+   (EC2) security groups.
+
+"--source-security-group-owner-id"  (string)
+   Deprecated
+
+"--source-security-group-name"  (string)
+   Deprecated
+
+"--to-port"  (integer)
+   Deprecated
+
+"--ip-protocol"  (string)
+   Deprecated
+
+"--group-id"  (string)
+   ID of the standard (EC2) or VPC security group to modify. The group
+   must belong to your account. Required for VPC security groups; can
+   be used instead of --group-name for standard (EC2) security groups.

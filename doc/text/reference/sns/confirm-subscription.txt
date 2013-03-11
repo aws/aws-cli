@@ -1,0 +1,44 @@
+
+confirm-subscription
+********************
+
+
+DESCRIPTION
+===========
+
+The confirm-subscription action verifies an endpoint owner's intent to
+receive messages by validating the token sent to the endpoint by an
+earlier subscribe action. If the token is valid, the action creates a
+new subscription and returns its Amazon Resource Name (ARN). This call
+requires an AWS signature only when the --authenticate-on-unsubscribe
+flag is set to "true".
+
+
+SYNOPSIS
+========
+
+   aws sns confirm-subscription
+     --token <value>
+     --topic-arn <value>
+     [--authenticate-on-unsubscribe <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--token"  (string)
+   Short-lived token sent to an endpoint during the subscribe action.
+
+"--topic-arn"  (string)
+   The ARN of the topic for which you wish to confirm a subscription.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--authenticate-on-unsubscribe"  (string)
+   Indicates that you want to disallow unauthenticated unsubscribes of
+   the subscription. If value of this parameter is "true" and the
+   request has an AWS signature then only the topic owner and the
+   subscription owner will be permitted to unsubscribe the endpoint.
+   The unsubscribe action will require AWS authentication.

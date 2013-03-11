@@ -1,0 +1,48 @@
+
+update-signing-certificate
+**************************
+
+
+DESCRIPTION
+===========
+
+Changes the status of the specified signing certificate from active to
+disabled, or vice versa. This action can be used to disable a user's
+signing certificate as part of a certificate rotation work flow.
+
+If the "--user-name" field is not specified, the --user-name is
+determined implicitly based on the AWS Access Key ID used to sign the
+request. Because this action works for access keys under the AWS
+account, this API can be used to manage root credentials even if the
+AWS account has no associated users.
+
+For information about rotating certificates, see Managing Keys and
+Certificates in *Using AWS Identity and Access Management* .
+
+
+SYNOPSIS
+========
+
+   aws iam update-signing-certificate
+     --status <value>
+     --certificate-id <value>
+     [--user-name <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--status"  (string)
+   The status you want to assign to the certificate. "Active" means
+   the certificate can be used for API calls to AWS, while "Inactive"
+   means the certificate cannot be used.
+
+"--certificate-id"  (string)
+   The ID of the signing certificate you want to update.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--user-name"  (string)
+   Name of the user the signing certificate belongs to.

@@ -7,6 +7,7 @@ distutils/setuptools install script.
 import os
 import sys
 import awscli
+import glob
 
 try:
     from setuptools import setup
@@ -14,12 +15,22 @@ try:
 except ImportError:
     from distutils.core import setup
 
+def visitfn(l, dirname, names):
+    fqn = [os.path.join(dirname, name) for name in names]
+    l.append((dirname, [n for n in fqn if os.path.isfile(n)]))
+
+def build_doclist():
+    doclist = [('doc/man/man1', glob.glob('doc/man/man1/*.1'))]
+    os.path.walk('doc/text', visitfn, doclist)
+    return doclist
+
 packages = [
     'awscli',
 ]
 
-requires = ['botocore>=0.6.0',
+requires = ['botocore>=0.8.0',
             'six>=1.1.0',
+            'colorama==0.2.5',
             'argparse>=1.1']
 
 
@@ -32,7 +43,8 @@ setup(
     author_email='garnaat@amazon.com',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
-             'bin/aws_completer', 'bin/zsh_complete.sh'],
+             'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
+    data_files=build_doclist(),
     packages=packages,
     package_data={'awscli': ['data/*.json']},
     package_dir={'awscli': 'awscli'},

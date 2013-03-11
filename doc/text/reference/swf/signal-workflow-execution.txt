@@ -1,0 +1,76 @@
+
+signal-workflow-execution
+*************************
+
+
+DESCRIPTION
+===========
+
+Records a "WorkflowExecutionSignaled" event in the workflow execution
+history and creates a decision task for the workflow execution
+identified by the given domain, --workflow-id and runId. The event is
+recorded with the specified user defined --signal-name and --input (if
+provided).
+
+Note: If a --run-id is not specified, then the "WorkflowExecutionSignaled"
+  event is recorded in the history of the current open workflow with
+  the matching --workflow-id in the domain.
+
+Note: If the specified workflow execution is not open, this method fails
+  with "UnknownResource" .
+
+**Access Control**
+
+You can use IAM policies to control this action's access to Amazon SWF
+resources as follows:
+
+* Use a "Resource" element with the --domain name to limit the action
+  to only specified domains.
+
+* Use an "Action" element to allow or deny permission to call this
+  action.
+
+* You cannot use an IAM policy to constrain this action's parameters.
+
+If the caller does not have sufficient permissions to invoke the
+action, or the parameter values fall outside the specified
+constraints, the action fails by throwing "OperationNotPermitted" .
+For details and example IAM policies, see Using IAM to Manage Access
+to Amazon SWF Workflows .
+
+
+SYNOPSIS
+========
+
+   aws swf signal-workflow-execution
+     --domain <value>
+     --signal-name <value>
+     --workflow-id <value>
+     [--input <value>]
+     [--run-id <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--domain"  (string)
+   The name of the --domain containing the workflow execution to
+   signal.
+
+"--signal-name"  (string)
+   The name of the signal. This name must be meaningful to the target
+   workflow.
+
+"--workflow-id"  (string)
+   The --workflow-id of the workflow execution to signal.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--input"  (string)
+   Data to attach to the "WorkflowExecutionSignaled" event in the
+   target workflow execution's history.
+
+"--run-id"  (string)
+   The --run-id of the workflow execution to signal.

@@ -1,0 +1,134 @@
+
+put-metric-data
+***************
+
+
+DESCRIPTION
+===========
+
+Publishes metric data points to Amazon CloudWatch. Amazon Cloudwatch
+associates the data points with the specified metric. If the specified
+metric does not exist, Amazon CloudWatch creates the metric.
+
+Note: If you create a metric with the "put-metric-data" action, allow up
+  to fifteen minutes for the metric to appear in calls to the  list-
+  metrics action.
+
+The size of a put-metric-data request is limited to 8 KB for HTTP GET
+requests and 40 KB for HTTP POST requests.
+
+Warning: Although the "Value" parameter accepts numbers of type "Double" ,
+  Amazon CloudWatch truncates values with very large exponents. Values
+  with base-10 exponents greater than 126 (1 x 10^126) are truncated.
+  Likewise, values with base-10 exponents less than -130 (1 x 10^-130)
+  are also truncated.
+
+
+SYNOPSIS
+========
+
+   aws cloudwatch put-metric-data
+     --namespace <value>
+     --metric-data <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--namespace"  (string)
+   The namespace for the metric data.
+
+"--metric-data"  (list)
+   A list of data describing the metric.
+
+      (structure)
+         The "MetricDatum" data type encapsulates the information sent
+         with put-metric-data to either create a new metric or add new
+         values to be aggregated into an existing metric.
+
+         "dimensions"  (list)
+            A list of dimensions associated with the metric.
+
+               (structure)
+                  The "Dimension" data type further expands on the
+                  identity of a metric using a Name, Value pair.
+
+                  "name"  (string)
+                     The name of the dimension.
+
+                  "value"  (string)
+                     The value representing the dimension measurement
+
+         "timestamp"  (timestamp)
+            The time stamp used for the metric. If not specified, the
+            default value is set to the time the metric data was
+            received.
+
+         "value"  (double)
+            The value for the metric.
+
+            Warning: Although the "Value" parameter accepts numbers of type
+              "Double" , Amazon CloudWatch truncates values with very
+              large exponents. Values with base-10 exponents greater
+              than 126 (1 x 10^126) are truncated. Likewise, values
+              with base-10 exponents less than -130 (1 x 10^-130) are
+              also truncated.
+
+         "statistic_values"  (structure)
+            A set of statistical values describing the metric.
+
+            "sample_count"  (double)
+               The number of samples used for the statistic set.
+
+            "sum"  (double)
+               The sum of values for the sample set.
+
+            "minimum"  (double)
+               The minimum value of the sample set.
+
+            "maximum"  (double)
+               The maximum value of the sample set.
+
+         "unit"  (string)
+            The unit of the metric.
+
+         "metric_name"  (string)
+            The name of the metric.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "dimensions":
+            [
+              {
+                "name": "string",
+                "value": "string"
+              }
+              ...
+            ],
+          "timestamp": timestamp,
+          "value": double,
+          "statistic_values": {
+            {
+              "sample_count": double,
+              "sum": double,
+              "minimum": double,
+              "maximum": double
+            },
+          "unit": "Seconds"|"Microseconds"|"Milliseconds"|"Bytes"|"Kilobytes"|"Meg
+          abytes"|"Gigabytes"|"Terabytes"|"Bits"|"Kilobits"|"Megabits"|"Gigabits"|
+          "Terabits"|"Percent"|"Count"|"Bytes/Second"|"Kilobytes/Second"|"Megabyte
+          s/Second"|"Gigabytes/Second"|"Terabytes/Second"|"Bits/Second"|"Kilobits/
+          Second"|"Megabits/Second"|"Gigabits/Second"|"Terabits/Second"|"Count/Sec
+          ond"|"None",
+          "metric_name": "string"
+        }
+        ...
+      ]
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

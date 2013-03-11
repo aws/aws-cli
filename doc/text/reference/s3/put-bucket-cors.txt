@@ -1,0 +1,67 @@
+
+put-bucket-cors
+***************
+
+
+DESCRIPTION
+===========
+
+Sets the cors configuration for a bucket.
+
+
+SYNOPSIS
+========
+
+   aws s3 put-bucket-cors
+     --bucket <value>
+     [--content-md5 <value>]
+     [--cors-configuration <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--bucket"  (string)
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--content-md5"  (string)
+
+"--cors-configuration"  (structure)
+   "cors_rules"  (list)
+      (structure)
+         "expose_headers"  (list of string)One or more headers in the
+         response that you want customers to be able to access from
+         their applications (for example, from a JavaScript
+         XMLHttpRequest object).
+
+         "allowed_methods"  (list of string)Identifies HTTP methods
+         that the domain/origin specified in the rule is allowed to
+         execute.
+
+         "max_age_seconds"  (integer)The time in seconds that your
+         browser is to cache the preflight response for the specified
+         resource.
+
+         "allowed_origins"  (list of string)One or more origins you
+         want customers to be able to access the bucket from.
+
+   *Parameter Syntax*
+
+      {
+        "cors_rules":
+          [
+            {
+              "expose_headers":
+                ["string", ...],
+              "allowed_methods":
+                ["string", ...],
+              "max_age_seconds": integer,
+              "allowed_origins":
+                ["string", ...]
+            }
+            ...
+          ]
+      }

@@ -1,0 +1,62 @@
+
+create-vpn-connection
+*********************
+
+
+DESCRIPTION
+===========
+
+Creates a new VPN connection between an existing VPN gateway and
+customer gateway. The only supported connection type is ipsec.1.
+
+The response includes information that you need to configure your
+customer gateway, in XML format. We recommend you use the command line
+version of this operation ( "ec2-create-vpn-connection" ), which takes
+an "-f" option (for format) and returns configuration information
+formatted as expected by the vendor you specified, or in a generic,
+human readable format. For information about the command, go to "ec2
+-create-vpn-connection" in the Amazon Virtual Private Cloud Command
+Line Reference.
+
+Warning: We strongly recommend you use HTTPS when calling this operation
+  because the response contains sensitive cryptographic information
+  for configuring your customer gateway.If you decide to shut down
+  your VPN connection for any reason and then create a new one, you
+  must re-configure your customer gateway with the new information
+  returned from this call.
+
+
+SYNOPSIS
+========
+
+   aws ec2 create-vpn-connection
+     --customer-gateway-id <value>
+     --type <value>
+     --vpn-gateway-id <value>
+     [--options <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--customer-gateway-id"  (string)
+   The ID of the customer gateway.
+
+"--type"  (string)
+   The type of VPN connection.
+
+"--vpn-gateway-id"  (string)
+   The ID of the VPN gateway.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--options"  (structure)
+   "static_routes_only"  (boolean)
+
+   *Parameter Syntax*
+
+      {
+        "static_routes_only": true|false
+      }

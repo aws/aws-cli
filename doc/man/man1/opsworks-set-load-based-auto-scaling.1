@@ -1,0 +1,166 @@
+.TH "OPSWORKS-SET-LOAD-BASED-AUTO-SCALING" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+opsworks-set-load-based-auto-scaling \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Specify the load\-based auto scaling configuration for a specified layer.
+.IP Note
+To use load\-based auto scaling, you must create a set of load\-based auto
+scaling instances. Load\-based auto scaling operates only on the instances from
+that set, so you must ensure that you have created enough instances to handle
+the maximum anticipated load.
+.RE
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws opsworks set\-load\-based\-auto\-scaling
+  [\-\-down\-scaling <value>]
+  [\-\-enable ]
+  [\-\-up\-scaling <value>]
+  [\-\-layer\-id <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.sp
+None
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-down\-scaling\fP  (structure)
+An \fBAutoScalingThresholds\fP object with the downscaling threshold
+configuration. If the load falls below these thresholds for a specified amount
+of time, OpsWorks stops a specified number of instances.
+.INDENT 7.0
+.TP
+.B \fBinstance_count\fP  (integer)
+The number of instances to add or remove when the load exceeds a threshold.
+.TP
+.B \fBload_threshold\fP  (double)
+The load threshold. For more information about how load is computed, see
+\fI\%Load (computing)\fP .
+.TP
+.B \fBthresholds_wait_time\fP  (integer)
+The amount of time, in minutes, that the load must exceed a threshold before
+more instances are added or removed.
+.TP
+.B \fBignore_metrics_time\fP  (integer)
+The amount of time (in minutes) after a scaling event occurs that OpsWorks
+should ignore metrics and not raise any additional scaling events. For
+example, OpsWorks adds new instances following an upscaling event but the
+instances won\(aqt start reducing the load until they have been booted and
+configured. There is no point in raising additional scaling events during
+that operation, which typically takes several minutes. \fBIgnoreMetricsTime\fP
+allows you to direct OpsWorks to not raise any scaling events long enough to
+get the new instances online.
+.TP
+.B \fBmemory_threshold\fP  (double)
+The memory utilization threshold, as a percent of the available memory.
+.TP
+.B \fBcpu_threshold\fP  (double)
+The CPU utilization threshold, as a percent of the available CPU load.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "instance_count": integer,
+  "load_threshold": double,
+  "thresholds_wait_time": integer,
+  "ignore_metrics_time": integer,
+  "memory_threshold": double,
+  "cpu_threshold": double
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-enable\fP  (boolean)
+Enables load\-based auto scaling for the layer.
+.TP
+.B \fB\-\-up\-scaling\fP  (structure)
+An \fBAutoScalingThresholds\fP object with the upscaling threshold
+configuration. If the load exceeds these thresholds for a specified amount of
+time, OpsWorks starts a specified number of instances.
+.INDENT 7.0
+.TP
+.B \fBinstance_count\fP  (integer)
+The number of instances to add or remove when the load exceeds a threshold.
+.TP
+.B \fBload_threshold\fP  (double)
+The load threshold. For more information about how load is computed, see
+\fI\%Load (computing)\fP .
+.TP
+.B \fBthresholds_wait_time\fP  (integer)
+The amount of time, in minutes, that the load must exceed a threshold before
+more instances are added or removed.
+.TP
+.B \fBignore_metrics_time\fP  (integer)
+The amount of time (in minutes) after a scaling event occurs that OpsWorks
+should ignore metrics and not raise any additional scaling events. For
+example, OpsWorks adds new instances following an upscaling event but the
+instances won\(aqt start reducing the load until they have been booted and
+configured. There is no point in raising additional scaling events during
+that operation, which typically takes several minutes. \fBIgnoreMetricsTime\fP
+allows you to direct OpsWorks to not raise any scaling events long enough to
+get the new instances online.
+.TP
+.B \fBmemory_threshold\fP  (double)
+The memory utilization threshold, as a percent of the available memory.
+.TP
+.B \fBcpu_threshold\fP  (double)
+The CPU utilization threshold, as a percent of the available CPU load.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "instance_count": integer,
+  "load_threshold": double,
+  "thresholds_wait_time": integer,
+  "ignore_metrics_time": integer,
+  "memory_threshold": double,
+  "cpu_threshold": double
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-layer\-id\fP  (string)
+The layer ID.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

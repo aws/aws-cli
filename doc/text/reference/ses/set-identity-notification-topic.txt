@@ -1,0 +1,45 @@
+
+set-identity-notification-topic
+*******************************
+
+
+DESCRIPTION
+===========
+
+Given an identity (email address or domain), sets the Amazon SNS topic
+to which Amazon SES will publish bounce and complaint notifications
+for emails sent with that identity as the "Source" . Publishing to
+topics may only be disabled when feedback forwarding is enabled. For
+more information about feedback notification, see the Amazon SES
+Developer Guide .
+
+
+SYNOPSIS
+========
+
+   aws ses set-identity-notification-topic
+     --notification-type <value>
+     --identity <value>
+     [--sns-topic <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--notification-type"  (string)
+   The type of feedback notifications that will be published to the
+   specified topic.
+
+"--identity"  (string)
+   The identity for which the topic will be set. Examples:
+   "user@example.com" , "example.com" .
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--sns-topic"  (string)
+   The Amazon Resource Name (ARN) of the Amazon Simple Notification
+   Service (Amazon SNS) topic. If the parameter is ommited from the
+   request or a null value is passed, the topic is cleared and
+   publishing is disabled.

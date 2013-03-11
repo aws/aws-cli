@@ -1,0 +1,269 @@
+.TH "SWF" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+swf \- Amazon Simple Workflow Service
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+The Amazon Simple Workflow Service API Reference is intended for programmers who
+need detailed information about the Amazon SWF actions and data types.
+.sp
+For an broader overview of the Amazon SWF programming model, please go to the
+\fI\%Amazon SWF Developer Guide\fP .
+.sp
+This section provides an overview of Amazon SWF actions.
+.sp
+\fBAction Categories\fP
+.sp
+The Amazon SWF actions can be grouped into the following major categories.
+.INDENT 0.0
+.IP \(bu 2
+Actions related to Activities
+.IP \(bu 2
+Actions related to Deciders
+.IP \(bu 2
+Actions related to Workflow Executions
+.IP \(bu 2
+Actions related to Administration
+.IP \(bu 2
+Actions related to Visibility
+.UNINDENT
+.sp
+\fBActions related to Activities\fP
+.sp
+The following are actions that are performed by activity workers:
+.INDENT 0.0
+.IP \(bu 2
+\fI\%poll-for-activity-task\fP
+.IP \(bu 2
+\fI\%respond-activity-task-completed\fP
+.IP \(bu 2
+\fI\%respond-activity-task-failed\fP
+.IP \(bu 2
+\fI\%respond-activity-task-canceled\fP
+.IP \(bu 2
+\fI\%record-activity-task-heartbeat\fP
+.UNINDENT
+.sp
+Activity workers use the \fI\%poll-for-activity-task\fP to get new activity tasks. After a worker
+receives an activity task from Amazon SWF, it performs the task and responds
+using \fI\%respond-activity-task-completed\fP
+if successful or \fI\%respond-activity-task-failed\fP if unsuccessful.
+.sp
+\fBActions related to Deciders\fP
+.sp
+The following are actions that are performed by deciders:
+.INDENT 0.0
+.IP \(bu 2
+\fI\%poll-for-decision-task\fP
+.IP \(bu 2
+\fI\%respond-decision-task-completed\fP
+.UNINDENT
+.sp
+Deciders use \fI\%poll-for-decision-task\fP to get
+decision tasks. After a decider receives a decision task from Amazon SWF, it
+examines its workflow execution history and decides what to do next. It calls
+\fI\%respond-decision-task-completed\fP to
+complete the decision task and provide zero or more next decisions.
+.sp
+\fBActions related to Workflow Executions\fP
+.sp
+The following actions operate on a workflow execution:
+.INDENT 0.0
+.IP \(bu 2
+\fI\%request-cancel-workflow-execution\fP
+.IP \(bu 2
+\fI\%start-workflow-execution\fP
+.IP \(bu 2
+\fI\%signal-workflow-execution\fP
+.IP \(bu 2
+\fI\%terminate-workflow-execution\fP
+.UNINDENT
+.sp
+\fBActions related to Administration\fP
+.sp
+Although you can perform administrative tasks from the Amazon SWF console, you
+can use the actions in this section to automate functions or build your own
+administrative tools.
+.sp
+\fBActivity Management\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%register-activity-type\fP
+.IP \(bu 2
+\fI\%deprecate-activity-type\fP
+.UNINDENT
+.sp
+\fBWorkflow Management\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%register-workflow-type\fP
+.IP \(bu 2
+\fI\%deprecate-workflow-type\fP
+.UNINDENT
+.sp
+\fBDomain Management\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%register-domain\fP
+.IP \(bu 2
+\fI\%deprecate-domain\fP
+.UNINDENT
+.sp
+\fBWorkflow Execution Management\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%request-cancel-workflow-execution\fP
+.IP \(bu 2
+\fI\%terminate-workflow-execution\fP
+.UNINDENT
+.sp
+\fBVisibility Actions\fP
+.sp
+Although you can perform visibility actions from the Amazon SWF console, you can
+use the actions in this section to build your own console or administrative
+tools.
+.sp
+\fBActivity Visibility\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%list-activity-types\fP
+.IP \(bu 2
+\fI\%DescribeActivity\fP
+.UNINDENT
+.sp
+\fBWorkflow Visibility\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%list-workflow-types\fP
+.IP \(bu 2
+\fI\%describe-workflow-type\fP
+.UNINDENT
+.sp
+\fBWorkflow Execution Visibility\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%describe-workflow-execution\fP
+.IP \(bu 2
+\fI\%list-open-workflow-executions\fP
+.IP \(bu 2
+\fI\%list-closed-workflow-executions\fP
+.IP \(bu 2
+\fI\%count-open-workflow-executions\fP
+.IP \(bu 2
+\fI\%count-closed-workflow-executions\fP
+.IP \(bu 2
+\fI\%get-workflow-execution-history\fP
+.UNINDENT
+.sp
+\fBDomain Visibility\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%list-domains\fP
+.IP \(bu 2
+\fI\%describe-domain\fP
+.UNINDENT
+.sp
+\fBTask List Visibility\fP
+.INDENT 0.0
+.IP \(bu 2
+\fI\%count-pending-activity-tasks\fP
+.IP \(bu 2
+\fI\%count-pending-decision-tasks\fP
+.UNINDENT
+.SH AVAILABLE COMMANDS
+.INDENT 0.0
+.IP \(bu 2
+count\-closed\-workflow\-executions
+.IP \(bu 2
+count\-open\-workflow\-executions
+.IP \(bu 2
+count\-pending\-activity\-tasks
+.IP \(bu 2
+count\-pending\-decision\-tasks
+.IP \(bu 2
+deprecate\-activity\-type
+.IP \(bu 2
+deprecate\-domain
+.IP \(bu 2
+deprecate\-workflow\-type
+.IP \(bu 2
+describe\-activity\-type
+.IP \(bu 2
+describe\-domain
+.IP \(bu 2
+describe\-workflow\-execution
+.IP \(bu 2
+describe\-workflow\-type
+.IP \(bu 2
+get\-workflow\-execution\-history
+.IP \(bu 2
+list\-activity\-types
+.IP \(bu 2
+list\-closed\-workflow\-executions
+.IP \(bu 2
+list\-domains
+.IP \(bu 2
+list\-open\-workflow\-executions
+.IP \(bu 2
+list\-workflow\-types
+.IP \(bu 2
+poll\-for\-activity\-task
+.IP \(bu 2
+poll\-for\-decision\-task
+.IP \(bu 2
+record\-activity\-task\-heartbeat
+.IP \(bu 2
+register\-activity\-type
+.IP \(bu 2
+register\-domain
+.IP \(bu 2
+register\-workflow\-type
+.IP \(bu 2
+request\-cancel\-workflow\-execution
+.IP \(bu 2
+respond\-activity\-task\-canceled
+.IP \(bu 2
+respond\-activity\-task\-completed
+.IP \(bu 2
+respond\-activity\-task\-failed
+.IP \(bu 2
+respond\-decision\-task\-completed
+.IP \(bu 2
+signal\-workflow\-execution
+.IP \(bu 2
+start\-workflow\-execution
+.IP \(bu 2
+terminate\-workflow\-execution
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

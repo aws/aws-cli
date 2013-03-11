@@ -1,0 +1,316 @@
+.TH "REDSHIFT-CREATE-CLUSTER" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+redshift-create-cluster \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Creates a new cluster. To create the cluster in virtual private cloud (VPC), you
+must provide cluster subnet group name. If you don\(aqt provide a cluster subnet
+group name or the cluster security group parameter, Amazon Redshift creates a
+non\-VPC cluster, it associates the default cluster security group with the
+cluster. .
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws redshift create\-cluster
+  \-\-node\-type <value>
+  \-\-master\-username <value>
+  \-\-master\-user\-password <value>
+  \-\-cluster\-identifier <value>
+  [\-\-number\-of\-nodes <value>]
+  [\-\-availability\-zone <value>]
+  [\-\-publicly\-accessible ]
+  [\-\-cluster\-parameter\-group\-name <value>]
+  [\-\-encrypted ]
+  [\-\-cluster\-type <value>]
+  [\-\-vpc\-security\-group\-ids <value>]
+  [\-\-allow\-version\-upgrade ]
+  [\-\-cluster\-subnet\-group\-name <value>]
+  [\-\-automated\-snapshot\-retention\-period <value>]
+  [\-\-cluster\-security\-groups <value>]
+  [\-\-port <value>]
+  [\-\-db\-name <value>]
+  [\-\-preferred\-maintenance\-window <value>]
+  [\-\-cluster\-version <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-node\-type\fP  (string)
+The node type to be provisioned for the cluster. For information about node
+types, go to \fI\%Working with Clusters\fP in the \fIAmazon Redshift
+Management Guide\fP .
+.sp
+Valid Values: \fBdw.hs1.xlarge\fP | \fBdw.hs1.8xlarge\fP .
+.TP
+.B \fB\-\-master\-username\fP  (string)
+The user name associated with the master user account for the cluster that is
+being created.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 \- 128 alphanumeric characters.
+.IP \(bu 2
+First character must be a letter.
+.IP \(bu 2
+Cannot be a reserved word. A list of reserved words can be found in
+\fI\%Reserved Words\fP in the
+Developer Guide.
+.UNINDENT
+.TP
+.B \fB\-\-master\-user\-password\fP  (string)
+The password associated with the master user account for the cluster that is
+being created.
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be between 8 and 64 characters in length.
+.IP \(bu 2
+Must contain at least one uppercase letter.
+.IP \(bu 2
+Must contain at least one lowercase letter.
+.IP \(bu 2
+Must contain one number.
+.IP \(bu 2
+Can be any printable ASCII character (ASCII code 33 to 126) except \(aq (single
+quote), " (double quote), , /, @, or space.
+.UNINDENT
+.TP
+.B \fB\-\-cluster\-identifier\fP  (string)
+A unique identifier for the cluster. You use this identifier to refer to the
+cluster for any subsequent cluster operations such as deleting or modifying.
+The identifier also appears in the console.
+.sp
+Example: \fBmyexamplecluster\fP
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-number\-of\-nodes\fP  (integer)
+The number of compute nodes in the cluster. This parameter is required when
+the \fB\-\-cluster\-type\fP parameter is specified as \fBmulti\-node\fP .
+.sp
+For information about determining how many nodes you need, go to \fI\%Working with
+Clusters\fP in the \fIAmazon Redshift Management Guide\fP .
+.sp
+If you don\(aqt specify this parameter, you get a single\-node cluster. When
+requesting a multi\-node cluster, you must specify the number of nodes that you
+want in the cluster.
+.sp
+Default: \fB1\fP
+.sp
+Constraints: Value must be at least 1 and no more than 100.
+.TP
+.B \fB\-\-availability\-zone\fP  (string)
+The EC2 Availability Zone (AZ) in which you want to provision the cluster. For
+example, if you have several EC2 instances running in a specific Availability
+Zone, then you might want the cluster to be provisioned in the same zone in
+order to decrease network latency.
+.sp
+Default: A random, system\-chosen Availability Zone in the region that is
+specified by the endpoint.
+.sp
+Example: \fBus\-east\-1d\fP
+.sp
+Constraint: The specified Availability Zone must be in the same region as the
+current endpoint.
+.TP
+.B \fB\-\-publicly\-accessible\fP  (boolean)
+If \fBtrue\fP , the cluster can be accessed from a public network.
+.TP
+.B \fB\-\-cluster\-parameter\-group\-name\fP  (string)
+The name of the parameter group to be associated with this cluster.
+.sp
+Default: The default cluster parameter group. For information about the
+default parameter group, go to \fI\%Working with Amazon Redshift Parameter Groups\fP
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must be 1 to 255 alphanumeric characters or hyphens.
+.IP \(bu 2
+First character must be a letter.
+.IP \(bu 2
+Cannot end with a hyphen or contain two consecutive hyphens.
+.UNINDENT
+.TP
+.B \fB\-\-encrypted\fP  (boolean)
+If \fBtrue\fP , the data in cluster is encrypted at rest.
+.sp
+Default: false
+.TP
+.B \fB\-\-cluster\-type\fP  (string)
+The type of the cluster. When cluster type is specified as
+.INDENT 7.0
+.IP \(bu 2
+\fBsingle\-node\fP , the \fB\-\-number\-of\-nodes\fP parameter is not required.
+.IP \(bu 2
+\fBmulti\-node\fP , the \fB\-\-number\-of\-nodes\fP parameter is required.
+.UNINDENT
+.sp
+Valid Values: \fBmulti\-node\fP | \fBsingle\-node\fP
+.sp
+Default: \fBmulti\-node\fP
+.TP
+.B \fB\-\-vpc\-security\-group\-ids\fP  (list of string)
+A list of Virtual Private Cloud (VPC) security groups to be associated with
+the cluster.
+.sp
+Default: The default VPC security group is associated with the cluster.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-allow\-version\-upgrade\fP  (boolean)
+If \fBtrue\fP , upgrades can be applied during the maintenance window to the
+engine that is running on the cluster.
+.sp
+When a new version of the engine is released, you can request that the service
+automatically apply upgrades during the maintenance window to the engine that
+is running on your cluster.
+.sp
+Default: \fBtrue\fP
+.TP
+.B \fB\-\-cluster\-subnet\-group\-name\fP  (string)
+The name of a cluster subnet group to be associated with this cluster.
+.sp
+If this parameter is not provided the resulting cluster will be deployed
+outside virtual private cloud (VPC).
+.TP
+.B \fB\-\-automated\-snapshot\-retention\-period\fP  (integer)
+The number of days that automated snapshots are retained. If the value is 0,
+automated snapshots are disabled. Even if automated snapshots are disabled,
+you can still create manual snapshots when you want with
+create\-cluster\-snapshot .
+.sp
+Default: \fB1\fP
+.sp
+Constraints: Must be a value from 0 to 35.
+.TP
+.B \fB\-\-cluster\-security\-groups\fP  (list of string)
+A list of security groups to be associated with this cluster.
+.sp
+Default: The default cluster security group for .
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-port\fP  (integer)
+The port number on which the cluster accepts incoming connections.
+.sp
+The cluster is accessible only via the JDBC and ODBC connection strings. Part
+of the connection string requires the port on which the cluster will listen
+for incoming connections.
+.sp
+Default: \fB5439\fP
+.sp
+Valid Values: \fB1150\-65535\fP
+.TP
+.B \fB\-\-db\-name\fP  (string)
+The name of the first database to be created when the cluster is created.
+.sp
+To create additional databases after the cluster is created, connect to the
+cluster with a SQL client and use SQL commands to create a database. For more
+information, go to \fI\%Create a Database\fP in the
+Developer Guide.
+.sp
+Default: \fBdev\fP
+.sp
+Constraints:
+.INDENT 7.0
+.IP \(bu 2
+Must contain 1 to 64 alphanumeric characters.
+.IP \(bu 2
+Must contain only lowercase letters.
+.IP \(bu 2
+Cannot be a word that is reserved by the service. A list of reserved words
+can be found in \fI\%Reserved Words\fP in the
+Developer Guide.
+.UNINDENT
+.TP
+.B \fB\-\-preferred\-maintenance\-window\fP  (string)
+The weekly time range (in UTC) during which automated cluster maintenance can
+occur.
+.sp
+Format: \fBddd:hh24:mi\-ddd:hh24:mi\fP
+.sp
+Default: A 30\-minute window selected at random from an 8\-hour block of time
+per region, occurring on a random day of the week. The following list shows
+the time blocks for each region from which the default maintenance windows are
+assigned.
+.INDENT 7.0
+.IP \(bu 2
+\fBUS\-East (Northern Virginia) Region:\fP 03:00\-11:00 UTC
+.IP \(bu 2
+\fBUS\-West (Northern California) Region:\fP 06:00\-14:00 UTC
+.IP \(bu 2
+\fBEU (Ireland) Region:\fP 22:00\-06:00 UTC
+.IP \(bu 2
+\fBAsia Pacific (Singapore) Region:\fP 14:00\-22:00 UTC
+.IP \(bu 2
+
+.nf
+**
+.fi
+Asia Pacific (Tokyo) Region: ** 17:00\-03:00 UTC
+.UNINDENT
+.sp
+Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun
+.sp
+Constraints: Minimum 30\-minute window.
+.TP
+.B \fB\-\-cluster\-version\fP  (string)
+The version of the engine software that you want to deploy on the cluster.
+.sp
+The version selected runs on all the nodes in the cluster.
+.sp
+Constraints: Only version 1.0 is currently available.
+.sp
+Example: \fB1.0\fP
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

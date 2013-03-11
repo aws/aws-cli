@@ -1,0 +1,64 @@
+
+describe-cluster-parameters
+***************************
+
+
+DESCRIPTION
+===========
+
+Returns a detailed list of parameters contained within the specified
+parameter group. For each parameter the response includes information
+such as parameter name, description, data type, value, whether the
+parameter value is modifiable, and so on.
+
+You can specify *source* filter to retrieve parameters of only
+specific type. For example, to retrieve parameters that were modified
+by a user action such as from  modify-cluster-parameter-group , you
+can specify *source* equal to *user* .
+
+
+SYNOPSIS
+========
+
+   aws redshift describe-cluster-parameters
+     --parameter-group-name <value>
+     [--marker <value>]
+     [--source <value>]
+     [--max-records <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--parameter-group-name"  (string)
+   The name of a cluster parameter group for which to return details.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--marker"  (string)
+   An optional marker returned from a previous **describe-cluster-
+   parameters** request. If this parameter is specified, the response
+   includes only records beyond the specified marker, up to the value
+   specified by "--max-records" .
+
+"--source"  (string)
+   The parameter types to return. Specify "user" to show parameters
+   that are different form the default. Similarly, specify "engine-
+   default" to show parameters that are the same as the default
+   parameter group.
+
+   Default: All parameter types returned.
+
+   Valid Values: "user" | "engine-default"
+
+"--max-records"  (integer)
+   The maximum number of records to include in the response. If more
+   records exist than the specified "--max-records" value, response
+   includes a marker that you can specify in your subsequent request
+   to retrieve remaining result.
+
+   Default: "100"
+
+   Constraints: Value must be at least 20 and no more than 100.

@@ -1,0 +1,93 @@
+
+replace-network-acl-entry
+*************************
+
+
+DESCRIPTION
+===========
+
+Replaces an entry (i.e., rule) in a network ACL. For more information
+about network ACLs, go to Network ACLs in the Amazon Virtual Private
+Cloud User Guide.
+
+
+SYNOPSIS
+========
+
+   aws ec2 replace-network-acl-entry
+     --network-acl-id <value>
+     --rule-number <value>
+     --protocol <value>
+     --egress
+     --no-egress
+     --rule-action <value>
+     --cidr-block <value>
+     [--icmp-type-code <value>]
+     [--port-range <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--network-acl-id"  (string)
+   ID of the ACL where the entry will be replaced.
+
+"--rule-number"  (integer)
+   Rule number of the entry to replace.
+
+"--protocol"  (string)
+   IP protocol the rule applies to. Valid Values: "tcp" , "udp" ,
+   "icmp" or an IP protocol number.
+
+"--egress"  | "--no-egress"  (boolean)
+   Whether this rule applies to egress traffic from the subnet (
+   "true" ) or ingress traffic ( "false" ).
+
+"--rule-action"  (string)
+   Whether to allow or deny traffic that matches the rule.
+
+"--cidr-block"  (string)
+   The CIDR range to allow or deny, in CIDR notation (e.g.,
+   "172.16.0.0/24" ).
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--icmp-type-code"  (structure)
+   ICMP values.
+
+   "code"  (integer)
+      For the ICMP protocol, the ICMP code. A value of "-1" is a
+      wildcard meaning all codes. Required if specifying "icmp" for
+      the protocol.
+
+   "type"  (integer)
+      For the ICMP protocol, the ICMP type. A value of "-1" is a
+      wildcard meaning all types. Required if specifying "icmp" for
+      the protocol.
+
+   *Parameter Syntax*
+
+      {
+        "code": integer,
+        "type": integer
+      }
+
+"--port-range"  (structure)
+   Port ranges.
+
+   "to"  (integer)
+      The last port in the range. Required if specifying "tcp" or
+      "udp" for the protocol.
+
+   "from"  (integer)
+      The first port in the range. Required if specifying "tcp" or
+      "udp" for the protocol.
+
+   *Parameter Syntax*
+
+      {
+        "to": integer,
+        "from": integer
+      }

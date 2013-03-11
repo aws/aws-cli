@@ -1,0 +1,159 @@
+
+update-layer
+************
+
+
+DESCRIPTION
+===========
+
+Updates a specified layer.
+
+
+SYNOPSIS
+========
+
+   aws opsworks update-layer
+     [--packages <value>]
+     [--name <value>]
+     [--custom-recipes <value>]
+     [--volume-configurations <value>]
+     [--auto-assign-elastic-ips ]
+     [--enable-auto-healing ]
+     [--layer-id <value>]
+     [--attributes <value>]
+     [--shortname <value>]
+     [--instance-profile-arn <value>]
+     [--custom-security-group-ids <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+None
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--packages"  (list of string)
+   An array of "Package" objects that describe the layer's packages.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--name"  (string)
+   The layer name, which is used by the console.
+
+"--custom-recipes"  (structure)
+   A "LayerCustomRecipes" object that specifies the layer's custom
+   recipes.
+
+   "undeploy"  (list of string)
+      An array of custom recipe names to be run following a "undeploy"
+      event.
+
+   "setup"  (list of string)
+      An array of custom recipe names to be run following a "setup"
+      event.
+
+   "configure"  (list of string)
+      An array of custom recipe names to be run following a
+      "configure" event.
+
+   "shutdown"  (list of string)
+      An array of custom recipe names to be run following a "shutdown"
+      event.
+
+   "deploy"  (list of string)
+      An array of custom recipe names to be run following a "deploy"
+      event.
+
+   *Parameter Syntax*
+
+      {
+        "undeploy":
+          ["string", ...],
+        "setup":
+          ["string", ...],
+        "configure":
+          ["string", ...],
+        "shutdown":
+          ["string", ...],
+        "deploy":
+          ["string", ...]
+      }
+
+"--volume-configurations"  (list)
+   A "--volume-configurations" object that describes the layer's
+   Amazon EBS volumes.
+
+      (structure)
+         Describes an Amazon EBS volume configuration.
+
+         "size"  (integer)
+            The volume size.
+
+         "mount_point"  (string)
+            The volume mount point. For example "/dev/sdh".
+
+         "raid_level"  (integer)
+            The volume RAID level .
+
+         "number_of_disks"  (integer)
+            The number of disks in the volume.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "size": integer,
+          "mount_point": "string",
+          "raid_level": integer,
+          "number_of_disks": integer
+        }
+        ...
+      ]
+
+"--auto-assign-elastic-ips"  (boolean)
+   Whether to automatically assign an Elastic IP address to the layer.
+
+"--enable-auto-healing"  (boolean)
+   Whether to disable auto healing for the layer.
+
+"--layer-id"  (string)
+   The layer ID.
+
+"--attributes"  (map)
+   One or more user-defined key/value pairs to be added to the stack
+   attributes bag.
+
+   *Parameter Syntax*
+
+      {
+        "EnableHaproxyStats"|"HaproxyStatsUrl"|"HaproxyStatsUser"|"HaproxyStatsPas
+        sword"|"HaproxyHealthCheckUrl"|"HaproxyHealthCheckMethod"|"MysqlRootPasswo
+        rd"|"MysqlRootPasswordUbiquitous"|"GangliaUrl"|"GangliaUser"|"GangliaPassw
+        ord"|"MemcachedMemory"|"NodejsVersion"|"NpmVersion"|"RubyVersion"|"Rubygem
+        sVersion"|"ManageBundler"|"BundlerVersion"|"RailsStack"|"PassengerVersion"
+        : "string"
+        ...
+      }
+
+"--shortname"  (string)
+   The layer short name, which is used internally by OpsWorks, by
+   Chef. The shortname is also used as the name for the directory
+   where your app files are installed. It can have a maximum of 200
+   characters and must be in the following format: /A[a-z0-9-_.]+Z/.
+
+"--instance-profile-arn"  (string)
+   An IAM profile ARN for the layer instances. You can override this
+   value when you create an instance. For more information about IAM
+   ARNs, see Using Identifiers .
+
+"--custom-security-group-ids"  (list of string)
+   An array containing the layer's custom security group IDs.
+
+   *Parameter Syntax*
+
+      ["string", ...]

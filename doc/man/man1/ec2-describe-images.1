@@ -1,0 +1,181 @@
+.TH "EC2-DESCRIBE-IMAGES" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+ec2-describe-images \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+The describe\-images operation returns information about AMIs, AKIs, and ARIs
+available to the user. Information returned includes image type, product codes,
+architecture, and kernel and RAM disk IDs. Images available to the user include
+public images available for any user to launch, private images owned by the user
+making the request, and private images owned by other users for which the user
+has explicit launch permissions.
+.sp
+Launch permissions fall into three categories:
+.INDENT 0.0
+.IP \(bu 2
+\fBPublic:\fP The owner of the AMI granted launch permissions for the AMI to the
+all group. All users have launch permissions for these AMIs.
+.IP \(bu 2
+\fBExplicit:\fP The owner of the AMI granted launch permissions to a specific
+user.
+.IP \(bu 2
+\fBImplicit:\fP A user has implicit launch permissions for all AMIs he or she
+owns.
+.UNINDENT
+.sp
+The list of AMIs returned can be modified by specifying AMI IDs, AMI owners, or
+users with launch permissions. If no options are specified, Amazon EC2 returns
+all AMIs for which the user has launch permissions.
+.sp
+If you specify one or more AMI IDs, only AMIs that have the specified IDs are
+returned. If you specify an invalid AMI ID, a fault is returned. If you specify
+an AMI ID for which you do not have access, it will not be included in the
+returned results.
+.sp
+If you specify one or more AMI owners, only AMIs from the specified owners and
+for which you have access are returned. The results can include the account IDs
+of the specified owners, amazon for AMIs owned by Amazon or self for AMIs that
+you own.
+.sp
+If you specify a list of executable users, only users that have launch
+permissions for the AMIs are returned. You can specify account IDs (if you own
+the AMI(s)), self for AMIs for which you own or have explicit permissions, or
+all for public AMIs.
+.IP Note
+Deregistered images are included in the returned results for an unspecified
+interval after deregistration.
+.RE
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws ec2 describe\-images
+  [\-\-owners <value>]
+  [\-\-image\-ids <value>]
+  [\-\-filters <value>]
+  [\-\-executable\-users <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.sp
+None
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-owners\fP  (list of string)
+The optional list of owners for the described AMIs. The IDs amazon, self, and
+explicit can be used to include AMIs owned by Amazon, AMIs owned by the user,
+and AMIs for which the user has explicit launch permissions, respectively.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-image\-ids\fP  (list of string)
+An optional list of the AMI IDs to describe. If not specified, all AMIs will
+be described.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-filters\fP  (list)
+A list of filters used to match properties for Images. For a complete
+reference to the available filter keys for this operation, see the \fI\%Amazon EC2
+API reference\fP .
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+A filter used to limit results when describing tags. Multiple values can be
+specified per filter. A tag must match at least one of the specified values
+for it to be returned from an operation.
+.sp
+Wildcards can be included in filter values; \fB*\fP specifies that zero or
+more characters must match, and \fB?\fP specifies that exactly one character
+must match. Use a backslash to escape special characters. For example, a
+filter value of \fB\e*amazon\e?\e\e\fP specifies the literal string \fB*amazon?\e\fP
+.
+.INDENT 7.0
+.TP
+.B \fBvalues\fP  (list of string)
+Contains one or more values for the filter.
+.TP
+.B \fBname\fP  (string)
+Specifies the name of the filter.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "values":
+      ["string", ...],
+    "name": "string"
+  }
+  ...
+]
+.ft P
+.fi
+.TP
+.B \fB\-\-executable\-users\fP  (list of string)
+The optional list of users with explicit launch permissions for the described
+AMIs. The user ID can be a user\(aqs account ID, \(aqself\(aq to return AMIs for which
+the sender of the request has explicit launch permissions, or \(aqall\(aq to return
+AMIs with public launch permissions.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

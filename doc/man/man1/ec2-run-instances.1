@@ -1,0 +1,422 @@
+.TH "EC2-RUN-INSTANCES" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+ec2-run-instances \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+The run\-instances operation launches a specified number of instances.
+.sp
+If Amazon EC2 cannot launch the minimum number AMIs you request, no instances
+launch. If there is insufficient capacity to launch the maximum number of AMIs
+you request, Amazon EC2 launches as many as possible to satisfy the requested
+maximum values.
+.sp
+Every instance is launched in a security group. If you do not specify a security
+group at launch, the instances start in your default security group. For more
+information on creating security groups, see CreateSecurityGroup.
+.sp
+An optional instance type can be specified. For information about instance
+types, see Instance Types.
+.sp
+You can provide an optional key pair ID for each image in the launch request
+(for more information, see CreateKeyPair). All instances that are created from
+images that use this key pair will have access to the associated public key at
+boot. You can use this key to provide secure access to an instance of an image
+on a per\-instance basis. Amazon EC2 public images use this feature to provide
+secure access without passwords.
+.IP Warning
+Launching public images without a key pair ID will leave them inaccessible.
+.sp
+The public key material is made available to the instance at boot time by
+placing it in the \fBopenssh_id.pub\fP file on a logical device that is exposed
+to the instance as \fB/dev/sda2\fP (the ephemeral store). The format of this
+file is suitable for use as an entry within \fB~/.ssh/authorized_keys\fP (the
+OpenSSH format). This can be done at boot (e.g., as part of \fBrc.local\fP )
+allowing for secure access without passwords.
+.sp
+Optional user data can be provided in the launch request. All instances that
+collectively comprise the launch request have access to this data For more
+information, see Instance Metadata.
+.RE
+.IP Note
+If any of the AMIs have a product code attached for which the user has not
+subscribed, the run\-instances call will fail.
+.RE
+.IP Warning
+We strongly recommend using the 2.6.18 Xen stock kernel with the \fBc1.medium\fP
+and \fBc1.xlarge\fP instances. Although the default Amazon EC2 kernels will
+work, the new kernels provide greater stability and performance for these
+instance types. For more information about kernels, see Kernels, RAM Disks,
+and Block Device Mappings.
+.RE
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws ec2 run\-instances
+  \-\-min\-count <value>
+  \-\-image\-id <value>
+  \-\-max\-count <value>
+  [\-\-monitoring <value>]
+  [\-\-ebs\-optimized ]
+  [\-\-ramdisk\-id <value>]
+  [\-\-private\-ip\-address <value>]
+  [\-\-key\-name <value>]
+  [\-\-security\-groups <value>]
+  [\-\-client\-token <value>]
+  [\-\-subnet\-id <value>]
+  [\-\-instance\-type <value>]
+  [\-\-network\-interfaces <value>]
+  [\-\-additional\-info <value>]
+  [\-\-placement <value>]
+  [\-\-license <value>]
+  [\-\-instance\-initiated\-shutdown\-behavior <value>]
+  [\-\-security\-group\-ids <value>]
+  [\-\-block\-device\-mappings <value>]
+  [\-\-kernel\-id <value>]
+  [\-\-iam\-instance\-profile <value>]
+  [\-\-user\-data <value>]
+  [\-\-disable\-api\-termination ]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-min\-count\fP  (integer)
+Minimum number of instances to launch. If the value is more than Amazon EC2
+can launch, no instances are launched at all.
+.TP
+.B \fB\-\-image\-id\fP  (string)
+Unique ID of a machine image, returned by a call to DescribeImages.
+.TP
+.B \fB\-\-max\-count\fP  (integer)
+Maximum number of instances to launch. If the value is more than Amazon EC2
+can launch, the largest possible number above minCount will be launched
+instead.
+.sp
+Between 1 and the maximum number allowed for your account (default: 20).
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-monitoring\fP  (structure)
+Enables monitoring for the instance.
+.sp
+\fBenabled\fP  | \fB\-\-no\-enabled\fP  (boolean)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "enabled": true|false
+}
+.ft P
+.fi
+.UNINDENT
+.sp
+\fB\-\-ebs\-optimized\fP  (boolean)
+.INDENT 0.0
+.TP
+.B \fB\-\-ramdisk\-id\fP  (string)
+The ID of the RAM disk with which to launch the instance. Some kernels require
+additional drivers at launch. Check the kernel requirements for information on
+whether you need to specify a RAM disk. To find kernel requirements, go to the
+Resource Center and search for the kernel ID.
+.TP
+.B \fB\-\-private\-ip\-address\fP  (string)
+If you\(aqre using Amazon Virtual Private Cloud, you can optionally use this
+parameter to assign the instance a specific available IP address from the
+subnet.
+.TP
+.B \fB\-\-key\-name\fP  (string)
+The name of the key pair.
+.TP
+.B \fB\-\-security\-groups\fP  (list of string)
+The names of the security groups into which the instances will be launched.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.TP
+.B \fB\-\-client\-token\fP  (string)
+Unique, case\-sensitive identifier you provide to ensure idempotency of the
+request. For more information, go to How to Ensure Idempotency in the Amazon
+Elastic Compute Cloud User Guide.
+.TP
+.B \fB\-\-subnet\-id\fP  (string)
+Specifies the subnet ID within which to launch the instance(s) for Amazon
+Virtual Private Cloud.
+.TP
+.B \fB\-\-instance\-type\fP  (string)
+Specifies the instance type for the launched instances.
+.TP
+.B \fB\-\-network\-interfaces\fP  (list)
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+\fBdevice_index\fP  (integer)
+.sp
+\fBdescription\fP  (string)
+.sp
+\fBnetwork_interface_id\fP  (string)
+.INDENT 7.0
+.TP
+.B \fBprivate_ip_addresses\fP  (list)
+.INDENT 7.0
+.TP
+.B (structure)
+\fBprimary\fP  (boolean)
+.sp
+\fBprivate_ip_address\fP  (string)
+.UNINDENT
+.UNINDENT
+.sp
+\fBdelete_on_termination\fP  (boolean)
+.sp
+\fBgroups\fP  (list of string)
+.sp
+\fBsubnet_id\fP  (string)
+.sp
+\fBprivate_ip_address\fP  (string)
+.sp
+\fBsecondary_private_ip_address_count\fP  (integer)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "device_index": integer,
+    "description": "string",
+    "network_interface_id": "string",
+    "private_ip_addresses":
+      [
+        {
+          "primary": true|false,
+          "private_ip_address": "string"
+        }
+        ...
+      ],
+    "delete_on_termination": true|false,
+    "groups":
+      ["string", ...],
+    "subnet_id": "string",
+    "private_ip_address": "string",
+    "secondary_private_ip_address_count": integer
+  }
+  ...
+]
+.ft P
+.fi
+.UNINDENT
+.sp
+\fB\-\-additional\-info\fP  (string)
+.INDENT 0.0
+.TP
+.B \fB\-\-placement\fP  (structure)
+Specifies the placement constraints (Availability Zones) for launching the
+instances.
+.INDENT 7.0
+.TP
+.B \fBtenancy\fP  (string)
+The allowed tenancy of instances launched into the VPC. A value of default
+means instances can be launched with any tenancy; a value of dedicated means
+all instances launched into the VPC will be launched as dedicated tenancy
+regardless of the tenancy assigned to the instance at launch.
+.TP
+.B \fBgroup_name\fP  (string)
+The name of the  PlacementGroup in which an Amazon EC2 instance runs.
+\-\-placement groups are primarily used for launching High Performance
+Computing instances in the same group to ensure fast connection speeds.
+.TP
+.B \fBavailability_zone\fP  (string)
+The availability zone in which an Amazon EC2 instance runs.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "tenancy": "string",
+  "group_name": "string",
+  "availability_zone": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-license\fP  (structure)
+Specifies active licenses in use and attached to an Amazon EC2 instance.
+.INDENT 7.0
+.TP
+.B \fBpool\fP  (string)
+The license pool from which to take a license when starting Amazon EC2
+instances in the associated \fBrun\-instances\fP request.
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "pool": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-instance\-initiated\-shutdown\-behavior\fP  (string)
+Specifies whether the instance\(aqs Amazon EBS volumes are stopped or terminated
+when the instance is shut down.
+.UNINDENT
+.sp
+\fB\-\-security\-group\-ids\fP  (list of string)
+.INDENT 0.0
+.INDENT 3.5
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \fB\-\-block\-device\-mappings\fP  (list)
+Specifies how block devices are exposed to the instance. Each mapping is made
+up of a virtualName and a deviceName.
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B (structure)
+The BlockDeviceMappingItemType data type.
+.INDENT 7.0
+.TP
+.B \fBdevice_name\fP  (string)
+Specifies the device name (e.g., \fB/dev/sdh\fP ).
+.TP
+.B \fBvirtual_name\fP  (string)
+Specifies the virtual device name.
+.TP
+.B \fBno_device\fP  (string)
+Specifies the device name to suppress during instance launch.
+.TP
+.B \fBebs\fP  (structure)
+Specifies parameters used to automatically setup Amazon EBS volumes when
+the instance is launched.
+.INDENT 7.0
+.TP
+.B \fBdelete_on_termination\fP  (boolean)
+Specifies whether the Amazon EBS volume is deleted on instance
+termination.
+.TP
+.B \fBsnapshot_id\fP  (string)
+The ID of the snapshot from which the volume will be created.
+.TP
+.B \fBvolume_size\fP  (integer)
+The size of the volume, in gigabytes.
+.UNINDENT
+.sp
+\fBvolume_type\fP  (string)
+.sp
+\fBiops\fP  (integer)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+[
+  {
+    "device_name": "string",
+    "virtual_name": "string",
+    "no_device": "string",
+    "ebs": {
+      {
+        "delete_on_termination": true|false,
+        "snapshot_id": "string",
+        "volume_size": integer,
+        "volume_type": "standard"|"io1",
+        "iops": integer
+      }
+  }
+  ...
+]
+.ft P
+.fi
+.TP
+.B \fB\-\-kernel\-id\fP  (string)
+The ID of the kernel with which to launch the instance.
+.TP
+.B \fB\-\-iam\-instance\-profile\fP  (structure)
+\fBname\fP  (string)
+.sp
+\fBarn\fP  (string)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "name": "string",
+  "arn": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-user\-data\fP  (blob)
+Specifies additional information to make available to the instance(s).
+.TP
+.B \fB\-\-disable\-api\-termination\fP  (boolean)
+Specifies whether the instance can be terminated using the APIs. You must
+modify this attribute before you can terminate any "locked" instances from the
+APIs.
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

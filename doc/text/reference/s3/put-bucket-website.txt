@@ -1,0 +1,147 @@
+
+put-bucket-website
+******************
+
+
+DESCRIPTION
+===========
+
+Set the website configuration for a bucket.
+
+
+SYNOPSIS
+========
+
+   aws s3 put-bucket-website
+     --bucket <value>
+     --website-configuration <value>
+     [--content-md5 <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--bucket"  (string)
+
+"--website-configuration"  (structure)
+   "redirect_all_requests_to"  (structure)
+      "host_name"  (string)Name of the host where requests will be
+      redirected.
+
+      "protocol"  (string)Protocol to use (http, https) when
+      redirecting requests. The default is the protocol that is used
+      in the original request.
+
+   "index_document"  (structure)
+      "suffix"  (string)A suffix that is appended to a request that is
+      for a directory on the website endpoint (e.g. if the suffix is
+      index.html and you make a request to samplebucket/images/ the
+      data that is returned will be for the object with the key name
+      images/index.html) The suffix must not be empty and must not
+      include a slash character.
+
+   "error_document"  (structure)
+      "key"  (string)The object key name to use when a 4XX class error
+      occurs.
+
+   "routing_rules"  (list)
+      (structure)
+         "redirect"  (structure)Container for redirect information.
+         You can redirect requests to another host, to another page,
+         or with another protocol. In the event of an error, you can
+         can specify a different error code to return.
+
+            "replace_key_with"  (string)The specific object key to use
+            in the redirect request. For example, redirect request to
+            error.html. Not required if one of the sibling is present.
+            Can be present only if ReplaceKeyPrefixWith is not
+            provided.
+
+            "host_name"  (string)Name of the host where requests will
+            be redirected.
+
+            "protocol"  (string)Protocol to use (http, https) when
+            redirecting requests. The default is the protocol that is
+            used in the original request.
+
+            "replace_key_prefix_with"  (string)The object key prefix
+            to use in the redirect request. For example, to redirect
+            requests for all pages with prefix docs/ (objects in the
+            docs/ folder) to documents/, you can set a condition block
+            with KeyPrefixEquals set to docs/ and in the Redirect set
+            ReplaceKeyPrefixWith to /documents. Not required if one of
+            the siblings is present. Can be present only if
+            ReplaceKeyWith is not provided.
+
+            "http_redirect_code"  (string)The HTTP redirect code to
+            use on the response. Not required if one of the siblings
+            is present.
+
+         "condition"  (structure)A container for describing a
+         condition that must be met for the specified redirect to
+         apply. For example, 1. If request is for pages in the /docs
+         folder, redirect to the /documents folder. 2. If request
+         results in HTTP error 4xx, redirect request to another host
+         where you might process the error.
+
+            "http_error_code_returned_equals"  (string)The HTTP error
+            code when the redirect is applied. In the event of an
+            error, if the error code equals this value, then the
+            specified redirect is applied. Required when parent
+            element Condition is specified and sibling KeyPrefixEquals
+            is not specified. If both are specified, then both must be
+            true for the redirect to be applied.
+
+            "key_prefix_equals"  (string)The object key name prefix
+            when the redirect is applied. For example, to redirect
+            requests for ExamplePage.html, the key prefix will be
+            ExamplePage.html. To redirect request for all pages with
+            the prefix docs/, the key prefix will be /docs, which
+            identifies all objects in the docs/ folder. Required when
+            the parent element Condition is specified and sibling
+            HttpErrorCodeReturnedEquals is not specified. If both
+            conditions are specified, both must be true for the
+            redirect to be applied.
+
+   *Parameter Syntax*
+
+      {
+        "redirect_all_requests_to": {
+          {
+            "host_name": "string",
+            "protocol": "http"|"https"
+          },
+        "index_document": {
+          {
+            "suffix": "string"
+          },
+        "error_document": {
+          {
+            "key": "string"
+          },
+        "routing_rules":
+          [
+            {
+              "redirect": {
+                {
+                  "replace_key_with": "string",
+                  "host_name": "string",
+                  "protocol": "http"|"https",
+                  "replace_key_prefix_with": "string",
+                  "http_redirect_code": "string"
+                },
+              "condition": {
+                {
+                  "http_error_code_returned_equals": "string",
+                  "key_prefix_equals": "string"
+                }
+            }
+            ...
+          ]
+      }
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--content-md5"  (string)

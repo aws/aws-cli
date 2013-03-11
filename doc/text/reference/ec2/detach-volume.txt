@@ -1,0 +1,49 @@
+
+detach-volume
+*************
+
+
+DESCRIPTION
+===========
+
+Detach a previously attached volume from a running instance.
+
+
+SYNOPSIS
+========
+
+   aws ec2 detach-volume
+     --volume-id <value>
+     [--instance-id <value>]
+     [--device <value>]
+     [--force ]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--volume-id"  (string)
+   The ID of the volume to detach.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--instance-id"  (string)
+   The ID of the instance from which to detach the the specified
+   volume.
+
+"--device"  (string)
+   The device name to which the volume is attached on the specified
+   instance.
+
+"--force"  (boolean)
+   Forces detachment if the previous detachment attempt did not occur
+   cleanly (logging into an instance, unmounting the volume, and
+   detaching normally).
+
+   This option can lead to data loss or a corrupted file system. Use
+   this option only as a last resort to detach a volume from a failed
+   instance. The instance will not have an opportunity to flush file
+   system caches nor file system meta data. If you use this option,
+   you must perform file system check and repair procedures.

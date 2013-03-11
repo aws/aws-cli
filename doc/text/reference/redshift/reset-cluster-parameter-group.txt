@@ -1,0 +1,94 @@
+
+reset-cluster-parameter-group
+*****************************
+
+
+DESCRIPTION
+===========
+
+Sets one or more parameters of the specified parameter group to their
+default values and sets the source values of the parameters to
+"engine-default". To reset the entire parameter group specify the
+*--reset-all-parameters* parameter. For parameter changes to take
+effect you must reboot any associated clusters.
+
+
+SYNOPSIS
+========
+
+   aws redshift reset-cluster-parameter-group
+     --parameter-group-name <value>
+     [--reset-all-parameters ]
+     [--parameters <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--parameter-group-name"  (string)
+   The name of the cluster parameter group to be reset.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--reset-all-parameters"  (boolean)
+   If "true" , all parameters in the specified parameter group will be
+   reset to their default values.
+
+   Default: "true"
+
+"--parameters"  (list)
+   An array of names of parameters to be reset. If *--reset-all-
+   parameters* option is not used, then at least one parameter name
+   must be supplied.
+
+   Constraints: A maximum of 20 parameters can be reset in a single
+   request.
+
+      (structure)
+         Describes a parameter in a cluster parameter group.
+
+         "description"  (string)
+            A description of the parameter.
+
+         "data_type"  (string)
+            The data type of the parameter.
+
+         "is_modifiable"  (boolean)
+            If "true" , the parameter can be modified. Some parameters
+            have security or operational implications that prevent
+            them from being changed.
+
+         "allowed_values"  (string)
+            The valid range of values for the parameter.
+
+         "source"  (string)
+            The source of the parameter value, such as "engine-
+            default" or "user".
+
+         "parameter_value"  (string)
+            The value of the parameter.
+
+         "parameter_name"  (string)
+            The name of the parameter.
+
+         "minimum_engine_version"  (string)
+            The earliest engine version to which the parameter can
+            apply.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "description": "string",
+          "data_type": "string",
+          "is_modifiable": true|false,
+          "allowed_values": "string",
+          "source": "string",
+          "parameter_value": "string",
+          "parameter_name": "string",
+          "minimum_engine_version": "string"
+        }
+        ...
+      ]

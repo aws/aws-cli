@@ -1,0 +1,46 @@
+
+update-pipeline-status
+**********************
+
+
+DESCRIPTION
+===========
+
+To pause or reactivate a pipeline, so the pipeline stops or restarts
+processing jobs, update the status for the pipeline. Send a POST
+request to the "/2012-09-25/pipelines/*[pipelineId]* /status"
+resource.
+
+Changing the pipeline status is useful if you want to cancel one or
+more jobs. You can't cancel jobs after Elastic Transcoder has started
+processing them; if you pause the pipeline to which you submitted the
+jobs, you have more time to get the job IDs for the jobs that you want
+to cancel, and to send a  cancel-job request.
+
+
+SYNOPSIS
+========
+
+   aws elastictranscoder update-pipeline-status
+     --status <value>
+     --id <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--status"  (string)
+   The new status of the pipeline:
+
+   * "active" : Enable the pipeline, so it starts processing jobs.
+
+   * "paused" : Disable the pipeline, so it stops processing jobs.
+
+"--id"  (string)
+   The identifier of the pipeline to update.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

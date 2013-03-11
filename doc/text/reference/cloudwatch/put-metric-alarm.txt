@@ -1,0 +1,142 @@
+
+put-metric-alarm
+****************
+
+
+DESCRIPTION
+===========
+
+Creates or updates an alarm and associates it with the specified
+Amazon CloudWatch metric. Optionally, this operation can associate one
+or more Amazon Simple Notification Service resources with the alarm.
+
+When this operation creates an alarm, the alarm state is immediately
+set to "INSUFFICIENT_DATA" . The alarm is evaluated and its
+"StateValue" is set appropriately. Any actions associated with the
+"StateValue" is then executed.
+
+Note: When updating an existing alarm, its "StateValue" is left unchanged.
+
+
+SYNOPSIS
+========
+
+   aws cloudwatch put-metric-alarm
+     --evaluation-periods <value>
+     --namespace <value>
+     --period <value>
+     --comparison-operator <value>
+     --alarm-name <value>
+     --statistic <value>
+     --threshold <value>
+     --metric-name <value>
+     [--dimensions <value>]
+     [--alarm-actions <value>]
+     [--alarm-description <value>]
+     [--unit <value>]
+     [--insufficient-data-actions <value>]
+     [--ok-actions <value>]
+     [--actions-enabled ]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--evaluation-periods"  (integer)
+   The number of periods over which data is compared to the specified
+   threshold.
+
+"--namespace"  (string)
+   The namespace for the alarm's associated metric.
+
+"--period"  (integer)
+   The period in seconds over which the specified statistic is
+   applied.
+
+"--comparison-operator"  (string)
+   The arithmetic operation to use when comparing the specified "--
+   statistic" and "--threshold" . The specified "--statistic" value is
+   used as the first operand.
+
+"--alarm-name"  (string)
+   The descriptive name for the alarm. This name must be unique within
+   the user's AWS account
+
+"--statistic"  (string)
+   The statistic to apply to the alarm's associated metric.
+
+"--threshold"  (double)
+   The value against which the specified statistic is compared.
+
+"--metric-name"  (string)
+   The name for the alarm's associated metric.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--dimensions"  (list)
+   The dimensions for the alarm's associated metric.
+
+      (structure)
+         The "Dimension" data type further expands on the identity of
+         a metric using a Name, Value pair.
+
+         "name"  (string)
+            The name of the dimension.
+
+         "value"  (string)
+            The value representing the dimension measurement
+
+   *Parameter Syntax*
+
+      [
+        {
+          "name": "string",
+          "value": "string"
+        }
+        ...
+      ]
+
+"--alarm-actions"  (list of string)
+   The list of actions to execute when this alarm transitions into an
+   "ALARM" state from any other state. Each action is specified as an
+   Amazon Resource Number (ARN). Currently the only action supported
+   is publishing to an Amazon SNS topic or an Amazon Auto Scaling
+   policy.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--alarm-description"  (string)
+   The description for the alarm.
+
+"--unit"  (string)
+   The unit for the alarm's associated metric.
+
+"--insufficient-data-actions"  (list of string)
+   The list of actions to execute when this alarm transitions into an
+   "INSUFFICIENT_DATA" state from any other state. Each action is
+   specified as an Amazon Resource Number (ARN). Currently the only
+   action supported is publishing to an Amazon SNS topic or an Amazon
+   Auto Scaling policy.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--ok-actions"  (list of string)
+   The list of actions to execute when this alarm transitions into an
+   "OK" state from any other state. Each action is specified as an
+   Amazon Resource Number (ARN). Currently the only action supported
+   is publishing to an Amazon SNS topic or an Amazon Auto Scaling
+   policy.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--actions-enabled"  (boolean)
+   Indicates whether or not actions should be executed during any
+   changes to the alarm's state.

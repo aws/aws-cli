@@ -1,0 +1,179 @@
+.TH "S3-PUT-BUCKET-WEBSITE" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+s3-put-bucket-website \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Set the website configuration for a bucket.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws s3 put\-bucket\-website
+  \-\-bucket <value>
+  \-\-website\-configuration <value>
+  [\-\-content\-md5 <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.sp
+\fB\-\-bucket\fP  (string)
+.INDENT 0.0
+.TP
+.B \fB\-\-website\-configuration\fP  (structure)
+.INDENT 7.0
+.TP
+.B \fBredirect_all_requests_to\fP  (structure)
+\fBhost_name\fP  (string)Name of the host where requests will be redirected.
+.sp
+\fBprotocol\fP  (string)Protocol to use (http, https) when redirecting
+requests. The default is the protocol that is used in the original request.
+.TP
+.B \fBindex_document\fP  (structure)
+\fBsuffix\fP  (string)A suffix that is appended to a request that is for a
+directory on the website endpoint (e.g. if the suffix is index.html and you
+make a request to samplebucket/images/ the data that is returned will be for
+the object with the key name images/index.html) The suffix must not be empty
+and must not include a slash character.
+.TP
+.B \fBerror_document\fP  (structure)
+\fBkey\fP  (string)The object key name to use when a 4XX class error occurs.
+.TP
+.B \fBrouting_rules\fP  (list)
+.INDENT 7.0
+.TP
+.B (structure)
+\fBredirect\fP  (structure)Container for redirect information. You can
+redirect requests to another host, to another page, or with another
+protocol. In the event of an error, you can can specify a different error
+code to return.
+.INDENT 7.0
+.INDENT 3.5
+\fBreplace_key_with\fP  (string)The specific object key to use in the
+redirect request. For example, redirect request to error.html. Not
+required if one of the sibling is present. Can be present only if
+ReplaceKeyPrefixWith is not provided.
+.sp
+\fBhost_name\fP  (string)Name of the host where requests will be
+redirected.
+.sp
+\fBprotocol\fP  (string)Protocol to use (http, https) when redirecting
+requests. The default is the protocol that is used in the original
+request.
+.sp
+\fBreplace_key_prefix_with\fP  (string)The object key prefix to use in the
+redirect request. For example, to redirect requests for all pages with
+prefix docs/ (objects in the docs/ folder) to documents/, you can set a
+condition block with KeyPrefixEquals set to docs/ and in the Redirect
+set ReplaceKeyPrefixWith to /documents. Not required if one of the
+siblings is present. Can be present only if ReplaceKeyWith is not
+provided.
+.sp
+\fBhttp_redirect_code\fP  (string)The HTTP redirect code to use on the
+response. Not required if one of the siblings is present.
+.UNINDENT
+.UNINDENT
+.sp
+\fBcondition\fP  (structure)A container for describing a condition that must
+be met for the specified redirect to apply. For example, 1. If request is
+for pages in the /docs folder, redirect to the /documents folder. 2. If
+request results in HTTP error 4xx, redirect request to another host where
+you might process the error.
+.INDENT 7.0
+.INDENT 3.5
+\fBhttp_error_code_returned_equals\fP  (string)The HTTP error code when
+the redirect is applied. In the event of an error, if the error code
+equals this value, then the specified redirect is applied. Required when
+parent element Condition is specified and sibling KeyPrefixEquals is not
+specified. If both are specified, then both must be true for the
+redirect to be applied.
+.sp
+\fBkey_prefix_equals\fP  (string)The object key name prefix when the
+redirect is applied. For example, to redirect requests for
+ExamplePage.html, the key prefix will be ExamplePage.html. To redirect
+request for all pages with the prefix docs/, the key prefix will be
+/docs, which identifies all objects in the docs/ folder. Required when
+the parent element Condition is specified and sibling
+HttpErrorCodeReturnedEquals is not specified. If both conditions are
+specified, both must be true for the redirect to be applied.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "redirect_all_requests_to": {
+    {
+      "host_name": "string",
+      "protocol": "http"|"https"
+    },
+  "index_document": {
+    {
+      "suffix": "string"
+    },
+  "error_document": {
+    {
+      "key": "string"
+    },
+  "routing_rules":
+    [
+      {
+        "redirect": {
+          {
+            "replace_key_with": "string",
+            "host_name": "string",
+            "protocol": "http"|"https",
+            "replace_key_prefix_with": "string",
+            "http_redirect_code": "string"
+          },
+        "condition": {
+          {
+            "http_error_code_returned_equals": "string",
+            "key_prefix_equals": "string"
+          }
+      }
+      ...
+    ]
+}
+.ft P
+.fi
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.sp
+\fB\-\-content\-md5\fP  (string)
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

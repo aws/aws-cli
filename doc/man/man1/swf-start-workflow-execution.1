@@ -1,0 +1,240 @@
+.TH "SWF-START-WORKFLOW-EXECUTION" "1" "March 11, 2013" "0.8" "aws-cli"
+.SH NAME
+swf-start-workflow-execution \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH DESCRIPTION
+.sp
+Starts an execution of the workflow type in the specified \-\-domain using the
+provided \fB\-\-workflow\-id\fP and \-\-input data.
+.sp
+This action returns the newly started workflow execution.
+.sp
+\fBAccess Control\fP
+.sp
+You can use IAM policies to control this action\(aqs access to Amazon SWF resources
+as follows:
+.INDENT 0.0
+.IP \(bu 2
+Use a \fBResource\fP element with the \-\-domain name to limit the action to only
+specified domains.
+.IP \(bu 2
+Use an \fBAction\fP element to allow or deny permission to call this action.
+.IP \(bu 2
+Constrain the following parameters by using a \fBCondition\fP element with the
+appropriate keys.
+.IP \(bu 2
+\fBtagList.member.0\fP : The key is \fBswf:tagList.member.0\fP .
+.IP \(bu 2
+\fBtagList.member.1\fP : The key is \fBswf:tagList.member.1\fP .
+.IP \(bu 2
+\fBtagList.member.2\fP : The key is \fBswf:tagList.member.2\fP .
+.IP \(bu 2
+\fBtagList.member.3\fP : The key is \fBswf:tagList.member.3\fP .
+.IP \(bu 2
+\fBtagList.member.4\fP : The key is \fBswf:tagList.member.4\fP .
+.IP \(bu 2
+\fB\-\-task\-list\fP : String constraint. The key is \fBswf:taskList.name\fP .
+.IP \(bu 2
+\fBname\fP : String constraint. The key is \fBswf:workflowType.name\fP .
+.IP \(bu 2
+\fBversion\fP : String constraint. The key is \fBswf:workflowType.version\fP .
+.UNINDENT
+.sp
+If the caller does not have sufficient permissions to invoke the action, or the
+parameter values fall outside the specified constraints, the action fails by
+throwing \fBOperationNotPermitted\fP . For details and example IAM policies, see
+\fI\%Using IAM to Manage Access to Amazon SWF Workflows\fP
+.
+.SH SYNOPSIS
+.sp
+.nf
+.ft C
+aws swf start\-workflow\-execution
+  \-\-domain <value>
+  \-\-workflow\-id <value>
+  \-\-workflow\-type <value>
+  [\-\-task\-list <value>]
+  [\-\-task\-start\-to\-close\-timeout <value>]
+  [\-\-child\-policy <value>]
+  [\-\-execution\-start\-to\-close\-timeout <value>]
+  [\-\-input <value>]
+  [\-\-tag\-list <value>]
+.ft P
+.fi
+.SH REQUIRED PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-domain\fP  (string)
+The name of the \-\-domain in which the workflow execution is created.
+.TP
+.B \fB\-\-workflow\-id\fP  (string)
+The user defined identifier associated with the workflow execution. You can
+use this to associate a custom identifier with the workflow execution. You may
+specify the same identifier if a workflow execution is logically a \fIrestart\fP
+of a previous execution. You cannot have two open workflow executions with the
+same \fB\-\-workflow\-id\fP at the same time.
+.sp
+The specified string must not start or end with whitespace. It must not
+contain a \fB:\fP (colon), \fB/\fP (slash), \fB|\fP (vertical bar), or any control
+characters (u0000\-u001f | u007f \- u009f). Also, it must not contain the
+literal string arn.
+.TP
+.B \fB\-\-workflow\-type\fP  (structure)
+The type of the workflow to start.
+.sp
+\fBversion\fP  (string)
+.sp
+\fBname\fP  (string)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "version": "string",
+  "name": "string"
+}
+.ft P
+.fi
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-task\-list\fP  (structure)
+The task list to use for the decision tasks generated for this workflow
+execution. This overrides the \fBdefaultTaskList\fP specified when registering
+the workflow type.
+.IP Note
+A task list for this workflow execution must be specified either as a
+default for the workflow type or through this parameter. If neither this
+parameter is set nor a default task list was specified at registration time
+then a fault will be returned.
+.RE
+.sp
+The specified string must not start or end with whitespace. It must not
+contain a \fB:\fP (colon), \fB/\fP (slash), \fB|\fP (vertical bar), or any control
+characters (u0000\-u001f | u007f \- u009f). Also, it must not contain the
+literal string arn.
+.sp
+\fBname\fP  (string)
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+{
+  "name": "string"
+}
+.ft P
+.fi
+.TP
+.B \fB\-\-task\-start\-to\-close\-timeout\fP  (string)
+Specifies the maximum duration of decision tasks for this workflow execution.
+This parameter overrides the \fBdefaultTaskStartToCloseTimout\fP specified when
+registering the workflow type using  register\-workflow\-type .
+.sp
+The valid values are integers greater than or equal to \fB0\fP . An integer
+value can be used to specify the duration in seconds while \fBNONE\fP can be
+used to specify unlimited duration.
+.IP Note
+A task start\-to\-close timeout for this workflow execution must be specified
+either as a default for the workflow type or through this parameter. If
+neither this parameter is set nor a default task start\-to\-close timeout was
+specified at registration time then a fault will be returned.
+.RE
+.TP
+.B \fB\-\-child\-policy\fP  (string)
+If set, specifies the policy to use for the child workflow executions of this
+workflow execution if it is terminated, by calling the
+terminate\-workflow\-execution action explicitly or due to an expired timeout.
+This policy overrides the default child policy specified when registering the
+workflow type using  register\-workflow\-type . The supported child policies
+are:
+.INDENT 7.0
+.IP \(bu 2
+\fBTERMINATE:\fP the child executions will be terminated.
+.IP \(bu 2
+\fBREQUEST_CANCEL:\fP a request to cancel will be attempted for each child
+execution by recording a \fBWorkflowExecutionCancelRequested\fP event in its
+history. It is up to the decider to take appropriate actions when it
+receives an execution history with this event.
+.IP \(bu 2
+\fBABANDON:\fP no action will be taken. The child executions will continue to
+run.
+.UNINDENT
+.IP Note
+A child policy for this workflow execution must be specified either as a
+default for the workflow type or through this parameter. If neither this
+parameter is set nor a default child policy was specified at registration
+time then a fault will be returned.
+.RE
+.TP
+.B \fB\-\-execution\-start\-to\-close\-timeout\fP  (string)
+The total duration for this workflow execution. This overrides the
+defaultExecutionStartToCloseTimeout specified when registering the workflow
+type.
+.sp
+The duration is specified in seconds. The valid values are integers greater
+than or equal to 0. Exceeding this limit will cause the workflow execution to
+time out. Unlike some of the other timeout parameters in Amazon SWF, you
+cannot specify a value of "NONE" for this timeout; there is a one\-year max
+limit on the time that a workflow execution can run.
+.IP Note
+An execution start\-to\-close timeout must be specified either through this
+parameter or as a default when the workflow type is registered. If neither
+this parameter nor a default execution start\-to\-close timeout is specified,
+a fault is returned.
+.RE
+.TP
+.B \fB\-\-input\fP  (string)
+The \-\-input for the workflow execution. This is a free form string which
+should be meaningful to the workflow you are starting. This \fB\-\-input\fP is
+made available to the new workflow execution in the
+\fBWorkflowExecutionStarted\fP history event.
+.TP
+.B \fB\-\-tag\-list\fP  (list of string)
+The list of tags to associate with the workflow execution. You can specify a
+maximum of 5 tags. You can list workflow executions with a specific tag by
+calling  list\-open\-workflow\-executions or  list\-closed\-workflow\-executions and
+specifying a  TagFilter .
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
+.UNINDENT
+.SH COPYRIGHT
+2013, Amazon Web Services
+.\" Generated by docutils manpage writer.
+.

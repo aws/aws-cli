@@ -1,0 +1,95 @@
+
+create-pipeline
+***************
+
+
+DESCRIPTION
+===========
+
+To create a pipeline, send a POST request to the
+"2012-09-25/pipelines" resource.
+
+
+SYNOPSIS
+========
+
+   aws elastictranscoder create-pipeline
+     --output-bucket <value>
+     --notifications <value>
+     --role <value>
+     --name <value>
+     --input-bucket <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--output-bucket"  (string)
+   The Amazon S3 bucket in which you want Elastic Transcoder to save
+   the transcoded files.
+
+"--notifications"  (structure)
+   The Amazon Simple Notification Service (Amazon SNS) topic that you
+   want to notify to report job status.
+
+   Warning: To receive notifications, you must also subscribe to the new
+     topic in the Amazon SNS console.
+
+   * **Progressing** : The Amazon Simple Notification Service (Amazon
+     SNS) topic that you want to notify when Elastic Transcoder has
+     started to process the job.
+
+   * **Completed** : The Amazon SNS topic that you want to notify when
+     Elastic Transcoder has finished processing the job.
+
+   * **Warning** : The Amazon SNS topic that you want to notify when
+     Elastic Transcoder encounters a warning condition.
+
+   * **Error** : The Amazon SNS topic that you want to notify when
+     Elastic Transcoder encounters an error condition.
+
+   "completed"  (string)
+      The Amazon SNS topic that you want to notify when Elastic
+      Transcoder has finished processing the job.
+
+   "warning"  (string)
+      The Amazon SNS topic that you want to notify when Elastic
+      Transcoder encounters a warning condition.
+
+   "progressing"  (string)
+      The Amazon Simple Notification Service (Amazon SNS) topic that
+      you want to notify when Elastic Transcoder has started to
+      process the job.
+
+   "error"  (string)
+      The Amazon SNS topic that you want to notify when Elastic
+      Transcoder encounters an error condition.
+
+   *Parameter Syntax*
+
+      {
+        "completed": "string",
+        "warning": "string",
+        "progressing": "string",
+        "error": "string"
+      }
+
+"--role"  (string)
+   The IAM Amazon Resource --name (ARN) for the role that you want
+   Elastic Transcoder to use to create the pipeline.
+
+"--name"  (string)
+   The name of the pipeline. We recommend that the name be unique
+   within the AWS account, but uniqueness is not enforced.
+
+   Constraints: Maximum 40 characters.
+
+"--input-bucket"  (string)
+   The Amazon S3 bucket in which you saved the media files that you
+   want to transcode.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

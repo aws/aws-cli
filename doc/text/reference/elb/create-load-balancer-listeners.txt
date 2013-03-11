@@ -1,0 +1,92 @@
+
+create-load-balancer-listeners
+******************************
+
+
+DESCRIPTION
+===========
+
+Creates one or more listeners on a LoadBalancer for the specified
+port. If a listener with the given port does not already exist, it
+will be created; otherwise, the properties of the new listener must
+match the properties of the existing listener.
+
+
+SYNOPSIS
+========
+
+   aws elb create-load-balancer-listeners
+     --listeners <value>
+     --load-balancer-name <value>
+
+
+REQUIRED PARAMETERS
+===================
+
+"--listeners"  (list)
+   A list of "LoadBalancerPort" , "InstancePort" , "Protocol" , and
+   "SSLCertificateId" items.
+
+      (structure)
+         The Listener data type.
+
+         "instance_port"  (integer)
+            Specifies the TCP port on which the instance server is
+            listening. This property cannot be modified for the life
+            of the LoadBalancer.
+
+         "ssl_certificate_id"  (string)
+            The ARN string of the server certificate. To get the ARN
+            of the server certificate, call the AWS Identity and
+            Access Management UploadServerCertificate API.
+
+         "load_balancer_port"  (integer)
+            Specifies the external LoadBalancer port number. This
+            property cannot be modified for the life of the
+            LoadBalancer.
+
+         "protocol"  (string)
+            Specifies the LoadBalancer transport protocol to use for
+            routing - HTTP, HTTPS, TCP or SSL. This property cannot be
+            modified for the life of the LoadBalancer.
+
+         "instance_protocol"  (string)
+            Specifies the protocol to use for routing traffic to back-
+            end instances - HTTP, HTTPS, TCP, or SSL. This property
+            cannot be modified for the life of the LoadBalancer.
+
+            Note: If the front-end protocol is HTTP or HTTPS,
+              "InstanceProtocol" has to be at the same protocol layer,
+              i.e., HTTP or HTTPS. Likewise, if the front-end protocol
+              is TCP or SSL, InstanceProtocol has to be TCP or SSL.
+
+            Note: If there is another listener with the same
+              "InstancePort" whose "InstanceProtocol" is secure, i.e.,
+              HTTPS or SSL, the listener's "InstanceProtocol" has to
+              be secure, i.e., HTTPS or SSL. If there is another
+              listener with the same "InstancePort" whose
+              "InstanceProtocol" is HTTP or TCP, the listener's
+              "InstanceProtocol" must be either HTTP or TCP.
+
+   *Parameter Syntax*
+
+      [
+        {
+          "instance_port": integer,
+          "ssl_certificate_id": "string",
+          "load_balancer_port": integer,
+          "protocol": "string",
+          "instance_protocol": "string"
+        }
+        ...
+      ]
+
+"--load-balancer-name"  (string)
+   The name of the new LoadBalancer. The name must be unique within
+   your AWS account.
+
+
+OPTIONAL PARAMETERS
+===================
+
+None

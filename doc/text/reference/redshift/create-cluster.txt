@@ -1,0 +1,269 @@
+
+create-cluster
+**************
+
+
+DESCRIPTION
+===========
+
+Creates a new cluster. To create the cluster in virtual private cloud
+(VPC), you must provide cluster subnet group name. If you don't
+provide a cluster subnet group name or the cluster security group
+parameter, Amazon Redshift creates a non-VPC cluster, it associates
+the default cluster security group with the cluster. .
+
+
+SYNOPSIS
+========
+
+   aws redshift create-cluster
+     --node-type <value>
+     --master-username <value>
+     --master-user-password <value>
+     --cluster-identifier <value>
+     [--number-of-nodes <value>]
+     [--availability-zone <value>]
+     [--publicly-accessible ]
+     [--cluster-parameter-group-name <value>]
+     [--encrypted ]
+     [--cluster-type <value>]
+     [--vpc-security-group-ids <value>]
+     [--allow-version-upgrade ]
+     [--cluster-subnet-group-name <value>]
+     [--automated-snapshot-retention-period <value>]
+     [--cluster-security-groups <value>]
+     [--port <value>]
+     [--db-name <value>]
+     [--preferred-maintenance-window <value>]
+     [--cluster-version <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--node-type"  (string)
+   The node type to be provisioned for the cluster. For information
+   about node types, go to Working with Clusters in the *Amazon
+   Redshift Management Guide* .
+
+   Valid Values: "dw.hs1.xlarge" | "dw.hs1.8xlarge" .
+
+"--master-username"  (string)
+   The user name associated with the master user account for the
+   cluster that is being created.
+
+   Constraints:
+
+   * Must be 1 - 128 alphanumeric characters.
+
+   * First character must be a letter.
+
+   * Cannot be a reserved word. A list of reserved words can be found
+     in Reserved Words in the Developer Guide.
+
+"--master-user-password"  (string)
+   The password associated with the master user account for the
+   cluster that is being created.
+
+   Constraints:
+
+   * Must be between 8 and 64 characters in length.
+
+   * Must contain at least one uppercase letter.
+
+   * Must contain at least one lowercase letter.
+
+   * Must contain one number.
+
+   * Can be any printable ASCII character (ASCII code 33 to 126)
+     except ' (single quote), " (double quote), , /, @, or space.
+
+"--cluster-identifier"  (string)
+   A unique identifier for the cluster. You use this identifier to
+   refer to the cluster for any subsequent cluster operations such as
+   deleting or modifying. The identifier also appears in the console.
+
+   Example: "myexamplecluster"
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--number-of-nodes"  (integer)
+   The number of compute nodes in the cluster. This parameter is
+   required when the **--cluster-type** parameter is specified as
+   "multi-node" .
+
+   For information about determining how many nodes you need, go to
+   Working with Clusters in the *Amazon Redshift Management Guide* .
+
+   If you don't specify this parameter, you get a single-node cluster.
+   When requesting a multi-node cluster, you must specify the number
+   of nodes that you want in the cluster.
+
+   Default: "1"
+
+   Constraints: Value must be at least 1 and no more than 100.
+
+"--availability-zone"  (string)
+   The EC2 Availability Zone (AZ) in which you want to provision the
+   cluster. For example, if you have several EC2 instances running in
+   a specific Availability Zone, then you might want the cluster to be
+   provisioned in the same zone in order to decrease network latency.
+
+   Default: A random, system-chosen Availability Zone in the region
+   that is specified by the endpoint.
+
+   Example: "us-east-1d"
+
+   Constraint: The specified Availability Zone must be in the same
+   region as the current endpoint.
+
+"--publicly-accessible"  (boolean)
+   If "true" , the cluster can be accessed from a public network.
+
+"--cluster-parameter-group-name"  (string)
+   The name of the parameter group to be associated with this cluster.
+
+   Default: The default cluster parameter group. For information about
+   the default parameter group, go to Working with Amazon Redshift
+   Parameter Groups
+
+   Constraints:
+
+   * Must be 1 to 255 alphanumeric characters or hyphens.
+
+   * First character must be a letter.
+
+   * Cannot end with a hyphen or contain two consecutive hyphens.
+
+"--encrypted"  (boolean)
+   If "true" , the data in cluster is encrypted at rest.
+
+   Default: false
+
+"--cluster-type"  (string)
+   The type of the cluster. When cluster type is specified as
+
+   * "single-node" , the **--number-of-nodes** parameter is not
+     required.
+
+   * "multi-node" , the **--number-of-nodes** parameter is required.
+
+   Valid Values: "multi-node" | "single-node"
+
+   Default: "multi-node"
+
+"--vpc-security-group-ids"  (list of string)
+   A list of Virtual Private Cloud (VPC) security groups to be
+   associated with the cluster.
+
+   Default: The default VPC security group is associated with the
+   cluster.
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--allow-version-upgrade"  (boolean)
+   If "true" , upgrades can be applied during the maintenance window
+   to the engine that is running on the cluster.
+
+   When a new version of the engine is released, you can request that
+   the service automatically apply upgrades during the maintenance
+   window to the engine that is running on your cluster.
+
+   Default: "true"
+
+"--cluster-subnet-group-name"  (string)
+   The name of a cluster subnet group to be associated with this
+   cluster.
+
+   If this parameter is not provided the resulting cluster will be
+   deployed outside virtual private cloud (VPC).
+
+"--automated-snapshot-retention-period"  (integer)
+   The number of days that automated snapshots are retained. If the
+   value is 0, automated snapshots are disabled. Even if automated
+   snapshots are disabled, you can still create manual snapshots when
+   you want with create-cluster-snapshot .
+
+   Default: "1"
+
+   Constraints: Must be a value from 0 to 35.
+
+"--cluster-security-groups"  (list of string)
+   A list of security groups to be associated with this cluster.
+
+   Default: The default cluster security group for .
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--port"  (integer)
+   The port number on which the cluster accepts incoming connections.
+
+   The cluster is accessible only via the JDBC and ODBC connection
+   strings. Part of the connection string requires the port on which
+   the cluster will listen for incoming connections.
+
+   Default: "5439"
+
+   Valid Values: "1150-65535"
+
+"--db-name"  (string)
+   The name of the first database to be created when the cluster is
+   created.
+
+   To create additional databases after the cluster is created,
+   connect to the cluster with a SQL client and use SQL commands to
+   create a database. For more information, go to Create a Database in
+   the Developer Guide.
+
+   Default: "dev"
+
+   Constraints:
+
+   * Must contain 1 to 64 alphanumeric characters.
+
+   * Must contain only lowercase letters.
+
+   * Cannot be a word that is reserved by the service. A list of
+     reserved words can be found in Reserved Words in the Developer
+     Guide.
+
+"--preferred-maintenance-window"  (string)
+   The weekly time range (in UTC) during which automated cluster
+   maintenance can occur.
+
+   Format: "ddd:hh24:mi-ddd:hh24:mi"
+
+   Default: A 30-minute window selected at random from an 8-hour block
+   of time per region, occurring on a random day of the week. The
+   following list shows the time blocks for each region from which the
+   default maintenance windows are assigned.
+
+   * **US-East (Northern Virginia) Region:** 03:00-11:00 UTC
+
+   * **US-West (Northern California) Region:** 06:00-14:00 UTC
+
+   * **EU (Ireland) Region:** 22:00-06:00 UTC
+
+   * **Asia Pacific (Singapore) Region:** 14:00-22:00 UTC
+
+   * >>**<<Asia Pacific (Tokyo) Region: ** 17:00-03:00 UTC
+
+   Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun
+
+   Constraints: Minimum 30-minute window.
+
+"--cluster-version"  (string)
+   The version of the engine software that you want to deploy on the
+   cluster.
+
+   The version selected runs on all the nodes in the cluster.
+
+   Constraints: Only version 1.0 is currently available.
+
+   Example: "1.0"

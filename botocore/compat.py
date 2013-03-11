@@ -20,6 +20,7 @@
 # IN THE SOFTWARE.
 #
 import sys
+import copy
 import six
 if six.PY3:
     from six.moves import http_client
@@ -36,12 +37,14 @@ else:
             for field, value in self._headers:
                 yield field
 
+
 @classmethod
 def from_dict(cls, d):
     new_instance = cls()
     for key, value in d.items():
         new_instance[key] = value
     return new_instance
+
 
 @classmethod
 def from_pairs(cls, pairs):
@@ -53,3 +56,20 @@ def from_pairs(cls, pairs):
 HTTPHeaders.from_dict = from_dict
 HTTPHeaders.from_pairs = from_pairs
 
+
+def copy_kwargs(kwargs):
+    """
+    There is a bug in Python versions < 2.6.5 that prevents you
+    from passing unicode keyword args (#4978).  This function
+    takes a dictionary of kwargs and returns a copy.  If you are
+    using Python < 2.6.5, it also encodes the keys to avoid this bug.
+    Oh, and version_info wasn't a namedtuple back then, either!
+    """
+    vi = sys.version_info
+    if vi[0] == 2 and vi[1] <= 6 and vi[3] < 5:
+        copy_kwargs = {}
+        for key in kwargs:
+            copy_kwargs[key.encode('utf-8')] = kwargs[key]
+    else:
+        copy_kwargs = copy.copy(kwargs)
+    return copy_kwargs

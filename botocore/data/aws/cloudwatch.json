@@ -3,6 +3,7 @@
     "service_abbreviation": "CloudWatch",
     "type": "query",
     "signature_version": "v2",
+    "timestamp_format": "iso8601",
     "result_wrapped": true,
     "api_version": "2010-08-01",
     "endpoint_prefix": "monitoring",
@@ -10,6 +11,7 @@
     "documentation": "\n\t\t<p>This is the <i>Amazon CloudWatch API Reference</i>. This guide provides detailed\n\t\t\tinformation about Amazon CloudWatch actions, data types, parameters, and\n\t\t\terrors. For detailed information about Amazon CloudWatch features and their associated API calls,\n\t\t\tgo to the <a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/DeveloperGuide\">Amazon CloudWatch Developer Guide</a>.\n\t\t</p>\n\t\t<p>Amazon CloudWatch is a web service that enables you to publish, monitor, and manage various metrics,\n\t\t\tas well as configure alarm actions based on data from metrics. For more information about this product\n\t\t\tgo to <a href=\"http://aws.amazon.com/cloudwatch\">http://aws.amazon.com/cloudwatch</a>.\n\t\t</p>\n\n\t\t<p>Use the following links to get started using the <i>Amazon CloudWatch API Reference</i>:</p>\n\t\t<ul>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Amazon CloudWatch actions.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_Types.html\">Data Types</a>: An alphabetical list of all Amazon CloudWatch data types.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n\t\t\t<li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n\t\t\t<li>\n<a href=\"http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl\">WSDL Location</a>: http://monitoring.amazonaws.com/doc/2010-08-01/CloudWatch.wsdl</li>\n\t\t</ul>\n\t",
     "operations": {
         "DeleteAlarms": {
+            "name": "DeleteAlarms",
             "input": {
                 "shape_name": "DeleteAlarmsInput",
                 "type": "structure",
@@ -51,6 +53,7 @@
             "documentation": "\n\t\t<p>\n\t\tDeletes all specified alarms.\n\t\tIn the event of an error, no alarms are deleted.\n\t\t</p>\n\t"
         },
         "DescribeAlarmHistory": {
+            "name": "DescribeAlarmHistory",
             "input": {
                 "shape_name": "DescribeAlarmHistoryInput",
                 "type": "structure",
@@ -173,9 +176,18 @@
                     "documentation": "\n\t\t<p>\n\t\tThe next token specified is invalid.\n\t\t</p>\n\t"
                 }
             ],
-            "documentation": "\n\t\t<p>\n\t\tRetrieves history for the specified alarm.\n\t\tFilter alarms by date range or item type.\n\t\tIf an alarm name is not specified,\n\t\tAmazon CloudWatch returns histories for\n\t\tall of the owner's alarms.\n\t\t</p>\n\t\t<note>\n\t\tAmazon CloudWatch retains the history of an alarm\n\t\tfor two weeks, whether or not you delete the alarm.\n\t\t</note>\n\t"
+            "documentation": "\n\t\t<p>\n\t\tRetrieves history for the specified alarm.\n\t\tFilter alarms by date range or item type.\n\t\tIf an alarm name is not specified,\n\t\tAmazon CloudWatch returns histories for\n\t\tall of the owner's alarms.\n\t\t</p>\n\t\t<note>\n\t\tAmazon CloudWatch retains the history of an alarm\n\t\tfor two weeks, whether or not you delete the alarm.\n\t\t</note>\n\t",
+            "pagination": {
+                "limit_key": "MaxResults",
+                "output_tokens": [
+                    "NextToken"
+                ],
+                "input_token": "NextToken",
+                "py_input_token": "next_token"
+            }
         },
         "DescribeAlarms": {
+            "name": "DescribeAlarms",
             "input": {
                 "shape_name": "DescribeAlarmsInput",
                 "type": "structure",
@@ -516,9 +528,18 @@
                     "documentation": "\n\t\t<p>\n\t\tThe next token specified is invalid.\n\t\t</p>\n\t"
                 }
             ],
-            "documentation": "\n\t\t<p>\n\t\tRetrieves alarms with the specified names.\n\t\tIf no name is specified, all alarms for the user are returned.\n\t\tAlarms can be retrieved by using only a prefix for the alarm name,\n\t\tthe alarm state, or a prefix for any action.\n\t\t</p>\n\t"
+            "documentation": "\n\t\t<p>\n\t\tRetrieves alarms with the specified names.\n\t\tIf no name is specified, all alarms for the user are returned.\n\t\tAlarms can be retrieved by using only a prefix for the alarm name,\n\t\tthe alarm state, or a prefix for any action.\n\t\t</p>\n\t",
+            "pagination": {
+                "limit_key": "MaxResults",
+                "output_tokens": [
+                    "NextToken"
+                ],
+                "input_token": "NextToken",
+                "py_input_token": "next_token"
+            }
         },
         "DescribeAlarmsForMetric": {
+            "name": "DescribeAlarmsForMetric",
             "input": {
                 "shape_name": "DescribeAlarmsForMetricInput",
                 "type": "structure",
@@ -895,6 +916,7 @@
             "documentation": "\n\t\t<p>\n\t\tRetrieves all alarms for a single metric.\n\t\tSpecify a statistic, period, or unit to filter\n\t\tthe set of alarms further.\n\t\t</p>\n\t"
         },
         "DisableAlarmActions": {
+            "name": "DisableAlarmActions",
             "input": {
                 "shape_name": "DisableAlarmActionsInput",
                 "type": "structure",
@@ -921,6 +943,7 @@
             "documentation": "\n\t\t<p>\n\t\tDisables actions for the specified alarms.\n\t\tWhen an alarm's actions are disabled the\n\t\talarm's state may change, but none of the\n\t\talarm's actions will execute.\n\t\t</p>\n\t"
         },
         "EnableAlarmActions": {
+            "name": "EnableAlarmActions",
             "input": {
                 "shape_name": "EnableAlarmActionsInput",
                 "type": "structure",
@@ -947,6 +970,7 @@
             "documentation": "\n\t\t<p>\n\t\tEnables actions for the specified alarms.\n\t\t</p>\n\t"
         },
         "GetMetricStatistics": {
+            "name": "GetMetricStatistics",
             "input": {
                 "shape_name": "GetMetricStatisticsInput",
                 "type": "structure",
@@ -1230,6 +1254,7 @@
             "documentation": "\n\t\t<p>\n\t\tGets statistics for the specified metric.\n\t</p>\n\t<note>\n\tThe maximum number of data points returned from a single\n\t    <code>GetMetricStatistics</code> request is 1,440.\n\t    If a request is made that generates more than 1,440 data points,\n\t    Amazon CloudWatch returns an error.  In such a case,\n\t    alter the request by narrowing the specified time range\n\t    or increasing the specified period.  Alternatively,\n\t    make multiple requests across adjacent time ranges.\n\t</note>\n\t<p>\n\t\tAmazon CloudWatch aggregates data points based on the\n\t\tlength of the <code>period</code> that you specify.\n\t\tFor example, if you request statistics with a one-minute granularity,\n\t\tAmazon CloudWatch aggregates data points with time stamps that fall\n\t\twithin the same one-minute period. In such a case,\n\t\tthe data points queried can greatly outnumber the data points returned.\n\t</p>\n\t\t<note>\n\t\tThe maximum number of data points that can be queried is 50,850;\n\t\twhereas the maximum number of data points returned is 1,440.\n\t\t</note>\n\n\t\t<p>\n\t\tThe following examples show various statistics allowed by the data point query maximum of 50,850\n\t\twhen you call <code>GetMetricStatistics</code> on Amazon EC2 instances with\n\t\tdetailed (one-minute) monitoring enabled:\n\t\t</p>\n\t\t<ul>\n\t\t\t<li>Statistics for up to 400 instances for a span of one hour</li>\n\t\t\t<li>Statistics for up to 35 instances over a span of 24 hours</li>\n\t\t\t<li>Statistics for up to 2 instances over a span of 2 weeks</li>\n\t\t</ul>\n\n\t"
         },
         "ListMetrics": {
+            "name": "ListMetrics",
             "input": {
                 "shape_name": "ListMetricsInput",
                 "type": "structure",
@@ -1395,9 +1420,18 @@
                     "documentation": null
                 }
             ],
-            "documentation": "\n\t\t<p>\n\t\tReturns a list of valid metrics stored for the AWS account owner.\n\t\tReturned metrics can be used with <code>GetMetricStatistics</code>\n\t\tto obtain statistical data for a given metric.\n\t\t</p>\n\t\t<note>\n\t\tUp to 500 results are returned for any one call.  To retrieve further\n\t\tresults, use returned <code>NextToken</code> values with subsequent\n\t\t<code>ListMetrics</code> operations.\n\t\t</note>\n\t\t<note>\n\t\t\tIf you create a metric with the <a>PutMetricData</a> action,\n\t\t\tallow up to fifteen minutes for the metric to appear in calls\n\t\t\tto the <code>ListMetrics</code> action.\n\t\t</note>\n\t"
+            "documentation": "\n\t\t<p>\n\t\tReturns a list of valid metrics stored for the AWS account owner.\n\t\tReturned metrics can be used with <code>GetMetricStatistics</code>\n\t\tto obtain statistical data for a given metric.\n\t\t</p>\n\t\t<note>\n\t\tUp to 500 results are returned for any one call.  To retrieve further\n\t\tresults, use returned <code>NextToken</code> values with subsequent\n\t\t<code>ListMetrics</code> operations.\n\t\t</note>\n\t\t<note>\n\t\t\tIf you create a metric with the <a>PutMetricData</a> action,\n\t\t\tallow up to fifteen minutes for the metric to appear in calls\n\t\t\tto the <code>ListMetrics</code> action.\n\t\t</note>\n\t",
+            "pagination": {
+                "limit_key": "MaxResults",
+                "output_tokens": [
+                    "NextToken"
+                ],
+                "input_token": "NextToken",
+                "py_input_token": "next_token"
+            }
         },
         "PutMetricAlarm": {
+            "name": "PutMetricAlarm",
             "input": {
                 "shape_name": "PutMetricAlarmInput",
                 "type": "structure",
@@ -1613,6 +1647,7 @@
             "documentation": "\n\t\t<p>\n\t\tCreates or updates an alarm and associates it\n\t\twith the specified Amazon CloudWatch metric. Optionally,\n\t\tthis operation can associate one or more Amazon Simple\n\t\tNotification Service resources with the alarm.\n\t\t</p>\n\t\t<p>\n\t\tWhen this operation creates an alarm, the alarm state is immediately\n\t\tset to <code>INSUFFICIENT_DATA</code>.  The alarm is evaluated and its\n\t\t<code>StateValue</code> is set appropriately.  Any actions associated\n\t\twith the <code>StateValue</code> is then executed.\n\t\t</p>\n\t\t<note>\n\t\tWhen updating an existing alarm, its <code>StateValue</code>\n\t\tis left unchanged.\n\t\t</note>\n\t"
         },
         "PutMetricData": {
+            "name": "PutMetricData",
             "input": {
                 "shape_name": "PutMetricDataInput",
                 "type": "structure",
@@ -1815,6 +1850,7 @@
             "documentation": "\n\t\t<p>\n\t\tPublishes metric data points to Amazon CloudWatch. Amazon Cloudwatch\n\t\tassociates the data points with the specified metric. If the specified metric does not exist,\n\t\tAmazon CloudWatch creates the metric.\n\t\t</p>\n\t\t<note>\n\t\t\tIf you create a metric with the <code>PutMetricData</code> action,\n\t\t\tallow up to fifteen minutes for the metric to appear in calls\n\t\t\tto the <a>ListMetrics</a> action.\n\t\t</note>\n\t\t<p>\n\t\t\tThe size of a <function>PutMetricData</function> request is limited to 8 KB\n\t\t\tfor HTTP GET requests and 40 KB for HTTP POST requests.\n\t\t</p>\n\t\t<important>\n\t\t\tAlthough the <code>Value</code> parameter accepts numbers of type <code>Double</code>,\n\t\t\tAmazon CloudWatch truncates values with very large exponents.\n\t\t\tValues with base-10 exponents greater than 126 (1 x 10^126) are truncated.\n\t\t\tLikewise, values with base-10 exponents less than -130 (1 x 10^-130) are also truncated.\n\t\t</important>\n\n\t"
         },
         "SetAlarmState": {
+            "name": "SetAlarmState",
             "input": {
                 "shape_name": "SetAlarmStateInput",
                 "type": "structure",
@@ -1888,6 +1924,32 @@
                 }
             ],
             "documentation": "\n\t\t<p>\n\t\tTemporarily sets the state of an alarm.\n\t\tWhen the updated <code>StateValue</code> differs\n\t\tfrom the previous value, the action configured for\n\t\tthe appropriate state is invoked. This is not a\n\t\tpermanent change. The next periodic alarm check\n\t\t(in about a minute) will set the alarm to its actual state.\n\t\t</p>\n\t"
+        }
+    },
+    "pagination": {
+        "DescribeAlarmHistory": {
+            "limit_key": "MaxResults",
+            "output_tokens": [
+                "NextToken"
+            ],
+            "input_token": "NextToken",
+            "py_input_token": "next_token"
+        },
+        "DescribeAlarms": {
+            "limit_key": "MaxResults",
+            "output_tokens": [
+                "NextToken"
+            ],
+            "input_token": "NextToken",
+            "py_input_token": "next_token"
+        },
+        "ListMetrics": {
+            "limit_key": "MaxResults",
+            "output_tokens": [
+                "NextToken"
+            ],
+            "input_token": "NextToken",
+            "py_input_token": "next_token"
         }
     },
     "metadata": {

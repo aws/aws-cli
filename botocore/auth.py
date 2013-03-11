@@ -28,6 +28,7 @@ import hmac
 import logging
 from email.utils import formatdate
 from botocore.exceptions import UnknownSignatureVersionError
+from botocore.exceptions import NoCredentialsError
 from botocore.utils import normalize_url_path
 from botocore.compat import HTTPHeaders
 from six.moves import http_client
@@ -57,6 +58,8 @@ class SigV2Auth(object):
     """
     def __init__(self, credentials, service_name=None, region_name=None):
         self.credentials = credentials
+        if self.credentials is None:
+            raise NoCredentialsError
         self.service_name = service_name
         self.region_name = region_name
 
@@ -109,6 +112,8 @@ class SigV2Auth(object):
 class SigV3Auth(object):
     def __init__(self, credentials, service_name=None, region_name=None):
         self.credentials = credentials
+        if self.credentials is None:
+            raise NoCredentialsError
         self.service_name = service_name
         self.region_name = region_name
 
@@ -134,6 +139,8 @@ class SigV4Auth(object):
 
     def __init__(self, credentials, service_name=None, region_name=None):
         self.credentials = credentials
+        if self.credentials is None:
+            raise NoCredentialsError
         self.now = datetime.datetime.utcnow()
         self.timestamp = self.now.strftime('%Y%m%dT%H%M%SZ')
         self.region_name = region_name
@@ -285,6 +292,8 @@ class HmacV1Auth(object):
 
     def __init__(self, credentials, service_name=None, region_name=None):
         self.credentials = credentials
+        if self.credentials is None:
+            raise NoCredentialsError
         self.service_name = service_name
         self.region_name = region_name
 
@@ -372,6 +381,7 @@ class HmacV1Auth(object):
 
     def add_auth(self, request):
         split = urlsplit(request.url)
+        logger.debug('Method: %s' % request.method)
         signature = self.get_signature(request.method, split,
                                        request.headers)
         request.headers['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
@@ -385,6 +395,6 @@ def get_auth(signature_version, *args, **kw):
         return SigV4Auth(*args, **kw)
     elif signature_version == 's3':
         return HmacV1Auth(*args, **kw)
-    elif signature_version == 'v3https':
+    elif signature_version == 'v3':
         return SigV3Auth(*args, **kw)
     raise UnknownSignatureVersionError(signature_version=signature_version)

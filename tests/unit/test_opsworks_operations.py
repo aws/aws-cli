@@ -53,22 +53,24 @@ class TestOpsworksOperations(unittest.TestCase):
         os.environ['BOTO_DATA_PATH'] = '~/.aws_data'
         self.session = botocore.session.get_session()
         self.opsworks = self.session.get_service('opsworks')
+        self.stack_id = '35959772-cd1e-4082-8346-79096d4179f2'
 
     def test_describe_layers(self):
         op = self.opsworks.get_operation('DescribeLayers')
-        params = op.build_parameters(layer_ids=['3e9a9949-a85e-4687-bf95-25c5dab11205'])
-        result = {'LayerIds': ['3e9a9949-a85e-4687-bf95-25c5dab11205']}
+        params = op.build_parameters(stack_id=self.stack_id,
+                                     layer_ids=['3e9a9949-a85e-4687-bf95-25c5dab11205'])
+        result = {'StackId': self.stack_id,
+                  'LayerIds': ['3e9a9949-a85e-4687-bf95-25c5dab11205']}
         self.assertEqual(params, result)
 
     def test_create_layers(self):
-        stack_id = '35959772-cd1e-4082-8346-79096d4179f2'
         op = self.opsworks.get_operation('CreateLayer')
         params = op.build_parameters(name='Test CLI',
-                                     stack_id=stack_id,
+                                     stack_id=self.stack_id,
                                      auto_assign_elastic_ips=True,
                                      attributes=attributes,
                                      type='rails-app')
-        result = {'StackId': stack_id,
+        result = {'StackId': self.stack_id,
                   'Name': 'Test CLI',
                   'AutoAssignElasticIps': True,
                   'Attributes': attributes,

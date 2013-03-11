@@ -75,7 +75,7 @@ xml = """<?xml version="1.0"?>
   </ResponseMetadata>
 </GetQueueAttributesResponse>"""
 
-data = {'Attribute': {'ApproximateNumberOfMessagesNotVisible': '0', 'MessageRetentionPeriod': '345600', 'ApproximateNumberOfMessagesDelayed': '0', 'MaximumMessageSize': '65536', 'CreatedTimestamp': '1351044153', 'ApproximateNumberOfMessages': '0', 'DelaySeconds': '0', 'VisibilityTimeout': '45', 'LastModifiedTimestamp': '1351044214', 'QueueArn': 'arn:aws:sqs:us-east-1:419278470775:test1351044153'}, 'ResponseMetadata': {'RequestId': '0c8d2786-b7b4-56e2-a823-6e80a404d6fd'}}
+data = {'Attributes': {'ApproximateNumberOfMessagesNotVisible': '0', 'MessageRetentionPeriod': '345600', 'ApproximateNumberOfMessagesDelayed': '0', 'MaximumMessageSize': '65536', 'CreatedTimestamp': '1351044153', 'ApproximateNumberOfMessages': '0', 'DelaySeconds': '0', 'VisibilityTimeout': '45', 'LastModifiedTimestamp': '1351044214', 'QueueArn': 'arn:aws:sqs:us-east-1:419278470775:test1351044153'}, 'ResponseMetadata': {'RequestId': '0c8d2786-b7b4-56e2-a823-6e80a404d6fd'}}
 
 
 class TestGetQueueAttributes(unittest.TestCase):
@@ -86,8 +86,9 @@ class TestGetQueueAttributes(unittest.TestCase):
 
     def test_get_queue_attributes(self):
         op = self.service.get_operation('GetQueueAttributes')
-        r = botocore.response.Response(op)
+        r = botocore.response.XmlResponse(op)
         r.parse(six.b(xml))
+        self.maxDiff = None
         self.assertEqual(r.get_value(), data)
 
 

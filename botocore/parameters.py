@@ -21,6 +21,8 @@
 # IN THE SOFTWARE.
 #
 import logging
+import base64
+import hashlib
 import six
 import dateutil.parser
 from . import BotoCoreObject
@@ -38,6 +40,8 @@ class Parameter(BotoCoreObject):
         self.allow_file = False
         self.min = None
         self.max = None
+        self.payload = False
+        self.streaming = False
         BotoCoreObject.__init__(self, **kwargs)
         self.cli_name = '--' + self.cli_name
         self.handle_subtypes()
@@ -78,7 +82,11 @@ class Parameter(BotoCoreObject):
             if self.location == 'uri':
                 built_params['uri_params'][self.name] = value
             elif self.location == 'header':
-                built_params['headers'][self.name] = value
+                if hasattr(self, 'location_name'):
+                    key = self.location_name
+                else:
+                    key = self.name
+                built_params['headers'][key] = value
         else:
             built_params['payload'] = value
 
@@ -185,6 +193,13 @@ class BooleanParameter(Parameter):
             label = label + self.get_label()
             built_params[label] = value
 
+    @property
+    def false_name(self):
+        false_name = ''
+        if self.required:
+            false_name = '--no-' + self.cli_name[2:]
+        return false_name
+
 
 class TimestampParameter(Parameter):
 
@@ -216,6 +231,34 @@ class StringParameter(Parameter):
         return value
 
 
+class BlobParameter(Parameter):
+
+    # I'm not actually sure where this goes.  I'm going to leave it
+    # right here for now, even though I'm not calling it anywhere.
+    def _calculate_md5(self, fp):
+        pos = fp.tell()
+        md5 = hashlib.md5()
+        s = fp.read(BUFFERSIZE)
+        while s:
+            md5.update(s)
+            s = fp.read(BUFFERSIZE)
+        fp.seek(pos)
+        return base64.b64encode(md5.digest())
+
+    def validate(self, value):
+        if self.payload and self.streaming:
+            # Streaming blobs should be file-like objects
+            if not hasattr(value, 'read'):
+                raise ValidationError(value=str(value), type_name='blob')
+        else:
+            if not isinstance(value, six.string_types):
+                raise ValidationError(value=str(value), type_name='string')
+            if not hasattr(self, 'payload') or self.payload is False:
+                # Blobs that are not in the payload should be base64-encoded
+                value = base64.b64encode(six.b(value)).decode('utf-8')
+        return value
+
+
 class ListParameter(Parameter):
 
     def validate(self, value):
@@ -242,12 +285,12 @@ class ListParameter(Parameter):
                     label = member_type.xmlname
             else:
                 if label:
-                    label = label.format(label=self.get_label)
+                    label = label.format(label=self.get_label())
                 else:
                     label = self.get_label()
         else:
             if label:
-                label.format(label=self.get_label())
+                label = label.format(label=self.get_label())
             else:
                 label = self.get_label()
             label = '%s.%s' % (label, 'member')
@@ -348,7 +391,7 @@ type_map = {
     'timestamp': TimestampParameter,
     'list': ListParameter,
     'string': StringParameter,
-    'blob': StringParameter,
+    'blob': BlobParameter,
     'float': FloatParameter,
     'double': DoubleParameter,
     'integer': IntegerParameter,

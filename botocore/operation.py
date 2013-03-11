@@ -23,6 +23,7 @@
 import logging
 from .parameters import get_parameter
 from .exceptions import MissingParametersError
+from .paginate import Paginator
 from . import BotoCoreObject
 
 logger = logging.getLogger(__name__)
@@ -30,13 +31,18 @@ logger = logging.getLogger(__name__)
 
 class Operation(BotoCoreObject):
 
-    def __init__(self, service, op_data):
+    _DEFAULT_PAGINATOR_CLS = Paginator
+
+    def __init__(self, service, op_data, paginator_cls=None):
         self.input = {}
         self.output = {}
         BotoCoreObject.__init__(self, **op_data)
         self.service = service
         self.type = 'operation'
         self._get_parameters()
+        if paginator_cls is None:
+            paginator_cls = self._DEFAULT_PAGINATOR_CLS
+        self._paginator_cls = paginator_cls
 
     def __repr__(self):
         return 'Operation:%s' % self.name
@@ -45,6 +51,24 @@ class Operation(BotoCoreObject):
         logger.debug(kwargs)
         params = self.build_parameters(**kwargs)
         return endpoint.make_request(self, params)
+
+    @property
+    def can_paginate(self):
+        return hasattr(self, 'pagination')
+
+    def paginate(self, endpoint, **kwargs):
+        """Iterate over the responses of an operation.
+
+        This will return an iterator with each element
+        being a tuple of (``http_response``, ``parsed_response``).
+        If the operation does not paginate, a ``TypeError`` will
+        be raised.  You can check if an operation can be paginated
+        by using the ``can_paginate`` arg.
+        """
+        if not self.can_paginate:
+            raise TypeError("Operation cannot be paginated: %s" % self)
+        paginator = self._paginator_cls(self)
+        return paginator.paginate(endpoint, **kwargs)
 
     def _get_parameters(self):
         """
@@ -58,7 +82,7 @@ class Operation(BotoCoreObject):
 
     def _get_built_params(self):
         d = {}
-        if self.service.type == 'rest-xml':
+        if self.service.type in ('rest-xml', 'rest-json'):
             d['uri_params'] = {}
             d['headers'] = {}
             d['payload'] = None
@@ -86,3 +110,14 @@ class Operation(BotoCoreObject):
             missing_str = ','.join([p.py_name for p in missing])
             raise MissingParametersError(missing=missing_str)
         return built_params
+
+    def is_streaming(self):
+        is_streaming = False
+        if self.output:
+            for member_name in self.output['members']:
+                member_dict = self.output['members'][member_name]
+                if member_dict['type'] == 'blob':
+                    if member_dict.get('payload', False):
+                        if member_dict.get('streaming', False):
+                            is_streaming = True
+        return is_streaming

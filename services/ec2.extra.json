@@ -1,10 +1,63 @@
 {
+    "operations": {
+        "ImportInstance": {
+            "input": {
+                "members": {
+                    "DiskImages": {
+                        "members": {
+                            "members": {
+                                "Image": {
+                                    "members": {
+                                        "ImportManifestUrl": {
+                                            "no_paramfile": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "RunInstances": {
+            "input": {
+                "members": {
+                    "UserData": {
+			"type": "blob"
+                    }
+                }
+            }
+        },
+	"ImportKeyPair": {
+	    "input": {
+		"members": {
+		    "PublicKeyMaterial": {
+			"type": "blob"
+		    }
+		}
+	    }
+	}
+    },
     "pagination": {
+        "DescribeInstanceStatus": {
+            "limit_key": "MaxResults",
+            "output_tokens": ["NextToken"],
+            "input_token": "NextToken"
+        },
         "DescribeReservedInstancesOfferings": {
-            "input_token": "NextToken",
-            "output_token": "NextToken",
-            "max_results": "MaxResults",
-            "merge_key": "reservedInstancesListingsSet"
+            "limit_key": "MaxResults",
+            "output_tokens": ["NextToken"],
+            "input_token": "NextToken"
+        },
+        "DescribeSpotPriceHistory": {
+            "limit_key": "MaxResults",
+            "output_tokens": ["NextToken"],
+            "input_token": "NextToken"
+        },
+        "DescribeVolumeStatus": {
+            "limit_key": "MaxResults",
+            "output_tokens": ["NextToken"],
+            "input_token": "NextToken"
         }
     }
 }

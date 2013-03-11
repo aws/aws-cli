@@ -41,7 +41,7 @@ xml = """<?xml version="1.0"?>
   </ResponseMetadata>
 </ListQueuesResponse>"""
 
-data = {'QueueUrl': ['https://queue.amazonaws.com/419278470775/blat', 'https://queue.amazonaws.com/419278470775/test1348104148', 'https://queue.amazonaws.com/419278470775/test1348112370', 'https://queue.amazonaws.com/419278470775/test1351037239', 'https://queue.amazonaws.com/419278470775/test1351044153', 'https://queue.amazonaws.com/419278470775/testcli'], 'ResponseMetadata': {'RequestId': '6447266c-d0e0-5c10-8e26-6f57c3adec51'}}
+data = {'QueueUrls': ['https://queue.amazonaws.com/419278470775/blat', 'https://queue.amazonaws.com/419278470775/test1348104148', 'https://queue.amazonaws.com/419278470775/test1348112370', 'https://queue.amazonaws.com/419278470775/test1351037239', 'https://queue.amazonaws.com/419278470775/test1351044153', 'https://queue.amazonaws.com/419278470775/testcli'], 'ResponseMetadata': {'RequestId': '6447266c-d0e0-5c10-8e26-6f57c3adec51'}}
 
 
 class TestListQueuesAttributes(unittest.TestCase):
@@ -52,8 +52,9 @@ class TestListQueuesAttributes(unittest.TestCase):
 
     def test_list_queues(self):
         op = self.service.get_operation('ListQueues')
-        r = botocore.response.Response(op)
+        r = botocore.response.XmlResponse(op)
         r.parse(six.b(xml))
+        self.maxDiff = None
         self.assertEqual(r.get_value(), data)
 
 

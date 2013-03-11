@@ -13,6 +13,8 @@ except ImportError:
     # of ordered dict for python2.6 if we felt this was important.
     OrderedDict = dict
 
+from botocore import xform_name
+
 
 class ModelFiles(object):
     """Container object to hold all the various parsed json files.
@@ -57,8 +59,11 @@ def _load_enhancements_file(file_path):
 
 def translate(model):
     new_model = deepcopy(model.model)
-    transform_operations_list(new_model)
     new_model.update(model.enhancements.get('extra', {}))
+    try:
+        del new_model['pagination']
+    except KeyError:
+        pass
     service_info = model.services.get(model.name, {})
     add_pagination_configs(
         new_model,
@@ -72,40 +77,19 @@ def add_pagination_configs(new_model, pagination):
     # Adding in pagination configs means copying the config to a top level
     # 'pagination' key in the new model, and it also means adding the
     # pagination config to each individual operation.
+    # Also, the input_token needs to be transformed to the python specific
+    # name, so we're adding a py_input_token (e.g. NextToken -> next_token).
     if pagination:
         new_model['pagination'] = pagination
     for name in pagination:
         config = pagination[name]
+        if 'py_input_token' not in config:
+            config['py_input_token'] = xform_name(config['input_token'])
         operation = new_model['operations'].get(name)
         if operation is None:
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)
         operation['pagination'] = config.copy()
-
-
-def transform_operations_list(new_model):
-    """Transforms list of operations into a dict.
-
-    This mutates the passed in new_model.
-
-    From:
-
-        {'operations': [{'Name': 'Foo'}, {'Name': 'Bar'}]}
-
-    To:
-
-        {'operations': {'Foo': {}, 'Bar': {}}}
-
-    The 'Name' key is extracted out of the per operation dict,
-    but all the other fields are left in tact.
-
-    """
-    operations = new_model.get('operations', [])
-    operations_map = OrderedDict()
-    for name in operations:
-        operation = operations[name]
-        operations_map[name] = operation
-    new_model['operations'] = operations_map
 
 
 def merge_dicts(dict1, dict2):

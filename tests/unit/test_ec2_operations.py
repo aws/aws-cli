@@ -22,6 +22,8 @@
 # IN THE SOFTWARE.
 #
 import unittest
+import base64
+import six
 import botocore.session
 
 
@@ -103,6 +105,20 @@ class TestEC2Operations(unittest.TestCase):
                   'LaunchSpecification.BlockDeviceMapping.4.VirtualName': 'ephemeral3'}
         self.maxDiff = None
         self.assertEqual(params, result)
+
+    def test_run_instances_userdata(self):
+        user_data = 'This is a test'
+        b64_user_data = base64.b64encode(six.b(user_data)).decode('utf-8')
+        op = self.ec2.get_operation('RunInstances')
+        params = op.build_parameters(image_id='img-12345678',
+                                     min_count=1, max_count=5,
+                                     user_data=user_data)
+        result = {'ImageId': 'img-12345678',
+                  'MinCount': '1',
+                  'MaxCount': '5',
+                  'UserData': b64_user_data}
+        self.assertEqual(params, result)
+
 
 if __name__ == "__main__":
     unittest.main()

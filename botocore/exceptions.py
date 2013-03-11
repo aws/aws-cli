@@ -45,10 +45,11 @@ class DataNotFoundError(BotoCoreError):
     fmt = 'Unable to load data for: {data_path}'
 
 
-class NoCredentials(BotoCoreError):
+class NoCredentialsError(BotoCoreError):
     """
-    No credentials could be found.
+    No credentials could be found
     """
+    fmt = 'Unable to locate credentials'
 
 
 class NoRegionError(BotoCoreError):
@@ -146,3 +147,7 @@ class UnknownServiceStyle(BotoCoreError):
     :ivar service_style: The style requested.
     """
     fmt = 'The service style ({service_style}) is not understood.'
+
+
+class PaginationError(BotoCoreError):
+    fmt = 'Error during pagination: {message}'

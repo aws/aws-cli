@@ -24,7 +24,7 @@ from tests import unittest
 
 from mock import Mock
 from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \
-    RestXMLEndpoint
+    RestEndpoint
 from botocore.auth import SigV4Auth
 from botocore.exceptions import UnknownServiceStyle
 from botocore.exceptions import UnknownSignatureVersionError
@@ -34,7 +34,7 @@ class TestGetEdnpoint(unittest.TestCase):
     def create_mock_service(self, service_type, signature_version='v2'):
         service = Mock()
         service.type = service_type
-        service.signature_version =  signature_version
+        service.signature_version = signature_version
         return service
 
     def test_get_query(self):
@@ -53,13 +53,13 @@ class TestGetEdnpoint(unittest.TestCase):
         service = self.create_mock_service('rest-xml')
         endpoint = get_endpoint(service, 'us-west-2',
                                 'https://service.region.amazonaws.com')
-        self.assertIsInstance(endpoint, RestXMLEndpoint)
+        self.assertIsInstance(endpoint, RestEndpoint)
 
     def test_get_rest_json(self):
         service = self.create_mock_service('rest-json')
-        with self.assertRaises(NotImplementedError):
-            endpoint = get_endpoint(service, 'us-west-2',
-                                    'https://service.region.amazonaws.com')
+        endpoint = get_endpoint(service, 'us-west-2',
+                                'https://service.region.amazonaws.com')
+        self.assertIsInstance(endpoint, RestEndpoint)
 
     def test_unknown_service(self):
         service = self.create_mock_service('rest-query-xml-json')

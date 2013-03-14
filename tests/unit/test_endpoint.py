@@ -22,7 +22,7 @@
 
 from tests import unittest
 
-from mock import Mock
+from mock import Mock, patch, sentinel
 from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \
     RestEndpoint
 from botocore.auth import SigV4Auth
@@ -78,6 +78,80 @@ class TestGetEdnpoint(unittest.TestCase):
         with self.assertRaises(UnknownSignatureVersionError):
             endpoint = get_endpoint(service, 'us-west-2',
                                     'https://service.region.amazonaws.com')
+
+
+class TestEndpointBase(unittest.TestCase):
+    def setUp(self):
+        self.service = Mock()
+        self.service.session.user_agent.return_value = 'botocore-test'
+        self.op = Mock()
+        self.op.is_streaming.return_value = False
+        self.auth = Mock()
+        self.endpoint = self.ENDPOINT_CLASS(
+            self.service, 'us-west-2', 'https://ec2.us-west-2.amazonaws.com/',
+            auth=self.auth)
+        self.http_session = Mock()
+        self.http_session.send.return_value = sentinel.HTTP_RETURN_VALUE
+        self.endpoint.http_session = self.http_session
+        self.get_response_patch = patch('botocore.response.get_response')
+        self.get_response = self.get_response_patch.start()
+
+    def tearDown(self):
+        self.get_response_patch.stop()
+
+
+class TestQueryEndpoint(TestEndpointBase):
+    ENDPOINT_CLASS = QueryEndpoint
+
+    def test_make_request(self):
+        self.endpoint.make_request(self.op, {})
+        # Should have authenticated the request
+        self.assertTrue(self.auth.add_auth.called)
+        request = self.auth.add_auth.call_args[1]['request']
+        # http_session should be used to send the request.
+        self.assertTrue(self.http_session.send.called)
+        prepared_request = self.http_session.send.call_args[0][0]
+        self.http_session.send.assert_called_with(
+            prepared_request, verify=True, stream=False,
+            proxies={})
+        self.get_response.assert_called_with(
+            self.op, sentinel.HTTP_RETURN_VALUE)
+
+    def test_make_request_with_proxies(self):
+        proxies = {'http': 'http://localhost:8888'}
+        self.endpoint.proxies = proxies
+        self.endpoint.make_request(self.op, {})
+        prepared_request = self.http_session.send.call_args[0][0]
+        self.http_session.send.assert_called_with(
+            prepared_request, verify=True, stream=False,
+            proxies=proxies)
+
+
+class TestJSONEndpoint(TestEndpointBase):
+    ENDPOINT_CLASS = JSONEndpoint
+
+    def test_make_request(self):
+        self.endpoint.make_request(self.op, {})
+        self.assertTrue(self.auth.add_auth.called)
+        self.assertTrue(self.http_session.send.called)
+        prepared_request = self.http_session.send.call_args[0][0]
+        self.http_session.send.assert_called_with(
+            prepared_request, verify=True, stream=False,
+            proxies={})
+
+
+class TestRestEndpoint(TestEndpointBase):
+    ENDPOINT_CLASS = RestEndpoint
+
+    def test_make_request(self):
+        self.op.http = {'uri': '/foo', 'method': 'POST'}
+        self.endpoint.make_request(self.op, {
+            'headers': {}, 'uri_params': {}, 'payload': None})
+        self.assertTrue(self.auth.add_auth.called)
+        prepared_request = self.http_session.send.call_args[0][0]
+        self.http_session.send.assert_called_with(
+            prepared_request, verify=True, stream=False,
+            proxies={})
 
 
 if __name__ == '__main__':

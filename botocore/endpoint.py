@@ -24,6 +24,7 @@
 import logging
 import json
 from requests.sessions import Session
+from requests.utils import get_environ_proxies
 
 import botocore.auth
 import botocore.response
@@ -49,13 +50,16 @@ class Endpoint(object):
     :ivar session: The session object.
     """
 
-    def __init__(self, service, region_name, host, auth):
+    def __init__(self, service, region_name, host, auth, proxies=None):
         self.service = service
         self.session = self.service.session
         self.region_name = region_name
         self.host = host
         self.verify = True
         self.auth = auth
+        if proxies is None:
+            proxies = {}
+        self.proxies = proxies
         self.http_session = Session()
 
     def __repr__(self):
@@ -69,6 +73,11 @@ class Endpoint(object):
         self.auth.add_auth(request=request)
         prepared_request = request.prepare()
         return prepared_request
+
+    def _send_request(self, request, operation):
+        return self.http_session.send(request, verify=self.verify,
+                                      stream=operation.is_streaming(),
+                                      proxies=self.proxies)
 
 
 class QueryEndpoint(Endpoint):
@@ -90,9 +99,7 @@ class QueryEndpoint(Endpoint):
         request = AWSRequest(method='POST', url=self.host,
                              data=params, headers={'User-Agent': user_agent})
         prepared_request = self.prepare_request(request)
-        http_response = self.http_session.send(prepared_request,
-                                               verify=self.verify,
-                                               stream=operation.is_streaming())
+        http_response = self._send_request(prepared_request, operation)
         return botocore.response.get_response(operation, http_response)
 
 
@@ -127,9 +134,7 @@ class JSONEndpoint(Endpoint):
                                       'Content-Type': content_type,
                                       'Content-Encoding': content_encoding})
         prepared_request = self.prepare_request(request)
-        http_response = self.http_session.send(prepared_request,
-                                               verify=self.verify,
-                                               stream=operation.is_streaming())
+        http_response = self._send_request(prepared_request, operation)
         return botocore.response.get_response(operation, http_response)
 
 
@@ -187,10 +192,14 @@ class RestEndpoint(Endpoint):
                              url=uri, headers=params['headers'],
                              data=params['payload'])
         prepared_request = self.prepare_request(request)
-        http_response = self.http_session.send(prepared_request,
-                                               verify=self.verify,
-                                               stream=operation.is_streaming())
+        http_response = self._send_request(prepared_request, operation)
         return botocore.response.get_response(operation, http_response)
+
+
+def _get_proxies(url):
+    # We could also support getting proxies from a config file,
+    # but for now proxy support is taken from the environment.
+    return get_environ_proxies(url)
 
 
 def get_endpoint(service, region_name, endpoint_url):
@@ -213,4 +222,5 @@ def get_endpoint(service, region_name, endpoint_url):
                                   credentials=service.session.get_credentials(),
                                   service_name=service_name,
                                   region_name=region_name)
-    return cls(service, region_name, endpoint_url, auth=auth)
+    proxies = _get_proxies(endpoint_url)
+    return cls(service, region_name, endpoint_url, auth=auth, proxies=proxies)

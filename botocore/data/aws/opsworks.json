@@ -3,11 +3,11 @@
     "json_version": 1.1,
     "signature_version": "v4",
     "service_full_name": "AWS OpsWorks",
-    "target_prefix": "OpsWorks",
+    "target_prefix": "OpsWorks_20130218",
     "api_version": "2013-02-18",
     "endpoint_prefix": "opsworks",
     "xmlnamespace": "http://opsworks.amazonaws.com/doc/2013-02-18/",
-    "documentation": "\n      <fullname>OpsWorks</fullname>  <!-- JEN: Is 'Service' really part of the name? Guysm: Dunno. It was in the original file.-->\n   ",
+    "documentation": "\n      <fullname>AWS OpsWorks</fullname>  \n   ",
     "operations": {
         "CloneStack": {
             "name": "CloneStack",
@@ -18,7 +18,8 @@
                     "SourceStackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The source stack ID.</p>\n   "
+                        "documentation": "\n      <p>The source stack ID.</p>\n   ",
+                        "required": true
                     },
                     "Name": {
                         "shape_name": "String",
@@ -36,11 +37,8 @@
                         "shape_name": "StackAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "StackAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "Color"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -53,27 +51,28 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the OpsWorks console,\n         it creates the role for you. You can obtain an existing stack's IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the OpsWorks console,\n         it creates the role for you. You can obtain an existing stack's IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   ",
+                        "required": true
                     },
                     "DefaultInstanceProfileArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>TBD</p>\n   "
+                        "documentation": "\n      <p>The ARN of an IAM profile that is the default profile for all of the stack's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
                     },
                     "DefaultOs": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack default operating system, which must be one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   "
+                        "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n    "
                     },
                     "HostnameTheme": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack host name theme, with spaces replaced by underscores. For example: Bud_Spencer.\n         OpsWorks uses this string to generate host names for the stack instances.</p> \n   "
+                        "documentation": "\n      <p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate hostnames for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates hostnames by appending integers to the layer's shortname.\n         The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated hostname, call <code>GetHostNameSuggestion</code>, which returns a hostname based on the current theme.</p>   "
                     },
                     "DefaultAvailabilityZone": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n    "
+                        "documentation": "\n      <p>The cloned stack's Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n    "
                     },
                     "CustomJson": {
                         "shape_name": "String",
@@ -104,7 +103,7 @@
                             "Url": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                "documentation": "\n      <p>The source URL. </p>"
                             },
                             "Username": {
                                 "shape_name": "String",
@@ -163,7 +162,7 @@
                         "documentation": "\n      <p>The cloned stack ID.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": " <p>Contains the response to a <code>CloneStack</code> request.</p>  "
             },
             "errors": [
                 {
@@ -202,12 +201,14 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     },
                     "Name": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app name.</p>\n   "
+                        "documentation": "\n      <p>The app name.</p>\n   ",
+                        "required": true
                     },
                     "Description": {
                         "shape_name": "String",
@@ -224,7 +225,8 @@
                             "static",
                             "other"
                         ],
-                        "documentation": "\n      <p>The app type. Each supported type is associated with a particular layer. For example, PHP applications are associated with a PHP layer.\n         OpsWorks deploys an application to those instances that are members of the corresponding layer.</p>\n    "
+                        "documentation": "\n      <p>The app type. Each supported type is associated with a particular layer. For example, PHP applications are associated with a PHP layer.\n         OpsWorks deploys an application to those instances that are members of the corresponding layer.</p>\n    ",
+                        "required": true
                     },
                     "AppSource": {
                         "shape_name": "Source",
@@ -244,7 +246,7 @@
                             "Url": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                "documentation": "\n      <p>The source URL. </p>"
                             },
                             "Username": {
                                 "shape_name": "String",
@@ -292,12 +294,14 @@
                             "Certificate": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The contents of the certificate's domain.crt file.</p>\n   "
+                                "documentation": "\n      <p>The contents of the certificate's domain.crt file.</p>\n   ",
+                                "required": true
                             },
                             "PrivateKey": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The private key; the contents of the certificate's domain.kex file.</p>\n   "
+                                "documentation": "\n      <p>The private key; the contents of the certificate's domain.kex file.</p>\n   ",
+                                "required": true
                             },
                             "Chain": {
                                 "shape_name": "String",
@@ -311,13 +315,8 @@
                         "shape_name": "AppAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "AppAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "DocumentRoot",
-                                "RailsEnv",
-                                "AutoBundleOnDeploy"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -325,10 +324,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p> <!-- JEN: Bag? Guy: That's the standard Chef terminology.\n         I think it goes back to the COM property bag-->\n   "
+                        "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p> \n   "
                     }
                 },
-                "documentation": "<p>TBD</p>  "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "CreateAppResult",
@@ -340,7 +339,7 @@
                         "documentation": "\n      <p>The app ID.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p> "
+                "documentation": "<p>Contains the response to a <code>CreateApp</code> request.</p> "
             },
             "errors": [
                 {
@@ -379,7 +378,8 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     },
                     "AppId": {
                         "shape_name": "String",
@@ -415,7 +415,8 @@
                                     "restart",
                                     "undeploy"
                                 ],
-                                "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>ExecuteRecipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>InstallDependencies: Installs the stack's dependencies.</li>\n         <li>UpdateCustomCookbooks: Update the stack's custom cookbooks.</li>\n         <li>UpdateDependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>DeployApp</code>: Deploy the app.</li>\n         <li>\n<code>RollbackApp</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>StartApp</code>: Start the app's web or application server.</li>\n         <li>\n<code>StopApp</code>: Stop the app's web or application server.</li>\n         <li>\n<code>UndeployApp</code>: Undeploy the app.</li>\n      </ul>\n   "
+                                "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n         <li>\n<code>shutdown</code>: Run the shutdown recipes.</li>\n         <li>\n<code>setup</code>: Run the setup recipes.</li>\n         <li>\n<code>configure</code>: Run the configure recipes.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
+                                "required": true
                             },
                             "Args": {
                                 "shape_name": "DeploymentCommandArgs",
@@ -438,7 +439,8 @@
                                 "documentation": "\n      <p>An array of command arguments. This parameter is currently used only to specify the list of recipes to be executed by the <code>ExecuteRecipes</code>\n      command.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>A <code>DeploymentCommand</code> object that describes details of the operation.</p>\n   "
+                        "documentation": "\n      <p>A <code>DeploymentCommand</code> object that describes details of the operation.</p>\n   ",
+                        "required": true
                     },
                     "Comment": {
                         "shape_name": "String",
@@ -451,7 +453,7 @@
                         "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": ""
             },
             "output": {
                 "shape_name": "CreateDeploymentResult",
@@ -460,10 +462,10 @@
                     "DeploymentId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The deployment ID, which can be used with other requests to identify the deployment.</p> <!-- JEN: 'from other actions'? Guy: request is more specific-->\n   "
+                        "documentation": "\n      <p>The deployment ID, which can be used with other requests to identify the deployment.</p> \n   "
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": "<p>Contains the response to a <code>CreateDeployment</code> request.</p>"
             },
             "errors": [
                 {
@@ -502,7 +504,8 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     },
                     "LayerIds": {
                         "shape_name": "Strings",
@@ -512,12 +515,14 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array that contains the instance layer IDs.</p>\n   "
+                        "documentation": "\n      <p>An array that contains the instance layer IDs.</p>\n   ",
+                        "required": true
                     },
                     "InstanceType": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance type, which can be one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   "
+                        "documentation": "\n      <p>The instance type, which can be one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   ",
+                        "required": true
                     },
                     "AutoScalingType": {
                         "shape_name": "AutoScalingType",
@@ -550,7 +555,7 @@
                         "documentation": "\n      <p>The instance Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>  "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "CreateInstanceResult",
@@ -562,7 +567,7 @@
                         "documentation": "\n      <p>The instance ID.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>  "
+                "documentation": "<p>Contains the response to a <code>CreateInstance</code> request.</p>"
             },
             "errors": [
                 {
@@ -589,62 +594,33 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer stack ID.</p>\n   "
+                        "documentation": "\n      <p>The layer stack ID.</p>\n   ",
+                        "required": true
                     },
                     "Type": {
                         "shape_name": "LayerType",
                         "type": "string",
-                        "enum": [
-                            "lb",
-                            "web",
-                            "php-app",
-                            "rails-app",
-                            "nodejs-app",
-                            "memcached",
-                            "db-master",
-                            "monitoring-master",
-                            "custom"
-                        ],
-                        "documentation": "\n      <p>The layer type. A stack cannot have more than one layer of the same type.</p> \n   "
+                        "documentation": "\n      <p>The layer type. A stack cannot have more than one layer of the same type.</p> \n   ",
+                        "required": true
                     },
                     "Name": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer name, which is used by the console.</p>\n   "
+                        "documentation": "\n      <p>The layer name, which is used by the console.</p>\n   ",
+                        "required": true
                     },
                     "Shortname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": " \n      <p>The layer short name, which is used internally by OpsWorks and by Chef recipes. The shortname is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters, which are limited to the alphanumeric\n         characters, '-', '_', and '.'.</p>\n   "
+                        "documentation": " \n      <p>The layer short name, which is used internally by OpsWorks and by Chef recipes. The shortname is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters, which are limited to the alphanumeric\n         characters, '-', '_', and '.'.</p>\n   ",
+                        "required": true
                     },
                     "Attributes": {
                         "shape_name": "LayerAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "LayerAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "EnableHaproxyStats",
-                                "HaproxyStatsUrl",
-                                "HaproxyStatsUser",
-                                "HaproxyStatsPassword",
-                                "HaproxyHealthCheckUrl",
-                                "HaproxyHealthCheckMethod",
-                                "MysqlRootPassword",
-                                "MysqlRootPasswordUbiquitous",
-                                "GangliaUrl",
-                                "GangliaUser",
-                                "GangliaPassword",
-                                "MemcachedMemory",
-                                "NodejsVersion",
-                                "NpmVersion",
-                                "RubyVersion",
-                                "RubygemsVersion",
-                                "ManageBundler",
-                                "BundlerVersion",
-                                "RailsStack",
-                                "PassengerVersion"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -654,10 +630,10 @@
                         },
                         "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p>\n   "
                     },
-                    "InstanceProfileArn": {
+                    "CustomInstanceProfileArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>An IAM profile ARN for the layer instances. You can override this value when you create an instance. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
+                        "documentation": "\n      <p>The ARN of an IAM profile that to be used for the layer's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
                     },
                     "CustomSecurityGroupIds": {
                         "shape_name": "Strings",
@@ -689,7 +665,8 @@
                                 "MountPoint": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The volume mount point. For example \"/dev/sdh\".</p>\n   "
+                                    "documentation": "\n      <p>The volume mount point. For example \"/dev/sdh\".</p>\n   ",
+                                    "required": true
                                 },
                                 "RaidLevel": {
                                     "shape_name": "Integer",
@@ -701,13 +678,15 @@
                                     "shape_name": "Integer",
                                     "type": "integer",
                                     "box": true,
-                                    "documentation": "\n      <p>The number of disks in the volume.</p>\n   "
+                                    "documentation": "\n      <p>The number of disks in the volume.</p>\n   ",
+                                    "required": true
                                 },
                                 "Size": {
                                     "shape_name": "Integer",
                                     "type": "integer",
                                     "box": true,
-                                    "documentation": "\n      <p>The volume size.</p>\n   "
+                                    "documentation": "\n      <p>The volume size.</p>\n   ",
+                                    "required": true
                                 }
                             },
                             "documentation": "\n      <p>Describes an Amazon EBS volume configuration.</p> \n   "
@@ -784,7 +763,7 @@
                         "documentation": "\n      <p>A <code>LayerCustomRecipes</code> object that specifies the layer custom recipes.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>  "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "CreateLayerResult",
@@ -796,7 +775,7 @@
                         "documentation": "\n      <p>The layer ID.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>CreateLayer</code> request.</p>"
             },
             "errors": [
                 {
@@ -823,12 +802,14 @@
                     "Name": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack name.</p>\n   "
+                        "documentation": "\n      <p>The stack name.</p>\n   ",
+                        "required": true
                     },
                     "Region": {
                         "shape_name": "String",
                         "type": "string",
                         "documentation": "\n      <p>The stack AWS region, such as \"us-east-1\". For more information about Amazon regions, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   ",
+                        "required": true,
                         "py_name": "stack_region",
                         "cli_name": "stack-region"
                     },
@@ -836,11 +817,8 @@
                         "shape_name": "StackAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "StackAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "Color"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -853,22 +831,24 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n   "
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n   ",
+                        "required": true
                     },
                     "DefaultInstanceProfileArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>TBD</p>\n   "
+                        "documentation": "\n      <p>The ARN of an IAM profile that is the default profile for all of the stack's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   ",
+                        "required": true
                     },
                     "DefaultOs": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack default operating system, which must be set to one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   "
+                        "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
                     },
                     "HostnameTheme": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack host name theme, with spaces are replaced by underscores. For example: Bud_Spencer. By default,\n         <code>HostnameTheme</code> is set to the role-based theme.</p>\n   "
+                        "documentation": "\n      <p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate hostnames for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates hostnames by appending integers to the layer's shortname.\n      The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated hostname, call <code>GetHostNameSuggestion</code>, which returns a hostname based on the current theme.</p>\n   "
                     },
                     "DefaultAvailabilityZone": {
                         "shape_name": "String",
@@ -904,7 +884,7 @@
                             "Url": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                "documentation": "\n      <p>The source URL. </p>"
                             },
                             "Username": {
                                 "shape_name": "String",
@@ -935,7 +915,7 @@
                         "documentation": "\n      <p>A default SSH key for the stack instances. You can override this value when you create or update an instance.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>   "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "CreateStackResult",
@@ -947,7 +927,7 @@
                         "documentation": "\n      <p>The stack ID, which is an opaque string that you use to identify the stack when performing actions such as <code>DescribeStacks</code>.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": "<p>Contains the response to a <code>CreateStack</code> request.</p>   "
             },
             "errors": [
                 {
@@ -974,7 +954,8 @@
                     "IamUserArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The user's IAM ARN.</p>\n   "
+                        "documentation": "\n      <p>The user's IAM ARN.</p>\n   ",
+                        "required": true
                     },
                     "SshUsername": {
                         "shape_name": "String",
@@ -987,7 +968,7 @@
                         "documentation": "\n      <p>The user's public SSH key.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": ""
             },
             "output": {
                 "shape_name": "CreateUserProfileResult",
@@ -999,7 +980,7 @@
                         "documentation": "\n      <p>The user's IAM ARN.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>CreateUserProfile</code> request.</p>"
             },
             "errors": [
                 {
@@ -1026,10 +1007,11 @@
                     "AppId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app ID.</p>\n   "
+                        "documentation": "\n      <p>The app ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "<p>TBD</p> "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -1069,7 +1051,8 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID.</p>\n   ",
+                        "required": true
                     },
                     "DeleteElasticIp": {
                         "shape_name": "Boolean",
@@ -1084,7 +1067,7 @@
                         "documentation": "\n      <p>Whether to delete the instance Amazon EBS volumes.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -1124,10 +1107,11 @@
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer ID.</p>\n   "
+                        "documentation": "\n      <p>The layer ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "<p>TBD</p>   "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -1167,10 +1151,11 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "<p>TBD</p>   "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -1210,10 +1195,11 @@
                     "IamUserArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The user's IAM ARN.</p>\n   "
+                        "documentation": "\n      <p>The user's IAM ARN.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -1266,7 +1252,7 @@
                         "documentation": "\n      <p>An array of app IDs for the apps to be described.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p> "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeAppsResult",
@@ -1329,7 +1315,7 @@
                                         "Url": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                            "documentation": "\n      <p>The source URL. </p>"
                                         },
                                         "Username": {
                                             "shape_name": "String",
@@ -1377,12 +1363,14 @@
                                         "Certificate": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The contents of the certificate's domain.crt file.</p>\n   "
+                                            "documentation": "\n      <p>The contents of the certificate's domain.crt file.</p>\n   ",
+                                            "required": true
                                         },
                                         "PrivateKey": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The private key; the contents of the certificate's domain.kex file.</p>\n   "
+                                            "documentation": "\n      <p>The private key; the contents of the certificate's domain.kex file.</p>\n   ",
+                                            "required": true
                                         },
                                         "Chain": {
                                             "shape_name": "String",
@@ -1396,13 +1384,8 @@
                                     "shape_name": "AppAttributes",
                                     "type": "map",
                                     "keys": {
-                                        "shape_name": "AppAttributesKeys",
+                                        "shape_name": "String",
                                         "type": "string",
-                                        "enum": [
-                                            "DocumentRoot",
-                                            "RailsEnv",
-                                            "AutoBundleOnDeploy"
-                                        ],
                                         "documentation": null
                                     },
                                     "members": {
@@ -1423,7 +1406,7 @@
                         "documentation": "\n      An array of <code>App</code> objects that describe the specified apps.\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeApps</code> request.</p>"
             },
             "errors": [
                 {
@@ -1480,7 +1463,7 @@
                         "documentation": "\n      <p>An array of IDs for the commands to be described.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeCommandsResult",
@@ -1511,12 +1494,12 @@
                                 "CreatedAt": {
                                     "shape_name": "DateTime",
                                     "type": "string",
-                                    "documentation": "\n      <p>Date when the command was run.</p>\n   "
+                                    "documentation": "\n      <p>Date and time when the command was run.</p>\n   "
                                 },
                                 "AcknowledgedAt": {
                                     "shape_name": "DateTime",
                                     "type": "string",
-                                    "documentation": "\n      <p>Date when the command was acknowledged.</p>\n   "
+                                    "documentation": "\n      <p>Date and time when the command was acknowledged.</p>\n   "
                                 },
                                 "CompletedAt": {
                                     "shape_name": "DateTime",
@@ -1526,7 +1509,7 @@
                                 "Status": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The command status</p>\n   "
+                                    "documentation": "\n      <p>The command status:</p>\n      <ul>\n         <li>failed</li>\n         <li>successful</li>\n         <li>skipped</li>\n         <li>pending</li>\n      </ul>\n   "
                                 },
                                 "ExitCode": {
                                     "shape_name": "Integer",
@@ -1542,7 +1525,7 @@
                                 "Type": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>TBD</p>\n   "
+                                    "documentation": "\n      <p>The command type:</p>\n      <ul>\n         <li>shutdown</li>\n         <li>setup</li>\n         <li>configure</li>\n         <li>deploy</li>\n         <li>rollback</li>\n         <li>start</li>\n         <li>stop</li>\n         <li>restart</li>\n         <li>undeploy</li>\n         <li>update_dependencies</li>\n         <li>install_dependencies</li>\n         <li>update_custom_cookbooks</li>\n         <li>execute_recipes</li>\n      </ul>\n   "
                                 }
                             },
                             "documentation": "\n      <p>Describes a command.</p>\n   "
@@ -1550,7 +1533,7 @@
                         "documentation": "\n      <p>An array of <c>InstanceCommand</c> objects that describe each of the specified commands.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>"
+                "documentation": "<p>Contains the response to a <code>DescribeCommands</code> request.</p>"
             },
             "errors": [
                 {
@@ -1607,7 +1590,7 @@
                         "documentation": "\n      <p>An array of deployment IDs to be described.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>  "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeDeploymentsResult",
@@ -1680,7 +1663,8 @@
                                                 "restart",
                                                 "undeploy"
                                             ],
-                                            "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>ExecuteRecipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>InstallDependencies: Installs the stack's dependencies.</li>\n         <li>UpdateCustomCookbooks: Update the stack's custom cookbooks.</li>\n         <li>UpdateDependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>DeployApp</code>: Deploy the app.</li>\n         <li>\n<code>RollbackApp</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>StartApp</code>: Start the app's web or application server.</li>\n         <li>\n<code>StopApp</code>: Stop the app's web or application server.</li>\n         <li>\n<code>UndeployApp</code>: Undeploy the app.</li>\n      </ul>\n   "
+                                            "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n         <li>\n<code>shutdown</code>: Run the shutdown recipes.</li>\n         <li>\n<code>setup</code>: Run the setup recipes.</li>\n         <li>\n<code>configure</code>: Run the configure recipes.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
+                                            "required": true
                                         },
                                         "Args": {
                                             "shape_name": "DeploymentCommandArgs",
@@ -1708,7 +1692,7 @@
                                 "Status": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n     <p>The deployment status.</p>\n   "
+                                    "documentation": "\n     <p>The deployment status:</p>\n      <ul>\n         <li>running</li>\n         <li>successful</li>\n         <li>failed</li>\n      </ul>\n   "
                                 },
                                 "CustomJson": {
                                     "shape_name": "String",
@@ -1731,7 +1715,7 @@
                         "documentation": "\n      <p>An array of <code>Deployment</code> objects that describe the deployments.</p>\n   "
                     }
                 },
-                "documentation": "<p>TBD</p>   "
+                "documentation": "<p>Contains the response to a <code>DescribeDeployments</code> request.</p> "
             },
             "errors": [
                 {
@@ -1783,7 +1767,7 @@
                         "documentation": "\n      <p>An array of Elastic IP addresses to be described.</p>\n   "
                     }
                 },
-                "documentation": " "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeElasticIpsResult",
@@ -1817,7 +1801,7 @@
                         "documentation": "\n      <p>An <code>ElasticIps</code> object that describes the specified Elastic IP addresses.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeElasticIps</code> request.</p>"
             },
             "errors": [
                 {
@@ -1856,17 +1840,17 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance's stack ID.</p>\n   "
+                        "documentation": "\n      <p>A stack ID.</p>\n   "
                     },
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance's layer ID.</p>\n   "
+                        "documentation": "\n      <p>A layer ID.</p>\n   "
                     },
                     "AppId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app ID.</p>\n   "
+                        "documentation": "\n      <p>An app ID.</p>\n   "
                     },
                     "InstanceIds": {
                         "shape_name": "Strings",
@@ -1879,7 +1863,7 @@
                         "documentation": "\n      <p>An array of instance IDs to be described.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeInstancesResult",
@@ -1922,7 +1906,7 @@
                                     },
                                     "documentation": "\n      <p>An array containing the instance layer IDs.</p>\n   "
                                 },
-                                "SecurityGroups": {
+                                "SecurityGroupIds": {
                                     "shape_name": "Strings",
                                     "type": "list",
                                     "members": {
@@ -1930,7 +1914,7 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": "\n      <p>An array containing the instance security group names.</p>\n   "
+                                    "documentation": "\n      <p>An array containing the instance security group IDs.</p>\n   "
                                 },
                                 "InstanceType": {
                                     "shape_name": "String",
@@ -1940,12 +1924,12 @@
                                 "InstanceProfileArn": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The instance IAM profile ARN. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>    \n   "
+                                    "documentation": "\n      <p>The ARN of the instance's IAM profile. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>    \n   "
                                 },
                                 "Status": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n     <p>The instance status.</p>\n   "
+                                    "documentation": "\n     <p>The instance status:</p>\n      <ul>\n         <li>requested</li>\n         <li>booting</li>\n         <li>running_setup</li>\n         <li>online</li>\n         <li>setup_failed</li>\n         <li>start_failed</li>\n         <li>terminating</li>\n         <li>terminated</li>\n         <li>stopped</li>\n         <li>connection_lost</li>\n      </ul>\n   "
                                 },
                                 "Os": {
                                     "shape_name": "String",
@@ -2010,7 +1994,7 @@
                                 "CreatedAt": {
                                     "shape_name": "DateTime",
                                     "type": "string",
-                                    "documentation": "\n      <p>The time that the instance was created.</p> <!-- JEN: Changed 'tie' to 'the' -->\n   "
+                                    "documentation": "\n      <p>The time that the instance was created.</p> \n   "
                                 },
                                 "LastServiceErrorId": {
                                     "shape_name": "String",
@@ -2023,7 +2007,7 @@
                         "documentation": "\n      <p>An array of <code>Instance</code> objects that describe the instances.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": " <p>Contains the response to a <code>DescribeInstances</code> request.</p>  "
             },
             "errors": [
                 {
@@ -2051,7 +2035,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Requests a description of a specified set of instances.</p>      \n   "
+            "documentation": "\n      <p>Requests a description of a set of instances associated with a specified ID or IDs.</p>      \n   "
         },
         "DescribeLayers": {
             "name": "DescribeLayers",
@@ -2062,7 +2046,8 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     },
                     "LayerIds": {
                         "shape_name": "Strings",
@@ -2075,7 +2060,7 @@
                         "documentation": "\n      <p>An array of layer IDs that specify the layers to be described.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeLayersResult",
@@ -2101,17 +2086,6 @@
                                 "Type": {
                                     "shape_name": "LayerType",
                                     "type": "string",
-                                    "enum": [
-                                        "lb",
-                                        "web",
-                                        "php-app",
-                                        "rails-app",
-                                        "nodejs-app",
-                                        "memcached",
-                                        "db-master",
-                                        "monitoring-master",
-                                        "custom"
-                                    ],
                                     "documentation": "\n      <p>The layer type, which must be one of the following:</p>\n      <ul>\n         <li>Custom</li>\n         <li>GangliaMonitoringMaster</li>\n         <li>HaProxy</li>\n         <li>MemcachedServer</li>\n         <li>MySqlMaster</li>\n         <li>NodeJsAppServer</li>\n         <li>PhpAppServer</li>\n         <li>RailsAppServer</li>\n         <li>WebServer</li>\n      </ul>  \n   "
                                 },
                                 "Name": {
@@ -2128,30 +2102,8 @@
                                     "shape_name": "LayerAttributes",
                                     "type": "map",
                                     "keys": {
-                                        "shape_name": "LayerAttributesKeys",
+                                        "shape_name": "String",
                                         "type": "string",
-                                        "enum": [
-                                            "EnableHaproxyStats",
-                                            "HaproxyStatsUrl",
-                                            "HaproxyStatsUser",
-                                            "HaproxyStatsPassword",
-                                            "HaproxyHealthCheckUrl",
-                                            "HaproxyHealthCheckMethod",
-                                            "MysqlRootPassword",
-                                            "MysqlRootPasswordUbiquitous",
-                                            "GangliaUrl",
-                                            "GangliaUser",
-                                            "GangliaPassword",
-                                            "MemcachedMemory",
-                                            "NodejsVersion",
-                                            "NpmVersion",
-                                            "RubyVersion",
-                                            "RubygemsVersion",
-                                            "ManageBundler",
-                                            "BundlerVersion",
-                                            "RailsStack",
-                                            "PassengerVersion"
-                                        ],
                                         "documentation": null
                                     },
                                     "members": {
@@ -2161,10 +2113,10 @@
                                     },
                                     "documentation": "\n      <p>The layer attributes.</p>\n   "
                                 },
-                                "InstanceProfileArn": {
+                                "CustomInstanceProfileArn": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>An IAM profile ARN for the layer's instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
+                                    "documentation": "\n      <p>The ARN of the default IAM profile to be used for the layer's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
                                 },
                                 "CustomSecurityGroupIds": {
                                     "shape_name": "Strings",
@@ -2174,7 +2126,7 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": "     \n      <p>NEW</p>      \n   "
+                                    "documentation": "     \n      <p>An array containing the layer's custom security group IDs.</p>      \n   "
                                 },
                                 "DefaultSecurityGroupNames": {
                                     "shape_name": "Strings",
@@ -2206,7 +2158,8 @@
                                             "MountPoint": {
                                                 "shape_name": "String",
                                                 "type": "string",
-                                                "documentation": "\n      <p>The volume mount point. For example \"/dev/sdh\".</p>\n   "
+                                                "documentation": "\n      <p>The volume mount point. For example \"/dev/sdh\".</p>\n   ",
+                                                "required": true
                                             },
                                             "RaidLevel": {
                                                 "shape_name": "Integer",
@@ -2218,13 +2171,15 @@
                                                 "shape_name": "Integer",
                                                 "type": "integer",
                                                 "box": true,
-                                                "documentation": "\n      <p>The number of disks in the volume.</p>\n   "
+                                                "documentation": "\n      <p>The number of disks in the volume.</p>\n   ",
+                                                "required": true
                                             },
                                             "Size": {
                                                 "shape_name": "Integer",
                                                 "type": "integer",
                                                 "box": true,
-                                                "documentation": "\n      <p>The volume size.</p>\n   "
+                                                "documentation": "\n      <p>The volume size.</p>\n   ",
+                                                "required": true
                                             }
                                         },
                                         "documentation": "\n      <p>Describes an Amazon EBS volume configuration.</p> \n   "
@@ -2368,7 +2323,7 @@
                         "documentation": "\n      <p>An array of <code>Layer</code> objects that describe the layers.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": " <p>Contains the response to a <code>DescribeLayers</code> request.</p>  "
             },
             "errors": [
                 {
@@ -2412,7 +2367,8 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of layer IDs.</p>\n   "
+                        "documentation": "\n      <p>An array of layer IDs.</p>\n   ",
+                        "required": true
                     }
                 },
                 "documentation": ""
@@ -2467,7 +2423,7 @@
                                             "shape_name": "Double",
                                             "type": "double",
                                             "box": true,
-                                            "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU load.</p> <!-- JEN: changed 'memory' to CPU/CPU load -->\n   "
+                                            "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU.</p> \n   "
                                         },
                                         "MemoryThreshold": {
                                             "shape_name": "Double",
@@ -2512,7 +2468,7 @@
                                             "shape_name": "Double",
                                             "type": "double",
                                             "box": true,
-                                            "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU load.</p> <!-- JEN: changed 'memory' to CPU/CPU load -->\n   "
+                                            "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU.</p> \n   "
                                         },
                                         "MemoryThreshold": {
                                             "shape_name": "Double",
@@ -2535,7 +2491,7 @@
                         "documentation": "\n      <p>An array of <code>LoadBasedAutoScalingConfiguration</code> objects that describe each layer's configuration.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeLoadBasedAutoScaling</code> request.</p> "
             },
             "errors": [
                 {
@@ -2574,15 +2530,17 @@
                     "IamUserArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The Amazon Resource Name (ARN) for the stack AWS Identity and Access Management (IAM) role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
+                        "documentation": "\n      <p>The user's IAM ARN. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   ",
+                        "required": true
                     },
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": " "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribePermissionsResult",
@@ -2623,7 +2581,7 @@
                         "documentation": "\n      <p>An array of <code>Permission</code> objects that describe the stack permissions.</p>\n      <ul>\n         <li>If the request object contains only a stack ID, the array contains a\n            <code>Permission</code> object with permissions for each of the stack IAM ARNs.</li>\n         <li>If the request object contains only an IAM ARN, the array contains a\n            <code>Permission</code> object with permissions for each of the user's stack IDs.</li>\n         <li>If the request contains a stack ID and an IAM ARN, the array contains a single\n            <code>Permission</code> object with permissions for the specified stack and IAM ARN.</li>\n      </ul>\n   "
                     }
                 },
-                "documentation": " "
+                "documentation": "<p>Contains the response to a <code>DescribePermissions</code> request.</p> "
             },
             "errors": [
                 {
@@ -2675,7 +2633,7 @@
                         "documentation": "\n      <p>An array of RAID array IDs to be described.</p>\n   "
                     }
                 },
-                "documentation": " "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeRaidArraysResult",
@@ -2724,7 +2682,7 @@
                                 "Device": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The array's device name.</p>\n   "
+                                    "documentation": "\n      <p>The array's Linux device. For example /dev/mdadm0.</p>\n   "
                                 },
                                 "MountPoint": {
                                     "shape_name": "String",
@@ -2747,7 +2705,7 @@
                         "documentation": "\n      <p>A <code>RaidArrays</code> object that describes the specified RAID arrays.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeRaidArrays</code> request.</p>"
             },
             "errors": [
                 {
@@ -2853,7 +2811,7 @@
                         "documentation": "\n      <p>An array of <code>ServiceError</code> objects that describe the specified service errors.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeServiceErrors</code> request.</p>"
             },
             "errors": [
                 {
@@ -2883,107 +2841,6 @@
             ],
             "documentation": "\n      <p>Describes OpsWorks service errors.</p>\n   "
         },
-        "DescribeSshKeys": {
-            "name": "DescribeSshKeys",
-            "input": {
-                "shape_name": "DescribeSshKeysRequest",
-                "type": "structure",
-                "members": {
-                    "StackId": {
-                        "shape_name": "String",
-                        "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
-                    },
-                    "InstanceId": {
-                        "shape_name": "String",
-                        "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
-                    },
-                    "SshKeyIds": {
-                        "shape_name": "Strings",
-                        "type": "list",
-                        "members": {
-                            "shape_name": "String",
-                            "type": "string",
-                            "documentation": null
-                        },
-                        "documentation": "\n      <p>An array of SSH key IDs to be described.</p>\n   "
-                    }
-                },
-                "documentation": ""
-            },
-            "output": {
-                "shape_name": "DescribeSshKeysResult",
-                "type": "structure",
-                "members": {
-                    "SshKeys": {
-                        "shape_name": "SshKeys",
-                        "type": "list",
-                        "members": {
-                            "shape_name": "SshKey",
-                            "type": "structure",
-                            "members": {
-                                "SshKeyId": {
-                                    "shape_name": "String",
-                                    "type": "string",
-                                    "documentation": "\n      <p>The key's ID.</p>\n   "
-                                },
-                                "Region": {
-                                    "shape_name": "String",
-                                    "type": "string",
-                                    "documentation": "\n      <p>The AWS region. For more information, see <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
-                                },
-                                "Name": {
-                                    "shape_name": "String",
-                                    "type": "string",
-                                    "documentation": "\n      <p>The key's name.</p>\n   "
-                                },
-                                "Fingerprint": {
-                                    "shape_name": "String",
-                                    "type": "string",
-                                    "documentation": "\n      <p>The key's RSA fingerprint.</p>\n   "
-                                },
-                                "PrivateKey": {
-                                    "shape_name": "String",
-                                    "type": "string",
-                                    "documentation": "\n      <p>The key's private key.</p>\n   "
-                                }
-                            },
-                            "documentation": "\n      <p>Describes an SSH key.</p>\n   "
-                        },
-                        "documentation": "\n      <p>An <code>SshKeys</code> object that describes the specified keys.</p>\n   "
-                    }
-                },
-                "documentation": ""
-            },
-            "errors": [
-                {
-                    "shape_name": "ValidationException",
-                    "type": "structure",
-                    "members": {
-                        "message": {
-                            "shape_name": "String",
-                            "type": "string",
-                            "documentation": "\n      <p>The exception message.</p>\n   "
-                        }
-                    },
-                    "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
-                },
-                {
-                    "shape_name": "ResourceNotFoundException",
-                    "type": "structure",
-                    "members": {
-                        "message": {
-                            "shape_name": "String",
-                            "type": "string",
-                            "documentation": "\n      <p>The exception message.</p>\n   "
-                        }
-                    },
-                    "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
-                }
-            ],
-            "documentation": "\n      <p>Describe an instance's SSH keys.</p>\n   "
-        },
         "DescribeStacks": {
             "name": "DescribeStacks",
             "input": {
@@ -3001,7 +2858,7 @@
                         "documentation": "\n      <p>An array of stack IDs that specify the stacks to be described.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": {
                 "shape_name": "DescribeStacksResult",
@@ -3033,11 +2890,8 @@
                                     "shape_name": "StackAttributes",
                                     "type": "map",
                                     "keys": {
-                                        "shape_name": "StackAttributesKeys",
+                                        "shape_name": "String",
                                         "type": "string",
-                                        "enum": [
-                                            "Color"
-                                        ],
                                         "documentation": null
                                     },
                                     "members": {
@@ -3055,17 +2909,17 @@
                                 "DefaultInstanceProfileArn": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>TBD</p>\n   "
+                                    "documentation": "\n      <p>The ARN of an IAM profile that is the default profile for all of the stack's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
                                 },
                                 "DefaultOs": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The stack's default operating system, which must be set to one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   "
+                                    "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
                                 },
                                 "HostnameTheme": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The stack host name theme, with spaces replaced by underscores. For example: Bud_Spencer. By default,\n         <code>HostnameTheme</code> is set to the role-based theme.</p>      \n   "
+                                    "documentation": "\n      <p>The stack host name theme, with spaces replaced by underscores.</p>      \n   "
                                 },
                                 "DefaultAvailabilityZone": {
                                     "shape_name": "String",
@@ -3101,7 +2955,7 @@
                                         "Url": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                            "documentation": "\n      <p>The source URL. </p>"
                                         },
                                         "Username": {
                                             "shape_name": "String",
@@ -3142,7 +2996,7 @@
                         "documentation": "\n      <p>An array of <code>Stack</code> objects that describe the stacks.</p>\n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": " <p>Contains the response to a <code>DescribeStacks</code> request.</p>  "
             },
             "errors": [
                 {
@@ -3186,7 +3040,8 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of instance IDs.</p>\n   "
+                        "documentation": "\n      <p>An array of instance IDs.</p>\n   ",
+                        "required": true
                     }
                 },
                 "documentation": ""
@@ -3224,7 +3079,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Monday.</p>\n   "
                                         },
                                         "Tuesday": {
                                             "shape_name": "DailyAutoScalingSchedule",
@@ -3239,7 +3094,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Tuesday.</p>\n   "
                                         },
                                         "Wednesday": {
                                             "shape_name": "DailyAutoScalingSchedule",
@@ -3254,7 +3109,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Wednesday.</p>\n   "
                                         },
                                         "Thursday": {
                                             "shape_name": "DailyAutoScalingSchedule",
@@ -3269,7 +3124,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Thursday.</p>\n   "
                                         },
                                         "Friday": {
                                             "shape_name": "DailyAutoScalingSchedule",
@@ -3284,7 +3139,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Friday.</p>\n   "
                                         },
                                         "Saturday": {
                                             "shape_name": "DailyAutoScalingSchedule",
@@ -3299,7 +3154,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Saturday.</p>\n   "
                                         },
                                         "Sunday": {
                                             "shape_name": "DailyAutoScalingSchedule",
@@ -3314,7 +3169,7 @@
                                                 "type": "string",
                                                 "documentation": null
                                             },
-                                            "documentation": "\n      <p>TBD</p>\n   "
+                                            "documentation": "\n      <p>The schedule for Sunday.</p>\n   "
                                         }
                                     },
                                     "documentation": "\n      <p>A <code>WeeklyAutoScalingSchedule</code> object with the instance schedule.</p>\n   "
@@ -3325,7 +3180,7 @@
                         "documentation": "\n      <p>An array of <code>TimeBasedAutoScalingConfiguration</code> objects that describe the configuration for the specified instances.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeTimeBasedAutoScaling</code> request.</p> "
             },
             "errors": [
                 {
@@ -3369,7 +3224,8 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of IAM user ARNs that identify the users to be described. </p>\n   "
+                        "documentation": "\n      <p>An array of IAM user ARNs that identify the users to be described. </p>\n   ",
+                        "required": true
                     }
                 },
                 "documentation": ""
@@ -3395,12 +3251,6 @@
                                     "type": "string",
                                     "documentation": "\n      <p>The user name.</p>\n   "
                                 },
-                                "Root": {
-                                    "shape_name": "Boolean",
-                                    "type": "boolean",
-                                    "box": true,
-                                    "documentation": "\n      <p>Whether the user has root privileges.</p>\n   "
-                                },
                                 "SshUsername": {
                                     "shape_name": "String",
                                     "type": "string",
@@ -3417,7 +3267,7 @@
                         "documentation": "\n      <p>A <code>Users</code> object that describes the specified users.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeUserProfiles</code> request.</p>"
             },
             "errors": [
                 {
@@ -3515,7 +3365,7 @@
                                 "Status": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The volume status. The possible values are:</p>\n      <ul>\n         <li>Ok</li>\n         <li>Impaired</li>\n         <li>Warning</li>\n         <li>Insufficient-data</li>\n      </ul>\n   "
+                                    "documentation": "\n      <p>The value returned by <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html\">DescribeVolumes</a>.</p>\n   "
                                 },
                                 "Size": {
                                     "shape_name": "Integer",
@@ -3549,7 +3399,7 @@
                         "documentation": "\n      <p>An array of volume IDs.</p> \n   "
                     }
                 },
-                "documentation": ""
+                "documentation": "<p>Contains the response to a <code>DescribeVolumes</code> request.</p>"
             },
             "errors": [
                 {
@@ -3588,7 +3438,8 @@
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer ID.</p>\n   "
+                        "documentation": "\n      <p>The layer ID.</p>\n   ",
+                        "required": true
                     }
                 },
                 "documentation": ""
@@ -3605,10 +3456,10 @@
                     "Hostname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The host name suggestion.</p>\n   "
+                        "documentation": "\n      <p>The generated hostname.</p>\n   "
                     }
                 },
-                "documentation": "  "
+                "documentation": " <p>Contains the response to a <code>GetHostnameSuggestion</code> request.</p> "
             },
             "errors": [
                 {
@@ -3624,7 +3475,7 @@
                     "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
                 }
             ],
-            "documentation": "\n      <p>Gets a layer's host name suggestion.</p>\n   "
+            "documentation": "\n      <p>Gets a generated hostname for the specified layer, based on the current hostname theme.</p>\n   "
         },
         "RebootInstance": {
             "name": "RebootInstance",
@@ -3635,10 +3486,11 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "  "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -3678,7 +3530,8 @@
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer ID.</p>\n   "
+                        "documentation": "\n      <p>The layer ID.</p>\n   ",
+                        "required": true
                     },
                     "Enable": {
                         "shape_name": "Boolean",
@@ -3714,7 +3567,7 @@
                                 "shape_name": "Double",
                                 "type": "double",
                                 "box": true,
-                                "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU load.</p> <!-- JEN: changed 'memory' to CPU/CPU load -->\n   "
+                                "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU.</p> \n   "
                             },
                             "MemoryThreshold": {
                                 "shape_name": "Double",
@@ -3759,7 +3612,7 @@
                                 "shape_name": "Double",
                                 "type": "double",
                                 "box": true,
-                                "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU load.</p> <!-- JEN: changed 'memory' to CPU/CPU load -->\n   "
+                                "documentation": "\n      <p>The CPU utilization threshold, as a percent of the available CPU.</p> \n   "
                             },
                             "MemoryThreshold": {
                                 "shape_name": "Double",
@@ -3817,12 +3670,14 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     },
                     "IamUserArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The user's IAM ARN.</p>\n   "
+                        "documentation": "\n      <p>The user's IAM ARN.</p>\n   ",
+                        "required": true
                     },
                     "AllowSsh": {
                         "shape_name": "Boolean",
@@ -3865,7 +3720,8 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID.</p>\n   ",
+                        "required": true
                     },
                     "AutoScalingSchedule": {
                         "shape_name": "WeeklyAutoScalingSchedule",
@@ -3884,7 +3740,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Monday.</p>\n   "
                             },
                             "Tuesday": {
                                 "shape_name": "DailyAutoScalingSchedule",
@@ -3899,7 +3755,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Tuesday.</p>\n   "
                             },
                             "Wednesday": {
                                 "shape_name": "DailyAutoScalingSchedule",
@@ -3914,7 +3770,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Wednesday.</p>\n   "
                             },
                             "Thursday": {
                                 "shape_name": "DailyAutoScalingSchedule",
@@ -3929,7 +3785,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Thursday.</p>\n   "
                             },
                             "Friday": {
                                 "shape_name": "DailyAutoScalingSchedule",
@@ -3944,7 +3800,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Friday.</p>\n   "
                             },
                             "Saturday": {
                                 "shape_name": "DailyAutoScalingSchedule",
@@ -3959,7 +3815,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Saturday.</p>\n   "
                             },
                             "Sunday": {
                                 "shape_name": "DailyAutoScalingSchedule",
@@ -3974,7 +3830,7 @@
                                     "type": "string",
                                     "documentation": null
                                 },
-                                "documentation": "\n      <p>TBD</p>\n   "
+                                "documentation": "\n      <p>The schedule for Sunday.</p>\n   "
                             }
                         },
                         "documentation": "\n      <p>An <code>AutoScalingSchedule</code> with the instance schedule.</p>\n   "
@@ -4020,10 +3876,11 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>      \n   "
+                        "documentation": "\n      <p>The instance ID.</p>      \n   ",
+                        "required": true
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4063,10 +3920,11 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4095,7 +3953,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Starts a specified stack. <!-- Not entirely sure what \"starts\" means. Does this start the instances as well?--></p>\n   "
+            "documentation": "\n      <p>Starts stack's instances. </p>\n   "
         },
         "StopInstance": {
             "name": "StopInstance",
@@ -4106,10 +3964,11 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID.</p>\n   ",
+                        "required": true
                     }
                 },
-                "documentation": "  "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4149,10 +4008,11 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>      \n   "
+                        "documentation": "\n      <p>The stack ID.</p>      \n   ",
+                        "required": true
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4192,7 +4052,8 @@
                     "AppId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app ID.</p>\n   "
+                        "documentation": "\n      <p>The app ID.</p>\n   ",
+                        "required": true
                     },
                     "Name": {
                         "shape_name": "String",
@@ -4234,7 +4095,7 @@
                             "Url": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                "documentation": "\n      <p>The source URL. </p>"
                             },
                             "Username": {
                                 "shape_name": "String",
@@ -4282,12 +4143,14 @@
                             "Certificate": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The contents of the certificate's domain.crt file.</p>\n   "
+                                "documentation": "\n      <p>The contents of the certificate's domain.crt file.</p>\n   ",
+                                "required": true
                             },
                             "PrivateKey": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The private key; the contents of the certificate's domain.kex file.</p>\n   "
+                                "documentation": "\n      <p>The private key; the contents of the certificate's domain.kex file.</p>\n   ",
+                                "required": true
                             },
                             "Chain": {
                                 "shape_name": "String",
@@ -4301,13 +4164,8 @@
                         "shape_name": "AppAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "AppAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "DocumentRoot",
-                                "RailsEnv",
-                                "AutoBundleOnDeploy"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -4318,7 +4176,7 @@
                         "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p>\n   "
                     }
                 },
-                "documentation": "  "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4358,7 +4216,8 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID.</p>\n   ",
+                        "required": true
                     },
                     "LayerIds": {
                         "shape_name": "Strings",
@@ -4401,7 +4260,7 @@
                         "documentation": "\n      <p>The instance SSH key name.</p>\n   "
                     }
                 },
-                "documentation": " "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4441,7 +4300,8 @@
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer ID.</p>\n   "
+                        "documentation": "\n      <p>The layer ID.</p>\n   ",
+                        "required": true
                     },
                     "Name": {
                         "shape_name": "String",
@@ -4457,30 +4317,8 @@
                         "shape_name": "LayerAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "LayerAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "EnableHaproxyStats",
-                                "HaproxyStatsUrl",
-                                "HaproxyStatsUser",
-                                "HaproxyStatsPassword",
-                                "HaproxyHealthCheckUrl",
-                                "HaproxyHealthCheckMethod",
-                                "MysqlRootPassword",
-                                "MysqlRootPasswordUbiquitous",
-                                "GangliaUrl",
-                                "GangliaUser",
-                                "GangliaPassword",
-                                "MemcachedMemory",
-                                "NodejsVersion",
-                                "NpmVersion",
-                                "RubyVersion",
-                                "RubygemsVersion",
-                                "ManageBundler",
-                                "BundlerVersion",
-                                "RailsStack",
-                                "PassengerVersion"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -4490,10 +4328,10 @@
                         },
                         "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p>\n   "
                     },
-                    "InstanceProfileArn": {
+                    "CustomInstanceProfileArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>An IAM profile ARN for the layer instances. You can override this value when you create an instance. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
+                        "documentation": "\n      <p>The ARN of an IAM profile to be used for all of the layer's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
                     },
                     "CustomSecurityGroupIds": {
                         "shape_name": "Strings",
@@ -4525,7 +4363,8 @@
                                 "MountPoint": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The volume mount point. For example \"/dev/sdh\".</p>\n   "
+                                    "documentation": "\n      <p>The volume mount point. For example \"/dev/sdh\".</p>\n   ",
+                                    "required": true
                                 },
                                 "RaidLevel": {
                                     "shape_name": "Integer",
@@ -4537,13 +4376,15 @@
                                     "shape_name": "Integer",
                                     "type": "integer",
                                     "box": true,
-                                    "documentation": "\n      <p>The number of disks in the volume.</p>\n   "
+                                    "documentation": "\n      <p>The number of disks in the volume.</p>\n   ",
+                                    "required": true
                                 },
                                 "Size": {
                                     "shape_name": "Integer",
                                     "type": "integer",
                                     "box": true,
-                                    "documentation": "\n      <p>The volume size.</p>\n   "
+                                    "documentation": "\n      <p>The volume size.</p>\n   ",
+                                    "required": true
                                 }
                             },
                             "documentation": "\n      <p>Describes an Amazon EBS volume configuration.</p> \n   "
@@ -4620,7 +4461,7 @@
                         "documentation": "\n      <p>A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.</p>      \n   "
                     }
                 },
-                "documentation": "   "
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4660,7 +4501,8 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID.</p>\n   ",
+                        "required": true
                     },
                     "Name": {
                         "shape_name": "String",
@@ -4671,11 +4513,8 @@
                         "shape_name": "StackAttributes",
                         "type": "map",
                         "keys": {
-                            "shape_name": "StackAttributesKeys",
+                            "shape_name": "String",
                             "type": "string",
-                            "enum": [
-                                "Color"
-                            ],
                             "documentation": null
                         },
                         "members": {
@@ -4693,17 +4532,17 @@
                     "DefaultInstanceProfileArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>TBD</p>\n   "
+                        "documentation": "\n      <p>The ARN of an IAM profile that is the default profile for all of the stack's EC2 instances. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   "
                     },
                     "DefaultOs": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack's new default operating system.</p>\n   "
+                        "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
                     },
                     "HostnameTheme": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack's new host name theme.</p>      \n   "
+                        "documentation": "\n      <p>The stack's new host name theme, with spaces are replaced by underscores. The theme is used to generate hostnames for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates hostnames by appending integers to the layer's shortname.\n         The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated hostname, call <code>GetHostNameSuggestion</code>, which returns a hostname based on the current theme.</p>      \n   "
                     },
                     "DefaultAvailabilityZone": {
                         "shape_name": "String",
@@ -4739,7 +4578,7 @@
                             "Url": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The source URI. For example, the source URI for the OpsWorks MySQL cookbook is:\n         <code>https://github.com/scalarium/cookbooks.git</code></p>\n      <p>For Github repositories, you can also use the \"git://...\" format. For example:</p>\n      <code>git://github.com/scalarium/cookbooks.git</code>\n   "
+                                "documentation": "\n      <p>The source URL. </p>"
                             },
                             "Username": {
                                 "shape_name": "String",
@@ -4770,7 +4609,7 @@
                         "documentation": "\n      <p>A default SSH key for the stack instances. You can override this value when you create or update an instance.</p>\n   "
                     }
                 },
-                "documentation": "<p>tbd</p>"
+                "documentation": ""
             },
             "output": null,
             "errors": [
@@ -4810,7 +4649,8 @@
                     "IamUserArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The user IAM ARN.</p>\n   "
+                        "documentation": "\n      <p>The user IAM ARN.</p>\n   ",
+                        "required": true
                     },
                     "SshUsername": {
                         "shape_name": "String",

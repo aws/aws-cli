@@ -13,41 +13,46 @@ SYNOPSIS
 ========
 
    aws opsworks create-layer
-     [--stack-id <value>]
-     [--packages <value>]
-     [--name <value>]
+     --stack-id <value>
+     --name <value>
+     --shortname <value>
+     --type <value>
+     [--auto-assign-elastic-ips ]
      [--custom-security-group-ids <value>]
      [--custom-recipes <value>]
-     [--auto-assign-elastic-ips ]
      [--enable-auto-healing ]
+     [--custom-instance-profile-arn <value>]
      [--volume-configurations <value>]
      [--attributes <value>]
-     [--shortname <value>]
-     [--instance-profile-arn <value>]
-     [--type <value>]
+     [--packages <value>]
 
 
 REQUIRED PARAMETERS
 ===================
 
-None
+"--stack-id"  (string)
+   The layer stack ID.
+
+"--name"  (string)
+   The layer name, which is used by the console.
+
+"--shortname"  (string)
+   The layer short name, which is used internally by OpsWorks and by
+   Chef recipes. The shortname is also used as the name for the
+   directory where your app files are installed. It can have a maximum
+   of 200 characters, which are limited to the alphanumeric
+   characters, '-', '_', and '.'.
+
+"--type"  (string)
+   The layer type. A stack cannot have more than one layer of the same
+   type.
 
 
 OPTIONAL PARAMETERS
 ===================
 
-"--stack-id"  (string)
-   The layer stack ID.
-
-"--packages"  (list of string)
-   An array of "Package" objects that describe the layer packages.
-
-   *Parameter Syntax*
-
-      ["string", ...]
-
-"--name"  (string)
-   The layer name, which is used by the console.
+"--auto-assign-elastic-ips"  (boolean)
+   Whether to automatically assign an Elastic IP address to the layer.
 
 "--custom-security-group-ids"  (list of string)
    An array containing the layer custom security group IDs.
@@ -95,11 +100,13 @@ OPTIONAL PARAMETERS
           ["string", ...]
       }
 
-"--auto-assign-elastic-ips"  (boolean)
-   Whether to automatically assign an Elastic IP address to the layer.
-
 "--enable-auto-healing"  (boolean)
    Whether to disable auto healing for the layer.
+
+"--custom-instance-profile-arn"  (string)
+   The ARN of an IAM profile that to be used for the layer's EC2
+   instances. For more information about IAM ARNs, see Using
+   Identifiers .
 
 "--volume-configurations"  (list)
    A "--volume-configurations" object that describes the layer Amazon
@@ -139,27 +146,13 @@ OPTIONAL PARAMETERS
    *Parameter Syntax*
 
       {
-        "EnableHaproxyStats"|"HaproxyStatsUrl"|"HaproxyStatsUser"|"HaproxyStatsPas
-        sword"|"HaproxyHealthCheckUrl"|"HaproxyHealthCheckMethod"|"MysqlRootPasswo
-        rd"|"MysqlRootPasswordUbiquitous"|"GangliaUrl"|"GangliaUser"|"GangliaPassw
-        ord"|"MemcachedMemory"|"NodejsVersion"|"NpmVersion"|"RubyVersion"|"Rubygem
-        sVersion"|"ManageBundler"|"BundlerVersion"|"RailsStack"|"PassengerVersion"
-        : "string"
+        "string": "string"
         ...
       }
 
-"--shortname"  (string)
-   The layer short name, which is used internally by OpsWorks and by
-   Chef recipes. The shortname is also used as the name for the
-   directory where your app files are installed. It can have a maximum
-   of 200 characters, which are limited to the alphanumeric
-   characters, '-', '_', and '.'.
+"--packages"  (list of string)
+   An array of "Package" objects that describe the layer packages.
 
-"--instance-profile-arn"  (string)
-   An IAM profile ARN for the layer instances. You can override this
-   value when you create an instance. For more information about IAM
-   ARNs, see Using Identifiers .
+   *Parameter Syntax*
 
-"--type"  (string)
-   The layer type. A stack cannot have more than one layer of the same
-   type.
+      ["string", ...]

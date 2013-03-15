@@ -38,13 +38,13 @@ Creates a clone of a specified stack.
 .nf
 .ft C
 aws opsworks clone\-stack
-  [\-\-service\-role\-arn <value>]
+  \-\-service\-role\-arn <value>
+  \-\-source\-stack\-id <value>
   [\-\-name <value>]
   [\-\-hostname\-theme <value>]
   [\-\-use\-custom\-cookbooks ]
   [\-\-default\-availability\-zone <value>]
   [\-\-stack\-region <value>]
-  [\-\-source\-stack\-id <value>]
   [\-\-custom\-cookbooks\-source <value>]
   [\-\-default\-ssh\-key\-name <value>]
   [\-\-clone\-app\-ids <value>]
@@ -56,9 +56,6 @@ aws opsworks clone\-stack
 .ft P
 .fi
 .SH REQUIRED PARAMETERS
-.sp
-None
-.SH OPTIONAL PARAMETERS
 .INDENT 0.0
 .TP
 .B \fB\-\-service\-role\-arn\fP  (string)
@@ -69,27 +66,58 @@ by using the OpsWorks console, it creates the role for you. You can obtain an
 existing stack\(aqs IAM ARN programmatically by calling  describe\-permissions .
 For more information about IAM ARNs, see \fI\%Using Identifiers\fP .
 .TP
+.B \fB\-\-source\-stack\-id\fP  (string)
+The source stack ID.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
 .B \fB\-\-name\fP  (string)
 The cloned stack name.
 .TP
 .B \fB\-\-hostname\-theme\fP  (string)
-The cloned stack host name theme, with spaces replaced by underscores. For
-example: Bud_Spencer. OpsWorks uses this string to generate host names for the
-stack instances.
+The stack\(aqs host name theme, with spaces are replaced by underscores. The
+theme is used to generate hostnames for the stack\(aqs instances. By default,
+\fB\-\-hostname\-theme\fP is set to Layer_Dependent, which creates hostnames by
+appending integers to the layer\(aqs shortname. The other themes are:
+.INDENT 7.0
+.IP \(bu 2
+Baked_Goods
+.IP \(bu 2
+Clouds
+.IP \(bu 2
+European_Cities
+.IP \(bu 2
+Fruits
+.IP \(bu 2
+Greek_Deities
+.IP \(bu 2
+Legendary_Creatures_from_Japan
+.IP \(bu 2
+Planets_and_Moons
+.IP \(bu 2
+Roman_Deities
+.IP \(bu 2
+Scottish_Islands
+.IP \(bu 2
+US_Cities
+.IP \(bu 2
+Wild_Cats
+.UNINDENT
+.sp
+To obtain a generated hostname, call \fBGetHostNameSuggestion\fP , which returns
+a hostname based on the current theme.
 .TP
 .B \fB\-\-use\-custom\-cookbooks\fP  (boolean)
 Whether to use custom cookbooks.
 .TP
 .B \fB\-\-default\-availability\-zone\fP  (string)
-The cloned stack Availability Zone. For more information, see \fI\%Regions and
+The cloned stack\(aqs Availability Zone. For more information, see \fI\%Regions and
 Endpoints\fP .
 .TP
 .B \fB\-\-stack\-region\fP  (string)
 The cloned stack AWS region, such as "us\-east\-1". For more information about
 AWS regions, see \fI\%Regions and Endpoints\fP
-.TP
-.B \fB\-\-source\-stack\-id\fP  (string)
-The source stack ID.
 .TP
 .B \fB\-\-custom\-cookbooks\-source\fP  (structure)
 .INDENT 7.0
@@ -101,12 +129,7 @@ The user name.
 The repository\(aqs SSH key.
 .TP
 .B \fBurl\fP  (string)
-The source URI. For example, the source URI for the OpsWorks MySQL cookbook
-is: \fBhttps://github.com/scalarium/cookbooks.git\fP
-.sp
-For Github repositories, you can also use the "git://..." format. For
-example:
-\fBgit://github.com/scalarium/cookbooks.git\fP
+The source URL.
 .TP
 .B \fBpassword\fP  (string)
 The repository\(aqs password.
@@ -155,7 +178,8 @@ A list of source stack app IDs to be included in the cloned stack.
 Whether to clone the source stack\(aqs permissions.
 .TP
 .B \fB\-\-default\-instance\-profile\-arn\fP  (string)
-TBD
+The ARN of an IAM profile that is the default profile for all of the stack\(aqs
+EC2 instances. For more information about IAM ARNs, see \fI\%Using Identifiers\fP .
 .TP
 .B \fB\-\-attributes\fP  (map)
 A list of stack attributes and values as key/value pairs to be added to the
@@ -166,7 +190,7 @@ cloned stack.
 .nf
 .ft C
 {
-  "Color": "string"
+  "string": "string"
   ...
 }
 .ft P
@@ -179,27 +203,8 @@ the following format and must escape characters such as \(aq"\(aq.:
 \fB"{\e"key1\e": \e"value1\e", \e"key2\e": \e"value2\e",...}"\fP
 .TP
 .B \fB\-\-default\-os\fP  (string)
-The cloned stack default operating system, which must be one of the following:
-.INDENT 7.0
-.IP \(bu 2
-m1.small
-.IP \(bu 2
-m1.medium
-.IP \(bu 2
-m1.large
-.IP \(bu 2
-m1.xlarge
-.IP \(bu 2
-c1.medium
-.IP \(bu 2
-c1.xlarge
-.IP \(bu 2
-m2.xlarge
-.IP \(bu 2
-m2.2xlarge
-.IP \(bu 2
-m2.4xlarge
-.UNINDENT
+The cloned stack default operating system, which must be either "Amazon Linux"
+or "Ubuntu 12.04 LTS".
 .UNINDENT
 .SH COPYRIGHT
 2013, Amazon Web Services

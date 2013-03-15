@@ -38,25 +38,33 @@ Creates an app for a specified stack.
 .nf
 .ft C
 aws opsworks create\-app
-  [\-\-stack\-id <value>]
+  \-\-stack\-id <value>
+  \-\-name <value>
+  \-\-type <value>
   [\-\-app\-source <value>]
-  [\-\-name <value>]
   [\-\-enable\-ssl ]
   [\-\-ssl\-configuration <value>]
   [\-\-domains <value>]
   [\-\-attributes <value>]
-  [\-\-type <value>]
   [\-\-description <value>]
 .ft P
 .fi
 .SH REQUIRED PARAMETERS
-.sp
-None
-.SH OPTIONAL PARAMETERS
 .INDENT 0.0
 .TP
 .B \fB\-\-stack\-id\fP  (string)
 The stack ID.
+.TP
+.B \fB\-\-name\fP  (string)
+The app name.
+.TP
+.B \fB\-\-type\fP  (string)
+The app type. Each supported type is associated with a particular layer. For
+example, PHP applications are associated with a PHP layer. OpsWorks deploys an
+application to those instances that are members of the corresponding layer.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
 .TP
 .B \fB\-\-app\-source\fP  (structure)
 A \fBSource\fP object that specifies the app repository.
@@ -69,12 +77,7 @@ The user name.
 The repository\(aqs SSH key.
 .TP
 .B \fBurl\fP  (string)
-The source URI. For example, the source URI for the OpsWorks MySQL cookbook
-is: \fBhttps://github.com/scalarium/cookbooks.git\fP
-.sp
-For Github repositories, you can also use the "git://..." format. For
-example:
-\fBgit://github.com/scalarium/cookbooks.git\fP
+The source URL.
 .TP
 .B \fBpassword\fP  (string)
 The repository\(aqs password.
@@ -103,9 +106,6 @@ that can potentially be deployed.
 }
 .ft P
 .fi
-.TP
-.B \fB\-\-name\fP  (string)
-The app name.
 .TP
 .B \fB\-\-enable\-ssl\fP  (boolean)
 Whether to enable SSL for the app.
@@ -158,16 +158,11 @@ bag.
 .nf
 .ft C
 {
-  "DocumentRoot"|"RailsEnv"|"AutoBundleOnDeploy": "string"
+  "string": "string"
   ...
 }
 .ft P
 .fi
-.TP
-.B \fB\-\-type\fP  (string)
-The app type. Each supported type is associated with a particular layer. For
-example, PHP applications are associated with a PHP layer. OpsWorks deploys an
-application to those instances that are members of the corresponding layer.
 .TP
 .B \fB\-\-description\fP  (string)
 A description of the app.

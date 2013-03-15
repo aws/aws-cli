@@ -13,34 +13,31 @@ SYNOPSIS
 ========
 
    aws opsworks update-layer
-     [--packages <value>]
+     --layer-id <value>
+     [--auto-assign-elastic-ips ]
      [--name <value>]
      [--custom-recipes <value>]
      [--volume-configurations <value>]
-     [--auto-assign-elastic-ips ]
      [--enable-auto-healing ]
-     [--layer-id <value>]
+     [--custom-instance-profile-arn <value>]
      [--attributes <value>]
      [--shortname <value>]
-     [--instance-profile-arn <value>]
+     [--packages <value>]
      [--custom-security-group-ids <value>]
 
 
 REQUIRED PARAMETERS
 ===================
 
-None
+"--layer-id"  (string)
+   The layer ID.
 
 
 OPTIONAL PARAMETERS
 ===================
 
-"--packages"  (list of string)
-   An array of "Package" objects that describe the layer's packages.
-
-   *Parameter Syntax*
-
-      ["string", ...]
+"--auto-assign-elastic-ips"  (boolean)
+   Whether to automatically assign an Elastic IP address to the layer.
 
 "--name"  (string)
    The layer name, which is used by the console.
@@ -115,14 +112,13 @@ OPTIONAL PARAMETERS
         ...
       ]
 
-"--auto-assign-elastic-ips"  (boolean)
-   Whether to automatically assign an Elastic IP address to the layer.
-
 "--enable-auto-healing"  (boolean)
    Whether to disable auto healing for the layer.
 
-"--layer-id"  (string)
-   The layer ID.
+"--custom-instance-profile-arn"  (string)
+   The ARN of an IAM profile to be used for all of the layer's EC2
+   instances. For more information about IAM ARNs, see Using
+   Identifiers .
 
 "--attributes"  (map)
    One or more user-defined key/value pairs to be added to the stack
@@ -131,12 +127,7 @@ OPTIONAL PARAMETERS
    *Parameter Syntax*
 
       {
-        "EnableHaproxyStats"|"HaproxyStatsUrl"|"HaproxyStatsUser"|"HaproxyStatsPas
-        sword"|"HaproxyHealthCheckUrl"|"HaproxyHealthCheckMethod"|"MysqlRootPasswo
-        rd"|"MysqlRootPasswordUbiquitous"|"GangliaUrl"|"GangliaUser"|"GangliaPassw
-        ord"|"MemcachedMemory"|"NodejsVersion"|"NpmVersion"|"RubyVersion"|"Rubygem
-        sVersion"|"ManageBundler"|"BundlerVersion"|"RailsStack"|"PassengerVersion"
-        : "string"
+        "string": "string"
         ...
       }
 
@@ -146,10 +137,12 @@ OPTIONAL PARAMETERS
    where your app files are installed. It can have a maximum of 200
    characters and must be in the following format: /A[a-z0-9-_.]+Z/.
 
-"--instance-profile-arn"  (string)
-   An IAM profile ARN for the layer instances. You can override this
-   value when you create an instance. For more information about IAM
-   ARNs, see Using Identifiers .
+"--packages"  (list of string)
+   An array of "Package" objects that describe the layer's packages.
+
+   *Parameter Syntax*
+
+      ["string", ...]
 
 "--custom-security-group-ids"  (list of string)
    An array containing the layer's custom security group IDs.

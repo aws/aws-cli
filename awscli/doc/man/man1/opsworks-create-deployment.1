@@ -46,31 +46,19 @@ Stack deployment runs the \fBdeploy\fP recipes but does not raise an event.
 .nf
 .ft C
 aws opsworks create\-deployment
-  [\-\-stack\-id <value>]
+  \-\-stack\-id <value>
+  \-\-command <value>
   [\-\-comment <value>]
   [\-\-custom\-json <value>]
-  [\-\-command <value>]
   [\-\-app\-id <value>]
   [\-\-instance\-ids <value>]
 .ft P
 .fi
 .SH REQUIRED PARAMETERS
-.sp
-None
-.SH OPTIONAL PARAMETERS
 .INDENT 0.0
 .TP
 .B \fB\-\-stack\-id\fP  (string)
 The stack ID.
-.TP
-.B \fB\-\-comment\fP  (string)
-A user\-defined comment.
-.TP
-.B \fB\-\-custom\-json\fP  (string)
-A string that contains user\-defined, custom JSON. It is used to override the
-corresponding default stack configuration JSON values. The string should be in
-the following format and must escape characters such as \(aq"\(aq.:
-\fB"{\e"key1\e": \e"value1\e", \e"key2\e": \e"value2\e",...}"\fP
 .TP
 .B \fB\-\-command\fP  (structure)
 A \fBDeploymentCommand\fP object that describes details of the operation.
@@ -87,31 +75,55 @@ Specifies the deployment operation. You can specify only one command.
 For stacks, the available commands are:
 .INDENT 7.0
 .IP \(bu 2
-ExecuteRecipes: Execute the recipes that are specified by the \fBArgs\fP
-parameter.
+
+.nf
+\(ga\(ga
+.fi
+\(ga\(ga execute_recipes: Execute the recipes that are specified by the
+\fBArgs\fP parameter.
 .IP \(bu 2
-InstallDependencies: Installs the stack\(aqs dependencies.
+
+.nf
+\(ga\(ga
+.fi
+\(ga\(ga install_dependencies: Installs the stack\(aqs dependencies.
 .IP \(bu 2
-UpdateCustomCookbooks: Update the stack\(aqs custom cookbooks.
+
+.nf
+\(ga\(ga
+.fi
+\(ga\(ga update_custom_cookbooks: Update the stack\(aqs custom cookbooks.
 .IP \(bu 2
-UpdateDependencies: Update the stack\(aqs dependencies.
+
+.nf
+\(ga\(ga
+.fi
+\(ga\(ga update_dependencies: Update the stack\(aqs dependencies.
+.IP \(bu 2
+\fBshutdown\fP : Run the shutdown recipes.
+.IP \(bu 2
+\fBsetup\fP : Run the setup recipes.
+.IP \(bu 2
+\fBconfigure\fP : Run the configure recipes.
 .UNINDENT
 .sp
 For apps, the available commands are:
 .INDENT 7.0
 .IP \(bu 2
-\fBDeployApp\fP : Deploy the app.
+\fBdeploy\fP : Deploy the app.
 .IP \(bu 2
-\fBRollbackApp\fP Roll the app back to the previous version. When you update
-an app, OpsWorks stores the previous version, up to a maximum of five
+\fBrollback\fP Roll the app back to the previous version. When you update an
+app, OpsWorks stores the previous version, up to a maximum of five
 versions. You can use this command to roll an app back as many as four
 versions.
 .IP \(bu 2
-\fBStartApp\fP : Start the app\(aqs web or application server.
+\fBstart\fP : Start the app\(aqs web or application server.
 .IP \(bu 2
-\fBStopApp\fP : Stop the app\(aqs web or application server.
+\fBstop\fP : Stop the app\(aqs web or application server.
 .IP \(bu 2
-\fBUndeployApp\fP : Undeploy the app.
+\fBrestart\fP : Restart the app\(aqs web or application server.
+.IP \(bu 2
+\fBundeploy\fP : Undeploy the app.
 .UNINDENT
 .UNINDENT
 .sp
@@ -132,6 +144,18 @@ versions.
 }
 .ft P
 .fi
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
+.TP
+.B \fB\-\-comment\fP  (string)
+A user\-defined comment.
+.TP
+.B \fB\-\-custom\-json\fP  (string)
+A string that contains user\-defined, custom JSON. It is used to override the
+corresponding default stack configuration JSON values. The string should be in
+the following format and must escape characters such as \(aq"\(aq.:
+\fB"{\e"key1\e": \e"value1\e", \e"key2\e": \e"value2\e",...}"\fP
 .TP
 .B \fB\-\-app\-id\fP  (string)
 The app ID, for app deployments.

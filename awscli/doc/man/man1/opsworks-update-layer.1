@@ -38,35 +38,30 @@ Updates a specified layer.
 .nf
 .ft C
 aws opsworks update\-layer
-  [\-\-packages <value>]
+  \-\-layer\-id <value>
+  [\-\-auto\-assign\-elastic\-ips ]
   [\-\-name <value>]
   [\-\-custom\-recipes <value>]
   [\-\-volume\-configurations <value>]
-  [\-\-auto\-assign\-elastic\-ips ]
   [\-\-enable\-auto\-healing ]
-  [\-\-layer\-id <value>]
+  [\-\-custom\-instance\-profile\-arn <value>]
   [\-\-attributes <value>]
   [\-\-shortname <value>]
-  [\-\-instance\-profile\-arn <value>]
+  [\-\-packages <value>]
   [\-\-custom\-security\-group\-ids <value>]
 .ft P
 .fi
 .SH REQUIRED PARAMETERS
-.sp
-None
+.INDENT 0.0
+.TP
+.B \fB\-\-layer\-id\fP  (string)
+The layer ID.
+.UNINDENT
 .SH OPTIONAL PARAMETERS
 .INDENT 0.0
 .TP
-.B \fB\-\-packages\fP  (list of string)
-An array of \fBPackage\fP objects that describe the layer\(aqs packages.
-.sp
-\fIParameter Syntax\fP
-.sp
-.nf
-.ft C
-["string", ...]
-.ft P
-.fi
+.B \fB\-\-auto\-assign\-elastic\-ips\fP  (boolean)
+Whether to automatically assign an \fI\%Elastic IP address\fP to the layer.
 .TP
 .B \fB\-\-name\fP  (string)
 The layer name, which is used by the console.
@@ -153,14 +148,12 @@ The number of disks in the volume.
 .ft P
 .fi
 .TP
-.B \fB\-\-auto\-assign\-elastic\-ips\fP  (boolean)
-Whether to automatically assign an \fI\%Elastic IP address\fP to the layer.
-.TP
 .B \fB\-\-enable\-auto\-healing\fP  (boolean)
 Whether to disable auto healing for the layer.
 .TP
-.B \fB\-\-layer\-id\fP  (string)
-The layer ID.
+.B \fB\-\-custom\-instance\-profile\-arn\fP  (string)
+The ARN of an IAM profile to be used for all of the layer\(aqs EC2 instances. For
+more information about IAM ARNs, see \fI\%Using Identifiers\fP .
 .TP
 .B \fB\-\-attributes\fP  (map)
 One or more user\-defined key/value pairs to be added to the stack attributes
@@ -171,12 +164,7 @@ bag.
 .nf
 .ft C
 {
-  "EnableHaproxyStats"|"HaproxyStatsUrl"|"HaproxyStatsUser"|"HaproxyStatsPas
-  sword"|"HaproxyHealthCheckUrl"|"HaproxyHealthCheckMethod"|"MysqlRootPasswo
-  rd"|"MysqlRootPasswordUbiquitous"|"GangliaUrl"|"GangliaUser"|"GangliaPassw
-  ord"|"MemcachedMemory"|"NodejsVersion"|"NpmVersion"|"RubyVersion"|"Rubygem
-  sVersion"|"ManageBundler"|"BundlerVersion"|"RailsStack"|"PassengerVersion"
-  : "string"
+  "string": "string"
   ...
 }
 .ft P
@@ -188,10 +176,16 @@ shortname is also used as the name for the directory where your app files are
 installed. It can have a maximum of 200 characters and must be in the
 following format: /A[a\-z0\-9\-_.]+Z/.
 .TP
-.B \fB\-\-instance\-profile\-arn\fP  (string)
-An IAM profile ARN for the layer instances. You can override this value when
-you create an instance. For more information about IAM ARNs, see \fI\%Using
-Identifiers\fP .
+.B \fB\-\-packages\fP  (list of string)
+An array of \fBPackage\fP objects that describe the layer\(aqs packages.
+.sp
+\fIParameter Syntax\fP
+.sp
+.nf
+.ft C
+["string", ...]
+.ft P
+.fi
 .TP
 .B \fB\-\-custom\-security\-group\-ids\fP  (list of string)
 An array containing the layer\(aqs custom security group IDs.

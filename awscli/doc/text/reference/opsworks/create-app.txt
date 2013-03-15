@@ -13,28 +13,35 @@ SYNOPSIS
 ========
 
    aws opsworks create-app
-     [--stack-id <value>]
+     --stack-id <value>
+     --name <value>
+     --type <value>
      [--app-source <value>]
-     [--name <value>]
      [--enable-ssl ]
      [--ssl-configuration <value>]
      [--domains <value>]
      [--attributes <value>]
-     [--type <value>]
      [--description <value>]
 
 
 REQUIRED PARAMETERS
 ===================
 
-None
+"--stack-id"  (string)
+   The stack ID.
+
+"--name"  (string)
+   The app name.
+
+"--type"  (string)
+   The app type. Each supported type is associated with a particular
+   layer. For example, PHP applications are associated with a PHP
+   layer. OpsWorks deploys an application to those instances that are
+   members of the corresponding layer.
 
 
 OPTIONAL PARAMETERS
 ===================
-
-"--stack-id"  (string)
-   The stack ID.
 
 "--app-source"  (structure)
    A "Source" object that specifies the app repository.
@@ -46,11 +53,7 @@ OPTIONAL PARAMETERS
       The repository's SSH key.
 
    "url"  (string)
-      The source URI. For example, the source URI for the OpsWorks
-      MySQL cookbook is: "https://github.com/scalarium/cookbooks.git"
-
-      For Github repositories, you can also use the "git://..."
-      format. For example: "git://github.com/scalarium/cookbooks.git"
+      The source URL.
 
    "password"  (string)
       The repository's password.
@@ -74,9 +77,6 @@ OPTIONAL PARAMETERS
         "type": "git"|"svn"|"archive"|"s3",
         "revision": "string"
       }
-
-"--name"  (string)
-   The app name.
 
 "--enable-ssl"  (boolean)
    Whether to enable SSL for the app.
@@ -118,15 +118,9 @@ OPTIONAL PARAMETERS
    *Parameter Syntax*
 
       {
-        "DocumentRoot"|"RailsEnv"|"AutoBundleOnDeploy": "string"
+        "string": "string"
         ...
       }
-
-"--type"  (string)
-   The app type. Each supported type is associated with a particular
-   layer. For example, PHP applications are associated with a PHP
-   layer. OpsWorks deploys an application to those instances that are
-   members of the corresponding layer.
 
 "--description"  (string)
    A description of the app.

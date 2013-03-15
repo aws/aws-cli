@@ -13,13 +13,13 @@ SYNOPSIS
 ========
 
    aws opsworks clone-stack
-     [--service-role-arn <value>]
+     --service-role-arn <value>
+     --source-stack-id <value>
      [--name <value>]
      [--hostname-theme <value>]
      [--use-custom-cookbooks ]
      [--default-availability-zone <value>]
      [--stack-region <value>]
-     [--source-stack-id <value>]
      [--custom-cookbooks-source <value>]
      [--default-ssh-key-name <value>]
      [--clone-app-ids <value>]
@@ -33,12 +33,6 @@ SYNOPSIS
 REQUIRED PARAMETERS
 ===================
 
-None
-
-
-OPTIONAL PARAMETERS
-===================
-
 "--service-role-arn"  (string)
    The stack AWS Identity and Access Management (IAM) role, which
    allows OpsWorks to work with AWS resources on your behalf. You must
@@ -48,27 +42,58 @@ OPTIONAL PARAMETERS
    stack's IAM ARN programmatically by calling  describe-permissions .
    For more information about IAM ARNs, see Using Identifiers .
 
+"--source-stack-id"  (string)
+   The source stack ID.
+
+
+OPTIONAL PARAMETERS
+===================
+
 "--name"  (string)
    The cloned stack name.
 
 "--hostname-theme"  (string)
-   The cloned stack host name theme, with spaces replaced by
-   underscores. For example: Bud_Spencer. OpsWorks uses this string to
-   generate host names for the stack instances.
+   The stack's host name theme, with spaces are replaced by
+   underscores. The theme is used to generate hostnames for the
+   stack's instances. By default, "--hostname-theme" is set to
+   Layer_Dependent, which creates hostnames by appending integers to
+   the layer's shortname. The other themes are:
+
+   * Baked_Goods
+
+   * Clouds
+
+   * European_Cities
+
+   * Fruits
+
+   * Greek_Deities
+
+   * Legendary_Creatures_from_Japan
+
+   * Planets_and_Moons
+
+   * Roman_Deities
+
+   * Scottish_Islands
+
+   * US_Cities
+
+   * Wild_Cats
+
+   To obtain a generated hostname, call "GetHostNameSuggestion" ,
+   which returns a hostname based on the current theme.
 
 "--use-custom-cookbooks"  (boolean)
    Whether to use custom cookbooks.
 
 "--default-availability-zone"  (string)
-   The cloned stack Availability Zone. For more information, see
+   The cloned stack's Availability Zone. For more information, see
    Regions and Endpoints .
 
 "--stack-region"  (string)
    The cloned stack AWS region, such as "us-east-1". For more
    information about AWS regions, see Regions and Endpoints
-
-"--source-stack-id"  (string)
-   The source stack ID.
 
 "--custom-cookbooks-source"  (structure)
    "username"  (string)
@@ -78,11 +103,7 @@ OPTIONAL PARAMETERS
       The repository's SSH key.
 
    "url"  (string)
-      The source URI. For example, the source URI for the OpsWorks
-      MySQL cookbook is: "https://github.com/scalarium/cookbooks.git"
-
-      For Github repositories, you can also use the "git://..."
-      format. For example: "git://github.com/scalarium/cookbooks.git"
+      The source URL.
 
    "password"  (string)
       The repository's password.
@@ -122,7 +143,9 @@ OPTIONAL PARAMETERS
    Whether to clone the source stack's permissions.
 
 "--default-instance-profile-arn"  (string)
-   TBD
+   The ARN of an IAM profile that is the default profile for all of
+   the stack's EC2 instances. For more information about IAM ARNs, see
+   Using Identifiers .
 
 "--attributes"  (map)
    A list of stack attributes and values as key/value pairs to be
@@ -131,7 +154,7 @@ OPTIONAL PARAMETERS
    *Parameter Syntax*
 
       {
-        "Color": "string"
+        "string": "string"
         ...
       }
 
@@ -143,23 +166,5 @@ OPTIONAL PARAMETERS
    \"value2\",...}""
 
 "--default-os"  (string)
-   The cloned stack default operating system, which must be one of the
-   following:
-
-   * m1.small
-
-   * m1.medium
-
-   * m1.large
-
-   * m1.xlarge
-
-   * c1.medium
-
-   * c1.xlarge
-
-   * m2.xlarge
-
-   * m2.2xlarge
-
-   * m2.4xlarge
+   The cloned stack default operating system, which must be either
+   "Amazon Linux" or "Ubuntu 12.04 LTS".

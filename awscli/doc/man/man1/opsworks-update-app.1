@@ -38,11 +38,11 @@ Updates a specified app.
 .nf
 .ft C
 aws opsworks update\-app
+  \-\-app\-id <value>
   [\-\-app\-source <value>]
   [\-\-description <value>]
   [\-\-enable\-ssl ]
   [\-\-ssl\-configuration <value>]
-  [\-\-app\-id <value>]
   [\-\-domains <value>]
   [\-\-attributes <value>]
   [\-\-type <value>]
@@ -50,8 +50,11 @@ aws opsworks update\-app
 .ft P
 .fi
 .SH REQUIRED PARAMETERS
-.sp
-None
+.INDENT 0.0
+.TP
+.B \fB\-\-app\-id\fP  (string)
+The app ID.
+.UNINDENT
 .SH OPTIONAL PARAMETERS
 .INDENT 0.0
 .TP
@@ -66,12 +69,7 @@ The user name.
 The repository\(aqs SSH key.
 .TP
 .B \fBurl\fP  (string)
-The source URI. For example, the source URI for the OpsWorks MySQL cookbook
-is: \fBhttps://github.com/scalarium/cookbooks.git\fP
-.sp
-For Github repositories, you can also use the "git://..." format. For
-example:
-\fBgit://github.com/scalarium/cookbooks.git\fP
+The source URL.
 .TP
 .B \fBpassword\fP  (string)
 The repository\(aqs password.
@@ -134,9 +132,6 @@ The contents of the certificate\(aqs domain.crt file.
 .ft P
 .fi
 .TP
-.B \fB\-\-app\-id\fP  (string)
-The app ID.
-.TP
 .B \fB\-\-domains\fP  (list of string)
 The app\(aqs virtual host settings, with multiple domains separated by commas.
 For example: \fB\(aqwww.mysite.com, mysite.com\(aq\fP
@@ -158,7 +153,7 @@ bag.
 .nf
 .ft C
 {
-  "DocumentRoot"|"RailsEnv"|"AutoBundleOnDeploy": "string"
+  "string": "string"
   ...
 }
 .ft P

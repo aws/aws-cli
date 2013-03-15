@@ -38,7 +38,7 @@ Updates a specified stack.
 .nf
 .ft C
 aws opsworks update\-stack
-  [\-\-stack\-id <value>]
+  \-\-stack\-id <value>
   [\-\-service\-role\-arn <value>]
   [\-\-name <value>]
   [\-\-hostname\-theme <value>]
@@ -53,13 +53,13 @@ aws opsworks update\-stack
 .ft P
 .fi
 .SH REQUIRED PARAMETERS
-.sp
-None
-.SH OPTIONAL PARAMETERS
 .INDENT 0.0
 .TP
 .B \fB\-\-stack\-id\fP  (string)
 The stack ID.
+.UNINDENT
+.SH OPTIONAL PARAMETERS
+.INDENT 0.0
 .TP
 .B \fB\-\-service\-role\-arn\fP  (string)
 The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks
@@ -71,7 +71,37 @@ about IAM ARNs, see \fI\%Using Identifiers\fP .
 The stack\(aqs new name.
 .TP
 .B \fB\-\-hostname\-theme\fP  (string)
-The stack\(aqs new host name theme.
+The stack\(aqs new host name theme, with spaces are replaced by underscores. The
+theme is used to generate hostnames for the stack\(aqs instances. By default,
+\fB\-\-hostname\-theme\fP is set to Layer_Dependent, which creates hostnames by
+appending integers to the layer\(aqs shortname. The other themes are:
+.INDENT 7.0
+.IP \(bu 2
+Baked_Goods
+.IP \(bu 2
+Clouds
+.IP \(bu 2
+European_Cities
+.IP \(bu 2
+Fruits
+.IP \(bu 2
+Greek_Deities
+.IP \(bu 2
+Legendary_Creatures_from_Japan
+.IP \(bu 2
+Planets_and_Moons
+.IP \(bu 2
+Roman_Deities
+.IP \(bu 2
+Scottish_Islands
+.IP \(bu 2
+US_Cities
+.IP \(bu 2
+Wild_Cats
+.UNINDENT
+.sp
+To obtain a generated hostname, call \fBGetHostNameSuggestion\fP , which returns
+a hostname based on the current theme.
 .TP
 .B \fB\-\-use\-custom\-cookbooks\fP  (boolean)
 Whether the stack uses custom cookbooks.
@@ -96,12 +126,7 @@ The user name.
 The repository\(aqs SSH key.
 .TP
 .B \fBurl\fP  (string)
-The source URI. For example, the source URI for the OpsWorks MySQL cookbook
-is: \fBhttps://github.com/scalarium/cookbooks.git\fP
-.sp
-For Github repositories, you can also use the "git://..." format. For
-example:
-\fBgit://github.com/scalarium/cookbooks.git\fP
+The source URL.
 .TP
 .B \fBpassword\fP  (string)
 The repository\(aqs password.
@@ -136,7 +161,8 @@ A default SSH key for the stack instances. You can override this value when
 you create or update an instance.
 .TP
 .B \fB\-\-default\-instance\-profile\-arn\fP  (string)
-TBD
+The ARN of an IAM profile that is the default profile for all of the stack\(aqs
+EC2 instances. For more information about IAM ARNs, see \fI\%Using Identifiers\fP .
 .TP
 .B \fB\-\-attributes\fP  (map)
 One or more user\-defined key/value pairs to be added to the stack attributes
@@ -147,14 +173,15 @@ bag.
 .nf
 .ft C
 {
-  "Color": "string"
+  "string": "string"
   ...
 }
 .ft P
 .fi
 .TP
 .B \fB\-\-default\-os\fP  (string)
-The stack\(aqs new default operating system.
+The cloned stack default operating system, which must be either "Amazon Linux"
+or "Ubuntu 12.04 LTS".
 .UNINDENT
 .SH COPYRIGHT
 2013, Amazon Web Services

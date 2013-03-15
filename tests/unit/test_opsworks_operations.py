@@ -69,12 +69,14 @@ class TestOpsworksOperations(unittest.TestCase):
                                      stack_id=self.stack_id,
                                      auto_assign_elastic_ips=True,
                                      attributes=attributes,
-                                     type='rails-app')
+                                     type='rails-app',
+                                     shortname='a')
         result = {'StackId': self.stack_id,
                   'Name': 'Test CLI',
                   'AutoAssignElasticIps': True,
                   'Attributes': attributes,
-                  'Type': 'rails-app'}
+                  'Type': 'rails-app',
+                  'Shortname': 'a'}
         self.maxDiff = None
         self.assertEqual(params, result)
 

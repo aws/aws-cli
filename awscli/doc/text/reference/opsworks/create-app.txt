@@ -1,0 +1,126 @@
+
+create-app
+**********
+
+
+DESCRIPTION
+===========
+
+Creates an app for a specified stack.
+
+
+SYNOPSIS
+========
+
+   aws opsworks create-app
+     --stack-id <value>
+     --name <value>
+     --type <value>
+     [--app-source <value>]
+     [--enable-ssl ]
+     [--ssl-configuration <value>]
+     [--domains <value>]
+     [--attributes <value>]
+     [--description <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--stack-id"  (string)
+   The stack ID.
+
+"--name"  (string)
+   The app name.
+
+"--type"  (string)
+   The app type. Each supported type is associated with a particular
+   layer. For example, PHP applications are associated with a PHP
+   layer. OpsWorks deploys an application to those instances that are
+   members of the corresponding layer.
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--app-source"  (structure)
+   A "Source" object that specifies the app repository.
+
+   "username"  (string)
+      The user name.
+
+   "ssh_key"  (string)
+      The repository's SSH key.
+
+   "url"  (string)
+      The source URL.
+
+   "password"  (string)
+      The repository's password.
+
+   "type"  (string)
+      The repository type.
+
+   "revision"  (string)
+      The application's version. OpsWorks enables you to easily deploy
+      new versions of an application. One of the simplest approaches
+      is to have branches or revisions in your repository that
+      represent different versions that can potentially be deployed.
+
+   *Parameter Syntax*
+
+      {
+        "username": "string",
+        "ssh_key": "string",
+        "url": "string",
+        "password": "string",
+        "type": "git"|"svn"|"archive"|"s3",
+        "revision": "string"
+      }
+
+"--enable-ssl"  (boolean)
+   Whether to enable SSL for the app.
+
+"--ssl-configuration"  (structure)
+   An "--ssl-configuration" object with the SSL configuration.
+
+   "private_key"  (string)
+      The private key; the contents of the certificate's domain.kex
+      file.
+
+   "chain"  (string)
+      Optional. Can be used to specify an intermediate certificate
+      authority key or client authentication.
+
+   "certificate"  (string)
+      The contents of the certificate's domain.crt file.
+
+   *Parameter Syntax*
+
+      {
+        "private_key": "string",
+        "chain": "string",
+        "certificate": "string"
+      }
+
+"--domains"  (list of string)
+   The app virtual host settings, with multiple domains separated by
+   commas. For example: "'www.mysite.com, mysite.com'"
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--attributes"  (map)
+   One or more user-defined key/value pairs to be added to the stack
+   attributes bag.
+
+   *Parameter Syntax*
+
+      {
+        "string": "string"
+        ...
+      }
+
+"--description"  (string)
+   A description of the app.

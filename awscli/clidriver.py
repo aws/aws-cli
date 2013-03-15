@@ -287,7 +287,7 @@ class CLIDriver(object):
             self.endpoint.verify = not self.args.no_verify_ssl
             http_response, response_data = self.operation.call(self.endpoint,
                                                                **params)
-            self.formatter(self.operation, response_data)
+            self._display_response(self.operation, response_data)
             if http_response.status_code >= 500:
                 msg = self.session.get_data('messages/ServerError')
                 code, message = self.get_error_code_and_message(response_data)
@@ -302,6 +302,14 @@ class CLIDriver(object):
                 sys.exit(http_response.status_code - 399)
         except Exception as ex:
             self.display_error_and_exit(ex)
+
+    def _display_response(self, operation, response_data):
+        try:
+            self.formatter(operation, response_data)
+        finally:
+            # flush is needed to avoid the "close failed in file object
+            # destructor" in python2.x (see http://bugs.python.org/issue11380).
+            sys.stdout.flush()
 
     def test(self, cmdline):
         """

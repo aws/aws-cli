@@ -7,8 +7,8 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
 SOURCEDIR     = source
-MANBUILDDIR   = ../doc/man/man1
-TEXTBUILDDIR  = ../doc/text
+MANBUILDDIR   = ../awscli/doc/man/man1
+TEXTBUILDDIR  = ../awscli/doc/text
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4

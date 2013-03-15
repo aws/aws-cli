@@ -13,6 +13,7 @@
 
 import sys, os
 
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -20,6 +21,8 @@ import sys, os
 
 sys.path.append(os.path.abspath('_themes'))
 sys.path.append('.')
+
+import bootstrapdocs
 
 # -- General configuration -----------------------------------------------------
 
@@ -61,7 +64,7 @@ release = '0.8.0'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
-#today = ''
+today = bootstrapdocs.TODAY
 # Else, today_fmt is used as the format for a strftime call.
 #today_fmt = '%B %d, %Y'
 
@@ -217,8 +220,8 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-from bootstrapdocs import man_pages
 
+man_pages = bootstrapdocs.man_pages
 
 # If true, show URL addresses after external links.
 #man_show_urls = False

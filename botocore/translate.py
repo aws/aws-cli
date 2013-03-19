@@ -84,7 +84,14 @@ def add_pagination_configs(new_model, pagination):
     for name in pagination:
         config = pagination[name]
         if 'py_input_token' not in config:
-            config['py_input_token'] = xform_name(config['input_token'])
+            input_token = config['input_token']
+            if isinstance(input_token, list):
+                py_input_token = []
+                for token in input_token:
+                    py_input_token.append(xform_name(token))
+                config['py_input_token'] = py_input_token
+            else:
+                config['py_input_token'] = xform_name(input_token)
         operation = new_model['operations'].get(name)
         if operation is None:
             raise ValueError("Tried to add a pagination config for non "

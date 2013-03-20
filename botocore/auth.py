@@ -372,7 +372,7 @@ class HmacV1Auth(object):
     def get_signature(self, method, split, headers, expires=None):
         if self.credentials.token:
             #TODO: remove hardcoded header name
-            headers['security_token'] = self.credentials.token
+            headers['x-amz-security-token'] = self.credentials.token
         string_to_sign = self.canonical_string(method,
                                                split,
                                                headers)

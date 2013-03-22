@@ -371,6 +371,18 @@ class TestTranslateModel(unittest.TestCase):
         new_model = translate(self.model)
         self.assertEqual(new_model['pagination'], extra['pagination'])
 
+    def test_extra_key(self):
+        # Anything in "extra" is merged as a top level key.
+        extra = {
+            "extra": {
+                "signature_version": "v2",
+            }
+        }
+        self.model.enhancements = extra
+        new_model = translate(self.model)
+        self.assertEqual(new_model['signature_version'], 'v2')
+        self.assertEqual(new_model['documentation'], 'docs')
+
     def test_translate_operation_casing(self):
         pass
 

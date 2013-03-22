@@ -15,8 +15,7 @@ def check_dicts(d1, d2):
 
 
 def test_response_parsing():
-    data_path = os.path.dirname(os.path.join(os.path.abspath(__file__)))
-    data_path = os.path.join(data_path, 'data')
+    data_path = os.path.join(os.path.dirname(__file__), 'data')
     session = botocore.session.get_session()
     xml_files = glob.glob('%s/*.xml' % data_path)
     service_names = set()

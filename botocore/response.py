@@ -184,13 +184,13 @@ class XmlResponse(Response):
 
     def get_response_metadata(self):
         rmd = {}
-        self.value[u'ResponseMetadata'] = rmd
+        self.value['ResponseMetadata'] = rmd
         request_id = self.tree.find(self.clark_notation('requestId'))
         if request_id is None:
             xpath = '*/%s' % self.clark_notation('RequestId')
             request_id = self.tree.find(xpath)
         if request_id is not None:
-            rmd[u'RequestId'] = request_id.text.strip()
+            rmd['RequestId'] = request_id.text.strip()
 
     def build_value(self):
         for member_name in self.operation.output['members']:

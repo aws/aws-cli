@@ -8,18 +8,30 @@ Amazon Web Services.
 
 The currently supported services include:
 
-* Amazon Elastic Compute Cloud (Amazon EC2) including VPC
-* Elastic Load Balancing
-* Auto Scaling
 * AWS CloudFormation
+* AWS Data Pipeline
+* AWS Direct Connect
 * AWS Elastic Beanstalk
-* Amazon Simple Notification Service (Amazon SNS)
-* Amazon Simple Queue Service (Amazon SQS)
-* Amazon Relational Database Service (Amazon RDS)
-* AWS Identity and Access Management (IAM)
-* AWS Security Token Service (STS)
+* AWS Identity and Access Management 
+* AWS Import/Export
+* AWS OpsWorks
+* AWS Security Token Service
+* AWS Storage Gateway
 * Amazon CloudWatch
-* Amazon Simple Email Service (Amazon SES)
+* Amazon Elastic Compute Cloud
+* Amazon Elastic MapReduce
+* Amazon Elastic Transcoder
+* Amazon Redshift
+* Amazon Relational Database Service (Beta)
+* Amazon Simple Email Service
+* Amazon Simple Notification Service
+* Amazon Simple Queue Service
+* Amazon Simple Storage Service
+* Amazon Simple Workflow Service
+* Auto Scaling
+* Dogfish Service
+* Elastic Load Balancing
+
 
 The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 

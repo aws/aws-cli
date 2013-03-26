@@ -113,8 +113,12 @@ class TableFormatter(Formatter):
             first = False
             self.table.add_row([element[header] for header in headers])
             for remaining in more:
-                self._build_table(remaining, element[remaining],
-                                  indent_level=indent_level + 1)
+                # Some of the non scalar attributes may not necessarily
+                # be in every single element of the list, so we need to
+                # check this condition before recursing.
+                if remaining in element:
+                    self._build_table(remaining, element[remaining],
+                                    indent_level=indent_level + 1)
 
     def _scalar_type(self, element):
         return not isinstance(element, (list, dict))

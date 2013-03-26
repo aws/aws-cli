@@ -78,7 +78,7 @@ def complete(cmdline, point):
         # Is the current word a completed standard option?
         if current_word in std_options:
             complete_std_option_value(session, current_word, std_options)
-        all_options = std_options.keys()
+        all_options = list(std_options.keys())
         if operation_name:
             op_data = operation_map[operation_name]
             operation = botocore.operation.Operation(None, op_data)

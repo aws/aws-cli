@@ -29,7 +29,6 @@ The currently supported services include:
 * Amazon Simple Storage Service
 * Amazon Simple Workflow Service
 * Auto Scaling
-* Dogfish Service
 * Elastic Load Balancing
 
 

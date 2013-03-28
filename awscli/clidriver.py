@@ -132,7 +132,7 @@ class CLIDriver(object):
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
             get_service_help(self.service)
-            sys.exit(0)
+            return 0
         self.operation = self.service.get_operation(args.operation)
         return self.create_operation_parser(remaining)
 
@@ -182,12 +182,12 @@ class CLIDriver(object):
                                     required=param.required)
         if 'help' in remaining:
             get_operation_help(self.operation)
-            sys.exit(0)
+            return 0
         args, remaining = parser.parse_known_args(remaining)
         if remaining:
             print('Something is wrong.  We have leftover options')
             print(remaining)
-            sys.exit(-1)
+            return -1
         return args
 
     def unpack_cli_arg(self, param, s):
@@ -264,7 +264,7 @@ class CLIDriver(object):
             print(ex)
         elif self.args.output != 'json':
             print(ex)
-        sys.exit(1)
+        return 1
 
     def get_error_code_and_message(self, response):
         code = 'Unknown'
@@ -293,15 +293,15 @@ class CLIDriver(object):
                 code, message = self.get_error_code_and_message(response_data)
                 print(msg.format(error_code=code,
                                  error_message=message))
-                sys.exit(http_response.status_code - 399)
+                return http_response.status_code - 399
             if http_response.status_code >= 400:
                 msg = self.session.get_data('messages/ClientError')
                 code, message = self.get_error_code_and_message(response_data)
                 print(msg.format(error_code=code,
                                  error_message=message))
-                sys.exit(http_response.status_code - 399)
+                return http_response.status_code - 399
         except Exception as ex:
-            self.display_error_and_exit(ex)
+            return self.display_error_and_exit(ex)
 
     def _display_response(self, operation, response_data):
         try:
@@ -342,7 +342,7 @@ class CLIDriver(object):
         if self.args.service_name == 'help':
             provider = self.session.get_variable('provider')
             get_provider_help(provider=provider)
-            sys.exit(0)
+            return 0
         else:
             if self.args.debug:
                 from six.moves import http_client
@@ -354,4 +354,4 @@ class CLIDriver(object):
             self.formatter = get_formatter(output, self.args)
             self.service = self.session.get_service(self.args.service_name)
             args = self.create_service_parser(remaining)
-            self.call(args)
+            return self.call(args)

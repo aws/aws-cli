@@ -295,6 +295,8 @@ class MultiTable(object):
             return
         widths = section.calculate_column_widths(padding=4,
                                                  max_width=max_width)
+        if not widths:
+            return
         self._write_line_break(stream, widths)
         for row in section.rows:
             # TODO: Built the string in a list then join instead of using +=,
@@ -335,6 +337,8 @@ class Section(object):
         # postcondition: sum(widths) == max_width
         unscaled_widths = [w + padding for w in self._max_widths]
         if max_width is None:
+            return unscaled_widths
+        if not unscaled_widths:
             return unscaled_widths
         else:
             # Compute scale factor for max_width.

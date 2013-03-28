@@ -15,8 +15,6 @@ import sys
 import os
 import traceback
 import json
-import copy
-import base64
 import six
 import botocore.session
 from botocore.compat import copy_kwargs

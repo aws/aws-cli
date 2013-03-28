@@ -255,7 +255,7 @@ class TestTableFormatter(unittest.TestCase):
         self.stream = six.StringIO()
 
     def assert_data_renders_to(self, data, table):
-        self.formatter(Object(name='OperationName'),
+        self.formatter(Object(name='OperationName', can_paginate=False),
                               data, self.stream)
         rendered = self.stream.getvalue()
         self.assertEqual(rendered, table)

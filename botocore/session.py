@@ -177,6 +177,18 @@ class Session(object):
             profile_name = 'default'
         return self._config.get(profile_name, dict())
 
+    @property
+    def full_config(self):
+        """Return the parsed config file.
+
+        The ``get_config`` method returns the config associated with the
+        specified profile.  This property returns the contents of the
+        **entire** config file.
+        """
+        if self._config is None:
+            self._config = botocore.config.get_config(self)
+        return self._config
+
     def set_credentials(self, access_key, secret_key, token=None):
         """
         Manually create credentials for this session.  If you would

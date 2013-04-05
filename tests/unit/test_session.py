@@ -24,6 +24,10 @@
 import unittest
 import os
 import logging
+import tempfile
+
+import mock
+
 import botocore.session
 import botocore.exceptions
 
@@ -37,39 +41,49 @@ class SessionTest(unittest.TestCase):
                          'config_file': (None, 'FOO_CONFIG_FILE', None),
                          'access_key': ('foo_access_key', None, None),
                          'secret_key': ('foo_secret_key', None, None)}
-        os.environ['FOO_PROFILE'] = 'foo'
-        os.environ['FOO_REGION'] = 'moon-west-1'
+        self.environ = {}
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
+        self.environ['FOO_PROFILE'] = 'foo'
+        self.environ['FOO_REGION'] = 'moon-west-1'
         data_path = os.path.join(os.path.dirname(__file__), 'data')
-        os.environ['FOO_DATA_PATH'] = data_path
+        self.environ['FOO_DATA_PATH'] = data_path
         config_path = os.path.join(os.path.dirname(__file__),
                                    'foo_config')
-        os.environ['FOO_CONFIG_FILE'] = config_path
+        self.environ['FOO_CONFIG_FILE'] = config_path
         self.session = botocore.session.get_session(self.env_vars)
 
+    def tearDown(self):
+        self.environ_patch.stop()
+
     def test_profile(self):
-        assert self.session.get_variable('profile') == 'foo'
-        assert self.session.get_variable('region') == 'moon-west-1'
+        self.assertEqual(self.session.get_variable('profile'), 'foo')
+        self.assertEqual(self.session.get_variable('region'), 'moon-west-1')
         self.session.get_variable('profile') == 'default'
-        saved_region = os.environ['FOO_REGION']
-        del os.environ['FOO_REGION']
-        saved_profile = os.environ['FOO_PROFILE']
-        del os.environ['FOO_PROFILE']
+        saved_region = self.environ['FOO_REGION']
+        del self.environ['FOO_REGION']
+        saved_profile = self.environ['FOO_PROFILE']
+        del self.environ['FOO_PROFILE']
         session = botocore.session.get_session(self.env_vars)
-        assert session.get_variable('profile') == None
-        assert session.get_variable('region') == 'us-west-1'
-        os.environ['FOO_REGION'] = saved_region
-        os.environ['FOO_PROFILE'] = saved_profile
+        self.assertEqual(session.get_variable('profile'), None)
+        self.assertEqual(session.get_variable('region'), 'us-west-1')
+        self.environ['FOO_REGION'] = saved_region
+        self.environ['FOO_PROFILE'] = saved_profile
 
     def test_file_logger(self):
-        log_path = os.path.join(os.path.dirname(__file__), 'foo_log')
-        self.session.set_file_logger(logging.DEBUG, log_path)
-        self.session.get_credentials()
-        assert os.path.isfile(log_path)
-        fp = open(log_path)
-        s = fp.read()
-        fp.close()
-        assert len(s) > 0
-        os.unlink(log_path)
+        with tempfile.NamedTemporaryFile('rw+') as f:
+            self.session.set_file_logger(logging.DEBUG, f.name)
+            self.session.get_credentials()
+            self.assertTrue(os.path.isfile(f.name))
+            with open(f.name) as logfile:
+                s = logfile.read()
+            self.assertTrue('Found credentials' in s)
+
+    def test_full_config_property(self):
+        full_config = self.session.full_config
+        self.assertTrue('foo' in full_config)
+        self.assertTrue('default' in full_config)
+
 
 if __name__ == "__main__":
     unittest.main()

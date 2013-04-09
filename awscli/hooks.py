@@ -15,7 +15,18 @@ import six
 from collections import defaultdict
 
 
-class EventHooks(object):
+class BaseEventHooks(object):
+    def emit(self, event_name, **kwargs):
+        return []
+
+    def register(self, event_name, handler):
+        pass
+
+    def unregister(self, event_name, handler):
+        pass
+
+
+class EventHooks(BaseEventHooks):
     def __init__(self):
         # event_name -> [handler, ...]
         self._handlers = defaultdict(list)
@@ -75,3 +86,26 @@ class EventHooks(object):
                 raise ValueError("Event handler %s must accept keyword "
                                  "arguments (**kwargs)" % func)
 
+
+class HierarchicalEmitter(BaseEventHooks):
+    def __init__(self, event_hooks):
+        self._event_hooks = event_hooks
+
+    def emit(self, event, **kwargs):
+        responses = []
+        # Invoke the event handlers from most specific
+        # to least specific, each time stripping off a dot.
+        while event:
+            responses.extend(self._event_hooks.emit(event, **kwargs))
+            next_event = event.rsplit('.', 1)
+            if len(next_event) == 2:
+                event = next_event[0]
+            else:
+                event = None
+        return responses
+
+    def register(self, event_name, handler):
+        return self._event_hooks.register(event_name, handler)
+
+    def unregister(self, event_name, handler):
+        return self._event_hooks.unregister(event_name, handler)

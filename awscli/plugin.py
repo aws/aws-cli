@@ -10,70 +10,77 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 
-from awscli.hooks import EventHooks
+from awscli.hooks import EventHooks, HierarchicalEmitter
+
+log = logging.getLogger('awscli.plugin')
 
 
-def load_plugins(plugin_names, event_hooks=None):
-    modules = _import_plugins(plugin_names)
+def load_plugins(plugin_mapping, event_hooks=None):
+    """
+
+    :type plugin_mapping: dict
+    :param plugin_mapping: A dict of plugin name to import path,
+        e.g. ``{"plugingName": "package.modulefoo"}``.
+
+    :type event_hooks: ``EventHooks``
+    :param event_hooks: Event hook emitter.
+
+    :rtype: HierarchicalEmitter
+    :return: An event emitter object.
+
+    """
+    modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
         event_hooks = EventHooks()
     cli = CLI(event_hooks)
-    for plugin in modules:
+    for name, plugin in zip(plugin_mapping.keys(), modules):
+        log.debug("Initializing plugin %s: %s", name, plugin)
         plugin.awscli_initialize(cli)
     return HierarchicalEmitter(event_hooks)
 
 
 def _import_plugins(plugin_names):
     plugins = []
-    for name in plugin_names:
+    for name, path in plugin_names.items():
+        log.debug("Importing plugin %s: %s", name, path)
         if '.' not in name:
-            plugins.append(__import__(name))
+            plugins.append(__import__(path))
     return plugins
 
 
-class HierarchicalEmitter(object):
-    def __init__(self, event_hooks):
-        self._event_hooks = event_hooks
+def first_non_none_response(responses, default=None):
+    """Find first non None response in a list of tuples.
 
-    def emit(self, event):
-        responses = []
-        # Invoke the event handlers from most specific
-        # to least specific, each time stripping off a dot.
-        while event:
-            responses.extend(self._event_hooks.emit(event))
-            next_event = event.rsplit('.', 1)
-            if len(next_event) == 2:
-                event = next_event[0]
-            else:
-                event = None
-        return responses
+    This function can be used to find the first non None response from
+    handlers connected to an event.  This is useful if you are interested
+    in the returned responses from event handlers. Example usage::
+
+        print(first_non_none_response([(func1, None), (func2, 'foo'),
+                                       (func3, 'bar')]))
+        # This will print 'foo'
+
+    :type responses: list of tuples
+    :param responses: The responses from the ``EventHooks.emit`` method.
+        This is a list of tuples, and each tuple is
+        (handler, handler_response).
+
+    :param default: If no non-None responses are found, then this default
+        value will be returned.
+
+    :return: The first non-None response in the list of tuples.
+
+    """
+    for response in responses:
+        if response[1] is not None:
+            return response[1]
+    return default
 
 
 class CLI(object):
     def __init__(self, event_hooks):
         self._event_hooks = event_hooks
 
-    def before_call(self, handler, service_name=None, operation_name=None):
-        op_event_name = self._get_event_name(service_name, operation_name)
-        if op_event_name:
-            event_name = 'before_call.%s' % op_event_name
-        else:
-            event_name = 'before_call'
+    def register(self, event_name, handler):
         self._event_hooks.register(event_name, handler)
-
-    def after_call(self, handler, service_name=None, operation_name=None):
-        op_event_name = self._get_event_name(service_name, operation_name)
-        if op_event_name:
-            event_name = 'after_call.%s' % op_event_name
-        else:
-            event_name = 'after_call'
-        self._event_hooks.register(event_name, handler)
-
-    def _get_event_name(self, service_name, operation_name):
-        if service_name is None:
-            return ''
-        if service_name is not None and operation_name is None:
-            return service_name
-        elif service_name is not None and operation_name is not None:
-            return '%s.%s' % (service_name, operation_name)

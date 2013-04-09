@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 
-from awscli.hooks import EventHooks
+from awscli.hooks import EventHooks, HierarchicalEmitter
 
 
 class TestEventHooks(unittest.TestCase):
@@ -70,6 +70,35 @@ class TestEventHooks(unittest.TestCase):
         self.dispatch.unregister('before_send', self.hook)
         self.dispatch.emit('before_send')
         self.assertFalse(self.called)
+
+
+class TestHierarchicalEventEmitter(unittest.TestCase):
+    def setUp(self):
+        self.hooks = EventHooks()
+        self.emitter = HierarchicalEmitter(self.hooks)
+        self.hook_calls = []
+
+    def hook(self, **kwargs):
+        self.hook_calls.append(kwargs)
+
+    def test_non_dot_behavior(self):
+        self.emitter.register('no-dot', self.hook)
+        self.emitter.emit('no-dot')
+        self.assertEqual(len(self.hook_calls), 1)
+
+    def test_with_dots(self):
+        self.emitter.register('foo.bar.baz', self.hook)
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 1)
+
+    def test_catch_all_hook(self):
+        self.emitter.register('foo', self.hook)
+        self.emitter.register('foo.bar', self.hook)
+        self.emitter.register('foo.bar.baz', self.hook)
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 3)
+        self.assertEqual([e['event_name'] for e in self.hook_calls],
+                         ['foo.bar.baz', 'foo.bar', 'foo'])
 
 
 if __name__ == '__main__':

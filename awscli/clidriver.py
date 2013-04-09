@@ -22,6 +22,15 @@ from awscli import EnvironmentVariables, __version__
 from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
+from .plugin import load_plugins, first_non_none_response
+from .hooks import BaseEventHooks
+
+
+def main():
+    session = botocore.session.get_session(EnvironmentVariables)
+    emitter = load_plugins(session.full_config.get('plugins', {}))
+    driver = CLIDriver(session=session, emitter=emitter)
+    return driver.main()
 
 
 class CLIDriver(object):
@@ -41,13 +50,17 @@ class CLIDriver(object):
         'double': float,
         'blob': str}
 
-    def __init__(self, session=None):
+    def __init__(self, session=None, emitter=None):
         if session is None:
             self.session = botocore.session.get_session(EnvironmentVariables)
             self.session.user_agent_name = 'aws-cli'
             self.session.user_agent_version = __version__
         else:
             self.session = session
+        if emitter is None:
+            self._emitter = BaseEventHooks()
+        else:
+            self._emitter = emitter
         self.args = None
         self.service = None
         self.region = None
@@ -89,6 +102,7 @@ class CLIDriver(object):
             parser.add_argument(option_name, **option_data)
         parser.add_argument('--version', action="version",
                             version=self.session.user_agent())
+        self._emitter.emit('parser-created.main', parser=parser)
         return parser
 
     def create_service_parser(self, remaining, main_parser):
@@ -115,6 +129,8 @@ class CLIDriver(object):
         parser.add_argument('operation', help='The operation',
                             metavar='operation',
                             choices=operations)
+        self._emitter.emit('parser-created.%s' % self.service.cli_name,
+                           parser=parser)
         return parser
 
     def _create_operation_parser(self, remaining, main_parser):
@@ -165,7 +181,6 @@ class CLIDriver(object):
             else:
                 parser.add_argument(param.cli_name,
                                     help=param.documentation,
-                                    nargs=1,
                                     type=self.type_map[param.type],
                                     required=param.required,
                                     dest=param.py_name)
@@ -175,6 +190,8 @@ class CLIDriver(object):
         if 'help' in remaining:
             get_operation_help(self.operation)
             return 0
+        self._emitter.emit('parser-created.%s-%s' % (self.service.cli_name,
+                                                     self.operation.cli_name))
         return parser
 
     def _unpack_cli_arg(self, param, s):
@@ -184,17 +201,11 @@ class CLIDriver(object):
         to the Operation.
         """
         if param.type == 'integer':
-            if isinstance(s, list):
-                s = s[0]
             return int(s)
         elif param.type == 'float' or param.type == 'double':
             # TODO: losing precision on double types
-            if isinstance(s, list):
-                s = s[0]
             return float(s)
         elif param.type == 'structure' or param.type == 'map':
-            if isinstance(s, list) and len(s) == 1:
-                s = s[0]
             if s[0] == '{':
                 d = json.loads(s)
             else:
@@ -210,37 +221,52 @@ class CLIDriver(object):
                     return json.loads(s[0])
             return [self._unpack_cli_arg(param.members, v) for v in s]
         elif param.type == 'blob' and param.payload and param.streaming:
-            if isinstance(s, list) and len(s) == 1:
-                file_path = s[0]
-            file_path = os.path.expandvars(file_path)
+            file_path = os.path.expandvars(s)
             file_path = os.path.expanduser(file_path)
             if not os.path.isfile(file_path):
                 msg = 'Blob values must be a path to a file.'
                 raise ValueError(msg)
             return open(file_path, 'rb')
         else:
-            if isinstance(s, list):
-                s = s[0]
             return str(s)
 
     def _build_call_parameters(self, args, param_dict):
+        service_name = self.service.cli_name
+        operation_name = self.operation.cli_name
         for param in self.operation.params:
             value = getattr(args, param.py_name)
             if value is not None:
-                # Don't include non-required boolean params whose
-                # values are False
+                # Plugins can override the cli -> python conversion
+                # process for CLI args.
+                responses = self._emitter.emit('process-cli-arg.%s.%s' % (
+                    service_name, operation_name), param=param, value=value,
+                    service=self.service, operation=self.operation)
+                override = first_non_none_response(responses)
+                if override is not None:
+                    # A plugin supplied an alternate conversion,
+                    # use it instead.
+                    param_dict[param.py_name] = override
+                    continue
+                # Otherwise fall back to our normal built in cli -> python
+                # conversion process.
                 if param.type == 'boolean' and not param.required and \
                         value is False:
+                    # Don't include non-required boolean params whose
+                    # values are False
                     continue
                 if not hasattr(param, 'no_paramfile'):
-                    if isinstance(value, list) and len(value) == 1:
-                        temp = value[0]
-                    else:
-                        temp = value
-                    temp = get_paramfile(self.session, temp)
-                    if temp:
-                        value = temp
+                    value = self._handle_param_file(value)
                 param_dict[param.py_name] = self._unpack_cli_arg(param, value)
+
+    def _handle_param_file(self, value):
+        if isinstance(value, list) and len(value) == 1:
+            temp = value[0]
+        else:
+            temp = value
+        temp = get_paramfile(self.session, temp)
+        if temp:
+            value = temp
+        return value
 
     def display_error_and_exit(self, ex):
         if self.args.debug:
@@ -273,20 +299,31 @@ class CLIDriver(object):
                 data = response_data[body_name].read(buffsize)
         del response_data[body_name]
 
-    def call(self, args):
+    def _call(self, args):
         try:
             params = {}
             self._build_call_parameters(args, params)
             self.endpoint = self.service.get_endpoint(
                 self.args.region, endpoint_url=self.args.endpoint_url)
             self.endpoint.verify = not self.args.no_verify_ssl
+            self._emitter.emit(
+                'before-operation.%s.%s' % (self.service.cli_name,
+                                            self.operation.cli_name),
+                service=self.service, operation=self.operation,
+                endpoint=self.endpoint, params=params)
             if self.operation.can_paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
+                self._emitter.emit(
+                    'after-operation.%s.%s' % (self.service.cli_name,
+                                               self.operation.cli_name),
+                    service=self.service, operation=self.operation,
+                    endpoint=self.endpoint, params=params)
                 self._display_response(self.operation, pages)
                 # TODO: need to handle http error responses.  I believe
                 # this will be addressed with the plugin refactoring,
                 # but the other alternative is going to be that we'll need
                 # to cache the fully buffered response.
+                return 0
             else:
                 http_response, response_data = self.operation.call(
                     self.endpoint, **params)
@@ -378,7 +415,16 @@ class CLIDriver(object):
                 return -1
             return args
 
-    def main(self):
+    def main(self, args=None):
+        """
+
+        :param args: List of arguments, with the 'aws' removed.  For example,
+            the command "aws s3 list-objects --bucket foo" will have an
+            args list of ``['s3', 'list-objects', '--bucket', 'foo']``.
+
+        """
+        if args is None:
+            args = sys.argv[1:]
         main_parser = self.create_main_parser()
-        args = self._parse_args(main_parser, sys.argv[1:])
-        return self.call(args)
+        remaining_args = self._parse_args(main_parser, args)
+        return self._call(remaining_args)

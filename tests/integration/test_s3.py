@@ -81,7 +81,7 @@ class TestS3Pagination(BaseS3Test):
         responses = list(generator)
         self.assertEqual(len(responses), 5)
         data = [r[1] for r in responses]
-        key_names = [el['ListBucketResult']['Contents'][0]['Key']
+        key_names = [el['Contents'][0]['Key']
                      for el in data]
         self.assertEqual(key_names, ['key0', 'key1', 'key2', 'key3', 'key4'])
 
@@ -101,9 +101,9 @@ class TestS3Pagination(BaseS3Test):
         key_names = [i.result_key for i in iterators]
         for vals in zip_longest(*iterators):
             for k, val in zip(key_names, vals):
-                response[k.expression].append(val)
-        self.assertIn('ListBucketResult.Contents', response)
-        self.assertIn('ListBucketResult.CommonPrefixes', response)
+                response[k].append(val)
+        self.assertIn('Contents', response)
+        self.assertIn('CommonPrefixes', response)
 
 
 if __name__ == '__main__':

@@ -19,19 +19,33 @@ from awscli.table import MultiTable, Styler, ColorizedStyler
 
 
 class Formatter(object):
-
     def __init__(self, args):
         pass
 
 
-class JSONFormatter(Formatter):
+class FullyBufferedFormatter(Formatter):
+    def __call__(self, operation, response, stream=None):
+        if stream is None:
+            # Retrieve stdout on invocation instead of at import time
+            # so that if anything wraps stdout we'll pick up those changes
+            # (specifically colorama on windows wraps stdout).
+            stream = sys.stdout
+        # I think the interfaces between non-paginated
+        # and paginated responses can still be cleaned up.
+        if operation.can_paginate:
+            response_data = response.build_full_result()
+        else:
+            response_data = response
+        self._format_response(operation, response_data, stream)
 
-    def __call__(self, operation, response):
-        json_response = json.dumps(response, indent=4)
-        print(json_response)
+
+class JSONFormatter(FullyBufferedFormatter):
+
+    def _format_response(self, operation, response, stream):
+        json.dump(response, stream, indent=4)
 
 
-class TableFormatter(Formatter):
+class TableFormatter(FullyBufferedFormatter):
     """Pretty print a table from a given response.
 
     The table formatter is able to take any generic response
@@ -54,12 +68,7 @@ class TableFormatter(Formatter):
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 
-    def __call__(self, operation, response, stream=None):
-        if stream is None:
-            # Retrieve stdout on invocation instead of at import time
-            # so that if anything wraps stdout we'll pick up those changes
-            # (specifically colorama on windows wraps stdout).
-            stream = sys.stdout
+    def _format_response(self, operation, response, stream):
         self._build_table(operation.name, response)
         try:
             self.table.render(stream)
@@ -68,7 +77,6 @@ class TableFormatter(Formatter):
             # we're done writing all of our output, we'll get an error about a
             # closed pipe which we can safely ignore.
             pass
-
 
     def _build_table(self, title, current, indent_level=0):
         if not current:
@@ -139,9 +147,9 @@ class TableFormatter(Formatter):
         return headers, more
 
 
-class TextFormatter(Formatter):
+class TextFormatter(FullyBufferedFormatter):
 
-    def _output(self, data, label=None):
+    def _output(self, data, stream, label=None):
         """
         A very simple, very stupid text formatter that has no
         knowledge of the output as defined in the JSON model.
@@ -160,15 +168,16 @@ class TextFormatter(Formatter):
                     scalars.append(val)
             if label:
                 scalars.insert(0, label.upper())
-            print('\t'.join(scalars))
+            stream.write('\t'.join(scalars))
+            stream.write('\n')
             for label, non_scalar in non_scalars:
-                self._output(non_scalar, label)
+                self._output(non_scalar, stream, label)
         elif isinstance(data, list):
             for d in data:
-                self._output(d)
+                self._output(d, stream)
 
-    def __call__(self, operation, response):
-        self._output(response)
+    def _format_response(self, operation, response, stream):
+        self._output(response, stream)
 
 
 def get_formatter(format_type, args):

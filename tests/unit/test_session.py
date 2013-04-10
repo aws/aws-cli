@@ -71,7 +71,7 @@ class SessionTest(unittest.TestCase):
         self.environ['FOO_PROFILE'] = saved_profile
 
     def test_file_logger(self):
-        with tempfile.NamedTemporaryFile('rw+') as f:
+        with tempfile.NamedTemporaryFile('w') as f:
             self.session.set_file_logger(logging.DEBUG, f.name)
             self.session.get_credentials()
             self.assertTrue(os.path.isfile(f.name))

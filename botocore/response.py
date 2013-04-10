@@ -303,7 +303,9 @@ def get_response(operation, http_response):
         streaming_response.parse(http_response.headers, http_response.raw)
         return (http_response, streaming_response.get_value())
     body = http_response.text.encode(encoding.lower())
-    logger.debug(body)
+    logger.debug("Response Body: %s", body)
+    if not body:
+        return (http_response, body)
     if content_type in ('application/x-amz-json-1.0',
                         'application/x-amz-json-1.1', 'application/json'):
         json_response = JSONResponse(operation)

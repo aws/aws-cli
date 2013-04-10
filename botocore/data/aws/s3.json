@@ -2363,7 +2363,24 @@
                 },
                 "shape_name": "ListMultipartUploadsOutput"
             },
-            "errors": []
+            "errors": [],
+            "pagination": {
+                "limit_key": "MaxUploads",
+                "more_results": "IsTruncated",
+                "output_token": [
+                    "NextKeyMarker",
+                    "NextUploadIdMarker"
+                ],
+                "input_token": [
+                    "KeyMarker",
+                    "UploadIdMarker"
+                ],
+                "result_key": "Uploads",
+                "py_input_token": [
+                    "key_marker",
+                    "upload_id_marker"
+                ]
+            }
         },
         "ListObjectVersions": {
             "name": "ListObjectVersions",
@@ -2545,7 +2562,24 @@
                 },
                 "shape_name": "ListObjectVersionsOutput"
             },
-            "errors": []
+            "errors": [],
+            "pagination": {
+                "more_results": "IsTruncated",
+                "limit_key": "MaxKeys",
+                "output_token": [
+                    "NextKeyMarker",
+                    "NextVersionIdMarker"
+                ],
+                "input_token": [
+                    "KeyMarker",
+                    "VersionIdMarker"
+                ],
+                "result_key": "Versions",
+                "py_input_token": [
+                    "key_marker",
+                    "version_id_marker"
+                ]
+            }
         },
         "ListObjects": {
             "name": "ListObjects",
@@ -2667,7 +2701,18 @@
                     "shape_name": "NoSuchBucket",
                     "type": "structure"
                 }
-            ]
+            ],
+            "pagination": {
+                "more_results": "IsTruncated",
+                "limit_key": "MaxKeys",
+                "output_token": "NextMarker or Contents[-1].Key",
+                "input_token": "Marker",
+                "result_key": [
+                    "Contents",
+                    "CommonPrefixes"
+                ],
+                "py_input_token": "marker"
+            }
         },
         "ListParts": {
             "name": "ListParts",
@@ -2802,7 +2847,14 @@
                 },
                 "shape_name": "ListPartsOutput"
             },
-            "errors": []
+            "errors": [],
+            "pagination": {
+                "limit_key": "IsTruncated",
+                "output_tokens": "NextPartNumberMarker",
+                "input_token": "PartNumberMarker",
+                "result_key": "Parts",
+                "py_input_token": "part_number_marker"
+            }
         },
         "PutBucketAcl": {
             "name": "PutBucketAcl",
@@ -4131,6 +4183,60 @@
                 "shape_name": "UploadPartCopyOutput"
             },
             "errors": []
+        }
+    },
+    "pagination": {
+        "ListMultipartUploads": {
+            "limit_key": "MaxUploads",
+            "more_results": "IsTruncated",
+            "output_token": [
+                "NextKeyMarker",
+                "NextUploadIdMarker"
+            ],
+            "input_token": [
+                "KeyMarker",
+                "UploadIdMarker"
+            ],
+            "result_key": "Uploads",
+            "py_input_token": [
+                "key_marker",
+                "upload_id_marker"
+            ]
+        },
+        "ListObjectVersions": {
+            "more_results": "IsTruncated",
+            "limit_key": "MaxKeys",
+            "output_token": [
+                "NextKeyMarker",
+                "NextVersionIdMarker"
+            ],
+            "input_token": [
+                "KeyMarker",
+                "VersionIdMarker"
+            ],
+            "result_key": "Versions",
+            "py_input_token": [
+                "key_marker",
+                "version_id_marker"
+            ]
+        },
+        "ListObjects": {
+            "more_results": "IsTruncated",
+            "limit_key": "MaxKeys",
+            "output_token": "NextMarker or Contents[-1].Key",
+            "input_token": "Marker",
+            "result_key": [
+                "Contents",
+                "CommonPrefixes"
+            ],
+            "py_input_token": "marker"
+        },
+        "ListParts": {
+            "limit_key": "IsTruncated",
+            "output_tokens": "NextPartNumberMarker",
+            "input_token": "PartNumberMarker",
+            "result_key": "Parts",
+            "py_input_token": "part_number_marker"
         }
     },
     "metadata": {

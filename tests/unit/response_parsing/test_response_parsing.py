@@ -6,8 +6,11 @@ import botocore.session
 from botocore.response import XmlResponse
 
 
-def check_dicts(d1, d2):
+def check_dicts(xmlfile, d1, d2):
     if d1 != d2:
+        print('-' * 40)
+        print(xmlfile)
+        print('-' * 40)
         pprint.pprint(d1)
         print('-' * 40)
         pprint.pprint(d2)
@@ -35,11 +38,20 @@ def test_response_parsing():
             xml = fp.read()
             fp.close()
             r.parse(xml)
+            # This is a little convenience when creating new tests.
+            # You just have to drop the XML file into the data directory
+            # and then, if not JSON file is present, this code will
+            # create the JSON file and dump the parsed value into it.
+            # Of course, you need to validate that the JSON is correct
+            # but it makes it easy to bootstrap more tests.
+            if not os.path.isfile(jsonfile):
+                fp = open(jsonfile, 'w')
+                json.dump(r.get_value(), fp, indent=4)
+                fp.close()
             fp = open(jsonfile)
             data = json.load(fp)
             fp.close()
-            check_dicts.description = basename
-            yield check_dicts, r.get_value(), data
+            yield check_dicts, xmlfile, r.get_value(), data
 
 
 if __name__ == '__main__':

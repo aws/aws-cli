@@ -20,49 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-"""
-This module uses the SAX parser to turn response XML into Python
-native datastructures.
-
-We create an Element object for each XML element we encounter in
-the response data.
-
-"""
+import sys
 import xml.etree.cElementTree
+from botocore import ScalarTypes
 import json
 import logging
-from botocore import ScalarTypes
 
 logger = logging.getLogger(__name__)
 
 
 class Response(object):
-
-    _log_path = None
-
-    @classmethod
-    def set_log_path(cls, path):
-        cls._log_path = path
-
-    @classmethod
-    def log_xml(cls, operation, xml):
-        if cls._log_path:
-            file_name = '%s-%s.xml' % (operation.service.cli_name,
-                                       operation.cli_name)
-            path = os.path.join(cls._log_path, file_name)
-            fp = open(path, 'w')
-            fp.write(xml)
-            fp.close()
-
-    @classmethod
-    def log_data(cls, operation, data):
-        if cls._log_path:
-            file_name = '%s-%s.json' % (operation.service.cli_name,
-                                        operation.cli_name)
-            path = os.path.join(cls._log_path, file_name)
-            fp = open(path, 'w')
-            json.dump(data, fp, indent=4)
-            fp.close()
 
     def __init__(self, operation):
         self.operation = operation
@@ -80,131 +47,219 @@ class XmlResponse(Response):
     def __init__(self, operation):
         Response.__init__(self, operation)
         self.tree = None
+        self.element_map = {}
         self.value = {}
-
-    def parse(self, s):
-        self.log_xml(self.operation, s)
-        self.tree = xml.etree.cElementTree.fromstring(s)
-        self.build_value()
-        self.log_data(self.operation, self.get_value())
+        self._parent = None
 
     def clark_notation(self, tag):
         return '{%s}%s' % (self.operation.service.xmlnamespace, tag)
 
-    def _do_structure(self, name, element, defn):
-        data = {}
-        for member_name in defn['members']:
-            member_defn = defn['members'][member_name]
-            xmlname = member_defn.get('xmlname', member_name)
-            cn = self.clark_notation(xmlname)
-            subelement = element.find(cn)
-            if subelement is None:
-                subelement = element.find('*/%s' % cn)
-            if subelement is not None:
-                data[member_name] = self._build_value(member_name,
-                                                      subelement,
-                                                      member_defn)
-        return data
-
-    def _do_list(self, name, element, defn):
-        if 'flattened' in defn and defn['flattened']:
-            xmlname = defn['members'].get('xmlname', name)
-            cn = self.clark_notation(xmlname)
-            subelements = element.findall('.//%s' % cn)
+    def get_element_base_tag(self, elem):
+        if '}' in elem.tag:
+            elem_tag = elem.tag.split('}')[1]
         else:
-            xmlname = defn['members'].get('xmlname', 'member')
-            cn = self.clark_notation(xmlname)
-            subelements = element.findall(cn)
-        return [self._build_value(name, subelement, defn['members'])
-                for subelement in subelements]
+            elem_tag = elem.tag
+        return elem_tag
 
-    def _do_map(self, name, element, defn):
-        xmlname = defn.get('xmlname', 'entry')
-        cn = self.clark_notation(xmlname)
-        if 'flattened' in defn and defn['flattened']:
-            entry_elements = element.findall('*/%s' % cn)
-        else:
-            entry_elements = element.findall(cn)
-        data = {}
-        for entry_element in entry_elements:
-            key_xmlname = defn['keys'].get('xmlname', 'key')
-            cn = self.clark_notation(key_xmlname)
-            key_element = entry_element.find(cn)
-            value_xmlname = defn['members'].get('xmlname', 'value')
-            cn = self.clark_notation(value_xmlname)
-            value_element = entry_element.find(cn)
-            data[key_element.text] = self._build_value(xmlname,
-                                                       value_element,
-                                                       defn['members'])
-        return data
-
-    def check_children(self, element):
-        kids = list(element)
-        if len(kids) == 1:
-            element = kids[0]
-        elif len(kids) > 1:
-            logger.debug('ermahgerd')
-        return element
-
-    def _do_string(self, name, element, defn):
-        element = self.check_children(element)
-        rval = element.text
-        kids = element.getchildren()
-        if rval is not None:
-            rval = rval.strip()
-        return rval
-
-    _do_timestamp = _do_string
-
-    def _do_integer(self, name, element, defn):
-        element = self.check_children(element)
-        return int(element.text)
-
-    _do_long = _do_integer
-
-    def _do_float(self, name, element, defn):
-        element = self.check_children(element)
-        return float(element.text)
-
-    _do_double = _do_float
-
-    def _do_boolean(self, name, element, defn):
-        element = self.check_children(element)
-        return True if element.text.lower() == 'true' else False
-
-    def _build_value(self, name, element, defn):
-        rval = None
-        if element is not None:
-            handler_name = '_do_%s' % defn['type']
-            if hasattr(self, handler_name):
-                rval = getattr(self, handler_name)(name, element, defn)
-            else:
-                print('Unhandled type: %s' % defn['type'])
-        return rval
+    def parse(self, s):
+        self.tree = xml.etree.cElementTree.fromstring(s)
+        if self.operation.output:
+            self.build_element_map(self.operation.output, 'root')
+        self.start(self.tree)
 
     def get_response_metadata(self):
         rmd = {}
         self.value['ResponseMetadata'] = rmd
-        request_id = self.tree.find(self.clark_notation('requestId'))
-        if request_id is None:
-            xpath = '*/%s' % self.clark_notation('RequestId')
-            request_id = self.tree.find(xpath)
+        rmd_elem = self.tree.find(self.clark_notation('ResponseMetadata'))
+        if rmd_elem is not None:
+            rmd_elem.tail = True
+            request_id = rmd_elem.find(self.clark_notation('RequestId'))
+        else:
+            request_id = self.tree.find(self.clark_notation('requestId'))
         if request_id is not None:
+            request_id.tail = True
             rmd['RequestId'] = request_id.text.strip()
 
-    def build_value(self):
-        for member_name in self.operation.output['members']:
-            member_defn = self.operation.output['members'][member_name]
-            if 'flattened' in member_defn and member_defn['flattened']:
-                subelement = self.tree
+    def build_element_map(self, defn, keyname):
+        xmlname = defn.get('xmlname', keyname)
+        if not xmlname:
+            xmlname = defn.get('shape_name')
+        self.element_map[xmlname] = defn
+        if defn['type'] == 'structure':
+            for member_name in defn['members']:
+                self.build_element_map(defn['members'][member_name],
+                                         member_name)
+        elif defn['type'] == 'list':
+            self.build_element_map(defn['members'], None)
+        elif defn['type'] == 'map':
+            self.build_element_map(defn['keys'], 'key')
+            self.build_element_map(defn['members'], 'value')
+
+    def find(self, parent, tag):
+        tag = tag.split(':')[-1]
+        cn = self.clark_notation(tag)
+        child = parent.find(cn)
+        if child is None:
+            child = parent.find('*/%s' % cn)
+        return child
+
+    def findall(self, parent, tag):
+        cn = self.clark_notation(tag)
+        children = parent.findall(cn)
+        if not children:
+            try:
+                children = parent.findall('*/%s' % cn)
+            except:
+                pass
+        return children
+
+    def parent_slow(self, elem, target):
+        for child in elem:
+            if child == target:
+                self._parent = elem
+                break
+            self.parent_slow(child, target)
+
+    def parent(self, elem):
+        # We need the '..' operator in XPath but only that is only
+        # available in Python versions >= 2.7
+        if sys.version_info[0] == 2 and sys.version_info[1] == 6:
+            self.parent_slow(self.tree, elem)
+            parent = self._parent
+            self._parent = None
+        else:
+            parent = self.tree.find('.//%s/..' % elem.tag)
+        return parent
+
+    def get_elem_text(self, elem):
+        data = elem.text
+        if data is not None:
+            data = elem.text.strip()
+        return data
+
+    def _handle_string(self, elem, shape):
+        data = self.get_elem_text(elem)
+        if not data:
+            children = list(elem)
+            if len(children) == 1:
+                data = self.get_elem_text(children[0])
+        return data
+
+    _handle_timestamp = _handle_string
+
+    def _handle_integer(self, elem, shape):
+        data = self.get_elem_text(elem)
+        if data:
+            data = int(data)
+        return data
+
+    _handle_long = _handle_integer
+
+    def _handle_float(self, elem, shape):
+        data = self.get_elem_text(elem)
+        if data:
+            data = float(data)
+        return data
+
+    _handle_double = _handle_float
+
+    def _handle_boolean(self, elem, shape):
+        return True if elem.text.lower() == 'true' else False
+
+    def _handle_structure(self, elem, shape):
+        new_data = {}
+        for member_name in shape['members']:
+            member_shape = shape['members'][member_name]
+            xmlname = member_shape.get('xmlname', member_name)
+            child = self.find(elem, xmlname)
+            if child is not None:
+                new_data[member_name] = self.handle_elem(child, member_shape)
             else:
-                xmlname = member_defn.get('xmlname', member_name)
-                xpath = './/%s' % self.clark_notation(xmlname)
-                subelement = self.tree.find(xpath)
-            value = self._build_value(member_name, subelement, member_defn)
-            if value is not None:
-                self.value[member_name] = value
+                logger.debug('unable to find struct member: %s' % xmlname)
+        return new_data
+
+    def _handle_list(self, elem, shape):
+        xmlname = shape['members'].get('xmlname', 'member')
+        children = self.findall(elem, xmlname)
+        if not children and shape.get('flattened'):
+            parent = self.parent(elem)
+            if parent is not None:
+                tagname = self.get_element_base_tag(elem)
+                children = self.findall(parent, tagname)
+        if not children:
+            children = []
+        return [self.handle_elem(child, shape['members'])
+                for child in children]
+
+    def _handle_map(self, elem, shape):
+        data = {}
+        # First collect all map entries
+        xmlname = shape.get('xmlname', 'entry')
+        keyshape = shape['keys']
+        valueshape = shape['members']
+        key_xmlname = keyshape.get('xmlname', 'key')
+        value_xmlname = valueshape.get('xmlname', 'value')
+        members = self.findall(elem, xmlname)
+        if not members:
+            parent = self.parent(elem)
+            if parent is not None:
+                members = self.findall(parent, xmlname)
+        for member in members:
+            key = self.find(member, key_xmlname)
+            value = self.find(member, value_xmlname)
+            cn = self.clark_notation(value_xmlname)
+            value = member.find(cn)
+            data[self.handle_elem(key, keyshape)] = self.handle_elem(value,
+                                                                     valueshape)
+        return data
+
+    def handle_elem(self, elem, shape):
+        handler_name = '_handle_%s' % shape['type']
+        elem.tail = True
+        if hasattr(self, handler_name):
+            return getattr(self, handler_name)(elem, shape)
+        else:
+            logger.debug('Unhandled type: %s' % shape['type'])
+
+    def fake_shape(self, elem):
+        shape = {}
+        tags = set()
+        nchildren = 0
+        for child in elem:
+            tags.add(child)
+            nchildren += 1
+        if nchildren == 0:
+            shape['type'] = 'string'
+        elif nchildren > 1 and len(tags) == 1:
+            shape['type'] = 'list'
+            shape['members'] = {'type': 'string'}
+        else:
+            shape['type'] = 'structure'
+            shape['members'] = {}
+            for tag in tags:
+                base_tag = self.get_element_base_tag(tag)
+                shape['members'][base_tag] = {'type': 'string'}
+        return shape
+
+    def start(self, elem):
+        self.value = {}
+        if self.operation.output:
+            for member_name in self.operation.output['members']:
+                member = self.operation.output['members'][member_name]
+                xmlname = member.get('xmlname', member_name)
+                child = self.find(elem, xmlname)
+                if child is None and member['type'] not in ScalarTypes:
+                    child = elem
+                if child is not None:
+                    self.value[member_name] = self.handle_elem(child, member)
         self.get_response_metadata()
+        for child in self.tree:
+            if child.tail is not True:
+                child_tag = self.get_element_base_tag(child)
+                if child_tag not in self.element_map:
+                    if not child_tag.startswith(self.operation.name):
+                        shape = self.fake_shape(child)
+                        self.value[child_tag] = self.handle_elem(child, shape)
 
 
 class JSONResponse(Response):

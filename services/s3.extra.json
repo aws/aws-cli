@@ -4,26 +4,29 @@
             "limit_key": "MaxUploads",
             "more_results": "IsTruncated",
             "output_token": ["NextKeyMarker", "NextUploadIdMarker"],
-            "input_token": ["KeyMarker", "UploadIdMarker"]
+            "input_token": ["KeyMarker", "UploadIdMarker"],
+            "result_key": "Uploads"
         },
         "ListObjectVersions": {
-            "more_results": "ListVersionsResult.IsTruncated",
+            "more_results": "IsTruncated",
             "limit_key": "MaxKeys",
-            "output_token": ["ListVersionResult.NextKeyMarker",
-                             "ListVersionResult.NextVersionIdMarker"],
-            "input_token": ["KeyMarker", "VersionIdMarker"]
+            "output_token": ["NextKeyMarker",
+                             "NextVersionIdMarker"],
+            "input_token": ["KeyMarker", "VersionIdMarker"],
+            "result_key": "Versions"
         },
         "ListObjects": {
-            "more_results": "ListBucketResult.IsTruncated",
+            "more_results": "IsTruncated",
             "limit_key": "MaxKeys",
-            "output_token": "ListBucketResult.NextMarker or ListBucketResult.Contents[-1].Key",
+            "output_token": "NextMarker or Contents[-1].Key",
             "input_token": "Marker",
-            "result_key": ["ListBucketResult.Contents", "ListBucketResult.CommonPrefixes"]
+            "result_key": ["Contents", "CommonPrefixes"]
         },
         "ListParts": {
-            "limit_key": "ListBucketResult.IsTruncated",
+            "limit_key": "IsTruncated",
             "output_tokens": "NextPartNumberMarker",
-            "input_token": "PartNumberMarker"
+            "input_token": "PartNumberMarker",
+            "result_key": "Parts"
         }
     }
 }

@@ -302,6 +302,7 @@ class TestTranslateModel(unittest.TestCase):
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
                     'max_results': 'MaxResults',
+                    'result_key': 'Credentials',
                 }
             }
         }
@@ -314,6 +315,7 @@ class TestTranslateModel(unittest.TestCase):
                 'py_input_token': 'next_token',
                 'output_token': 'NextToken',
                 'max_results': 'MaxResults',
+                'result_key': 'Credentials',
             })
 
     def test_py_input_name_is_not_added_if_it_exists(self):
@@ -326,6 +328,7 @@ class TestTranslateModel(unittest.TestCase):
                     'output_token': 'NextToken',
                     'py_input_token': 'other_value',
                     'max_results': 'MaxResults',
+                    'result_key': 'Credentials',
                 }
             }
         }
@@ -340,6 +343,7 @@ class TestTranslateModel(unittest.TestCase):
                 'py_input_token': 'other_value',
                 'output_token': 'NextToken',
                 'max_results': 'MaxResults',
+                'result_key': 'Credentials',
             })
 
     def test_paginators_are_validated(self):
@@ -364,6 +368,7 @@ class TestTranslateModel(unittest.TestCase):
                 'AssumeRole': {
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
+                    'result_key': 'Credentials',
                 }
             }
         }
@@ -388,7 +393,8 @@ class TestTranslateModel(unittest.TestCase):
             'pagination': {
                 'AssumeRole': {
                     'input_token': ['Token', 'TokenToken'],
-                    'output_token': ['NextToken', 'NextTokenToken']
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': 'Credentials'
                 }
             }
         }
@@ -400,7 +406,50 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': ['Token', 'TokenToken'],
                 'py_input_token': ['token', 'token_token'],
                 'output_token': ['NextToken', 'NextTokenToken'],
+                'result_key': 'Credentials',
             })
+
+    def test_result_key_validation(self):
+        # result_key must exist.
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': ['Token', 'TokenToken'],
+                    'output_token': ['NextToken', 'NextTokenToken']
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
+
+    def test_result_key_exists_in_output(self):
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': ['Token', 'TokenToken'],
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': 'DoesNotExist',
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
+
+    def test_result_key_can_be_a_list(self):
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': ['Token', 'TokenToken'],
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                }
+            }
+        }
+        self.model.enhancements = extra
+        new_model = translate(self.model)
+        self.assertEqual(new_model['pagination'], extra['pagination'])
 
     def test_translate_operation_casing(self):
         pass

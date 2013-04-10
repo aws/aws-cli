@@ -92,7 +92,21 @@ def add_pagination_configs(new_model, pagination):
                 config['py_input_token'] = py_input_token
             else:
                 config['py_input_token'] = xform_name(input_token)
+        # result_key must be defined
+        if 'result_key' not in config:
+            raise ValueError("Required key 'result_key' is missing from "
+                             "from pagination config: %s" % config)
         operation = new_model['operations'].get(name)
+        # result_key must match a key in the output.
+        if not isinstance(config['result_key'], list):
+            result_keys = [config['result_key']]
+        else:
+            result_keys = config['result_key']
+        for result_key in result_keys:
+            if result_key not in operation['output']['members']:
+                raise ValueError("result_key %r is not an output member: %s" %
+                                (result_key,
+                                 operation['output']['members'].keys()))
         if operation is None:
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)

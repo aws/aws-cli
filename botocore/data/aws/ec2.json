@@ -6999,10 +6999,9 @@
             "documentation": "\n   <p>\n   Describes the status of an Amazon Elastic Compute Cloud (Amazon EC2) instance. Instance status provides information about two types of scheduled events for an instance that may require your attention:\n   </p>\n   <ul>\n   \t <li>\n\t\tScheduled Reboot: When Amazon EC2 determines that an instance must be rebooted, the instance's status will return one of two event codes: <code>system-reboot</code> or <code>instance-reboot</code>. System reboot commonly occurs if certain maintenance or upgrade operations require a reboot of the underlying host that supports an instance. Instance reboot commonly occurs if the instance must be rebooted, rather than the underlying host. Rebooting events include a scheduled start and end time.\n     </li>\n     <li>\n\t\tScheduled Retirement: When Amazon EC2 determines that an instance must be shut down, the instance's status will return an event code called <code>instance-retirement</code>. Retirement commonly occurs when the underlying host is degraded and must be replaced. Retirement events include a scheduled start and end time. You're also notified by email if one of your instances is set to retiring. The email message indicates when your instance will be permanently retired.\n     </li>\n   </ul>\n   <p>\n\tIf your instance is permanently retired, it will not be restarted. You can avoid retirement by manually restarting your instance when its event code is <code>instance-retirement</code>. This ensures that your instance is started on a healthy host.\n   </p>\n   <p>\n\t<code>DescribeInstanceStatus</code> returns information only for instances in the running state.\n   </p>\n   <p>\n\tYou can filter the results to return information only about instances that match criteria you specify. For example, you could get information about instances in a specific Availability Zone. You can specify multiple values for a filter (e.g., more than one Availability Zone). An instance must match at least one of the specified values for it to be included in the results.\n   </p>\n   <p>\n\tYou can specify multiple filters. An instance must match all the filters for it to be included in the results. If there's no match, no special message is returned; the response is simply empty.\n   </p>\n   <p>\n\tYou can use wildcards with the filter values: <code>*</code> matches zero or more characters, and <code>?</code> matches exactly one character. You can escape special characters using a backslash before the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal string <code>*amazon?\\</code>.\n   </p>\n   <p>\n   The following filters are available:\n   </p>\n   <ul>\n     <li>\n       <code>availability-zone</code> - Filter on an instance's availability zone.\n     </li>\n     <li>\n       <code>instance-state-name</code> - Filter on the intended state of the instance, e.g., running.\n     </li>\n     <li>\n       <code>instance-state-code</code> - Filter on the intended state code of the instance, e.g., 16.\n     </li>\n   </ul>\n   ",
             "pagination": {
                 "limit_key": "MaxResults",
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "InstanceStatuses",
                 "py_input_token": "next_token"
             }
         },
@@ -9819,10 +9818,9 @@
             "documentation": "\n        <p>\n        The DescribeReservedInstancesOfferings operation describes Reserved\n        Instance offerings that are available for purchase. With Amazon EC2\n        Reserved Instances, you purchase the right to launch Amazon EC2 instances\n        for a period of time (without getting insufficient capacity errors) and\n        pay a lower usage rate for the actual time used.\n        </p>\n    ",
             "pagination": {
                 "limit_key": "MaxResults",
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "ReservedInstancesOfferings",
                 "py_input_token": "next_token"
             }
         },
@@ -11442,10 +11440,9 @@
             "documentation": "\n        <p>\n        Describes the Spot Price history.\n        </p>\n        <p>\n        Spot Instances are instances that Amazon EC2\n        starts on your behalf when the maximum price\n        that you specify exceeds the current Spot Price.\n        Amazon EC2 periodically sets the Spot Price based\n        on available Spot Instance capacity and current\n        spot instance requests.\n        </p>\n        <p>\n        For conceptual information about Spot Instances,\n        refer to the\n        <a hlink=\"http://docs.amazonwebservices.com/AWSEC2/2009-11-30/DeveloperGuide/\">\n        Amazon Elastic Compute Cloud Developer Guide\n        </a>\n        or\n        <a hlink=\"http://docs.amazonwebservices.com/AWSEC2/2009-11-30/UserGuide/\">\n        Amazon Elastic Compute Cloud User Guide\n        </a>.\n        </p>\n    ",
             "pagination": {
                 "limit_key": "MaxResults",
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "SpotPriceHistory",
                 "py_input_token": "next_token"
             }
         },
@@ -12007,10 +12004,9 @@
             "documentation": "\n        <p>\n        Describes the status of a volume.\n        </p>\n    ",
             "pagination": {
                 "limit_key": "MaxResults",
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "VolumeStatuses",
                 "py_input_token": "next_token"
             }
         },
@@ -17919,34 +17915,30 @@
     "pagination": {
         "DescribeInstanceStatus": {
             "limit_key": "MaxResults",
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "InstanceStatuses",
             "py_input_token": "next_token"
         },
         "DescribeReservedInstancesOfferings": {
             "limit_key": "MaxResults",
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "ReservedInstancesOfferings",
             "py_input_token": "next_token"
         },
         "DescribeSpotPriceHistory": {
             "limit_key": "MaxResults",
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "SpotPriceHistory",
             "py_input_token": "next_token"
         },
         "DescribeVolumeStatus": {
             "limit_key": "MaxResults",
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "VolumeStatuses",
             "py_input_token": "next_token"
         }
     },

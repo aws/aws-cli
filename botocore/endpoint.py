@@ -188,9 +188,13 @@ class RestEndpoint(Endpoint):
         params['headers']['User-Agent'] = user_agent
         uri = self.build_uri(operation, params)
         uri = urljoin(self.host, uri)
-        request = AWSRequest(method=operation.http['method'],
-                             url=uri, headers=params['headers'],
-                             data=params['payload'])
+        if params['payload'] is None:
+            request = AWSRequest(method=operation.http['method'],
+                                 url=uri, headers=params['headers'])
+        else:
+            request = AWSRequest(method=operation.http['method'],
+                                 url=uri, headers=params['headers'],
+                                 data=params['payload'])
         prepared_request = self.prepare_request(request)
         http_response = self._send_request(prepared_request, operation)
         return botocore.response.get_response(operation, http_response)

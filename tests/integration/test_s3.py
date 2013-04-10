@@ -20,7 +20,7 @@
 # IN THE SOFTWARE.
 #
 import time
-import unittest
+from tests import unittest
 from collections import defaultdict
 try:
     from itertools import izip_longest as zip_longest

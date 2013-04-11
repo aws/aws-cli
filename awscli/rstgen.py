@@ -326,6 +326,9 @@ class OperationDocument(Document):
             if param.type != 'boolean':
                 para.write('<value>')
             para.write(']')
+        if operation.is_streaming():
+            para = self.add_paragraph()
+            para.write('output_file')
         self.dedent()
         self.dedent()
         msg = self.session.get_data('messages/RequiredParameters')
@@ -343,6 +346,16 @@ class OperationDocument(Document):
             self.do_example(param)
         if not optional:
             self.add_paragraph().write(none_msg)
+        if operation.is_streaming():
+            msg = self.session.get_data('messages/PositionalArguments')
+            self.add_paragraph().write(self.style.h2(msg))
+            para = self.add_paragraph()
+            para.write(self.style.code('output_file'))
+            para.write(' (blob)')
+            self.indent()
+            self.add_paragraph().write('The output file')
+            self.dedent()
+
 
     def _build_output(self, name, type_dict, lines, prefix=''):
         if not name:

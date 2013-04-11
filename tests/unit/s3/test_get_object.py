@@ -25,6 +25,7 @@ class TestGetObject(unittest.TestCase):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
         cmdline += ' --key mykey'
+        cmdline += ' outfile'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {},
@@ -37,6 +38,7 @@ class TestGetObject(unittest.TestCase):
         cmdline += ' --bucket mybucket'
         cmdline += ' --key mykey'
         cmdline += ' --range bytes=0-499'
+        cmdline += ' outfile'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {'Range': 'bytes=0-499'},
@@ -50,6 +52,7 @@ class TestGetObject(unittest.TestCase):
         cmdline += ' --key mykey'
         cmdline += ' --response-cache-control No-cache'
         cmdline += ' --response-content-encoding x-gzip'
+        cmdline += ' outfile'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey',
                                  'ResponseCacheControl': 'No-cache',

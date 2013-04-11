@@ -178,6 +178,9 @@ class CLIDriver(object):
                                     nargs=1,
                                     type=self.type_map[param.type],
                                     required=param.required)
+        if self.operation.is_streaming():
+            parser.add_argument('outfile', metavar='output_file',
+                                help='Where to save the content')
         if 'help' in remaining:
             get_operation_help(self.operation)
             return 0
@@ -276,6 +279,15 @@ class CLIDriver(object):
                         code = response['Response']['Errors']['Error']['Code']
         return (code, message)
 
+    def save_output(self, body_name, response_data, path):
+        buffsize = 32768
+        with open(path, 'wb') as fp:
+            data = response_data[body_name].read(buffsize)
+            while data:
+                fp.write(data)
+                data = response_data[body_name].read(buffsize)
+        del response_data[body_name]
+
     def call(self, args):
         try:
             params = {}
@@ -294,6 +306,10 @@ class CLIDriver(object):
                 http_response, response_data = self.operation.call(
                     self.endpoint, **params)
                 response_data = response_data
+                streaming_param = self.operation.is_streaming()
+                if streaming_param:
+                    self.save_output(streaming_param, response_data,
+                                     args.outfile)
                 self._display_response(self.operation, response_data)
                 return self._handle_http_response(http_response, response_data)
         except Exception as ex:
@@ -320,7 +336,6 @@ class CLIDriver(object):
             # flush is needed to avoid the "close failed in file object
             # destructor" in python2.x (see http://bugs.python.org/issue11380).
             sys.stdout.flush()
-
 
     def test(self, cmdline):
         """

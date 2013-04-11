@@ -76,6 +76,8 @@ class TestS3Objects(BaseS3Test):
         for i in range(5):
             key_name = 'key%s' % i
             self.create_object(key_name)
+        # Eventual consistency.
+        time.sleep(3)
         operation = self.service.get_operation('ListObjects')
         generator = operation.paginate(self.endpoint, max_keys=1,
                                        bucket=self.bucket_name)
@@ -92,6 +94,7 @@ class TestS3Objects(BaseS3Test):
             self.create_object(key_name)
             key_name2 = 'key/%s' % i
             self.create_object(key_name2)
+        time.sleep(3)
         operation = self.service.get_operation('ListObjects')
         generator = operation.paginate(self.endpoint, max_keys=2,
                                        prefix='key/',
@@ -108,6 +111,7 @@ class TestS3Objects(BaseS3Test):
 
     def test_can_get_and_put_object(self):
         self.create_object('foobarbaz', body='body contents')
+        time.sleep(3)
 
         operation = self.service.get_operation('GetObject')
         response = operation.call(self.endpoint, bucket=self.bucket_name,

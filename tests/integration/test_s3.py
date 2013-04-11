@@ -45,8 +45,8 @@ class TestS3Buckets(BaseS3Test):
         self.assertEqual(http.status_code, 200)
         # Can't really assume anything about whether or not they have buckets,
         # but we can assume something about the structure of the response.
-        self.assertEqual(list(result.keys()),
-                         ['Owner', 'Buckets', 'ResponseMetadata'])
+        self.assertEqual(sorted(list(result.keys())),
+                         ['Buckets', 'Owner', 'ResponseMetadata'])
 
 
 class TestS3Objects(BaseS3Test):
@@ -117,7 +117,7 @@ class TestS3Objects(BaseS3Test):
         response = operation.call(self.endpoint, bucket=self.bucket_name,
                                   key='foobarbaz')
         data = response[1]
-        self.assertEqual(data['Body'].read(), 'body contents')
+        self.assertEqual(data['Body'].read().decode('utf-8'), 'body contents')
 
 
 if __name__ == '__main__':

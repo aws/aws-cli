@@ -22,7 +22,7 @@ packages = [
     'botocore',
 ]
 
-requires = ['requests==1.1.0',
+requires = ['requests==1.2.0',
             'six>=1.1.0',
             'jmespath==0.0.2',
             'python-dateutil>=2.1']

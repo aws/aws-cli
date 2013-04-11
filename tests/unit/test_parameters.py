@@ -25,12 +25,26 @@ import unittest
 import botocore.parameters
 import botocore.exceptions
 import dateutil.parser
+import time
+
+
+class FakeService(object):
+
+    def __init__(self, timestamp_format):
+        self.timestamp_format = timestamp_format
+
+
+class FakeOperation(object):
+
+    def __init__(self, timestamp_format):
+        self.service = FakeService(timestamp_format)
 
 
 class TestParameters(unittest.TestCase):
 
-    def test_timestamp(self):
-        p = botocore.parameters.TimestampParameter(name='foo')
+    def test_iso_timestamp_from_iso(self):
+        op = FakeOperation('iso8601')
+        p = botocore.parameters.TimestampParameter(op, name='foo')
         d = {}
         ts = '2012-10-12T00:00'
         dt = dateutil.parser.parse(ts)
@@ -40,8 +54,43 @@ class TestParameters(unittest.TestCase):
                           p.build_parameter_query,
                           value='not a date string', built_params=d)
 
+    def test_iso_timestamp_from_epoch(self):
+        op = FakeOperation('iso8601')
+        p = botocore.parameters.TimestampParameter(op, name='foo')
+        d = {}
+        iso = '2013-04-11T23:23:15'
+        epoch = 1365722595
+        p.build_parameter_query(epoch, d)
+        self.assertEqual(d['foo'], iso)
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='not a date string', built_params=d)
+
+    def test_epoch_timestamp_from_iso(self):
+        op = FakeOperation('unixTimestamp')
+        p = botocore.parameters.TimestampParameter(op, name='foo')
+        d = {}
+        iso = '2013-04-11T23:23:15'
+        epoch = 1365722595
+        p.build_parameter_query(iso, d)
+        self.assertEqual(d['foo'], str(epoch))
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='not a date string', built_params=d)
+
+    def test_epoch_timestamp_from_epoch(self):
+        op = FakeOperation('unixTimestamp')
+        p = botocore.parameters.TimestampParameter(op, name='foo')
+        d = {}
+        epoch = 1365722595
+        p.build_parameter_query(epoch, d)
+        self.assertEqual(d['foo'], str(epoch))
+        self.assertRaises(botocore.exceptions.ValidationError,
+                          p.build_parameter_query,
+                          value='not a date string', built_params=d)
+
     def test_string(self):
-        p = botocore.parameters.StringParameter(name='foo')
+        p = botocore.parameters.StringParameter(None, name='foo')
         d = {}
         value = 'This is a test'
         p.build_parameter_query(value, d)
@@ -51,7 +100,7 @@ class TestParameters(unittest.TestCase):
                           value=1, built_params=d)
 
     def test_integer(self):
-        p = botocore.parameters.IntegerParameter(name='foo')
+        p = botocore.parameters.IntegerParameter(None, name='foo')
         d = {}
         p.build_parameter_query(123, d)
         self.assertEqual(d['foo'], '123')
@@ -62,7 +111,8 @@ class TestParameters(unittest.TestCase):
                           value=123.4, built_params=d)
 
     def test_integer_range(self):
-        p = botocore.parameters.IntegerParameter(name='foo', min=0, max=10)
+        p = botocore.parameters.IntegerParameter(None, name='foo',
+                                                 min=0, max=10)
         d = {}
         p.build_parameter_query(9, d)
         self.assertEqual(d['foo'], '9')
@@ -74,7 +124,7 @@ class TestParameters(unittest.TestCase):
                           value=100, built_params=d)
 
     def test_float(self):
-        p = botocore.parameters.FloatParameter(name='foo')
+        p = botocore.parameters.FloatParameter(None, name='foo')
         d = {}
         p.build_parameter_query(123.4, d)
         self.assertEqual(d['foo'], '123.4')
@@ -85,7 +135,8 @@ class TestParameters(unittest.TestCase):
                           value='true', built_params=d)
 
     def test_float_range(self):
-        p = botocore.parameters.FloatParameter(name='foo', min=0, max=10)
+        p = botocore.parameters.FloatParameter(None, name='foo',
+                                               min=0, max=10)
         d = {}
         p.build_parameter_query(9.0, d)
         assert d['foo'] == '9.0'
@@ -96,7 +147,7 @@ class TestParameters(unittest.TestCase):
                           value=100.0, built_params=d)
 
     def test_boolean(self):
-        p = botocore.parameters.BooleanParameter(name='foo')
+        p = botocore.parameters.BooleanParameter(None, name='foo')
         d = {}
         p.build_parameter_query('true', d)
         self.assertEqual(d['foo'], 'true')
@@ -122,7 +173,7 @@ class TestParameters(unittest.TestCase):
         #
         # Test a plain vanilla list
         #
-        p = botocore.parameters.ListParameter(name='foo')
+        p = botocore.parameters.ListParameter(None, name='foo')
         p.members = {'type': 'string'}
         p.handle_subtypes()
         d = {}
@@ -136,7 +187,7 @@ class TestParameters(unittest.TestCase):
         # Test a list where the member specifies an xmlname.
         # This should be ignored.
         #
-        p = botocore.parameters.ListParameter(name='foo')
+        p = botocore.parameters.ListParameter(None, name='foo')
         p.members = {'type': 'string',
                      'xmlname': 'bar'}
         p.handle_subtypes()
@@ -154,7 +205,7 @@ class TestParameters(unittest.TestCase):
         # Test a flattened list.  Member should always define
         # and xmlname attribute.
         #
-        p = botocore.parameters.ListParameter(name='foo')
+        p = botocore.parameters.ListParameter(None, name='foo')
         p.flattened = True
         p.members = {'type': 'string',
                      'xmlname': 'bar'}

@@ -196,6 +196,10 @@ class TimestampParameter(Parameter):
 
     Epoch = datetime.datetime(1970, 1, 1)
 
+    def totalseconds(self, td):
+        value = td.microseconds + (td.seconds + td.days * 24 * 3600)
+        return value * 10**6 / 10**6
+
     def validate(self, value):
         try:
             return dateutil.parser.parse(value)
@@ -210,7 +214,8 @@ class TimestampParameter(Parameter):
 
     def get_time_value(self, value):
         if self.operation.service.timestamp_format == 'unixTimestamp':
-            value = int((value - self.Epoch).total_seconds())
+            delta = value - self.Epoch
+            value = int(self.totalseconds(delta))
         else:
             value = value.isoformat()
         return value

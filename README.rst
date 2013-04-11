@@ -142,11 +142,17 @@ entries or both.  The following table documents these.
 Variable     Config Entry  Environment Variable   Description
 ==========   ============  =====================  ============================
 profile                    AWS_DEFAULT_PROFILE    Default profile name
+----------   ------------  ---------------------  ----------------------------
 region       region        AWS_DEFAULT_REGION     Default AWS Region
+----------   ------------  ---------------------  ----------------------------
 config_file                AWS_CONFIG_FILE        Alternate location of config
+----------   ------------  ---------------------  ----------------------------
 output       output        AWS_DEFAULT_OUTPUT     Default output style
+----------   ------------  ---------------------  ----------------------------
 access_key   access_key    AWS_ACCESS_KEY_ID      AWS Access Key
+----------   ------------  ---------------------  ----------------------------
 secret_key   secret_key    AWS_SECRET_ACCESS_KEY  AWS Secret Key
+----------   ------------  ---------------------  ----------------------------
 token        token         AWS_SECURITY_TOKEN     AWS Token (temp credentials)
 ===========  ============  =====================  ============================
 

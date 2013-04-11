@@ -37,7 +37,7 @@ class BaseS3Test(unittest.TestCase):
         self.endpoint = self.service.get_endpoint('us-east-1')
 
 
-class TestS3(BaseS3Test):
+class TestS3Buckets(BaseS3Test):
     def test_can_make_request(self):
         # Basic smoke test to ensure we can talk to s3.
         operation = self.service.get_operation('ListBuckets')
@@ -45,13 +45,14 @@ class TestS3(BaseS3Test):
         self.assertEqual(http.status_code, 200)
         # Can't really assume anything about whether or not they have buckets,
         # but we can assume something about the structure of the response.
-        # TODO: implement this once the output structure is finalized.
+        self.assertEqual(sorted(list(result.keys())),
+                         ['Buckets', 'Owner', 'ResponseMetadata'])
 
 
-class TestS3Pagination(BaseS3Test):
+class TestS3Objects(BaseS3Test):
 
     def setUp(self):
-        super(TestS3Pagination, self).setUp()
+        super(TestS3Objects, self).setUp()
         self.bucket_name = 'botocoretest%s' % int(time.time())
         operation = self.service.get_operation('CreateBucket')
         operation.call(self.endpoint, bucket=self.bucket_name)
@@ -65,16 +66,18 @@ class TestS3Pagination(BaseS3Test):
         operation = self.service.get_operation('DeleteBucket')
         operation.call(self.endpoint, bucket=self.bucket_name)
 
-    def create_object(self, key_name):
+    def create_object(self, key_name, body='foo'):
         self.keys.append(key_name)
         operation = self.service.get_operation('PutObject')
         operation.call(self.endpoint, bucket=self.bucket_name, key=key_name,
-                       body='foo')
+                       body=body)
 
     def test_can_paginate(self):
         for i in range(5):
             key_name = 'key%s' % i
             self.create_object(key_name)
+        # Eventual consistency.
+        time.sleep(3)
         operation = self.service.get_operation('ListObjects')
         generator = operation.paginate(self.endpoint, max_keys=1,
                                        bucket=self.bucket_name)
@@ -91,6 +94,7 @@ class TestS3Pagination(BaseS3Test):
             self.create_object(key_name)
             key_name2 = 'key/%s' % i
             self.create_object(key_name2)
+        time.sleep(3)
         operation = self.service.get_operation('ListObjects')
         generator = operation.paginate(self.endpoint, max_keys=2,
                                        prefix='key/',
@@ -104,6 +108,16 @@ class TestS3Pagination(BaseS3Test):
                 response[k].append(val)
         self.assertIn('Contents', response)
         self.assertIn('CommonPrefixes', response)
+
+    def test_can_get_and_put_object(self):
+        self.create_object('foobarbaz', body='body contents')
+        time.sleep(3)
+
+        operation = self.service.get_operation('GetObject')
+        response = operation.call(self.endpoint, bucket=self.bucket_name,
+                                  key='foobarbaz')
+        data = response[1]
+        self.assertEqual(data['Body'].read().decode('utf-8'), 'body contents')
 
 
 if __name__ == '__main__':

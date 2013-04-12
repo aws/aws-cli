@@ -46,7 +46,7 @@ setup(
     name='awscli',
     version=awscli.__version__,
     description='Universal Command Line Environment for AWS.',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     author='Mitch Garnaat',
     author_email='garnaat@amazon.com',
     url='http://aws.amazon.com/cli/',

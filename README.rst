@@ -160,7 +160,7 @@ token       token        AWS_SECURITY_TOKEN    AWS Token (temp credentials)
 Examples
 ^^^^^^^^
 
-If you get tired of specify a ``--region`` option on the command line
+If you get tired of specifying a ``--region`` option on the command line
 all of the time, you can specify a default region to use whenever no
 explicit ``--region`` option is included using the ``region`` variable.
 To specify this using an environment variable::

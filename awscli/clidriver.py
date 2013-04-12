@@ -153,7 +153,8 @@ class CLIDriver(object):
                                     help=param.documentation,
                                     nargs='*',
                                     type=self.type_map[param.type],
-                                    required=param.required)
+                                    required=param.required,
+                                    dest=param.py_name)
             elif param.type == 'boolean':
                 if param.required:
                     dest = param.cli_name[2:].replace('-', '_')
@@ -171,13 +172,15 @@ class CLIDriver(object):
                     parser.add_argument(param.cli_name,
                                         help=param.documentation,
                                         action='store_true',
-                                        required=param.required)
+                                        required=param.required,
+                                        dest=param.py_name)
             else:
                 parser.add_argument(param.cli_name,
                                     help=param.documentation,
                                     nargs=1,
                                     type=self.type_map[param.type],
-                                    required=param.required)
+                                    required=param.required,
+                                    dest=param.py_name)
         if self.operation.is_streaming():
             parser.add_argument('outfile', metavar='output_file',
                                 help='Where to save the content')
@@ -239,10 +242,7 @@ class CLIDriver(object):
 
     def build_call_parameters(self, args, param_dict):
         for param in self.operation.params:
-            if hasattr(args, param.py_name):
-                value = getattr(args, param.py_name)
-            else:
-                value = getattr(args, param.cli_name)
+            value = getattr(args, param.py_name)
             if value is not None:
                 # Don't include non-required boolean params whose
                 # values are False

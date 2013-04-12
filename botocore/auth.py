@@ -27,6 +27,7 @@ from hashlib import sha1
 import hmac
 import logging
 from email.utils import formatdate
+from operator import itemgetter
 from botocore.exceptions import UnknownSignatureVersionError
 from botocore.exceptions import NoCredentialsError
 from botocore.utils import normalize_url_path
@@ -347,17 +348,15 @@ class HmacV1Auth(object):
         # don't include anything after the first ? in the resource...
         # unless it is one of the QSA of interest, defined above
         buf = split.path
-
         if split.query:
             qsa = split.query.split('&')
             qsa = [a.split('=', 1) for a in qsa]
             qsa = [self.unquote_v(a) for a in qsa if a[0] in self.QSAOfInterest]
             if len(qsa) > 0:
-                qsa.sort(cmp=lambda x, y:cmp(x[0], y[0]))
+                qsa.sort(key=itemgetter(0))
                 qsa = ['='.join(a) for a in qsa]
                 buf += '?'
                 buf += '&'.join(qsa)
-
         return buf
 
     def canonical_string(self, method, split, headers, expires=None):
@@ -372,7 +371,7 @@ class HmacV1Auth(object):
     def get_signature(self, method, split, headers, expires=None):
         if self.credentials.token:
             #TODO: remove hardcoded header name
-            headers['security_token'] = self.credentials.token
+            headers['x-amz-security-token'] = self.credentials.token
         string_to_sign = self.canonical_string(method,
                                                split,
                                                headers)

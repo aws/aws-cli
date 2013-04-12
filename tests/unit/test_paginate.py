@@ -32,7 +32,7 @@ class TestPagination(unittest.TestCase):
     def setUp(self):
         self.operation = mock.Mock()
         self.paginate_config = {
-            'output_tokens': ['NextToken'],
+            'output_token': 'NextToken',
             'py_input_token': 'NextToken',
         }
         self.operation.pagination = self.paginate_config
@@ -78,9 +78,9 @@ class TestPagination(unittest.TestCase):
         with self.assertRaises(PaginationError):
             list(self.paginator.paginate(None))
 
-    def test_next_tokens_are_lists(self):
+    def test_next_token_with_or_expression(self):
         self.operation.pagination = {
-            'output_tokens': ['NextToken', 'NextToken2'],
+            'output_token': 'NextToken or NextToken2',
             'py_input_token': 'NextToken',
         }
         self.paginator = Paginator(self.operation)
@@ -109,7 +109,7 @@ class TestPagination(unittest.TestCase):
         # indicate whether or not the results are being paginated.
         self.paginate_config = {
             'more_results': 'IsTruncated',
-            'output_tokens': ['NextToken'],
+            'output_token': 'NextToken',
             'py_input_token': 'NextToken',
         }
         self.operation.pagination = self.paginate_config
@@ -131,6 +131,24 @@ class TestPagination(unittest.TestCase):
              mock.call(None, NextToken='token1'),
              mock.call(None, NextToken='token2'),])
 
+    def test_more_tokens_is_path_expression(self):
+        self.paginate_config = {
+            'more_results': 'Foo.IsTruncated',
+            'output_token': 'NextToken',
+            'py_input_token': 'NextToken',
+        }
+        self.operation.pagination = self.paginate_config
+        self.paginator = Paginator(self.operation)
+        responses = [
+            (None, {'Foo': {'IsTruncated': True}, 'NextToken': 'token1'}),
+            (None, {'Foo': {'IsTruncated': False}, 'NextToken': 'token2'}),
+        ]
+        self.operation.call.side_effect = responses
+        list(self.paginator.paginate(None))
+        self.assertEqual(
+            self.operation.call.call_args_list,
+            [mock.call(None),
+             mock.call(None, NextToken='token1'),])
 
 
 class TestPaginatorObjectConstruction(unittest.TestCase):
@@ -161,8 +179,8 @@ class TestPaginatorWithPathExpressions(unittest.TestCase):
         self.operation = mock.Mock()
         # This is something we'd see in s3 pagination.
         self.paginate_config = {
-            'output_tokens': ['NextMarker',
-                              'ListBucketResult.Contents[-1].Key'],
+            'output_token': [
+                'NextMarker or ListBucketResult.Contents[-1].Key'],
             'py_input_token': 'next_marker',
         }
         self.operation.pagination = self.paginate_config
@@ -194,6 +212,100 @@ class TestPaginatorWithPathExpressions(unittest.TestCase):
             [mock.call(None),
              mock.call(None, next_marker='token1'),
              mock.call(None, next_marker='Last'),])
+
+
+class TestMultipleTokens(unittest.TestCase):
+    def setUp(self):
+        self.operation = mock.Mock()
+        # This is something we'd see in s3 pagination.
+        self.paginate_config = {
+            "output_token": ["ListBucketResults.NextKeyMarker",
+                             "ListBucketResults.NextUploadIdMarker"],
+            "py_input_token": ["key_marker", "upload_id_marker"]
+        }
+        self.operation.pagination = self.paginate_config
+        self.paginator = Paginator(self.operation)
+
+    def test_s3_list_multipart_uploads(self):
+        responses = [
+            (None, {"ListBucketResults": {"NextKeyMarker": "key1",
+                    "NextUploadIdMarker": "up1"}}),
+            (None, {"ListBucketResults": {"NextKeyMarker": "key2",
+                    "NextUploadIdMarker": "up2"}}),
+            (None, {"ListBucketResults": {"NextKeyMarker": "key3",
+                    "NextUploadIdMarker": "up3"}}),
+            (None, {}),
+        ]
+        self.operation.call.side_effect = responses
+        list(self.paginator.paginate(None))
+        self.assertEqual(
+            self.operation.call.call_args_list,
+            [mock.call(None),
+             mock.call(None, key_marker='key1', upload_id_marker='up1'),
+             mock.call(None, key_marker='key2', upload_id_marker='up2'),
+             mock.call(None, key_marker='key3', upload_id_marker='up3'),
+             ])
+
+
+class TestKeyIterators(unittest.TestCase):
+    def setUp(self):
+         self.operation = mock.Mock()
+         # This is something we'd see in s3 pagination.
+         self.paginate_config = {
+             "output_token": "Marker",
+             "py_input_token": "Marker",
+             "result_key": "Users"
+         }
+         self.operation.pagination = self.paginate_config
+         self.paginator = Paginator(self.operation)
+
+    def test_result_key_iters(self):
+        responses = [
+            (None, {"Users": ["User1"], "Marker": "m1"}),
+            (None, {"Users": ["User2"], "Marker": "m2"}),
+            (None, {"Users": ["User3"]}),
+        ]
+        self.operation.call.side_effect = responses
+        pages = self.paginator.paginate(None)
+        iterators = pages.result_key_iters()
+        self.assertEqual(len(iterators), 1)
+        self.assertEqual(list(iterators[0]),
+                         ["User1", "User2", "User3"])
+        self.assertEqual(len(pages.http_responses), 3)
+
+    def test_build_full_result_with_single_key(self):
+        responses = [
+            (None, {"Users": ["User1"], "Marker": "m1"}),
+            (None, {"Users": ["User2"], "Marker": "m2"}),
+            (None, {"Users": ["User3"]}),
+        ]
+        self.operation.call.side_effect = responses
+        pages = self.paginator.paginate(None)
+        complete = pages.build_full_result()
+        self.assertEqual(complete, ['User1', 'User2', 'User3'])
+
+    def test_build_full_result_with_multiple_result_keys(self):
+        self.operation = mock.Mock()
+        # This is something we'd see in s3 pagination.
+        self.paginate_config = {
+            "output_token": "Marker",
+            "py_input_token": "Marker",
+            "result_key": ["Users", "Groups"],
+        }
+        self.operation.pagination = self.paginate_config
+        self.paginator = Paginator(self.operation)
+
+        responses = [
+            (None, {"Users": ["User1"], "Groups": ["Group1"], "Marker": "m1"}),
+            (None, {"Users": ["User2"], "Groups": ["Group2"], "Marker": "m2"}),
+            (None, {"Users": ["User3"], "Groups": ["Group3"], }),
+        ]
+        self.operation.call.side_effect = responses
+        pages = self.paginator.paginate(None)
+        complete = pages.build_full_result()
+        self.assertEqual(complete,
+                         {"Users": ['User1', 'User2', 'User3'],
+                          "Groups": ['Group1', 'Group2', 'Group3']})
 
 
 if __name__ == '__main__':

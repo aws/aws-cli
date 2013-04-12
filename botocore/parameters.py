@@ -23,6 +23,8 @@
 import logging
 import base64
 import hashlib
+import datetime
+import time
 import six
 import dateutil.parser
 from . import BotoCoreObject
@@ -33,7 +35,8 @@ logger = logging.getLogger(__name__)
 
 class Parameter(BotoCoreObject):
 
-    def __init__(self, **kwargs):
+    def __init__(self, operation, **kwargs):
+        self.operation = operation
         self.xmlname = None
         self.required = False
         self.flattened = False
@@ -59,25 +62,29 @@ class Parameter(BotoCoreObject):
             label = self.name
         return label
 
-    def build_parameter_query(self, value, built_params, label=''):
-        value = self.validate(value)
+    def store_value_query(self, value, built_params, label):
         if label:
             label = label.format(label=self.get_label())
         else:
             label = self.get_label()
         built_params[label] = str(value)
 
-    def build_parameter_json(self, value, built_params,
-                             label=''):
+    def build_parameter_query(self, value, built_params, label=''):
         value = self.validate(value)
+        self.store_value_query(value, built_params, label)
+
+    def store_value_json(self, value, built_params, label):
         if isinstance(built_params, list):
             built_params.append(value)
         else:
             label = self.get_label()
             built_params[label] = value
 
-    def build_parameter_rest(self, value, built_params,
-                             label=''):
+    def build_parameter_json(self, value, built_params, label=''):
+        value = self.validate(value)
+        self.store_value_json(value, built_params, value)
+
+    def build_parameter_rest(self, value, built_params, label=''):
         if hasattr(self, 'location'):
             if self.location == 'uri':
                 built_params['uri_params'][self.name] = value
@@ -175,23 +182,7 @@ class BooleanParameter(Parameter):
             value = 'true'
         else:
             value = 'false'
-        if label:
-            label = label.format(label=self.get_label())
-        else:
-            label = self.get_label()
-        built_params[label] = value
-
-    def build_parameter_json(self, value, built_params, label=''):
-        value = self.validate(value)
-        if value:
-            value = True
-        else:
-            value = False
-        if isinstance(built_params, list):
-            built_params.append(value)
-        else:
-            label = label + self.get_label()
-            built_params[label] = value
+        self.store_value_query(value, built_params, label)
 
     @property
     def false_name(self):
@@ -203,13 +194,40 @@ class BooleanParameter(Parameter):
 
 class TimestampParameter(Parameter):
 
+    Epoch = datetime.datetime(1970, 1, 1)
+
+    def totalseconds(self, td):
+        value = td.microseconds + (td.seconds + td.days * 24 * 3600)
+        return value * 10**6 / 10**6
+
     def validate(self, value):
         try:
-            dt = dateutil.parser.parse(value)
-            return dt.isoformat()
-        except ValueError:
-            raise ValidationError(value=str(value),
-                                  type_name='timestamp')
+            return dateutil.parser.parse(value)
+        except:
+            pass
+        try:
+            # Might be specified as an epoch time
+            return datetime.datetime.utcfromtimestamp(value)
+        except:
+            pass
+        raise ValidationError(value=str(value), type_name='timestamp')
+
+    def get_time_value(self, value):
+        if self.operation.service.timestamp_format == 'unixTimestamp':
+            delta = value - self.Epoch
+            value = int(self.totalseconds(delta))
+        else:
+            value = value.isoformat()
+        return value
+
+    def build_parameter_query(self, value, built_params, label=''):
+        value = self.validate(value)
+        self.store_value_query(self.get_time_value(value),
+                               built_params, label)
+
+    def build_parameter_json(self, value, built_params, label=''):
+        value = self.validate(value)
+        self.store_value_json(self.get_time_value(value), built_params, value)
 
 
 class StringParameter(Parameter):
@@ -268,7 +286,7 @@ class ListParameter(Parameter):
 
     def handle_subtypes(self):
         if self.members:
-            self.members = get_parameter(None, self.members)
+            self.members = get_parameter(self.operation, None, self.members)
 
     def build_parameter_query(self, value, built_params, label=''):
         logger.debug('name: %s' % self.get_label())
@@ -314,9 +332,9 @@ class MapParameter(Parameter):
 
     def handle_subtypes(self):
         if self.members:
-            self.members = get_parameter(None, self.members)
+            self.members = get_parameter(self.operation, None, self.members)
         if self.keys:
-            self.keys = get_parameter(None, self.keys)
+            self.keys = get_parameter(self.operation, None, self.keys)
 
     def build_parameter_query(self, value, built_params, label=''):
         label = self.get_label()
@@ -350,7 +368,7 @@ class StructParameter(Parameter):
         if self.members:
             l = []
             for name, data in self.members.items():
-                l.append(get_parameter(name, data))
+                l.append(get_parameter(self.operation, name, data))
             self.members = l
 
     def build_parameter_query(self, value, built_params, label=''):
@@ -403,12 +421,12 @@ type_map = {
     'file': StringParameter}
 
 
-def get_parameter(name, type_data):
+def get_parameter(operation, name, type_data):
     """
     Returns a Parameter object based on the parameter data passed in.
     """
     if name and 'name' not in type_data:
         type_data['name'] = name
     param_cls = type_map[type_data['type']]
-    obj = param_cls(**type_data)
+    obj = param_cls(operation, **type_data)
     return obj

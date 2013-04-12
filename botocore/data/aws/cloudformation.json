@@ -5,7 +5,7 @@
     "result_wrapped": true,
     "api_version": "2010-05-15",
     "endpoint_prefix": "cloudformation",
-    "xmlnamespace": null,
+    "xmlnamespace": "http://cloudformation.amazonaws.com/doc/2010-05-15/",
     "documentation": "\n      <fullname>AWS CloudFormation</fullname>\n      <p>AWS CloudFormation enables you to create and manage AWS infrastructure deployments predictably and repeatedly.\n         AWS CloudFormation helps you leverage AWS products such as Amazon EC2, EBS, Amazon SNS, ELB, and Auto Scaling\n         to build highly-reliable, highly scalable, cost effective applications without worrying about creating and\n         configuring the underlying the AWS infrastructure.</p>\n      <p>With AWS CloudFormation, you declare all of your resources and dependencies in a template file. The template\n         defines a collection of resources as a single unit called a stack. AWS CloudFormation creates and deletes all\n         member resources of the stack together and manages all dependencies between the resources for you.</p>\n      <p>For more information about this product, go to the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation Product Page</a>.</p>\n      <p>Amazon CloudFormation makes use of other AWS products. If you need additional technical information about a\n         specific AWS product, you can find the product's technical documentation at <a href=\"http://aws.amazon.com/documentation/\">http://aws.amazon.com/documentation/</a>.</p>\n\n   ",
     "operations": {
         "CancelUpdateStack": {
@@ -314,10 +314,9 @@
             "errors": [],
             "documentation": "\n      <p>Returns all the stack related events for the AWS account. If <code>StackName</code> is specified, returns\n         events related to all the stacks with the given name. If <code>StackName</code> is not specified, returns all\n         the events for the account. For more information about a stack's event history, go to the <a href=\"http://docs.amazonwebservices.com/AWSCloudFormation/latest/UserGuide\">AWS CloudFormation User\n            Guide</a>.</p>\n      <note>Events are returned, even if the stack never existed or has been successfully deleted.</note>\n\n      <examples>\n         <queryrequest>\nhttps://cloudformation.us-east-1.amazonaws.com/\n ?Action=DescribeStackEvents\n &StackName=MyStack\n &Version=2010-05-15\n &SignatureVersion=2\n &Timestamp=2010-07-27T22%3A26%3A28.000Z\n &AWSAccessKeyId=[AWS Access KeyID]\n &Signature=[Signature]</queryrequest>\n\n         <queryresponse>\n<DescribeStackEventsResult>\n  <StackEvents>\n    <member>\n      <EventId>Event-1-Id</EventId>\n      <StackId>arn:aws:cloudformation:us-east-1:123456789:stack/MyStack/aaf549a0-a413-11df-adb3-5081b3858e83</StackId>\n      <StackName>MyStack</StackName>\n      <LogicalResourceId>MyStack</LogicalResourceId>\n      <PhysicalResourceId>MyStack_One</PhysicalResourceId>\n      <ResourceType>AWS::CloudFormation::Stack</ResourceType>\n      <Timestamp>2010-07-27T22:26:28Z</Timestamp>\n      <ResourceStatus>CREATE_IN_PROGRESS</ResourceStatus>\n      <ResourceStatusReason>User initiated</ ResourceStatusReason>\n    </member>\n    <member>\n      <EventId>Event-2-Id</EventId>\n      <StackId>arn:aws:cloudformation:us-east-1:123456789:stack/MyStack/aaf549a0-a413-11df-adb3-5081b3858e83</StackId>\n      <StackName>MyStack</StackName>\n      <LogicalResourceId>MyDBInstance</LogicalResourceId>\n      <PhysicalResourceId>MyStack_DB1</PhysicalResourceId>\n      <ResourceType>AWS::SecurityGroup</ResourceType>\n      <Timestamp>2010-07-27T22:27:28Z</Timestamp>\n      <ResourceStatus>CREATE_IN_PROGRESS</ResourceStatus>\n      <ResourceProperties>{\"GroupDescription\":...}</ResourceProperties>\n    </member>\n    <member>\n      <EventId>Event-3-Id</EventId>\n      <StackId>arn:aws:cloudformation:us-east-1:123456789:stack/MyStack/aaf549a0-a413-11df-adb3-5081b3858e83</StackId>\n      <StackName>MyStack</StackName>\n      <LogicalResourceId>MySG1</LogicalResourceId>\n      <PhysicalResourceId>MyStack_SG1</PhysicalResourceId>\n      <ResourceType>AWS:: SecurityGroup</ResourceType>\n      <Timestamp>2010-07-27T22:28:28Z</Timestamp>\n      <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n    </member>\n  </StackEvents>\n</DescribeStackEventsResult></queryresponse>\n      </examples>\n   ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "StackEvents",
                 "py_input_token": "next_token"
             }
         },
@@ -742,10 +741,9 @@
             "errors": [],
             "documentation": "\n      <p>Returns the description for the specified stack; if no stack name was specified, then it returns the\n         description for all the stacks created.</p>\n      <examples>\n\n         <queryrequest>\nhttps://cloudformation.us-east-1.amazonaws.com/\n ?Action=DescribeStacks\n &StackName=MyStack\n &Version=2010-05-15\n &SignatureVersion=2\n &Timestamp=2010-07-27T22%3A26%3A28.000Z\n &AWSAccessKeyId=[AWS Access KeyID]\n &Signature=[Signature]</queryrequest>\n         <queryresponse>\n<DescribeStacksResult>\n  <Stacks>\n    <member>\n      <StackName>MyStack</StackName>\n      <StackId>arn:aws:cloudformation:us-east-1:123456789:stack/MyStack/aaf549a0-a413-11df-adb3-5081b3858e83</StackId>\n      <CreationTime>2010-07-27T22:28:28Z</CreationTime>\n      <StackStatus>CREATE_COMPLETE</StackStatus>\n      <DisableRollback>false</DisableRollback>\n      <Outputs>\n        <member>\n          <OutputKey>StartPage</OutputKey>\n          <OutputValue>http://my-load-balancer.amazonaws.com:80/index.html</OutputValue>\n        </member>\n      </Outputs>\n    </member>\n  </Stacks>\n</DescribeStacksResult></queryresponse>\n      </examples>\n   ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "Stacks",
                 "py_input_token": "next_token"
             }
         },
@@ -938,10 +936,9 @@
             "errors": [],
             "documentation": "\n      <p>Returns descriptions of all resources of the specified stack.</p>\n      <p>For deleted stacks, ListStackResources returns resource information for up to 90 days after the stack has been\n         deleted.</p>\n\n      <examples>\n         <queryrequest>\nhttps://cloudformation.us-east-1.amazonaws.com/\n ?Action=ListStackResources\n &StackName=MyStack\n &Version=2010-05-15\n &SignatureVersion=2\n &Timestamp=2011-07-08T22%3A26%3A28.000Z\n &AWSAccessKeyId=[AWS Access KeyID]\n &Signature=[Signature]</queryrequest>\n\n         <queryresponse>\n<ListStackResourcesResponse>\n  <ListStackResourcesResult>\n    <StackResourceSummaries>\n      <member>\n        <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n        <LogicalResourceId>DBSecurityGroup</LogicalResourceId>\n        <LastUpdatedTimestamp>2011-06-21T20:15:58Z</LastUpdatedTimestamp>\n        <PhysicalResourceId>gmarcteststack-dbsecuritygroup-1s5m0ez5lkk6w</PhysicalResourceId>\n        <ResourceType>AWS::RDS::DBSecurityGroup</ResourceType>\n      </member>\n      <member>\n        <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n        <LogicalResourceId>SampleDB</LogicalResourceId>\n        <LastUpdatedTimestamp>2011-06-21T20:25:57Z</LastUpdatedTimestamp>\n        <PhysicalResourceId>MyStack-sampledb-ycwhk1v830lx</PhysicalResourceId>\n        <ResourceType>AWS::RDS::DBInstance</ResourceType>\n      </member>\n      <member>\n        <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n        <LogicalResourceId>SampleApplication</LogicalResourceId>\n        <LastUpdatedTimestamp>2011-06-21T20:26:12Z</LastUpdatedTimestamp>\n        <PhysicalResourceId>MyStack-SampleApplication-1MKNASYR3RBQL</PhysicalResourceId>\n        <ResourceType>AWS::ElasticBeanstalk::Application</ResourceType>\n      </member>\n      <member>\n        <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n        <LogicalResourceId>SampleEnvironment</LogicalResourceId>\n        <LastUpdatedTimestamp>2011-06-21T20:28:48Z</LastUpdatedTimestamp>\n        <PhysicalResourceId>myst-Samp-1AGU6ERZX6M3Q</PhysicalResourceId>\n        <ResourceType>AWS::ElasticBeanstalk::Environment</ResourceType>\n      </member>\n      <member>\n        <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n        <LogicalResourceId>AlarmTopic</LogicalResourceId>\n        <LastUpdatedTimestamp>2011-06-21T20:29:06Z</LastUpdatedTimestamp>\n        <PhysicalResourceId>arn:aws:sns:us-east-1:803981987763:MyStack-AlarmTopic-SW4IQELG7RPJ</PhysicalResourceId>\n        <ResourceType>AWS::SNS::Topic</ResourceType>\n      </member>\n      <member>\n        <ResourceStatus>CREATE_COMPLETE</ResourceStatus>\n        <LogicalResourceId>CPUAlarmHigh</LogicalResourceId>\n        <LastUpdatedTimestamp>2011-06-21T20:29:23Z</LastUpdatedTimestamp>\n        <PhysicalResourceId>MyStack-CPUAlarmHigh-POBWQPDJA81F</PhysicalResourceId>\n        <ResourceType>AWS::CloudWatch::Alarm</ResourceType>\n      </member>\n    </StackResourceSummaries>\n  </ListStackResourcesResult>\n  <ResponseMetadata>\n    <RequestId>2d06e36c-ac1d-11e0-a958-f9382b6eb86b</RequestId>\n  </ResponseMetadata>\n</ListStackResourcesResponse>\n</queryresponse>\n      </examples>\n\n   ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "StackResourceSummaries",
                 "py_input_token": "next_token"
             }
         },
@@ -1079,10 +1076,9 @@
             "errors": [],
             "documentation": "\n      <p>Returns the summary information for stacks whose status matches the specified StackStatusFilter. Summary\n         information for stacks that have been deleted is kept for 90 days after the stack is deleted. If no\n         StackStatusFilter is specified, summary information for all stacks is returned (including existing stacks and\n         stacks that have been deleted).</p>\n      <examples>\n\n         <queryrequest>\nhttps://cloudformation.us-east-1.amazonaws.com/\n ?Action=ListStacks\n &StackStatusFilter.member.1=CREATE_IN_PROGRESS\n &StackStatusFilter.member.2=DELETE_COMPLETE\n &Version=2010-05-15\n &SignatureVersion=2\n &SignatureMethod=HmacSHA256\n &Timestamp=2010-07-27T22%3A26%3A28.000Z\n &AWSAccessKeyId=[AWS Access KeyID]\n &Signature=[Signature]</queryrequest>\n         <queryresponse><ListStacksResponse>\n <ListStacksResult>\n  <StackSummaries>\n    <member>\n        <StackId>\n            arn:aws:cloudformation:us-east-1:1234567:stack/TestCreate1/aaaaa\n        </StackId>\n        <StackStatus>CREATE_IN_PROGRESS</StackStatus>\n        <StackName>vpc1</StackName>\n        <CreationTime>2011-05-23T15:47:44Z</CreationTime>\n        <TemplateDescription>\n            Creates one EC2 instance and a load balancer.\n        </TemplateDescription>\n    </member>\n    <member>\n        <StackId>\n            arn:aws:cloudformation:us-east-1:1234567:stack/TestDelete2/bbbbb\n        </StackId>\n        <StackStatus>DELETE_COMPLETE</StackStatus>\n        <DeletionTime>2011-03-10T16:20:51Z</DeletionTime>\n        <StackName>WP1</StackName>\n        <CreationTime>2011-03-05T19:57:58Z</CreationTime>\n        <TemplateDescription>\n            A simple basic Cloudformation Template.\n        </TemplateDescription>\n    </member>\n  </StackSummaries>\n </ListStacksResult>\n</ListStacksResponse></queryresponse>\n      </examples>\n   ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "StackSummaries",
                 "py_input_token": "next_token"
             }
         },
@@ -1265,31 +1261,27 @@
     },
     "pagination": {
         "DescribeStackEvents": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "StackEvents",
             "py_input_token": "next_token"
         },
         "DescribeStacks": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "Stacks",
             "py_input_token": "next_token"
         },
         "ListStackResources": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "StackResourceSummaries",
             "py_input_token": "next_token"
         },
         "ListStacks": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "StackSummaries",
             "py_input_token": "next_token"
         }
     },

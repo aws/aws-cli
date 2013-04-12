@@ -41,6 +41,7 @@ class Service(object):
     def __init__(self, session, provider_name, service_name,
                  path='/', port=None):
         self.global_endpoint = None
+        self.timestamp_format = 'iso8601'
         sdata = session.get_service_data(service_name, provider_name)
         self.__dict__.update(sdata)
         self.session = session

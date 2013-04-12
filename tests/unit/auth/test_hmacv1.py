@@ -72,3 +72,10 @@ class TestHMACV1(unittest.TestCase):
         split = urlsplit('/quotes/nelson')
         sig = self.hmacv1.get_signature('PUT', split, http_headers)
         self.assertEqual(sig, 'kIdMxyiYB+F+83zYGR6sSb3ICcE=')
+
+    def test_query_string(self):
+        split = urlsplit('/quotes/nelson?uploads')
+        pairs = [('Date', 'Thu, 17 Nov 2005 18:49:58 GMT'),]
+        sig = self.hmacv1.get_signature('PUT', split,
+                                        HTTPHeaders.from_pairs(pairs))
+        self.assertEqual(sig, 'P7pBz3Z4p3GxysRSJ/gR8nk7D4o=')

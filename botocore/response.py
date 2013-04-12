@@ -20,18 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-"""
-This module uses the SAX parser to turn response XML into Python
-native datastructures.
-
-We create an Element object for each XML element we encounter in
-the response data.
-
-"""
-import xml.sax
+import sys
+import xml.etree.cElementTree
+from botocore import ScalarTypes
 import json
 import logging
-from botocore import ScalarTypes
 
 logger = logging.getLogger(__name__)
 
@@ -49,231 +42,224 @@ class Response(object):
         return self.value
 
 
-class Element(object):
-
-    def __init__(self, name, defn):
-        self.name = name
-        self.defn = defn
-        self.value = ''
-        if self.defn:
-            if self.defn['type'] == 'list':
-                self.value = []
-            elif self.defn['type'] in ('structure', 'map'):
-                self.value = {}
-        self.key_name = None
-        self.to_be_flattened = False
-
-    def __repr__(self):
-        if self.defn:
-            type_name = self.defn['type']
-        else:
-            type_name = 'generic'
-        return '%s(%s)=%s' % (self.name, type_name, self.value)
-
-    def set_value(self, name, value):
-        if self.defn:
-            if self.defn['type'] == 'integer':
-                self.value = int(value)
-            elif self.defn['type'] == 'float':
-                self.value = float(value)
-            elif self.defn['type'] == 'boolean':
-                if value.lower() == 'true':
-                    self.value = True
-                else:
-                    self.value = False
-            elif self.defn['type'] in ScalarTypes:
-                self.value = value
-            elif self.defn['type'] == 'list':
-                if self.to_be_flattened:
-                    if self.defn['members']['type'] == 'structure':
-                        self.value[-1][name] = value
-                    else:
-                        self.value.append(value)
-                else:
-                    self.value.append(value)
-            elif self.defn['type'] == 'map':
-                if self.to_be_flattened:
-                    self.value = value
-                else:
-                    key_name = self.defn['keys'].get('xmlname', 'key')
-                    if name == key_name:
-                        self.key_name = value
-                    else:
-                        self.value[self.key_name] = value
-            elif self.defn['type'] == 'structure':
-                self.value[name] = value
-        else:
-            if not name:
-                self.value = value
-            else:
-                if not isinstance(self.value, dict):
-                    self.value = {}
-                self.value[name] = value
-
-
-class XmlResponse(Response, xml.sax.ContentHandler):
+class XmlResponse(Response):
 
     def __init__(self, operation):
         Response.__init__(self, operation)
-        self.root_element = Element('root', None)
-        self.stack = [self.root_element]
-        self.current_text = ''
-        self.type_map = {}
-        self.build_type_map(None, self.operation.output)
-        self.map_map = {}
-        self.flattened_map = {}
-        self.create_key_names(None, operation.output)
+        self.tree = None
+        self.element_map = {}
+        self.value = {}
+        self._parent = None
 
-    def create_key_names(self, name, type_dict):
-        if type_dict:
-            if name:
-                type_dict['key_name'] = name
-            if type_dict['type'] == 'structure':
-                for member_name in type_dict['members']:
-                    self.create_key_names(member_name,
-                                          type_dict['members'][member_name])
-            elif type_dict['type'] == 'list':
-                self.create_key_names(None, type_dict['members'])
-            elif type_dict['type'] == 'map':
-                self.create_key_names(None, type_dict['keys'])
-                self.create_key_names(None, type_dict['members'])
+    def clark_notation(self, tag):
+        return '{%s}%s' % (self.operation.service.xmlnamespace, tag)
 
-    def build_type_map(self, name, type_dict):
-        if not isinstance(type_dict, dict):
-            return
-        if not name:
-            if 'shape_name' in type_dict:
-                name = type_dict['shape_name']
-        name = type_dict.get('xmlname', name)
-        if type_dict['type'] == 'structure':
-            self.type_map[name] = type_dict
-            for member_name in type_dict['members']:
-                self.build_type_map(member_name,
-                                    type_dict['members'][member_name])
-        elif type_dict['type'] == 'list':
-            flattened = type_dict.get('flattened', False)
-            if flattened:
-                name = type_dict['members'].get('xmlname', name)
-            self.type_map[name] = type_dict
-            self.build_type_map(None, type_dict['members'])
-        elif type_dict['type'] == 'map':
-            self.type_map[name] = type_dict
-            self.build_type_map('key', type_dict['keys'])
-            self.build_type_map('value', type_dict['members'])
+    def get_element_base_tag(self, elem):
+        if '}' in elem.tag:
+            elem_tag = elem.tag.split('}')[1]
         else:
-            if name not in self.type_map:
-                self.type_map[name] = type_dict
-
-    def get_value(self):
-        return self.root_element.value
-
-    def add_element(self, name):
-        new_element = None
-        if name in self.map_map:
-            self.stack.append(self.map_map[name])
-        current_element = self.stack[-1]
-        if name in self.flattened_map:
-            new_element_name = name
-            new_element = self.flattened_map[name]
-            if new_element.defn['type'] == 'list':
-                if new_element.defn['members']['type'] == 'structure':
-                    new_element.value.append({})
-        elif not current_element.defn:
-            for type_name in self.type_map:
-                type_dict = self.type_map[type_name]
-                xmlname = type_dict.get('xmlname', type_name)
-                if xmlname == name:
-                    new_element = Element(xmlname, type_dict)
-                    new_element_name = xmlname
-                    if type_dict['type'] == 'list':
-                        flattened = type_dict.get('flattened', False)
-                        if flattened:
-                            new_element.to_be_flattened = True
-                            self.flattened_map[new_element_name] = new_element
-                            if new_element.defn['type'] == 'list':
-                                if new_element.defn['members']['type'] == 'structure':
-                                    new_element.value.append({})
-        else:
-            if current_element.defn['type'] == 'structure':
-                for member_name in current_element.defn['members']:
-                    data = current_element.defn['members'][member_name]
-                    xmlname = data.get('xmlname', member_name)
-                    if name == xmlname:
-                        new_element = Element(xmlname, data)
-                        new_element_name = xmlname
-            elif current_element.defn['type'] == 'map':
-                if name in self.map_map:
-                    return self.map_map[name]
-                flattened = current_element.defn.get('flattened', False)
-                if not flattened and name == 'entry':
-                    new_element = Element('entry', current_element.defn)
-                    new_element_name = 'entry'
-                    current_element.to_be_flattened = True
-                else:
-                    # Is this a key?
-                    data = current_element.defn['keys']
-                    xmlname = data.get('xmlname', 'key')
-                    if name == xmlname:
-                        new_element = Element(xmlname, data)
-                        new_element_name = xmlname
-                    else:
-                        # Or a value?
-                        data = current_element.defn['members']
-                        xmlname = data.get('xmlname', 'value')
-                        if name == xmlname:
-                            new_element = Element(xmlname, data)
-                            new_element_name = xmlname
-            elif current_element.defn['type'] == 'list':
-                if current_element.defn.get('flattened'):
-                    member_data = current_element.defn['members']
-                    for member_name in member_data['members']:
-                        data = member_data['members'][member_name]
-                        xmlname = data.get('xmlname', member_name)
-                        if name == xmlname:
-                            new_element = Element(xmlname, data)
-                            new_element_name = xmlname
-                else:
-                    data = current_element.defn['members']
-                    xmlname = data.get('xmlname', 'member')
-                    if name == xmlname or current_element.defn.get('flattened'):
-                        new_element = Element(xmlname, data)
-                        new_element_name = xmlname
-        if new_element is None:
-            new_element = Element(name, None)
-            new_element_name = name
-        self.stack.append(new_element)
-        if new_element.defn and new_element.defn['type'] == 'map':
-            self.map_map[name] = new_element
-
-    def startElement(self, name, attrs):
-        self.current_text = ''
-        if name.startswith(self.operation.name):
-            pass
-        else:
-            self.add_element(name)
-
-    def endElement(self, name):
-        if name.startswith(self.operation.name):
-            pass
-        else:
-            current_element = self.stack.pop()
-            self.current_text = self.current_text.strip()
-            if self.current_text:
-                current_element.set_value(None, self.current_text)
-                self.current_text = ''
-            parent_element = self.stack[-1]
-            real_name = name
-            if current_element.defn:
-                if 'key_name' in current_element.defn:
-                    real_name = current_element.defn['key_name']
-            parent_element.set_value(real_name, current_element.value)
-
-    def characters(self, content):
-        self.current_text += content
+            elem_tag = elem.tag
+        return elem_tag
 
     def parse(self, s):
-        if s:
-            xml.sax.parseString(s, self)
+        self.tree = xml.etree.cElementTree.fromstring(s)
+        if self.operation.output:
+            self.build_element_map(self.operation.output, 'root')
+        self.start(self.tree)
+
+    def get_response_metadata(self):
+        rmd = {}
+        self.value['ResponseMetadata'] = rmd
+        rmd_elem = self.tree.find(self.clark_notation('ResponseMetadata'))
+        if rmd_elem is not None:
+            rmd_elem.tail = True
+            request_id = rmd_elem.find(self.clark_notation('RequestId'))
+        else:
+            request_id = self.tree.find(self.clark_notation('requestId'))
+        if request_id is not None:
+            request_id.tail = True
+            rmd['RequestId'] = request_id.text.strip()
+
+    def build_element_map(self, defn, keyname):
+        xmlname = defn.get('xmlname', keyname)
+        if not xmlname:
+            xmlname = defn.get('shape_name')
+        self.element_map[xmlname] = defn
+        if defn['type'] == 'structure':
+            for member_name in defn['members']:
+                self.build_element_map(defn['members'][member_name],
+                                         member_name)
+        elif defn['type'] == 'list':
+            self.build_element_map(defn['members'], None)
+        elif defn['type'] == 'map':
+            self.build_element_map(defn['keys'], 'key')
+            self.build_element_map(defn['members'], 'value')
+
+    def find(self, parent, tag):
+        tag = tag.split(':')[-1]
+        cn = self.clark_notation(tag)
+        child = parent.find(cn)
+        if child is None:
+            child = parent.find('*/%s' % cn)
+        return child
+
+    def findall(self, parent, tag):
+        cn = self.clark_notation(tag)
+        children = parent.findall(cn)
+        if not children:
+            try:
+                children = parent.findall('*/%s' % cn)
+            except:
+                pass
+        return children
+
+    def parent_slow(self, elem, target):
+        for child in elem:
+            if child == target:
+                self._parent = elem
+                break
+            self.parent_slow(child, target)
+
+    def parent(self, elem):
+        # We need the '..' operator in XPath but only that is only
+        # available in Python versions >= 2.7
+        if sys.version_info[0] == 2 and sys.version_info[1] == 6:
+            self.parent_slow(self.tree, elem)
+            parent = self._parent
+            self._parent = None
+        else:
+            parent = self.tree.find('.//%s/..' % elem.tag)
+        return parent
+
+    def get_elem_text(self, elem):
+        data = elem.text
+        if data is not None:
+            data = elem.text.strip()
+        return data
+
+    def _handle_string(self, elem, shape):
+        data = self.get_elem_text(elem)
+        if not data:
+            children = list(elem)
+            if len(children) == 1:
+                data = self.get_elem_text(children[0])
+        return data
+
+    _handle_timestamp = _handle_string
+
+    def _handle_integer(self, elem, shape):
+        data = self.get_elem_text(elem)
+        if data:
+            data = int(data)
+        return data
+
+    _handle_long = _handle_integer
+
+    def _handle_float(self, elem, shape):
+        data = self.get_elem_text(elem)
+        if data:
+            data = float(data)
+        return data
+
+    _handle_double = _handle_float
+
+    def _handle_boolean(self, elem, shape):
+        return True if elem.text.lower() == 'true' else False
+
+    def _handle_structure(self, elem, shape):
+        new_data = {}
+        for member_name in shape['members']:
+            member_shape = shape['members'][member_name]
+            xmlname = member_shape.get('xmlname', member_name)
+            child = self.find(elem, xmlname)
+            if child is not None:
+                new_data[member_name] = self.handle_elem(child, member_shape)
+            else:
+                logger.debug('unable to find struct member: %s' % xmlname)
+        return new_data
+
+    def _handle_list(self, elem, shape):
+        xmlname = shape['members'].get('xmlname', 'member')
+        children = self.findall(elem, xmlname)
+        if not children and shape.get('flattened'):
+            parent = self.parent(elem)
+            if parent is not None:
+                tagname = self.get_element_base_tag(elem)
+                children = self.findall(parent, tagname)
+        if not children:
+            children = []
+        return [self.handle_elem(child, shape['members'])
+                for child in children]
+
+    def _handle_map(self, elem, shape):
+        data = {}
+        # First collect all map entries
+        xmlname = shape.get('xmlname', 'entry')
+        keyshape = shape['keys']
+        valueshape = shape['members']
+        key_xmlname = keyshape.get('xmlname', 'key')
+        value_xmlname = valueshape.get('xmlname', 'value')
+        members = self.findall(elem, xmlname)
+        if not members:
+            parent = self.parent(elem)
+            if parent is not None:
+                members = self.findall(parent, xmlname)
+        for member in members:
+            key = self.find(member, key_xmlname)
+            value = self.find(member, value_xmlname)
+            cn = self.clark_notation(value_xmlname)
+            value = member.find(cn)
+            data[self.handle_elem(key, keyshape)] = self.handle_elem(value,
+                                                                     valueshape)
+        return data
+
+    def handle_elem(self, elem, shape):
+        handler_name = '_handle_%s' % shape['type']
+        elem.tail = True
+        if hasattr(self, handler_name):
+            return getattr(self, handler_name)(elem, shape)
+        else:
+            logger.debug('Unhandled type: %s' % shape['type'])
+
+    def fake_shape(self, elem):
+        shape = {}
+        tags = set()
+        nchildren = 0
+        for child in elem:
+            tags.add(child)
+            nchildren += 1
+        if nchildren == 0:
+            shape['type'] = 'string'
+        elif nchildren > 1 and len(tags) == 1:
+            shape['type'] = 'list'
+            shape['members'] = {'type': 'string'}
+        else:
+            shape['type'] = 'structure'
+            shape['members'] = {}
+            for tag in tags:
+                base_tag = self.get_element_base_tag(tag)
+                shape['members'][base_tag] = {'type': 'string'}
+        return shape
+
+    def start(self, elem):
+        self.value = {}
+        if self.operation.output:
+            for member_name in self.operation.output['members']:
+                member = self.operation.output['members'][member_name]
+                xmlname = member.get('xmlname', member_name)
+                child = self.find(elem, xmlname)
+                if child is None and member['type'] not in ScalarTypes:
+                    child = elem
+                if child is not None:
+                    self.value[member_name] = self.handle_elem(child, member)
+        self.get_response_metadata()
+        for child in self.tree:
+            if child.tail is not True:
+                child_tag = self.get_element_base_tag(child)
+                if child_tag not in self.element_map:
+                    if not child_tag.startswith(self.operation.name):
+                        shape = self.fake_shape(child)
+                        self.value[child_tag] = self.handle_elem(child, shape)
 
 
 class JSONResponse(Response):
@@ -317,7 +303,9 @@ def get_response(operation, http_response):
         streaming_response.parse(http_response.headers, http_response.raw)
         return (http_response, streaming_response.get_value())
     body = http_response.text.encode(encoding.lower())
-    logger.debug(body)
+    logger.debug("Response Body: %s", body)
+    if not body:
+        return (http_response, body)
     if content_type in ('application/x-amz-json-1.0',
                         'application/x-amz-json-1.1', 'application/json'):
         json_response = JSONResponse(operation)

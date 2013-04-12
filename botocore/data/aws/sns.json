@@ -635,10 +635,9 @@
             ],
             "documentation": "\n    <p>The ListSubscriptions action returns a list of the requester's subscriptions. Each call returns a limited list\n     of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken parameter in a \n     new ListSubscriptions call to get further results.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  &Action=ListSubscriptions\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=SZmBxEPqfs9R7xxhSt6C1b7PnOEvg%2BSVyyMYJfLRFCA%3D\n\n </queryrequest>\n <queryresponse>\n  \n<ListSubscriptionsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListSubscriptionsResult>\n    <Subscriptions>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:698519295917:My-Topic</TopicArn>\n        <Protocol>email</Protocol>\n        <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n        <Owner>123456789012</Owner>\n        <Endpoint>example@amazon.com</Endpoint>\n      </member>\n    </Subscriptions>\n  </ListSubscriptionsResult>\n  <ResponseMetadata>\n    <RequestId>384ac68d-3775-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</ListSubscriptionsResponse>\n  \n </queryresponse>\n</examples>\n  ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "Subscriptions",
                 "py_input_token": "next_token"
             }
         },
@@ -763,10 +762,9 @@
             ],
             "documentation": "\n    <p>The ListSubscriptionsByTopic action returns a list of the subscriptions to a specific topic. Each call returns \n      a limited list of subscriptions, up to 100. If there are more subscriptions, a NextToken is also returned. Use the NextToken \n      parameter in a new ListSubscriptionsByTopic call to get further results.</p>\n    <examples>\n      <queryrequest>\n        \n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=ListSubscriptionsByTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=SZmBxEPqfs9R7xxhSt6C1b7PnOEvg%2BSVyyMYJfLRFCA%3D\n\n      </queryrequest>\n      <queryresponse>\n        \n<ListSubscriptionsByTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListSubscriptionsByTopicResult>\n    <Subscriptions>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n        <Protocol>email</Protocol>\n        <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n        <Owner>123456789012</Owner>\n        <Endpoint>example@amazon.com</Endpoint>\n      </member>\n    </Subscriptions>\n  </ListSubscriptionsByTopicResult>\n  <ResponseMetadata>\n    <RequestId>b9275252-3774-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</ListSubscriptionsByTopicResponse>\n  \n      </queryresponse>\n    </examples>\n  ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "Subscriptions",
                 "py_input_token": "next_token"
             }
         },
@@ -853,10 +851,9 @@
             ],
             "documentation": "\n    <p>The ListTopics action returns a list of the requester's topics. Each call returns a limited list of topics, up to 100. If\n     there are more topics, a NextToken is also returned. Use the NextToken parameter in a new ListTopics call to get \n     further results.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?Action=ListTopics\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=tPg1qKNTNVPydnL3Yx5Fqm2O9GxCr9vh3EF5r9%2F5%2BJs%3D\n\n </queryrequest>\n <queryresponse>\n  \n<ListTopicsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListTopicsResult>\n    <Topics>\n      <member>\n        <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n      </member>\n    </Topics>\n  </ListTopicsResult>\n  <ResponseMetadata>\n    <RequestId>3f1478c7-33a9-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</ListTopicsResponse>\n  \n </queryresponse>\n</examples>\n  ",
             "pagination": {
-                "output_tokens": [
-                    "NextToken"
-                ],
                 "input_token": "NextToken",
+                "output_token": "NextToken",
+                "result_key": "Topics",
                 "py_input_token": "next_token"
             }
         },
@@ -1212,7 +1209,6 @@
                         "type": "string",
                         "documentation": "\n    <p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p>\n    <ul>\n    <li>For the http protocol, the endpoint is an URL beginning with \"http://\"</li>\n    <li>For the https protocol, the endpoint is a URL beginning with \"https://\"</li>\n    <li>For the email protocol, the endpoint is an e-mail address</li>\n    <li>For the email-json protocol, the endpoint is an e-mail address</li>\n    <li>For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue</li>\n    </ul>\n  ",
                         "required": true,
-                        "py_name": "notificaton_endpoint",
                         "cli_name": "notification-endpoint",
                         "no_paramfile": true
                     }
@@ -1366,24 +1362,21 @@
     },
     "pagination": {
         "ListSubscriptions": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "Subscriptions",
             "py_input_token": "next_token"
         },
         "ListSubscriptionsByTopic": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "Subscriptions",
             "py_input_token": "next_token"
         },
         "ListTopics": {
-            "output_tokens": [
-                "NextToken"
-            ],
             "input_token": "NextToken",
+            "output_token": "NextToken",
+            "result_key": "Topics",
             "py_input_token": "next_token"
         }
     },

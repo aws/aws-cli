@@ -77,7 +77,7 @@ class Operation(BotoCoreObject):
         self.params = []
         if self.input and 'members' in self.input:
             for name, data in self.input['members'].items():
-                param = get_parameter(name, data)
+                param = get_parameter(self, name, data)
                 self.params.append(param)
 
     def _get_built_params(self):
@@ -119,5 +119,6 @@ class Operation(BotoCoreObject):
                 if member_dict['type'] == 'blob':
                     if member_dict.get('payload', False):
                         if member_dict.get('streaming', False):
-                            is_streaming = True
+                            is_streaming = member_dict.get('xmlname',
+                                                           member_name)
         return is_streaming

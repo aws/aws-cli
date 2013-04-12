@@ -32,11 +32,9 @@ class TestSNSOperations(unittest.TestCase):
 
     def test_subscribe_with_endpoint(self):
         op = self.sns.get_operation('Subscribe')
-        # There's an override for endpoint, so we need to make sure
-        # notification_endpoint gets mapped to Endpoint.
         params = op.build_parameters(topic_arn='topic_arn',
                                      protocol='http',
-                                     notification_endpoint='http://example.org')
+                                     endpoint='http://example.org')
         self.assertEqual(params['Endpoint'], 'http://example.org')
 
 

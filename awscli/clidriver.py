@@ -15,8 +15,6 @@ import sys
 import os
 import traceback
 import json
-import copy
-import base64
 import six
 import botocore.session
 from botocore.compat import copy_kwargs
@@ -132,7 +130,7 @@ class CLIDriver(object):
         args, remaining = parser.parse_known_args(remaining)
         if args.operation == 'help':
             get_service_help(self.service)
-            sys.exit(0)
+            return 0
         self.operation = self.service.get_operation(args.operation)
         return self.create_operation_parser(remaining)
 
@@ -155,7 +153,8 @@ class CLIDriver(object):
                                     help=param.documentation,
                                     nargs='*',
                                     type=self.type_map[param.type],
-                                    required=param.required)
+                                    required=param.required,
+                                    dest=param.py_name)
             elif param.type == 'boolean':
                 if param.required:
                     dest = param.cli_name[2:].replace('-', '_')
@@ -173,21 +172,26 @@ class CLIDriver(object):
                     parser.add_argument(param.cli_name,
                                         help=param.documentation,
                                         action='store_true',
-                                        required=param.required)
+                                        required=param.required,
+                                        dest=param.py_name)
             else:
                 parser.add_argument(param.cli_name,
                                     help=param.documentation,
                                     nargs=1,
                                     type=self.type_map[param.type],
-                                    required=param.required)
+                                    required=param.required,
+                                    dest=param.py_name)
+        if self.operation.is_streaming():
+            parser.add_argument('outfile', metavar='output_file',
+                                help='Where to save the content')
         if 'help' in remaining:
             get_operation_help(self.operation)
-            sys.exit(0)
+            return 0
         args, remaining = parser.parse_known_args(remaining)
         if remaining:
             print('Something is wrong.  We have leftover options')
             print(remaining)
-            sys.exit(-1)
+            return -1
         return args
 
     def unpack_cli_arg(self, param, s):
@@ -238,10 +242,7 @@ class CLIDriver(object):
 
     def build_call_parameters(self, args, param_dict):
         for param in self.operation.params:
-            if hasattr(args, param.py_name):
-                value = getattr(args, param.py_name)
-            else:
-                value = getattr(args, param.cli_name)
+            value = getattr(args, param.py_name)
             if value is not None:
                 # Don't include non-required boolean params whose
                 # values are False
@@ -264,7 +265,7 @@ class CLIDriver(object):
             print(ex)
         elif self.args.output != 'json':
             print(ex)
-        sys.exit(1)
+        return 1
 
     def get_error_code_and_message(self, response):
         code = 'Unknown'
@@ -278,30 +279,55 @@ class CLIDriver(object):
                         code = response['Response']['Errors']['Error']['Code']
         return (code, message)
 
+    def save_output(self, body_name, response_data, path):
+        buffsize = 32768
+        with open(path, 'wb') as fp:
+            data = response_data[body_name].read(buffsize)
+            while data:
+                fp.write(data)
+                data = response_data[body_name].read(buffsize)
+        del response_data[body_name]
+
     def call(self, args):
         try:
             params = {}
             self.build_call_parameters(args, params)
-            self.endpoint = self.service.get_endpoint(self.args.region,
-                                                      endpoint_url=self.args.endpoint_url)
+            self.endpoint = self.service.get_endpoint(
+                self.args.region, endpoint_url=self.args.endpoint_url)
             self.endpoint.verify = not self.args.no_verify_ssl
-            http_response, response_data = self.operation.call(self.endpoint,
-                                                               **params)
-            self._display_response(self.operation, response_data)
-            if http_response.status_code >= 500:
-                msg = self.session.get_data('messages/ServerError')
-                code, message = self.get_error_code_and_message(response_data)
-                print(msg.format(error_code=code,
-                                 error_message=message))
-                sys.exit(http_response.status_code - 399)
-            if http_response.status_code >= 400:
-                msg = self.session.get_data('messages/ClientError')
-                code, message = self.get_error_code_and_message(response_data)
-                print(msg.format(error_code=code,
-                                 error_message=message))
-                sys.exit(http_response.status_code - 399)
+            if self.operation.can_paginate:
+                pages = self.operation.paginate(self.endpoint, **params)
+                self._display_response(self.operation, pages)
+                # TODO: need to handle http error responses.  I believe
+                # this will be addressed with the plugin refactoring,
+                # but the other alternative is going to be that we'll need
+                # to cache the fully buffered response.
+            else:
+                http_response, response_data = self.operation.call(
+                    self.endpoint, **params)
+                response_data = response_data
+                streaming_param = self.operation.is_streaming()
+                if streaming_param:
+                    self.save_output(streaming_param, response_data,
+                                     args.outfile)
+                self._display_response(self.operation, response_data)
+                return self._handle_http_response(http_response, response_data)
         except Exception as ex:
-            self.display_error_and_exit(ex)
+            return self.display_error_and_exit(ex)
+
+    def _handle_http_response(self, http_response, response_data):
+        if http_response.status_code >= 500:
+            msg = self.session.get_data('messages/ServerError')
+            code, message = self.get_error_code_and_message(response_data)
+            print(msg.format(error_code=code,
+                                error_message=message))
+            return http_response.status_code - 399
+        if http_response.status_code >= 400:
+            msg = self.session.get_data('messages/ClientError')
+            code, message = self.get_error_code_and_message(response_data)
+            print(msg.format(error_code=code,
+                                error_message=message))
+            return http_response.status_code - 399
 
     def _display_response(self, operation, response_data):
         try:
@@ -342,7 +368,7 @@ class CLIDriver(object):
         if self.args.service_name == 'help':
             provider = self.session.get_variable('provider')
             get_provider_help(provider=provider)
-            sys.exit(0)
+            return 0
         else:
             if self.args.debug:
                 from six.moves import http_client
@@ -354,4 +380,4 @@ class CLIDriver(object):
             self.formatter = get_formatter(output, self.args)
             self.service = self.session.get_service(self.args.service_name)
             args = self.create_service_parser(remaining)
-            self.call(args)
+            return self.call(args)

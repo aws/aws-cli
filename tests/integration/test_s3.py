@@ -20,6 +20,7 @@
 # IN THE SOFTWARE.
 #
 import time
+import random
 from tests import unittest
 from collections import defaultdict
 try:
@@ -53,7 +54,8 @@ class TestS3Objects(BaseS3Test):
 
     def setUp(self):
         super(TestS3Objects, self).setUp()
-        self.bucket_name = 'botocoretest%s' % int(time.time())
+        self.bucket_name = 'botocoretest%s-%s' % (
+            int(time.time()), random.randint(1, 1000))
         operation = self.service.get_operation('CreateBucket')
         operation.call(self.endpoint, bucket=self.bucket_name)
         self.keys = []
@@ -82,7 +84,7 @@ class TestS3Objects(BaseS3Test):
         generator = operation.paginate(self.endpoint, max_keys=1,
                                        bucket=self.bucket_name)
         responses = list(generator)
-        self.assertEqual(len(responses), 5)
+        self.assertEqual(len(responses), 5, responses)
         data = [r[1] for r in responses]
         key_names = [el['Contents'][0]['Key']
                      for el in data]

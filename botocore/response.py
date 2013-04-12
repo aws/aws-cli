@@ -35,7 +35,7 @@ class Response(object):
         self.operation = operation
         self.value = None
 
-    def parse(self, s):
+    def parse(self, s, encoding):
         pass
 
     def get_value(self):
@@ -61,8 +61,13 @@ class XmlResponse(Response):
             elem_tag = elem.tag
         return elem_tag
 
-    def parse(self, s):
-        self.tree = xml.etree.cElementTree.fromstring(s)
+    def parse(self, s, encoding):
+        parser = xml.etree.cElementTree.XMLParser(
+            target=xml.etree.cElementTree.TreeBuilder(),
+            encoding=encoding)
+        parser.feed(s)
+        self.tree = parser.close()
+
         if self.operation.output:
             self.build_element_map(self.operation.output, 'root')
         self.start(self.tree)
@@ -264,11 +269,11 @@ class XmlResponse(Response):
 
 class JSONResponse(Response):
 
-    def parse(self, s):
+    def parse(self, s, encoding):
         try:
-            self.value = json.loads(s)
-        except:
-            logger.debug('Error loading JSON response body')
+            self.value = json.loads(s, encoding=encoding)
+        except Exception as err:
+            logger.debug('Error loading JSON response body, %r', err)
 
 
 class StreamingResponse(Response):
@@ -302,18 +307,18 @@ def get_response(operation, http_response):
         streaming_response = StreamingResponse(operation)
         streaming_response.parse(http_response.headers, http_response.raw)
         return (http_response, streaming_response.get_value())
-    body = http_response.text.encode(encoding.lower())
+    body = http_response.text
     logger.debug("Response Body: %s", body)
     if not body:
         return (http_response, body)
     if content_type in ('application/x-amz-json-1.0',
                         'application/x-amz-json-1.1', 'application/json'):
         json_response = JSONResponse(operation)
-        json_response.parse(body)
+        json_response.parse(body, encoding)
         return (http_response, json_response.get_value())
     # We are defaulting to an XML response handler because many query
     # services send XML error responses but do not include a Content-Type
     # header.
     xml_response = XmlResponse(operation)
-    xml_response.parse(body)
+    xml_response.parse(body, encoding)
     return (http_response, xml_response.get_value())

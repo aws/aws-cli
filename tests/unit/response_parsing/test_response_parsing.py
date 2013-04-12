@@ -37,7 +37,7 @@ def test_response_parsing():
             fp = open(xmlfile)
             xml = fp.read()
             fp.close()
-            r.parse(xml)
+            r.parse(xml, 'utf-8')
             # This is a little convenience when creating new tests.
             # You just have to drop the XML file into the data directory
             # and then, if not JSON file is present, this code will

@@ -1,6 +1,5 @@
 import time
 import random
-from functools import wraps
 
 
 def delay_exponential(attempts):
@@ -10,7 +9,7 @@ def delay_exponential(attempts):
 class RetryHandler(object):
     """
     Super simple retry handler.
-    Pass in the callable to be retried and another status, the statusfn.
+    Pass in the callable to be retried and another callable, the statusfn.
     The statusfn will get called with the attempt number and the return
     value and is responsible for performing any kind of delay needed.  It
     should also return a boolean, True if the retryable needs to be

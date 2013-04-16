@@ -29,11 +29,12 @@ import logging
 import platform
 import os
 import copy
+
 import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
-from . import __version__
+from botocore import __version__
 
 
 EnvironmentVariables = {

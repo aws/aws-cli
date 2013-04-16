@@ -134,8 +134,8 @@ def search_file(**kwargs):
     """
     credentials = None
     session = kwargs.get('session')
-    access_key = session.get_variable('access_key', ('config',))
-    secret_key = session.get_variable('secret_key', ('config',))
+    access_key = session.get_variable('access_key', methods=('config',))
+    secret_key = session.get_variable('secret_key', methods=('config',))
     token = session.get_variable('token', ('config',))
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key, token)

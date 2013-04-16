@@ -49,6 +49,26 @@ class RetryHandlerTest(unittest.TestCase):
         self.assertEqual(rv, 0)
         self.assertEqual(rh.attempts, 3)
 
+    def test_1(self):
+        n = 0
+
+        def retryable(a=None):
+            if a['n'] < 4:
+                a['n'] += 1
+                return 0
+            return 1
+
+
+        def statusfn(attempt, return_value):
+            if return_value != 1:
+                delay_exponential(attempt)
+                return True
+            return False
+
+        rh = RetryHandler(retryable, statusfn)
+        rv = rh(a={'n': 1})
+        self.assertEqual(rv, 1)
+        self.assertEqual(rh.attempts, 4)
 
 if __name__ == "__main__":
     unittest.main()

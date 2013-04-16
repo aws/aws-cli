@@ -21,8 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import unittest
 import os
+
+import mock
+
 import botocore.session
 import botocore.exceptions
 
@@ -41,150 +44,124 @@ metadata = {'info':
                                       'Type': 'AWS-HMAC'}}}
 
 
-class EnvVarTest(unittest.TestCase):
+def path(filename):
+    return os.path.join(os.path.dirname(__file__), filename)
+
+
+class BaseEnvVar(unittest.TestCase):
+    def setUp(self):
+        # Automatically patches out os.environ for you
+        # and gives you a self.environ attribute that simulates
+        # the environment.  Also will automatically restore state
+        # for you in tearDown()
+        self.environ = {}
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
+
+    def tearDown(self):
+        self.environ_patch.stop()
+
+
+class EnvVarTest(BaseEnvVar):
 
     def setUp(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
-        config_path = os.path.join(os.path.dirname(__file__),
-                                   'aws_config_nocreds')
-        os.environ['AWS_CONFIG_FILE'] = config_path
-        os.environ['BOTO_CONFIG'] = ''
-        os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
-        os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
+        super(EnvVarTest, self).setUp()
+        self.environ['AWS_CONFIG_FILE'] = path('aws_config_nocreds')
+        self.environ['BOTO_CONFIG'] = ''
+        self.environ['AWS_ACCESS_KEY_ID'] = 'foo'
+        self.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
         self.session = botocore.session.get_session()
 
     def test_envvar(self):
         credentials = self.session.get_credentials()
-        assert credentials.access_key == 'foo'
-        assert credentials.secret_key == 'bar'
-        assert credentials.method == 'env'
-
-    def tearDown(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
+        self.assertEqual(credentials.method, 'env')
 
 
-class CredentialsFileTest(unittest.TestCase):
+class CredentialsFileTest(BaseEnvVar):
 
     def setUp(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
-        config_path = os.path.join(os.path.dirname(__file__),
-                                   'aws_credentials')
-        self.bad_config_path = os.path.join(os.path.dirname(__file__),
-                                            'no_aws_credentials')
-        os.environ['AWS_CREDENTIAL_FILE'] = config_path
-        os.environ['BOTO_CONFIG'] = ''
+        super(CredentialsFileTest, self).setUp()
+        self.environ['BOTO_CONFIG'] = ''
         self.session = botocore.session.get_session()
 
     def test_credentials_file(self):
+        self.environ['AWS_CREDENTIAL_FILE'] = path('aws_credentials')
         credentials = self.session.get_credentials()
-        assert credentials.access_key == 'foo'
-        assert credentials.secret_key == 'bar'
-        assert credentials.method == 'credentials-file'
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
+        self.assertEqual(credentials.method, 'credentials-file')
 
     def test_bad_file(self):
-        os.environ['AWS_CREDENTIAL_FILE'] = self.bad_config_path
+        self.environ['AWS_CREDENTIAL_FILE'] = path('no_aws_credentials')
         credentials = self.session.get_credentials()
-        assert credentials == None
-
-    def tearDown(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
+        self.assertEqual(credentials, None)
 
 
-class ConfigTest(unittest.TestCase):
+class ConfigTest(BaseEnvVar):
 
     def setUp(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
-        config_path = os.path.join(os.path.dirname(__file__), 'aws_config')
-        os.environ['AWS_CONFIG_FILE'] = config_path
-        os.environ['BOTO_CONFIG'] = ''
+        super(ConfigTest, self).setUp()
+        self.environ['AWS_CONFIG_FILE'] = path('aws_config')
+        self.environ['BOTO_CONFIG'] = ''
         self.session = botocore.session.get_session()
 
     def test_config(self):
         credentials = self.session.get_credentials()
-        assert credentials.access_key == 'foo'
-        assert credentials.secret_key == 'bar'
-        assert credentials.method == 'config'
-        assert len(self.session.available_profiles) == 2
-        assert 'default' in self.session.available_profiles
-        assert 'personal' in self.session.available_profiles
-        os.environ['BOTO_DEFAULT_PROFILE'] = 'personal'
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
+        self.assertEqual(credentials.method, 'config')
+        self.assertEqual(len(self.session.available_profiles), 2)
+        self.assertIn('default', self.session.available_profiles)
+        self.assertIn('personal', self.session.available_profiles)
+
+
+    def test_default_profile_is_obeyed(self):
+        self.environ['BOTO_DEFAULT_PROFILE'] = 'personal'
         session = botocore.session.get_session()
         credentials = session.get_credentials()
-        assert credentials.access_key == 'fie'
-        assert credentials.secret_key == 'baz'
-        assert credentials.token == 'fiebaz'
-        assert credentials.method == 'config'
-        assert len(session.available_profiles) == 2
-        assert 'default' in session.available_profiles
-        assert 'personal' in session.available_profiles
-
-    def tearDown(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
+        self.assertEqual(credentials.access_key, 'fie')
+        self.assertEqual(credentials.secret_key, 'baz')
+        self.assertEqual(credentials.token, 'fiebaz')
+        self.assertEqual(credentials.method, 'config')
+        self.assertEqual(len(session.available_profiles), 2)
+        self.assertIn('default', session.available_profiles)
+        self.assertIn('personal', session.available_profiles)
 
 
-class BotoConfigTest(unittest.TestCase):
+class BotoConfigTest(BaseEnvVar):
 
     def setUp(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
-        config_path = os.path.join(os.path.dirname(__file__), 'boto_config')
-        os.environ['BOTO_CONFIG'] = config_path
+        super(BotoConfigTest, self).setUp()
+        self.environ['BOTO_CONFIG'] = path('boto_config')
         self.session = botocore.session.get_session()
 
     def test_boto_config(self):
         credentials = self.session.get_credentials()
-        assert credentials.access_key == 'foo'
-        assert credentials.secret_key == 'bar'
-        assert credentials.method == 'boto'
-
-    def tearDown(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
+        self.assertEqual(credentials.method, 'boto')
 
 
-class IamRoleTest(unittest.TestCase):
-
+class IamRoleTest(BaseEnvVar):
     def setUp(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
-        os.environ['BOTO_CONFIG'] = ''
+        super(IamRoleTest, self).setUp()
         self.session = botocore.session.get_session()
 
     def test_iam_role(self):
+        self.environ['BOTO_CONFIG'] = ''
         credentials = self.session.get_credentials(metadata=metadata)
-        assert credentials.method == 'iam-role'
-        assert credentials.access_key == 'foo'
-        assert credentials.secret_key == 'bar'
+        self.assertEqual(credentials.method, 'iam-role')
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
 
-    def tearDown(self):
-        for var in ('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
-                    'BOTO_CONFIG', 'AWS_CONFIG_FILE',
-                    'AWS_CREDENTIAL_FILE'):
-            os.environ.pop(var, None)
+    def test_empty_boto_config_is_ignored(self):
+        self.environ['BOTO_CONFIG'] = path('boto_config_empty')
+        credentials = self.session.get_credentials(metadata=metadata)
+        self.assertEqual(credentials.method, 'iam-role')
+        self.assertEqual(credentials.access_key, 'foo')
+        self.assertEqual(credentials.secret_key, 'bar')
 
 
 if __name__ == "__main__":

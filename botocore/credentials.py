@@ -158,8 +158,10 @@ def search_boto_config(**kwargs):
     cp = configparser.RawConfigParser()
     cp.read(paths)
     if cp.has_section('Credentials'):
-        access_key = cp.get('Credentials', 'aws_access_key_id')
-        secret_key = cp.get('Credentials', 'aws_secret_access_key')
+        if cp.has_option('Credentials', 'aws_access_key_id'):
+            access_key = cp.get('Credentials', 'aws_access_key_id')
+        if cp.has_option('Credentials', 'aws_secret_access_key'):
+            secret_key = cp.get('Credentials', 'aws_secret_access_key')
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
         credentials.method = 'boto'

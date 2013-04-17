@@ -45,7 +45,7 @@ metadata = {'info':
 
 
 def path(filename):
-    return os.path.join(os.path.dirname(__file__), filename)
+    return os.path.join(os.path.dirname(__file__), 'cfg', filename)
 
 
 class EnvVarTest(BaseEnvVar):

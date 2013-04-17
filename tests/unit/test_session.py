@@ -48,7 +48,7 @@ class SessionTest(unittest.TestCase):
         self.environ['FOO_REGION'] = 'moon-west-1'
         data_path = os.path.join(os.path.dirname(__file__), 'data')
         self.environ['FOO_DATA_PATH'] = data_path
-        config_path = os.path.join(os.path.dirname(__file__),
+        config_path = os.path.join(os.path.dirname(__file__), 'cfg',
                                    'foo_config')
         self.environ['FOO_CONFIG_FILE'] = config_path
         self.session = botocore.session.get_session(self.env_vars)

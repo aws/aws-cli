@@ -34,6 +34,7 @@ import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
+from botocore.exceptions import ConfigNotFound
 from botocore import __version__
 
 
@@ -160,6 +161,8 @@ class Session(object):
                 if config_name:
                     config = self.get_config()
                     value = config.get(config_name, default)
+        if value is None and default is not None:
+            value = default
         return value
 
     def get_config(self):
@@ -171,12 +174,11 @@ class Session(object):
 
         :raises: ConfigNotFound, ConfigParseError
         """
-        if self._config is None:
-            self._config = botocore.config.get_config(self)
+        config = self.full_config
         profile_name = self.get_variable('profile')
         if not profile_name:
             profile_name = 'default'
-        return self._config.get(profile_name, dict())
+        return config.get(profile_name, dict())
 
     @property
     def full_config(self):
@@ -187,7 +189,10 @@ class Session(object):
         **entire** config file.
         """
         if self._config is None:
-            self._config = botocore.config.get_config(self)
+            try:
+                self._config = botocore.config.get_config(self)
+            except ConfigNotFound:
+                self._config = {}
         return self._config
 
     def set_credentials(self, access_key, secret_key, token=None):

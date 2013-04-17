@@ -81,7 +81,7 @@ class SessionTest(unittest.TestCase):
 
     def test_full_config_property(self):
         full_config = self.session.full_config
-        self.assertTrue('foo' in full_config)
+        self.assertTrue('profile "foo"' in full_config)
         self.assertTrue('default' in full_config)
 
 

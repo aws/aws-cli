@@ -19,7 +19,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import os
 import sys
+import mock
 
 
 # The unittest module got a significant overhaul
@@ -30,3 +32,16 @@ if sys.version_info[:2] == (2, 6):
 else:
     import unittest
 
+
+class BaseEnvVar(unittest.TestCase):
+    def setUp(self):
+        # Automatically patches out os.environ for you
+        # and gives you a self.environ attribute that simulates
+        # the environment.  Also will automatically restore state
+        # for you in tearDown()
+        self.environ = {}
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
+
+    def tearDown(self):
+        self.environ_patch.stop()

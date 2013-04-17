@@ -74,6 +74,11 @@ The ``profile`` and ``config_file`` variables should always have a
 None value for the first entry in the tuple because it doesn't make
 sense to look inside the config file for the location of the config
 file or for the default profile to use.
+
+The ``config_name`` is the name to look for in the configuration file,
+the ``env var`` is the OS environment variable (``os.environ``) to
+use, and ``default_value`` is the value to use if no value is otherwise
+found.
 """
 
 

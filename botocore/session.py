@@ -29,6 +29,7 @@ import logging
 import platform
 import os
 import copy
+import shlex
 
 import botocore.config
 import botocore.credentials
@@ -119,7 +120,17 @@ class Session(object):
         profiles = []
         self.get_config()
         for key in self._config.keys():
-            if not key.startswith('_'):
+            if key.startswith("profile"):
+                try:
+                    parts = shlex.split(key)
+                except ValueError:
+                    continue
+                if len(parts) == 2:
+                    profiles.append(parts[1])
+            elif key == 'default':
+                # default section is special and is considered a profile name
+                # but we don't require you use 'profile "default"' as a
+                # section.
                 profiles.append(key)
         return profiles
 
@@ -183,6 +194,8 @@ class Session(object):
         profile_name = self.get_variable('profile')
         if not profile_name:
             profile_name = 'default'
+        elif not profile_name == 'default':
+            profile_name = 'profile "%s"' % profile_name
         return config.get(profile_name, dict())
 
     @property

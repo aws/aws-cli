@@ -28,7 +28,7 @@ import botocore.exceptions
 
 
 def path(filename):
-    return os.path.join(os.path.dirname(__file__), filename)
+    return os.path.join(os.path.dirname(__file__), 'cfg', filename)
 
 
 class TestConfig(BaseEnvVar):
@@ -76,6 +76,16 @@ class TestConfig(BaseEnvVar):
         config = session.get_config()
         self.assertEqual(config['aws_access_key_id'], 'other_foo')
         self.assertEqual(config['aws_secret_access_key'], 'other_bar')
+
+    def test_bad_profile(self):
+        os.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
+        session = botocore.session.get_session(self.env_vars)
+        config = session.get_config()
+        profiles = session.available_profiles
+        self.assertEqual(len(profiles), 3)
+        self.assertIn('my profile', profiles)
+        self.assertIn('personal1', profiles)
+        self.assertIn('default', profiles)
 
 
 if __name__ == "__main__":

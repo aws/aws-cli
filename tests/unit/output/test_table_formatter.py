@@ -273,3 +273,7 @@ class TestTableFormatter(unittest.TestCase):
     def test_inner_table(self):
         self.assert_data_renders_to(data=INNER_LIST,
                                     table=INNER_LIST_TABLE)
+
+    def test_empty_table(self):
+        self.assert_data_renders_to(data={},
+                                    table='')

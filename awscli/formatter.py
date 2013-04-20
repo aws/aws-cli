@@ -69,18 +69,18 @@ class TableFormatter(FullyBufferedFormatter):
             raise ValueError("Unknown color option: %s" % args.color)
 
     def _format_response(self, operation, response, stream):
-        self._build_table(operation.name, response)
-        try:
-            self.table.render(stream)
-        except IOError:
-            # If they're piping stdout to another process which exits before
-            # we're done writing all of our output, we'll get an error about a
-            # closed pipe which we can safely ignore.
-            pass
+        if self._build_table(operation.name, response):
+            try:
+                self.table.render(stream)
+            except IOError:
+                # If they're piping stdout to another process which exits before
+                # we're done writing all of our output, we'll get an error about a
+                # closed pipe which we can safely ignore.
+                pass
 
     def _build_table(self, title, current, indent_level=0):
         if not current:
-            return
+            return False
         self.table.new_section(title, indent_level=indent_level)
         if isinstance(current, list):
             if isinstance(current[0], dict):
@@ -93,6 +93,7 @@ class TableFormatter(FullyBufferedFormatter):
             # and the row as the values, unless the value
             # is a list.
             self._build_sub_table_from_dict(current, indent_level)
+        return True
 
     def _build_sub_table_from_dict(self, current, indent_level):
         # Render a single row section with keys as header

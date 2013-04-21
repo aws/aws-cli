@@ -50,9 +50,8 @@ import awscli.clidriver
 
 
 def main():
-    driver = awscli.clidriver.CLIDriver()
-    driver.main()
+    return awscli.clidriver.main()
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

@@ -57,6 +57,19 @@ class TestDescribeInstances(unittest.TestCase):
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
+    def test_multiple_filters(self):
+        args = (' --filters {"name":"group-name","values":["foobar"]} '
+                '{"name":"instance-id","values":["i-12345"]}')
+        cmdline = self.prefix + args
+        result = {
+            'Filter.1.Name': 'group-name',
+            'Filter.1.Value.1': 'foobar',
+            'Filter.2.Name': 'instance-id',
+            'Filter.2.Value.1': 'i-12345',
+        }
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
 
 
 if __name__ == "__main__":

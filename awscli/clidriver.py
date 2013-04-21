@@ -22,31 +22,15 @@ from awscli import EnvironmentVariables, __version__
 from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
+from .plugin import load_plugins, first_non_none_response
+from .hooks import BaseEventHooks
 
 
-def split_list(s):
-    l = []
-    depth = 0
-    item = ''
-    for c in s:
-        if c == '[':
-            depth += 1
-            if depth > 1:
-                item += c
-        elif c == ']':
-            if depth > 1:
-                item += c
-            depth -= 1
-        elif c == ',':
-            if depth == 1:
-                l.append(item)
-                item = ''
-            elif depth > 1:
-                item += c
-        else:
-            item += c
-    l.append(item)
-    return l
+def main():
+    session = botocore.session.get_session(EnvironmentVariables)
+    emitter = load_plugins(session.full_config.get('plugins', {}))
+    driver = CLIDriver(session=session, emitter=emitter)
+    return driver.main()
 
 
 class CLIDriver(object):
@@ -66,17 +50,24 @@ class CLIDriver(object):
         'double': float,
         'blob': str}
 
-    def __init__(self):
-        self.session = botocore.session.get_session(EnvironmentVariables)
-        self.session.user_agent_name = 'aws-cli'
-        self.session.user_agent_version = __version__
+    def __init__(self, session=None, emitter=None):
+        if session is None:
+            self.session = botocore.session.get_session(EnvironmentVariables)
+            self.session.user_agent_name = 'aws-cli'
+            self.session.user_agent_version = __version__
+        else:
+            self.session = session
+        if emitter is None:
+            self._emitter = BaseEventHooks()
+        else:
+            self._emitter = emitter
         self.args = None
         self.service = None
         self.region = None
         self.endpoint = None
         self.operation = None
 
-    def create_choice_help(self, choices):
+    def _create_choice_help(self, choices):
         help_str = ''
         for choice in sorted(choices):
             help_str += '* %s\n' % choice
@@ -85,13 +76,17 @@ class CLIDriver(object):
     def create_main_parser(self):
         """
         Create the main parser to handle the global arguments.
+
+        :rtype: ``argparser.ArgumentParser``
+        :return: The parser object
+
         """
         self.cli_data = self.session.get_data('cli')
         description = self.cli_data['description']
-        self.parser = argparse.ArgumentParser(formatter_class=self.Formatter,
-                                              description=description,
-                                              add_help=False,
-                                              conflict_handler='resolve')
+        parser = argparse.ArgumentParser(formatter_class=self.Formatter,
+                                         description=description,
+                                         add_help=False,
+                                         conflict_handler='resolve')
         for option_name in self.cli_data['options']:
             option_data = copy_kwargs(self.cli_data['options'][option_name])
             if 'choices' in option_data:
@@ -102,23 +97,30 @@ class CLIDriver(object):
                     choices = self.session.get_data(choices_path)
                 if isinstance(choices, dict):
                     choices = list(choices.keys())
-                option_data['help'] = self.create_choice_help(choices)
+                option_data['help'] = self._create_choice_help(choices)
                 option_data['choices'] = choices + ['help']
-            self.parser.add_argument(option_name, **option_data)
-        self.parser.add_argument('--version', action="version",
-                                 version=self.session.user_agent())
+            parser.add_argument(option_name, **option_data)
+        parser.add_argument('--version', action="version",
+                            version=self.session.user_agent())
+        self._emitter.emit('parser-created.main', parser=parser)
+        return parser
 
-    def create_service_parser(self, remaining):
+    def create_service_parser(self, remaining, main_parser):
         """
         Create the subparser to handle the Service arguments.
 
         :type remaining: list
         :param remaining: The list of command line parameters that were
             not recognized by upstream parsers.
+
+        :type main_parser: ``argparser.ArgumentParser``
+        :param main_parser: The top level (main) parser that handles global
+            arguments.  Can be created from ``create_main_parser``.
+
         """
         if self.args.profile:
             self.session.profile = self.args.profile
-        prog = '%s %s' % (self.parser.prog,
+        prog = '%s %s' % (main_parser.prog,
                           self.service.cli_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
                                          add_help=False, prog=prog)
@@ -127,22 +129,24 @@ class CLIDriver(object):
         parser.add_argument('operation', help='The operation',
                             metavar='operation',
                             choices=operations)
-        args, remaining = parser.parse_known_args(remaining)
-        if args.operation == 'help':
-            get_service_help(self.service)
-            return 0
-        self.operation = self.service.get_operation(args.operation)
-        return self.create_operation_parser(remaining)
+        self._emitter.emit('parser-created.%s' % self.service.cli_name,
+                           parser=parser)
+        return parser
 
-    def create_operation_parser(self, remaining):
+    def _create_operation_parser(self, remaining, main_parser):
         """
         Create the subparser to handle the Operation arguments.
 
         :type remaining: list
         :param remaining: The list of command line parameters that were
             not recognized by upstream parsers.
+
+        :type main_parser: ``argparser.ArgumentParser``
+        :param main_parser: The top level (main) parser that handles global
+            arguments.  Can be created from ``create_main_parser``.
+
         """
-        prog = '%s %s %s' % (self.parser.prog,
+        prog = '%s %s %s' % (main_parser.prog,
                              self.service.cli_name,
                              self.operation.cli_name)
         parser = argparse.ArgumentParser(formatter_class=self.Formatter,
@@ -177,7 +181,6 @@ class CLIDriver(object):
             else:
                 parser.add_argument(param.cli_name,
                                     help=param.documentation,
-                                    nargs=1,
                                     type=self.type_map[param.type],
                                     required=param.required,
                                     dest=param.py_name)
@@ -187,31 +190,22 @@ class CLIDriver(object):
         if 'help' in remaining:
             get_operation_help(self.operation)
             return 0
-        args, remaining = parser.parse_known_args(remaining)
-        if remaining:
-            print('Something is wrong.  We have leftover options')
-            print(remaining)
-            return -1
-        return args
+        self._emitter.emit('parser-created.%s-%s' % (self.service.cli_name,
+                                                     self.operation.cli_name))
+        return parser
 
-    def unpack_cli_arg(self, param, s):
+    def _unpack_cli_arg(self, param, s):
         """
         Parses and unpacks the encoded string command line parameter
         and returns native Python data structures that can be passed
         to the Operation.
         """
         if param.type == 'integer':
-            if isinstance(s, list):
-                s = s[0]
             return int(s)
         elif param.type == 'float' or param.type == 'double':
             # TODO: losing precision on double types
-            if isinstance(s, list):
-                s = s[0]
             return float(s)
         elif param.type == 'structure' or param.type == 'map':
-            if isinstance(s, list) and len(s) == 1:
-                s = s[0]
             if s[0] == '{':
                 d = json.loads(s)
             else:
@@ -225,38 +219,54 @@ class CLIDriver(object):
             elif isinstance(s, list) and len(s) == 1:
                 if s[0][0] == '[':
                     return json.loads(s[0])
-            return [self.unpack_cli_arg(param.members, v) for v in s]
+            return [self._unpack_cli_arg(param.members, v) for v in s]
         elif param.type == 'blob' and param.payload and param.streaming:
-            if isinstance(s, list) and len(s) == 1:
-                file_path = s[0]
-            file_path = os.path.expandvars(file_path)
+            file_path = os.path.expandvars(s)
             file_path = os.path.expanduser(file_path)
             if not os.path.isfile(file_path):
                 msg = 'Blob values must be a path to a file.'
                 raise ValueError(msg)
             return open(file_path, 'rb')
         else:
-            if isinstance(s, list):
-                s = s[0]
             return str(s)
 
-    def build_call_parameters(self, args, param_dict):
+    def _build_call_parameters(self, args, param_dict):
+        service_name = self.service.cli_name
+        operation_name = self.operation.cli_name
         for param in self.operation.params:
             value = getattr(args, param.py_name)
             if value is not None:
-                # Don't include non-required boolean params whose
-                # values are False
-                if param.type == 'boolean' and not param.required and value is False:
+                # Plugins can override the cli -> python conversion
+                # process for CLI args.
+                responses = self._emitter.emit('process-cli-arg.%s.%s' % (
+                    service_name, operation_name), param=param, value=value,
+                    service=self.service, operation=self.operation)
+                override = first_non_none_response(responses)
+                if override is not None:
+                    # A plugin supplied an alternate conversion,
+                    # use it instead.
+                    param_dict[param.py_name] = override
+                    continue
+                # Otherwise fall back to our normal built in cli -> python
+                # conversion process.
+                if param.type == 'boolean' and not param.required and \
+                        value is False:
+                    # Don't include non-required boolean params whose
+                    # values are False
                     continue
                 if not hasattr(param, 'no_paramfile'):
-                    if isinstance(value, list) and len(value) == 1:
-                        temp = value[0]
-                    else:
-                        temp = value
-                    temp = get_paramfile(self.session, temp)
-                    if temp:
-                        value = temp
-                param_dict[param.py_name] = self.unpack_cli_arg(param, value)
+                    value = self._handle_param_file(value)
+                param_dict[param.py_name] = self._unpack_cli_arg(param, value)
+
+    def _handle_param_file(self, value):
+        if isinstance(value, list) and len(value) == 1:
+            temp = value[0]
+        else:
+            temp = value
+        temp = get_paramfile(self.session, temp)
+        if temp:
+            value = temp
+        return value
 
     def display_error_and_exit(self, ex):
         if self.args.debug:
@@ -274,7 +284,8 @@ class CLIDriver(object):
             if 'Errors' in response['Response']:
                 if 'Error' in response['Response']['Errors']:
                     if 'Message' in response['Response']['Errors']['Error']:
-                        message = response['Response']['Errors']['Error']['Message']
+                        message = response['Response']['Errors']\
+                                          ['Error']['Message']
                     if 'Code' in response['Response']['Errors']['Error']:
                         code = response['Response']['Errors']['Error']['Code']
         return (code, message)
@@ -288,20 +299,31 @@ class CLIDriver(object):
                 data = response_data[body_name].read(buffsize)
         del response_data[body_name]
 
-    def call(self, args):
+    def _call(self, args):
         try:
             params = {}
-            self.build_call_parameters(args, params)
+            self._build_call_parameters(args, params)
             self.endpoint = self.service.get_endpoint(
                 self.args.region, endpoint_url=self.args.endpoint_url)
             self.endpoint.verify = not self.args.no_verify_ssl
+            self._emitter.emit(
+                'before-operation.%s.%s' % (self.service.cli_name,
+                                            self.operation.cli_name),
+                service=self.service, operation=self.operation,
+                endpoint=self.endpoint, params=params)
             if self.operation.can_paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
+                self._emitter.emit(
+                    'after-operation.%s.%s' % (self.service.cli_name,
+                                               self.operation.cli_name),
+                    service=self.service, operation=self.operation,
+                    endpoint=self.endpoint, params=params)
                 self._display_response(self.operation, pages)
                 # TODO: need to handle http error responses.  I believe
                 # this will be addressed with the plugin refactoring,
                 # but the other alternative is going to be that we'll need
                 # to cache the fully buffered response.
+                return 0
             else:
                 http_response, response_data = self.operation.call(
                     self.endpoint, **params)
@@ -350,25 +372,23 @@ class CLIDriver(object):
         :type cmdline: str
         :param cmdline: The command line.
         """
-        self.create_main_parser()
-        self.args, remaining = self.parser.parse_known_args(cmdline.split()[1:])
-        self.service = self.session.get_service(self.args.service_name)
-        output = self.args.output
-        if output is None:
-            output = self.session.get_variable('output')
-        self.formatter = get_formatter(output, self.args)
-        args = self.create_service_parser(remaining)
+        main_parser = self.create_main_parser()
+        # XXX: Does this still work with complex params that may be
+        # space separated?
+        args = self._parse_args(main_parser, cmdline.split()[1:])
         params = {}
-        self.build_call_parameters(args, params)
+        self._build_call_parameters(args, params)
         return self.operation.build_parameters(**params)
 
-    def main(self):
-        self.create_main_parser()
-        self.args, remaining = self.parser.parse_known_args()
+    def _parse_args(self, main_parser, args):
+        self.args, remaining = main_parser.parse_known_args(args)
         if self.args.service_name == 'help':
             provider = self.session.get_variable('provider')
             get_provider_help(provider=provider)
-            return 0
+            # get_provider_help will exec a process so we'll never get here,
+            # but the sys.exit(0) is here in case get_provider_help's
+            # implementation changes.
+            sys.exit(0)
         else:
             if self.args.debug:
                 from six.moves import http_client
@@ -379,5 +399,32 @@ class CLIDriver(object):
                 output = self.session.get_variable('output')
             self.formatter = get_formatter(output, self.args)
             self.service = self.session.get_service(self.args.service_name)
-            args = self.create_service_parser(remaining)
-            return self.call(args)
+            service_parser = self.create_service_parser(remaining, main_parser)
+            args, remaining = service_parser.parse_known_args(remaining)
+            if args.operation == 'help':
+                get_service_help(self.service)
+                return 0
+            self.operation = self.service.get_operation(args.operation)
+            operation_parser = self._create_operation_parser(remaining,
+                                                             main_parser)
+            args, still_remaining = operation_parser.parse_known_args(
+                remaining)
+            if still_remaining:
+                print('Something is wrong.  We have leftover options')
+                print(still_remaining)
+                return -1
+            return args
+
+    def main(self, args=None):
+        """
+
+        :param args: List of arguments, with the 'aws' removed.  For example,
+            the command "aws s3 list-objects --bucket foo" will have an
+            args list of ``['s3', 'list-objects', '--bucket', 'foo']``.
+
+        """
+        if args is None:
+            args = sys.argv[1:]
+        main_parser = self.create_main_parser()
+        remaining_args = self._parse_args(main_parser, args)
+        return self._call(remaining_args)

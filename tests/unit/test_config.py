@@ -21,45 +21,71 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import unittest, BaseEnvVar
 import os
 import botocore.session
 import botocore.exceptions
 
 
-class TestConfig(unittest.TestCase):
+def path(filename):
+    return os.path.join(os.path.dirname(__file__), 'cfg', filename)
+
+
+class TestConfig(BaseEnvVar):
 
     def setUp(self):
+        super(TestConfig, self).setUp()
         self.env_vars = {'config_file': (None, 'FOO_CONFIG_FILE', None)}
 
     def test_config_not_found(self):
-        config_path = os.path.join(os.path.dirname(__file__),
-                                   'aws_config_notfound')
-        os.environ['FOO_CONFIG_FILE'] = config_path
+        os.environ['FOO_CONFIG_FILE'] = path('aws_config_notfound')
         session = botocore.session.get_session(self.env_vars)
-        self.assertRaises(botocore.exceptions.ConfigNotFound,
-                          session.get_config)
+        self.assertEqual(session.get_config(), {})
 
     def test_config_parse_error(self):
-        config_path = os.path.join(os.path.dirname(__file__),
-                                   'aws_config_bad')
-        os.environ['FOO_CONFIG_FILE'] = config_path
+        os.environ['FOO_CONFIG_FILE'] = path('aws_config_bad')
         session = botocore.session.get_session(self.env_vars)
         self.assertRaises(botocore.exceptions.ConfigParseError,
                           session.get_config)
 
     def test_config(self):
-        config_path = os.path.join(os.path.dirname(__file__),
-                                   'aws_config')
-        os.environ['FOO_CONFIG_FILE'] = config_path
+        os.environ['FOO_CONFIG_FILE'] = path('aws_config')
         session = botocore.session.get_session(self.env_vars)
         session.get_config()
-        assert len(session.available_profiles) == 2
-        assert 'default' in session.available_profiles
-        assert 'personal' in session.available_profiles
+        self.assertEqual(len(session.available_profiles), 2)
+        self.assertIn('default', session.available_profiles)
+        self.assertIn('personal', session.available_profiles)
 
-    def tearDown(self):
-        del os.environ['FOO_CONFIG_FILE']
+    def test_default_values_are_used_in_configs(self):
+        env_vars = {'config_file': (
+            None, 'FOO_CONFIG_FILE', path('aws_config'))}
+        session = botocore.session.get_session(env_vars)
+        config = session.get_config()
+        self.assertEqual(config['aws_access_key_id'], 'foo')
+        self.assertEqual(config['aws_secret_access_key'], 'bar')
+
+    def test_env_vars_trump_defaults(self):
+        env_vars = {'config_file': (
+            None, 'FOO_CONFIG_FILE', path('aws_config'))}
+        os.environ['FOO_CONFIG_FILE'] = path('aws_config_other')
+        # aws_config has access/secret keys of foo/bar, while
+        # aws_config_other has access/secret key of other_foo/other_bar,
+        # which is what should be used by the session since env vars
+        # trump the default value.
+        session = botocore.session.get_session(env_vars)
+        config = session.get_config()
+        self.assertEqual(config['aws_access_key_id'], 'other_foo')
+        self.assertEqual(config['aws_secret_access_key'], 'other_bar')
+
+    def test_bad_profile(self):
+        os.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
+        session = botocore.session.get_session(self.env_vars)
+        config = session.get_config()
+        profiles = session.available_profiles
+        self.assertEqual(len(profiles), 3)
+        self.assertIn('my profile', profiles)
+        self.assertIn('personal1', profiles)
+        self.assertIn('default', profiles)
 
 
 if __name__ == "__main__":

@@ -4882,7 +4882,34 @@
                 "documentation": "\n        <p>\n        The result of describing an account's available Elastic IPs.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeAddresses operation lists elastic IP addresses assigned to your\n        account.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeAddresses operation lists elastic IP addresses assigned to your\n        account.\n        </p>\n    ",
+            "filters": {
+                "allocation-id": {
+                    "documentation": "The allocation ID for the address (VPC only)."
+                },
+                "association-id": {
+                    "documentation": "The association ID for the address (VPC only)."
+                },
+                "domain": {
+                    "choices": [
+                        "standard",
+                        "vpc"
+                    ],
+                    "documentation": "Indicates whether the address is for use in a VPC."
+                },
+                "instance-id": {
+                    "documentation": "The instance the address is associated with (if any)."
+                },
+                "network-interface-id": {
+                    "documentation": "The network interface (if any) that the address is associated with (VPC only)."
+                },
+                "private-ip-address": {
+                    "documentation": "The private IP address associated with the Elastic IP address (VPC only)."
+                },
+                "public-ip": {
+                    "documentation": "The Elastic IP address."
+                }
+            }
         },
         "DescribeAvailabilityZones": {
             "name": "DescribeAvailabilityZones",
@@ -4996,7 +5023,24 @@
                 "documentation": "\n        <p>\n        The result of describing the Amazon EC2 availability zones in the current\n        region.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeAvailabilityZones operation describes availability zones that are\n        currently available to the account and their states.\n        </p>\n        <p>\n         Availability zones are not the same across accounts. The availability zone\n        <code>us-east-1a</code> for account A is not necessarily the same as <code>us-east-1a</code> for account\n        B. Zone assignments are mapped independently for each account.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeAvailabilityZones operation describes availability zones that are\n        currently available to the account and their states.\n        </p>\n        <p>\n         Availability zones are not the same across accounts. The availability zone\n        <code>us-east-1a</code> for account A is not necessarily the same as <code>us-east-1a</code> for account\n        B. Zone assignments are mapped independently for each account.\n        </p>\n    ",
+            "filters": {
+                "message": {
+                    "documentation": "Information about the Availability Zone."
+                },
+                "region-name": {
+                    "documentation": "The region for the Availability Zone (for example, us-east-1)."
+                },
+                "state": {
+                    "choices": [
+                        "available"
+                    ],
+                    "documentation": "The state of the Availability Zone"
+                },
+                "zone-name": {
+                    "documentation": "The name of the zone."
+                }
+            }
         },
         "DescribeBundleTasks": {
             "name": "DescribeBundleTasks",
@@ -5172,7 +5216,48 @@
                 "documentation": "\n        <p>\n        The result of describing the bundle tasks for the user's account.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeBundleTasks operation describes in-progress\n        and recent bundle tasks. Complete and failed tasks are\n        removed from the list a short time after completion.\n        If no bundle ids are given, all bundle tasks are returned.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeBundleTasks operation describes in-progress\n        and recent bundle tasks. Complete and failed tasks are\n        removed from the list a short time after completion.\n        If no bundle ids are given, all bundle tasks are returned.\n        </p>\n    ",
+            "filters": {
+                "bundle-id": {
+                    "documentation": "The ID of the bundle task."
+                },
+                "error-code": {
+                    "documentation": "If the task failed, the error code returned."
+                },
+                "error-message": {
+                    "documentation": "If the task failed, the error message returned."
+                },
+                "instance-id": {
+                    "documentation": "The ID of the instance that was bundled."
+                },
+                "progress": {
+                    "documentation": "The level of task completion, as a percentage (for example, 20%)."
+                },
+                "s3-bucket": {
+                    "documentation": "The Amazon S3 bucket to store the AMI."
+                },
+                "s3-prefix": {
+                    "documentation": "The beginning of the AMI name."
+                },
+                "start-time": {
+                    "documentation": "The time the task started (for example, 2008-09-15T17:15:20.000Z)."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "waiting-for-shutdown",
+                        "bundling",
+                        "storing",
+                        "cancelling",
+                        "complete",
+                        "failed"
+                    ],
+                    "documentation": "The state of the task."
+                },
+                "update-time": {
+                    "documentation": "The time of the most recent update for the task (for example, 2008-09-15T17:15:20.000Z)."
+                }
+            }
         },
         "DescribeConversionTasks": {
             "name": "DescribeConversionTasks",
@@ -5650,7 +5735,42 @@
                 "documentation": "\n        <p>\n\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Gives you information about your customer gateways. You can filter the results to return information\n        only about customer gateways that match criteria you specify. For example, you could ask to get\n        information about a particular customer gateway (or all) only if the gateway's state is pending or\n        available. You can specify multiple filters (e.g., the customer gateway has a particular IP address for\n        the Internet-routable external interface, and the gateway's state is pending or available). The result\n        includes information for a particular customer gateway only if the gateway matches all your filters. If\n        there's no match, no special message is returned; the response is simply empty. The following table\n        shows the available filters.\n        </p>\n    "
+            "documentation": "\n        <p>\n        Gives you information about your customer gateways. You can filter the results to return information\n        only about customer gateways that match criteria you specify. For example, you could ask to get\n        information about a particular customer gateway (or all) only if the gateway's state is pending or\n        available. You can specify multiple filters (e.g., the customer gateway has a particular IP address for\n        the Internet-routable external interface, and the gateway's state is pending or available). The result\n        includes information for a particular customer gateway only if the gateway matches all your filters. If\n        there's no match, no special message is returned; the response is simply empty. The following table\n        shows the available filters.\n        </p>\n    ",
+            "filters": {
+                "bgp-asn": {
+                    "documentation": "The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN)."
+                },
+                "customer-gateway-id": {
+                    "documentation": "The ID of the customer gateway."
+                },
+                "ip-address": {
+                    "documentation": "The IP address of the customer gateway's Internet-routable external interface (for example, 12.1.2.3)."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "available",
+                        "deleting",
+                        "deleted"
+                    ],
+                    "documentation": "The state of the customer gateway."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "type": {
+                    "choices": [
+                        "ipsec.1"
+                    ],
+                    "documentation": "The type of customer gateway. Currently the only supported type is ipsec.1 ."
+                }
+            }
         },
         "DescribeDhcpOptions": {
             "name": "DescribeDhcpOptions",
@@ -5790,7 +5910,27 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Gives you information about one or more sets of DHCP options. You can specify one or more DHCP\n        options set IDs, or no IDs (to describe all your sets of DHCP options). The returned information\n        consists of:\n        </p>\n        <ul>\n            <li>\n            The DHCP options set ID\n            </li>\n            <li>\n            The options\n            </li>\n        </ul>\n    "
+            "documentation": "\n        <p>\n        Gives you information about one or more sets of DHCP options. You can specify one or more DHCP\n        options set IDs, or no IDs (to describe all your sets of DHCP options). The returned information\n        consists of:\n        </p>\n        <ul>\n            <li>\n            The DHCP options set ID\n            </li>\n            <li>\n            The options\n            </li>\n        </ul>\n    ",
+            "filters": {
+                "dhcp-options-id": {
+                    "documentation": "The ID of a set of DHCP options."
+                },
+                "key": {
+                    "documentation": "The key for one of the options (for example, domain-name )."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "value": {
+                    "documentation": "The value for one of the options."
+                }
+            }
         },
         "DescribeExportTasks": {
             "name": "DescribeExportTasks",
@@ -6488,7 +6628,130 @@
                 "documentation": "\n        <p>\n        The result of describing <i>Amazon Machine Images</i> (AMIs).\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeImages operation returns information about AMIs, AKIs, and ARIs\n        available to the user. Information returned includes image type, product codes,\n        architecture, and kernel and RAM disk IDs. Images available to the user include\n        public images available for any user to launch, private images owned by the\n        user making the request, and private images owned by other users for which the\n        user has explicit launch permissions.\n        </p>\n        <p>\n        Launch permissions fall into three categories:\n        </p>\n        <ul>\n            <li>\n            <b>Public:</b>\n            The owner of the AMI granted launch permissions for the AMI\n            to the all group. All users have launch permissions for these AMIs.\n            </li>\n            <li>\n            <b>Explicit:</b>\n            The owner of the AMI granted launch permissions to a specific user.\n            </li>\n            <li>\n            <b>Implicit:</b>\n            A user has implicit launch permissions for all AMIs he or she owns.\n            </li>\n        </ul>\n        <p>\n        The list of AMIs returned can be modified by specifying AMI IDs, AMI owners, or\n        users with launch permissions. If no options are specified, Amazon EC2 returns\n        all AMIs for which the user has launch permissions.\n        </p>\n        <p>\n        If you specify one or more AMI IDs, only AMIs that have the specified IDs are\n        returned. If you specify an invalid AMI ID, a fault is returned. If you specify\n        an AMI ID for which you do not have access, it will not be included in the\n        returned results.\n        </p>\n        <p>\n        If you specify one or more AMI owners, only AMIs from the specified owners and\n        for which you have access are returned. The results can include the account IDs\n        of the specified owners, amazon for AMIs owned by Amazon or self for AMIs that\n        you own.\n        </p>\n        <p>\n        If you specify a list of executable users, only users that have launch\n        permissions for the AMIs are returned. You can specify account IDs (if you own\n        the AMI(s)), self for AMIs for which you own or have explicit permissions, or\n        all for public AMIs.\n        </p>\n        <note>\n        Deregistered images are included in the returned results for an unspecified\n        interval after deregistration.\n        </note>\n    "
+            "documentation": "\n        <p>\n        The DescribeImages operation returns information about AMIs, AKIs, and ARIs\n        available to the user. Information returned includes image type, product codes,\n        architecture, and kernel and RAM disk IDs. Images available to the user include\n        public images available for any user to launch, private images owned by the\n        user making the request, and private images owned by other users for which the\n        user has explicit launch permissions.\n        </p>\n        <p>\n        Launch permissions fall into three categories:\n        </p>\n        <ul>\n            <li>\n            <b>Public:</b>\n            The owner of the AMI granted launch permissions for the AMI\n            to the all group. All users have launch permissions for these AMIs.\n            </li>\n            <li>\n            <b>Explicit:</b>\n            The owner of the AMI granted launch permissions to a specific user.\n            </li>\n            <li>\n            <b>Implicit:</b>\n            A user has implicit launch permissions for all AMIs he or she owns.\n            </li>\n        </ul>\n        <p>\n        The list of AMIs returned can be modified by specifying AMI IDs, AMI owners, or\n        users with launch permissions. If no options are specified, Amazon EC2 returns\n        all AMIs for which the user has launch permissions.\n        </p>\n        <p>\n        If you specify one or more AMI IDs, only AMIs that have the specified IDs are\n        returned. If you specify an invalid AMI ID, a fault is returned. If you specify\n        an AMI ID for which you do not have access, it will not be included in the\n        returned results.\n        </p>\n        <p>\n        If you specify one or more AMI owners, only AMIs from the specified owners and\n        for which you have access are returned. The results can include the account IDs\n        of the specified owners, amazon for AMIs owned by Amazon or self for AMIs that\n        you own.\n        </p>\n        <p>\n        If you specify a list of executable users, only users that have launch\n        permissions for the AMIs are returned. You can specify account IDs (if you own\n        the AMI(s)), self for AMIs for which you own or have explicit permissions, or\n        all for public AMIs.\n        </p>\n        <note>\n        Deregistered images are included in the returned results for an unspecified\n        interval after deregistration.\n        </note>\n    ",
+            "filters": {
+                "architecture": {
+                    "choices": [
+                        "i386",
+                        "x86_64"
+                    ],
+                    "documentation": "The image architecture."
+                },
+                "block-device-mapping.delete-on-termination": {
+                    "documentation": "Whether the Amazon EBS volume is deleted on instance termination."
+                },
+                "block-device-mapping.device-name": {
+                    "documentation": "The device name (for example, /dev/sdh) for the Amazon EBS volume."
+                },
+                "block-device-mapping.snapshot-id": {
+                    "documentation": "The ID of the snapshot used for the Amazon EBS volume."
+                },
+                "block-device-mapping.volume-size": {
+                    "documentation": "The volume size of the Amazon EBS volume, in GiB."
+                },
+                "block-device-mapping.volume-type": {
+                    "choices": [
+                        "standard",
+                        "io1"
+                    ],
+                    "documentation": "The volume type of the Amazon EBS volume."
+                },
+                "description": {
+                    "documentation": "The description of the image (provided during image creation)."
+                },
+                "hypervisor": {
+                    "choices": [
+                        "ovm",
+                        "xen"
+                    ],
+                    "documentation": "The hypervisor type."
+                },
+                "image-id": {
+                    "documentation": "The ID of the image."
+                },
+                "image-type": {
+                    "choices": [
+                        "machine",
+                        "kernel",
+                        "ramdisk"
+                    ],
+                    "documentation": "The image type."
+                },
+                "is-public": {
+                    "documentation": "Whether the image is public."
+                },
+                "kernel-id": {
+                    "documentation": "The kernel ID."
+                },
+                "manifest-location": {
+                    "documentation": "The location of the image manifest."
+                },
+                "name": {
+                    "documentation": "The name of the AMI (provided during image creation)."
+                },
+                "owner-alias": {
+                    "documentation": "The AWS account alias (for example, amazon )."
+                },
+                "owner-id": {
+                    "documentation": "The AWS account ID of the image owner."
+                },
+                "platform": {
+                    "documentation": "The platform. To only list Windows-based AMIs, use windows . Otherwise, leave blank."
+                },
+                "product-code": {
+                    "documentation": "The product code."
+                },
+                "product-code.type": {
+                    "choices": [
+                        "devpay",
+                        "marketplace"
+                    ],
+                    "documentation": "The type of the product code."
+                },
+                "ramdisk-id": {
+                    "documentation": "The RAM disk ID."
+                },
+                "root-device-name": {
+                    "documentation": "The name of the root device volume (for example, /dev/sda1)."
+                },
+                "root-device-type": {
+                    "choices": [
+                        "ebs",
+                        "instance-store"
+                    ],
+                    "documentation": "The type of the root device volume."
+                },
+                "state": {
+                    "choices": [
+                        "available",
+                        "pending",
+                        "failed"
+                    ],
+                    "documentation": "The state of the image."
+                },
+                "state-reason-code": {
+                    "documentation": "The reason code for the state change."
+                },
+                "state-reason-message": {
+                    "documentation": "The message for the state change."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "virtualization-type": {
+                    "choices": [
+                        "paravirtual",
+                        "hvm"
+                    ],
+                    "documentation": "The virtualization type."
+                }
+            }
         },
         "DescribeInstanceAttribute": {
             "name": "DescribeInstanceAttribute",
@@ -6998,11 +7261,95 @@
             "errors": [],
             "documentation": "\n   <p>\n   Describes the status of an Amazon Elastic Compute Cloud (Amazon EC2) instance. Instance status provides information about two types of scheduled events for an instance that may require your attention:\n   </p>\n   <ul>\n   \t <li>\n\t\tScheduled Reboot: When Amazon EC2 determines that an instance must be rebooted, the instance's status will return one of two event codes: <code>system-reboot</code> or <code>instance-reboot</code>. System reboot commonly occurs if certain maintenance or upgrade operations require a reboot of the underlying host that supports an instance. Instance reboot commonly occurs if the instance must be rebooted, rather than the underlying host. Rebooting events include a scheduled start and end time.\n     </li>\n     <li>\n\t\tScheduled Retirement: When Amazon EC2 determines that an instance must be shut down, the instance's status will return an event code called <code>instance-retirement</code>. Retirement commonly occurs when the underlying host is degraded and must be replaced. Retirement events include a scheduled start and end time. You're also notified by email if one of your instances is set to retiring. The email message indicates when your instance will be permanently retired.\n     </li>\n   </ul>\n   <p>\n\tIf your instance is permanently retired, it will not be restarted. You can avoid retirement by manually restarting your instance when its event code is <code>instance-retirement</code>. This ensures that your instance is started on a healthy host.\n   </p>\n   <p>\n\t<code>DescribeInstanceStatus</code> returns information only for instances in the running state.\n   </p>\n   <p>\n\tYou can filter the results to return information only about instances that match criteria you specify. For example, you could get information about instances in a specific Availability Zone. You can specify multiple values for a filter (e.g., more than one Availability Zone). An instance must match at least one of the specified values for it to be included in the results.\n   </p>\n   <p>\n\tYou can specify multiple filters. An instance must match all the filters for it to be included in the results. If there's no match, no special message is returned; the response is simply empty.\n   </p>\n   <p>\n\tYou can use wildcards with the filter values: <code>*</code> matches zero or more characters, and <code>?</code> matches exactly one character. You can escape special characters using a backslash before the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal string <code>*amazon?\\</code>.\n   </p>\n   <p>\n   The following filters are available:\n   </p>\n   <ul>\n     <li>\n       <code>availability-zone</code> - Filter on an instance's availability zone.\n     </li>\n     <li>\n       <code>instance-state-name</code> - Filter on the intended state of the instance, e.g., running.\n     </li>\n     <li>\n       <code>instance-state-code</code> - Filter on the intended state code of the instance, e.g., 16.\n     </li>\n   </ul>\n   ",
             "pagination": {
-                "limit_key": "MaxResults",
                 "input_token": "NextToken",
+                "limit_key": "MaxResults",
                 "output_token": "NextToken",
                 "result_key": "InstanceStatuses",
                 "py_input_token": "next_token"
+            },
+            "filters": {
+                "availability-zone": {
+                    "documentation": "The Availability Zone of the instance."
+                },
+                "event.code": {
+                    "choices": [
+                        "instance-reboot",
+                        "system-reboot",
+                        "system-maintenance",
+                        "instance-retirement",
+                        "instance-stop"
+                    ],
+                    "documentation": "The code identifying the type of event."
+                },
+                "event.description": {
+                    "documentation": "A description of the event."
+                },
+                "event.not-after": {
+                    "documentation": "The latest end time for the scheduled event."
+                },
+                "event.not-before": {
+                    "documentation": "The earliest start time for the scheduled event."
+                },
+                "instance-state-code": {
+                    "choices": [
+                        "0",
+                        "16",
+                        "32",
+                        "48",
+                        "64",
+                        "80"
+                    ],
+                    "documentation": "A code representing the state of the instance. The high byte is an opaque internal value and should be ignored. The low byte is set based on the state represented"
+                },
+                "instance-state-name": {
+                    "choices": [
+                        "pending",
+                        "running",
+                        "shutting-down",
+                        "terminated",
+                        "stopping",
+                        "stopped"
+                    ],
+                    "documentation": "The state of the instance."
+                },
+                "instance-status.reachability": {
+                    "choices": [
+                        "passed",
+                        "failed",
+                        "initializing",
+                        "insufficient-data"
+                    ],
+                    "documentation": "Filters on instance status where the name is reachability ."
+                },
+                "instance-status.status": {
+                    "choices": [
+                        "ok",
+                        "impaired",
+                        "initializing",
+                        "insufficient-data",
+                        "not-applicable"
+                    ],
+                    "documentation": "The status of the instance."
+                },
+                "system-status.reachability": {
+                    "choices": [
+                        "passed",
+                        "failed",
+                        "initializing",
+                        "insufficient-data"
+                    ],
+                    "documentation": "Filters on system status where the name is reachability ."
+                },
+                "system-status.status": {
+                    "choices": [
+                        "ok",
+                        "impaired",
+                        "initializing",
+                        "insufficient-data",
+                        "not-applicable"
+                    ],
+                    "documentation": "The system status of the instance."
+                }
             }
         },
         "DescribeInstances": {
@@ -7788,7 +8135,292 @@
                 "documentation": "\n        <p>\n        The result of describing Amazon EC2 instances.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeInstances operation returns information about instances that you\n        own.\n        </p>\n        <p>\n        If you specify one or more instance IDs, Amazon EC2 returns information for\n        those instances. If you do not specify instance IDs, Amazon EC2 returns\n        information for all relevant instances. If you specify an invalid instance ID,\n        a fault is returned. If you specify an instance that you do not own, it will\n        not be included in the returned results.\n        </p>\n        <p>\n        Recently terminated instances might appear in the returned results. This\n        interval is usually less than one hour.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeInstances operation returns information about instances that you\n        own.\n        </p>\n        <p>\n        If you specify one or more instance IDs, Amazon EC2 returns information for\n        those instances. If you do not specify instance IDs, Amazon EC2 returns\n        information for all relevant instances. If you specify an invalid instance ID,\n        a fault is returned. If you specify an instance that you do not own, it will\n        not be included in the returned results.\n        </p>\n        <p>\n        Recently terminated instances might appear in the returned results. This\n        interval is usually less than one hour.\n        </p>\n    ",
+            "filters": {
+                "architecture": {
+                    "choices": [
+                        "i386",
+                        "x86_64"
+                    ],
+                    "documentation": "The instance architecture."
+                },
+                "association.allocation-id": {
+                    "documentation": "The allocation ID that AWS returned when you allocated the Elastic IP address for your network interface."
+                },
+                "association.association-id": {
+                    "documentation": "The association ID returned when the network interface was associated with an IP address."
+                },
+                "association.ip-owner-id": {
+                    "documentation": "The owner of the Elastic IP address associated with the network interface."
+                },
+                "association.public-ip": {
+                    "documentation": "The address of the Elastic IP address bound to the network interface."
+                },
+                "availability-zone": {
+                    "documentation": "The Availability Zone of the instance."
+                },
+                "block-device-mapping.attach-time": {
+                    "documentation": "The attach time for an Amazon EBS volume mapped to the instance (for example, 2010-09-15T17:15:20.000Z)"
+                },
+                "block-device-mapping.delete-on-termination": {
+                    "documentation": "Indicates whether the Amazon EBS volume is deleted on instance termination."
+                },
+                "block-device-mapping.device-name": {
+                    "documentation": "The device name (for example, /dev/sdh) for the Amazon EBS volume."
+                },
+                "block-device-mapping.status": {
+                    "choices": [
+                        "attaching",
+                        "attached",
+                        "detaching",
+                        "detached"
+                    ],
+                    "documentation": "The status for the Amazon EBS volume."
+                },
+                "block-device-mapping.volume-id": {
+                    "documentation": "The volume ID of the Amazon EBS volume."
+                },
+                "client-token": {
+                    "documentation": "The idempotency token you provided when you launched the instance."
+                },
+                "dns-name": {
+                    "documentation": "The public DNS name of the instance."
+                },
+                "group-id": {
+                    "documentation": "The ID of the security group for the instance. If the instance is in a VPC, use instance.group-id instead."
+                },
+                "group-name": {
+                    "documentation": "The name of the security group for the instance. If the instance is in a VPC, use instance.group-name instead."
+                },
+                "hypervisor": {
+                    "choices": [
+                        "ovm",
+                        "xen"
+                    ],
+                    "documentation": "The hypervisor type of the instance."
+                },
+                "image-id": {
+                    "documentation": "The ID of the image used to launch the instance."
+                },
+                "instance-id": {
+                    "documentation": "The ID of the instance."
+                },
+                "instance-lifecycle": {
+                    "choices": [
+                        "spot"
+                    ],
+                    "documentation": "Indicates whether this is a Spot Instance."
+                },
+                "instance-state-code": {
+                    "choices": [
+                        "0",
+                        "16",
+                        "32",
+                        "48",
+                        "64",
+                        "80"
+                    ],
+                    "documentation": "The state of the instance. The high byte is an opaque internal value and should be ignored. The low byte is set based on the state represented."
+                },
+                "instance-state-name": {
+                    "choices": [
+                        "pending",
+                        "running",
+                        "shutting-down",
+                        "terminated",
+                        "stopping",
+                        "stopped"
+                    ],
+                    "documentation": "The state of the instance."
+                },
+                "instance-type": {
+                    "documentation": "The type of instance (for example, m1.small )."
+                },
+                "instance.group-id": {
+                    "documentation": "The ID of the security group for the instance. If the instance is in a VPC, use group-id instead."
+                },
+                "instance.group-name": {
+                    "documentation": "The name of the security group for the instance. if the instance is in a VPC, use group-name instead."
+                },
+                "ip-address": {
+                    "documentation": "The public IP address of the instance."
+                },
+                "kernel-id": {
+                    "documentation": "The kernel ID."
+                },
+                "key-name": {
+                    "documentation": "The name of the key pair used when the instance was launched."
+                },
+                "launch-index": {
+                    "documentation": "When launching multiple instances, this is the index for the instance in the launch group (for example, 0, 1, 2, and so on)."
+                },
+                "launch-time": {
+                    "documentation": "The time the instance was launched (for example, 2010-08-07T11:54:42.000Z)."
+                },
+                "monitoring-state": {
+                    "choices": [
+                        "disabled",
+                        "enabled"
+                    ],
+                    "documentation": "Indicates whether monitoring is enabled for the instance."
+                },
+                "network-interface-private-dns-name": {
+                    "documentation": "The private DNS name of the network interface."
+                },
+                "network-interface.addresses.association.ip-owner-id": {
+                    "documentation": "The owner ID of the private IP address associated with the network interface."
+                },
+                "network-interface.addresses.association.public-ip": {
+                    "documentation": "The ID of the association of an Elastic IP address with a network interface."
+                },
+                "network-interface.addresses.primary": {
+                    "documentation": "Specifies whether the IP address of the network interface is the primary private IP address."
+                },
+                "network-interface.addresses.private-ip-address": {
+                    "documentation": "The private IP address associated with the network interface."
+                },
+                "network-interface.attachment.attach-time": {
+                    "documentation": "The time that the network interface was attached to an instance."
+                },
+                "network-interface.attachment.attachment-id": {
+                    "documentation": "The ID of the interface attachment."
+                },
+                "network-interface.attachment.delete-on-termination": {
+                    "documentation": "Specifies whether the attachment is deleted when an instance is terminated."
+                },
+                "network-interface.attachment.device-index": {
+                    "documentation": "The device index to which the network interface is attached."
+                },
+                "network-interface.attachment.instance-id": {
+                    "documentation": "The ID of the instance to which the network interface is attached."
+                },
+                "network-interface.attachment.instance-owner-id": {
+                    "documentation": "The owner ID of the instance to which the network interface is attached."
+                },
+                "network-interface.attachment.status": {
+                    "documentation": "The status of the attachment."
+                },
+                "network-interface.availability-zone": {
+                    "documentation": "The availability zone for the network interface."
+                },
+                "network-interface.description": {
+                    "documentation": "The description of the network interface."
+                },
+                "network-interface.group-id": {
+                    "documentation": "The ID of a security group associated with the network interface."
+                },
+                "network-interface.group-name": {
+                    "documentation": "The name of a security group associated with the network interface."
+                },
+                "network-interface.mac-address": {
+                    "documentation": "The MAC address of the network interface."
+                },
+                "network-interface.network-interface.id": {
+                    "documentation": "The ID of the network interface."
+                },
+                "network-interface.owner-id": {
+                    "documentation": "The ID of the owner of the network interface."
+                },
+                "network-interface.requester-id": {
+                    "documentation": "The requester ID for the network interface."
+                },
+                "network-interface.requester-managed": {
+                    "documentation": "Indicates whether the network interface is being managed by AWS."
+                },
+                "network-interface.source-destination-check": {
+                    "documentation": "Whether the network interface performs source/destination checking. A value of true means checking is enabled, and false means checking is disabled. The value must be false for the network interface to perform network address translation (NAT) in your VPC."
+                },
+                "network-interface.status": {
+                    "documentation": "The status of the network interface."
+                },
+                "network-interface.subnet-id": {
+                    "documentation": "The ID of the subnet for the network interface."
+                },
+                "network-interface.vpc-id": {
+                    "documentation": "The ID of the VPC for the network interface."
+                },
+                "owner-id": {
+                    "documentation": "The AWS account ID of the instance owner."
+                },
+                "placement-group-name": {
+                    "documentation": "The name of the placement group for the instance."
+                },
+                "platform": {
+                    "documentation": "The platform. Use windows if you have Windows based instances; otherwise, leave blank."
+                },
+                "private-dns-name": {
+                    "documentation": "The private DNS name of the instance."
+                },
+                "private-ip-address": {
+                    "documentation": "The private IP address of the instance."
+                },
+                "product-code": {
+                    "documentation": "The product code associated with the AMI used to launch the instance."
+                },
+                "product-code.type": {
+                    "choices": [
+                        "devpay",
+                        "marketplace"
+                    ],
+                    "documentation": "The type of product code."
+                },
+                "ramdisk-id": {
+                    "documentation": "The RAM disk ID."
+                },
+                "reason": {
+                    "documentation": "The reason for the current state of the instance (for example, shows \"User Initiated [date]\" when you stop or terminate the instance). Similar to the state-reason-code filter."
+                },
+                "requester-id": {
+                    "documentation": "The ID of the entity that launched the instance on your behalf (for example, AWS Management Console, Auto Scaling, and so on)"
+                },
+                "reservation-id": {
+                    "documentation": "The ID of the instance's reservation. A reservation ID is created any time you launch an instance. A reservation ID has a one-to-one relationship with an instance launch request, but can be associated with more than one instance if you launch multiple instances using the same launch request. For example, if you launch one instance, you'll get one reservation ID. If you launch ten instances using the same launch request, you'll also get one reservation ID."
+                },
+                "root-device-name": {
+                    "documentation": "The name of the root device for the instance (for example, /dev/sda1)."
+                },
+                "root-device-type": {
+                    "choices": [
+                        "ebs",
+                        "instance-store"
+                    ],
+                    "documentation": "The type of root device the instance uses."
+                },
+                "source-dest-check": {
+                    "documentation": "Indicates whether the instance performs source/destination checking. A value of true means that checking is enabled, and false means checking is disabled. The value must be false for the instance to perform network address translation (NAT) in your VPC."
+                },
+                "spot-instance-request-id": {
+                    "documentation": "The ID of the Spot Instance request."
+                },
+                "state-reason-code": {
+                    "documentation": "The reason code for the state change."
+                },
+                "state-reason-message": {
+                    "documentation": "A message that describes the state change."
+                },
+                "subnet-id": {
+                    "documentation": "The ID of the subnet for the instance."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "virtualization-type": {
+                    "choices": [
+                        "paravirtual",
+                        "hvm"
+                    ],
+                    "documentation": "The virtualization type of the instance."
+                },
+                "vpc-id": {
+                    "documentation": "The ID of the VPC the instance is running in."
+                }
+            }
         },
         "DescribeInternetGateways": {
             "name": "DescribeInternetGateways",
@@ -7922,7 +8554,27 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": "\n\t\t<p>\n\t\tGives you information about your Internet gateways. You can filter the results to return information only\n\t\tabout Internet gateways that match criteria you specify. For example, you could get information only about\n\t\tgateways with particular tags. The Internet gateway must match at least one of the specified values for it\n\t\tto be included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the Internet gateway is attached to a particular VPC and is tagged\n\t\twith a particular value). The result includes information for a particular Internet gateway only if the\n\t\tgateway matches all your filters. If there's no match, no special message is returned; the response is\n\t\tsimply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code>\n\t\tmatches exactly one character. You can escape special characters using a backslash before the character.\n\t\tFor example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal string <code>*amazon?\\</code>.\n\t\t</p>\n    "
+            "documentation": "\n\t\t<p>\n\t\tGives you information about your Internet gateways. You can filter the results to return information only\n\t\tabout Internet gateways that match criteria you specify. For example, you could get information only about\n\t\tgateways with particular tags. The Internet gateway must match at least one of the specified values for it\n\t\tto be included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the Internet gateway is attached to a particular VPC and is tagged\n\t\twith a particular value). The result includes information for a particular Internet gateway only if the\n\t\tgateway matches all your filters. If there's no match, no special message is returned; the response is\n\t\tsimply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters, and <code>?</code>\n\t\tmatches exactly one character. You can escape special characters using a backslash before the character.\n\t\tFor example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal string <code>*amazon?\\</code>.\n\t\t</p>\n    ",
+            "filters": {
+                "attachment.state": {
+                    "documentation": "The current state of the attachment between the gateway and the VPC. Returned only if a VPC is attached."
+                },
+                "attachment.vpc-id": {
+                    "documentation": "The ID of an attached VPC."
+                },
+                "internet-gateway-id": {
+                    "documentation": "The ID of the Internet gateway."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                }
+            }
         },
         "DescribeKeyPairs": {
             "name": "DescribeKeyPairs",
@@ -8010,7 +8662,15 @@
                 "documentation": "\n        <p>\n        The result of describing a user's key pairs.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeKeyPairs operation returns information about key pairs available to\n        you. If you specify key pairs, information about those key pairs is returned.\n        Otherwise, information for all registered key pairs is returned.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeKeyPairs operation returns information about key pairs available to\n        you. If you specify key pairs, information about those key pairs is returned.\n        Otherwise, information for all registered key pairs is returned.\n        </p>\n    ",
+            "filters": {
+                "fingerprint": {
+                    "documentation": "The fingerprint of the key pair."
+                },
+                "key-name": {
+                    "documentation": "The name of the key pair."
+                }
+            }
         },
         "DescribeLicenses": {
             "name": "DescribeLicenses",
@@ -8408,7 +9068,72 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": "\n\t\t<p>\n\t\tGives you information about the network ACLs in your VPC. You can filter the results to return\n\t\tinformation only about ACLs that match criteria you specify. For example, you could get information\n\t\tonly the ACL associated with a particular subnet. The ACL must match at least one of the specified\n\t\tvalues for it to be included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the ACL is associated with a particular subnet and has an\n\t\tegress entry that denies traffic to a particular port). The result includes information for a\n\t\tparticular ACL only if it matches all your filters. If there's no match, no special message is\n\t\treturned; the response is simply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters, and\n\t\t<code>?</code> matches exactly one character. You can escape special characters using a backslash\n\t\tbefore the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal\n\t\tstring <code>*amazon?\\</code>.\n\t\t</p>\n    "
+            "documentation": "\n\t\t<p>\n\t\tGives you information about the network ACLs in your VPC. You can filter the results to return\n\t\tinformation only about ACLs that match criteria you specify. For example, you could get information\n\t\tonly the ACL associated with a particular subnet. The ACL must match at least one of the specified\n\t\tvalues for it to be included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the ACL is associated with a particular subnet and has an\n\t\tegress entry that denies traffic to a particular port). The result includes information for a\n\t\tparticular ACL only if it matches all your filters. If there's no match, no special message is\n\t\treturned; the response is simply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters, and\n\t\t<code>?</code> matches exactly one character. You can escape special characters using a backslash\n\t\tbefore the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal\n\t\tstring <code>*amazon?\\</code>.\n\t\t</p>\n    ",
+            "filters": {
+                "association.association-id": {
+                    "documentation": "The ID of an association ID for the ACL."
+                },
+                "association.network-acl-id": {
+                    "documentation": "The ID of the network ACL involved in the association."
+                },
+                "association.subnet-id": {
+                    "documentation": "The ID of the subnet involved in the association."
+                },
+                "default": {
+                    "documentation": "Indicates whether the ACL is the default network ACL for the VPC."
+                },
+                "entry.cidr": {
+                    "documentation": "The CIDR range specified in the entry."
+                },
+                "entry.egress": {
+                    "documentation": "Indicates whether the entry applies to egress traffic."
+                },
+                "entry.icmp.code": {
+                    "documentation": "The ICMP code specified in the entry, if any."
+                },
+                "entry.icmp.type": {
+                    "documentation": "The ICMP type specified in the entry, if any."
+                },
+                "entry.port-range.from": {
+                    "documentation": "The start of the port range specified in the entry."
+                },
+                "entry.port-range.to": {
+                    "documentation": "The end of the port range specified in the entry."
+                },
+                "entry.protocol": {
+                    "choices": [
+                        "tcp",
+                        "udp",
+                        "icmp"
+                    ],
+                    "documentation": "The protocol specified in the entry."
+                },
+                "entry.rule-action": {
+                    "choices": [
+                        "allow",
+                        "deny"
+                    ],
+                    "documentation": "Indicates whether the entry allows or denies the matching traffic."
+                },
+                "entry.rule-number": {
+                    "documentation": "The number of an entry (i.e., rule) in the ACL's set of entries."
+                },
+                "network-acl-id": {
+                    "documentation": "The ID of the network ACL."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "vpc-id": {
+                    "documentation": "The ID of the VPC for the network ACL."
+                }
+            }
         },
         "DescribeNetworkInterfaceAttribute": {
             "name": "DescribeNetworkInterfaceAttribute",
@@ -8916,7 +9641,118 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": null
+            "documentation": null,
+            "filters": {
+                "addresses.association.owner-id": {
+                    "documentation": "The owner ID of the addresses associated with the network interface."
+                },
+                "addresses.association.public-ip": {
+                    "documentation": "The association ID returned when the network interface was associated with the Elastic IP address."
+                },
+                "addresses.primary": {
+                    "documentation": "Whether the private IP address is the primary IP address associated with the network interface."
+                },
+                "addresses.private-ip-address": {
+                    "documentation": "The private IP addresses associated with the network interface."
+                },
+                "association.allocation-id": {
+                    "documentation": "The allocation ID that AWS returned when you allocated the Elastic IP address for your network interface."
+                },
+                "association.association-id": {
+                    "documentation": "The association ID returned when the network interface was associated with an IP address."
+                },
+                "association.ip-owner-id": {
+                    "documentation": "The owner of the Elastic IP address associated with the network interface."
+                },
+                "association.public-ip": {
+                    "documentation": "The address of the Elastic IP address bound to the network interface."
+                },
+                "attachment.attach.time": {
+                    "documentation": "The time that the network interface was attached to an instance."
+                },
+                "attachment.attachment-id": {
+                    "documentation": "The ID of the interface attachment."
+                },
+                "attachment.delete-on-termination": {
+                    "documentation": "Indicates whether the attachment is deleted when an instance is terminated."
+                },
+                "attachment.device-index": {
+                    "documentation": "The device index to which the network interface is attached."
+                },
+                "attachment.instance-id": {
+                    "documentation": "The ID of the instance to which the network interface is attached."
+                },
+                "attachment.instance-owner-id": {
+                    "documentation": "The owner ID of the instance to which the network interface is attached."
+                },
+                "attachment.status": {
+                    "choices": [
+                        "attaching",
+                        "attached",
+                        "detaching",
+                        "detached"
+                    ],
+                    "documentation": "The status of the attachment."
+                },
+                "availability-zone": {
+                    "documentation": "The Availability Zone of the network interface."
+                },
+                "description": {
+                    "documentation": "The description of the network interface."
+                },
+                "group-id": {
+                    "documentation": "The ID of a security group associated with the network interface."
+                },
+                "group-name": {
+                    "documentation": "The name of a security group associated with the network interface."
+                },
+                "mac-address": {
+                    "documentation": "The MAC address of the network interface."
+                },
+                "network-interface-id": {
+                    "documentation": "The ID of the network interface."
+                },
+                "owner-id": {
+                    "documentation": "The AWS account ID of the network interface owner."
+                },
+                "private-dns-name": {
+                    "documentation": "The private DNS name of the network interface."
+                },
+                "private-ip-address": {
+                    "documentation": "The private IP address or addresses of the network interface."
+                },
+                "requester-id": {
+                    "documentation": "The ID of the entity that launched the instance on your behalf (for example, AWS Management Console, Auto Scaling, and so on)."
+                },
+                "requester-managed": {
+                    "documentation": "Indicates whether the network interface is being managed by an AWS service (for example, AWS Management Console, Auto Scaling, and so on)."
+                },
+                "source-dest-check": {
+                    "documentation": "Indicates whether the network interface performs source/destination checking. A value of true means checking is enabled, and false means checking is disabled. The value must be false for the network interface to perform Network Address Translation (NAT) in your VPC."
+                },
+                "status": {
+                    "choices": [
+                        "available",
+                        "in-use"
+                    ],
+                    "documentation": "The status of the network interface. If the network interface is not attached to an instance, the status shows available ; if a network interface is attached to an instance the status shows in-use ."
+                },
+                "subnet-id": {
+                    "documentation": "The ID of the subnet for the network interface."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "vpc-id": {
+                    "documentation": "The ID of the VPC for the network interface."
+                }
+            }
         },
         "DescribePlacementGroups": {
             "name": "DescribePlacementGroups",
@@ -9019,7 +9855,24 @@
                 "documentation": "\n        <p></p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Returns information about one or more <a>PlacementGroup</a> instances\n        in a user's account.\n        </p>\n    "
+            "documentation": "\n        <p>\n        Returns information about one or more <a>PlacementGroup</a> instances\n        in a user's account.\n        </p>\n    ",
+            "filters": {
+                "group-name": {
+                    "documentation": "The name of the placement group."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "available",
+                        "deleting",
+                        "deleted"
+                    ],
+                    "documentation": "The state of the placement group."
+                },
+                "strategy": {
+                    "documentation": "The strategy of the placement group."
+                }
+            }
         },
         "DescribeRegions": {
             "name": "DescribeRegions",
@@ -9107,7 +9960,15 @@
                 "documentation": "\n        <p>\n        The result of describing the available Amazon EC2 regions.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeRegions operation describes regions zones\n        that are currently available to the account.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeRegions operation describes regions zones\n        that are currently available to the account.\n        </p>\n    ",
+            "filters": {
+                "endpoint": {
+                    "documentation": "The endpoint of the region (for example, ec2.us-east-1.amazonaws.com)."
+                },
+                "region-name": {
+                    "documentation": "The name of the region."
+                }
+            }
         },
         "DescribeReservedInstances": {
             "name": "DescribeReservedInstances",
@@ -9337,7 +10198,61 @@
                 "documentation": "\n        <p>\n        The result of describing the purchased Reserved Instances for your\n        account.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeReservedInstances operation describes Reserved Instances\n        that were purchased for use with your account.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeReservedInstances operation describes Reserved Instances\n        that were purchased for use with your account.\n        </p>\n    ",
+            "filters": {
+                "availability-zone": {
+                    "documentation": "The Availability Zone where the Reserved Instance can be used."
+                },
+                "duration": {
+                    "choices": [
+                        "31536000",
+                        "94608000"
+                    ],
+                    "documentation": "The duration of the Reserved Instance (one year or three years), in seconds."
+                },
+                "fixed-price": {
+                    "documentation": "The purchase price of the Reserved Instance (for example, 9800.0 )"
+                },
+                "instance-type": {
+                    "documentation": "The instance type on which the Reserved Instance can be used."
+                },
+                "product-description": {
+                    "choices": [
+                        "Linux/UNIX",
+                        "Linux/UNIX (Amazon VPC)",
+                        "Windows",
+                        "Windows (Amazon VPC)"
+                    ],
+                    "documentation": "The product description of the Reserved Instance."
+                },
+                "reserved-instances-id": {
+                    "documentation": "The ID of the Reserved Instance."
+                },
+                "start": {
+                    "documentation": "The time at which the Reserved Instance purchase request was placed (for example, 2010-08-07T11:54:42.000Z)."
+                },
+                "state": {
+                    "choices": [
+                        "pending-payment",
+                        "active",
+                        "payment-failed",
+                        "retired"
+                    ],
+                    "documentation": "The state of the Reserved Instance."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "usage-price": {
+                    "documentation": "The usage price of the Reserved Instance, per hour (for example, 0.84 )"
+                }
+            }
         },
         "DescribeReservedInstancesListings": {
             "name": "DescribeReservedInstancesListings",
@@ -9542,7 +10457,21 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": null
+            "documentation": null,
+            "filters": {
+                "reserved-instances-id": {
+                    "documentation": "The ID of the Reserved Instances."
+                },
+                "reserved-instances-listing-id": {
+                    "documentation": "The ID of the Reserved Instances listing."
+                },
+                "status": {
+                    "documentation": "Status of the Reserved Instance listing."
+                },
+                "status-message": {
+                    "documentation": "Reason for the status."
+                }
+            }
         },
         "DescribeReservedInstancesOfferings": {
             "name": "DescribeReservedInstancesOfferings",
@@ -9817,11 +10746,44 @@
             "errors": [],
             "documentation": "\n        <p>\n        The DescribeReservedInstancesOfferings operation describes Reserved\n        Instance offerings that are available for purchase. With Amazon EC2\n        Reserved Instances, you purchase the right to launch Amazon EC2 instances\n        for a period of time (without getting insufficient capacity errors) and\n        pay a lower usage rate for the actual time used.\n        </p>\n    ",
             "pagination": {
-                "limit_key": "MaxResults",
                 "input_token": "NextToken",
+                "limit_key": "MaxResults",
                 "output_token": "NextToken",
                 "result_key": "ReservedInstancesOfferings",
                 "py_input_token": "next_token"
+            },
+            "filters": {
+                "availability-zone": {
+                    "documentation": "The Availability Zone where the Reserved Instance can be used."
+                },
+                "duration": {
+                    "choices": [
+                        "31536000",
+                        "94608000"
+                    ],
+                    "documentation": "The duration of the Reserved Instance (for example, one year or three years), in seconds."
+                },
+                "fixed-price": {
+                    "documentation": "The purchase price of the Reserved Instance (for example, 9800.0 )"
+                },
+                "instance-type": {
+                    "documentation": "The Amazon EC2 instance type on which the Reserved Instance can be used."
+                },
+                "product-description": {
+                    "choices": [
+                        "Linux/UNIX",
+                        "Linux/UNIX (Amazon VPC)",
+                        "Windows",
+                        "Windows (Amazon VPC)"
+                    ],
+                    "documentation": "The description of the Reserved Instance."
+                },
+                "reserved-instances-offering-id": {
+                    "documentation": "The Reserved Instances offering ID."
+                },
+                "usage-price": {
+                    "documentation": "The usage price of the Reserved Instance, per hour (for example, 0.84 )"
+                }
             }
         },
         "DescribeRouteTables": {
@@ -10044,7 +11006,55 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": "\n\t\t<p>\n\t\tGives you information about your route tables. You can filter the results to return information only\n\t\tabout tables that match criteria you specify. For example, you could get information only about a\n\t\ttable associated with a particular subnet. You can specify multiple values for the filter. The table\n\t\tmust match at least one of the specified values for it to be included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the table has a particular route, and is associated with a\n\t\tparticular subnet). The result includes information for a particular table only if it matches all\n\t\tyour filters. If there's no match, no special message is returned; the response is simply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters, and\n\t\t<code>?</code> matches exactly one character. You can escape special characters using a backslash\n\t\tbefore the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal\n\t\tstring <code>*amazon?\\</code>.\n\t\t</p>\n    "
+            "documentation": "\n\t\t<p>\n\t\tGives you information about your route tables. You can filter the results to return information only\n\t\tabout tables that match criteria you specify. For example, you could get information only about a\n\t\ttable associated with a particular subnet. You can specify multiple values for the filter. The table\n\t\tmust match at least one of the specified values for it to be included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the table has a particular route, and is associated with a\n\t\tparticular subnet). The result includes information for a particular table only if it matches all\n\t\tyour filters. If there's no match, no special message is returned; the response is simply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters, and\n\t\t<code>?</code> matches exactly one character. You can escape special characters using a backslash\n\t\tbefore the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the literal\n\t\tstring <code>*amazon?\\</code>.\n\t\t</p>\n    ",
+            "filters": {
+                "association.main": {
+                    "documentation": "Indicates whether the route table is the main route table for the VPC."
+                },
+                "association.route-table-association-id": {
+                    "documentation": "The ID of an association ID for the route table."
+                },
+                "association.route-table-id": {
+                    "documentation": "The ID of the route table involved in the association."
+                },
+                "association.subnet-id": {
+                    "documentation": "The ID of the subnet involved in the association."
+                },
+                "route-table-id": {
+                    "documentation": "The ID of the route table."
+                },
+                "route.destination-cidr-block": {
+                    "documentation": "The CIDR range specified in a route in the table."
+                },
+                "route.gateway-id": {
+                    "documentation": "The ID of a gateway specified in a route in the table."
+                },
+                "route.instance-id": {
+                    "documentation": "The ID of an instance specified in a route in the table."
+                },
+                "route.origin": {
+                    "documentation": "Describes how the route was created."
+                },
+                "route.state": {
+                    "choices": [
+                        "active",
+                        "blackhole"
+                    ],
+                    "documentation": "The state of a route in the route table. The blackhole state indicates that the route's target isn't available (for example, the specified gateway isn't attached to the VPC, the specified NAT instance has been terminated, and so on)."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "vpc-id": {
+                    "documentation": "The ID of the VPC for the route table."
+                }
+            }
         },
         "DescribeSecurityGroups": {
             "name": "DescribeSecurityGroups",
@@ -10356,7 +11366,53 @@
                 "documentation": "\n        <p>\n        The result of describing the Amazon EC2 security groups for your account.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        The DescribeSecurityGroups operation returns information about security groups\n        that you own.\n        </p>\n        <p>\n        If you specify security group names, information about those security group is\n        returned. Otherwise, information for all security group is returned. If you\n        specify a group that does not exist, a fault is returned.\n        </p>\n    "
+            "documentation": "\n        <p>\n        The DescribeSecurityGroups operation returns information about security groups\n        that you own.\n        </p>\n        <p>\n        If you specify security group names, information about those security group is\n        returned. Otherwise, information for all security group is returned. If you\n        specify a group that does not exist, a fault is returned.\n        </p>\n    ",
+            "filters": {
+                "description": {
+                    "documentation": "The description of the security group."
+                },
+                "group-id": {
+                    "documentation": "The ID of the security group."
+                },
+                "group-name": {
+                    "documentation": "The name of the security group."
+                },
+                "ip-permission.cidr": {
+                    "documentation": "The CIDR range that has been granted the permission."
+                },
+                "ip-permission.from-port": {
+                    "documentation": "The start of port range for the TCP and UDP protocols, or an ICMP type number."
+                },
+                "ip-permission.group-name": {
+                    "documentation": "The name of security group that has been granted the permission."
+                },
+                "ip-permission.protocol": {
+                    "choices": [
+                        "tcp",
+                        "udp",
+                        "icmp"
+                    ],
+                    "documentation": "The IP protocol for the permission."
+                },
+                "ip-permission.to-port": {
+                    "documentation": "The end of port range for the TCP and UDP protocols, or an ICMP code."
+                },
+                "ip-permission.user-id": {
+                    "documentation": "The ID of an AWS account that has been granted the permission."
+                },
+                "owner-id": {
+                    "documentation": "The AWS account ID of the owner of the security group."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the security group."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the security group."
+                },
+                "vpc-id": {
+                    "documentation": "Only return the security groups that belong to the specified EC2-VPC ID."
+                }
+            }
         },
         "DescribeSnapshotAttribute": {
             "name": "DescribeSnapshotAttribute",
@@ -10634,7 +11690,50 @@
                 "documentation": "\n        <p>\n        The result of describing EBS snapshots.\n        </p>\n   "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Returns information about the Amazon EBS snapshots available to you.\n        Snapshots available to you include public snapshots available for any AWS account to launch, private snapshots you own,\n        and private snapshots owned by another AWS account but for which you've been given explicit create volume permissions.\n        </p>\n    "
+            "documentation": "\n        <p>\n        Returns information about the Amazon EBS snapshots available to you.\n        Snapshots available to you include public snapshots available for any AWS account to launch, private snapshots you own,\n        and private snapshots owned by another AWS account but for which you've been given explicit create volume permissions.\n        </p>\n    ",
+            "filters": {
+                "description": {
+                    "documentation": "A description of the snapshot."
+                },
+                "owner-alias": {
+                    "documentation": "The AWS account alias (for example, amazon ) that owns the snapshot."
+                },
+                "owner-id": {
+                    "documentation": "The ID of the AWS account that owns the snapshot."
+                },
+                "progress": {
+                    "documentation": "The progress of the snapshot, as a percentage (for example, 80% )."
+                },
+                "snapshot-id": {
+                    "documentation": "The snapshot ID."
+                },
+                "start-time": {
+                    "documentation": "The time stamp when the snapshot was initiated."
+                },
+                "status": {
+                    "choices": [
+                        "pending",
+                        "completed",
+                        "error"
+                    ],
+                    "documentation": "The status of the snapshot."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "volume-id": {
+                    "documentation": "The ID of the volume the snapshot is for."
+                },
+                "volume-size": {
+                    "documentation": "The size of the volume, in GiB (for example, 20 )."
+                }
+            }
         },
         "DescribeSpotDatafeedSubscription": {
             "name": "DescribeSpotDatafeedSubscription",
@@ -11250,7 +12349,151 @@
                 "documentation": null
             },
             "errors": [],
-            "documentation": "\n        <p>\n\t\tDescribes Spot Instance requests. Spot Instances are instances that\n\t\tAmazon EC2 starts on your behalf when the maximum price that you specify\n\t\texceeds the current Spot Price. Amazon EC2 periodically sets the Spot Price\n\t\tbased on available Spot Instance capacity and current spot instance requests.\n\t\tFor conceptual information about Spot Instances, refer to the\n\t\t<a href=\"http://docs.amazonwebservices.com/AWSEC2/2010-08-31/DeveloperGuide/\">\n\t\tAmazon Elastic Compute Cloud Developer Guide</a>\n\t\tor\n\t\t<a href=\"http://docs.amazonwebservices.com/AWSEC2/2010-08-31/UserGuide/\">\n\t\tAmazon Elastic Compute Cloud User Guide</a>.\n\t\t</p>\n\t\t<p>\n\t\tYou can filter the results to return information only about\n\t\tSpot Instance requests that match criteria you specify. For example,\n\t\tyou could get information about requests where the Spot Price you specified\n\t\tis a certain value (you can't use greater than or less than comparison,\n\t\tbut you can use <code>*</code> and <code>?</code> wildcards).\n\t\tYou can specify multiple values for a filter.\n\t\tA Spot Instance request must match at least one of the specified values for it to\n\t\tbe included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the Spot Price is equal to a particular value,\n\t\tand the instance type is <code>m1.small</code>). The result includes information for a particular\n\t\trequest only if it matches all your filters. If there's no match, no special message\n\t\tis returned; the response is simply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters,\n\t\tand <code>?</code> matches exactly one character. You can escape special characters using a\n\t\tbackslash before the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the\n\t\tliteral string <code>*amazon?\\</code>.\n\t\t</p>\n    "
+            "documentation": "\n        <p>\n\t\tDescribes Spot Instance requests. Spot Instances are instances that\n\t\tAmazon EC2 starts on your behalf when the maximum price that you specify\n\t\texceeds the current Spot Price. Amazon EC2 periodically sets the Spot Price\n\t\tbased on available Spot Instance capacity and current spot instance requests.\n\t\tFor conceptual information about Spot Instances, refer to the\n\t\t<a href=\"http://docs.amazonwebservices.com/AWSEC2/2010-08-31/DeveloperGuide/\">\n\t\tAmazon Elastic Compute Cloud Developer Guide</a>\n\t\tor\n\t\t<a href=\"http://docs.amazonwebservices.com/AWSEC2/2010-08-31/UserGuide/\">\n\t\tAmazon Elastic Compute Cloud User Guide</a>.\n\t\t</p>\n\t\t<p>\n\t\tYou can filter the results to return information only about\n\t\tSpot Instance requests that match criteria you specify. For example,\n\t\tyou could get information about requests where the Spot Price you specified\n\t\tis a certain value (you can't use greater than or less than comparison,\n\t\tbut you can use <code>*</code> and <code>?</code> wildcards).\n\t\tYou can specify multiple values for a filter.\n\t\tA Spot Instance request must match at least one of the specified values for it to\n\t\tbe included in the results.\n\t\t</p>\n\t\t<p>\n\t\tYou can specify multiple filters (e.g., the Spot Price is equal to a particular value,\n\t\tand the instance type is <code>m1.small</code>). The result includes information for a particular\n\t\trequest only if it matches all your filters. If there's no match, no special message\n\t\tis returned; the response is simply empty.\n\t\t</p>\n\t\t<p>\n\t\tYou can use wildcards with the filter values: an asterisk matches zero or more characters,\n\t\tand <code>?</code> matches exactly one character. You can escape special characters using a\n\t\tbackslash before the character. For example, a value of <code>\\*amazon\\?\\\\</code> searches for the\n\t\tliteral string <code>*amazon?\\</code>.\n\t\t</p>\n    ",
+            "filters": {
+                "availability-zone-group": {
+                    "documentation": "The Availability Zone group. If you specify the same Availability Zone group for all Spot Instance requests, all Spot Instances are launched in the same Availability Zone."
+                },
+                "create-time": {
+                    "documentation": "The time stamp when the Spot Instance request was created."
+                },
+                "fault-code": {
+                    "documentation": "The fault code related to the request."
+                },
+                "fault-message": {
+                    "documentation": "The fault message related to the request."
+                },
+                "instance-id": {
+                    "documentation": "The ID of the instance that fulfilled the request."
+                },
+                "launch-group": {
+                    "documentation": "The Spot Instance launch group. Launch groups are Spot Instances that launch together and terminate together."
+                },
+                "launch.block-device-mapping.delete-on-termination": {
+                    "documentation": "Whether the Amazon EBS volume is deleted on instance termination."
+                },
+                "launch.block-device-mapping.device-name": {
+                    "documentation": "The device name (for example, /dev/sdh) for the Amazon EBS volume."
+                },
+                "launch.block-device-mapping.snapshot-id": {
+                    "documentation": "The ID of the snapshot used for the Amazon EBS volume."
+                },
+                "launch.block-device-mapping.volume-size": {
+                    "documentation": "The volume size of the Amazon EBS volume, in GiB."
+                },
+                "launch.block-device-mapping.volume-type": {
+                    "choices": [
+                        "standard",
+                        "io1"
+                    ],
+                    "documentation": "The volume type of the Amazon EBS volume."
+                },
+                "launch.group-id": {
+                    "documentation": "The security group for the instance."
+                },
+                "launch.image-id": {
+                    "documentation": "The ID of the AMI."
+                },
+                "launch.instance-type": {
+                    "documentation": "The type of instance (for example, m1.small)."
+                },
+                "launch.kernel-id": {
+                    "documentation": "The kernel ID."
+                },
+                "launch.key-name": {
+                    "documentation": "The name of the key pair the instance launched with."
+                },
+                "launch.monitoring-enabled": {
+                    "documentation": "Whether monitoring is enabled for the Spot Instance."
+                },
+                "launch.network-interface.addresses.primary": {
+                    "documentation": "Indicates whether the IP address is the primary private IP address."
+                },
+                "launch.network-interface.delete-on-termination": {
+                    "documentation": "Indicates whether the network interface is deleted when the instance is terminated."
+                },
+                "launch.network-interface.description": {
+                    "documentation": "A description of the network interface."
+                },
+                "launch.network-interface.device-index": {
+                    "documentation": "The index of the device for the network interface attachment on the instance."
+                },
+                "launch.network-interface.group-id": {
+                    "documentation": "The ID of the security group associated with the network interface."
+                },
+                "launch.network-interface.group-name": {
+                    "documentation": "The name of the security group associated with the network interface."
+                },
+                "launch.network-interface.network-interface-id": {
+                    "documentation": "The ID of the network interface."
+                },
+                "launch.network-interface.private-ip-address": {
+                    "documentation": "The primary private IP address of the network interface."
+                },
+                "launch.network-interface.subnet-id": {
+                    "documentation": "The ID of the subnet for the instance."
+                },
+                "launch.ramdisk-id": {
+                    "documentation": "The RAM disk ID."
+                },
+                "launched-availability-zone": {
+                    "choices": [
+                        "us-east-1a"
+                    ],
+                    "documentation": "The Availability Zone in which the bid is launched."
+                },
+                "product-description": {
+                    "choices": [
+                        "Linux/UNIX",
+                        "Windows"
+                    ],
+                    "documentation": "The product description associated with the instance."
+                },
+                "spot-instance-request-id": {
+                    "documentation": "The Spot Instance request ID."
+                },
+                "spot-price": {
+                    "documentation": "The maximum hourly price for any Spot Instance launched to fulfill the request."
+                },
+                "state": {
+                    "choices": [
+                        "open",
+                        "active",
+                        "closed",
+                        "cancelled",
+                        "failed"
+                    ],
+                    "documentation": "The state of the Spot Instance request. Spot bid status information can help you track your Amazon EC2 Spot Instance requests. For information, see Tracking Spot Requests with Bid Status Codes in the Amazon Elastic Compute Cloud User Guide ."
+                },
+                "status-code": {
+                    "documentation": "The short code describing the most recent evaluation of your Spot Instance request. For more information, see Spot Bid Status in the ."
+                },
+                "status-message": {
+                    "documentation": "The message explaining the status of the Spot Instance request."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "type": {
+                    "choices": [
+                        "one-time",
+                        "persistent"
+                    ],
+                    "documentation": "The type of Spot Instance request."
+                },
+                "valid-from": {
+                    "documentation": "The start date of the request."
+                },
+                "valid-until": {
+                    "documentation": "The end date of the request."
+                }
+            }
         },
         "DescribeSpotPriceHistory": {
             "name": "DescribeSpotPriceHistory",
@@ -11439,11 +12682,36 @@
             "errors": [],
             "documentation": "\n        <p>\n        Describes the Spot Price history.\n        </p>\n        <p>\n        Spot Instances are instances that Amazon EC2\n        starts on your behalf when the maximum price\n        that you specify exceeds the current Spot Price.\n        Amazon EC2 periodically sets the Spot Price based\n        on available Spot Instance capacity and current\n        spot instance requests.\n        </p>\n        <p>\n        For conceptual information about Spot Instances,\n        refer to the\n        <a hlink=\"http://docs.amazonwebservices.com/AWSEC2/2009-11-30/DeveloperGuide/\">\n        Amazon Elastic Compute Cloud Developer Guide\n        </a>\n        or\n        <a hlink=\"http://docs.amazonwebservices.com/AWSEC2/2009-11-30/UserGuide/\">\n        Amazon Elastic Compute Cloud User Guide\n        </a>.\n        </p>\n    ",
             "pagination": {
-                "limit_key": "MaxResults",
                 "input_token": "NextToken",
+                "limit_key": "MaxResults",
                 "output_token": "NextToken",
                 "result_key": "SpotPriceHistory",
                 "py_input_token": "next_token"
+            },
+            "filters": {
+                "availability-zone": {
+                    "documentation": "The Availability Zone for which prices should be returned."
+                },
+                "instance-type": {
+                    "documentation": "The type of instance (for example, m1.small)."
+                },
+                "product-description": {
+                    "choices": [
+                        "Linux/UNIX",
+                        "SUSE Linux",
+                        "Windows",
+                        "Linux/UNIX (Amazon VPC)",
+                        "SUSE Linux (Amazon VPC)",
+                        "Windows (Amazon VPC)"
+                    ],
+                    "documentation": "The product description for the Spot Price."
+                },
+                "spot-price": {
+                    "documentation": "The Spot Price. The value must match exactly (or use wildcards; greater than or less than comparison is not supported)."
+                },
+                "timestamp": {
+                    "documentation": "The timestamp of the Spot Price history (for example, 2010-08-16T05:06:11.000Z). You can use wildcards (* and ?). Greater than or less than comparison is not supported."
+                }
             }
         },
         "DescribeSubnets": {
@@ -11594,7 +12862,40 @@
                 "documentation": "\n        <p>\n\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Gives you information about your subnets. You can filter the results to return information only about\n        subnets that match criteria you specify.\n\t\t</p>\n\t\t<p>\n\t\tFor example, you could ask to get information about a particular subnet (or all) only if the subnet's\n\t\tstate is available. You can specify multiple filters (e.g., the subnet is in a particular VPC, and the\n\t\tsubnet's state is available).\n\t\t</p>\n\t\t<p>\n\t\tThe result includes information for a particular subnet only if the subnet matches all your filters.\n\t\tIf there's no match, no special message is returned; the response is simply empty. The following table\n\t\tshows the available filters.\n        </p>\n    "
+            "documentation": "\n        <p>\n        Gives you information about your subnets. You can filter the results to return information only about\n        subnets that match criteria you specify.\n\t\t</p>\n\t\t<p>\n\t\tFor example, you could ask to get information about a particular subnet (or all) only if the subnet's\n\t\tstate is available. You can specify multiple filters (e.g., the subnet is in a particular VPC, and the\n\t\tsubnet's state is available).\n\t\t</p>\n\t\t<p>\n\t\tThe result includes information for a particular subnet only if the subnet matches all your filters.\n\t\tIf there's no match, no special message is returned; the response is simply empty. The following table\n\t\tshows the available filters.\n        </p>\n    ",
+            "filters": {
+                "availability-zone": {
+                    "documentation": "The Availability Zone for the subnet."
+                },
+                "available-ip-address-count": {
+                    "documentation": "The number of IP addresses in the subnet that are available."
+                },
+                "cidr": {
+                    "documentation": "The CIDR block of the subnet. The CIDR block you specify must exactly match the subnet's CIDR block for information to be returned for the subnet."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "available"
+                    ],
+                    "documentation": "The state of the subnet."
+                },
+                "subnet-id": {
+                    "documentation": "The ID of the subnet."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "vpc-id": {
+                    "documentation": "The ID of the VPC for the subnet."
+                }
+            }
         },
         "DescribeTags": {
             "name": "DescribeTags",
@@ -11695,7 +12996,40 @@
                 "documentation": "\n    <p></p>\n   "
             },
             "errors": [],
-            "documentation": "\n    <p>\n    Describes the tags for the specified resources.\n    </p>\n   "
+            "documentation": "\n    <p>\n    Describes the tags for the specified resources.\n    </p>\n   ",
+            "filters": {
+                "key": {
+                    "documentation": "The tag key."
+                },
+                "resource-id": {
+                    "documentation": "The resource ID."
+                },
+                "resource-type": {
+                    "choices": [
+                        "customer-gateway",
+                        "dhcp-options",
+                        "image",
+                        "instance",
+                        "internet-gateway",
+                        "network-acl",
+                        "network-interface",
+                        "reserved-instances",
+                        "route-table",
+                        "security-group",
+                        "snapshot",
+                        "spot-instances-request",
+                        "subnet",
+                        "volume",
+                        "vpc",
+                        "vpn-connection",
+                        "vpn-gateway"
+                    ],
+                    "documentation": "The resource type."
+                },
+                "value": {
+                    "documentation": "The tag value."
+                }
+            }
         },
         "DescribeVolumeAttribute": {
             "name": "DescribeVolumeAttribute",
@@ -12003,11 +13337,59 @@
             "errors": [],
             "documentation": "\n        <p>\n        Describes the status of a volume.\n        </p>\n    ",
             "pagination": {
-                "limit_key": "MaxResults",
                 "input_token": "NextToken",
+                "limit_key": "MaxResults",
                 "output_token": "NextToken",
                 "result_key": "VolumeStatuses",
                 "py_input_token": "next_token"
+            },
+            "filters": {
+                "action.code": {
+                    "documentation": "The action code for the event, for example, enable-volume-io"
+                },
+                "action.description": {
+                    "documentation": "A description of the action."
+                },
+                "action.event-id": {
+                    "documentation": "The event ID associated with the action."
+                },
+                "availability-zone": {
+                    "documentation": "The Availability Zone of the instance."
+                },
+                "event.description": {
+                    "documentation": "A description of the event."
+                },
+                "event.event-id": {
+                    "documentation": "The event ID."
+                },
+                "event.event-type": {
+                    "documentation": "The event type."
+                },
+                "event.not-after": {
+                    "documentation": "The latest end time for the event."
+                },
+                "event.not-before": {
+                    "documentation": "The earliest start time for the event."
+                },
+                "volume-status.details-name": {
+                    "choices": [
+                        "io-enabled",
+                        "io-performance"
+                    ],
+                    "documentation": "The cause for the volume-status.status ."
+                },
+                "volume-status.details-status": {
+                    "documentation": "The status of the volume-status.details-name ."
+                },
+                "volume-status.status": {
+                    "choices": [
+                        "ok",
+                        "impaired",
+                        "warning",
+                        "insufficient-data"
+                    ],
+                    "documentation": "The status of the volume."
+                }
             }
         },
         "DescribeVolumes": {
@@ -12225,7 +13607,72 @@
                 "documentation": "\n        <p>\n        The result of describing your EBS volumes.\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Describes the status of the indicated volume or, in lieu of any specified,\n        all volumes belonging to the caller. Volumes that have been deleted\n        are not described.\n        </p>\n    "
+            "documentation": "\n        <p>\n        Describes the status of the indicated volume or, in lieu of any specified,\n        all volumes belonging to the caller. Volumes that have been deleted\n        are not described.\n        </p>\n    ",
+            "filters": {
+                "attachment.attach-time": {
+                    "documentation": "The time stamp when the attachment initiated."
+                },
+                "attachment.delete-on-termination": {
+                    "documentation": "Whether the volume is deleted on instance termination."
+                },
+                "attachment.device": {
+                    "documentation": "The device name that is exposed to the instance (for example, /dev/sda1)."
+                },
+                "attachment.instance-id": {
+                    "documentation": "The ID of the instance the volume is attached to."
+                },
+                "attachment.status": {
+                    "choices": [
+                        "attaching",
+                        "attached",
+                        "detaching",
+                        "detached"
+                    ],
+                    "documentation": "The attachment state."
+                },
+                "availability-zone": {
+                    "documentation": "The Availability Zone in which the volume was created."
+                },
+                "create-time": {
+                    "documentation": "The time stamp when the volume was created."
+                },
+                "size": {
+                    "documentation": "The size of the volume, in GiB (for example, 20 )."
+                },
+                "snapshot-id": {
+                    "documentation": "The snapshot from which the volume was created."
+                },
+                "status": {
+                    "choices": [
+                        "creating",
+                        "available",
+                        "in-use",
+                        "deleting",
+                        "deleted",
+                        "error"
+                    ],
+                    "documentation": "The status of the volume."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "volume-id": {
+                    "documentation": "The volume ID."
+                },
+                "volume-type": {
+                    "choices": [
+                        "standard",
+                        "io1"
+                    ],
+                    "documentation": "The Amazon EBS volume type. If the volume is an io1 volume, the response includes the IOPS as well."
+                }
+            }
         },
         "DescribeVpcAttribute": {
             "name": "DescribeVpcAttribute",
@@ -12432,7 +13879,34 @@
                 "documentation": "\n        <p>\n\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Gives you information about your VPCs. You can filter the results to return information only about\n        VPCs that match criteria you specify.\n\t\t</p>\n\t\t<p>\n\t\tFor example, you could ask to get information about a particular VPC or VPCs (or all your VPCs)\n\t\tonly if the VPC's state is available. You can specify multiple filters (e.g., the VPC uses one of\n\t\tseveral sets of DHCP options, and the VPC's state is available). The result includes information\n\t\tfor a particular VPC only if the VPC matches all your filters.\n\t\t</p>\n\t\t<p>\n\t\tIf there's no match, no special message is returned; the response is simply empty. The following\n\t\ttable shows the available filters.\n        </p>\n    "
+            "documentation": "\n        <p>\n        Gives you information about your VPCs. You can filter the results to return information only about\n        VPCs that match criteria you specify.\n\t\t</p>\n\t\t<p>\n\t\tFor example, you could ask to get information about a particular VPC or VPCs (or all your VPCs)\n\t\tonly if the VPC's state is available. You can specify multiple filters (e.g., the VPC uses one of\n\t\tseveral sets of DHCP options, and the VPC's state is available). The result includes information\n\t\tfor a particular VPC only if the VPC matches all your filters.\n\t\t</p>\n\t\t<p>\n\t\tIf there's no match, no special message is returned; the response is simply empty. The following\n\t\ttable shows the available filters.\n        </p>\n    ",
+            "filters": {
+                "cidr": {
+                    "documentation": "The CIDR block of the VPC. The CIDR block you specify must exactly match the VPC's CIDR block for information to be returned for the VPC."
+                },
+                "dhcp-options-id": {
+                    "documentation": "The ID of a set of DHCP options."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "available"
+                    ],
+                    "documentation": "The state of the VPC."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "vpc-id": {
+                    "documentation": "The ID of the VPC."
+                }
+            }
         },
         "DescribeVpnConnections": {
             "name": "DescribeVpnConnections",
@@ -12660,7 +14134,54 @@
                 "documentation": "\n        <p>\n\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n        <p>\n        Gives you information about your VPN connections.\n        </p>\n        <important>\n            <p>\n            We strongly recommend you use HTTPS when calling this operation because the response\n            contains sensitive cryptographic information for configuring your customer gateway.\n            </p>\n            <p>\n            You can filter the results to return information only about VPN connections that match criteria you\n            specify. For example, you could ask to get information about a particular VPN connection (or all) only if\n            the VPN's state is pending or available. You can specify multiple filters (e.g., the VPN connection\n            is associated with a particular VPN gateway, and the gateway's state is pending or available). The\n            result includes information for a particular VPN connection only if the VPN connection matches all your\n            filters. If there's no match, no special message is returned; the response is simply empty. The following\n            table shows the available filters.\n            </p>\n        </important>\n    "
+            "documentation": "\n        <p>\n        Gives you information about your VPN connections.\n        </p>\n        <important>\n            <p>\n            We strongly recommend you use HTTPS when calling this operation because the response\n            contains sensitive cryptographic information for configuring your customer gateway.\n            </p>\n            <p>\n            You can filter the results to return information only about VPN connections that match criteria you\n            specify. For example, you could ask to get information about a particular VPN connection (or all) only if\n            the VPN's state is pending or available. You can specify multiple filters (e.g., the VPN connection\n            is associated with a particular VPN gateway, and the gateway's state is pending or available). The\n            result includes information for a particular VPN connection only if the VPN connection matches all your\n            filters. If there's no match, no special message is returned; the response is simply empty. The following\n            table shows the available filters.\n            </p>\n        </important>\n    ",
+            "filters": {
+                "bgp-asn": {
+                    "documentation": "The BGP Autonomous System Number (ASN) associated with a BGP device."
+                },
+                "customer-gateway-configuration": {
+                    "documentation": "The configuration information for the customer gateway."
+                },
+                "customer-gateway-id": {
+                    "documentation": "The ID of a customer gateway associated with the VPN connection."
+                },
+                "option.static-routes-only": {
+                    "documentation": "Indicates whether the connection has static routes only. Used for devices that do not support Border Gateway Protocol (BGP)."
+                },
+                "route.destination-cidr-block": {
+                    "documentation": "The destination CIDR block. This corresponds to the subnet used in a customer data center."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "available",
+                        "deleting",
+                        "deleted"
+                    ],
+                    "documentation": "The state of the VPN connection."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "type": {
+                    "choices": [
+                        "ipsec.1"
+                    ],
+                    "documentation": "The type of VPN connection. Currently the only supported type is ipsec.1 ."
+                },
+                "vpn-connection-id": {
+                    "documentation": "The ID of the VPN connection."
+                },
+                "vpn-gateway-id": {
+                    "documentation": "The ID of a virtual private gateway associated with the VPN connection."
+                }
+            }
         },
         "DescribeVpnGateways": {
             "name": "DescribeVpnGateways",
@@ -12812,7 +14333,51 @@
                 "documentation": "\n        <p>\n\n        </p>\n    "
             },
             "errors": [],
-            "documentation": "\n\t\t<p>\n\t\tGives you information about your VPN gateways. You can filter the results to return information only\n\t\tabout VPN gateways that match criteria you specify.\n\t\t</p>\n\t\t<p>\n\t\tFor example, you could ask to get information about a particular VPN gateway (or all) only if the\n\t\tgateway's state is pending or available. You can specify multiple filters (e.g., the VPN gateway is\n\t\tin a particular Availability Zone and the gateway's state is pending or available).\n\t\t</p>\n\t\t<p>\n\t\tThe result includes information for a particular VPN gateway only if the gateway matches all your\n\t\tfilters. If there's no match, no special message is returned; the response is simply empty. The\n\t\tfollowing table shows the available filters.\n\t\t</p>\n    "
+            "documentation": "\n\t\t<p>\n\t\tGives you information about your VPN gateways. You can filter the results to return information only\n\t\tabout VPN gateways that match criteria you specify.\n\t\t</p>\n\t\t<p>\n\t\tFor example, you could ask to get information about a particular VPN gateway (or all) only if the\n\t\tgateway's state is pending or available. You can specify multiple filters (e.g., the VPN gateway is\n\t\tin a particular Availability Zone and the gateway's state is pending or available).\n\t\t</p>\n\t\t<p>\n\t\tThe result includes information for a particular VPN gateway only if the gateway matches all your\n\t\tfilters. If there's no match, no special message is returned; the response is simply empty. The\n\t\tfollowing table shows the available filters.\n\t\t</p>\n    ",
+            "filters": {
+                "attachment.state": {
+                    "choices": [
+                        "attaching",
+                        "attached",
+                        "detaching",
+                        "detached"
+                    ],
+                    "documentation": "The current state of the attachment between the gateway and the VPC."
+                },
+                "attachment.vpc-id": {
+                    "documentation": "The ID of an attached VPC."
+                },
+                "availability-zone": {
+                    "documentation": "The Availability Zone for the virtual private gateway."
+                },
+                "state": {
+                    "choices": [
+                        "pending",
+                        "available",
+                        "deleting",
+                        "deleted"
+                    ],
+                    "documentation": "The state of the virtual private gateway."
+                },
+                "tag-key": {
+                    "documentation": "The key of a tag assigned to the resource. This filter is independent of the tag-value filter. For example, if you use both the filter \" tag-key=Purpose \" and the filter \" tag-value=X \", you get any resources assigned both the tag key Purpose (regardless of what the tag's value is), and the tag value X (regardless of what the tag's key is). If you want to list only resources where Purpose is X, see the key filter later in this table."
+                },
+                "tag-value": {
+                    "documentation": "The value of a tag assigned to the resource. This filter is independent of the tag-key filter."
+                },
+                "tag:": {
+                    "documentation": "Filters the response based on a specific tag/value combination."
+                },
+                "type": {
+                    "choices": [
+                        "ipsec.1"
+                    ],
+                    "documentation": "The type of virtual private gateway. Currently the only supported type is ipsec.1 ."
+                },
+                "vpn-gateway-id": {
+                    "documentation": "The ID of the virtual private gateway."
+                }
+            }
         },
         "DetachInternetGateway": {
             "name": "DetachInternetGateway",
@@ -17914,29 +19479,29 @@
     },
     "pagination": {
         "DescribeInstanceStatus": {
-            "limit_key": "MaxResults",
             "input_token": "NextToken",
+            "limit_key": "MaxResults",
             "output_token": "NextToken",
             "result_key": "InstanceStatuses",
             "py_input_token": "next_token"
         },
         "DescribeReservedInstancesOfferings": {
-            "limit_key": "MaxResults",
             "input_token": "NextToken",
+            "limit_key": "MaxResults",
             "output_token": "NextToken",
             "result_key": "ReservedInstancesOfferings",
             "py_input_token": "next_token"
         },
         "DescribeSpotPriceHistory": {
-            "limit_key": "MaxResults",
             "input_token": "NextToken",
+            "limit_key": "MaxResults",
             "output_token": "NextToken",
             "result_key": "SpotPriceHistory",
             "py_input_token": "next_token"
         },
         "DescribeVolumeStatus": {
-            "limit_key": "MaxResults",
             "input_token": "NextToken",
+            "limit_key": "MaxResults",
             "output_token": "NextToken",
             "result_key": "VolumeStatuses",
             "py_input_token": "next_token"

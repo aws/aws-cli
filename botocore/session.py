@@ -29,18 +29,21 @@ import logging
 import platform
 import os
 import copy
+import shlex
+
 import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
-from . import __version__
+from botocore.exceptions import ConfigNotFound
+from botocore import __version__
 
 
 EnvironmentVariables = {
     'profile': (None, 'BOTO_DEFAULT_PROFILE', 'default'),
     'region': ('region', 'BOTO_DEFAULT_REGION', None),
     'data_path': ('data_path', 'BOTO_DATA_PATH', None),
-    'config_file': (None, 'AWS_CONFIG_FILE', None),
+    'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config'),
     'access_key': ('aws_access_key_id', 'AWS_ACCESS_KEY_ID', None),
     'secret_key': ('aws_secret_access_key', 'AWS_SECRET_ACCESS_KEY', None),
     'token': ('aws_security_token', 'AWS_SECURITY_TOKEN', None),
@@ -72,6 +75,11 @@ The ``profile`` and ``config_file`` variables should always have a
 None value for the first entry in the tuple because it doesn't make
 sense to look inside the config file for the location of the config
 file or for the default profile to use.
+
+The ``config_name`` is the name to look for in the configuration file,
+the ``env var`` is the OS environment variable (``os.environ``) to
+use, and ``default_value`` is the value to use if no value is otherwise
+found.
 """
 
 
@@ -112,7 +120,17 @@ class Session(object):
         profiles = []
         self.get_config()
         for key in self._config.keys():
-            if not key.startswith('_'):
+            if key.startswith("profile"):
+                try:
+                    parts = shlex.split(key)
+                except ValueError:
+                    continue
+                if len(parts) == 2:
+                    profiles.append(parts[1])
+            elif key == 'default':
+                # default section is special and is considered a profile name
+                # but we don't require you use 'profile "default"' as a
+                # section.
                 profiles.append(key)
         return profiles
 
@@ -159,6 +177,8 @@ class Session(object):
                 if config_name:
                     config = self.get_config()
                     value = config.get(config_name, default)
+        if value is None and default is not None:
+            value = default
         return value
 
     def get_config(self):
@@ -170,12 +190,13 @@ class Session(object):
 
         :raises: ConfigNotFound, ConfigParseError
         """
-        if self._config is None:
-            self._config = botocore.config.get_config(self)
+        config = self.full_config
         profile_name = self.get_variable('profile')
         if not profile_name:
             profile_name = 'default'
-        return self._config.get(profile_name, dict())
+        elif not profile_name == 'default':
+            profile_name = 'profile "%s"' % profile_name
+        return config.get(profile_name, dict())
 
     @property
     def full_config(self):
@@ -186,7 +207,10 @@ class Session(object):
         **entire** config file.
         """
         if self._config is None:
-            self._config = botocore.config.get_config(self)
+            try:
+                self._config = botocore.config.get_config(self)
+            except ConfigNotFound:
+                self._config = {}
         return self._config
 
     def set_credentials(self, access_key, secret_key, token=None):

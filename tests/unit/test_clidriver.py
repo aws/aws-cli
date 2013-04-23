@@ -11,7 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+import sys
+
 import mock
+import six
 
 from awscli.clidriver import CLIDriver
 from awscli.hooks import HierarchicalEmitter, EventHooks
@@ -53,6 +56,11 @@ GET_DATA = {
                 "action": "store_true",
                 "help": "Override default behavior of verifying SSL certificates"
             },
+            "--no-paginate": {
+                "action": "store_false",
+                "help": "Disable automatic pagination",
+                "dest": "paginate"
+            },
         }
     },
     'aws/_services': {'s3':{}},
@@ -67,7 +75,7 @@ GET_VARIABLE = {
 
 class FakeSession(object):
     def __init__(self):
-        pass
+        self.operation = None
 
     def get_data(self, name):
         return GET_DATA[name]
@@ -92,7 +100,9 @@ class FakeSession(object):
         operation.cli_name = 'list-objects'
         operation.is_streaming.return_value = False
         operation.paginate.return_value.build_full_result.return_value = {
-            'foo': 'bar'}
+            'foo': 'paginate'}
+        operation.call.return_value = (mock.Mock(), {'foo': 'bar'})
+        self.operation = operation
         service.operations = [list_objects]
         service.cli_name = 's3'
         service.get_operation.return_value = operation
@@ -122,6 +132,16 @@ class TestCliDriverHooks(unittest.TestCase):
         self.session = FakeSession()
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
+        self.stdout = six.StringIO()
+        self.stderr = six.StringIO()
+        self.stdout_patch = mock.patch('sys.stdout', self.stdout)
+        self.stdout_patch.start()
+        self.stderr_patch = mock.patch('sys.stderr', self.stderr)
+        self.stderr_patch.start()
+
+    def tearDown(self):
+        self.stdout_patch.stop()
+        self.stderr_patch.stop()
 
     def assert_events_fired_in_order(self, events):
         args = self.emitter.emit.call_args_list
@@ -155,6 +175,22 @@ class TestCliDriverHooks(unittest.TestCase):
         driver = CLIDriver(session=self.session, emitter=emitter)
         driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(actual_params, [{'bucket': 'foo-altered!'}])
+        self.assertIn(mock.call.paginate(mock.ANY, bucket='foo-altered!'),
+                      self.session.operation.method_calls)
+
+    def test_cli_driver_with_no_paginate(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --no-paginate'.split())
+        # Because --no-paginate was used, op.call should be used instead of
+        # op.paginate.
+        self.assertIn(mock.call.call(mock.ANY, bucket='foo'),
+                      self.session.operation.method_calls)
+
+    def test_unknown_params_raises_error(self):
+        driver = CLIDriver(session=self.session)
+        rc = driver.main('s3 list-objects --bucket foo --unknown-arg foo'.split())
+        self.assertEqual(rc, 255)
+        self.assertIn('Unknown options', self.stderr.getvalue())
 
 
 if __name__ == '__main__':

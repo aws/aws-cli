@@ -156,6 +156,12 @@ class TestCliDriverHooks(unittest.TestCase):
         driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(actual_params, [{'bucket': 'foo-altered!'}])
 
+    def test_unknown_params_raises_error(self):
+        driver = CLIDriver(session=self.session)
+        rc = driver.main('s3 list-objects --bucket foo --unknown-arg foo'.split())
+        self.assertEqual(rc, 255)
+
+
 
 if __name__ == '__main__':
     unittest.main()

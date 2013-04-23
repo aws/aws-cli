@@ -410,9 +410,7 @@ class CLIDriver(object):
             args, still_remaining = operation_parser.parse_known_args(
                 remaining)
             if still_remaining:
-                print('Something is wrong.  We have leftover options')
-                print(still_remaining)
-                return -1
+                raise ValueError("Unknown options: %s" % still_remaining)
             return args
 
     def main(self, args=None):
@@ -426,5 +424,10 @@ class CLIDriver(object):
         if args is None:
             args = sys.argv[1:]
         main_parser = self.create_main_parser()
-        remaining_args = self._parse_args(main_parser, args)
+        try:
+            remaining_args = self._parse_args(main_parser, args)
+        except ValueError as e:
+            sys.stderr.write(str(e))
+            sys.stderr.write('\n')
+            return 255
         return self._call(remaining_args)

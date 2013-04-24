@@ -34,7 +34,7 @@ class TestSNSOperations(unittest.TestCase):
         op = self.sns.get_operation('Subscribe')
         params = op.build_parameters(topic_arn='topic_arn',
                                      protocol='http',
-                                     endpoint='http://example.org')
+                                     notification_endpoint='http://example.org')
         self.assertEqual(params['Endpoint'], 'http://example.org')
 
 

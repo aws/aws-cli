@@ -102,7 +102,7 @@ class Parameter(BotoCoreObject):
             self.build_parameter_query(value, built_params, label)
         elif style == 'json':
             self.build_parameter_json(value, built_params, label)
-        elif style == 'rest-xml':
+        elif style in ('rest-xml', 'rest-json'):
             self.build_parameter_rest(value, built_params, label)
 
 

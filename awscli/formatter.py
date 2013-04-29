@@ -20,7 +20,7 @@ from awscli.table import MultiTable, Styler, ColorizedStyler
 
 class Formatter(object):
     def __init__(self, args):
-        pass
+        self._args = args
 
 
 class FullyBufferedFormatter(Formatter):
@@ -32,7 +32,7 @@ class FullyBufferedFormatter(Formatter):
             stream = sys.stdout
         # I think the interfaces between non-paginated
         # and paginated responses can still be cleaned up.
-        if operation.can_paginate:
+        if operation.can_paginate and self._args.paginate:
             response_data = response.build_full_result()
         else:
             response_data = response
@@ -54,6 +54,7 @@ class TableFormatter(FullyBufferedFormatter):
 
     """
     def __init__(self, args, table=None):
+        super(TableFormatter, self).__init__(args)
         if args.color == 'auto':
             self.table = MultiTable(initial_section=False,
                                     column_separator='|')

@@ -204,7 +204,7 @@ class CLIDriver(object):
                                             self.operation.cli_name),
                 service=self.service, operation=self.operation,
                 endpoint=self.endpoint, params=params)
-            if self.operation.can_paginate:
+            if self.operation.can_paginate and self.args.paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
                 self._emitter.emit(
                     'after-operation.%s.%s' % (self.service.cli_name,

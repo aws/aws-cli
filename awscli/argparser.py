@@ -23,7 +23,7 @@ class CLIArgParser(argparse.ArgumentParser):
         self.args, self.remaining = self.parse_known_args(args)
 
     def error(self, message):
-        sys.stderr.write('Idiot - error: %s\n' % message)
+        self.print_usage(sys.stderr)
         sys.exit(2)
 
 
@@ -51,12 +51,19 @@ class MainArgParser(CLIArgParser):
                     choices_path = choices.format(provider=provider)
                     choices = self.session.get_data(choices_path)
                 if isinstance(choices, dict):
-                    choices = list(choices.keys())
+                    choices = [c.encode('utf-8') for c in choices.keys()]
+                    #choices = list(choices.keys())
                 option_data['help'] = self._create_choice_help(choices)
                 option_data['choices'] = choices + ['help']
             self.add_argument(option_name, **option_data)
         self.add_argument('--version', action="version",
                           version=self.session.user_agent())
+
+    def print_usage(self, file=None):
+        if not file:
+            file = sys.stdout
+
+
 
 
 class ServiceArgParser(CLIArgParser):

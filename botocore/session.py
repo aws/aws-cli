@@ -114,25 +114,32 @@ class Session(object):
         self._profile = None
         self._config = None
         self._credentials = None
+        self._profile_map = None
 
     @property
     def available_profiles(self):
-        profiles = []
-        self.get_config()
-        for key in self._config.keys():
-            if key.startswith("profile"):
-                try:
-                    parts = shlex.split(key)
-                except ValueError:
-                    continue
-                if len(parts) == 2:
-                    profiles.append(parts[1])
-            elif key == 'default':
-                # default section is special and is considered a profile name
-                # but we don't require you use 'profile "default"' as a
-                # section.
-                profiles.append(key)
-        return profiles
+        return list(self._build_profile_map().keys())
+
+    def _build_profile_map(self):
+        # This will build the profile map if it has not been created,
+        # otherwise it will return the cached value.
+        if self._profile_map is None:
+            profile_map = {}
+            for key, values in self.full_config.items():
+                if key.startswith("profile"):
+                    try:
+                        parts = shlex.split(key)
+                    except ValueError:
+                        continue
+                    if len(parts) == 2:
+                        profile_map[parts[1]] = values
+                elif key == 'default':
+                    # default section is special and is considered a profile name
+                    # but we don't require you use 'profile "default"' as a
+                    # section.
+                    profile_map[key] = values
+            self._profile_map = profile_map
+        return self._profile_map
 
     @property
     def profile(self):
@@ -194,9 +201,7 @@ class Session(object):
         profile_name = self.get_variable('profile')
         if not profile_name:
             profile_name = 'default'
-        elif not profile_name == 'default':
-            profile_name = 'profile "%s"' % profile_name
-        return config.get(profile_name, dict())
+        return self._build_profile_map().get(profile_name, {})
 
     @property
     def full_config(self):

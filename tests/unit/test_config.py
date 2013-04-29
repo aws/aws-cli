@@ -35,7 +35,10 @@ class TestConfig(BaseEnvVar):
 
     def setUp(self):
         super(TestConfig, self).setUp()
-        self.env_vars = {'config_file': (None, 'FOO_CONFIG_FILE', None)}
+        self.env_vars = {
+            'config_file': (None, 'FOO_CONFIG_FILE', None),
+            'profile': (None, 'FOO_DEFAULT_PROFILE', 'default'),
+        }
 
     def test_config_not_found(self):
         os.environ['FOO_CONFIG_FILE'] = path('aws_config_notfound')
@@ -79,6 +82,7 @@ class TestConfig(BaseEnvVar):
 
     def test_bad_profile(self):
         os.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
+        os.environ['FOO_DEFAULT_PROFILE'] = 'personal1'
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()
         profiles = session.available_profiles
@@ -86,6 +90,19 @@ class TestConfig(BaseEnvVar):
         self.assertIn('my profile', profiles)
         self.assertIn('personal1', profiles)
         self.assertIn('default', profiles)
+        self.assertEqual(config, {'aws_access_key_id': 'access_personal1',
+                                  'aws_secret_access_key': 'key_personal1'})
+
+    def test_profile_cached_returns_same_values(self):
+        os.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
+        os.environ['FOO_DEFAULT_PROFILE'] = 'personal1'
+        session = botocore.session.get_session(self.env_vars)
+        # First time is built from scratch.
+        config = session.get_config()
+        # Second time is cached.
+        cached_config = session.get_config()
+        # Both versions should be identical.
+        self.assertEqual(config, cached_config)
 
 
 if __name__ == "__main__":

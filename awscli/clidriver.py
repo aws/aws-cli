@@ -204,7 +204,7 @@ class CLIDriver(object):
                                             self.operation.cli_name),
                 service=self.service, operation=self.operation,
                 endpoint=self.endpoint, params=params)
-            if self.operation.can_paginate and self.args.paginate:
+            if self.operation.can_paginate and self.main_parser.args.paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
                 self._emitter.emit(
                     'after-operation.%s.%s' % (self.service.cli_name,
@@ -268,9 +268,9 @@ class CLIDriver(object):
         self.create_main_parser()
         # XXX: Does this still work with complex params that may be
         # space separated?
-        args = self._parse_args(cmdline.split()[1:])
+        status = self._parse_args(cmdline.split()[1:])
         params = {}
-        self._build_call_parameters(args, params)
+        self._build_call_parameters(self.operation_parser.args, params)
         return self.operation.build_parameters(**params)
 
     def _parse_args(self, args):
@@ -312,9 +312,8 @@ class CLIDriver(object):
                 get_operation_help(self.operation)
                 return 0
             if self.operation_parser.remaining:
-                print('Something is wrong.  We have leftover options')
-                print(self.operation_parser.remaining)
-                return -1
+                raise ValueError('Unknown options: %s' %
+                                 self.operation_parser.remaining)
             return 1
 
     def main(self, args=None):
@@ -328,6 +327,10 @@ class CLIDriver(object):
         if args is None:
             args = sys.argv[1:]
         self.create_main_parser()
-        status = self._parse_args(args)
-        if status == 1:
-            return self._call(self.operation_parser.args)
+        try:
+            status = self._parse_args(args)
+        except ValueError as e:
+            sys.stderr.write(str(e))
+            sys.stderr.write('\n')
+            return 255
+        return self._call(self.operation_parser.args)

@@ -137,5 +137,5 @@ class OperationArgParser(CLIArgParser):
                                   required=param.required,
                                   dest=param.py_name)
         if self.operation.is_streaming():
-            parser.add_argument('outfile', metavar='output_file',
-                                help='Where to save the content')
+            self.add_argument('outfile', metavar='output_file',
+                              help='Where to save the content')

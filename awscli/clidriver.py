@@ -10,20 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import argparse
 import sys
 import os
 import traceback
 import json
 import six
 import botocore.session
-from botocore.compat import copy_kwargs
+from botocore.hooks import BaseEventHooks, first_non_none_response
 from awscli import EnvironmentVariables, __version__
 from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
 from .plugin import load_plugins
-from botocore.hooks import BaseEventHooks, first_non_none_response
+from .argparser import MainArgParser, ServiceArgParser, OperationArgParser
 
 
 def main():
@@ -34,21 +33,6 @@ def main():
 
 
 class CLIDriver(object):
-
-    Formatter = argparse.RawTextHelpFormatter
-
-    type_map = {
-        'structure': str,
-        'map': str,
-        'timestamp': str,
-        'list': str,
-        'string': str,
-        'float': float,
-        'integer': str,
-        'long': int,
-        'boolean': bool,
-        'double': float,
-        'blob': str}
 
     def __init__(self, session=None, emitter=None):
         if session is None:
@@ -61,17 +45,13 @@ class CLIDriver(object):
             self._emitter = BaseEventHooks()
         else:
             self._emitter = emitter
-        self.args = None
         self.service = None
         self.region = None
         self.endpoint = None
         self.operation = None
-
-    def _create_choice_help(self, choices):
-        help_str = ''
-        for choice in sorted(choices):
-            help_str += '* %s\n' % choice
-        return help_str
+        self.main_parser = None
+        self.service_parser = None
+        self.operation_parser = None
 
     def create_main_parser(self):
         """
@@ -81,118 +61,30 @@ class CLIDriver(object):
         :return: The parser object
 
         """
-        self.cli_data = self.session.get_data('cli')
-        description = self.cli_data['description']
-        parser = argparse.ArgumentParser(formatter_class=self.Formatter,
-                                         description=description,
-                                         add_help=False,
-                                         conflict_handler='resolve')
-        for option_name in self.cli_data['options']:
-            option_data = copy_kwargs(self.cli_data['options'][option_name])
-            if 'choices' in option_data:
-                choices = option_data['choices']
-                if not isinstance(choices, list):
-                    provider = self.session.get_variable('provider')
-                    choices_path = choices.format(provider=provider)
-                    choices = self.session.get_data(choices_path)
-                if isinstance(choices, dict):
-                    choices = list(choices.keys())
-                option_data['help'] = self._create_choice_help(choices)
-                option_data['choices'] = choices + ['help']
-            parser.add_argument(option_name, **option_data)
-        parser.add_argument('--version', action="version",
-                            version=self.session.user_agent())
-        self._emitter.emit('parser-created.main', parser=parser)
-        return parser
+        self.main_parser = MainArgParser(self.session)
+        self._emitter.emit('parser-created.main', parser=self.main_parser)
 
-    def create_service_parser(self, remaining, main_parser):
+    def create_service_parser(self):
         """
         Create the subparser to handle the Service arguments.
-
-        :type remaining: list
-        :param remaining: The list of command line parameters that were
-            not recognized by upstream parsers.
-
-        :type main_parser: ``argparser.ArgumentParser``
-        :param main_parser: The top level (main) parser that handles global
-            arguments.  Can be created from ``create_main_parser``.
-
         """
-        if self.args.profile:
-            self.session.profile = self.args.profile
-        prog = '%s %s' % (main_parser.prog,
+        prog = '%s %s' % (self.main_parser.prog,
                           self.service.cli_name)
-        parser = argparse.ArgumentParser(formatter_class=self.Formatter,
-                                         add_help=False, prog=prog)
-        operations = [op.cli_name for op in self.service.operations]
-        operations.append('help')
-        parser.add_argument('operation', help='The operation',
-                            metavar='operation',
-                            choices=operations)
+        self.service_parser = ServiceArgParser(self.service, prog=prog)
         self._emitter.emit('parser-created.%s' % self.service.cli_name,
-                           parser=parser)
-        return parser
+                           parser=self.service_parser)
 
-    def _create_operation_parser(self, remaining, main_parser):
+    def create_operation_parser(self):
         """
         Create the subparser to handle the Operation arguments.
-
-        :type remaining: list
-        :param remaining: The list of command line parameters that were
-            not recognized by upstream parsers.
-
-        :type main_parser: ``argparser.ArgumentParser``
-        :param main_parser: The top level (main) parser that handles global
-            arguments.  Can be created from ``create_main_parser``.
-
         """
-        prog = '%s %s %s' % (main_parser.prog,
+        prog = '%s %s %s' % (self.main_parser.prog,
                              self.service.cli_name,
                              self.operation.cli_name)
-        parser = argparse.ArgumentParser(formatter_class=self.Formatter,
-                                         add_help=False, prog=prog)
-        for param in self.operation.params:
-            if param.type == 'list':
-                parser.add_argument(param.cli_name,
-                                    help=param.documentation,
-                                    nargs='*',
-                                    type=self.type_map[param.type],
-                                    required=param.required,
-                                    dest=param.py_name)
-            elif param.type == 'boolean':
-                if param.required:
-                    dest = param.cli_name[2:].replace('-', '_')
-                    mutex = parser.add_mutually_exclusive_group(required=True)
-                    mutex.add_argument(param.cli_name,
-                                       help=param.documentation,
-                                       dest=dest,
-                                       action='store_true')
-                    false_name = '--no-' + param.cli_name[2:]
-                    mutex.add_argument(false_name,
-                                       help=param.documentation,
-                                       dest=dest,
-                                       action='store_false')
-                else:
-                    parser.add_argument(param.cli_name,
-                                        help=param.documentation,
-                                        action='store_true',
-                                        required=param.required,
-                                        dest=param.py_name)
-            else:
-                parser.add_argument(param.cli_name,
-                                    help=param.documentation,
-                                    type=self.type_map[param.type],
-                                    required=param.required,
-                                    dest=param.py_name)
-        if self.operation.is_streaming():
-            parser.add_argument('outfile', metavar='output_file',
-                                help='Where to save the content')
-        if 'help' in remaining:
-            get_operation_help(self.operation)
-            return 0
+        self.operation_parser = OperationArgParser(self.operation, prog=prog)
         self._emitter.emit('parser-created.%s-%s' % (self.service.cli_name,
                                                      self.operation.cli_name))
-        return parser
+        return 1
 
     def _unpack_cli_arg(self, param, s):
         """
@@ -269,11 +161,11 @@ class CLIDriver(object):
         return value
 
     def display_error_and_exit(self, ex):
-        if self.args.debug:
+        if self.main_parser.args.debug:
             traceback.print_exc()
         elif isinstance(ex, Exception):
             print(ex)
-        elif self.args.output != 'json':
+        elif self.main_parser.args.output != 'json':
             print(ex)
         return 1
 
@@ -304,14 +196,15 @@ class CLIDriver(object):
             params = {}
             self._build_call_parameters(args, params)
             self.endpoint = self.service.get_endpoint(
-                self.args.region, endpoint_url=self.args.endpoint_url)
-            self.endpoint.verify = not self.args.no_verify_ssl
+                self.main_parser.args.region,
+                endpoint_url=self.main_parser.args.endpoint_url)
+            self.endpoint.verify = not self.main_parser.args.no_verify_ssl
             self._emitter.emit(
                 'before-operation.%s.%s' % (self.service.cli_name,
                                             self.operation.cli_name),
                 service=self.service, operation=self.operation,
                 endpoint=self.endpoint, params=params)
-            if self.operation.can_paginate and self.args.paginate:
+            if self.operation.can_paginate and self.main_parser.args.paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
                 self._emitter.emit(
                     'after-operation.%s.%s' % (self.service.cli_name,
@@ -372,17 +265,21 @@ class CLIDriver(object):
         :type cmdline: str
         :param cmdline: The command line.
         """
-        main_parser = self.create_main_parser()
+        self.create_main_parser()
         # XXX: Does this still work with complex params that may be
         # space separated?
-        args = self._parse_args(main_parser, cmdline.split()[1:])
+        status = self._parse_args(cmdline.split()[1:])
         params = {}
-        self._build_call_parameters(args, params)
+        self._build_call_parameters(self.operation_parser.args, params)
         return self.operation.build_parameters(**params)
 
-    def _parse_args(self, main_parser, args):
-        self.args, remaining = main_parser.parse_known_args(args)
-        if self.args.service_name == 'help':
+    def _parse_args(self, args):
+        """
+        Returns -1 on error, 0 if no further action is warranted,
+        and 1 if the request should be made.
+        """
+        self.main_parser.parse(args)
+        if self.main_parser.args.service_name == 'help':
             provider = self.session.get_variable('provider')
             get_provider_help(provider=provider)
             # get_provider_help will exec a process so we'll never get here,
@@ -390,28 +287,34 @@ class CLIDriver(object):
             # implementation changes.
             sys.exit(0)
         else:
-            if self.args.debug:
+            if self.main_parser.args.debug:
                 from six.moves import http_client
                 http_client.HTTPConnection.debuglevel = 2
                 self.session.set_debug_logger()
-            output = self.args.output
+            output = self.main_parser.args.output
             if output is None:
                 output = self.session.get_variable('output')
-            self.formatter = get_formatter(output, self.args)
-            self.service = self.session.get_service(self.args.service_name)
-            service_parser = self.create_service_parser(remaining, main_parser)
-            args, remaining = service_parser.parse_known_args(remaining)
-            if args.operation == 'help':
+            if self.main_parser.args.profile:
+                self.session.profile = main_parser.args.profile
+            self.formatter = get_formatter(output, self.main_parser.args)
+            service_name = self.main_parser.args.service_name
+            self.service = self.session.get_service(service_name)
+            self.create_service_parser()
+            self.service_parser.parse(self.main_parser.remaining)
+            if self.service_parser.args.operation == 'help':
                 get_service_help(self.service)
                 return 0
-            self.operation = self.service.get_operation(args.operation)
-            operation_parser = self._create_operation_parser(remaining,
-                                                             main_parser)
-            args, still_remaining = operation_parser.parse_known_args(
-                remaining)
-            if still_remaining:
-                raise ValueError("Unknown options: %s" % still_remaining)
-            return args
+            operation_name = self.service_parser.args.operation
+            self.operation = self.service.get_operation(operation_name)
+            self.create_operation_parser()
+            self.operation_parser.parse(self.service_parser.remaining)
+            if 'help' in self.operation_parser.remaining:
+                get_operation_help(self.operation)
+                return 0
+            if self.operation_parser.remaining:
+                raise ValueError('Unknown options: %s' %
+                                 self.operation_parser.remaining)
+            return 1
 
     def main(self, args=None):
         """
@@ -423,11 +326,11 @@ class CLIDriver(object):
         """
         if args is None:
             args = sys.argv[1:]
-        main_parser = self.create_main_parser()
+        self.create_main_parser()
         try:
-            remaining_args = self._parse_args(main_parser, args)
+            status = self._parse_args(args)
         except ValueError as e:
             sys.stderr.write(str(e))
             sys.stderr.write('\n')
             return 255
-        return self._call(remaining_args)
+        return self._call(self.operation_parser.args)

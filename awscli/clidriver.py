@@ -22,8 +22,8 @@ from awscli import EnvironmentVariables, __version__
 from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
-from .plugin import load_plugins, first_non_none_response
-from .hooks import BaseEventHooks
+from .plugin import load_plugins
+from botocore.hooks import BaseEventHooks, first_non_none_response
 
 
 def main():

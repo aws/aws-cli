@@ -17,7 +17,7 @@ import mock
 import six
 
 from awscli.clidriver import CLIDriver
-from awscli.hooks import HierarchicalEmitter, EventHooks
+from botocore.hooks import HierarchicalEmitter, EventHooks
 
 
 GET_DATA = {

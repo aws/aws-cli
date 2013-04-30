@@ -21,7 +21,8 @@
 #
 from tests import unittest
 
-from botocore.hooks import EventHooks, HierarchicalEmitter
+from botocore.hooks import EventHooks, HierarchicalEmitter, \
+        first_non_none_response
 
 
 class TestEventHooks(unittest.TestCase):
@@ -108,6 +109,27 @@ class TestHierarchicalEventEmitter(unittest.TestCase):
         self.assertEqual(len(self.hook_calls), 3)
         self.assertEqual([e['event_name'] for e in self.hook_calls],
                          ['foo.bar.baz', 'foo.bar', 'foo'])
+
+
+class TestFirstNonNoneResponse(unittest.TestCase):
+    def test_all_none(self):
+        self.assertIsNone(first_non_none_response([]))
+
+    def test_first_non_none(self):
+        correct_value = 'correct_value'
+        wrong_value = 'wrong_value'
+        # The responses are tuples of (handler, response),
+        # and we don't care about the handler so we just use a value of
+        # None.
+        responses = [(None, None), (None, correct_value), (None, wrong_value)]
+        self.assertEqual(first_non_none_response(responses), correct_value)
+
+    def test_default_value_if_non_none_found(self):
+        responses = [(None, None), (None, None)]
+        # If no response is found and a default value is passed in, it will
+        # be returned.
+        self.assertEqual(
+            first_non_none_response(responses, default='notfound'), 'notfound')
 
 
 if __name__ == '__main__':

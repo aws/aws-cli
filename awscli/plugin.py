@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.hooks import EventHooks, HierarchicalEmitter
+from botocore.hooks import EventHooks, HierarchicalEmitter
 
 log = logging.getLogger('awscli.plugin')
 

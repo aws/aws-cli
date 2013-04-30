@@ -15,7 +15,7 @@ from tests import unittest
 
 from awscli import plugin
 from awscli.plugin import first_non_none_response
-from awscli import hooks
+from botocore import hooks
 
 
 class FakeModule(object):

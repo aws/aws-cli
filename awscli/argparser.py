@@ -51,8 +51,7 @@ class MainArgParser(CLIArgParser):
                     choices_path = choices.format(provider=provider)
                     choices = self.session.get_data(choices_path)
                 if isinstance(choices, dict):
-                    choices = [c.encode('utf-8') for c in choices.keys()]
-                    #choices = list(choices.keys())
+                    choices = list(choices.keys())
                 option_data['help'] = self._create_choice_help(choices)
                 option_data['choices'] = choices + ['help']
             self.add_argument(option_name, **option_data)
@@ -62,8 +61,6 @@ class MainArgParser(CLIArgParser):
     def print_usage(self, file=None):
         if not file:
             file = sys.stdout
-
-
 
 
 class ServiceArgParser(CLIArgParser):

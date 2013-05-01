@@ -295,7 +295,7 @@ class CLIDriver(object):
             if output is None:
                 output = self.session.get_variable('output')
             if self.main_parser.args.profile:
-                self.session.profile = main_parser.args.profile
+                self.session.profile = self.main_parser.args.profile
             self.formatter = get_formatter(output, self.main_parser.args)
             service_name = self.main_parser.args.service_name
             self.service = self.session.get_service(service_name)

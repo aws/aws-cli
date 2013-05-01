@@ -294,30 +294,20 @@ class Session(object):
         """
         return botocore.base.get_data(self, data_path)
 
-    def get_service_metadata(self, service_name, provider_name='aws'):
-        """
-        Get metadata for a service.
-        """
-        data_path = '%s/_services/%s' % (provider_name, service_name)
-        return self.get_data(data_path)
-
     def get_service_data(self, service_name, provider_name='aws'):
         """
         Retrieve the fully merged data associated with a service.
         """
-        meta_data = self.get_service_metadata(service_name, provider_name)
         data_path = '%s/%s' % (provider_name, service_name)
         service_data = self.get_data(data_path)
-        # Merge metadata about service
-        service_data.update(meta_data)
         return service_data
 
     def get_available_services(self, provider_name='aws'):
         """
         Return a list of names of available services.
         """
-        data_path = '%s/_services' % provider_name
-        return self.get_data(data_path).keys()
+        data_path = '%s' % provider_name
+        return self.get_data(data_path)
 
     def get_service(self, service_name, provider_name='aws'):
         """

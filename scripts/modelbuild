@@ -16,8 +16,6 @@ def generate_python_model(args):
 
 def add_defaults_args(args):
     directory = os.path.dirname(os.path.abspath(args.modelfile))
-    if args.services_file is None:
-        args.services_file = os.path.join(directory, '_services.json')
     if args.regions_file is None:
         args.regions_file = os.path.join(directory, '_regions.json')
     if args.enhancements_file is None:
@@ -31,7 +29,6 @@ def main():
                         default=sys.stdout)
     # Normally don't need to specify these, they'll default to the right
     # values.
-    parser.add_argument('-s', '--services-file', help="The filename of the services json file.")
     parser.add_argument('-r', '--regions-file', help="The filename of the region file.")
     parser.add_argument('-e', '--enhancements-file', help="The filename of the region file.")
     args = parser.parse_args()

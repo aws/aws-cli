@@ -63,14 +63,14 @@ class Service(object):
 
     @property
     def region_names(self):
-        return self.regions.keys()
+        return self.metadata['regions'].keys()
 
     def build_endpoint_url(self, host, is_secure):
         if is_secure:
             scheme = 'https'
         else:
             scheme = 'http'
-        if scheme not in self.protocols:
+        if scheme not in self.metadata['protocols']:
             raise ValueError('Unsupported protocol: %s' % scheme)
         endpoint_url = '%s://%s%s' % (scheme, host, self.path)
         if self.port:
@@ -103,10 +103,10 @@ class Service(object):
         if region_name is None:
             envvar_name = self.session.env_vars['region'][1]
             raise NoRegionError(env_var=envvar_name)
-        if region_name not in self.regions:
+        if region_name not in self.metadata['regions']:
             raise ServiceNotInRegionError(service_name=self.endpoint_prefix,
                                           region_name=region_name)
-        endpoint_url = endpoint_url or self.regions[region_name]
+        endpoint_url = endpoint_url or self.metadata['regions'][region_name]
         if endpoint_url is None:
             host = '%s.%s.amazonaws.com' % (self.endpoint_prefix, region_name)
             endpoint_url = self.build_endpoint_url(host, is_secure)

@@ -22,15 +22,13 @@ class ModelFiles(object):
     Includes:
 
         * The json service description.
-        * The _services.json file.
         * The _regions.json file.
         * The <service>.extra.json enhancements file.
         * The name of the service.
 
     """
-    def __init__(self, model, services, regions, enhancements, name=''):
+    def __init__(self, model, regions, enhancements, name=''):
         self.model = model
-        self.services = services
         self.regions = regions
         self.enhancements = enhancements
         self.name = name
@@ -39,13 +37,11 @@ class ModelFiles(object):
 def load_model_files(args):
     model = json.load(open(args.modelfile),
                            object_pairs_hook=OrderedDict)
-    services = json.load(open(args.services_file),
-                        object_pairs_hook=OrderedDict)
     regions = json.load(open(args.regions_file),
                         object_pairs_hook=OrderedDict)
     enhancements = _load_enhancements_file(args.enhancements_file)
     service_name = os.path.splitext(os.path.basename(args.modelfile))[0]
-    return ModelFiles(model, services, regions, enhancements,
+    return ModelFiles(model, regions, enhancements,
                       name=service_name)
 
 
@@ -64,11 +60,9 @@ def translate(model):
         del new_model['pagination']
     except KeyError:
         pass
-    service_info = model.services.get(model.name, {})
     add_pagination_configs(
         new_model,
         model.enhancements.get('pagination', {}))
-    new_model['metadata'] = service_info.copy()
     merge_dicts(new_model['operations'], model.enhancements.get('operations', {}))
     return new_model
 

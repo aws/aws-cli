@@ -67,6 +67,7 @@ Get the member args for an operations::
 
 """
 import os
+import glob
 import json
 import logging
 import botocore.exceptions
@@ -80,10 +81,24 @@ _search_paths = []
 def _load_data(session, data_path):
     logger.debug('Attempting to Load: %s' % data_path)
     data = {}
+    # Is the path a directory?
     file_name = data_path + '.json'
     for path in get_search_path(session):
         file_path = os.path.join(path, file_name)
-        if os.path.isfile(file_path):
+        dir_path = os.path.join(path, data_path)
+        if os.path.isdir(dir_path):
+            logger.debug('Found data dir: %s' % dir_path)
+            try:
+                data = []
+                for pn in glob.glob(os.path.join(dir_path, '*.json')):
+                    fn = os.path.split(pn)[1]
+                    fn = os.path.splitext(fn)[0]
+                    if not fn.startswith('_'):
+                        data.append(fn)
+            except:
+                logger.error('Unable to load dir: %s' % dir_path)
+            break
+        elif os.path.isfile(file_path):
             fp = open(file_path)
             try:
                 new_data = json.load(fp)

@@ -19,6 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import sys
 from tests import unittest
 from botocore.translate import ModelFiles, translate, merge_dicts
 
@@ -277,21 +278,24 @@ class TestTranslateModel(unittest.TestCase):
         self.assertIn('AssumeRole', new_model['operations'])
 
     def test_supported_regions_are_merged_into_service(self):
-        services = {
-            "sts": {
-                "regions": {
-                    "us-east-1": "https://sts.amazonaws.com/",
-                    "us-gov-west-1": None,
-                },
-                "protocols": [
-                    "https"
-                ]
+        extra = {
+            "extra": {
+                "metadata": {
+                    "regions": {
+                        "us-east-1": "https://sts.amazonaws.com/",
+                        "us-gov-west-1": None,
+                        },
+                    "protocols": [
+                        "https"
+                        ]
+                    }
+                }
             }
-        }
-        self.model.services = services
+        self.model.enhancements = extra
         self.model.name = 'sts'
         new_model = translate(self.model)
-        self.assertDictEqual(new_model['metadata'], services['sts'])
+        self.maxDiff = None
+        self.assertDictEqual(new_model['metadata'], extra['extra']['metadata'])
 
     def test_iterators_are_merged_into_operations(self):
         # This may or may not pan out, but if a pagination config is

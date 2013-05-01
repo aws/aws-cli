@@ -56,7 +56,7 @@ def complete(cmdline, point):
     else:
         previous_word = None
     std_options = session.get_data('cli/options')
-    service_names = session.get_data('aws/_services').keys()
+    service_names = session.get_data('aws')
     # First find all non-options words in command line
     non_options = [w for w in words if not w.startswith('-')]
     # Look for a service name in the non_options

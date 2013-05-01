@@ -5949,6 +5949,15 @@
             "documentation": "\n    <p>Uploads an X.509 signing certificate and associates it with the specified user. Some AWS services\n\tuse X.509 signing certificates to validate requests that are signed with a\n    corresponding private key. When you upload the certificate, its default status is <code>Active</code>.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the user name is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account\n\thas no associated users.</p>\n\n    <note>Because the body of a X.509 certificate can be large, you should use POST rather than GET when\n    \tcalling <code>UploadSigningCertificate</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n\n      <queryrequest>\nPOST / HTTP/1.1\nHost: iam.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\n\nAction=UploadSigningCertificate\n&UserName=Bob\n&CertificateBody=-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UploadSigningCertificateResponse>\n   <UploadSigningCertificateResult>\n      <Certificate>\n         <UserName>Bob</UserName>\n         <CertificateId>TA7SMP42TDN5Z26OBPJE7EXAMPLE</CertificateId>\n         <CertificateBody>-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----</CertificateBody>\n         <Status>Active</Status>\n      </Certificate>\n   </UploadSigningCertificateResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UploadSigningCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
         }
     },
+    "metadata": {
+        "regions": {
+            "us-east-1": "https://iam.amazonaws.com/",
+            "us-gov-west-1": "https://iam.us-gov.amazonaws.com/"
+        },
+        "protocols": [
+            "https"
+        ]
+    },
     "pagination": {
         "GetGroup": {
             "more_key": "IsTruncated",
@@ -6062,14 +6071,5 @@
             "result_key": "VirtualMFADevices",
             "py_input_token": "marker"
         }
-    },
-    "metadata": {
-        "regions": {
-            "us-east-1": "https://iam.amazonaws.com/",
-            "us-gov-west-1": "https://iam.us-gov.amazonaws.com/"
-        },
-        "protocols": [
-            "https"
-        ]
     }
 }

@@ -280,8 +280,7 @@ class CLIDriver(object):
         """
         self.main_parser.parse(args)
         if self.main_parser.args.service_name == 'help':
-            provider = self.session.get_variable('provider')
-            get_provider_help(provider=provider)
+            get_provider_help(self.session)
             # get_provider_help will exec a process so we'll never get here,
             # but the sys.exit(0) is here in case get_provider_help's
             # implementation changes.
@@ -302,14 +301,14 @@ class CLIDriver(object):
             self.create_service_parser()
             self.service_parser.parse(self.main_parser.remaining)
             if self.service_parser.args.operation == 'help':
-                get_service_help(self.service)
+                get_service_help(self.session, self.service)
                 return 0
             operation_name = self.service_parser.args.operation
             self.operation = self.service.get_operation(operation_name)
             self.create_operation_parser()
             self.operation_parser.parse(self.service_parser.remaining)
             if 'help' in self.operation_parser.remaining:
-                get_operation_help(self.operation)
+                get_operation_help(self.session, self.service, self.operation)
                 return 0
             if self.operation_parser.remaining:
                 raise ValueError('Unknown options: %s' %

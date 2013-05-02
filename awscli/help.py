@@ -13,6 +13,7 @@
 import sys
 import os
 import platform
+from subprocess import Popen, PIPE
 
 
 def get_text_path():
@@ -21,6 +22,7 @@ def get_text_path():
     textpath = os.path.join(textpath, 'text')
     textpath = os.path.join(textpath, 'reference')
     return textpath
+
 
 def do_text_provider(provider):
     textpath = get_text_path()
@@ -61,22 +63,55 @@ def do_man(man_page):
     os.execvp('man', args)
 
 
-def get_provider_help(provider='aws'):
-    if platform.system() == 'Windows':
-        do_text_provider(provider)
+def _runcmd_posix(provider, service=None, operation=None):
+    cmdline = ['rstgen', '--provider', provider]
+    if service:
+        cmdline.append('--service')
+        cmdline.append(service)
+    if operation:
+        cmdline.append('--operation')
+        cmdline.append(operation)
+    p1 = Popen(cmdline, stdout=PIPE)
+    cmdline = ['rst2man.py']
+    p2 = Popen(cmdline, stdin=p1.stdout, stdout=PIPE)
+    cmdline = ['groff', '-man', '-T', 'ascii']
+    p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
+    more = os.environ.get('MORE', 'more')
+    cmdline = [more]
+    p4 = Popen(cmdline, stdin=p3.stdout)
+    output = p4.communicate()[0]
+    sys.exit(1)
+
+
+def _runcmd_windows(provider, service=None, operation=None):
+    cmdline = ['rstgen', '--provider', provider]
+    if service:
+        cmdline.append('--service')
+        cmdline.append(service)
+    if operation:
+        cmdline.append('--operation')
+        cmdline.append(operation)
+    p1 = Popen(cmdline)
+    output = p1.communicate()[0]
+    sys.exit(1)
+
+
+def runcmd(provider, service=None, operation=None):
+    if True or platform.system() == 'Windows':
+        _runcmd_windows(provider, service, operation)
     else:
-        do_man(provider)
+        _runcmd_posix(provider, service, operation)
+
+def get_provider_help(session):
+    provider = session.get_variable('provider')
+    runcmd(provider)
 
 
-def get_service_help(service):
-    if platform.system() == 'Windows':
-        do_text_service(service)
-    else:
-        do_man(service.cli_name)
+def get_service_help(session, service):
+    provider = session.get_variable('provider')
+    runcmd(provider, service=service.cli_name)
 
 
-def get_operation_help(operation):
-    if platform.system() == 'Windows':
-        do_text_operation(operation)
-    else:
-        do_man(operation.service.cli_name + '-' + operation.cli_name)
+def get_operation_help(session, service, operation):
+    provider = session.get_variable('provider')
+    runcmd(provider, service=service.cli_name, operation=operation.cli_name)

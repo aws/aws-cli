@@ -47,6 +47,7 @@ goto :EOF
 # language governing permissions and limitations under the License.
 
 import awscli.clidriver
+import sys
 
 
 def main():

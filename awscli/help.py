@@ -16,53 +16,6 @@ import platform
 from subprocess import Popen, PIPE
 
 
-def get_text_path():
-    textpath = os.path.split(__file__)[0]
-    textpath = os.path.join(textpath, 'doc')
-    textpath = os.path.join(textpath, 'text')
-    textpath = os.path.join(textpath, 'reference')
-    return textpath
-
-
-def do_text_provider(provider):
-    textpath = get_text_path()
-    textpath = os.path.join(textpath, 'index.txt')
-    fp = open(textpath, 'r')
-    sys.stdout.write(fp.read())
-    sys.stdout.write('\n')
-    fp.close()
-
-
-def do_text_service(service):
-    textpath = get_text_path()
-    textpath = os.path.join(textpath, service.cli_name)
-    textpath = os.path.join(textpath, 'index.txt')
-    fp = open(textpath, 'r')
-    sys.stdout.write(fp.read())
-    sys.stdout.write('\n')
-    fp.close()
-
-
-def do_text_operation(operation):
-    textpath = get_text_path()
-    textpath = os.path.join(textpath, operation.service.cli_name)
-    textpath = os.path.join(textpath, operation.cli_name + '.txt')
-    fp = open(textpath, 'r')
-    sys.stdout.write(fp.read())
-    sys.stdout.write('\n')
-    fp.close()
-
-
-def do_man(man_page):
-    manpath = os.path.split(__file__)[0]
-    manpath = os.path.join(manpath, 'doc')
-    manpath = os.path.join(manpath, 'man')
-    args = ['man', '-M', manpath, man_page]
-    sys.stdout.flush()
-    sys.stderr.flush()
-    os.execvp('man', args)
-
-
 def _runcmd_posix(provider, service=None, operation=None):
     cmdline = ['rstgen', '--provider', provider]
     if service:
@@ -84,7 +37,7 @@ def _runcmd_posix(provider, service=None, operation=None):
 
 
 def _runcmd_windows(provider, service=None, operation=None):
-    cmdline = ['rstgen', '--provider', provider]
+    cmdline = ['rstgen.cmd', '--provider', provider]
     if service:
         cmdline.append('--service')
         cmdline.append(service)

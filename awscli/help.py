@@ -50,10 +50,11 @@ def _runcmd_windows(provider, service=None, operation=None):
 
 
 def runcmd(provider, service=None, operation=None):
-    if True or platform.system() == 'Windows':
+    if platform.system() == 'Windows':
         _runcmd_windows(provider, service, operation)
     else:
         _runcmd_posix(provider, service, operation)
+
 
 def get_provider_help(session):
     provider = session.get_variable('provider')

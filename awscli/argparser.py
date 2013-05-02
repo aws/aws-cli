@@ -24,13 +24,19 @@ class CLIArgParser(argparse.ArgumentParser):
         pass
 
     def parse(self, args):
-        if args[0] == 'help':
+        if len(args) > 0 and args[0] == 'help':
             self.do_help()
         self.args, self.remaining = self.parse_known_args(args)
 
-    def error(self, message):
-        self.print_usage(sys.stderr)
-        sys.exit(1)
+    def _check_value(self, action, value):
+        # converted value must be one of the choices (if specified)
+        if action.choices is not None and value not in action.choices:
+            tup = value, '|'.join(map(repr, action.choices))
+            msg = 'invalid choice: %r (choose from %s)' % tup
+            raise argparse.ArgumentError(action, msg)
+
+    def print_usage(self, fp):
+        fp.write('\nPrint usage here\n')
 
 
 class MainArgParser(CLIArgParser):
@@ -70,11 +76,6 @@ class MainArgParser(CLIArgParser):
         subprocess.  This also will cause a sys.exit call.
         """
         get_provider_help(self.session)
-
-
-    def print_usage(self, file=None):
-        if not file:
-            file = sys.stdout
 
 
 class ServiceArgParser(CLIArgParser):

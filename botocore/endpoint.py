@@ -207,20 +207,11 @@ def _get_proxies(url):
 
 
 def get_endpoint(service, region_name, endpoint_url):
-    service_to_endpoint = {
-        'query': QueryEndpoint,
-        'json': JSONEndpoint,
-        'rest-xml': RestEndpoint,
-        'rest-json': RestEndpoint,
-    }
     service_type = service.type
-    if service_type not in service_to_endpoint:
+    cls = SERVICE_TO_ENDPOINT.get(service_type)
+    if cls is None:
         raise botocore.exceptions.UnknownServiceStyle(
             service_style=service.type)
-    cls = service_to_endpoint.get(service_type)
-    if cls is None:
-        raise NotImplementedError("%s service type is not yet implemented" %
-                                  service_type)
     service_name = getattr(service, 'signing_name', service.endpoint_prefix)
     auth = _get_auth(service.signature_version,
                      credentials=service.session.get_credentials(),
@@ -238,3 +229,11 @@ def _get_auth(signature_version, credentials, service_name, region_name):
         return cls(credentials=credentials,
                    service_name=service_name,
                    region_name=region_name)
+
+
+SERVICE_TO_ENDPOINT = {
+    'query': QueryEndpoint,
+    'json': JSONEndpoint,
+    'rest-xml': RestEndpoint,
+    'rest-json': RestEndpoint,
+}

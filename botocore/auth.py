@@ -48,7 +48,6 @@ except ImportError:
     from urlparse import parse_qsl
 
 
-PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
 EMPTY_SHA256_HASH = (
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
 

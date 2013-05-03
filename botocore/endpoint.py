@@ -26,7 +26,7 @@ import json
 from requests.sessions import Session
 from requests.utils import get_environ_proxies
 
-import botocore.auth
+from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 import botocore.response
 import botocore.exceptions
 from botocore.awsrequest import AWSRequest
@@ -222,9 +222,19 @@ def get_endpoint(service, region_name, endpoint_url):
         raise NotImplementedError("%s service type is not yet implemented" %
                                   service_type)
     service_name = getattr(service, 'signing_name', service.endpoint_prefix)
-    auth = botocore.auth.get_auth(service.signature_version,
-                                  credentials=service.session.get_credentials(),
-                                  service_name=service_name,
-                                  region_name=region_name)
+    auth = _get_auth(service.signature_version,
+                     credentials=service.session.get_credentials(),
+                     service_name=service_name,
+                     region_name=region_name)
     proxies = _get_proxies(endpoint_url)
     return cls(service, region_name, endpoint_url, auth=auth, proxies=proxies)
+
+
+def _get_auth(signature_version, credentials, service_name, region_name):
+    cls = AUTH_TYPE_MAPS.get(signature_version)
+    if cls is None:
+        raise UnknownSignatureVersionError(signature_version=signature_version)
+    else:
+        return cls(credentials=credentials,
+                   service_name=service_name,
+                   region_name=region_name)

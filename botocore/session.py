@@ -104,7 +104,7 @@ class Session(object):
         :param env_vars: A dictionary that is used to override some or all
             of the environment variables associated with this session.  The
             key/value pairs defined in this dictionary will override the
-            corresponding variables defined in `EnvironmentVariables`.
+            corresponding variables defined in ``EnvironmentVariables``.
         """
         self.env_vars = copy.copy(EnvironmentVariables)
         if env_vars:
@@ -122,7 +122,8 @@ class Session(object):
 
     def _build_profile_map(self):
         # This will build the profile map if it has not been created,
-        # otherwise it will return the cached value.
+        # otherwise it will return the cached value.  The profile map
+        # is a list of profile names, to the config values for the profile.
         if self._profile_map is None:
             profile_map = {}
             for key, values in self.full_config.items():
@@ -195,7 +196,12 @@ class Session(object):
         using the default ``profile`` session variable.  If it has already been
         loaded, the cached configuration will be returned.
 
+        Note that this configuration is specific to a single profile (the
+        ``profile`` session variable).
+
+
         :raises: ConfigNotFound, ConfigParseError
+        :rtype: dict
         """
         config = self.full_config
         profile_name = self.get_variable('profile')
@@ -210,6 +216,8 @@ class Session(object):
         The ``get_config`` method returns the config associated with the
         specified profile.  This property returns the contents of the
         **entire** config file.
+
+        :rtype: dict
         """
         if self._config is None:
             try:
@@ -376,6 +384,6 @@ class Session(object):
 
 def get_session(env_vars=None):
     """
-    Return a new session  object.
+    Return a new session object.
     """
     return Session(env_vars)

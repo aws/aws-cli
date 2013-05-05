@@ -1,0 +1,90 @@
+
+create-case
+***********
+
+
+DESCRIPTION
+===========
+
+Creates a new case in the AWS Support Center. This action is modeled
+on the behavior of the AWS Support Center Open a new case page. Its
+parameters require you to specify the following information:
+
+* **ServiceCode.** Represents a code for an AWS service. You obtain
+  the *ServiceCode* by calling describe-services .
+
+* **CategoryCode** . Represents a category for the service defined for
+  the ServiceCode value. You also obtain the cateogory code for a
+  service by calling describe-services . Each AWS service defines its
+  own set of category codes.
+
+* **SeverityCode** . Represents a value that specifies the urgency of
+  the case, and the time interval in which your service level
+  agreement specifies a response from AWS Support. You obtain the
+  SeverityCode by calling describe-severity-levels .
+
+* **Subject** . Represents the **Subject** field on the AWS Support
+  Center Open a new case page.
+
+* **CommunicationBody** . Represents the **Description** field on the
+  AWS Support Center Open a new case page.
+
+* **Language** . Specifies the human --language in which AWS Support
+  handles the case. The API currently supports English and Japanese.
+
+* **CcEmailAddresses** . Represents the AWS Support Center **CC**
+  field on the Open a new case page. You can list email addresses to
+  be copied on any correspondence about the case. The account that
+  opens the case is already identified by passing the AWS Credentials
+  in the HTTP POST method or in a method or function call from one of
+  the programming languages supported by an AWS SDK .
+
+Note: The AWS Support API does not currently support the ability to add
+  attachments to cases. You can, however, call add-communication-to-
+  case to add information to an open case.
+
+A successful create-case request returns an AWS Support case number.
+Case numbers are used by describe-cases request to retrieve existing
+AWS Support support cases.
+
+
+SYNOPSIS
+========
+
+   aws support create-case
+     --communication-body <value>
+     --category-code <value>
+     --service-code <value>
+     --subject <value>
+     [--language <value>]
+     [--cc-email-addresses <value>]
+     [--severity-code <value>]
+     [--issue-type <value>]
+
+
+REQUIRED PARAMETERS
+===================
+
+"--communication-body"  (string)
+
+"--category-code"  (string)
+
+"--service-code"  (string)
+
+"--subject"  (string)
+
+
+OPTIONAL PARAMETERS
+===================
+
+"--language"  (string)
+
+"--cc-email-addresses"  (list of string)
+
+   *Parameter Syntax*
+
+      ["string", ...]
+
+"--severity-code"  (string)
+
+"--issue-type"  (string)

@@ -85,6 +85,24 @@ class XmlResponse(Response):
             request_id.tail = True
             rmd['RequestId'] = request_id.text.strip()
 
+    def _get_error_data(self, error_elem):
+        data = {}
+        for elem in error_elem:
+            elem.tail = True
+            data[elem.tag] = elem.text.strip()
+        return data
+
+    def get_response_errors(self):
+        errors = None
+        errors_elem = self.tree.find('Errors')
+        if errors_elem is not None:
+            errors_elem.tail = True
+            errors = [self._get_error_data(e) for e in errors_elem]
+        elif self.tree.tag == 'Error':
+            errors = [self._get_error_data(self.tree)]
+        if errors:
+            self.value['Errors'] = errors
+
     def build_element_map(self, defn, keyname):
         xmlname = defn.get('xmlname', keyname)
         if not xmlname:
@@ -258,6 +276,7 @@ class XmlResponse(Response):
                 if child is not None:
                     self.value[member_name] = self.handle_elem(child, member)
         self.get_response_metadata()
+        self.get_response_errors()
         for child in self.tree:
             if child.tail is not True:
                 child_tag = self.get_element_base_tag(child)

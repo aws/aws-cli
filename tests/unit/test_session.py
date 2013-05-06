@@ -84,6 +84,19 @@ class SessionTest(unittest.TestCase):
         self.assertTrue('profile "foo"' in full_config)
         self.assertTrue('default' in full_config)
 
+    def test_register_unregister(self):
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        self.session.register('service-created', handler)
+        service = self.session.get_service('ec2')
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0]['service'], service)
+
+        calls[:] = []
+        self.session.unregister('service-created', handler)
+        service = self.session.get_service('ec2')
+        self.assertEqual(len(calls), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

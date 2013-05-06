@@ -19,8 +19,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   reference/index
    tutorial/index
+   reference/index
+   topics/index
    development/index
 
 

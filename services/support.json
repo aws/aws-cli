@@ -1,0 +1,1253 @@
+{
+  "api_version": "2013-04-15",
+  "type": "json",
+  "json_version": 1.1,
+  "target_prefix": "AWSSupport_20130415",
+  "signature_version": "v4",
+  "service_full_name": "AWS Support",
+  "endpoint_prefix": "support",
+  "xmlnamespace": "http://support.amazonaws.com/doc/2013-04-15/",
+  "documentation": "\n    <fullname>AWS Support</fullname>\n    \n    \n    <p>The AWS Support API reference is intended for programmers who need detailed information about the AWS Support actions and data types. This service enables you to manage with your AWS Support cases programmatically. It is built on the AWS Query API programming model and provides HTTP methods that take parameters and return results in JSON format.</p>\n    \n    <p>The AWS Support service also exposes a set of <a href=\"https://aws.amazon.com/support/trustedadvisor\" title=\"TrustedAdvisor\">Trusted Advisor</a> features. You can retrieve a list of checks you can run on your resources, specify checks to run and refresh, and check the status of checks you have submitted. </p> \n    \n    <p>The following list describes the AWS Support case management actions: </p>\n    <ul>\n      <li>\n<b>Service names, issue categories, and available severity levels. </b>The actions <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeServices.html\" title=\"DescribeServices\">DescribeServices</a> and <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeSeverityLevels.html\">DescribeSeverityLevels</a> enable you to obtain AWS service names, service codes, service categories, and problem severity levels. You use these values when you call the <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CreateCase.html\" title=\"CreateCase\">CreateCase</a> action. </li>\n      <li>\n<b>Case Creation, case details, and case resolution</b>. The actions <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CreateCase.html\" title=\"CreateCase\">CreateCase</a>, <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeCases.html\" title=\"DescribeCases\">DescribeCases</a>, and <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_ResolveCase.html\" title=\"ResolveCase\">ResolveCase</a> enable you to create AWS Support cases, retrieve them, and resolve them.</li>\n      <li>\n<b>Case communication</b>. The actions <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeCommunications.html\" title=\"DescribeCommunications\">DescribeCommunications</a> and <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_AddCommunicationToCase.html\" title=\"AddCommunicationToCase\">AddCommunicationToCase</a> enable you to retrieve and add communication to AWS Support cases. </li>\n    </ul>\n    \n    <p>The following list describes the actions available from the AWS Support service for  Trusted Advisor:</p>\n    <ul>\n      <li>\n<a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorChecks.html\" title=\"DescribeTrustedAdvisorChecks\">DescribeTrustedAdvisorChecks</a> returns the list of checks that you can run against your AWS resources.</li> \n      <li>Using the CheckId for a specific check returned by DescribeTrustedAdvisorChecks, you can call <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorCheckResult.html\" title=\"DescribeTrustedAdvisorCheckResult\">DescribeTrustedAdvisorCheckResult</a>\n</li> and obtain a new result for the check you specified. \n      <li> Using <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorCheckSummaries.html\" title=\"DescribeTrustedAdvisorCheckSummaries\">DescribeTrustedAdvisorCheckSummaries</a>, you can get summaries for a set of Trusted Advisor checks.</li>\n      <li>\n<a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_RefreshTrustedAdvisorCheck.html\" title=\"RefreshTrustedAdvisorCheck\">RefreshTrustedAdvisorCheck</a> enables you to request that Trusted Advisor run the check again. </li>\n      <li>\n<a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorCheckRefreshStatuses.html\" title=\"DescribeTrustedAdvisorCheckRefreshStatuses\">DescribeTrustedAdvisorCheckRefreshStatuses</a> gets statuses on the checks you are running.  </li>\n    </ul>\n    \n    \n    \n    <p>For authentication of requests, the AWS Support uses <a href=\"http://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>.</p>\n    \n    <p>See the AWS Support <a href=\"http://docs.aws.amazon.com/awssupport/latest/developerguide/Welcome.html\">Developer Guide</a> for information about how to use this service to manage create and manage your support cases, and how to call Trusted Advisor for results of checks on your resources. </p>\n \n   \n  ",
+  "operations": {
+    "AddCommunicationToCase": {
+      "name": "AddCommunicationToCase",
+      "input": {
+        "shape_name": "AddCommunicationToCaseRequest",
+        "type": "structure",
+        "members": {
+          "caseId": {
+            "shape_name": "CaseId",
+            "type": "string",
+            "documentation": null
+          },
+          "communicationBody": {
+            "shape_name": "CommunicationBody",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 8000,
+            "documentation": null,
+            "required": true
+          },
+          "ccEmailAddresses": {
+            "shape_name": "CcEmailAddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "CcEmailAddress",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "AddCommunicationToCaseResponse",
+        "type": "structure",
+        "members": {
+          "result": {
+            "shape_name": "Result",
+            "type": "boolean",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "CaseIdNotFound",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action adds additional customer communication to an AWS Support case. You use the <i>CaseId</i> value to identify the case to which you want to add communication. You can list a set of email addresses to copy on the communication using the <i>CcEmailAddresses</i> value. The <i>CommunicationBody</i> value contains the text of the communication.</p>\n    <p>This action's response indicates the success or failure of the request.</p>\n    <p>This action implements a subset of the behavior on the AWS Support <a href=\"https://aws.amazon.com/support\" title=\"Support Center\">Your Support Cases</a> web form.</p>\n  "
+    },
+    "CreateCase": {
+      "name": "CreateCase",
+      "input": {
+        "shape_name": "CreateCaseRequest",
+        "type": "structure",
+        "members": {
+          "subject": {
+            "shape_name": "Subject",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "serviceCode": {
+            "shape_name": "ServiceCode",
+            "type": "string",
+            "pattern": "[0-9a-z\\-_]+",
+            "documentation": null,
+            "required": true
+          },
+          "severityCode": {
+            "shape_name": "SeverityCode",
+            "type": "string",
+            "documentation": null
+          },
+          "categoryCode": {
+            "shape_name": "CategoryCode",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "communicationBody": {
+            "shape_name": "CommunicationBody",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 8000,
+            "documentation": null,
+            "required": true
+          },
+          "ccEmailAddresses": {
+            "shape_name": "CcEmailAddressList",
+            "type": "list",
+            "members": {
+              "shape_name": "CcEmailAddress",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": null
+          },
+          "language": {
+            "shape_name": "Language",
+            "type": "string",
+            "documentation": null
+          },
+          "issueType": {
+            "shape_name": "IssueType",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "CreateCaseResponse",
+        "type": "structure",
+        "members": {
+          "caseId": {
+            "shape_name": "CaseId",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "CaseCreationLimitExceeded",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>Creates a new case in the AWS Support Center. This action is modeled on the behavior of the AWS Support Center <a href=\"https://aws.amazon.com/support/createCase\">Open a new case</a> page. Its parameters require you to specify the following information: </p>\n    <ol>\n      <li>\n<b>ServiceCode.</b> Represents a code for an AWS service. You obtain the <i>ServiceCode</i> by calling <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeServices.html\" title=\"DescribeServices\">DescribeServices</a>. </li>\n      <li>\n<b>CategoryCode</b>. Represents a category for the service defined for the ServiceCode value. You also obtain the cateogory code for a service by calling <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeServices.html\" title=\"DescribeServices\">DescribeServices</a>. Each AWS service defines its own set of category codes. </li>\n      <li>\n<b>SeverityCode</b>. Represents a value that specifies the urgency of the case, and the time interval in which your service level agreement specifies a response from AWS Support. You obtain the SeverityCode by calling <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeSeverityLevels.html\" title=\"DescribeSeverityLevels\">DescribeSeverityLevels</a>.</li>\n      <li>\n<b>Subject</b>. Represents the <b>Subject</b> field  on the AWS Support Center <a href=\"https://aws.amazon.com/support/createCase\">Open a new case</a> page.</li>\n      <li>\n<b>CommunicationBody</b>. Represents the <b>Description</b> field on the AWS Support Center <a href=\"https://aws.amazon.com/support/createCase\">Open a new case</a> page.</li>\n      <li>\n<b>Language</b>. Specifies the human language in which AWS Support handles the case. The API currently supports English and Japanese.</li>\n      <li>\n<b>CcEmailAddresses</b>.  Represents the  AWS Support Center <b>CC</b> field on the <a href=\"https://aws.amazon.com/support/createCase\">Open a new case</a> page. You can list email addresses to be copied on any correspondence about the case. The account that opens the case is already identified by passing the AWS Credentials in the HTTP POST method or in a method or function call from one of the programming languages supported by an <a href=\"http://aws.amazon.com/tools/\" title=\"Tools for Amazon Web Services\">AWS SDK</a>. </li> </ol>\n    \n    <note>The AWS Support API does not currently support the ability to add attachments to cases. You can, however, call <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_AddCommunicationToCase.html\" title=\"AddCommunicationToCase\">AddCommunicationToCase</a> to add information to an open case. </note>\n    \n    <p>A successful <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CreateCase.html\" title=\"CreateCase\">CreateCase</a> request returns an AWS Support case number. Case numbers are used by <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeCases.html\" title=\"DescribeCases\">DescribeCases</a> request to retrieve existing AWS Support support cases. </p>\n    \n    \n   "
+    },
+    "DescribeCases": {
+      "name": "DescribeCases",
+      "input": {
+        "shape_name": "DescribeCasesRequest",
+        "type": "structure",
+        "members": {
+          "caseIdList": {
+            "shape_name": "CaseIdList",
+            "type": "list",
+            "members": {
+              "shape_name": "CaseId",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": null
+          },
+          "displayId": {
+            "shape_name": "DisplayId",
+            "type": "string",
+            "documentation": null
+          },
+          "afterTime": {
+            "shape_name": "AfterTime",
+            "type": "string",
+            "documentation": null
+          },
+          "beforeTime": {
+            "shape_name": "BeforeTime",
+            "type": "string",
+            "documentation": null
+          },
+          "includeResolvedCases": {
+            "shape_name": "IncludeResolvedCases",
+            "type": "boolean",
+            "documentation": null
+          },
+          "nextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": null
+          },
+          "maxResults": {
+            "shape_name": "MaxResults",
+            "type": "integer",
+            "min_length": 10,
+            "max_length": 100,
+            "documentation": null
+          },
+          "language": {
+            "shape_name": "Language",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeCasesResponse",
+        "type": "structure",
+        "members": {
+          "cases": {
+            "shape_name": "CaseList",
+            "type": "list",
+            "members": {
+              "shape_name": "CaseDetails",
+              "type": "structure",
+              "members": {
+                "caseId": {
+                  "shape_name": "CaseId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "displayId": {
+                  "shape_name": "DisplayId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "subject": {
+                  "shape_name": "Subject",
+                  "type": "string",
+                  "documentation": null
+                },
+                "status": {
+                  "shape_name": "Status",
+                  "type": "string",
+                  "documentation": null
+                },
+                "serviceCode": {
+                  "shape_name": "ServiceCode",
+                  "type": "string",
+                  "documentation": null
+                },
+                "categoryCode": {
+                  "shape_name": "CategoryCode",
+                  "type": "string",
+                  "documentation": null
+                },
+                "severityCode": {
+                  "shape_name": "SeverityCode",
+                  "type": "string",
+                  "documentation": null
+                },
+                "submittedBy": {
+                  "shape_name": "SubmittedBy",
+                  "type": "string",
+                  "documentation": null
+                },
+                "timeCreated": {
+                  "shape_name": "TimeCreated",
+                  "type": "string",
+                  "documentation": null
+                },
+                "recentCommunications": {
+                  "shape_name": "RecentCaseCommunications",
+                  "type": "structure",
+                  "members": {
+                    "communications": {
+                      "shape_name": "CommunicationList",
+                      "type": "list",
+                      "members": {
+                        "shape_name": "Communication",
+                        "type": "structure",
+                        "members": {
+                          "caseId": {
+                            "shape_name": "CaseId",
+                            "type": "string",
+                            "documentation": null
+                          },
+                          "body": {
+                            "shape_name": "CommunicationBody",
+                            "type": "string",
+                            "documentation": null
+                          },
+                          "submittedBy": {
+                            "shape_name": "SubmittedBy",
+                            "type": "string",
+                            "documentation": null
+                          },
+                          "timeCreated": {
+                            "shape_name": "TimeCreated",
+                            "type": "string",
+                            "documentation": null
+                          }
+                        },
+                        "documentation": null
+                      },
+                      "documentation": null
+                    },
+                    "nextToken": {
+                      "shape_name": "NextToken",
+                      "type": "string",
+                      "documentation": null
+                    }
+                  },
+                  "documentation": null
+                },
+                "ccEmailAddresses": {
+                  "shape_name": "CcEmailAddressList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "CcEmailAddress",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": null
+                },
+                "language": {
+                  "shape_name": "Language",
+                  "type": "string",
+                  "documentation": null
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null
+          },
+          "nextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "CaseIdNotFound",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action returns a list of cases that you specify by passing one or more CaseIds. In addition, you can filter the cases by date by setting values for the AfterTime and BeforeTime request parameters. </p>\n    \n    The response returns the following in JSON format: \n    <ol>\n      <li>One or more <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CaseDetails.html\" title=\"CaseDetails\">CaseDetails</a> data types. </li>\n      <li>One or more <i>NextToken</i> objects, strings that specifies where to paginate the returned records represented by <i>CaseDetails</i>.</li>\n    </ol>\n  "
+    },
+    "DescribeCommunications": {
+      "name": "DescribeCommunications",
+      "input": {
+        "shape_name": "DescribeCommunicationsRequest",
+        "type": "structure",
+        "members": {
+          "caseId": {
+            "shape_name": "CaseId",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "beforeTime": {
+            "shape_name": "BeforeTime",
+            "type": "string",
+            "documentation": null
+          },
+          "afterTime": {
+            "shape_name": "AfterTime",
+            "type": "string",
+            "documentation": null
+          },
+          "nextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": null
+          },
+          "maxResults": {
+            "shape_name": "MaxResults",
+            "type": "integer",
+            "min_length": 10,
+            "max_length": 100,
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeCommunicationsResponse",
+        "type": "structure",
+        "members": {
+          "communications": {
+            "shape_name": "CommunicationList",
+            "type": "list",
+            "members": {
+              "shape_name": "Communication",
+              "type": "structure",
+              "members": {
+                "caseId": {
+                  "shape_name": "CaseId",
+                  "type": "string",
+                  "documentation": null
+                },
+                "body": {
+                  "shape_name": "CommunicationBody",
+                  "type": "string",
+                  "documentation": null
+                },
+                "submittedBy": {
+                  "shape_name": "SubmittedBy",
+                  "type": "string",
+                  "documentation": null
+                },
+                "timeCreated": {
+                  "shape_name": "TimeCreated",
+                  "type": "string",
+                  "documentation": null
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null
+          },
+          "nextToken": {
+            "shape_name": "NextToken",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "CaseIdNotFound",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action returns communications regarding the support case. You can use the <i>AfterTime</i> and <i>BeforeTime</i> parameters to filter by date. The <i>CaseId</i> parameter enables you to identify a specific case by its <i>CaseId</i> number.</p>\n    <p>The <i>MaxResults</i> and <i>NextToken</i> parameters enable you to control the pagination of the result set. Set <i>MaxResults</i> to the number of cases you want displayed on each page, and use  <i>NextToken</i> to specify the resumption of pagination.</p>\n  "
+    },
+    "DescribeServices": {
+      "name": "DescribeServices",
+      "input": {
+        "shape_name": "DescribeServicesRequest",
+        "type": "structure",
+        "members": {
+          "serviceCodeList": {
+            "shape_name": "ServiceCodeList",
+            "type": "list",
+            "members": {
+              "shape_name": "ServiceCode",
+              "type": "string",
+              "pattern": "[0-9a-z\\-_]+",
+              "documentation": null
+            },
+            "documentation": null
+          },
+          "language": {
+            "shape_name": "Language",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeServicesResponse",
+        "type": "structure",
+        "members": {
+          "services": {
+            "shape_name": "ServiceList",
+            "type": "list",
+            "members": {
+              "shape_name": "Service",
+              "type": "structure",
+              "members": {
+                "code": {
+                  "shape_name": "ServiceCode",
+                  "type": "string",
+                  "documentation": null
+                },
+                "name": {
+                  "shape_name": "ServiceName",
+                  "type": "string",
+                  "documentation": null
+                },
+                "categories": {
+                  "shape_name": "CategoryList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "Category",
+                    "type": "structure",
+                    "members": {
+                      "code": {
+                        "shape_name": "CategoryCode",
+                        "type": "string",
+                        "documentation": null
+                      },
+                      "name": {
+                        "shape_name": "CategoryName",
+                        "type": "string",
+                        "documentation": null
+                      }
+                    },
+                    "documentation": null
+                  },
+                  "documentation": null
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>Returns the current list of AWS services and a list of service categories that applies to each one. You then use service names and categories in your <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CreateCase.html\" title=\"CreateCase\">CreateCase</a> requests. Each AWS service has its own set of categories.</p>\n    \n<p>The service codes and category codes correspond to the values that are displayed in the <b>Service</b> and <b>Category</b> drop-down lists on the AWS Support Center <a href=\"https://aws.amazon.com/support/createCase\" title=\"Open a new case\">Open a new case</a> page. The values in those fields, however, do not necessarily match the service codes and categories returned by the <code>DescribeServices</code> request. Always use the service codes and categories obtained programmatically. This practice ensures that you always have the most recent set of service and category codes.</p>    \n   \n  "
+    },
+    "DescribeSeverityLevels": {
+      "name": "DescribeSeverityLevels",
+      "input": {
+        "shape_name": "DescribeSeverityLevelsRequest",
+        "type": "structure",
+        "members": {
+          "language": {
+            "shape_name": "Language",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeSeverityLevelsResponse",
+        "type": "structure",
+        "members": {
+          "severityLevels": {
+            "shape_name": "SeverityLevelsList",
+            "type": "list",
+            "members": {
+              "shape_name": "SeverityLevel",
+              "type": "structure",
+              "members": {
+                "code": {
+                  "shape_name": "SeverityLevelCode",
+                  "type": "string",
+                  "documentation": null
+                },
+                "name": {
+                  "shape_name": "SeverityLevelName",
+                  "type": "string",
+                  "documentation": null
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action returns the list of severity levels that you can assign to an AWS Support case. The severity level for a case is also a field in the <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CaseDetails.html\" title=\"CaseDetails\">CaseDetails</a> data type included in any <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_CreateCase.html\" title=\"CreateCase\">CreateCase</a> request.  </p>\n  \n  "
+    },
+    "ResolveCase": {
+      "name": "ResolveCase",
+      "input": {
+        "shape_name": "ResolveCaseRequest",
+        "type": "structure",
+        "members": {
+          "caseId": {
+            "shape_name": "CaseId",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "ResolveCaseResponse",
+        "type": "structure",
+        "members": {
+          "initialCaseStatus": {
+            "shape_name": "CaseStatus",
+            "type": "string",
+            "documentation": null
+          },
+          "finalCaseStatus": {
+            "shape_name": "CaseStatus",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        },
+        {
+          "shape_name": "CaseIdNotFound",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n       \n    <p>Takes a <i>CaseId</i> and returns the initial state of the case along with the state of the case after the call to <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_ResolveCase.html\" title=\"ResolveCase\">ResolveCase</a> completed.</p>\n  "
+    },
+    "DescribeTrustedAdvisorCheckRefreshStatuses": {
+      "name": "DescribeTrustedAdvisorCheckRefreshStatuses",
+      "input": {
+        "shape_name": "DescribeTrustedAdvisorCheckRefreshStatusesRequest",
+        "type": "structure",
+        "members": {
+          "checkIds": {
+            "shape_name": "StringList",
+            "type": "list",
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeTrustedAdvisorCheckRefreshStatusesResponse",
+        "type": "structure",
+        "members": {
+          "statuses": {
+            "shape_name": "TrustedAdvisorCheckRefreshStatusList",
+            "type": "list",
+            "members": {
+              "shape_name": "TrustedAdvisorCheckRefreshStatus",
+              "type": "structure",
+              "members": {
+                "checkId": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "status": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "millisUntilNextRefreshable": {
+                  "shape_name": "Long",
+                  "type": "long",
+                  "documentation": null,
+                  "required": true
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>Returns the status of all refresh requests Trusted Advisor checks called using <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_RefreshTrustedAdvisorCheck.html\" title=\"RefreshTrustedAdvisorCheck\">RefreshTrustedAdvisorCheck</a>.  </p>\n  "
+    },
+    "DescribeTrustedAdvisorCheckResult": {
+      "name": "DescribeTrustedAdvisorCheckResult",
+      "input": {
+        "shape_name": "DescribeTrustedAdvisorCheckResultRequest",
+        "type": "structure",
+        "members": {
+          "checkId": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "language": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeTrustedAdvisorCheckResultResponse",
+        "type": "structure",
+        "members": {
+          "result": {
+            "shape_name": "TrustedAdvisorCheckResult",
+            "type": "structure",
+            "members": {
+              "checkId": {
+                "shape_name": "String",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "timestamp": {
+                "shape_name": "String",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "status": {
+                "shape_name": "String",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "resourcesSummary": {
+                "shape_name": "TrustedAdvisorResourcesSummary",
+                "type": "structure",
+                "members": {
+                  "resourcesProcessed": {
+                    "shape_name": "Long",
+                    "type": "long",
+                    "documentation": null,
+                    "required": true
+                  },
+                  "resourcesFlagged": {
+                    "shape_name": "Long",
+                    "type": "long",
+                    "documentation": null,
+                    "required": true
+                  },
+                  "resourcesIgnored": {
+                    "shape_name": "Long",
+                    "type": "long",
+                    "documentation": null,
+                    "required": true
+                  },
+                  "resourcesSuppressed": {
+                    "shape_name": "Long",
+                    "type": "long",
+                    "documentation": null,
+                    "required": true
+                  }
+                },
+                "documentation": null,
+                "required": true
+              },
+              "categorySpecificSummary": {
+                "shape_name": "TrustedAdvisorCategorySpecificSummary",
+                "type": "structure",
+                "members": {
+                  "costOptimizing": {
+                    "shape_name": "TrustedAdvisorCostOptimizingSummary",
+                    "type": "structure",
+                    "members": {
+                      "estimatedMonthlySavings": {
+                        "shape_name": "Double",
+                        "type": "double",
+                        "documentation": null,
+                        "required": true
+                      },
+                      "estimatedPercentMonthlySavings": {
+                        "shape_name": "Double",
+                        "type": "double",
+                        "documentation": null,
+                        "required": true
+                      }
+                    },
+                    "documentation": null
+                  }
+                },
+                "documentation": null,
+                "required": true
+              },
+              "flaggedResources": {
+                "shape_name": "TrustedAdvisorResourceDetailList",
+                "type": "list",
+                "members": {
+                  "shape_name": "TrustedAdvisorResourceDetail",
+                  "type": "structure",
+                  "members": {
+                    "status": {
+                      "shape_name": "String",
+                      "type": "string",
+                      "documentation": null,
+                      "required": true
+                    },
+                    "region": {
+                      "shape_name": "String",
+                      "type": "string",
+                      "documentation": null,
+                      "required": true
+                    },
+                    "resourceId": {
+                      "shape_name": "String",
+                      "type": "string",
+                      "documentation": null,
+                      "required": true
+                    },
+                    "isSuppressed": {
+                      "shape_name": "Boolean",
+                      "type": "boolean",
+                      "documentation": null
+                    },
+                    "metadata": {
+                      "shape_name": "StringList",
+                      "type": "list",
+                      "members": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null
+                      },
+                      "documentation": null,
+                      "required": true
+                    }
+                  },
+                  "documentation": null
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action responds with the results of a Trusted Advisor check. Once you have obtained the list of available Trusted Advisor checks by calling <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorChecks.html\" title=\"DescribeTrustedAdvisorChecks\">DescribeTrustedAdvisorChecks</a>, you specify the <i>CheckId</i> for the check you want to retrieve from AWS Support.</p>\n    <p>The response for this action contains a JSON-formatted <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorCheckResultResult.html\" title=\"DescribeTrustedAdvisorCheckResultResult\">TrustedAdvisorCheckResult</a> object</p>, which is a container for the following three objects:<p></p>\n    <ol>\n      <li><a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_TrustedAdvisorCategorySpecificSummary.html\" title=\"TrustedAdvisorCategorySpecificSummary\">TrustedAdvisorCategorySpecificSummary</a></li>\n      <li><a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_TrustedAdvisorResourceDetail.html\" title=\"TrustedAdvisorResourceDetail\">TrustedAdvisorResourceDetail</a></li>\n      <li><a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_TrustedAdvisorResourcesSummary.html\" title=\"TrustedAdvisorResourcesSummary\">TrustedAdvisorResourcesSummary</a></li>\n    </ol>\n<p>In addition, the response contains the following fields:</p>\n    <ol>\n      <li>\n<b>Status</b>. Overall status of the check.</li>\n      <li>\n<b>Timestamp</b>. Time at which Trusted Advisor last ran the check.  </li>\n      <li>\n<b>CheckId</b>. Unique identifier for the specific check returned by the request.</li>\n    </ol>\n "
+    },
+    "DescribeTrustedAdvisorCheckSummaries": {
+      "name": "DescribeTrustedAdvisorCheckSummaries",
+      "input": {
+        "shape_name": "DescribeTrustedAdvisorCheckSummariesRequest",
+        "type": "structure",
+        "members": {
+          "checkIds": {
+            "shape_name": "StringList",
+            "type": "list",
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeTrustedAdvisorCheckSummariesResponse",
+        "type": "structure",
+        "members": {
+          "summaries": {
+            "shape_name": "TrustedAdvisorCheckSummaryList",
+            "type": "list",
+            "members": {
+              "shape_name": "TrustedAdvisorCheckSummary",
+              "type": "structure",
+              "members": {
+                "checkId": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "timestamp": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "status": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "hasFlaggedResources": {
+                  "shape_name": "Boolean",
+                  "type": "boolean",
+                  "documentation": null
+                },
+                "resourcesSummary": {
+                  "shape_name": "TrustedAdvisorResourcesSummary",
+                  "type": "structure",
+                  "members": {
+                    "resourcesProcessed": {
+                      "shape_name": "Long",
+                      "type": "long",
+                      "documentation": null,
+                      "required": true
+                    },
+                    "resourcesFlagged": {
+                      "shape_name": "Long",
+                      "type": "long",
+                      "documentation": null,
+                      "required": true
+                    },
+                    "resourcesIgnored": {
+                      "shape_name": "Long",
+                      "type": "long",
+                      "documentation": null,
+                      "required": true
+                    },
+                    "resourcesSuppressed": {
+                      "shape_name": "Long",
+                      "type": "long",
+                      "documentation": null,
+                      "required": true
+                    }
+                  },
+                  "documentation": null,
+                  "required": true
+                },
+                "categorySpecificSummary": {
+                  "shape_name": "TrustedAdvisorCategorySpecificSummary",
+                  "type": "structure",
+                  "members": {
+                    "costOptimizing": {
+                      "shape_name": "TrustedAdvisorCostOptimizingSummary",
+                      "type": "structure",
+                      "members": {
+                        "estimatedMonthlySavings": {
+                          "shape_name": "Double",
+                          "type": "double",
+                          "documentation": null,
+                          "required": true
+                        },
+                        "estimatedPercentMonthlySavings": {
+                          "shape_name": "Double",
+                          "type": "double",
+                          "documentation": null,
+                          "required": true
+                        }
+                      },
+                      "documentation": null
+                    }
+                  },
+                  "documentation": null,
+                  "required": true
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action enables you to get the latest summaries for Trusted Advisor checks that you specify in your request. You submit the list of Trusted Advisor checks for which you want summaries. You obtain these <i>CheckIds</i> by submitting a  <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_DescribeTrustedAdvisorChecks.html\" title=\"DescribeTrustedAdvisorChecks\">DescribeTrustedAdvisorChecks</a> request. </p>    \n    <p>The response body contains an array of <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_TrustedAdvisorCheckSummary.html\" title=\"TrustedAdvisorCheckSummary\">TrustedAdvisorCheckSummary</a> objects.  </p>\n    \n    \n  "
+    },
+    "DescribeTrustedAdvisorChecks": {
+      "name": "DescribeTrustedAdvisorChecks",
+      "input": {
+        "shape_name": "DescribeTrustedAdvisorChecksRequest",
+        "type": "structure",
+        "members": {
+          "language": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeTrustedAdvisorChecksResponse",
+        "type": "structure",
+        "members": {
+          "checks": {
+            "shape_name": "TrustedAdvisorCheckList",
+            "type": "list",
+            "members": {
+              "shape_name": "TrustedAdvisorCheckDescription",
+              "type": "structure",
+              "members": {
+                "id": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "name": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "description": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "category": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null,
+                  "required": true
+                },
+                "metadata": {
+                  "shape_name": "StringList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": null,
+                  "required": true
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action enables you to get a list of the available Trusted Advisor checks. You must specify a language code. English (\"en\") and Japanese (\"jp\") are currently supported. The response contains a list of <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_TrustedAdvisorCheckDescription.html\" title=\"TrustedAdvisorCheckDescription\">TrustedAdvisorCheckDescription</a> objects. </p> \n  "
+    },
+    "RefreshTrustedAdvisorCheck": {
+      "name": "RefreshTrustedAdvisorCheck",
+      "input": {
+        "shape_name": "RefreshTrustedAdvisorCheckRequest",
+        "type": "structure",
+        "members": {
+          "checkId": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "RefreshTrustedAdvisorCheckResponse",
+        "type": "structure",
+        "members": {
+          "status": {
+            "shape_name": "TrustedAdvisorCheckRefreshStatus",
+            "type": "structure",
+            "members": {
+              "checkId": {
+                "shape_name": "String",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "status": {
+                "shape_name": "String",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "millisUntilNextRefreshable": {
+                "shape_name": "Long",
+                "type": "long",
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "InternalServerError",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": null
+        }
+      ],
+      "documentation": "\n    <p>This action enables you to query the service to request a refresh for a specific Trusted Advisor check. Your request body contains a <i>CheckId</i> for which you are querying. The response body contains a <a href=\"http://docs.aws.amazon.com/awssupport/latest/APIReference/API_RefreshTrustedAdvisorCheckResult.html\" title=\"RefreshTrustedAdvisorCheckResult\">RefreshTrustedAdvisorCheckResult</a> object containing <i>Status</i> and <i>TimeUntilNextRefresh</i> fields.</p>\n  "
+    }
+  }
+}

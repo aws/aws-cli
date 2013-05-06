@@ -24,7 +24,7 @@ class CLIArgParser(argparse.ArgumentParser):
 
     def error(self, message):
         self.print_usage(sys.stderr)
-        sys.exit(2)
+        self.exit(2, '%s: error: %s\n' % (self.prog, message))
 
 
 class MainArgParser(CLIArgParser):
@@ -57,10 +57,6 @@ class MainArgParser(CLIArgParser):
             self.add_argument(option_name, **option_data)
         self.add_argument('--version', action="version",
                           version=self.session.user_agent())
-
-    def print_usage(self, file=None):
-        if not file:
-            file = sys.stdout
 
 
 class ServiceArgParser(CLIArgParser):
@@ -98,6 +94,12 @@ class OperationArgParser(CLIArgParser):
     def __init__(self, operation, **kwargs):
         self.operation = operation
         CLIArgParser.__init__(self, **kwargs)
+
+    def parse(self, args):
+        if args == ['help']:
+            self.remaining = args
+            return
+        CLIArgParser.parse(self, args)
 
     def build(self):
         for param in self.operation.params:

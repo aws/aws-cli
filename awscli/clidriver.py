@@ -17,6 +17,7 @@ import json
 import six
 import botocore.session
 from botocore.hooks import BaseEventHooks, first_non_none_response
+from botocore.hooks import HierarchicalEmitter, EventHooks
 from awscli import EnvironmentVariables, __version__
 from .formatter import get_formatter
 from .paramfile import get_paramfile
@@ -25,8 +26,11 @@ from .argparser import MainArgParser, ServiceArgParser, OperationArgParser
 
 
 def main():
-    session = botocore.session.get_session(EnvironmentVariables)
-    emitter = load_plugins(session.full_config.get('plugins', {}))
+    event_hooks = EventHooks()
+    emitter = HierarchicalEmitter(event_hooks)
+    session = botocore.session.Session(EnvironmentVariables, emitter)
+    emitter = load_plugins(session.full_config.get('plugins', {}),
+                           event_hooks=emitter)
     driver = CLIDriver(session=session, emitter=emitter)
     return driver.main()
 

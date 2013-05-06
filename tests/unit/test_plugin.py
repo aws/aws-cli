@@ -44,7 +44,8 @@ class TestPlugins(unittest.TestCase):
         emitter = plugin.load_plugins({'fake_plugin': '__fake_plugin__'})
         self.assertTrue(self.fake_module.called)
         self.assertTrue(isinstance(emitter, hooks.HierarchicalEmitter))
-        self.assertTrue(isinstance(self.fake_module.context, plugin.CLI))
+        self.assertTrue(isinstance(self.fake_module.context,
+                                   hooks.HierarchicalEmitter))
 
     def test_event_hooks_can_be_passed_in(self):
         hooks = plugin.EventHooks()

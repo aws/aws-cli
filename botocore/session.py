@@ -387,10 +387,34 @@ class Session(object):
         log.addHandler(ch)
 
     def register(self, event_name, handler):
+        """Register a handler with an event.
+
+        :type event_name: str
+        :param event_name: The name of the event.
+
+        :type handler: callable
+        :param handler: The callback to invoke when the event
+            is emitted.  This object must be callable, and must
+            accept ``**kwargs``.  If either of these preconditions are
+            not met, a ``ValueError`` will be raised.
+
+        """
         self._events.register(event_name, handler)
 
     def unregister(self, event_name, handler):
+        """Unregister a handler with an event.
+
+        :type event_name: str
+        :param event_name: The name of the event.
+
+        :type handler: callable
+        :param handler: The callback to unregister.
+
+        """
         self._events.unregister(event_name, handler)
+
+    def emit(self, event_name, **kwargs):
+        return self._events.emit(event_name, **kwargs)
 
 
 def get_session(env_vars=None):

@@ -97,6 +97,14 @@ class SessionTest(unittest.TestCase):
         service = self.session.get_service('ec2')
         self.assertEqual(len(calls), 0)
 
+    def test_emit_delegates_to_emitter(self):
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        self.session.register('foo', handler)
+        self.session.emit('foo')
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0]['event_name'], 'foo')
+
 
 if __name__ == "__main__":
     unittest.main()

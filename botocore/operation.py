@@ -48,9 +48,19 @@ class Operation(BotoCoreObject):
         return 'Operation:%s' % self.name
 
     def call(self, endpoint, **kwargs):
-        logger.debug(kwargs)
+        logger.debug("%s called with kwargs: %s", self, kwargs)
+        self.service.session.emit('before-call.%s' % self._event_name(),
+                                  operation=self, endpoint=endpoint,
+                                  params=kwargs)
         params = self.build_parameters(**kwargs)
-        return endpoint.make_request(self, params)
+        response = endpoint.make_request(self, params)
+        self.service.session.emit('after-call.%s' % self._event_name(),
+                                  operation=self, http_response=response[0],
+                                  parsed=response[1])
+        return response
+
+    def _event_name(self):
+        return "%s.%s" % (self.service.endpoint_prefix, self.name)
 
     @property
     def can_paginate(self):

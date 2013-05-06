@@ -112,6 +112,8 @@ class Session(object):
             self.env_vars.update(env_vars)
         if event_hooks is None:
             self._events = EventHooks()
+        else:
+            self._events = event_hooks
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
         self._profile = None

@@ -30,6 +30,7 @@ import mock
 
 import botocore.session
 import botocore.exceptions
+from botocore.hooks import EventHooks
 
 
 class SessionTest(unittest.TestCase):
@@ -104,6 +105,16 @@ class SessionTest(unittest.TestCase):
         self.session.emit('foo')
         self.assertEqual(len(calls), 1)
         self.assertEqual(calls[0]['event_name'], 'foo')
+
+    def test_emitter_can_be_passed_in(self):
+        events = EventHooks()
+        session = botocore.session.Session(self.env_vars, events)
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        events.register('foo', handler)
+
+        session.emit('foo')
+        self.assertEqual(len(calls), 1)
 
 
 if __name__ == "__main__":

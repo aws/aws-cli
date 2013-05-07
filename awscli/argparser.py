@@ -8,12 +8,15 @@ class CLIArgParser(argparse.ArgumentParser):
 
     Formatter = argparse.RawTextHelpFormatter
 
-    def __init__(self, **kwargs):
+    def __init__(self, session, **kwargs):
+        self.session = session
+        self.cli_data = self.session.get_data('cli')
         self.args = None
         self.remaining = None
         argparse.ArgumentParser.__init__(self, formatter_class=self.Formatter,
                                          add_help=False,
                                          conflict_handler='resolve',
+                                         description=self.cli_data['description'],
                                          **kwargs)
         self.build()
 
@@ -29,23 +32,22 @@ class CLIArgParser(argparse.ArgumentParser):
         self.args, self.remaining = self.parse_known_args(args)
 
     def _check_value(self, action, value):
+        """
+        It's probably not a great idea to override a "hidden" method
+        but the default behavior is pretty ugly and there doesn't
+        seem to be any other way to change it.
+        """
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
-            tup = value, '|'.join(map(repr, action.choices))
+            tup = value, '|'.join(map(str, action.choices))
             msg = 'invalid choice: %r (choose from %s)' % tup
             raise argparse.ArgumentError(action, msg)
 
     def print_usage(self, fp):
-        fp.write('\nPrint usage here\n')
+        fp.write('\n%s\n\n' % self.cli_data['synopsis'])
 
 
 class MainArgParser(CLIArgParser):
-
-    def __init__(self, session, **kwargs):
-        self.session = session
-        self.cli_data = self.session.get_data('cli')
-        CLIArgParser.__init__(self, description=self.cli_data['description'],
-                              **kwargs)
 
     def _create_choice_help(self, choices):
         help_str = ''
@@ -81,9 +83,8 @@ class MainArgParser(CLIArgParser):
 class ServiceArgParser(CLIArgParser):
 
     def __init__(self, session, service, **kwargs):
-        self.session = session
         self.service = service
-        CLIArgParser.__init__(self, **kwargs)
+        CLIArgParser.__init__(self, session, **kwargs)
 
     def do_help(self):
         """
@@ -119,10 +120,9 @@ class OperationArgParser(CLIArgParser):
         'blob': str}
 
     def __init__(self, session, service, operation, **kwargs):
-        self.session = session
         self.service = service
         self.operation = operation
-        CLIArgParser.__init__(self, **kwargs)
+        CLIArgParser.__init__(self, session, **kwargs)
 
     def do_help(self):
         """

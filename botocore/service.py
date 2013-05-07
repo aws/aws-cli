@@ -94,7 +94,7 @@ class Service(object):
             computed endpoint name with this parameter.
         """
         if region_name is None:
-            if self.global_endpoint and not self.session.profile:
+            if self.global_endpoint:
                 endpoint_url = self.build_endpoint_url(self.global_endpoint,
                                                        is_secure)
                 region_name = 'us-east-1'

@@ -20,7 +20,7 @@ packages = [
     'awscli',
 ]
 
-requires = ['botocore>=0.9.1',
+requires = ['botocore>=0.9.2',
             'bcdoc>=0.3.0',
             'six>=1.1.0',
             'colorama==0.2.5',

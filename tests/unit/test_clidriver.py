@@ -74,8 +74,17 @@ GET_VARIABLE = {
 
 
 class FakeSession(object):
-    def __init__(self):
+    def __init__(self, emitter=None):
         self.operation = None
+        if emitter is None:
+            emitter = HierarchicalEmitter(EventHooks())
+        self.emitter = emitter
+
+    def register(self, event_name, handler):
+        self.emitter.register(event_name, handler)
+
+    def emit(self, event_name, **kwargs):
+        return self.emitter.emit(event_name, **kwargs)
 
     def get_data(self, name):
         return GET_DATA[name]
@@ -153,7 +162,9 @@ class TestCliDriverHooks(unittest.TestCase):
             return value + '-altered!'
 
     def test_expected_events_are_emitted_in_order(self):
-        driver = CLIDriver(session=self.session, emitter=self.emitter)
+        self.emitter.emit.return_value = []
+        self.session.emitter = self.emitter
+        driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo'.split())
         self.assert_events_fired_in_order([
             # Events fired while parser is being created.
@@ -172,7 +183,8 @@ class TestCliDriverHooks(unittest.TestCase):
         emitter.register('process-cli-arg.s3.list-objects', self.serialize_param)
         emitter.register('before-operation',
                          lambda params, **kwargs: actual_params.append(params))
-        driver = CLIDriver(session=self.session, emitter=emitter)
+        self.session.emitter = emitter
+        driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(actual_params, [{'bucket': 'foo-altered!'}])
         self.assertIn(mock.call.paginate(mock.ANY, bucket='foo-altered!'),

@@ -31,25 +31,6 @@ def do_service(ref_path, session, service_name, operations):
         do_operation(operation, service_path, session)
 
 
-def build_manpages_list(ref_path, session):
-    l = []
-    index_path = os.path.join(ref_path, 'man_index')
-    l.append((index_path, 'aws', '', '', 1))
-    for service_name in session.get_available_services():
-        service = session.get_service(service_name)
-        service_path = os.path.join(ref_path, service_name)
-        index_path = os.path.join(service_path, 'man_index')
-        l.append((index_path, service_name,
-                  service.service_full_name, '', 1))
-        for operation in service.operations:
-            operation_path = os.path.join(service_path, operation.cli_name)
-            l.append((operation_path, service_name + '-' + operation.cli_name,
-                      '', '', 1))
-    data_path = 'aws_man_pages.json'
-    fp = open(data_path, 'w')
-    json.dump(l, fp)
-    fp.close()
-
 def build_service_list(tut_path, ref_path, session):
     file_path = os.path.join(tut_path, 'services.rst')
     fp = open(file_path, 'w')

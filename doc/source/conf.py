@@ -64,7 +64,7 @@ release = '0.8.0'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
-today = bootstrapdocs.TODAY
+
 # Else, today_fmt is used as the format for a strftime call.
 #today_fmt = '%B %d, %Y'
 
@@ -221,7 +221,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 
-man_pages = bootstrapdocs.man_pages
+#man_pages = bootstrapdocs.man_pages
 
 # If true, show URL addresses after external links.
 #man_show_urls = False

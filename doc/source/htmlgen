@@ -1,0 +1,114 @@
+#!/usr/bin/env python
+import os
+import sys
+import json
+import argparse
+from awscli.clidriver import CLIDriver
+from bcdoc.mangen import gen_man
+
+REF_PATH = 'reference'
+TUT_PATH = 'tutorial'
+
+def do_operation(operation, service_path, session):
+    file_path = os.path.join(service_path, operation.cli_name + '.rst')
+    fp = open(file_path, 'w')
+    gen_man(session, operation=operation, fp=fp, do_man=False)
+    fp.close()
+
+
+def do_service(ref_path, session, service_name, operations):
+    service = session.get_service(service_name)
+    service_path = os.path.join(ref_path, service_name)
+    if not os.path.isdir(service_path):
+        os.mkdir(service_path)
+    index_path = os.path.join(service_path, 'index.rst')
+    fp = open(index_path, 'w')
+    gen_man(session, service=service, fp=fp, do_man=False)
+    fp.close()
+    for operation in service.operations:
+        if operations and operation.name not in operations:
+            continue
+        do_operation(operation, service_path, session)
+
+
+def build_manpages_list(ref_path, session):
+    l = []
+    index_path = os.path.join(ref_path, 'man_index')
+    l.append((index_path, 'aws', '', '', 1))
+    for service_name in session.get_available_services():
+        service = session.get_service(service_name)
+        service_path = os.path.join(ref_path, service_name)
+        index_path = os.path.join(service_path, 'man_index')
+        l.append((index_path, service_name,
+                  service.service_full_name, '', 1))
+        for operation in service.operations:
+            operation_path = os.path.join(service_path, operation.cli_name)
+            l.append((operation_path, service_name + '-' + operation.cli_name,
+                      '', '', 1))
+    data_path = 'aws_man_pages.json'
+    fp = open(data_path, 'w')
+    json.dump(l, fp)
+    fp.close()
+
+def build_service_list(tut_path, ref_path, session):
+    file_path = os.path.join(tut_path, 'services.rst')
+    fp = open(file_path, 'w')
+    fp.write('\n')
+    l = []
+    for service_name in session.get_available_services():
+        service = session.get_service(service_name)
+        l.append((service.service_full_name, service_name))
+    l = sorted(l, key=lambda x: x[0])
+    for full_name, service_name in l:
+        service_ref_path = os.path.join(ref_path, service_name)
+        service_ref_path = os.path.join(service_ref_path, 'index')
+        fp.write('* :doc:`%s <..%s%s>`\n' % (full_name,
+                                             os.path.sep,
+                                             service_ref_path))
+    fp.write('\n')
+    fp.close()
+
+
+def get_cli_data(session, provider_name):
+    cli_data = session.get_data('cli')
+    for option in cli_data['options']:
+        if option.startswith('--'):
+            option_data = cli_data['options'][option]
+            if 'choices' in option_data:
+                choices = option_data['choices']
+                if not isinstance(choices, list):
+                    choices_path = choices.format(provider=provider_name)
+                    choices = session.get_data(choices_path)
+                    option_data['choices'] = choices
+    return cli_data
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--service',
+                        help='Name of service, or else all services')
+    parser.add_argument('-o', '--operations',
+                        help='Name of operations, or else all operations',
+                        nargs='*')
+    args = parser.parse_args()
+    driver = CLIDriver()
+    if args.service:
+        service_names = [args.service]
+    else:
+        service_names = driver.session.get_available_services()
+    if not os.path.isdir(REF_PATH):
+        os.mkdir(REF_PATH)
+    print('Generating ReST documents from service descriptions...')
+    for service_name in service_names:
+        print('\t%s' % service_name)
+        do_service(REF_PATH, driver.session, service_name, args.operations)
+    print('done!')
+    cli_data = get_cli_data(driver.session, provider_name='aws')
+    index_path = os.path.join(REF_PATH, 'index.rst')
+    fp = open(index_path, 'w')
+    gen_man(driver.session, provider='aws', cli_data=cli_data,
+            fp=fp, do_man=False)
+    fp.close()
+    print('Generating service list ReST document...')
+    build_service_list(TUT_PATH, REF_PATH, driver.session)
+    print('Done!')

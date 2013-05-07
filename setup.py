@@ -15,31 +15,17 @@ try:
 except ImportError:
     from distutils.core import setup
 
-def build_package_data():
-    text_files = _get_text_files()
-    package_data = {
-        'awscli': ['data/*.json', 'doc/man/man1/*.1'] + text_files
-    }
-    return package_data
-
-
-def _get_text_files():
-    filenames = []
-    for root, dirs, files in os.walk('awscli/doc/text'):
-        for filename in files:
-            # Strip off the 'awscli/'
-            filenames.append(os.path.join(root, filename)[7:])
-    return filenames
-
 
 packages = [
     'awscli',
 ]
 
 requires = ['botocore>=0.9.2',
+            'bcdoc>=0.3.0',
             'six>=1.1.0',
             'colorama==0.2.5',
-            'argparse>=1.1']
+            'argparse>=1.1',
+            'docutils>=0.10']
 
 
 setup(
@@ -51,11 +37,10 @@ setup(
     author_email='garnaat@amazon.com',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
-             'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
+             'bin/aws_completer', 'bin/aws_zsh_completer.sh',
+             'bin/rstgen', 'bin/rstgen.cmd'],
     packages=packages,
-    package_data=build_package_data(),
     package_dir={'awscli': 'awscli'},
-    include_package_data=True,
     install_requires=requires,
     license=open("LICENSE.txt").read(),
     classifiers=(

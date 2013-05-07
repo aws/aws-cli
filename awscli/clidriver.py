@@ -18,7 +18,6 @@ import six
 import botocore.session
 from botocore.hooks import BaseEventHooks, first_non_none_response
 from awscli import EnvironmentVariables, __version__
-from .help import get_provider_help, get_service_help, get_operation_help
 from .formatter import get_formatter
 from .paramfile import get_paramfile
 from .plugin import load_plugins
@@ -70,7 +69,9 @@ class CLIDriver(object):
         """
         prog = '%s %s' % (self.main_parser.prog,
                           self.service.cli_name)
-        self.service_parser = ServiceArgParser(self.service, prog=prog)
+        self.service_parser = ServiceArgParser(self.session,
+                                               self.service,
+                                               prog=prog)
         self._emitter.emit('parser-created.%s' % self.service.cli_name,
                            parser=self.service_parser)
 
@@ -81,7 +82,10 @@ class CLIDriver(object):
         prog = '%s %s %s' % (self.main_parser.prog,
                              self.service.cli_name,
                              self.operation.cli_name)
-        self.operation_parser = OperationArgParser(self.operation, prog=prog)
+        self.operation_parser = OperationArgParser(self.session,
+                                                   self.service,
+                                                   self.operation,
+                                                   prog=prog)
         self._emitter.emit('parser-created.%s-%s' % (self.service.cli_name,
                                                      self.operation.cli_name))
         return 1
@@ -277,44 +281,36 @@ class CLIDriver(object):
         """
         Returns -1 on error, 0 if no further action is warranted,
         and 1 if the request should be made.
+
+        Each time one of the parsers parse() method is called, the
+        parser will determine whether the user asked for help or not.
+        If they did ask for help for that particular context, it will
+        be generated and the process will exit.  Control flow will not
+        return here after the generation of the man page.
         """
         self.main_parser.parse(args)
-        if self.main_parser.args.service_name == 'help':
-            provider = self.session.get_variable('provider')
-            get_provider_help(provider=provider)
-            # get_provider_help will exec a process so we'll never get here,
-            # but the sys.exit(0) is here in case get_provider_help's
-            # implementation changes.
-            sys.exit(0)
-        else:
-            if self.main_parser.args.debug:
-                from six.moves import http_client
-                http_client.HTTPConnection.debuglevel = 2
-                self.session.set_debug_logger()
-            output = self.main_parser.args.output
-            if output is None:
-                output = self.session.get_variable('output')
-            if self.main_parser.args.profile:
-                self.session.profile = self.main_parser.args.profile
-            self.formatter = get_formatter(output, self.main_parser.args)
-            service_name = self.main_parser.args.service_name
-            self.service = self.session.get_service(service_name)
-            self.create_service_parser()
-            self.service_parser.parse(self.main_parser.remaining)
-            if self.service_parser.args.operation == 'help':
-                get_service_help(self.service)
-                return 0
-            operation_name = self.service_parser.args.operation
-            self.operation = self.service.get_operation(operation_name)
-            self.create_operation_parser()
-            self.operation_parser.parse(self.service_parser.remaining)
-            if 'help' in self.operation_parser.remaining:
-                get_operation_help(self.operation)
-                return 0
-            if self.operation_parser.remaining:
-                raise ValueError('Unknown options: %s' %
-                                 self.operation_parser.remaining)
-            return 1
+        if self.main_parser.args.debug:
+            from six.moves import http_client
+            http_client.HTTPConnection.debuglevel = 2
+            self.session.set_debug_logger()
+        output = self.main_parser.args.output
+        if output is None:
+            output = self.session.get_variable('output')
+        if self.main_parser.args.profile:
+            self.session.profile = self.main_parser.args.profile
+        self.formatter = get_formatter(output, self.main_parser.args)
+        service_name = self.main_parser.args.service_name
+        self.service = self.session.get_service(service_name)
+        self.create_service_parser()
+        self.service_parser.parse(self.main_parser.remaining)
+        operation_name = self.service_parser.args.operation
+        self.operation = self.service.get_operation(operation_name)
+        self.create_operation_parser()
+        self.operation_parser.parse(self.service_parser.remaining)
+        if self.operation_parser.remaining:
+            raise ValueError('Unknown options: %s' %
+                             self.operation_parser.remaining)
+        return 1
 
     def main(self, args=None):
         """

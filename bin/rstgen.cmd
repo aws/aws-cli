@@ -31,7 +31,6 @@ goto :EOF
 # ===================================================
 # Python script starts here
 # ===================================================
-
 #!/usr/bin/env python
 # Copyright 2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
@@ -46,13 +45,8 @@ goto :EOF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import awscli.clidriver
 import sys
-
-
-def main():
-    return awscli.clidriver.main()
-
+import awscli.rstgen
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(awscli.rstgen.main())

@@ -1,39 +1,53 @@
 import argparse
 import sys
 from botocore.compat import copy_kwargs
+from .help import get_provider_help, get_service_help, get_operation_help
 
 
 class CLIArgParser(argparse.ArgumentParser):
 
     Formatter = argparse.RawTextHelpFormatter
 
-    def __init__(self, **kwargs):
+    def __init__(self, session, **kwargs):
+        self.session = session
+        self.cli_data = self.session.get_data('cli')
         self.args = None
         self.remaining = None
         argparse.ArgumentParser.__init__(self, formatter_class=self.Formatter,
                                          add_help=False,
                                          conflict_handler='resolve',
+                                         description=self.cli_data['description'],
                                          **kwargs)
         self.build()
 
     def build(self):
         pass
 
+    def do_help(self):
+        pass
+
     def parse(self, args):
+        if len(args) > 0 and args[0] == 'help':
+            self.do_help()
         self.args, self.remaining = self.parse_known_args(args)
 
-    def error(self, message):
-        self.print_usage(sys.stderr)
-        sys.exit(2)
+    def _check_value(self, action, value):
+        """
+        It's probably not a great idea to override a "hidden" method
+        but the default behavior is pretty ugly and there doesn't
+        seem to be any other way to change it.
+        """
+        # converted value must be one of the choices (if specified)
+        if action.choices is not None and value not in action.choices:
+            tup = value, '|'.join(map(str, action.choices))
+            msg = 'invalid choice: %r (choose from %s)' % tup
+            raise argparse.ArgumentError(action, msg)
+
+    def print_usage(self, fp):
+        fp.write('\n%s\n\n' % self.cli_data['synopsis'])
 
 
 class MainArgParser(CLIArgParser):
-
-    def __init__(self, session, **kwargs):
-        self.session = session
-        self.cli_data = self.session.get_data('cli')
-        CLIArgParser.__init__(self, description=self.cli_data['description'],
-                              **kwargs)
 
     def _create_choice_help(self, choices):
         help_str = ''
@@ -58,16 +72,26 @@ class MainArgParser(CLIArgParser):
         self.add_argument('--version', action="version",
                           version=self.session.user_agent())
 
-    def print_usage(self, file=None):
-        if not file:
-            file = sys.stdout
+    def do_help(self):
+        """
+        This will cause the interactive help to be generated in a
+        subprocess.  This also will cause a sys.exit call.
+        """
+        get_provider_help(self.session)
 
 
 class ServiceArgParser(CLIArgParser):
 
-    def __init__(self, service, **kwargs):
+    def __init__(self, session, service, **kwargs):
         self.service = service
-        CLIArgParser.__init__(self, **kwargs)
+        CLIArgParser.__init__(self, session, **kwargs)
+
+    def do_help(self):
+        """
+        This will cause the interactive help to be generated in a
+        subprocess.  This also will cause a sys.exit call.
+        """
+        get_service_help(self.session, self.service)
 
     def build(self):
         """
@@ -95,9 +119,17 @@ class OperationArgParser(CLIArgParser):
         'double': float,
         'blob': str}
 
-    def __init__(self, operation, **kwargs):
+    def __init__(self, session, service, operation, **kwargs):
+        self.service = service
         self.operation = operation
-        CLIArgParser.__init__(self, **kwargs)
+        CLIArgParser.__init__(self, session, **kwargs)
+
+    def do_help(self):
+        """
+        This will cause the interactive help to be generated in a
+        subprocess.  This also will cause a sys.exit call.
+        """
+        get_operation_help(self.session, self.service, self.operation)
 
     def build(self):
         for param in self.operation.params:

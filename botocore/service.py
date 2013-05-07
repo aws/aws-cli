@@ -65,7 +65,7 @@ class Service(object):
     def region_names(self):
         return self.metadata['regions'].keys()
 
-    def build_endpoint_url(self, host, is_secure):
+    def _build_endpoint_url(self, host, is_secure):
         if is_secure:
             scheme = 'https'
         else:
@@ -95,7 +95,7 @@ class Service(object):
         """
         if region_name is None:
             if self.global_endpoint:
-                endpoint_url = self.build_endpoint_url(self.global_endpoint,
+                endpoint_url = self._build_endpoint_url(self.global_endpoint,
                                                        is_secure)
                 region_name = 'us-east-1'
             else:
@@ -109,7 +109,7 @@ class Service(object):
         endpoint_url = endpoint_url or self.metadata['regions'][region_name]
         if endpoint_url is None:
             host = '%s.%s.amazonaws.com' % (self.endpoint_prefix, region_name)
-            endpoint_url = self.build_endpoint_url(host, is_secure)
+            endpoint_url = self._build_endpoint_url(host, is_secure)
         return get_endpoint(self, region_name, endpoint_url)
 
     def get_operation(self, operation_name):

@@ -30,6 +30,7 @@ import mock
 
 import botocore.session
 import botocore.exceptions
+from botocore.hooks import EventHooks
 
 
 class SessionTest(unittest.TestCase):
@@ -83,6 +84,37 @@ class SessionTest(unittest.TestCase):
         full_config = self.session.full_config
         self.assertTrue('profile "foo"' in full_config)
         self.assertTrue('default' in full_config)
+
+    def test_register_unregister(self):
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        self.session.register('service-created', handler)
+        service = self.session.get_service('ec2')
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0]['service'], service)
+
+        calls[:] = []
+        self.session.unregister('service-created', handler)
+        service = self.session.get_service('ec2')
+        self.assertEqual(len(calls), 0)
+
+    def test_emit_delegates_to_emitter(self):
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        self.session.register('foo', handler)
+        self.session.emit('foo')
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0]['event_name'], 'foo')
+
+    def test_emitter_can_be_passed_in(self):
+        events = EventHooks()
+        session = botocore.session.Session(self.env_vars, events)
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        events.register('foo', handler)
+
+        session.emit('foo')
+        self.assertEqual(len(calls), 1)
 
 
 if __name__ == "__main__":

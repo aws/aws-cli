@@ -36,6 +36,7 @@ import botocore.credentials
 import botocore.base
 import botocore.service
 from botocore.exceptions import ConfigNotFound
+from botocore.hooks import EventHooks
 from botocore import __version__
 
 
@@ -96,7 +97,7 @@ class Session(object):
 
     FmtString = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    def __init__(self, env_vars=None):
+    def __init__(self, env_vars=None, event_hooks=None):
         """
         Create a new Session object.
 
@@ -109,6 +110,10 @@ class Session(object):
         self.env_vars = copy.copy(EnvironmentVariables)
         if env_vars:
             self.env_vars.update(env_vars)
+        if event_hooks is None:
+            self._events = EventHooks()
+        else:
+            self._events = event_hooks
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
         self._profile = None
@@ -330,7 +335,9 @@ class Session(object):
 
         :returns: :class:`botocore.service.Service`
         """
-        return botocore.service.get_service(self, service_name, provider_name)
+        service = botocore.service.get_service(self, service_name, provider_name)
+        self._events.emit('service-created', service=service)
+        return service
 
     def set_debug_logger(self):
         """
@@ -380,6 +387,36 @@ class Session(object):
 
         # add ch to logger
         log.addHandler(ch)
+
+    def register(self, event_name, handler):
+        """Register a handler with an event.
+
+        :type event_name: str
+        :param event_name: The name of the event.
+
+        :type handler: callable
+        :param handler: The callback to invoke when the event
+            is emitted.  This object must be callable, and must
+            accept ``**kwargs``.  If either of these preconditions are
+            not met, a ``ValueError`` will be raised.
+
+        """
+        self._events.register(event_name, handler)
+
+    def unregister(self, event_name, handler):
+        """Unregister a handler with an event.
+
+        :type event_name: str
+        :param event_name: The name of the event.
+
+        :type handler: callable
+        :param handler: The callback to unregister.
+
+        """
+        self._events.unregister(event_name, handler)
+
+    def emit(self, event_name, **kwargs):
+        return self._events.emit(event_name, **kwargs)
 
 
 def get_session(env_vars=None):

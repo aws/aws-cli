@@ -48,10 +48,8 @@ except ImportError:
     from urlparse import parse_qsl
 
 
-PostContentType = 'application/x-www-form-urlencoded; charset=UTF-8'
 EMPTY_SHA256_HASH = (
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
-
 
 class SigV2Auth(object):
     """
@@ -387,13 +385,12 @@ class HmacV1Auth(object):
                                                            signature))
 
 
-def get_auth(signature_version, *args, **kw):
-    if signature_version == 'v2':
-        return SigV2Auth(*args, **kw)
-    elif signature_version == 'v4':
-        return SigV4Auth(*args, **kw)
-    elif signature_version == 's3':
-        return HmacV1Auth(*args, **kw)
-    elif signature_version == 'v3':
-        return SigV3Auth(*args, **kw)
-    raise UnknownSignatureVersionError(signature_version=signature_version)
+# Defined at the bottom instead of the top of the module because the Auth
+# classes weren't defined yet.
+AUTH_TYPE_MAPS = {
+    'v2': SigV2Auth,
+    'v4': SigV4Auth,
+    'v3': SigV3Auth,
+    's3': HmacV1Auth,
+}
+

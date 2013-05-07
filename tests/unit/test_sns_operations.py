@@ -21,6 +21,9 @@
 # IN THE SOFTWARE.
 #
 import unittest
+
+from mock import Mock, sentinel
+
 import botocore.session
 
 
@@ -36,6 +39,37 @@ class TestSNSOperations(unittest.TestCase):
                                      protocol='http',
                                      notification_endpoint='http://example.org')
         self.assertEqual(params['Endpoint'], 'http://example.org')
+
+    def test_sns_pre_send_event(self):
+        op = self.sns.get_operation('Subscribe')
+        calls = []
+        self.session.register('before-call.sns.Subscribe',
+                              lambda **kwargs: calls.append(kwargs))
+        endpoint = Mock()
+        endpoint.make_request.return_value = (sentinel.RESPONSE,
+                                              sentinel.PARSED)
+        op.call(endpoint=endpoint, topic_arn='topic_arn', protocol='http',
+                notification_endpoint='http://example.org')
+        self.assertEqual(len(calls), 1)
+        kwargs = calls[0]
+        self.assertEqual(kwargs['operation'], op)
+        self.assertEqual(kwargs['endpoint'], endpoint)
+        self.assertEqual(kwargs['params']['topic_arn'], 'topic_arn')
+
+    def test_sns_post_send_event_is_invoked(self):
+        op = self.sns.get_operation('Subscribe')
+        calls = []
+        self.session.register('after-call.sns.Subscribe',
+                              lambda **kwargs: calls.append(kwargs))
+        endpoint = Mock()
+        endpoint.make_request.return_value = (sentinel.RESPONSE,
+                                              sentinel.PARSED)
+        op.call(endpoint=endpoint, topic_arn='topic_arn', protocol='http',
+                notification_endpoint='http://example.org')
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0]['operation'], op)
+        self.assertEqual(calls[0]['http_response'], sentinel.RESPONSE)
+        self.assertEqual(calls[0]['parsed'], sentinel.PARSED)
 
 
 if __name__ == "__main__":

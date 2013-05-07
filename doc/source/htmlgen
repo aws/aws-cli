@@ -12,7 +12,7 @@ TUT_PATH = 'tutorial'
 def do_operation(operation, service_path, session):
     file_path = os.path.join(service_path, operation.cli_name + '.rst')
     fp = open(file_path, 'w')
-    gen_man(session, operation=operation, fp=fp)
+    gen_man(session, operation=operation, fp=fp, do_man=False)
     fp.close()
 
 
@@ -23,11 +23,7 @@ def do_service(ref_path, session, service_name, operations):
         os.mkdir(service_path)
     index_path = os.path.join(service_path, 'index.rst')
     fp = open(index_path, 'w')
-    gen_man(session, service=service, fp=fp)
-    fp.close()
-    man_index_path = os.path.join(service_path, 'man_index.rst')
-    fp = open(man_index_path, 'w')
-    gen_man(session, service=service, fp=fp, do_man=True)
+    gen_man(session, service=service, fp=fp, do_man=False)
     fp.close()
     for operation in service.operations:
         if operations and operation.name not in operations:
@@ -62,7 +58,7 @@ def build_service_list(tut_path, ref_path, session):
     for service_name in session.get_available_services():
         service = session.get_service(service_name)
         l.append((service.service_full_name, service_name))
-    l = sorted(l, cmp=lambda x,y: cmp(x[0], y[0]))
+    l = sorted(l, key=lambda x: x[0])
     for full_name, service_name in l:
         service_ref_path = os.path.join(ref_path, service_name)
         service_ref_path = os.path.join(service_ref_path, 'index')
@@ -113,14 +109,6 @@ if __name__ == '__main__':
     gen_man(driver.session, provider='aws', cli_data=cli_data,
             fp=fp, do_man=False)
     fp.close()
-    man_index_path = os.path.join(REF_PATH, 'man_index.rst')
-    fp = open(man_index_path, 'w')
-    gen_man(driver.session, provider='aws', cli_data=cli_data,
-            fp=fp, do_man=True)
-    fp.close()
-    print('Generating man page JSON document...')
-    build_manpages_list(REF_PATH, driver.session)
-    print('Done!')
     print('Generating service list ReST document...')
     build_service_list(TUT_PATH, REF_PATH, driver.session)
     print('Done!')

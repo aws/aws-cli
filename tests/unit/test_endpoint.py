@@ -26,6 +26,7 @@ from mock import Mock, patch, sentinel
 from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \
     RestEndpoint
 from botocore.auth import SigV4Auth
+from botocore.credentials import Credentials
 from botocore.exceptions import UnknownServiceStyle
 from botocore.exceptions import UnknownSignatureVersionError
 
@@ -79,6 +80,12 @@ class TestGetEdnpoint(unittest.TestCase):
             endpoint = get_endpoint(service, 'us-west-2',
                                     'https://service.region.amazonaws.com')
 
+    def test_omitted_auth_handler(self):
+        service = self.create_mock_service('query', signature_version=None)
+        del service.signature_version
+        endpoint = get_endpoint(service, 'us-west-2',
+                                'https://service.region.amazonaws.com')
+        self.assertIsNone(endpoint.auth)
 
 class TestEndpointBase(unittest.TestCase):
     def setUp(self):
@@ -126,6 +133,14 @@ class TestQueryEndpoint(TestEndpointBase):
             prepared_request, verify=True, stream=False,
             proxies=proxies)
 
+    def test_make_request_with_no_auth(self):
+        self.endpoint.auth = None
+        self.endpoint.make_request(self.op, {})
+
+        # http_session should be used to send the request.
+        self.assertTrue(self.http_session.send.called)
+        prepared_request = self.http_session.send.call_args[0][0]
+        self.assertNotIn('Authorization', prepared_request.headers)
 
 class TestJSONEndpoint(TestEndpointBase):
     ENDPOINT_CLASS = JSONEndpoint

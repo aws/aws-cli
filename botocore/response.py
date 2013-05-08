@@ -67,7 +67,6 @@ class XmlResponse(Response):
             encoding=encoding)
         parser.feed(s)
         self.tree = parser.close()
-
         if self.operation.output:
             self.build_element_map(self.operation.output, 'root')
         self.start(self.tree)
@@ -81,6 +80,10 @@ class XmlResponse(Response):
             request_id = rmd_elem.find(self.clark_notation('RequestId'))
         else:
             request_id = self.tree.find(self.clark_notation('requestId'))
+            if request_id is None:
+                request_id = self.tree.find(self.clark_notation('RequestId'))
+            if request_id is None:
+                request_id = self.tree.find('RequestID')
         if request_id is not None:
             request_id.tail = True
             rmd['RequestId'] = request_id.text.strip()
@@ -89,18 +92,26 @@ class XmlResponse(Response):
         data = {}
         for elem in error_elem:
             elem.tail = True
-            data[elem.tag] = elem.text.strip()
+            data[self.get_element_base_tag(elem)] = elem.text
         return data
 
     def get_response_errors(self):
         errors = None
-        errors_elem = self.tree.find('Errors')
-        if errors_elem is not None:
-            errors_elem.tail = True
-            errors = [self._get_error_data(e) for e in errors_elem]
-        elif self.tree.tag == 'Error':
-            errors = [self._get_error_data(self.tree)]
+        error_elems = self.tree.find('Errors')
+        if error_elems is not None:
+            logger.debug('111')
+            error_elems.tail = True
+            errors = [self._get_error_data(e) for e in error_elems]
+        else:
+            logger.debug('222')
+            error_elems = self.tree.find(self.clark_notation('Error'))
+            if error_elems is not None:
+                error_elems.tail = True
+                errors = [self._get_error_data(error_elems)]
+            elif self.tree.tag == 'Error':
+                errors = [self._get_error_data(self.tree)]
         if errors:
+            logger.debug('333')
             self.value['Errors'] = errors
 
     def build_element_map(self, defn, keyname):
@@ -265,6 +276,7 @@ class XmlResponse(Response):
         return shape
 
     def start(self, elem):
+        logger.debug('start')
         self.value = {}
         if self.operation.output:
             for member_name in self.operation.output['members']:

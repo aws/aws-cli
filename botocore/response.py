@@ -99,11 +99,9 @@ class XmlResponse(Response):
         errors = None
         error_elems = self.tree.find('Errors')
         if error_elems is not None:
-            logger.debug('111')
             error_elems.tail = True
             errors = [self._get_error_data(e) for e in error_elems]
         else:
-            logger.debug('222')
             error_elems = self.tree.find(self.clark_notation('Error'))
             if error_elems is not None:
                 error_elems.tail = True
@@ -111,7 +109,6 @@ class XmlResponse(Response):
             elif self.tree.tag == 'Error':
                 errors = [self._get_error_data(self.tree)]
         if errors:
-            logger.debug('333')
             self.value['Errors'] = errors
 
     def build_element_map(self, defn, keyname):
@@ -303,8 +300,18 @@ class JSONResponse(Response):
     def parse(self, s, encoding):
         try:
             self.value = json.loads(s, encoding=encoding)
+            self.get_response_errors()
         except Exception as err:
             logger.debug('Error loading JSON response body, %r', err)
+
+    def get_response_errors(self):
+        if '__type' in self.value:
+            error = {'Type': self.value['__type']}
+            del self.value['__type']
+            if 'message' in self.value:
+                error['Message'] = self.value['message']
+                del self.value['message']
+            self.value['Errors'] = [error]
 
 
 class StreamingResponse(Response):

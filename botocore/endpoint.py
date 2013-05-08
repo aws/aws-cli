@@ -70,7 +70,8 @@ class Endpoint(object):
 
     def prepare_request(self, request):
         logger.debug('prepare_request')
-        self.auth.add_auth(request=request)
+        if self.auth is not None:
+            self.auth.add_auth(request=request)
         prepared_request = request.prepare()
         return prepared_request
 
@@ -213,10 +214,12 @@ def get_endpoint(service, region_name, endpoint_url):
         raise botocore.exceptions.UnknownServiceStyle(
             service_style=service.type)
     service_name = getattr(service, 'signing_name', service.endpoint_prefix)
-    auth = _get_auth(service.signature_version,
-                     credentials=service.session.get_credentials(),
-                     service_name=service_name,
-                     region_name=region_name)
+    auth = None
+    if hasattr(service, 'signature_version'):
+        auth = _get_auth(service.signature_version,
+            credentials=service.session.get_credentials(),
+            service_name=service_name,
+            region_name=region_name)
     proxies = _get_proxies(endpoint_url)
     return cls(service, region_name, endpoint_url, auth=auth, proxies=proxies)
 

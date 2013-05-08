@@ -172,21 +172,14 @@ class TestCliDriverHooks(unittest.TestCase):
             'parser-created.s3',
             'parser-created.s3-list-objects',
             'process-cli-arg.s3.list-objects',
-            # Events fired when operation is being invoked.
-            'before-operation.s3.list-objects',
-            'after-operation.s3.list-objects',
         ])
 
     def test_cli_driver_changes_args(self):
-        actual_params = []
         emitter = HierarchicalEmitter(EventHooks())
         emitter.register('process-cli-arg.s3.list-objects', self.serialize_param)
-        emitter.register('before-operation',
-                         lambda params, **kwargs: actual_params.append(params))
         self.session.emitter = emitter
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo'.split())
-        self.assertEqual(actual_params, [{'bucket': 'foo-altered!'}])
         self.assertIn(mock.call.paginate(mock.ANY, bucket='foo-altered!'),
                       self.session.operation.method_calls)
 

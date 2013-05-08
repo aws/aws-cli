@@ -203,18 +203,8 @@ class CLIDriver(object):
                 self.main_parser.args.region,
                 endpoint_url=self.main_parser.args.endpoint_url)
             self.endpoint.verify = not self.main_parser.args.no_verify_ssl
-            self.session.emit(
-                'before-operation.%s.%s' % (self.service.cli_name,
-                                            self.operation.cli_name),
-                service=self.service, operation=self.operation,
-                endpoint=self.endpoint, params=params)
             if self.operation.can_paginate and self.main_parser.args.paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
-                self.session.emit(
-                    'after-operation.%s.%s' % (self.service.cli_name,
-                                               self.operation.cli_name),
-                    service=self.service, operation=self.operation,
-                    endpoint=self.endpoint, params=params)
                 self._display_response(self.operation, pages)
                 # TODO: need to handle http error responses.  I believe
                 # this will be addressed with the plugin refactoring,

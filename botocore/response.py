@@ -23,6 +23,7 @@
 import sys
 import base64
 import xml.etree.cElementTree
+import six
 from botocore import ScalarTypes
 import json
 import logging
@@ -199,7 +200,7 @@ class XmlResponse(Response):
         return True if elem.text.lower() == 'true' else False
 
     def _handle_blob(self, elem, shape):
-        return base64.b64decode(elem.text).decode('utf-8')
+        return base64.b64decode(six.b(elem.text)).decode('utf-8')
 
     def _handle_structure(self, elem, shape):
         new_data = {}

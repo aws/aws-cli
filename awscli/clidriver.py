@@ -238,14 +238,16 @@ class CLIDriver(object):
         if http_response.status_code >= 500:
             msg = self.session.get_data('messages/ServerError')
             code, message = self.get_error_code_and_message(response_data)
-            print(msg.format(error_code=code,
-                                error_message=message))
+            sys.stderr.write(msg.format(error_code=code,
+                                        error_message=message))
+            sys.stderr.write('\n')
             return http_response.status_code - 399
         if http_response.status_code >= 400:
             msg = self.session.get_data('messages/ClientError')
             code, message = self.get_error_code_and_message(response_data)
-            print(msg.format(error_code=code,
-                                error_message=message))
+            sys.stderr.write(msg.format(error_code=code,
+                                        error_message=message))
+            sys.stderr.write('\n')
             return http_response.status_code - 399
 
     def _display_response(self, operation, response_data):

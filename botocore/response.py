@@ -21,6 +21,7 @@
 # IN THE SOFTWARE.
 #
 import sys
+import base64
 import xml.etree.cElementTree
 from botocore import ScalarTypes
 import json
@@ -196,6 +197,9 @@ class XmlResponse(Response):
 
     def _handle_boolean(self, elem, shape):
         return True if elem.text.lower() == 'true' else False
+
+    def _handle_blob(self, elem, shape):
+        return base64.b64decode(elem.text)
 
     def _handle_structure(self, elem, shape):
         new_data = {}

@@ -25,7 +25,9 @@ def load_plugins(plugin_mapping, event_hooks=None):
         e.g. ``{"plugingName": "package.modulefoo"}``.
 
     :type event_hooks: ``EventHooks``
-    :param event_hooks: Event hook emitter.
+    :param event_hooks: Event hook emitter.  If one if not provided,
+        an emitter will be created and returned.  Otherwise, the
+        passed in ``event_hooks`` will be used to initialize plugins.
 
     :rtype: HierarchicalEmitter
     :return: An event emitter object.
@@ -33,12 +35,11 @@ def load_plugins(plugin_mapping, event_hooks=None):
     """
     modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
-        event_hooks = EventHooks()
-    cli = CLI(event_hooks)
+        event_hooks = HierarchicalEmitter(EventHooks())
     for name, plugin in zip(plugin_mapping.keys(), modules):
         log.debug("Initializing plugin %s: %s", name, plugin)
-        plugin.awscli_initialize(cli)
-    return HierarchicalEmitter(event_hooks)
+        plugin.awscli_initialize(event_hooks)
+    return event_hooks
 
 
 def _import_plugins(plugin_names):
@@ -48,11 +49,3 @@ def _import_plugins(plugin_names):
         if '.' not in name:
             plugins.append(__import__(path))
     return plugins
-
-
-class CLI(object):
-    def __init__(self, event_hooks):
-        self._event_hooks = event_hooks
-
-    def register(self, event_name, handler):
-        self._event_hooks.register(event_name, handler)

@@ -16,7 +16,8 @@ import traceback
 import json
 import six
 import botocore.session
-from botocore.hooks import BaseEventHooks, first_non_none_response
+from botocore.hooks import first_non_none_response
+from botocore.hooks import HierarchicalEmitter, EventHooks
 from awscli import EnvironmentVariables, __version__
 from .formatter import get_formatter
 from .paramfile import get_paramfile
@@ -25,25 +26,24 @@ from .argparser import MainArgParser, ServiceArgParser, OperationArgParser
 
 
 def main():
-    session = botocore.session.get_session(EnvironmentVariables)
-    emitter = load_plugins(session.full_config.get('plugins', {}))
-    driver = CLIDriver(session=session, emitter=emitter)
+    event_hooks = EventHooks()
+    emitter = HierarchicalEmitter(event_hooks)
+    session = botocore.session.Session(EnvironmentVariables, emitter)
+    load_plugins(session.full_config.get('plugins', {}),
+                 event_hooks=emitter)
+    driver = CLIDriver(session=session)
     return driver.main()
 
 
 class CLIDriver(object):
 
-    def __init__(self, session=None, emitter=None):
+    def __init__(self, session=None):
         if session is None:
             self.session = botocore.session.get_session(EnvironmentVariables)
             self.session.user_agent_name = 'aws-cli'
             self.session.user_agent_version = __version__
         else:
             self.session = session
-        if emitter is None:
-            self._emitter = BaseEventHooks()
-        else:
-            self._emitter = emitter
         self.service = None
         self.region = None
         self.endpoint = None
@@ -61,7 +61,7 @@ class CLIDriver(object):
 
         """
         self.main_parser = MainArgParser(self.session)
-        self._emitter.emit('parser-created.main', parser=self.main_parser)
+        self.session.emit('parser-created.main', parser=self.main_parser)
 
     def create_service_parser(self):
         """
@@ -72,7 +72,7 @@ class CLIDriver(object):
         self.service_parser = ServiceArgParser(self.session,
                                                self.service,
                                                prog=prog)
-        self._emitter.emit('parser-created.%s' % self.service.cli_name,
+        self.session.emit('parser-created.%s' % self.service.cli_name,
                            parser=self.service_parser)
 
     def create_operation_parser(self):
@@ -86,7 +86,7 @@ class CLIDriver(object):
                                                    self.service,
                                                    self.operation,
                                                    prog=prog)
-        self._emitter.emit('parser-created.%s-%s' % (self.service.cli_name,
+        self.session.emit('parser-created.%s-%s' % (self.service.cli_name,
                                                      self.operation.cli_name))
         return 1
 
@@ -134,7 +134,7 @@ class CLIDriver(object):
             if value is not None:
                 # Plugins can override the cli -> python conversion
                 # process for CLI args.
-                responses = self._emitter.emit('process-cli-arg.%s.%s' % (
+                responses = self.session.emit('process-cli-arg.%s.%s' % (
                     service_name, operation_name), param=param, value=value,
                     service=self.service, operation=self.operation)
                 override = first_non_none_response(responses)
@@ -203,18 +203,8 @@ class CLIDriver(object):
                 self.main_parser.args.region,
                 endpoint_url=self.main_parser.args.endpoint_url)
             self.endpoint.verify = not self.main_parser.args.no_verify_ssl
-            self._emitter.emit(
-                'before-operation.%s.%s' % (self.service.cli_name,
-                                            self.operation.cli_name),
-                service=self.service, operation=self.operation,
-                endpoint=self.endpoint, params=params)
             if self.operation.can_paginate and self.main_parser.args.paginate:
                 pages = self.operation.paginate(self.endpoint, **params)
-                self._emitter.emit(
-                    'after-operation.%s.%s' % (self.service.cli_name,
-                                               self.operation.cli_name),
-                    service=self.service, operation=self.operation,
-                    endpoint=self.endpoint, params=params)
                 self._display_response(self.operation, pages)
                 # TODO: need to handle http error responses.  I believe
                 # this will be addressed with the plugin refactoring,

@@ -93,10 +93,11 @@ class Service(object):
         :param endpoint_url: You can explicitly override the default
             computed endpoint name with this parameter.
         """
-        region_name = self.session.get_variable('region')
-        if region_name is None and not self.global_endpoint:
-            envvar_name = self.session.env_vars['region'][1]
-            raise NoRegionError(env_var=envvar_name)
+        if not region_name:
+            region_name = self.session.get_variable('region')
+            if region_name is None and not self.global_endpoint:
+                envvar_name = self.session.env_vars['region'][1]
+                raise NoRegionError(env_var=envvar_name)
         if region_name not in self.metadata['regions']:
             if self.global_endpoint:
                 endpoint_url = self._build_endpoint_url(self.global_endpoint,

@@ -140,9 +140,9 @@ class Session(object):
                     if len(parts) == 2:
                         profile_map[parts[1]] = values
                 elif key == 'default':
-                    # default section is special and is considered a profile name
-                    # but we don't require you use 'profile "default"' as a
-                    # section.
+                    # default section is special and is considered a profile
+                    # name but we don't require you use 'profile "default"'
+                    # as a section.
                     profile_map[key] = values
             self._profile_map = profile_map
         return self._profile_map

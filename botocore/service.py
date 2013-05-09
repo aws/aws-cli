@@ -93,19 +93,18 @@ class Service(object):
         :param endpoint_url: You can explicitly override the default
             computed endpoint name with this parameter.
         """
-        if region_name is None:
-            if self.global_endpoint:
-                endpoint_url = self._build_endpoint_url(self.global_endpoint,
-                                                       is_secure)
-                region_name = 'us-east-1'
-            else:
-                region_name = self.session.get_variable('region')
-        if region_name is None:
+        region_name = self.session.get_variable('region')
+        if region_name is None and not self.global_endpoint:
             envvar_name = self.session.env_vars['region'][1]
             raise NoRegionError(env_var=envvar_name)
         if region_name not in self.metadata['regions']:
-            raise ServiceNotInRegionError(service_name=self.endpoint_prefix,
-                                          region_name=region_name)
+            if self.global_endpoint:
+                endpoint_url = self._build_endpoint_url(self.global_endpoint,
+                                                        is_secure)
+                region_name = 'us-east-1'
+            else:
+                raise ServiceNotInRegionError(service_name=self.endpoint_prefix,
+                                              region_name=region_name)
         endpoint_url = endpoint_url or self.metadata['regions'][region_name]
         if endpoint_url is None:
             host = '%s.%s.amazonaws.com' % (self.endpoint_prefix, region_name)

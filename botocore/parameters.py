@@ -110,7 +110,8 @@ class IntegerParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, six.integer_types):
-            raise ValidationError(value=str(value), type_name='integer')
+            raise ValidationError(value=str(value), type_name='integer',
+                                  param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -128,7 +129,8 @@ class FloatParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, float):
-            raise ValidationError(value=str(value), type_name='float')
+            raise ValidationError(value=str(value), type_name='float',
+                                  param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -146,7 +148,8 @@ class DoubleParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, double):
-            raise ValidationError(value=str(value), type_name='double')
+            raise ValidationError(value=str(value), type_name='double',
+                                   param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -174,7 +177,8 @@ class BooleanParameter(Parameter):
                         raise ValueError
             return value
         except ValueError:
-            raise ValidationError(value=str(value), type_name='boolean')
+            raise ValidationError(value=str(value), type_name='boolean',
+                                  param=self)
 
     def build_parameter_query(self, value, built_params, label=''):
         value = self.validate(value)
@@ -210,7 +214,8 @@ class TimestampParameter(Parameter):
             return datetime.datetime.utcfromtimestamp(value)
         except:
             pass
-        raise ValidationError(value=str(value), type_name='timestamp')
+        raise ValidationError(value=str(value), type_name='timestamp',
+                              param=self)
 
     def get_time_value(self, value):
         if self.operation.service.timestamp_format == 'unixTimestamp':
@@ -234,7 +239,8 @@ class StringParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, six.string_types):
-            raise ValidationError(value=str(value), type_name='string')
+            raise ValidationError(value=str(value), type_name='string',
+                                  param=self)
 
         if self.min:
             if len(value) < self.min:
@@ -267,10 +273,12 @@ class BlobParameter(Parameter):
         if self.payload and self.streaming:
             # Streaming blobs should be file-like objects
             if not hasattr(value, 'read'):
-                raise ValidationError(value=str(value), type_name='blob')
+                raise ValidationError(value=str(value), type_name='blob',
+                                      param=self)
         else:
             if not isinstance(value, six.string_types):
-                raise ValidationError(value=str(value), type_name='string')
+                raise ValidationError(value=str(value), type_name='string',
+                                      param=self)
             if not hasattr(self, 'payload') or self.payload is False:
                 # Blobs that are not in the payload should be base64-encoded
                 value = base64.b64encode(six.b(value)).decode('utf-8')
@@ -328,7 +336,7 @@ class MapParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, dict):
-            raise ValidationError(value=str(value), type_name='map')
+            raise ValidationError(value=str(value), type_name='map', param=self)
 
     def handle_subtypes(self):
         if self.members:
@@ -362,7 +370,8 @@ class StructParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, dict):
-            raise ValidationError(value=str(value), type_name='structure')
+            raise ValidationError(value=str(value), type_name='structure',
+                                  param=self)
 
     def handle_subtypes(self):
         if self.members:

@@ -38,6 +38,7 @@ import botocore.service
 from botocore.exceptions import ConfigNotFound
 from botocore.hooks import EventHooks
 from botocore import __version__
+from botocore import handlers
 
 
 EnvironmentVariables = {
@@ -97,7 +98,7 @@ class Session(object):
 
     FmtString = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    def __init__(self, env_vars=None, event_hooks=None):
+    def __init__(self, env_vars=None, event_hooks=None, include_builtin_handlers=True):
         """
         Create a new Session object.
 
@@ -106,6 +107,14 @@ class Session(object):
             of the environment variables associated with this session.  The
             key/value pairs defined in this dictionary will override the
             corresponding variables defined in ``EnvironmentVariables``.
+
+        :type event_hooks: EventHooks
+        :param event_hooks: The event hooks object to use. If one is not provided,
+            an event hooks object will be automatically created for you.
+
+        :type include_builtin_handlers: bool
+        :param include_builtin_handlers: Indicates whether or not to automatically
+            register builtin handlers.
         """
         self.env_vars = copy.copy(EnvironmentVariables)
         if env_vars:
@@ -114,12 +123,18 @@ class Session(object):
             self._events = EventHooks()
         else:
             self._events = event_hooks
+        if include_builtin_handlers:
+            self._register_builtin_handlers(self._events)
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
         self._profile = None
         self._config = None
         self._credentials = None
         self._profile_map = None
+
+    def _register_builtin_handlers(self, events):
+        for event_name, handler in handlers.BUILTIN_HANDLERS:
+            self.register(event_name, handler)
 
     @property
     def available_profiles(self):

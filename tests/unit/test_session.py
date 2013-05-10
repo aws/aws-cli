@@ -33,7 +33,7 @@ import botocore.exceptions
 from botocore.hooks import EventHooks
 
 
-class SessionTest(unittest.TestCase):
+class BaseSessionTest(unittest.TestCase):
 
     def setUp(self):
         self.env_vars = {'profile': (None, 'FOO_PROFILE', None),
@@ -56,6 +56,9 @@ class SessionTest(unittest.TestCase):
 
     def tearDown(self):
         self.environ_patch.stop()
+
+
+class SessionTest(BaseSessionTest):
 
     def test_profile(self):
         self.assertEqual(self.session.get_variable('profile'), 'foo')
@@ -115,6 +118,31 @@ class SessionTest(unittest.TestCase):
 
         session.emit('foo')
         self.assertEqual(len(calls), 1)
+
+
+class TestBuiltinEventHandlers(BaseSessionTest):
+    def setUp(self):
+        super(TestBuiltinEventHandlers, self).setUp()
+        self.builtin_handlers = [
+            ('foo', self.on_foo),
+        ]
+        self.foo_called = False
+        self.handler_patch = mock.patch('botocore.handlers.BUILTIN_HANDLERS',
+                                        self.builtin_handlers)
+        self.handler_patch.start()
+
+    def on_foo(self, **kwargs):
+        self.foo_called = True
+
+    def tearDown(self):
+        super(TestBuiltinEventHandlers, self).setUp()
+        self.handler_patch.stop()
+
+    def test_registered_builtin_handlers(self):
+        session = botocore.session.Session(self.env_vars, None,
+                                           include_builtin_handlers=True)
+        session.emit('foo')
+        self.assertTrue(self.foo_called)
 
 
 if __name__ == "__main__":

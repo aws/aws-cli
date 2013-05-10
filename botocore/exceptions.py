@@ -126,7 +126,8 @@ class ValidationError(BotoCoreError):
     :ivar value: The value that was being validated.
     :ivar type_name: The name of the underlying type.
     """
-    fmt = 'Unable to convert value ({value}) to type {type_name}'
+    fmt = ('Unable to convert value ({value}) to type {type_name} '
+           'for param {param}')
 
 
 class RangeError(BotoCoreError):

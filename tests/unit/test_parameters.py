@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import unittest
 import botocore.parameters
 import botocore.exceptions
 import dateutil.parser
@@ -44,15 +44,17 @@ class TestParameters(unittest.TestCase):
 
     def test_iso_timestamp_from_iso(self):
         op = FakeOperation('iso8601')
-        p = botocore.parameters.TimestampParameter(op, name='foo')
+        p = botocore.parameters.TimestampParameter(op, name='paramname',
+                                                   type='timestamp')
         d = {}
         ts = '2012-10-12T00:00'
         dt = dateutil.parser.parse(ts)
         p.build_parameter_query(ts, d)
-        self.assertEqual(d['foo'], dt.isoformat())
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value='not a date string', built_params=d)
+        self.assertEqual(d['paramname'], dt.isoformat())
+        with self.assertRaisesRegexp(botocore.exceptions.ValidationError,
+                                     'timestamp:paramname'):
+            p.build_parameter_query(value='not a date string',
+                                    built_params=d)
 
     def test_iso_timestamp_from_epoch(self):
         op = FakeOperation('iso8601')

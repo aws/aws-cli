@@ -130,7 +130,7 @@ class HierarchicalEmitter(BaseEventHooks):
         # read only access (we never modify self._handlers).
         # A cache of event name to handler list.
         self._lookup_cache = {}
-        self._handlers = PrefixTrie()
+        self._handlers = _PrefixTrie()
 
     def emit(self, event_name, **kwargs):
         responses = []
@@ -149,7 +149,7 @@ class HierarchicalEmitter(BaseEventHooks):
         return responses
 
     def _handlers_for_event(self, event):
-        return self._handlers.get_items(event)
+        return self._handlers.prefix_search(event)
 
     def register(self, event_name, handler):
         # Super simple caching strategy for now, if we change the registrations
@@ -165,17 +165,42 @@ class HierarchicalEmitter(BaseEventHooks):
             pass
 
 
-class PrefixTrie(object):
-    """Specialized prefix trie that handles wildcards."""
+class _PrefixTrie(object):
+    """Specialized prefix trie that handles wildcards.
+
+    The prefixes in this case are based on dot separated
+    names so 'foo.bar.baz' is::
+
+        foo -> bar -> baz
+
+    Wildcard support just means that having a key such as 'foo.bar.*.baz' will
+    be matched with a call to ``get_items(key='foo.bar.ANYTHING.baz')``.
+
+    You can think of this prefix trie as the equivalent as defaultdict(list),
+    except that it can do prefix searches:
+
+        foo.bar.baz -> A
+        foo.bar -> B
+        foo -> C
+
+    Calling ``get_items('foo.bar.baz')`` will return [A + B + C], from
+    most specific to least specific.
+
+    """
     def __init__(self):
-        self._root = Node(None, None)
+        self._root = _Node(None, None)
 
     def append_item(self, key, value):
+        """Add an item to a key.
+
+        If a value is already associated with that key, the new
+        value is appended to the list for the key.
+        """
         key_parts = key.split('.')
         current = self._root
         for part in key_parts:
             if part not in current.children:
-                new_child = Node(part)
+                new_child = _Node(part)
                 current.children[part] = new_child
                 current = new_child
             else:
@@ -185,7 +210,14 @@ class PrefixTrie(object):
         else:
             current.values.append(value)
 
-    def get_items(self, key):
+    def prefix_search(self, key):
+        """Collect all items that are prefixes of key.
+
+        Prefix in this case are delineated by '.' characters so
+        'foo.bar.baz' is a 3 chunk sequence of 3 "prefixes" (
+        "foo", "bar", and "baz").
+
+        """
         collected = deque()
         key_parts = key.split('.')
         current = self._root
@@ -193,20 +225,36 @@ class PrefixTrie(object):
         return collected
 
     def remove_item(self, key, value):
+        """Remove an item associated with a key.
+
+        If the value is not associated with the key a ``ValueError``
+        will be raised.  If the key does not exist in the trie, a
+        ``ValueError`` will be raised.
+
+        """
         key_parts = key.split('.')
         previous = None
         current = self._root
-        for part in key_parts:
-            if part not in current.children:
-                return ValueError("key not in trie: %s" % key)
+        self._remove_item(current, key_parts, value, index=0)
+
+    def _remove_item(self, current_node, key_parts, value, index):
+        if current_node is None:
+            return
+        elif index < len(key_parts):
+            next_node = current_node.children.get(key_parts[index])
+            if next_node is not None:
+                self._remove_item(next_node, key_parts, value, index + 1)
+                if index == len(key_parts) - 1:
+                    next_node.values.remove(value)
+                if not next_node.children and not next_node.values:
+                    # Then this is a leaf node with no values so
+                    # we can just delete this link from the parent node.
+                    # This makes subsequent search faster in the case
+                    # where a key does not exist.
+                    del current_node.children[key_parts[index]]
             else:
-                previous = current
-                current = current.children[part]
-        current.values.remove(value)
-        # If the list is now empty, we can just remove the link from
-        # the parent (previous in this case).
-        if not current.values:
-            previous.children[current.chunk]
+                raise ValueError(
+                    "key is not in trie: %s" % '.'.join(key_parts))
 
     def _get_items(self, current_node, key_parts, collected, index):
         if current_node is None:
@@ -221,11 +269,11 @@ class PrefixTrie(object):
                             key_parts, collected, index + 1)
 
 
-class Node(object):
+class _Node(object):
     def __init__(self, chunk, values=None):
         self.chunk = chunk
         self.children = {}
         self.values = values
 
     def __repr__(self):
-        return 'Node(chunk=%s, values=%s)' % (self.chunk, self.values)
+        return '_Node(chunk=%s, values=%s)' % (self.chunk, self.values)

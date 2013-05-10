@@ -20,6 +20,7 @@
 # IN THE SOFTWARE.
 #
 from tests import unittest
+from functools import partial
 
 from botocore.hooks import EventHooks, HierarchicalEmitter, \
         first_non_none_response
@@ -153,11 +154,16 @@ class TestWildcardHandlers(unittest.TestCase):
     def hook(self, **kwargs):
         self.hook_calls.append(kwargs)
 
+    def register(self, event_name):
+        func = partial(self.hook, registered_with=event_name)
+        self.emitter.register(event_name, func)
+        return func
+
     def assert_hook_is_called_given_event(self, event):
         starting = len(self.hook_calls)
         self.emitter.emit(event)
         after = len(self.hook_calls)
-        if not after - starting == 1:
+        if not after > starting:
             self.fail("Handler was not called for event: %s" % event)
         self.assertEqual(self.hook_calls[-1]['event_name'], event)
 
@@ -167,7 +173,8 @@ class TestWildcardHandlers(unittest.TestCase):
         after = len(self.hook_calls)
         if not after == starting:
             self.fail("Handler was called for event but was not "
-                      "suppose to be called: %s" % event)
+                      "suppose to be called: %s, last_event: %s" %
+                      (event, self.hook_calls[-1]))
 
     def test_one_level_wildcard_handler(self):
         self.emitter.register('foo.*.baz', self.hook)
@@ -249,6 +256,31 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.unregister('foo.*.*.baz', self.hook)
         self.assert_hook_is_called_given_event('foo.bar.baz.bar')
         self.assert_hook_is_not_called_given_event('foo.bar.baz.baz')
+
+    def test_complicated_register_unregister(self):
+        r = self.emitter.register
+        u = partial(self.emitter.unregister, handler=self.hook)
+        r('foo.bar.baz.qux', self.hook)
+        r('foo.bar.baz', self.hook)
+        r('foo.bar', self.hook)
+        r('foo', self.hook)
+
+        u('foo.bar.baz')
+        u('foo')
+        u('foo.bar')
+
+        self.assert_hook_is_called_given_event('foo.bar.baz.qux')
+
+        self.assert_hook_is_not_called_given_event('foo.bar.baz')
+        self.assert_hook_is_not_called_given_event('foo.bar')
+        self.assert_hook_is_not_called_given_event('foo')
+
+    def test_register_multiple_handlers_for_same_event(self):
+        self.emitter.register('foo.bar.baz', self.hook)
+        self.emitter.register('foo.bar.baz', self.hook)
+
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 2)
 
 
 if __name__ == '__main__':

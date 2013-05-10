@@ -37,6 +37,11 @@ The currently supported services include:
 
 The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 
+.. attention::
+   We recommend that all customers regularly monitor the
+   [Amazon Web Services Security Bulletins website](https://aws.amazon.com/security/security-bulletins) for any important security bulletins related to
+   aws-cli.
+
 ------------
 Installation
 ------------

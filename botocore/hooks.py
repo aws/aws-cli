@@ -151,16 +151,24 @@ class HierarchicalEmitter(BaseEventHooks):
             # the exact match.
             return self._handlers[event]
         else:
-            handlers_to_call = []
-            while event:
-                handlers_to_call.extend(self._handlers[event])
-                # Chop off the rightmost '.<foo>' part.
-                next_event = event.rsplit('.', 1)
-                if len(next_event) == 2:
-                    event = next_event[0]
-                else:
-                    event = None
-            return handlers_to_call
+            handlers = []
+            parts = event.split('.')
+            for event_name in sorted(self._handlers.keys(), reverse=True):
+                event_name_split = event_name.split('.')
+                if len(event_name_split) > len(parts):
+                    continue
+                if all(e1 == e2 for e1, e2 in zip(event_name_split, parts)):
+                    handlers.extend(self._handlers[event_name])
+                elif '*' in event_name:
+                    for subpart, desired_subpart in zip(event_name_split,
+                                                        parts):
+                        if subpart == '*':
+                            continue
+                        if not subpart == desired_subpart:
+                            break
+                    else:
+                        handlers.extend(self._handlers[event_name])
+            return handlers
 
     def register(self, event_name, handler):
         return self._event_hooks.register(event_name, handler)

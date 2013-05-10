@@ -146,5 +146,78 @@ class TestFirstNonNoneResponse(unittest.TestCase):
             first_non_none_response(responses, default='notfound'), 'notfound')
 
 
+class TestWildcardHandlers(unittest.TestCase):
+    def setUp(self):
+        self.hooks = EventHooks()
+        self.emitter = HierarchicalEmitter(self.hooks)
+        self.hook_calls = []
+
+    def hook(self, **kwargs):
+        self.hook_calls.append(kwargs)
+
+    def assert_hook_is_called_given_event(self, event):
+        starting = len(self.hook_calls)
+        self.emitter.emit(event)
+        after = len(self.hook_calls)
+        if not after - starting == 1:
+            self.fail("Handler was not called for event: %s" % event)
+        self.assertEqual(self.hook_calls[-1]['event_name'], event)
+
+    def assert_hook_is_not_called_given_event(self, event):
+        starting = len(self.hook_calls)
+        self.emitter.emit(event)
+        after = len(self.hook_calls)
+        if not after == starting:
+            self.fail("Handler was called for event but was not "
+                      "suppose to be called: %s" % event)
+
+    def test_one_level_wildcard_handler(self):
+        self.emitter.register('foo.*.baz', self.hook)
+        # Also register for a number of other events to check
+        # for false positives.
+        self.emitter.register('other.bar.baz', self.hook)
+        self.emitter.register('qqq.baz', self.hook)
+        self.emitter.register('dont.call.me', self.hook)
+        self.emitter.register('dont', self.hook)
+        # These calls should trigger our hook.
+        self.assert_hook_is_called_given_event('foo.bar.baz')
+        self.assert_hook_is_called_given_event('foo.qux.baz')
+        self.assert_hook_is_called_given_event('foo.anything.baz')
+
+        # These calls should not match our hook.
+        self.assert_hook_is_not_called_given_event('foo')
+        self.assert_hook_is_not_called_given_event('foo.bar')
+        self.assert_hook_is_not_called_given_event('bar.qux.baz')
+        self.assert_hook_is_not_called_given_event('foo-bar')
+
+    def test_hierarchical_wildcard_handler(self):
+        self.emitter.register('foo.*.baz', self.hook)
+        self.assert_hook_is_called_given_event('foo.bar.baz.qux')
+        self.assert_hook_is_called_given_event('foo.bar.baz.qux.foo')
+        self.assert_hook_is_called_given_event('foo.qux.baz.qux')
+        self.assert_hook_is_called_given_event('foo.qux.baz.qux.foo')
+
+        self.assert_hook_is_not_called_given_event('bar.qux.baz.foo')
+
+    def test_multiple_wildcard_events(self):
+        self.emitter.register('foo.*.*.baz', self.hook)
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_called_given_event('foo.ANY.THING.baz')
+        self.assert_hook_is_called_given_event('foo.AT.ALL.baz')
+
+        # More specific than what we registered for.
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz.extra')
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz.extra.stuff')
+
+        # Too short:
+        self.assert_hook_is_not_called_given_event('foo')
+        self.assert_hook_is_not_called_given_event('foo.bar')
+        self.assert_hook_is_not_called_given_event('foo.bar.baz')
+
+        # Bad ending segment.
+        self.assert_hook_is_not_called_given_event('foo.ANY.THING.notbaz')
+        self.assert_hook_is_not_called_given_event('foo.ANY.THING.stillnotbaz')
+
+
 if __name__ == '__main__':
     unittest.main()

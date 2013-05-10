@@ -36,7 +36,7 @@ import botocore.credentials
 import botocore.base
 import botocore.service
 from botocore.exceptions import ConfigNotFound
-from botocore.hooks import EventHooks
+from botocore.hooks import HierarchicalEmitter
 from botocore import __version__
 from botocore import handlers
 
@@ -98,7 +98,8 @@ class Session(object):
 
     FmtString = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    def __init__(self, env_vars=None, event_hooks=None, include_builtin_handlers=True):
+    def __init__(self, env_vars=None, event_hooks=None,
+                 include_builtin_handlers=True):
         """
         Create a new Session object.
 
@@ -108,19 +109,20 @@ class Session(object):
             key/value pairs defined in this dictionary will override the
             corresponding variables defined in ``EnvironmentVariables``.
 
-        :type event_hooks: EventHooks
-        :param event_hooks: The event hooks object to use. If one is not provided,
-            an event hooks object will be automatically created for you.
+        :type event_hooks: BaseEventHooks
+        :param event_hooks: The event hooks object to use. If one is not
+            provided, an event hooks object will be automatically created
+            for you.
 
         :type include_builtin_handlers: bool
-        :param include_builtin_handlers: Indicates whether or not to automatically
-            register builtin handlers.
+        :param include_builtin_handlers: Indicates whether or not to
+            automatically register builtin handlers.
         """
         self.env_vars = copy.copy(EnvironmentVariables)
         if env_vars:
             self.env_vars.update(env_vars)
         if event_hooks is None:
-            self._events = EventHooks()
+            self._events = HierarchicalEmitter()
         else:
             self._events = event_hooks
         if include_builtin_handlers:

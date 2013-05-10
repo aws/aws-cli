@@ -21,7 +21,7 @@
 #
 import inspect
 import six
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 def first_non_none_response(responses, default=None):
@@ -57,10 +57,34 @@ class BaseEventHooks(object):
         return []
 
     def register(self, event_name, handler):
-        pass
+        self._verify_is_callable(handler)
+        self._verify_accept_kwargs(handler)
+        self._register(event_name, handler)
 
     def unregister(self, event_name, handler):
         pass
+
+    def _verify_is_callable(self, func):
+        if not six.callable(func):
+            raise ValueError("Event handler %s must be callable." % func)
+
+    def _verify_accept_kwargs(self, func):
+        """Verifies a callable accepts kwargs
+
+        :type func: callable
+        :param func: A callable object.
+
+        :returns: True, if ``func`` accepts kwargs, otherwise False.
+
+        """
+        try:
+            argspec = inspect.getargspec(func)
+        except TypeError:
+            return False
+        else:
+            if argspec[2] is None:
+                raise ValueError("Event handler %s must accept keyword "
+                                 "arguments (**kwargs)" % func)
 
 
 class EventHooks(BaseEventHooks):
@@ -90,9 +114,7 @@ class EventHooks(BaseEventHooks):
             responses.append((handler, response))
         return responses
 
-    def register(self, event_name, handler):
-        self._verify_is_callable(handler)
-        self._verify_accept_kwargs(handler)
+    def _register(self, event_name, handler):
         self._handlers[event_name].append(handler)
 
     def unregister(self, event_name, handler):
@@ -101,37 +123,14 @@ class EventHooks(BaseEventHooks):
         except ValueError:
             pass
 
-    def _verify_is_callable(self, func):
-        if not six.callable(func):
-            raise ValueError("Event handler %s must be callable." % func)
-
-    def _verify_accept_kwargs(self, func):
-        """Verifies a callable accepts kwargs
-
-        :type func: callable
-        :param func: A callable object.
-
-        :returns: True, if ``func`` accepts kwargs, otherwise False.
-
-        """
-        try:
-            argspec = inspect.getargspec(func)
-        except TypeError:
-            return False
-        else:
-            if argspec[2] is None:
-                raise ValueError("Event handler %s must accept keyword "
-                                 "arguments (**kwargs)" % func)
-
 
 class HierarchicalEmitter(BaseEventHooks):
-    def __init__(self, event_hooks):
-        self._event_hooks = event_hooks
+    def __init__(self):
         # We keep a reference to the handlers for quick
         # read only access (we never modify self._handlers).
-        self._handlers = event_hooks._handlers
         # A cache of event name to handler list.
         self._lookup_cache = {}
+        self._handlers = PrefixTrie()
 
     def emit(self, event_name, **kwargs):
         responses = []
@@ -150,40 +149,83 @@ class HierarchicalEmitter(BaseEventHooks):
         return responses
 
     def _handlers_for_event(self, event):
-        # Given an event name, find all the handlers we need to call
-        # and return them in order.
-        if '.' not in event:
-            # Simplest case, no hierarchical events, just return
-            # the exact match.
-            return self._handlers[event]
-        else:
-            handlers = []
-            parts = event.split('.')
-            for event_name in sorted(self._handlers.keys(), reverse=True):
-                event_name_split = event_name.split('.')
-                if len(event_name_split) > len(parts):
-                    continue
-                if all(e1 == e2 for e1, e2 in zip(event_name_split, parts)):
-                    handlers.extend(self._handlers[event_name])
-                elif '*' in event_name:
-                    for subpart, desired_subpart in zip(event_name_split,
-                                                        parts):
-                        if subpart == '*':
-                            continue
-                        if not subpart == desired_subpart:
-                            break
-                    else:
-                        handlers.extend(self._handlers[event_name])
-            return handlers
+        return self._handlers.get_items(event)
 
     def register(self, event_name, handler):
         # Super simple caching strategy for now, if we change the registrations
         # clear the cache.  This has the opportunity for smarter invalidations.
-        return_value = self._event_hooks.register(event_name, handler)
+        self._handlers.append_item(event_name, handler)
         self._lookup_cache = {}
-        return return_value
 
     def unregister(self, event_name, handler):
-        return_value = self._event_hooks.unregister(event_name, handler)
-        self._lookup_cache = {}
-        return return_value
+        try:
+            self._handlers.remove_item(event_name, handler)
+            self._lookup_cache = {}
+        except ValueError:
+            pass
+
+
+class PrefixTrie(object):
+    """Specialized prefix trie that handles wildcards."""
+    def __init__(self):
+        self._root = Node(None, None)
+
+    def append_item(self, key, value):
+        key_parts = key.split('.')
+        current = self._root
+        for part in key_parts:
+            if part not in current.children:
+                new_child = Node(part)
+                current.children[part] = new_child
+                current = new_child
+            else:
+                current = current.children[part]
+        if current.values is None:
+            current.values = [value]
+        else:
+            current.values.append(value)
+
+    def get_items(self, key):
+        collected = deque()
+        key_parts = key.split('.')
+        current = self._root
+        self._get_items(current, key_parts, collected, index=0)
+        return collected
+
+    def remove_item(self, key, value):
+        key_parts = key.split('.')
+        previous = None
+        current = self._root
+        for part in key_parts:
+            if part not in current.children:
+                return ValueError("key not in trie: %s" % key)
+            else:
+                previous = current
+                current = current.children[part]
+        current.values.remove(value)
+        # If the list is now empty, we can just remove the link from
+        # the parent (previous in this case).
+        if not current.values:
+            previous.children[current.chunk]
+
+    def _get_items(self, current_node, key_parts, collected, index):
+        if current_node is None:
+            return
+        if current_node.values:
+            seq = reversed(current_node.values)
+            collected.extendleft(seq)
+        if not len(key_parts) == index:
+            self._get_items(current_node.children.get(key_parts[index]),
+                            key_parts, collected, index + 1)
+            self._get_items(current_node.children.get('*'),
+                            key_parts, collected, index + 1)
+
+
+class Node(object):
+    def __init__(self, chunk, values=None):
+        self.chunk = chunk
+        self.children = {}
+        self.values = values
+
+    def __repr__(self):
+        return 'Node(chunk=%s, values=%s)' % (self.chunk, self.values)

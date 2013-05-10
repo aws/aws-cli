@@ -84,8 +84,7 @@ class TestEventHooks(unittest.TestCase):
 
 class TestHierarchicalEventEmitter(unittest.TestCase):
     def setUp(self):
-        self.hooks = EventHooks()
-        self.emitter = HierarchicalEmitter(self.hooks)
+        self.emitter = HierarchicalEmitter()
         self.hook_calls = []
 
     def hook(self, **kwargs):
@@ -148,8 +147,7 @@ class TestFirstNonNoneResponse(unittest.TestCase):
 
 class TestWildcardHandlers(unittest.TestCase):
     def setUp(self):
-        self.hooks = EventHooks()
-        self.emitter = HierarchicalEmitter(self.hooks)
+        self.emitter = HierarchicalEmitter()
         self.hook_calls = []
 
     def hook(self, **kwargs):
@@ -233,6 +231,12 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.register('foo.*.*.baz', self.hook)
         self.assert_hook_is_called_given_event('foo.bar.baz.baz')
         self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+
+    def test_unregister_does_not_exist(self):
+        self.emitter.register('foo.*.*.baz', self.hook)
+        self.emitter.unregister('foo.*.*.baz', self.hook)
+        self.emitter.unregister('foo.*.*.baz', self.hook)
+        self.assert_hook_is_not_called_given_event('foo.bar.baz.baz')
 
     def test_cache_cleared_properly(self):
         self.emitter.register('foo.*.*.baz', self.hook)

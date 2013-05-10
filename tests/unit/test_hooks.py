@@ -218,6 +218,34 @@ class TestWildcardHandlers(unittest.TestCase):
         self.assert_hook_is_not_called_given_event('foo.ANY.THING.notbaz')
         self.assert_hook_is_not_called_given_event('foo.ANY.THING.stillnotbaz')
 
+    def test_can_unregister_for_wildcard_events(self):
+        self.emitter.register('foo.*.*.baz', self.hook)
+        # Call multiple times to verify caching behavior.
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+
+        self.emitter.unregister('foo.*.*.baz', self.hook)
+        self.assert_hook_is_not_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_not_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_not_called_given_event('foo.bar.baz.baz')
+
+        self.emitter.register('foo.*.*.baz', self.hook)
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+
+    def test_cache_cleared_properly(self):
+        self.emitter.register('foo.*.*.baz', self.hook)
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+
+        self.emitter.register('foo.*.*.bar', self.hook)
+        self.assert_hook_is_called_given_event('foo.bar.baz.baz')
+        self.assert_hook_is_called_given_event('foo.bar.baz.bar')
+
+        self.emitter.unregister('foo.*.*.baz', self.hook)
+        self.assert_hook_is_called_given_event('foo.bar.baz.bar')
+        self.assert_hook_is_not_called_given_event('foo.bar.baz.baz')
+
 
 if __name__ == '__main__':
     unittest.main()

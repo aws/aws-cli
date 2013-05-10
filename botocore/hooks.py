@@ -130,12 +130,18 @@ class HierarchicalEmitter(BaseEventHooks):
         # We keep a reference to the handlers for quick
         # read only access (we never modify self._handlers).
         self._handlers = event_hooks._handlers
+        # A cache of event name to handler list.
+        self._lookup_cache = {}
 
     def emit(self, event_name, **kwargs):
         responses = []
         # Invoke the event handlers from most specific
         # to least specific, each time stripping off a dot.
-        handlers_to_call = self._handlers_for_event(event_name)
+        if event_name in self._lookup_cache:
+            handlers_to_call = self._lookup_cache[event_name]
+        else:
+            handlers_to_call = self._handlers_for_event(event_name)
+            self._lookup_cache[event_name] = handlers_to_call
         kwargs['event_name'] = event_name
         responses = []
         for handler in handlers_to_call:
@@ -171,7 +177,13 @@ class HierarchicalEmitter(BaseEventHooks):
             return handlers
 
     def register(self, event_name, handler):
-        return self._event_hooks.register(event_name, handler)
+        # Super simple caching strategy for now, if we change the registrations
+        # clear the cache.  This has the opportunity for smarter invalidations.
+        return_value = self._event_hooks.register(event_name, handler)
+        self._lookup_cache = {}
+        return return_value
 
     def unregister(self, event_name, handler):
-        return self._event_hooks.unregister(event_name, handler)
+        return_value = self._event_hooks.unregister(event_name, handler)
+        self._lookup_cache = {}
+        return return_value

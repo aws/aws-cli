@@ -127,19 +127,40 @@ class EventHooks(BaseEventHooks):
 class HierarchicalEmitter(BaseEventHooks):
     def __init__(self, event_hooks):
         self._event_hooks = event_hooks
+        # We keep a reference to the handlers for quick
+        # read only access (we never modify self._handlers).
+        self._handlers = event_hooks._handlers
 
-    def emit(self, event, **kwargs):
+    def emit(self, event_name, **kwargs):
         responses = []
         # Invoke the event handlers from most specific
         # to least specific, each time stripping off a dot.
-        while event:
-            responses.extend(self._event_hooks.emit(event, **kwargs))
-            next_event = event.rsplit('.', 1)
-            if len(next_event) == 2:
-                event = next_event[0]
-            else:
-                event = None
+        handlers_to_call = self._handlers_for_event(event_name)
+        kwargs['event_name'] = event_name
+        responses = []
+        for handler in handlers_to_call:
+            response = handler(**kwargs)
+            responses.append((handler, response))
         return responses
+
+    def _handlers_for_event(self, event):
+        # Given an event name, find all the handlers we need to call
+        # and return them in order.
+        if '.' not in event:
+            # Simplest case, no hierarchical events, just return
+            # the exact match.
+            return self._handlers[event]
+        else:
+            handlers_to_call = []
+            while event:
+                handlers_to_call.extend(self._handlers[event])
+                # Chop off the rightmost '.<foo>' part.
+                next_event = event.rsplit('.', 1)
+                if len(next_event) == 2:
+                    event = next_event[0]
+                else:
+                    event = None
+            return handlers_to_call
 
     def register(self, event_name, handler):
         return self._event_hooks.register(event_name, handler)

@@ -106,9 +106,23 @@ class TestHierarchicalEventEmitter(unittest.TestCase):
         self.emitter.register('foo.bar', self.hook)
         self.emitter.register('foo.bar.baz', self.hook)
         self.emitter.emit('foo.bar.baz')
-        self.assertEqual(len(self.hook_calls), 3)
+        self.assertEqual(len(self.hook_calls), 3, self.hook_calls)
+        # The hook is called with the same event name three times.
         self.assertEqual([e['event_name'] for e in self.hook_calls],
-                         ['foo.bar.baz', 'foo.bar', 'foo'])
+                         ['foo.bar.baz', 'foo.bar.baz', 'foo.bar.baz'])
+
+    def test_hook_called_in_proper_order(self):
+        # We should call the hooks from most specific to least
+        # specific.
+        calls = []
+        self.emitter.register('foo', lambda **kwargs: calls.append('foo'))
+        self.emitter.register('foo.bar',
+                              lambda **kwargs: calls.append('foo.bar'))
+        self.emitter.register('foo.bar.baz',
+                              lambda **kwargs: calls.append('foo.bar.baz'))
+
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(calls, ['foo.bar.baz', 'foo.bar', 'foo'])
 
 
 class TestFirstNonNoneResponse(unittest.TestCase):

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from botocore.hooks import EventHooks, HierarchicalEmitter
+from botocore.hooks import HierarchicalEmitter
 
 log = logging.getLogger('awscli.plugin')
 
@@ -35,7 +35,7 @@ def load_plugins(plugin_mapping, event_hooks=None):
     """
     modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
-        event_hooks = HierarchicalEmitter(EventHooks())
+        event_hooks = HierarchicalEmitter()
     for name, plugin in zip(plugin_mapping.keys(), modules):
         log.debug("Initializing plugin %s: %s", name, plugin)
         plugin.awscli_initialize(event_hooks)

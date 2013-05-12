@@ -17,7 +17,7 @@ import mock
 import six
 
 from awscli.clidriver import CLIDriver
-from botocore.hooks import HierarchicalEmitter, EventHooks
+from botocore.hooks import HierarchicalEmitter
 
 
 GET_DATA = {
@@ -77,7 +77,7 @@ class FakeSession(object):
     def __init__(self, emitter=None):
         self.operation = None
         if emitter is None:
-            emitter = HierarchicalEmitter(EventHooks())
+            emitter = HierarchicalEmitter()
         self.emitter = emitter
 
     def register(self, event_name, handler):
@@ -175,7 +175,7 @@ class TestCliDriverHooks(unittest.TestCase):
         ])
 
     def test_cli_driver_changes_args(self):
-        emitter = HierarchicalEmitter(EventHooks())
+        emitter = HierarchicalEmitter()
         emitter.register('process-cli-arg.s3.list-objects', self.serialize_param)
         self.session.emitter = emitter
         driver = CLIDriver(session=self.session)

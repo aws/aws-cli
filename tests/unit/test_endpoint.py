@@ -87,7 +87,9 @@ class TestGetEdnpoint(unittest.TestCase):
                                 'https://service.region.amazonaws.com')
         self.assertIsNone(endpoint.auth)
 
+
 class TestEndpointBase(unittest.TestCase):
+
     def setUp(self):
         self.service = Mock()
         self.service.session.user_agent.return_value = 'botocore-test'
@@ -121,7 +123,7 @@ class TestQueryEndpoint(TestEndpointBase):
         self.http_session.send.assert_called_with(
             prepared_request, verify=True, stream=False,
             proxies={})
-        self.get_response.assert_called_with(
+        self.get_response.assert_called_with(self.service.session,
             self.op, sentinel.HTTP_RETURN_VALUE)
 
     def test_make_request_with_proxies(self):
@@ -141,6 +143,7 @@ class TestQueryEndpoint(TestEndpointBase):
         self.assertTrue(self.http_session.send.called)
         prepared_request = self.http_session.send.call_args[0][0]
         self.assertNotIn('Authorization', prepared_request.headers)
+
 
 class TestJSONEndpoint(TestEndpointBase):
     ENDPOINT_CLASS = JSONEndpoint

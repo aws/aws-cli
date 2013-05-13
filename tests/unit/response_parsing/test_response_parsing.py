@@ -51,7 +51,7 @@ def test_xml_parsing():
                 jsonfile = os.path.join(dirname, basename + '.json')
                 sn, opname = basename.split('-', 1)
                 operation = service.get_operation(opname)
-                r = XmlResponse(operation)
+                r = XmlResponse(session, operation)
                 fp = open(xmlfile)
                 xml = fp.read()
                 fp.close()
@@ -83,7 +83,7 @@ def test_json_parsing():
             basename = os.path.splitext(filename)[0]
             sn, opname = basename.split('-', 1)
             operation = service.get_operation(opname)
-            r = JSONResponse(operation)
+            r = JSONResponse(session, operation)
             fp = open(inputfile)
             jsondoc = fp.read()
             fp.close()

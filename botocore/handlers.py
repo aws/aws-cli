@@ -29,15 +29,20 @@ import json
 import six
 from botocore.compat import unquote
 
-def decode_console_output(event_name, shape, value):
-    return base64.b64decode(six.b(value)).decode('utf-8')
 
-
-def decode_jsondoc(event_name, shape, value):
+def decode_console_output(**kwargs):
     try:
-        value = json.loads(unquote(value))
+        value = base64.b64decode(six.b(kwargs['value'])).decode('utf-8')
     except:
-        pass
+        value = kwargs['value']
+    return value
+
+
+def decode_jsondoc(**kwargs):
+    try:
+        value = json.loads(unquote(kwargs['value']))
+    except:
+        value = kwargs['value']
     return value
 
 # This is a list of (event_name, handler).

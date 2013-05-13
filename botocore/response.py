@@ -245,16 +245,17 @@ class XmlResponse(Response):
         return data
 
     def emit_event(self, tag, shape, value):
-        event = 'after-parsed'
-        event += '.%s.%s.%s' % (self.operation.service.cli_name,
-                                self.operation.cli_name,
-                                shape['shape_name'])
-        if tag:
-            event += '.%s' % tag
-        rv = self.session.emit(event, shape=shape, value=value)
-        logger.debug(rv)
-        if len(rv) > 0:
-            value = rv[-1][1]
+        if 'shape_name' in shape:
+            event = 'after-parsed'
+            event += '.%s.%s.%s' % (self.operation.service.cli_name,
+                                    self.operation.cli_name,
+                                    shape['shape_name'])
+            if tag:
+                event += '.%s' % tag
+            rv = self.session.emit(event, shape=shape, value=value)
+            logger.debug(rv)
+            if len(rv) > 0:
+                value = rv[-1][1]
         return value
 
     def handle_elem(self, key, elem, shape):

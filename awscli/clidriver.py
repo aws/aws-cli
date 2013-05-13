@@ -213,7 +213,6 @@ class CLIDriver(object):
             else:
                 http_response, response_data = self.operation.call(
                     self.endpoint, **params)
-                response_data = response_data
                 streaming_param = self.operation.is_streaming()
                 if streaming_param:
                     self.save_output(streaming_param, response_data,

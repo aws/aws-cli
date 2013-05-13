@@ -32,20 +32,10 @@ from botocore.exceptions import UnknownSignatureVersionError
 from botocore.exceptions import NoCredentialsError
 from botocore.utils import normalize_url_path
 from botocore.compat import HTTPHeaders
+from botocore.compat import quote, unquote, urlsplit, parse_qsl
 from six.moves import http_client
 
 logger = logging.getLogger(__name__)
-
-try:
-    from urllib.parse import quote
-    from urllib.parse import unquote
-    from urllib.parse import urlsplit
-    from urllib.parse import parse_qsl
-except ImportError:
-    from urllib import quote
-    from urllib import unquote
-    from urlparse import urlsplit
-    from urlparse import parse_qsl
 
 
 EMPTY_SHA256_HASH = (
@@ -393,4 +383,3 @@ AUTH_TYPE_MAPS = {
     'v3': SigV3Auth,
     's3': HmacV1Auth,
 }
-

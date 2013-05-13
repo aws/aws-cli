@@ -24,8 +24,28 @@
 This module contains builtin handlers for events emitted by botocore.
 """
 
+import base64
+import json
+import six
+from botocore.compat import unquote
+
+def decode_console_output(event_name, shape, value):
+    return base64.b64decode(six.b(value)).decode('utf-8')
+
+
+def decode_jsondoc(event_name, shape, value):
+    try:
+        value = json.loads(unquote(value))
+    except:
+        pass
+    return value
+
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
 # automatically registered with that Session.
 BUILTIN_HANDLERS = [
+    ('after-parsed.ec2.get-console-output.String.Output',
+     decode_console_output),
+    ('after-parsed.iam.*.policyDocumentType.PolicyDocument',
+     decode_jsondoc)
 ]

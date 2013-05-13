@@ -21,9 +21,7 @@
 # IN THE SOFTWARE.
 #
 import sys
-import base64
 import xml.etree.cElementTree
-import six
 from botocore import ScalarTypes
 import json
 import logging
@@ -33,7 +31,8 @@ logger = logging.getLogger(__name__)
 
 class Response(object):
 
-    def __init__(self, operation):
+    def __init__(self, session, operation):
+        self.session = session
         self.operation = operation
         self.value = None
 
@@ -46,8 +45,8 @@ class Response(object):
 
 class XmlResponse(Response):
 
-    def __init__(self, operation):
-        Response.__init__(self, operation)
+    def __init__(self, session, operation):
+        Response.__init__(self, session, operation)
         self.tree = None
         self.element_map = {}
         self.value = {}
@@ -199,9 +198,6 @@ class XmlResponse(Response):
     def _handle_boolean(self, elem, shape):
         return True if elem.text.lower() == 'true' else False
 
-    def _handle_blob(self, elem, shape):
-        return base64.b64decode(six.b(elem.text)).decode('utf-8')
-
     def _handle_structure(self, elem, shape):
         new_data = {}
         for member_name in shape['members']:
@@ -209,9 +205,8 @@ class XmlResponse(Response):
             xmlname = member_shape.get('xmlname', member_name)
             child = self.find(elem, xmlname)
             if child is not None:
-                new_data[member_name] = self.handle_elem(child, member_shape)
-            else:
-                logger.debug('unable to find struct member: %s' % xmlname)
+                new_data[member_name] = self.handle_elem(member_name, child,
+                                                         member_shape)
         return new_data
 
     def _handle_list(self, elem, shape):
@@ -224,7 +219,7 @@ class XmlResponse(Response):
                 children = self.findall(parent, tagname)
         if not children:
             children = []
-        return [self.handle_elem(child, shape['members'])
+        return [self.handle_elem(None, child, shape['members'])
                 for child in children]
 
     def _handle_map(self, elem, shape):
@@ -245,15 +240,30 @@ class XmlResponse(Response):
             value = self.find(member, value_xmlname)
             cn = self.clark_notation(value_xmlname)
             value = member.find(cn)
-            data[self.handle_elem(key, keyshape)] = self.handle_elem(value,
-                                                                     valueshape)
+            key_name = self.handle_elem(None, key, keyshape)
+            data[key_name] = self.handle_elem(key_name, value, valueshape)
         return data
 
-    def handle_elem(self, elem, shape):
+    def emit_event(self, tag, shape, value):
+        event = 'after-parsed'
+        event += '.%s.%s.%s' % (self.operation.service.cli_name,
+                                self.operation.cli_name,
+                                shape['shape_name'])
+        if tag:
+            event += '.%s' % tag
+        rv = self.session.emit(event, shape=shape, value=value)
+        logger.debug(rv)
+        if len(rv) > 0:
+            value = rv[-1][1]
+        return value
+
+    def handle_elem(self, key, elem, shape):
         handler_name = '_handle_%s' % shape['type']
         elem.tail = True
         if hasattr(self, handler_name):
-            return getattr(self, handler_name)(elem, shape)
+            value = getattr(self, handler_name)(elem, shape)
+            value = self.emit_event(key, shape, value)
+            return value
         else:
             logger.debug('Unhandled type: %s' % shape['type'])
 
@@ -288,7 +298,8 @@ class XmlResponse(Response):
                 if child is None and member['type'] not in ScalarTypes:
                     child = elem
                 if child is not None:
-                    self.value[member_name] = self.handle_elem(child, member)
+                    self.value[member_name] = self.handle_elem(member_name,
+                                                               child, member)
         self.get_response_metadata()
         self.get_response_errors()
         for child in self.tree:
@@ -297,7 +308,8 @@ class XmlResponse(Response):
                 if child_tag not in self.element_map:
                     if not child_tag.startswith(self.operation.name):
                         shape = self.fake_shape(child)
-                        self.value[child_tag] = self.handle_elem(child, shape)
+                        self.value[child_tag] = self.handle_elem(child_tag,
+                                                                 child, shape)
 
 
 class JSONResponse(Response):
@@ -321,8 +333,8 @@ class JSONResponse(Response):
 
 class StreamingResponse(Response):
 
-    def __init__(self, operation):
-        Response.__init__(self, operation)
+    def __init__(self, session, operation):
+        Response.__init__(self, session, operation)
         self.value = {}
 
     def parse(self, headers, stream):
@@ -338,7 +350,7 @@ class StreamingResponse(Response):
                         self.value[member_name] = stream
 
 
-def get_response(operation, http_response):
+def get_response(session, operation, http_response):
     encoding = 'utf-8'
     if http_response.encoding:
         encoding = http_response.encoding
@@ -347,7 +359,7 @@ def get_response(operation, http_response):
         content_type = content_type.split(';')[0]
     logger.debug('content-type=%s' % content_type)
     if operation.is_streaming():
-        streaming_response = StreamingResponse(operation)
+        streaming_response = StreamingResponse(session, operation)
         streaming_response.parse(http_response.headers, http_response.raw)
         return (http_response, streaming_response.get_value())
     body = http_response.text
@@ -356,12 +368,12 @@ def get_response(operation, http_response):
         return (http_response, body)
     if content_type in ('application/x-amz-json-1.0',
                         'application/x-amz-json-1.1', 'application/json'):
-        json_response = JSONResponse(operation)
+        json_response = JSONResponse(session, operation)
         json_response.parse(body, encoding)
         return (http_response, json_response.get_value())
     # We are defaulting to an XML response handler because many query
     # services send XML error responses but do not include a Content-Type
     # header.
-    xml_response = XmlResponse(operation)
+    xml_response = XmlResponse(session, operation)
     xml_response.parse(body, encoding)
     return (http_response, xml_response.get_value())

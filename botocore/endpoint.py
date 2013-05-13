@@ -101,7 +101,8 @@ class QueryEndpoint(Endpoint):
                              data=params, headers={'User-Agent': user_agent})
         prepared_request = self.prepare_request(request)
         http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(operation, http_response)
+        return botocore.response.get_response(self.session, operation,
+                                              http_response)
 
 
 class JSONEndpoint(Endpoint):
@@ -136,7 +137,8 @@ class JSONEndpoint(Endpoint):
                                       'Content-Encoding': content_encoding})
         prepared_request = self.prepare_request(request)
         http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(operation, http_response)
+        return botocore.response.get_response(self.session, operation,
+                                              http_response)
 
 
 class RestEndpoint(Endpoint):
@@ -198,7 +200,8 @@ class RestEndpoint(Endpoint):
                                  data=params['payload'])
         prepared_request = self.prepare_request(request)
         http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(operation, http_response)
+        return botocore.response.get_response(self.session, operation,
+                                              http_response)
 
 
 def _get_proxies(url):

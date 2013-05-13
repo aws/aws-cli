@@ -22,6 +22,9 @@
 import inspect
 import six
 from collections import defaultdict, deque
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def first_non_none_response(responses, default=None):
@@ -136,6 +139,7 @@ class HierarchicalEmitter(BaseEventHooks):
         responses = []
         # Invoke the event handlers from most specific
         # to least specific, each time stripping off a dot.
+        logger.debug('emit: %s' % event_name)
         if event_name in self._lookup_cache:
             handlers_to_call = self._lookup_cache[event_name]
         else:
@@ -144,6 +148,7 @@ class HierarchicalEmitter(BaseEventHooks):
         kwargs['event_name'] = event_name
         responses = []
         for handler in handlers_to_call:
+            logger.debug('emit: calling %s' % handler)
             response = handler(**kwargs)
             responses.append((handler, response))
         return responses

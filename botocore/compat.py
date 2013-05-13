@@ -26,8 +26,15 @@ if six.PY3:
     from six.moves import http_client
     class HTTPHeaders(http_client.HTTPMessage):
         pass
-
+    from urllib.parse import quote
+    from urllib.parse import unquote
+    from urllib.parse import urlsplit
+    from urllib.parse import parse_qsl
 else:
+    from urllib import quote
+    from urllib import unquote
+    from urlparse import urlsplit
+    from urlparse import parse_qsl
     from email.message import Message
     class HTTPHeaders(Message):
 

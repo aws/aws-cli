@@ -27,12 +27,6 @@ from botocore.retryhandler import RetryHandler, delay_exponential
 
 class RetryHandlerTest(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_1(self):
 
         def retryable(a=None, b=None, c=None):
@@ -57,7 +51,6 @@ class RetryHandlerTest(unittest.TestCase):
                 a['n'] += 1
                 return 0
             return 1
-
 
         def statusfn(attempt, return_value):
             if return_value != 1:

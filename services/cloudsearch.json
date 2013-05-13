@@ -1,0 +1,3585 @@
+{
+  "service_full_name": "Amazon CloudSearch",
+  "type": "query",
+  "signature_version": "v2",
+  "result_wrapped": true,
+  "api_version": "2011-02-01",
+  "endpoint_prefix": "cloudsearch",
+  "xmlnamespace": null,
+  "documentation": "\n    <fullname>Amazon CloudSearch Configuration Service</fullname>\n    <p>You use the Configuration Service to create, configure, and manage search domains. \n      Amazon CloudSearch configuration requests are submitted to <code>cloudsearch.us-east-1.amazonaws.com</code>\n      using the AWS Query protocol. </p>\n  ",
+  "operations": {
+    "CreateDomain": {
+      "name": "CreateDomain",
+      "input": {
+        "shape_name": "CreateDomainRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "CreateDomainResponse",
+        "type": "structure",
+        "members": {
+          "DomainStatus": {
+            "shape_name": "DomainStatus",
+            "type": "structure",
+            "members": {
+              "DomainId": {
+                "shape_name": "DomainId",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "documentation": null,
+                "required": true
+              },
+              "DomainName": {
+                "shape_name": "DomainName",
+                "type": "string",
+                "min_length": 3,
+                "max_length": 28,
+                "pattern": "[a-z][a-z0-9\\-]+",
+                "documentation": null,
+                "required": true
+              },
+              "Created": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if the search domain is created. It can take several minutes to initialize a domain when <a>CreateDomain</a> is called. Newly created search domains are returned from <a>DescribeDomains</a> with a false value for Created until domain creation is complete.</p>\n  "
+              },
+              "Deleted": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if the search domain has been deleted.  The system must clean up resources dedicated to the search domain when <a>DeleteDomain</a> is called.  Newly deleted search domains are returned from <a>DescribeDomains</a> with a true value for IsDeleted for several minutes until resource cleanup is complete.</p>\n  "
+              },
+              "NumSearchableDocs": {
+                "shape_name": "UIntValue",
+                "type": "integer",
+                "min_length": 0,
+                "documentation": "\n    <p>The number of documents that have been submitted to the domain and indexed.</p>\n  "
+              },
+              "DocService": {
+                "shape_name": "ServiceEndpoint",
+                "type": "structure",
+                "members": {
+                  "Arn": {
+                    "shape_name": "Arn",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "Endpoint": {
+                    "shape_name": "ServiceUrl",
+                    "type": "string",
+                    "documentation": null
+                  }
+                },
+                "documentation": "\n  <p>The service endpoint for updating documents in a search domain.</p>\n  "
+              },
+              "SearchService": {
+                "shape_name": "ServiceEndpoint",
+                "type": "structure",
+                "members": {
+                  "Arn": {
+                    "shape_name": "Arn",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "Endpoint": {
+                    "shape_name": "ServiceUrl",
+                    "type": "string",
+                    "documentation": null
+                  }
+                },
+                "documentation": "\n  <p>The service endpoint for requesting search results from a search domain.</p>\n  "
+              },
+              "RequiresIndexDocuments": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if <a>IndexDocuments</a> needs to be called to activate the current domain configuration.</p>\n  ",
+                "required": true
+              },
+              "Processing": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if processing is being done to activate the current domain configuration.</p>\n  "
+              },
+              "SearchInstanceType": {
+                "shape_name": "SearchInstanceType",
+                "type": "string",
+                "documentation": "\n    <p>The instance type (such as search.m1.small) that is being used to process search requests.</p>\n  "
+              },
+              "SearchPartitionCount": {
+                "shape_name": "PartitionCount",
+                "type": "integer",
+                "min_length": 1,
+                "documentation": "\n    <p>The number of partitions across which the search index is spread.</p>\n  "
+              },
+              "SearchInstanceCount": {
+                "shape_name": "InstanceCount",
+                "type": "integer",
+                "min_length": 1,
+                "documentation": "\n    <p>The number of search instances that are available to process search requests.</p>\n  "
+              }
+            },
+            "documentation": null
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of a newly created domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Creates a new search domain.</p>\n  "
+    },
+    "DefineIndexField": {
+      "name": "DefineIndexField",
+      "input": {
+        "shape_name": "DefineIndexFieldRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "IndexField": {
+            "shape_name": "IndexField",
+            "type": "structure",
+            "members": {
+              "IndexFieldName": {
+                "shape_name": "FieldName",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "pattern": "[a-z][a-z0-9_]*",
+                "documentation": "\n  <p>The name of a field in the search index. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                "required": true
+              },
+              "IndexFieldType": {
+                "shape_name": "IndexFieldType",
+                "type": "string",
+                "enum": [
+                  "uint",
+                  "literal",
+                  "text"
+                ],
+                "documentation": "\n  <p>The type of field.  Based on this type, exactly one of the <a>UIntOptions</a>, <a>LiteralOptions</a> or <a>TextOptions</a> must be present.</p>\n  ",
+                "required": true
+              },
+              "UIntOptions": {
+                "shape_name": "UIntOptions",
+                "type": "structure",
+                "members": {
+                  "DefaultValue": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>The default value for an unsigned integer field. Optional.</p>\n  "
+                  }
+                },
+                "documentation": "\n  <p>Options for an unsigned integer field.  Present if <code>IndexFieldType</code> specifies the field is of type unsigned integer.</p>\n  "
+              },
+              "LiteralOptions": {
+                "shape_name": "LiteralOptions",
+                "type": "structure",
+                "members": {
+                  "DefaultValue": {
+                    "shape_name": "FieldValue",
+                    "type": "string",
+                    "min_length": 0,
+                    "max_length": 1024,
+                    "documentation": "\n  <p>The default value for a literal field. Optional.</p>\n  "
+                  },
+                  "SearchEnabled": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Specifies whether search is enabled for this field. Default: False.</p>\n  "
+                  },
+                  "FacetEnabled": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                  },
+                  "ResultEnabled": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Specifies whether values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                  }
+                },
+                "documentation": "\n  <p>Options for literal field.  Present if <code>IndexFieldType</code> specifies the field is of type literal.</p>\n  "
+              },
+              "TextOptions": {
+                "shape_name": "TextOptions",
+                "type": "structure",
+                "members": {
+                  "DefaultValue": {
+                    "shape_name": "FieldValue",
+                    "type": "string",
+                    "min_length": 0,
+                    "max_length": 1024,
+                    "documentation": "\n  <p>The default value for a text field. Optional.</p>\n  "
+                  },
+                  "FacetEnabled": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                  },
+                  "ResultEnabled": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n    <p>Specifies whether  values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                  },
+                  "TextProcessor": {
+                    "shape_name": "FieldName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 64,
+                    "pattern": "[a-z][a-z0-9_]*",
+                    "documentation": "\n    <p>The text processor to apply to this field. Optional. Possible values:</p>\n    <ul>\n      <li>\n<code>cs_text_no_stemming</code>: turns off stemming for the field.</li>\n    </ul>\n    <p>Default: none</p>\n  "
+                  }
+                },
+                "documentation": "\n  <p>Options for text field.  Present if <code>IndexFieldType</code> specifies the field is of type text.</p>\n  "
+              },
+              "SourceAttributes": {
+                "shape_name": "SourceAttributeList",
+                "type": "list",
+                "members": {
+                  "shape_name": "SourceAttribute",
+                  "type": "structure",
+                  "members": {
+                    "SourceDataFunction": {
+                      "shape_name": "SourceDataFunction",
+                      "type": "string",
+                      "enum": [
+                        "Copy",
+                        "TrimTitle",
+                        "Map"
+                      ],
+                      "documentation": "\n  <p>Identifies the transformation to apply when copying data from a source attribute.</p>\n  ",
+                      "required": true
+                    },
+                    "SourceDataCopy": {
+                      "shape_name": "SourceData",
+                      "type": "structure",
+                      "members": {
+                        "SourceName": {
+                          "shape_name": "FieldName",
+                          "type": "string",
+                          "min_length": 1,
+                          "max_length": 64,
+                          "pattern": "[a-z][a-z0-9_]*",
+                          "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                          "required": true
+                        },
+                        "DefaultValue": {
+                          "shape_name": "FieldValue",
+                          "type": "string",
+                          "min_length": 0,
+                          "max_length": 1024,
+                          "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                        }
+                      },
+                      "documentation": "\n  <p>Copies data from a source document attribute to an <code>IndexField</code>.</p>\n  "
+                    },
+                    "SourceDataTrimTitle": {
+                      "shape_name": "SourceDataTrimTitle",
+                      "type": "structure",
+                      "members": {
+                        "SourceName": {
+                          "shape_name": "FieldName",
+                          "type": "string",
+                          "min_length": 1,
+                          "max_length": 64,
+                          "pattern": "[a-z][a-z0-9_]*",
+                          "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                          "required": true
+                        },
+                        "DefaultValue": {
+                          "shape_name": "FieldValue",
+                          "type": "string",
+                          "min_length": 0,
+                          "max_length": 1024,
+                          "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                        },
+                        "Separator": {
+                          "shape_name": "String",
+                          "type": "string",
+                          "documentation": "\n    <p>The separator that follows the text to trim.</p>\n  "
+                        },
+                        "Language": {
+                          "shape_name": "Language",
+                          "type": "string",
+                          "pattern": "[a-zA-Z]{2,8}(?:-[a-zA-Z]{2,8})*",
+                          "documentation": null
+                        }
+                      },
+                      "documentation": "\n  <p>Trims common title words from a source document attribute when populating an <code>IndexField</code>. This can be used to create an <code>IndexField</code> you can use for sorting.</p>\n  "
+                    },
+                    "SourceDataMap": {
+                      "shape_name": "SourceDataMap",
+                      "type": "structure",
+                      "members": {
+                        "SourceName": {
+                          "shape_name": "FieldName",
+                          "type": "string",
+                          "min_length": 1,
+                          "max_length": 64,
+                          "pattern": "[a-z][a-z0-9_]*",
+                          "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                          "required": true
+                        },
+                        "DefaultValue": {
+                          "shape_name": "FieldValue",
+                          "type": "string",
+                          "min_length": 0,
+                          "max_length": 1024,
+                          "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                        },
+                        "Cases": {
+                          "shape_name": "StringCaseMap",
+                          "type": "map",
+                          "keys": {
+                            "shape_name": "FieldValue",
+                            "type": "string",
+                            "min_length": 0,
+                            "max_length": 1024,
+                            "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                          },
+                          "members": {
+                            "shape_name": "FieldValue",
+                            "type": "string",
+                            "min_length": 0,
+                            "max_length": 1024,
+                            "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                          },
+                          "documentation": "\n    <p>A map that translates source field values to custom values.</p>\n  "
+                        }
+                      },
+                      "documentation": "\n    <p>Maps source document attribute values to new values when populating the <code>IndexField</code>.</p>\n  "
+                    }
+                  },
+                  "documentation": "\n    <p>Identifies the source data for an index field. An optional data transformation can be applied to the source data when populating the index field. By default, the value of the source attribute is copied to the index field.</p>\n  "
+                },
+                "documentation": "\n    <p>An optional list of source attributes that provide data for this index field. If not specified, the data is pulled from a source attribute with the same name as this <code>IndexField</code>. When one or more source attributes are specified, an optional data transformation can be applied to the source data when populating the index field.  You can configure a maximum of 20 sources for an <code>IndexField</code>.</p>\n  "
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DefineIndexFieldResponse",
+        "type": "structure",
+        "members": {
+          "IndexField": {
+            "shape_name": "IndexFieldStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "IndexField",
+                "type": "structure",
+                "members": {
+                  "IndexFieldName": {
+                    "shape_name": "FieldName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 64,
+                    "pattern": "[a-z][a-z0-9_]*",
+                    "documentation": "\n  <p>The name of a field in the search index. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                    "required": true
+                  },
+                  "IndexFieldType": {
+                    "shape_name": "IndexFieldType",
+                    "type": "string",
+                    "enum": [
+                      "uint",
+                      "literal",
+                      "text"
+                    ],
+                    "documentation": "\n  <p>The type of field.  Based on this type, exactly one of the <a>UIntOptions</a>, <a>LiteralOptions</a> or <a>TextOptions</a> must be present.</p>\n  ",
+                    "required": true
+                  },
+                  "UIntOptions": {
+                    "shape_name": "UIntOptions",
+                    "type": "structure",
+                    "members": {
+                      "DefaultValue": {
+                        "shape_name": "UIntValue",
+                        "type": "integer",
+                        "min_length": 0,
+                        "documentation": "\n  <p>The default value for an unsigned integer field. Optional.</p>\n  "
+                      }
+                    },
+                    "documentation": "\n  <p>Options for an unsigned integer field.  Present if <code>IndexFieldType</code> specifies the field is of type unsigned integer.</p>\n  "
+                  },
+                  "LiteralOptions": {
+                    "shape_name": "LiteralOptions",
+                    "type": "structure",
+                    "members": {
+                      "DefaultValue": {
+                        "shape_name": "FieldValue",
+                        "type": "string",
+                        "min_length": 0,
+                        "max_length": 1024,
+                        "documentation": "\n  <p>The default value for a literal field. Optional.</p>\n  "
+                      },
+                      "SearchEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether search is enabled for this field. Default: False.</p>\n  "
+                      },
+                      "FacetEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                      },
+                      "ResultEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                      }
+                    },
+                    "documentation": "\n  <p>Options for literal field.  Present if <code>IndexFieldType</code> specifies the field is of type literal.</p>\n  "
+                  },
+                  "TextOptions": {
+                    "shape_name": "TextOptions",
+                    "type": "structure",
+                    "members": {
+                      "DefaultValue": {
+                        "shape_name": "FieldValue",
+                        "type": "string",
+                        "min_length": 0,
+                        "max_length": 1024,
+                        "documentation": "\n  <p>The default value for a text field. Optional.</p>\n  "
+                      },
+                      "FacetEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                      },
+                      "ResultEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n    <p>Specifies whether  values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                      },
+                      "TextProcessor": {
+                        "shape_name": "FieldName",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 64,
+                        "pattern": "[a-z][a-z0-9_]*",
+                        "documentation": "\n    <p>The text processor to apply to this field. Optional. Possible values:</p>\n    <ul>\n      <li>\n<code>cs_text_no_stemming</code>: turns off stemming for the field.</li>\n    </ul>\n    <p>Default: none</p>\n  "
+                      }
+                    },
+                    "documentation": "\n  <p>Options for text field.  Present if <code>IndexFieldType</code> specifies the field is of type text.</p>\n  "
+                  },
+                  "SourceAttributes": {
+                    "shape_name": "SourceAttributeList",
+                    "type": "list",
+                    "members": {
+                      "shape_name": "SourceAttribute",
+                      "type": "structure",
+                      "members": {
+                        "SourceDataFunction": {
+                          "shape_name": "SourceDataFunction",
+                          "type": "string",
+                          "enum": [
+                            "Copy",
+                            "TrimTitle",
+                            "Map"
+                          ],
+                          "documentation": "\n  <p>Identifies the transformation to apply when copying data from a source attribute.</p>\n  ",
+                          "required": true
+                        },
+                        "SourceDataCopy": {
+                          "shape_name": "SourceData",
+                          "type": "structure",
+                          "members": {
+                            "SourceName": {
+                              "shape_name": "FieldName",
+                              "type": "string",
+                              "min_length": 1,
+                              "max_length": 64,
+                              "pattern": "[a-z][a-z0-9_]*",
+                              "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                              "required": true
+                            },
+                            "DefaultValue": {
+                              "shape_name": "FieldValue",
+                              "type": "string",
+                              "min_length": 0,
+                              "max_length": 1024,
+                              "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                            }
+                          },
+                          "documentation": "\n  <p>Copies data from a source document attribute to an <code>IndexField</code>.</p>\n  "
+                        },
+                        "SourceDataTrimTitle": {
+                          "shape_name": "SourceDataTrimTitle",
+                          "type": "structure",
+                          "members": {
+                            "SourceName": {
+                              "shape_name": "FieldName",
+                              "type": "string",
+                              "min_length": 1,
+                              "max_length": 64,
+                              "pattern": "[a-z][a-z0-9_]*",
+                              "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                              "required": true
+                            },
+                            "DefaultValue": {
+                              "shape_name": "FieldValue",
+                              "type": "string",
+                              "min_length": 0,
+                              "max_length": 1024,
+                              "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                            },
+                            "Separator": {
+                              "shape_name": "String",
+                              "type": "string",
+                              "documentation": "\n    <p>The separator that follows the text to trim.</p>\n  "
+                            },
+                            "Language": {
+                              "shape_name": "Language",
+                              "type": "string",
+                              "pattern": "[a-zA-Z]{2,8}(?:-[a-zA-Z]{2,8})*",
+                              "documentation": null
+                            }
+                          },
+                          "documentation": "\n  <p>Trims common title words from a source document attribute when populating an <code>IndexField</code>. This can be used to create an <code>IndexField</code> you can use for sorting.</p>\n  "
+                        },
+                        "SourceDataMap": {
+                          "shape_name": "SourceDataMap",
+                          "type": "structure",
+                          "members": {
+                            "SourceName": {
+                              "shape_name": "FieldName",
+                              "type": "string",
+                              "min_length": 1,
+                              "max_length": 64,
+                              "pattern": "[a-z][a-z0-9_]*",
+                              "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                              "required": true
+                            },
+                            "DefaultValue": {
+                              "shape_name": "FieldValue",
+                              "type": "string",
+                              "min_length": 0,
+                              "max_length": 1024,
+                              "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                            },
+                            "Cases": {
+                              "shape_name": "StringCaseMap",
+                              "type": "map",
+                              "keys": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                              },
+                              "members": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                              },
+                              "documentation": "\n    <p>A map that translates source field values to custom values.</p>\n  "
+                            }
+                          },
+                          "documentation": "\n    <p>Maps source document attribute values to new values when populating the <code>IndexField</code>.</p>\n  "
+                        }
+                      },
+                      "documentation": "\n    <p>Identifies the source data for an index field. An optional data transformation can be applied to the source data when populating the index field. By default, the value of the source attribute is copied to the index field.</p>\n  "
+                    },
+                    "documentation": "\n    <p>An optional list of source attributes that provide data for this index field. If not specified, the data is pulled from a source attribute with the same name as this <code>IndexField</code>. When one or more source attributes are specified, an optional data transformation can be applied to the source data when populating the index field.  You can configure a maximum of 20 sources for an <code>IndexField</code>.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>A response message that contains the status of an updated index field.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Configures an <code>IndexField</code> for the search domain. Used to create new fields and modify existing ones.  If the field exists, the new configuration replaces the old one. You can configure a maximum of 200 index fields.</p>\n  "
+    },
+    "DefineRankExpression": {
+      "name": "DefineRankExpression",
+      "input": {
+        "shape_name": "DefineRankExpressionRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "RankExpression": {
+            "shape_name": "NamedRankExpression",
+            "type": "structure",
+            "members": {
+              "RankName": {
+                "shape_name": "FieldName",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "pattern": "[a-z][a-z0-9_]*",
+                "documentation": "\n  <p>The name of a rank expression. Rank expression names must begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                "required": true
+              },
+              "RankExpression": {
+                "shape_name": "RankExpression",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 10240,
+                "documentation": "\n    <p>The expression to evaluate for ranking or thresholding while processing a search request.  The <code>RankExpression</code> syntax is based on JavaScript expressions and supports:</p>\n<ul>\n    <li>Integer, floating point, hex and octal literals</li>\n    <li>Shortcut evaluation of logical operators such that an expression <code>a || b</code> evaluates to the value <code>a</code> if <code>a</code> is <code>true</code> without evaluting <code>b</code> at all</li>\n    <li>JavaScript order of precendence for operators</li>\n    <li>Arithmetic operators: <code>+ - * / %</code>\n</li>\n    <li>Boolean operators (including the ternary operator)</li>\n    <li>Bitwise operators</li>\n    <li>Comparison operators</li>\n    <li>Common mathematic functions: <code>abs ceil erf exp floor lgamma ln log2 log10 max min sqrt pow</code>\n</li>\n    <li>Trigonometric library functions: <code>acosh acos asinh asin atanh atan cosh cos sinh sin tanh tan</code>\n</li>\n    <li>Random generation of a number between 0 and 1: <code>rand</code>\n</li>\n    <li>Current time in epoch: <code>time</code>\n</li>\n    <li>The <code>min max</code> functions that operate on a variable argument list</li>\n    </ul>\n\n    <p>Intermediate results are calculated as double precision floating point values.  The final return value of a <code>RankExpression</code> is automatically converted from floating point to a 32-bit unsigned integer by rounding to the nearest integer, with a natural floor of 0 and a ceiling of max(uint32_t), 4294967295.  Mathematical errors such as dividing by 0 will fail during evaluation and return a value of 0.</p>\n  <p>The source data for a <code>RankExpression</code> can be the name of an <code>IndexField</code> of type uint, another <code>RankExpression</code> or the reserved name <i>text_relevance</i>.  The text_relevance source is defined to return an integer from 0 to 1000 (inclusive) to indicate how relevant a document is to the search request, taking into account repetition of search terms in the document and proximity of search terms to each other in each matching <code>IndexField</code>  in the document.</p>\n    <p>For more information about using rank expressions to customize ranking, see the Amazon CloudSearch Developer Guide.</p>\n  ",
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DefineRankExpressionResponse",
+        "type": "structure",
+        "members": {
+          "RankExpression": {
+            "shape_name": "RankExpressionStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "NamedRankExpression",
+                "type": "structure",
+                "members": {
+                  "RankName": {
+                    "shape_name": "FieldName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 64,
+                    "pattern": "[a-z][a-z0-9_]*",
+                    "documentation": "\n  <p>The name of a rank expression. Rank expression names must begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                    "required": true
+                  },
+                  "RankExpression": {
+                    "shape_name": "RankExpression",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 10240,
+                    "documentation": "\n    <p>The expression to evaluate for ranking or thresholding while processing a search request.  The <code>RankExpression</code> syntax is based on JavaScript expressions and supports:</p>\n<ul>\n    <li>Integer, floating point, hex and octal literals</li>\n    <li>Shortcut evaluation of logical operators such that an expression <code>a || b</code> evaluates to the value <code>a</code> if <code>a</code> is <code>true</code> without evaluting <code>b</code> at all</li>\n    <li>JavaScript order of precendence for operators</li>\n    <li>Arithmetic operators: <code>+ - * / %</code>\n</li>\n    <li>Boolean operators (including the ternary operator)</li>\n    <li>Bitwise operators</li>\n    <li>Comparison operators</li>\n    <li>Common mathematic functions: <code>abs ceil erf exp floor lgamma ln log2 log10 max min sqrt pow</code>\n</li>\n    <li>Trigonometric library functions: <code>acosh acos asinh asin atanh atan cosh cos sinh sin tanh tan</code>\n</li>\n    <li>Random generation of a number between 0 and 1: <code>rand</code>\n</li>\n    <li>Current time in epoch: <code>time</code>\n</li>\n    <li>The <code>min max</code> functions that operate on a variable argument list</li>\n    </ul>\n\n    <p>Intermediate results are calculated as double precision floating point values.  The final return value of a <code>RankExpression</code> is automatically converted from floating point to a 32-bit unsigned integer by rounding to the nearest integer, with a natural floor of 0 and a ceiling of max(uint32_t), 4294967295.  Mathematical errors such as dividing by 0 will fail during evaluation and return a value of 0.</p>\n  <p>The source data for a <code>RankExpression</code> can be the name of an <code>IndexField</code> of type uint, another <code>RankExpression</code> or the reserved name <i>text_relevance</i>.  The text_relevance source is defined to return an integer from 0 to 1000 (inclusive) to indicate how relevant a document is to the search request, taking into account repetition of search terms in the document and proximity of search terms to each other in each matching <code>IndexField</code>  in the document.</p>\n    <p>For more information about using rank expressions to customize ranking, see the Amazon CloudSearch Developer Guide.</p>\n  ",
+                    "required": true
+                  }
+                },
+                "documentation": "\n  <p>The expression that is evaluated for ranking or thresholding while processing a search request.</p>\n  ",
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>A response message that contains the status of an updated <code>RankExpression</code>.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Configures a <code>RankExpression</code> for the search domain. Used to create new rank expressions and modify existing ones.  If the expression exists, the new configuration replaces the old one. You can configure a maximum of 50 rank expressions.</p>\n  "
+    },
+    "DeleteDomain": {
+      "name": "DeleteDomain",
+      "input": {
+        "shape_name": "DeleteDomainRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DeleteDomainResponse",
+        "type": "structure",
+        "members": {
+          "DomainStatus": {
+            "shape_name": "DomainStatus",
+            "type": "structure",
+            "members": {
+              "DomainId": {
+                "shape_name": "DomainId",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "documentation": null,
+                "required": true
+              },
+              "DomainName": {
+                "shape_name": "DomainName",
+                "type": "string",
+                "min_length": 3,
+                "max_length": 28,
+                "pattern": "[a-z][a-z0-9\\-]+",
+                "documentation": null,
+                "required": true
+              },
+              "Created": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if the search domain is created. It can take several minutes to initialize a domain when <a>CreateDomain</a> is called. Newly created search domains are returned from <a>DescribeDomains</a> with a false value for Created until domain creation is complete.</p>\n  "
+              },
+              "Deleted": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if the search domain has been deleted.  The system must clean up resources dedicated to the search domain when <a>DeleteDomain</a> is called.  Newly deleted search domains are returned from <a>DescribeDomains</a> with a true value for IsDeleted for several minutes until resource cleanup is complete.</p>\n  "
+              },
+              "NumSearchableDocs": {
+                "shape_name": "UIntValue",
+                "type": "integer",
+                "min_length": 0,
+                "documentation": "\n    <p>The number of documents that have been submitted to the domain and indexed.</p>\n  "
+              },
+              "DocService": {
+                "shape_name": "ServiceEndpoint",
+                "type": "structure",
+                "members": {
+                  "Arn": {
+                    "shape_name": "Arn",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "Endpoint": {
+                    "shape_name": "ServiceUrl",
+                    "type": "string",
+                    "documentation": null
+                  }
+                },
+                "documentation": "\n  <p>The service endpoint for updating documents in a search domain.</p>\n  "
+              },
+              "SearchService": {
+                "shape_name": "ServiceEndpoint",
+                "type": "structure",
+                "members": {
+                  "Arn": {
+                    "shape_name": "Arn",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "Endpoint": {
+                    "shape_name": "ServiceUrl",
+                    "type": "string",
+                    "documentation": null
+                  }
+                },
+                "documentation": "\n  <p>The service endpoint for requesting search results from a search domain.</p>\n  "
+              },
+              "RequiresIndexDocuments": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if <a>IndexDocuments</a> needs to be called to activate the current domain configuration.</p>\n  ",
+                "required": true
+              },
+              "Processing": {
+                "shape_name": "Boolean",
+                "type": "boolean",
+                "documentation": "\n  <p>True if processing is being done to activate the current domain configuration.</p>\n  "
+              },
+              "SearchInstanceType": {
+                "shape_name": "SearchInstanceType",
+                "type": "string",
+                "documentation": "\n    <p>The instance type (such as search.m1.small) that is being used to process search requests.</p>\n  "
+              },
+              "SearchPartitionCount": {
+                "shape_name": "PartitionCount",
+                "type": "integer",
+                "min_length": 1,
+                "documentation": "\n    <p>The number of partitions across which the search index is spread.</p>\n  "
+              },
+              "SearchInstanceCount": {
+                "shape_name": "InstanceCount",
+                "type": "integer",
+                "min_length": 1,
+                "documentation": "\n    <p>The number of search instances that are available to process search requests.</p>\n  "
+              }
+            },
+            "documentation": null
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of a newly deleted domain, or no status if the domain has already been completely deleted.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Permanently deletes a search domain and all of its data.</p>\n  "
+    },
+    "DeleteIndexField": {
+      "name": "DeleteIndexField",
+      "input": {
+        "shape_name": "DeleteIndexFieldRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "IndexFieldName": {
+            "shape_name": "FieldName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "pattern": "[a-z][a-z0-9_]*",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DeleteIndexFieldResponse",
+        "type": "structure",
+        "members": {
+          "IndexField": {
+            "shape_name": "IndexFieldStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "IndexField",
+                "type": "structure",
+                "members": {
+                  "IndexFieldName": {
+                    "shape_name": "FieldName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 64,
+                    "pattern": "[a-z][a-z0-9_]*",
+                    "documentation": "\n  <p>The name of a field in the search index. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                    "required": true
+                  },
+                  "IndexFieldType": {
+                    "shape_name": "IndexFieldType",
+                    "type": "string",
+                    "enum": [
+                      "uint",
+                      "literal",
+                      "text"
+                    ],
+                    "documentation": "\n  <p>The type of field.  Based on this type, exactly one of the <a>UIntOptions</a>, <a>LiteralOptions</a> or <a>TextOptions</a> must be present.</p>\n  ",
+                    "required": true
+                  },
+                  "UIntOptions": {
+                    "shape_name": "UIntOptions",
+                    "type": "structure",
+                    "members": {
+                      "DefaultValue": {
+                        "shape_name": "UIntValue",
+                        "type": "integer",
+                        "min_length": 0,
+                        "documentation": "\n  <p>The default value for an unsigned integer field. Optional.</p>\n  "
+                      }
+                    },
+                    "documentation": "\n  <p>Options for an unsigned integer field.  Present if <code>IndexFieldType</code> specifies the field is of type unsigned integer.</p>\n  "
+                  },
+                  "LiteralOptions": {
+                    "shape_name": "LiteralOptions",
+                    "type": "structure",
+                    "members": {
+                      "DefaultValue": {
+                        "shape_name": "FieldValue",
+                        "type": "string",
+                        "min_length": 0,
+                        "max_length": 1024,
+                        "documentation": "\n  <p>The default value for a literal field. Optional.</p>\n  "
+                      },
+                      "SearchEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether search is enabled for this field. Default: False.</p>\n  "
+                      },
+                      "FacetEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                      },
+                      "ResultEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                      }
+                    },
+                    "documentation": "\n  <p>Options for literal field.  Present if <code>IndexFieldType</code> specifies the field is of type literal.</p>\n  "
+                  },
+                  "TextOptions": {
+                    "shape_name": "TextOptions",
+                    "type": "structure",
+                    "members": {
+                      "DefaultValue": {
+                        "shape_name": "FieldValue",
+                        "type": "string",
+                        "min_length": 0,
+                        "max_length": 1024,
+                        "documentation": "\n  <p>The default value for a text field. Optional.</p>\n  "
+                      },
+                      "FacetEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                      },
+                      "ResultEnabled": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "documentation": "\n    <p>Specifies whether  values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                      },
+                      "TextProcessor": {
+                        "shape_name": "FieldName",
+                        "type": "string",
+                        "min_length": 1,
+                        "max_length": 64,
+                        "pattern": "[a-z][a-z0-9_]*",
+                        "documentation": "\n    <p>The text processor to apply to this field. Optional. Possible values:</p>\n    <ul>\n      <li>\n<code>cs_text_no_stemming</code>: turns off stemming for the field.</li>\n    </ul>\n    <p>Default: none</p>\n  "
+                      }
+                    },
+                    "documentation": "\n  <p>Options for text field.  Present if <code>IndexFieldType</code> specifies the field is of type text.</p>\n  "
+                  },
+                  "SourceAttributes": {
+                    "shape_name": "SourceAttributeList",
+                    "type": "list",
+                    "members": {
+                      "shape_name": "SourceAttribute",
+                      "type": "structure",
+                      "members": {
+                        "SourceDataFunction": {
+                          "shape_name": "SourceDataFunction",
+                          "type": "string",
+                          "enum": [
+                            "Copy",
+                            "TrimTitle",
+                            "Map"
+                          ],
+                          "documentation": "\n  <p>Identifies the transformation to apply when copying data from a source attribute.</p>\n  ",
+                          "required": true
+                        },
+                        "SourceDataCopy": {
+                          "shape_name": "SourceData",
+                          "type": "structure",
+                          "members": {
+                            "SourceName": {
+                              "shape_name": "FieldName",
+                              "type": "string",
+                              "min_length": 1,
+                              "max_length": 64,
+                              "pattern": "[a-z][a-z0-9_]*",
+                              "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                              "required": true
+                            },
+                            "DefaultValue": {
+                              "shape_name": "FieldValue",
+                              "type": "string",
+                              "min_length": 0,
+                              "max_length": 1024,
+                              "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                            }
+                          },
+                          "documentation": "\n  <p>Copies data from a source document attribute to an <code>IndexField</code>.</p>\n  "
+                        },
+                        "SourceDataTrimTitle": {
+                          "shape_name": "SourceDataTrimTitle",
+                          "type": "structure",
+                          "members": {
+                            "SourceName": {
+                              "shape_name": "FieldName",
+                              "type": "string",
+                              "min_length": 1,
+                              "max_length": 64,
+                              "pattern": "[a-z][a-z0-9_]*",
+                              "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                              "required": true
+                            },
+                            "DefaultValue": {
+                              "shape_name": "FieldValue",
+                              "type": "string",
+                              "min_length": 0,
+                              "max_length": 1024,
+                              "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                            },
+                            "Separator": {
+                              "shape_name": "String",
+                              "type": "string",
+                              "documentation": "\n    <p>The separator that follows the text to trim.</p>\n  "
+                            },
+                            "Language": {
+                              "shape_name": "Language",
+                              "type": "string",
+                              "pattern": "[a-zA-Z]{2,8}(?:-[a-zA-Z]{2,8})*",
+                              "documentation": null
+                            }
+                          },
+                          "documentation": "\n  <p>Trims common title words from a source document attribute when populating an <code>IndexField</code>. This can be used to create an <code>IndexField</code> you can use for sorting.</p>\n  "
+                        },
+                        "SourceDataMap": {
+                          "shape_name": "SourceDataMap",
+                          "type": "structure",
+                          "members": {
+                            "SourceName": {
+                              "shape_name": "FieldName",
+                              "type": "string",
+                              "min_length": 1,
+                              "max_length": 64,
+                              "pattern": "[a-z][a-z0-9_]*",
+                              "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                              "required": true
+                            },
+                            "DefaultValue": {
+                              "shape_name": "FieldValue",
+                              "type": "string",
+                              "min_length": 0,
+                              "max_length": 1024,
+                              "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                            },
+                            "Cases": {
+                              "shape_name": "StringCaseMap",
+                              "type": "map",
+                              "keys": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                              },
+                              "members": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                              },
+                              "documentation": "\n    <p>A map that translates source field values to custom values.</p>\n  "
+                            }
+                          },
+                          "documentation": "\n    <p>Maps source document attribute values to new values when populating the <code>IndexField</code>.</p>\n  "
+                        }
+                      },
+                      "documentation": "\n    <p>Identifies the source data for an index field. An optional data transformation can be applied to the source data when populating the index field. By default, the value of the source attribute is copied to the index field.</p>\n  "
+                    },
+                    "documentation": "\n    <p>An optional list of source attributes that provide data for this index field. If not specified, the data is pulled from a source attribute with the same name as this <code>IndexField</code>. When one or more source attributes are specified, an optional data transformation can be applied to the source data when populating the index field.  You can configure a maximum of 20 sources for an <code>IndexField</code>.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>A response message that contains the status of a deleted index field.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Removes an <code>IndexField</code> from the search domain.</p>\n  "
+    },
+    "DeleteRankExpression": {
+      "name": "DeleteRankExpression",
+      "input": {
+        "shape_name": "DeleteRankExpressionRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "RankName": {
+            "shape_name": "FieldName",
+            "type": "string",
+            "min_length": 1,
+            "max_length": 64,
+            "pattern": "[a-z][a-z0-9_]*",
+            "documentation": "\n  <p>The name of the <code>RankExpression</code> to delete.</p>\n  ",
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DeleteRankExpressionResponse",
+        "type": "structure",
+        "members": {
+          "RankExpression": {
+            "shape_name": "RankExpressionStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "NamedRankExpression",
+                "type": "structure",
+                "members": {
+                  "RankName": {
+                    "shape_name": "FieldName",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 64,
+                    "pattern": "[a-z][a-z0-9_]*",
+                    "documentation": "\n  <p>The name of a rank expression. Rank expression names must begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                    "required": true
+                  },
+                  "RankExpression": {
+                    "shape_name": "RankExpression",
+                    "type": "string",
+                    "min_length": 1,
+                    "max_length": 10240,
+                    "documentation": "\n    <p>The expression to evaluate for ranking or thresholding while processing a search request.  The <code>RankExpression</code> syntax is based on JavaScript expressions and supports:</p>\n<ul>\n    <li>Integer, floating point, hex and octal literals</li>\n    <li>Shortcut evaluation of logical operators such that an expression <code>a || b</code> evaluates to the value <code>a</code> if <code>a</code> is <code>true</code> without evaluting <code>b</code> at all</li>\n    <li>JavaScript order of precendence for operators</li>\n    <li>Arithmetic operators: <code>+ - * / %</code>\n</li>\n    <li>Boolean operators (including the ternary operator)</li>\n    <li>Bitwise operators</li>\n    <li>Comparison operators</li>\n    <li>Common mathematic functions: <code>abs ceil erf exp floor lgamma ln log2 log10 max min sqrt pow</code>\n</li>\n    <li>Trigonometric library functions: <code>acosh acos asinh asin atanh atan cosh cos sinh sin tanh tan</code>\n</li>\n    <li>Random generation of a number between 0 and 1: <code>rand</code>\n</li>\n    <li>Current time in epoch: <code>time</code>\n</li>\n    <li>The <code>min max</code> functions that operate on a variable argument list</li>\n    </ul>\n\n    <p>Intermediate results are calculated as double precision floating point values.  The final return value of a <code>RankExpression</code> is automatically converted from floating point to a 32-bit unsigned integer by rounding to the nearest integer, with a natural floor of 0 and a ceiling of max(uint32_t), 4294967295.  Mathematical errors such as dividing by 0 will fail during evaluation and return a value of 0.</p>\n  <p>The source data for a <code>RankExpression</code> can be the name of an <code>IndexField</code> of type uint, another <code>RankExpression</code> or the reserved name <i>text_relevance</i>.  The text_relevance source is defined to return an integer from 0 to 1000 (inclusive) to indicate how relevant a document is to the search request, taking into account repetition of search terms in the document and proximity of search terms to each other in each matching <code>IndexField</code>  in the document.</p>\n    <p>For more information about using rank expressions to customize ranking, see the Amazon CloudSearch Developer Guide.</p>\n  ",
+                    "required": true
+                  }
+                },
+                "documentation": "\n  <p>The expression that is evaluated for ranking or thresholding while processing a search request.</p>\n  ",
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>A response message that contains the status of a deleted <code>RankExpression</code>.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Removes a <code>RankExpression</code> from the search domain.</p>\n  "
+    },
+    "DescribeDefaultSearchField": {
+      "name": "DescribeDefaultSearchField",
+      "input": {
+        "shape_name": "DescribeDefaultSearchFieldRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeDefaultSearchFieldResponse",
+        "type": "structure",
+        "members": {
+          "DefaultSearchField": {
+            "shape_name": "DefaultSearchFieldStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "FieldName",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "pattern": "[a-z][a-z0-9_]*",
+                "documentation": "\n    <p>The name of the <code>IndexField</code> to use as the default search field. The default is an empty string, which automatically searches all text fields.</p>\n  ",
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": "\n  <p>The name of the <code>IndexField</code> to use for search requests issued with the <code>q</code> parameter. The default is the empty string, which automatically searches all text fields.</p>\n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the default search field for a search domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Gets the default search field configured for the search domain.</p>\n  "
+    },
+    "DescribeDomains": {
+      "name": "DescribeDomains",
+      "input": {
+        "shape_name": "DescribeDomainsRequest",
+        "type": "structure",
+        "members": {
+          "DomainNames": {
+            "shape_name": "DomainNameList",
+            "type": "list",
+            "members": {
+              "shape_name": "DomainName",
+              "type": "string",
+              "min_length": 3,
+              "max_length": 28,
+              "pattern": "[a-z][a-z0-9\\-]+",
+              "documentation": "\n    <p>A string that represents the name of a domain. Domain names must be unique across the domains owned by an account within an AWS region. Domain names must start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen). Uppercase letters and underscores are not allowed.</p>\n\n  "
+            },
+            "documentation": "\n  <p>Limits the DescribeDomains response to the specified search domains.</p>\n  "
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeDomainsResponse",
+        "type": "structure",
+        "members": {
+          "DomainStatusList": {
+            "shape_name": "DomainStatusList",
+            "type": "list",
+            "members": {
+              "shape_name": "DomainStatus",
+              "type": "structure",
+              "members": {
+                "DomainId": {
+                  "shape_name": "DomainId",
+                  "type": "string",
+                  "min_length": 1,
+                  "max_length": 64,
+                  "documentation": null,
+                  "required": true
+                },
+                "DomainName": {
+                  "shape_name": "DomainName",
+                  "type": "string",
+                  "min_length": 3,
+                  "max_length": 28,
+                  "pattern": "[a-z][a-z0-9\\-]+",
+                  "documentation": null,
+                  "required": true
+                },
+                "Created": {
+                  "shape_name": "Boolean",
+                  "type": "boolean",
+                  "documentation": "\n  <p>True if the search domain is created. It can take several minutes to initialize a domain when <a>CreateDomain</a> is called. Newly created search domains are returned from <a>DescribeDomains</a> with a false value for Created until domain creation is complete.</p>\n  "
+                },
+                "Deleted": {
+                  "shape_name": "Boolean",
+                  "type": "boolean",
+                  "documentation": "\n  <p>True if the search domain has been deleted.  The system must clean up resources dedicated to the search domain when <a>DeleteDomain</a> is called.  Newly deleted search domains are returned from <a>DescribeDomains</a> with a true value for IsDeleted for several minutes until resource cleanup is complete.</p>\n  "
+                },
+                "NumSearchableDocs": {
+                  "shape_name": "UIntValue",
+                  "type": "integer",
+                  "min_length": 0,
+                  "documentation": "\n    <p>The number of documents that have been submitted to the domain and indexed.</p>\n  "
+                },
+                "DocService": {
+                  "shape_name": "ServiceEndpoint",
+                  "type": "structure",
+                  "members": {
+                    "Arn": {
+                      "shape_name": "Arn",
+                      "type": "string",
+                      "documentation": null
+                    },
+                    "Endpoint": {
+                      "shape_name": "ServiceUrl",
+                      "type": "string",
+                      "documentation": null
+                    }
+                  },
+                  "documentation": "\n  <p>The service endpoint for updating documents in a search domain.</p>\n  "
+                },
+                "SearchService": {
+                  "shape_name": "ServiceEndpoint",
+                  "type": "structure",
+                  "members": {
+                    "Arn": {
+                      "shape_name": "Arn",
+                      "type": "string",
+                      "documentation": null
+                    },
+                    "Endpoint": {
+                      "shape_name": "ServiceUrl",
+                      "type": "string",
+                      "documentation": null
+                    }
+                  },
+                  "documentation": "\n  <p>The service endpoint for requesting search results from a search domain.</p>\n  "
+                },
+                "RequiresIndexDocuments": {
+                  "shape_name": "Boolean",
+                  "type": "boolean",
+                  "documentation": "\n  <p>True if <a>IndexDocuments</a> needs to be called to activate the current domain configuration.</p>\n  ",
+                  "required": true
+                },
+                "Processing": {
+                  "shape_name": "Boolean",
+                  "type": "boolean",
+                  "documentation": "\n  <p>True if processing is being done to activate the current domain configuration.</p>\n  "
+                },
+                "SearchInstanceType": {
+                  "shape_name": "SearchInstanceType",
+                  "type": "string",
+                  "documentation": "\n    <p>The instance type (such as search.m1.small) that is being used to process search requests.</p>\n  "
+                },
+                "SearchPartitionCount": {
+                  "shape_name": "PartitionCount",
+                  "type": "integer",
+                  "min_length": 1,
+                  "documentation": "\n    <p>The number of partitions across which the search index is spread.</p>\n  "
+                },
+                "SearchInstanceCount": {
+                  "shape_name": "InstanceCount",
+                  "type": "integer",
+                  "min_length": 1,
+                  "documentation": "\n    <p>The number of search instances that are available to process search requests.</p>\n  "
+                }
+              },
+              "documentation": "\n  <p>The current status of the search domain.</p>\n  "
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of one or more domains.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Gets information about the search domains owned by this account. Can be limited to specific domains. Shows\n    all domains by default.</p>\n  "
+    },
+    "DescribeIndexFields": {
+      "name": "DescribeIndexFields",
+      "input": {
+        "shape_name": "DescribeIndexFieldsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "FieldNames": {
+            "shape_name": "FieldNameList",
+            "type": "list",
+            "members": {
+              "shape_name": "FieldName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 64,
+              "pattern": "[a-z][a-z0-9_]*",
+              "documentation": "\n  <p>A string that represents the name of an index field. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n\n  "
+            },
+            "documentation": "\n    <p>Limits the <code>DescribeIndexFields</code> response to the specified fields.</p>\n  "
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeIndexFieldsResponse",
+        "type": "structure",
+        "members": {
+          "IndexFields": {
+            "shape_name": "IndexFieldStatusList",
+            "type": "list",
+            "members": {
+              "shape_name": "IndexFieldStatus",
+              "type": "structure",
+              "members": {
+                "Options": {
+                  "shape_name": "IndexField",
+                  "type": "structure",
+                  "members": {
+                    "IndexFieldName": {
+                      "shape_name": "FieldName",
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 64,
+                      "pattern": "[a-z][a-z0-9_]*",
+                      "documentation": "\n  <p>The name of a field in the search index. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                      "required": true
+                    },
+                    "IndexFieldType": {
+                      "shape_name": "IndexFieldType",
+                      "type": "string",
+                      "enum": [
+                        "uint",
+                        "literal",
+                        "text"
+                      ],
+                      "documentation": "\n  <p>The type of field.  Based on this type, exactly one of the <a>UIntOptions</a>, <a>LiteralOptions</a> or <a>TextOptions</a> must be present.</p>\n  ",
+                      "required": true
+                    },
+                    "UIntOptions": {
+                      "shape_name": "UIntOptions",
+                      "type": "structure",
+                      "members": {
+                        "DefaultValue": {
+                          "shape_name": "UIntValue",
+                          "type": "integer",
+                          "min_length": 0,
+                          "documentation": "\n  <p>The default value for an unsigned integer field. Optional.</p>\n  "
+                        }
+                      },
+                      "documentation": "\n  <p>Options for an unsigned integer field.  Present if <code>IndexFieldType</code> specifies the field is of type unsigned integer.</p>\n  "
+                    },
+                    "LiteralOptions": {
+                      "shape_name": "LiteralOptions",
+                      "type": "structure",
+                      "members": {
+                        "DefaultValue": {
+                          "shape_name": "FieldValue",
+                          "type": "string",
+                          "min_length": 0,
+                          "max_length": 1024,
+                          "documentation": "\n  <p>The default value for a literal field. Optional.</p>\n  "
+                        },
+                        "SearchEnabled": {
+                          "shape_name": "Boolean",
+                          "type": "boolean",
+                          "documentation": "\n  <p>Specifies whether search is enabled for this field. Default: False.</p>\n  "
+                        },
+                        "FacetEnabled": {
+                          "shape_name": "Boolean",
+                          "type": "boolean",
+                          "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                        },
+                        "ResultEnabled": {
+                          "shape_name": "Boolean",
+                          "type": "boolean",
+                          "documentation": "\n  <p>Specifies whether values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                        }
+                      },
+                      "documentation": "\n  <p>Options for literal field.  Present if <code>IndexFieldType</code> specifies the field is of type literal.</p>\n  "
+                    },
+                    "TextOptions": {
+                      "shape_name": "TextOptions",
+                      "type": "structure",
+                      "members": {
+                        "DefaultValue": {
+                          "shape_name": "FieldValue",
+                          "type": "string",
+                          "min_length": 0,
+                          "max_length": 1024,
+                          "documentation": "\n  <p>The default value for a text field. Optional.</p>\n  "
+                        },
+                        "FacetEnabled": {
+                          "shape_name": "Boolean",
+                          "type": "boolean",
+                          "documentation": "\n  <p>Specifies whether  facets are enabled for this field. Default: False.</p>\n  "
+                        },
+                        "ResultEnabled": {
+                          "shape_name": "Boolean",
+                          "type": "boolean",
+                          "documentation": "\n    <p>Specifies whether  values of this field can be returned in search results and used for ranking. Default: False.</p>\n  "
+                        },
+                        "TextProcessor": {
+                          "shape_name": "FieldName",
+                          "type": "string",
+                          "min_length": 1,
+                          "max_length": 64,
+                          "pattern": "[a-z][a-z0-9_]*",
+                          "documentation": "\n    <p>The text processor to apply to this field. Optional. Possible values:</p>\n    <ul>\n      <li>\n<code>cs_text_no_stemming</code>: turns off stemming for the field.</li>\n    </ul>\n    <p>Default: none</p>\n  "
+                        }
+                      },
+                      "documentation": "\n  <p>Options for text field.  Present if <code>IndexFieldType</code> specifies the field is of type text.</p>\n  "
+                    },
+                    "SourceAttributes": {
+                      "shape_name": "SourceAttributeList",
+                      "type": "list",
+                      "members": {
+                        "shape_name": "SourceAttribute",
+                        "type": "structure",
+                        "members": {
+                          "SourceDataFunction": {
+                            "shape_name": "SourceDataFunction",
+                            "type": "string",
+                            "enum": [
+                              "Copy",
+                              "TrimTitle",
+                              "Map"
+                            ],
+                            "documentation": "\n  <p>Identifies the transformation to apply when copying data from a source attribute.</p>\n  ",
+                            "required": true
+                          },
+                          "SourceDataCopy": {
+                            "shape_name": "SourceData",
+                            "type": "structure",
+                            "members": {
+                              "SourceName": {
+                                "shape_name": "FieldName",
+                                "type": "string",
+                                "min_length": 1,
+                                "max_length": 64,
+                                "pattern": "[a-z][a-z0-9_]*",
+                                "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                                "required": true
+                              },
+                              "DefaultValue": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                              }
+                            },
+                            "documentation": "\n  <p>Copies data from a source document attribute to an <code>IndexField</code>.</p>\n  "
+                          },
+                          "SourceDataTrimTitle": {
+                            "shape_name": "SourceDataTrimTitle",
+                            "type": "structure",
+                            "members": {
+                              "SourceName": {
+                                "shape_name": "FieldName",
+                                "type": "string",
+                                "min_length": 1,
+                                "max_length": 64,
+                                "pattern": "[a-z][a-z0-9_]*",
+                                "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                                "required": true
+                              },
+                              "DefaultValue": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                              },
+                              "Separator": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n    <p>The separator that follows the text to trim.</p>\n  "
+                              },
+                              "Language": {
+                                "shape_name": "Language",
+                                "type": "string",
+                                "pattern": "[a-zA-Z]{2,8}(?:-[a-zA-Z]{2,8})*",
+                                "documentation": null
+                              }
+                            },
+                            "documentation": "\n  <p>Trims common title words from a source document attribute when populating an <code>IndexField</code>. This can be used to create an <code>IndexField</code> you can use for sorting.</p>\n  "
+                          },
+                          "SourceDataMap": {
+                            "shape_name": "SourceDataMap",
+                            "type": "structure",
+                            "members": {
+                              "SourceName": {
+                                "shape_name": "FieldName",
+                                "type": "string",
+                                "min_length": 1,
+                                "max_length": 64,
+                                "pattern": "[a-z][a-z0-9_]*",
+                                "documentation": "\n  <p>The name of the document source field to add to this <code>IndexField</code>.</p>\n  ",
+                                "required": true
+                              },
+                              "DefaultValue": {
+                                "shape_name": "FieldValue",
+                                "type": "string",
+                                "min_length": 0,
+                                "max_length": 1024,
+                                "documentation": "\n    <p>The default value to use if the source attribute is not specified in a document. Optional.</p>\n  "
+                              },
+                              "Cases": {
+                                "shape_name": "StringCaseMap",
+                                "type": "map",
+                                "keys": {
+                                  "shape_name": "FieldValue",
+                                  "type": "string",
+                                  "min_length": 0,
+                                  "max_length": 1024,
+                                  "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                                },
+                                "members": {
+                                  "shape_name": "FieldValue",
+                                  "type": "string",
+                                  "min_length": 0,
+                                  "max_length": 1024,
+                                  "documentation": "\n  <p>The value of a field or source document attribute.</p>\n  "
+                                },
+                                "documentation": "\n    <p>A map that translates source field values to custom values.</p>\n  "
+                              }
+                            },
+                            "documentation": "\n    <p>Maps source document attribute values to new values when populating the <code>IndexField</code>.</p>\n  "
+                          }
+                        },
+                        "documentation": "\n    <p>Identifies the source data for an index field. An optional data transformation can be applied to the source data when populating the index field. By default, the value of the source attribute is copied to the index field.</p>\n  "
+                      },
+                      "documentation": "\n    <p>An optional list of source attributes that provide data for this index field. If not specified, the data is pulled from a source attribute with the same name as this <code>IndexField</code>. When one or more source attributes are specified, an optional data transformation can be applied to the source data when populating the index field.  You can configure a maximum of 20 sources for an <code>IndexField</code>.</p>\n  "
+                    }
+                  },
+                  "documentation": null,
+                  "required": true
+                },
+                "Status": {
+                  "shape_name": "OptionStatus",
+                  "type": "structure",
+                  "members": {
+                    "CreationDate": {
+                      "shape_name": "UpdateTimestamp",
+                      "type": "timestamp",
+                      "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                      "required": true
+                    },
+                    "UpdateDate": {
+                      "shape_name": "UpdateTimestamp",
+                      "type": "timestamp",
+                      "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                      "required": true
+                    },
+                    "UpdateVersion": {
+                      "shape_name": "UIntValue",
+                      "type": "integer",
+                      "min_length": 0,
+                      "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                    },
+                    "State": {
+                      "shape_name": "OptionState",
+                      "type": "string",
+                      "enum": [
+                        "RequiresIndexDocuments",
+                        "Processing",
+                        "Active"
+                      ],
+                      "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                      "required": true
+                    },
+                    "PendingDeletion": {
+                      "shape_name": "Boolean",
+                      "type": "boolean",
+                      "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                    }
+                  },
+                  "documentation": null,
+                  "required": true
+                }
+              },
+              "documentation": "\n  <p>The value of an <code>IndexField</code> and its current status.</p>\n  "
+            },
+            "documentation": "\n    <p>The index fields configured for the domain.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the index fields for a search domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Gets information about the index fields configured for the search domain. Can be limited to specific fields by name. Shows all fields by default.</p>\n  "
+    },
+    "DescribeRankExpressions": {
+      "name": "DescribeRankExpressions",
+      "input": {
+        "shape_name": "DescribeRankExpressionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "RankNames": {
+            "shape_name": "FieldNameList",
+            "type": "list",
+            "members": {
+              "shape_name": "FieldName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 64,
+              "pattern": "[a-z][a-z0-9_]*",
+              "documentation": "\n  <p>A string that represents the name of an index field. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n\n  "
+            },
+            "documentation": "\n    <p>Limits the <code>DescribeRankExpressions</code> response to the specified fields.</p>\n  "
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeRankExpressionsResponse",
+        "type": "structure",
+        "members": {
+          "RankExpressions": {
+            "shape_name": "RankExpressionStatusList",
+            "type": "list",
+            "members": {
+              "shape_name": "RankExpressionStatus",
+              "type": "structure",
+              "members": {
+                "Options": {
+                  "shape_name": "NamedRankExpression",
+                  "type": "structure",
+                  "members": {
+                    "RankName": {
+                      "shape_name": "FieldName",
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 64,
+                      "pattern": "[a-z][a-z0-9_]*",
+                      "documentation": "\n  <p>The name of a rank expression. Rank expression names must begin with a letter and can contain the following characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n  ",
+                      "required": true
+                    },
+                    "RankExpression": {
+                      "shape_name": "RankExpression",
+                      "type": "string",
+                      "min_length": 1,
+                      "max_length": 10240,
+                      "documentation": "\n    <p>The expression to evaluate for ranking or thresholding while processing a search request.  The <code>RankExpression</code> syntax is based on JavaScript expressions and supports:</p>\n<ul>\n    <li>Integer, floating point, hex and octal literals</li>\n    <li>Shortcut evaluation of logical operators such that an expression <code>a || b</code> evaluates to the value <code>a</code> if <code>a</code> is <code>true</code> without evaluting <code>b</code> at all</li>\n    <li>JavaScript order of precendence for operators</li>\n    <li>Arithmetic operators: <code>+ - * / %</code>\n</li>\n    <li>Boolean operators (including the ternary operator)</li>\n    <li>Bitwise operators</li>\n    <li>Comparison operators</li>\n    <li>Common mathematic functions: <code>abs ceil erf exp floor lgamma ln log2 log10 max min sqrt pow</code>\n</li>\n    <li>Trigonometric library functions: <code>acosh acos asinh asin atanh atan cosh cos sinh sin tanh tan</code>\n</li>\n    <li>Random generation of a number between 0 and 1: <code>rand</code>\n</li>\n    <li>Current time in epoch: <code>time</code>\n</li>\n    <li>The <code>min max</code> functions that operate on a variable argument list</li>\n    </ul>\n\n    <p>Intermediate results are calculated as double precision floating point values.  The final return value of a <code>RankExpression</code> is automatically converted from floating point to a 32-bit unsigned integer by rounding to the nearest integer, with a natural floor of 0 and a ceiling of max(uint32_t), 4294967295.  Mathematical errors such as dividing by 0 will fail during evaluation and return a value of 0.</p>\n  <p>The source data for a <code>RankExpression</code> can be the name of an <code>IndexField</code> of type uint, another <code>RankExpression</code> or the reserved name <i>text_relevance</i>.  The text_relevance source is defined to return an integer from 0 to 1000 (inclusive) to indicate how relevant a document is to the search request, taking into account repetition of search terms in the document and proximity of search terms to each other in each matching <code>IndexField</code>  in the document.</p>\n    <p>For more information about using rank expressions to customize ranking, see the Amazon CloudSearch Developer Guide.</p>\n  ",
+                      "required": true
+                    }
+                  },
+                  "documentation": "\n  <p>The expression that is evaluated for ranking or thresholding while processing a search request.</p>\n  ",
+                  "required": true
+                },
+                "Status": {
+                  "shape_name": "OptionStatus",
+                  "type": "structure",
+                  "members": {
+                    "CreationDate": {
+                      "shape_name": "UpdateTimestamp",
+                      "type": "timestamp",
+                      "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                      "required": true
+                    },
+                    "UpdateDate": {
+                      "shape_name": "UpdateTimestamp",
+                      "type": "timestamp",
+                      "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                      "required": true
+                    },
+                    "UpdateVersion": {
+                      "shape_name": "UIntValue",
+                      "type": "integer",
+                      "min_length": 0,
+                      "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                    },
+                    "State": {
+                      "shape_name": "OptionState",
+                      "type": "string",
+                      "enum": [
+                        "RequiresIndexDocuments",
+                        "Processing",
+                        "Active"
+                      ],
+                      "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                      "required": true
+                    },
+                    "PendingDeletion": {
+                      "shape_name": "Boolean",
+                      "type": "boolean",
+                      "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                    }
+                  },
+                  "documentation": null,
+                  "required": true
+                }
+              },
+              "documentation": "\n    <p>The value of a <code>RankExpression</code> and its current status.</p>\n  "
+            },
+            "documentation": "\n    <p>The rank expressions configured for the domain.</p>\n    ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>A response message that contains the rank expressions for a search domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Gets the rank expressions configured for the search domain. Can be limited to specific rank expressions by name. Shows all rank expressions by default. </p>\n  "
+    },
+    "DescribeServiceAccessPolicies": {
+      "name": "DescribeServiceAccessPolicies",
+      "input": {
+        "shape_name": "DescribeServiceAccessPoliciesRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeServiceAccessPoliciesResponse",
+        "type": "structure",
+        "members": {
+          "AccessPolicies": {
+            "shape_name": "AccessPoliciesStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "PolicyDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the access policies for a domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Gets information about the resource-based policies that control access to the domain's document and search services.</p>\n  "
+    },
+    "DescribeStemmingOptions": {
+      "name": "DescribeStemmingOptions",
+      "input": {
+        "shape_name": "DescribeStemmingOptionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeStemmingOptionsResponse",
+        "type": "structure",
+        "members": {
+          "Stems": {
+            "shape_name": "StemmingOptionsStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "StemsDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the stemming options for a search domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Gets the stemming dictionary configured for the search domain.</p>\n  "
+    },
+    "DescribeStopwordOptions": {
+      "name": "DescribeStopwordOptions",
+      "input": {
+        "shape_name": "DescribeStopwordOptionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeStopwordOptionsResponse",
+        "type": "structure",
+        "members": {
+          "Stopwords": {
+            "shape_name": "StopwordOptionsStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "StopwordsDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the stopword options for a search domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Gets the stopwords configured for the search domain.</p>\n  "
+    },
+    "DescribeSynonymOptions": {
+      "name": "DescribeSynonymOptions",
+      "input": {
+        "shape_name": "DescribeSynonymOptionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeSynonymOptionsResponse",
+        "type": "structure",
+        "members": {
+          "Synonyms": {
+            "shape_name": "SynonymOptionsStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "SynonymsDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the synonym options for a search domain.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Gets the synonym dictionary configured for the search domain.</p>\n  "
+    },
+    "IndexDocuments": {
+      "name": "IndexDocuments",
+      "input": {
+        "shape_name": "IndexDocumentsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "IndexDocumentsResponse",
+        "type": "structure",
+        "members": {
+          "FieldNames": {
+            "shape_name": "FieldNameList",
+            "type": "list",
+            "members": {
+              "shape_name": "FieldName",
+              "type": "string",
+              "min_length": 1,
+              "max_length": 64,
+              "pattern": "[a-z][a-z0-9_]*",
+              "documentation": "\n  <p>A string that represents the name of an index field. Field names must begin with a letter and can contain the following\n   characters: a-z (lowercase), 0-9, and _ (underscore). Uppercase letters and hyphens are not allowed. The names \"body\", \"docid\", and \"text_relevance\" are reserved and cannot be specified as field or rank expression names.</p>\n\n  "
+            },
+            "documentation": "\n  <p>The names of the fields that are currently being processed due to an <code>IndexDocuments</code> action.</p>\n  "
+          }
+        },
+        "documentation": "\n    <p>The result of an <code>IndexDocuments</code> action.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Tells the search domain to start indexing its documents using the latest text processing options and <code>IndexFields</code>.  This operation must be invoked to make options whose <a>OptionStatus</a> has <code>OptionState</code> of <code>RequiresIndexDocuments</code> visible in search results.</p>\n  "
+    },
+    "UpdateDefaultSearchField": {
+      "name": "UpdateDefaultSearchField",
+      "input": {
+        "shape_name": "UpdateDefaultSearchFieldRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "DefaultSearchField": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>The <code>IndexField</code> to use for search requests issued with the <code>q</code> parameter. The default is an empty string, which automatically searches all text fields.</p>\n  ",
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "UpdateDefaultSearchFieldResponse",
+        "type": "structure",
+        "members": {
+          "DefaultSearchField": {
+            "shape_name": "DefaultSearchFieldStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "FieldName",
+                "type": "string",
+                "min_length": 1,
+                "max_length": 64,
+                "pattern": "[a-z][a-z0-9_]*",
+                "documentation": "\n    <p>The name of the <code>IndexField</code> to use as the default search field. The default is an empty string, which automatically searches all text fields.</p>\n  ",
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of an updated default search field.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Configures the default search field for the search domain. The default search field is used when a search request does not specify which fields to search. By default, it is configured to include the contents of all of the domain's text fields.</p>\n  "
+    },
+    "UpdateServiceAccessPolicies": {
+      "name": "UpdateServiceAccessPolicies",
+      "input": {
+        "shape_name": "UpdateServiceAccessPoliciesRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "AccessPolicies": {
+            "shape_name": "PolicyDocument",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "UpdateServiceAccessPoliciesResponse",
+        "type": "structure",
+        "members": {
+          "AccessPolicies": {
+            "shape_name": "AccessPoliciesStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "PolicyDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of updated access policies.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Configures the policies that control access to the domain's document and search services. The maximum size of an access policy document is 100 KB.</p>\n  "
+    },
+    "UpdateStemmingOptions": {
+      "name": "UpdateStemmingOptions",
+      "input": {
+        "shape_name": "UpdateStemmingOptionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "Stems": {
+            "shape_name": "StemsDocument",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "UpdateStemmingOptionsResponse",
+        "type": "structure",
+        "members": {
+          "Stems": {
+            "shape_name": "StemmingOptionsStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "StemsDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of updated stemming options.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Configures a stemming dictionary for the search domain. The stemming dictionary is used during indexing and when processing search requests. The maximum size of the stemming dictionary is 500 KB.</p>\n  "
+    },
+    "UpdateStopwordOptions": {
+      "name": "UpdateStopwordOptions",
+      "input": {
+        "shape_name": "UpdateStopwordOptionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "Stopwords": {
+            "shape_name": "StopwordsDocument",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "UpdateStopwordOptionsResponse",
+        "type": "structure",
+        "members": {
+          "Stopwords": {
+            "shape_name": "StopwordOptionsStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "StopwordsDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of updated stopword options.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n  <p>Configures stopwords for the search domain. Stopwords are used during indexing and when processing search requests. The maximum size of the stopwords dictionary is 10 KB.</p>\n    \n  "
+    },
+    "UpdateSynonymOptions": {
+      "name": "UpdateSynonymOptions",
+      "input": {
+        "shape_name": "UpdateSynonymOptionsRequest",
+        "type": "structure",
+        "members": {
+          "DomainName": {
+            "shape_name": "DomainName",
+            "type": "string",
+            "min_length": 3,
+            "max_length": 28,
+            "pattern": "[a-z][a-z0-9\\-]+",
+            "documentation": null,
+            "required": true
+          },
+          "Synonyms": {
+            "shape_name": "SynonymsDocument",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "UpdateSynonymOptionsResponse",
+        "type": "structure",
+        "members": {
+          "Synonyms": {
+            "shape_name": "SynonymOptionsStatus",
+            "type": "structure",
+            "members": {
+              "Options": {
+                "shape_name": "SynonymsDocument",
+                "type": "string",
+                "documentation": null,
+                "required": true
+              },
+              "Status": {
+                "shape_name": "OptionStatus",
+                "type": "structure",
+                "members": {
+                  "CreationDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was created.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateDate": {
+                    "shape_name": "UpdateTimestamp",
+                    "type": "timestamp",
+                    "documentation": "\n  <p>A timestamp for when this option was last updated.</p>\n  ",
+                    "required": true
+                  },
+                  "UpdateVersion": {
+                    "shape_name": "UIntValue",
+                    "type": "integer",
+                    "min_length": 0,
+                    "documentation": "\n  <p>A unique integer that indicates when this option was last updated.</p>\n  "
+                  },
+                  "State": {
+                    "shape_name": "OptionState",
+                    "type": "string",
+                    "enum": [
+                      "RequiresIndexDocuments",
+                      "Processing",
+                      "Active"
+                    ],
+                    "documentation": "\n  <p>The state of processing a change to an option.  Possible values:</p>\n<ul>\n    <li>\n<code>RequiresIndexDocuments</code>: the option's latest value will not be visible in searches until  <a>IndexDocuments</a> has been called and indexing is complete.</li>\n    <li>\n<code>Processing</code>: the option's latest value is not yet visible in all searches but is in the process of being activated.  </li>\n    <li>\n<code>Active</code>: the option's latest value is completely visible. Any warnings or messages generated during processing are provided in <code>Diagnostics</code>.</li>\n  </ul>\n  ",
+                    "required": true
+                  },
+                  "PendingDeletion": {
+                    "shape_name": "Boolean",
+                    "type": "boolean",
+                    "documentation": "\n  <p>Indicates that the option will be deleted once processing is complete.</p>\n  "
+                  }
+                },
+                "documentation": null,
+                "required": true
+              }
+            },
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": "\n  <p>A response message that contains the status of updated synonym options.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "BaseException",
+          "type": "structure",
+          "members": {
+            "Code": {
+              "shape_name": "ErrorCode",
+              "type": "string",
+              "documentation": null
+            },
+            "Message": {
+              "shape_name": "ErrorMessage",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>An error occurred while processing the request.</p>\n  "
+        },
+        {
+          "shape_name": "InternalException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n    <p>An internal error occurred while processing the request. If this problem persists,\n      report an issue from the <a href=\"http://status.aws.amazon.com/\">Service Health Dashboard</a>.</p>\n  "
+        },
+        {
+          "shape_name": "InvalidTypeException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it specified an invalid type definition.</p>\n  "
+        },
+        {
+          "shape_name": "LimitExceededException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because a resource limit has already been met.</p>\n  "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+          },
+          "documentation": "\n  <p>The request was rejected because it attempted to reference a resource that does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>Configures a synonym dictionary for the search domain. The synonym dictionary is used during indexing to configure mappings for terms that occur in text fields. The maximum size of the synonym dictionary is 100 KB. </p>\n  "
+    }
+  }
+}

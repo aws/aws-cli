@@ -81,11 +81,11 @@ _search_paths = []
 def _load_data(session, data_path):
     logger.debug('Attempting to Load: %s' % data_path)
     data = {}
-    # Is the path a directory?
     file_name = data_path + '.json'
     for path in get_search_path(session):
         file_path = os.path.join(path, file_name)
         dir_path = os.path.join(path, data_path)
+        # Is the path a directory?
         if os.path.isdir(dir_path):
             logger.debug('Found data dir: %s' % dir_path)
             try:
@@ -96,7 +96,8 @@ def _load_data(session, data_path):
                     if not fn.startswith('_'):
                         data.append(fn)
             except:
-                logger.error('Unable to load dir: %s' % dir_path)
+                logger.error('Unable to load dir: %s' % dir_path,
+                             exc_info=True)
             break
         elif os.path.isfile(file_path):
             fp = open(file_path)
@@ -104,9 +105,15 @@ def _load_data(session, data_path):
                 new_data = json.load(fp)
                 fp.close()
                 logger.debug('Found data file: %s' % file_path)
-                data.update(new_data)
+                if data is not None:
+                    data.update(new_data)
+                else:
+                    data = new_data
             except:
-                logger.error('Unable to load file: %s' % file_path)
+                logger.error('Unable to load file: %s' % file_path,
+                             exc_info=True)
+        else:
+            logger.error('Unable to find file: %s' % file_path)
     if data:
         _data_cache[data_path] = data
     return data
@@ -138,6 +145,10 @@ def _load_nested_data(session, data_path):
                     if 'name' in item and item['name'] == attr:
                         data = item
                         break
+        # If we have gotten here and the data is still the original
+        # prefix data, it means we did not find the sub data.
+        if data == _data_cache[prefix]:
+            data = None
     if data is not None:
         _data_cache[data_path] = data
     return data

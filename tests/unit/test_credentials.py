@@ -29,6 +29,10 @@ import mock
 import botocore.session
 import botocore.exceptions
 
+# Passed to session to keep it from finding default config file
+TESTENVVARS = {'config_file': (None, 'AWS_CONFIG_FILE', None)}
+
+
 metadata = {'info':
             {'InstanceProfileArn': 'arn:aws:iam::444444444444:instance-profile/foobar',
              'InstanceProfileId': 'FOOBAR',
@@ -56,7 +60,7 @@ class EnvVarTest(BaseEnvVar):
         self.environ['BOTO_CONFIG'] = ''
         self.environ['AWS_ACCESS_KEY_ID'] = 'foo'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
-        self.session = botocore.session.get_session()
+        self.session = botocore.session.get_session(env_vars=TESTENVVARS)
 
     def test_envvar(self):
         credentials = self.session.get_credentials()
@@ -70,7 +74,7 @@ class CredentialsFileTest(BaseEnvVar):
     def setUp(self):
         super(CredentialsFileTest, self).setUp()
         self.environ['BOTO_CONFIG'] = ''
-        self.session = botocore.session.get_session()
+        self.session = botocore.session.get_session(env_vars=TESTENVVARS)
 
     def test_credentials_file(self):
         self.environ['AWS_CREDENTIAL_FILE'] = path('aws_credentials')
@@ -91,7 +95,7 @@ class ConfigTest(BaseEnvVar):
         super(ConfigTest, self).setUp()
         self.environ['AWS_CONFIG_FILE'] = path('aws_config')
         self.environ['BOTO_CONFIG'] = ''
-        self.session = botocore.session.get_session()
+        self.session = botocore.session.get_session(env_vars=TESTENVVARS)
 
     def test_config(self):
         credentials = self.session.get_credentials()
@@ -101,7 +105,6 @@ class ConfigTest(BaseEnvVar):
         self.assertEqual(len(self.session.available_profiles), 2)
         self.assertIn('default', self.session.available_profiles)
         self.assertIn('personal', self.session.available_profiles)
-
 
     def test_default_profile_is_obeyed(self):
         self.environ['BOTO_DEFAULT_PROFILE'] = 'personal'
@@ -121,7 +124,7 @@ class BotoConfigTest(BaseEnvVar):
     def setUp(self):
         super(BotoConfigTest, self).setUp()
         self.environ['BOTO_CONFIG'] = path('boto_config')
-        self.session = botocore.session.get_session()
+        self.session = botocore.session.get_session(env_vars=TESTENVVARS)
 
     def test_boto_config(self):
         credentials = self.session.get_credentials()
@@ -133,7 +136,7 @@ class BotoConfigTest(BaseEnvVar):
 class IamRoleTest(BaseEnvVar):
     def setUp(self):
         super(IamRoleTest, self).setUp()
-        self.session = botocore.session.get_session()
+        self.session = botocore.session.get_session(env_vars=TESTENVVARS)
 
     def test_iam_role(self):
         self.environ['BOTO_CONFIG'] = ''

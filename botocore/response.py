@@ -21,7 +21,9 @@
 # IN THE SOFTWARE.
 #
 import sys
+import base64
 import xml.etree.cElementTree
+import six
 from botocore import ScalarTypes
 import json
 import logging
@@ -67,7 +69,6 @@ class XmlResponse(Response):
             encoding=encoding)
         parser.feed(s)
         self.tree = parser.close()
-
         if self.operation.output:
             self.build_element_map(self.operation.output, 'root')
         self.start(self.tree)
@@ -81,9 +82,36 @@ class XmlResponse(Response):
             request_id = rmd_elem.find(self.clark_notation('RequestId'))
         else:
             request_id = self.tree.find(self.clark_notation('requestId'))
+            if request_id is None:
+                request_id = self.tree.find(self.clark_notation('RequestId'))
+            if request_id is None:
+                request_id = self.tree.find('RequestID')
         if request_id is not None:
             request_id.tail = True
             rmd['RequestId'] = request_id.text.strip()
+
+    def _get_error_data(self, error_elem):
+        data = {}
+        for elem in error_elem:
+            elem.tail = True
+            data[self.get_element_base_tag(elem)] = elem.text
+        return data
+
+    def get_response_errors(self):
+        errors = None
+        error_elems = self.tree.find('Errors')
+        if error_elems is not None:
+            error_elems.tail = True
+            errors = [self._get_error_data(e) for e in error_elems]
+        else:
+            error_elems = self.tree.find(self.clark_notation('Error'))
+            if error_elems is not None:
+                error_elems.tail = True
+                errors = [self._get_error_data(error_elems)]
+            elif self.tree.tag == 'Error':
+                errors = [self._get_error_data(self.tree)]
+        if errors:
+            self.value['Errors'] = errors
 
     def build_element_map(self, defn, keyname):
         xmlname = defn.get('xmlname', keyname)
@@ -171,6 +199,9 @@ class XmlResponse(Response):
     def _handle_boolean(self, elem, shape):
         return True if elem.text.lower() == 'true' else False
 
+    def _handle_blob(self, elem, shape):
+        return base64.b64decode(six.b(elem.text)).decode('utf-8')
+
     def _handle_structure(self, elem, shape):
         new_data = {}
         for member_name in shape['members']:
@@ -247,6 +278,7 @@ class XmlResponse(Response):
         return shape
 
     def start(self, elem):
+        logger.debug('start')
         self.value = {}
         if self.operation.output:
             for member_name in self.operation.output['members']:
@@ -258,6 +290,7 @@ class XmlResponse(Response):
                 if child is not None:
                     self.value[member_name] = self.handle_elem(child, member)
         self.get_response_metadata()
+        self.get_response_errors()
         for child in self.tree:
             if child.tail is not True:
                 child_tag = self.get_element_base_tag(child)
@@ -272,8 +305,18 @@ class JSONResponse(Response):
     def parse(self, s, encoding):
         try:
             self.value = json.loads(s, encoding=encoding)
+            self.get_response_errors()
         except Exception as err:
             logger.debug('Error loading JSON response body, %r', err)
+
+    def get_response_errors(self):
+        if '__type' in self.value:
+            error = {'Type': self.value['__type']}
+            del self.value['__type']
+            if 'message' in self.value:
+                error['Message'] = self.value['message']
+                del self.value['message']
+            self.value['Errors'] = [error]
 
 
 class StreamingResponse(Response):

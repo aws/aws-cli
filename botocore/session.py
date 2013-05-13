@@ -36,7 +36,9 @@ import botocore.credentials
 import botocore.base
 import botocore.service
 from botocore.exceptions import ConfigNotFound
+from botocore.hooks import HierarchicalEmitter
 from botocore import __version__
+from botocore import handlers
 
 
 EnvironmentVariables = {
@@ -96,7 +98,8 @@ class Session(object):
 
     FmtString = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    def __init__(self, env_vars=None):
+    def __init__(self, env_vars=None, event_hooks=None,
+                 include_builtin_handlers=True):
         """
         Create a new Session object.
 
@@ -105,16 +108,35 @@ class Session(object):
             of the environment variables associated with this session.  The
             key/value pairs defined in this dictionary will override the
             corresponding variables defined in ``EnvironmentVariables``.
+
+        :type event_hooks: BaseEventHooks
+        :param event_hooks: The event hooks object to use. If one is not
+            provided, an event hooks object will be automatically created
+            for you.
+
+        :type include_builtin_handlers: bool
+        :param include_builtin_handlers: Indicates whether or not to
+            automatically register builtin handlers.
         """
         self.env_vars = copy.copy(EnvironmentVariables)
         if env_vars:
             self.env_vars.update(env_vars)
+        if event_hooks is None:
+            self._events = HierarchicalEmitter()
+        else:
+            self._events = event_hooks
+        if include_builtin_handlers:
+            self._register_builtin_handlers(self._events)
         self.user_agent_name = 'Boto'
         self.user_agent_version = __version__
         self._profile = None
         self._config = None
         self._credentials = None
         self._profile_map = None
+
+    def _register_builtin_handlers(self, events):
+        for event_name, handler in handlers.BUILTIN_HANDLERS:
+            self.register(event_name, handler)
 
     @property
     def available_profiles(self):
@@ -135,9 +157,9 @@ class Session(object):
                     if len(parts) == 2:
                         profile_map[parts[1]] = values
                 elif key == 'default':
-                    # default section is special and is considered a profile name
-                    # but we don't require you use 'profile "default"' as a
-                    # section.
+                    # default section is special and is considered a profile
+                    # name but we don't require you use 'profile "default"'
+                    # as a section.
                     profile_map[key] = values
             self._profile_map = profile_map
         return self._profile_map
@@ -330,7 +352,9 @@ class Session(object):
 
         :returns: :class:`botocore.service.Service`
         """
-        return botocore.service.get_service(self, service_name, provider_name)
+        service = botocore.service.get_service(self, service_name, provider_name)
+        self._events.emit('service-created', service=service)
+        return service
 
     def set_debug_logger(self):
         """
@@ -380,6 +404,36 @@ class Session(object):
 
         # add ch to logger
         log.addHandler(ch)
+
+    def register(self, event_name, handler):
+        """Register a handler with an event.
+
+        :type event_name: str
+        :param event_name: The name of the event.
+
+        :type handler: callable
+        :param handler: The callback to invoke when the event
+            is emitted.  This object must be callable, and must
+            accept ``**kwargs``.  If either of these preconditions are
+            not met, a ``ValueError`` will be raised.
+
+        """
+        self._events.register(event_name, handler)
+
+    def unregister(self, event_name, handler):
+        """Unregister a handler with an event.
+
+        :type event_name: str
+        :param event_name: The name of the event.
+
+        :type handler: callable
+        :param handler: The callback to unregister.
+
+        """
+        self._events.unregister(event_name, handler)
+
+    def emit(self, event_name, **kwargs):
+        return self._events.emit(event_name, **kwargs)
 
 
 def get_session(env_vars=None):

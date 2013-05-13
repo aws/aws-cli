@@ -44,8 +44,8 @@ class TestConfig(unittest.TestCase):
 
     def test_all_data(self):
         data = self.session.get_data('foo')
-        assert 'test_key_1' in data
-        assert 'test_key_2' in data
+        self.assertTrue('test_key_1' in data)
+        self.assertTrue('test_key_2' in data)
 
     def test_not_there(self):
         self.assertRaises(botocore.exceptions.DataNotFoundError,
@@ -54,18 +54,24 @@ class TestConfig(unittest.TestCase):
 
     def test_sub_data(self):
         data = self.session.get_data('foo/test_key_2')
-        assert len(data) == 2
-        assert 'test_value_2_1' in data
-        assert 'test_value_2_2' in data
+        self.assertEqual(len(data), 2)
+        self.assertTrue('test_value_2_1' in data)
+        self.assertTrue('test_value_2_2' in data)
 
     def test_sublist_data(self):
         data = self.session.get_data('foo/test_key_3/test_list_2')
-        assert 'name' in data
-        assert data['name'] == 'test_list_2'
-        assert 'value' in data
-        assert data['value'] == 'test_list_value_2'
+        self.assertTrue('name' in data)
+        self.assertEqual(data['name'], 'test_list_2')
+        self.assertTrue('value' in data)
+        self.assertEqual(data['value'], 'test_list_value_2')
 
+    def test_subdir(self):
+        data = self.session.get_data('sub/fie')
+        self.assertEqual(data['test_key_1'], 'test_value_1')
 
+    def test_subdir_not_found(self):
+        self.assertRaises(botocore.exceptions.DataNotFoundError,
+                          self.session.get_data, 'sub/foo')
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,6 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
+import os
+import json
+
+import six
+
 
 SCALAR_TYPES = set([
     'string', 'float', 'integer', 'long', 'boolean', 'double',
@@ -34,3 +39,51 @@ def detect_shape_structure(param):
     elif param.type == 'map':
         if param.members.type in SCALAR_TYPES:
             return 'map-scalar'
+
+
+def unpack_cli_arg(parameter, value):
+    """
+    Parses and unpacks the encoded string command line parameter
+    and returns native Python data structures that can be passed
+    to the Operation.
+
+    :type parameter: :class:`botocore.parameter.Parameter`
+    :param parameter: The parameter object containing metadata about
+        the parameter.
+
+    :param value: The value of the parameter.  This can be a number of
+        different python types (str, list, etc).  This is the value as
+        it's specified on the command line.
+
+    :return: The "unpacked" argument than can be sent to the `Operation`
+        object in python.
+    """
+    if parameter.type == 'integer':
+        return int(value)
+    elif parameter.type == 'float' or parameter.type == 'double':
+        # TODO: losing precision on double types
+        return float(value)
+    elif parameter.type == 'structure' or parameter.type == 'map':
+        if value[0] == '{':
+            d = json.loads(value)
+        else:
+            msg = 'Structure option value must be JSON or path to file.'
+            raise ValueError(msg)
+        return d
+    elif parameter.type == 'list':
+        if isinstance(value, six.string_types):
+            if value[0] == '[':
+                return json.loads(value)
+        elif isinstance(value, list) and len(value) == 1:
+            if value[0][0] == '[':
+                return json.loads(value[0])
+        return [unpack_cli_arg(parameter.members, v) for v in value]
+    elif parameter.type == 'blob' and parameter.payload and parameter.streaming:
+        file_path = os.path.expandvars(value)
+        file_path = os.path.expanduser(file_path)
+        if not os.path.isfile(file_path):
+            msg = 'Blob values must be a path to a file.'
+            raise ValueError(msg)
+        return open(file_path, 'rb')
+    else:
+        return str(value)

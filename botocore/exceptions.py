@@ -152,3 +152,12 @@ class UnknownServiceStyle(BotoCoreError):
 
 class PaginationError(BotoCoreError):
     fmt = 'Error during pagination: {message}'
+
+
+class EventNotFound(BotoCoreError):
+    """
+    The specified event name is unknown to the system.
+
+    :ivar event_name: The name of the event the user attempted to use.
+    """
+    fmt = 'The event ({event_name}) is not known'

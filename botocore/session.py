@@ -35,10 +35,22 @@ import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
-from botocore.exceptions import ConfigNotFound
+from botocore.exceptions import ConfigNotFound, EventNotFound
 from botocore.hooks import HierarchicalEmitter
 from botocore import __version__
 from botocore import handlers
+
+
+AllEvents = {
+    'after-call': '.%s.%s',
+    'after-parsed': '.%s.%s.%s.%s',
+    'before-call': '.%s.%s',
+    'service-created': ''
+    }
+"""
+A dictionary where each key is an event name and the value
+is the formatting string used to construct a new event.
+"""
 
 
 EnvironmentVariables = {
@@ -352,8 +364,10 @@ class Session(object):
 
         :returns: :class:`botocore.service.Service`
         """
-        service = botocore.service.get_service(self, service_name, provider_name)
-        self._events.emit('service-created', service=service)
+        service = botocore.service.get_service(self, service_name,
+                                               provider_name)
+        event = self.create_event('service-created')
+        self._events.emit(event, service=service)
         return service
 
     def set_debug_logger(self):
@@ -431,6 +445,30 @@ class Session(object):
 
         """
         self._events.unregister(event_name, handler)
+
+    def create_event(self, event_name, *fmtargs):
+        """
+        Creates a new event string that can then be emitted.
+        You could just create it manually, since it's just
+        a string but this helps to define the range of known events.
+
+        :type event_name: str
+        :param event_name: The base name of the new event.
+
+        :type fmtargs: tuple
+        :param fmtargs: A tuple of values that will be used as the
+            arguments pass to the string formatting operation.  The
+            actual values passed depend on the type of event you
+            are creating.
+        """
+        if event_name in AllEvents:
+            fmt_string = AllEvents[event_name]
+            if fmt_string:
+                event = event_name + (fmt_string % fmtargs)
+            else:
+                event = event_name
+            return event
+        raise EventNotFound(event_name=event_name)
 
     def emit(self, event_name, **kwargs):
         return self._events.emit(event_name, **kwargs)

@@ -38,6 +38,10 @@ class Operation(BotoCoreObject):
         self.output = {}
         BotoCoreObject.__init__(self, **op_data)
         self.service = service
+        if self.service:
+            self.session = self.service.session
+        else:
+            self.session = None
         self.type = 'operation'
         self._get_parameters()
         if paginator_cls is None:
@@ -49,18 +53,20 @@ class Operation(BotoCoreObject):
 
     def call(self, endpoint, **kwargs):
         logger.debug("%s called with kwargs: %s", self, kwargs)
-        self.service.session.emit('before-call.%s' % self._event_name(),
-                                  operation=self, endpoint=endpoint,
-                                  params=kwargs)
+        event = self.session.create_event('before-call',
+                                          self.service.endpoint_prefix,
+                                          self.name)
+        self.session.emit(event, operation=self, endpoint=endpoint,
+                          params=kwargs)
         params = self.build_parameters(**kwargs)
         response = endpoint.make_request(self, params)
-        self.service.session.emit('after-call.%s' % self._event_name(),
-                                  operation=self, http_response=response[0],
-                                  parsed=response[1])
+        event = self.session.create_event('after-call',
+                                          self.service.endpoint_prefix,
+                                          self.name)
+        self.session.emit(event, operation=self,
+                          http_response=response[0],
+                          parsed=response[1])
         return response
-
-    def _event_name(self):
-        return "%s.%s" % (self.service.endpoint_prefix, self.name)
 
     @property
     def can_paginate(self):

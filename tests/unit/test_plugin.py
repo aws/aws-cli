@@ -13,6 +13,8 @@
 import sys
 from tests import unittest
 
+import mock
+
 from awscli import plugin
 from botocore import hooks
 
@@ -54,6 +56,22 @@ class TestPlugins(unittest.TestCase):
         emitter.emit('before_operation')
         self.assertEqual(len(self.fake_module.events_seen), 1)
 
+
+class TestPluginCanBePackage(unittest.TestCase):
+    def setUp(self):
+        self.fake_module = FakeModule()
+        self.fake_package = mock.Mock()
+        sys.modules['__fake_plugin__'] = self.fake_package
+        sys.modules['__fake_plugin__.__fake__'] = self.fake_package
+        sys.modules['__fake_plugin__.__fake__.bar'] = self.fake_module
+
+    def tearDown(self):
+        del sys.modules['__fake_plugin__.__fake__']
+
+    def test_plugin_register(self):
+        emitter = plugin.load_plugins(
+            {'fake_plugin': '__fake_plugin__.__fake__.bar'})
+        self.assertTrue(self.fake_module.called)
 
 
 if __name__ == '__main__':

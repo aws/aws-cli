@@ -54,6 +54,7 @@ class TestS3Operations(unittest.TestCase):
                    'Content-Type': 'text/plain'},
                   'payload': fp,
                   'uri_params': {'Bucket': 'foo', 'Key': 'bar'}}
+        self.maxDiff = None
         self.assertEqual(params, result)
 
 

@@ -54,7 +54,7 @@ class TestSNSOperations(unittest.TestCase):
         kwargs = calls[0]
         self.assertEqual(kwargs['operation'], op)
         self.assertEqual(kwargs['endpoint'], endpoint)
-        self.assertEqual(kwargs['params']['topic_arn'], 'topic_arn')
+        self.assertEqual(kwargs['params']['TopicArn'], 'topic_arn')
 
     def test_sns_post_send_event_is_invoked(self):
         op = self.sns.get_operation('Subscribe')

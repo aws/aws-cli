@@ -22,7 +22,6 @@
 #
 import logging
 import base64
-import hashlib
 import datetime
 import time
 import six
@@ -84,7 +83,7 @@ class Parameter(BotoCoreObject):
         value = self.validate(value)
         self.store_value_json(value, built_params, value)
 
-    def build_parameter_rest(self, value, built_params, label=''):
+    def build_parameter_rest(self, style, value, built_params, label=''):
         if hasattr(self, 'location'):
             if self.location == 'uri':
                 built_params['uri_params'][self.name] = value
@@ -94,6 +93,13 @@ class Parameter(BotoCoreObject):
                 else:
                     key = self.name
                 built_params['headers'][key] = value
+        elif style == 'rest-json':
+            built_params['payload'] = value
+        elif style == 'rest-xml' and not self.streaming:
+            logger.debug('XML Payload found')
+            xml_payload = self.to_xml(value)
+            logger.debug(xml_payload)
+            built_params['payload'] = xml_payload
         else:
             built_params['payload'] = value
 
@@ -103,7 +109,12 @@ class Parameter(BotoCoreObject):
         elif style == 'json':
             self.build_parameter_json(value, built_params, label)
         elif style in ('rest-xml', 'rest-json'):
-            self.build_parameter_rest(value, built_params, label)
+            self.build_parameter_rest(style, value, built_params, label)
+
+    def to_xml(self, value, label=None):
+        if not label:
+            label = self.name
+        return '<%s>%s</%s>' % (label, value, label)
 
 
 class IntegerParameter(Parameter):
@@ -257,18 +268,6 @@ class StringParameter(Parameter):
 
 class BlobParameter(Parameter):
 
-    # I'm not actually sure where this goes.  I'm going to leave it
-    # right here for now, even though I'm not calling it anywhere.
-    def _calculate_md5(self, fp):
-        pos = fp.tell()
-        md5 = hashlib.md5()
-        s = fp.read(BUFFERSIZE)
-        while s:
-            md5.update(s)
-            s = fp.read(BUFFERSIZE)
-        fp.seek(pos)
-        return base64.b64encode(md5.digest())
-
     def validate(self, value):
         if self.payload and self.streaming:
             # Streaming blobs should be file-like objects
@@ -330,6 +329,15 @@ class ListParameter(Parameter):
         built_params[label] = []
         for v in value:
             self.members.build_parameter_json(v, built_params[label], None)
+
+    def to_xml(self, value, label=None):
+        if not label:
+            label = self.xmlname
+        xml = '<%s>' % label
+        for item in value:
+            xml += self.members.to_xml(item, self.xmlname)
+        xml += '</%s>' % label
+        return xml
 
 
 class MapParameter(Parameter):
@@ -412,6 +420,16 @@ class StructParameter(Parameter):
                                             new_value,
                                             member_label)
 
+    def to_xml(self, value, label=None):
+        if not label:
+            label = self.get_label()
+        xml = '<%s>' % label
+        for member in self.members:
+            if member.py_name in value:
+                xml += member.to_xml(value[member.py_name], member.name)
+        xml += '</%s>' % label
+        return xml
+
 type_map = {
     'structure': StructParameter,
     'map': MapParameter,
@@ -426,7 +444,6 @@ type_map = {
     'boolean': BooleanParameter,
     'double': FloatParameter,
     'member': Parameter,
-    'jsondoc': StringParameter,
     'file': StringParameter}
 
 

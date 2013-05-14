@@ -26,32 +26,40 @@ This module contains builtin handlers for events emitted by botocore.
 
 import base64
 import json
+import hashlib
 import six
 from botocore.compat import unquote
 
 
-def decode_console_output(**kwargs):
+def decode_console_output(event_name, shape, value, **kwargs):
     try:
-        value = base64.b64decode(six.b(kwargs['value'])).decode('utf-8')
+        value = base64.b64decode(six.b(value)).decode('utf-8')
     except:
-        value = kwargs['value']
+        pass
     return value
 
 
-def decode_quoted_jsondoc(**kwargs):
+def decode_quoted_jsondoc(event_name, shape, value, **kwargs):
     try:
-        value = json.loads(unquote(kwargs['value']))
+        value = json.loads(unquote(value))
     except:
-        value = kwargs['value']
+        pass
     return value
 
 
-def decode_jsondoc(**kwargs):
+def decode_jsondoc(event_name, shape, value, **kwargs):
     try:
-        value = json.loads(kwargs['value'])
+        value = json.loads(value)
     except:
-        value = kwargs['value']
+        pass
     return value
+
+
+def calculate_md5(event_name, params, **kwargs):
+    if params['payload'] and not 'Content-MD5' in params['headers']:
+        md5 = hashlib.md5()
+        md5.update(params['payload'])
+        params['headers']['Content-MD5'] = base64.b64encode(md5.digest())
 
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
@@ -62,5 +70,6 @@ BUILTIN_HANDLERS = [
     ('after-parsed.iam.*.policyDocumentType.PolicyDocument',
      decode_quoted_jsondoc),
     ('after-parsed.cloudformation.*.TemplateBody.TemplateBody',
-     decode_jsondoc)
+     decode_jsondoc),
+    ('before-call.s3.PutBucketTagging', calculate_md5)
 ]

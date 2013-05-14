@@ -46,6 +46,10 @@ def _import_plugins(plugin_names):
     plugins = []
     for name, path in plugin_names.items():
         log.debug("Importing plugin %s: %s", name, path)
-        if '.' not in name:
+        if '.' not in path:
             plugins.append(__import__(path))
+        else:
+            package, module = path.rsplit('.', 1)
+            module = __import__(path, fromlist=[module])
+            plugins.append(module)
     return plugins

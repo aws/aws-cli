@@ -14,28 +14,31 @@ import unittest
 
 import botocore.session
 from awscli.argprocess import detect_shape_structure
+from awscli.argprocess import unpack_cli_arg
+from awscli.argprocess import ParamShorthand
 
 
 # These tests use real service types so that we can
 # verify the real shapes of services.
-class TestArgShapeDetection(unittest.TestCase):
-
+class BaseArgProcessTest(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
 
-    def tearDown(self):
-        pass
-
-    def assert_shape_type(self, spec, expected_type):
-        service_name, operation_name, param_name = spec.split('.')
+    def get_param_object(self, dotted_name):
+        service_name, operation_name, param_name = dotted_name.split('.')
         service = self.session.get_service(service_name)
         operation = service.get_operation(operation_name)
         for p in operation.params:
             if p.name == param_name:
-                param = p
-                break
+                return p
         else:
             raise ValueError("Unknown param: %s" % param_name)
+
+
+class TestArgShapeDetection(BaseArgProcessTest):
+
+    def assert_shape_type(self, spec, expected_type):
+        p = self.get_param_object(spec)
         actual_structure = detect_shape_structure(p)
         self.assertEqual(actual_structure, expected_type)
 
@@ -63,6 +66,57 @@ class TestArgShapeDetection(unittest.TestCase):
     def test_map_scalar(self):
         self.assert_shape_type(
             'sqs.SetQueueAttributes.Attributes', 'map-scalar')
+
+
+class TestParamShorthand(BaseArgProcessTest):
+    def setUp(self):
+        super(TestParamShorthand, self).setUp()
+        self.simplify = ParamShorthand()
+
+    def test_simplify_structure_scalars(self):
+        p = self.get_param_object(
+            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
+        value = 'application_name:foo,template_name:bar'
+        json_value = '{"application_name": "foo", "template_name": "bar"}'
+        returned = self.simplify(p, value)
+        json_version = unpack_cli_arg(p, json_value)
+        self.assertEqual(returned, json_version)
+
+    def test_simplify_map_scalar(self):
+        p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
+        returned = self.simplify(p, 'visibility_timeout:15')
+        self.assertEqual(returned, {'visibility_timeout': '15'})
+
+    def test_list_structure_scalars(self):
+        p = self.get_param_object(
+            'elb.RegisterInstancesWithLoadBalancer.Instances')
+        # Because this is a list type param, we'll use nargs
+        # with argparse which means the value will be presented
+        # to us as a list.
+        returned = self.simplify(p, ['instance-1',  'instance-2'])
+        self.assertEqual(returned, [{'instance_id': 'instance-1'},
+                                    {'instance_id': 'instance-2'}])
+
+    def test_list_structure_list_scalar(self):
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        expected = [{"name": "instance-id", "values": ["i-1", "i-2"]},
+                    {"name": "architecture", "values": ["i386"]}]
+        returned = self.simplify(
+            p, ["name:instance-id,values:i-1,i-2",
+                "name:architecture,values:i386"])
+        self.assertEqual(returned, expected)
+
+        # With spaces around the comma.
+        returned2 = self.simplify(
+            p, ["name:instance-id, values:i-1,i-2",
+                "name:architecture, values:i386"])
+        self.assertEqual(returned2, expected)
+
+        # Strip off leading/trailing spaces.
+        returned3 = self.simplify(
+            p, ["name: instance-id, values: i-1,i-2",
+                "name: architecture, values: i386"])
+        self.assertEqual(returned2, expected)
 
 
 if __name__ == '__main__':

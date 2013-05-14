@@ -11,14 +11,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests import BaseCLIDriverTest
 import awscli.clidriver
 
 
-class TestDescribeInstances(unittest.TestCase):
+class TestDescribeInstances(BaseCLIDriverTest):
 
     def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
+        super(TestDescribeInstances, self).setUp()
         self.prefix = 'aws ec2 describe-instances'
 
     def test_no_params(self):
@@ -49,15 +49,22 @@ class TestDescribeInstances(unittest.TestCase):
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
-    def test_filter(self):
+    def test_filter_json(self):
         args = """ --filters {"name":"group-name","values":["foobar"]}"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
+    def test_filter_simple(self):
+        args = """ --filters name:group-name,values:foobar"""
+        cmdline = self.prefix + args
+        result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
     def test_filter_values(self):
-        args = """ --filters {"name":"group-name","values":["foobar","fiebaz"]}"""
+        args = """ --filters name:group-name,values:foobar,fiebaz"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.2': 'fiebaz',
                   'Filter.1.Value.1': 'foobar',
@@ -66,8 +73,8 @@ class TestDescribeInstances(unittest.TestCase):
         self.assertEqual(params, result)
 
     def test_multiple_filters(self):
-        args = (' --filters {"name":"group-name","values":["foobar"]} '
-                '{"name":"instance-id","values":["i-12345"]}')
+        args = (' --filters name:group-name,values:foobar '
+                'name:instance-id,values:i-12345')
         cmdline = self.prefix + args
         result = {
             'Filter.1.Name': 'group-name',
@@ -79,16 +86,17 @@ class TestDescribeInstances(unittest.TestCase):
         self.assertEqual(params, result)
 
     def test_multiple_filters_alternate(self):
-        args = (' --filters [{"name":"group-name","values":["foobar"]},'
-                '{"name":"instance-id","values":["i-12345"]}]')
-        cmdline = self.prefix + args
+        cmdlist = 'aws ec2 describe-instances'.split()
+        cmdlist.extend(['--filters',
+                        'name: group-name, values: foobar',
+                        'name: instance-id,values:i-12345'])
         result = {
             'Filter.1.Name': 'group-name',
             'Filter.1.Value.1': 'foobar',
             'Filter.2.Name': 'instance-id',
             'Filter.2.Value.1': 'i-12345',
         }
-        params = self.driver.test(cmdline)
+        params = self.driver.test(cmdlist)
         self.assertEqual(params, result)
 
 

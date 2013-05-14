@@ -228,7 +228,9 @@ class CLIDriver(object):
         self.create_main_parser()
         # XXX: Does this still work with complex params that may be
         # space separated?
-        status = self._parse_args(cmdline.split()[1:])
+        if isinstance(cmdline, str):
+            cmdline = cmdline.split()
+        status = self._parse_args(cmdline[1:])
         params = {}
         self._build_call_parameters(self.operation_parser.args, params)
         return self.operation.build_parameters(**params)

@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.argprocess import ParamSimplifier
+from awscli.argprocess import ParamShorthand
 
 
 def awscli_initialize(event_handlers):
-    event_handlers.register('process-cli-arg', ParamSimplifier())
+    event_handlers.register('process-cli-arg', ParamShorthand())

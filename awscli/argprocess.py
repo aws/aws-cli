@@ -13,6 +13,8 @@
 """Module for processing CLI args."""
 import os
 import json
+import csv
+import logging
 
 import six
 
@@ -22,6 +24,7 @@ SCALAR_TYPES = set([
     'blob', 'timestamp'
 ])
 COMPLEX_TYPES = set(['structure', 'map', 'list'])
+LOG = logging.getLogger('awscli.argprocess')
 
 
 def detect_shape_structure(param):
@@ -41,13 +44,86 @@ def detect_shape_structure(param):
             return 'map-scalar'
 
 
-class ParamSimplifier(object):
+class ParamShorthand(object):
+
+    SHORTHAND_SHAPES = {
+        'structure(scalar)': '_key_value_parse',
+        'map-scalar': '_key_value_parse',
+        'list-structure(scalar)': '_list_scalar_parse',
+        'list-structure(list-scalar, scalar)': '_list_scalar_list_parse',
+    }
+
     def __init__(self):
         pass
 
     def __call__(self, param, value, **kwargs):
-        pass
+        # We first need to make sure this is a parameter that qualifies
+        # for simplification.  The first short-circuit case is if it looks
+        # like json we immediately return.
+        if isinstance(value, list):
+            check_val = value[0]
+        else:
+            check_val = value
+        if isinstance(check_val, str) and check_val.startswith(('[', '{')):
+            LOG.debug("Param %s looks like JSON, not considered for "
+                      "param shorthand.", param.py_name)
+            return
+        structure = detect_shape_structure(param)
+        parse_method = self.SHORTHAND_SHAPES.get(structure)
+        if parse_method is None:
+            return
+        else:
+            parsed = getattr(self, parse_method)(param, value)
+            return parsed
 
+    def _list_scalar_list_parse(self, param, value):
+        # Think something like ec2.DescribeInstances.Filters.
+        arg_types = {}
+        for arg in param.members.members:
+            arg_types[arg.py_name] = arg.type
+        parsed = []
+        for v in value:
+            parts = v.split(',')
+            current_parsed = {}
+            for part in parts:
+                current = part.split(':', 1)
+                if len(current) == 2:
+                    # This is a key/value pair.
+                    current_key = current[0].strip()
+                    current_value = current[1].strip()
+                    if arg_types[current_key] == 'list':
+                        current_parsed[current_key] = [current_value]
+                    else:
+                        current_parsed[current_key] = current_value
+                else:
+                    assert len(current) == 1
+                    assert arg_types[current_key] == 'list'
+                    current_parsed[current_key].append(current[0])
+            parsed.append(current_parsed)
+        return parsed
+
+    def _list_scalar_parse(self, param, value):
+        assert len(param.members.members) == 1
+        assert isinstance(value, list)
+        single_param = param.members.members[0]
+        parsed = []
+        # We know that value is a list in this case.
+        for v in value:
+            parsed.append({single_param.py_name: v})
+        return parsed
+
+    def _key_value_parse(self, param, value):
+        # The expected structure is:
+        #  key=value,key2=value
+        # that is, csv key value pairs, where the key and values
+        # are separated by ':'.  All of this should be whitespace
+        # insensitive.
+        parsed = {}
+        parts = value.split(',')
+        for part in parts:
+            key, value = part.split(':')
+            parsed[key.strip()] = value.strip()
+        return parsed
 
 
 def unpack_cli_arg(parameter, value):

@@ -41,6 +41,15 @@ def detect_shape_structure(param):
             return 'map-scalar'
 
 
+class ParamSimplifier(object):
+    def __init__(self):
+        pass
+
+    def __call__(self, param, value, **kwargs):
+        pass
+
+
+
 def unpack_cli_arg(parameter, value):
     """
     Parses and unpacks the encoded string command line parameter

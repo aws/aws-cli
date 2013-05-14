@@ -248,7 +248,7 @@ class XmlResponse(Response):
         if 'shape_name' in shape:
             event = 'after-parsed'
             event += '.%s.%s.%s' % (self.operation.service.cli_name,
-                                    self.operation.cli_name,
+                                    self.operation.name,
                                     shape['shape_name'])
             if tag:
                 event += '.%s' % tag

@@ -120,21 +120,23 @@ class SessionTest(BaseSessionTest):
         self.assertEqual(len(calls), 1)
 
     def test_available_events(self):
-        self.assertIn('after-call', botocore.session.AllEvents)
-        self.assertIn('after-parsed', botocore.session.AllEvents)
-        self.assertIn('before-call', botocore.session.AllEvents)
-        self.assertIn('service-created', botocore.session.AllEvents)
+        self.assertTrue('after-call' in botocore.session.AllEvents)
+        self.assertTrue('after-parsed' in botocore.session.AllEvents)
+        self.assertTrue('before-call' in botocore.session.AllEvents)
+        self.assertTrue('service-created' in botocore.session.AllEvents)
 
     def test_create_events(self):
         event = self.session.create_event('before-call', 'foo', 'bar')
         self.assertEqual(event, 'before-call.foo.bar')
         event = self.session.create_event('after-call', 'foo', 'bar')
         self.assertEqual(event, 'after-call.foo.bar')
-        event = self.session.create_event('after-parsed', 'foo', 'bar', 'fie', 'baz')
+        event = self.session.create_event('after-parsed', 'foo',
+                                          'bar', 'fie', 'baz')
         self.assertEqual(event, 'after-parsed.foo.bar.fie.baz')
         event = self.session.create_event('service-created')
         self.assertEqual(event, 'service-created')
-
+        self.assertRaises(botocore.exceptions.EventNotFound,
+                          self.session.create_event, 'foo-bar')
 
 
 class TestBuiltinEventHandlers(BaseSessionTest):

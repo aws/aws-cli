@@ -175,14 +175,15 @@ class CLIDriver(object):
     def get_error_code_and_message(self, response):
         code = 'Unknown'
         message = 'Unknown'
-        if 'Response' in response:
-            if 'Errors' in response['Response']:
-                if 'Error' in response['Response']['Errors']:
-                    if 'Message' in response['Response']['Errors']['Error']:
-                        message = response['Response']['Errors']\
-                                          ['Error']['Message']
-                    if 'Code' in response['Response']['Errors']['Error']:
-                        code = response['Response']['Errors']['Error']['Code']
+        if 'Errors' in response:
+            if isinstance(response['Errors'], list):
+                error = response['Errors'][-1]
+                if 'Code' in error:
+                    code = error['Code']
+                elif 'Type' in error:
+                    code = error['Type']
+                if 'Message' in error:
+                    message = error['Message']
         return (code, message)
 
     def save_output(self, body_name, response_data, path):

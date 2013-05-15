@@ -3,16 +3,7 @@ import os
 import sys
 import json
 from copy import deepcopy
-try:
-    from collections import OrderedDict
-except ImportError:
-    # OrderedDicts are used during the annotation process to preserve
-    # the order of keys to create useful diffs.  Not doing this doesn't
-    # break the behavior, it just creates less the useful diffs.
-    # This only applies for python2.6, so we could include a backport
-    # of ordered dict for python2.6 if we felt this was important.
-    OrderedDict = dict
-
+from .compat import OrderedDict
 from botocore import xform_name
 
 

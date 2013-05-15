@@ -44,6 +44,20 @@ else:
             for field, value in self._headers:
                 yield field
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    # OrderedDicts are used during the annotation process to preserve
+    # the order of keys to create useful diffs.  Not doing this doesn't
+    # break the behavior, it just creates less the useful diffs.
+    # This only applies for python2.6, so we could include a backport
+    # of ordered dict for python2.6 if we felt this was important.
+    # OrderedDicts are also used when parsing the JSON service
+    # descriptions to preserve the order of keys.  Right now, the
+    # order of params printed for help will look different in 2.6
+    # than the other versions so we do probably need to back this.
+    OrderedDict = dict
+
 
 @classmethod
 def from_dict(cls, d):

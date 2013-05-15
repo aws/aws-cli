@@ -70,7 +70,7 @@ import os
 import glob
 import json
 import logging
-from collections import OrderedDict
+from .compat import OrderedDict
 import botocore.exceptions
 
 logger = logging.getLogger(__name__)

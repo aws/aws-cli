@@ -70,6 +70,7 @@ import os
 import glob
 import json
 import logging
+from collections import OrderedDict
 import botocore.exceptions
 
 logger = logging.getLogger(__name__)
@@ -102,7 +103,7 @@ def _load_data(session, data_path):
         elif os.path.isfile(file_path):
             fp = open(file_path)
             try:
-                new_data = json.load(fp)
+                new_data = json.load(fp, object_pairs_hook=OrderedDict)
                 fp.close()
                 logger.debug('Found data file: %s' % file_path)
                 if data is not None:

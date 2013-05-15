@@ -27,15 +27,18 @@ This module contains builtin handlers for events emitted by botocore.
 import base64
 import json
 import hashlib
+import logging
 import six
 from botocore.compat import unquote
+
+logger = logging.getLogger(__name__)
 
 
 def decode_console_output(event_name, shape, value, **kwargs):
     try:
-        value = base64.b64decode(six.b(value)).decode('utf-8')
+        value = base64.b64decode(value).decode('utf-8')
     except:
-        pass
+        logger.debug('error decoding base64', exc_info=True)
     return value
 
 
@@ -43,7 +46,7 @@ def decode_quoted_jsondoc(event_name, shape, value, **kwargs):
     try:
         value = json.loads(unquote(value))
     except:
-        pass
+        logger.debug('error loading quoted JSON', exc_info=True)
     return value
 
 
@@ -51,7 +54,7 @@ def decode_jsondoc(event_name, shape, value, **kwargs):
     try:
         value = json.loads(value)
     except:
-        pass
+        logger.debug('error loading JSON', exc_info=True)
     return value
 
 

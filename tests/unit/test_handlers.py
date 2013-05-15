@@ -39,7 +39,7 @@ class TestHandlers(unittest.TestCase):
         event = self.session.create_event('after-parsed', 'ec2',
                                           'GetConsoleOutput',
                                           'String', 'Output')
-        value = base64.b64encode(six.b('foobar'))
+        value = base64.b64encode(six.b('foobar')).decode('utf-8')
         rv = self.session.emit(event, shape={}, value=value)
         converted_value = first_non_none_response(rv)
         self.assertEqual(converted_value, 'foobar')
@@ -52,7 +52,7 @@ class TestHandlers(unittest.TestCase):
         value = quote('{"foo":"bar"}')
         rv = self.session.emit(event, shape={}, value=value)
         converted_value = first_non_none_response(rv)
-        self.assertEqual(converted_value, {'foo':'bar'})
+        self.assertEqual(converted_value, {'foo': 'bar'})
 
     def test_decode_jsondoc(self):
         event = self.session.create_event('after-parsed', 'cloudformation',

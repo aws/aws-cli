@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 def decode_console_output(event_name, shape, value, **kwargs):
     try:
-        value = base64.b64decode(value).decode('utf-8')
+        value = base64.b64decode(six.b(value)).decode('utf-8')
     except:
         logger.debug('error decoding base64', exc_info=True)
     return value

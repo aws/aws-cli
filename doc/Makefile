@@ -43,7 +43,6 @@ help:
 
 clean:
 	-rm -rf $(BUILDDIR)/*
-	-rm -f $(SOURCEDIR)/*.json
 	-rm -rf $(SOURCEDIR)/reference
 	-rm -rf $(SOURCEDIR)/tutorial/services.rst
 
@@ -158,4 +157,4 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-all: html man text
+all: html

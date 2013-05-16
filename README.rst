@@ -37,6 +37,11 @@ The currently supported services include:
 
 The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 
+.. attention::
+   We recommend that all customers regularly monitor the
+   [Amazon Web Services Security Bulletins website](https://aws.amazon.com/security/security-bulletins) for any important security bulletins related to
+   aws-cli.
+
 ------------
 Installation
 ------------
@@ -110,7 +115,7 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<default secret key>
     region=us-west-1  # optional, to define default region for this profile
 
-    [testing]
+    [profile testing]
     aws_access_key_id=<testing access key>
     aws_secret_access_key=<testing secret key>
     region=us-west-2

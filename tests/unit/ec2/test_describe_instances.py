@@ -41,6 +41,14 @@ class TestDescribeInstances(unittest.TestCase):
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
+    def test_instance_ids_alternate(self):
+        # Not required, but will still work if you use JSON.
+        args = ' --instance-ids ["i-12345678","i-87654321"]'
+        cmdline = self.prefix + args
+        result = {'InstanceId.1': 'i-12345678', 'InstanceId.2': 'i-87654321'}
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
     def test_filter(self):
         args = """ --filters {"name":"group-name","values":["foobar"]}"""
         cmdline = self.prefix + args
@@ -54,6 +62,32 @@ class TestDescribeInstances(unittest.TestCase):
         result = {'Filter.1.Value.2': 'fiebaz',
                   'Filter.1.Value.1': 'foobar',
                   'Filter.1.Name': 'group-name'}
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
+    def test_multiple_filters(self):
+        args = (' --filters {"name":"group-name","values":["foobar"]} '
+                '{"name":"instance-id","values":["i-12345"]}')
+        cmdline = self.prefix + args
+        result = {
+            'Filter.1.Name': 'group-name',
+            'Filter.1.Value.1': 'foobar',
+            'Filter.2.Name': 'instance-id',
+            'Filter.2.Value.1': 'i-12345',
+        }
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
+    def test_multiple_filters_alternate(self):
+        args = (' --filters [{"name":"group-name","values":["foobar"]},'
+                '{"name":"instance-id","values":["i-12345"]}]')
+        cmdline = self.prefix + args
+        result = {
+            'Filter.1.Name': 'group-name',
+            'Filter.1.Value.1': 'foobar',
+            'Filter.2.Name': 'instance-id',
+            'Filter.2.Value.1': 'i-12345',
+        }
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 

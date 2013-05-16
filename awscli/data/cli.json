@@ -1,6 +1,6 @@
 {
     "description": "<p>The AWS Command Line Interface is a unified tool that provides a consistent interface for interacting with all parts of AWS.",
-    "synopsis": "aws [options] service operation [parameters]",
+    "synopsis": "aws [options] <service_name> <operation> [parameters]",
     "help_usage": "Use <code>aws service help</code> for information on a specific service.",
     "options": {
         "--debug": {
@@ -14,6 +14,11 @@
         "--no-verify-ssl": {
             "action": "store_true",
             "help": "Override default behavior of verifying SSL certificates"
+        },
+        "--no-paginate": {
+            "action": "store_false",
+            "help": "Disable automatic pagination",
+            "dest": "paginate"
         },
         "--output": {
             "choices": [
@@ -41,7 +46,7 @@
             "help": "Turn on/off color output."
         },
         "service_name": {
-            "choices": "{provider}/_services",
+            "choices": "{provider}",
             "metavar": "service_name"
         }
     }

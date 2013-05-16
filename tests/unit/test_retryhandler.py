@@ -21,13 +21,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import unittest
+
+import mock
+
 from botocore.retryhandler import RetryHandler, delay_exponential
 
 
 class RetryHandlerTest(unittest.TestCase):
 
-    def test_1(self):
+    @mock.patch('time.sleep')
+    def test_multiple_attempts(self, sleep_mock):
 
         def retryable(a=None, b=None, c=None):
             return 0
@@ -43,7 +47,8 @@ class RetryHandlerTest(unittest.TestCase):
         self.assertEqual(rv, 0)
         self.assertEqual(rh.attempts, 3)
 
-    def test_1(self):
+    @mock.patch('time.sleep')
+    def test_return_value_status(self, sleep_mock):
         n = 0
 
         def retryable(a=None):
@@ -62,6 +67,7 @@ class RetryHandlerTest(unittest.TestCase):
         rv = rh(a={'n': 1})
         self.assertEqual(rv, 1)
         self.assertEqual(rh.attempts, 4)
+
 
 if __name__ == "__main__":
     unittest.main()

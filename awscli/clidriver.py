@@ -96,6 +96,8 @@ class CLIDriver(object):
         for param in self.operation.params:
             value = getattr(args, param.py_name)
             if value is not None:
+                if not hasattr(param, 'no_paramfile'):
+                    value = self._handle_param_file(value)
                 # Plugins can override the cli -> python conversion
                 # process for CLI args.
                 responses = self.session.emit('process-cli-arg.%s.%s' % (
@@ -114,8 +116,6 @@ class CLIDriver(object):
                     # Don't include non-required boolean params whose
                     # values are False
                     continue
-                if not hasattr(param, 'no_paramfile'):
-                    value = self._handle_param_file(value)
                 param_dict[param.py_name] = unpack_cli_arg(param, value)
 
     def _handle_param_file(self, value):

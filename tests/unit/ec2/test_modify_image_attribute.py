@@ -11,15 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests import BaseCLIDriverTest
 import awscli.clidriver
 
 
-class TestModifyInstanceAttribute(unittest.TestCase):
+class TestModifyInstanceAttribute(BaseCLIDriverTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 modify-image-attribute'
+    prefix = 'aws ec2 modify-image-attribute'
 
     def test_one(self):
         cmdline = self.prefix
@@ -35,9 +33,12 @@ class TestModifyInstanceAttribute(unittest.TestCase):
     def test_two(self):
         cmdline = self.prefix
         cmdline += ' --image-id ami-d00dbeef'
-        cmdline += ' --launch-permission {"add":[{"user_id":"123456789012"}]}'
+        cmdline += (' --launch-permission {"add":[{"user_id":"123456789012"}],'
+                    '"remove":[{"group":"all"}]}')
         result = {'ImageId': 'ami-d00dbeef',
-                  'LaunchPermission.Add.1.UserId': '123456789012'}
+                  'LaunchPermission.Add.1.UserId': '123456789012',
+                  'LaunchPermission.Remove.1.Group': 'all',
+                  }
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 

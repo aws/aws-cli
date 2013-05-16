@@ -17,9 +17,7 @@ import awscli.clidriver
 
 class TestDescribeInstances(BaseCLIDriverTest):
 
-    def setUp(self):
-        super(TestDescribeInstances, self).setUp()
-        self.prefix = 'aws ec2 describe-instances'
+    prefix = 'aws ec2 describe-instances'
 
     def test_no_params(self):
         cmdline = self.prefix

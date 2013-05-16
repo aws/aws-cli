@@ -58,7 +58,7 @@ class TestRegisterInstancesWithLoadBalancer(unittest.TestCase):
                                  'test.json')
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances file:%s' % data_path
+        cmdline += ' --instances file://%s' % data_path
         result = {'LoadBalancerName': 'my-lb',
                   'Instances.member.1.InstanceId': 'i-12345678',
                   'Instances.member.2.InstanceId': 'i-87654321'}

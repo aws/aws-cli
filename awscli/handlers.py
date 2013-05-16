@@ -14,4 +14,6 @@ from awscli.argprocess import ParamShorthand
 
 
 def awscli_initialize(event_handlers):
-    event_handlers.register('process-cli-arg', ParamShorthand())
+    param_shorthand = ParamShorthand()
+    event_handlers.register('process-cli-arg', param_shorthand)
+    event_handlers.register('add-syntax-example', param_shorthand.add_docs)

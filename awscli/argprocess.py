@@ -56,6 +56,9 @@ class ParamShorthand(object):
     def __init__(self):
         pass
 
+    def add_docs(self, operation_doc, **kwargs):
+        pass
+
     def __call__(self, param, value, **kwargs):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks

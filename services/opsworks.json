@@ -1,14 +1,64 @@
 {
+  "api_version": "2013-02-18",
   "type": "json",
   "json_version": 1.1,
+  "target_prefix": "OpsWorks_20130218",
   "signature_version": "v4",
   "service_full_name": "AWS OpsWorks",
-  "target_prefix": "OpsWorks_20130218",
-  "api_version": "2013-02-18",
   "endpoint_prefix": "opsworks",
   "xmlnamespace": "http://opsworks.amazonaws.com/doc/2013-02-18/",
   "documentation": "\n      <fullname>AWS OpsWorks</fullname>  \n   ",
   "operations": {
+    "AttachElasticLoadBalancer": {
+      "name": "AttachElasticLoadBalancer",
+      "input": {
+        "shape_name": "AttachElasticLoadBalancerRequest",
+        "type": "structure",
+        "members": {
+          "ElasticLoadBalancerName": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "LayerId": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ValidationException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
+        }
+      ],
+      "documentation": null
+    },
     "CloneStack": {
       "name": "CloneStack",
       "input": {
@@ -35,8 +85,11 @@
             "shape_name": "StackAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "StackAttributesKeys",
               "type": "string",
+              "enum": [
+                "Color"
+              ],
               "documentation": null
             },
             "members": {
@@ -146,6 +199,15 @@
               "documentation": null
             },
             "documentation": "\n      <p>A list of source stack app IDs to be included in the cloned stack.</p>      \n   "
+          },
+          "DefaultRootDeviceType": {
+            "shape_name": "RootDeviceType",
+            "type": "string",
+            "enum": [
+              "ebs",
+              "instance-store"
+            ],
+            "documentation": null
           }
         },
         "documentation": ""
@@ -201,6 +263,11 @@
             "type": "string",
             "documentation": "\n      <p>The stack ID.</p>\n   ",
             "required": true
+          },
+          "Shortname": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null
           },
           "Name": {
             "shape_name": "String",
@@ -313,8 +380,13 @@
             "shape_name": "AppAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "AppAttributesKeys",
               "type": "string",
+              "enum": [
+                "DocumentRoot",
+                "RailsEnv",
+                "AutoBundleOnDeploy"
+              ],
               "documentation": null
             },
             "members": {
@@ -526,9 +598,8 @@
             "shape_name": "AutoScalingType",
             "type": "string",
             "enum": [
-              "AlwaysRunning",
-              "TimeBasedAutoScaling",
-              "LoadBasedAutoScaling"
+              "load",
+              "timer"
             ],
             "documentation": "\n      <p>The instance auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>:  A 24x7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.\n            To specify the schedule, call <a>SetTimeBasedAutoScaling</a>.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.\n            To use load-based auto scaling, you must enable it for the instance layer and configure the thresholds by calling\n            <a>SetLoadBasedAutoScaling</a>.</li>\n      </ul>\n   "
           },
@@ -551,6 +622,24 @@
             "shape_name": "String",
             "type": "string",
             "documentation": "\n      <p>The instance Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
+          },
+          "Architecture": {
+            "shape_name": "Architecture",
+            "type": "string",
+            "enum": [
+              "x86_64",
+              "i386"
+            ],
+            "documentation": null
+          },
+          "RootDeviceType": {
+            "shape_name": "RootDeviceType",
+            "type": "string",
+            "enum": [
+              "ebs",
+              "instance-store"
+            ],
+            "documentation": null
           }
         },
         "documentation": ""
@@ -579,6 +668,18 @@
             }
           },
           "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
         }
       ],
       "documentation": "\n      <p>Creates an instance in a specified stack.</p>\n   "
@@ -598,6 +699,17 @@
           "Type": {
             "shape_name": "LayerType",
             "type": "string",
+            "enum": [
+              "lb",
+              "web",
+              "php-app",
+              "rails-app",
+              "nodejs-app",
+              "memcached",
+              "db-master",
+              "monitoring-master",
+              "custom"
+            ],
             "documentation": "\n      <p>The layer type. A stack cannot have more than one layer of the same type.</p> \n   ",
             "required": true
           },
@@ -617,8 +729,29 @@
             "shape_name": "LayerAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "LayerAttributesKeys",
               "type": "string",
+              "enum": [
+                "EnableHaproxyStats",
+                "HaproxyStatsUrl",
+                "HaproxyStatsUser",
+                "HaproxyStatsPassword",
+                "HaproxyHealthCheckUrl",
+                "HaproxyHealthCheckMethod",
+                "MysqlRootPassword",
+                "MysqlRootPasswordUbiquitous",
+                "GangliaUrl",
+                "GangliaUser",
+                "GangliaPassword",
+                "MemcachedMemory",
+                "NodejsVersion",
+                "RubyVersion",
+                "RubygemsVersion",
+                "ManageBundler",
+                "BundlerVersion",
+                "RailsStack",
+                "PassengerVersion"
+              ],
               "documentation": null
             },
             "members": {
@@ -787,6 +920,18 @@
             }
           },
           "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
         }
       ],
       "documentation": "\n      <p>Creates a layer.</p>\n   "
@@ -813,8 +958,11 @@
             "shape_name": "StackAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "StackAttributesKeys",
               "type": "string",
+              "enum": [
+                "Color"
+              ],
               "documentation": null
             },
             "members": {
@@ -909,6 +1057,15 @@
             "shape_name": "String",
             "type": "string",
             "documentation": "\n      <p>A default SSH key for the stack instances. You can override this value when you create or update an instance.</p>\n   "
+          },
+          "DefaultRootDeviceType": {
+            "shape_name": "RootDeviceType",
+            "type": "string",
+            "enum": [
+              "ebs",
+              "instance-store"
+            ],
+            "documentation": null
           }
         },
         "documentation": ""
@@ -1271,6 +1428,11 @@
                   "type": "string",
                   "documentation": "\n     <p>The app stack ID.</p>\n   "
                 },
+                "Shortname": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
+                },
                 "Name": {
                   "shape_name": "String",
                   "type": "string",
@@ -1380,8 +1542,13 @@
                   "shape_name": "AppAttributes",
                   "type": "map",
                   "keys": {
-                    "shape_name": "String",
+                    "shape_name": "AppAttributesKeys",
                     "type": "string",
+                    "enum": [
+                      "DocumentRoot",
+                      "RailsEnv",
+                      "AutoBundleOnDeploy"
+                    ],
                     "documentation": null
                   },
                   "members": {
@@ -1827,6 +1994,122 @@
       ],
       "documentation": "\n      <p>Describes an instance's <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP addresses</a>.</p>\n   "
     },
+    "DescribeElasticLoadBalancers": {
+      "name": "DescribeElasticLoadBalancers",
+      "input": {
+        "shape_name": "DescribeElasticLoadBalancersRequest",
+        "type": "structure",
+        "members": {
+          "StackId": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null
+          },
+          "LayerIds": {
+            "shape_name": "Strings",
+            "type": "list",
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "output": {
+        "shape_name": "DescribeElasticLoadBalancersResult",
+        "type": "structure",
+        "members": {
+          "ElasticLoadBalancers": {
+            "shape_name": "ElasticLoadBalancers",
+            "type": "list",
+            "members": {
+              "shape_name": "ElasticLoadBalancer",
+              "type": "structure",
+              "members": {
+                "ElasticLoadBalancerName": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
+                },
+                "Region": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
+                },
+                "DnsName": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
+                },
+                "StackId": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
+                },
+                "LayerId": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
+                },
+                "AvailabilityZones": {
+                  "shape_name": "Strings",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": null
+                },
+                "Ec2InstanceIds": {
+                  "shape_name": "Strings",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": null
+                }
+              },
+              "documentation": null
+            },
+            "documentation": null
+          }
+        },
+        "documentation": null
+      },
+      "errors": [
+        {
+          "shape_name": "ValidationException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
+        }
+      ],
+      "documentation": null
+    },
     "DescribeInstances": {
       "name": "DescribeInstances",
       "input": {
@@ -1842,11 +2125,6 @@
             "shape_name": "String",
             "type": "string",
             "documentation": "\n      <p>A layer ID.</p>\n   "
-          },
-          "AppId": {
-            "shape_name": "String",
-            "type": "string",
-            "documentation": "\n      <p>An app ID.</p>\n   "
           },
           "InstanceIds": {
             "shape_name": "Strings",
@@ -1966,9 +2244,8 @@
                   "shape_name": "AutoScalingType",
                   "type": "string",
                   "enum": [
-                    "AlwaysRunning",
-                    "TimeBasedAutoScaling",
-                    "LoadBasedAutoScaling"
+                    "load",
+                    "timer"
                   ],
                   "documentation": "\n      <p>The instance's auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>: A 24x7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.</li>\n      </ul>   "
                 },
@@ -1996,6 +2273,29 @@
                   "shape_name": "String",
                   "type": "string",
                   "documentation": "\n      <p>The ID of the last service error. Call <a>DescribeServiceErrors</a> for details.</p>\n   "
+                },
+                "Architecture": {
+                  "shape_name": "Architecture",
+                  "type": "string",
+                  "enum": [
+                    "x86_64",
+                    "i386"
+                  ],
+                  "documentation": null
+                },
+                "RootDeviceType": {
+                  "shape_name": "RootDeviceType",
+                  "type": "string",
+                  "enum": [
+                    "ebs",
+                    "instance-store"
+                  ],
+                  "documentation": null
+                },
+                "RootDeviceVolumeId": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": null
                 }
               },
               "documentation": "\n     <p>Describes an instance.</p>\n   "
@@ -2082,6 +2382,17 @@
                 "Type": {
                   "shape_name": "LayerType",
                   "type": "string",
+                  "enum": [
+                    "lb",
+                    "web",
+                    "php-app",
+                    "rails-app",
+                    "nodejs-app",
+                    "memcached",
+                    "db-master",
+                    "monitoring-master",
+                    "custom"
+                  ],
                   "documentation": "\n      <p>The layer type, which must be one of the following:</p>\n      <ul>\n         <li>Custom</li>\n         <li>GangliaMonitoringMaster</li>\n         <li>HaProxy</li>\n         <li>MemcachedServer</li>\n         <li>MySqlMaster</li>\n         <li>NodeJsAppServer</li>\n         <li>PhpAppServer</li>\n         <li>RailsAppServer</li>\n         <li>WebServer</li>\n      </ul>  \n   "
                 },
                 "Name": {
@@ -2098,8 +2409,29 @@
                   "shape_name": "LayerAttributes",
                   "type": "map",
                   "keys": {
-                    "shape_name": "String",
+                    "shape_name": "LayerAttributesKeys",
                     "type": "string",
+                    "enum": [
+                      "EnableHaproxyStats",
+                      "HaproxyStatsUrl",
+                      "HaproxyStatsUser",
+                      "HaproxyStatsPassword",
+                      "HaproxyHealthCheckUrl",
+                      "HaproxyHealthCheckMethod",
+                      "MysqlRootPassword",
+                      "MysqlRootPasswordUbiquitous",
+                      "GangliaUrl",
+                      "GangliaUser",
+                      "GangliaPassword",
+                      "MemcachedMemory",
+                      "NodejsVersion",
+                      "RubyVersion",
+                      "RubygemsVersion",
+                      "ManageBundler",
+                      "BundlerVersion",
+                      "RailsStack",
+                      "PassengerVersion"
+                    ],
                     "documentation": null
                   },
                   "members": {
@@ -2886,8 +3218,11 @@
                   "shape_name": "StackAttributes",
                   "type": "map",
                   "keys": {
-                    "shape_name": "String",
+                    "shape_name": "StackAttributesKeys",
                     "type": "string",
+                    "enum": [
+                      "Color"
+                    ],
                     "documentation": null
                   },
                   "members": {
@@ -2985,6 +3320,15 @@
                   "shape_name": "DateTime",
                   "type": "string",
                   "documentation": "\n      <p>Date when the stack was created.</p>\n   "
+                },
+                "DefaultRootDeviceType": {
+                  "shape_name": "RootDeviceType",
+                  "type": "string",
+                  "enum": [
+                    "ebs",
+                    "instance-store"
+                  ],
+                  "documentation": null
                 }
               },
               "documentation": "\n      <p>Describes a stack.</p>\n   "
@@ -3425,6 +3769,44 @@
       ],
       "documentation": "\n      <p>Describes an instance's Amazon EBS volumes.</p>\n   "
     },
+    "DetachElasticLoadBalancer": {
+      "name": "DetachElasticLoadBalancer",
+      "input": {
+        "shape_name": "DetachElasticLoadBalancerRequest",
+        "type": "structure",
+        "members": {
+          "ElasticLoadBalancerName": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          },
+          "LayerId": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": null,
+            "required": true
+          }
+        },
+        "documentation": null
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
+        }
+      ],
+      "documentation": null
+    },
     "GetHostnameSuggestion": {
       "name": "GetHostnameSuggestion",
       "input": {
@@ -3703,6 +4085,18 @@
             }
           },
           "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
+        },
+        {
+          "shape_name": "ResourceNotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "\n      <p>The exception message.</p>\n   "
+            }
+          },
+          "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
         }
       ],
       "documentation": "\n      <p>Specifies a stack's permissions.</p>\n   "
@@ -4160,8 +4554,13 @@
             "shape_name": "AppAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "AppAttributesKeys",
               "type": "string",
+              "enum": [
+                "DocumentRoot",
+                "RailsEnv",
+                "AutoBundleOnDeploy"
+              ],
               "documentation": null
             },
             "members": {
@@ -4234,9 +4633,8 @@
             "shape_name": "AutoScalingType",
             "type": "string",
             "enum": [
-              "AlwaysRunning",
-              "TimeBasedAutoScaling",
-              "LoadBasedAutoScaling"
+              "load",
+              "timer"
             ],
             "documentation": "\n      <p>The instance's auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>: A 24x7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.</li>\n      </ul>\n   "
           },
@@ -4254,6 +4652,15 @@
             "shape_name": "String",
             "type": "string",
             "documentation": "\n      <p>The instance SSH key name.</p>\n   "
+          },
+          "Architecture": {
+            "shape_name": "Architecture",
+            "type": "string",
+            "enum": [
+              "x86_64",
+              "i386"
+            ],
+            "documentation": null
           }
         },
         "documentation": ""
@@ -4313,8 +4720,29 @@
             "shape_name": "LayerAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "LayerAttributesKeys",
               "type": "string",
+              "enum": [
+                "EnableHaproxyStats",
+                "HaproxyStatsUrl",
+                "HaproxyStatsUser",
+                "HaproxyStatsPassword",
+                "HaproxyHealthCheckUrl",
+                "HaproxyHealthCheckMethod",
+                "MysqlRootPassword",
+                "MysqlRootPasswordUbiquitous",
+                "GangliaUrl",
+                "GangliaUser",
+                "GangliaPassword",
+                "MemcachedMemory",
+                "NodejsVersion",
+                "RubyVersion",
+                "RubygemsVersion",
+                "ManageBundler",
+                "BundlerVersion",
+                "RailsStack",
+                "PassengerVersion"
+              ],
               "documentation": null
             },
             "members": {
@@ -4509,8 +4937,11 @@
             "shape_name": "StackAttributes",
             "type": "map",
             "keys": {
-              "shape_name": "String",
+              "shape_name": "StackAttributesKeys",
               "type": "string",
+              "enum": [
+                "Color"
+              ],
               "documentation": null
             },
             "members": {
@@ -4603,6 +5034,15 @@
             "shape_name": "String",
             "type": "string",
             "documentation": "\n      <p>A default SSH key for the stack instances. You can override this value when you create or update an instance.</p>\n   "
+          },
+          "DefaultRootDeviceType": {
+            "shape_name": "RootDeviceType",
+            "type": "string",
+            "enum": [
+              "ebs",
+              "instance-store"
+            ],
+            "documentation": null
           }
         },
         "documentation": ""

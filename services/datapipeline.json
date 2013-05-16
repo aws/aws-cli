@@ -1,13 +1,13 @@
 {
-  "service_full_name": "AWS Data Pipeline",
+  "api_version": "2012-10-29",
   "type": "json",
   "json_version": 1.1,
-  "signature_version": "v4",
   "target_prefix": "DataPipeline",
-  "api_version": "2012-10-29",
+  "signature_version": "v4",
+  "service_full_name": "AWS Data Pipeline",
   "endpoint_prefix": "datapipeline",
   "xmlnamespace": "http://datapipeline.amazonaws.com/doc/2012-10-29/",
-  "documentation": "\n        <p> \n            This is the <i>AWS Data Pipeline API Reference</i>. This guide provides descriptions and\n            samples of the AWS Data Pipeline API.\n        </p>\n        \n        <p>\n            AWS Data Pipeline is a web service that configures and manages a data-driven workflow called a pipeline. AWS Data Pipeline handles the details of scheduling and ensuring that data dependencies are met so your application can focus on processing the data.</p>\n        \n        <p>\n            The AWS Data Pipeline API implements two main sets of functionality. The first set of actions configure the pipeline in the web service. You call these actions to create a pipeline and define data sources, schedules, dependencies, and the transforms to be performed on the data.\n        </p>\n        \n        <p>\n            The second set of actions are used by a task runner application that calls the AWS Data Pipeline API to receive the next task ready for processing. The logic for performing the task, such as querying the data, running data analysis, or converting the data from one format to another, is contained within the task runner. The task runner performs the task assigned to it by the web service, reporting progress to the web service as it does so. When the task is done, the task runner reports the final success or failure of the task to the web service.\n        </p>\n        \n        <p>\n            AWS Data Pipeline provides an open-source implementation of a task runner called AWS Data Pipeline Task Runner. AWS Data Pipeline Task Runner provides logic for common data management scenarios, such as performing database queries and running data analysis using Amazon Elastic MapReduce (Amazon EMR). You can use AWS Data Pipeline Task Runner as your task runner, or you can write your own task runner to provide custom data management.\n        </p>\n        \n            \n        <p>\n            The AWS Data Pipeline API uses the Signature Version 4 protocol for signing requests. For information about how to sign a request with this protocol, go to \n            <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>. In the code examples in this reference, the Signature Version 4 Request parameters are represented as AuthParams.\n        </p>\n        \n        <p><i>Note: This is pre-release documentation and subject to change.</i></p>\n    ",
+  "documentation": "\n        <p> \n            This is the <i>AWS Data Pipeline API Reference</i>. This guide provides descriptions and\n            samples of the AWS Data Pipeline API.\n        </p>\n        \n        <p>\n            AWS Data Pipeline is a web service that configures and manages a data-driven workflow called a pipeline. AWS Data Pipeline handles the details of scheduling and ensuring that data dependencies are met so your application can focus on processing the data.</p>\n        \n        <p>\n            The AWS Data Pipeline API implements two main sets of functionality. The first set of actions configure the pipeline in the web service. You call these actions to create a pipeline and define data sources, schedules, dependencies, and the transforms to be performed on the data.\n        </p>\n        \n        <p>\n            The second set of actions are used by a task runner application that calls the AWS Data Pipeline API to receive the next task ready for processing. The logic for performing the task, such as querying the data, running data analysis, or converting the data from one format to another, is contained within the task runner. The task runner performs the task assigned to it by the web service, reporting progress to the web service as it does so. When the task is done, the task runner reports the final success or failure of the task to the web service.\n        </p>\n        \n        <p>\n            AWS Data Pipeline provides an open-source implementation of a task runner called AWS Data Pipeline Task Runner. AWS Data Pipeline Task Runner provides logic for common data management scenarios, such as performing database queries and running data analysis using Amazon Elastic MapReduce (Amazon EMR). You can use AWS Data Pipeline Task Runner as your task runner, or you can write your own task runner to provide custom data management.\n        </p>\n        \n            \n        <p>\n            The AWS Data Pipeline API uses the Signature Version 4 protocol for signing requests. For more information about how to sign a request with this protocol, see  \n            <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signature-version-4.html\">Signature Version 4 Signing Process</a>. In the code examples in this reference, the Signature Version 4 Request parameters are represented as AuthParams.\n        </p>\n        \n    ",
   "operations": {
     "ActivatePipeline": {
       "name": "ActivatePipeline",
@@ -107,7 +107,7 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 1,
             "max_length": 1024,
-            "documentation": "\n        <p>\n            A unique identifier that you specify. This identifier is not the same as the pipeline identifier assigned by AWS Data Pipeline. You are responsible for defining the format and ensuring the uniqueness of this identifier. You use this parameter to ensure idempotency during repeated calls to CreatePipeline. For example, if the first call to CreatePipeline does not return a clear success, you can pass in the same unique identifier and pipeline name combination on a subsequent call to CreatePipeline. CreatePipeline ensures that if a pipeline already exists with the same name and unique identifier, a new pipeline will not be created. Instead, you'll receive the pipeline identifier from the previous attempt. The uniqueness of the name and unique identifier combination is scoped to the AWS account or IAM user credentials.\n        </p>\n    ",
+            "documentation": "\n        <p>\n            A unique identifier that you specify. This identifier is not the same as the pipeline identifier assigned by AWS Data Pipeline. You are responsible for defining the format and ensuring the uniqueness of this identifier. You use this parameter to ensure idempotency during repeated calls to <a>CreatePipeline</a>. For example, if the first call to <a>CreatePipeline</a> does not return a clear success, you can pass in the same unique identifier and pipeline name combination on a subsequent call to <a>CreatePipeline</a>. <a>CreatePipeline</a> ensures that if a pipeline already exists with the same name and unique identifier, a new pipeline will not be created. Instead, you'll receive the pipeline identifier from the previous attempt. The uniqueness of the name and unique identifier combination is scoped to the AWS account or IAM user credentials.\n        </p>\n    ",
             "required": true
           },
           "description": {
@@ -119,7 +119,7 @@
             "documentation": "\n        <p>The description of the new pipeline.</p> \n    "
           }
         },
-        "documentation": "\n        <p>The input for the CreatePipeline action.</p> \n    "
+        "documentation": "\n        <p>The input for the <a>CreatePipeline</a> action.</p> \n    "
       },
       "output": {
         "shape_name": "CreatePipelineOutput",
@@ -181,7 +181,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>The input for the DeprecatePipeline action.</p>\n    "
+        "documentation": "\n        <p>The input for the <a>DeletePipeline</a> action.</p>\n    "
       },
       "output": null,
       "errors": [
@@ -222,7 +222,7 @@
           "documentation": "\n        <p>The request was not valid. Verify that your request was properly formatted, that the signature was generated with the correct credentials, and that you haven't exceeded any of the service limits for your account.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>\n            Permanently deletes a pipeline, its pipeline definition and its run history. You cannot query or restore a deleted pipeline. AWS Data Pipeline will attempt to cancel instances associated with the pipeline that are currently being processed by task runners. Deleting a pipeline cannot be undone.\n        </p>\n        <p> \n            To temporarily pause a pipeline instead of deleting it, call <a>SetStatus</a> with the status set to Pause on individual components. Components that are paused by <a>SetStatus</a> can be resumed.\n        </p>\n        \n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.DeletePipeline\nContent-Length: 50\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\"}\n\n            </request>\n            \n            <response>\n                 \nx-amzn-RequestId: b7a88c81-0754-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 0\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\nUnexpected response: 200, OK, undefined\n        \n            </response>s\n        </examples>\n    "
+      "documentation": "\n        <p>\n            Permanently deletes a pipeline, its pipeline definition and its run history. You cannot query or restore a deleted pipeline. AWS Data Pipeline will attempt to cancel instances associated with the pipeline that are currently being processed by task runners. Deleting a pipeline cannot be undone.\n        </p>\n        <p> \n            To temporarily pause a pipeline instead of deleting it, call <a>SetStatus</a> with the status set to Pause on individual components. Components that are paused by <a>SetStatus</a> can be resumed.\n        </p>\n        \n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.DeletePipeline\nContent-Length: 50\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\"}\n\n            </request>\n            \n            <response>\n                 \nx-amzn-RequestId: b7a88c81-0754-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 0\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\nUnexpected response: 200, OK, undefined\n        \n            </response>\n        </examples>\n    "
     },
     "DescribeObjects": {
       "name": "DescribeObjects",
@@ -250,13 +250,13 @@
               "max_length": 1024,
               "documentation": null
             },
-            "documentation": "\n        <p>Identifiers of the pipeline objects that contain the definitions to be described. You can pass as many as 25 identifiers in a single call to DescribeObjects </p>\n    ",
+            "documentation": "\n        <p>Identifiers of the pipeline objects that contain the definitions to be described. You can pass as many as 25 identifiers in a single call to DescribeObjects.</p>\n    ",
             "required": true
           },
           "evaluateExpressions": {
             "shape_name": "boolean",
             "type": "boolean",
-            "documentation": null
+            "documentation": "\n        <p>Indicates whether any expressions in the object should be evaluated when the object descriptions are returned.</p>\n    "
           },
           "marker": {
             "shape_name": "string",
@@ -264,10 +264,10 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>The starting point for the results to be returned. The first time you call DescribeObjects, this value should be empty. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call DescribeObjects again and pass the marker value from the response to retrieve the next set of results.</p>\n    "
+            "documentation": "\n        <p>The starting point for the results to be returned. The first time you call <a>DescribeObjects</a>, this value should be empty. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call <a>DescribeObjects</a> again and pass the marker value from the response to retrieve the next set of results.</p>\n    "
           }
         },
-        "documentation": "\n        <p> The DescribeObjects action returns the object definitions for a specified set of object identifiers. You can filter the results to named fields and used markers to page throught the results. </p>\n    "
+        "documentation": "\n        <p> The <a>DescribeObjects</a> action returns the object definitions for a specified set of object identifiers. You can filter the results to named fields and used markers to page through the results. </p>\n    "
       },
       "output": {
         "shape_name": "DescribeObjectsOutput",
@@ -331,7 +331,7 @@
                         "documentation": "\n        <p>The field value, expressed as the identifier of another object.</p>\n    "
                       }
                     },
-                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.</p>\n    "
+                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (<code>StringValue</code>) or a reference to another object (<code>RefValue</code>) but not as both.</p>\n    "
                   },
                   "documentation": "\n        <p>Key-value pairs that define the properties of the object.</p>\n    ",
                   "required": true
@@ -339,7 +339,7 @@
               },
               "documentation": "\n        <p>Contains information about a pipeline object. This can be a logical, physical, or physical attempt pipeline object. The complete set of components of a pipeline defines the pipeline.</p>\n    "
             },
-            "documentation": "\n        <p>An array of object definitions that are returned by the call to DescribeObjects.</p>\n    ",
+            "documentation": "\n        <p>An array of object definitions that are returned by the call to <a>DescribeObjects</a>.</p>\n    ",
             "required": true
           },
           "marker": {
@@ -348,7 +348,7 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>\n            The starting point for the next page of results. To view the next page of results, call DescribeObjects again with this marker value.\n        </p>\n    "
+            "documentation": "\n        <p>\n            The starting point for the next page of results. To view the next page of results, call <a>DescribeObjects</a> again with this marker value.\n        </p>\n    "
           },
           "hasMoreResults": {
             "shape_name": "boolean",
@@ -356,7 +356,7 @@
             "documentation": "\n        <p>If <code>True</code>, there are more pages of results to return.</p>\n    "
           }
         },
-        "documentation": "\n        <p>If <code>True</code>, there are more results that can be returned in another call to DescribeObjects.</p>\n    "
+        "documentation": "\n        <p>If <code>True</code>, there are more results that can be returned in another call to <a>DescribeObjects</a>.</p>\n    "
       },
       "errors": [
         {
@@ -408,7 +408,7 @@
           "documentation": "\n        <p>The specified pipeline has been deleted.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>\n           Returns the object definitions for a set of objects associated with the pipeline. Object definitions are composed of a set of fields that define the properties of the object. \n        </p>\n        \n        <examples>\n            \n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.DescribeObjects\nContent-Length: 95\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"objectIds\": \n  [\"Schedule\", \"Default\"], \n \"marker\": \"\"}\n\n            </request>\n            \n            <response>\n\nx-amzn-RequestId: 4c18ea5d-0777-11e2-8a14-21bb8a1f50ef\nContent-Type: application/x-amz-json-1.1\nContent-Length: 1488\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"hasMoreResults\": false, \n \"pipelineObjects\": \n  [\n    {\"id\": \"Schedule\", \n     \"name\": \"Schedule\", \n     \"fields\": \n      [\n        {\"key\": \"@baseType\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"#backRefSchedule\", \n         \"refValue\": \"SayHello\"}, \n        {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"}, \n        {\"key\": \"@id\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"@sphere\", \n         \"stringValue\": \"LO\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"@status\", \n         \"stringValue\": \"PENDING\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}, \n        {\"key\": \"@pipelineId\", \n         \"stringValue\": \"df-06372391ZG65EXAMPLE\"}\n      ]\n    }, \n    {\"id\": \"Default\", \n     \"name\": \"Default\", \n     \"fields\": \n      [\n        {\"key\": \"@baseType\", \n         \"stringValue\": \"Default\"}, \n        {\"key\": \"#backRefParent\", \n         \"refValue\": \"Schedule\"}, \n        {\"key\": \"#backRefParent\", \n         \"refValue\": \"SayHello\"}, h\n        {\"key\": \"@id\", \n         \"stringValue\": \"Default\"}, \n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"MyworkerGroup\"}, \n        {\"key\": \"@sphere\", \n         \"stringValue\": \"LO\"}, \n        {\"key\": \"@status\", \n         \"stringValue\": \"PENDING\"}, \n        {\"key\": \"@pipelineId\", \n         \"stringValue\": \"df-06372391ZG65EXAMPLE\"}\n      ]\n    }\n  ]\n}\n         \n            </response>\n        </examples>\n        \n    "
+      "documentation": "\n        <p>\n           Returns the object definitions for a set of objects associated with the pipeline. Object definitions are composed of a set of fields that define the properties of the object. \n        </p>\n        \n        <examples>\n            \n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.DescribeObjects\nContent-Length: 98\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"objectIds\": \n  [\"Schedule\"],\n \"evaluateExpressions\": true}\n\n            </request>\n            \n            <response>\n\nx-amzn-RequestId: 4c18ea5d-0777-11e2-8a14-21bb8a1f50ef\nContent-Type: application/x-amz-json-1.1\nContent-Length: 1488\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"hasMoreResults\": false, \n \"pipelineObjects\": \n  [\n    {\"fields\": \n      [\n        {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-12-12T00:00:00\"}, \n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"}, \n        {\"key\": \"@sphere\", \n         \"stringValue\": \"COMPONENT\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-12-21T18:00:00\"}, \n        {\"key\": \"@version\", \n         \"stringValue\": \"1\"}, \n        {\"key\": \"@status\", \n         \"stringValue\": \"PENDING\"}, \n        {\"key\": \"@pipelineId\", \n         \"stringValue\": \"df-06372391ZG65EXAMPLE\"}\n      ], \n     \"id\": \"Schedule\", \n     \"name\": \"Schedule\"}\n  ]\n}\n         \n            </response>\n        </examples>\n        \n    "
     },
     "DescribePipelines": {
       "name": "DescribePipelines",
@@ -427,11 +427,11 @@
               "max_length": 1024,
               "documentation": null
             },
-            "documentation": "\n        <p>Identifiers of the pipelines to describe. You can pass as many as 25 identifiers in a single call to DescribePipelines. You can obtain pipeline identifiers by calling ListPipelines.</p>\n    ",
+            "documentation": "\n        <p>Identifiers of the pipelines to describe. You can pass as many as 25 identifiers in a single call to <a>DescribePipelines</a>. You can obtain pipeline identifiers by calling <a>ListPipelines</a>.</p>\n    ",
             "required": true
           }
         },
-        "documentation": "\n        <p>The input to the DescribePipelines action.</p>\n    "
+        "documentation": "\n        <p>The input to the <a>DescribePipelines</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "DescribePipelinesOutput",
@@ -450,7 +450,7 @@
                   "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
                   "min_length": 1,
                   "max_length": 1024,
-                  "documentation": "\n        <p>The pipeline identifier that was assigned by AWS Data Pipeline. This is a string of the form df-297EG78HU43EEXAMPLE.</p>\n    ",
+                  "documentation": "\n        <p>The pipeline identifier that was assigned by AWS Data Pipeline. This is a string of the form <code>df-297EG78HU43EEXAMPLE</code>.</p>\n    ",
                   "required": true
                 },
                 "name": {
@@ -495,7 +495,7 @@
                         "documentation": "\n        <p>The field value, expressed as the identifier of another object.</p>\n    "
                       }
                     },
-                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.</p>\n    "
+                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (<code>StringValue</code>) or a reference to another object (<code>RefValue</code>) but not as both.</p>\n    "
                   },
                   "documentation": "\n        <p>A list of read-only fields that contain metadata about the pipeline: @userId, @accountId, and @pipelineState.</p>\n    ",
                   "required": true
@@ -515,7 +515,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>Contains the output from the DescribePipelines action.</p>\n    "
+        "documentation": "\n        <p>Contains the output from the <a>DescribePipelines</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -603,7 +603,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>The input for the EvaluateExpression action.</p>\n    "
+        "documentation": "\n        <p>The input for the <a>EvaluateExpression</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "EvaluateExpressionOutput",
@@ -619,7 +619,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>Contains the output from the EvaluateExpression action.</p>\n    "
+        "documentation": "\n        <p>Contains the output from the <a>EvaluateExpression</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -683,7 +683,7 @@
           "documentation": "\n        <p>The specified pipeline has been deleted.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>Evaluates a string in the context of a specified object. A task runner can use this action to evaluate SQL queries stored in Amazon S3. </p>\n    "
+      "documentation": "\n        <p>Evaluates a string in the context of a specified object. A task runner can use this action to evaluate SQL queries stored in Amazon S3. </p>\n        \n        \n        \n        <examples>\n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.DescribePipelines\nContent-Length: 164\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-08785951KAKJEXAMPLE\",\n        \"objectId\": \"Schedule\",\n        \"expression\": \"Transform started at #{startDateTime} and finished at #{endDateTime}\"}\n\n            </request>\n            \n            \n            <response>\n                 \nx-amzn-RequestId: 02870eb7-0736-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 103\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"evaluatedExpression\": \"Transform started at 2012-12-12T00:00:00 and finished at 2012-12-21T18:00:00\"}\n</response>\n        </examples> \n    "
     },
     "GetPipelineDefinition": {
       "name": "GetPipelineDefinition",
@@ -706,10 +706,10 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>The version of the pipeline definition to retrieve.</p>\n    "
+            "documentation": "\n        <p>The version of the pipeline definition to retrieve. This parameter accepts the values <code>latest</code> (default) and <code>active</code>. Where <code>latest</code> indicates the last definition saved to the pipeline and <code>active</code> indicates the last definition of the pipeline that was activated.</p>\n    "
           }
         },
-        "documentation": "\n        <p>The input for the GetPipelineDefinition action.</p>\n    "
+        "documentation": "\n        <p>The input for the <a>GetPipelineDefinition</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "GetPipelineDefinitionOutput",
@@ -773,7 +773,7 @@
                         "documentation": "\n        <p>The field value, expressed as the identifier of another object.</p>\n    "
                       }
                     },
-                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.</p>\n    "
+                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (<code>StringValue</code>) or a reference to another object (<code>RefValue</code>) but not as both.</p>\n    "
                   },
                   "documentation": "\n        <p>Key-value pairs that define the properties of the object.</p>\n    ",
                   "required": true
@@ -784,7 +784,7 @@
             "documentation": "\n        <p>An array of objects defined in the pipeline.</p>\n    "
           }
         },
-        "documentation": "\n        <p>Contains the output from the GetPipelineDefinition action.</p>\n    "
+        "documentation": "\n        <p>Contains the output from the <a>GetPipelineDefinition</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -836,7 +836,7 @@
           "documentation": "\n        <p>The specified pipeline has been deleted.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>Returns the definition of the specified pipeline. You can call GetPipelineDefinition to retrieve the pipeline definition you provided using <a>PutPipelineDefinition</a>.</p>\n\n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.GetPipelineDefinition\nContent-Length: 40\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\"}\n\n            </request>\n            <response>\n                \nx-amzn-RequestId: e28309e5-0776-11e2-8a14-21bb8a1f50ef\nContent-Type: application/x-amz-json-1.1\nContent-Length: 890\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"pipelineObjects\": \n  [\n    {\"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"workerGroup\"}\n      ], \n     \"id\": \"Default\", \n     \"name\": \"Default\"}, \n    {\"fields\": \n      [\n        {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ], \n     \"id\": \"Schedule\", \n     \"name\": \"Schedule\"}, \n    {\"fields\": \n      [\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}, \n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"}, \n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"}\n      ], \n     \"id\": \"SayHello\", \n     \"name\": \"SayHello\"}\n  ]\n}\n\n            </response>\n        </examples>\n    "
+      "documentation": "\n        <p>Returns the definition of the specified pipeline. You can call <a>GetPipelineDefinition</a> to retrieve the pipeline definition you provided using <a>PutPipelineDefinition</a>.</p>\n\n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.GetPipelineDefinition\nContent-Length: 40\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\"}\n\n            </request>\n            <response>\n                \nx-amzn-RequestId: e28309e5-0776-11e2-8a14-21bb8a1f50ef\nContent-Type: application/x-amz-json-1.1\nContent-Length: 890\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"pipelineObjects\": \n  [\n    {\"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"workerGroup\"}\n      ], \n     \"id\": \"Default\", \n     \"name\": \"Default\"}, \n    {\"fields\": \n      [\n        {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ], \n     \"id\": \"Schedule\", \n     \"name\": \"Schedule\"}, \n    {\"fields\": \n      [\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}, \n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"}, \n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"}\n      ], \n     \"id\": \"SayHello\", \n     \"name\": \"SayHello\"}\n  ]\n}\n\n            </response>\n        </examples>\n    "
     },
     "ListPipelines": {
       "name": "ListPipelines",
@@ -850,10 +850,10 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>The starting point for the results to be returned. The first time you call ListPipelines, this value should be empty. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call ListPipelines again and pass the marker value from the response to retrieve the next set of results.</p>\n    "
+            "documentation": "\n        <p>The starting point for the results to be returned. The first time you call <a>ListPipelines</a>, this value should be empty. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call <a>ListPipelines</a> again and pass the marker value from the response to retrieve the next set of results.</p>\n    "
           }
         },
-        "documentation": "\n        <p>The input to the ListPipelines action.</p>\n    "
+        "documentation": "\n        <p>The input to the <a>ListPipelines</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "ListPipelinesOutput",
@@ -872,7 +872,7 @@
                   "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
                   "min_length": 1,
                   "max_length": 1024,
-                  "documentation": "\n        <p>Identifier of the pipeline that was assigned by AWS Data Pipeline. This is a string of the form df-297EG78HU43EEXAMPLE.</p>\n    "
+                  "documentation": "\n        <p>Identifier of the pipeline that was assigned by AWS Data Pipeline. This is a string of the form <code>df-297EG78HU43EEXAMPLE</code>.</p>\n    "
                 },
                 "name": {
                   "shape_name": "id",
@@ -894,15 +894,15 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>If not null, indicates the starting point for the set of pipeline identifiers that the next call to ListPipelines will retrieve. If null, there are no more pipeline identifiers. .</p>\n    "
+            "documentation": "\n        <p>If not null, indicates the starting point for the set of pipeline identifiers that the next call to <a>ListPipelines</a> will retrieve. If null, there are no more pipeline identifiers.</p>\n    "
           },
           "hasMoreResults": {
             "shape_name": "boolean",
             "type": "boolean",
-            "documentation": "\n        <p>If <code>True</code>, there are more results that can be obtained by a subsequent call to ListPipelines.</p>\n    "
+            "documentation": "\n        <p>If <code>True</code>, there are more results that can be obtained by a subsequent call to <a>ListPipelines</a>.</p>\n    "
           }
         },
-        "documentation": "\n        <p>Contains the output from the ListPipelines action.</p> \n    "
+        "documentation": "\n        <p>Contains the output from the <a>ListPipelines</a> action.</p> \n    "
       },
       "errors": [
         {
@@ -944,7 +944,7 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>Indicates the type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for workerGroup in the call to PollForTask. There are no wildcard values permitted in workerGroup, the string must be an exact, case-sensitive, match.\n        </p>\n    ",
+            "documentation": "\n        <p>Indicates the type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for <code>workerGroup</code> in the call to <a>PollForTask</a>. There are no wildcard values permitted in <code>workerGroup</code>, the string must be an exact, case-sensitive, match.\n        </p>\n    ",
             "required": true
           },
           "hostname": {
@@ -965,7 +965,7 @@
                 "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
                 "min_length": 0,
                 "max_length": 1024,
-                "documentation": "\n        <p>A description of an Amazon EC2 instance that is generated when the instance is launched and exposed to the instance via the instance meta-data service in the form of a JSON representation of an object.</p>\n    "
+                "documentation": "\n        <p>A description of an Amazon EC2 instance that is generated when the instance is launched and exposed to the instance via the instance metadata service in the form of a JSON representation of an object.</p>\n    "
               },
               "signature": {
                 "shape_name": "string",
@@ -1079,7 +1079,7 @@
                             "documentation": "\n        <p>The field value, expressed as the identifier of another object.</p>\n    "
                           }
                         },
-                        "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.</p>\n    "
+                        "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (<code>StringValue</code>) or a reference to another object (<code>RefValue</code>) but not as both.</p>\n    "
                       },
                       "documentation": "\n        <p>Key-value pairs that define the properties of the object.</p>\n    ",
                       "required": true
@@ -1090,7 +1090,7 @@
                 "documentation": "\n        <p>Connection information for the location where the task runner will publish the output of the task.</p>\n    "
               }
             },
-            "documentation": "\n        <p>An instance of PollForTaskResult, which contains an instance of TaskObject. The returned object contains all the information needed to complete the task that is being assigned to the task runner. One of the fields returned in this object is taskId, which contains an identifier for the task being assigned. The calling task runner  uses taskId in subsequent calls to <a>ReportTaskProgress</a> and <a>SetTaskStatus</a>.</p>\n    "
+            "documentation": "\n        <p>An instance of <a>PollForTaskResult</a>, which contains an instance of <a>TaskObject</a>. The returned object contains all the information needed to complete the task that is being assigned to the task runner. One of the fields returned in this object is taskId, which contains an identifier for the task being assigned. The calling task runner  uses taskId in subsequent calls to <a>ReportTaskProgress</a> and <a>SetTaskStatus</a>.</p>\n    "
           }
         },
         "documentation": "\n        <p>Contains the output from the PollForTask action.</p>\n    "
@@ -1133,7 +1133,7 @@
           "documentation": "\n        <p>The specified task was not found. </p>\n    "
         }
       ],
-      "documentation": "\n        <p>\n            Task runners call this action to receive a task to perform from AWS Data Pipeline. The task runner specifies which tasks it can perform by setting a value for the workerGroup parameter of the PollForTask call. The task returned by PollForTask may come from any of the pipelines that match the workerGroup value passed in by the task runner and that was launched using the IAM user credentials specified by the task runner.\n        </p>\n        <p>\n            If tasks are ready in the work queue, PollForTask returns a response immediately. If no tasks are available in the queue, PollForTask uses long-polling and holds on to a poll connection for up to a 90 seconds during which time the first newly scheduled task is handed to the task runner. To accomodate this, set the socket timeout in your task runner to 90 seconds. The task runner should not call PollForTask again on the same workerGroup until it receives a response, and this may take up to 90 seconds.\n        </p>\n\n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.PollForTask\nContent-Length: 59\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"workerGroup\": \"MyworkerGroup\",\n \"hostname\": \"example.com\"}\n\n            </request>\n            \n            <response>\n \nx-amzn-RequestId: 41c713d2-0775-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 39\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"taskObject\": \n  {\"attemptId\": \"@SayHello_2012-12-12T00:00:00_Attempt=1\", \n   \"objects\": \n    {\"@SayHello_2012-12-12T00:00:00_Attempt=1\": \n      {\"fields\": \n        [\n          {\"key\": \"@componentParent\", \n           \"refValue\": \"SayHello\"}, \n          {\"key\": \"@scheduledStartTime\", \n           \"stringValue\": \"2012-12-12T00:00:00\"}, \n          {\"key\": \"parent\", \n           \"refValue\": \"SayHello\"}, \n          {\"key\": \"@sphere\", \n           \"stringValue\": \"ATTEMPT\"}, \n          {\"key\": \"workerGroup\", \n           \"stringValue\": \"workerGroup\"}, \n          {\"key\": \"@instanceParent\", \n           \"refValue\": \"@SayHello_2012-12-12T00:00:00\"}, \n          {\"key\": \"type\", \n           \"stringValue\": \"ShellCommandActivity\"}, \n          {\"key\": \"@status\", \n           \"stringValue\": \"WAITING_FOR_RUNNER\"}, \n          {\"key\": \"@version\", \n           \"stringValue\": \"1\"}, \n          {\"key\": \"schedule\", \n           \"refValue\": \"Schedule\"}, \n          {\"key\": \"@actualStartTime\", \n           \"stringValue\": \"2012-12-13T01:40:50\"}, \n          {\"key\": \"command\", \n           \"stringValue\": \"echo hello\"}, \n          {\"key\": \"@scheduledEndTime\", \n           \"stringValue\": \"2012-12-12T01:00:00\"}, \n          {\"key\": \"@activeInstances\", \n           \"refValue\": \"@SayHello_2012-12-12T00:00:00\"}, \n          {\"key\": \"@pipelineId\", \n           \"stringValue\": \"df-0937003356ZJEXAMPLE\"}\n        ], \n       \"id\": \"@SayHello_2012-12-12T00:00:00_Attempt=1\", \n       \"name\": \"@SayHello_2012-12-12T00:00:00_Attempt=1\"}\n    }, \n   \"pipelineId\": \"df-0937003356ZJEXAMPLE\", \n   \"taskId\": \"2xaM4wRs5zOsIH+g9U3oVHfAgAlbSqU6XduncB0HhZ3xMnmvfePZPn4dIbYXHyWyRK+cU15MqDHwdrvftx/4wv+sNS4w34vJfv7QA9aOoOazW28l1GYSb2ZRR0N0paiQp+d1MhSKo10hOTWOsVK5S5Lnx9Qm6omFgXHyIvZRIvTlrQMpr1xuUrflyGOfbFOGpOLpvPE172MYdqpZKnbSS4TcuqgQKSWV2833fEubI57DPOP7ghWa2TcYeSIv4pdLYG53fTuwfbnbdc98g2LNUQzSVhSnt7BoqyNwht2aQ6b/UHg9A80+KVpuXuqmz3m1MXwHFgxjdmuesXNOrrlGpeLCcRWD+aGo0RN1NqhQRzNAig8V4GlaPTQzMsRCljKqvrIyAoP3Tt2XEGsHkkQo12rEX8Z90957XX2qKRwhruwYzqGkSLWjINoLdAxUJdpRXRc5DJTrBd3D5mdzn7kY1l7NEh4kFHJDt3Cx4Z3Mk8MYCACyCk/CEyy9DwuPi66cLz0NBcgbCM5LKjTBOwo1m+am+pvM1kSposE9FPP1+RFGb8k6jQBTJx3TRz1yKilnGXQTZ5xvdOFpJrklIT0OXP1MG3+auM9FlJA+1dX90QoNJE5z7axmK//MOGXUdkqFe2kiDkorqjxwDvc0Js9pVKfKvAmW8YqUbmI9l0ERpWCXXnLVHNmPWz3jaPY+OBAmuJWDmxB/Z8p94aEDg4BVXQ7LvsKQ3DLYhaB7yJ390CJT+i0mm+EBqY60V6YikPSWDFrYQ/NPi2b1DgE19mX8zHqw8qprIl4yh1Ckx2Iige4En/N5ktOoIxnASxAw/TzcE2skxdw5KlHDF+UTj71m16CR/dIaKlXijlfNlNzUBo/bNSadCQn3G5NoO501wPKI:XO50TgDNyo8EXAMPLE/g==:1\"}\n}\n         \n            </response>\n        </examples>\n    "
+      "documentation": "\n        <p>\n            Task runners call this action to receive a task to perform from AWS Data Pipeline. The task runner specifies which tasks it can perform by setting a value for the workerGroup parameter of the <a>PollForTask</a> call. The task returned by <a>PollForTask</a> may come from any of the pipelines that match the workerGroup value passed in by the task runner and that was launched using the IAM user credentials specified by the task runner.\n        </p>\n        <p>\n            If tasks are ready in the work queue, <a>PollForTask</a> returns a response immediately. If no tasks are available in the queue, <a>PollForTask</a> uses long-polling and holds on to a poll connection for up to a 90 seconds during which time the first newly scheduled task is handed to the task runner. To accomodate this, set the socket timeout in your task runner to 90 seconds. The task runner should not call <a>PollForTask</a> again on the same <code>workerGroup</code> until it receives a response, and this may take up to 90 seconds.\n        </p>\n\n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.PollForTask\nContent-Length: 59\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"workerGroup\": \"MyworkerGroup\",\n \"hostname\": \"example.com\"}\n\n            </request>\n            \n            <response>\n \nx-amzn-RequestId: 41c713d2-0775-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 39\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"taskObject\": \n  {\"attemptId\": \"@SayHello_2012-12-12T00:00:00_Attempt=1\", \n   \"objects\": \n    {\"@SayHello_2012-12-12T00:00:00_Attempt=1\": \n      {\"fields\": \n        [\n          {\"key\": \"@componentParent\", \n           \"refValue\": \"SayHello\"}, \n          {\"key\": \"@scheduledStartTime\", \n           \"stringValue\": \"2012-12-12T00:00:00\"}, \n          {\"key\": \"parent\", \n           \"refValue\": \"SayHello\"}, \n          {\"key\": \"@sphere\", \n           \"stringValue\": \"ATTEMPT\"}, \n          {\"key\": \"workerGroup\", \n           \"stringValue\": \"workerGroup\"}, \n          {\"key\": \"@instanceParent\", \n           \"refValue\": \"@SayHello_2012-12-12T00:00:00\"}, \n          {\"key\": \"type\", \n           \"stringValue\": \"ShellCommandActivity\"}, \n          {\"key\": \"@status\", \n           \"stringValue\": \"WAITING_FOR_RUNNER\"}, \n          {\"key\": \"@version\", \n           \"stringValue\": \"1\"}, \n          {\"key\": \"schedule\", \n           \"refValue\": \"Schedule\"}, \n          {\"key\": \"@actualStartTime\", \n           \"stringValue\": \"2012-12-13T01:40:50\"}, \n          {\"key\": \"command\", \n           \"stringValue\": \"echo hello\"}, \n          {\"key\": \"@scheduledEndTime\", \n           \"stringValue\": \"2012-12-12T01:00:00\"}, \n          {\"key\": \"@activeInstances\", \n           \"refValue\": \"@SayHello_2012-12-12T00:00:00\"}, \n          {\"key\": \"@pipelineId\", \n           \"stringValue\": \"df-0937003356ZJEXAMPLE\"}\n        ], \n       \"id\": \"@SayHello_2012-12-12T00:00:00_Attempt=1\", \n       \"name\": \"@SayHello_2012-12-12T00:00:00_Attempt=1\"}\n    }, \n   \"pipelineId\": \"df-0937003356ZJEXAMPLE\", \n   \"taskId\": \"2xaM4wRs5zOsIH+g9U3oVHfAgAlbSqU6XduncB0HhZ3xMnmvfePZPn4dIbYXHyWyRK+cU15MqDHwdrvftx/4wv+sNS4w34vJfv7QA9aOoOazW28l1GYSb2ZRR0N0paiQp+d1MhSKo10hOTWOsVK5S5Lnx9Qm6omFgXHyIvZRIvTlrQMpr1xuUrflyGOfbFOGpOLpvPE172MYdqpZKnbSS4TcuqgQKSWV2833fEubI57DPOP7ghWa2TcYeSIv4pdLYG53fTuwfbnbdc98g2LNUQzSVhSnt7BoqyNwht2aQ6b/UHg9A80+KVpuXuqmz3m1MXwHFgxjdmuesXNOrrlGpeLCcRWD+aGo0RN1NqhQRzNAig8V4GlaPTQzMsRCljKqvrIyAoP3Tt2XEGsHkkQo12rEX8Z90957XX2qKRwhruwYzqGkSLWjINoLdAxUJdpRXRc5DJTrBd3D5mdzn7kY1l7NEh4kFHJDt3Cx4Z3Mk8MYCACyCk/CEyy9DwuPi66cLz0NBcgbCM5LKjTBOwo1m+am+pvM1kSposE9FPP1+RFGb8k6jQBTJx3TRz1yKilnGXQTZ5xvdOFpJrklIT0OXP1MG3+auM9FlJA+1dX90QoNJE5z7axmK//MOGXUdkqFe2kiDkorqjxwDvc0Js9pVKfKvAmW8YqUbmI9l0ERpWCXXnLVHNmPWz3jaPY+OBAmuJWDmxB/Z8p94aEDg4BVXQ7LvsKQ3DLYhaB7yJ390CJT+i0mm+EBqY60V6YikPSWDFrYQ/NPi2b1DgE19mX8zHqw8qprIl4yh1Ckx2Iige4En/N5ktOoIxnASxAw/TzcE2skxdw5KlHDF+UTj71m16CR/dIaKlXijlfNlNzUBo/bNSadCQn3G5NoO501wPKI:XO50TgDNyo8EXAMPLE/g==:1\"}\n}\n         \n            </response>\n        </examples>\n    "
     },
     "PutPipelineDefinition": {
       "name": "PutPipelineDefinition",
@@ -1208,7 +1208,7 @@
                         "documentation": "\n        <p>The field value, expressed as the identifier of another object.</p>\n    "
                       }
                     },
-                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.</p>\n    "
+                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (<code>StringValue</code>) or a reference to another object (<code>RefValue</code>) but not as both.</p>\n    "
                   },
                   "documentation": "\n        <p>Key-value pairs that define the properties of the object.</p>\n    ",
                   "required": true
@@ -1220,7 +1220,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>The input of the PutPipelineDefinition action.</p>\n    "
+        "documentation": "\n        <p>The input of the <a>PutPipelineDefinition</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "PutPipelineDefinitionOutput",
@@ -1242,10 +1242,10 @@
                   "documentation": "\n        <p>The identifier of the object that contains the validation error.</p>\n    "
                 },
                 "errors": {
-                  "shape_name": "validationErrorList",
+                  "shape_name": "validationMessages",
                   "type": "list",
                   "members": {
-                    "shape_name": "validationError",
+                    "shape_name": "validationMessage",
                     "type": "string",
                     "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
                     "min_length": 0,
@@ -1255,18 +1255,51 @@
                   "documentation": "\n        <p>A description of the validation error.</p>\n    "
                 }
               },
-              "documentation": "\n        <p>Defines a validation error returned by <a>PutPipelineDefinition</a> or <a>ValidatePipelineDefinition</a>. The set of validation errors that can be returned are defined by AWS Data Pipeline.</p>\n    "
+              "documentation": "\n        <p>Defines a validation error returned by <a>PutPipelineDefinition</a> or <a>ValidatePipelineDefinition</a>. Validation errors prevent pipeline activation. The set of validation errors that can be returned are defined by AWS Data Pipeline.</p>\n    "
             },
-            "documentation": "\n        <p>A list of the validation errors that are associated with the objects defined in pipelineObjects.</p>\n    "
+            "documentation": "\n        <p>A list of the validation errors that are associated with the objects defined in <code>pipelineObjects</code>.</p>\n    "
+          },
+          "validationWarnings": {
+            "shape_name": "ValidationWarnings",
+            "type": "list",
+            "members": {
+              "shape_name": "ValidationWarning",
+              "type": "structure",
+              "members": {
+                "id": {
+                  "shape_name": "id",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1024,
+                  "documentation": "\n        <p>The identifier of the object that contains the validation warning.</p>\n    "
+                },
+                "warnings": {
+                  "shape_name": "validationMessages",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "validationMessage",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "min_length": 0,
+                    "max_length": 10000,
+                    "documentation": null
+                  },
+                  "documentation": "\n        <p>A description of the validation warning.</p>\n    "
+                }
+              },
+              "documentation": "\n        <p>Defines a validation warning returned by <a>PutPipelineDefinition</a> or <a>ValidatePipelineDefinition</a>. Validation warnings do not prevent pipeline activation. The set of validation warnings that can be returned are defined by AWS Data Pipeline.</p>\n    "
+            },
+            "documentation": "\n        <p>A list of the validation warnings that are associated with the objects defined in <code>pipelineObjects</code>.</p>\n    "
           },
           "errored": {
             "shape_name": "boolean",
             "type": "boolean",
-            "documentation": "\n        <p>If <code>True</code>, there were validation errors. If errored is <code>True</code>, the pipeline definition is stored but cannot be activated until you correct the pipeline and call PutPipelineDefinition to commit the corrected pipeline.</p>\n    ",
+            "documentation": "\n        <p>If <code>True</code>, there were validation errors. If errored is <code>True</code>, the pipeline definition is stored but cannot be activated until you correct the pipeline and call <a>PutPipelineDefinition</a> to commit the corrected pipeline.</p>\n    ",
             "required": true
           }
         },
-        "documentation": "\n        <p>Contains the output of the PutPipelineDefinition action.</p>\n    "
+        "documentation": "\n        <p>Contains the output of the <a>PutPipelineDefinition</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -1318,7 +1351,7 @@
           "documentation": "\n        <p>The specified pipeline has been deleted.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>Adds tasks, schedules, and preconditions that control the behavior of the pipeline. You can use PutPipelineDefinition to populate a new pipeline or to update an existing pipeline that has not yet been activated.\n        </p>\n        <p>\n            PutPipelineDefinition also validates the configuration as it adds it to the pipeline. Changes to the pipeline are saved unless one of the following three validation errors exists in the pipeline.\n            <ol>\n                <li>An object is missing a name or identifier field.</li>\n                <li>A string or reference field is empty.</li>\n                <li>The number of objects in the pipeline exceeds the maximum allowed objects.</li>\n            </ol>\n        </p>\n        <p>\n            Pipeline object definitions are passed to the PutPipelineDefinition action and returned by the <a>GetPipelineDefinition</a> action. \n        </p>\n        <examples>\n            <example>\n                <name>Example 1</name>\n                <description>\n                    This example sets an valid pipeline configuration and returns success.\n                </description>\n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.PutPipelineDefinition\nContent-Length: 914\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-0937003356ZJFO6ZSK6A\",\n \"pipelineObjects\": \n  [\n   {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"workerGroup\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-12-12T00:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-12-21T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n      ]\n    }\n  ]\n}\n                \n            </request>\n            <response>\n                \nHTTP/1.1 200 \nx-amzn-RequestId: f74afc14-0754-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"errored\": false}\n\n                \n            </response>\n            </example>\n            <example>\n                <name>Example 2</name>\n                <description>\n                    This example sets an invalid pipeline configuration (the value for workerGroup is an empty string) and returns an error message.\n                </description>\n                <request>\n                    \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.PutPipelineDefinition\nContent-Length: 903\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"pipelineObjects\": \n  [\n    {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n \n      ]\n    }\n  ]\n}\n                                    \n                </request>\n                <response>\n                    \nHTTP/1.1 200 \nx-amzn-RequestId: f74afc14-0754-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"__type\": \"com.amazon.setl.webservice#InvalidRequestException\", \n \"message\": \"Pipeline definition has errors: Could not save the pipeline definition due to FATAL errors: [com.amazon.setl.webservice.ValidationError@108d7ea9] Please call Validate to validate your pipeline\"}\n\n                \n                </response>\n            </example>\n        </examples>\n    "
+      "documentation": "\n        <p>Adds tasks, schedules, and preconditions that control the behavior of the pipeline. You can use PutPipelineDefinition to populate a new pipeline or to update an existing pipeline that has not yet been activated.\n        </p>\n        <p>\n            <a>PutPipelineDefinition</a> also validates the configuration as it adds it to the pipeline. Changes to the pipeline are saved unless one of the following three validation errors exists in the pipeline.\n            <ol>\n                <li>An object is missing a name or identifier field.</li>\n                <li>A string or reference field is empty.</li>\n                <li>The number of objects in the pipeline exceeds the maximum allowed objects.</li>\n            </ol>\n        </p>\n        <p>\n            Pipeline object definitions are passed to the <a>PutPipelineDefinition</a> action and returned by the <a>GetPipelineDefinition</a> action. \n        </p>\n        <examples>\n            <example>\n                <name>Example 1</name>\n                <description>\n                    This example sets an valid pipeline configuration and returns success.\n                </description>\n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.PutPipelineDefinition\nContent-Length: 914\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-0937003356ZJEXAMPLE\",\n \"pipelineObjects\": \n  [\n   {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"workerGroup\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-12-12T00:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-12-21T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n      ]\n    }\n  ]\n}\n                \n            </request>\n            <response>\n                \nHTTP/1.1 200 \nx-amzn-RequestId: f74afc14-0754-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"errored\": false}\n\n                \n            </response>\n            </example>\n            <example>\n                <name>Example 2</name>\n                <description>\n                    This example sets an invalid pipeline configuration (the value for <code>workerGroup</code> is an empty string) and returns an error message.\n                </description>\n                <request>\n                    \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.PutPipelineDefinition\nContent-Length: 903\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"pipelineObjects\": \n  [\n    {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n \n      ]\n    }\n  ]\n}\n                                    \n                </request>\n                <response>\n                    \nHTTP/1.1 200 \nx-amzn-RequestId: f74afc14-0754-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"__type\": \"com.amazon.setl.webservice#InvalidRequestException\", \n \"message\": \"Pipeline definition has errors: Could not save the pipeline definition due to FATAL errors: [com.amazon.setl.webservice.ValidationError@108d7ea9] Please call Validate to validate your pipeline\"}\n\n                \n                </response>\n            </example>\n        </examples>\n    "
     },
     "QueryObjects": {
       "name": "QueryObjects",
@@ -1368,7 +1401,7 @@
                             "GE",
                             "BETWEEN"
                           ],
-                          "documentation": " \n        <p>\n            The logical operation to be performed: equal (EQ), equal reference (REF_EQ), less than or equal (LE), greater than or equal (GE), or between (BETWEEN). Equal reference (REF_EQ) can be used only with reference fields. The other comparison types can be used only with String fields. The comparison types you can use apply only to certain object fields, as detailed below.  \n        </p>\n        <p>\n          The comparison operators EQ and REF_EQ act on the following fields:\n        </p>\n        <ul>\n            <li>name</li>\n            <li>@sphere</li>\n            <li>parent</li>\n            <li>@componentParent</li>\n            <li>@instanceParent</li>\n            <li>@status</li>\n            <li>@scheduledStartTime</li>\n            <li>@scheduledEndTime</li>\n            <li>@actualStartTime</li>\n            <li>@actualEndTime</li>\n        </ul>\n        \n        <p>\n            The comparison operators GE, LE, and BETWEEN act on the following fields:\n        </p>\n        <ul>\n            <li>@scheduledStartTime</li>\n            <li>@scheduledEndTime</li>\n            <li>@actualStartTime</li>\n            <li>@actualEndTime</li>\n        </ul>\n        <p>Note that fields beginning with the at sign (@) are read-only and set by the web service. When you name fields, you should choose names containing only alpha-numeric values, as symbols may be reserved by AWS Data Pipeline. A best practice for user-defined fields that you add to a pipeline is to prefix their name with the string \"my\".</p>\n    "
+                          "documentation": " \n        <p>\n            The logical operation to be performed: equal (<code>EQ</code>), equal reference (<code>REF_EQ</code>), less than or equal (<code>LE</code>), greater than or equal (<code>GE</code>), or between (<code>BETWEEN</code>). Equal reference (<code>REF_EQ</code>) can be used only with reference fields. The other comparison types can be used only with String fields. The comparison types you can use apply only to certain object fields, as detailed below.  \n        </p>\n        <p>\n          The comparison operators EQ and REF_EQ act on the following fields:\n        </p>\n        <ul>\n            <li>name</li>\n            <li>@sphere</li>\n            <li>parent</li>\n            <li>@componentParent</li>\n            <li>@instanceParent</li>\n            <li>@status</li>\n            <li>@scheduledStartTime</li>\n            <li>@scheduledEndTime</li>\n            <li>@actualStartTime</li>\n            <li>@actualEndTime</li>\n        </ul>\n        \n        <p>\n            The comparison operators <code>GE</code>, <code>LE</code>, and <code>BETWEEN</code> act on the following fields:\n        </p>\n        <ul>\n            <li>@scheduledStartTime</li>\n            <li>@scheduledEndTime</li>\n            <li>@actualStartTime</li>\n            <li>@actualEndTime</li>\n        </ul>\n        <p>Note that fields beginning with the at sign (@) are read-only and set by the web service. When you name fields, you should choose names containing only alpha-numeric values, as symbols may be reserved by AWS Data Pipeline. User-defined fields that you add to a pipeline should prefix their name with the string \"my\".</p>\n    "
                         },
                         "values": {
                           "shape_name": "stringList",
@@ -1392,7 +1425,7 @@
                 "documentation": "\n        <p>List of selectors that define the query. An object must satisfy all of the selectors to match the query.</p>\n    "
               }
             },
-            "documentation": "\n        <p>\n            Query that defines the objects to be returned. The Query object can contain a maximum of ten selectors. \n            The conditions in the query are limited to top-level String fields in the object. \n            These filters can be applied to components, instances, and attempts. \n        </p>\n    "
+            "documentation": "\n        <p>\n            Query that defines the objects to be returned. The <a>Query</a> object can contain a maximum of ten selectors. \n            The conditions in the query are limited to top-level String fields in the object. \n            These filters can be applied to components, instances, and attempts. \n        </p>\n    "
           },
           "sphere": {
             "shape_name": "string",
@@ -1400,7 +1433,7 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>\n            Specifies whether the query applies to components or instances.\t\n            Allowable values: COMPONENT, INSTANCE, ATTEMPT.\n        </p>\n    ",
+            "documentation": "\n        <p>\n            Specifies whether the query applies to components or instances.\t\n            Allowable values: <code>COMPONENT</code>, <code>INSTANCE</code>, <code>ATTEMPT</code>.\n        </p>\n    ",
             "required": true
           },
           "marker": {
@@ -1409,15 +1442,15 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>\n            The starting point for the results to be returned. The first time you call QueryObjects, this value should be empty. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call QueryObjects again and pass the marker value from the response to retrieve the next set of results.\n        </p>\n    "
+            "documentation": "\n        <p>\n            The starting point for the results to be returned. The first time you call <a>QueryObjects</a>, this value should be empty. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call <a>QueryObjects</a> again and pass the marker value from the response to retrieve the next set of results.\n        </p>\n    "
           },
           "limit": {
             "shape_name": "int",
             "type": "integer",
-            "documentation": "\n        <p>Specifies the maximum number of object names that QueryObjects will return in a single call. The default value is 100. </p>\n    "
+            "documentation": "\n        <p>Specifies the maximum number of object names that <a>QueryObjects</a> will return in a single call. The default value is 100. </p>\n    "
           }
         },
-        "documentation": "\n        <p>The input for the QueryObjects action.</p>\n    "
+        "documentation": "\n        <p>The input for the <a>QueryObjects</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "QueryObjectsOutput",
@@ -1442,15 +1475,15 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>\n            The starting point for the results to be returned. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call QueryObjects again and pass the marker value from the response to retrieve the next set of results.\n        </p>\n    "
+            "documentation": "\n        <p>\n            The starting point for the results to be returned. As long as the action returns <code>HasMoreResults</code> as <code>True</code>, you can call <a>QueryObjects</a> again and pass the marker value from the response to retrieve the next set of results.\n        </p>\n    "
           },
           "hasMoreResults": {
             "shape_name": "boolean",
             "type": "boolean",
-            "documentation": "\n        <p>If <code>True</code>, there are more results that can be obtained by a subsequent call to QueryObjects.</p>\n    "
+            "documentation": "\n        <p>If <code>True</code>, there are more results that can be obtained by a subsequent call to <a>QueryObjects</a>.</p>\n    "
           }
         },
-        "documentation": "\n        <p>Contains the output from the QueryObjects action.</p>\n    "
+        "documentation": "\n        <p>Contains the output from the <a>QueryObjects</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -1502,7 +1535,7 @@
           "documentation": "\n        <p>The request was not valid. Verify that your request was properly formatted, that the signature was generated with the correct credentials, and that you haven't exceeded any of the service limits for your account.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>Queries a pipeline for the names of objects that match a specified set of conditions.</p>\n        \n        <p>The objects returned by QueryResults are paginated and then filtered by the value you set for query. This means the action may return an empty result set with a value set for marker. If <code>HasMoreResults</code> is set to <code>True</code>, you should continue to call QueryObjects, passing in the returned value for marker, until <code>HasMoreResults</code> returns <code>False</code>.</p>\n\n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.QueryObjects\nContent-Length: 123\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"query\": \n  {\"selectors\": \n    [\n    ]\n  },\n \"sphere\": \"PO\",\n \"marker\": \"\",\n \"limit\": 10}\n\n            </request>\n            \n           \n            <response>\n\nx-amzn-RequestId: 14d704c1-0775-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 72\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"hasMoreResults\": false, \n \"ids\": \n  [\"@SayHello_1_2012-09-25T17:00:00\"]\n}\n         </response>\n        </examples>\n        \n    "
+      "documentation": "\n        <p>Queries a pipeline for the names of objects that match a specified set of conditions.</p>\n        \n        <p>The objects returned by <a>QueryObjects</a> are paginated and then filtered by the value you set for query. This means the action may return an empty result set with a value set for marker. If <code>HasMoreResults</code> is set to <code>True</code>, you should continue to call <a>QueryObjects</a>, passing in the returned value for marker, until <code>HasMoreResults</code> returns <code>False</code>.</p>\n\n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.QueryObjects\nContent-Length: 123\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"query\": \n  {\"selectors\": \n    [\n    ]\n  },\n \"sphere\": \"PO\",\n \"marker\": \"\",\n \"limit\": 10}\n\n            </request>\n            \n           \n            <response>\n\nx-amzn-RequestId: 14d704c1-0775-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 72\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"hasMoreResults\": false, \n \"ids\": \n  [\"@SayHello_1_2012-09-25T17:00:00\"]\n}\n         </response>\n        </examples>\n        \n    "
     },
     "ReportTaskProgress": {
       "name": "ReportTaskProgress",
@@ -1597,7 +1630,7 @@
           "documentation": "\n        <p>The specified pipeline has been deleted.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>\n            Updates the AWS Data Pipeline service on the progress of the calling task runner. When the task runner is assigned a task, it should call ReportTaskProgress to acknowledge that it has the task within 2 minutes. If the web service does not recieve this acknowledgement within the 2 minute window, it will assign the task in a subsequent <a>PollForTask</a> call. After this initial acknowledgement, the task runner only needs to report progress every 15 minutes to maintain its ownership of the task. You can change this reporting time from 15 minutes by specifying a <code>reportProgressTimeout</code> field in your pipeline.\n            \n            \n            If a task runner does not report its status after 5 minutes, AWS Data Pipeline will assume that the task runner is unable to process the task and will reassign the task in a subsequent response to <a>PollForTask</a>. task runners should call ReportTaskProgress every 60 seconds.\n        </p>\n        \n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ReportTaskProgress\nContent-Length: 832\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"taskId\": \"aaGgHT4LuH0T0Y0oLrJRjas5qH0d8cDPADxqq3tn+zCWGELkCdV2JprLreXm1oxeP5EFZHFLJ69kjSsLYE0iYHYBYVGBrB+E/pYq7ANEEeGJFnSBMRiXZVA+8UJ3OzcInvXeinqBmBaKwii7hnnKb/AXjXiNTXyxgydX1KAyg1AxkwBYG4cfPYMZbuEbQJFJvv5C/2+GVXz1w94nKYTeUeepwUOFOuRLS6JVtZoYwpF56E+Yfk1IcGpFOvCZ01B4Bkuu7x3J+MD/j6kJgZLAgbCJQtI3eiW3kdGmX0p0I2BdY1ZsX6b4UiSvM3OMj6NEHJCJL4E0ZfitnhCoe24Kvjo6C2hFbZq+ei/HPgSXBQMSagkr4vS9c0ChzxH2+LNYvec6bY4kymkaZI1dvOzmpa0FcnGf5AjSK4GpsViZ/ujz6zxFv81qBXzjF0/4M1775rjV1VUdyKaixiA/sJiACNezqZqETidp8d24BDPRhGsj6pBCrnelqGFrk/gXEXUsJ+xwMifRC8UVwiKekpAvHUywVk7Ku4jH/n3i2VoLRP6FXwpUbelu34iiZ9czpXyLtyPKwxa87dlrnRVURwkcVjOt2Mcrcaqe+cbWHvNRhyrPkkdfSF3ac8/wfgVbXvLEB2k9mKc67aD9rvdc1PKX09Tk8BKklsMTpZ3TRCd4NzQlJKigMe8Jat9+1tKj4Ole5ZzW6uyTu2s2iFjEV8KXu4MaiRJyNKCdKeGhhZWY37Qk4NBK4Ppgu+C6Y41dpfOh288SLDEVx0/UySlqOEdhba7c6BiPp5r3hKj3mk9lFy5OYp1aoGLeeFmjXveTnPdf2gkWqXXg7AUbJ7jEs1F0lKZQg4szep2gcKyAJXgvXLfJJHcha8Lfb/Ee7wYmyOcAaRpDBoFNSbtoVXar46teIrpho+ZDvynUXvU0grHWGOk=:wn3SgymHZM99bEXAMPLE\",\n \"fields\": \n  [\n    {\"key\": \"percentComplete\",\n     \"stringValue\": \"50\"}\n  ]\n}\n\n            </request>\n            \n            <response>\n\nx-amzn-RequestId: 640bd023-0775-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"canceled\": false}\n         \n</response>\n        </examples>\n        \n    "
+      "documentation": "\n        <p>\n            Updates the AWS Data Pipeline service on the progress of the calling task runner. When the task runner is assigned a task, it should call ReportTaskProgress to acknowledge that it has the task within 2 minutes. If the web service does not recieve this acknowledgement within the 2 minute window, it will assign the task in a subsequent <a>PollForTask</a> call. After this initial acknowledgement, the task runner only needs to report progress every 15 minutes to maintain its ownership of the task. You can change this reporting time from 15 minutes by specifying a <code>reportProgressTimeout</code> field in your pipeline.\n            \n            \n            \n            If a task runner does not report its status after 5 minutes, AWS Data Pipeline will assume that the task runner is unable to process the task and will reassign the task in a subsequent response to <a>PollForTask</a>. task runners should call <a>ReportTaskProgress</a> every 60 seconds.\n        </p>\n        \n        <examples>\n            <request>\n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ReportTaskProgress\nContent-Length: 832\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"taskId\": \"aaGgHT4LuH0T0Y0oLrJRjas5qH0d8cDPADxqq3tn+zCWGELkCdV2JprLreXm1oxeP5EFZHFLJ69kjSsLYE0iYHYBYVGBrB+E/pYq7ANEEeGJFnSBMRiXZVA+8UJ3OzcInvXeinqBmBaKwii7hnnKb/AXjXiNTXyxgydX1KAyg1AxkwBYG4cfPYMZbuEbQJFJvv5C/2+GVXz1w94nKYTeUeepwUOFOuRLS6JVtZoYwpF56E+Yfk1IcGpFOvCZ01B4Bkuu7x3J+MD/j6kJgZLAgbCJQtI3eiW3kdGmX0p0I2BdY1ZsX6b4UiSvM3OMj6NEHJCJL4E0ZfitnhCoe24Kvjo6C2hFbZq+ei/HPgSXBQMSagkr4vS9c0ChzxH2+LNYvec6bY4kymkaZI1dvOzmpa0FcnGf5AjSK4GpsViZ/ujz6zxFv81qBXzjF0/4M1775rjV1VUdyKaixiA/sJiACNezqZqETidp8d24BDPRhGsj6pBCrnelqGFrk/gXEXUsJ+xwMifRC8UVwiKekpAvHUywVk7Ku4jH/n3i2VoLRP6FXwpUbelu34iiZ9czpXyLtyPKwxa87dlrnRVURwkcVjOt2Mcrcaqe+cbWHvNRhyrPkkdfSF3ac8/wfgVbXvLEB2k9mKc67aD9rvdc1PKX09Tk8BKklsMTpZ3TRCd4NzQlJKigMe8Jat9+1tKj4Ole5ZzW6uyTu2s2iFjEV8KXu4MaiRJyNKCdKeGhhZWY37Qk4NBK4Ppgu+C6Y41dpfOh288SLDEVx0/UySlqOEdhba7c6BiPp5r3hKj3mk9lFy5OYp1aoGLeeFmjXveTnPdf2gkWqXXg7AUbJ7jEs1F0lKZQg4szep2gcKyAJXgvXLfJJHcha8Lfb/Ee7wYmyOcAaRpDBoFNSbtoVXar46teIrpho+ZDvynUXvU0grHWGOk=:wn3SgymHZM99bEXAMPLE\",\n \"fields\": \n  [\n    {\"key\": \"percentComplete\",\n     \"stringValue\": \"50\"}\n  ]\n}\n\n            </request>\n            \n            <response>\n\nx-amzn-RequestId: 640bd023-0775-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"canceled\": false}\n         \n</response>\n        </examples>\n        \n    "
     },
     "ReportTaskRunnerHeartbeat": {
       "name": "ReportTaskRunnerHeartbeat",
@@ -1620,7 +1653,7 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>Indicates the type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for workerGroup in the call to ReportTaskRunnerHeartbeat. There are no wildcard values permitted in workerGroup, the string must be an exact, case-sensitive, match.</p>\n    "
+            "documentation": "\n        <p>Indicates the type of task the task runner is configured to accept and process. The worker group is set as a field on objects in the pipeline when they are created. You can only specify a single value for <code>workerGroup</code> in the call to <a>ReportTaskRunnerHeartbeat</a>. There are no wildcard values permitted in <code>workerGroup</code>, the string must be an exact, case-sensitive, match.</p>\n    "
           },
           "hostname": {
             "shape_name": "id",
@@ -1640,11 +1673,11 @@
           "terminate": {
             "shape_name": "boolean",
             "type": "boolean",
-            "documentation": "\n        <p>Indicates whether the calling task runner should terminate. If <code>True</code>, the task runner that called ReportTaskRunnerHeartbeat should terminate. </p>\n    ",
+            "documentation": "\n        <p>Indicates whether the calling task runner should terminate. If <code>True</code>, the task runner that called <a>ReportTaskRunnerHeartbeat</a> should terminate. </p>\n    ",
             "required": true
           }
         },
-        "documentation": "\n        <p>Contains the output from the ReportTaskRunnerHeartbeat action.</p>\n    "
+        "documentation": "\n        <p>Contains the output from the <a>ReportTaskRunnerHeartbeat</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -1672,7 +1705,7 @@
           "documentation": "\n        <p>The request was not valid. Verify that your request was properly formatted, that the signature was generated with the correct credentials, and that you haven't exceeded any of the service limits for your account.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>Task runners call ReportTaskRunnerHeartbeat to indicate that they are operational. In the case of AWS Data Pipeline Task Runner launched on a resource managed by AWS Data Pipeline, the web service can use this call to detect when the task runner application has failed and restart a new instance.</p>\n    "
+      "documentation": "\n        <p>Task runners call <a>ReportTaskRunnerHeartbeat</a> every 15 minutes to indicate that they are operational. In the case of AWS Data Pipeline Task Runner launched on a resource managed by AWS Data Pipeline, the web service can use this call to detect when the task runner application has failed and restart a new instance.</p>\n        \n        <examples>\n            <request>           \n\nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ReportTaskRunnerHeartbeat\nContent-Length: 84\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"taskrunnerId\": \"1234567890\",\n \"workerGroup\": \"wg-12345\",\n \"hostname\": \"example.com\"}\n\n            </request>\n            \n            <response>\n\nStatus:\nx-amzn-RequestId: b3104dc5-0734-11e2-af6f-6bc7a6be60d9\nContent-Type: application/x-amz-json-1.1\nContent-Length: 20\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"terminate\": false}\n         \n            </response>\n        </examples>\n    "
     },
     "SetStatus": {
       "name": "SetStatus",
@@ -1709,11 +1742,11 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>Specifies the status to be set on all the objects in objectIds. For components, this can be either <code>PAUSE</code> or <code>RESUME</code>. For instances, this can be either <code>CANCEL</code>, <code>RERUN</code>, or <code>MARK_FINISHED</code>.</p>\n    ",
+            "documentation": "\n        <p>Specifies the status to be set on all the objects in <code>objectIds</code>. For components, this can be either <code>PAUSE</code> or <code>RESUME</code>. For instances, this can be either <code>CANCEL</code>, <code>RERUN</code>, or <code>MARK_FINISHED</code>.</p>\n    ",
             "required": true
           }
         },
-        "documentation": "\n        <p>The input to the SetStatus action.</p>\n    "
+        "documentation": "\n        <p>The input to the <a>SetStatus</a> action.</p>\n    "
       },
       "output": null,
       "errors": [
@@ -1791,18 +1824,21 @@
               "FAILED",
               "FALSE"
             ],
-            "documentation": "\n        <p>If FINISHED, the task successfully completed. If FAILED the task ended unsuccessfully. The FALSE value is used by preconditions.</p>\n    ",
+            "documentation": "\n        <p>If <code>FINISHED</code>, the task successfully completed. If <code>FAILED</code> the task ended unsuccessfully. The <code>FALSE</code> value is used by preconditions.</p>\n    ",
             "required": true
           },
-          "errorCode": {
-            "shape_name": "int",
-            "type": "integer",
-            "documentation": "\n        <p>If an error occurred during the task, specifies a numerical value that represents the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.</p>\n    "
+          "errorId": {
+            "shape_name": "string",
+            "type": "string",
+            "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+            "min_length": 0,
+            "max_length": 1024,
+            "documentation": "\n        <p>If an error occurred during the task, this value specifies an id value that represents the error. This value is set on the physical attempt object. It is used to display error information to the user. It should not start with string \"Service_\" which is reserved by the system.</p>\n    "
           },
           "errorMessage": {
             "shape_name": "errorMessage",
             "type": "string",
-            "documentation": "\n        <p>If an error occurred during the task, specifies a text description of the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.</p>\n    "
+            "documentation": "\n        <p>If an error occurred during the task, this value specifies a text description of the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.</p>\n    "
           },
           "errorStackTrace": {
             "shape_name": "string",
@@ -1810,7 +1846,7 @@
             "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
             "min_length": 0,
             "max_length": 1024,
-            "documentation": "\n        <p>If an error occurred during the task, specifies the stack trace associated with the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.</p>\n    "
+            "documentation": "\n        <p>If an error occurred during the task, this value specifies the stack trace associated with the error. This value is set on the physical attempt object. It is used to display error information to the user. The web service does not parse this value.</p>\n    "
           }
         },
         "documentation": "\n        <p>The input of the SetTaskStatus action.</p>\n    "
@@ -1820,7 +1856,7 @@
         "type": "structure",
         "members": {
         },
-        "documentation": "\n        <p>The output from the SetTaskStatus action.</p>\n    "
+        "documentation": "\n        <p>The output from the <a>SetTaskStatus</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -1959,7 +1995,7 @@
                         "documentation": "\n        <p>The field value, expressed as the identifier of another object.</p>\n    "
                       }
                     },
-                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (StringValue) or a reference to another object (RefValue) but not as both.</p>\n    "
+                    "documentation": "\n        <p>A key-value pair that describes a property of a pipeline object. The value is specified as either a string value (<code>StringValue</code>) or a reference to another object (<code>RefValue</code>) but not as both.</p>\n    "
                   },
                   "documentation": "\n        <p>Key-value pairs that define the properties of the object.</p>\n    ",
                   "required": true
@@ -1971,7 +2007,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>The input of the ValidatePipelineDefinition action.</p>\n    "
+        "documentation": "\n        <p>The input of the <a>ValidatePipelineDefinition</a> action.</p>\n    "
       },
       "output": {
         "shape_name": "ValidatePipelineDefinitionOutput",
@@ -1993,10 +2029,10 @@
                   "documentation": "\n        <p>The identifier of the object that contains the validation error.</p>\n    "
                 },
                 "errors": {
-                  "shape_name": "validationErrorList",
+                  "shape_name": "validationMessages",
                   "type": "list",
                   "members": {
-                    "shape_name": "validationError",
+                    "shape_name": "validationMessage",
                     "type": "string",
                     "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
                     "min_length": 0,
@@ -2006,9 +2042,42 @@
                   "documentation": "\n        <p>A description of the validation error.</p>\n    "
                 }
               },
-              "documentation": "\n        <p>Defines a validation error returned by <a>PutPipelineDefinition</a> or <a>ValidatePipelineDefinition</a>. The set of validation errors that can be returned are defined by AWS Data Pipeline.</p>\n    "
+              "documentation": "\n        <p>Defines a validation error returned by <a>PutPipelineDefinition</a> or <a>ValidatePipelineDefinition</a>. Validation errors prevent pipeline activation. The set of validation errors that can be returned are defined by AWS Data Pipeline.</p>\n    "
             },
-            "documentation": "\n        <p>Lists the validation errors that were found by ValidatePipelineDefinition.</p>\n    "
+            "documentation": "\n        <p>Lists the validation errors that were found by <a>ValidatePipelineDefinition</a>.</p>\n    "
+          },
+          "validationWarnings": {
+            "shape_name": "ValidationWarnings",
+            "type": "list",
+            "members": {
+              "shape_name": "ValidationWarning",
+              "type": "structure",
+              "members": {
+                "id": {
+                  "shape_name": "id",
+                  "type": "string",
+                  "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                  "min_length": 1,
+                  "max_length": 1024,
+                  "documentation": "\n        <p>The identifier of the object that contains the validation warning.</p>\n    "
+                },
+                "warnings": {
+                  "shape_name": "validationMessages",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "validationMessage",
+                    "type": "string",
+                    "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+                    "min_length": 0,
+                    "max_length": 10000,
+                    "documentation": null
+                  },
+                  "documentation": "\n        <p>A description of the validation warning.</p>\n    "
+                }
+              },
+              "documentation": "\n        <p>Defines a validation warning returned by <a>PutPipelineDefinition</a> or <a>ValidatePipelineDefinition</a>. Validation warnings do not prevent pipeline activation. The set of validation warnings that can be returned are defined by AWS Data Pipeline.</p>\n    "
+            },
+            "documentation": "\n        <p>Lists the validation warnings that were found by <a>ValidatePipelineDefinition</a>.</p>\n    "
           },
           "errored": {
             "shape_name": "boolean",
@@ -2017,7 +2086,7 @@
             "required": true
           }
         },
-        "documentation": "\n        <p>Contains the output from the ValidatePipelineDefinition action.</p>\n    "
+        "documentation": "\n        <p>Contains the output from the <a>ValidatePipelineDefinition</a> action.</p>\n    "
       },
       "errors": [
         {
@@ -2069,7 +2138,7 @@
           "documentation": "\n        <p>The specified pipeline has been deleted.</p>\n    "
         }
       ],
-      "documentation": "\n        <p>Tests the pipeline definition with a set of validation checks to ensure that it is well formed and can run without error. </p>\n\n        <examples>\n            <example>\n                <name>Example 1</name>\n                <description>\n                    This example sets an valid pipeline configuration and returns success.\n                </description>\n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ValidatePipelineDefinition\nContent-Length: 936\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"pipelineObjects\": \n  [\n    {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"MyworkerGroup\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n \n      ]\n    }\n  ]\n}\n                \n            </request>\n            <response>\n                \nx-amzn-RequestId: 92c9f347-0776-11e2-8a14-21bb8a1f50ef\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"errored\": false}\n                \n            </response>\n            </example>\n            <example>\n             <name>Example 2</name>\n            <description>\n                This example sets an invalid pipeline configuration and returns the associated set of validation errors.\n            </description>\n            \n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ValidatePipelineDefinition\nContent-Length: 903\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"pipelineObjects\": \n  [\n    {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"MyworkerGroup\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"bad-time\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n \n      ]\n    }\n  ]\n}\n                \n            </request>\n            <response>\n                \nx-amzn-RequestId: 496a1f5a-0e6a-11e2-a61c-bd6312c92ddd\nContent-Type: application/x-amz-json-1.1\nContent-Length: 278\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"errored\": true, \n \"validationErrors\": \n  [\n    {\"errors\": \n      [\"INVALID_FIELD_VALUE:  'startDateTime' value must be a litleral datetime value.\"], \n     \"id\": \"Schedule\"}\n  ]\n}\n                \n            </response>\n                </example>\n        </examples>\n    "
+      "documentation": "\n        <p>Tests the pipeline definition with a set of validation checks to ensure that it is well formed and can run without error. </p>\n\n        <examples>\n            <example>\n                <name>Example 1</name>\n                <description>\n                    This example sets an valid pipeline configuration and returns success.\n                </description>\n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ValidatePipelineDefinition\nContent-Length: 936\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"pipelineObjects\": \n  [\n    {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"MyworkerGroup\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"2012-09-25T17:00:00\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n \n      ]\n    }\n  ]\n}\n                \n            </request>\n            <response>\n                \nx-amzn-RequestId: 92c9f347-0776-11e2-8a14-21bb8a1f50ef\nContent-Type: application/x-amz-json-1.1\nContent-Length: 18\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"errored\": false}\n                \n            </response>\n            </example>\n            <example>\n             <name>Example 2</name>\n            <description>\n                This example sets an invalid pipeline configuration and returns the associated set of validation errors.\n            </description>\n            \n            <request>\n                \nPOST / HTTP/1.1\nContent-Type: application/x-amz-json-1.1\nX-Amz-Target: DataPipeline.ValidatePipelineDefinition\nContent-Length: 903\nHost: datapipeline.us-east-1.amazonaws.com\nX-Amz-Date: Mon, 12 Nov 2012 17:49:52 GMT\nAuthorization: AuthParams\n\n{\"pipelineId\": \"df-06372391ZG65EXAMPLE\",\n \"pipelineObjects\": \n  [\n    {\"id\": \"Default\",\n     \"name\": \"Default\",\n     \"fields\": \n      [\n        {\"key\": \"workerGroup\", \n         \"stringValue\": \"MyworkerGroup\"}\n      ]\n    }, \n    {\"id\": \"Schedule\",\n     \"name\": \"Schedule\",\n     \"fields\": \n      [\n       {\"key\": \"startDateTime\", \n         \"stringValue\": \"bad-time\"}, \n        {\"key\": \"type\", \n         \"stringValue\": \"Schedule\"}, \n        {\"key\": \"period\", \n         \"stringValue\": \"1 hour\"}, \n        {\"key\": \"endDateTime\", \n         \"stringValue\": \"2012-09-25T18:00:00\"}\n      ]\n    },\n    {\"id\": \"SayHello\",\n     \"name\": \"SayHello\",\n     \"fields\": \n      [\n        {\"key\": \"type\", \n         \"stringValue\": \"ShellCommandActivity\"},\n        {\"key\": \"command\", \n         \"stringValue\": \"echo hello\"},\n        {\"key\": \"parent\", \n         \"refValue\": \"Default\"},\n        {\"key\": \"schedule\", \n         \"refValue\": \"Schedule\"}\n \n      ]\n    }\n  ]\n}\n                \n            </request>\n            <response>\n                \nx-amzn-RequestId: 496a1f5a-0e6a-11e2-a61c-bd6312c92ddd\nContent-Type: application/x-amz-json-1.1\nContent-Length: 278\nDate: Mon, 12 Nov 2012 17:50:53 GMT\n\n{\"errored\": true, \n \"validationErrors\": \n  [\n    {\"errors\": \n      [\"INVALID_FIELD_VALUE:  'startDateTime' value must be a literal datetime value.\"], \n     \"id\": \"Schedule\"}\n  ]\n}\n                \n            </response>\n                </example>\n        </examples>\n    "
     }
   }
 }

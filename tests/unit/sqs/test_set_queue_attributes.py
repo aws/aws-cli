@@ -31,7 +31,7 @@ class TestSetQueueAttributes(BaseCLIDriverTest):
 
     def test_shorthand(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
-        cmdline += ' --attributes VisibilityTimeout:15'
+        cmdline += ' --attributes VisibilityTimeout=15'
         result = {'QueueUrl': self.queue_url,
                   'Attribute.1.Name': 'VisibilityTimeout',
                   'Attribute.1.Value': '15'}

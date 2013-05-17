@@ -55,14 +55,14 @@ class TestDescribeInstances(BaseCLIDriverTest):
         self.assertEqual(params, result)
 
     def test_filter_simple(self):
-        args = """ --filters name:group-name,values:foobar"""
+        args = """ --filters name=group-name,values=foobar"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
     def test_filter_values(self):
-        args = """ --filters name:group-name,values:foobar,fiebaz"""
+        args = """ --filters name=group-name,values=foobar,fiebaz"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.2': 'fiebaz',
                   'Filter.1.Value.1': 'foobar',
@@ -71,8 +71,8 @@ class TestDescribeInstances(BaseCLIDriverTest):
         self.assertEqual(params, result)
 
     def test_multiple_filters(self):
-        args = (' --filters name:group-name,values:foobar '
-                'name:instance-id,values:i-12345')
+        args = (' --filters name=group-name,values=foobar '
+                'name=instance-id,values=i-12345')
         cmdline = self.prefix + args
         result = {
             'Filter.1.Name': 'group-name',
@@ -86,8 +86,8 @@ class TestDescribeInstances(BaseCLIDriverTest):
     def test_multiple_filters_alternate(self):
         cmdlist = 'aws ec2 describe-instances'.split()
         cmdlist.extend(['--filters',
-                        'name: group-name, values: foobar',
-                        'name: instance-id,values:i-12345'])
+                        'name = group-name, values= foobar',
+                        'name=instance-id,values=i-12345'])
         result = {
             'Filter.1.Name': 'group-name',
             'Filter.1.Value.1': 'foobar',

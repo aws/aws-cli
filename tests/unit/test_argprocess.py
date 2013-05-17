@@ -10,12 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests import unittest
 
 import botocore.session
+from bcdoc.mangen import OperationDocument
+import six
+
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthand
+from awscli.argprocess import ParamError
+from awscli.argprocess import ParamUnknownKeyError
 
 
 # These tests use real service types so that we can
@@ -76,7 +81,7 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_simplify_structure_scalars(self):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        value = 'application_name:foo,template_name:bar'
+        value = 'application_name=foo,template_name=bar'
         json_value = '{"application_name": "foo", "template_name": "bar"}'
         returned = self.simplify(p, value)
         json_version = unpack_cli_arg(p, json_value)
@@ -84,8 +89,8 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_simplify_map_scalar(self):
         p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
-        returned = self.simplify(p, 'visibility_timeout:15')
-        self.assertEqual(returned, {'visibility_timeout': '15'})
+        returned = self.simplify(p, 'VisibilityTimeout=15')
+        self.assertEqual(returned, {'VisibilityTimeout': '15'})
 
     def test_list_structure_scalars(self):
         p = self.get_param_object(
@@ -102,21 +107,98 @@ class TestParamShorthand(BaseArgProcessTest):
         expected = [{"name": "instance-id", "values": ["i-1", "i-2"]},
                     {"name": "architecture", "values": ["i386"]}]
         returned = self.simplify(
-            p, ["name:instance-id,values:i-1,i-2",
-                "name:architecture,values:i386"])
+            p, ["name=instance-id,values=i-1,i-2",
+                "name=architecture,values=i386"])
         self.assertEqual(returned, expected)
 
         # With spaces around the comma.
         returned2 = self.simplify(
-            p, ["name:instance-id, values:i-1,i-2",
-                "name:architecture, values:i386"])
+            p, ["name=instance-id, values=i-1,i-2",
+                "name=architecture, values=i386"])
         self.assertEqual(returned2, expected)
 
         # Strip off leading/trailing spaces.
         returned3 = self.simplify(
-            p, ["name: instance-id, values: i-1,i-2",
-                "name: architecture, values: i386"])
+            p, ["name = instance-id, values = i-1,i-2",
+                "name = architecture, values = i386"])
         self.assertEqual(returned2, expected)
+
+    def test_error_messages_for_structure_scalar(self):
+        p = self.get_param_object(
+            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
+        value = 'application_names==foo,template_name=bar'
+        error_msg = "Error parsing parameter --source-configuration.*should be"
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            self.simplify(p, value)
+
+    def test_mispelled_param_name(self):
+        p = self.get_param_object(
+            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
+        error_msg = 'valid choices.*application_name'
+        with self.assertRaisesRegexp(ParamUnknownKeyError, error_msg):
+            # Typo in 'application_names'
+            self.simplify(p, 'application_namess=foo, template_name=bar')
+
+    def test_improper_separator(self):
+        # If the user uses ':' instead of '=', we should give a good
+        # error message.
+        p = self.get_param_object(
+            'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
+        value = 'application_names:foo,template_name:bar'
+        error_msg = "Error parsing parameter --source-configuration.*should be"
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            self.simplify(p, value)
+
+    def test_improper_separator_for_filters_param(self):
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        error_msg = "Error parsing parameter --filters.*should be"
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ["name:tag:Name,values:foo"])
+
+    def test_unknown_key_for_filters_param(self):
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        with self.assertRaisesRegexp(ParamUnknownKeyError,
+                                     'valid choices.*name'):
+            self.simplify(p, ["names=instance-id,values=foo,bar"])
+
+
+class TestDocGen(BaseArgProcessTest):
+    # These aren't very extensive doc tests, as we want to stay somewhat
+    # flexible and allow the docs to slightly change without breaking these
+    # tests.
+    def setUp(self):
+        super(TestDocGen, self).setUp()
+        self.simplify = ParamShorthand()
+
+    def test_gen_map_type_docs(self):
+        p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
+        op_doc = OperationDocument(self.session, p.operation)
+        self.simplify.add_docs(op_doc, p)
+        fp = six.StringIO()
+        op_doc.render(fp=fp)
+        rendered = fp.getvalue()
+        # Key parts include:
+        # Title that says it's the shorthand syntax.
+        self.assertIn('Shorthand Syntax', rendered)
+        # sample syntax
+        self.assertIn('key_name=value', rendered)
+        # valid key names
+        self.assertIn('VisibilityTimeout', rendered)
+
+    def test_gen_list_scalar_docs(self):
+        p = self.get_param_object(
+            'elb.RegisterInstancesWithLoadBalancer.Instances')
+        op_doc = OperationDocument(self.session, p.operation)
+        self.simplify.add_docs(op_doc, p)
+        fp = six.StringIO()
+        op_doc.render(fp=fp)
+        rendered = fp.getvalue()
+        # Key parts include:
+        # Title that says it's the shorthand syntax.
+        self.assertIn('Shorthand Syntax', rendered)
+        # sample syntax
+        self.assertIn('--instances instance_id1', rendered)
 
 
 if __name__ == '__main__':

@@ -13,10 +13,10 @@
 """Module for processing CLI args."""
 import os
 import json
-import csv
 import logging
 
 import six
+from bcdoc.mangen import OperationDocument
 
 
 SCALAR_TYPES = set([
@@ -25,6 +25,27 @@ SCALAR_TYPES = set([
 ])
 COMPLEX_TYPES = set(['structure', 'map', 'list'])
 LOG = logging.getLogger('awscli.argprocess')
+
+
+class ParamError(Exception):
+    def __init__(self, param, message):
+        full_message = ("Error parsing parameter %s, should be: %s" %
+                        (param.cli_name, message))
+        super(ParamError, self).__init__(full_message)
+        self.param = param
+
+
+class ParamSyntaxError(Exception):
+    pass
+
+
+class ParamUnknownKeyError(Exception):
+    def __init__(self, param, key, valid_keys):
+        valid_keys = ', '.join(valid_keys)
+        full_message = (
+            "Unknown key '%s' for parameter %s, valid choices "
+            "are: %s" % (key, param.cli_name, valid_keys))
+        super(ParamUnknownKeyError, self).__init__(full_message)
 
 
 def detect_shape_structure(param):
@@ -52,6 +73,14 @@ def detect_shape_structure(param):
 
 class ParamShorthand(object):
 
+    # To add support for a new shape:
+    #
+    #  * Add it to SHORTHAND_SHAPES below, key is the shape structure
+    #    value is the name of the method to call.
+    #  * Implement parse method.
+    #  * Implement _doc_<parse_method_name>.  This is used to generate
+    #    the docs for this shorthand syntax.
+
     SHORTHAND_SHAPES = {
         'structure(scalar)': '_key_value_parse',
         'map-scalar': '_key_value_parse',
@@ -63,26 +92,75 @@ class ParamShorthand(object):
         pass
 
     def add_docs(self, operation_doc, param, **kwargs):
+        """Inject shorthand syntax docs into help text."""
         shape_structure = detect_shape_structure(param)
         method = self.SHORTHAND_SHAPES.get(shape_structure)
         if method is None:
             return
         doc_method = getattr(self, '_docs' + method, None)
         if doc_method is not None:
-            operation_doc.indent()
-            p = operation_doc.add_paragraph()
-            p.write(operation_doc.style.italics('Shorthand Syntax'))
-            operation_doc.add_paragraph()
-            operation_doc.add_paragraph().write(
-                'As an alternative to JSON, you can specify this '
-                'parameter as::')
-            operation_doc.add_paragraph()
-            operation_doc.indent()
-            doc_method(operation_doc, param)
-            operation_doc.dedent()
-            operation_doc.dedent()
+            self._add_docs(doc_method, operation_doc, param)
+
+    def _add_docs(self, doc_method, operation_doc, param):
+        operation_doc.indent()
+        p = operation_doc.add_paragraph()
+        p.write(operation_doc.style.italics('Shorthand Syntax'))
+        operation_doc.add_paragraph()
+        operation_doc.add_paragraph().write(
+            'As an alternative to JSON, you can specify this '
+            'parameter as::')
+        operation_doc.add_paragraph()
+        operation_doc.indent()
+        doc_method(operation_doc, param)
+        operation_doc.dedent()
+        operation_doc.dedent()
 
     def __call__(self, param, value, **kwargs):
+        """Attempt to parse shorthand syntax for values.
+
+        This is intended to be hooked up as an event handler (hence the
+        **kwargs).  Given ``param`` object and its string ``value``,
+        figure out if we can parse it.  If we can parse it, we return
+        the parsed value (typically some sort of python dict).
+
+        :type param: :class:`botocore.parameters.Parameter`
+        :param param: The parameter object (includes various metadata
+            about the parameter).
+
+        :type value: str
+        :param value: The value for the parameter type on the command
+            line, e.g ``--foo this_value``, value would be ``"this_value"``.
+
+        :returns: If we can parse the value we return the parsed value.
+            If it looks like JSON, we return None (which tells the event
+            emitter to use the default ``unpack_cli_arg`` provided that
+            no other event handlers can parsed the value).  If we
+            run into an error parsing the value, a ``ParamError`` will
+            be raised.
+
+        """
+        parse_method = self._get_parse_method_for_param(param, value)
+        if parse_method is None:
+            return
+        else:
+            try:
+                LOG.debug("Using %s for param %s", parse_method, param)
+                parsed = getattr(self, parse_method)(param, value)
+            except ParamSyntaxError as e:
+                # Give them a helpful error message.
+                doc_method = getattr(self, '_docs' + parse_method, None)
+                if doc_method is None:
+                    raise e
+                else:
+                    help_text = six.StringIO()
+                    doc = OperationDocument(param.operation.session,
+                                            param.operation)
+                    doc_method(doc, param)
+                    doc.render(fp=help_text)
+                    raise ParamError(param, help_text.getvalue())
+            return parsed
+
+    def _get_parse_method_for_param(self, param, value):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks
         # like json we immediately return.
@@ -96,11 +174,7 @@ class ParamShorthand(object):
             return
         structure = detect_shape_structure(param)
         parse_method = self.SHORTHAND_SHAPES.get(structure)
-        if parse_method is None:
-            return
-        else:
-            parsed = getattr(self, parse_method)(param, value)
-            return parsed
+        return parse_method
 
     def _docs_list_scalar_list_parse(self, doc, param):
         p2 = doc.add_paragraph()
@@ -111,14 +185,15 @@ class ParamShorthand(object):
             scalar_inner_param = param.members.members[1].py_name
             list_inner_param = param.members.members[0].py_name
         p2.write('%s ' % param.cli_name)
-        p2.write('%s:%s1,' % (scalar_inner_param, scalar_inner_param))
-        p2.write('%s:%s1,%s2,' % (list_inner_param, list_inner_param,
+        p2.write('%s=%s1,' % (scalar_inner_param, scalar_inner_param))
+        p2.write('%s=%s1,%s2,' % (list_inner_param, list_inner_param,
                                   list_inner_param))
-        p2.write('%s:%s2,' % (scalar_inner_param, scalar_inner_param))
-        p2.write('%s:%s1' % (list_inner_param, list_inner_param))
+        p2.write('%s=%s2,' % (scalar_inner_param, scalar_inner_param))
+        p2.write('%s=%s1' % (list_inner_param, list_inner_param))
 
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
+        # We're looking for key=val1,val2,val3,key2=val1,val2.
         arg_types = {}
         for arg in param.members.members:
             arg_types[arg.py_name] = arg.type
@@ -126,20 +201,29 @@ class ParamShorthand(object):
         for v in value:
             parts = v.split(',')
             current_parsed = {}
+            current_key = None
             for part in parts:
-                current = part.split(':', 1)
+                current = part.split('=', 1)
                 if len(current) == 2:
                     # This is a key/value pair.
                     current_key = current[0].strip()
                     current_value = current[1].strip()
-                    if arg_types[current_key] == 'list':
+                    if current_key not in arg_types:
+                        raise ParamUnknownKeyError(param, current_key,
+                                                   arg_types.keys())
+                    elif arg_types[current_key] == 'list':
                         current_parsed[current_key] = [current_value]
                     else:
                         current_parsed[current_key] = current_value
-                else:
-                    assert len(current) == 1
-                    assert arg_types[current_key] == 'list'
+                elif current_key is not None:
+                    # This is a value which we associate with the current_key,
+                    # so key1=val1,val2
+                    #               ^
+                    #               |
+                    #             val2 is associated with key1.
                     current_parsed[current_key].append(current[0])
+                else:
+                    raise ParamSyntaxError(part)
             parsed.append(current_parsed)
         return parsed
 
@@ -150,8 +234,6 @@ class ParamShorthand(object):
         p2.write('%s %s1 %s2 %s3' % (param.cli_name, name, name, name))
 
     def _list_scalar_parse(self, param, value):
-        assert len(param.members.members) == 1
-        assert isinstance(value, list)
         single_param = param.members.members[0]
         parsed = []
         # We know that value is a list in this case.
@@ -163,10 +245,10 @@ class ParamShorthand(object):
         p = doc.add_paragraph()
         p.write('%s ' % param.cli_name)
         if param.type == 'structure':
-            p.write(','.join(['%s:value' % sub_param.py_name
+            p.write(','.join(['%s=value' % sub_param.py_name
                             for sub_param in param.members]))
         elif param.type == 'map':
-            p.write("key_name:value")
+            p.write("key_name=value")
             if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
                 doc.add_paragraph()
                 p2 = doc.add_paragraph()
@@ -181,14 +263,28 @@ class ParamShorthand(object):
         # The expected structure is:
         #  key=value,key2=value
         # that is, csv key value pairs, where the key and values
-        # are separated by ':'.  All of this should be whitespace
+        # are separated by '='.  All of this should be whitespace
         # insensitive.
         parsed = {}
         parts = value.split(',')
+        valid_names = self._get_valid_key_names(param)
         for part in parts:
-            key, value = part.split(':')
-            parsed[key.strip()] = value.strip()
+            try:
+                key, value = part.split('=')
+            except ValueError:
+                raise ParamSyntaxError(part)
+            key = key.strip()
+            value = value.strip()
+            if key not in valid_names:
+                raise ParamUnknownKeyError(param, key, valid_names)
+            parsed[key] = value
         return parsed
+
+    def _get_valid_key_names(self, param):
+        if param.type == 'structure':
+            return set([p.py_name for p in param.members])
+        elif param.type == 'map':
+            return set(param.keys.enum)
 
 
 def unpack_cli_arg(parameter, value):

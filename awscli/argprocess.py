@@ -33,7 +33,11 @@ def detect_shape_structure(param):
     elif param.type == 'structure':
         sub_types = [detect_shape_structure(p)
                      for p in param.members]
-        if all(p in SCALAR_TYPES for p in sub_types):
+        # We're distinguishing between structure(scalar)
+        # and structure(scalars), because for the case of
+        # a single scalar in a structure we can simplify
+        # more than a structure(scalars).
+        if len(sub_types) == 1 and all(p == 'scalar' for p in sub_types):
             return 'structure(scalar)'
         else:
             return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
@@ -42,6 +46,8 @@ def detect_shape_structure(param):
     elif param.type == 'map':
         if param.members.type in SCALAR_TYPES:
             return 'map-scalar'
+        else:
+            return 'map-%s' % detect_shape_structure(param.members)
 
 
 class ParamShorthand(object):
@@ -56,8 +62,25 @@ class ParamShorthand(object):
     def __init__(self):
         pass
 
-    def add_docs(self, operation_doc, **kwargs):
-        pass
+    def add_docs(self, operation_doc, param, **kwargs):
+        shape_structure = detect_shape_structure(param)
+        method = self.SHORTHAND_SHAPES.get(shape_structure)
+        if method is None:
+            return
+        doc_method = getattr(self, '_docs' + method, None)
+        if doc_method is not None:
+            operation_doc.indent()
+            p = operation_doc.add_paragraph()
+            p.write(operation_doc.style.italics('Shorthand Syntax'))
+            operation_doc.add_paragraph()
+            operation_doc.add_paragraph().write(
+                'As an alternative to JSON, you can specify this '
+                'parameter as::')
+            operation_doc.add_paragraph()
+            operation_doc.indent()
+            doc_method(operation_doc, param)
+            operation_doc.dedent()
+            operation_doc.dedent()
 
     def __call__(self, param, value, **kwargs):
         # We first need to make sure this is a parameter that qualifies
@@ -78,6 +101,21 @@ class ParamShorthand(object):
         else:
             parsed = getattr(self, parse_method)(param, value)
             return parsed
+
+    def _docs_list_scalar_list_parse(self, doc, param):
+        p2 = doc.add_paragraph()
+        if param.members.members[0].type in SCALAR_TYPES:
+            scalar_inner_param = param.members.members[0].py_name
+            list_inner_param = param.members.members[1].py_name
+        else:
+            scalar_inner_param = param.members.members[1].py_name
+            list_inner_param = param.members.members[0].py_name
+        p2.write('%s ' % param.cli_name)
+        p2.write('%s:%s1,' % (scalar_inner_param, scalar_inner_param))
+        p2.write('%s:%s1,%s2,' % (list_inner_param, list_inner_param,
+                                  list_inner_param))
+        p2.write('%s:%s2,' % (scalar_inner_param, scalar_inner_param))
+        p2.write('%s:%s1' % (list_inner_param, list_inner_param))
 
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
@@ -105,6 +143,12 @@ class ParamShorthand(object):
             parsed.append(current_parsed)
         return parsed
 
+    def _docs_list_scalar_parse(self, doc, param):
+        detect_shape_structure(param)
+        p2 = doc.add_paragraph()
+        name = param.members.members[0].py_name
+        p2.write('%s %s1 %s2 %s3' % (param.cli_name, name, name, name))
+
     def _list_scalar_parse(self, param, value):
         assert len(param.members.members) == 1
         assert isinstance(value, list)
@@ -114,6 +158,24 @@ class ParamShorthand(object):
         for v in value:
             parsed.append({single_param.py_name: v})
         return parsed
+
+    def _docs_key_value_parse(self, doc, param):
+        p = doc.add_paragraph()
+        p.write('%s ' % param.cli_name)
+        if param.type == 'structure':
+            p.write(','.join(['%s:value' % sub_param.py_name
+                            for sub_param in param.members]))
+        elif param.type == 'map':
+            p.write("key_name:value")
+            if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
+                doc.add_paragraph()
+                p2 = doc.add_paragraph()
+                p2.write("Where key_name can be:")
+                doc.add_paragraph()
+                doc.indent()
+                for value in param.keys.enum:
+                    doc.add_paragraph().write(value)
+                doc.dedent()
 
     def _key_value_parse(self, param, value):
         # The expected structure is:

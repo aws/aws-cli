@@ -39,7 +39,7 @@ The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 
 .. attention::
    We recommend that all customers regularly monitor the
-   [Amazon Web Services Security Bulletins website](https://aws.amazon.com/security/security-bulletins) for any important security bulletins related to
+   `Amazon Web Services Security Bulletins website`_ for any important security bulletins related to
    aws-cli.
 
 ------------
@@ -283,3 +283,5 @@ output for other uses.
 There is also an ASCII table format available.  You can select this
 style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
+
+.. _Amazon Web Services Security Bulletins website: https://aws.amazon.com/security/security-bulletins

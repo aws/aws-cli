@@ -14,10 +14,20 @@ import sys
 import os
 import platform
 from subprocess import Popen, PIPE
-
 import six
-
 from awscli import rstgen
+
+
+PAGER = 'more'
+
+
+def get_pager():
+    pager = PAGER
+    if 'MANPAGER' in os.environ:
+        pager = os.environ['MANPAGER']
+    elif 'PAGER' in os.environ:
+        pager = os.environ['PAGER']
+    return pager
 
 
 def _render_docs_posix(rst_contents):
@@ -27,8 +37,8 @@ def _render_docs_posix(rst_contents):
     p2.stdin.close()
     cmdline = ['groff', '-man', '-T', 'ascii']
     p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
-    more = os.environ.get('MORE', 'more')
-    cmdline = [more]
+    pager = get_pager()
+    cmdline = [pager]
     p4 = Popen(cmdline, stdin=p3.stdout)
     output = p4.communicate()[0]
     sys.exit(1)

@@ -23,6 +23,7 @@ from botocore.hooks import HierarchicalEmitter
 GET_DATA = {
     'cli': {
         'description': 'description',
+        'synopsis': 'usage: foo',
         'options': {
             "service_name": {
                 "choices": "{provider}/_services",
@@ -196,6 +197,19 @@ class TestCliDriverHooks(unittest.TestCase):
         rc = driver.main('s3 list-objects --bucket foo --unknown-arg foo'.split())
         self.assertEqual(rc, 255)
         self.assertIn('Unknown options', self.stderr.getvalue())
+
+    def test_unknown_command_suggests_help(self):
+        driver = CLIDriver(session=self.session)
+        # We're catching SystemExit here because this is raised from the bowels
+        # of argparser so short of patching the ArgumentParser's exit() method,
+        # we can just catch SystemExit.
+        with self.assertRaises(SystemExit):
+            # Note the typo in 'list-objects'
+            driver.main('s3 list-objecst --bucket foo --unknown-arg foo'.split())
+        # Tell the user what went wrong.
+        self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
+        # Offer the user a suggestion.
+        self.assertIn("maybe you meant:\n\n  * list-objects", self.stderr.getvalue())
 
 
 if __name__ == '__main__':

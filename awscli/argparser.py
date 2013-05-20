@@ -1,12 +1,18 @@
 import argparse
 import sys
+from difflib import get_close_matches
+
 from botocore.compat import copy_kwargs
+
 from .help import get_provider_help, get_service_help, get_operation_help
 
 
 class CLIArgParser(argparse.ArgumentParser):
 
     Formatter = argparse.RawTextHelpFormatter
+    # When displaying invalid choice error messages,
+    # this controls how many options to show per line.
+    ChoicesPerLine = 2
 
     def __init__(self, session, **kwargs):
         self.session = session
@@ -39,9 +45,19 @@ class CLIArgParser(argparse.ArgumentParser):
         """
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
-            tup = value, '|'.join(map(str, action.choices))
-            msg = 'invalid choice: %r (choose from %s)' % tup
-            raise argparse.ArgumentError(action, msg)
+            msg = ['Invalid choice, valid choices are:\n']
+            for i in range(len(action.choices))[::self.ChoicesPerLine]:
+                current = []
+                for choice in action.choices[i:i+self.ChoicesPerLine]:
+                    current.append('%-40s' % choice)
+                msg.append(' | '.join(current))
+            possible = get_close_matches(value, action.choices, cutoff=0.8)
+            if possible:
+                extra = ['\n\nInvalid choice: %r, maybe you meant:\n' % value]
+                for word in possible:
+                    extra.append('  * %s' % word)
+                msg.extend(extra)
+            raise argparse.ArgumentError(action, '\n'.join(msg))
 
     def print_usage(self, fp):
         fp.write('\n%s\n\n' % self.cli_data['synopsis'])

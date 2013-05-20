@@ -224,11 +224,6 @@ for all IP addresses::
 
     $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":["0.0.0.0/0"]}'
 
-You could also place the JSON in a file, called port22.json for example,
-and use this::
-
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions /path/to/port22.json
-
 --------------------------
 File-based Parameter Input
 --------------------------

@@ -11,20 +11,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests import BaseCLIDriverTest
 import awscli.clidriver
 
 
-class TestSetQueueAttributes(unittest.TestCase):
+class TestSetQueueAttributes(BaseCLIDriverTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws sqs set-queue-attributes'
-        self.queue_url = 'https://queue.amazonaws.com/4444/testcli'
+    prefix = 'aws sqs set-queue-attributes'
+    queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
     def test_one(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attributes {"VisibilityTimeout":"15"}'
+        result = {'QueueUrl': self.queue_url,
+                  'Attribute.1.Name': 'VisibilityTimeout',
+                  'Attribute.1.Value': '15'}
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
+    def test_shorthand(self):
+        cmdline = self.prefix + ' --queue-url %s' % self.queue_url
+        cmdline += ' --attributes VisibilityTimeout=15'
         result = {'QueueUrl': self.queue_url,
                   'Attribute.1.Name': 'VisibilityTimeout',
                   'Attribute.1.Value': '15'}

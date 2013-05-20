@@ -249,9 +249,10 @@ the file ip_perms.json::
 
 Then, we could make the same call as above like this::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions file:ip_perms.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions file://ip_perms.json
 
-The ``file:`` prefix on the parameter value signals that the parameter value
+The ``file://`` prefix on the parameter value signals that the parameter value
 is actually a reference to a file that contains the actual parameter value.
 aws-cli will open the file, read the value and pass use that value as the
 parameter value.
@@ -267,9 +268,10 @@ URI-based Parameter Input
 
 Similar to the file-based input described above, aws-cli also includes a
 way to use data from a URI as the value of a parameter.  The idea is exactly
-the same except the prefix used is ``https:`` or ``http:``::
+the same except the prefix used is ``https://`` or ``http://``::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
 
 --------------
 Command Output

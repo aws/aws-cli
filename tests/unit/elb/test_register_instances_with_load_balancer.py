@@ -11,16 +11,21 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests import BaseCLIDriverTest
 import os
 import awscli.clidriver
 
 
-class TestRegisterInstancesWithLoadBalancer(unittest.TestCase):
+TWO_INSTANCE_EXPECTED = {
+    'LoadBalancerName': 'my-lb',
+    'Instances.member.1.InstanceId': 'i-12345678',
+    'Instances.member.2.InstanceId': 'i-87654321'
+}
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws elb register-instances-with-load-balancer'
+
+class TestRegisterInstancesWithLoadBalancer(BaseCLIDriverTest):
+
+    prefix = 'aws elb register-instances-with-load-balancer'
 
     def test_one_instance(self):
         cmdline = self.prefix
@@ -31,39 +36,46 @@ class TestRegisterInstancesWithLoadBalancer(unittest.TestCase):
         params = self.driver.test(cmdline)
         self.assertEqual(params, result)
 
+    def test_shorthand(self):
+        cmdline = self.prefix
+        cmdline += ' --load-balancer-name my-lb'
+        cmdline += ' --instances i-12345678'
+        result = {'LoadBalancerName': 'my-lb',
+                  'Instances.member.1.InstanceId': 'i-12345678'}
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, result)
+
     def test_two_instance(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances {"instance_id":"i-12345678"}'
         cmdline += ' {"instance_id":"i-87654321"}'
-        result = {'LoadBalancerName': 'my-lb',
-                  'Instances.member.1.InstanceId': 'i-12345678',
-                  'Instances.member.2.InstanceId': 'i-87654321'}
         params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assertEqual(params, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_as_json(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances [{"instance_id":"i-12345678"},'
         cmdline += '{"instance_id":"i-87654321"}]'
-        result = {'LoadBalancerName': 'my-lb',
-                  'Instances.member.1.InstanceId': 'i-12345678',
-                  'Instances.member.2.InstanceId': 'i-87654321'}
         params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assertEqual(params, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_from_file(self):
         data_path = os.path.join(os.path.dirname(__file__),
                                  'test.json')
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances file:%s' % data_path
-        result = {'LoadBalancerName': 'my-lb',
-                  'Instances.member.1.InstanceId': 'i-12345678',
-                  'Instances.member.2.InstanceId': 'i-87654321'}
+        cmdline += ' --instances file://%s' % data_path
         params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assertEqual(params, TWO_INSTANCE_EXPECTED)
+
+    def test_two_instance_shorthand(self):
+        cmdline = self.prefix
+        cmdline += ' --load-balancer-name my-lb'
+        cmdline += ' --instances i-12345678 i-87654321'
+        params = self.driver.test(cmdline)
+        self.assertEqual(params, TWO_INSTANCE_EXPECTED)
 
 
 if __name__ == "__main__":

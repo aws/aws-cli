@@ -23,6 +23,7 @@ from .formatter import get_formatter
 from .paramfile import get_paramfile
 from .plugin import load_plugins
 from .argparser import MainArgParser, ServiceArgParser, OperationArgParser
+from .argprocess import unpack_cli_arg
 
 
 def main():
@@ -89,48 +90,14 @@ class CLIDriver(object):
                                                      self.operation.cli_name))
         return 1
 
-    def _unpack_cli_arg(self, param, s):
-        """
-        Parses and unpacks the encoded string command line parameter
-        and returns native Python data structures that can be passed
-        to the Operation.
-        """
-        if param.type == 'integer':
-            return int(s)
-        elif param.type == 'float' or param.type == 'double':
-            # TODO: losing precision on double types
-            return float(s)
-        elif param.type == 'structure' or param.type == 'map':
-            if s[0] == '{':
-                d = json.loads(s)
-            else:
-                msg = 'Structure option value must be JSON or path to file.'
-                raise ValueError(msg)
-            return d
-        elif param.type == 'list':
-            if isinstance(s, six.string_types):
-                if s[0] == '[':
-                    return json.loads(s)
-            elif isinstance(s, list) and len(s) == 1:
-                if s[0][0] == '[':
-                    return json.loads(s[0])
-            return [self._unpack_cli_arg(param.members, v) for v in s]
-        elif param.type == 'blob' and param.payload and param.streaming:
-            file_path = os.path.expandvars(s)
-            file_path = os.path.expanduser(file_path)
-            if not os.path.isfile(file_path):
-                msg = 'Blob values must be a path to a file.'
-                raise ValueError(msg)
-            return open(file_path, 'rb')
-        else:
-            return str(s)
-
     def _build_call_parameters(self, args, param_dict):
         service_name = self.service.cli_name
         operation_name = self.operation.cli_name
         for param in self.operation.params:
             value = getattr(args, param.py_name)
             if value is not None:
+                if not hasattr(param, 'no_paramfile'):
+                    value = self._handle_param_file(value)
                 # Plugins can override the cli -> python conversion
                 # process for CLI args.
                 responses = self.session.emit('process-cli-arg.%s.%s' % (
@@ -149,9 +116,7 @@ class CLIDriver(object):
                     # Don't include non-required boolean params whose
                     # values are False
                     continue
-                if not hasattr(param, 'no_paramfile'):
-                    value = self._handle_param_file(value)
-                param_dict[param.py_name] = self._unpack_cli_arg(param, value)
+                param_dict[param.py_name] = unpack_cli_arg(param, value)
 
     def _handle_param_file(self, value):
         if isinstance(value, list) and len(value) == 1:
@@ -263,7 +228,9 @@ class CLIDriver(object):
         self.create_main_parser()
         # XXX: Does this still work with complex params that may be
         # space separated?
-        status = self._parse_args(cmdline.split()[1:])
+        if isinstance(cmdline, str):
+            cmdline = cmdline.split()
+        status = self._parse_args(cmdline[1:])
         params = {}
         self._build_call_parameters(self.operation_parser.args, params)
         return self.operation.build_parameters(**params)

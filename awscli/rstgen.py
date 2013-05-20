@@ -1,7 +1,6 @@
 import os
 import sys
 import argparse
-from .clidriver import CLIDriver
 from bcdoc.mangen import gen_man
 
 
@@ -36,6 +35,7 @@ def get_cli_data(session, provider_name):
 
 
 def main():
+    from .clidriver import CLIDriver
     parser = argparse.ArgumentParser()
     parser.add_argument('--provider',
                         help='Name of provider', required=True)

@@ -153,12 +153,14 @@ For example, consider the command to authorize access to an EC2
 security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":["0.0.0.0/0"]}'
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":["0.0.0.0/0"]}'
 
 You could also place the JSON in a file, called port22.json for example,
 and use this::
 
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions /path/to/port22.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions /path/to/port22.json
 
 File-based Parameter Input
 ==========================
@@ -179,9 +181,10 @@ the file ip_perms.json::
 
 Then, we could make the same call as above like this::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions file:ip_perms.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions file://ip_perms.json
 
-The ``file:`` prefix on the parameter value signals that the parameter value
+The ``file://`` prefix on the parameter value signals that the parameter value
 is actually a reference to a file that contains the actual parameter value.
 aws-cli will open the file, read the value and pass use that value as the
 parameter value.
@@ -199,7 +202,8 @@ Similar to the file-based input described above, aws-cli also includes a
 way to use data from a URI as the value of a parameter.  The idea is exactly
 the same except the prefix used is ``https:`` or ``http:``::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
 
 Command Output
 ==============

@@ -32,22 +32,3 @@ def get_cli_data(session, provider_name):
                     choices = session.get_data(choices_path)
                     option_data['choices'] = choices
     return cli_data
-
-
-def main():
-    from .clidriver import CLIDriver
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--provider',
-                        help='Name of provider', required=True)
-    parser.add_argument('--service',
-                        help='Name of service')
-    parser.add_argument('--operation',
-                        help='Name of operation')
-    args = parser.parse_args()
-    driver = CLIDriver()
-    if args.provider and args.service and args.operation:
-        do_operation(driver.session, args)
-    elif args.provider and args.service:
-        do_service(driver.session, args)
-    else:
-        do_provider(driver.session, args)

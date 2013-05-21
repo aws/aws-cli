@@ -112,6 +112,7 @@ class ParamShorthand(object):
         operation_doc.add_paragraph()
         operation_doc.indent()
         doc_method(operation_doc, param)
+        operation_doc.add_paragraph()
         operation_doc.dedent()
         operation_doc.dedent()
 

@@ -25,6 +25,7 @@ import unittest
 import os
 import logging
 import tempfile
+import shutil
 
 import mock
 
@@ -60,6 +61,14 @@ class BaseSessionTest(unittest.TestCase):
 
 class SessionTest(BaseSessionTest):
 
+    def setUp(self):
+        super(SessionTest, self).setUp()
+        self.tempdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        super(SessionTest, self).tearDown()
+        shutil.rmtree(self.tempdir)
+
     def test_profile(self):
         self.assertEqual(self.session.get_variable('profile'), 'foo')
         self.assertEqual(self.session.get_variable('region'), 'moon-west-1')
@@ -75,13 +84,13 @@ class SessionTest(BaseSessionTest):
         self.environ['FOO_PROFILE'] = saved_profile
 
     def test_file_logger(self):
-        with tempfile.NamedTemporaryFile('w') as f:
-            self.session.set_file_logger(logging.DEBUG, f.name)
-            self.session.get_credentials()
-            self.assertTrue(os.path.isfile(f.name))
-            with open(f.name) as logfile:
-                s = logfile.read()
-            self.assertTrue('Found credentials' in s)
+        temp_file = os.path.join(self.tempdir, 'file_logger')
+        self.session.set_file_logger(logging.DEBUG, temp_file)
+        self.session.get_credentials()
+        self.assertTrue(os.path.isfile(temp_file))
+        with open(temp_file) as logfile:
+            s = logfile.read()
+        self.assertTrue('Found credentials' in s)
 
     def test_full_config_property(self):
         full_config = self.session.full_config

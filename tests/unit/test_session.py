@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import unittest
 import os
 import logging
 import tempfile
@@ -76,6 +76,11 @@ class SessionTest(BaseSessionTest):
             if hasattr(handler, 'stream') and handler.stream.name == filename:
                 handler.stream.close()
                 logger.removeHandler(handler)
+                # logging has an atexit handler that will try to flush/close
+                # the file.  By setting this flag to False, we'll prevent it
+                # from raising an exception, which is fine because we're
+                # handling the closing of the file ourself.
+                logging.raiseExceptions = False
 
     def test_profile(self):
         self.assertEqual(self.session.get_variable('profile'), 'foo')

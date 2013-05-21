@@ -23,18 +23,14 @@
 
 import logging
 import json
+import re
 from requests.sessions import Session
 from requests.utils import get_environ_proxies
-
-from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 import botocore.response
 import botocore.exceptions
-from botocore.awsrequest import AWSRequest
-
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
+from .auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
+from .awsrequest import AWSRequest
+from .compat import urlsplit, urljoin, urlunsplit
 
 logger = logging.getLogger(__name__)
 
@@ -204,6 +200,78 @@ class RestEndpoint(Endpoint):
                                               http_response)
 
 
+class S3Endpoint(RestEndpoint):
+
+    LabelRE = re.compile('[a-z0-9][a-z0-9\-]*[a-z0-9]')
+
+    def check_dns_name(self, bucket_name):
+        """
+        Check to see if the ``bucket_name`` complies with the
+        restricted DNS naming conventions necessary to allow
+        access via virtual-hosting style.
+        """
+        n = len(bucket_name)
+        if n < 3 or n > 63:
+            # Wrong length
+            return False
+        for label in bucket_name.split('.'):
+            if len(label) == 0:
+                # Must be two '.' in a row
+                return False
+            match = self.LabelRE.match(label)
+            if match is None or match.end() != len(label):
+                return Fale
+        return True
+
+    def build_uri(self, operation, params):
+        auth_path = None
+        path = RestEndpoint.build_uri(self, operation, params)
+        if 'Bucket' in params['uri_params']:
+            bucket_name = params['uri_params']['Bucket']
+            if self.check_dns_name(bucket_name):
+                parts = urlsplit(path)
+                auth_path = parts.path
+                if auth_path[-1] != '/':
+                    auth_path += '/'
+                pc = parts.path.split('/')
+                pc.remove(bucket_name)
+                path = '/'.join(pc)
+                logger.debug('path: %s' % path)
+                if parts.query:
+                    path += '?' + parts.query
+                scheme = urlsplit(self.host).scheme
+                host = bucket_name + '.' + self.service.global_endpoint
+                self.host = urlunsplit((scheme, host, '', '', ''))
+        logger.debug('host: %s' % self.host)
+        return path, auth_path
+
+    def make_request(self, operation, params):
+        """
+        Send a request to the endpoint and parse the response
+        and return it and long with the HTTP response object
+        from requests.
+        """
+        logger.debug(params)
+        logger.debug('SSL Verify: %s' % self.verify)
+        user_agent = self.session.user_agent()
+        params['headers']['User-Agent'] = user_agent
+        path, auth_path = self.build_uri(operation, params)
+        uri = urljoin(self.host, path)
+        if params['payload'] is None:
+            request = AWSRequest(method=operation.http['method'],
+                                 url=uri, headers=params['headers'],
+                                 auth_path=auth_path)
+        else:
+            request = AWSRequest(method=operation.http['method'],
+                                 url=uri, headers=params['headers'],
+                                 data=params['payload'],
+                                 auth_path=auth_path)
+        prepared_request = self.prepare_request(request)
+        http_response = self._send_request(prepared_request, operation)
+        return botocore.response.get_response(self.session, operation,
+                                              http_response)
+
+
 def _get_proxies(url):
     # We could also support getting proxies from a config file,
     # but for now proxy support is taken from the environment.
@@ -211,8 +279,11 @@ def _get_proxies(url):
 
 
 def get_endpoint(service, region_name, endpoint_url):
-    service_type = service.type
-    cls = SERVICE_TO_ENDPOINT.get(service_type)
+    if service.endpoint_prefix == 's3':
+        cls = S3Endpoint
+    else:
+        service_type = service.type
+        cls = SERVICE_TO_ENDPOINT.get(service_type)
     if cls is None:
         raise botocore.exceptions.UnknownServiceStyle(
             service_style=service.type)

@@ -41,6 +41,7 @@ logger = logging.getLogger(__name__)
 EMPTY_SHA256_HASH = (
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
 
+
 class SigV2Auth(object):
     """
     Sign a request with Signature V2.
@@ -332,10 +333,13 @@ class HmacV1Auth(object):
         else:
             return (nv[0], unquote(nv[1]))
 
-    def canonical_resource(self, split):
+    def canonical_resource(self, split, auth_path=None):
         # don't include anything after the first ? in the resource...
         # unless it is one of the QSA of interest, defined above
-        buf = split.path
+        if auth_path:
+            buf = auth_path
+        else:
+            buf = split.path
         if split.query:
             qsa = split.query.split('&')
             qsa = [a.split('=', 1) for a in qsa]
@@ -347,30 +351,35 @@ class HmacV1Auth(object):
                 buf += '&'.join(qsa)
         return buf
 
-    def canonical_string(self, method, split, headers, expires=None):
+    def canonical_string(self, method, split, headers,
+                         expires=None, auth_path=None):
         cs = method.upper() + '\n'
         cs += self.canonical_standard_headers(headers) + '\n'
         custom_headers = self.canonical_custom_headers(headers)
         if custom_headers:
             cs += custom_headers + '\n'
-        cs += self.canonical_resource(split)
+        cs += self.canonical_resource(split, auth_path)
         return cs
 
-    def get_signature(self, method, split, headers, expires=None):
+    def get_signature(self, method, split, headers,
+                      expires=None, auth_path=None):
         if self.credentials.token:
             #TODO: remove hardcoded header name
             headers['x-amz-security-token'] = self.credentials.token
         string_to_sign = self.canonical_string(method,
                                                split,
-                                               headers)
+                                               headers,
+                                               auth_path=auth_path)
         logger.debug('StringToSign:\n%s' % string_to_sign)
         return self.sign_string(string_to_sign)
 
     def add_auth(self, request):
+        logger.debug('auth_path: %s' % request.auth_path)
         split = urlsplit(request.url)
         logger.debug('Method: %s' % request.method)
         signature = self.get_signature(request.method, split,
-                                       request.headers)
+                                       request.headers,
+                                       auth_path=request.auth_path)
         request.headers['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
                                                            signature))
 

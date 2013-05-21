@@ -5,6 +5,10 @@ from botocore.compat import HTTPHeaders
 
 class AWSRequest(models.RequestEncodingMixin, models.Request):
     def __init__(self, *args, **kwargs):
+        self.auth_path = None
+        if 'auth_path' in kwargs:
+            self.auth_path = kwargs['auth_path']
+            del kwargs['auth_path']
         models.Request.__init__(self, *args, **kwargs)
         headers = HTTPHeaders()
         if self.headers is not None:

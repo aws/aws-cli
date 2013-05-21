@@ -29,11 +29,15 @@ if six.PY3:
     from urllib.parse import quote
     from urllib.parse import unquote
     from urllib.parse import urlsplit
+    from urllib.parse import urlunsplit
+    from urllib.parse import urljoin
     from urllib.parse import parse_qsl
 else:
     from urllib import quote
     from urllib import unquote
     from urlparse import urlsplit
+    from urlparse import urlunsplit
+    from urlparse import urljoin
     from urlparse import parse_qsl
     from email.message import Message
     class HTTPHeaders(Message):

@@ -40,6 +40,7 @@ setup(
              'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
     packages=packages,
     package_dir={'awscli': 'awscli'},
+    package_data={'awscli': ['data/*.json']},
     install_requires=requires,
     license=open("LICENSE.txt").read(),
     classifiers=(

@@ -114,6 +114,7 @@ def _load_data(session, data_path):
                     data.update(new_data)
                 else:
                     data = new_data
+                break
             except:
                 logger.error('Unable to load file: %s' % file_path,
                              exc_info=True)

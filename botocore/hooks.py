@@ -156,7 +156,7 @@ class HierarchicalEmitter(BaseEventHooks):
     def _handlers_for_event(self, event):
         return self._handlers.prefix_search(event)
 
-    def register(self, event_name, handler):
+    def _register(self, event_name, handler):
         # Super simple caching strategy for now, if we change the registrations
         # clear the cache.  This has the opportunity for smarter invalidations.
         self._handlers.append_item(event_name, handler)

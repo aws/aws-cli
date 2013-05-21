@@ -69,6 +69,14 @@ class SessionTest(BaseSessionTest):
         super(SessionTest, self).tearDown()
         shutil.rmtree(self.tempdir)
 
+    def close_log_file_handler(self, filename):
+        logger = logging.getLogger('botocore')
+        handlers = logger.handlers
+        for handler in handlers[:]:
+            if hasattr(handler, 'stream') and handler.stream.name == filename:
+                handler.stream.close()
+                logger.removeHandler(handler)
+
     def test_profile(self):
         self.assertEqual(self.session.get_variable('profile'), 'foo')
         self.assertEqual(self.session.get_variable('region'), 'moon-west-1')
@@ -86,6 +94,7 @@ class SessionTest(BaseSessionTest):
     def test_file_logger(self):
         temp_file = os.path.join(self.tempdir, 'file_logger')
         self.session.set_file_logger(logging.DEBUG, temp_file)
+        self.addCleanup(self.close_log_file_handler, temp_file)
         self.session.get_credentials()
         self.assertTrue(os.path.isfile(temp_file))
         with open(temp_file) as logfile:

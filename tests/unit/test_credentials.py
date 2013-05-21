@@ -86,7 +86,11 @@ class CredentialsFileTest(BaseEnvVar):
     def test_bad_file(self):
         self.environ['AWS_CREDENTIAL_FILE'] = path('no_aws_credentials')
         credentials = self.session.get_credentials()
-        self.assertEqual(credentials, None)
+        # There can be two cases, either credentials are None,
+        # or if we're able to get an IAM role the credentials method
+        # is not 'credentials-file'
+        if credentials is not None:
+            self.assertNotEqual(credentials.method, 'credentials-file')
 
 
 class ConfigTest(BaseEnvVar):

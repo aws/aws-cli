@@ -33,7 +33,7 @@ def get_pager():
 def _render_docs_posix(rst_contents):
     cmdline = ['rst2man.py']
     p2 = Popen(cmdline, stdin=PIPE, stdout=PIPE)
-    p2.stdin.write(rst_contents.getvalue())
+    p2.stdin.write(rst_contents)
     p2.stdin.close()
     cmdline = ['groff', '-man', '-T', 'ascii']
     p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
@@ -45,7 +45,7 @@ def _render_docs_posix(rst_contents):
 
 
 def _render_docs_windows(rst_contents):
-    sys.stdout.write(rst_contents.getvalue())
+    sys.stdout.write(rst_contents)
     sys.exit(1)
 
 
@@ -62,16 +62,20 @@ def get_provider_help(session):
     rst_contents = six.StringIO()
     rstgen.gen_man(session, provider=provider, cli_data=cli_data,
                    fp=rst_contents)
-    render_docs(rst_contents)
+    render_docs(_encode_contents(rst_contents))
 
 
 def get_service_help(session, service):
     rst_contents = six.StringIO()
     rstgen.gen_man(session, service=service, fp=rst_contents)
-    render_docs(rst_contents)
+    render_docs(_encode_contents(rst_contents))
 
 
 def get_operation_help(session, service, operation):
     rst_contents = six.StringIO()
     rstgen.gen_man(session, operation=operation, fp=rst_contents)
-    render_docs(rst_contents)
+    render_docs(_encode_contents(rst_contents))
+
+
+def _encode_contents(contents):
+    return contents.getvalue().encode('utf-8')

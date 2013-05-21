@@ -12,19 +12,23 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 import os
-from awscli.help import get_pager, PAGER
+
+import mock
+
+from awscli.help import get_pager, PAGER, get_provider_help
+from awscli.clidriver import CLIDriver
 
 
-class TestCliDriver(unittest.TestCase):
+class TestHelpPager(unittest.TestCase):
 
     def setUp(self):
         self.save_pager = os.environ.get('PAGER', None)
         self.save_manpager = os.environ.get('MANPAGER', None)
 
     def tearDown(self):
-        if self.save_pager:
+        if self.save_pager is not None:
             os.environ['PAGER'] = self.save_pager
-        if self.save_manpager:
+        if self.save_manpager is not None:
             os.environ['MANPAGER'] = self.save_manpager
 
     def test_no_env_vars(self):
@@ -50,3 +54,14 @@ class TestCliDriver(unittest.TestCase):
         os.environ['MANPAGER'] = 'foobar'
         os.environ['PAGER'] = 'fiebaz'
         self.assertEqual(get_pager(), 'foobar')
+
+
+class TestGetProviderHelp(unittest.TestCase):
+    @mock.patch('awscli.help.render_docs')
+    def test_help_contents_is_bytes(self, render_docs):
+        driver = CLIDriver()
+        get_provider_help(driver.session)
+        self.assertTrue(render_docs.called)
+        contents = render_docs.call_args[0][0]
+        self.assertIsInstance(contents, bytes)
+

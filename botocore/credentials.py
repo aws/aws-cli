@@ -50,23 +50,23 @@ class Credentials(object):
         self.profiles = []
 
 
-def _search_md(url='http://169.254.169.254/latest/meta-data/iam/'):
+def _search_md(url='http://169.254.169.254/latest/meta-data/iam/security-credentials/'):
     d = {}
     try:
         r = requests.get(url, timeout=.1)
         if r.status_code == 200 and r.content:
-            fields = r.content.split('\n')
+            fields = r.content.decode('utf-8').split('\n')
             for field in fields:
                 if field.endswith('/'):
                     d[field[0:-1]] = _search_md(url + field)
                 else:
-                    val = requests.get(url + field).content
+                    val = requests.get(url + field).content.decode('utf-8')
                     if val[0] == '{':
                         val = json.loads(val)
                     else:
                         p = val.find('\n')
                         if p > 0:
-                            val = r.content.split('\n')
+                            val = r.content.decode('utf-8').split('\n')
                     d[field] = val
     except (requests.Timeout, requests.ConnectionError):
         pass
@@ -79,7 +79,6 @@ def search_iam_role(**kwargs):
     if metadata is None:
         metadata = _search_md()
     if metadata:
-        metadata = metadata['security-credentials']
         for role_name in metadata:
             credentials = Credentials(metadata[role_name]['AccessKeyId'],
                                       metadata[role_name]['SecretAccessKey'],

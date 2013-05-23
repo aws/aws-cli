@@ -32,6 +32,7 @@ dynamically generate testcases based on these files.
 """
 import os
 import logging
+import io
 from six import BytesIO
 from six.moves import BaseHTTPServer
 import six
@@ -168,13 +169,20 @@ def assert_equal(actual, expected, raw_request, part):
 class _SignatureTestCase(object):
     def __init__(self, test_case):
         p = os.path.join
-        self.raw_request = open(p(TESTSUITE_DIR, test_case + '.req')).read()
-        self.canonical_request = open(
-            p(TESTSUITE_DIR, test_case + '.creq')).read().replace('\r', '')
-        self.string_to_sign = open(
-            p(TESTSUITE_DIR, test_case + '.sts')).read().replace('\r', '')
-        self.authorization_header = open(
-            p(TESTSUITE_DIR, test_case + '.authz')).read().replace('\r', '')
-        self.signed_request = open(p(TESTSUITE_DIR, test_case + '.sreq')).read()
+        # We're using io.open() because we need to open these files with
+        # a specific encoding, and in 2.x io.open is the best way to do this.
+        self.raw_request = io.open(p(TESTSUITE_DIR, test_case + '.req'),
+                                   encoding='utf-8').read()
+        self.canonical_request = io.open(
+            p(TESTSUITE_DIR, test_case + '.creq'),
+            encoding='utf-8').read().replace('\r', '')
+        self.string_to_sign = io.open(
+            p(TESTSUITE_DIR, test_case + '.sts'),
+            encoding='utf-8').read().replace('\r', '')
+        self.authorization_header = io.open(
+            p(TESTSUITE_DIR, test_case + '.authz'),
+            encoding='utf-8').read().replace('\r', '')
+        self.signed_request = io.open(p(TESTSUITE_DIR, test_case + '.sreq'),
+                                      encoding='utf-8').read()
 
         self.credentials = Credentials(ACCESS_KEY, SECRET_KEY)

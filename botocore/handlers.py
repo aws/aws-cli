@@ -85,7 +85,7 @@ def check_dns_name(bucket_name):
             return False
         match = LabelRE.match(label)
         if match is None or match.end() != len(label):
-            return Fale
+            return False
     return True
 
 
@@ -102,8 +102,8 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
     logger.debug('fix_s3_host: uri=%s' % request.url)
     parts = urlsplit(request.url)
     auth.auth_path = parts.path
-    if auth.auth_path[-1] != '/':
-        auth.auth_path += '/'
+    # if auth.auth_path[-1] != '/':
+    #     auth.auth_path += '/'
     path_parts = parts.path.split('/')
     if len(path_parts) > 1:
         bucket_name = path_parts[1]

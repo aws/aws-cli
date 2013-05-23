@@ -137,6 +137,14 @@ class SessionTest(BaseSessionTest):
         session.emit('foo')
         self.assertEqual(len(calls), 1)
 
+    def test_emit_first_non_none(self):
+        session = botocore.session.Session(self.env_vars)
+        session.register('foo', lambda **kwargs: None)
+        session.register('foo', lambda **kwargs: 'first')
+        session.register('foo', lambda **kwargs: 'second')
+        response = session.emit_first_non_none_response('foo')
+        self.assertEqual(response, 'first')
+
     def test_available_events(self):
         self.assertTrue('after-call' in botocore.session.AllEvents)
         self.assertTrue('after-parsed' in botocore.session.AllEvents)

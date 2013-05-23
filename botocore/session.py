@@ -45,7 +45,8 @@ AllEvents = {
     'after-call': '.%s.%s',
     'after-parsed': '.%s.%s.%s.%s',
     'before-call': '.%s.%s',
-    'service-created': ''
+    'service-created': '',
+    'before-auth': '.%s'
     }
 """
 A dictionary where each key is an event name and the value

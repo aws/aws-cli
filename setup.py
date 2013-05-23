@@ -16,6 +16,17 @@ except ImportError:
     from distutils.core import setup
 
 
+def _get_example_files():
+    filenames = []
+    for root, dirs, files in os.walk('doc/source/examples'):
+        for filename in files:
+            filenames.append(os.path.join(root, filename))
+    return filenames
+
+
+def get_data_files():
+    return [('awscli/examples', _get_example_files())]
+
 packages = [
     'awscli',
 ]
@@ -41,6 +52,7 @@ setup(
     packages=packages,
     package_dir={'awscli': 'awscli'},
     package_data={'awscli': ['data/*.json']},
+    data_files=get_data_files(),
     install_requires=requires,
     license=open("LICENSE.txt").read(),
     classifiers=(

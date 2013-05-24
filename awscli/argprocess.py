@@ -60,6 +60,8 @@ def detect_shape_structure(param):
         # more than a structure(scalars).
         if len(sub_types) == 1 and all(p == 'scalar' for p in sub_types):
             return 'structure(scalar)'
+        elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
+            return 'structure(scalars)'
         else:
             return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
     elif param.type == 'list':
@@ -82,9 +84,10 @@ class ParamShorthand(object):
     #    the docs for this shorthand syntax.
 
     SHORTHAND_SHAPES = {
-        'structure(scalar)': '_key_value_parse',
+        'structure(scalars)': '_key_value_parse',
         'map-scalar': '_key_value_parse',
         'list-structure(scalar)': '_list_scalar_parse',
+        'list-structure(scalars)': '_list_key_value_parse',
         'list-structure(list-scalar, scalar)': '_list_scalar_list_parse',
     }
 
@@ -242,6 +245,26 @@ class ParamShorthand(object):
             parsed.append({single_param.py_name: v})
         return parsed
 
+    def _docs_list_key_value_parse(self, doc, param):
+        p = doc.add_paragraph()
+        p.write("Key value pairs, with multiple values separated by "
+                "a space.")
+        doc.add_paragraph()
+        p2 = doc.add_paragraph()
+        p2.write('%s ' % param.cli_name)
+        p2.write(','.join(['%s=value' % sub_param.py_name
+                        for sub_param in param.members.members]))
+
+    def _list_key_value_parse(self, param, value):
+        # param is a list param.
+        # param.member is the struct param.
+        struct_param = param.members
+        parsed = []
+        for v in value:
+            single_struct_param = self._key_value_parse(struct_param, v)
+            parsed.append(single_struct_param)
+        return parsed
+
     def _docs_key_value_parse(self, doc, param):
         p = doc.add_paragraph()
         p.write('%s ' % param.cli_name)
@@ -260,6 +283,7 @@ class ParamShorthand(object):
                     doc.add_paragraph().write(value)
                 doc.dedent()
 
+
     def _key_value_parse(self, param, value):
         # The expected structure is:
         #  key=value,key2=value
@@ -268,7 +292,7 @@ class ParamShorthand(object):
         # insensitive.
         parsed = {}
         parts = value.split(',')
-        valid_names = self._get_valid_key_names(param)
+        valid_names = self._create_name_to_params(param)
         for part in parts:
             try:
                 key, value = part.split('=')
@@ -278,14 +302,17 @@ class ParamShorthand(object):
             value = value.strip()
             if key not in valid_names:
                 raise ParamUnknownKeyError(param, key, valid_names)
+            sub_param = valid_names[key]
+            if sub_param is not None:
+                value = unpack_scalar_cli_arg(sub_param, value)
             parsed[key] = value
         return parsed
 
-    def _get_valid_key_names(self, param):
+    def _create_name_to_params(self, param):
         if param.type == 'structure':
-            return set([p.py_name for p in param.members])
+            return dict([(p.py_name, p) for p in param.members])
         elif param.type == 'map':
-            return set(param.keys.enum)
+            return dict([(v, None) for v in param.keys.enum])
 
 
 def unpack_cli_arg(parameter, value):
@@ -305,12 +332,16 @@ def unpack_cli_arg(parameter, value):
     :return: The "unpacked" argument than can be sent to the `Operation`
         object in python.
     """
-    if parameter.type == 'integer':
-        return int(value)
-    elif parameter.type == 'float' or parameter.type == 'double':
-        # TODO: losing precision on double types
-        return float(value)
-    elif parameter.type == 'structure' or parameter.type == 'map':
+    if parameter.type in SCALAR_TYPES:
+        return unpack_scalar_cli_arg(parameter, value)
+    elif parameter.type in COMPLEX_TYPES:
+        return unpack_complex_cli_arg(parameter, value)
+    else:
+        return str(value)
+
+
+def unpack_complex_cli_arg(parameter, value):
+    if parameter.type == 'structure' or parameter.type == 'map':
         if value[0] == '{':
             d = json.loads(value)
         else:
@@ -325,6 +356,14 @@ def unpack_cli_arg(parameter, value):
             if value[0][0] == '[':
                 return json.loads(value[0])
         return [unpack_cli_arg(parameter.members, v) for v in value]
+
+
+def unpack_scalar_cli_arg(parameter, value):
+    if parameter.type == 'integer':
+        return int(value)
+    elif parameter.type == 'float' or parameter.type == 'double':
+        # TODO: losing precision on double types
+        return float(value)
     elif parameter.type == 'blob' and parameter.payload and parameter.streaming:
         file_path = os.path.expandvars(value)
         file_path = os.path.expanduser(file_path)

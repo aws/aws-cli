@@ -21,10 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import unittest
 import os
 import logging
 import tempfile
+import shutil
 
 import mock
 
@@ -60,6 +61,21 @@ class BaseSessionTest(unittest.TestCase):
 
 class SessionTest(BaseSessionTest):
 
+    def close_log_file_handler(self, tempdir, filename):
+        logger = logging.getLogger('botocore')
+        handlers = logger.handlers
+        for handler in handlers[:]:
+            if hasattr(handler, 'stream') and handler.stream.name == filename:
+                handler.stream.close()
+                logger.removeHandler(handler)
+                os.remove(filename)
+                # logging has an atexit handler that will try to flush/close
+                # the file.  By setting this flag to False, we'll prevent it
+                # from raising an exception, which is fine because we're
+                # handling the closing of the file ourself.
+                logging.raiseExceptions = False
+        shutil.rmtree(tempdir)
+
     def test_profile(self):
         self.assertEqual(self.session.get_variable('profile'), 'foo')
         self.assertEqual(self.session.get_variable('region'), 'moon-west-1')
@@ -75,13 +91,15 @@ class SessionTest(BaseSessionTest):
         self.environ['FOO_PROFILE'] = saved_profile
 
     def test_file_logger(self):
-        with tempfile.NamedTemporaryFile('w') as f:
-            self.session.set_file_logger(logging.DEBUG, f.name)
-            self.session.get_credentials()
-            self.assertTrue(os.path.isfile(f.name))
-            with open(f.name) as logfile:
-                s = logfile.read()
-            self.assertTrue('Found credentials' in s)
+        tempdir = tempfile.mkdtemp()
+        temp_file = os.path.join(tempdir, 'file_logger')
+        self.session.set_file_logger(logging.DEBUG, temp_file)
+        self.addCleanup(self.close_log_file_handler, tempdir, temp_file)
+        self.session.get_credentials()
+        self.assertTrue(os.path.isfile(temp_file))
+        with open(temp_file) as logfile:
+            s = logfile.read()
+        self.assertTrue('Found credentials' in s)
 
     def test_full_config_property(self):
         full_config = self.session.full_config
@@ -118,6 +136,14 @@ class SessionTest(BaseSessionTest):
 
         session.emit('foo')
         self.assertEqual(len(calls), 1)
+
+    def test_emit_first_non_none(self):
+        session = botocore.session.Session(self.env_vars)
+        session.register('foo', lambda **kwargs: None)
+        session.register('foo', lambda **kwargs: 'first')
+        session.register('foo', lambda **kwargs: 'second')
+        response = session.emit_first_non_none_response('foo')
+        self.assertEqual(response, 'first')
 
     def test_available_events(self):
         self.assertTrue('after-call' in botocore.session.AllEvents)

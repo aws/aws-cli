@@ -114,6 +114,7 @@ def _load_data(session, data_path):
                     data.update(new_data)
                 else:
                     data = new_data
+                break
             except:
                 logger.error('Unable to load file: %s' % file_path,
                              exc_info=True)
@@ -165,7 +166,8 @@ def get_search_path(session):
     data files.
 
     """
-    p = os.path.split(__file__)[0]
+    p = os.path.abspath(__file__)
+    p = os.path.split(p)[0]
     p = os.path.split(p)[0]
     p = _search_paths + [os.path.join(p, 'botocore/data')]
     paths = session.get_variable('data_path')

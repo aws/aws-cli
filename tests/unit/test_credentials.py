@@ -22,6 +22,7 @@
 # IN THE SOFTWARE.
 #
 from tests import unittest, BaseEnvVar
+import json
 import os
 
 import mock
@@ -33,19 +34,11 @@ import botocore.exceptions
 TESTENVVARS = {'config_file': (None, 'AWS_CONFIG_FILE', None)}
 
 
-metadata = {'info':
-            {'InstanceProfileArn': 'arn:aws:iam::444444444444:instance-profile/foobar',
-             'InstanceProfileId': 'FOOBAR',
-             'Code': 'Success',
-             'LastUpdated': '2012-12-03T14:36:50Z'},
-            'security-credentials': {'foobar':
-                                     {'Code': 'Success',
-                                      'LastUpdated': '2012-12-03T14:38:21Z',
-                                      'AccessKeyId': 'foo',
-                                      'SecretAccessKey': 'bar',
-                                      'Token': 'foobar',
-                                      'Expiration': '2012-12-03T20:48:03Z',
-                                      'Type': 'AWS-HMAC'}}}
+metadata = {'foobar': {'Code': 'Success', 'LastUpdated':
+                       '2012-12-03T14:38:21Z', 'AccessKeyId': 'foo',
+                       'SecretAccessKey': 'bar', 'Token': 'foobar',
+                       'Expiration': '2012-12-03T20:48:03Z', 'Type':
+                       'AWS-HMAC'}}
 
 
 def path(filename):
@@ -86,7 +79,11 @@ class CredentialsFileTest(BaseEnvVar):
     def test_bad_file(self):
         self.environ['AWS_CREDENTIAL_FILE'] = path('no_aws_credentials')
         credentials = self.session.get_credentials()
-        self.assertEqual(credentials, None)
+        # There can be two cases, either credentials are None,
+        # or if we're able to get an IAM role the credentials method
+        # is not 'credentials-file'
+        if credentials is not None:
+            self.assertNotEqual(credentials.method, 'credentials-file')
 
 
 class ConfigTest(BaseEnvVar):
@@ -151,6 +148,21 @@ class IamRoleTest(BaseEnvVar):
         self.assertEqual(credentials.method, 'iam-role')
         self.assertEqual(credentials.access_key, 'foo')
         self.assertEqual(credentials.secret_key, 'bar')
+
+    @mock.patch('requests.get')
+    def test_get_credentials_with_metadata_mock(self, get):
+        self.environ['BOTO_CONFIG'] = ''
+        first = mock.Mock()
+        first.status_code = 200
+        first.content = 'foobar'.encode('utf-8')
+
+        second = mock.Mock()
+        second.status_code = 200
+        second.content = json.dumps(metadata['foobar']).encode('utf-8')
+        get.side_effect = [first, second]
+
+        credentials = self.session.get_credentials()
+        self.assertEqual(credentials.method, 'iam-role')
 
 
 if __name__ == "__main__":

@@ -16,8 +16,10 @@ from botocore.hooks import HierarchicalEmitter
 
 log = logging.getLogger('awscli.plugin')
 
+BUILTIN_PLUGINS = {'__builtin__': 'awscli.handlers'}
 
-def load_plugins(plugin_mapping, event_hooks=None):
+
+def load_plugins(plugin_mapping, event_hooks=None, include_builtins=True):
     """
 
     :type plugin_mapping: dict
@@ -29,10 +31,16 @@ def load_plugins(plugin_mapping, event_hooks=None):
         an emitter will be created and returned.  Otherwise, the
         passed in ``event_hooks`` will be used to initialize plugins.
 
+    :type include_builtins: bool
+    :param include_builtins: If True, the builtin awscli plugins (specified in
+        ``BUILTIN_PLUGINS``) will be included in the list of plugins to load.
+
     :rtype: HierarchicalEmitter
     :return: An event emitter object.
 
     """
+    if include_builtins:
+        plugin_mapping.update(BUILTIN_PLUGINS)
     modules = _import_plugins(plugin_mapping)
     if event_hooks is None:
         event_hooks = HierarchicalEmitter()

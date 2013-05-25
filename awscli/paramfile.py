@@ -47,9 +47,9 @@ def get_uri(session, prefix, uri):
 
 # TODO - Add s3n: support
 
-PrefixMap = {'file:': get_file,
-             'http:': get_uri,
-             'https:': get_uri}
+PrefixMap = {'file://': get_file,
+             'http://': get_uri,
+             'https://': get_uri}
 
 
 def get_paramfile(session, path):

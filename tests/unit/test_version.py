@@ -27,6 +27,7 @@ class TestVersion(unittest.TestCase):
     def test_session_can_be_passed_in(self):
         process = Popen([AWS_CMD, '--version'], stdout=PIPE, stderr=PIPE)
         stdout, stderr = process.communicate()
+        stderr = stderr.decode('utf-8')
         self.assertTrue(stderr.startswith('aws-cli'), stderr)
 
 

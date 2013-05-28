@@ -36,7 +36,7 @@ import botocore.credentials
 import botocore.base
 import botocore.service
 from botocore.exceptions import ConfigNotFound, EventNotFound
-from botocore.hooks import HierarchicalEmitter
+from botocore.hooks import HierarchicalEmitter, first_non_none_response
 from botocore import __version__
 from botocore import handlers
 
@@ -473,6 +473,10 @@ class Session(object):
 
     def emit(self, event_name, **kwargs):
         return self._events.emit(event_name, **kwargs)
+
+    def emit_first_non_none_response(self, event_name, **kwargs):
+        responses = self._events.emit(event_name, **kwargs)
+        return first_non_none_response(responses)
 
 
 def get_session(env_vars=None):

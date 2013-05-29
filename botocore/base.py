@@ -71,13 +71,15 @@ import sys
 import glob
 import json
 import logging
-from .compat import OrderedDict
+
+from botocore.compat import OrderedDict
 import botocore.exceptions
 
 logger = logging.getLogger(__name__)
 
 _data_cache = {}
 _search_paths = []
+
 
 def _load_data(session, data_path):
     logger.debug('Attempting to Load: %s' % data_path)
@@ -166,18 +168,21 @@ def get_search_path(session):
     data files.
 
     """
-    p = os.path.abspath(__file__)
-    p = os.path.split(p)[0]
-    p = os.path.split(p)[0]
-    p = _search_paths + [os.path.join(p, 'botocore/data')]
-    paths = session.get_variable('data_path')
-    if paths is not None:
-        paths = paths.split(':')
-        for path in paths:
+    # Automatically add ./botocore/data to the
+    # data search path.
+    builtin_path = os.path.join(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__))), 'botocore', 'data')
+    paths = [builtin_path]
+    search_path = session.get_variable('data_path')
+    if search_path is not None:
+        extra_paths = search_path.split(os.pathsep)
+        for path in extra_paths:
             path = os.path.expandvars(path)
             path = os.path.expanduser(path)
-            p.append(path)
-    return p
+            paths.append(path)
+    return paths
 
 
 def get_data(session, data_path):

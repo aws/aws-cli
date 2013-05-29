@@ -139,7 +139,7 @@ class Session(object):
             self._events = event_hooks
         if include_builtin_handlers:
             self._register_builtin_handlers(self._events)
-        self.user_agent_name = 'Boto'
+        self.user_agent_name = 'Botocore'
         self.user_agent_version = __version__
         self._profile = None
         self._config = None

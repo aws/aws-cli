@@ -16,8 +16,10 @@ import sys
 import mock
 import six
 
+import awscli
 from awscli.clidriver import CLIDriver
 from botocore.hooks import HierarchicalEmitter
+from botocore.base import get_search_path
 
 
 GET_DATA = {
@@ -210,6 +212,22 @@ class TestCliDriverHooks(unittest.TestCase):
         self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
         # Offer the user a suggestion.
         self.assertIn("maybe you meant:\n\n  * list-objects", self.stderr.getvalue())
+
+
+class TestSearchPath(unittest.TestCase):
+    def tearDown(self):
+        reload(awscli)
+
+    @mock.patch('os.pathsep', ';')
+    @mock.patch('os.environ', {'AWS_DATA_PATH': 'c:\\foo;c:\\bar'})
+    def test_windows_style_search_path(self):
+        driver = CLIDriver()
+        # Because the os.environ patching happens at import time,
+        # we have to force a reimport of the module to test our changes.
+        reload(awscli)
+        # Our two overrides should be the last two elements in the search path.
+        search_path = get_search_path(driver.session)[-2:]
+        self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])
 
 
 if __name__ == '__main__':

@@ -35,10 +35,10 @@ import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
-from botocore.exceptions import ConfigNotFound, EventNotFound
-from botocore.hooks import HierarchicalEmitter, first_non_none_response
-from botocore import __version__
-from botocore import handlers
+from .exceptions import ConfigNotFound, EventNotFound
+from .hooks import HierarchicalEmitter, first_non_none_response
+from .provider import get_provider
+from botocore import __version__, handlers
 
 
 AllEvents = {
@@ -146,10 +146,17 @@ class Session(object):
         self._config = None
         self._credentials = None
         self._profile_map = None
+        self._provider = None
 
     def _register_builtin_handlers(self, events):
         for event_name, handler in handlers.BUILTIN_HANDLERS:
             self.register(event_name, handler)
+
+    @property
+    def provider(self):
+        if self._provider is None:
+            self._provider = get_provider(self, self.get_variable('provider'))
+        return self._provider
 
     @property
     def available_profiles(self):
@@ -183,6 +190,9 @@ class Session(object):
 
     @profile.setter
     def profile(self, profile):
+        # Since provider can be specified in profile, changing the
+        # profile should reset the provider.
+        self._provider = None
         self._profile = profile
 
     def get_variable(self, logical_name, methods=('env', 'config')):
@@ -337,36 +347,32 @@ class Session(object):
         """
         return botocore.base.get_data(self, data_path)
 
-    def get_service_data(self, service_name, provider_name='aws'):
+    def get_service_data(self, service_name):
         """
         Retrieve the fully merged data associated with a service.
         """
-        data_path = '%s/%s' % (provider_name, service_name)
+        data_path = '%s/%s' % (self.provider.name, service_name)
         service_data = self.get_data(data_path)
         return service_data
 
-    def get_available_services(self, provider_name='aws'):
+    def get_available_services(self):
         """
         Return a list of names of available services.
         """
-        data_path = '%s' % provider_name
+        data_path = '%s' % self.provider.name
         return self.get_data(data_path)
 
-    def get_service(self, service_name, provider_name='aws'):
+    def get_service(self, service_name):
         """
         Get information about a service.
 
         :type service_name: str
         :param service_name: The name of the service (e.g. 'ec2')
 
-        :type provider_name: str
-        :param provider_name: The name of the provider.  Defaults
-            to 'aws'.
-
         :returns: :class:`botocore.service.Service`
         """
         service = botocore.service.get_service(self, service_name,
-                                               provider_name)
+                                               self.provider)
         event = self.create_event('service-created')
         self._events.emit(event, service=service)
         return service

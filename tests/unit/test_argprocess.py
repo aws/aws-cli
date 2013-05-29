@@ -224,7 +224,7 @@ class TestDocGen(BaseArgProcessTest):
         # Title that says it's the shorthand syntax.
         self.assertIn('Shorthand Syntax', rendered)
         # sample syntax
-        self.assertIn('key_name=value', rendered)
+        self.assertIn('key_name=string', rendered)
         # valid key names
         self.assertIn('VisibilityTimeout', rendered)
 
@@ -251,7 +251,7 @@ class TestDocGen(BaseArgProcessTest):
         rendered = fp.getvalue()
         self.assertIn('Shorthand Syntax', rendered)
         self.assertIn('--listeners', rendered)
-        self.assertIn('protocol=value', rendered)
+        self.assertIn('protocol=string', rendered)
 
 
 if __name__ == '__main__':

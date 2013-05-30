@@ -20,9 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import logging
+
 from .endpoint import get_endpoint
 from .operation import Operation
 from .exceptions import ServiceNotInRegionError, NoRegionError
+
+
+logger = logging.getLogger(__name__)
 
 
 class Service(object):
@@ -44,22 +49,32 @@ class Service(object):
         self.timestamp_format = 'iso8601'
         sdata = session.get_service_data(service_name, provider_name)
         self.__dict__.update(sdata)
+        self._operations_data = self.__dict__.pop('operations')
+        self._operations = None
         self.session = session
         self.provider_name = provider_name
         self.path = path
         self.port = port
         self.cli_name = service_name
-        self._operations_data = self.operations
-        self.operations = []
+
+    def _create_operation_objects(self):
+        logger.debug("Creating operation objects for: %s", self)
+        operations = []
         for operation_name in self._operations_data:
             data = self._operations_data[operation_name]
             data['name'] = operation_name
             op = Operation(self, data)
-            self.operations.append(op)
-            setattr(self, op.py_name, op)
+            operations.append(op)
+        return operations
 
     def __repr__(self):
         return 'Service(%s)' % self.endpoint_prefix
+
+    @property
+    def operations(self):
+        if self._operations is None:
+            self._operations = self._create_operation_objects()
+        return self._operations
 
     @property
     def region_names(self):

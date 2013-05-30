@@ -90,6 +90,32 @@ class SessionTest(BaseSessionTest):
         self.environ['FOO_REGION'] = saved_region
         self.environ['FOO_PROFILE'] = saved_profile
 
+    def test_profile_does_not_exist_raises_exception(self):
+        # Given we have no profile:
+        self.environ['FOO_PROFILE'] = 'profile_that_does_not_exist'
+        session = botocore.session.get_session(self.env_vars)
+        with self.assertRaises(botocore.exceptions.ProfileNotFound):
+            session.get_config()
+
+    def test_profile_does_not_exist_with_default_profile(self):
+        session = botocore.session.get_session(self.env_vars)
+        config = session.get_config()
+        self.assertEqual(config['foo_access_key'], 'fie')
+
+    def test_default_profile_specified_raises_exception(self):
+        # If you explicity set the default profile and you don't
+        # have that in your config file, an exception is raised.
+        config_path = os.path.join(os.path.dirname(__file__), 'cfg',
+                                   'boto_config_empty')
+        self.environ['FOO_CONFIG_FILE'] = config_path
+        self.environ['FOO_PROFILE'] = 'default'
+        session = botocore.session.get_session(self.env_vars)
+        # In this case, even though we specified default, because
+        # the boto_config_empty config file does not have a default
+        # profile, we should be raising an exception.
+        with self.assertRaises(botocore.exceptions.ProfileNotFound):
+            session.get_config()
+
     def test_file_logger(self):
         tempdir = tempfile.mkdtemp()
         temp_file = os.path.join(tempdir, 'file_logger')

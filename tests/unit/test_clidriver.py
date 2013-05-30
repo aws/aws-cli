@@ -216,7 +216,7 @@ class TestCliDriverHooks(unittest.TestCase):
 
 class TestSearchPath(unittest.TestCase):
     def tearDown(self):
-        reload(awscli)
+        six.moves.reload_module(awscli)
 
     @mock.patch('os.pathsep', ';')
     @mock.patch('os.environ', {'AWS_DATA_PATH': 'c:\\foo;c:\\bar'})
@@ -224,7 +224,7 @@ class TestSearchPath(unittest.TestCase):
         driver = CLIDriver()
         # Because the os.environ patching happens at import time,
         # we have to force a reimport of the module to test our changes.
-        reload(awscli)
+        six.moves.reload_module(awscli)
         # Our two overrides should be the last two elements in the search path.
         search_path = get_search_path(driver.session)[-2:]
         self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])

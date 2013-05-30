@@ -153,4 +153,5 @@ def get_service(session, service_name, provider_name='aws'):
     :type provider_name: str
     :param provider_name: The name of the provider.
     """
+    logger.debug("Creating service object for: %s", service_name)
     return Service(session, provider_name, service_name)

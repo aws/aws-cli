@@ -348,7 +348,7 @@ def unpack_cli_arg(parameter, value):
 
 def unpack_complex_cli_arg(parameter, value):
     if parameter.type == 'structure' or parameter.type == 'map':
-        if value[0] == '{':
+        if value.lstrip()[0] == '{':
             d = json.loads(value)
         else:
             msg = 'Structure option value must be JSON or path to file.'
@@ -356,10 +356,10 @@ def unpack_complex_cli_arg(parameter, value):
         return d
     elif parameter.type == 'list':
         if isinstance(value, six.string_types):
-            if value[0] == '[':
+            if value.lstrip()[0] == '[':
                 return json.loads(value)
         elif isinstance(value, list) and len(value) == 1:
-            if value[0][0] == '[':
+            if value[0].lstrip()[0] == '[':
                 return json.loads(value[0])
         return [unpack_cli_arg(parameter.members, v) for v in value]
 

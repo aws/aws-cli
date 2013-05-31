@@ -11,13 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import BaseCLIDriverTest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestDescribeInstances(BaseCLIDriverTest):
+class TestDescribeInstances(BaseAWSCommandParamsTest):
 
-    prefix = 'aws ec2 run-instances'
+    prefix = 'ec2 run-instances'
 
     def test_block_device_mapping(self):
         args = ' --image-id ami-foobar --min-count 1 --max-count 1'
@@ -36,8 +36,7 @@ class TestDescribeInstances(BaseCLIDriverTest):
             'MaxCount': '1',
             'MinCount': '1'
         }
-        params = self.driver.test(args_list)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(args_list, result)
 
 
 if __name__ == "__main__":

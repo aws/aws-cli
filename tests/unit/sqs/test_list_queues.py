@@ -11,27 +11,23 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestListQueues(unittest.TestCase):
+class TestListQueues(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws sqs list-queues'
+    prefix = 'sqs list-queues'
 
     def test_no_param(self):
         cmdline = self.prefix
         result = {}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_prefix(self):
         cmdline = self.prefix + ' --queue-name-prefix test'
         result = {'QueueNamePrefix': 'test'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

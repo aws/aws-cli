@@ -11,13 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import sys
+import re
 
 import mock
 import six
+import httpretty
 
 import awscli
 from awscli.clidriver import CLIDriver
+from awscli.clidriver import create_clidriver
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
 
@@ -89,6 +93,9 @@ class FakeSession(object):
     def emit(self, event_name, **kwargs):
         return self.emitter.emit(event_name, **kwargs)
 
+    def get_available_services(self):
+        return ['s3']
+
     def get_data(self, name):
         return GET_DATA[name]
 
@@ -108,8 +115,10 @@ class FakeSession(object):
         param.type = 'string'
         param.py_name = 'bucket'
         param.cli_name = '--bucket'
+        param.name = 'bucket'
         operation.params = [param]
         operation.cli_name = 'list-objects'
+        operation.name = 'ListObjects'
         operation.is_streaming.return_value = False
         operation.paginate.return_value.build_full_result.return_value = {
             'foo': 'paginate'}
@@ -117,8 +126,22 @@ class FakeSession(object):
         self.operation = operation
         service.operations = [list_objects]
         service.cli_name = 's3'
+        service.endpoint_prefix = 's3'
         service.get_operation.return_value = operation
+        operation.service = service
+        operation.service.session = self
         return service
+
+    def get_service_data(self, service_name):
+        import botocore.session
+        s = botocore.session.get_session()
+        actual = s.get_service_data(service_name)
+        foo = actual['operations']['ListObjects']['input']['members']
+        return {'operations': {'ListObjects': {'input': {
+            'members': dict.fromkeys(
+                ['Bucket', 'Delimiter', 'Marker', 'MaxKeys', 'Prefix']),
+        }}}}
+
 
     def user_agent(self):
         return 'user_agent'
@@ -132,7 +155,7 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         self.assertEqual(driver.session, self.session)
 
-    def test_call(self):
+    def test_paginate_rc(self):
         driver = CLIDriver(session=self.session)
         rc = driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 0)
@@ -171,9 +194,9 @@ class TestCliDriverHooks(unittest.TestCase):
         driver.main('s3 list-objects --bucket foo'.split())
         self.assert_events_fired_in_order([
             # Events fired while parser is being created.
-            'parser-created.main',
-            'parser-created.s3',
-            'parser-created.s3-list-objects',
+            'building-command-table',
+            'building-operation-table.s3',
+            'building-argument-table.s3.ListObjects',
             'process-cli-arg.s3.list-objects',
         ])
 
@@ -184,14 +207,6 @@ class TestCliDriverHooks(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo'.split())
         self.assertIn(mock.call.paginate(mock.ANY, bucket='foo-altered!'),
-                      self.session.operation.method_calls)
-
-    def test_cli_driver_with_no_paginate(self):
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo --no-paginate'.split())
-        # Because --no-paginate was used, op.call should be used instead of
-        # op.paginate.
-        self.assertIn(mock.call.call(mock.ANY, bucket='foo'),
                       self.session.operation.method_calls)
 
     def test_unknown_params_raises_error(self):
@@ -228,6 +243,23 @@ class TestSearchPath(unittest.TestCase):
         # Our two overrides should be the last two elements in the search path.
         search_path = get_search_path(driver.session)[-2:]
         self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])
+
+
+class TestAWSCommand(BaseAWSCommandParamsTest):
+    # These tests will simulate running actual aws commands
+    # but with the http part mocked out.
+    def last_request_headers(self):
+        return httpretty.httpretty.last_request.headers
+
+    def test_aws_with_region(self):
+        driver = create_clidriver()
+        driver.main('ec2 describe-instances --region us-east-1'.split())
+        host = self.last_request_headers()['Host']
+        self.assertEqual(host, 'ec2.us-east-1.amazonaws.com')
+
+        driver.main('ec2 describe-instances --region us-west-2'.split())
+        host = self.last_request_headers()['Host']
+        self.assertEqual(host, 'ec2.us-west-2.amazonaws.com')
 
 
 if __name__ == '__main__':

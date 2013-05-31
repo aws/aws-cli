@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+from argparse import Namespace
 
 import botocore.session
 from bcdoc.mangen import OperationDocument
 import six
 
+from awscli.clidriver import CLIArgument
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthand

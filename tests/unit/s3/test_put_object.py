@@ -12,7 +12,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-from tests import unittest
+import re
+import copy
+
+from tests.unit import BaseAWSCommandParamsTest
+import httpretty
+import six
+
 import awscli.clidriver
 
 # file is gone in python3, so instead IOBase must be used.
@@ -25,26 +31,41 @@ except NameError:
     file_type = io.IOBase
 
 
-class TestGetObject(unittest.TestCase):
+class TestGetObject(BaseAWSCommandParamsTest):
+
+    prefix = 's3 put-object'
 
     def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws s3 put-object'
+        super(TestGetObject, self).setUp()
         self.file_path = os.path.join(os.path.dirname(__file__),
                                       'test_put_object_data')
+        self.payload = None
+
+    def _store_params(self, params):
+        # Copy the params dict without the payload attribute.
+        self.payload = params['payload']
+        self.last_params = params.copy()
+        del self.last_params['payload']
+        self.last_params = copy.deepcopy(self.last_params)
+        # There appears to be a bug in httpretty, and we're not
+        # interested in testing this part of the request serialization
+        # for these tests so we're replacing the file like object
+        # with the string contents.
+        params['payload'] = self.payload.read()
+
+    def register_uri(self):
+        httpretty.register_uri(httpretty.PUT, re.compile('.*'), body='')
 
     def test_simple(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
         cmdline += ' --key mykey'
         cmdline += ' --body %s' % self.file_path
-        uri_params = {'Bucket': 'mybucket',
-                      'Key': 'mykey'}
-        headers = {}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params['uri_params'], uri_params)
-        self.assertEqual(params['headers'], headers)
-        self.assertIsInstance(params['payload'], file_type)
+        result = {'uri_params': {'Bucket': 'mybucket',
+                                 'Key': 'mykey'},
+                  'headers': {}}
+        self.assert_params_for_cmd(cmdline, result)
+        self.assertIsInstance(self.payload, file_type)
 
     def test_headers(self):
         cmdline = self.prefix
@@ -54,19 +75,12 @@ class TestGetObject(unittest.TestCase):
         cmdline += ' --acl public-read'
         cmdline += ' --content-encoding x-gzip'
         cmdline += ' --content-type text/plain'
-        uri_params = {'Bucket': 'mybucket',
-                      'Key': 'mykey'}
-        headers = {'x-amz-acl': 'public-read',
-                   'Content-Encoding': 'x-gzip',
-                   'Content-Type': 'text/plain'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params['uri_params'], uri_params)
-        self.assertEqual(params['headers'], headers)
-        # Not sure how best to check if the payload contains a file object.
-        # In Python 2.x, this would be of type file but in Python3.x
-        # it is an instance of io.IOBase.  I'm just going to check to
-        # see if it has a read method.
-        self.assertTrue(hasattr(params['payload'], 'read'))
+        result = {'uri_params': {'Bucket': 'mybucket', 'Key': 'mykey'},
+                  'headers': {'x-amz-acl': 'public-read',
+                              'Content-Encoding': 'x-gzip',
+                              'Content-Type': 'text/plain'}}
+        self.assert_params_for_cmd(cmdline, result)
+        self.assertEqual(self.payload.read(), b'')
 
 
 if __name__ == "__main__":

@@ -100,7 +100,10 @@ class SessionTest(BaseSessionTest):
     def test_profile_does_not_exist_with_default_profile(self):
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()
-        self.assertEqual(config['foo_access_key'], 'fie')
+        # We should have loaded this properly, and we'll check
+        # that foo_access_key which is defined in the config
+        # file should be present in the loaded config dict.
+        self.assertIn('foo_access_key', config)
 
     def test_default_profile_specified_raises_exception(self):
         # If you explicity set the default profile and you don't

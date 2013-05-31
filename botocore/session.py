@@ -467,6 +467,20 @@ class Session(object):
         """
         self._events.unregister(event_name, handler)
 
+    def register_event(self, event_name, fmtstr):
+        """
+        Register a new event.  The event will be added to ``AllEvents``
+        and will then be able to be created using ``create_event``.
+
+        :type event_name: str
+        :param event_name: The base name of the event.
+
+        :type fmtstr: str
+        :param fmtstr: The formatting string for the event.
+        """
+        if event_name not in AllEvents:
+            AllEvents[event_name] = fmtstr
+
     def create_event(self, event_name, *fmtargs):
         """
         Creates a new event string that can then be emitted.

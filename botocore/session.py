@@ -35,7 +35,7 @@ import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
-from botocore.exceptions import ConfigNotFound, EventNotFound
+from botocore.exceptions import ConfigNotFound, EventNotFound, ProfileNotFound
 from botocore.hooks import HierarchicalEmitter, first_non_none_response
 from botocore import __version__
 from botocore import handlers
@@ -54,7 +54,7 @@ is the formatting string used to construct a new event.
 
 
 EnvironmentVariables = {
-    'profile': (None, 'BOTO_DEFAULT_PROFILE', 'default'),
+    'profile': (None, 'BOTO_DEFAULT_PROFILE', None),
     'region': ('region', 'BOTO_DEFAULT_REGION', None),
     'data_path': ('data_path', 'BOTO_DATA_PATH', None),
     'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config'),
@@ -139,7 +139,7 @@ class Session(object):
             self._events = event_hooks
         if include_builtin_handlers:
             self._register_builtin_handlers(self._events)
-        self.user_agent_name = 'Boto'
+        self.user_agent_name = 'Botocore'
         self.user_agent_version = __version__
         self._profile = None
         self._config = None
@@ -233,15 +233,28 @@ class Session(object):
         Note that this configuration is specific to a single profile (the
         ``profile`` session variable).
 
+        If the ``profile`` session variable is set and the profile does
+        not exist in the config file, a ``ProfileNotFound`` exception
+        will be raised.
 
-        :raises: ConfigNotFound, ConfigParseError
+        :raises: ConfigNotFound, ConfigParseError, ProfileNotFound
         :rtype: dict
         """
         config = self.full_config
         profile_name = self.get_variable('profile')
-        if not profile_name:
-            profile_name = 'default'
-        return self._build_profile_map().get(profile_name, {})
+        profile_map = self._build_profile_map()
+        # If a profile is not explicitly set return the default
+        # profile config or an empty config dict if we don't have
+        # a default profile.
+        if profile_name is None:
+            return profile_map.get('default', {})
+        elif profile_name not in profile_map:
+            # Otherwise if they specified a profile, it has to
+            # exist (even if it's the default profile) otherwise
+            # we complain.
+            raise ProfileNotFound(profile=profile_name)
+        else:
+            return profile_map[profile_name]
 
     @property
     def full_config(self):

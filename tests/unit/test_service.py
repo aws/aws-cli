@@ -31,7 +31,6 @@ class TestService(unittest.TestCase):
 
     def test_get_endpoint_with_no_region(self):
         # Test global endpoint service such as iam.
-        self.session.profile = 'default'
         service = self.session.get_service('iam')
         endpoint = service.get_endpoint()
         self.assertEqual(endpoint.host, 'https://iam.amazonaws.com/')

@@ -37,7 +37,7 @@ class TestConfig(BaseEnvVar):
         super(TestConfig, self).setUp()
         self.env_vars = {
             'config_file': (None, 'FOO_CONFIG_FILE', None),
-            'profile': (None, 'FOO_DEFAULT_PROFILE', 'default'),
+            'profile': (None, 'FOO_DEFAULT_PROFILE', None),
         }
 
     def test_config_not_found(self):

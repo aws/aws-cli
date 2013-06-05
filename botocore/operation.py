@@ -43,7 +43,7 @@ class Operation(BotoCoreObject):
         else:
             self.session = None
         self.type = 'operation'
-        self._get_parameters()
+        self._params = None
         if paginator_cls is None:
             paginator_cls = self._DEFAULT_PAGINATOR_CLS
         self._paginator_cls = paginator_cls
@@ -86,15 +86,23 @@ class Operation(BotoCoreObject):
         paginator = self._paginator_cls(self)
         return paginator.paginate(endpoint, **kwargs)
 
-    def _get_parameters(self):
+    @property
+    def params(self):
+        if self._params is None:
+            self._params = self._create_parameter_objects()
+        return self._params
+
+    def _create_parameter_objects(self):
         """
         Build the list of Parameter objects for this operation.
         """
-        self.params = []
+        logger.debug("Creating parameter objects for: %s", self)
+        params = []
         if self.input and 'members' in self.input:
             for name, data in self.input['members'].items():
                 param = get_parameter(self, name, data)
-                self.params.append(param)
+                params.append(param)
+        return params
 
     def _get_built_params(self):
         d = {}

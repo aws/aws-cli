@@ -29,6 +29,8 @@ from .argprocess import unpack_cli_arg
 def main():
     emitter = HierarchicalEmitter()
     session = botocore.session.Session(EnvironmentVariables, emitter)
+    session.user_agent_name = 'aws-cli'
+    session.user_agent_version = __version__
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=emitter)
     driver = CLIDriver(session=session)

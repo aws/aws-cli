@@ -108,10 +108,7 @@ class ParamShorthand(object):
         operation_doc.indent()
         p = operation_doc.add_paragraph()
         p.write(operation_doc.style.italics('Shorthand Syntax'))
-        operation_doc.add_paragraph()
-        operation_doc.add_paragraph().write(
-            'As an alternative to JSON, you can specify this '
-            'parameter as::')
+        operation_doc.add_paragraph().write('::')
         operation_doc.add_paragraph()
         operation_doc.indent()
         doc_method(operation_doc, param)
@@ -181,19 +178,28 @@ class ParamShorthand(object):
         return parse_method
 
     def _docs_list_scalar_list_parse(self, doc, param):
+        doc.add_paragraph().write("Key value pairs, where values are separated "
+                                  "by commas.")
+        doc.add_paragraph()
         p2 = doc.add_paragraph()
         if param.members.members[0].type in SCALAR_TYPES:
-            scalar_inner_param = param.members.members[0].py_name
-            list_inner_param = param.members.members[1].py_name
+            scalar_inner_param = param.members.members[0]
+            scalar_inner_type = scalar_inner_param.type
+            list_inner_param = param.members.members[1]
+            list_inner_type = list_inner_param.members.type
         else:
-            scalar_inner_param = param.members.members[1].py_name
-            list_inner_param = param.members.members[0].py_name
+            scalar_inner_param = param.members.members[1]
+            scalar_inner_type = scalar_inner_param.type
+            list_inner_param = param.members.members[0]
+            list_inner_type = list_inner_param.members.type
         p2.write('%s ' % param.cli_name)
-        p2.write('%s=%s1,' % (scalar_inner_param, scalar_inner_param))
-        p2.write('%s=%s1,%s2,' % (list_inner_param, list_inner_param,
-                                  list_inner_param))
-        p2.write('%s=%s2,' % (scalar_inner_param, scalar_inner_param))
-        p2.write('%s=%s1' % (list_inner_param, list_inner_param))
+        p2.write('%s=%s1,' % (scalar_inner_param.py_name,
+                              scalar_inner_type))
+        p2.write('%s=%s1,%s2,' % (list_inner_param.py_name,
+                                  list_inner_type,
+                                  list_inner_type))
+        p2.write('%s=%s2,' % (scalar_inner_param.py_name, scalar_inner_type))
+        p2.write('%s=%s1' % (list_inner_param.py_name, list_inner_type))
 
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
@@ -252,8 +258,8 @@ class ParamShorthand(object):
         doc.add_paragraph()
         p2 = doc.add_paragraph()
         p2.write('%s ' % param.cli_name)
-        p2.write(','.join(['%s=value' % sub_param.py_name
-                        for sub_param in param.members.members]))
+        p2.write(','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
+                          for sub_param in param.members.members]))
 
     def _list_key_value_parse(self, param, value):
         # param is a list param.
@@ -272,11 +278,11 @@ class ParamShorthand(object):
             p.write(','.join(['%s=value' % sub_param.py_name
                             for sub_param in param.members]))
         elif param.type == 'map':
-            p.write("key_name=value")
+            p.write("key_name=string,key_name2=string")
             if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
                 doc.add_paragraph()
                 p2 = doc.add_paragraph()
-                p2.write("Where key_name can be:")
+                p2.write("Where valid key names are:")
                 doc.add_paragraph()
                 doc.indent()
                 for value in param.keys.enum:
@@ -342,7 +348,7 @@ def unpack_cli_arg(parameter, value):
 
 def unpack_complex_cli_arg(parameter, value):
     if parameter.type == 'structure' or parameter.type == 'map':
-        if value[0] == '{':
+        if value.lstrip()[0] == '{':
             d = json.loads(value)
         else:
             msg = 'Structure option value must be JSON or path to file.'
@@ -350,10 +356,10 @@ def unpack_complex_cli_arg(parameter, value):
         return d
     elif parameter.type == 'list':
         if isinstance(value, six.string_types):
-            if value[0] == '[':
+            if value.lstrip()[0] == '[':
                 return json.loads(value)
         elif isinstance(value, list) and len(value) == 1:
-            if value[0][0] == '[':
+            if value[0].lstrip()[0] == '[':
                 return json.loads(value[0])
         return [unpack_cli_arg(parameter.members, v) for v in value]
 

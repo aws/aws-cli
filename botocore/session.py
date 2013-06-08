@@ -207,6 +207,7 @@ class Session(object):
         :returns: str value of variable of None if not defined.
         """
         value = None
+        default = None
         if logical_name in self.env_vars:
             config_name, envvar_name, default = self.env_vars[logical_name]
             if logical_name in ('config_file', 'profile'):

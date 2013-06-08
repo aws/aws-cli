@@ -97,6 +97,10 @@ class SessionTest(BaseSessionTest):
         with self.assertRaises(botocore.exceptions.ProfileNotFound):
             session.get_config()
 
+    def test_variable_does_not_exist(self):
+        session = botocore.session.get_session(self.env_vars)
+        self.assertIsNone(session.get_variable('foo/bar'))
+
     def test_profile_does_not_exist_with_default_profile(self):
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()

@@ -108,8 +108,28 @@ class CLIDriver(object):
 
 
 class CLICommand(object):
+    """Interface for a CLI command.
+
+    This class represents a top level CLI command
+    (``aws ec2``, ``aws s3``, ``aws config``).
+
+    """
 
     def call(self, args, parsed_globals):
+        """Invoke CLI operation.
+
+        :type args: str
+        :param args: The remaining command line args.
+
+        :type parsed_globals: ``argparse.Namespace``
+        :param parsed_globals: The parsed arguments so far.
+
+        :rtype: int
+        :return: The return code of the operation.  This will be used
+            as the RC code for the ``aws`` process.
+
+        """
+        # Subclasses are expected to implement this method.
         pass
 
 

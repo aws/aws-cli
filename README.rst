@@ -21,6 +21,7 @@ The currently supported services include:
 * AWS Security Token Service
 * AWS Storage Gateway
 * Amazon CloudWatch
+* Amazon ElastiCache
 * Amazon Elastic Compute Cloud
 * Amazon Elastic MapReduce
 * Amazon Elastic Transcoder

@@ -134,6 +134,11 @@ class CLICommand(object):
 
 
 class ProviderHelpCommand(CLICommand):
+    """Implements top level help command.
+
+    This is what is called when ``aws help`` is run.
+
+    """
     def __init__(self, session):
         self._session = session
 
@@ -186,7 +191,23 @@ class ServiceCommand(CLICommand):
 
 
 class ServiceHelpCommand(CLICommand):
+    """Implements service level help.
+
+    This is the object invoked whenever a service command
+    help is implemented, e.g. ``aws ec2 help``.
+
+    """
     def __init__(self, session, service):
+        """
+
+        :type session: ``botocore.session.Session``
+        :param session: A botocore session.
+
+        :type service: ``botocore.service.Service``
+        :param service: A botocore service object representing the
+            particular service.
+
+        """
         self._session = session
         self._service = service
 
@@ -196,6 +217,12 @@ class ServiceHelpCommand(CLICommand):
 
 
 class OperationHelpCommand(CLICommand):
+    """Implements operation level help.
+
+    This is the object invoked whenever help for a service is requested,
+    e.g. ``aws ec2 describe-instances help``.
+
+    """
     def __init__(self, session, service, operation):
         self._session = session
         self._service = service

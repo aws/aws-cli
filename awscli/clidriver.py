@@ -106,10 +106,10 @@ class CLIDriver(object):
             args = sys.argv[1:]
         command_table = self._build_command_table()
         parser = self._create_parser_from_command_table(command_table)
-        args, remaining = parser.parse_known_args(args)
-        self._handle_top_level_args(args)
+        parsed_args, remaining = parser.parse_known_args(args)
+        self._handle_top_level_args(parsed_args)
         try:
-            return command_table[args.command](remaining, args)
+            return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write(str(e) + '\n')
             return 255
@@ -185,8 +185,8 @@ class ServiceCommand(CLICommand):
         service_object = self._session.get_service(self._name)
         op_table = self._create_operations_table(service_object)
         service_parser = self._create_service_parser(op_table)
-        args, remaining = service_parser.parse_known_args(args)
-        return op_table[args.operation](remaining, parsed_globals)
+        parsed_args, remaining = service_parser.parse_known_args(args)
+        return op_table[parsed_args.operation](remaining, parsed_globals)
 
     def _create_service_parser(self, operation_table):
         return ServiceArgParser(
@@ -567,18 +567,18 @@ class ServiceOperation(object):
         arg_table = self._create_argument_table(operation_object)
         operation_parser = self._create_operation_parser(arg_table)
         self._add_help(operation_parser)
-        args, remaining = operation_parser.parse_known_args(args)
-        if args.help == 'help':
+        parsed_args, remaining = operation_parser.parse_known_args(args)
+        if parsed_args.help == 'help':
             op_help = OperationHelpCommand(
                 self._service_object.session, self._service_object,
                 operation_object)
-            op_help(args, parsed_globals)
-        elif args.help:
-            remaining.append(args.help)
+            op_help(parsed_args, parsed_globals)
+        elif parsed_args.help:
+            remaining.append(parsed_args.help)
         if remaining:
             raise UnknownArgumentError(
                 "Unknown options: %s" % ', '.join(remaining))
-        call_parameters = self._build_call_parameters(args, arg_table)
+        call_parameters = self._build_call_parameters(parsed_args, arg_table)
         return self._operation_caller.invoke(
             operation_object, call_parameters, parsed_globals)
 

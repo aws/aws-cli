@@ -87,7 +87,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 1)
         self.assertIn('AWS', p.stdout)
-        self.assertIn('The  AWS  Command Line Interface', p.stdout)
+        self.assertRegexpMatches(p.stdout, 'The.*AWS.*Command Line Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')

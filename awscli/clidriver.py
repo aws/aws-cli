@@ -109,7 +109,7 @@ class CLIDriver(object):
         args, remaining = parser.parse_known_args(args)
         self._handle_top_level_args(args)
         try:
-            return command_table[args.command].call(remaining, args)
+            return command_table[args.command](remaining, args)
         except UnknownArgumentError as e:
             sys.stderr.write(str(e) + '\n')
             return 255
@@ -133,7 +133,7 @@ class CLICommand(object):
 
     """
 
-    def call(self, args, parsed_globals):
+    def __call__(self, args, parsed_globals):
         """Invoke CLI operation.
 
         :type args: str
@@ -160,7 +160,7 @@ class ProviderHelpCommand(CLICommand):
     def __init__(self, session):
         self._session = session
 
-    def call(self, args, parsed_globals):
+    def __call__(self, args, parsed_globals):
         if not args:
             get_provider_help(self._session)
 
@@ -176,7 +176,7 @@ class ServiceCommand(CLICommand):
         self._name = name
         self._session = session
 
-    def call(self, args, parsed_globals):
+    def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
@@ -184,7 +184,7 @@ class ServiceCommand(CLICommand):
         op_table = self._create_operations_table(service_object)
         service_parser = self._create_service_parser(op_table)
         args, remaining = service_parser.parse_known_args(args)
-        return op_table[args.operation].call(remaining, parsed_globals)
+        return op_table[args.operation](remaining, parsed_globals)
 
     def _create_service_parser(self, operation_table):
         return ServiceArgParser(
@@ -230,7 +230,7 @@ class ServiceHelpCommand(CLICommand):
         self._session = session
         self._service = service
 
-    def call(self, args, parsed_globals):
+    def __call__(self, args, parsed_globals):
         if not args:
             get_service_help(self._session, self._service)
 
@@ -247,7 +247,7 @@ class OperationHelpCommand(CLICommand):
         self._service = service
         self._operation = operation
 
-    def call(self, args, parsed_globals):
+    def __call__(self, args, parsed_globals):
         get_operation_help(self._session, self._service, self._operation)
 
 
@@ -552,7 +552,7 @@ class ServiceOperation(object):
         self._operation_caller = operation_caller
         self._service_object = service_object
 
-    def call(self, args, parsed_globals):
+    def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
         # We can also create the operation object from botocore.
@@ -565,7 +565,7 @@ class ServiceOperation(object):
             op_help = OperationHelpCommand(
                 self._service_object.session, self._service_object,
                 operation_object)
-            op_help.call(args, parsed_globals)
+            op_help(args, parsed_globals)
         elif args.help:
             remaining.append(args.help)
         if remaining:

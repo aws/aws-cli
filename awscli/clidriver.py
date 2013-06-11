@@ -42,12 +42,16 @@ def main():
 def create_clidriver():
     emitter = HierarchicalEmitter()
     session = botocore.session.Session(EnvironmentVariables, emitter)
-    session.user_agent_name = 'aws-cli'
-    session.user_agent_version = __version__
+    _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=emitter)
     driver = CLIDriver(session=session)
     return driver
+
+
+def _set_user_agent_for_session(session):
+    session.user_agent_name = 'aws-cli'
+    session.user_agent_version = __version__
 
 
 class CLIDriver(object):
@@ -55,8 +59,7 @@ class CLIDriver(object):
     def __init__(self, session=None):
         if session is None:
             self.session = botocore.session.get_session(EnvironmentVariables)
-            self.session.user_agent_name = 'aws-cli'
-            self.session.user_agent_version = __version__
+            _set_user_agent_for_session(self.session)
         else:
             self.session = session
 

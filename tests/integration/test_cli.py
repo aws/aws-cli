@@ -204,6 +204,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # Also should see DEBUG statements:
         self.assertIn('DEBUG', p.stderr, p.stderr)
 
+    def test_leftover_args_in_operation(self):
+        p = aws('ec2 describe-instances BADKEY=foo')
+        self.assertEqual(p.rc, 255)
+        self.assertIn("Unknown option", p.stderr, p.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()

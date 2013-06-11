@@ -562,9 +562,11 @@ class ServiceOperation(object):
                 self._service_object.session, self._service_object,
                 operation_object)
             op_help.call(args, parsed_globals)
+        elif args.help:
+            remaining.append(args.help)
         if remaining:
             raise UnknownArgumentError(
-                "Unknown options: %s" % ','.join(remaining))
+                "Unknown options: %s" % ', '.join(remaining))
         call_parameters = self._build_call_parameters(args, arg_table)
         return self._operation_caller.invoke(
             operation_object, call_parameters, parsed_globals)

@@ -514,7 +514,6 @@ class CLIOperationCaller(object):
             output = self._session.get_variable('output')
         formatter = get_formatter(output, args)
         formatter(operation, response)
-        sys.stdout.flush()
 
     def _handle_http_response(self, http_response, response_data):
         if http_response.status_code >= 500:

@@ -70,7 +70,8 @@ class CLIDriver(object):
         """
         command_table = self._build_builtin_commands(self.session)
         self.session.emit('building-command-table',
-                          command_table=command_table)
+                          command_table=command_table,
+                          session=self.session)
         return command_table
 
     def _build_builtin_commands(self, session):
@@ -354,6 +355,10 @@ class CLIArgument(BaseCLIArgument):
     @property
     def required(self):
         return self._argument_object.required
+
+    @required.setter
+    def required(self, value):
+        self._argument_object.required = value
 
     @property
     def documentation(self):

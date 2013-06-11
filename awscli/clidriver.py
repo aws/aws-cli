@@ -19,12 +19,12 @@ from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
 
 from awscli import EnvironmentVariables, __version__
-from .formatter import get_formatter
-from .paramfile import get_paramfile
-from .plugin import load_plugins
-from .argparser import MainArgParser, ServiceArgParser, OperationArgParser
-from .argprocess import unpack_cli_arg
-from .help import get_provider_help, get_service_help, get_operation_help
+from awscli.formatter import get_formatter
+from awscli.paramfile import get_paramfile
+from awscli.plugin import load_plugins
+from awscli.argparser import MainArgParser, ServiceArgParser, OperationArgParser
+from awscli.argprocess import unpack_cli_arg
+from awscli.help import get_provider_help, get_service_help, get_operation_help
 
 
 log = logging.getLogger('awscli.clidriver')

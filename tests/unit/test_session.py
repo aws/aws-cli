@@ -90,6 +90,39 @@ class SessionTest(BaseSessionTest):
         self.environ['FOO_REGION'] = saved_region
         self.environ['FOO_PROFILE'] = saved_profile
 
+    def test_profile_does_not_exist_raises_exception(self):
+        # Given we have no profile:
+        self.environ['FOO_PROFILE'] = 'profile_that_does_not_exist'
+        session = botocore.session.get_session(self.env_vars)
+        with self.assertRaises(botocore.exceptions.ProfileNotFound):
+            session.get_config()
+
+    def test_variable_does_not_exist(self):
+        session = botocore.session.get_session(self.env_vars)
+        self.assertIsNone(session.get_variable('foo/bar'))
+
+    def test_profile_does_not_exist_with_default_profile(self):
+        session = botocore.session.get_session(self.env_vars)
+        config = session.get_config()
+        # We should have loaded this properly, and we'll check
+        # that foo_access_key which is defined in the config
+        # file should be present in the loaded config dict.
+        self.assertIn('foo_access_key', config)
+
+    def test_default_profile_specified_raises_exception(self):
+        # If you explicity set the default profile and you don't
+        # have that in your config file, an exception is raised.
+        config_path = os.path.join(os.path.dirname(__file__), 'cfg',
+                                   'boto_config_empty')
+        self.environ['FOO_CONFIG_FILE'] = config_path
+        self.environ['FOO_PROFILE'] = 'default'
+        session = botocore.session.get_session(self.env_vars)
+        # In this case, even though we specified default, because
+        # the boto_config_empty config file does not have a default
+        # profile, we should be raising an exception.
+        with self.assertRaises(botocore.exceptions.ProfileNotFound):
+            session.get_config()
+
     def test_file_logger(self):
         tempdir = tempfile.mkdtemp()
         temp_file = os.path.join(tempdir, 'file_logger')
@@ -163,6 +196,14 @@ class SessionTest(BaseSessionTest):
         self.assertEqual(event, 'service-created')
         self.assertRaises(botocore.exceptions.EventNotFound,
                           self.session.create_event, 'foo-bar')
+
+    @mock.patch('logging.getLogger')
+    def test_logger_name_can_be_passed_in(self, get_logger):
+        self.session.set_debug_logger('botocore.hooks')
+        get_logger.assert_called_with('botocore.hooks')
+
+        self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
+        get_logger.assert_called_with('botocore.service')
 
 
 class TestBuiltinEventHandlers(BaseSessionTest):

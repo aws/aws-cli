@@ -35,7 +35,7 @@ import botocore.config
 import botocore.credentials
 import botocore.base
 import botocore.service
-from botocore.exceptions import ConfigNotFound, EventNotFound
+from botocore.exceptions import ConfigNotFound, EventNotFound, ProfileNotFound
 from botocore.hooks import HierarchicalEmitter, first_non_none_response
 from botocore import __version__
 from botocore import handlers
@@ -54,7 +54,7 @@ is the formatting string used to construct a new event.
 
 
 EnvironmentVariables = {
-    'profile': (None, 'BOTO_DEFAULT_PROFILE', 'default'),
+    'profile': (None, 'BOTO_DEFAULT_PROFILE', None),
     'region': ('region', 'BOTO_DEFAULT_REGION', None),
     'data_path': ('data_path', 'BOTO_DATA_PATH', None),
     'config_file': (None, 'AWS_CONFIG_FILE', '~/.aws/config'),
@@ -207,6 +207,7 @@ class Session(object):
         :returns: str value of variable of None if not defined.
         """
         value = None
+        default = None
         if logical_name in self.env_vars:
             config_name, envvar_name, default = self.env_vars[logical_name]
             if logical_name in ('config_file', 'profile'):
@@ -233,15 +234,28 @@ class Session(object):
         Note that this configuration is specific to a single profile (the
         ``profile`` session variable).
 
+        If the ``profile`` session variable is set and the profile does
+        not exist in the config file, a ``ProfileNotFound`` exception
+        will be raised.
 
-        :raises: ConfigNotFound, ConfigParseError
+        :raises: ConfigNotFound, ConfigParseError, ProfileNotFound
         :rtype: dict
         """
         config = self.full_config
         profile_name = self.get_variable('profile')
-        if not profile_name:
-            profile_name = 'default'
-        return self._build_profile_map().get(profile_name, {})
+        profile_map = self._build_profile_map()
+        # If a profile is not explicitly set return the default
+        # profile config or an empty config dict if we don't have
+        # a default profile.
+        if profile_name is None:
+            return profile_map.get('default', {})
+        elif profile_name not in profile_map:
+            # Otherwise if they specified a profile, it has to
+            # exist (even if it's the default profile) otherwise
+            # we complain.
+            raise ProfileNotFound(profile=profile_name)
+        else:
+            return profile_map[profile_name]
 
     @property
     def full_config(self):
@@ -370,12 +384,12 @@ class Session(object):
         self._events.emit(event, service=service)
         return service
 
-    def set_debug_logger(self):
+    def set_debug_logger(self, logger_name='botocore'):
         """
         Convenience function to quickly configure full debug output
         to go to the console.
         """
-        log = logging.getLogger('botocore')
+        log = logging.getLogger(logger_name)
         log.setLevel(logging.DEBUG)
 
         # create console handler and set level to debug
@@ -391,7 +405,7 @@ class Session(object):
         # add ch to logger
         log.addHandler(ch)
 
-    def set_file_logger(self, log_level, path):
+    def set_file_logger(self, log_level, path, logger_name='botocore'):
         """
         Convenience function to quickly configure any level of logging
         to a file.
@@ -403,7 +417,7 @@ class Session(object):
         :param path: Path to the log file.  The file will be created
             if it doesn't already exist.
         """
-        log = logging.getLogger('botocore')
+        log = logging.getLogger(logger_name)
         log.setLevel(log_level)
 
         # create console handler and set level to debug

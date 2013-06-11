@@ -590,7 +590,7 @@ class ServiceOperation(object):
 
     def _build_call_parameters(self, args, arg_table):
         # We need to convert the args specified on the command
-        # line as valid **kwargs we can hand to boto.
+        # line as valid **kwargs we can hand to botocore.
         service_params = {}
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.

@@ -384,12 +384,12 @@ class Session(object):
         self._events.emit(event, service=service)
         return service
 
-    def set_debug_logger(self):
+    def set_debug_logger(self, logger_name='botocore'):
         """
         Convenience function to quickly configure full debug output
         to go to the console.
         """
-        log = logging.getLogger('botocore')
+        log = logging.getLogger(logger_name)
         log.setLevel(logging.DEBUG)
 
         # create console handler and set level to debug
@@ -405,7 +405,7 @@ class Session(object):
         # add ch to logger
         log.addHandler(ch)
 
-    def set_file_logger(self, log_level, path):
+    def set_file_logger(self, log_level, path, logger_name='botocore'):
         """
         Convenience function to quickly configure any level of logging
         to a file.
@@ -417,7 +417,7 @@ class Session(object):
         :param path: Path to the log file.  The file will be created
             if it doesn't already exist.
         """
-        log = logging.getLogger('botocore')
+        log = logging.getLogger(logger_name)
         log.setLevel(log_level)
 
         # create console handler and set level to debug

@@ -197,6 +197,14 @@ class SessionTest(BaseSessionTest):
         self.assertRaises(botocore.exceptions.EventNotFound,
                           self.session.create_event, 'foo-bar')
 
+    @mock.patch('logging.getLogger')
+    def test_logger_name_can_be_passed_in(self, get_logger):
+        self.session.set_debug_logger('botocore.hooks')
+        get_logger.assert_called_with('botocore.hooks')
+
+        self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
+        get_logger.assert_called_with('botocore.service')
+
 
 class TestBuiltinEventHandlers(BaseSessionTest):
     def setUp(self):

@@ -11,10 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import logging
+
 import botocore.session
 from botocore.hooks import first_non_none_response
 from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
+
 from awscli import EnvironmentVariables, __version__
 from .formatter import get_formatter
 from .paramfile import get_paramfile
@@ -22,6 +25,9 @@ from .plugin import load_plugins
 from .argparser import MainArgParser, ServiceArgParser, OperationArgParser
 from .argprocess import unpack_cli_arg
 from .help import get_provider_help, get_service_help, get_operation_help
+
+
+log = logging.getLogger('awscli.clidriver')
 
 
 class UnknownArgumentError(Exception):
@@ -97,14 +103,22 @@ class CLIDriver(object):
         command_table = self._build_command_table()
         parser = self._create_parser_from_command_table(command_table)
         args, remaining = parser.parse_known_args(args)
+        self._handle_top_level_args(args)
         try:
             return command_table[args.command].call(remaining, args)
         except UnknownArgumentError as e:
             sys.stderr.write(str(e) + '\n')
             return 255
         except Exception as e:
-            sys.stderr.write("%s: %s\n" % (e.__class__.__name__, e))
+            log.debug("Exception caugh in main()", exc_info=True)
+            log.debug("Exiting with rc 255")
+            sys.stderr.write("%s\n" % e)
             return 255
+
+    def _handle_top_level_args(self, args):
+        if args.debug:
+            self.session.set_debug_logger(logger_name='botocore')
+            self.session.set_debug_logger(logger_name='awscli')
 
 
 class CLICommand(object):
@@ -606,8 +620,6 @@ class CLIOperationCaller(object):
         self._session = session
 
     def invoke(self, operation_object, parameters, parsed_globals):
-        if parsed_globals.debug:
-            self._session.set_debug_logger()
         endpoint = operation_object.service.get_endpoint(parsed_globals.region)
         endpoint.verify = not parsed_globals.no_verify_ssl
         if operation_object.can_paginate and parsed_globals.paginate:

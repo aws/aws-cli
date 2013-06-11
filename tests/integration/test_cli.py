@@ -198,6 +198,12 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertTrue(p.stderr.startswith('aws-cli'), p.stderr)
 
+    def test_traceback_printed_when_debug_on(self):
+        p = aws('ec2 describe-instances --filters BADKEY=foo --debug')
+        self.assertIn('Traceback (most recent call last):', p.stderr, p.stderr)
+        # Also should see DEBUG statements:
+        self.assertIn('DEBUG', p.stderr, p.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -114,3 +114,11 @@ class OperationArgParser(CLIArgParser):
         for param in argument_table:
             argument = argument_table[param]
             argument.add_to_parser(self, param)
+
+    def parse_known_args(self, args):
+        if len(args) == 1 and args[0] == 'help':
+            namespace = argparse.Namespace()
+            namespace.help = 'help'
+            return namespace, []
+        else:
+            return super(OperationArgParser, self).parse_known_args(args)

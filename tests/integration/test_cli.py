@@ -99,6 +99,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 1)
         self.assertIn('The  describe-instances  operation', p.stdout)
 
+    def test_operation_help_with_required_arg(self):
+        p = aws('s3 get-object help')
+        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertIn('get-object', p.stdout)
+
     def test_param_shorthand(self):
         p = aws(
             'ec2 describe-instances --filters name=instance-id,values=i-123')

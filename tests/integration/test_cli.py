@@ -131,7 +131,6 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertIn('Reservations', p.json)
 
     def test_streaming_output_operation(self):
-        return
         d = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, d)
         bucket_name = 'clistream' + str(

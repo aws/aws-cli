@@ -448,7 +448,9 @@ class ServiceOperation(object):
         # We need to convert the args specified on the command
         # line as valid **kwargs we can hand to boto.
         service_params = {}
-        for name, value in args.__dict__.items():
+        # args is an argparse.Namespace object so we're using vars()
+        # so we can iterate over the parsed key/values.
+        for name, value in vars(args).items():
             if name in arg_table:
                 arg_object = arg_table[name]
                 arg_object.add_to_params(service_params, value)

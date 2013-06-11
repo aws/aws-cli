@@ -391,10 +391,15 @@ def add_streaming_output_arg(argument_table, operation, **kwargs):
 
 
 class StreamingOutputArgument(object):
-    def __init__(self, operation, stream_param_name):
+    BUFFER_SIZE = 32768
+
+    def __init__(self, operation, stream_param_name, buffer_size=None):
         self._operation = operation
         self._output_param_key = stream_param_name
         self._output_file = None
+        if buffer_size is None:
+            buffer_size = self.BUFFER_SIZE
+        self._buffer_size = buffer_size
 
     def add_to_parser(self, parser, cli_name):
         parser.add_argument(cli_name, metavar='output_file',
@@ -409,12 +414,12 @@ class StreamingOutputArgument(object):
 
     def save_file(self, http_response, parsed, **kwargs):
         body = parsed[self._output_param_key]
-        buffsize = 32768
+        buffer_size = self._buffer_size
         with open(self._output_file, 'wb') as fp:
-            data = body.read(buffsize)
+            data = body.read(buffer_size)
             while data:
                 fp.write(data)
-                data = body.read(buffsize)
+                data = body.read(buffer_size)
         # We don't want to include the streaming param in
         # the returned response.
         del parsed[self._output_param_key]

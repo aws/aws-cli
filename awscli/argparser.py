@@ -1,8 +1,6 @@
 import argparse
 from difflib import get_close_matches
 
-from .help import get_operation_help
-
 
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter

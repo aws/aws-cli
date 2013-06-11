@@ -157,6 +157,7 @@ class ProviderHelpCommand(CLICommand):
     This is what is called when ``aws help`` is run.
 
     """
+
     def __init__(self, session):
         self._session = session
 
@@ -172,6 +173,7 @@ class ServiceCommand(CLICommand):
     object that represents the ec2 service.
 
     """
+
     def __init__(self, name, session):
         self._name = name
         self._session = session
@@ -216,6 +218,7 @@ class ServiceHelpCommand(CLICommand):
     help is implemented, e.g. ``aws ec2 help``.
 
     """
+
     def __init__(self, session, service):
         """
 
@@ -242,6 +245,7 @@ class OperationHelpCommand(CLICommand):
     e.g. ``aws ec2 describe-instances help``.
 
     """
+
     def __init__(self, session, service, operation):
         self._session = session
         self._service = service
@@ -310,6 +314,7 @@ class CLIArgument(BaseCLIArgument):
     """Represents a CLI argument that maps to a service parameter.
 
     """
+
     TYPE_MAP = {
         'structure': str,
         'map': str,
@@ -472,6 +477,7 @@ class BooleanArgument(CLIArgument):
     We use the capabilities of the CLIArgument to help achieve this.
 
     """
+
     def __init__(self, name, argument_object, operation_object):
         super(BooleanArgument, self).__init__(name, argument_object,
                                               operation_object)
@@ -539,6 +545,7 @@ class ServiceOperation(object):
     example ``ec2.DescribeInstances``.
 
     """
+
     ARG_TYPES = {
         'list': ListArgument,
         'boolean': BooleanArgument,
@@ -627,6 +634,7 @@ class ServiceOperation(object):
 
 class CLIOperationCaller(object):
     """Call an AWS operation and format the response."""
+
     def __init__(self, session):
         self._session = session
 

@@ -184,8 +184,8 @@ class ServiceCommand(CLICommand):
         return op_table[args.operation].call(remaining, parsed_globals)
 
     def _create_service_parser(self, operation_table):
-        parser = ServiceArgParser(operation_table, self._name)
-        return parser
+        return ServiceArgParser(
+            operations_table=operation_table, service_name=self._name)
 
     def _create_operations_table(self, service_object):
         operation_table = {}
@@ -194,12 +194,13 @@ class ServiceCommand(CLICommand):
         for operation_name in operations_data:
             cli_name = xform_name(operation_name, '-')
             operation_table[cli_name] = ServiceOperation(
-                cli_name, operations_data[operation_name],
-                CLIOperationCaller(self._session),
-                service_object)
+                name=cli_name,
+                operation_model=operations_data[operation_name],
+                operation_caller=CLIOperationCaller(self._session),
+                service_object=service_object)
         # Also add a 'help' command.
-        operation_table['help'] = ServiceHelpCommand(self._session,
-                                                     service_object)
+        operation_table['help'] = ServiceHelpCommand(
+            session=self._session, service=service_object)
         self._session.emit('building-operation-table.%s' % self._name,
                            operation_table=operation_table)
         return operation_table

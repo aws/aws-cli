@@ -232,7 +232,65 @@ class OperationHelpCommand(CLICommand):
         get_operation_help(self._session, self._service, self._operation)
 
 
-class CLIArgument(object):
+class BaseCLIArgument(object):
+    """Interface for CLI argument.
+
+    This class represents the interface used for representing CLI
+    arguments.
+
+    """
+
+    def add_to_arg_table(self, argument_table):
+        """Add this object to the argument_table.
+
+        The ``argument_table`` represents the argument for the operation.
+        This is called by the ``ServiceOperation`` object to create the
+        arguments associated with the operation.
+
+        :type argument_table: dict
+        :param argument_table: The argument table.  The key is the argument
+            name, and the value is an object implementing this interface.
+        """
+        pass
+
+    def add_to_parser(self, parser, cli_name):
+        """Add this object to the parser instance.
+
+        This method is called by the associated ``ArgumentParser``
+        instance.  This method should make the relevant calls
+        to ``add_argument`` to add itself to the argparser.
+
+        :type parser: ``argparse.ArgumentParser``.
+        :param parser: The argument parser associated with the operation.
+
+        :type cli_name: str
+        :param cli_name: The key from the argument table.
+
+        """
+        pass
+
+    def add_to_params(self, parameters, value):
+        """Add this object to the parameters dict.
+
+        This method is responsible for taking the value specified
+        on the command line, and deciding how that corresponds to
+        parameters used by the service/operation.
+
+        :type parameters: dict
+        :param parameters: The parameters dictionary that will be
+            given to ``botocore``.  This should match up to the
+            parameters associated with the particular operation.
+
+        :param value: The value associated with the CLI option.
+
+        """
+        pass
+
+
+class CLIArgument(BaseCLIArgument):
+    """Represents a CLI argument that maps to a service parameter.
+
+    """
     TYPE_MAP = {
         'structure': str,
         'map': str,
@@ -248,6 +306,21 @@ class CLIArgument(object):
     }
 
     def __init__(self, name, argument_object, operation_object):
+        """
+
+        :type name: str
+        :param name: The name of the argument in "cli" form
+            (e.g.  ``min-instances``).
+
+        :type argument_object: ``botocore.parameter.Parameter``
+        :param argument_object: The parameter object to associate with
+            this object.
+
+        :type operation_object: ``botocore.operation.Operation``
+        :param operation_object: The operation object associated with
+            this object.
+
+        """
         self._name = name
         self._argument_object = argument_object
         self._operation_object = operation_object
@@ -274,12 +347,23 @@ class CLIArgument(object):
 
     @property
     def cli_type(self):
-        return self.TYPE_MAP[self._argument_object.type]
+        return self.TYPE_MAP.get(self._argument_object.type, str)
 
     def add_to_arg_table(self, argument_table):
+        # This is used by the ServiceOperation so we can add ourselves
+        # to the argument table.  For the normal case, we use our name
+        # as the key, and ourself as the value.  For a more complicated
+        # example, see BooleanArgument.add_to_arg_table
         argument_table[self.name] = self
 
     def add_to_parser(self, parser, cli_name):
+        """
+
+        See the ``BaseCLIArgument.add_to_parser`` docs for more information.
+
+        """
+        # We need to add ourselve to the argparser instance.  For the normal
+        # case we just need to make a single add_argument call.
         cli_name = '--%s' % cli_name
         parser.add_argument(
             cli_name,
@@ -350,6 +434,21 @@ class ListArgument(CLIArgument):
 
 
 class BooleanArgument(CLIArgument):
+    """Represent a boolean CLI argument.
+
+    A boolean parameter is specified without a value::
+
+        aws foo bar --enabled
+
+    For cases wher the boolean parameter is required we need to add
+    two parameters::
+
+        aws foo bar --enabled
+        aws foo bar --no-enabled
+
+    We use the capabilities of the CLIArgument to help achieve this.
+
+    """
     def __init__(self, name, argument_object, operation_object):
         super(BooleanArgument, self).__init__(name, argument_object,
                                               operation_object)
@@ -367,14 +466,21 @@ class BooleanArgument(CLIArgument):
             parameters[self.py_name] = unpacked
 
     def add_to_arg_table(self, argument_table):
-        # We're adding two arguments.  One for the
-        # positive option and one for the negative case.
+        # If this parameter is required, we need to add two command line
+        # arguments, --foo, and --no-foo.  We do this by adding two
+        # entries to the argument table and assigning both values to us.
         argument_table[self.name] = self
         if self.required:
             negative_name = 'no-%s' % self.name
             argument_table[negative_name] = self
 
     def add_to_parser(self, parser, cli_name):
+        # If we're a required parameter we need to add two options
+        # to the argparse.ArgumentParser instance, one for --foo, one for
+        # --no-foo.  We handle this by knowing that we're going to be
+        # called twice (we added two values to the argument table in
+        # add_to_arg_table).  The first time through we create a
+        # mutex group, the second time through we add to this mutex group.
         cli_name = '--%s' % cli_name
         if self._is_negative_version(cli_name):
             action = 'store_false'
@@ -382,12 +488,18 @@ class BooleanArgument(CLIArgument):
             action = 'store_true'
         if self.required:
             if self._mutex_group is None:
+                # This is our first time being called, so we need to
+                # create the mutex group.
                 self._mutex_group = parser.add_mutually_exclusive_group(
                     required=True)
             self._mutex_group.add_argument(
                 cli_name, help=self.documentation,
                 dest=self.name, action=action)
         else:
+            # If we're not a required parameter, we assume we default to False.
+            # In this case we only add a single boolean parameter, '--foo'.
+            # We don't need a '--no-foo' because a user can just not specify
+            # '--foo' and we won't send the parameter to the service.
             parser.add_argument(cli_name,
                                 help=self.documentation,
                                 action=action,
@@ -464,7 +576,7 @@ class ServiceOperation(object):
         # We could potentially do the same thing as service/operations
         # but botocore already builds all the parameter objects
         # when calling an operation so we'd have to optimize that first
-        # before using get_paramter() in the cli would be advantageous
+        # before using get_parameter() in the cli would be advantageous
         for argument in operation_object.params:
             cli_arg_name = xform_name(argument.name, '-')
             arg_class = self.ARG_TYPES.get(argument.type,

@@ -179,6 +179,7 @@ class XmlResponse(Response):
         return data
 
     _handle_timestamp = _handle_string
+    _handle_blob = _handle_string
 
     def _handle_integer(self, elem, shape):
         data = self.get_elem_text(elem)

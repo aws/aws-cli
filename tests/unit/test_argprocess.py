@@ -130,6 +130,13 @@ class TestParamShorthand(BaseArgProcessTest):
                 "name = architecture, values = i386"])
         self.assertEqual(returned2, expected)
 
+    def test_list_structure_list_multiple_scalar(self):
+        p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
+        returned = self.simplify(
+            p, ['name=foo,format=hslv3,output_keys=iphone1,iphone2'])
+        self.assertEqual(returned, [{'output_keys': ['iphone1', 'iphone2'],
+                                     'name': 'foo', 'format': 'hslv3'}])
+
     def test_list_structure_scalars(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
         expected = [
@@ -252,6 +259,17 @@ class TestDocGen(BaseArgProcessTest):
         self.assertIn('Shorthand Syntax', rendered)
         self.assertIn('--listeners', rendered)
         self.assertIn('protocol=string', rendered)
+
+    def test_gen_list_structure_multiple_scalar_docs(self):
+        p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
+        op_doc = OperationDocument(self.session, p.operation)
+        self.simplify.add_docs(op_doc, p)
+        fp = six.StringIO()
+        op_doc.render(fp=fp)
+        rendered = fp.getvalue()
+        self.assertIn('Shorthand Syntax', rendered)
+        # Check for syntax for a list type.
+        self.assertIn('string1,string2', rendered)
 
 
 if __name__ == '__main__':

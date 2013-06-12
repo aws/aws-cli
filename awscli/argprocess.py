@@ -182,24 +182,19 @@ class ParamShorthand(object):
                                   "by commas.")
         doc.add_paragraph()
         p2 = doc.add_paragraph()
-        if param.members.members[0].type in SCALAR_TYPES:
-            scalar_inner_param = param.members.members[0]
-            scalar_inner_type = scalar_inner_param.type
-            list_inner_param = param.members.members[1]
-            list_inner_type = list_inner_param.members.type
-        else:
-            scalar_inner_param = param.members.members[1]
-            scalar_inner_type = scalar_inner_param.type
-            list_inner_param = param.members.members[0]
-            list_inner_type = list_inner_param.members.type
         p2.write('%s ' % param.cli_name)
-        p2.write('%s=%s1,' % (scalar_inner_param.py_name,
-                              scalar_inner_type))
-        p2.write('%s=%s1,%s2,' % (list_inner_param.py_name,
-                                  list_inner_type,
-                                  list_inner_type))
-        p2.write('%s=%s2,' % (scalar_inner_param.py_name, scalar_inner_type))
-        p2.write('%s=%s1' % (list_inner_param.py_name, list_inner_type))
+        inner_params = param.members.members
+        scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
+        list_params = [p for p in inner_params if p.type == 'list']
+        for param in scalar_params:
+            p2.write('%s=%s1,' % (param.py_name, param.type))
+        for param in list_params[:-1]:
+            param_type = param.members.type
+            p2.write('%s=%s1,%s2,' % (param.py_name, param_type, param_type))
+        last_param = list_params[-1]
+        param_type = last_param.members.type
+        p2.write('%s=%s1,%s2' % (last_param.py_name, param_type,
+                                 param_type))
 
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.

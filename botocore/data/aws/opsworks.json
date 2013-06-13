@@ -18,13 +18,13 @@
                     "ElasticLoadBalancerName": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": null,
+                        "documentation": "\n      <p>The Elastic Load Balancing instance's name.</p>\n   ",
                         "required": true
                     },
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": null,
+                        "documentation": "\n      <p>The ID of the layer that the Elastic Load Balancing instance is to be attached to.</p>\n   ",
                         "required": true
                     }
                 },
@@ -57,7 +57,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": null
+            "documentation": "\n      <p>Attaches an Elastic Load Balancing instance to a specified layer.</p>\n      <note>You must create the Elastic Load Balancing instance separately, by using the Elastic Load Balancing console, API, or CLI. For more information,\n         see <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/Welcome.html\">\n            Elastic Load Balancing Developer Guide</a>.</note>\n   "
         },
         "CloneStack": {
             "name": "CloneStack",
@@ -79,7 +79,7 @@
                     "Region": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack AWS region, such as \"us-east-1\". For more information about AWS regions, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a></p>\n   ",
+                        "documentation": "\n      <p>The cloned stack AWS region, such as \"us-east-1\". For more information about AWS regions, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   ",
                         "cli_name": "stack-region"
                     },
                     "Attributes": {
@@ -103,7 +103,7 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the OpsWorks console,\n         it creates the role for you. You can obtain an existing stack's IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n   ",
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the OpsWorks console,\n         it creates the role for you. You can obtain an existing stack's IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n      <note>You must set this parameter to a valid service role ARN or the action will fail; there is no default value.\n         You can specify the source stack's service role ARN, if you prefer, but you must do so explicitly.</note>\n   ",
                         "required": true
                     },
                     "DefaultInstanceProfileArn": {
@@ -129,7 +129,7 @@
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON\n         values. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">.\n         Use Custom JSON to Modify the Stack Configuration JSON</a></p>\n   "
                     },
                     "UseCustomCookbooks": {
                         "shape_name": "Boolean",
@@ -160,12 +160,12 @@
                             "Username": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The user name.</p> \n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                             },
                             "Password": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The repository's password.</p>\n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                             },
                             "SshKey": {
                                 "shape_name": "String",
@@ -178,7 +178,7 @@
                                 "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
-                        "documentation": null
+                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                     },
                     "DefaultSshKeyName": {
                         "shape_name": "String",
@@ -208,10 +208,10 @@
                             "ebs",
                             "instance-store"
                         ],
-                        "documentation": null
+                        "documentation": "\n      <p>The default root device type. This value is used by default for all instances in the cloned stack,\n         but you can override it when you create an instance. For more information, see\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CloneStackResult",
@@ -223,7 +223,7 @@
                         "documentation": "\n      <p>The cloned stack ID.</p>\n   "
                     }
                 },
-                "documentation": " <p>Contains the response to a <code>CloneStack</code> request.</p>  "
+                "documentation": " <p>Contains the response to a <code>CloneStack</code> request.</p>\n   "
             },
             "errors": [
                 {
@@ -251,7 +251,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Creates a clone of a specified stack.</p>\n   "
+            "documentation": "\n      <p>Creates a clone of a specified stack. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-cloning.html\">Clone a Stack</a>.</p>\n   "
         },
         "CreateApp": {
             "name": "CreateApp",
@@ -268,7 +268,7 @@
                     "Shortname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": null
+                        "documentation": "\n      <p>The app's short name.</p>\n   "
                     },
                     "Name": {
                         "shape_name": "String",
@@ -317,12 +317,12 @@
                             "Username": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The user name.</p> \n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                             },
                             "Password": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The repository's password.</p>\n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                             },
                             "SshKey": {
                                 "shape_name": "String",
@@ -345,7 +345,7 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>The app virtual host settings, with multiple domains separated by commas. For example: <code>'www.mysite.com, mysite.com'</code></p>\n   "
+                        "documentation": "\n      <p>The app virtual host settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code></p>\n   "
                     },
                     "EnableSsl": {
                         "shape_name": "Boolean",
@@ -398,7 +398,7 @@
                         "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p> \n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CreateAppResult",
@@ -438,7 +438,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Creates an app for a specified stack.</p>\n   "
+            "documentation": "\n      <p>Creates an app for a specified stack. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a>.</p>\n   "
         },
         "CreateDeployment": {
             "name": "CreateDeployment",
@@ -455,7 +455,7 @@
                     "AppId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app ID, for app deployments.</p>\n   "
+                        "documentation": "\n      <p>The app ID. This parameter is required for app deployments, but not for other deployment commands.</p>\n   "
                     },
                     "InstanceIds": {
                         "shape_name": "Strings",
@@ -486,7 +486,7 @@
                                     "restart",
                                     "undeploy"
                                 ],
-                                "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n         <li>\n<code>shutdown</code>: Run the shutdown recipes.</li>\n         <li>\n<code>setup</code>: Run the setup recipes.</li>\n         <li>\n<code>configure</code>: Run the configure recipes.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
+                                "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
                                 "required": true
                             },
                             "Args": {
@@ -510,7 +510,7 @@
                                 "documentation": "\n      <p>An array of command arguments. This parameter is currently used only to specify the list of recipes to be executed by the <code>ExecuteRecipes</code>\n      command.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>A <code>DeploymentCommand</code> object that describes details of the operation.</p>\n   ",
+                        "documentation": "\n      <p>A <code>DeploymentCommand</code> object that specifies the deployment command and any associated arguments.</p>\n   ",
                         "required": true
                     },
                     "Comment": {
@@ -521,10 +521,10 @@
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CreateDeploymentResult",
@@ -564,7 +564,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Deploys a stack or app.</p>\n      <ul>\n         <li>App deployment generates a <code>deploy</code> event, which runs the associated recipes and passes them a JSON stack configuration object\n            that includes information about the app. </li>\n         <li>Stack deployment runs the <code>deploy</code> recipes but does not raise an event.</li>\n      </ul>\n   "
+            "documentation": "\n      <p>Deploys a stack or app.</p>\n      <ul>\n         <li>App deployment generates a <code>deploy</code> event, which runs the associated recipes and passes them a JSON stack configuration object\n            that includes information about the app. </li>\n         <li>Stack deployment runs the <code>deploy</code> recipes but does not raise an event.</li>\n      </ul>\n      <p>For more information, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html\">Deploying Apps</a>\n         and <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-commands.html\">Run Stack Commands</a>.</p>\n   "
         },
         "CreateInstance": {
             "name": "CreateInstance",
@@ -592,7 +592,7 @@
                     "InstanceType": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance type, which can be one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   ",
+                        "documentation": "\n      <p>The instance type. OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that you use to specify the various types are in the API Name column of the Available Instance Types table.</p>\n   ",
                         "required": true
                     },
                     "AutoScalingType": {
@@ -602,7 +602,7 @@
                             "load",
                             "timer"
                         ],
-                        "documentation": "\n      <p>The instance auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>:  A 24x7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.\n            To specify the schedule, call <a>SetTimeBasedAutoScaling</a>.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.\n            To use load-based auto scaling, you must enable it for the instance layer and configure the thresholds by calling\n            <a>SetLoadBasedAutoScaling</a>.</li>\n      </ul>\n   "
+                        "documentation": "\n      <p>The instance auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>:  A 24/7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.\n            To specify the schedule, call <a>SetTimeBasedAutoScaling</a>.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.\n            To use load-based auto scaling, you must enable it for the instance layer and configure the thresholds by calling\n            <a>SetLoadBasedAutoScaling</a>.</li>\n      </ul>\n   "
                     },
                     "Hostname": {
                         "shape_name": "String",
@@ -612,7 +612,7 @@
                     "Os": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance operating system.</p>\n   "
+                        "documentation": "\n      <p>The instance's operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
                     },
                     "SshKeyName": {
                         "shape_name": "String",
@@ -631,7 +631,7 @@
                             "x86_64",
                             "i386"
                         ],
-                        "documentation": null
+                        "documentation": "\n      <p>The instance architecture. Instance types do not necessarily support both architectures.\n         For a list of the architectures that are supported by the different instance types, see\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.</p>\n   "
                     },
                     "RootDeviceType": {
                         "shape_name": "RootDeviceType",
@@ -640,10 +640,10 @@
                             "ebs",
                             "instance-store"
                         ],
-                        "documentation": null
+                        "documentation": "\n      <p>The instance root device type. For more information, see \n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CreateInstanceResult",
@@ -683,7 +683,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Creates an instance in a specified stack.</p>\n   "
+            "documentation": "\n      <p>Creates an instance in a specified stack. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html\">Adding an Instance to a Layer</a>.</p>\n   "
         },
         "CreateLayer": {
             "name": "CreateLayer",
@@ -711,7 +711,7 @@
                             "monitoring-master",
                             "custom"
                         ],
-                        "documentation": "\n      <p>The layer type. A stack cannot have more than one layer of the same type.</p> \n   ",
+                        "documentation": "\n      <p>The layer type. A stack cannot have more than one layer of the same type. This parameter must be set to one of the following:</p>\n      <ul>\n         <li>lb: An HAProxy layer</li>\n         <li>web: A Static Web Server layer</li>\n         <li>rails-app: A Rails App Server layer</li>\n         <li>php-app: A PHP App Server layer</li>\n         <li>nodejs-app: A Node.js App Server layer</li>\n         <li>memcached: A Memcached layer</li>\n         <li>db-master: A MySQL layer</li>\n         <li>monitoring-master: A Ganglia layer</li>\n         <li>custom: A custom layer</li>\n      </ul>\n   ",
                         "required": true
                     },
                     "Name": {
@@ -835,7 +835,7 @@
                         "shape_name": "Boolean",
                         "type": "boolean",
                         "box": true,
-                        "documentation": "\n      <p>Whether to automatically assign an <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP address</a> to the layer.</p>\n   "
+                        "documentation": "\n      <p>Whether to automatically assign an <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic\n         IP address</a> to the layer.</p>\n   "
                     },
                     "CustomRecipes": {
                         "shape_name": "Recipes",
@@ -895,7 +895,7 @@
                         "documentation": "\n      <p>A <code>LayerCustomRecipes</code> object that specifies the layer custom recipes.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CreateLayerResult",
@@ -935,7 +935,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Creates a layer.</p>\n   "
+            "documentation": "\n      <p>Creates a layer. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-create.html\">How to Create a Layer</a>.</p>\n      <note>You should use <b>CreateLayer</b> for non-custom layer types such as PHP App Server only if the stack does not have an existing layer of that type.\n         A stack can have at most one instance of each non-custom layer; if you attempt to create a second instance, <b>CreateLayer</b> fails. A stack can have an arbitrary\n         number of custom layers, so you can call <b>CreateLayer</b> as many times as you like for that layer type.</note>\n   "
         },
         "CreateStack": {
             "name": "CreateStack",
@@ -1004,7 +1004,7 @@
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                     },
                     "UseCustomCookbooks": {
                         "shape_name": "Boolean",
@@ -1035,12 +1035,12 @@
                             "Username": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The user name.</p> \n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                             },
                             "Password": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The repository's password.</p>\n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                             },
                             "SshKey": {
                                 "shape_name": "String",
@@ -1053,7 +1053,7 @@
                                 "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
-                        "documentation": null
+                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                     },
                     "DefaultSshKeyName": {
                         "shape_name": "String",
@@ -1067,10 +1067,10 @@
                             "ebs",
                             "instance-store"
                         ],
-                        "documentation": null
+                        "documentation": "\n      <p>The default root device type. This value is used by default for all instances in the cloned stack,\n         but you can override it when you create an instance. For more information, see \n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CreateStackResult",
@@ -1098,7 +1098,7 @@
                     "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
                 }
             ],
-            "documentation": "\n      <p>Creates a new stack.</p>\n   "
+            "documentation": "\n      <p>Creates a new stack. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-edit.html\">Create a New Stack</a>.</p>\n   "
         },
         "CreateUserProfile": {
             "name": "CreateUserProfile",
@@ -1123,7 +1123,7 @@
                         "documentation": "\n      <p>The user's public SSH key.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "CreateUserProfileResult",
@@ -1151,7 +1151,7 @@
                     "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
                 }
             ],
-            "documentation": "\n      <p>Creates a new user.</p>\n   "
+            "documentation": "\n      <p>Creates a new user profile.</p>\n   "
         },
         "DeleteApp": {
             "name": "DeleteApp",
@@ -1166,7 +1166,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -1222,7 +1222,7 @@
                         "documentation": "\n      <p>Whether to delete the instance Amazon EBS volumes.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -1251,7 +1251,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Deletes a specified instance.</p>\n   "
+            "documentation": "\n      <p>Deletes a specified instance. You must stop an instance before you can delete it. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-delete.html\">Deleting Instances</a>.</p>\n   "
         },
         "DeleteLayer": {
             "name": "DeleteLayer",
@@ -1266,7 +1266,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -1295,7 +1295,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Deletes a specified layer. You must first remove all associated instances.</p>\n   "
+            "documentation": "\n      <p>Deletes a specified layer. You must first stop and then delete all associated instances.  For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-delete.html\">How to Delete a Layer</a>.</p>\n   "
         },
         "DeleteStack": {
             "name": "DeleteStack",
@@ -1310,7 +1310,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -1339,7 +1339,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Deletes a specified stack. You must first delete all instances and layers.</p> \n   "
+            "documentation": "\n      <p>Deletes a specified stack. You must first delete all instances, layers, and apps.\n         For more information, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-shutting.html\">Shut Down a Stack</a>.</p> \n   "
         },
         "DeleteUserProfile": {
             "name": "DeleteUserProfile",
@@ -1354,7 +1354,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -1383,7 +1383,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": " \n      <p>Deletes a user.</p>\n   "
+            "documentation": " \n      <p>Deletes a user profile.</p>\n   "
         },
         "DescribeApps": {
             "name": "DescribeApps",
@@ -1394,7 +1394,7 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app stack ID.</p> <!-- Could this be more than one stack ID for more than one app? Or is it 'An array of app stack IDs.'? -->\n   "
+                        "documentation": "\n      <p>The app stack ID. If you use this parameter, <code>DescribeApps</code> returns a description of the\n         apps in the specified stack.</p> \n   "
                     },
                     "AppIds": {
                         "shape_name": "Strings",
@@ -1404,10 +1404,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of app IDs for the apps to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of app IDs for the apps to be described. If you use this parameter, <code>DescribeApps</code> returns a description of the\n         specified apps.  Otherwise, it returns a description of every app.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeAppsResult",
@@ -1433,7 +1433,7 @@
                                 "Shortname": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The app's short name.</p>\n   "
                                 },
                                 "Name": {
                                     "shape_name": "String",
@@ -1480,12 +1480,12 @@
                                         "Username": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The user name.</p> \n   "
+                                            "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                                         },
                                         "Password": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The repository's password.</p>\n   "
+                                            "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                                         },
                                         "SshKey": {
                                             "shape_name": "String",
@@ -1508,7 +1508,7 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": "\n      <p>The app vhost settings, with multiple domains separated by commas. For example: <code>'www.mysite.com, mysite.com'</code></p>\n   "
+                                    "documentation": "\n      <p>The app vhost settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code></p>\n   "
                                 },
                                 "EnableSsl": {
                                     "shape_name": "Boolean",
@@ -1610,12 +1610,12 @@
                     "DeploymentId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The deployment ID.</p>\n   "
+                        "documentation": "\n      <p>The deployment ID. If you include this parameter, <code>DescribeCommands</code> returns a description of the commands\n         associated with the specified deployment.</p>\n   "
                     },
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID. If you include this parameter, <code>DescribeCommands</code> returns a description of the commands\n         associated with the specified instance.</p>\n   "
                     },
                     "CommandIds": {
                         "shape_name": "Strings",
@@ -1625,10 +1625,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of IDs for the commands to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of command IDs. If you include this parameter, <code>DescribeCommands</code> returns a description of the specified commands.\n         Otherwise, it returns a description of every command.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeCommandsResult",
@@ -1690,12 +1690,12 @@
                                 "Type": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The command type:</p>\n      <ul>\n         <li>shutdown</li>\n         <li>setup</li>\n         <li>configure</li>\n         <li>deploy</li>\n         <li>rollback</li>\n         <li>start</li>\n         <li>stop</li>\n         <li>restart</li>\n         <li>undeploy</li>\n         <li>update_dependencies</li>\n         <li>install_dependencies</li>\n         <li>update_custom_cookbooks</li>\n         <li>execute_recipes</li>\n      </ul>\n   "
+                                    "documentation": "\n      <p>The command type:</p>\n      <ul>\n         <li>deploy</li>\n         <li>rollback</li>\n         <li>start</li>\n         <li>stop</li>\n         <li>restart</li>\n         <li>undeploy</li>\n         <li>update_dependencies</li>\n         <li>install_dependencies</li>\n         <li>update_custom_cookbooks</li>\n         <li>execute_recipes</li>\n      </ul>\n   "
                                 }
                             },
                             "documentation": "\n      <p>Describes a command.</p>\n   "
                         },
-                        "documentation": "\n      <p>An array of <c>InstanceCommand</c> objects that describe each of the specified commands.</p>\n   "
+                        "documentation": "\n      <p>An array of <code>Command</code> objects that describe each of the specified commands.</p>\n   "
                     }
                 },
                 "documentation": "<p>Contains the response to a <code>DescribeCommands</code> request.</p>"
@@ -1737,12 +1737,12 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID. If you include this parameter, <code>DescribeDeployments</code> returns a description of the commands\n         associated with the specified stack.</p>\n   "
                     },
                     "AppId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The app ID.</p>\n   "
+                        "documentation": "\n      <p>The app ID. If you include this parameter, <code>DescribeDeployments</code> returns a description of the commands\n         associated with the specified app.</p>\n   "
                     },
                     "DeploymentIds": {
                         "shape_name": "Strings",
@@ -1752,10 +1752,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of deployment IDs to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of deployment IDs to be described. If you include this parameter, <code>DescribeDeployments</code> returns a description of the\n         specified deployments. Otherwise, it returns a description of every deployment.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeDeploymentsResult",
@@ -1828,7 +1828,7 @@
                                                 "restart",
                                                 "undeploy"
                                             ],
-                                            "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n         <li>\n<code>shutdown</code>: Run the shutdown recipes.</li>\n         <li>\n<code>setup</code>: Run the setup recipes.</li>\n         <li>\n<code>configure</code>: Run the configure recipes.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
+                                            "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
                                             "required": true
                                         },
                                         "Args": {
@@ -1852,7 +1852,7 @@
                                             "documentation": "\n      <p>An array of command arguments. This parameter is currently used only to specify the list of recipes to be executed by the <code>ExecuteRecipes</code>\n      command.</p>\n   "
                                         }
                                     },
-                                    "documentation": null
+                                    "documentation": "\n      <p>Used to specify a deployment operation.</p>\n   "
                                 },
                                 "Status": {
                                     "shape_name": "String",
@@ -1862,7 +1862,7 @@
                                 "CustomJson": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>A string that contains user-defined custom JSON. It is used to override the corresponding default stack configuration JSON values for \n         stack. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>   "
+                                    "documentation": "\n      <p>A string that contains user-defined custom JSON. It is used to override the corresponding default stack configuration JSON values for \n         stack. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                                 },
                                 "InstanceIds": {
                                     "shape_name": "Strings",
@@ -1919,7 +1919,7 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the\n        Elastic IP addresses associated with the specified instance.</p>\n   "
                     },
                     "Ips": {
                         "shape_name": "Strings",
@@ -1929,10 +1929,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of Elastic IP addresses to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of Elastic IP addresses to be described. If you include this parameter, <code>DescribeElasticIps</code> returns a description of\n         the specified Elastic IP addresses. Otherwise, it returns a description of every Elastic IP address.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeElasticIpsResult",
@@ -2005,7 +2005,7 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": null
+                        "documentation": "\n      <p>A stack ID. The action describes the Elastic Load Balancing instances for the stack.</p>\n   "
                     },
                     "LayerIds": {
                         "shape_name": "Strings",
@@ -2015,7 +2015,7 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": null
+                        "documentation": "\n      <p>A list of layer IDs. The action describes the Elastic Load Balancing instances for the specified layers.</p>\n   "
                     }
                 },
                 "documentation": null
@@ -2034,27 +2034,27 @@
                                 "ElasticLoadBalancerName": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The Elastic Load Balancing instance's name.</p>\n   "
                                 },
                                 "Region": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The instance's AWS region.</p>\n   "
                                 },
                                 "DnsName": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The instance's public DNS name.</p>\n   "
                                 },
                                 "StackId": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The ID of the stack that the instance is associated with.</p>\n   "
                                 },
                                 "LayerId": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The ID of the layer that the instance is attached to.</p>\n   "
                                 },
                                 "AvailabilityZones": {
                                     "shape_name": "Strings",
@@ -2064,7 +2064,7 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": null
+                                    "documentation": "\n      <p>The instance's Availability Zones.</p>\n   "
                                 },
                                 "Ec2InstanceIds": {
                                     "shape_name": "Strings",
@@ -2074,15 +2074,15 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": null
+                                    "documentation": "\n      <p>A list of the EC2 instances that the Elastic Load Balancing instance is managing traffic for.</p>\n   "
                                 }
                             },
-                            "documentation": null
+                            "documentation": "\n      <p>Describes an Elastic Load Balancing instance.</p>\n   "
                         },
-                        "documentation": null
+                        "documentation": "\n      <p>A list of <code>ElasticLoadBalancer</code> objects that describe the specified Elastic Load Balancing instances.</p>\n   "
                     }
                 },
-                "documentation": null
+                "documentation": "\n      <p>Contains the response to a <code>DescribeElasticLoadBalancers</code> request.</p>\n   "
             },
             "errors": [
                 {
@@ -2110,7 +2110,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": null
+            "documentation": "\n      <p>Describes a stack's Elastic Load Balancing instances.</p>\n   "
         },
         "DescribeInstances": {
             "name": "DescribeInstances",
@@ -2121,12 +2121,12 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A stack ID.</p>\n   "
+                        "documentation": "\n      <p>A stack ID. If you use this parameter, <code>DescribeInstances</code> returns\n         descriptions of the instances associated with the specified stack.</p>\n   "
                     },
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A layer ID.</p>\n   "
+                        "documentation": "\n      <p>A layer ID. If you use this parameter, <code>DescribeInstances</code> returns\n         descriptions of the instances associated with the specified layer.</p>\n   "
                     },
                     "InstanceIds": {
                         "shape_name": "Strings",
@@ -2136,10 +2136,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of instance IDs to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of instance IDs to be described. If you use this parameter, \n         <code>DescribeInstances</code> returns a description of the specified instances. Otherwise, it returns\n      a description of every instance.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeInstancesResult",
@@ -2195,7 +2195,7 @@
                                 "InstanceType": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The instance type, which can be one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   "
+                                    "documentation": "\n      <p>The instance type. OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that specify the various types are in the API Name column of the Available Instance Types table.</p>\n   "
                                 },
                                 "InstanceProfileArn": {
                                     "shape_name": "String",
@@ -2240,7 +2240,7 @@
                                 "ElasticIp": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The instance <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\"></a>Elastic IP address.</p>\n   "
+                                    "documentation": "\n      <p>The instance <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP address </a>.</p>\n   "
                                 },
                                 "AutoScalingType": {
                                     "shape_name": "AutoScalingType",
@@ -2249,7 +2249,7 @@
                                         "load",
                                         "timer"
                                     ],
-                                    "documentation": "\n      <p>The instance's auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>: A 24x7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.</li>\n      </ul>   "
+                                    "documentation": "\n      <p>The instance's auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>: A 24/7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.</li>\n      </ul>   "
                                 },
                                 "SshKeyName": {
                                     "shape_name": "String",
@@ -2274,7 +2274,7 @@
                                 "LastServiceErrorId": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The ID of the last service error. Call <a>DescribeServiceErrors</a> for details.</p>\n   "
+                                    "documentation": "\n      <p>The ID of the last service error. For more information, call <a>DescribeServiceErrors</a>.</p>\n   "
                                 },
                                 "Architecture": {
                                     "shape_name": "Architecture",
@@ -2283,7 +2283,7 @@
                                         "x86_64",
                                         "i386"
                                     ],
-                                    "documentation": null
+                                    "documentation": "\n      <p>The instance architecture, \"i386\" or \"x86_64\".</p>\n   "
                                 },
                                 "RootDeviceType": {
                                     "shape_name": "RootDeviceType",
@@ -2292,12 +2292,12 @@
                                         "ebs",
                                         "instance-store"
                                     ],
-                                    "documentation": null
+                                    "documentation": "\n      <p>The instance root device type. For more information, see\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
                                 },
                                 "RootDeviceVolumeId": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": null
+                                    "documentation": "\n      <p>The root device volume ID.</p>\n   "
                                 }
                             },
                             "documentation": "\n     <p>Describes an instance.</p>\n   "
@@ -2355,10 +2355,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of layer IDs that specify the layers to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of layer IDs that specify the layers to be described. If you omit this parameter,\n         <code>DescribeLayers</code> returns a description of every layer in the specified stack.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeLayersResult",
@@ -2526,7 +2526,7 @@
                                     "shape_name": "Boolean",
                                     "type": "boolean",
                                     "box": true,
-                                    "documentation": "\n     <p>Whether the layer has an automatically assigned <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP address</a>.</p>\n   "
+                                    "documentation": "\n     <p>Whether the layer has an automatically assigned\n        <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP address</a>.</p>\n   "
                                 },
                                 "DefaultRecipes": {
                                     "shape_name": "Recipes",
@@ -2583,7 +2583,7 @@
                                             "documentation": "\n      <p>An array of custom recipe names to be run following a <code>shutdown</code> event.</p>\n   "
                                         }
                                     },
-                                    "documentation": null
+                                    "documentation": "\n      <p>OpsWorks supports five life<?oxy_delete author=\"witsoej\" timestamp=\"20130319T132659-0700\" content=\"-\">cycle events, <b>setup</b>, <b>configuration</b>, <b>deploy</b>, <b>undeploy</b>, and <b>shutdown</b>.\n         For each layer, OpsWorks runs a set of standard recipes for each event.\n         In addition, you can provide custom recipes for any or all layers and events. OpsWorks runs custom event recipes after the standard recipes.\n         <code>LayerCustomRecipes</code> specifies the custom recipes for a particular layer to be run in response to each of the five events.\n      </p>\n      \n      <p>To specify a recipe, use the cookbook's directory name in the repository\n         followed by two colons and the recipe name, which is the recipe's file name without the .rb extension. For example: phpapp2::dbsetup\n         specifies the dbsetup.rb recipe in the repository's phpapp2 folder.\n      </p>\n   "
                                 },
                                 "CustomRecipes": {
                                     "shape_name": "Recipes",
@@ -2701,7 +2701,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeLoadBasedAutoScalingResult",
@@ -2870,7 +2870,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribePermissionsResult",
@@ -2939,7 +2939,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes the permissions for a specified stack. You must specify at least one of the two request values.</p>\n   "
+            "documentation": "\n      <p>Describes the permissions for a specified stack.</p>\n   "
         },
         "DescribeRaidArrays": {
             "name": "DescribeRaidArrays",
@@ -2950,7 +2950,7 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID. If you use this parameter, <code>DescribeRaidArrays</code> returns\n         descriptions of the RAID arrays associated with the specified instance. </p>\n   "
                     },
                     "RaidArrayIds": {
                         "shape_name": "Strings",
@@ -2960,10 +2960,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of RAID array IDs to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of RAID array IDs. If you use this parameter, <code>DescribeRaidArrays</code> returns\n         descriptions of the specified arrays. Otherwise, it returns a description of every array.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeRaidArraysResult",
@@ -3022,7 +3022,7 @@
                                 "AvailabilityZone": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The array's AWS Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
+                                    "documentation": "\n      <p>The array's Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
                                 },
                                 "CreatedAt": {
                                     "shape_name": "DateTime",
@@ -3074,12 +3074,12 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID.</p>\n   "
+                        "documentation": "\n      <p>The stack ID. If you use this parameter, <code>DescribeServiceErrors</code> returns\n         descriptions of the errors associated with the specified stack.</p>\n   "
                     },
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID. If you use this parameter, <code>DescribeServiceErrors</code> returns\n         descriptions of the errors associated with the specified instance.</p>\n   "
                     },
                     "ServiceErrorIds": {
                         "shape_name": "Strings",
@@ -3089,10 +3089,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of service error IDs to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of service error IDs. If you use this parameter, <code>DescribeServiceErrors</code> returns\n         descriptions of the specified errors. Otherwise, it returns a description of every error.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeServiceErrorsResult",
@@ -3185,10 +3185,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>An array of stack IDs that specify the stacks to be described.</p>\n   "
+                        "documentation": "\n      <p>An array of stack IDs that specify the stacks to be described. If you omit this parameter,\n         <code>DescribeStacks</code> returns a description of every stack.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeStacksResult",
@@ -3262,7 +3262,7 @@
                                 "CustomJson": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values.\nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n   "
+                                    "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values.\nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                                 },
                                 "UseCustomCookbooks": {
                                     "shape_name": "Boolean",
@@ -3293,12 +3293,12 @@
                                         "Username": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The user name.</p> \n   "
+                                            "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                                         },
                                         "Password": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The repository's password.</p>\n   "
+                                            "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                                         },
                                         "SshKey": {
                                             "shape_name": "String",
@@ -3311,7 +3311,7 @@
                                             "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                                         }
                                     },
-                                    "documentation": null
+                                    "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                                 },
                                 "DefaultSshKeyName": {
                                     "shape_name": "String",
@@ -3330,7 +3330,7 @@
                                         "ebs",
                                         "instance-store"
                                     ],
-                                    "documentation": null
+                                    "documentation": "\n      <p>The default root device type. This value is used by default for all instances in the cloned stack,\n         but you can override it when you create an instance. For more information, see\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
                                 }
                             },
                             "documentation": "\n      <p>Describes a stack.</p>\n   "
@@ -3386,7 +3386,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeTimeBasedAutoScalingResult",
@@ -3570,7 +3570,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeUserProfilesResult",
@@ -3648,12 +3648,12 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID.</p>\n   "
+                        "documentation": "\n      <p>The instance ID. If you use this parameter, <code>DescribeVolumes</code> returns\n         descriptions of the volumes associated with the specified instance.</p>\n   "
                     },
                     "RaidArrayId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The RAID array ID.</p>\n   "
+                        "documentation": "\n      <p>The RAID array ID.  If you use this parameter, <code>DescribeVolumes</code> returns\n         descriptions of the volumes associated with the specified RAID array.</p>\n   "
                     },
                     "VolumeIds": {
                         "shape_name": "Strings",
@@ -3663,10 +3663,10 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>Am array of volume IDs to be described.</p>\n   "
+                        "documentation": "\n      <p>Am array of volume IDs. If you use this parameter, <code>DescribeVolumes</code> returns\n         descriptions of the specified volumes. Otherwise, it returns a description of every volume.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "DescribeVolumesResult",
@@ -3707,7 +3707,7 @@
                                 "Status": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The value returned by <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html\">DescribeVolumes</a>.</p>\n   "
+                                    "documentation": "\n      <p>The value returned by\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeVolumes.html\">DescribeVolumes</a>.</p>\n   "
                                 },
                                 "Size": {
                                     "shape_name": "Integer",
@@ -3780,13 +3780,13 @@
                     "ElasticLoadBalancerName": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": null,
+                        "documentation": "\n      <p>The Elastic Load Balancing instance's name.</p>\n   ",
                         "required": true
                     },
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": null,
+                        "documentation": "\n      <p>The ID of the layer that the Elastic Load Balancing instance is attached to.</p>\n   ",
                         "required": true
                     }
                 },
@@ -3807,7 +3807,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": null
+            "documentation": "\n      <p>Detaches a specified Elastic Load Balancing instance from it's layer.</p>\n   "
         },
         "GetHostnameSuggestion": {
             "name": "GetHostnameSuggestion",
@@ -3822,7 +3822,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "GetHostnameSuggestionResult",
@@ -3870,7 +3870,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -3899,7 +3899,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Reboots a specified instance.</p>\n   "
+            "documentation": "\n      <p>Reboots a specified instance.  For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html\">Starting, Stopping, and Rebooting Instances</a>.</p>\n   "
         },
         "SetLoadBasedAutoScaling": {
             "name": "SetLoadBasedAutoScaling",
@@ -4010,7 +4010,7 @@
                         "documentation": "\n      <p>An <code>AutoScalingThresholds</code> object with the downscaling threshold configuration. If the load falls\n         below these thresholds for a specified amount of time, OpsWorks stops a specified number of instances.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4039,7 +4039,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Specify the load-based auto scaling configuration for a specified layer.</p>\n      <note>To use load-based auto scaling, you must create a set of load-based auto scaling instances. Load-based auto scaling operates only \n         on the instances from that set, so you must ensure that you have created enough instances to handle the maximum anticipated load.</note>\n   "
+            "documentation": "\n      <p>Specify the load-based auto scaling configuration for a specified layer. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-autoscaling.html\">Managing Load\n            with Time-based and Load-based Instances</a>.</p>\n      <note>To use load-based auto scaling, you must create a set of load-based auto scaling instances. Load-based auto scaling operates only \n         on the instances from that set, so you must ensure that you have created enough instances to handle the maximum anticipated load.</note>\n   "
         },
         "SetPermission": {
             "name": "SetPermission",
@@ -4072,7 +4072,7 @@
                         "documentation": "\n      <p>The user is allowed to use <b>sudo</b> to elevate privileges.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4101,7 +4101,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Specifies a stack's permissions.</p>\n   "
+            "documentation": "\n      <p>Specifies a stack's permissions.  For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingsecurity.html\">Security and Permissions</a>.</p>\n   "
         },
         "SetTimeBasedAutoScaling": {
             "name": "SetTimeBasedAutoScaling",
@@ -4228,7 +4228,7 @@
                         "documentation": "\n      <p>An <code>AutoScalingSchedule</code> with the instance schedule.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4257,7 +4257,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Specify the time-based auto scaling configuration for a specified instance.</p>\n   "
+            "documentation": "\n      <p>Specify the time-based auto scaling configuration for a specified instance. For more information,\n         see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-autoscaling.html\">Managing Load\n            with Time-based and Load-based Instances</a>.</p>\n   "
         },
         "StartInstance": {
             "name": "StartInstance",
@@ -4272,7 +4272,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4301,7 +4301,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Starts a specified instance.</p>\n   "
+            "documentation": "\n      <p>Starts a specified instance. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html\">Starting, Stopping,\n            and Rebooting Instances</a>.</p>\n   "
         },
         "StartStack": {
             "name": "StartStack",
@@ -4316,7 +4316,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4360,7 +4360,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4389,7 +4389,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Stops a specified instance. When you stop a standard instance, the data disappears and must\n         be reinstalled when you restart the instance. You can stop an Amazon EBS-backed instance without losing data.</p>\n   "
+            "documentation": "\n      <p>Stops a specified instance. When you stop a standard instance, the data disappears and must\n         be reinstalled when you restart the instance. You can stop an Amazon EBS-backed instance without losing data.\n         For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html\">Starting, Stopping,\n            and Rebooting Instances</a>.</p>\n   "
         },
         "StopStack": {
             "name": "StopStack",
@@ -4404,7 +4404,7 @@
                         "required": true
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4492,12 +4492,12 @@
                             "Username": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The user name.</p> \n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                             },
                             "Password": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The repository's password.</p>\n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                             },
                             "SshKey": {
                                 "shape_name": "String",
@@ -4520,7 +4520,7 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>The app's virtual host settings, with multiple domains separated by commas. For example: <code>'www.mysite.com, mysite.com'</code></p>\n   "
+                        "documentation": "\n      <p>The app's virtual host settings, with multiple domains separated by commas. For example: <code>'www.example.com, example.com'</code></p>\n   "
                     },
                     "EnableSsl": {
                         "shape_name": "Boolean",
@@ -4573,7 +4573,7 @@
                         "documentation": "\n      <p>One or more user-defined key/value pairs to be added to the stack attributes bag.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4629,7 +4629,7 @@
                     "InstanceType": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance type, which can be one of the following:</p>\n      <ul>\n         <li>m1.small</li>\n         <li>m1.medium</li>\n         <li>m1.large</li>\n         <li>m1.xlarge</li>\n         <li>c1.medium</li>\n         <li>c1.xlarge</li>\n         <li>m2.xlarge</li>\n         <li>m2.2xlarge</li>\n         <li>m2.4xlarge</li>\n      </ul>\n   "
+                        "documentation": "\n      <p>The instance type. OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that you use to specify the various types are in the API Name column of the Available Instance Types table.</p>\n   "
                     },
                     "AutoScalingType": {
                         "shape_name": "AutoScalingType",
@@ -4638,7 +4638,7 @@
                             "load",
                             "timer"
                         ],
-                        "documentation": "\n      <p>The instance's auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>: A 24x7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.</li>\n      </ul>\n   "
+                        "documentation": "\n      <p>The instance's auto scaling type, which has three possible values:</p>\n      <ul>\n         <li>\n<b>AlwaysRunning</b>: A 24/7 instance, which is not affected by auto scaling.</li>\n         <li>\n<b>TimeBasedAutoScaling</b>: A time-based auto scaling instance, which is started and stopped based on a specified schedule.</li>\n         <li>\n<b>LoadBasedAutoScaling</b>: A load-based auto scaling instance, which is started and stopped based on load metrics.</li>\n      </ul>\n   "
                     },
                     "Hostname": {
                         "shape_name": "String",
@@ -4662,10 +4662,10 @@
                             "x86_64",
                             "i386"
                         ],
-                        "documentation": null
+                        "documentation": "\n      <p>The instance architecture. Instance types do not necessarily support both architectures.\n         For a list of the architectures that are supported by the different instance types, see\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4716,7 +4716,7 @@
                     "Shortname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer short name, which is used internally by OpsWorks, by Chef. The shortname is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters and must be in the following format:\n         /\\A[a-z0-9\\-\\_\\.]+\\Z/.</p>\n   "
+                        "documentation": "\n      <p>The layer short name, which is used internally by OpsWorksand by Chef. The shortname is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters and must be in the following format:\n         /\\A[a-z0-9\\-\\_\\.]+\\Z/.</p>\n   "
                     },
                     "Attributes": {
                         "shape_name": "LayerAttributes",
@@ -4827,7 +4827,7 @@
                         "shape_name": "Boolean",
                         "type": "boolean",
                         "box": true,
-                        "documentation": "\n      <p>Whether to automatically assign an <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP address</a> to the layer.</p>\n   "
+                        "documentation": "\n      <p>Whether to automatically assign an <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic\n         IP address</a> to the layer.</p>\n   "
                     },
                     "CustomRecipes": {
                         "shape_name": "Recipes",
@@ -4887,7 +4887,7 @@
                         "documentation": "\n      <p>A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.</p>      \n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -4956,7 +4956,7 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n   "
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n      <note>You must set this parameter to a valid service role ARN or the action will fail; there is no default value.\n         You can specify the stack's current service role ARN, if you prefer, but you must do so explicitly.</note>\n   "
                     },
                     "DefaultInstanceProfileArn": {
                         "shape_name": "String",
@@ -4981,7 +4981,7 @@
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                     },
                     "UseCustomCookbooks": {
                         "shape_name": "Boolean",
@@ -5012,12 +5012,12 @@
                             "Username": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The user name.</p> \n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Username</code> to the appropriate AWS access key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Username</code> to the user name.</li>\n      </ul>\n   "
                             },
                             "Password": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The repository's password.</p>\n   "
+                                "documentation": "\n      <p>This parameter depends on the repository type. </p>\n      <ul>\n         <li>For Amazon S3 bundles, set <code>Password</code> to the appropriate AWS secret key.</li>\n         <li>For HTTP bundles, Git repositories, and Subversion repositories, set <code>Password</code> to the password.</li>\n      </ul>\n   "
                             },
                             "SshKey": {
                                 "shape_name": "String",
@@ -5030,7 +5030,7 @@
                                 "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
-                        "documentation": null
+                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                     },
                     "DefaultSshKeyName": {
                         "shape_name": "String",
@@ -5044,10 +5044,10 @@
                             "ebs",
                             "instance-store"
                         ],
-                        "documentation": null
+                        "documentation": "\n      <p>The default root device type. This value is used by default for all instances in the cloned stack,\n         but you can override it when you create an instance.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -5101,7 +5101,7 @@
                         "documentation": "\n      <p>The user's new SSH public key.</p>\n   "
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": null,
             "errors": [
@@ -5130,7 +5130,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Updates a specified user's SSH name and public key.</p>\n   "
+            "documentation": "\n      <p>Updates a specified user profile.</p>\n   "
         }
     },
     "metadata": {

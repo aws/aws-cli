@@ -1,14 +1,14 @@
 {
+    "api_version": "2011-06-15",
+    "type": "query",
+    "result_wrapped": true,
+    "signature_version": "v4",
     "service_full_name": "AWS Security Token Service",
     "service_abbreviation": "AWS STS",
-    "type": "query",
-    "signature_version": "v4",
-    "result_wrapped": true,
     "global_endpoint": "sts.amazonaws.com",
-    "api_version": "2011-06-15",
     "endpoint_prefix": "sts",
     "xmlnamespace": "https://sts.amazonaws.com/doc/2011-06-15/",
-    "documentation": "\n    <fullname>AWS Security Token Service</fullname>\n\n    <p>The AWS Security Token Service is a web service that enables you to request temporary, \n    limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). This guide \n    provides descriptions of the AWS Security Token Service API.</p> \n    \n    <p>For more detailed information about using this service, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UsingSTS/Welcome.html\" target=\"_blank\">Using Temporary Security Credentials</a>.</p>\n\n\t<p>For information about setting up signatures and \n\t\tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n\t\tthe Query API, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>. For information about using security tokens with other AWS products, go to\n\t\t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UsingSTS/UsingTokens.html\">Using Temporary Security Credentials to Access AWS</a>\n\tin <i>Using Temporary Security Credentials</i>.</p>\n\n        <p>If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's\ntechnical documentation at <a href=\"http://aws.amazon.com/documentation/\" target=\"_blank\">http://aws.amazon.com/documentation/</a>.</p>\n    \n    <p>We will refer to Amazon Identity and Access Management using the abbreviated form IAM. \n\t\tAll copyrights and legal protections still apply.</p>\n\t\t\n ",
+    "documentation": "\n    <fullname>AWS Security Token Service</fullname>\n\n    <p>The AWS Security Token Service is a web service that enables you to request temporary, \n    limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). This guide \n    provides descriptions of the AWS Security Token Service API.</p> \n    \n   <p>\n        For more detailed information about using this service, go to \n        <a href=\"http://docs.aws.amazon.com/IAM/latest/UsingSTS/Welcome.html\" target=\"_blank\">Using Temporary Security Credentials</a>.\n    </p>\n    <p>\n        For information about setting up signatures and authorization through the API, go to \n        <a href=\"http://docs.aws.amazon.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> \n        in the <i>AWS General Reference</i>. For general information about the Query API, go to \n        <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> \n        in <i>Using IAM</i>. For information about using security tokens with other AWS products, go to\n\t<a href=\"http://docs.aws.amazon.com/IAM/latest/UsingSTS/UsingTokens.html\">Using Temporary Security Credentials to Access AWS</a>\n        in <i>Using Temporary Security Credentials</i>.\n    </p>\n    <p>\n        If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's\n        technical documentation at <a href=\"http://aws.amazon.com/documentation/\" target=\"_blank\">http://aws.amazon.com/documentation/</a>.\n    </p>\n    \n    <p>\n        We will refer to Amazon Identity and Access Management using the abbreviated form IAM. \n        All copyrights and legal protections still apply.\n    </p>\n\t\t\n ",
     "operations": {
         "AssumeRole": {
             "name": "AssumeRole",
@@ -39,14 +39,14 @@
                         "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
                         "min_length": 1,
                         "max_length": 2048,
-                        "documentation": "\n    <p>A supplemental policy that can be associated with the temporary security credentials. The caller can restrict the permissions\n       that are available on the role's temporary security credentials to maintain the least amount of privileges.\n       When a service call is made with the temporary security credentials, both the role's permission policy and supplemental policy are checked.\n       For more information about how permissions work in the context of temporary credentials, see\n       <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/TokenPermissions.html\" target=\"_blank\">Controlling Permissions in Temporary Credentials</a>.</p>\n"
+                        "documentation": "\n    <p>A supplemental policy that is associated with the temporary security credentials from\n\tthe <code>AssumeRole</code> call. The resulting permissions of the\n\ttemporary security credentials are an intersection of this policy and the access policy that\n\tis associated with the role. Use this policy to further restrict the permissions of\n\tthe temporary security credentials.</p>\n"
                     },
                     "DurationSeconds": {
                         "shape_name": "roleDurationSecondsType",
                         "type": "integer",
                         "min_length": 900,
                         "max_length": 3600,
-                        "documentation": "\n    <p>The duration, in seconds, of the role session. The value can range from 900 seconds (15 minutes) to 3600 seconds (1 hour).\n       By default, the value is set to 3600 seconds (1 hour).</p>\n"
+                        "documentation": "\n    <p>The duration, in seconds, of the role session. The value can range from 900 seconds (15 minutes) to 3600 seconds (1 hour).\n       By default, the value is set to 3600 seconds.</p>\n"
                     },
                     "ExternalId": {
                         "shape_name": "externalIdType",
@@ -54,10 +54,10 @@
                         "min_length": 2,
                         "max_length": 96,
                         "pattern": "[\\w+=,.@:-]*",
-                        "documentation": "\n    <p>A unique identifier that is generated by a third party for each of their customers. For each role that the third party can assume,\n        they should instruct their customers to create a role with the external ID that was generated by the third party.\n        Each time the third party assumes the role, they must pass the customer's correct external ID.\n        The external ID is useful in order to help third parties bind a role to the customer who created it.\n        For more information about the external ID, see <a href=\"http://docs.amazonwebservices.com/STS/latest/UsingSTS/sts-delegating-externalid.html\" target=\"_blank\">About the External ID</a> \n        in <i>Using Temporary Security Credentials</i>.</p>\n"
+                        "documentation": "\n    <p>A unique identifier that is used by third parties to assume a role in their customers' accounts. For each role that the third party can assume,\n        they should instruct their customers to create a role with the external ID that the third party generated.\n        Each time the third party assumes the role, they must pass the customer's external ID.\n        The external ID is useful in order to help third parties bind a role to the customer who created it.\n        For more information about the external ID, see <a href=\"http://docs.aws.amazon.com/STS/latest/UsingSTS/sts-delegating-externalid.html\" target=\"_blank\">About the External ID</a> \n        in <i>Using Temporary Security Credentials</i>.</p>\n"
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "AssumeRoleResponse",
@@ -79,7 +79,7 @@
                             "SecretAccessKey": {
                                 "shape_name": "accessKeySecretType",
                                 "type": "string",
-                                "documentation": "\n\t<p>The Secret Access Key to sign requests.</p>\n",
+                                "documentation": "\n\t<p>The secret access key to sign requests.</p>\n",
                                 "required": true
                             },
                             "SessionToken": {
@@ -95,7 +95,7 @@
                                 "required": true
                             }
                         },
-                        "documentation": "\n    <p>The temporary security credentials, which includes an Access Key ID, a Secret Access Key, and a security token.</p>\n"
+                        "documentation": "\n    <p>The temporary security credentials, which include an access key ID, a secret access key, and a security token.</p>\n"
                     },
                     "AssumedRoleUser": {
                         "shape_name": "AssumedRoleUser",
@@ -115,11 +115,11 @@
                                 "type": "string",
                                 "min_length": 20,
                                 "max_length": 2048,
-                                "documentation": "\n    <p>The ARN of the temporary security credentials that are returned from the AssumeRole action.\n        For more information about ARNs and how to use them in policies, \n        see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_Identifiers.html\" target=\"_blank\">\n            Identifiers for IAM Entities</a> in <i>Using IAM</i>.</p>\n",
+                                "documentation": "\n    <p>The ARN of the temporary security credentials that are returned from the AssumeRole action.\n        For more information about ARNs and how to use them in policies, \n        see <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\" target=\"_blank\">\n            Identifiers for IAM Entities</a> in <i>Using IAM</i>.</p>\n",
                                 "required": true
                             }
                         },
-                        "documentation": "\n    <p>The Amazon Resource Name (ARN) and the assumed role ID for the temporary security credentials.\n        The ARN and the role ID are identifiers for the temporary security credentials so that you can refer to the temporary credentials in a policy. For example,\n        if you want to build a policy that applies to these temporary credentials, you would specify the <code>AssumedRoleUser</code> ARN or role ID in that policy.\n        </p>\n"
+                        "documentation": "\n    <p>The Amazon Resource Name (ARN) and the assumed role ID, which are identifiers that you can use to refer to the resulting temporary security credentials. For example, you can reference these credentials as a principal in a resource-based policy by using the ARN or assumed role ID. The ARN and ID include the <code>RoleSessionName</code> that you specified when you called <code>AssumeRole</code>.\n\t</p>\n"
                     },
                     "PackedPolicySize": {
                         "shape_name": "nonNegativeIntegerType",
@@ -138,7 +138,7 @@
                         "message": {
                             "shape_name": "malformedPolicyDocumentMessage",
                             "type": "string",
-                            "documentation": ""
+                            "documentation": null
                         }
                     },
                     "documentation": "\n    <p>The request was rejected because the policy document was malformed. The error message describes the specific error.</p>\n"
@@ -150,13 +150,223 @@
                         "message": {
                             "shape_name": "packedPolicyTooLargeMessage",
                             "type": "string",
-                            "documentation": ""
+                            "documentation": null
                         }
                     },
                     "documentation": "\n    <p>The request was rejected because the policy document was too large. The error message describes how big the policy document\n       is, in packed form, as a percentage of what the API allows.</p>\n"
                 }
             ],
-            "documentation": "\n    <p>\n        The <code>AssumeRole</code> action returns a set of temporary security credentials that\n        you can use to access resources that are defined in the role's policy.\n        The returned credentials consist of an Access Key ID, a Secret Access Key, and a security token.\n\t</p>\n\t<p>\n\t\t<b>Important:</b> Only IAM users can assume a role. If you use AWS account credentials to call AssumeRole, access is denied.\n\t</p>\n\t<p>\n        The credentials are valid for the duration that you specified when calling <code>AssumeRole</code>, which can be from 15 minutes to 1 hour.\n    </p>\n    <p>\n        When you assume a role, you have the privileges that are defined in the role. You can further restrict the privileges by passing a policy when calling <code>AssumeRole</code>.\n    </p>\n    <p>\n        To assume a role, you must be an IAM user from a trusted entity and have permission to call <code>AssumeRole</code>.\n        Trusted entites are defined when the IAM role is created. Permission to call <code>AssumeRole</code> is defined in your or your group's IAM policy.\n    </p>\n    \n    <member name=\"RoleArn\" target=\"arnType\"></member>\n    <member name=\"RoleSessionName\" target=\"userNameType\"></member>\n    <member name=\"Policy\" target=\"sessionPolicyDocumentType\"></member>\n    <member name=\"DurationSeconds\" target=\"roleDurationSecondsType\"></member>\n    <member name=\"ExternalId\" target=\"externalIdType\"></member>\n    <examples>\n        <queryrequest>https://sts.amazonaws.com/\n?Version=2011-06-15\n&Action=AssumeRole\n&RoleSessionName=Bob\n&RoleArn=arn:aws:iam::123456789012:role/demo\n&Policy=%7B%22Statement%22%3A%5B%7B%22Sid%22%3A%22Stmt1%22%2C%22Effect%22%\n 3A%22Allow%22%2C%22Action%22%3A%22s3%3A*%22%2C%22Resource%22%3A%22*%22%7D\n %5D%7D\n&DurationSeconds=3600\n&ExternalId=123ABC\n&AUTHPARAMS</queryrequest>\n\n<queryresponse><AssumeRoleResponse xmlns=\"https://sts.amazonaws.com/doc/\n2011-06-15/\">\n  <AssumeRoleResult>\n    <Credentials>\n      <SessionToken>\n       AQoDYXdzEPT//////////wEXAMPLEtc764bNrC9SAPBSM22wDOk4x4HIZ8j4FZTwdQW\n       LWsKWHGBuFqwAeMicRXmxfpSPfIeoIYRqTflfKD8YUuwthAx7mSEI/qkPpKPi/kMcGd\n       QrmGdeehM4IC1NtBmUpp2wUE8phUZampKsburEDy0KPkyQDYwT7WZ0wq5VSXDvp75YU\n       9HFvlRd8Tx6q6fE8YQcHNVXAkiY9q6d+xo0rKwT38xVqr7ZD0u0iPPkUL64lIZbqBAz\n       +scqKmlzm8FDrypNC9Yjc8fPOLn9FX9KSYvKTr4rvx3iSIlTJabIQwj2ICCR/oLxBA==\n      </SessionToken>\n      <SecretAccessKey>\n       wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>2011-07-15T23:28:33.359Z</Expiration>\n      <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n    </Credentials>\n    <AssumedRoleUser>\n      <Arn>arn:aws:sts::123456789012:assumed-role/demo/Bob</Arn>\n      <AssumedRoleId>ARO123EXAMPLE123:Bob</AssumedRoleId>\n    </AssumedRoleUser>\n    <PackedPolicySize>6</PackedPolicySize>\n  </AssumeRoleResult>\n  <ResponseMetadata>\n    <RequestId>c6104cbe-af31-11e0-8154-cbc7ccf896c7</RequestId>\n  </ResponseMetadata>\n</AssumeRoleResponse></queryresponse>\n\n    </examples>\n"
+            "documentation": "\n    <p>\n        Returns a set of temporary security credentials\n\t\t(consisting of an access key ID, a secret access key, and a security token)\n\t\tthat you can use to access AWS resources that you might not normally have access to. Typically, you use <code>AssumeRole</code> for cross-account access or federation.\n\t</p>\n\t<p>\n\t\tFor cross-account access, imagine that you own multiple accounts and need to access resources in each account. You could create long-term credentials in each account to access those resources. However, managing all those credentials and remembering which one can access which account can be time consuming. Instead, you can create one set of long-term credentials in one account and then use temporary security credentials to access all the other accounts by assuming roles in those accounts. For more information about roles, see <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html\">Roles</a> in <i>Using IAM</i>.\n\t</p>\n\t<p>\n\t    For federation, you can, for example, grant single sign-on access to the AWS Management Console. If you already have an identity and authentication system in your corporate network, you don't have to recreate user identities in AWS in order to grant those user identities access to AWS. Instead, after a user has been authenticated, you call <code>AssumeRole</code> (and specify the role with the appropriate permissions) to get temporary security credentials for that user. With those temporary security credentials, you construct a sign-in URL that users can use to access the console. For more information, see <a href=\"http://docs.aws.amazon.com/STS/latest/UsingSTS/STSUseCases.html\">Scenarios for Granting Temporary Access</a> in\n\t\t<i>AWS Security Token Service</i>.\n\t</p>\n\t<p>\n\t\tThe temporary security credentials are valid for the duration that you specified when calling <code>AssumeRole</code>, which can be from 900 seconds (15 minutes) to 3600 seconds (1 hour). The default is 1 hour.\n    </p>\n\t<p>\n        The temporary security credentials that are returned from the\n\t\t<code>AssumeRoleWithWebIdentity</code> response have the permissions that are\n\t\tassociated with the access policy of the role being assumed and any policies that are associated with the AWS resource being accessed. You can further\n\t\trestrict the permissions of the temporary security credentials by passing a policy\n\t\tin the request. The resulting permissions are an intersection of the role's access\n\t\tpolicy and the policy that you passed. These policies and any applicable\n\t\tresource-based policies are evaluated when calls to AWS service APIs are made\n\t\tusing the temporary security credentials.\n    </p>\n    <p>\n        To assume a role, your AWS account must be trusted by the role. The trust relationship is defined in the role's trust policy when the IAM role is created. You must also have a policy that allows you to call <code>sts:AssumeRole</code>. \n    </p>\n\t<p>\n\t\t<b>Important:</b> You cannot call <code>Assumerole</code> by using AWS account credentials; access will be denied. You must use IAM user credentials to call <code>AssumeRole</code>.\n\t</p>\n    \n    <member name=\"RoleArn\" target=\"arnType\"></member>\n    <member name=\"RoleSessionName\" target=\"userNameType\"></member>\n    <member name=\"Policy\" target=\"sessionPolicyDocumentType\"></member>\n    <member name=\"DurationSeconds\" target=\"roleDurationSecondsType\"></member>\n    <member name=\"ExternalId\" target=\"externalIdType\"></member>\n    <examples>\n        <queryrequest>https://sts.amazonaws.com/\n?Version=2011-06-15\n&Action=AssumeRole\n&RoleSessionName=Bob\n&RoleArn=arn:aws:iam::123456789012:role/demo\n&Policy=%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Sid%22%3A%22Stmt1%22%2C%22Effect%22%\n 3A%22Allow%22%2C%22Action%22%3A%22s3%3A*%22%2C%22Resource%22%3A%22*%22%7D\n %5D%7D\n&DurationSeconds=3600\n&ExternalId=123ABC\n&AUTHPARAMS</queryrequest>\n\n<queryresponse><AssumeRoleResponse xmlns=\"https://sts.amazonaws.com/doc/\n2011-06-15/\">\n  <AssumeRoleResult>\n    <Credentials>\n      <SessionToken>\n       AQoDYXdzEPT//////////wEXAMPLEtc764bNrC9SAPBSM22wDOk4x4HIZ8j4FZTwdQW\n       LWsKWHGBuFqwAeMicRXmxfpSPfIeoIYRqTflfKD8YUuwthAx7mSEI/qkPpKPi/kMcGd\n       QrmGdeehM4IC1NtBmUpp2wUE8phUZampKsburEDy0KPkyQDYwT7WZ0wq5VSXDvp75YU\n       9HFvlRd8Tx6q6fE8YQcHNVXAkiY9q6d+xo0rKwT38xVqr7ZD0u0iPPkUL64lIZbqBAz\n       +scqKmlzm8FDrypNC9Yjc8fPOLn9FX9KSYvKTr4rvx3iSIlTJabIQwj2ICCR/oLxBA==\n      </SessionToken>\n      <SecretAccessKey>\n       wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>2011-07-15T23:28:33.359Z</Expiration>\n      <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n    </Credentials>\n    <AssumedRoleUser>\n      <Arn>arn:aws:sts::123456789012:assumed-role/demo/Bob</Arn>\n      <AssumedRoleId>ARO123EXAMPLE123:Bob</AssumedRoleId>\n    </AssumedRoleUser>\n    <PackedPolicySize>6</PackedPolicySize>\n  </AssumeRoleResult>\n  <ResponseMetadata>\n    <RequestId>c6104cbe-af31-11e0-8154-cbc7ccf896c7</RequestId>\n  </ResponseMetadata>\n</AssumeRoleResponse></queryresponse>\n\n    </examples>\n"
+        },
+        "AssumeRoleWithWebIdentity": {
+            "name": "AssumeRoleWithWebIdentity",
+            "input": {
+                "shape_name": "AssumeRoleWithWebIdentityRequest",
+                "type": "structure",
+                "members": {
+                    "RoleArn": {
+                        "shape_name": "arnType",
+                        "type": "string",
+                        "min_length": 20,
+                        "max_length": 2048,
+                        "documentation": "\n\t<p>The Amazon Resource Name (ARN) of the role that the caller is assuming.</p>\n",
+                        "required": true
+                    },
+                    "RoleSessionName": {
+                        "shape_name": "userNameType",
+                        "type": "string",
+                        "min_length": 2,
+                        "max_length": 32,
+                        "pattern": "[\\w+=,.@-]*",
+                        "documentation": "\n\t<p>An identifier for the assumed role session. Typically, you pass the name or\n\tidentifier that is associated with the user who is using your application. That way,\n\tthe temporary security credentials that your application will use are associated with\n\tthat user. This session name is included as part of the ARN and assumed role ID in the\n\t<code>AssumedRoleUser</code> response element.</p>\n",
+                        "required": true
+                    },
+                    "WebIdentityToken": {
+                        "shape_name": "clientTokenType",
+                        "type": "string",
+                        "min_length": 4,
+                        "max_length": 2048,
+                        "documentation": "\n\t<p>The OAuth 2.0 access token or OpenID Connect ID token that is provided by the\n\tidentity provider. Your application must get this token by authenticating the user who\n\tis using your application with a web identity provider before the application makes an\n\t<code>AssumeRoleWithWebIdentity</code> call.</p>\n",
+                        "required": true
+                    },
+                    "ProviderId": {
+                        "shape_name": "urlType",
+                        "type": "string",
+                        "min_length": 4,
+                        "max_length": 2048,
+                        "documentation": "\n\t<p>Specify this value only for OAuth access tokens. Do not specify this value for OpenID Connect ID tokens, such as <code>accounts.google.com</code>. This is the fully-qualified host component of the domain name of the identity provider. Do not include URL schemes and port numbers. Currently, <code>www.amazon.com</code> and <code>graph.facebook.com</code> are supported.\n\t</p>\n"
+                    },
+                    "Policy": {
+                        "shape_name": "sessionPolicyDocumentType",
+                        "type": "string",
+                        "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
+                        "min_length": 1,
+                        "max_length": 2048,
+                        "documentation": "\n\t<p>\n\tA supplemental policy that is associated with the temporary security credentials from\n\tthe <code>AssumeRoleWithWebIdentity</code> call. The resulting permissions of the\n\ttemporary security credentials are an intersection of this policy and the access\n\tpolicy that\tis associated with the role. Use this policy to further restrict the\n\tpermissions of the temporary security credentials.</p>\n"
+                    },
+                    "DurationSeconds": {
+                        "shape_name": "durationSecondsType",
+                        "type": "integer",
+                        "min_length": 900,
+                        "max_length": 129600,
+                        "documentation": "\n\t<p>The duration, in seconds, of the role session. The value can range from 900 seconds (15 minutes) to 3600 seconds (1 hour).\n       By default, the value is set to 3600 seconds.</p>\n"
+                    }
+                },
+                "documentation": null
+            },
+            "output": {
+                "shape_name": "AssumeRoleWithWebIdentityResponse",
+                "type": "structure",
+                "members": {
+                    "Credentials": {
+                        "shape_name": "Credentials",
+                        "type": "structure",
+                        "members": {
+                            "AccessKeyId": {
+                                "shape_name": "accessKeyIdType",
+                                "type": "string",
+                                "min_length": 16,
+                                "max_length": 32,
+                                "pattern": "[\\w]*",
+                                "documentation": "\n\t<p>AccessKeyId ID that identifies the temporary credentials.</p>\n",
+                                "required": true
+                            },
+                            "SecretAccessKey": {
+                                "shape_name": "accessKeySecretType",
+                                "type": "string",
+                                "documentation": "\n\t<p>The secret access key to sign requests.</p>\n",
+                                "required": true
+                            },
+                            "SessionToken": {
+                                "shape_name": "tokenType",
+                                "type": "string",
+                                "documentation": "\n\t<p>The security token that users must pass to the service API to use the temporary credentials.</p>\n",
+                                "required": true
+                            },
+                            "Expiration": {
+                                "shape_name": "dateType",
+                                "type": "timestamp",
+                                "documentation": "\n\t<p>The date on which these credentials expire.</p>\n",
+                                "required": true
+                            }
+                        },
+                        "documentation": "\n\t<p>The temporary security credentials, which include an access key ID, a secret access key, and a security token.</p>\n"
+                    },
+                    "SubjectFromWebIdentityToken": {
+                        "shape_name": "webIdentitySubjectType",
+                        "type": "string",
+                        "min_length": 6,
+                        "max_length": 255,
+                        "documentation": "\n    <p>The unique user identifier that is returned by the identity provider. This\n\tidentifier is associated with the <code>WebIdentityToken</code> that was submitted with the <code>AssumeRoleWithWebIdentity</code> call.\n\tThe identifier is typically unique to the user and the\n\tapplication that acquired the <code>WebIdentityToken</code> (pairwise identifier). If\n\tan OpenID Connect ID token was submitted in the <code>WebIdentityToken</code>, this\n\tvalue is returned by the identity provider as the token's <code>sub</code> (Subject) claim.</p>\n"
+                    },
+                    "AssumedRoleUser": {
+                        "shape_name": "AssumedRoleUser",
+                        "type": "structure",
+                        "members": {
+                            "AssumedRoleId": {
+                                "shape_name": "assumedRoleIdType",
+                                "type": "string",
+                                "min_length": 2,
+                                "max_length": 96,
+                                "pattern": "[\\w+=,.@:-]*",
+                                "documentation": "\n    <p>A unique identifier that contains the role ID and the role session name of the role that is being assumed. The role ID was generated by AWS when the role was created.</p>\n",
+                                "required": true
+                            },
+                            "Arn": {
+                                "shape_name": "arnType",
+                                "type": "string",
+                                "min_length": 20,
+                                "max_length": 2048,
+                                "documentation": "\n    <p>The ARN of the temporary security credentials that are returned from the AssumeRole action.\n        For more information about ARNs and how to use them in policies, \n        see <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\" target=\"_blank\">\n            Identifiers for IAM Entities</a> in <i>Using IAM</i>.</p>\n",
+                                "required": true
+                            }
+                        },
+                        "documentation": "\n    <p>The Amazon Resource Name (ARN) and the assumed role ID, which are identifiers that you can use to refer to the resulting temporary security credentials. For example, you can reference these credentials as a principal in a resource-based policy by using the ARN or assumed role ID. The ARN and ID include the <code>RoleSessionName</code> that you specified when you called <code>AssumeRole</code>.\n    </p>\n"
+                    },
+                    "PackedPolicySize": {
+                        "shape_name": "nonNegativeIntegerType",
+                        "type": "integer",
+                        "min_length": 0,
+                        "documentation": "\n    <p>A percentage value that indicates the size of the policy in packed form. The service rejects\n       any policy with a packed size greater than 100 percent, which means the policy exceeded the allowed space.</p>\n"
+                    }
+                },
+                "documentation": "\n\t<p>Contains the result of a successful invocation of the <a>AssumeRoleWithWebIdentity</a> action, including temporary\n\tAWS credentials that can be used to make AWS requests.</p>\n"
+            },
+            "errors": [
+                {
+                    "shape_name": "MalformedPolicyDocumentException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "malformedPolicyDocumentMessage",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>The request was rejected because the policy document was malformed. The error message describes the specific error.</p>\n"
+                },
+                {
+                    "shape_name": "PackedPolicyTooLargeException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "packedPolicyTooLargeMessage",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n    <p>The request was rejected because the policy document was too large. The error message describes how big the policy document\n       is, in packed form, as a percentage of what the API allows.</p>\n"
+                },
+                {
+                    "shape_name": "IDPRejectedClaimException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "idpRejectedClaimMessage",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n\t<p>The non-AWS identity provider (IDP) that was asked to verify the incoming identity token\n\trejected the identity claim. This might be because the claim is invalid, has expired, or has\n\tbeen explicitly revoked by the user. The error message contains\n\tdetails about the response from the non-AWS identity provider.</p>\n"
+                },
+                {
+                    "shape_name": "IDPCommunicationErrorException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "idpCommunicationErrorMessage",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n\t<p>The request could not be fulfilled because the non-AWS identity provider (IDP) that was\n\tasked to verify the incoming identity token could not be reached. This is often a transient\n\terror caused by network conditions. Retry the request a limited number of times so that you don't exceed the request rate. If the error persists, the\n\tnon-AWS identity provider might be down or not responding.\n\t</p>\n"
+                },
+                {
+                    "shape_name": "InvalidIdentityTokenException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "invalidIdentityTokenMessage",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n\t<p>The web identity token that was passed could not be validated by AWS. Get a new identity token from the identity provider and then retry the request.\n\t</p>\n"
+                },
+                {
+                    "shape_name": "ExpiredTokenException",
+                    "type": "structure",
+                    "members": {
+                        "message": {
+                            "shape_name": "expiredIdentityTokenMessage",
+                            "type": "string",
+                            "documentation": null
+                        }
+                    },
+                    "documentation": "\n\t<p>The web identity token that was passed is expired. Get a new identity token from the identity provider and then retry the request.\n\t</p>\n"
+                }
+            ],
+            "documentation": "\n <p>\n        Returns a set of temporary security \n\t\tcredentials\tfor users who have been authenticated in a mobile or web application\n\t\twith a web identity provider, such as Login with Amazon, Facebook, or Google.\n\t\t<code>AssumeRoleWithWebIdentity</code> is an API call that does \n\t\tnot require the use of AWS security credentials. Therefore, you can distribute an\n\t\tapplication\t(for example, on mobile devices) that requests temporary security\n\t\tcredentials without including long-term AWS credentials in the application or by\n\t\tdeploying server-based proxy services that use long-term AWS credentials. For more information, see <a href=\"http://aws-docs-alpha.integ.amazon.com/STS/latest/UsingSTS/STSUseCases.html#MobileApplication-KnownProvider\">Creating a Mobile Application with Third-Party Sign-In</a> in <i>AWS Security Token Service</i>.\n\t</p>\n\t<p>\n\t    The temporary security credentials\n\t\tconsist of an access key ID, a secret access key, and a security token.\n\t\tApplications can use these temporary security credentials to sign calls to\n\t\tAWS service APIs. The credentials are valid for the duration that you specified\n\t\twhen calling <code>AssumeRoleWithWebIdentity</code>, which can be from 900 seconds (15 minutes)\n\t\tto 3600 seconds (1 hour). By default, the temporary security credentials are valid for 1 hour.\n    </p>\n\t<p>\n        The temporary security credentials that are returned from the\n\t\t<code>AssumeRoleWithWebIdentity</code> response have the permissions that are\n\t\tassociated with the access policy of the role being assumed. You can further\n\t\trestrict the permissions of the temporary security credentials by passing a policy\n\t\tin the request. The resulting permissions are an intersection of the role's access\n\t\tpolicy and the policy that you passed. These policies and any applicable\n\t\tresource-based policies are evaluated when calls to AWS service APIs are made\n\t\tusing the temporary security credentials.\n    </p>\n    <p>\n\t    Before your application can call <code>AssumeRoleWithWebIdentity</code>, you must\n\t\thave an identity token from a supported identity provider and create a role that the\n\t\tapplication can assume. The role that your application assumes must trust the\n\t\tidentity provider that is associated with the identity token. In other words, the\n\t\tidentity provider must be specified in the role's trust policy. \n\t\tFor more information, see <a href=\"http://docs.aws.amazon.com/STS/latest/UsingSTS/CreatingWIF.html\" target=\"_blank\">\n\t\tCreating Temporary Security Credentials for Mobile Apps Using Third-Party Identity\n\t\tProviders</a>.\n    </p>\n    \n    <member name=\"RoleArn\" target=\"arnType\"></member>\n    <member name=\"RoleSessionName\" target=\"userNameType\"></member>\n    <member name=\"WebIdentityToken\" target=\"clientTokenType\"></member>\n    <member name=\"ProviderId\" target=\"urlType\"></member>\n    <member name=\"Policy\" target=\"sessionPolicyDocumentType\"></member>\n    <member name=\"DurationSeconds\" target=\"roleDurationSecondsType\"></member>\n<examples>\n\n<queryrequest>https://sts.amazonaws.com/\n?Action=AssumeRoleWithWebIdentity\n&DurationSeconds=3600\n&ProviderId=www.amazon.com\n&RoleSessionName=app1\n&Version=2011-06-15\n&RoleArn=arn%3Aaws%3Aiam%3A%3A000240903217%3Arole%2FFederatedWebIdentityRole\n&WebIdentityToken=Atza%7CIQEBLjAsAhRFiXuWpUXuRvQ9PZL3GMFcYevydwIUFAHZwXZXX\nXXXXXXJnrulxKDHwy87oGKPznh0D6bEQZTSCzyoCtL_8S07pLpr0zMbn6w1lfVZKNTBdDansFB\nmtGnIsIapjI6xKR02Yc_2bQ8LZbUXSGm6Ry6_BG7PrtLZtj_dfCTj92xNGed-CrKqjG7nPBjNI\nL016GGvuS5gSvPRUxWES3VYfm1wl7WTI7jn-Pcb6M-buCgHhFOzTQxod27L9CqnOLio7N3gZAG\npsp6n1-AJBOCJckcyXe2c6uD0srOJeZlKUm2eTDVMf8IehDVI0r1QOnTV6KzzAI3OY87Vd_cVMQ</queryrequest>\n\n<queryresponse><AssumeRoleWithWebIdentityResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\">\n  <AssumeRoleWithWebIdentityResult>\n    <SubjectFromWebIdentityToken>\n      amzn1.account.AF6RHO7KZU5XRVQJGXK6HB56KR2A\n    </SubjectFromWebIdentityToken>\n    <AssumedRoleUser>\n      <Arn>\n        arn:aws:sts::000240903217:assumed-role/FederatedWebIdentityRole/app1\n      </Arn>\n      <AssumedRoleId>\n        AROACLKWSDQRAOFQC3IDI:app1\n      </AssumedRoleId>\n    </AssumedRoleUser>\n    <Credentials>\n      <SessionToken>\n        AQoDYXdzEE0a8ANXXXXXXXXNO1ewxE5TijQyp+IPfnyowF\n      </SessionToken>\n      <SecretAccessKey>\n        wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>\n        2013-05-14T23:00:23Z\n      </Expiration>\n      <AccessKeyId>\n        AKIAIOSFODNN7EXAMPLE\n      </AccessKeyId>\n    </Credentials>\n  </AssumeRoleWithWebIdentityResult>\n  <ResponseMetadata>\n    <RequestId>ad4156e9-bce1-11e2-82e6-6b6ef249e618</RequestId>\n  </ResponseMetadata>\n</AssumeRoleWithWebIdentityResponse></queryresponse>\n</examples>\n"
         },
         "GetFederationToken": {
             "name": "GetFederationToken",
@@ -170,7 +380,7 @@
                         "min_length": 2,
                         "max_length": 32,
                         "pattern": "[\\w+=,.@-]*",
-                        "documentation": "\n    <p>The name of the federated user associated with the credentials. For information about limitations on user\n    names, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/LimitationsOnEntities.html\">Limitations on IAM Entities</a>\n        in <i>Using IAM</i>.</p>\n",
+                        "documentation": "\n    <p>The name of the federated user. The name is used as an identifier for the temporary security credentials (such as <code>Bob</code>). For example, you can reference the federated user name in a resource-based policy, such as in an Amazon S3 bucket policy.</p>\n",
                         "required": true
                     },
                     "Policy": {
@@ -179,17 +389,17 @@
                         "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
                         "min_length": 1,
                         "max_length": 2048,
-                        "documentation": "\n    <p>A policy specifying the permissions to associate with the credentials. The caller can delegate their own permissions by\n       specifying a policy, and both policies will be checked when a service call is made. For more information about \n\thow permissions work in the context of temporary credentials, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/TokenPermissions.html\" target=\"_blank\">Controlling Permissions in Temporary Credentials</a> \n        in <i>Using IAM</i>.</p>\n"
+                        "documentation": "\n    <p>A policy that specifies the permissions that are granted to the federated user. By default, federated users have no permissions; they do not inherit any from the IAM user. When you specify a policy, the federated user's permissions are intersection of the specified policy and the IAM user's policy. If you don't specify a policy, federated users can only access AWS resources that explicitly allow those federated users in a resource policy, such as in an Amazon S3 bucket policy.</p>\n"
                     },
                     "DurationSeconds": {
                         "shape_name": "durationSecondsType",
                         "type": "integer",
                         "min_length": 900,
                         "max_length": 129600,
-                        "documentation": "\n    <p>The duration, in seconds, that the session should last. Acceptable durations for federation sessions \n    range from 900s (15 minutes) to 129600s (36 hours), with 43200s (12 hours) as the default.\n    Sessions for AWS account owners are restricted to a maximum of 3600s (one hour). If the duration is longer than one hour, the session for AWS account owners defaults to one hour.</p>\n"
+                        "documentation": "\n    <p>The duration, in seconds, that the session should last. Acceptable durations for federation sessions \n    range from 900 seconds (15 minutes) to 129600 seconds (36 hours), with 43200 seconds (12 hours) as the default.\n    Sessions for AWS account owners are restricted to a maximum of 3600 seconds (one hour). If the duration is longer than one hour, the session for AWS account owners defaults to one hour.</p>\n"
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "GetFederationTokenResponse",
@@ -211,7 +421,7 @@
                             "SecretAccessKey": {
                                 "shape_name": "accessKeySecretType",
                                 "type": "string",
-                                "documentation": "\n\t<p>The Secret Access Key to sign requests.</p>\n",
+                                "documentation": "\n\t<p>The secret access key to sign requests.</p>\n",
                                 "required": true
                             },
                             "SessionToken": {
@@ -247,17 +457,17 @@
                                 "type": "string",
                                 "min_length": 20,
                                 "max_length": 2048,
-                                "documentation": "\n\t<p>The ARN specifying the federated user associated with the credentials. For more information about ARNs and how\n\t    to use them in policies, see  <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_Identifiers.html\" target=\"_blank\">Identifiers for IAM Entities</a> in <i>Using IAM</i>.</p>\n",
+                                "documentation": "\n\t<p>The ARN specifying the federated user associated with the credentials. For more information about ARNs and how\n\t    to use them in policies, see  <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\" target=\"_blank\">Identifiers for IAM Entities</a> in <i>Using IAM</i>.</p>\n",
                                 "required": true
                             }
                         },
-                        "documentation": "\n    <p>Identifiers for the federated user associated with the credentials. You can use the federated user's ARN in \n    your resource policies.</p>\n"
+                        "documentation": "\n    <p>Identifiers for the federated user associated with the credentials (such as <code>arn:aws:sts::123456789012:federated-user/Bob</code> or <code>123456789012:Bob</code>). You can use the federated user's ARN in \n    your resource policies like in an Amazon S3 bucket policy.</p>\n"
                     },
                     "PackedPolicySize": {
                         "shape_name": "nonNegativeIntegerType",
                         "type": "integer",
                         "min_length": 0,
-                        "documentation": "\n    <p>A percentage value indicating the size of the policy in packed form. Policies for which the packed size is greater than\n       100% of the allowed value are rejected by the service.</p>\n"
+                        "documentation": "\n    <p>A percentage value indicating the size of the policy in packed form. The service rejects policies for which the packed size is greater than\n       100 percent of the allowed value.</p>\n"
                     }
                 },
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>GetFederationToken</a> action.</p>\n  "
@@ -270,7 +480,7 @@
                         "message": {
                             "shape_name": "malformedPolicyDocumentMessage",
                             "type": "string",
-                            "documentation": ""
+                            "documentation": null
                         }
                     },
                     "documentation": "\n    <p>The request was rejected because the policy document was malformed. The error message describes the specific error.</p>\n"
@@ -282,13 +492,13 @@
                         "message": {
                             "shape_name": "packedPolicyTooLargeMessage",
                             "type": "string",
-                            "documentation": ""
+                            "documentation": null
                         }
                     },
                     "documentation": "\n    <p>The request was rejected because the policy document was too large. The error message describes how big the policy document\n       is, in packed form, as a percentage of what the API allows.</p>\n"
                 }
             ],
-            "documentation": "\n\t<p>The GetFederationToken action returns a set of temporary credentials for a federated user with the\n\tuser name and policy specified in the request. The credentials consist of an Access Key ID, a Secret Access \n\tKey, and a security token. Credentials created by IAM users are valid for the specified duration, between \n\t15 minutes and 36 hours; credentials created using account credentials have a maximum duration of one hour.</p>\n\n\t<p>The federated user who holds these credentials has any permissions allowed by \n\tthe intersection of the specified policy and any resource or user policies that apply to the caller of \n\tthe GetFederationToken API, and any resource policies that apply to the federated user's Amazon Resource Name (ARN). \n\tFor more information about how token permissions work, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/TokenPermissions.html\" target=\"_blank\">Controlling Permissions in Temporary Credentials</a> \n\tin <i>Using IAM</i>. For information about using GetFederationToken to \n\tcreate temporary credentials, \n\tsee <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/CreatingFedTokens.html\" target=\"_blank\">Creating Temporary Credentials to Enable Access for Federated Users</a> \n\t    in <i>Using IAM</i>.</p>\n\n\t<examples>\n\t<queryrequest>https://sts.amazonaws.com/\n?Version=2011-06-15\n&Action=GetFederationToken\n&Name=Bob\n&Policy=%7B%22Statement%22%3A%5B%7B%22Sid%22%3A%22Stmt1%22%2C%22Effect%22%\n 3A%22Allow%22%2C%22Action%22%3A%22s3%3A*%22%2C%22Resource%22%3A%22*%22%7D\n %5D%7D\n&DurationSeconds=3600\n&AUTHPARAMS</queryrequest>\n\n<queryresponse><GetFederationTokenResponse xmlns=\"https://sts.amazonaws.com/doc/\n2011-06-15/\">\n  <GetFederationTokenResult>\n    <Credentials>\n      <SessionToken>\n       AQoDYXdzEPT//////////wEXAMPLEtc764bNrC9SAPBSM22wDOk4x4HIZ8j4FZTwdQW\n       LWsKWHGBuFqwAeMicRXmxfpSPfIeoIYRqTflfKD8YUuwthAx7mSEI/qkPpKPi/kMcGd\n       QrmGdeehM4IC1NtBmUpp2wUE8phUZampKsburEDy0KPkyQDYwT7WZ0wq5VSXDvp75YU\n       9HFvlRd8Tx6q6fE8YQcHNVXAkiY9q6d+xo0rKwT38xVqr7ZD0u0iPPkUL64lIZbqBAz\n       +scqKmlzm8FDrypNC9Yjc8fPOLn9FX9KSYvKTr4rvx3iSIlTJabIQwj2ICCR/oLxBA==\n      </SessionToken>\n      <SecretAccessKey>\n       wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>2011-07-15T23:28:33.359Z</Expiration>\n      <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n    </Credentials>\n    <FederatedUser>\n      <Arn>arn:aws:sts::123456789012:federated-user/Bob</Arn>\n      <FederatedUserId>123456789012:Bob</FederatedUserId>\n    </FederatedUser>\n    <PackedPolicySize>6</PackedPolicySize>\n  </GetFederationTokenResult>\n  <ResponseMetadata>\n    <RequestId>c6104cbe-af31-11e0-8154-cbc7ccf896c7</RequestId>\n  </ResponseMetadata>\n</GetFederationTokenResponse></queryresponse>\n\n\t</examples>\n"
+            "documentation": "\n\t<p>Returns a set of temporary security credentials (consisting of an access key ID, a secret access key, and a security token) for a federated user. A typical use is in a proxy application that is getting temporary security credentials on behalf of distributed applications inside a corporate network. Because you must call the <code>GetFederationToken</code> action using the long-term security credentials of an IAM user, this call is appropriate in contexts where those credentials can be safely stored, usually in a server-based application.\n\t</p>\n\t\n\t<p><b>Note:</b>\n\tDo not use this call in mobile applications or client-based web applications that directly get temporary security credentials. For those types of applications, use <code>AssumeRoleWithWebIdentity</code>.\n\t</p>\n\t\n\t<p>\n\tThe <code>GetFederationToken</code> action must be called by using the long-term\n\tAWS security credentials of the AWS account or an IAM user. Credentials that are created by IAM users are valid for the specified duration, between 900 seconds (15 minutes) and 129600 seconds (36 hours); credentials that are created by using account credentials have a maximum duration of 3600 seconds (1 hour).</p>\n\n\t<p>\n\t The permissions that are granted to the federated user are the intersection of the policy that is passed with the <code>GetFederationToken</code> request and policies that are associated with of the entity making the <code>GetFederationToken</code> call.\n\t</p>\n\t<p>\n\tFor more information about how permissions work, see <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/TokenPermissions.html\" target=\"_blank\">Controlling Permissions in Temporary Credentials</a> \n\tin <i>Using Temporary Security Credentials</i>. For information about using <code>GetFederationToken</code> to \n\tcreate temporary security credentials, \n\tsee <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/CreatingFedTokens.html\" target=\"_blank\">Creating Temporary Credentials to Enable Access for Federated Users</a> \n\tin <i>Using Temporary Security Credentials</i>.</p>\n\n\t<examples>\n\t<queryrequest>https://sts.amazonaws.com/\n?Version=2011-06-15\n&Action=GetFederationToken\n&Name=Bob\n&Policy=%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Sid%22%3A%22Stmt1%22%2C%22Effect%22%\n 3A%22Allow%22%2C%22Action%22%3A%22s3%3A*%22%2C%22Resource%22%3A%22*%22%7D\n %5D%7D\n&DurationSeconds=3600\n&AUTHPARAMS</queryrequest>\n\n<queryresponse><GetFederationTokenResponse xmlns=\"https://sts.amazonaws.com/doc/\n2011-06-15/\">\n  <GetFederationTokenResult>\n    <Credentials>\n      <SessionToken>\n       AQoDYXdzEPT//////////wEXAMPLEtc764bNrC9SAPBSM22wDOk4x4HIZ8j4FZTwdQW\n       LWsKWHGBuFqwAeMicRXmxfpSPfIeoIYRqTflfKD8YUuwthAx7mSEI/qkPpKPi/kMcGd\n       QrmGdeehM4IC1NtBmUpp2wUE8phUZampKsburEDy0KPkyQDYwT7WZ0wq5VSXDvp75YU\n       9HFvlRd8Tx6q6fE8YQcHNVXAkiY9q6d+xo0rKwT38xVqr7ZD0u0iPPkUL64lIZbqBAz\n       +scqKmlzm8FDrypNC9Yjc8fPOLn9FX9KSYvKTr4rvx3iSIlTJabIQwj2ICCR/oLxBA==\n      </SessionToken>\n      <SecretAccessKey>\n       wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>2011-07-15T23:28:33.359Z</Expiration>\n      <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n    </Credentials>\n    <FederatedUser>\n      <Arn>arn:aws:sts::123456789012:federated-user/Bob</Arn>\n      <FederatedUserId>123456789012:Bob</FederatedUserId>\n    </FederatedUser>\n    <PackedPolicySize>6</PackedPolicySize>\n  </GetFederationTokenResult>\n  <ResponseMetadata>\n    <RequestId>c6104cbe-af31-11e0-8154-cbc7ccf896c7</RequestId>\n  </ResponseMetadata>\n</GetFederationTokenResponse></queryresponse>\n\n\t</examples>\n"
         },
         "GetSessionToken": {
             "name": "GetSessionToken",
@@ -301,7 +511,7 @@
                         "type": "integer",
                         "min_length": 900,
                         "max_length": 129600,
-                        "documentation": "\n\t<p>The duration, in seconds, that the credentials should remain valid. Acceptable durations for\n\tIAM user sessions range from 900s (15 minutes) to 129600s (36 hours), with 43200s (12 hours) as the\n\t default. Sessions for AWS account owners are restricted to a maximum of 3600s (one hour). If the duration is longer than one hour, the session for AWS account owners defaults to one hour.</p>\n"
+                        "documentation": "\n\t<p>The duration, in seconds, that the credentials should remain valid. Acceptable durations for\n\tIAM user sessions range from 900 seconds (15 minutes) to 129600 seconds (36 hours), with 43200 seconds (12 hours) as the\n\t default. Sessions for AWS account owners are restricted to a maximum of 3600 seconds (one hour). If the duration is longer than one hour, the session for AWS account owners defaults to one hour.</p>\n"
                     },
                     "SerialNumber": {
                         "shape_name": "serialNumberType",
@@ -309,7 +519,7 @@
                         "min_length": 9,
                         "max_length": 256,
                         "pattern": "[\\w+=/:,.@-]*",
-                        "documentation": "\n    <p>The identification number of the MFA device for the user. If the IAM user has a policy requiring MFA authentication (or is in a group requiring MFA authentication) to access resources, provide the device value here.</p>\n<p>The value is in the <b>Security Credentials</b> tab of the user's details pane in the IAM console. If the IAM user has an active MFA device, the details pane displays a <b>Multi-Factor Authentication Device</b> value. The value is either for a virtual device, such as <code>arn:aws:iam::123456789012:mfa/user</code>, or it is the device serial number for a hardware device (usually the number from the back of the device), such as <code>GAHT12345678</code>. For more information, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingMFA.html\" target=\"_blank\">Using Multi-Factor Authentication (MFA) Devices with AWS</a> in <i>Using IAM</i>.</p>\n"
+                        "documentation": "\n    <p>The identification number of the MFA device that is associated with the IAM user who is making the <code>GetSessionToken</code> call. Specify this value if the IAM user has a policy that requires MFA authentication. The value is either the serial number for a hardware device (such as <code>GAHT12345678</code>) or an Amazon Resource Name (ARN) for a virtual device (such as <code>arn:aws:iam::123456789012:mfa/user</code>). You can find the device for an IAM user by going to the AWS Management Console and viewing the user's security credentials.</p>\n"
                     },
                     "TokenCode": {
                         "shape_name": "tokenCodeType",
@@ -317,10 +527,10 @@
                         "min_length": 6,
                         "max_length": 6,
                         "pattern": "[\\d]*",
-                        "documentation": "\n\t<p>The value provided by the MFA device. If the user has an access policy requiring an MFA code (or is in a group requiring an MFA code), provide the value here to get permission to resources as specified in the access policy. If MFA authentication is required, and the user does not provide a code when requesting a set of temporary security credentials, the user will receive an \"access denied\" response when requesting resources that require MFA authentication. For more information, see <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/Using_ManagingMFA.html\" target=\"_blank\">Using Multi-Factor Authentication (MFA) Devices with AWS</a> in <i>Using IAM</i>.</p>\n"
+                        "documentation": "\n\t<p>The value provided by the MFA device, if MFA is required. If any policy requires the IAM user to submit an MFA code, specify this value. If MFA authentication is required, and the user does not provide a code when requesting a set of temporary security credentials, the user will receive an \"access denied\" response when requesting resources that require MFA authentication.</p>\n"
                     }
                 },
-                "documentation": ""
+                "documentation": null
             },
             "output": {
                 "shape_name": "GetSessionTokenResponse",
@@ -342,7 +552,7 @@
                             "SecretAccessKey": {
                                 "shape_name": "accessKeySecretType",
                                 "type": "string",
-                                "documentation": "\n\t<p>The Secret Access Key to sign requests.</p>\n",
+                                "documentation": "\n\t<p>The secret access key to sign requests.</p>\n",
                                 "required": true
                             },
                             "SessionToken": {
@@ -364,7 +574,7 @@
                 "documentation": "\n    <p>Contains the result of a successful invocation of the <a>GetSessionToken</a> action.</p>\n  "
             },
             "errors": [],
-            "documentation": "\n\t<p>The GetSessionToken action returns a set of temporary credentials for an AWS account or IAM user. \n\tThe credentials consist of an Access Key ID, a Secret Access Key, and a security token. These credentials are \n\tvalid for the specified duration only. The session duration for IAM users can be between 15 minutes and 36 hours, \n\twith a default of 12 hours. The session duration for AWS account owners is restricted to a maximum of one hour. Providing \n\tthe AWS Multi-Factor Authentication (MFA) device serial number and the token code is optional.</p>\n\t<p>For more information about using GetSessionToken to create temporary credentials, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/CreatingSessionTokens.html\" target=\"_blank\">Creating Temporary Credentials to Enable Access \n\tfor IAM Users</a> in <i>Using IAM</i>.</p>\n\t\n\t\n\t<examples>\n\t<queryrequest>https://sts.amazonaws.com/\n?Version=2011-06-15\n&Action=GetSessionToken\n&DurationSeconds=3600\n&SerialNumber=YourMFADeviceSerialNumber\n&TokenCode=123456\n&AUTHPARAMS</queryrequest>\n\n<queryresponse><GetSessionTokenResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\">\n  <GetSessionTokenResult>\n    <Credentials>\n      <SessionToken>\n       AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/L\n       To6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3z\n       rkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtp\n       Z3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE\n      </SessionToken>\n      <SecretAccessKey>\n      wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>2011-07-11T19:55:29.611Z</Expiration>\n      <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n    </Credentials>\n  </GetSessionTokenResult>\n  <ResponseMetadata>\n    <RequestId>58c5dbae-abef-11e0-8cfe-09039844ac7d</RequestId>\n  </ResponseMetadata>\n</GetSessionTokenResponse></queryresponse>\n\t</examples>\n"
+            "documentation": "\n\t<p>Returns a set of temporary credentials for an AWS account or IAM user. The credentials consist of an access key ID, a secret access key, and a security token. Typically, you use <code>GetSessionToken</code> if you want use MFA to protect programmatic calls to specific AWS APIs like Amazon EC2 <code>StopInstances</code>. MFA-enabled IAM users would need to call <code>GetSessionToken</code> and submit an MFA code that is associated with their MFA device. Using the temporary security credentials that are returned from the call, IAM users can then make programmatic calls to APIs that require MFA authentication.\n\t</p>\n\t\n\t<p>\n\tThe <code>GetSessionToken</code> action must be called by using the long-term\n\tAWS security credentials of the AWS account or an IAM user. Credentials that are created by IAM users are valid for the duration that you specify, between 900 seconds (15 minutes) and 129600 seconds (36 hours); credentials that are created by using account credentials have a maximum duration of 3600 seconds (1 hour).</p>\n\t\n\t<p>\n\t The permissions that are granted to the federated user are the intersection of the policy that is passed with the <code>GetSessionToken</code> request and policies that are associated with of the entity making the <code>GetSessionToken</code> call.\n\t</p>\n\n\t<p>For more information about using <code>GetSessionToken</code> to create temporary credentials, go to <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/CreatingSessionTokens.html\" target=\"_blank\">Creating Temporary Credentials to Enable Access \n\tfor IAM Users</a> in <i>Using IAM</i>.</p>\n\t\n\t\n\t<examples>\n\t<queryrequest>https://sts.amazonaws.com/\n?Version=2011-06-15\n&Action=GetSessionToken\n&DurationSeconds=3600\n&SerialNumber=YourMFADeviceSerialNumber\n&TokenCode=123456\n&AUTHPARAMS</queryrequest>\n\n<queryresponse><GetSessionTokenResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\">\n  <GetSessionTokenResult>\n    <Credentials>\n      <SessionToken>\n       AQoEXAMPLEH4aoAH0gNCAPyJxz4BlCFFxWNE1OPTgk5TthT+FvwqnKwRcOIfrRh3c/L\n       To6UDdyJwOOvEVPvLXCrrrUtdnniCEXAMPLE/IvU1dYUg2RVAJBanLiHb4IgRmpRV3z\n       rkuWJOgQs8IZZaIv2BXIa2R4OlgkBN9bkUDNCJiBeb/AXlzBBko7b15fjrBs2+cTQtp\n       Z3CYWFXG8C5zqx37wnOE49mRl/+OtkIKGO7fAE\n      </SessionToken>\n      <SecretAccessKey>\n      wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY\n      </SecretAccessKey>\n      <Expiration>2011-07-11T19:55:29.611Z</Expiration>\n      <AccessKeyId>AKIAIOSFODNN7EXAMPLE</AccessKeyId>\n    </Credentials>\n  </GetSessionTokenResult>\n  <ResponseMetadata>\n    <RequestId>58c5dbae-abef-11e0-8cfe-09039844ac7d</RequestId>\n  </ResponseMetadata>\n</GetSessionTokenResponse></queryresponse>\n\t</examples>\n"
         }
     },
     "metadata": {

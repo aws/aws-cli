@@ -70,7 +70,7 @@ def calculate_md5(event_name, params, **kwargs):
 BUILTIN_HANDLERS = [
     ('after-parsed.ec2.GetConsoleOutput.String.Output',
      decode_console_output),
-    ('after-parsed.iam.*.policyDocumentType.PolicyDocument',
+    ('after-parsed.iam.*.policyDocumentType.*',
      decode_quoted_jsondoc),
     ('after-parsed.cloudformation.*.TemplateBody.TemplateBody',
      decode_jsondoc),

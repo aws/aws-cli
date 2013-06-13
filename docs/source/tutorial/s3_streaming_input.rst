@@ -1,4 +1,3 @@
-
 ========================
 Streaming Input with S3
 ========================
@@ -14,7 +13,7 @@ Here's a simple example that stores an object in S3::
 
     session = botocore.session.get_session()
     s3 = session.get_service('s3')
-    operation = s3.get_operation('GetObject')
+    operation = s3.get_operation('PutObject')
     endpoint = s3.get_endpoint('us-east-1')
     fp = open('my_large_local_file', 'rb')
     http_response, response_data = operation.call(endpoint,

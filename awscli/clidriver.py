@@ -17,6 +17,7 @@ import botocore.session
 from botocore.hooks import first_non_none_response
 from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
+from botocore.compat import copy_kwargs
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -89,9 +90,12 @@ class CLIDriver(object):
 
     def _create_parser_from_command_table(self, command_table):
         provider = self.session.get_variable('provider')
+        cli_data = self.session.get_data('cli')
+        self._build_top_level_cli_args(cli_data)
         parser = MainArgParser(
             command_table, self.session.user_agent(),
-            self.session.get_data(provider + '/_regions'))
+            self.session.get_data(provider + '/_regions'),
+            cli_data)
         return parser
 
     def main(self, args=None):
@@ -120,9 +124,36 @@ class CLIDriver(object):
             return 255
 
     def _handle_top_level_args(self, args):
+        self.session.emit('top-level-args-parsed', parsed_args=args)
         if args.debug:
             self.session.set_debug_logger(logger_name='botocore')
             self.session.set_debug_logger(logger_name='awscli')
+
+    def _build_top_level_cli_args(self, cli_data):
+        # This consists of two steps.  First we need to
+        # fill in any reference values in the cli_data
+        # (references to regions or anything else available
+        # in the session).
+        cli_arguments = cli_data['options']
+        for option in cli_arguments:
+            option_params = copy_kwargs(cli_arguments[option])
+            # Special case the 'choices' param.  Allows choices
+            # to reference a variable from the session.
+            if 'choices' in option_params:
+                choices = option_params['choices']
+                if not isinstance(choices, list):
+                    # Assume it's a reference like
+                    # "{provider}/_regions", so first resolve
+                    # the provider.
+                    provider = self.session.get_variable('provider')
+                    # The grab the var from the session
+                    choices_path = choices.format(provider=provider)
+                    choices = list(self.session.get_data(choices_path))
+                option_params['choices'] = choices
+                cli_arguments[option] = option_params
+        # Then the final step is to send out an event so handlers
+        # can add extra arguments or modify existing arguments.
+        self.session.emit('building-top-level-params', cli_data=cli_data)
 
 
 class CLICommand(object):

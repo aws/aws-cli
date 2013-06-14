@@ -40,29 +40,36 @@ class MainArgParser(CLIArgParser):
         "a consistent interface for interacting with all parts of AWS.")
     Usage = ("aws [options] <service_name> <operation> [parameters]")
 
-    def __init__(self, command_table, version_string, available_regions):
+    def __init__(self, command_table, version_string, available_regions,
+                 cli_data):
         super(MainArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
             conflict_handler='resolve',
             usage=self.Usage,
             description=self.Description)
-        self._build(command_table, version_string, available_regions)
+        self._build(command_table, version_string, available_regions,
+                    cli_data)
 
-    def _build(self, command_table, version_string, available_regions):
-        # TODO: refactor this.
-        self.add_argument('--debug', action="store_true", help="Turn on debug logging")
-        self.add_argument('--endpoint-url', help="Override service's default URL with the given URL")
-        self.add_argument('--no-verify-ssl', action="store_true",
-                          help='Override default behavior of verifying SSL certificates')
-        self.add_argument('--no-paginate', action='store_false', help='Disable automatic pagination', dest='paginate')
-        self.add_argument('--output', choices=['json', 'text', 'table'], metavar='output_format')
-        self.add_argument('--profile', help='Use a specific profile from your credential file', metavar='profile_name')
-        self.add_argument('--region', metavar='region_name', choices=available_regions)
+    def _create_choice_help(self, choices):
+        help_str = ''
+        for choice in sorted(choices):
+            help_str += '* %s\n' % choice
+        return help_str
+
+    def _build(self, command_table, version_string, available_regions,
+               cli_data):
+        for argument, argparse_params in cli_data['options'].items():
+            if not argument.startswith('--'):
+                # This can eventually be removed.  The 'service_name'
+                # key in the cli data options is deprecated in favor
+                # of the command table.  We can just remove 'service_name'
+                # from cli.json.
+                continue
+            self.add_argument(argument, **argparse_params)
         self.add_argument('--version', action="version",
-                          version=version_string, help='Display the version of this tool')
-        self.add_argument('--color', choices=['on', 'off', 'auto'],
-                          default='auto', help='Turn on/off color output')
+                          version=version_string,
+                          help='Display the version of this tool')
         self.add_argument('command', choices=list(command_table.keys()))
 
 

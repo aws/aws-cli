@@ -12,6 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
+import os
 import re
 
 import httpretty
@@ -26,6 +27,10 @@ class TestGetObject(BaseAWSCommandParamsTest):
     def register_uri(self):
         httpretty.register_uri(httpretty.GET, re.compile('.*'), body='')
 
+    def remove_file_if_exists(self, filename):
+        if os.path.isfile(filename):
+            os.remove(filename)
+
     def test_simple(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
@@ -35,6 +40,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {},
                   'payload': None}
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, result)
 
     def test_range(self):
@@ -47,6 +53,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'Range': 'bytes=0-499'},
                   'payload': None}
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, result)
 
     def test_response_headers(self):
@@ -62,6 +69,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'ResponseContentEncoding': 'x-gzip'},
                   'headers': {},
                   'payload': None}
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, result)
 
 

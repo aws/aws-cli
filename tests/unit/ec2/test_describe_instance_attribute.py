@@ -11,15 +11,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from tests.unit import BaseAWSCommandParamsTest
 import unittest
 import awscli.clidriver
 
 
-class TestDescribeInstanceAttribute(unittest.TestCase):
+class TestDescribeInstanceAttribute(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 describe-instance-attribute'
+    prefix = 'ec2 describe-instance-attribute'
 
     def test_both_params(self):
         cmdline = self.prefix
@@ -27,8 +26,7 @@ class TestDescribeInstanceAttribute(unittest.TestCase):
         cmdline += ' --attribute blockDeviceMapping'
         result = {'InstanceId': 'i-12345678',
                   'Attribute': 'blockDeviceMapping'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

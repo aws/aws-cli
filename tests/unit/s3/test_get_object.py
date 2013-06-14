@@ -11,15 +11,25 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
+import os
+import re
+
+import httpretty
+
 import awscli.clidriver
 
 
-class TestGetObject(unittest.TestCase):
+class TestGetObject(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws s3 get-object'
+    prefix = 's3 get-object'
+
+    def register_uri(self):
+        httpretty.register_uri(httpretty.GET, re.compile('.*'), body='')
+
+    def remove_file_if_exists(self, filename):
+        if os.path.isfile(filename):
+            os.remove(filename)
 
     def test_simple(self):
         cmdline = self.prefix
@@ -30,8 +40,8 @@ class TestGetObject(unittest.TestCase):
                                  'Key': 'mykey'},
                   'headers': {},
                   'payload': None}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_range(self):
         cmdline = self.prefix
@@ -43,8 +53,8 @@ class TestGetObject(unittest.TestCase):
                                  'Key': 'mykey'},
                   'headers': {'Range': 'bytes=0-499'},
                   'payload': None}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_response_headers(self):
         cmdline = self.prefix
@@ -59,8 +69,8 @@ class TestGetObject(unittest.TestCase):
                                  'ResponseContentEncoding': 'x-gzip'},
                   'headers': {},
                   'payload': None}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

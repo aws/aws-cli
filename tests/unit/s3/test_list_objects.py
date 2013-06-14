@@ -11,15 +11,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
+import re
+
+import httpretty
+import mock
+
 import awscli.clidriver
 
 
-class TestListObjects(unittest.TestCase):
+class TestListObjects(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws s3 list-objects'
+    prefix = 's3 list-objects'
+
+    def register_uri(self):
+        body = """<ListBucketResult xmlns="http://s3.amazonaws.com/">
+        </ListBucketResult>
+        """
+        httpretty.register_uri(httpretty.GET, re.compile('.*'), body=body)
 
     def test_simple(self):
         cmdline = self.prefix
@@ -27,8 +36,7 @@ class TestListObjects(unittest.TestCase):
         result = {'uri_params': {'Bucket': 'mybucket'},
                   'headers': {},
                   'payload': None}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_maxkeys(self):
         cmdline = self.prefix
@@ -38,8 +46,7 @@ class TestListObjects(unittest.TestCase):
                                  'MaxKeys': 100},
                   'headers': {},
                   'payload': None}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

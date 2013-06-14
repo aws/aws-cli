@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
 import os
+import csv
 import json
 import logging
 import six
@@ -178,7 +179,7 @@ class ParamShorthand(object):
             arg_types[arg.py_name] = arg.type
         parsed = []
         for v in value:
-            parts = v.split(',')
+            parts = self._split_on_commas(v)
             current_parsed = {}
             current_key = None
             for part in parts:
@@ -231,7 +232,7 @@ class ParamShorthand(object):
         # are separated by '='.  All of this should be whitespace
         # insensitive.
         parsed = {}
-        parts = value.split(',')
+        parts = self._split_on_commas(value)
         valid_names = self._create_name_to_params(param)
         for part in parts:
             try:
@@ -293,6 +294,40 @@ class ParamShorthand(object):
                 for value in param.keys.enum:
                     s += '  %s\n' % value
         return s
+
+    def _split_on_commas(self, value):
+        stringio = six.StringIO
+        if '"' not in value and '\\' not in value:
+            # No quotes or escaping, just use a simple split.
+            return value.split(',')
+        elif '"' not in value:
+            # Simple escaping, let the csv module handle it.
+            return list(csv.reader(stringio(value), escapechar='\\'))[0]
+        else:
+            # If there's quotes for the values, we have to handle this
+            # ourselves.
+            parts = list(csv.reader(stringio(value), escapechar='\\'))[0]
+            iter_parts = iter(parts)
+            new_parts = []
+            for part in iter_parts:
+                if part.count('"') == 1:
+                    # Need to combine the parts until we encounter an end quote.
+                    current = part
+                    chunks = [current.replace('"', '')]
+                    while True:
+                        try:
+                            current = iter_parts.next()
+                        except StopIteration:
+                            raise ParamSyntaxError(value)
+                        chunks.append(current.replace('"', ''))
+                        if '"' in current:
+                            break
+                    new_chunk = ','.join(chunks)
+                    new_parts.append(new_chunk)
+                else:
+                    new_parts.append(part)
+            return new_parts
+
 
 def unpack_cli_arg(parameter, value):
     """

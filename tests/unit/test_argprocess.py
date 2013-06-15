@@ -236,15 +236,20 @@ class TestParamShorthand(BaseArgProcessTest):
                                      'valid choices.*name'):
             self.simplify(p, ["names=instance-id,values=foo,bar"])
 
-    def test_csv_syntax(self):
+    def test_csv_syntax_escaped(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
         returned = self.simplify(
             p, ["parameter_key=key,parameter_value=foo\,bar"])
         expected = [{"parameter_key": "key",
                      "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
 
-        returned2e = self.simplify(
+    def test_csv_syntax_quoted(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
             p, ['parameter_key=key,parameter_value="foo,bar"'])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
         self.assertEqual(returned, expected)
 
     def test_csv_syntax_errors(self):

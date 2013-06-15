@@ -316,7 +316,7 @@ class ParamShorthand(object):
                     chunks = [current.replace('"', '')]
                     while True:
                         try:
-                            current = iter_parts.next()
+                            current = six.advance_iterator(iter_parts)
                         except StopIteration:
                             raise ParamSyntaxError(value)
                         chunks.append(current.replace('"', ''))

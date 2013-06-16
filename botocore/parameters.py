@@ -94,7 +94,10 @@ class Parameter(BotoCoreObject):
                     key = self.name
                 built_params['headers'][key] = value
         elif style == 'rest-json':
-            built_params['payload'] = value
+            logger.debug('JSON Payload found')
+            if built_params['payload'] is None:
+                built_params['payload'] = {}
+            self.store_value_json(value, built_params['payload'], label)
         elif style == 'rest-xml' and not self.streaming:
             logger.debug('XML Payload found')
             xml_payload = self.to_xml(value)
@@ -419,6 +422,15 @@ class StructParameter(Parameter):
                 member.build_parameter_json(value[member.py_name],
                                             new_value,
                                             member_label)
+
+    def store_value_json(self, value, built_params, label):
+        label = self.get_label()
+        built_params[label] = {}
+        for member in self.members:
+            if member.py_name in value:
+                member.store_value_json(value[member.py_name],
+                                        built_params[label],
+                                        member.name)
 
     def to_xml(self, value, label=None):
         if not label:

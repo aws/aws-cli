@@ -1,13 +1,13 @@
 {
-  "service_full_name": "AWS Direct Connect",
+  "api_version": "2012-10-25",
   "type": "json",
   "json_version": 1.1,
-  "signature_version": "v4",
   "target_prefix": "OvertureService",
-  "api_version": "2012-10-25",
+  "signature_version": "v4",
+  "service_full_name": "AWS Direct Connect",
   "endpoint_prefix": "directconnect",
   "xmlnamespace": "http://directconnect.amazonaws.com/doc/2012-10-25/",
-  "documentation": "\n\t\t<p>AWS Direct Connect makes it easy to establish a dedicated network connection from your premises to Amazon Web Services (AWS).  Using AWS Direct Connect, you can establish private connectivity between AWS and your data center, office, or colocation environment, which in many cases can reduce your network costs, increase bandwidth throughput, and provide a more consistent network experience than Internet-based connections.</p>\n\n <p>The AWS Direct Connect API Reference provides descriptions, syntax, and usage examples for each of the actions and data types for AWS Direct Connect. Use the following links to get started using the <i>AWS Direct Connect API Reference</i>:</p>\n    <ul>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all AWS Direct Connect actions.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/API_Types.html\">Data Types</a>: An alphabetical list of all AWS Direct Connect data types.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/CommonParameters.html\">Common Parameters</a>: Parameters that all Query actions can use.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/DirectConnect/latest/APIReference/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n        <li>\n<a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a>: Itemized regions and endpoints for all AWS products.</li>\n    </ul>\n\t",
+  "documentation": "\n\t\t<p>AWS Direct Connect makes it easy to establish a dedicated network connection from your premises to Amazon Web Services (AWS).  Using AWS Direct Connect, you can establish private connectivity between AWS and your data center, office, or colocation environment, which in many cases can reduce your network costs, increase bandwidth throughput, and provide a more consistent network experience than Internet-based connections.</p>\n\n <p>The AWS Direct Connect API Reference provides descriptions, syntax, and usage examples for each of the actions and data types for AWS Direct Connect. Use the following links to get started using the <i>AWS Direct Connect API Reference</i>:</p>\n    <ul>\n        <li>\n<a href=\"http://docs.aws.amazon.com/directconnect/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all AWS Direct Connect actions.</li>\n        <li>\n<a href=\"http://docs.aws.amazon.com/directconnect/latest/APIReference/API_Types.html\">Data Types</a>: An alphabetical list of all AWS Direct Connect data types.</li>\n        <li>\n<a href=\"http://docs.aws.amazon.com/directconnect/latest/APIReference/CommonParameters.html\">Common Query Parameters</a>: Parameters that all Query actions can use.</li>\n        <li>\n<a href=\"http://docs.aws.amazon.com/directconnect/latest/APIReference/CommonErrors.html\">Common Errors</a>: Client and server errors that all actions can return.</li>\n    </ul>\n\t",
   "operations": {
     "CreateConnection": {
       "name": "CreateConnection",
@@ -18,13 +18,13 @@
           "offeringId": {
             "shape_name": "OfferingId",
             "type": "string",
-            "documentation": null,
+            "documentation": "\n\t\t<p>The ID of the offering.</p>\n                <p>Example: us-west-1_EqSV5_1G</p>\n\t\t<p>Default: None</p>\n\t",
             "required": true
           },
           "connectionName": {
             "shape_name": "ConnectionName",
             "type": "string",
-            "documentation": null,
+            "documentation": "\n\t\t<p>The name of the connection.</p>\n\t\t<p>Example: \"<i>1G Connection to AWS</i>\"</p>\n\t\t<p>Default: None</p>\n\t",
             "required": true
           }
         },
@@ -37,12 +37,12 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "connectionName": {
             "shape_name": "ConnectionName",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The name of the connection.</p>\n\t\t<p>Example: \"<i>1G Connection to AWS</i>\"</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "connectionState": {
             "shape_name": "ConnectionState",
@@ -51,19 +51,20 @@
               "requested",
               "pending",
               "available",
+              "down",
               "deleted"
             ],
-            "documentation": null
+            "documentation": "\n\t\tState of the connection.\n\t\t<ul>\n\t\t\t<li>\n<b>Requested</b>: The initial state of connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</li>\n\t\t\t<li>\n<b>Pending</b>: The connection has been approved, and is being initialized.</li>\n\t\t\t<li>\n<b>Available</b>: The network link is up, and the connection is ready for use.</li>\n\t\t\t<li>\n<b>Down</b>: The network link is down.</li>\n\t\t\t<li>\n<b>Deleted</b>: The connection has been deleted.</li>\n\t\t</ul>\n\t"
           },
           "region": {
             "shape_name": "Region",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The AWS region where the offering is located.</p>\n                <p>Example: us-east-1</p>\n                <p>Default: None</p>\n\t"
           },
           "location": {
             "shape_name": "Location",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
           }
         },
         "documentation": "\n        A connection represents the physical network connection between the Direct Connect location and the customer.\n\t"
@@ -105,7 +106,7 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "newPrivateVirtualInterface": {
             "shape_name": "NewPrivateVirtualInterface",
@@ -114,37 +115,37 @@
               "virtualInterfaceName": {
                 "shape_name": "VirtualInterfaceName",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n\t\t<p>The name of the virtual interface assigned by the customer</p>\n                <p>Example: \"My VPC\"</p>\n\t"
               },
               "vlan": {
                 "shape_name": "VLAN",
                 "type": "integer",
-                "documentation": null
+                "documentation": "\n                <p>VLAN ID</p>\n                <p>Example: 101</p>\n\t"
               },
               "asn": {
                 "shape_name": "ASN",
                 "type": "integer",
-                "documentation": null
+                "documentation": "\n                <p>Autonomous system (AS) number for Border Gateway Protocol (BGP) configuration</p>\n                <p>Example: 65000</p>\n\t"
               },
               "authKey": {
                 "shape_name": "BGPAuthKey",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>Authentication key for BGP configuration</p>\n                <p>Example: asdf34example</p>\n\t"
               },
               "amazonAddress": {
                 "shape_name": "AmazonAddress",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>IP address assigned to the Amazon interface.</p>\n                <p>Example: 192.168.1.1/30</p>\n\t"
               },
               "customerAddress": {
                 "shape_name": "CustomerAddress",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2/30</p>\n\t"
               },
               "virtualGatewayId": {
                 "shape_name": "VirtualGatewayId",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>The ID of the virtual private gateway to a VPC.  Only applies to private virtual interfaces.</p>\n                <p>Example: vgw-123er56</p>\n\t"
               }
             },
             "documentation": "\n\t\t<p>Detailed information of the private virtual interface to be created.</p>\n\t\t<p>Default: None</p>\n\t"
@@ -159,52 +160,52 @@
           "virtualInterfaceId": {
             "shape_name": "VirtualInterfaceId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the virtual interface.</p>\n                <p>Example: dxvif-123dfg56</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "location": {
             "shape_name": "Location",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
           },
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "virtualInterfaceType": {
             "shape_name": "VirtualInterfaceType",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>The type of virtual interface</p>\n                <p>Example: private (Amazon VPC) or public (Amazon S3, Amazon DynamoDB, etc.)</p>\n\t"
           },
           "virtualInterfaceName": {
             "shape_name": "VirtualInterfaceName",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The name of the virtual interface assigned by the customer</p>\n                <p>Example: \"My VPC\"</p>\n\t"
           },
           "vlan": {
             "shape_name": "VLAN",
             "type": "integer",
-            "documentation": null
+            "documentation": "\n                <p>VLAN ID</p>\n                <p>Example: 101</p>\n\t"
           },
           "asn": {
             "shape_name": "ASN",
             "type": "integer",
-            "documentation": null
+            "documentation": "\n                <p>Autonomous system (AS) number for Border Gateway Protocol (BGP) configuration</p>\n                <p>Example: 65000</p>\n\t"
           },
           "authKey": {
             "shape_name": "BGPAuthKey",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>Authentication key for BGP configuration</p>\n                <p>Example: asdf34example</p>\n\t"
           },
           "amazonAddress": {
             "shape_name": "AmazonAddress",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>IP address assigned to the Amazon interface.</p>\n                <p>Example: 192.168.1.1/30</p>\n\t"
           },
           "customerAddress": {
             "shape_name": "CustomerAddress",
             "type": "string",
-            "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2</p>\n\t"
+            "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2/30</p>\n\t"
           },
           "virtualInterfaceState": {
             "shape_name": "VirtualInterfaceState",
@@ -216,7 +217,7 @@
               "deleting",
               "deleted"
             ],
-            "documentation": null
+            "documentation": "\n\t\tState of the virtual interface.\n\t\t<ul>\n                <li>\n<b>Verifying</b>: This state only applies to public virtual interfaces.  Each public virtual interface needs validation before the virtual interface can be created.</li>\n                <li>\n<b>Pending</b>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</li>\n                <li>\n<b>Available</b>: A virtual interface that is able to forward traffic.</li>\n                <li>\n<b>Deleting</b>:  A virtual interface is in this state immediately after calling <i>DeleteVirtualInterface</i> until it can no longer forward traffic.</li>\n                <li>\n<b>Deleted</b>:  A virtual interface that cannot forward traffic.</li>\n                </ul>\n\t"
           },
           "customerRouterConfig": {
             "shape_name": "RouterConfig",
@@ -226,7 +227,7 @@
           "virtualGatewayId": {
             "shape_name": "VirtualGatewayId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>The ID of the virtual private gateway to a VPC.  Only applies to private virtual interfaces.</p>\n                <p>Example: vgw-123er56</p>\n\t"
           },
           "routeFilterPrefixes": {
             "shape_name": "RouteFilterPrefixList",
@@ -243,7 +244,7 @@
               },
               "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
             },
-            "documentation": null
+            "documentation": "\n\t\tA list of routes to be advertised to the AWS network in this region (public virtual interface) or your VPC (private virtual interface).\n\t"
           }
         },
         "documentation": "\n                A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.\n\t"
@@ -285,7 +286,7 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "newPublicVirtualInterface": {
             "shape_name": "NewPublicVirtualInterface",
@@ -294,32 +295,32 @@
               "virtualInterfaceName": {
                 "shape_name": "VirtualInterfaceName",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n\t\t<p>The name of the virtual interface assigned by the customer</p>\n                <p>Example: \"My VPC\"</p>\n\t"
               },
               "vlan": {
                 "shape_name": "VLAN",
                 "type": "integer",
-                "documentation": null
+                "documentation": "\n                <p>VLAN ID</p>\n                <p>Example: 101</p>\n\t"
               },
               "asn": {
                 "shape_name": "ASN",
                 "type": "integer",
-                "documentation": null
+                "documentation": "\n                <p>Autonomous system (AS) number for Border Gateway Protocol (BGP) configuration</p>\n                <p>Example: 65000</p>\n\t"
               },
               "authKey": {
                 "shape_name": "BGPAuthKey",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>Authentication key for BGP configuration</p>\n                <p>Example: asdf34example</p>\n\t"
               },
               "amazonAddress": {
                 "shape_name": "AmazonAddress",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>IP address assigned to the Amazon interface.</p>\n                <p>Example: 192.168.1.1/30</p>\n\t"
               },
               "customerAddress": {
                 "shape_name": "CustomerAddress",
                 "type": "string",
-                "documentation": null
+                "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2/30</p>\n\t"
               },
               "routeFilterPrefixes": {
                 "shape_name": "RouteFilterPrefixList",
@@ -336,7 +337,7 @@
                   },
                   "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
                 },
-                "documentation": null
+                "documentation": "\n\t\tA list of routes to be advertised to the AWS network in this region (public virtual interface) or your VPC (private virtual interface).\n\t"
               }
             },
             "documentation": "\n\t\t<p>Detailed information of the public virtual interface to be created.</p>\n\t\t<p>Default: None</p>\n\t"
@@ -351,52 +352,52 @@
           "virtualInterfaceId": {
             "shape_name": "VirtualInterfaceId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the virtual interface.</p>\n                <p>Example: dxvif-123dfg56</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "location": {
             "shape_name": "Location",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
           },
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "virtualInterfaceType": {
             "shape_name": "VirtualInterfaceType",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>The type of virtual interface</p>\n                <p>Example: private (Amazon VPC) or public (Amazon S3, Amazon DynamoDB, etc.)</p>\n\t"
           },
           "virtualInterfaceName": {
             "shape_name": "VirtualInterfaceName",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The name of the virtual interface assigned by the customer</p>\n                <p>Example: \"My VPC\"</p>\n\t"
           },
           "vlan": {
             "shape_name": "VLAN",
             "type": "integer",
-            "documentation": null
+            "documentation": "\n                <p>VLAN ID</p>\n                <p>Example: 101</p>\n\t"
           },
           "asn": {
             "shape_name": "ASN",
             "type": "integer",
-            "documentation": null
+            "documentation": "\n                <p>Autonomous system (AS) number for Border Gateway Protocol (BGP) configuration</p>\n                <p>Example: 65000</p>\n\t"
           },
           "authKey": {
             "shape_name": "BGPAuthKey",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>Authentication key for BGP configuration</p>\n                <p>Example: asdf34example</p>\n\t"
           },
           "amazonAddress": {
             "shape_name": "AmazonAddress",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>IP address assigned to the Amazon interface.</p>\n                <p>Example: 192.168.1.1/30</p>\n\t"
           },
           "customerAddress": {
             "shape_name": "CustomerAddress",
             "type": "string",
-            "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2</p>\n\t"
+            "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2/30</p>\n\t"
           },
           "virtualInterfaceState": {
             "shape_name": "VirtualInterfaceState",
@@ -408,7 +409,7 @@
               "deleting",
               "deleted"
             ],
-            "documentation": null
+            "documentation": "\n\t\tState of the virtual interface.\n\t\t<ul>\n                <li>\n<b>Verifying</b>: This state only applies to public virtual interfaces.  Each public virtual interface needs validation before the virtual interface can be created.</li>\n                <li>\n<b>Pending</b>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</li>\n                <li>\n<b>Available</b>: A virtual interface that is able to forward traffic.</li>\n                <li>\n<b>Deleting</b>:  A virtual interface is in this state immediately after calling <i>DeleteVirtualInterface</i> until it can no longer forward traffic.</li>\n                <li>\n<b>Deleted</b>:  A virtual interface that cannot forward traffic.</li>\n                </ul>\n\t"
           },
           "customerRouterConfig": {
             "shape_name": "RouterConfig",
@@ -418,7 +419,7 @@
           "virtualGatewayId": {
             "shape_name": "VirtualGatewayId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n                <p>The ID of the virtual private gateway to a VPC.  Only applies to private virtual interfaces.</p>\n                <p>Example: vgw-123er56</p>\n\t"
           },
           "routeFilterPrefixes": {
             "shape_name": "RouteFilterPrefixList",
@@ -435,7 +436,7 @@
               },
               "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
             },
-            "documentation": null
+            "documentation": "\n\t\tA list of routes to be advertised to the AWS network in this region (public virtual interface) or your VPC (private virtual interface).\n\t"
           }
         },
         "documentation": "\n                A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.\n\t"
@@ -477,7 +478,7 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null,
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t",
             "required": true
           }
         },
@@ -490,12 +491,12 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "connectionName": {
             "shape_name": "ConnectionName",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The name of the connection.</p>\n\t\t<p>Example: \"<i>1G Connection to AWS</i>\"</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "connectionState": {
             "shape_name": "ConnectionState",
@@ -504,19 +505,20 @@
               "requested",
               "pending",
               "available",
+              "down",
               "deleted"
             ],
-            "documentation": null
+            "documentation": "\n\t\tState of the connection.\n\t\t<ul>\n\t\t\t<li>\n<b>Requested</b>: The initial state of connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</li>\n\t\t\t<li>\n<b>Pending</b>: The connection has been approved, and is being initialized.</li>\n\t\t\t<li>\n<b>Available</b>: The network link is up, and the connection is ready for use.</li>\n\t\t\t<li>\n<b>Down</b>: The network link is down.</li>\n\t\t\t<li>\n<b>Deleted</b>: The connection has been deleted.</li>\n\t\t</ul>\n\t"
           },
           "region": {
             "shape_name": "Region",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The AWS region where the offering is located.</p>\n                <p>Example: us-east-1</p>\n                <p>Default: None</p>\n\t"
           },
           "location": {
             "shape_name": "Location",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
           }
         },
         "documentation": "\n        A connection represents the physical network connection between the Direct Connect location and the customer.\n\t"
@@ -547,7 +549,7 @@
           "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
         }
       ],
-      "documentation": "\n            <p>Deletes the connection.</p>\n            <p>Deleting a connection only stops the AWS Direct Connect port and data transfer charges. You separately need to cancel any services or charges for cross-connects or network circuits that connect you to the AWS Direct Connect location with the providers of those services.</p>\n\t"
+      "documentation": "\n            <p>Deletes the connection.</p>\n            <p>Deleting a connection only stops the AWS Direct Connect port hour and data transfer charges. You separately need to cancel any services or charges for cross-connects or network circuits that connect you to the AWS Direct Connect location with the providers of those services.</p>\n\t"
     },
     "DeleteVirtualInterface": {
       "name": "DeleteVirtualInterface",
@@ -558,7 +560,7 @@
           "virtualInterfaceId": {
             "shape_name": "VirtualInterfaceId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the virtual interface.</p>\n                <p>Example: dxvif-123dfg56</p>\n\t\t<p>Default: None</p>\n\t"
           }
         },
         "documentation": "\n\t"
@@ -577,7 +579,7 @@
               "deleting",
               "deleted"
             ],
-            "documentation": null
+            "documentation": "\n\t\tState of the virtual interface.\n\t\t<ul>\n                <li>\n<b>Verifying</b>: This state only applies to public virtual interfaces.  Each public virtual interface needs validation before the virtual interface can be created.</li>\n                <li>\n<b>Pending</b>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</li>\n                <li>\n<b>Available</b>: A virtual interface that is able to forward traffic.</li>\n                <li>\n<b>Deleting</b>:  A virtual interface is in this state immediately after calling <i>DeleteVirtualInterface</i> until it can no longer forward traffic.</li>\n                <li>\n<b>Deleted</b>:  A virtual interface that cannot forward traffic.</li>\n                </ul>\n\t"
           }
         },
         "documentation": "\n\t\tThe response received when DeleteVirtualInterface is called.\n\t"
@@ -619,7 +621,7 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null,
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t",
             "required": true
           }
         },
@@ -632,12 +634,12 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "connectionName": {
             "shape_name": "ConnectionName",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The name of the connection.</p>\n\t\t<p>Example: \"<i>1G Connection to AWS</i>\"</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "connectionState": {
             "shape_name": "ConnectionState",
@@ -646,24 +648,25 @@
               "requested",
               "pending",
               "available",
+              "down",
               "deleted"
             ],
-            "documentation": null
+            "documentation": "\n\t\tState of the connection.\n\t\t<ul>\n\t\t\t<li>\n<b>Requested</b>: The initial state of connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</li>\n\t\t\t<li>\n<b>Pending</b>: The connection has been approved, and is being initialized.</li>\n\t\t\t<li>\n<b>Available</b>: The network link is up, and the connection is ready for use.</li>\n\t\t\t<li>\n<b>Down</b>: The network link is down.</li>\n\t\t\t<li>\n<b>Deleted</b>: The connection has been deleted.</li>\n\t\t</ul>\n\t"
           },
           "region": {
             "shape_name": "Region",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The AWS region where the offering is located.</p>\n                <p>Example: us-east-1</p>\n                <p>Default: None</p>\n\t"
           },
           "location": {
             "shape_name": "Location",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
           },
           "bandwidth": {
             "shape_name": "Bandwidth",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Bandwidth of the connection.</p>\n                <p>Example: 1Gbps</p>\n                <p>Default: None</p>\n\t"
           },
           "connectionCosts": {
             "shape_name": "ConnectionCostList",
@@ -695,7 +698,7 @@
               },
               "documentation": "\n\t\tCost description.\n\t"
             },
-            "documentation": null
+            "documentation": "\n\t\tA list of connection costs.\n\t"
           },
           "orderSteps": {
             "shape_name": "ConnectionOrderSteps",
@@ -741,10 +744,10 @@
               },
               "documentation": "\n\t\tA step in the connection order process.\n\t"
             },
-            "documentation": null
+            "documentation": "\n\t\tA list of connection order steps.\n\t"
           }
         },
-        "documentation": "\n\t\tAdditional information about connection order steps.\n\t"
+        "documentation": "\n\t\tAdditional information about the connection and the order steps.\n\t"
       },
       "errors": [
         {
@@ -783,7 +786,7 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           }
         },
         "documentation": "\n\t"
@@ -802,12 +805,12 @@
                 "connectionId": {
                   "shape_name": "ConnectionId",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
                 },
                 "connectionName": {
                   "shape_name": "ConnectionName",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>The name of the connection.</p>\n\t\t<p>Example: \"<i>1G Connection to AWS</i>\"</p>\n\t\t<p>Default: None</p>\n\t"
                 },
                 "connectionState": {
                   "shape_name": "ConnectionState",
@@ -816,19 +819,20 @@
                     "requested",
                     "pending",
                     "available",
+                    "down",
                     "deleted"
                   ],
-                  "documentation": null
+                  "documentation": "\n\t\tState of the connection.\n\t\t<ul>\n\t\t\t<li>\n<b>Requested</b>: The initial state of connection. The connection stays in the requested state until the Letter of Authorization (LOA) is sent to the customer.</li>\n\t\t\t<li>\n<b>Pending</b>: The connection has been approved, and is being initialized.</li>\n\t\t\t<li>\n<b>Available</b>: The network link is up, and the connection is ready for use.</li>\n\t\t\t<li>\n<b>Down</b>: The network link is down.</li>\n\t\t\t<li>\n<b>Deleted</b>: The connection has been deleted.</li>\n\t\t</ul>\n\t"
                 },
                 "region": {
                   "shape_name": "Region",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>The AWS region where the offering is located.</p>\n                <p>Example: us-east-1</p>\n                <p>Default: None</p>\n\t"
                 },
                 "location": {
                   "shape_name": "Location",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
                 }
               },
               "documentation": "\n        A connection represents the physical network connection between the Direct Connect location and the customer.\n\t"
@@ -875,7 +879,7 @@
           "offeringId": {
             "shape_name": "OfferingId",
             "type": "string",
-            "documentation": null,
+            "documentation": "\n\t\t<p>The ID of the offering.</p>\n                <p>Example: us-west-1_EqSV5_1G</p>\n\t\t<p>Default: None</p>\n\t",
             "required": true
           }
         },
@@ -888,17 +892,17 @@
           "offeringId": {
             "shape_name": "OfferingId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The ID of the offering.</p>\n                <p>Example: us-west-1_EqSV5_1G</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "region": {
             "shape_name": "Region",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>The AWS region where the offering is located.</p>\n                <p>Example: us-east-1</p>\n                <p>Default: None</p>\n\t"
           },
           "location": {
             "shape_name": "Location",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
           },
           "offeringName": {
             "shape_name": "OfferingName",
@@ -908,12 +912,12 @@
           "description": {
             "shape_name": "Description",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Description of the offering.</p>\n                <p>Example: \"<i>1Gbps Cross Connect in us-east-1</i>\"</p>\n                <p>Default: None</p>\n\t"
           },
           "bandwidth": {
             "shape_name": "Bandwidth",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>Bandwidth of the connection.</p>\n                <p>Example: 1Gbps</p>\n                <p>Default: None</p>\n\t"
           },
           "connectionCosts": {
             "shape_name": "ConnectionCostList",
@@ -945,7 +949,7 @@
               },
               "documentation": "\n\t\tCost description.\n\t"
             },
-            "documentation": null
+            "documentation": "\n\t\tA list of connection costs.\n\t"
           },
           "orderSteps": {
             "shape_name": "OfferingOrderSteps",
@@ -982,7 +986,7 @@
               },
               "documentation": "\n\t\tA step in the offering order process.\n\t"
             },
-            "documentation": null
+            "documentation": "\n\t\tA list of offering order steps.\n\t"
           }
         },
         "documentation": "\n\t\tA structure containing detailed information about an offering.\n\t"
@@ -1032,32 +1036,32 @@
                 "offeringId": {
                   "shape_name": "OfferingId",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>The ID of the offering.</p>\n                <p>Example: us-west-1_EqSV5_1G</p>\n\t\t<p>Default: None</p>\n\t"
                 },
                 "region": {
                   "shape_name": "Region",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>The AWS region where the offering is located.</p>\n                <p>Example: us-east-1</p>\n                <p>Default: None</p>\n\t"
                 },
                 "location": {
                   "shape_name": "Location",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
                 },
                 "offeringName": {
                   "shape_name": "OfferingName",
                   "type": "string",
-                  "documentation": "\n\t\t<p>Name of the offering.</p>\n                <p>Example: \"<i>1Gbps Cross Connect in us-east-1 via Equinix</i>\"</p>\n                <p>Default: None</p>\n\t"
+                  "documentation": "\n\t\t<p>Name of the offering.</p>\n                <p>Example: \"<i>1Gbps Cross Connect in us-east-1</i>\"</p>\n                <p>Default: None</p>\n\t"
                 },
                 "description": {
                   "shape_name": "Description",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>Description of the offering.</p>\n                <p>Example: \"<i>1Gbps Cross Connect in us-east-1</i>\"</p>\n                <p>Default: None</p>\n\t"
                 },
                 "bandwidth": {
                   "shape_name": "Bandwidth",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>Bandwidth of the connection.</p>\n                <p>Example: 1Gbps</p>\n                <p>Default: None</p>\n\t"
                 },
                 "connectionCosts": {
                   "shape_name": "ConnectionCostList",
@@ -1089,7 +1093,7 @@
                     },
                     "documentation": "\n\t\tCost description.\n\t"
                   },
-                  "documentation": null
+                  "documentation": "\n\t\tA list of connection costs.\n\t"
                 }
               },
               "documentation": "\n\t\tAn offer to create a new connection for a specific price and terms.\n\t"
@@ -1144,20 +1148,20 @@
                 "virtualGatewayId": {
                   "shape_name": "VirtualGatewayId",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n                <p>The ID of the virtual private gateway to a VPC.  Only applies to private virtual interfaces.</p>\n                <p>Example: vgw-123er56</p>\n\t"
                 },
                 "virtualGatewayState": {
                   "shape_name": "VirtualGatewayState",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\tState of the virtual private gateway.\n\t\t<ul>\n                <li>\n<b>Pending</b>: This is the initial state after calling <i>CreateVpnGateway</i>.</li>\n                <li>\n<b>Available</b>: Ready for use by a private virtual interface.</li>\n                <li>\n<b>Deleting</b>:  This is the initial state after calling <i>DeleteVpnGateway</i>.</li>\n                <li>\n<b>Deleted</b>:  In this state, a private virtual interface is unable to send traffic over this gateway.</li>\n                </ul>\n\t"
                 }
               },
-              "documentation": "\n\t\t<p>You can create one or more Direct Connect private virtual interfaces linking to your virtual private gateway.</p>\n\t\t<p>Virtual private gateway can be managed via AWS Virtual Private Cloud Console or the <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway API</a>.</p>\n\t"
+              "documentation": "\n\t\t<p>You can create one or more Direct Connect private virtual interfaces linking to your virtual private gateway.</p>\n\t\t<p>Virtual private gateway can be managed via AWS Virtual Private Cloud Console or the <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway API</a>.</p>\n\t"
             },
-            "documentation": "\n\t\tA list of virtual gateways.\n\t"
+            "documentation": "\n\t\tA list of virtual private gateways.\n\t"
           }
         },
-        "documentation": "\n\t\tA structure containing a list of virtual gateways.\n\t"
+        "documentation": "\n\t\tA structure containing a list of virtual private gateways.\n\t"
       },
       "errors": [
         {
@@ -1185,7 +1189,7 @@
           "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
         }
       ],
-      "documentation": "\n\t\t<p>Returns a list of virtual private gateways owned by the AWS account.</p>\n\t\t<p>You can create one or more AWS Direct Connect private virtual interfaces linking to a virtual private gateway. A virtual private gateway can be managed via Amazon Virtual Private Cloud (VPC) console or the <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway</a> action.</p>\n\t"
+      "documentation": "\n\t\t<p>Returns a list of virtual private gateways owned by the AWS account.</p>\n\t\t<p>You can create one or more AWS Direct Connect private virtual interfaces linking to a virtual private gateway. A virtual private gateway can be managed via Amazon Virtual Private Cloud (VPC) console or the <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-CreateVpnGateway.html\">EC2 CreateVpnGateway</a> action.</p>\n\t"
     },
     "DescribeVirtualInterfaces": {
       "name": "DescribeVirtualInterfaces",
@@ -1196,12 +1200,12 @@
           "connectionId": {
             "shape_name": "ConnectionId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
           },
           "virtualInterfaceId": {
             "shape_name": "VirtualInterfaceId",
             "type": "string",
-            "documentation": null
+            "documentation": "\n\t\t<p>ID of the virtual interface.</p>\n                <p>Example: dxvif-123dfg56</p>\n\t\t<p>Default: None</p>\n\t"
           }
         },
         "documentation": "\n\t"
@@ -1220,52 +1224,52 @@
                 "virtualInterfaceId": {
                   "shape_name": "VirtualInterfaceId",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>ID of the virtual interface.</p>\n                <p>Example: dxvif-123dfg56</p>\n\t\t<p>Default: None</p>\n\t"
                 },
                 "location": {
                   "shape_name": "Location",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>Where the AWS Direct Connect offering is located.</p>\n                <p>Example: EqSV5</p>\n                <p>Default: None</p>\n\t"
                 },
                 "connectionId": {
                   "shape_name": "ConnectionId",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>ID of the connection.</p>\n                <p>Example: dxcon-fg5678gh</p>\n\t\t<p>Default: None</p>\n\t"
                 },
                 "virtualInterfaceType": {
                   "shape_name": "VirtualInterfaceType",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n                <p>The type of virtual interface</p>\n                <p>Example: private (Amazon VPC) or public (Amazon S3, Amazon DynamoDB, etc.)</p>\n\t"
                 },
                 "virtualInterfaceName": {
                   "shape_name": "VirtualInterfaceName",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n\t\t<p>The name of the virtual interface assigned by the customer</p>\n                <p>Example: \"My VPC\"</p>\n\t"
                 },
                 "vlan": {
                   "shape_name": "VLAN",
                   "type": "integer",
-                  "documentation": null
+                  "documentation": "\n                <p>VLAN ID</p>\n                <p>Example: 101</p>\n\t"
                 },
                 "asn": {
                   "shape_name": "ASN",
                   "type": "integer",
-                  "documentation": null
+                  "documentation": "\n                <p>Autonomous system (AS) number for Border Gateway Protocol (BGP) configuration</p>\n                <p>Example: 65000</p>\n\t"
                 },
                 "authKey": {
                   "shape_name": "BGPAuthKey",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n                <p>Authentication key for BGP configuration</p>\n                <p>Example: asdf34example</p>\n\t"
                 },
                 "amazonAddress": {
                   "shape_name": "AmazonAddress",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n                <p>IP address assigned to the Amazon interface.</p>\n                <p>Example: 192.168.1.1/30</p>\n\t"
                 },
                 "customerAddress": {
                   "shape_name": "CustomerAddress",
                   "type": "string",
-                  "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2</p>\n\t"
+                  "documentation": "\n                <p>IP address assigned to the customer interface.</p>\n                <p>Example: 192.168.1.2/30</p>\n\t"
                 },
                 "virtualInterfaceState": {
                   "shape_name": "VirtualInterfaceState",
@@ -1277,7 +1281,7 @@
                     "deleting",
                     "deleted"
                   ],
-                  "documentation": null
+                  "documentation": "\n\t\tState of the virtual interface.\n\t\t<ul>\n                <li>\n<b>Verifying</b>: This state only applies to public virtual interfaces.  Each public virtual interface needs validation before the virtual interface can be created.</li>\n                <li>\n<b>Pending</b>: A virtual interface is in this state from the time that it is created until the virtual interface is ready to forward traffic.</li>\n                <li>\n<b>Available</b>: A virtual interface that is able to forward traffic.</li>\n                <li>\n<b>Deleting</b>:  A virtual interface is in this state immediately after calling <i>DeleteVirtualInterface</i> until it can no longer forward traffic.</li>\n                <li>\n<b>Deleted</b>:  A virtual interface that cannot forward traffic.</li>\n                </ul>\n\t"
                 },
                 "customerRouterConfig": {
                   "shape_name": "RouterConfig",
@@ -1287,7 +1291,7 @@
                 "virtualGatewayId": {
                   "shape_name": "VirtualGatewayId",
                   "type": "string",
-                  "documentation": null
+                  "documentation": "\n                <p>The ID of the virtual private gateway to a VPC.  Only applies to private virtual interfaces.</p>\n                <p>Example: vgw-123er56</p>\n\t"
                 },
                 "routeFilterPrefixes": {
                   "shape_name": "RouteFilterPrefixList",
@@ -1304,7 +1308,7 @@
                     },
                     "documentation": "\n                <p>A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.</p>\n\t"
                   },
-                  "documentation": null
+                  "documentation": "\n\t\tA list of routes to be advertised to the AWS network in this region (public virtual interface) or your VPC (private virtual interface).\n\t"
                 }
               },
               "documentation": "\n                A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.\n\t"
@@ -1340,7 +1344,7 @@
           "documentation": "\n\t\tThe API was called with invalid parameters.  The error message will contain additional details about the cause.\n\t"
         }
       ],
-      "documentation": "\n        <p>Displays all virtual interfaces for an AWS account. Virtual interfaces deleted fewer than 15 minutes before DescribeVirtualInterfaces is called are also returned.  If a virtual interface ID is included then only a single virtual interface will be returned.</p>\n        <p> A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.</p>\n\t"
+      "documentation": "\n        <p>Displays all virtual interfaces for an AWS account. Virtual interfaces deleted fewer than 15 minutes before DescribeVirtualInterfaces is called are also returned.  If a connection ID is included then only virtual interfaces associated with this connection will be returned. If a virtual interface ID is included then only a single virtual interface will be returned.</p>\n        <p> A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.</p>\n\t"
     }
   }
 }

@@ -179,6 +179,7 @@ class XmlResponse(Response):
         return data
 
     _handle_timestamp = _handle_string
+    _handle_blob = _handle_string
 
     def _handle_integer(self, elem, shape):
         data = self.get_elem_text(elem)
@@ -324,12 +325,21 @@ class JSONResponse(Response):
             logger.debug('Error loading JSON response body, %r', err)
 
     def get_response_errors(self):
+        # Most JSON services return a __type in error response bodies.
+        # Unfortunately, ElasticTranscoder does not.  It simply returns
+        # a JSON body with a single key, "message".
+        error = None
         if '__type' in self.value:
             error = {'Type': self.value['__type']}
             del self.value['__type']
             if 'message' in self.value:
                 error['Message'] = self.value['message']
                 del self.value['message']
+        elif 'message' in self.value and len(self.value.keys()) == 1:
+            error = {'Type': 'Unspecified',
+                     'Message': self.value['message']}
+            del self.value['message']
+        if error:
             self.value['Errors'] = [error]
 
 

@@ -195,6 +195,8 @@ class RestEndpoint(Endpoint):
             request = AWSRequest(method=operation.http['method'],
                                  url=uri, headers=params['headers'])
         else:
+            if self.service.type == 'rest-json':
+                params['payload'] = json.dumps(params['payload'])
             request = AWSRequest(method=operation.http['method'],
                                  url=uri, headers=params['headers'],
                                  data=params['payload'])

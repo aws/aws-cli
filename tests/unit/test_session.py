@@ -97,6 +97,10 @@ class SessionTest(BaseSessionTest):
         with self.assertRaises(botocore.exceptions.ProfileNotFound):
             session.get_config()
 
+    def test_variable_does_not_exist(self):
+        session = botocore.session.get_session(self.env_vars)
+        self.assertIsNone(session.get_variable('foo/bar'))
+
     def test_profile_does_not_exist_with_default_profile(self):
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()
@@ -192,6 +196,14 @@ class SessionTest(BaseSessionTest):
         self.assertEqual(event, 'service-created')
         self.assertRaises(botocore.exceptions.EventNotFound,
                           self.session.create_event, 'foo-bar')
+
+    @mock.patch('logging.getLogger')
+    def test_logger_name_can_be_passed_in(self, get_logger):
+        self.session.set_debug_logger('botocore.hooks')
+        get_logger.assert_called_with('botocore.hooks')
+
+        self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
+        get_logger.assert_called_with('botocore.service')
 
 
 class TestBuiltinEventHandlers(BaseSessionTest):

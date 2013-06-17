@@ -284,7 +284,9 @@ class TestKeyIterators(unittest.TestCase):
         complete = pages.build_full_result()
         self.assertEqual(complete, ['User1', 'User2', 'User3'])
 
-    def test_build_full_result_with_multiple_result_keys(self):
+
+class TestMultipleResultKeys(unittest.TestCase):
+    def setUp(self):
         self.operation = mock.Mock()
         # This is something we'd see in s3 pagination.
         self.paginate_config = {
@@ -295,6 +297,7 @@ class TestKeyIterators(unittest.TestCase):
         self.operation.pagination = self.paginate_config
         self.paginator = Paginator(self.operation)
 
+    def test_build_full_result_with_multiple_result_keys(self):
         responses = [
             (None, {"Users": ["User1"], "Groups": ["Group1"], "Marker": "m1"}),
             (None, {"Users": ["User2"], "Groups": ["Group2"], "Marker": "m2"}),
@@ -305,6 +308,37 @@ class TestKeyIterators(unittest.TestCase):
         complete = pages.build_full_result()
         self.assertEqual(complete,
                          {"Users": ['User1', 'User2', 'User3'],
+                          "Groups": ['Group1', 'Group2', 'Group3']})
+
+    def test_build_full_result_with_different_length_result_keys(self):
+        responses = [
+            (None, {"Users": ["User1"], "Groups": ["Group1"], "Marker": "m1"}),
+            # Then we stop getting "Users" output, but we get more "Groups"
+            (None, {"Users": [], "Groups": ["Group2"], "Marker": "m2"}),
+            (None, {"Users": [], "Groups": ["Group3"], }),
+        ]
+        self.operation.call.side_effect = responses
+        pages = self.paginator.paginate(None)
+        complete = pages.build_full_result()
+        self.assertEqual(complete,
+                         {"Users": ['User1'],
+                          "Groups": ['Group1', 'Group2', 'Group3']})
+
+
+    def test_build_full_result_with_zero_length_result_key(self):
+        responses = [
+            # In this case the 'Users' key is always empty but we should
+            # have a 'Users' key in the output, it should just have an
+            # empty list for a value.
+            (None, {"Users": [], "Groups": ["Group1"], "Marker": "m1"}),
+            (None, {"Users": [], "Groups": ["Group2"], "Marker": "m2"}),
+            (None, {"Users": [], "Groups": ["Group3"], }),
+        ]
+        self.operation.call.side_effect = responses
+        pages = self.paginator.paginate(None)
+        complete = pages.build_full_result()
+        self.assertEqual(complete,
+                         {"Users": [],
                           "Groups": ['Group1', 'Group2', 'Group3']})
 
 

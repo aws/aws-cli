@@ -70,12 +70,15 @@ class TestS3Operations(BaseEnvVar):
                                      key=self.key_name,
                                      upload_id='upload_id',
                                      multipart_upload=parts)
-        self.assertEqual(
-            params['payload'],
-            ('<CompleteMultipartUpload><Part><ETag>123</ETag>'
-             '<PartNumber>1</PartNumber></Part>'
-             '<Part><ETag>124</ETag><PartNumber>2</PartNumber></Part>'
-             '</CompleteMultipartUpload>'))
+        xml_payload = params['payload']
+        # We should not see the <Parts><Part><...></Part></Parts>
+        # element in the xml_payload.
+        # Directly to Part, skipping Parts.
+        self.assertIn('<CompleteMultipartUpload><Part>', xml_payload)
+        self.assertIn('</Part></CompleteMultipartUpload>', xml_payload)
+        # Explicitly check that <Parts> is not in the payload anywhere.
+        self.assertNotIn('<Parts>', xml_payload)
+        self.assertNotIn('</Parts>', xml_payload)
 
 
 if __name__ == "__main__":

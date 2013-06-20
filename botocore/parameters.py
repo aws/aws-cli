@@ -334,13 +334,15 @@ class ListParameter(Parameter):
             self.members.build_parameter_json(v, built_params[label], None)
 
     def to_xml(self, value, label=None):
-        if not label:
-            label = self.xmlname
-        xml = '<%s>' % label
+        inner_xml = ''
         for item in value:
-            xml += self.members.to_xml(item, self.xmlname)
-        xml += '</%s>' % label
-        return xml
+            inner_xml += self.members.to_xml(item, self.xmlname)
+        if self.flattened:
+            return inner_xml
+        else:
+            if not label:
+                label = self.xmlname
+            return '<%s>' % label  + inner_xml + '</%s>' % label
 
 
 class MapParameter(Parameter):

@@ -20,7 +20,6 @@
 # IN THE SOFTWARE.
 #
 from itertools import tee
-from collections import defaultdict
 try:
     from itertools import zip_longest
 except ImportError:
@@ -146,11 +145,14 @@ class PageIterator(object):
     def build_full_result(self):
         iterators = self.result_key_iters()
         if len(iterators) > 1:
-           response = defaultdict(list)
+           response = {}
            key_names = [i.result_key for i in iterators]
+           for key in key_names:
+               response[key] = []
            for vals in zip_longest(*iterators):
                for k, val in zip(key_names, vals):
-                   response[k].append(val)
+                   if val is not None:
+                       response[k].append(val)
         else:
             response = list(iterators[0])
         return response

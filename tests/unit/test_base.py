@@ -31,11 +31,12 @@ import botocore.exceptions
 import botocore.base
 
 
-class TestConfig(unittest.TestCase):
+class TestConfig(BaseEnvVar):
 
     def setUp(self):
+        super(TestConfig, self).setUp()
         data_path = os.path.join(os.path.dirname(__file__), 'data')
-        os.environ['BOTO_DATA_PATH'] = data_path
+        self.environ['BOTO_DATA_PATH'] = data_path
         self.session = botocore.session.get_session()
 
     def test_data_not_found(self):

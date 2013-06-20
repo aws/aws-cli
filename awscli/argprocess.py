@@ -296,37 +296,44 @@ class ParamShorthand(object):
         return s
 
     def _split_on_commas(self, value):
-        stringio = six.StringIO
-        if '"' not in value and '\\' not in value:
+        if '"' not in value and '\\' not in value and "'" not in value:
             # No quotes or escaping, just use a simple split.
             return value.split(',')
-        elif '"' not in value:
+        elif '"' not in value and "'" not in value:
             # Simple escaping, let the csv module handle it.
-            return list(csv.reader(stringio(value), escapechar='\\'))[0]
+            return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
         else:
             # If there's quotes for the values, we have to handle this
             # ourselves.
-            parts = list(csv.reader(stringio(value), escapechar='\\'))[0]
-            iter_parts = iter(parts)
-            new_parts = []
-            for part in iter_parts:
-                if part.count('"') == 1:
-                    # Need to combine the parts until we encounter an end quote.
-                    current = part
-                    chunks = [current.replace('"', '')]
-                    while True:
-                        try:
-                            current = six.advance_iterator(iter_parts)
-                        except StopIteration:
-                            raise ParamSyntaxError(value)
-                        chunks.append(current.replace('"', ''))
-                        if '"' in current:
-                            break
-                    new_chunk = ','.join(chunks)
-                    new_parts.append(new_chunk)
-                else:
-                    new_parts.append(part)
-            return new_parts
+            return self._split_with_quotes(value)
+
+    def _split_with_quotes(self, value):
+        parts = list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        iter_parts = iter(parts)
+        new_parts = []
+        for part in iter_parts:
+            if part.count('"') == 1:
+                quote_char = '"'
+            elif part.count("'") == 1:
+                quote_char = "'"
+            else:
+                new_parts.append(part)
+                continue
+            # Now that we've found a starting quote char, we
+            # need to combine the parts until we encounter an end quote.
+            current = part
+            chunks = [current.replace(quote_char, '')]
+            while True:
+                try:
+                    current = six.advance_iterator(iter_parts)
+                except StopIteration:
+                    raise ParamSyntaxError(value)
+                chunks.append(current.replace(quote_char, ''))
+                if quote_char in current:
+                    break
+            new_chunk = ','.join(chunks)
+            new_parts.append(new_chunk)
+        return new_parts
 
 
 def unpack_cli_arg(parameter, value):

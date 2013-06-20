@@ -244,10 +244,18 @@ class TestParamShorthand(BaseArgProcessTest):
                      "parameter_value": "foo,bar"}]
         self.assertEqual(returned, expected)
 
-    def test_csv_syntax_quoted(self):
+    def test_csv_syntax_double_quoted(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
         returned = self.simplify(
             p, ['parameter_key=key,parameter_value="foo,bar"'])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_single_quoted(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ["parameter_key=key,parameter_value='foo,bar'"])
         expected = [{"parameter_key": "key",
                      "parameter_value": "foo,bar"}]
         self.assertEqual(returned, expected)
@@ -264,6 +272,9 @@ class TestParamShorthand(BaseArgProcessTest):
         with self.assertRaisesRegexp(ParamError, error_msg):
             returned = self.simplify(
                 p, ['parameter_key=key,parameter_value=""foo,bar"'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value="foo,bar\''])
 
 
 class TestDocGen(BaseArgProcessTest):

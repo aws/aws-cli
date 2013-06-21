@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import BaseEnvVar
 import botocore.session
 
 
-class TestService(unittest.TestCase):
-
-    def setUp(self):
-        self.session = botocore.session.get_session()
+class TestService(BaseEnvVar):
 
     def test_get_endpoint_with_no_region(self):
+        self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
+        self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
+        session = botocore.session.get_session()
         # Test global endpoint service such as iam.
-        service = self.session.get_service('iam')
+        service = session.get_service('iam')
         endpoint = service.get_endpoint()
         self.assertEqual(endpoint.host, 'https://iam.amazonaws.com/')
 

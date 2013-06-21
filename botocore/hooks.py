@@ -226,8 +226,26 @@ class _PrefixTrie(object):
         collected = deque()
         key_parts = key.split('.')
         current = self._root
-        self._get_items(current, key_parts, collected, index=0)
+        self._get_items(current, key_parts, collected, 0)
         return collected
+
+    def _get_items(self, starting_node, key_parts, collected, starting_index):
+        stack = [(starting_node, starting_index)]
+        key_parts_len = len(key_parts)
+        while stack:
+            current_node, index = stack.pop()
+            if current_node.values:
+                seq = reversed(current_node.values)
+                collected.extendleft(seq)
+            if not index == key_parts_len:
+                children = current_node.children
+                directs = children.get(key_parts[index])
+                wildcard = children.get('*')
+                next_index = index + 1
+                if wildcard is not None:
+                    stack.append((wildcard, next_index))
+                if directs is not None:
+                    stack.append((directs, next_index))
 
     def remove_item(self, key, value):
         """Remove an item associated with a key.
@@ -260,25 +278,3 @@ class _PrefixTrie(object):
             else:
                 raise ValueError(
                     "key is not in trie: %s" % '.'.join(key_parts))
-
-    def _get_items(self, current_node, key_parts, collected, index):
-        if current_node is None:
-            return
-        if current_node.values:
-            seq = reversed(current_node.values)
-            collected.extendleft(seq)
-        if not len(key_parts) == index:
-            self._get_items(current_node.children.get(key_parts[index]),
-                            key_parts, collected, index + 1)
-            self._get_items(current_node.children.get('*'),
-                            key_parts, collected, index + 1)
-
-
-class _Node(object):
-    def __init__(self, chunk, values=None):
-        self.chunk = chunk
-        self.children = {}
-        self.values = values
-
-    def __repr__(self):
-        return '_Node(chunk=%s, values=%s)' % (self.chunk, self.values)

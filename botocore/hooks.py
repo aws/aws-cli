@@ -139,22 +139,22 @@ class HierarchicalEmitter(BaseEventHooks):
         responses = []
         # Invoke the event handlers from most specific
         # to least specific, each time stripping off a dot.
-        logger.debug('emit: %s' % event_name)
-        if event_name in self._lookup_cache:
-            handlers_to_call = self._lookup_cache[event_name]
-        else:
-            handlers_to_call = self._handlers_for_event(event_name)
+        handlers_to_call = self._lookup_cache.get(event_name)
+        if handlers_to_call is None:
+            handlers_to_call = self._handlers.prefix_search(event_name)
             self._lookup_cache[event_name] = handlers_to_call
+        elif not handlers_to_call:
+            # Short circuit and return an empty response is we have
+            # no handlers to call.  This is the common case where
+            # for the majority of signals, nothing is listening.
+            return []
         kwargs['event_name'] = event_name
         responses = []
         for handler in handlers_to_call:
-            logger.debug('emit: calling %s' % handler)
+            logger.debug('Event %s: calling handler %s', event_name, handler)
             response = handler(**kwargs)
             responses.append((handler, response))
         return responses
-
-    def _handlers_for_event(self, event):
-        return self._handlers.prefix_search(event)
 
     def _register(self, event_name, handler):
         # Super simple caching strategy for now, if we change the registrations
@@ -193,7 +193,7 @@ class _PrefixTrie(object):
 
     """
     def __init__(self):
-        self._root = _Node(None, None)
+        self._root = {'chunk': None, 'children': {}, 'values': None}
 
     def append_item(self, key, value):
         """Add an item to a key.
@@ -204,16 +204,16 @@ class _PrefixTrie(object):
         key_parts = key.split('.')
         current = self._root
         for part in key_parts:
-            if part not in current.children:
-                new_child = _Node(part)
-                current.children[part] = new_child
+            if part not in current['children']:
+                new_child = {'chunk': part, 'values': None, 'children': {}}
+                current['children'][part] = new_child
                 current = new_child
             else:
-                current = current.children[part]
-        if current.values is None:
-            current.values = [value]
+                current = current['children'][part]
+        if current['values'] is None:
+            current['values'] = [value]
         else:
-            current.values.append(value)
+            current['values'].append(value)
 
     def prefix_search(self, key):
         """Collect all items that are prefixes of key.
@@ -234,11 +234,11 @@ class _PrefixTrie(object):
         key_parts_len = len(key_parts)
         while stack:
             current_node, index = stack.pop()
-            if current_node.values:
-                seq = reversed(current_node.values)
+            if current_node['values']:
+                seq = reversed(current_node['values'])
                 collected.extendleft(seq)
             if not index == key_parts_len:
-                children = current_node.children
+                children = current_node['children']
                 directs = children.get(key_parts[index])
                 wildcard = children.get('*')
                 next_index = index + 1
@@ -264,17 +264,17 @@ class _PrefixTrie(object):
         if current_node is None:
             return
         elif index < len(key_parts):
-            next_node = current_node.children.get(key_parts[index])
+            next_node = current_node['children'].get(key_parts[index])
             if next_node is not None:
                 self._remove_item(next_node, key_parts, value, index + 1)
                 if index == len(key_parts) - 1:
-                    next_node.values.remove(value)
-                if not next_node.children and not next_node.values:
+                    next_node['values'].remove(value)
+                if not next_node['children'] and not next_node['values']:
                     # Then this is a leaf node with no values so
                     # we can just delete this link from the parent node.
                     # This makes subsequent search faster in the case
                     # where a key does not exist.
-                    del current_node.children[key_parts[index]]
+                    del current_node['children'][key_parts[index]]
             else:
                 raise ValueError(
                     "key is not in trie: %s" % '.'.join(key_parts))

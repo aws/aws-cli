@@ -1,20 +1,33 @@
 import os
+import re
 import glob
 import json
 import pprint
+import logging
+import difflib
+
 import botocore.session
 from botocore.response import XmlResponse, JSONResponse
 
+log = logging.getLogger(__name__)
 
 def check_dicts(xmlfile, d1, d2):
     if d1 != d2:
-        print('-' * 40)
-        print(xmlfile)
-        print('-' * 40)
-        pprint.pprint(d1)
-        print('-' * 40)
-        pprint.pprint(d2)
-    assert d1 == d2
+        log.debug('-' * 40)
+        log.debug(xmlfile)
+        log.debug('-' * 40)
+        log.debug(pprint.pformat(d1))
+        log.debug('-' * 40)
+        log.debug(pprint.pformat(d2))
+    if not d1 == d2:
+        # Borrowed from assertDictEqual, though this doesn't
+        # handle the case when unicode literals are used in one
+        # dict but not in the other (and we want to consider them
+        # as being equal).
+        pretty_d1 = pprint.pformat(d1, width=1).splitlines()
+        pretty_d2 = pprint.pformat(d2, width=1).splitlines()
+        diff = ('\n' + '\n'.join(difflib.ndiff(pretty_d1, pretty_d2)))
+        raise AssertionError("Dicts are not equal:\n%s" % diff)
 
 
 def save_jsonfile(jsonfile, r):

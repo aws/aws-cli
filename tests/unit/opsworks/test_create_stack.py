@@ -11,16 +11,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import os
 import awscli.clidriver
 
 
-class TestCreateStack(unittest.TestCase):
+class TestCreateStack(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws opsworks create-stack'
+    prefix = 'opsworks create-stack'
 
     def test_attributes_file(self):
         cmdline = self.prefix
@@ -33,9 +31,7 @@ class TestCreateStack(unittest.TestCase):
                   'Region': 'us-west-2',
                   'DefaultInstanceProfileArn': 'arn-foofoofoo'
                   }
-        params = self.driver.test(cmdline)
-        self.maxDiff = None
-        self.assertEqual(result, params)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

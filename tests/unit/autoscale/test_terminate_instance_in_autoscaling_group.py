@@ -11,33 +11,30 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
+
 import awscli.clidriver
 
 
-class TestTerminateInstanceInAutoscalingGroup(unittest.TestCase):
+class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws autoscaling terminate-instance-in-auto-scaling-group'
+    PREFIX = 'autoscaling terminate-instance-in-auto-scaling-group'
 
     def test_true(self):
-        cmdline = self.prefix
+        cmdline = self.PREFIX
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --should-decrement-desired-capacity'
-        result = {'InstanceId': 'i-12345678',
+        params = {'InstanceId': 'i-12345678',
                   'ShouldDecrementDesiredCapacity': 'true'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, params)
 
     def test_false(self):
-        cmdline = self.prefix
+        cmdline = self.PREFIX
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --no-should-decrement-desired-capacity'
-        result = {'InstanceId': 'i-12345678',
+        params = {'InstanceId': 'i-12345678',
                   'ShouldDecrementDesiredCapacity': 'false'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, params)
 
 
 if __name__ == "__main__":

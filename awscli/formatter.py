@@ -36,7 +36,12 @@ class FullyBufferedFormatter(Formatter):
             response_data = response.build_full_result()
         else:
             response_data = response
-        self._format_response(operation, response_data, stream)
+        try:
+            self._format_response(operation, response_data, stream)
+        finally:
+            # flush is needed to avoid the "close failed in file object
+            # destructor" in python2.x (see http://bugs.python.org/issue11380).
+            stream.flush()
 
 
 class JSONFormatter(FullyBufferedFormatter):

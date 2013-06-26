@@ -11,22 +11,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestDescribeLayers(unittest.TestCase):
+class TestDescribeLayers(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws opsworks describe-layers'
+    prefix = 'opsworks describe-layers'
 
     def test_both_params(self):
         cmdline = self.prefix
         cmdline += ' --stack-id 35959772-cd1e-4082-8346-79096d4179f2'
         result = {'StackId': '35959772-cd1e-4082-8346-79096d4179f2'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

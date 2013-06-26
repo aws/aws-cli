@@ -14,7 +14,6 @@ from tests import unittest
 from argparse import Namespace
 
 import botocore.session
-from bcdoc.mangen import OperationDocument
 import six
 
 from awscli.clidriver import CLIArgument

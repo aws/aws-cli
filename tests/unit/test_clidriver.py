@@ -22,6 +22,7 @@ import httpretty
 import awscli
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
+from awscli.clidriver import BuiltInArgument
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
 
@@ -273,10 +274,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         host = self.last_request_headers()['Host']
         self.assertEqual(host, 'ec2.us-west-2.amazonaws.com')
 
-    def test_event_emission_for_top_level_params(self):
-        def inject_new_param(cli_data, **kwargs):
-            cli_data['options']['--unknown-arg'] = {}
+    def inject_new_param(self, argument_table, **kwargs):
+        argument = BuiltInArgument('unknown-arg', {})
+        argument.add_to_arg_table(argument_table)
 
+    def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()
         # --unknown-foo is an known arg, so we expect a 255 rc.
         rc = driver.main('ec2 describe-instances --unknown-arg foo'.split())
@@ -284,7 +286,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertIn('Unknown options: --unknown-arg', self.stderr.getvalue())
 
         driver.session.register(
-            'building-top-level-params', inject_new_param)
+            'building-top-level-params', self.inject_new_param)
         driver.session.register(
             'top-level-args-parsed',
             lambda parsed_args, **kwargs: args_seen.append(parsed_args))

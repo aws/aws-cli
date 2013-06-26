@@ -23,9 +23,13 @@ from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
 from awscli.paramfile import get_paramfile
 from awscli.plugin import load_plugins
-from awscli.argparser import MainArgParser, ServiceArgParser, OperationArgParser
+from awscli.argparser import MainArgParser
+from awscli.argparser import ServiceArgParser
+from awscli.argparser import OperationArgParser
+from awscli.help import ProviderHelpCommand
+from awscli.help import ServiceHelpCommand
+from awscli.help import OperationHelpCommand
 from awscli.argprocess import unpack_cli_arg
-from awscli.help import get_provider_help, get_service_help, get_operation_help
 
 
 log = logging.getLogger('awscli.clidriver')
@@ -63,6 +67,14 @@ class CLIDriver(object):
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
+        # Not crazy about this but the data in here is needed in
+        # several places (e.g. MainArgParser, ProviderHelp) so
+        # we load it here once.
+        cli_data = self.session.get_data('cli')
+        self.cli_arguments = cli_data.get('options', None)
+        self.cli_description = cli_data.get('description', None)
+        self.cli_synopsis = cli_data.get('synopsis', None)
+        self.cli_usage = cli_data.get('help_usage', None)
 
     def _build_command_table(self):
         """
@@ -84,18 +96,20 @@ class CLIDriver(object):
         services = session.get_available_services()
         for service_name in services:
             commands[service_name] = ServiceCommand(service_name, self.session)
-        # Also add a 'help' command.
-        commands['help'] = ProviderHelpCommand(self.session)
         return commands
 
-    def _create_parser_from_command_table(self, command_table):
-        provider = self.session.get_variable('provider')
-        cli_data = self.session.get_data('cli')
-        self._build_top_level_cli_args(cli_data)
+    def _create_parser_from_command_table(self, command_table,
+                                          argument_table):
+        # Also add a 'help' command.
+        command_table['help'] = ProviderHelpCommand(self.session,
+                                                    command_table,
+                                                    argument_table,
+                                                    self.cli_description,
+                                                    self.cli_synopsis,
+                                                    self.cli_usage)
         parser = MainArgParser(
             command_table, self.session.user_agent(),
-            self.session.get_data(provider + '/_regions'),
-            cli_data)
+            self.cli_description, self.cli_usage, argument_table)
         return parser
 
     def main(self, args=None):
@@ -109,7 +123,9 @@ class CLIDriver(object):
         if args is None:
             args = sys.argv[1:]
         command_table = self._build_command_table()
-        parser = self._create_parser_from_command_table(command_table)
+        argument_table = self._build_argument_table()
+        parser = self._create_parser_from_command_table(command_table,
+                                                        argument_table)
         parsed_args, remaining = parser.parse_known_args(args)
         self._handle_top_level_args(parsed_args)
         try:
@@ -118,7 +134,7 @@ class CLIDriver(object):
             sys.stderr.write(str(e) + '\n')
             return 255
         except Exception as e:
-            log.debug("Exception caugh in main()", exc_info=True)
+            log.debug("Exception caught in main()", exc_info=True)
             log.debug("Exiting with rc 255")
             sys.stderr.write("%s\n" % e)
             return 255
@@ -129,14 +145,10 @@ class CLIDriver(object):
             self.session.set_debug_logger(logger_name='botocore')
             self.session.set_debug_logger(logger_name='awscli')
 
-    def _build_top_level_cli_args(self, cli_data):
-        # This consists of two steps.  First we need to
-        # fill in any reference values in the cli_data
-        # (references to regions or anything else available
-        # in the session).
-        cli_arguments = cli_data['options']
-        for option in cli_arguments:
-            option_params = copy_kwargs(cli_arguments[option])
+    def _build_argument_table(self):
+        argument_table = {}
+        for option in self.cli_arguments:
+            option_params = copy_kwargs(self.cli_arguments[option])
             # Special case the 'choices' param.  Allows choices
             # to reference a variable from the session.
             if 'choices' in option_params:
@@ -150,10 +162,13 @@ class CLIDriver(object):
                     choices_path = choices.format(provider=provider)
                     choices = list(self.session.get_data(choices_path))
                 option_params['choices'] = choices
-                cli_arguments[option] = option_params
+            argument_object = BuiltInArgument(option, option_params)
+            argument_object.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
-        self.session.emit('building-top-level-params', cli_data=cli_data)
+        self.session.emit('building-top-level-params',
+                          argument_table=argument_table)
+        return argument_table
 
 
 class CLICommand(object):
@@ -180,21 +195,6 @@ class CLICommand(object):
         """
         # Subclasses are expected to implement this method.
         pass
-
-
-class ProviderHelpCommand(CLICommand):
-    """Implements top level help command.
-
-    This is what is called when ``aws help`` is run.
-
-    """
-
-    def __init__(self, session):
-        self._session = session
-
-    def __call__(self, args, parsed_globals):
-        if not args:
-            get_provider_help(self._session)
 
 
 class ServiceCommand(CLICommand):
@@ -236,54 +236,11 @@ class ServiceCommand(CLICommand):
                 service_object=service_object)
         # Also add a 'help' command.
         operation_table['help'] = ServiceHelpCommand(
-            session=self._session, service=service_object)
+            session=self._session, service=service_object,
+            command_table=operation_table)
         self._session.emit('building-operation-table.%s' % self._name,
-                           operation_table=operation_table)
+                           command_table=operation_table)
         return operation_table
-
-
-class ServiceHelpCommand(CLICommand):
-    """Implements service level help.
-
-    This is the object invoked whenever a service command
-    help is implemented, e.g. ``aws ec2 help``.
-
-    """
-
-    def __init__(self, session, service):
-        """
-
-        :type session: ``botocore.session.Session``
-        :param session: A botocore session.
-
-        :type service: ``botocore.service.Service``
-        :param service: A botocore service object representing the
-            particular service.
-
-        """
-        self._session = session
-        self._service = service
-
-    def __call__(self, args, parsed_globals):
-        if not args:
-            get_service_help(self._session, self._service)
-
-
-class OperationHelpCommand(CLICommand):
-    """Implements operation level help.
-
-    This is the object invoked whenever help for a service is requested,
-    e.g. ``aws ec2 describe-instances help``.
-
-    """
-
-    def __init__(self, session, service, operation):
-        self._session = session
-        self._service = service
-        self._operation = operation
-
-    def __call__(self, args, parsed_globals):
-        get_operation_help(self._session, self._service, self._operation)
 
 
 class BaseCLIArgument(object):
@@ -293,6 +250,10 @@ class BaseCLIArgument(object):
     arguments.
 
     """
+
+    def __init__(self, name, argument_object):
+        self._name = name
+        self.argument_object = argument_object
 
     def add_to_arg_table(self, argument_table):
         """Add this object to the argument_table.
@@ -307,7 +268,7 @@ class BaseCLIArgument(object):
         """
         pass
 
-    def add_to_parser(self, parser, cli_name):
+    def add_to_parser(self, parser, cli_name=None):
         """Add this object to the parser instance.
 
         This method is called by the associated ``ArgumentParser``
@@ -316,9 +277,6 @@ class BaseCLIArgument(object):
 
         :type parser: ``argparse.ArgumentParser``.
         :param parser: The argument parser associated with the operation.
-
-        :type cli_name: str
-        :param cli_name: The key from the argument table.
 
         """
         pass
@@ -339,6 +297,80 @@ class BaseCLIArgument(object):
 
         """
         pass
+
+    @property
+    def cli_name(self):
+        return '--' + self._name
+
+    @property
+    def py_name(self):
+        return self._name.replace('-', '_')
+
+    @property
+    def name(self):
+        return self._name
+
+class BuiltInArgument(BaseCLIArgument):
+    """
+    Represents a CLI argument that maps to the top-level command.
+    These are global arguments that are not associated with any
+    particular service.
+    """
+
+    def add_to_arg_table(self, argument_table):
+        # This is used by the ServiceOperation so we can add ourselves
+        # to the argument table.  For the normal case, we use our name
+        # as the key, and ourself as the value.  For a more complicated
+        # example, see BooleanArgument.add_to_arg_table
+        argument_table[self._name] = self
+
+    def add_to_parser(self, parser, cli_name=None):
+        """
+
+        See the ``BaseCLIArgument.add_to_parser`` docs for more information.
+
+        """
+        if not cli_name:
+            cli_name = self.cli_name
+        parser.add_argument(cli_name, **self.argument_object)
+
+    def required(self):
+        required = False
+        if 'required' in self.argument_object:
+            required = self.argument_object['required']
+        return required
+
+    @property
+    def documentation(self):
+        documentation = ''
+        if 'help' in self.argument_object:
+            documentation = self.argument_object['help']
+        return documentation
+
+    @property
+    def cli_type_name(self):
+        cli_type_name = 'string'
+        if 'action' in self.argument_object:
+            if self.argument_object['action'] in ['store_true',
+                                                  'store_false']:
+                cli_type_name = 'boolean'
+        return cli_type_name
+
+    @property
+    def cli_type(self):
+        cli_type = str
+        if 'action' in self.argument_object:
+            if self.argument_object['action'] in ['store_true',
+                                                  'store_false']:
+                cli_type = bool
+        return cli_type
+
+    @property
+    def choices(self):
+        choices = []
+        if 'choices' in self.argument_object:
+            choices = self.argument_object['choices']
+        return choices
 
 
 class CLIArgument(BaseCLIArgument):
@@ -376,13 +408,8 @@ class CLIArgument(BaseCLIArgument):
             this object.
 
         """
-        self._name = name
-        self._argument_object = argument_object
-        self._operation_object = operation_object
-
-    @property
-    def py_name(self):
-        return self._name.replace('-', '_')
+        super(CLIArgument, self).__init__(name, argument_object)
+        self.operation_object = operation_object
 
     @property
     def name(self):
@@ -390,23 +417,31 @@ class CLIArgument(BaseCLIArgument):
         # object, or at least into a distinct config property
         # or something.
         # The [2:] is to strip off the leading '--' part (--foo -> foo).
-        return self._argument_object.cli_name[2:]
+        return self._name
+
+    @property
+    def py_name(self):
+        return self._name.replace('-', '_')
 
     @property
     def required(self):
-        return self._argument_object.required
+        return self.argument_object.required
 
     @required.setter
     def required(self, value):
-        self._argument_object.required = value
+        self.argument_object.required = value
 
     @property
     def documentation(self):
-        return self._argument_object.documentation
+        return self.argument_object.documentation
+
+    @property
+    def cli_type_name(self):
+        return self.argument_object.type
 
     @property
     def cli_type(self):
-        return self.TYPE_MAP.get(self._argument_object.type, str)
+        return self.TYPE_MAP.get(self.argument_object.type, str)
 
     def add_to_arg_table(self, argument_table):
         # This is used by the ServiceOperation so we can add ourselves
@@ -415,7 +450,7 @@ class CLIArgument(BaseCLIArgument):
         # example, see BooleanArgument.add_to_arg_table
         argument_table[self.name] = self
 
-    def add_to_parser(self, parser, cli_name):
+    def add_to_parser(self, parser, cli_name=None):
         """
 
         See the ``BaseCLIArgument.add_to_parser`` docs for more information.
@@ -423,7 +458,8 @@ class CLIArgument(BaseCLIArgument):
         """
         # We need to add ourselve to the argparser instance.  For the normal
         # case we just need to make a single add_argument call.
-        cli_name = '--%s' % cli_name
+        if not cli_name:
+            cli_name = self.cli_name
         parser.add_argument(
             cli_name,
             help=self.documentation,
@@ -449,14 +485,14 @@ class CLIArgument(BaseCLIArgument):
             parameters[self.py_name] = self._unpack_argument(value)
 
     def _unpack_argument(self, value):
-        if not hasattr(self._argument_object, 'no_paramfile'):
+        if not hasattr(self.argument_object, 'no_paramfile'):
             value = self._handle_param_file(value)
-        service_name = self._operation_object.service.endpoint_prefix
-        operation_name = xform_name(self._operation_object.name, '-')
+        service_name = self.operation_object.service.endpoint_prefix
+        operation_name = xform_name(self.operation_object.name, '-')
         responses = self._emit('process-cli-arg.%s.%s' % (
-            service_name, operation_name), param=self._argument_object,
+            service_name, operation_name), param=self.argument_object,
             value=value,
-            operation=self._operation_object)
+            operation=self.operation_object)
         override = first_non_none_response(responses)
         if override is not None:
             # A plugin supplied an alternate conversion,
@@ -464,10 +500,10 @@ class CLIArgument(BaseCLIArgument):
             return override
         else:
             # Fall back to the default arg processing.
-            return unpack_cli_arg(self._argument_object, value)
+            return unpack_cli_arg(self.argument_object, value)
 
     def _handle_param_file(self, value):
-        session = self._operation_object.service.session
+        session = self.operation_object.service.session
         if isinstance(value, list) and len(value) == 1:
             temp = value[0]
         else:
@@ -478,13 +514,15 @@ class CLIArgument(BaseCLIArgument):
         return value
 
     def _emit(self, name, **kwargs):
-        session = self._operation_object.service.session
+        session = self.operation_object.service.session
         return session.emit(name, **kwargs)
 
 
 class ListArgument(CLIArgument):
-    def add_to_parser(self, parser, cli_name):
-        cli_name = '--%s' % cli_name
+    
+    def add_to_parser(self, parser, cli_name=None):
+        if not cli_name:
+            cli_name = self.cli_name
         parser.add_argument(cli_name,
                             nargs='*',
                             type=self.cli_type,
@@ -533,15 +571,17 @@ class BooleanArgument(CLIArgument):
         if self.required:
             negative_name = 'no-%s' % self.name
             argument_table[negative_name] = self
+            log.debug(argument_table)
 
-    def add_to_parser(self, parser, cli_name):
+    def add_to_parser(self, parser, cli_name=None):
         # If we're a required parameter we need to add two options
         # to the argparse.ArgumentParser instance, one for --foo, one for
         # --no-foo.  We handle this by knowing that we're going to be
         # called twice (we added two values to the argument table in
         # add_to_arg_table).  The first time through we create a
         # mutex group, the second time through we add to this mutex group.
-        cli_name = '--%s' % cli_name
+        if not cli_name:
+            cli_name = self.cli_name
         if self._is_negative_version(cli_name):
             action = 'store_false'
         else:
@@ -552,9 +592,10 @@ class BooleanArgument(CLIArgument):
                 # create the mutex group.
                 self._mutex_group = parser.add_mutually_exclusive_group(
                     required=True)
+            log.debug('cli_name: %s' % cli_name)
             self._mutex_group.add_argument(
                 cli_name, help=self.documentation,
-                dest=self.name, action=action)
+                dest=cli_name[2:], action=action)
         else:
             # If we're not a required parameter, we assume we default to False.
             # In this case we only add a single boolean parameter, '--foo'.
@@ -564,6 +605,7 @@ class BooleanArgument(CLIArgument):
                                 help=self.documentation,
                                 action=action,
                                 dest=self.name)
+
 
     def _is_negative_version(self, cli_name):
         return cli_name.startswith('--no-')
@@ -585,6 +627,7 @@ class ServiceOperation(object):
 
     def __init__(self, name, operation_model, operation_caller,
                  service_object):
+        log.debug('creating ServiceOperation: %s' % name)
         self._name = name
         self._operation_model = operation_model
         self._operation_caller = operation_caller
@@ -602,7 +645,7 @@ class ServiceOperation(object):
         if parsed_args.help == 'help':
             op_help = OperationHelpCommand(
                 self._service_object.session, self._service_object,
-                operation_object)
+                operation_object, arg_table=arg_table)
             op_help(parsed_args, parsed_globals)
         elif parsed_args.help:
             remaining.append(parsed_args.help)

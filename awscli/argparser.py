@@ -35,21 +35,15 @@ class CLIArgParser(argparse.ArgumentParser):
 class MainArgParser(CLIArgParser):
     Formatter = argparse.RawTextHelpFormatter
 
-    Description = (
-        "The AWS Command Line Interface is a unified tool that provides "
-        "a consistent interface for interacting with all parts of AWS.")
-    Usage = ("aws [options] <service_name> <operation> [parameters]")
-
-    def __init__(self, command_table, version_string, available_regions,
-                 cli_data):
+    def __init__(self, command_table, version_string,
+                 description, usage, argument_table):
         super(MainArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
             conflict_handler='resolve',
-            usage=self.Usage,
-            description=self.Description)
-        self._build(command_table, version_string, available_regions,
-                    cli_data)
+            description=description,
+            usage=usage)
+        self._build(command_table, version_string, argument_table)
 
     def _create_choice_help(self, choices):
         help_str = ''
@@ -57,16 +51,10 @@ class MainArgParser(CLIArgParser):
             help_str += '* %s\n' % choice
         return help_str
 
-    def _build(self, command_table, version_string, available_regions,
-               cli_data):
-        for argument, argparse_params in cli_data['options'].items():
-            if not argument.startswith('--'):
-                # This can eventually be removed.  The 'service_name'
-                # key in the cli data options is deprecated in favor
-                # of the command table.  We can just remove 'service_name'
-                # from cli.json.
-                continue
-            self.add_argument(argument, **argparse_params)
+    def _build(self, command_table, version_string, argument_table):
+        for argument_name in argument_table:
+            argument = argument_table[argument_name]
+            argument.add_to_parser(self)
         self.add_argument('--version', action="version",
                           version=version_string,
                           help='Display the version of this tool')
@@ -116,9 +104,9 @@ class OperationArgParser(CLIArgParser):
         self._build(argument_table, name)
 
     def _build(self, argument_table, name):
-        for param in argument_table:
-            argument = argument_table[param]
-            argument.add_to_parser(self, param)
+        for arg_name in argument_table:
+            argument = argument_table[arg_name]
+            argument.add_to_parser(self, '--' + arg_name)
 
     def parse_known_args(self, args):
         if len(args) == 1 and args[0] == 'help':

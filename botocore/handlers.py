@@ -102,10 +102,14 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
     logger.debug('fix_s3_host: uri=%s' % request.url)
     parts = urlsplit(request.url)
     auth.auth_path = parts.path
-    # if auth.auth_path[-1] != '/':
-    #     auth.auth_path += '/'
     path_parts = parts.path.split('/')
+    logger.debug('path_parts: %s' % path_parts)
     if len(path_parts) > 1:
+        # If the operation is on a bucket, the auth_path must be
+        # terminated with a '/' character.
+        if len(path_parts) == 2:
+            if auth.auth_path[-1] != '/':
+                auth.auth_path += '/'
         bucket_name = path_parts[1]
         if check_dns_name(bucket_name):
             path_parts.remove(bucket_name)

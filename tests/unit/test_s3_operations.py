@@ -22,23 +22,24 @@
 # IN THE SOFTWARE.
 #
 import os
-import unittest
+from tests import BaseEnvVar
 import botocore.session
 
 
-class TestS3Operations(unittest.TestCase):
+class TestS3Operations(BaseEnvVar):
 
     def setUp(self):
-        os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
-        os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
+        super(TestS3Operations, self).setUp()
+        self.environ['AWS_ACCESS_KEY_ID'] = 'foo'
+        self.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
         self.session = botocore.session.get_session()
         self.s3 = self.session.get_service('s3')
+        self.endpoint = self.s3.get_endpoint('us-east-1')
         self.bucket_name = 'foo'
         self.key_name = 'bar'
 
     def test_put_object(self):
         op = self.s3.get_operation('PutObject')
-        ep = self.s3.get_endpoint('us-east-1')
         file_path = os.path.join(os.path.dirname(__file__),
                                  'put_object_data')
         fp = open(file_path, 'rb')
@@ -56,6 +57,28 @@ class TestS3Operations(unittest.TestCase):
                   'uri_params': {'Bucket': 'foo', 'Key': 'bar'}}
         self.maxDiff = None
         self.assertEqual(params, result)
+
+    def test_complete_multipart_upload(self):
+        op = self.s3.get_operation('CompleteMultipartUpload')
+        parts = {
+            'parts': [
+                {'e_tag': '123', 'part_number': 1},
+                {'e_tag': '124', 'part_number': 2},
+            ]
+        }
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     key=self.key_name,
+                                     upload_id='upload_id',
+                                     multipart_upload=parts)
+        xml_payload = params['payload']
+        # We should not see the <Parts><Part><...></Part></Parts>
+        # element in the xml_payload.
+        # Directly to Part, skipping Parts.
+        self.assertIn('<CompleteMultipartUpload><Part>', xml_payload)
+        self.assertIn('</Part></CompleteMultipartUpload>', xml_payload)
+        # Explicitly check that <Parts> is not in the payload anywhere.
+        self.assertNotIn('<Parts>', xml_payload)
+        self.assertNotIn('</Parts>', xml_payload)
 
 
 if __name__ == "__main__":

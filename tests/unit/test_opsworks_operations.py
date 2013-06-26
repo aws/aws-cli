@@ -21,9 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
+from tests import BaseEnvVar
 import botocore.session
-import os
 
 attributes = {
     "MysqlRootPasswordUbiquitous": None,
@@ -47,10 +46,11 @@ attributes = {
     "HaproxyStatsUser": None
 }
 
-class TestOpsworksOperations(unittest.TestCase):
+class TestOpsworksOperations(BaseEnvVar):
 
     def setUp(self):
-        os.environ['BOTO_DATA_PATH'] = '~/.aws_data'
+        super(TestOpsworksOperations, self).setUp()
+        self.environ['BOTO_DATA_PATH'] = '~/.aws_data'
         self.session = botocore.session.get_session()
         self.opsworks = self.session.get_service('opsworks')
         self.stack_id = '35959772-cd1e-4082-8346-79096d4179f2'

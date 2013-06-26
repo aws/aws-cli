@@ -29,10 +29,15 @@ import json
 import hashlib
 import logging
 import re
+
 import six
-from .compat import urlsplit, urlunsplit, unquote
+
+from botocore.compat import urlsplit, urlunsplit, unquote
+from botocore import retryhandler
+
 
 logger = logging.getLogger(__name__)
+LabelRE = re.compile('[a-z0-9][a-z0-9\-]*[a-z0-9]')
 
 
 def decode_console_output(event_name, shape, value, **kwargs):
@@ -64,9 +69,6 @@ def calculate_md5(event_name, params, **kwargs):
         md5 = hashlib.md5()
         md5.update(params['payload'])
         params['headers']['Content-MD5'] = base64.b64encode(md5.digest())
-
-
-LabelRE = re.compile('[a-z0-9][a-z0-9\-]*[a-z0-9]')
 
 
 def check_dns_name(bucket_name):
@@ -130,6 +132,17 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
             request.url = new_uri
             logger.debug('fix_s3_host: new uri=%s' % new_uri)
 
+
+def register_retries_for_service(service, **kwargs):
+    if not hasattr(service, 'retries'):
+        return
+    config = service.retries
+    session = service.session
+    handler = retryhandler.create_retry_handler(config)
+    session.register('needs-retry.%s' % service.endpoint_prefix,
+                     handler)
+
+
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
 # automatically registered with that Session.
@@ -141,5 +154,6 @@ BUILTIN_HANDLERS = [
     ('after-parsed.cloudformation.*.TemplateBody.TemplateBody',
      decode_jsondoc),
     ('before-call.s3.PutBucketTagging', calculate_md5),
-    ('before-auth.s3', fix_s3_host)
+    ('before-auth.s3', fix_s3_host),
+    ('service-created', register_retries_for_service),
 ]

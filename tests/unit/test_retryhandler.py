@@ -25,48 +25,178 @@ from tests import unittest
 
 import mock
 
-from botocore.retryhandler import RetryHandler, delay_exponential
+from botocore import retryhandler
+
+HTTP_500_RESPONSE = mock.Mock()
+HTTP_500_RESPONSE.status_code = 500
+
+HTTP_400_RESPONSE = mock.Mock()
+HTTP_400_RESPONSE.status_code = 400
+
+HTTP_200_RESPONSE = mock.Mock()
+HTTP_200_RESPONSE.status_code = 200
 
 
-class RetryHandlerTest(unittest.TestCase):
+class TestRetryCheckers(unittest.TestCase):
+    def assert_should_be_retried(self, response, attempt_number=1):
+        self.assertTrue(self.checker(
+            response=response, attempt_number=attempt_number))
 
-    @mock.patch('time.sleep')
-    def test_multiple_attempts(self, sleep_mock):
+    def assert_should_not_be_retried(self, response, attempt_number=1):
+        self.assertFalse(self.checker(
+            response=response, attempt_number=attempt_number))
 
-        def retryable(a=None, b=None, c=None):
-            return 0
+    def test_status_code_checker(self):
+        self.checker = retryhandler.HTTPStatusCodeChecker(500)
+        self.assert_should_be_retried(response=(HTTP_500_RESPONSE, {}))
 
-        def statusfn(attempt, return_value):
-            if attempt < 3:
-                delay_exponential(attempt)
-                return True
-            return False
+    def test_max_attempts(self):
+        self.checker = retryhandler.MaxAttemptsDecorator(
+            retryhandler.HTTPStatusCodeChecker(500), max_attempts=3)
 
-        rh = RetryHandler(retryable, statusfn)
-        rv = rh(a=1, b=2)
-        self.assertEqual(rv, 0)
-        self.assertEqual(rh.attempts, 3)
+        # Retry up to three times.
+        self.assert_should_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=1)
+        self.assert_should_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=2)
+        # On the third failed response, we've reached the
+        # max attempts so we should return False.
+        self.assert_should_not_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=3)
 
-    @mock.patch('time.sleep')
-    def test_return_value_status(self, sleep_mock):
-        n = 0
+    def test_max_attempts_successful(self):
+        self.checker = retryhandler.MaxAttemptsDecorator(
+            retryhandler.HTTPStatusCodeChecker(500), max_attempts=3)
 
-        def retryable(a=None):
-            if a['n'] < 4:
-                a['n'] += 1
-                return 0
-            return 1
+        self.assert_should_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=1)
+        # The second retry is successful.
+        self.assert_should_not_be_retried(
+            (HTTP_200_RESPONSE, {}), attempt_number=2)
 
-        def statusfn(attempt, return_value):
-            if return_value != 1:
-                delay_exponential(attempt)
-                return True
-            return False
+        # But now we can reuse this object.
+        self.assert_should_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=1)
+        self.assert_should_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=2)
+        self.assert_should_not_be_retried(
+            (HTTP_500_RESPONSE, {}), attempt_number=3)
 
-        rh = RetryHandler(retryable, statusfn)
-        rv = rh(a={'n': 1})
-        self.assertEqual(rv, 1)
-        self.assertEqual(rh.attempts, 4)
+    def test_error_code_checker(self):
+        self.checker = retryhandler.ServiceErrorCodeChecker(
+            status_code=400, error_code='Throttled')
+        response = (HTTP_400_RESPONSE,
+                    {'Errors': [{'Code': 'Throttled'}]})
+        self.assert_should_be_retried(response)
+
+    def test_error_code_checker_does_not_match(self):
+        self.checker = retryhandler.ServiceErrorCodeChecker(
+            status_code=400, error_code='Throttled')
+        response = (HTTP_400_RESPONSE,
+                    {'Errors': [{'Code': 'NotThrottled'}]})
+        self.assert_should_not_be_retried(response)
+
+    def test_multi_checker(self):
+        checker = retryhandler.ServiceErrorCodeChecker(
+            status_code=400, error_code='Throttled')
+        checker2 = retryhandler.HTTPStatusCodeChecker(500)
+        self.checker = retryhandler.MultiChecker([checker, checker2])
+        self.assert_should_be_retried((HTTP_500_RESPONSE, {}))
+        self.assert_should_be_retried(
+            response=(HTTP_400_RESPONSE, {'Errors': [{'Code': 'Throttled'}]}))
+        self.assert_should_not_be_retried(
+            response=(HTTP_200_RESPONSE, {}))
+
+
+class TestCreateRetryConfiguration(unittest.TestCase):
+    def setUp(self):
+        self.retry_config = {
+            '__default__': {
+                'max_attempts': 5,
+                'delay': {
+                    'type': 'exponential',
+                    'base': 1,
+                    'growth_factor': 2,
+                },
+                'policies': {
+                    'throttling': {
+                        'applies_when': {
+                            'response': {
+                                'service_error_code': 'Throttling',
+                                'http_status_code': 400,
+                            }
+                        }
+                    }
+                }
+            },
+            'OperationFoo': {
+                'policies': {
+                    'crc32check': {
+                        'applies_when': {
+                            'response': {
+                                'crc32body': 'x-amz-crc32',
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_create_retry_single_checker_service_level(self):
+        checker = retryhandler.create_checker_from_retry_config(
+            self.retry_config, operation_name=None)
+        self.assertIsInstance(checker, retryhandler.MaxAttemptsDecorator)
+        # We're reaching into internal fields here, but only to check
+        # that the object is created properly.
+        self.assertEqual(checker._max_attempts, 5)
+        self.assertIsInstance(checker._checker,
+                              retryhandler.ServiceErrorCodeChecker)
+        self.assertEqual(checker._checker._error_code, 'Throttling')
+        self.assertEqual(checker._checker._status_code, 400)
+
+    def test_create_retry_for_operation(self):
+        checker = retryhandler.create_checker_from_retry_config(
+            self.retry_config, operation_name='OperationFoo')
+        self.assertIsInstance(checker, retryhandler.MaxAttemptsDecorator)
+        self.assertEqual(checker._max_attempts, 5)
+        self.assertIsInstance(checker._checker,
+                              retryhandler.MultiChecker)
+
+    def test_create_retry_handler_with_no_operation(self):
+        handler = retryhandler.create_retry_handler(
+            self.retry_config, operation_name=None)
+        self.assertIsInstance(handler, retryhandler.RetryHandler)
+        # No good way to test for the delay function as the action
+        # other than to just invoke it.
+        self.assertEqual(handler._action(attempts=2), 2)
+        self.assertEqual(handler._action(attempts=3), 4)
+
+
+class TestRetryHandler(unittest.TestCase):
+    def test_action_tied_to_policy(self):
+        # When a retry rule matches we should return the
+        # amount of time to sleep, otherwise we should return None.
+        delay_function = retryhandler.create_exponential_delay_function( 1, 2)
+        checker = retryhandler.HTTPStatusCodeChecker(500)
+        handler = retryhandler.RetryHandler(checker, delay_function)
+        response = (HTTP_500_RESPONSE, {})
+
+        self.assertEqual(
+            handler(response=response, attempts=1), 1)
+        self.assertEqual(
+            handler(response=response, attempts=2), 2)
+        self.assertEqual(
+            handler(response=response, attempts=3), 4)
+        self.assertEqual(
+            handler(response=response, attempts=4), 8)
+
+    def test_none_response_when_no_matches(self):
+        delay_function = retryhandler.create_exponential_delay_function( 1, 2)
+        checker = retryhandler.HTTPStatusCodeChecker(500)
+        handler = retryhandler.RetryHandler(checker, delay_function)
+        response = (HTTP_200_RESPONSE, {})
+
+        self.assertIsNone(handler(response=response, attempts=1))
 
 
 if __name__ == "__main__":

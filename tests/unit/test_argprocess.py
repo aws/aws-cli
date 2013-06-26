@@ -57,12 +57,17 @@ class TestArgShapeDetection(BaseArgProcessTest):
     def test_detect_structure_of_scalars(self):
         self.assert_shape_type(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration',
-            'structure(scalar)')
+            'structure(scalars)')
 
     def test_list_structure_scalars(self):
         self.assert_shape_type(
             'elb.RegisterInstancesWithLoadBalancer.Instances',
             'list-structure(scalar)')
+
+    def test_list_structure_scalars(self):
+        self.assert_shape_type(
+            'elb.CreateLoadBalancer.Listeners',
+            'list-structure(scalars)')
 
     def test_list_structure_of_list_and_strings(self):
         self.assert_shape_type(
@@ -90,7 +95,9 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_simplify_map_scalar(self):
         p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
         returned = self.simplify(p, 'VisibilityTimeout=15')
+        json_version = unpack_cli_arg(p, '{"VisibilityTimeout": "15"}')
         self.assertEqual(returned, {'VisibilityTimeout': '15'})
+        self.assertEqual(returned, json_version)
 
     def test_list_structure_scalars(self):
         p = self.get_param_object(
@@ -122,6 +129,48 @@ class TestParamShorthand(BaseArgProcessTest):
             p, ["name = instance-id, values = i-1,i-2",
                 "name = architecture, values = i386"])
         self.assertEqual(returned2, expected)
+
+    def test_list_structure_list_multiple_scalar(self):
+        p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
+        returned = self.simplify(
+            p, ['name=foo,format=hslv3,output_keys=iphone1,iphone2'])
+        self.assertEqual(returned, [{'output_keys': ['iphone1', 'iphone2'],
+                                     'name': 'foo', 'format': 'hslv3'}])
+
+    def test_list_structure_scalars(self):
+        p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
+        expected = [
+            {"protocol": "protocol1",
+             "load_balancer_port": 1,
+             "instance_protocol": "instance_protocol1",
+             "instance_port": 2,
+             "ssl_certificate_id": "ssl_certificate_id1"},
+            {"protocol": "protocol2",
+             "load_balancer_port": 3,
+             "instance_protocol": "instance_protocol2",
+             "instance_port": 4,
+             "ssl_certificate_id": "ssl_certificate_id2"},
+        ]
+        returned = unpack_cli_arg(
+            p, ['{"protocol": "protocol1", "load_balancer_port": 1, '
+                '"instance_protocol": "instance_protocol1", '
+                '"instance_port": 2, "ssl_certificate_id": '
+                '"ssl_certificate_id1"}',
+                '{"protocol": "protocol2", "load_balancer_port": 3, '
+                '"instance_protocol": "instance_protocol2", '
+                '"instance_port": 4, "ssl_certificate_id": '
+                '"ssl_certificate_id2"}',
+            ])
+        self.assertEqual(returned, expected)
+        simplified = self.simplify(p, [
+            'protocol=protocol1,load_balancer_port=1,'
+            'instance_protocol=instance_protocol1,'
+            'instance_port=2,ssl_certificate_id=ssl_certificate_id1',
+            'protocol=protocol2,load_balancer_port=3,'
+            'instance_protocol=instance_protocol2,'
+            'instance_port=4,ssl_certificate_id=ssl_certificate_id2'
+        ])
+        self.assertEqual(simplified, expected)
 
     def test_error_messages_for_structure_scalar(self):
         p = self.get_param_object(
@@ -182,7 +231,7 @@ class TestDocGen(BaseArgProcessTest):
         # Title that says it's the shorthand syntax.
         self.assertIn('Shorthand Syntax', rendered)
         # sample syntax
-        self.assertIn('key_name=value', rendered)
+        self.assertIn('key_name=string', rendered)
         # valid key names
         self.assertIn('VisibilityTimeout', rendered)
 
@@ -199,6 +248,28 @@ class TestDocGen(BaseArgProcessTest):
         self.assertIn('Shorthand Syntax', rendered)
         # sample syntax
         self.assertIn('--instances instance_id1', rendered)
+
+    def test_gen_list_structure_of_scalars_docs(self):
+        p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
+        op_doc = OperationDocument(self.session, p.operation)
+        self.simplify.add_docs(op_doc, p)
+        fp = six.StringIO()
+        op_doc.render(fp=fp)
+        rendered = fp.getvalue()
+        self.assertIn('Shorthand Syntax', rendered)
+        self.assertIn('--listeners', rendered)
+        self.assertIn('protocol=string', rendered)
+
+    def test_gen_list_structure_multiple_scalar_docs(self):
+        p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
+        op_doc = OperationDocument(self.session, p.operation)
+        self.simplify.add_docs(op_doc, p)
+        fp = six.StringIO()
+        op_doc.render(fp=fp)
+        rendered = fp.getvalue()
+        self.assertIn('Shorthand Syntax', rendered)
+        # Check for syntax for a list type.
+        self.assertIn('string1,string2', rendered)
 
 
 if __name__ == '__main__':

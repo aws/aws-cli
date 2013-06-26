@@ -56,12 +56,3 @@ class TestHelpPager(unittest.TestCase):
         self.assertEqual(get_pager(), 'foobar')
 
 
-class TestGetProviderHelp(unittest.TestCase):
-    @mock.patch('awscli.help.render_docs')
-    def test_help_contents_is_bytes(self, render_docs):
-        driver = CLIDriver()
-        get_provider_help(driver.session)
-        self.assertTrue(render_docs.called)
-        contents = render_docs.call_args[0][0]
-        self.assertIsInstance(contents, bytes)
-

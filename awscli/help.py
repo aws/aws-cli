@@ -16,6 +16,8 @@ import platform
 from subprocess import Popen, PIPE
 import six
 from awscli import rstgen
+from bcdoc.textwriter import TextWriter
+from docutils.core import publish_string
 
 
 PAGER = 'more'
@@ -45,15 +47,17 @@ def _render_docs_posix(rst_contents):
 
 
 def _render_docs_windows(rst_contents):
-    sys.stdout.write(rst_contents)
+    text_output = publish_string(rst_contents,
+                                 writer=TextWriter())
+    sys.stdout.write(text_output.decode('utf-8'))
     sys.exit(1)
 
 
 def render_docs(rst_contents):
     if platform.system() == 'Windows':
-        _render_docs_windows(rst_contents)
+        _render_docs_windows(rst_contents.getvalue())
     else:
-        _render_docs_posix(rst_contents)
+        _render_docs_posix(rst_contents.getvalue().encode('utf-8'))
 
 
 def get_provider_help(session):
@@ -62,20 +66,16 @@ def get_provider_help(session):
     rst_contents = six.StringIO()
     rstgen.gen_man(session, provider=provider, cli_data=cli_data,
                    fp=rst_contents)
-    render_docs(_encode_contents(rst_contents))
+    render_docs(rst_contents)
 
 
 def get_service_help(session, service):
     rst_contents = six.StringIO()
     rstgen.gen_man(session, service=service, fp=rst_contents)
-    render_docs(_encode_contents(rst_contents))
+    render_docs(rst_contents)
 
 
 def get_operation_help(session, service, operation):
     rst_contents = six.StringIO()
     rstgen.gen_man(session, operation=operation, fp=rst_contents)
-    render_docs(_encode_contents(rst_contents))
-
-
-def _encode_contents(contents):
-    return contents.getvalue().encode('utf-8')
+    render_docs(rst_contents)

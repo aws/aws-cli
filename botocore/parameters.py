@@ -44,6 +44,7 @@ class Parameter(BotoCoreObject):
         self.max = None
         self.payload = False
         self.streaming = False
+        self.example_fn = None
         BotoCoreObject.__init__(self, **kwargs)
         self.cli_name = '--' + self.cli_name
         self.handle_subtypes()

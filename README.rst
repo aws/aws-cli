@@ -177,7 +177,7 @@ To include it in your config file::
     [default]
     aws_access_key_id=<default access key>
     aws_secret_access_key=<default secret key>
-    region=us-west-1  # This will be used as the defaul
+    region=us-west-1  # This will be used as the default
 
 Similarly, the ``profile`` variable can be used to specify which profile to use
 if one is not explicitly specified on the command line via the
@@ -249,7 +249,7 @@ the file ip_perms.json::
 
 Then, we could make the same call as above like this::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions file:ip_perms.json
+    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions file://ip_perms.json
 
 The ``file:`` prefix on the parameter value signals that the parameter value
 is actually a reference to a file that contains the actual parameter value.

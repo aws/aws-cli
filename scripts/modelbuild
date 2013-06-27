@@ -18,6 +18,8 @@ def add_defaults_args(args):
     directory = os.path.dirname(os.path.abspath(args.modelfile))
     if args.regions_file is None:
         args.regions_file = os.path.join(directory, '_regions.json')
+    if args.retry_file is None:
+        args.retry_file = os.path.join(directory, '_retry.json')
     if args.enhancements_file is None:
         args.enhancements_file = args.modelfile.replace('.json', '.extra.json')
 
@@ -30,6 +32,7 @@ def main():
     # Normally don't need to specify these, they'll default to the right
     # values.
     parser.add_argument('-r', '--regions-file', help="The filename of the region file.")
+    parser.add_argument('--retry-file', help="The filename of the retry config file.")
     parser.add_argument('-e', '--enhancements-file', help="The filename of the region file.")
     args = parser.parse_args()
     add_defaults_args(args)

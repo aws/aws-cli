@@ -511,5 +511,70 @@ class TestDictMerg(unittest.TestCase):
         self.assertEqual(first['three']['foo']['bar'], 'baz')
 
 
+class TestBuildRetryConfig(unittest.TestCase):
+    def setUp(self):
+        self.retry = {
+            "definitions": {
+                "def_name": {
+                    "from": {"definition": "file"}
+                }
+            },
+            "retry": {
+                "__default__": {
+                    "max_attempts": 5,
+                    "delay": "global_delay",
+                    "policies": {
+                        "global_one": "global",
+                        "override_me": "global",
+                    }
+                },
+                "sts": {
+                    "__default__": {
+                        "delay": "service_specific_delay",
+                        "policies": {
+                            "service_one": "service",
+                            "override_me": "service",
+                        }
+                    },
+                    "AssumeRole": {
+                        "policies": {
+                            "name": "policy",
+                            "other": {"$ref": "def_name"}
+                        }
+                    }
+                }
+            }
+        }
+
+    def test_inject_retry_config(self):
+        model = ModelFiles(SERVICES, {}, self.retry, {})
+        new_model = translate(model)
+        self.assertIn('retry', new_model)
+        retry = new_model['retry']
+        self.assertIn('__default__', retry)
+        self.assertEqual(
+            retry['__default__'], {
+                "max_attempts": 5,
+                "delay": "service_specific_delay",
+                "policies": {
+                    "global_one": "global",
+                    "override_me": "service",
+                    "service_one": "service",
+                }
+            }
+        )
+        # Policies should be merged.
+        operation_config = retry['AssumeRole']
+        self.assertEqual(operation_config['policies']['name'], 'policy')
+
+    def test_resolve_reference(self):
+        model = ModelFiles(SERVICES, {}, self.retry, {})
+        new_model = translate(model)
+        operation_config = new_model['retry']['AssumeRole']
+        # And we should resolve references.
+        self.assertEqual(operation_config['policies']['other'],
+                         {"from": {"definition": "file"}})
+
+
 if __name__ == '__main__':
     unittest.main()

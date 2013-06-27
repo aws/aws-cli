@@ -79,9 +79,19 @@ def check_dns_name(bucket_name):
     if n < 3 or n > 63:
         # Wrong length
         return False
+    labels = bucket_name.split('.')
+    if len(labels) == 4:
+        # Must make sure this is not formatted like an IP address
+        if all([(d.isdigit() and int(d)<256) for d in labels]):
+            return False
     for label in bucket_name.split('.'):
         if len(label) == 0:
             # Must be two '.' in a row
+            return False
+        if len(label) == 1:
+            if label.isalnum():
+                continue
+            # Any single character label must be alphanumeric
             return False
         match = LabelRE.match(label)
         if match is None or match.end() != len(label):

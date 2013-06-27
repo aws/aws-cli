@@ -101,6 +101,23 @@ class TestS3Addressing(BaseEnvVar):
                          'https://my.valid.name.s3.amazonaws.com/mykeyname')
         fp.close()
         
+    def test_put_object_dns_name_single_letter_non_classic(self):
+        self.endpoint = self.s3.get_endpoint('us-west-2')
+        op = self.s3.get_operation('PutObject')
+        file_path = os.path.join(os.path.dirname(__file__),
+                                 'put_object_data')
+        fp = open(file_path, 'rb')
+        params = op.build_parameters(bucket='a.valid.name',
+                                     key='mykeyname',
+                                     body=fp,
+                                     acl='public-read',
+                                     content_language='piglatin',
+                                     content_type='text/plain')
+        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        self.assertEqual(prepared_request.url,
+                         'https://a.valid.name.s3.amazonaws.com/mykeyname')
+        fp.close()
+
     def test_get_object_non_dns_name_non_classic(self):
         self.endpoint = self.s3.get_endpoint('us-west-2')
         op = self.s3.get_operation('GetObject')
@@ -118,6 +135,25 @@ class TestS3Addressing(BaseEnvVar):
         prepared_request = self.endpoint.make_request(op, params, no_op=True)
         self.assertEqual(prepared_request.url,
                          'https://s3.amazonaws.com/AnInvalidName/mykeyname')
+
+    def test_get_object_ip_address_name_non_classic(self):
+        self.endpoint = self.s3.get_endpoint('us-west-s')
+        op = self.s3.get_operation('GetObject')
+        params = op.build_parameters(bucket='192.168.5.4',
+                                     key='mykeyname')
+        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        self.assertEqual(prepared_request.url,
+                         'https://s3.amazonaws.com/192.168.5.4/mykeyname')
+
+
+    def test_get_object_almost_an_ip_address_name_non_classic(self):
+        self.endpoint = self.s3.get_endpoint('us-west-s')
+        op = self.s3.get_operation('GetObject')
+        params = op.build_parameters(bucket='192.168.5.256',
+                                     key='mykeyname')
+        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        self.assertEqual(prepared_request.url,
+                         'https://192.168.5.256.s3.amazonaws.com/mykeyname')
 
 
 

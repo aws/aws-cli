@@ -47,9 +47,9 @@ AllEvents = {
     'after-parsed': '.%s.%s.%s.%s',
     'before-call': '.%s.%s',
     'service-created': '',
-    'before-auth': '.%s'
-    'need-retry': '.%s.%s',
-    }
+    'before-auth': '.%s',
+    'needs-retry': '.%s.%s',
+}
 """
 A dictionary where each key is an event name and the value
 is the formatting string used to construct a new event.

@@ -58,6 +58,7 @@ class Operation(BotoCoreObject):
         while self._needs_retry(response, endpoint, kwargs, attempts):
             attempts += 1
             response = self._call(endpoint, **kwargs)
+        return response
 
 
     def _call(self, endpoint, **kwargs):
@@ -80,7 +81,7 @@ class Operation(BotoCoreObject):
     def _needs_retry(self, response, endpoint, kwargs, attempts):
         # We need to determine if we need a retry.
         event = self.session.create_event(
-            'need-retry', self.service.endpoint_prefix, self.name)
+            'needs-retry', self.service.endpoint_prefix, self.name)
         response = self.session.emit_first_non_none_response(
             event, response=response, operation_args=kwargs,
             endpoint=endpoint, operation=self, attempts=attempts)

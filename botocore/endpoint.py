@@ -119,7 +119,7 @@ class JSONEndpoint(Endpoint):
     ResponseContentTypes = ['application/x-amz-json-1.1',
                             'application/json']
 
-    def make_request(self, operation, params, no_op=True):
+    def make_request(self, operation, params, no_op=False):
         """
         Send a request to the endpoint and parse the response
         and return it and long with the HTTP response object

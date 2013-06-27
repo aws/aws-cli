@@ -136,9 +136,9 @@ def resolve_references(config, definitions):
     """
     for key, value in config.items():
         if isinstance(value, dict):
-            if len(value) == 1 and value.keys()[0] == '$ref':
+            if len(value) == 1 and list(value.keys())[0] == '$ref':
                 # Then we need to resolve this reference.
-                config[key] = definitions[value.values()[0]]
+                config[key] = definitions[list(value.values())[0]]
             else:
                 resolve_references(value, definitions)
 

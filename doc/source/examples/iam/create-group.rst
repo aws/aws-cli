@@ -1,0 +1,25 @@
+**To create an IAM group**
+
+The following ``create-group`` commmand creates an IAM group named ``Admins``::
+
+  aws iam create-group --group-name Admins
+
+Output::
+
+  {
+    "Group": {
+        "Path": "/", 
+        "CreateDate": "2013-06-04T20:27:27.972Z", 
+        "GroupId": "AIDGPMS9RO4H3FEXAMPLE", 
+        "Arn": "arn:aws:iam::123456789012:group/Admins", 
+        "GroupName": "Admins"
+    }, 
+    "ResponseMetadata": {
+        "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
+    }
+  }
+
+For more information, see `Creating and Listing Groups`_ in the *Using IAM* guide.
+
+.. _Creating and Listing Groups: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_CreatingAndListingGroups.html
+

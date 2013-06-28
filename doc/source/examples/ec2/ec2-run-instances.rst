@@ -1,20 +1,60 @@
 **To launch an Amazon EC2 instance**
 
-The following ``run-instances`` command launches a single Amazon EC2 instance using
-AMI ami-554ac83c, a Microsoft Windows Server 2012 image. The instance type is
-t1.micro. The key pair and security groups are named MyKeyPair and
-MySecurityGroup, and are assumed to have been created previously.
-::
+The following ``run-instances`` command launches a single Amazon EC2 instance::
 
     aws ec2 run-instances --image-id ami-554ac83c --min-count 1 --max-count 1 --key-name MyKeyPair --security-groups MySecurityGroup
 
-This command output a JSON block that contains descriptive information about the instance.
+The key pair and security group, named MyKeyPair and MySecurityGroup, must exist already.
 
-If you launch an instance that is not within the Free Usage Tier, you are
-billed after you launch the instance and charged for the time that the
-instance is running, even if it remains idle.
+The output of this command is a JSON block that describes the instance, similar to the following::
 
-For more information, see `Launch an Amazon EC2 Instance`_ in the *AWS Command Line Interface User Guide*.
+    "Instances": [
+        {
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "PublicDnsName": null,
+            "Platform": "windows",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "EbsOptimized": false,
+            "LaunchTime": "2012-12-19T02:42:39.000Z",
+            "ProductCodes": [],
+            "InstanceId": "i-5203422c",
+            "ImageId": "ami-c3b8d6aa",
+            "PrivateDnsName": null,
+            "KeyName": "MyKeyPair",
+            "SecurityGroups": [
+                {
+                    "GroupName": "MySecurityGroup",
+                    "GroupId": "sg-903004f8"
+                }
+            ],
+            "ClientToken": null,
+            "InstanceType": "m1.small",
+            "NetworkInterfaces": [],
+            "Placement": {
+                "Tenancy": "default",
+                "GroupName": null,
+                "AvailabilityZone": "us-east-1b"
+            },
+            "Hypervisor": "xen",
+            "BlockDeviceMappings": [],
+            "Architecture": "x86_64",
+            "StateReason": {
+                "Message": "pending",
+                "Code": "pending"
+            },
+            "RootDeviceName": "/dev/sda1",
+            "VirtualizationType": "hvm",
+            "RootDeviceType": "ebs",
+            "AmiLaunchIndex": 0
+        }
+    ]
 
-.. _Launch an Amazon EC2 Instance: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
+For more information, see `Launching an Amazon EC2 Instance`_ in the *AWS Command Line Interface User Guide*.
+
+.. _Launching an Amazon EC2 Instance: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
 

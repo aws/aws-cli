@@ -433,7 +433,7 @@ class Session(object):
         # add ch to logger
         log.addHandler(ch)
 
-    def register(self, event_name, handler):
+    def register(self, event_name, handler, unique_id=None):
         """Register a handler with an event.
 
         :type event_name: str
@@ -445,10 +445,17 @@ class Session(object):
             accept ``**kwargs``.  If either of these preconditions are
             not met, a ``ValueError`` will be raised.
 
-        """
-        self._events.register(event_name, handler)
+        :type unique_id: str
+        :param unique_id: An optional identifier to associate with the
+            registration.  A unique_id can only be used once for
+            the entire session registration (unless it is unregistered).
+            This can be used to prevent an event handler from being
+            registered twice.
 
-    def unregister(self, event_name, handler):
+        """
+        self._events.register(event_name, handler, unique_id)
+
+    def unregister(self, event_name, handler=None, unique_id=None):
         """Unregister a handler with an event.
 
         :type event_name: str
@@ -457,8 +464,14 @@ class Session(object):
         :type handler: callable
         :param handler: The callback to unregister.
 
+        :type unique_id: str
+        :param unique_id: A unique identifier identifying the callback
+            to unregister.  You can provide either the handler or the
+            unique_id, you do not have to provide both.
+
         """
-        self._events.unregister(event_name, handler)
+        self._events.unregister(event_name, handler=handler,
+                                unique_id=unique_id)
 
     def create_event(self, event_name, *fmtargs):
         """

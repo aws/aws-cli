@@ -205,6 +205,17 @@ class SessionTest(BaseSessionTest):
         self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
         get_logger.assert_called_with('botocore.service')
 
+    def test_register_with_unique_id(self):
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        self.session.register('foo', handler, unique_id='bar')
+        self.session.emit('foo')
+        self.assertEqual(calls[0]['event_name'], 'foo')
+        calls = []
+        self.session.unregister('foo', unique_id='bar')
+        self.session.emit('foo')
+        self.assertEqual(calls, [])
+
 
 class TestBuiltinEventHandlers(BaseSessionTest):
     def setUp(self):

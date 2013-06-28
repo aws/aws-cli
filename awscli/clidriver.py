@@ -47,6 +47,8 @@ def main():
 def create_clidriver():
     emitter = HierarchicalEmitter()
     session = botocore.session.Session(EnvironmentVariables, emitter)
+    session.set_debug_logger(logger_name='botocore')
+    session.set_debug_logger(logger_name='awscli')
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=emitter)
@@ -127,6 +129,7 @@ class CLIDriver(object):
         parser = self._create_parser_from_command_table(command_table,
                                                         argument_table)
         parsed_args, remaining = parser.parse_known_args(args)
+        log.debug(parsed_args)
         self._handle_top_level_args(parsed_args)
         try:
             return command_table[parsed_args.command](remaining, parsed_args)
@@ -142,6 +145,10 @@ class CLIDriver(object):
     def _handle_top_level_args(self, args):
         self.session.emit('top-level-args-parsed', parsed_args=args)
         if args.debug:
+            # TODO:
+            # Unfortunately, by setting debug mode here, we miss out
+            # on all of the debug events prior to this such as the
+            # loading of plugins, etc.
             self.session.set_debug_logger(logger_name='botocore')
             self.session.set_debug_logger(logger_name='awscli')
 
@@ -168,6 +175,7 @@ class CLIDriver(object):
         # can add extra arguments or modify existing arguments.
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
+        log.debug(argument_table)
         return argument_table
 
 
@@ -196,6 +204,18 @@ class CLICommand(object):
         # Subclasses are expected to implement this method.
         pass
 
+
+class BuiltInCommand(CLICommand):
+    """
+    A top-level command that is not associated with a service.
+
+    For example, if you want to implement ``aws mycommand``
+    we would create a BuiltInCommand object for that.
+    """
+    
+    def __init__(self, name, session):
+        self._name = name
+        self._session = session
 
 class ServiceCommand(CLICommand):
     """A service command for the CLI.

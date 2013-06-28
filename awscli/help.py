@@ -14,11 +14,11 @@ import sys
 import os
 import platform
 from subprocess import Popen, PIPE
-import six
 from argprocess import ParamShorthand
-from bcdoc.clidocs import ProviderDocumentHandler
-from bcdoc.clidocs import ServiceDocumentHandler
-from bcdoc.clidocs import OperationDocumentHandler
+from bcdoc.clidocs import ReSTDocument
+from bcdoc.clidocs import ProviderDocumentEventHandler
+from bcdoc.clidocs import ServiceDocumentEventHandler
+from bcdoc.clidocs import OperationDocumentEventHandler
 import bcdoc.clidocevents
 from bcdoc.textwriter import TextWriter
 from docutils.core import publish_string
@@ -71,19 +71,25 @@ def get_renderer():
 
     
 class HelpCommand(object):
+    """
+    A HelpCommand is created to provide a way to pass state from
+    the CLI to any document handlers that may get called to generate
+    documentation.
+
+    The HelpCommand contains a ``session`` object, a ``command_table``,
+    an ``arg_table``, and it also creates the necessary document
+    object to hold the generated documentation.
+    """
     
     def __init__(self, session, command_table, arg_table):
         self.session = session
         self.command_table = command_table
         self.arg_table = arg_table
         self.renderer = get_renderer()
+        self.doc = ReSTDocument(target='man')
 
-
-    def generate_doc(self, handler):
-        handler.initialize(self.session)
-        bcdoc.clidocevents.document(self.session, self.session.provider,
-                                    help_command=self)
-        self.renderer.render(handler.fp.getvalue().encode('utf-8'))
+    def __call__(self, args, parsed_globals):
+        pass
 
 class ProviderHelpCommand(HelpCommand):
     """Implements top level help command.
@@ -100,11 +106,16 @@ class ProviderHelpCommand(HelpCommand):
         self.help_usage = usage
 
     def __call__(self, args, parsed_globals):
-        handler = ProviderDocumentHandler()
-        handler.initialize(self.session)
+        # Create an event handler for a Provider Document
+        event_handler = ProviderDocumentEventHandler()
+        # Initialize the handler, which registers all event handlers
+        event_handler.initialize(self.session)
+        # Now generate all of the events for a Provider document.
+        # We pass ourselves along so that we can, in turn, get passed
+        # to all event handlers.
         bcdoc.clidocevents.document(self.session, self.session.provider,
                                     help_command=self)
-        self.renderer.render(handler.fp.getvalue().encode('utf-8'))
+        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 
 class ServiceHelpCommand(HelpCommand):
@@ -130,11 +141,11 @@ class ServiceHelpCommand(HelpCommand):
         self.service = service
 
     def __call__(self, args, parsed_globals):
-        handler = ServiceDocumentHandler()
+        handler = ServiceDocumentEventHandler()
         handler.initialize(self.session)
         bcdoc.clidocevents.document(self.session, self.service,
                                     help_command=self)
-        self.renderer.render(handler.fp.getvalue().encode('utf-8'))
+        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 
 class OperationHelpCommand(HelpCommand):
@@ -152,10 +163,10 @@ class OperationHelpCommand(HelpCommand):
         self.param_shorthand = ParamShorthand()
 
     def __call__(self, args, parsed_globals):
-        handler = OperationDocumentHandler()
+        handler = OperationDocumentEventHandler()
         handler.initialize(self.session)
         bcdoc.clidocevents.document(self.session, self.operation,
                                     help_command=self)
-        self.renderer.render(handler.fp.getvalue().encode('utf-8'))
+        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 

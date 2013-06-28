@@ -214,8 +214,8 @@ class BuiltInCommand(CLICommand):
     """
     
     def __init__(self, name, session):
-        self._name = name
-        self._session = session
+        self.name = name
+        self.session = session
 
 class ServiceCommand(CLICommand):
     """A service command for the CLI.
@@ -226,14 +226,14 @@ class ServiceCommand(CLICommand):
     """
 
     def __init__(self, name, session):
-        self._name = name
-        self._session = session
+        self.name = name
+        self.session = session
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
-        service_object = self._session.get_service(self._name)
+        service_object = self.session.get_service(self.name)
         op_table = self._create_operations_table(service_object)
         service_parser = self._create_service_parser(op_table)
         parsed_args, remaining = service_parser.parse_known_args(args)
@@ -241,24 +241,24 @@ class ServiceCommand(CLICommand):
 
     def _create_service_parser(self, operation_table):
         return ServiceArgParser(
-            operations_table=operation_table, service_name=self._name)
+            operations_table=operation_table, service_name=self.name)
 
     def _create_operations_table(self, service_object):
         operation_table = {}
-        service_data = self._session.get_service_data(self._name)
+        service_data = self._session.get_service_data(self.name)
         operations_data = service_data['operations']
         for operation_name in operations_data:
             cli_name = xform_name(operation_name, '-')
             operation_table[cli_name] = ServiceOperation(
                 name=cli_name,
                 operation_model=operations_data[operation_name],
-                operation_caller=CLIOperationCaller(self._session),
+                operation_caller=CLIOperationCaller(self.session),
                 service_object=service_object)
         # Also add a 'help' command.
         operation_table['help'] = ServiceHelpCommand(
-            session=self._session, service=service_object,
+            session=self.session, service=service_object,
             command_table=operation_table)
-        self._session.emit('building-operation-table.%s' % self._name,
+        self._session.emit('building-operation-table.%s' % self.name,
                            command_table=operation_table)
         return operation_table
 

@@ -104,6 +104,7 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
+        self.provider = self.session.provider
 
     def __call__(self, args, parsed_globals):
         # Create an event handler for a Provider Document
@@ -113,8 +114,9 @@ class ProviderHelpCommand(HelpCommand):
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
-        bcdoc.clidocevents.document(self.session, self.session.provider,
-                                    help_command=self)
+        bcdoc.clidocevents.register_events(self.session)
+        bcdoc.clidocevents.document_provider(self.session,
+                                             help_command=self)
         self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 
@@ -143,8 +145,9 @@ class ServiceHelpCommand(HelpCommand):
     def __call__(self, args, parsed_globals):
         handler = ServiceDocumentEventHandler()
         handler.initialize(self.session)
-        bcdoc.clidocevents.document(self.session, self.service,
-                                    help_command=self)
+        bcdoc.clidocevents.register_events(self.session)
+        bcdoc.clidocevents.service_document(self.session,
+                                            help_command=self)
         self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 
@@ -165,8 +168,9 @@ class OperationHelpCommand(HelpCommand):
     def __call__(self, args, parsed_globals):
         handler = OperationDocumentEventHandler()
         handler.initialize(self.session)
-        bcdoc.clidocevents.document(self.session, self.operation,
-                                    help_command=self)
+        bcdoc.clidocevents.register_events(self.session)
+        bcdoc.clidocevents.document_operation(self.session,
+                                              help_command=self)
         self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 

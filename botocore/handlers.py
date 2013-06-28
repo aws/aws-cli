@@ -134,13 +134,30 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
 
 
 def register_retries_for_service(service, **kwargs):
-    if not hasattr(service, 'retries'):
+    if not hasattr(service, 'retry'):
         return
-    config = service.retries
+    config = service.retry
     session = service.session
     handler = retryhandler.create_retry_handler(config)
+    unique_id = 'retry-config-%s' % service.endpoint_prefix
     session.register('needs-retry.%s' % service.endpoint_prefix,
-                     handler)
+                     handler, unique_id=unique_id)
+    _register_for_operations(config, session,
+                             service_name=service.endpoint_prefix)
+
+
+def _register_for_operations(config, session, service_name):
+    # There's certainly a tradeoff for registering the retry config
+    # for the operations when the service is created.  In practice,
+    # there aren't a whole lot of per operation retry configs so
+    # this is ok for now.
+    for key in config:
+        if key == '__default__':
+            continue
+        handler = retryhandler.create_retry_handler(config, key)
+        unique_id = 'retry-config-%s-%s' % (service_name, key)
+        session.register('needs-retry.%s.%s' % (service_name, key),
+                         handler, unique_id=unique_id)
 
 
 # This is a list of (event_name, handler).

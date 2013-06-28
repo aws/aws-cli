@@ -95,6 +95,7 @@ class MaxAttemptsDecorator(object):
         self._max_attempts = max_attempts
 
     def __call__(self, response, attempt_number):
+        print("MaxAttemptsDecorator")
         should_retry = self._checker(response, attempt_number)
         if should_retry:
             if attempt_number >= self._max_attempts:

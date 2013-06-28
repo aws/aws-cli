@@ -59,12 +59,12 @@ class BaseEventHooks(object):
     def emit(self, event_name, **kwargs):
         return []
 
-    def register(self, event_name, handler):
+    def register(self, event_name, handler, unique_id=None):
         self._verify_is_callable(handler)
         self._verify_accept_kwargs(handler)
-        self._register(event_name, handler)
+        self._register(event_name, handler, unique_id)
 
-    def unregister(self, event_name, handler):
+    def unregister(self, event_name, handler=None, unique_id=None):
         pass
 
     def _verify_is_callable(self, func):
@@ -117,10 +117,10 @@ class EventHooks(BaseEventHooks):
             responses.append((handler, response))
         return responses
 
-    def _register(self, event_name, handler):
+    def _register(self, event_name, handler, unique_id=None):
         self._handlers[event_name].append(handler)
 
-    def unregister(self, event_name, handler):
+    def unregister(self, event_name, handler, unique_id=None):
         try:
             self._handlers[event_name].remove(handler)
         except ValueError:
@@ -134,6 +134,9 @@ class HierarchicalEmitter(BaseEventHooks):
         # A cache of event name to handler list.
         self._lookup_cache = {}
         self._handlers = _PrefixTrie()
+        # This is used to ensure that unique_id's are only
+        # registered once.
+        self._unique_id_cache = {}
 
     def emit(self, event_name, **kwargs):
         responses = []
@@ -156,13 +159,29 @@ class HierarchicalEmitter(BaseEventHooks):
             responses.append((handler, response))
         return responses
 
-    def _register(self, event_name, handler):
+    def _register(self, event_name, handler, unique_id=None):
+        if unique_id is not None:
+            if unique_id in self._unique_id_cache:
+                # We've already registered a handler using this unique_id
+                # so we don't need to register it again.
+                return
+            else:
+                self._handlers.append_item(event_name, handler)
+                self._unique_id_cache[unique_id] = handler
+        else:
+            self._handlers.append_item(event_name, handler)
         # Super simple caching strategy for now, if we change the registrations
         # clear the cache.  This has the opportunity for smarter invalidations.
-        self._handlers.append_item(event_name, handler)
         self._lookup_cache = {}
 
-    def unregister(self, event_name, handler):
+    def unregister(self, event_name, handler=None, unique_id=None):
+        if unique_id is not None:
+            try:
+                handler = self._unique_id_cache.pop(unique_id)
+            except KeyError:
+                # There's no handler matching that unique_id so we have
+                # nothing to unregister.
+                return
         try:
             self._handlers.remove_item(event_name, handler)
             self._lookup_cache = {}

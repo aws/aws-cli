@@ -282,6 +282,61 @@ class TestWildcardHandlers(unittest.TestCase):
         self.emitter.emit('foo.bar.baz')
         self.assertEqual(len(self.hook_calls), 2)
 
+    def test_register_with_unique_id(self):
+        self.emitter.register('foo.bar.baz', self.hook, unique_id='foo')
+        # Since we're using the same unique_id, this registration is ignored.
+        self.emitter.register('foo.bar.baz', self.hook, unique_id='foo')
+        # This also works across event names, so this registration is ignored
+        # as well.
+        self.emitter.register('foo.other', self.hook, unique_id='foo')
+
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 1)
+
+        self.hook_calls = []
+
+        self.emitter.emit('foo.other')
+        self.assertEqual(len(self.hook_calls), 0)
+
+    def test_remove_handler_with_unique_id(self):
+        hook2 = lambda **kwargs: self.hook_calls.append(kwargs)
+        self.emitter.register('foo.bar.baz', self.hook, unique_id='foo')
+        self.emitter.register('foo.bar.baz', hook2)
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 2)
+
+        # Reset the hook calls.
+        self.hook_calls = []
+
+        self.emitter.unregister('foo.bar.baz', hook2)
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 1)
+
+        self.hook_calls = []
+
+        # Can provide the unique_id to unregister.
+        self.emitter.unregister('foo.bar.baz', unique_id='foo')
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 0)
+
+        # Same as with not specifying a unique_id, you can call
+        # unregister multiple times and not get an exception.
+        self.emitter.unregister('foo.bar.baz', unique_id='foo')
+
+    def test_remove_handler_with_and_without_unique_id(self):
+        self.emitter.register('foo.bar.baz', self.hook, unique_id='foo')
+        self.emitter.register('foo.bar.baz', self.hook)
+
+        self.emitter.unregister('foo.bar.baz', self.hook)
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 1)
+
+        self.hook_calls = []
+
+        self.emitter.unregister('foo.bar.baz', self.hook)
+        self.emitter.emit('foo.bar.baz')
+        self.assertEqual(len(self.hook_calls), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

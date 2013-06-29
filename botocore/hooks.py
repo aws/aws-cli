@@ -166,6 +166,9 @@ class HierarchicalEmitter(BaseEventHooks):
                 # so we don't need to register it again.
                 return
             else:
+                # Note that the trie knows nothing about the unique
+                # id.  We track uniqueness in this class via the
+                # _unique_id_cache.
                 self._handlers.append_item(event_name, handler)
                 self._unique_id_cache[unique_id] = handler
         else:
@@ -212,6 +215,11 @@ class _PrefixTrie(object):
 
     """
     def __init__(self):
+        # Each dictionary can be though of as a node, where a node
+        # has values associated with the node, and children is a link
+        # to more nodes.  So 'foo.bar' would have a 'foo' node with
+        # a 'bar' node as a child of foo.
+        # {'foo': {'children': {'bar': {...}}}}.
         self._root = {'chunk': None, 'children': {}, 'values': None}
 
     def append_item(self, key, value):
@@ -251,10 +259,18 @@ class _PrefixTrie(object):
     def _get_items(self, starting_node, key_parts, collected, starting_index):
         stack = [(starting_node, starting_index)]
         key_parts_len = len(key_parts)
+        # Traverse down the nodes, where at each level we add the
+        # next part from key_parts as well as the wildcard element '*'.
+        # This means for each node we see we potentially add two more
+        # elements to our stack.
         while stack:
             current_node, index = stack.pop()
             if current_node['values']:
                 seq = reversed(current_node['values'])
+                # We're using extendleft because we want
+                # the values associated with the node furthest
+                # from the root to come before nodes closer
+                # to the root.
                 collected.extendleft(seq)
             if not index == key_parts_len:
                 children = current_node['children']

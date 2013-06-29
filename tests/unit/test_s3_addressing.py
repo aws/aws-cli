@@ -32,6 +32,8 @@ class TestS3Addressing(BaseEnvVar):
 
     def setUp(self):
         super(TestS3Addressing, self).setUp()
+        self.environ['AWS_ACCESS_KEY_ID'] = 'foo'
+        self.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
         self.session = botocore.session.get_session()
         self.s3 = self.session.get_service('s3')
 

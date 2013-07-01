@@ -24,13 +24,17 @@
 import logging
 import json
 import re
+import time
+
 from requests.sessions import Session
 from requests.utils import get_environ_proxies
+
 import botocore.response
 import botocore.exceptions
-from .auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
-from .awsrequest import AWSRequest
-from .compat import urljoin
+from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
+from botocore.awsrequest import AWSRequest
+from botocore.compat import urljoin
+
 
 logger = logging.getLogger(__name__)
 
@@ -66,9 +70,7 @@ class Endpoint(object):
                      operation, self.verify, params)
         request = self._create_request_object(operation, params)
         prepared_request = self.prepare_request(request)
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return self._send_request(prepared_request, operation)
 
     def _create_request_object(self, operation, params):
         raise NotImplementedError('_create_request_object')
@@ -84,9 +86,36 @@ class Endpoint(object):
         return prepared_request
 
     def _send_request(self, request, operation):
-        return self.http_session.send(request, verify=self.verify,
+        response = self._get_response(request, operation)
+        attempts = 1
+        while self._needs_retry(response, attempts, operation):
+            attempts += 1
+            response = self._get_response(request, operation)
+        return response
+
+    def _get_response(self, request, operation):
+        http_response = self.http_session.send(request, verify=self.verify,
                                       stream=operation.is_streaming(),
                                       proxies=self.proxies)
+        # This returns the http_response and the parsed_data.
+        return botocore.response.get_response(self.session, operation,
+                                              http_response)
+
+    def _needs_retry(self, response, attempts, operation):
+        event = self.session.create_event(
+            'needs-retry', self.service.endpoint_prefix, operation.name)
+        response = self.session.emit_first_non_none_response(
+            event, response=response, endpoint=self,
+            operation=operation, attempts=attempts)
+        if response is None:
+            return False
+        else:
+            # Request needs to be retried, and we need to sleep
+            # for the specified number of times.
+            logger.debug("Response received to retry, sleeping for "
+                         "%s seconds", response)
+            time.sleep(response)
+            return True
 
 
 class QueryEndpoint(Endpoint):

@@ -53,15 +53,6 @@ class Operation(BotoCoreObject):
         return 'Operation:%s' % self.name
 
     def call(self, endpoint, **kwargs):
-        response = self._call(endpoint, **kwargs)
-        attempts = 1
-        while self._needs_retry(response, endpoint, kwargs, attempts):
-            attempts += 1
-            response = self._call(endpoint, **kwargs)
-        return response
-
-
-    def _call(self, endpoint, **kwargs):
         logger.debug("%s called with kwargs: %s", self, kwargs)
         event = self.session.create_event('before-call',
                                           self.service.endpoint_prefix,
@@ -77,23 +68,6 @@ class Operation(BotoCoreObject):
                           http_response=response[0],
                           parsed=response[1])
         return response
-
-    def _needs_retry(self, response, endpoint, kwargs, attempts):
-        # We need to determine if we need a retry.
-        event = self.session.create_event(
-            'needs-retry', self.service.endpoint_prefix, self.name)
-        response = self.session.emit_first_non_none_response(
-            event, response=response, operation_args=kwargs,
-            endpoint=endpoint, operation=self, attempts=attempts)
-        if response is None:
-            return False
-        else:
-            # Request needs to be retried, and we need to sleep
-            # for the specified number of times.
-            logger.debug("Response received to retry, sleeping for "
-                         "%s seconds", response)
-            time.sleep(response)
-            return True
 
     @property
     def can_paginate(self):

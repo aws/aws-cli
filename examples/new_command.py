@@ -23,8 +23,7 @@ import bcdoc.clidocevents
 
 class ConfigDocumentEventHandler(CLIDocumentEventHandler):
     """
-    This class registers for the document events we are
-    interested in and implements the handlers for those events.
+    This class implements handlers for document events.
     """
 
     def doc_title(self, help_command, **kwargs):
@@ -39,6 +38,17 @@ class ConfigDocumentEventHandler(CLIDocumentEventHandler):
 
 
 class ConfigHelpCommand(HelpCommand):
+    """
+    A wrapper to handle the interactions between our config command
+    and the documentation pipeline.  The two things the HelpCommand
+    must do are:
+
+      + Specify a value for EventHandlerClass which is the class
+          that will be instantiated by the HelpCommand to register
+          and handle document events.
+      + Provide implementations of the ``event_class`` and ``name``
+        property getters.
+    """
 
     EventHandlerClass = ConfigDocumentEventHandler
     

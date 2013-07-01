@@ -476,6 +476,7 @@ class CLIArgument(BaseCLIArgument):
         # case we just need to make a single add_argument call.
         if not cli_name:
             cli_name = self.cli_name
+        log.debug('add_to_parser: %s' % cli_name)
         parser.add_argument(
             cli_name,
             help=self.documentation,
@@ -498,7 +499,8 @@ class CLIArgument(BaseCLIArgument):
             # just associating the key and value in the params dict as down
             # below.  Sometimes this can be more complicated, and subclasses
             # can customize as they need.
-            parameters[self.py_name] = self._unpack_argument(value)
+            log.debug('add_to_params: %s' % self.py_name)
+            parameters[self.argument_object.py_name] = self._unpack_argument(value)
 
     def _unpack_argument(self, value):
         if not hasattr(self.argument_object, 'no_paramfile'):
@@ -698,11 +700,13 @@ class ServiceOperation(object):
         # when calling an operation so we'd have to optimize that first
         # before using get_parameter() in the cli would be advantageous
         for argument in operation_object.params:
-            cli_arg_name = xform_name(argument.name, '-')
+            #cli_arg_name = xform_name(argument.name, '-')
+            cli_arg_name = argument.cli_name[2:]
             arg_class = self.ARG_TYPES.get(argument.type,
                                            self.DEFAULT_ARG_CLASS)
             arg_object = arg_class(cli_arg_name, argument, operation_object)
             arg_object.add_to_arg_table(argument_table)
+        log.debug(argument_table)
         service_name = self._service_object.endpoint_prefix
         operation_name = operation_object.name
         self._emit('building-argument-table.%s.%s' % (service_name,

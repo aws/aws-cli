@@ -199,5 +199,38 @@ class TestRetryHandler(unittest.TestCase):
         self.assertIsNone(handler(response=response, attempts=1))
 
 
+class TestCRC32Checker(unittest.TestCase):
+    def setUp(self):
+        self.checker = retryhandler.CRC32Checker('x-amz-crc32')
+
+    def test_crc32_matches(self):
+        http_response = mock.Mock()
+        http_response.status_code = 200
+        # This is the crc32 of b'foo', so this should
+        # pass the crc32 check.
+        http_response.headers = {'x-amz-crc32': 2356372769}
+        http_response.content = b'foo'
+        self.assertIsNone(self.checker(
+            response=(http_response, {}), attempt_number=1))
+
+    def test_crc32_missing(self):
+        # It's not an error is the crc32 header is missing.
+        http_response = mock.Mock()
+        http_response.status_code = 200
+        http_response.headers = {}
+        self.assertIsNone(self.checker(
+            response=(http_response, {}), attempt_number=1))
+
+    def test_crc32_check_fails(self):
+        http_response = mock.Mock()
+        http_response.status_code = 200
+        # This is not the crc32 of b'foo', so this should
+        # fail the crc32 check.
+        http_response.headers = {'x-amz-crc32': 2356372768}
+        http_response.content = b'foo'
+        self.assertFalse(self.checker(
+            response=(http_response, {}), attempt_number=1))
+
+
 if __name__ == "__main__":
     unittest.main()

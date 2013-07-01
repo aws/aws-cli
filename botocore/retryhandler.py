@@ -1,6 +1,11 @@
 import time
 import random
 import functools
+import logging
+from binascii import crc32
+
+
+log = logging.getLogger(__name__)
 
 
 def delay_exponential(base, growth_factor, attempts):
@@ -141,7 +146,17 @@ class MultiChecker(object):
 class CRC32Checker(object):
     def __init__(self, header):
         # The header where the expected crc32 is located.
-        self._header = header
+        self._header_name = header
 
     def __call__(self, response, attempt_number):
-        pass
+        http_response = response[0]
+        expected_crc = http_response.headers.get(self._header_name)
+        if expected_crc is None:
+            log.debug("crc32 check skipped, the %s header is not "
+                      "in the http response.", self._header_name)
+        else:
+            actual_crc32 = crc32(response[0].content) & 0xffffffff
+            if not actual_crc32 == int(expected_crc):
+                log.debug("crc32 check failed, expected != actual: "
+                          "%s != %s", int(expected_crc), actual_crc32)
+                return False

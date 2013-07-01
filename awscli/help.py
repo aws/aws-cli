@@ -24,11 +24,25 @@ from bcdoc.textwriter import TextWriter
 from docutils.core import publish_string
 
 class HelpRenderer(object):
+    """
+    Interface for a help renderer.
+
+    The renderer is responsible for displaying the help content on
+    a particular platform.
+    """
 
     def render(self, contents):
+        """
+        Each implementation of HelpRenderer must implement this
+        render method.
+        """
         pass
 
 class PosixHelpRenderer(HelpRenderer):
+    """
+    Render help content on a Posix-like system.  This includes
+    Linux and MacOS X.
+    """
 
     PAGER = 'more'
 
@@ -55,6 +69,9 @@ class PosixHelpRenderer(HelpRenderer):
 
 
 class WindowsHelpRenderer(HelpRenderer):
+    """
+    Render help content on a Windows platform.
+    """
     
     def render(self, contents):
         text_output = publish_string(contents,
@@ -64,6 +81,10 @@ class WindowsHelpRenderer(HelpRenderer):
 
 
 def get_renderer():
+    """
+    Return the appropriate HelpRenderer implementation for the
+    current platform.
+    """
     if platform.system() == 'Windows':
         return WindowsHelpRenderer()
     else:
@@ -72,24 +93,90 @@ def get_renderer():
     
 class HelpCommand(object):
     """
-    A HelpCommand is created to provide a way to pass state from
-    the CLI to any document handlers that may get called to generate
-    documentation.
+    HelpCommand Interface
+    ---------------------
+    A HelpCommand object acts as the interface between objects in the
+    CLI (e.g. Providers, Services, Operations, etc.) and the documentation
+    system (bcdoc).
 
-    The HelpCommand contains a ``session`` object, a ``command_table``,
-    an ``arg_table``, and it also creates the necessary document
-    object to hold the generated documentation.
+    A HelpCommand object wraps the object from the CLI space and provides
+    a consistent interface to critical information needed by the
+    documentation pipeline such as the object's name, description, etc.
+    
+    The HelpCommand object is passed to the component of the
+    documentation pipeline that fires documentation events.  It is
+    then passed on to each document event handler that has registered
+    for the events.
+
+    All HelpCommand objects contain the following attributes:
+    
+        + ``session`` - A ``botocore`` ``Session`` object.
+        + ``obj`` - The object that is being documented.
+        + ``command_table`` - A dict mapping command names to
+              callable objects.
+        + ``arg_table`` - A dict mapping argument names to callable objects.
+        + ``doc`` - A ``Document`` object that is used to collect the
+              generated documentation.
+
+    In addition, please note the `properties` defined below which are
+    required to allow the object to be used in the document pipeline.
+
+    Implementations of HelpCommand are provided here for Provider,
+    Service and Operation objects.  Other implementations for other
+    types of objects might be needed for customization in plugins.
+    As long as the implementations conform to this basic interface
+    it should be possible to pass them to the documentation system
+    and generate interactive and static help files.
     """
     
-    def __init__(self, session, command_table, arg_table):
+    def __init__(self, session, obj, command_table, arg_table):
         self.session = session
+        self.obj = obj
         self.command_table = command_table
         self.arg_table = arg_table
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
 
-    def __call__(self, args, parsed_globals):
+    EventHandlerClass = None
+    """
+    Each subclass should define this class variable to point to the
+    EventHandler class used by this HelpCommand.
+    """
+
+    @property
+    def event_class(self):
+        """
+        Return the ``event_class`` for this object.
+
+        The ``event_class`` is used by the documentation pipeline
+        when generating documentation events.  For the event below::
+
+            doc-title.<event_class>.<name>
+
+        The document pipeline would use this property to determine
+        the ``event_class`` value.
+        """
+
+    @property
+    def name(self):
+        """
+        Return the name of the wrapped object.
+
+        This would be called by the document pipeline to determine
+        the ``name`` to be inserted into the event, as shown above.
+        """
         pass
+
+    def __call__(self, args, parsed_globals):
+        # Create an event handler for a Provider Document
+        event_handler = self.EventHandlerClass()
+        # Initialize the handler, which registers all event handlers
+        event_handler.initialize(self.session)
+        # Now generate all of the events for a Provider document.
+        # We pass ourselves along so that we can, in turn, get passed
+        # to all event handlers.
+        bcdoc.clidocevents.generate_events(self.session, self)
+        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
 
 class ProviderHelpCommand(HelpCommand):
     """Implements top level help command.
@@ -100,24 +187,21 @@ class ProviderHelpCommand(HelpCommand):
 
     def __init__(self, session, command_table, arg_table,
                  description, synopsis, usage):
-        HelpCommand.__init__(self, session, command_table, arg_table)
+        HelpCommand.__init__(self, session, session.provider,
+                             command_table, arg_table)
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
-        self.provider = self.session.provider
 
-    def __call__(self, args, parsed_globals):
-        # Create an event handler for a Provider Document
-        event_handler = ProviderDocumentEventHandler()
-        # Initialize the handler, which registers all event handlers
-        event_handler.initialize(self.session)
-        # Now generate all of the events for a Provider document.
-        # We pass ourselves along so that we can, in turn, get passed
-        # to all event handlers.
-        bcdoc.clidocevents.register_events(self.session)
-        bcdoc.clidocevents.document_provider(self.session,
-                                             help_command=self)
-        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
+    EventHandlerClass = ProviderDocumentEventHandler
+    
+    @property
+    def event_class(self):
+        return 'Provider'
+    
+    @property
+    def name(self):
+        return self.obj.name
 
 
 class ServiceHelpCommand(HelpCommand):
@@ -128,27 +212,15 @@ class ServiceHelpCommand(HelpCommand):
 
     """
 
-    def __init__(self, session, service, command_table, arg_table=None):
-        """
-
-        :type session: ``botocore.session.Session``
-        :param session: A botocore session.
-
-        :type service: ``botocore.service.Service``
-        :param service: A botocore service object representing the
-            particular service.
-
-        """
-        HelpCommand.__init__(self, session, command_table, arg_table)
-        self.service = service
-
-    def __call__(self, args, parsed_globals):
-        handler = ServiceDocumentEventHandler()
-        handler.initialize(self.session)
-        bcdoc.clidocevents.register_events(self.session)
-        bcdoc.clidocevents.service_document(self.session,
-                                            help_command=self)
-        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
+    EventHandlerClass = ServiceDocumentEventHandler
+    
+    @property
+    def event_class(self):
+        return 'Service'
+    
+    @property
+    def name(self):
+        return self.obj.endpoint_prefix
 
 
 class OperationHelpCommand(HelpCommand):
@@ -160,17 +232,18 @@ class OperationHelpCommand(HelpCommand):
     """
 
     def __init__(self, session, service, operation, arg_table):
-        HelpCommand.__init__(self, session, None, arg_table)
+        HelpCommand.__init__(self, session, operation, None, arg_table)
         self.service = service
-        self.operation = operation
         self.param_shorthand = ParamShorthand()
 
-    def __call__(self, args, parsed_globals):
-        handler = OperationDocumentEventHandler()
-        handler.initialize(self.session)
-        bcdoc.clidocevents.register_events(self.session)
-        bcdoc.clidocevents.document_operation(self.session,
-                                              help_command=self)
-        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
+    EventHandlerClass = OperationDocumentEventHandler
+    
+    @property
+    def event_class(self):
+        return 'Operation'
+    
+    @property
+    def name(self):
+        return self.obj.cli_name
 
 

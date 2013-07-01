@@ -47,8 +47,6 @@ def main():
 def create_clidriver():
     emitter = HierarchicalEmitter()
     session = botocore.session.Session(EnvironmentVariables, emitter)
-    session.set_debug_logger(logger_name='botocore')
-    session.set_debug_logger(logger_name='awscli')
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=emitter)
@@ -129,7 +127,6 @@ class CLIDriver(object):
         parser = self._create_parser_from_command_table(command_table,
                                                         argument_table)
         parsed_args, remaining = parser.parse_known_args(args)
-        log.debug(parsed_args)
         self._handle_top_level_args(parsed_args)
         try:
             return command_table[parsed_args.command](remaining, parsed_args)
@@ -175,7 +172,6 @@ class CLIDriver(object):
         # can add extra arguments or modify existing arguments.
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
-        log.debug(argument_table)
         return argument_table
 
 
@@ -245,7 +241,7 @@ class ServiceCommand(CLICommand):
 
     def _create_operations_table(self, service_object):
         operation_table = {}
-        service_data = self._session.get_service_data(self.name)
+        service_data = self.session.get_service_data(self.name)
         operations_data = service_data['operations']
         for operation_name in operations_data:
             cli_name = xform_name(operation_name, '-')
@@ -256,9 +252,9 @@ class ServiceCommand(CLICommand):
                 service_object=service_object)
         # Also add a 'help' command.
         operation_table['help'] = ServiceHelpCommand(
-            session=self.session, service=service_object,
-            command_table=operation_table)
-        self._session.emit('building-operation-table.%s' % self.name,
+            session=self.session, obj=service_object,
+            command_table=operation_table, arg_table=None)
+        self.session.emit('building-operation-table.%s' % self.name,
                            command_table=operation_table)
         return operation_table
 
@@ -591,7 +587,6 @@ class BooleanArgument(CLIArgument):
         if self.required:
             negative_name = 'no-%s' % self.name
             argument_table[negative_name] = self
-            log.debug(argument_table)
 
     def add_to_parser(self, parser, cli_name=None):
         # If we're a required parameter we need to add two options
@@ -612,7 +607,6 @@ class BooleanArgument(CLIArgument):
                 # create the mutex group.
                 self._mutex_group = parser.add_mutually_exclusive_group(
                     required=True)
-            log.debug('cli_name: %s' % cli_name)
             self._mutex_group.add_argument(
                 cli_name, help=self.documentation,
                 dest=cli_name[2:], action=action)

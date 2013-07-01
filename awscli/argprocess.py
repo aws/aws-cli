@@ -156,13 +156,14 @@ class ParamShorthand(object):
             doc_fn = getattr(self, '_docs' + method, None)
         return doc_fn
 
-    def add_example_fn(self, event_name, operation, argument, **kwargs):
+    def add_example_fn(self, arg_name, help_command, **kwargs):
         """
         Adds a callable to the ``example_fn`` attribute of the parameter
         if the parameter type is supported by shorthand syntax.  This
         callable should return a string containing just the example and
         not any of the ReST formatting that might be required in the docs.
         """
+        argument = help_command.arg_table[arg_name]
         param = argument.argument_object
         if param:
             LOG.debug('Adding example fn for: %s' % param.name)
@@ -274,7 +275,7 @@ class ParamShorthand(object):
         return '%s %s1 %s2 %s3' % (param.cli_name, name, name, name)
 
     def _docs_list_key_value_parse(self, param):
-        s = "Key value pairs, with multiple values separated by a space."
+        s = "Key value pairs, with multiple values separated by a space.\n"
         s += '%s ' % param.cli_name
         s += ','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
                        for sub_param in param.members.members])

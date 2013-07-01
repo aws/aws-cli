@@ -11,6 +11,16 @@ log = logging.getLogger(__name__)
 
 
 def delay_exponential(base, growth_factor, attempts):
+    """Calculate time to sleep based on exponential function.
+
+    The format is::
+
+        base * growth_factor ^ attempts
+
+    If ``base`` is set to 'rand' then a random number between
+    0 and 1 will be used as the base.
+
+    """
     if base == 'rand':
         base = random.random()
     time_to_sleep = base * (growth_factor ** (attempts - 1))
@@ -18,6 +28,12 @@ def delay_exponential(base, growth_factor, attempts):
 
 
 def create_exponential_delay_function(base, growth_factor):
+    """Create an exponential delay function based on the attempts.
+
+    This is used so that you only have to pass it the attempts
+    parameter to calculate the delay.
+
+    """
     return functools.partial(
         delay_exponential, base=base, growth_factor=growth_factor)
 
@@ -80,7 +96,8 @@ def _create_single_checker(config):
             status_code=response['http_status_code'],
             error_code=response['service_error_code'])
     elif 'http_status_code' in response:
-        raise NotImplementedError()
+        checker = HTTPStatusCodeChecker(
+            status_code=response['http_status_code'])
     elif 'crc32body' in response:
         checker = CRC32Checker(header=response['crc32body'])
     else:
@@ -95,13 +112,17 @@ def _extract_retryable_exception(config):
 
 
 class RetryHandler(object):
-    """
-    Super simple retry handler.
-    Pass in the callable to be retried and another callable, the statusfn.
-    The statusfn will get called with the attempt number and the return
-    value and is responsible for performing any kind of delay needed.  It
-    should also return a boolean, True if the retryable needs to be
-    retried and False if it does not.
+    """Retry handler.
+
+    The retry handler takes two params, ``checker`` object
+    and an ``action`` object.
+
+    The ``checker`` object must be a callable object and based on a response
+    and an attempt number, determines whether or not sufficient criteria for
+    a retry has been met.  If this is the case then the ``action`` object
+    (which also is a callable) determines what needs to happen in the event
+    of a retry.
+
     """
 
     def __init__(self, checker, action):
@@ -109,11 +130,26 @@ class RetryHandler(object):
         self._action = action
 
     def __call__(self, response, attempts, **kwargs):
+        """Handler for a retry.
+
+        Intended to be hooked up to an event handler (hence the **kwargs),
+        this will process retries appropriately.
+
+        """
         if self._checker(response, attempts):
             return self._action(attempts=attempts)
 
 
 class MaxAttemptsDecorator(object):
+    """Allow retries up to a maximum number of attempts.
+
+    This will pass through calls to the decorated retry checker, provided
+    that the number of attempts does not exceed max_attempts.  It will
+    also catch any retryable_exceptions passed in.  Once max_attempts has
+    been exceeded, then False will be returned or the retryable_exceptions
+    that was previously being caught will be raised.
+
+    """
     def __init__(self, checker, max_attempts, retryable_exceptions=None):
         self._checker = checker
         self._max_attempts = max_attempts

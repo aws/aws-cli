@@ -27,20 +27,11 @@ class ConfigDocumentEventHandler(CLIDocumentEventHandler):
     interested in and implements the handlers for those events.
     """
 
-    def initialize(self, session):
-        CLIDocumentEventHandler.initialize(self, session)
-        session.register('doc-title.Config.*', self.title)
-        session.register('doc-description.Config.*', self.description)
-
-    def build_translation_map(self):
-        for op in self.service.operations:
-            self.translation_map[op.name] = op.cli_name
-
-    def title(self, help_command, **kwargs):
+    def doc_title(self, help_command, **kwargs):
         doc = help_command.doc
         doc.style.h1(help_command.name)
 
-    def description(self, help_command, **kwargs):
+    def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
         config = help_command.obj
         doc.style.h2('Description')

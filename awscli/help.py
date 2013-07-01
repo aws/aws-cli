@@ -169,9 +169,7 @@ class HelpCommand(object):
 
     def __call__(self, args, parsed_globals):
         # Create an event handler for a Provider Document
-        event_handler = self.EventHandlerClass()
-        # Initialize the handler, which registers all event handlers
-        event_handler.initialize(self.session)
+        event_handler = self.EventHandlerClass(self)
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.

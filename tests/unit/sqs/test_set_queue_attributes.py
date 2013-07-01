@@ -11,13 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import BaseCLIDriverTest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestSetQueueAttributes(BaseCLIDriverTest):
+class TestSetQueueAttributes(BaseAWSCommandParamsTest):
 
-    prefix = 'aws sqs set-queue-attributes'
+    prefix = 'sqs set-queue-attributes'
     queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
     def test_one(self):
@@ -26,8 +26,7 @@ class TestSetQueueAttributes(BaseCLIDriverTest):
         result = {'QueueUrl': self.queue_url,
                   'Attribute.1.Name': 'VisibilityTimeout',
                   'Attribute.1.Value': '15'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_shorthand(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
@@ -35,8 +34,7 @@ class TestSetQueueAttributes(BaseCLIDriverTest):
         result = {'QueueUrl': self.queue_url,
                   'Attribute.1.Name': 'VisibilityTimeout',
                   'Attribute.1.Value': '15'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

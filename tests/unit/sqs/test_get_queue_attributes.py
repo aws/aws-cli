@@ -11,38 +11,33 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestGetQueueAttributes(unittest.TestCase):
+class TestGetQueueAttributes(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws sqs get-queue-attributes'
-        self.queue_url = 'https://queue.amazonaws.com/4444/testcli'
+    prefix = 'sqs get-queue-attributes'
+    queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
     def test_no_attr(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         result = {'QueueUrl': self.queue_url}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_all(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attribute-names All'
         result = {'QueueUrl': self.queue_url,
                   'AttributeName.1': 'All'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_one(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attribute-names VisibilityTimeout'
         result = {'QueueUrl': self.queue_url,
                   'AttributeName.1': 'VisibilityTimeout'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_two(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
@@ -50,8 +45,7 @@ class TestGetQueueAttributes(unittest.TestCase):
         result = {'QueueUrl': self.queue_url,
                   'AttributeName.1': 'VisibilityTimeout',
                   'AttributeName.2': 'QueueArn'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

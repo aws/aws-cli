@@ -1,41 +1,13 @@
 import argparse
-import sys
 from difflib import get_close_matches
-
-from botocore.compat import copy_kwargs
-
-from .help import get_provider_help, get_service_help, get_operation_help
 
 
 class CLIArgParser(argparse.ArgumentParser):
-
     Formatter = argparse.RawTextHelpFormatter
+
     # When displaying invalid choice error messages,
     # this controls how many options to show per line.
     ChoicesPerLine = 2
-
-    def __init__(self, session, **kwargs):
-        self.session = session
-        self.cli_data = self.session.get_data('cli')
-        self.args = None
-        self.remaining = None
-        argparse.ArgumentParser.__init__(self, formatter_class=self.Formatter,
-                                         add_help=False,
-                                         conflict_handler='resolve',
-                                         description=self.cli_data['description'],
-                                         **kwargs)
-        self.build()
-
-    def build(self):
-        pass
-
-    def do_help(self):
-        pass
-
-    def parse(self, args):
-        if len(args) > 0 and args[0] == 'help':
-            self.do_help()
-        self.args, self.remaining = self.parse_known_args(args)
 
     def _check_value(self, action, value):
         """
@@ -59,11 +31,19 @@ class CLIArgParser(argparse.ArgumentParser):
                 msg.extend(extra)
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
-    def print_usage(self, fp):
-        fp.write('\n%s\n\n' % self.cli_data['synopsis'])
-
 
 class MainArgParser(CLIArgParser):
+    Formatter = argparse.RawTextHelpFormatter
+
+    def __init__(self, command_table, version_string,
+                 description, usage, argument_table):
+        super(MainArgParser, self).__init__(
+            formatter_class=self.Formatter,
+            add_help=False,
+            conflict_handler='resolve',
+            description=description,
+            usage=usage)
+        self._build(command_table, version_string, argument_table)
 
     def _create_choice_help(self, choices):
         help_str = ''
@@ -71,56 +51,36 @@ class MainArgParser(CLIArgParser):
             help_str += '* %s\n' % choice
         return help_str
 
-    def build(self):
-        for option_name in self.cli_data['options']:
-            option_data = copy_kwargs(self.cli_data['options'][option_name])
-            if 'choices' in option_data:
-                choices = option_data['choices']
-                if not isinstance(choices, list):
-                    provider = self.session.get_variable('provider')
-                    choices_path = choices.format(provider=provider)
-                    choices = self.session.get_data(choices_path)
-                if isinstance(choices, dict):
-                    choices = list(choices.keys())
-                option_data['help'] = self._create_choice_help(choices)
-                option_data['choices'] = choices + ['help']
-            self.add_argument(option_name, **option_data)
+    def _build(self, command_table, version_string, argument_table):
+        for argument_name in argument_table:
+            argument = argument_table[argument_name]
+            argument.add_to_parser(self)
         self.add_argument('--version', action="version",
-                          version=self.session.user_agent())
-
-    def do_help(self):
-        """
-        This will cause the interactive help to be generated in a
-        subprocess.  This also will cause a sys.exit call.
-        """
-        get_provider_help(self.session)
+                          version=version_string,
+                          help='Display the version of this tool')
+        self.add_argument('command', choices=list(command_table.keys()))
 
 
 class ServiceArgParser(CLIArgParser):
 
-    def __init__(self, session, service, **kwargs):
-        self.service = service
-        CLIArgParser.__init__(self, session, **kwargs)
+    Usage = ("aws [options] <service_name> <operation> [parameters]")
 
-    def do_help(self):
-        """
-        This will cause the interactive help to be generated in a
-        subprocess.  This also will cause a sys.exit call.
-        """
-        get_service_help(self.session, self.service)
+    def __init__(self, operations_table, service_name):
+        super(ServiceArgParser, self).__init__(
+            formatter_class=argparse.RawTextHelpFormatter,
+            add_help=False,
+            conflict_handler='resolve',
+            usage=self.Usage)
+        self._build(operations_table)
+        self._service_name = service_name
 
-    def build(self):
-        """
-        Create the subparser to handle the Service arguments.
-        """
-        operations = [op.cli_name for op in self.service.operations]
-        operations.append('help')
-        self.add_argument('operation', help='The operation',
-                          metavar='operation',
-                          choices=operations)
+    def _build(self, operations_table):
+        self.add_argument('operation', choices=list(operations_table.keys()))
 
 
 class OperationArgParser(CLIArgParser):
+    Formatter = argparse.RawTextHelpFormatter
+    Usage = ("aws [options] <service_name> <operation> [parameters]")
 
     type_map = {
         'structure': str,
@@ -135,52 +95,23 @@ class OperationArgParser(CLIArgParser):
         'double': float,
         'blob': str}
 
-    def __init__(self, session, service, operation, **kwargs):
-        self.service = service
-        self.operation = operation
-        CLIArgParser.__init__(self, session, **kwargs)
+    def __init__(self, argument_table, name):
+        super(OperationArgParser, self).__init__(
+            formatter_class=self.Formatter,
+            add_help=False,
+            usage=self.Usage,
+            conflict_handler='resolve')
+        self._build(argument_table, name)
 
-    def do_help(self):
-        """
-        This will cause the interactive help to be generated in a
-        subprocess.  This also will cause a sys.exit call.
-        """
-        get_operation_help(self.session, self.service, self.operation)
+    def _build(self, argument_table, name):
+        for arg_name in argument_table:
+            argument = argument_table[arg_name]
+            argument.add_to_parser(self, '--' + arg_name)
 
-    def build(self):
-        for param in self.operation.params:
-            if param.type == 'list':
-                self.add_argument(param.cli_name,
-                                  help=param.documentation,
-                                  nargs='*',
-                                  type=self.type_map[param.type],
-                                  required=param.required,
-                                  dest=param.py_name)
-            elif param.type == 'boolean':
-                if param.required:
-                    dest = param.cli_name[2:].replace('-', '_')
-                    mutex = self.add_mutually_exclusive_group(required=True)
-                    mutex.add_argument(param.cli_name,
-                                       help=param.documentation,
-                                       dest=dest,
-                                       action='store_true')
-                    false_name = '--no-' + param.cli_name[2:]
-                    mutex.add_argument(false_name,
-                                       help=param.documentation,
-                                       dest=dest,
-                                       action='store_false')
-                else:
-                    self.add_argument(param.cli_name,
-                                      help=param.documentation,
-                                      action='store_true',
-                                      required=param.required,
-                                      dest=param.py_name)
-            else:
-                self.add_argument(param.cli_name,
-                                  help=param.documentation,
-                                  type=self.type_map[param.type],
-                                  required=param.required,
-                                  dest=param.py_name)
-        if self.operation.is_streaming():
-            self.add_argument('outfile', metavar='output_file',
-                              help='Where to save the content')
+    def parse_known_args(self, args):
+        if len(args) == 1 and args[0] == 'help':
+            namespace = argparse.Namespace()
+            namespace.help = 'help'
+            return namespace, []
+        else:
+            return super(OperationArgParser, self).parse_known_args(args)

@@ -14,9 +14,7 @@
 import os
 import json
 import logging
-
 import six
-from bcdoc.mangen import OperationDocument
 
 
 SCALAR_TYPES = set([
@@ -94,28 +92,6 @@ class ParamShorthand(object):
     def __init__(self):
         pass
 
-    def add_docs(self, operation_doc, param, **kwargs):
-        """Inject shorthand syntax docs into help text."""
-        shape_structure = detect_shape_structure(param)
-        method = self.SHORTHAND_SHAPES.get(shape_structure)
-        if method is None:
-            return
-        doc_method = getattr(self, '_docs' + method, None)
-        if doc_method is not None:
-            self._add_docs(doc_method, operation_doc, param)
-
-    def _add_docs(self, doc_method, operation_doc, param):
-        operation_doc.indent()
-        p = operation_doc.add_paragraph()
-        p.write(operation_doc.style.italics('Shorthand Syntax'))
-        operation_doc.add_paragraph().write('::')
-        operation_doc.add_paragraph()
-        operation_doc.indent()
-        doc_method(operation_doc, param)
-        operation_doc.add_paragraph()
-        operation_doc.dedent()
-        operation_doc.dedent()
-
     def __call__(self, param, value, **kwargs):
         """Attempt to parse shorthand syntax for values.
 
@@ -140,7 +116,7 @@ class ParamShorthand(object):
             be raised.
 
         """
-        parse_method = self._get_parse_method_for_param(param, value)
+        parse_method = self.get_parse_method_for_param(param, value)
         if parse_method is None:
             return
         else:
@@ -148,20 +124,15 @@ class ParamShorthand(object):
                 LOG.debug("Using %s for param %s", parse_method, param)
                 parsed = getattr(self, parse_method)(param, value)
             except ParamSyntaxError as e:
-                # Give them a helpful error message.
-                doc_method = getattr(self, '_docs' + parse_method, None)
-                if doc_method is None:
+                doc_fn = self._get_example_fn(param)
+                # Try to give them a helpful error message.
+                if doc_fn is None:
                     raise e
                 else:
-                    help_text = six.StringIO()
-                    doc = OperationDocument(param.operation.session,
-                                            param.operation)
-                    doc_method(doc, param)
-                    doc.render(fp=help_text)
-                    raise ParamError(param, help_text.getvalue())
+                    raise ParamError(param, doc_fn(param))
             return parsed
 
-    def _get_parse_method_for_param(self, param, value):
+    def get_parse_method_for_param(self, param, value=None):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks
         # like json we immediately return.
@@ -177,24 +148,27 @@ class ParamShorthand(object):
         parse_method = self.SHORTHAND_SHAPES.get(structure)
         return parse_method
 
-    def _docs_list_scalar_list_parse(self, doc, param):
-        doc.add_paragraph().write("Key value pairs, where values are separated "
-                                  "by commas.")
-        doc.add_paragraph()
-        p2 = doc.add_paragraph()
-        p2.write('%s ' % param.cli_name)
-        inner_params = param.members.members
-        scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
-        list_params = [p for p in inner_params if p.type == 'list']
-        for param in scalar_params:
-            p2.write('%s=%s1,' % (param.py_name, param.type))
-        for param in list_params[:-1]:
-            param_type = param.members.type
-            p2.write('%s=%s1,%s2,' % (param.py_name, param_type, param_type))
-        last_param = list_params[-1]
-        param_type = last_param.members.type
-        p2.write('%s=%s1,%s2' % (last_param.py_name, param_type,
-                                 param_type))
+    def _get_example_fn(self, param):
+        doc_fn = None
+        shape_structure = detect_shape_structure(param)
+        method = self.SHORTHAND_SHAPES.get(shape_structure)
+        if method:
+            doc_fn = getattr(self, '_docs' + method, None)
+        return doc_fn
+
+    def add_example_fn(self, arg_name, help_command, **kwargs):
+        """
+        Adds a callable to the ``example_fn`` attribute of the parameter
+        if the parameter type is supported by shorthand syntax.  This
+        callable should return a string containing just the example and
+        not any of the ReST formatting that might be required in the docs.
+        """
+        argument = help_command.arg_table[arg_name]
+        param = argument.argument_object
+        if param:
+            LOG.debug('Adding example fn for: %s' % param.name)
+            doc_fn = self._get_example_fn(param)
+            param.example_fn = doc_fn
 
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
@@ -232,12 +206,6 @@ class ParamShorthand(object):
             parsed.append(current_parsed)
         return parsed
 
-    def _docs_list_scalar_parse(self, doc, param):
-        detect_shape_structure(param)
-        p2 = doc.add_paragraph()
-        name = param.members.members[0].py_name
-        p2.write('%s %s1 %s2 %s3' % (param.cli_name, name, name, name))
-
     def _list_scalar_parse(self, param, value):
         single_param = param.members.members[0]
         parsed = []
@@ -245,16 +213,6 @@ class ParamShorthand(object):
         for v in value:
             parsed.append({single_param.py_name: v})
         return parsed
-
-    def _docs_list_key_value_parse(self, doc, param):
-        p = doc.add_paragraph()
-        p.write("Key value pairs, with multiple values separated by "
-                "a space.")
-        doc.add_paragraph()
-        p2 = doc.add_paragraph()
-        p2.write('%s ' % param.cli_name)
-        p2.write(','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
-                          for sub_param in param.members.members]))
 
     def _list_key_value_parse(self, param, value):
         # param is a list param.
@@ -265,25 +223,6 @@ class ParamShorthand(object):
             single_struct_param = self._key_value_parse(struct_param, v)
             parsed.append(single_struct_param)
         return parsed
-
-    def _docs_key_value_parse(self, doc, param):
-        p = doc.add_paragraph()
-        p.write('%s ' % param.cli_name)
-        if param.type == 'structure':
-            p.write(','.join(['%s=value' % sub_param.py_name
-                            for sub_param in param.members]))
-        elif param.type == 'map':
-            p.write("key_name=string,key_name2=string")
-            if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
-                doc.add_paragraph()
-                p2 = doc.add_paragraph()
-                p2.write("Where valid key names are:")
-                doc.add_paragraph()
-                doc.indent()
-                for value in param.keys.enum:
-                    doc.add_paragraph().write(value)
-                doc.dedent()
-
 
     def _key_value_parse(self, param, value):
         # The expected structure is:
@@ -315,6 +254,45 @@ class ParamShorthand(object):
         elif param.type == 'map':
             return dict([(v, None) for v in param.keys.enum])
 
+    def _docs_list_scalar_list_parse(self, param):
+        s = 'Key value pairs, where values are separated by commas.\n'
+        s += '%s ' % param.cli_name
+        inner_params = param.members.members
+        scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
+        list_params = [p for p in inner_params if p.type == 'list']
+        for param in scalar_params:
+            s += '%s=%s1,' % (param.py_name, param.type)
+        for param in list_params[:-1]:
+            param_type = param.members.type
+            s += '%s=%s1,%s2,' % (param.py_name, param_type, param_type)
+        last_param = list_params[-1]
+        param_type = last_param.members.type
+        s += '%s=%s1,%s2' % (last_param.py_name, param_type, param_type)
+        return s
+
+    def _docs_list_scalar_parse(self, param):
+        name = param.members.members[0].py_name
+        return '%s %s1 %s2 %s3' % (param.cli_name, name, name, name)
+
+    def _docs_list_key_value_parse(self, param):
+        s = "Key value pairs, with multiple values separated by a space.\n"
+        s += '%s ' % param.cli_name
+        s += ','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
+                       for sub_param in param.members.members])
+        return s
+
+    def _docs_key_value_parse(self, param):
+        s = '%s ' % param.cli_name
+        if param.type == 'structure':
+            s += ','.join(['%s=value' % sub_param.py_name
+                            for sub_param in param.members])
+        elif param.type == 'map':
+            s += 'key_name=string,key_name2=string'
+            if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
+                s += '\nWhere valid key names are:\n'
+                for value in param.keys.enum:
+                    s += '  %s\n' % value
+        return s
 
 def unpack_cli_arg(parameter, value):
     """
@@ -372,5 +350,49 @@ def unpack_scalar_cli_arg(parameter, value):
             msg = 'Blob values must be a path to a file.'
             raise ValueError(msg)
         return open(file_path, 'rb')
+    elif parameter.type == 'boolean':
+        return bool(value)
     else:
         return str(value)
+
+
+def add_streaming_output_arg(argument_table, operation, **kwargs):
+    stream_param = operation.is_streaming()
+    if stream_param:
+        argument_table['output-file'] = StreamingOutputArgument(operation,
+                                                                stream_param)
+
+
+class StreamingOutputArgument(object):
+    BUFFER_SIZE = 32768
+
+    def __init__(self, operation, stream_param_name, buffer_size=None):
+        self._operation = operation
+        self._output_param_key = stream_param_name
+        self._output_file = None
+        if buffer_size is None:
+            buffer_size = self.BUFFER_SIZE
+        self._buffer_size = buffer_size
+
+    def add_to_parser(self, parser, cli_name=None):
+        parser.add_argument(self._output_param_key, metavar='output_file',
+                            help='Filename where the content will be saved')
+
+    def add_to_params(self, parameters, value):
+        self._output_file = value
+        service_name = self._operation.service.endpoint_prefix
+        operation_name = self._operation.name
+        self._operation.session.register('after-call.%s.%s' % (
+            service_name, operation_name), self.save_file)
+
+    def save_file(self, http_response, parsed, **kwargs):
+        body = parsed[self._output_param_key]
+        buffer_size = self._buffer_size
+        with open(self._output_file, 'wb') as fp:
+            data = body.read(buffer_size)
+            while data:
+                fp.write(data)
+                data = body.read(buffer_size)
+        # We don't want to include the streaming param in
+        # the returned response.
+        del parsed[self._output_param_key]

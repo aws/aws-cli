@@ -11,15 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestAttachInternetGateway(unittest.TestCase):
+class TestAttachInternetGateway(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 attach-internet-gateway'
+    prefix = 'ec2 attach-internet-gateway'
 
     def test_both_params(self):
         cmdline = self.prefix
@@ -27,8 +25,7 @@ class TestAttachInternetGateway(unittest.TestCase):
         cmdline += ' --internet-gateway-id igw-12345678'
         result = {'VpcId': 'vpc-12345678',
                   'InternetGatewayId': 'igw-12345678'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

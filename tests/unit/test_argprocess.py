@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+from argparse import Namespace
 
 import botocore.session
-from bcdoc.mangen import OperationDocument
 import six
 
+from awscli.clidriver import CLIArgument
+from awscli.help import OperationHelpCommand
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthand
@@ -212,6 +214,24 @@ class TestParamShorthand(BaseArgProcessTest):
             self.simplify(p, ["names=instance-id,values=foo,bar"])
 
 
+MAPHELP = """--attributes key_name=string,key_name2=string
+Where valid key names are:
+  Policy
+  VisibilityTimeout
+  MaximumMessageSize
+  MessageRetentionPeriod
+  ApproximateNumberOfMessages
+  ApproximateNumberOfMessagesNotVisible
+  CreatedTimestamp
+  LastModifiedTimestamp
+  QueueArn
+  ApproximateNumberOfMessagesDelayed
+  DelaySeconds
+  ReceiveMessageWaitTimeSeconds\n"""
+
+LISTSCALARSHELP = """Key value pairs, with multiple values separated by a space.
+--listeners protocol=string,load_balancer_port=integer,instance_protocol=string,instance_port=integer,ssl_certificate_id=string"""
+
 class TestDocGen(BaseArgProcessTest):
     # These aren't very extensive doc tests, as we want to stay somewhat
     # flexible and allow the docs to slightly change without breaking these
@@ -222,54 +242,50 @@ class TestDocGen(BaseArgProcessTest):
 
     def test_gen_map_type_docs(self):
         p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        # Key parts include:
-        # Title that says it's the shorthand syntax.
-        self.assertIn('Shorthand Syntax', rendered)
-        # sample syntax
-        self.assertIn('key_name=string', rendered)
-        # valid key names
-        self.assertIn('VisibilityTimeout', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        self.assertEqual(doc_string, MAPHELP)
 
     def test_gen_list_scalar_docs(self):
         p = self.get_param_object(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        # Key parts include:
-        # Title that says it's the shorthand syntax.
-        self.assertIn('Shorthand Syntax', rendered)
-        # sample syntax
-        self.assertIn('--instances instance_id1', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        self.assertEqual(doc_string,
+                         '--instances instance_id1 instance_id2 instance_id3')
 
     def test_gen_list_structure_of_scalars_docs(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        self.assertIn('Shorthand Syntax', rendered)
-        self.assertIn('--listeners', rendered)
-        self.assertIn('protocol=string', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        self.assertEqual(doc_string, LISTSCALARSHELP)
 
     def test_gen_list_structure_multiple_scalar_docs(self):
         p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        self.assertIn('Shorthand Syntax', rendered)
-        # Check for syntax for a list type.
-        self.assertIn('string1,string2', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        s = 'Key value pairs, where values are separated by commas.\n--playlists name=string1,format=string1,output_keys=string1,string2'
+        self.assertEqual(doc_string, s)
 
 
 if __name__ == '__main__':

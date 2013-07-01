@@ -8,6 +8,11 @@ to assume that the config command will have the following subcommands::
     aws config help
     aws config foo
     aws config bar
+
+TODO
+This is still more work than it should have to be.  We need to find ways
+to simplify this process and more of the details in awscli rather than in
+the plugin.
 """
 from awscli.clidriver import BuiltInCommand
 from awscli.help import HelpCommand
@@ -72,6 +77,8 @@ class ConfigCommand(BuiltInCommand):
         return op_table[parsed_args.operation](remaining, parsed_globals)
 
     def _create_service_parser(self, operation_table):
+        # TODO
+        # Kind of kludgy that we have to use ServiceArgParser here.
         return ServiceArgParser(
             operations_table=operation_table, service_name=self.name)
 

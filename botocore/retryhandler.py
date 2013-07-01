@@ -4,6 +4,8 @@ import functools
 import logging
 from binascii import crc32
 
+from botocore.exceptions import ChecksumError
+
 
 log = logging.getLogger(__name__)
 
@@ -43,21 +45,32 @@ def create_retry_action_from_config(config, operation_name=None):
 def create_checker_from_retry_config(config, operation_name=None):
     checkers = []
     max_attempts = None
+    retryable_exceptions = []
     if '__default__' in config:
         policies = config['__default__'].get('policies', [])
         max_attempts = config['__default__']['max_attempts']
         for key in policies:
-            checkers.append(_create_single_checker(policies[key]))
+            current_config = policies[key]
+            checkers.append(_create_single_checker(current_config))
+            retry_exception = _extract_retryable_exception(current_config)
+            if retry_exception is not None:
+                retryable_exceptions.append(retry_exception)
     if operation_name is not None and config.get(operation_name) is not None:
         operation_policies = config[operation_name]['policies']
         for key in operation_policies:
             checkers.append(_create_single_checker(operation_policies[key]))
+            retry_exception = _extract_retryable_exception(
+                operation_policies[key])
+            if retry_exception is not None:
+                retryable_exceptions.append(retry_exception)
     if len(checkers) == 1:
         # Don't need to use a MultiChecker
         return MaxAttemptsDecorator(checkers[0], max_attempts=max_attempts)
     else:
         multi_checker = MultiChecker(checkers)
-        return MaxAttemptsDecorator(multi_checker, max_attempts=max_attempts)
+        return MaxAttemptsDecorator(
+            multi_checker, max_attempts=max_attempts,
+            retryable_exceptions=tuple(retryable_exceptions))
 
 
 def _create_single_checker(config):
@@ -73,6 +86,12 @@ def _create_single_checker(config):
     else:
         raise ValueError("Unknown retry policy: %s" % config)
     return checker
+
+
+def _extract_retryable_exception(config):
+    response = config['applies_when']['response']
+    if 'crc32body' in response:
+        return ChecksumError
 
 
 class RetryHandler(object):
@@ -95,13 +114,13 @@ class RetryHandler(object):
 
 
 class MaxAttemptsDecorator(object):
-    def __init__(self, checker, max_attempts):
+    def __init__(self, checker, max_attempts, retryable_exceptions=None):
         self._checker = checker
         self._max_attempts = max_attempts
+        self._retryable_exceptions = retryable_exceptions
 
     def __call__(self, response, attempt_number):
-        print("MaxAttemptsDecorator")
-        should_retry = self._checker(response, attempt_number)
+        should_retry = self._should_retry(response, attempt_number)
         if should_retry:
             if attempt_number >= self._max_attempts:
                 return False
@@ -109,6 +128,16 @@ class MaxAttemptsDecorator(object):
                 return should_retry
         else:
             return False
+
+    def _should_retry(self, response, attempt_number):
+        if self._retryable_exceptions and \
+                attempt_number < self._max_attempts:
+            try:
+                should_retry = self._checker(response, attempt_number)
+            except self._retryable_exceptions as e:
+                return True
+        else:
+            return self._checker(response, attempt_number)
 
 
 class HTTPStatusCodeChecker(object):
@@ -159,4 +188,6 @@ class CRC32Checker(object):
             if not actual_crc32 == int(expected_crc):
                 log.debug("crc32 check failed, expected != actual: "
                           "%s != %s", int(expected_crc), actual_crc32)
-                return False
+                raise ChecksumError(checksum_type='crc32',
+                                    expected_checksum=int(expected_crc),
+                                    actual_checksum=actual_crc32)

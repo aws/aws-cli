@@ -161,3 +161,12 @@ class EventNotFound(BotoCoreError):
     :ivar event_name: The name of the event the user attempted to use.
     """
     fmt = 'The event ({event_name}) is not known'
+
+
+class ChecksumError(BotoCoreError):
+    """The expected checksum did not match the calculated checksum.
+
+    """
+    fmt = ('Checksum {checksum_type} failed, expected checksum '
+           '{expected_checksum} did not match calculated checksum '
+           '{actual_checksum}.')

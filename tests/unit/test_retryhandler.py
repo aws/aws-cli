@@ -26,6 +26,8 @@ from tests import unittest
 import mock
 
 from botocore import retryhandler
+from botocore.exceptions import ChecksumError
+
 
 HTTP_500_RESPONSE = mock.Mock()
 HTTP_500_RESPONSE.status_code = 500
@@ -171,6 +173,20 @@ class TestCreateRetryConfiguration(unittest.TestCase):
         self.assertEqual(handler._action(attempts=2), 2)
         self.assertEqual(handler._action(attempts=3), 4)
 
+    def test_crc32_check_propogates_error(self):
+        handler = retryhandler.create_retry_handler(
+            self.retry_config, operation_name='OperationFoo')
+        http_response = mock.Mock()
+        http_response.status_code = 200
+        # This is not the crc32 of b'foo', so this should
+        # fail the crc32 check.
+        http_response.headers = {'x-amz-crc32': 2356372768}
+        http_response.content = b'foo'
+        # The first 10 attempts we get a retry.
+        self.assertEqual(handler(response=(http_response, {}), attempts=1), 1)
+        with self.assertRaises(ChecksumError):
+            handler(response=(http_response, {}), attempts=10)
+
 
 class TestRetryHandler(unittest.TestCase):
     def test_action_tied_to_policy(self):
@@ -228,8 +244,8 @@ class TestCRC32Checker(unittest.TestCase):
         # fail the crc32 check.
         http_response.headers = {'x-amz-crc32': 2356372768}
         http_response.content = b'foo'
-        self.assertFalse(self.checker(
-            response=(http_response, {}), attempt_number=1))
+        with self.assertRaises(ChecksumError):
+            self.checker(response=(http_response, {}), attempt_number=1)
 
 
 if __name__ == "__main__":

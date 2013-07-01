@@ -22,7 +22,10 @@
 # IN THE SOFTWARE.
 #
 import os
+
 from tests import BaseEnvVar
+from mock import patch, Mock
+
 import botocore.session
 from botocore.awsrequest import AWSRequest
 from botocore.endpoint import RestEndpoint
@@ -37,11 +40,19 @@ class TestS3Addressing(BaseEnvVar):
         self.session = botocore.session.get_session()
         self.s3 = self.session.get_service('s3')
 
+    @patch('botocore.response.get_response', Mock())
+    def get_prepared_request(self, op, param):
+        request = []
+        self.endpoint._send_request = lambda prepared_request, operation: \
+                request.append(prepared_request)
+        self.endpoint.make_request(op, param)
+        return request[0]
+
     def test_list_objects_dns_name(self):
         self.endpoint = self.s3.get_endpoint('us-east-1')
         op = self.s3.get_operation('ListObjects')
         params = op.build_parameters(bucket='safename')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://safename.s3.amazonaws.com/')
 
@@ -49,7 +60,7 @@ class TestS3Addressing(BaseEnvVar):
         self.endpoint = self.s3.get_endpoint('us-east-1')
         op = self.s3.get_operation('ListObjects')
         params = op.build_parameters(bucket='un_safe_name')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://s3.amazonaws.com/un_safe_name')
 
@@ -57,7 +68,7 @@ class TestS3Addressing(BaseEnvVar):
         self.endpoint = self.s3.get_endpoint('us-west-2')
         op = self.s3.get_operation('ListObjects')
         params = op.build_parameters(bucket='safename')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://safename.s3.amazonaws.com/')
 
@@ -65,7 +76,7 @@ class TestS3Addressing(BaseEnvVar):
         self.endpoint = self.s3.get_endpoint('us-west-2')
         op = self.s3.get_operation('ListObjects')
         params = op.build_parameters(bucket='un_safe_name')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://s3-us-west-2.amazonaws.com/un_safe_name')
 
@@ -81,7 +92,7 @@ class TestS3Addressing(BaseEnvVar):
                                      acl='public-read',
                                      content_language='piglatin',
                                      content_type='text/plain')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://my.valid.name.s3.amazonaws.com/mykeyname')
         fp.close()
@@ -98,11 +109,11 @@ class TestS3Addressing(BaseEnvVar):
                                      acl='public-read',
                                      content_language='piglatin',
                                      content_type='text/plain')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://my.valid.name.s3.amazonaws.com/mykeyname')
         fp.close()
-        
+
     def test_put_object_dns_name_single_letter_non_classic(self):
         self.endpoint = self.s3.get_endpoint('us-west-2')
         op = self.s3.get_operation('PutObject')
@@ -115,7 +126,7 @@ class TestS3Addressing(BaseEnvVar):
                                      acl='public-read',
                                      content_language='piglatin',
                                      content_type='text/plain')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://a.valid.name.s3.amazonaws.com/mykeyname')
         fp.close()
@@ -125,7 +136,7 @@ class TestS3Addressing(BaseEnvVar):
         op = self.s3.get_operation('GetObject')
         params = op.build_parameters(bucket='AnInvalidName',
                                      key='mykeyname')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://s3-us-west-2.amazonaws.com/AnInvalidName/mykeyname')
 
@@ -134,7 +145,7 @@ class TestS3Addressing(BaseEnvVar):
         op = self.s3.get_operation('GetObject')
         params = op.build_parameters(bucket='AnInvalidName',
                                      key='mykeyname')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://s3.amazonaws.com/AnInvalidName/mykeyname')
 
@@ -143,7 +154,7 @@ class TestS3Addressing(BaseEnvVar):
         op = self.s3.get_operation('GetObject')
         params = op.build_parameters(bucket='192.168.5.4',
                                      key='mykeyname')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://s3.amazonaws.com/192.168.5.4/mykeyname')
 
@@ -153,10 +164,9 @@ class TestS3Addressing(BaseEnvVar):
         op = self.s3.get_operation('GetObject')
         params = op.build_parameters(bucket='192.168.5.256',
                                      key='mykeyname')
-        prepared_request = self.endpoint.make_request(op, params, no_op=True)
+        prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
                          'https://192.168.5.256.s3.amazonaws.com/mykeyname')
-
 
 
 if __name__ == "__main__":

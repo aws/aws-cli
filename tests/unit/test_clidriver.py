@@ -25,6 +25,7 @@ from awscli.clidriver import create_clidriver
 from awscli.clidriver import BuiltInArgument
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
+from botocore.provider import Provider
 
 
 GET_DATA = {
@@ -32,15 +33,11 @@ GET_DATA = {
         'description': 'description',
         'synopsis': 'usage: foo',
         'options': {
-            "service_name": {
-                "choices": "{provider}/_services",
-                "metavar": "service_name"
-            },
-            "--debug": {
+            "debug": {
                 "action": "store_true",
                 "help": "Turn on debug logging"
             },
-            "--output": {
+            "output": {
                 "choices": [
                     "json",
                     "text",
@@ -48,23 +45,23 @@ GET_DATA = {
                 ],
                 "metavar": "output_format"
             },
-            "--profile": {
+            "profile": {
                 "help": "Use a specific profile from your credential file",
                 "metavar": "profile_name"
             },
-            "--region": {
+            "region": {
                 "choices": "{provider}/_regions",
                 "metavar": "region_name"
             },
-            "--endpoint-url": {
+            "endpoint-url": {
                 "help": "Override service's default URL with the given URL",
                 "metavar": "endpoint_url"
             },
-            "--no-verify-ssl": {
+            "no-verify-ssl": {
                 "action": "store_true",
                 "help": "Override default behavior of verifying SSL certificates"
             },
-            "--no-paginate": {
+            "no-paginate": {
                 "action": "store_false",
                 "help": "Disable automatic pagination",
                 "dest": "paginate"
@@ -87,6 +84,7 @@ class FakeSession(object):
         if emitter is None:
             emitter = HierarchicalEmitter()
         self.emitter = emitter
+        self.provider = Provider(self, 'aws')
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)

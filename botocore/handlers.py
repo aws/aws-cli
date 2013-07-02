@@ -28,8 +28,9 @@ import base64
 import json
 import hashlib
 import logging
+import re
 import six
-from botocore.compat import unquote
+from .compat import urlsplit, urlunsplit, unquote
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +65,71 @@ def calculate_md5(event_name, params, **kwargs):
         md5.update(params['payload'])
         params['headers']['Content-MD5'] = base64.b64encode(md5.digest())
 
+
+LabelRE = re.compile('[a-z0-9][a-z0-9\-]*[a-z0-9]')
+
+
+def check_dns_name(bucket_name):
+    """
+    Check to see if the ``bucket_name`` complies with the
+    restricted DNS naming conventions necessary to allow
+    access via virtual-hosting style.
+    """
+    n = len(bucket_name)
+    if n < 3 or n > 63:
+        # Wrong length
+        return False
+    labels = bucket_name.split('.')
+    if len(labels) == 4:
+        # Must make sure this is not formatted like an IP address
+        if all([(d.isdigit() and int(d)<256) for d in labels]):
+            return False
+    for label in bucket_name.split('.'):
+        if len(label) == 0:
+            # Must be two '.' in a row
+            return False
+        if len(label) == 1:
+            if label.isalnum():
+                continue
+            # Any single character label must be alphanumeric
+            return False
+        match = LabelRE.match(label)
+        if match is None or match.end() != len(label):
+            return False
+    return True
+
+
+def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
+    """
+    This handler looks at S3 requests just before they are signed.
+    If there is a bucket name on the path (true for everything except
+    ListAllBuckets) it checks to see if that bucket name conforms to
+    the DNS naming conventions.  If it does, it alters the request to
+    use ``virtual hosting`` style addressing rather than ``path-style``
+    addressing.  This allows us to avoid 301 redirects for all
+    bucket names that can be CNAME'd.
+    """
+    logger.debug('fix_s3_host: uri=%s' % request.url)
+    parts = urlsplit(request.url)
+    auth.auth_path = parts.path
+    path_parts = parts.path.split('/')
+    logger.debug('path_parts: %s' % path_parts)
+    if len(path_parts) > 1:
+        # If the operation is on a bucket, the auth_path must be
+        # terminated with a '/' character.
+        if len(path_parts) == 2:
+            if auth.auth_path[-1] != '/':
+                auth.auth_path += '/'
+        bucket_name = path_parts[1]
+        if check_dns_name(bucket_name):
+            path_parts.remove(bucket_name)
+            host = bucket_name + '.' + endpoint.service.global_endpoint
+            new_tuple = (parts.scheme, host, '/'.join(path_parts),
+                         parts.query, '')
+            new_uri = urlunsplit(new_tuple)
+            request.url = new_uri
+            logger.debug('fix_s3_host: new uri=%s' % new_uri)
+
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
 # automatically registered with that Session.
@@ -74,5 +140,6 @@ BUILTIN_HANDLERS = [
      decode_quoted_jsondoc),
     ('after-parsed.cloudformation.*.TemplateBody.TemplateBody',
      decode_jsondoc),
-    ('before-call.s3.PutBucketTagging', calculate_md5)
+    ('before-call.s3.PutBucketTagging', calculate_md5),
+    ('before-auth.s3', fix_s3_host)
 ]

@@ -41,6 +41,7 @@ logger = logging.getLogger(__name__)
 EMPTY_SHA256_HASH = (
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
 
+
 class SigV2Auth(object):
     """
     Sign a request with Signature V2.
@@ -285,6 +286,7 @@ class HmacV1Auth(object):
             raise NoCredentialsError
         self.service_name = service_name
         self.region_name = region_name
+        self.auth_path = None  # see comment in canonical_resource below
 
     def sign_string(self, string_to_sign):
         new_hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
@@ -335,7 +337,16 @@ class HmacV1Auth(object):
     def canonical_resource(self, split):
         # don't include anything after the first ? in the resource...
         # unless it is one of the QSA of interest, defined above
-        buf = split.path
+        # NOTE:
+        # The path in the canonical resource should always be the
+        # full path including the bucket name, even for virtual-hosting
+        # style addressing.  The ``auth_path`` keeps track of the full
+        # path for the canonical resource and would be passed in if
+        # the client was using virtual-hosting style.
+        if self.auth_path:
+            buf = self.auth_path
+        else:
+            buf = split.path
         if split.query:
             qsa = split.query.split('&')
             qsa = [a.split('=', 1) for a in qsa]

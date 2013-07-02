@@ -124,9 +124,9 @@ To use a config file, create a configuration file like this::
 As you can see, you can have multiple ``profiles`` defined in this
 configuration file and specify which profile to use by using the
 ``--profile`` option.  If no profile is specified the ``default``
-profile is used.  Once you have created the config file, you need to
-tell aws-cli where to find it.  Do this by setting the appropriate
-environment variable::
+profile is used.  You MUST prefix each profile group with ``profile`` string.
+Once you have created the config file, you need to tell aws-cli where to find it.
+Do this by setting the appropriate environment variable::
 
     $ export AWS_CONFIG_FILE=/path/to/config_file
 

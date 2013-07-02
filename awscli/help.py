@@ -14,14 +14,17 @@ import sys
 import os
 import platform
 from subprocess import Popen, PIPE
-from argprocess import ParamShorthand
+
+from docutils.core import publish_string
 from bcdoc.clidocs import ReSTDocument
 from bcdoc.clidocs import ProviderDocumentEventHandler
 from bcdoc.clidocs import ServiceDocumentEventHandler
 from bcdoc.clidocs import OperationDocumentEventHandler
 import bcdoc.clidocevents
 from bcdoc.textwriter import TextWriter
-from docutils.core import publish_string
+
+from awscli.argprocess import ParamShorthand
+
 
 class HelpRenderer(object):
     """

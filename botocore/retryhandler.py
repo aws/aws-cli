@@ -1,4 +1,3 @@
-import time
 import random
 import functools
 import logging
@@ -169,7 +168,7 @@ class MaxAttemptsDecorator(object):
         if self._retryable_exceptions and \
                 attempt_number < self._max_attempts:
             try:
-                should_retry = self._checker(response, attempt_number)
+                return self._checker(response, attempt_number)
             except self._retryable_exceptions as e:
                 return True
         else:

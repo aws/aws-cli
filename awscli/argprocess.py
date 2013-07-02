@@ -332,7 +332,8 @@ def unpack_complex_cli_arg(parameter, value):
             if value.lstrip()[0] == '[':
                 return json.loads(value)
         elif isinstance(value, list) and len(value) == 1:
-            if value[0].lstrip()[0] == '[':
+            single_value = value[0].strip()
+            if single_value and single_value[0] == '[':
                 return json.loads(value[0])
         return [unpack_cli_arg(parameter.members, v) for v in value]
 

@@ -298,6 +298,14 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
+    def test_empty_params_gracefully_handled(self):
+        driver = create_clidriver()
+        # Simulates the equivalent in bash: --identifies ""
+        cmd = 'ses get-identity-dkim-attributes --identities'.split()
+        cmd.append('')
+        rc = driver.main(cmd)
+        self.assertEqual(rc, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

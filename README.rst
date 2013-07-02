@@ -122,11 +122,13 @@ To use a config file, create a configuration file like this::
     region=us-west-2
 
 As you can see, you can have multiple ``profiles`` defined in this
-configuration file and specify which profile to use by using the
-``--profile`` option.  If no profile is specified the ``default``
-profile is used.  Once you have created the config file, you need to
-tell aws-cli where to find it.  Do this by setting the appropriate
-environment variable::
+configuration file and specify which profile to use by using the ``--profile``
+option.  If no profile is specified the ``default`` profile is used.  Except
+for the default profile, you **must** prefix each config section of a profile
+group with ``profile``.  For example, if you have a profile named "testing" the
+section header would be ``[profile testing]``.  Once you have created the
+config file, you need to tell aws-cli where to find it.  Do this by setting the
+appropriate environment variable::
 
     $ export AWS_CONFIG_FILE=/path/to/config_file
 

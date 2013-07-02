@@ -109,7 +109,7 @@ class CLIDriver(object):
                                                     self.cli_usage)
         parser = MainArgParser(
             command_table, self.session.user_agent(),
-            self.cli_description, self.cli_usage, argument_table)
+            self.cli_description, self.cli_synopsis, argument_table)
         return parser
 
     def main(self, args=None):

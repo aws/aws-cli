@@ -338,7 +338,7 @@ def unpack_complex_cli_arg(parameter, value):
 
 
 def unpack_scalar_cli_arg(parameter, value):
-    if parameter.type == 'integer':
+    if parameter.type == 'integer' or parameter.type == 'long':
         return int(value)
     elif parameter.type == 'float' or parameter.type == 'double':
         # TODO: losing precision on double types

@@ -189,6 +189,14 @@ class TestParamShorthand(BaseArgProcessTest):
         ])
         self.assertEqual(simplified, expected)
 
+    def test_keyval_with_long_values(self):
+        p = self.get_param_object(
+            'dynamodb.UpdateTable.ProvisionedThroughput')
+        value = 'write_capacity_units=10,read_capacity_units=10'
+        returned = self.simplify(p, value)
+        self.assertEqual(returned, {'write_capacity_units': 10,
+                                    'read_capacity_units': 10})
+
     def test_error_messages_for_structure_scalar(self):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')

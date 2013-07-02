@@ -248,5 +248,24 @@ class TestCRC32Checker(unittest.TestCase):
             self.checker(response=(http_response, {}), attempt_number=1)
 
 
+class TestDelayExponential(unittest.TestCase):
+    def test_delay_with_numeric_base(self):
+        self.assertEqual(retryhandler.delay_exponential(base=3,
+                                                        growth_factor=2,
+                                                        attempts=3), 12)
+
+    def test_delay_with_rand_string(self):
+        delay = retryhandler.delay_exponential(base='rand',
+                                               growth_factor=2,
+                                               attempts=3)
+        # 2 ** (3 - 1) == 4, so the retry is between 0, 4.
+        self.assertTrue(0 <= delay <= 4)
+
+    def test_value_error_raised_with_non_positive_number(self):
+        with self.assertRaises(ValueError):
+            retryhandler.delay_exponential(
+                base=-1, growth_factor=2, attempts=3)
+
+
 if __name__ == "__main__":
     unittest.main()

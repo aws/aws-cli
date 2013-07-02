@@ -25,6 +25,21 @@ from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
 
 
+MAPHELP = """--attributes key_name=string,key_name2=string
+Where valid key names are:
+  Policy
+  VisibilityTimeout
+  MaximumMessageSize
+  MessageRetentionPeriod
+  ApproximateNumberOfMessages
+  ApproximateNumberOfMessagesNotVisible
+  CreatedTimestamp
+  LastModifiedTimestamp
+  QueueArn
+  ApproximateNumberOfMessagesDelayed
+  DelaySeconds
+  ReceiveMessageWaitTimeSeconds\n"""
+
 # These tests use real service types so that we can
 # verify the real shapes of services.
 class BaseArgProcessTest(unittest.TestCase):
@@ -214,24 +229,6 @@ class TestParamShorthand(BaseArgProcessTest):
             self.simplify(p, ["names=instance-id,values=foo,bar"])
 
 
-MAPHELP = """--attributes key_name=string,key_name2=string
-Where valid key names are:
-  Policy
-  VisibilityTimeout
-  MaximumMessageSize
-  MessageRetentionPeriod
-  ApproximateNumberOfMessages
-  ApproximateNumberOfMessagesNotVisible
-  CreatedTimestamp
-  LastModifiedTimestamp
-  QueueArn
-  ApproximateNumberOfMessagesDelayed
-  DelaySeconds
-  ReceiveMessageWaitTimeSeconds\n"""
-
-LISTSCALARSHELP = """Key value pairs, with multiple values separated by a space.
---listeners protocol=string,load_balancer_port=integer,instance_protocol=string,instance_port=integer,ssl_certificate_id=string"""
-
 class TestDocGen(BaseArgProcessTest):
     # These aren't very extensive doc tests, as we want to stay somewhat
     # flexible and allow the docs to slightly change without breaking these
@@ -273,7 +270,12 @@ class TestDocGen(BaseArgProcessTest):
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
-        self.assertEqual(doc_string, LISTSCALARSHELP)
+        self.assertIn('Key value pairs, with multiple values separated by a space.', doc_string)
+        self.assertIn('protocol=string', doc_string)
+        self.assertIn('load_balancer_port=integer', doc_string)
+        self.assertIn('instance_protocol=string', doc_string)
+        self.assertIn('instance_port=integer', doc_string)
+        self.assertIn('ssl_certificate_id=string', doc_string)
 
     def test_gen_list_structure_multiple_scalar_docs(self):
         p = self.get_param_object('elastictranscoder.CreateJob.Playlists')

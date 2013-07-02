@@ -48,6 +48,7 @@ class JSONFormatter(FullyBufferedFormatter):
 
     def _format_response(self, operation, response, stream):
         json.dump(response, stream, indent=4)
+        stream.write('\n')
 
 
 class TableFormatter(FullyBufferedFormatter):

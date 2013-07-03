@@ -14,13 +14,15 @@ class ModelFiles(object):
 
         * The json service description.
         * The _regions.json file.
+        * The _retry.json file.
         * The <service>.extra.json enhancements file.
         * The name of the service.
 
     """
-    def __init__(self, model, regions, enhancements, name=''):
+    def __init__(self, model, regions, retry, enhancements, name=''):
         self.model = model
         self.regions = regions
+        self.retry = retry
         self.enhancements = enhancements
         self.name = name
 
@@ -30,9 +32,11 @@ def load_model_files(args):
                            object_pairs_hook=OrderedDict)
     regions = json.load(open(args.regions_file),
                         object_pairs_hook=OrderedDict)
+    retry = json.load(open(args.retry_file),
+                      object_pairs_hook=OrderedDict)
     enhancements = _load_enhancements_file(args.enhancements_file)
     service_name = os.path.splitext(os.path.basename(args.modelfile))[0]
-    return ModelFiles(model, regions, enhancements,
+    return ModelFiles(model, regions, retry, enhancements,
                       name=service_name)
 
 
@@ -54,7 +58,10 @@ def translate(model):
     add_pagination_configs(
         new_model,
         model.enhancements.get('pagination', {}))
+    # Merge in any per operation overrides defined in the .extras.json file.
     merge_dicts(new_model['operations'], model.enhancements.get('operations', {}))
+    add_retry_configs(
+        new_model, model.retry.get('retry', {}), definitions=model.retry.get('definitions', {}))
     return new_model
 
 
@@ -96,6 +103,44 @@ def add_pagination_configs(new_model, pagination):
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)
         operation['pagination'] = config.copy()
+
+
+def add_retry_configs(new_model, retry_model, definitions):
+    if not retry_model:
+        new_model['retry'] = {}
+        return
+    # The service specific retry config is keyed off of the endpoint
+    # prefix as defined in the JSON model.
+    endpoint_prefix = new_model.get('endpoint_prefix', '')
+    service_config = retry_model.get(endpoint_prefix, {})
+    resolve_references(service_config, definitions)
+    # We want to merge the global defaults with the service specific
+    # defaults, with the service specific defaults taking precedence.
+    # So we use the global defaults as the base.
+    final_retry_config = {'__default__': retry_model.get('__default__', {})}
+    # The merge the service specific config on top.
+    merge_dicts(final_retry_config, service_config)
+    new_model['retry'] = final_retry_config
+
+
+def resolve_references(config, definitions):
+    """Recursively replace $ref keys.
+
+    To cut down on duplication, common definitions can be declared
+    (and passed in via the ``definitions`` attribute) and then
+    references as {"$ref": "name"}, when this happens the reference
+    dict is placed with the value from the ``definition`` dict.
+
+    This is recursively done.
+
+    """
+    for key, value in config.items():
+        if isinstance(value, dict):
+            if len(value) == 1 and list(value.keys())[0] == '$ref':
+                # Then we need to resolve this reference.
+                config[key] = definitions[list(value.values())[0]]
+            else:
+                resolve_references(value, definitions)
 
 
 def merge_dicts(dict1, dict2):

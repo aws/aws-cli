@@ -20,11 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import time
 import logging
-from .parameters import get_parameter
-from .exceptions import MissingParametersError
-from .paginate import Paginator
-from . import BotoCoreObject
+from botocore.parameters import get_parameter
+from botocore.exceptions import MissingParametersError
+from botocore.paginate import Paginator
+from botocore import BotoCoreObject
 
 logger = logging.getLogger(__name__)
 

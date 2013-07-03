@@ -330,17 +330,23 @@ class JSONResponse(Response):
         # a JSON body with a single key, "message".
         error = None
         if '__type' in self.value:
-            error = {'Type': self.value['__type']}
+            error_type = self.value['__type']
+            error = {'Type': error_type}
             del self.value['__type']
             if 'message' in self.value:
                 error['Message'] = self.value['message']
                 del self.value['message']
+            code = self._parse_code_from_type(error_type)
+            error['Code'] = code
         elif 'message' in self.value and len(self.value.keys()) == 1:
-            error = {'Type': 'Unspecified',
+            error = {'Type': 'Unspecified', 'Code': 'Unspecified',
                      'Message': self.value['message']}
             del self.value['message']
         if error:
             self.value['Errors'] = [error]
+
+    def _parse_code_from_type(self, error_type):
+        return error_type.rsplit('#', 1)[-1]
 
 
 class StreamingResponse(Response):

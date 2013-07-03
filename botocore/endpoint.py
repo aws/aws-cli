@@ -24,13 +24,17 @@
 import logging
 import json
 import re
+import time
+
 from requests.sessions import Session
 from requests.utils import get_environ_proxies
+
 import botocore.response
 import botocore.exceptions
-from .auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
-from .awsrequest import AWSRequest
-from .compat import urljoin
+from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
+from botocore.awsrequest import AWSRequest
+from botocore.compat import urljoin
+
 
 logger = logging.getLogger(__name__)
 
@@ -61,11 +65,17 @@ class Endpoint(object):
     def __repr__(self):
         return '%s(%s)' % (self.service.endpoint_prefix, self.host)
 
-    def make_request(self, params, list_marker=None, no_op=False):
-        raise NotImplementedError("make_request")
+    def make_request(self, operation, params):
+        logger.debug("Making request for %s (verify_ssl=%s) with params: %s",
+                     operation, self.verify, params)
+        request = self._create_request_object(operation, params)
+        prepared_request = self.prepare_request(request)
+        return self._send_request(prepared_request, operation)
+
+    def _create_request_object(self, operation, params):
+        raise NotImplementedError('_create_request_object')
 
     def prepare_request(self, request):
-        logger.debug('prepare_request')
         if self.auth is not None:
             event = self.session.create_event('before-auth',
                                               self.service.endpoint_prefix)
@@ -76,9 +86,36 @@ class Endpoint(object):
         return prepared_request
 
     def _send_request(self, request, operation):
-        return self.http_session.send(request, verify=self.verify,
+        response = self._get_response(request, operation)
+        attempts = 1
+        while self._needs_retry(response, attempts, operation):
+            attempts += 1
+            response = self._get_response(request, operation)
+        return response
+
+    def _get_response(self, request, operation):
+        http_response = self.http_session.send(request, verify=self.verify,
                                       stream=operation.is_streaming(),
                                       proxies=self.proxies)
+        # This returns the http_response and the parsed_data.
+        return botocore.response.get_response(self.session, operation,
+                                              http_response)
+
+    def _needs_retry(self, response, attempts, operation):
+        event = self.session.create_event(
+            'needs-retry', self.service.endpoint_prefix, operation.name)
+        response = self.session.emit_first_non_none_response(
+            event, response=response, endpoint=self,
+            operation=operation, attempts=attempts)
+        if response is None:
+            return False
+        else:
+            # Request needs to be retried, and we need to sleep
+            # for the specified number of times.
+            logger.debug("Response received to retry, sleeping for "
+                         "%s seconds", response)
+            time.sleep(response)
+            return True
 
 
 class QueryEndpoint(Endpoint):
@@ -86,29 +123,13 @@ class QueryEndpoint(Endpoint):
     This class handles only AWS/Query style services.
     """
 
-    def make_request(self, operation, params, no_op=False):
-        """
-        Send a request to the endpoint and parse the response
-        and return it and long with the HTTP response object
-        from requests.
-
-        If the ``no_op`` parameter is True, no request will be made.
-        Instead, the PreparedRequest will be returned.  This is
-        mainly useful for unit tests.
-        """
-        logger.debug(params)
-        logger.debug('SSL Verify: %s' % self.verify)
+    def _create_request_object(self, operation, params):
         params['Action'] = operation.name
         params['Version'] = self.service.api_version
         user_agent = self.session.user_agent()
         request = AWSRequest(method='POST', url=self.host,
                              data=params, headers={'User-Agent': user_agent})
-        prepared_request = self.prepare_request(request)
-        if no_op:
-            return prepared_request
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return request
 
 
 class JSONEndpoint(Endpoint):
@@ -119,18 +140,7 @@ class JSONEndpoint(Endpoint):
     ResponseContentTypes = ['application/x-amz-json-1.1',
                             'application/json']
 
-    def make_request(self, operation, params, no_op=False):
-        """
-        Send a request to the endpoint and parse the response
-        and return it and long with the HTTP response object
-        from requests.
-
-        If the ``no_op`` parameter is True, no request will be made.
-        Instead, the PreparedRequest will be returned.  This is
-        mainly useful for unit tests.
-        """
-        logger.debug(params)
-        logger.debug('SSL Verify: %s' % self.verify)
+    def _create_request_object(self, operation, params):
         user_agent = self.session.user_agent()
         target = '%s.%s' % (self.service.target_prefix, operation.name)
         json_version = '1.0'
@@ -145,12 +155,7 @@ class JSONEndpoint(Endpoint):
                                       'X-Amz-Target': target,
                                       'Content-Type': content_type,
                                       'Content-Encoding': content_encoding})
-        prepared_request = self.prepare_request(request)
-        if no_op:
-            return prepared_request
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return request
 
 
 class RestEndpoint(Endpoint):
@@ -191,18 +196,7 @@ class RestEndpoint(Endpoint):
         logger.debug('query_params: %s' % query_params)
         return path + '?' + query_params
 
-    def make_request(self, operation, params, no_op=False):
-        """
-        Send a request to the endpoint and parse the response
-        and return it and long with the HTTP response object
-        from requests.
-
-        If the ``no_op`` parameter is True, no request will be made.
-        Instead, the PreparedRequest will be returned.  This is
-        mainly useful for unit tests.
-        """
-        logger.debug(params)
-        logger.debug('SSL Verify: %s' % self.verify)
+    def _create_request_object(self, operation, params):
         user_agent = self.session.user_agent()
         params['headers']['User-Agent'] = user_agent
         uri = self.build_uri(operation, params)
@@ -216,12 +210,7 @@ class RestEndpoint(Endpoint):
             request = AWSRequest(method=operation.http['method'],
                                  url=uri, headers=params['headers'],
                                  data=params['payload'])
-        prepared_request = self.prepare_request(request)
-        if no_op:
-            return prepared_request
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return request
 
 
 def _get_proxies(url):

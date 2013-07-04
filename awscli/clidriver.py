@@ -717,7 +717,7 @@ class ServiceOperation(object):
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if parsed_args.help == 'help':
             op_help = self.create_help_command()
-            op_help(parsed_args, parsed_globals)
+            return op_help(parsed_args, parsed_globals)
         elif parsed_args.help:
             remaining.append(parsed_args.help)
         if remaining:

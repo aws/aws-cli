@@ -17,6 +17,7 @@ from subprocess import Popen, PIPE
 import six
 
 from docutils.core import publish_string
+import bcdoc
 from bcdoc.clidocs import ReSTDocument
 from bcdoc.clidocs import ProviderDocumentEventHandler
 from bcdoc.clidocs import ServiceDocumentEventHandler
@@ -69,7 +70,7 @@ class PosixHelpRenderer(HelpRenderer):
         pager = self.get_pager()
         cmdline = [pager]
         p4 = Popen(cmdline, stdin=p3.stdout)
-        output = p4.communicate()[0]
+        p4.communicate()
         sys.exit(1)
 
 
@@ -144,6 +145,12 @@ class HelpCommand(object):
     and generate interactive and static help files.
     """
 
+    EventHandlerClass = None
+    """
+    Each subclass should define this class variable to point to the
+    EventHandler class used by this HelpCommand.
+    """
+
     def __init__(self, session, obj, command_table, arg_table):
         self.session = session
         self.obj = obj
@@ -151,12 +158,6 @@ class HelpCommand(object):
         self.arg_table = arg_table
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
-
-    EventHandlerClass = None
-    """
-    Each subclass should define this class variable to point to the
-    EventHandler class used by this HelpCommand.
-    """
 
     @property
     def event_class(self):
@@ -185,12 +186,13 @@ class HelpCommand(object):
 
     def __call__(self, args, parsed_globals):
         # Create an event handler for a Provider Document
-        event_handler = self.EventHandlerClass(self)
+        self.EventHandlerClass(self)
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         bcdoc.clidocevents.generate_events(self.session, self)
         self.renderer.render(self.doc.fp.getvalue())
+
 
 
 class ProviderHelpCommand(HelpCommand):

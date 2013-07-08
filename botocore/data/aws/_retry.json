@@ -1,0 +1,240 @@
+{
+  "definitions": {
+    "throttling": {
+      "applies_when": {
+        "response": {
+          "service_error_code": "Throttling",
+          "http_status_code": 400
+        }
+      }
+    },
+    "throttling_exception": {
+      "applies_when": {
+        "response": {
+          "service_error_code": "ThrottlingException",
+          "http_status_code": 400
+        }
+      }
+    }
+  },
+  "retry": {
+    "__default__": {
+      "max_attempts": 5,
+      "delay": {
+        "type": "exponential",
+        "base": "rand",
+        "growth_factor": 2
+      }
+    },
+    "autoscaling": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "emr": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "rds": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "elasticache": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "redshift": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "elasticbeanstalk": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "cloudformation": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "datapipeline": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "opsworks": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "iam": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "sts": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "swf": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "sns": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "ses": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "cloudwatch": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "route53": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "directconnect": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "elb": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling"}
+        }
+      }
+    },
+    "dynamodb": {
+      "__default__": {
+        "max_attempts": 10,
+        "delay": {
+          "type": "exponential",
+          "base": 0.05,
+          "growth_factor": 2
+        },
+        "policies": {
+          "throughput_exceeded": {
+            "applies_when": {
+              "response": {
+                "service_error_code": "ProvisionedThroughputExceededException",
+                "http_status_code": 400
+              }
+            }
+          },
+          "throttling": {"$ref": "throttling_exception"},
+          "crc32": {
+            "applies_when": {
+              "response": {
+                "crc32body": "x-amz-crc32"
+              }
+            }
+          }
+        }
+      }
+    },
+    "glacier": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling_exception"}
+        }
+      }
+    },
+    "storagegateway": {
+      "__default__": {
+        "policies": {
+          "throttling": {"$ref": "throttling_exception"}
+        }
+      }
+    },
+    "ec2": {
+      "__default__": {
+        "policies": {
+          "request_limit_exceeded": {
+            "applies_when": {
+              "response": {
+                "service_error_code": "RequestLimitExceeded",
+                "http_status_code": 503
+              }
+            }
+          }
+        }
+      }
+    },
+    "cloudsearch": {
+      "__default__": {
+        "policies": {
+          "request_limit_exceeded": {
+            "applies_when": {
+              "response": {
+                "service_error_code": "BandwidthLimitExceeded",
+                "http_status_code": 509
+              }
+            }
+          }
+        }
+      }
+    },
+    "sqs": {
+      "__default__": {
+        "policies": {
+          "request_limit_exceeded": {
+            "applies_when": {
+              "response": {
+                "service_error_code": "RequestThrottled",
+                "http_status_code": 403
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

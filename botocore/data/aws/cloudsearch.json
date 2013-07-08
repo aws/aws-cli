@@ -3539,5 +3539,25 @@
         "protocols": [
             "https"
         ]
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "request_limit_exceeded": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "BandwidthLimitExceeded",
+                            "http_status_code": 509
+                        }
+                    }
+                }
+            }
+        }
     }
 }

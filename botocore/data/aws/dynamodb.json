@@ -4852,5 +4852,40 @@
             "https",
             "http"
         ]
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 10,
+            "delay": {
+                "type": "exponential",
+                "base": 0.05,
+                "growth_factor": 2
+            },
+            "policies": {
+                "throughput_exceeded": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "ProvisionedThroughputExceededException",
+                            "http_status_code": 400
+                        }
+                    }
+                },
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "ThrottlingException",
+                            "http_status_code": 400
+                        }
+                    }
+                },
+                "crc32": {
+                    "applies_when": {
+                        "response": {
+                            "crc32body": "x-amz-crc32"
+                        }
+                    }
+                }
+            }
+        }
     }
 }

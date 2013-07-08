@@ -1299,5 +1299,25 @@
             "result_key": "StackSummaries",
             "py_input_token": "next_token"
         }
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "Throttling",
+                            "http_status_code": 400
+                        }
+                    }
+                }
+            }
+        }
     }
 }

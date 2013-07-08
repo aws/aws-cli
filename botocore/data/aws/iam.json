@@ -6071,5 +6071,25 @@
             "result_key": "VirtualMFADevices",
             "py_input_token": "marker"
         }
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "Throttling",
+                            "http_status_code": 400
+                        }
+                    }
+                }
+            }
+        }
     }
 }

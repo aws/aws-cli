@@ -83,12 +83,24 @@ class WindowsHelpRenderer(HelpRenderer):
         sys.exit(1)
 
 
+class RawRenderer(HelpRenderer):
+    """
+    Render help as the raw ReST document.
+    """
+    
+    def render(self, contents):
+        sys.stdout.write(contents)
+        sys.exit(1)
+
+
 def get_renderer():
     """
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
-    if platform.system() == 'Windows':
+    if 'AWSCLI_RENDER_REST' in os.environ:
+        return RawRenderer()
+    elif platform.system() == 'Windows':
         return WindowsHelpRenderer()
     else:
         return PosixHelpRenderer()
@@ -159,6 +171,7 @@ class HelpCommand(object):
         The document pipeline would use this property to determine
         the ``event_class`` value.
         """
+        pass
 
     @property
     def name(self):
@@ -177,7 +190,8 @@ class HelpCommand(object):
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         bcdoc.clidocevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
+        event_handler.unregister()
+        self.renderer.render(self.doc.fp.getvalue())
 
 class ProviderHelpCommand(HelpCommand):
     """Implements top level help command.

@@ -139,7 +139,7 @@ class CLIDriver(object):
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
         return argument_table
-    
+
     def create_help_command(self):
         cli_data = self._get_cli_data()
         return ProviderHelpCommand(self.session, self._get_command_table(),
@@ -196,7 +196,6 @@ class CLIDriver(object):
             self.session.set_debug_logger(logger_name='awscli')
 
 
-
 class CLICommand(object):
     """Interface for a CLI command.
 
@@ -230,10 +229,11 @@ class BuiltInCommand(CLICommand):
     For example, if you want to implement ``aws mycommand``
     we would create a BuiltInCommand object for that.
     """
-    
+
     def __init__(self, name, session):
         self.name = name
         self.session = session
+
 
 class ServiceCommand(CLICommand):
     """A service command for the CLI.
@@ -288,10 +288,9 @@ class ServiceCommand(CLICommand):
         command_table = self._get_command_table()
         command_table['help'] = self.create_help_command()
         self.session.emit('building-operation-table.%s' % self.name,
-                           command_table=command_table)
+                          command_table=command_table)
         return ServiceArgParser(
             operations_table=command_table, service_name=self.name)
-
 
 
 class BaseCLIArgument(object):
@@ -372,6 +371,7 @@ class BaseCLIArgument(object):
     @property
     def name(self):
         return self._name
+
 
 class BuiltInArgument(BaseCLIArgument):
     """
@@ -584,7 +584,7 @@ class CLIArgument(BaseCLIArgument):
 
 
 class ListArgument(CLIArgument):
-    
+
     def add_to_parser(self, parser, cli_name=None):
         if not cli_name:
             cli_name = self.cli_name
@@ -668,7 +668,6 @@ class BooleanArgument(CLIArgument):
                                 help=self.documentation,
                                 action=action,
                                 dest=self.name)
-
 
     def _is_negative_version(self, cli_name):
         return cli_name.startswith('--no-')

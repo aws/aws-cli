@@ -15,6 +15,11 @@
           "http_status_code": 400
         }
       }
+    },
+    "general_socket_errors": {
+      "applies_when": {
+        "socket_errors": ["GENERAL_CONNECTION_ERROR"]
+      }
     }
   },
   "retry": {
@@ -24,6 +29,9 @@
         "type": "exponential",
         "base": "rand",
         "growth_factor": 2
+      },
+      "policies": {
+          "general_socket_errors": {"$ref": "general_socket_errors"}
       }
     },
     "autoscaling": {

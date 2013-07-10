@@ -86,35 +86,43 @@ class Endpoint(object):
         return prepared_request
 
     def _send_request(self, request, operation):
-        response = self._get_response(request, operation)
         attempts = 1
-        while self._needs_retry(response, attempts, operation):
+        response, exception = self._get_response(request, operation, attempts)
+        while self._needs_retry(attempts, operation, response, exception):
             attempts += 1
-            response = self._get_response(request, operation)
+            response, exception = self._get_response(request, operation,
+                                                     attempts)
         return response
 
-    def _get_response(self, request, operation):
-        http_response = self.http_session.send(request, verify=self.verify,
-                                      stream=operation.is_streaming(),
-                                      proxies=self.proxies)
+    def _get_response(self, request, operation, attempts):
+        try:
+            logger.debug("Sending http request: %s", request)
+            http_response = self.http_session.send(
+                request, verify=self.verify,
+                stream=operation.is_streaming(),
+                proxies=self.proxies)
+        except Exception as e:
+            return (None, e)
         # This returns the http_response and the parsed_data.
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return (botocore.response.get_response(self.session, operation,
+                                               http_response), None)
 
-    def _needs_retry(self, response, attempts, operation):
+    def _needs_retry(self, attempts, operation, response=None,
+                     caught_exception=None):
         event = self.session.create_event(
             'needs-retry', self.service.endpoint_prefix, operation.name)
-        response = self.session.emit_first_non_none_response(
+        handler_response = self.session.emit_first_non_none_response(
             event, response=response, endpoint=self,
-            operation=operation, attempts=attempts)
-        if response is None:
+            operation=operation, attempts=attempts,
+            caught_exception=caught_exception)
+        if handler_response is None:
             return False
         else:
             # Request needs to be retried, and we need to sleep
             # for the specified number of times.
             logger.debug("Response received to retry, sleeping for "
-                         "%s seconds", response)
-            time.sleep(response)
+                         "%s seconds", handler_response)
+            time.sleep(handler_response)
             return True
 
 

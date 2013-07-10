@@ -23,6 +23,7 @@
 from tests import unittest, BaseSessionTest
 
 from mock import Mock, patch, sentinel
+from requests import ConnectionError
 
 from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \
     RestEndpoint
@@ -187,13 +188,16 @@ class TestRetryInterface(BaseSessionTest):
         self.endpoint = QueryEndpoint(
             self.service, 'us-west-2', 'https://ec2.us-west-2.amazonaws.com/',
             auth=self.auth)
+        self.http_session = Mock()
+        self.endpoint.http_session = self.http_session
         self.get_response_patch = patch('botocore.response.get_response')
         self.get_response = self.get_response_patch.start()
+        self.retried_on_exception = None
 
     def tearDown(self):
         self.get_response_patch.stop()
 
-    def retry_handler(self, attempts, **kwargs):
+    def max_attempts_retry_handler(self, attempts, **kwargs):
         # Simulate a max requests of 3.
         self.total_calls += 1
         if attempts == 3:
@@ -202,6 +206,17 @@ class TestRetryInterface(BaseSessionTest):
             # Returning anything non-None will trigger a retry,
             # but 0 here is so that time.sleep(0) happens.
             return 0
+
+    def connection_error_handler(self, attempts, caught_exception, **kwargs):
+        self.total_calls += 1
+        if attempts == 3:
+            return None
+        elif isinstance(caught_exception, ConnectionError):
+            # Returning anything non-None will trigger a retry,
+            # but 0 here is so that time.sleep(0) happens.
+            return 0
+        else:
+            return None
 
     def test_retry_events_are_emitted(self):
         emitted_events = []
@@ -216,9 +231,18 @@ class TestRetryInterface(BaseSessionTest):
 
     def test_retry_events_can_alter_behavior(self):
         self.session.register('needs-retry.ec2.DescribeInstances',
-                              self.retry_handler)
+                              self.max_attempts_retry_handler)
         op = Mock()
         op.name = 'DescribeInstances'
+        self.endpoint.make_request(op, {})
+        self.assertEqual(self.total_calls, 3)
+
+    def test_retry_on_socket_errors(self):
+        self.session.register('needs-retry.ec2.DescribeInstances',
+                              self.connection_error_handler)
+        op = Mock()
+        op.name = 'DescribeInstances'
+        self.http_session.send.side_effect = ConnectionError()
         self.endpoint.make_request(op, {})
         self.assertEqual(self.total_calls, 3)
 

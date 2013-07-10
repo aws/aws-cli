@@ -118,6 +118,7 @@ def add_retry_configs(new_model, retry_model, definitions):
     # defaults, with the service specific defaults taking precedence.
     # So we use the global defaults as the base.
     final_retry_config = {'__default__': retry_model.get('__default__', {})}
+    resolve_references(final_retry_config, definitions)
     # The merge the service specific config on top.
     merge_dicts(final_retry_config, service_config)
     new_model['retry'] = final_retry_config

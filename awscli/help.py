@@ -190,7 +190,6 @@ class HelpCommand(object):
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         bcdoc.clidocevents.generate_events(self.session, self)
-        event_handler.unregister()
         self.renderer.render(self.doc.fp.getvalue())
 
 

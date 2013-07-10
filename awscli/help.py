@@ -100,9 +100,7 @@ def get_renderer():
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
-    if 'AWSCLI_RENDER_REST' in os.environ:
-        return RawRenderer()
-    elif platform.system() == 'Windows':
+    if platform.system() == 'Windows':
         return WindowsHelpRenderer()
     else:
         return PosixHelpRenderer()

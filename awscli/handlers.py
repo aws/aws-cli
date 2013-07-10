@@ -16,9 +16,21 @@ This is a collection of built in CLI extensions that can be automatically
 registered with the event system.
 
 """
+import os
+import pkgutil
 from awscli.argprocess import ParamShorthand
-from awscli.customizations.streamingoutputarg import add_streaming_output_arg
-from awscli.customizations.addexamples import add_examples
+import awscli.customizations
+
+
+def load_customizations(event_handlers):
+    pkgpath = os.path.dirname(awscli.customizations.__file__)
+    for importer, mod_name, _ in pkgutil.iter_modules([pkgpath]):
+        loader = importer.find_module(mod_name, importer.path)
+        module = loader.load_module(mod_name)
+        if hasattr(module, 'EVENTMAP'):
+            for event_name in module.EVENTMAP:
+                handler_fn = module.EVENTMAP[event_name]
+                event_handlers.register(event_name, handler_fn)
 
 
 def awscli_initialize(event_handlers):
@@ -33,7 +45,4 @@ def awscli_initialize(event_handlers):
     # handler gets called first but it still feels a bit brittle.
     event_handlers.register('doc-option-example.Operation.*.*',
                             param_shorthand.add_example_fn)
-    event_handlers.register('doc-examples.Operation.*',
-                            add_examples)
-    event_handlers.register('building-argument-table',
-                            add_streaming_output_arg)
+    load_customizations(event_handlers)

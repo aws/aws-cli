@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.clidriver import BaseCLIArgument
 
+
 def add_streaming_output_arg(argument_table, operation, **kwargs):
     stream_param = operation.is_streaming()
     if stream_param:
@@ -20,7 +21,7 @@ def add_streaming_output_arg(argument_table, operation, **kwargs):
 
 
 class StreamingOutputArgument(BaseCLIArgument):
-    
+
     BUFFER_SIZE = 32768
     HELP = 'Filename where the content will be saved'
 
@@ -34,7 +35,7 @@ class StreamingOutputArgument(BaseCLIArgument):
     @property
     def cli_type_name(self):
         return 'file'
-    
+
     @property
     def required(self):
         return True
@@ -65,3 +66,6 @@ class StreamingOutputArgument(BaseCLIArgument):
         # We don't want to include the streaming param in
         # the returned response.
         del parsed[self._name]
+
+
+EVENTMAP = {'building-argument-table': add_streaming_output_arg}

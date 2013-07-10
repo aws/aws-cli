@@ -244,15 +244,20 @@ class ServiceCommand(CLICommand):
     """
 
     def __init__(self, name, session):
-        self._command_table = None
         self.name = name
         self.session = session
-        self.service_object = self.session.get_service(self.name)
+        self._command_table = None
+        self._service_object = None
 
     def _get_command_table(self):
         if self._command_table is None:
             self._command_table = self._create_command_table()
         return self._command_table
+
+    def _get_service_object(self):
+        if self._service_object is None:
+            self._service_object = self.session.get_service(self.name)
+        return self._service_object
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
@@ -265,7 +270,8 @@ class ServiceCommand(CLICommand):
 
     def _create_command_table(self):
         command_table = {}
-        for operation_object in self.service_object.operations:
+        service_object = self._get_service_object()
+        for operation_object in service_object.operations:
             LOG.debug(operation_object)
             LOG.debug('operation.name=%s' % operation_object.name)
             cli_name = xform_name(operation_object.name, '-')
@@ -273,13 +279,14 @@ class ServiceCommand(CLICommand):
                 name=cli_name,
                 operation_object=operation_object,
                 operation_caller=CLIOperationCaller(self.session),
-                service_object=self.service_object)
+                service_object=service_object)
         return command_table
 
     def create_help_command(self):
         command_table = self._get_command_table()
+        service_object = self._get_service_object()
         return ServiceHelpCommand(session=self.session,
-                                  obj=self.service_object,
+                                  obj=service_object,
                                   command_table=command_table,
                                   arg_table=None)
 

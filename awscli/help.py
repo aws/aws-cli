@@ -14,6 +14,7 @@ import sys
 import os
 import platform
 from subprocess import Popen, PIPE
+import six
 
 from docutils.core import publish_string
 from bcdoc.clidocs import ReSTDocument
@@ -61,7 +62,7 @@ class PosixHelpRenderer(HelpRenderer):
     def render(self, contents):
         cmdline = ['rst2man.py']
         p2 = Popen(cmdline, stdin=PIPE, stdout=PIPE)
-        p2.stdin.write(contents)
+        p2.stdin.write(six.b(contents))
         p2.stdin.close()
         cmdline = ['groff', '-man', '-T', 'ascii']
         p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)

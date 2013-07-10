@@ -66,6 +66,3 @@ class StreamingOutputArgument(BaseCLIArgument):
         # We don't want to include the streaming param in
         # the returned response.
         del parsed[self._name]
-
-
-EVENTMAP = {'building-argument-table': add_streaming_output_arg}

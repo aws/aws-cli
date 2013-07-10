@@ -44,5 +44,3 @@ def add_examples(help_command, **kwargs):
         fp = open(doc_path)
         for line in fp.readlines():
             help_command.doc.writeraw(line)
-
-EVENTMAP = {'doc-examples.Operation.*': add_examples}            

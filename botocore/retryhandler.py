@@ -107,8 +107,7 @@ def _create_single_checker(config):
         return _create_single_response_checker(
             config['applies_when']['response'])
     elif 'socket_errors' in config['applies_when']:
-        return _create_single_exception_checker(
-            config['applies_when']['socket_errors'])
+        return ExceptionRaiser()
 
 
 def _create_single_response_checker(response):
@@ -125,11 +124,6 @@ def _create_single_response_checker(response):
         # TODO: send a signal.
         raise ValueError("Unknown retry policy: %s" % config)
     return checker
-
-
-def _create_single_exception_checker(exception_names):
-    exceptions = [EXCEPTION_MAP[name] for name in exception_names]
-    return ExceptionChecker(exceptions)
 
 
 def _extract_retryable_exception(config):
@@ -307,11 +301,18 @@ class CRC32Checker(BaseChecker):
                                     actual_checksum=actual_crc32)
 
 
-class ExceptionChecker(BaseChecker):
-    def __init__(self, exceptions):
-        self._exceptions = exceptions
+class ExceptionRaiser(BaseChecker):
+    """Raise any caught exceptions.
 
+    This class will raise any non None ``caught_exception``.
+
+    """
     def _check_caught_exception(self, attempt_number, caught_exception):
-        for e in self._exceptions:
-            if isinstance(caught_exception, e):
-                raise e
+        # This is implementation specific, but this class is useful by
+        # coordinating with the MaxAttemptsDecorator.
+        # The MaxAttemptsDecorator has a list of exceptions it should catch
+        # and retry, but something needs to come along and actually raise the
+        # caught_exception.  That's what this class is being used for.  If
+        # the MaxAttemptsDecorator is not interested in retrying the exception
+        # then this exception just propogates out past the retry code.
+        raise caught_exception

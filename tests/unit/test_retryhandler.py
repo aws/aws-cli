@@ -120,24 +120,13 @@ class TestRetryCheckers(unittest.TestCase):
         self.assert_should_not_be_retried(
             response=(HTTP_200_RESPONSE, {}))
 
-    def test_check_socket_errors(self):
-        self.checker = retryhandler.ExceptionChecker(
-            [ValueError, RuntimeError])
-        with self.assertRaises(RuntimeError):
-            self.checker(1, response=None,
-                         caught_exception=RuntimeError())
-        self.assert_should_not_be_retried(
-            response=None, caught_exception=TypeError())
-
     def test_exception_checker_ignores_response(self):
-        self.checker = retryhandler.ExceptionChecker(
-            [ValueError, RuntimeError])
+        self.checker = retryhandler.ExceptionRaiser()
         self.assert_should_not_be_retried(
             response=(HTTP_200_RESPONSE, {}), caught_exception=None)
 
     def test_value_error_raised_when_missing_response_and_exception(self):
-        self.checker = retryhandler.ExceptionChecker(
-            [ValueError, RuntimeError])
+        self.checker = retryhandler.ExceptionRaiser()
         with self.assertRaises(ValueError):
             self.checker(1, response=None, caught_exception=None)
 
@@ -213,8 +202,23 @@ class TestCreateRetryConfiguration(unittest.TestCase):
         self.assertIsInstance(all_checkers[0],
                               retryhandler.ServiceErrorCodeChecker)
         self.assertIsInstance(all_checkers[1],
-                              retryhandler.ExceptionChecker)
-        self.assertEqual(all_checkers[1]._exceptions, [ConnectionError])
+                              retryhandler.ExceptionRaiser)
+
+    def test_create_retry_handler_with_socket_errors(self):
+        handler = retryhandler.create_retry_handler(
+            self.retry_config, operation_name='OperationBar')
+        with self.assertRaises(ConnectionError):
+            handler(response=None, attempts=10,
+                    caught_exception=ConnectionError())
+        # No connection error raised because attempts < max_attempts.
+        sleep_time = handler(response=None, attempts=1,
+                             caught_exception=ConnectionError())
+        self.assertEqual(sleep_time, 1)
+        # But any other exception should be raised even if
+        # attempts < max_attempts.
+        with self.assertRaises(ValueError):
+            sleep_time = handler(response=None, attempts=1,
+                                caught_exception=ValueError())
 
     def test_create_retry_handler_with_no_operation(self):
         handler = retryhandler.create_retry_handler(

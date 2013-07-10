@@ -183,7 +183,7 @@ class BaseChecker(object):
         """Determine if retry criteria matches.
 
         Note that either ``response`` is not None and ``caught_exception`` is
-        not None or ``response`` is None and ``caught_exception`` is not None.
+        None or ``response`` is None and ``caught_exception`` is not None.
 
         :type attempt_number: int
         :param attempt_number: The total number of times we've attempted

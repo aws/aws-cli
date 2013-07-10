@@ -236,6 +236,46 @@ class TestParamShorthand(BaseArgProcessTest):
                                      'valid choices.*name'):
             self.simplify(p, ["names=instance-id,values=foo,bar"])
 
+    def test_csv_syntax_escaped(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ["parameter_key=key,parameter_value=foo\,bar"])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_double_quoted(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ['parameter_key=key,parameter_value="foo,bar"'])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_single_quoted(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ["parameter_key=key,parameter_value='foo,bar'"])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_errors(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        error_msg = "Error parsing parameter --parameters.*should be"
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value="foo,bar'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value=foo,bar"'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value=""foo,bar"'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value="foo,bar\''])
+
 
 class TestDocGen(BaseArgProcessTest):
     # These aren't very extensive doc tests, as we want to stay somewhat

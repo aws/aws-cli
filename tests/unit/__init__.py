@@ -64,5 +64,6 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             cmdlist = cmd.split()
         else:
             cmdlist = cmd
-        driver.main(cmdlist)
+        rc = driver.main(cmdlist)
         self.assertDictEqual(params, self.last_params)
+        return rc

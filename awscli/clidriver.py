@@ -32,7 +32,7 @@ from awscli.help import OperationHelpCommand
 from awscli.argprocess import unpack_cli_arg
 
 
-log = logging.getLogger('awscli.clidriver')
+LOG = logging.getLogger('awscli.clidriver')
 
 
 class UnknownArgumentError(Exception):
@@ -67,14 +67,27 @@ class CLIDriver(object):
             _set_user_agent_for_session(self.session)
         else:
             self.session = session
+        self._cli_data = None
+        self._command_table = None
+        self._argument_table = None
+
+    def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in
         # several places (e.g. MainArgParser, ProviderHelp) so
         # we load it here once.
-        cli_data = self.session.get_data('cli')
-        self.cli_arguments = cli_data.get('options', None)
-        self.cli_description = cli_data.get('description', None)
-        self.cli_synopsis = cli_data.get('synopsis', None)
-        self.cli_usage = cli_data.get('help_usage', None)
+        if self._cli_data is None:
+            self._cli_data = self.session.get_data('cli')
+        return self._cli_data
+
+    def _get_command_table(self):
+        if self._command_table is None:
+            self._command_table = self._build_command_table()
+        return self._command_table
+
+    def _get_argument_table(self):
+        if self._argument_table is None:
+            self._argument_table = self._build_argument_table()
+        return self._argument_table
 
     def _build_command_table(self):
         """
@@ -98,61 +111,13 @@ class CLIDriver(object):
             commands[service_name] = ServiceCommand(service_name, self.session)
         return commands
 
-    def _create_parser_from_command_table(self, command_table,
-                                          argument_table):
-        # Also add a 'help' command.
-        command_table['help'] = ProviderHelpCommand(self.session,
-                                                    command_table,
-                                                    argument_table,
-                                                    self.cli_description,
-                                                    self.cli_synopsis,
-                                                    self.cli_usage)
-        parser = MainArgParser(
-            command_table, self.session.user_agent(),
-            self.cli_description, self.cli_synopsis, argument_table)
-        return parser
-
-    def main(self, args=None):
-        """
-
-        :param args: List of arguments, with the 'aws' removed.  For example,
-            the command "aws s3 list-objects --bucket foo" will have an
-            args list of ``['s3', 'list-objects', '--bucket', 'foo']``.
-
-        """
-        if args is None:
-            args = sys.argv[1:]
-        command_table = self._build_command_table()
-        argument_table = self._build_argument_table()
-        parser = self._create_parser_from_command_table(command_table,
-                                                        argument_table)
-        parsed_args, remaining = parser.parse_known_args(args)
-        self._handle_top_level_args(parsed_args)
-        try:
-            return command_table[parsed_args.command](remaining, parsed_args)
-        except UnknownArgumentError as e:
-            sys.stderr.write(str(e) + '\n')
-            return 255
-        except Exception as e:
-            log.debug("Exception caught in main()", exc_info=True)
-            log.debug("Exiting with rc 255")
-            sys.stderr.write("%s\n" % e)
-            return 255
-
-    def _handle_top_level_args(self, args):
-        self.session.emit('top-level-args-parsed', parsed_args=args)
-        if args.debug:
-            # TODO:
-            # Unfortunately, by setting debug mode here, we miss out
-            # on all of the debug events prior to this such as the
-            # loading of plugins, etc.
-            self.session.set_debug_logger(logger_name='botocore')
-            self.session.set_debug_logger(logger_name='awscli')
-
     def _build_argument_table(self):
+        LOG.debug('_build_argument_table')
         argument_table = {}
-        for option in self.cli_arguments:
-            option_params = copy_kwargs(self.cli_arguments[option])
+        cli_data = self._get_cli_data()
+        cli_arguments = cli_data.get('options', None)
+        for option in cli_arguments:
+            option_params = copy_kwargs(cli_arguments[option])
             # Special case the 'choices' param.  Allows choices
             # to reference a variable from the session.
             if 'choices' in option_params:
@@ -170,9 +135,65 @@ class CLIDriver(object):
             argument_object.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
+        LOG.debug('_build_argument_table_again')
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
         return argument_table
+
+    def create_help_command(self):
+        cli_data = self._get_cli_data()
+        return ProviderHelpCommand(self.session, self._get_command_table(),
+                                   self._get_argument_table(),
+                                   cli_data.get('description', None),
+                                   cli_data.get('synopsis', None),
+                                   cli_data.get('help_usage', None))
+
+    def _create_parser(self):
+        # Also add a 'help' command.
+        command_table = self._get_command_table()
+        command_table['help'] = self.create_help_command()
+        cli_data = self._get_cli_data()
+        parser = MainArgParser(
+            command_table, self.session.user_agent(),
+            cli_data.get('description', None),
+            cli_data.get('synopsis', None),
+            self._get_argument_table())
+        return parser
+
+    def main(self, args=None):
+        """
+
+        :param args: List of arguments, with the 'aws' removed.  For example,
+            the command "aws s3 list-objects --bucket foo" will have an
+            args list of ``['s3', 'list-objects', '--bucket', 'foo']``.
+
+        """
+        if args is None:
+            args = sys.argv[1:]
+        parser = self._create_parser()
+        command_table = self._get_command_table()
+        parsed_args, remaining = parser.parse_known_args(args)
+        self._handle_top_level_args(parsed_args)
+        try:
+            return command_table[parsed_args.command](remaining, parsed_args)
+        except UnknownArgumentError as e:
+            sys.stderr.write(str(e) + '\n')
+            return 255
+        except Exception as e:
+            LOG.debug("Exception caught in main()", exc_info=True)
+            LOG.debug("Exiting with rc 255")
+            sys.stderr.write("%s\n" % e)
+            return 255
+
+    def _handle_top_level_args(self, args):
+        self.session.emit('top-level-args-parsed', parsed_args=args)
+        if args.debug:
+            # TODO:
+            # Unfortunately, by setting debug mode here, we miss out
+            # on all of the debug events prior to this such as the
+            # loading of plugins, etc.
+            self.session.set_debug_logger(logger_name='botocore')
+            self.session.set_debug_logger(logger_name='awscli')
 
 
 class CLICommand(object):
@@ -208,10 +229,11 @@ class BuiltInCommand(CLICommand):
     For example, if you want to implement ``aws mycommand``
     we would create a BuiltInCommand object for that.
     """
-    
+
     def __init__(self, name, session):
         self.name = name
         self.session = session
+
 
 class ServiceCommand(CLICommand):
     """A service command for the CLI.
@@ -224,39 +246,58 @@ class ServiceCommand(CLICommand):
     def __init__(self, name, session):
         self.name = name
         self.session = session
+        self._command_table = None
+        self._service_object = None
+
+    def _get_command_table(self):
+        if self._command_table is None:
+            self._command_table = self._create_command_table()
+        return self._command_table
+
+    def _get_service_object(self):
+        if self._service_object is None:
+            self._service_object = self.session.get_service(self.name)
+        return self._service_object
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
         # can also grab the Service object from botocore.
-        service_object = self.session.get_service(self.name)
-        op_table = self._create_operations_table(service_object)
-        service_parser = self._create_service_parser(op_table)
+        service_parser = self._create_parser()
         parsed_args, remaining = service_parser.parse_known_args(args)
-        return op_table[parsed_args.operation](remaining, parsed_globals)
+        command_table = self._get_command_table()
+        return command_table[parsed_args.operation](remaining, parsed_globals)
 
-    def _create_service_parser(self, operation_table):
-        return ServiceArgParser(
-            operations_table=operation_table, service_name=self.name)
-
-    def _create_operations_table(self, service_object):
-        operation_table = {}
-        service_data = self.session.get_service_data(self.name)
-        operations_data = service_data['operations']
-        for operation_name in operations_data:
-            cli_name = xform_name(operation_name, '-')
-            operation_table[cli_name] = ServiceOperation(
+    def _create_command_table(self):
+        command_table = {}
+        service_object = self._get_service_object()
+        for operation_object in service_object.operations:
+            LOG.debug(operation_object)
+            LOG.debug('operation.name=%s' % operation_object.name)
+            cli_name = xform_name(operation_object.name, '-')
+            command_table[cli_name] = ServiceOperation(
                 name=cli_name,
-                operation_model=operations_data[operation_name],
+                operation_object=operation_object,
                 operation_caller=CLIOperationCaller(self.session),
                 service_object=service_object)
+        return command_table
+
+    def create_help_command(self):
+        command_table = self._get_command_table()
+        service_object = self._get_service_object()
+        return ServiceHelpCommand(session=self.session,
+                                  obj=service_object,
+                                  command_table=command_table,
+                                  arg_table=None)
+
+    def _create_parser(self):
         # Also add a 'help' command.
-        operation_table['help'] = ServiceHelpCommand(
-            session=self.session, obj=service_object,
-            command_table=operation_table, arg_table=None)
-        self.session.emit('building-operation-table.%s' % self.name,
-                           command_table=operation_table)
-        return operation_table
+        command_table = self._get_command_table()
+        command_table['help'] = self.create_help_command()
+        self.session.emit('building-command-table.%s' % self.name,
+                          command_table=command_table)
+        return ServiceArgParser(
+            operations_table=command_table, service_name=self.name)
 
 
 class BaseCLIArgument(object):
@@ -319,12 +360,25 @@ class BaseCLIArgument(object):
         return '--' + self._name
 
     @property
+    def cli_type_name(self):
+        pass
+
+    @property
+    def required(self):
+        pass
+
+    @property
+    def documentation(self):
+        pass
+
+    @property
     def py_name(self):
         return self._name.replace('-', '_')
 
     @property
     def name(self):
         return self._name
+
 
 class BuiltInArgument(BaseCLIArgument):
     """
@@ -476,7 +530,7 @@ class CLIArgument(BaseCLIArgument):
         # case we just need to make a single add_argument call.
         if not cli_name:
             cli_name = self.cli_name
-        log.debug('add_to_parser: %s' % cli_name)
+        LOG.debug('add_to_parser: %s' % cli_name)
         parser.add_argument(
             cli_name,
             help=self.documentation,
@@ -499,7 +553,7 @@ class CLIArgument(BaseCLIArgument):
             # just associating the key and value in the params dict as down
             # below.  Sometimes this can be more complicated, and subclasses
             # can customize as they need.
-            log.debug('add_to_params: %s' % self.py_name)
+            LOG.debug('add_to_params: %s' % self.py_name)
             parameters[self.argument_object.py_name] = self._unpack_argument(value)
 
     def _unpack_argument(self, value):
@@ -537,7 +591,7 @@ class CLIArgument(BaseCLIArgument):
 
 
 class ListArgument(CLIArgument):
-    
+
     def add_to_parser(self, parser, cli_name=None):
         if not cli_name:
             cli_name = self.cli_name
@@ -622,7 +676,6 @@ class BooleanArgument(CLIArgument):
                                 action=action,
                                 dest=self.name)
 
-
     def _is_negative_version(self, cli_name):
         return cli_name.startswith('--no-')
 
@@ -641,36 +694,44 @@ class ServiceOperation(object):
     }
     DEFAULT_ARG_CLASS = CLIArgument
 
-    def __init__(self, name, operation_model, operation_caller,
+    def __init__(self, name, operation_object, operation_caller,
                  service_object):
-        log.debug('creating ServiceOperation: %s' % name)
+        LOG.debug('creating ServiceOperation: %s' % name)
+        self._arg_table = None
         self._name = name
-        self._operation_model = operation_model
+        self._operation_object = operation_object
         self._operation_caller = operation_caller
         self._service_object = service_object
+
+    @property
+    def arg_table(self):
+        if self._arg_table is None:
+            self._arg_table = self._create_argument_table()
+        return self._arg_table
 
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        # We can also create the operation object from botocore.
-        operation_object = self._service_object.get_operation(self._name)
-        arg_table = self._create_argument_table(operation_object)
-        operation_parser = self._create_operation_parser(arg_table)
+        operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if parsed_args.help == 'help':
-            op_help = OperationHelpCommand(
-                self._service_object.session, self._service_object,
-                operation_object, arg_table=arg_table)
+            op_help = self.create_help_command()
             op_help(parsed_args, parsed_globals)
         elif parsed_args.help:
             remaining.append(parsed_args.help)
         if remaining:
             raise UnknownArgumentError(
                 "Unknown options: %s" % ', '.join(remaining))
-        call_parameters = self._build_call_parameters(parsed_args, arg_table)
+        call_parameters = self._build_call_parameters(parsed_args,
+                                                      self.arg_table)
         return self._operation_caller.invoke(
-            operation_object, call_parameters, parsed_globals)
+            self._operation_object, call_parameters, parsed_globals)
+
+    def create_help_command(self):
+        return OperationHelpCommand(
+            self._service_object.session, self._service_object,
+            self._operation_object, arg_table=self.arg_table)
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from
@@ -690,7 +751,7 @@ class ServiceOperation(object):
                 arg_object.add_to_params(service_params, value)
         return service_params
 
-    def _create_argument_table(self, operation_object):
+    def _create_argument_table(self):
         argument_table = {}
         # Arguments are treated a differently than service and
         # operations.  Instead of doing a get_parameter() we just
@@ -699,19 +760,20 @@ class ServiceOperation(object):
         # but botocore already builds all the parameter objects
         # when calling an operation so we'd have to optimize that first
         # before using get_parameter() in the cli would be advantageous
-        for argument in operation_object.params:
+        for argument in self._operation_object.params:
             #cli_arg_name = xform_name(argument.name, '-')
             cli_arg_name = argument.cli_name[2:]
             arg_class = self.ARG_TYPES.get(argument.type,
                                            self.DEFAULT_ARG_CLASS)
-            arg_object = arg_class(cli_arg_name, argument, operation_object)
+            arg_object = arg_class(cli_arg_name, argument,
+                                   self._operation_object)
             arg_object.add_to_arg_table(argument_table)
-        log.debug(argument_table)
+        LOG.debug(argument_table)
         service_name = self._service_object.endpoint_prefix
-        operation_name = operation_object.name
+        operation_name = self._operation_object.name
         self._emit('building-argument-table.%s.%s' % (service_name,
                                                       operation_name),
-                   operation=operation_object,
+                   operation=self._operation_object,
                    argument_table=argument_table)
         return argument_table
 

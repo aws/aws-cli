@@ -3,45 +3,73 @@ import os
 import sys
 import json
 import argparse
-from awscli.clidriver import CLIDriver
-from bcdoc.mangen import gen_man
-from botocore.hooks import HierarchicalEmitter
-import botocore.session
-from awscli.plugin import load_plugins
-from awscli import EnvironmentVariables
+import awscli.clidriver
+from awscli.help import HelpRenderer
 
 REF_PATH = 'reference'
 TUT_PATH = 'tutorial'
 
-def do_operation(operation, service_path, session):
-    file_path = os.path.join(service_path, operation.cli_name + '.rst')
-    fp = open(file_path, 'w')
-    gen_man(session, operation=operation, fp=fp, do_man=False)
-    fp.close()
+
+class FileRenderer(HelpRenderer):
+
+    def __init__(self, file_path):
+        self._file_path = file_path
+
+    def render(self, contents):
+        fp = open(self._file_path, 'wb')
+        fp.write(contents)
+        fp.close()
 
 
-def do_service(ref_path, session, service_name, operations):
-    service = session.get_service(service_name)
+def do_operation(driver, service_path, operation_name, operation_command):
+    file_path = os.path.join(service_path,
+                             operation_name + '.rst')
+    help_command = operation_command.create_help_command()
+    help_command.doc.target = 'html'
+    help_command.renderer = FileRenderer(file_path)
+    help_command(None, None)
+
+
+def do_service(driver, ref_path, service_name, service_command):
+    print('...%s' % service_name)
     service_path = os.path.join(ref_path, service_name)
     if not os.path.isdir(service_path):
         os.mkdir(service_path)
     index_path = os.path.join(service_path, 'index.rst')
-    fp = open(index_path, 'w')
-    gen_man(session, service=service, fp=fp, do_man=False)
-    fp.close()
-    for operation in service.operations:
-        if operations and operation.name not in operations:
+    help_command = service_command.create_help_command()
+    help_command.doc.target = 'html'
+    help_command.renderer = FileRenderer(index_path)
+    help_command(None, None)
+    for operation_name in help_command.command_table:
+        if operation_name == 'help':
             continue
-        do_operation(operation, service_path, session)
+        operation_command = help_command.command_table[operation_name]
+        do_operation(driver, service_path, operation_name, operation_command)
 
 
-def build_service_list(tut_path, ref_path, session):
+def do_provider(driver):
+    help_command = driver.create_help_command()
+    help_command.doc.target = 'html'
+    help_command.renderer = FileRenderer(os.path.join(REF_PATH, 'index.rst'))
+    help_command(None, None)
+    for service_name in help_command.command_table:
+        if service_name == 'help':
+            continue
+        service_command = help_command.command_table[service_name]
+        do_service(driver, REF_PATH, service_name, service_command)
+
+
+def build_service_list(tut_path, ref_path, driver):
     file_path = os.path.join(tut_path, 'services.rst')
     fp = open(file_path, 'w')
     fp.write('\n')
     l = []
-    for service_name in session.get_available_services():
-        service = session.get_service(service_name)
+    help_command = driver.create_help_command()
+    for service_name in help_command.command_table:
+        if service_name == 'help':
+            continue
+        service_command = help_command.command_table[service_name]
+        service = service_command._service_object
         l.append((service.service_full_name, service_name))
     l = sorted(l, key=lambda x: x[0])
     for full_name, service_name in l:
@@ -54,20 +82,6 @@ def build_service_list(tut_path, ref_path, session):
     fp.close()
 
 
-def get_cli_data(session, provider_name):
-    cli_data = session.get_data('cli')
-    for option in cli_data['options']:
-        if option.startswith('--'):
-            option_data = cli_data['options'][option]
-            if 'choices' in option_data:
-                choices = option_data['choices']
-                if not isinstance(choices, list):
-                    choices_path = choices.format(provider=provider_name)
-                    choices = session.get_data(choices_path)
-                    option_data['choices'] = choices
-    return cli_data
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--service',
@@ -76,28 +90,13 @@ if __name__ == '__main__':
                         help='Name of operations, or else all operations',
                         nargs='*')
     args = parser.parse_args()
-    emitter = HierarchicalEmitter()
-    session = botocore.session.Session(EnvironmentVariables, emitter)
-    load_plugins(session.full_config.get('plugins', {}),
-                 event_hooks=emitter)
-    driver = CLIDriver(session=session)
-    if args.service:
-        service_names = [args.service]
-    else:
-        service_names = driver.session.get_available_services()
+    driver = awscli.clidriver.create_clidriver()
     if not os.path.isdir(REF_PATH):
         os.mkdir(REF_PATH)
-    print('Generating ReST documents from service descriptions...')
-    for service_name in service_names:
-        print('\t%s' % service_name)
-        do_service(REF_PATH, driver.session, service_name, args.operations)
-    print('done!')
-    cli_data = get_cli_data(driver.session, provider_name='aws')
-    index_path = os.path.join(REF_PATH, 'index.rst')
-    fp = open(index_path, 'w')
-    gen_man(driver.session, provider='aws', cli_data=cli_data,
-            fp=fp, do_man=False)
-    fp.close()
+    if not os.path.isdir(TUT_PATH):
+        os.mkdir(TUT_PATH)
+    print('Generating ReST documents for all services...')
+    do_provider(driver)
     print('Generating service list ReST document...')
-    build_service_list(TUT_PATH, REF_PATH, driver.session)
+    build_service_list(TUT_PATH, REF_PATH, driver)
     print('Done!')

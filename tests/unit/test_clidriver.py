@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 from tests.unit import BaseAWSCommandParamsTest
-import sys
-import re
 
 import mock
 import six
@@ -106,9 +104,6 @@ class FakeSession(object):
         # so we'll just return a Mock object with
         # enough of the "right stuff".
         service = mock.Mock()
-        list_objects = mock.Mock(name='operation')
-        list_objects.cli_name = 'list-objects'
-        list_objects.params = []
         operation = mock.Mock()
         param = mock.Mock()
         param.type = 'string'
@@ -123,7 +118,8 @@ class FakeSession(object):
             'foo': 'paginate'}
         operation.call.return_value = (mock.Mock(), {'foo': 'bar'})
         self.operation = operation
-        service.operations = [list_objects]
+        service.operations = [operation]
+        service.name = 's3'
         service.cli_name = 's3'
         service.endpoint_prefix = 's3'
         service.get_operation.return_value = operation
@@ -196,7 +192,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table',
             'building-top-level-params',
             'top-level-args-parsed',
-            'building-operation-table.s3',
+            'building-command-table.s3',
             'building-argument-table.s3.ListObjects',
             'process-cli-arg.s3.list-objects',
         ])
@@ -283,6 +279,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 255)
         self.assertIn('Unknown options: --unknown-arg', self.stderr.getvalue())
 
+        # The argument table is memoized in the CLIDriver object. So
+        # when we call main() above, it will get created and cached
+        # and the argument table won't get created again (and therefore
+        # the building-top-level-params event will not get generated again).
+        # So, for this test we need to create a new driver object.
+        driver = create_clidriver()
         driver.session.register(
             'building-top-level-params', self.inject_new_param)
         driver.session.register(

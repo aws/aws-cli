@@ -77,6 +77,19 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
         # Should see the title with the operation name
         self.assert_contains('*************\nrun-instances\n*************')
         # Should contain part of the help text from the model.
-        self.assert_contains('The RunInstances operation launches a specified '
+        self.assert_contains('The run-instances operation launches a specified '
                              'number of instances')
         self.assert_contains('``--max-count`` (integer)')
+
+    def test_arguments_with_example_json_syntax(self):
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('``--iam-instance-profile``')
+        self.assert_contains('JSON Syntax')
+        self.assert_contains('"arn": "string"')
+        self.assert_contains('"name": "string"')
+
+    def test_arguments_with_example_shorthand_syntax(self):
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('``--iam-instance-profile``')
+        self.assert_contains('Shorthand Syntax')
+        self.assert_contains('--iam-instance-profile arn=value,name=value')

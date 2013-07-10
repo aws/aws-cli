@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 from tests.unit import BaseAWSCommandParamsTest
-import sys
-import re
 
 import mock
 import six
@@ -194,7 +192,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table',
             'building-top-level-params',
             'top-level-args-parsed',
-            'building-operation-table.s3',
+            'building-command-table.s3',
             'building-argument-table.s3.ListObjects',
             'process-cli-arg.s3.list-objects',
         ])

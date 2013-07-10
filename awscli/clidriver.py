@@ -294,7 +294,7 @@ class ServiceCommand(CLICommand):
         # Also add a 'help' command.
         command_table = self._get_command_table()
         command_table['help'] = self.create_help_command()
-        self.session.emit('building-operation-table.%s' % self.name,
+        self.session.emit('building-command-table.%s' % self.name,
                           command_table=command_table)
         return ServiceArgParser(
             operations_table=command_table, service_name=self.name)

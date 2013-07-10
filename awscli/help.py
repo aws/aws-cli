@@ -14,6 +14,7 @@ import sys
 import os
 import platform
 from subprocess import Popen, PIPE
+import six
 
 from docutils.core import publish_string
 from bcdoc.clidocs import ReSTDocument
@@ -41,6 +42,7 @@ class HelpRenderer(object):
         """
         pass
 
+
 class PosixHelpRenderer(HelpRenderer):
     """
     Render help content on a Posix-like system.  This includes
@@ -60,7 +62,7 @@ class PosixHelpRenderer(HelpRenderer):
     def render(self, contents):
         cmdline = ['rst2man.py']
         p2 = Popen(cmdline, stdin=PIPE, stdout=PIPE)
-        p2.stdin.write(contents)
+        p2.stdin.write(six.b(contents))
         p2.stdin.close()
         cmdline = ['groff', '-man', '-T', 'ascii']
         p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
@@ -75,11 +77,21 @@ class WindowsHelpRenderer(HelpRenderer):
     """
     Render help content on a Windows platform.
     """
-    
+
     def render(self, contents):
         text_output = publish_string(contents,
                                      writer=TextWriter())
         sys.stdout.write(text_output.decode('utf-8'))
+        sys.exit(1)
+
+
+class RawRenderer(HelpRenderer):
+    """
+    Render help as the raw ReST document.
+    """
+
+    def render(self, contents):
+        sys.stdout.write(contents)
         sys.exit(1)
 
 
@@ -93,7 +105,7 @@ def get_renderer():
     else:
         return PosixHelpRenderer()
 
-    
+
 class HelpCommand(object):
     """
     HelpCommand Interface
@@ -105,14 +117,14 @@ class HelpCommand(object):
     A HelpCommand object wraps the object from the CLI space and provides
     a consistent interface to critical information needed by the
     documentation pipeline such as the object's name, description, etc.
-    
+
     The HelpCommand object is passed to the component of the
     documentation pipeline that fires documentation events.  It is
     then passed on to each document event handler that has registered
     for the events.
 
     All HelpCommand objects contain the following attributes:
-    
+
         + ``session`` - A ``botocore`` ``Session`` object.
         + ``obj`` - The object that is being documented.
         + ``command_table`` - A dict mapping command names to
@@ -131,7 +143,7 @@ class HelpCommand(object):
     it should be possible to pass them to the documentation system
     and generate interactive and static help files.
     """
-    
+
     def __init__(self, session, obj, command_table, arg_table):
         self.session = session
         self.obj = obj
@@ -159,6 +171,7 @@ class HelpCommand(object):
         The document pipeline would use this property to determine
         the ``event_class`` value.
         """
+        pass
 
     @property
     def name(self):
@@ -177,7 +190,8 @@ class HelpCommand(object):
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         bcdoc.clidocevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.fp.getvalue().encode('utf-8'))
+        self.renderer.render(self.doc.fp.getvalue())
+
 
 class ProviderHelpCommand(HelpCommand):
     """Implements top level help command.
@@ -195,11 +209,11 @@ class ProviderHelpCommand(HelpCommand):
         self.help_usage = usage
 
     EventHandlerClass = ProviderDocumentEventHandler
-    
+
     @property
     def event_class(self):
         return 'Provider'
-    
+
     @property
     def name(self):
         return self.obj.name
@@ -214,11 +228,11 @@ class ServiceHelpCommand(HelpCommand):
     """
 
     EventHandlerClass = ServiceDocumentEventHandler
-    
+
     @property
     def event_class(self):
         return 'Service'
-    
+
     @property
     def name(self):
         return self.obj.endpoint_prefix
@@ -238,13 +252,11 @@ class OperationHelpCommand(HelpCommand):
         self.param_shorthand = ParamShorthand()
 
     EventHandlerClass = OperationDocumentEventHandler
-    
+
     @property
     def event_class(self):
         return 'Operation'
-    
+
     @property
     def name(self):
         return self.obj.cli_name
-
-

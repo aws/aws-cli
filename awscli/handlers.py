@@ -17,7 +17,8 @@ registered with the event system.
 
 """
 from awscli.argprocess import ParamShorthand
-from awscli.argprocess import add_streaming_output_arg
+from awscli.customizations.streamingoutputarg import add_streaming_output_arg
+from awscli.customizations.addexamples import add_examples
 
 
 def awscli_initialize(event_handlers):
@@ -32,5 +33,7 @@ def awscli_initialize(event_handlers):
     # handler gets called first but it still feels a bit brittle.
     event_handlers.register('doc-option-example.Operation.*.*',
                             param_shorthand.add_example_fn)
+    event_handlers.register('doc-examples.Operation.*',
+                            add_examples)
     event_handlers.register('building-argument-table',
                             add_streaming_output_arg)

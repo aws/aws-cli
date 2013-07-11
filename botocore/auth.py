@@ -54,6 +54,7 @@ class SigV2Auth(object):
         self.region_name = region_name
 
     def calc_signature(self, request, params):
+        logger.debug("Calculating signature using v2 auth.")
         split = urlsplit(request.url)
         path = split.path
         if len(path) == 0:
@@ -70,8 +71,7 @@ class SigV2Auth(object):
                          quote(value, safe='-_~'))
         qs = '&'.join(pairs)
         string_to_sign += qs
-        logger.debug('string_to_sign')
-        logger.debug(string_to_sign)
+        logger.debug('String to sign: %s', string_to_sign)
         lhmac.update(string_to_sign.encode('utf-8'))
         b64 = base64.b64encode(lhmac.digest()).strip().decode('utf-8')
         return (qs, b64)
@@ -255,11 +255,13 @@ class SigV4Auth(object):
         if self.credentials.token:
             request.headers['X-Amz-Security-Token'] = self.credentials.token
         canonical_request = self.canonical_request(request)
-        logger.debug('CanonicalRequest:\n%s' % canonical_request)
+        logger.debug("Calculating signature using v4 auth.")
+        logger.debug('CanonicalRequest:\n%s', canonical_request)
         string_to_sign = self.string_to_sign(request, canonical_request)
-        logger.debug('StringToSign:\n%s' % string_to_sign)
+        logger.debug('StringToSign:\n%s', string_to_sign)
         signature = self.signature(string_to_sign)
-        logger.debug('Signature:\n%s' % signature)
+        logger.debug('Signature:\n%s', signature)
+
         l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
         headers_to_sign = self.headers_to_sign(request)
         l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
@@ -374,12 +376,13 @@ class HmacV1Auth(object):
         string_to_sign = self.canonical_string(method,
                                                split,
                                                headers)
-        logger.debug('StringToSign:\n%s' % string_to_sign)
+        logger.debug('StringToSign:\n%s', string_to_sign)
         return self.sign_string(string_to_sign)
 
     def add_auth(self, request):
+        logger.debug("Calculating signature using hmacv1 auth.")
         split = urlsplit(request.url)
-        logger.debug('Method: %s' % request.method)
+        logger.debug('HTTP request method: %s', request.method)
         signature = self.get_signature(request.method, split,
                                        request.headers)
         request.headers['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,

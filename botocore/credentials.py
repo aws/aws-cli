@@ -84,7 +84,7 @@ def search_iam_role(**kwargs):
                                       metadata[role_name]['SecretAccessKey'],
                                       metadata[role_name]['Token'])
             credentials.method = 'iam-role'
-            logger.info('Found IAM Role: %s' % role_name)
+            logger.info('Found IAM Role: %s', role_name)
     return credentials
 
 
@@ -100,7 +100,7 @@ def search_environment(**kwargs):
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key, token)
         credentials.method = 'env'
-        logger.info('Found credentials in Environment variables')
+        logger.info('Found credentials in Environment variables.')
     return credentials
 
 
@@ -114,7 +114,7 @@ def search_credentials_file(**kwargs):
         try:
             lines = map(str.strip, open(full_path).readlines())
         except IOError:
-            logger.warn('Unable to load AWS_CREDENTIAL_FILE (%s)', full_path)
+            logger.warn('Unable to load AWS_CREDENTIAL_FILE (%s).', full_path)
         else:
             config = dict(line.split('=', 1) for line in lines if '=' in line)
             access_key = config.get('AWSAccessKeyId')
@@ -122,7 +122,7 @@ def search_credentials_file(**kwargs):
             if access_key and secret_key:
                 credentials = Credentials(access_key, secret_key)
                 credentials.method = 'credentials-file'
-                logger.info('Found credentials in AWS_CREDENTIAL_FILE')
+                logger.info('Found credentials in AWS_CREDENTIAL_FILE.')
     return credentials
 
 
@@ -139,7 +139,7 @@ def search_file(**kwargs):
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key, token)
         credentials.method = 'config'
-        logger.info('Found credentials in config file')
+        logger.info('Found credentials in config file.')
     return credentials
 
 
@@ -164,7 +164,7 @@ def search_boto_config(**kwargs):
     if access_key and secret_key:
         credentials = Credentials(access_key, secret_key)
         credentials.method = 'boto'
-        logger.info('Found credentials in boto config file')
+        logger.info('Found credentials in boto config file.')
     return credentials
 
 AllCredentialFunctions = [search_environment,

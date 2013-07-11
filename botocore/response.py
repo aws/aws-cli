@@ -268,7 +268,7 @@ class XmlResponse(Response):
             value = self.emit_event(key, shape, value)
             return value
         else:
-            logger.debug('Unhandled type: %s' % shape['type'])
+            logger.debug('Unhandled type: %s', shape['type'])
 
     def fake_shape(self, elem):
         shape = {}
@@ -291,7 +291,6 @@ class XmlResponse(Response):
         return shape
 
     def start(self, elem):
-        logger.debug('start')
         self.value = {}
         if self.operation.output:
             for member_name in self.operation.output['members']:
@@ -375,13 +374,13 @@ def get_response(session, operation, http_response):
     content_type = http_response.headers['content-type']
     if content_type and ';' in content_type:
         content_type = content_type.split(';')[0]
-    logger.debug('content-type=%s' % content_type)
+        logger.debug('Content type from response: %s', content_type)
     if operation.is_streaming():
         streaming_response = StreamingResponse(session, operation)
         streaming_response.parse(http_response.headers, http_response.raw)
         return (http_response, streaming_response.get_value())
     body = http_response.text
-    logger.debug("Response Body: %s", body)
+    logger.debug("Response Body:\n%s", body)
     if not body:
         return (http_response, body)
     if content_type in ('application/x-amz-json-1.0',

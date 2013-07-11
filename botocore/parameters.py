@@ -100,9 +100,8 @@ class Parameter(BotoCoreObject):
                 built_params['payload'] = {}
             self.store_value_json(value, built_params['payload'], label)
         elif style == 'rest-xml' and not self.streaming:
-            logger.debug('XML Payload found')
             xml_payload = self.to_xml(value)
-            logger.debug(xml_payload)
+            logger.debug('XML Payload found: %s', xml_payload)
             built_params['payload'] = xml_payload
         else:
             built_params['payload'] = value
@@ -300,8 +299,8 @@ class ListParameter(Parameter):
             self.members = get_parameter(self.operation, None, self.members)
 
     def build_parameter_query(self, value, built_params, label=''):
-        logger.debug('name: %s' % self.get_label())
-        logger.debug('label: %s' % label)
+        logger.debug("Building parameter for query service, name: %r, label: %r",
+                  self.get_label(), label)
         value = self.validate(value)
         # If this is not a flattened list, find the label for member
         # items in the list.

@@ -43,23 +43,23 @@ LabelRE = re.compile('[a-z0-9][a-z0-9\-]*[a-z0-9]')
 def decode_console_output(event_name, shape, value, **kwargs):
     try:
         value = base64.b64decode(six.b(value)).decode('utf-8')
-    except:
-        logger.debug('error decoding base64', exc_info=True)
+    except TypeError:
+        logger.debug('Error decoding base64', exc_info=True)
     return value
 
 
 def decode_quoted_jsondoc(event_name, shape, value, **kwargs):
     try:
         value = json.loads(unquote(value))
-    except:
-        logger.debug('error loading quoted JSON', exc_info=True)
+    except (ValueError, TypeError):
+        logger.debug('Error loading quoted JSON', exc_info=True)
     return value
 
 
 def decode_jsondoc(event_name, shape, value, **kwargs):
     try:
         value = json.loads(value)
-    except:
+    except (ValueError, TypeError):
         logger.debug('error loading JSON', exc_info=True)
     return value
 
@@ -111,11 +111,9 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
     addressing.  This allows us to avoid 301 redirects for all
     bucket names that can be CNAME'd.
     """
-    logger.debug('fix_s3_host: uri=%s' % request.url)
     parts = urlsplit(request.url)
     auth.auth_path = parts.path
     path_parts = parts.path.split('/')
-    logger.debug('path_parts: %s' % path_parts)
     if len(path_parts) > 1:
         # If the operation is on a bucket, the auth_path must be
         # terminated with a '/' character.
@@ -123,6 +121,8 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
             if auth.auth_path[-1] != '/':
                 auth.auth_path += '/'
         bucket_name = path_parts[1]
+        logger.debug('Checking for DNS compatible bucket for: %s',
+                     request.url)
         if check_dns_name(bucket_name):
             path_parts.remove(bucket_name)
             host = bucket_name + '.' + endpoint.service.global_endpoint
@@ -130,12 +130,16 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
                          parts.query, '')
             new_uri = urlunsplit(new_tuple)
             request.url = new_uri
-            logger.debug('fix_s3_host: new uri=%s' % new_uri)
+            logger.debug('URI updated to: %s', new_uri)
+        else:
+            logger.debug('Not changing URI, bucket is not DNS compatible: %s',
+                         bucket_name)
 
 
 def register_retries_for_service(service, **kwargs):
     if not hasattr(service, 'retry'):
         return
+    logger.debug("Registering retry handlers for service: %s", service)
     config = service.retry
     session = service.session
     handler = retryhandler.create_retry_handler(config)

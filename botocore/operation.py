@@ -119,7 +119,6 @@ class Operation(BotoCoreObject):
         given operation formatted as required to pass to the service
         in a request.
         """
-        logger.debug(kwargs)
         built_params = self._get_built_params()
         missing = []
         for param in self.params:

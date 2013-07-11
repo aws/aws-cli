@@ -8,7 +8,7 @@ from requests import ConnectionError
 from botocore.exceptions import ChecksumError
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 # The only supported error for now is GENERAL_CONNECTION_ERROR
 # which maps to requests generic ConnectionError.  If we're able
 # to get more specific exceptions from requests we can update
@@ -163,7 +163,10 @@ class RetryHandler(object):
 
         """
         if self._checker(attempts, response, caught_exception):
-            return self._action(attempts=attempts)
+            result = self._action(attempts=attempts)
+            logger.debug("Retry needed, action of: %s", result)
+            return result
+        logger.debug("No retry needed.")
 
 
 class BaseChecker(object):
@@ -229,6 +232,8 @@ class MaxAttemptsDecorator(BaseChecker):
                                           caught_exception)
         if should_retry:
             if attempt_number >= self._max_attempts:
+                logger.debug("Reached the maximum number of retry "
+                             "attempts: %s", attempt_number)
                 return False
             else:
                 return should_retry
@@ -289,13 +294,13 @@ class CRC32Checker(BaseChecker):
         http_response = response[0]
         expected_crc = http_response.headers.get(self._header_name)
         if expected_crc is None:
-            log.debug("crc32 check skipped, the %s header is not "
-                      "in the http response.", self._header_name)
+            logger.debug("crc32 check skipped, the %s header is not "
+                         "in the http response.", self._header_name)
         else:
             actual_crc32 = crc32(response[0].content) & 0xffffffff
             if not actual_crc32 == int(expected_crc):
-                log.debug("crc32 check failed, expected != actual: "
-                          "%s != %s", int(expected_crc), actual_crc32)
+                logger.debug("crc32 check failed, expected != actual: "
+                             "%s != %s", int(expected_crc), actual_crc32)
                 raise ChecksumError(checksum_type='crc32',
                                     expected_checksum=int(expected_crc),
                                     actual_checksum=actual_crc32)

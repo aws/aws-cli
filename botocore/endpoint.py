@@ -169,14 +169,15 @@ class JSONEndpoint(Endpoint):
 class RestEndpoint(Endpoint):
 
     def build_uri(self, operation, params):
+        logger.debug('Building URI for rest endpoint.')
         uri = operation.http['uri']
         if '?' in uri:
             path, query_params = uri.split('?')
         else:
             path = uri
             query_params = ''
-        logger.debug('path: %s' % path)
-        logger.debug('query_params: %s' % query_params)
+        logger.debug('Templated URI path: %s', path)
+        logger.debug('Templated URI query_params: %s', query_params)
         path_components = []
         for pc in path.split('/'):
             if pc:
@@ -200,8 +201,8 @@ class RestEndpoint(Endpoint):
                 else:
                     query_param_components.append(key_name)
         query_params = '&'.join(query_param_components)
-        logger.debug('path: %s' % path)
-        logger.debug('query_params: %s' % query_params)
+        logger.debug('Rendered path: %s', path)
+        logger.debug('Rendered query_params: %s', query_params)
         return path + '?' + query_params
 
     def _create_request_object(self, operation, params):

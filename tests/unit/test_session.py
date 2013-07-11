@@ -203,6 +203,7 @@ class SessionTest(BaseSessionTest):
         get_logger.assert_called_with('botocore.hooks')
 
         self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
+        self.addCleanup(os.remove, 'debuglog')
         get_logger.assert_called_with('botocore.service')
 
     def test_register_with_unique_id(self):

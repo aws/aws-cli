@@ -17,7 +17,7 @@ import botocore.session
 from botocore.hooks import first_non_none_response
 from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
-from botocore.compat import copy_kwargs
+from botocore.compat import copy_kwargs, OrderedDict
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -104,8 +104,7 @@ class CLIDriver(object):
         return command_table
 
     def _build_builtin_commands(self, session):
-        # TODO: ordered dict.
-        commands = {}
+        commands = OrderedDict()
         services = session.get_available_services()
         for service_name in services:
             commands[service_name] = ServiceCommand(service_name, self.session)
@@ -113,7 +112,7 @@ class CLIDriver(object):
 
     def _build_argument_table(self):
         LOG.debug('_build_argument_table')
-        argument_table = {}
+        argument_table = OrderedDict()
         cli_data = self._get_cli_data()
         cli_arguments = cli_data.get('options', None)
         for option in cli_arguments:
@@ -269,7 +268,7 @@ class ServiceCommand(CLICommand):
         return command_table[parsed_args.operation](remaining, parsed_globals)
 
     def _create_command_table(self):
-        command_table = {}
+        command_table = OrderedDict()
         service_object = self._get_service_object()
         for operation_object in service_object.operations:
             LOG.debug(operation_object)
@@ -752,7 +751,7 @@ class ServiceOperation(object):
         return service_params
 
     def _create_argument_table(self):
-        argument_table = {}
+        argument_table = OrderedDict()
         # Arguments are treated a differently than service and
         # operations.  Instead of doing a get_parameter() we just
         # load all the parameter objects up front for the operation.

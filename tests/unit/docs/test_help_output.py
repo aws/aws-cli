@@ -40,6 +40,24 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
                       "actual rendered contents:\n%s" % (
                           contains, self.renderer.rendered_contents))
 
+    def assert_text_order(self, *args, **kwargs):
+        # First we need to find where the SYNOPSIS section starts.
+        starting_from = kwargs.pop('starting_from')
+        args = list(args)
+        contents = self.renderer.rendered_contents
+        self.assertIn(starting_from, contents)
+        start_index = contents.find(starting_from)
+        arg_indices = [contents.find(arg) for arg in args]
+        previous = arg_indices[0]
+        for i, index in enumerate(arg_indices[1:], 1):
+            if index == -1:
+                self.fail('The string %r was not found in the contents: %s'
+                          % (args[index], contents))
+            if index < previous:
+                self.fail('The string %r came before %r, but was suppose to come '
+                          'after it.' % (args[i], args[i - 1]))
+            previous = index
+
     def test_output(self):
         self.driver.main(['help'])
         self.assert_contains('***\naws\n***')
@@ -93,3 +111,28 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
         self.assert_contains('``--iam-instance-profile``')
         self.assert_contains('Shorthand Syntax')
         self.assert_contains('--iam-instance-profile arn=value,name=value')
+
+    def test_required_args_come_before_optional_args(self):
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        # We're asserting that the args in the synopsis section appear
+        # in this order.  They don't have to be in this exact order, but
+        # each item in the list has to come before the previous arg.
+        self.assert_text_order(
+            '--image-id <value>',
+            '--min-count <value>',
+            '--max-count <value>',
+            '[--key-name <value>]',
+            '[--security-groups <value>]', starting_from='Synopsis')
+
+    def test_service_operation_order(self):
+        self.driver.main(['ec2', 'help'])
+        self.assert_text_order(
+            'activate-license',
+            'allocate-address',
+            'assign-private-ip-addresses', starting_from='Available Commands')
+
+    def test_top_level_args_order(self):
+        self.driver.main(['help'])
+        self.assert_text_order(
+            'autoscaling\n', 'cloudformation\n', 'elb\n', 'swf\n',
+            starting_from='Available Services')

@@ -69,10 +69,9 @@ Get the member args for an operations::
 import os
 import sys
 import glob
-import json
 import logging
 
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, json
 import botocore.exceptions
 
 logger = logging.getLogger(__name__)
@@ -105,11 +104,7 @@ def _load_data(session, data_path):
         elif os.path.isfile(file_path):
             fp = open(file_path)
             try:
-                version_info = sys.version_info
-                if version_info[0] == 2 and version_info[1] == 6:
-                    new_data = json.load(fp)
-                else:
-                    new_data = json.load(fp, object_pairs_hook=OrderedDict)
+                new_data = json.load(fp, object_pairs_hook=OrderedDict)
                 fp.close()
                 logger.debug('Found data file: %s', file_path)
                 if data is not None:

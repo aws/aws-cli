@@ -25,14 +25,13 @@ This module contains builtin handlers for events emitted by botocore.
 """
 
 import base64
-import json
 import hashlib
 import logging
 import re
 
 import six
 
-from botocore.compat import urlsplit, urlunsplit, unquote
+from botocore.compat import urlsplit, urlunsplit, unquote, json
 from botocore import retryhandler
 
 

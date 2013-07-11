@@ -22,7 +22,6 @@
 #
 
 import logging
-import json
 import re
 import time
 
@@ -33,7 +32,7 @@ import botocore.response
 import botocore.exceptions
 from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 from botocore.awsrequest import AWSRequest
-from botocore.compat import urljoin
+from botocore.compat import urljoin, json
 
 
 logger = logging.getLogger(__name__)

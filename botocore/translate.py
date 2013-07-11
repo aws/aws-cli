@@ -1,9 +1,9 @@
 """Translate the raw json files into python specific descriptions."""
 import os
 import sys
-import json
 from copy import deepcopy
-from .compat import OrderedDict
+
+from botocore.compat import OrderedDict, json
 from botocore import xform_name
 
 

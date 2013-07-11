@@ -20,11 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-from six.moves import configparser
 import os
 import requests
-import json
 import logging
+
+from six.moves import configparser
+
+from botocore.compat import json
+
 
 logger = logging.getLogger(__name__)
 

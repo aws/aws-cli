@@ -55,7 +55,7 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
                           % (args[index], contents))
             if index < previous:
                 self.fail('The string %r came before %r, but was suppose to come '
-                          'after it.' % (args[i], args[i - 1]))
+                          'after it.\n%s' % (args[i], args[i - 1], contents))
             previous = index
 
     def test_output(self):

@@ -101,6 +101,11 @@ class SessionTest(BaseSessionTest):
         session = botocore.session.get_session(self.env_vars)
         self.assertIsNone(session.get_variable('foo/bar'))
 
+    def test_get_aws_services_in_alphabetical_order(self):
+        session = botocore.session.get_session(self.env_vars)
+        services = session.get_data('aws')
+        self.assertEqual(sorted(services), services)
+
     def test_profile_does_not_exist_with_default_profile(self):
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()

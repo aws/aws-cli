@@ -92,7 +92,7 @@ def _load_data(session, data_path):
             logger.debug('Found data dir: %s', dir_path)
             try:
                 data = []
-                for pn in glob.glob(os.path.join(dir_path, '*.json')):
+                for pn in sorted(glob.glob(os.path.join(dir_path, '*.json'))):
                     fn = os.path.split(pn)[1]
                     fn = os.path.splitext(fn)[0]
                     if not fn.startswith('_'):

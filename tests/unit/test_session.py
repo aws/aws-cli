@@ -198,13 +198,14 @@ class SessionTest(BaseSessionTest):
                           self.session.create_event, 'foo-bar')
 
     @mock.patch('logging.getLogger')
-    def test_logger_name_can_be_passed_in(self, get_logger):
+    @mock.patch('logging.FileHandler')
+    def test_logger_name_can_be_passed_in(self, file_handler, get_logger):
         self.session.set_debug_logger('botocore.hooks')
         get_logger.assert_called_with('botocore.hooks')
 
         self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
-        self.addCleanup(os.remove, 'debuglog')
         get_logger.assert_called_with('botocore.service')
+        file_handler.assert_called_with('debuglog')
 
     def test_register_with_unique_id(self):
         calls = []

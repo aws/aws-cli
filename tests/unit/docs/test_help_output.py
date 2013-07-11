@@ -136,3 +136,7 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
         self.assert_text_order(
             'autoscaling\n', 'cloudformation\n', 'elb\n', 'swf\n',
             starting_from='Available Services')
+
+    def test_examples_in_operation_help(self):
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('========\nExamples\n========')

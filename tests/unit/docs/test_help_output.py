@@ -47,7 +47,7 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
         contents = self.renderer.rendered_contents
         self.assertIn(starting_from, contents)
         start_index = contents.find(starting_from)
-        arg_indices = [contents.find(arg) for arg in args]
+        arg_indices = [contents.find(arg, start_index) for arg in args]
         previous = arg_indices[0]
         for i, index in enumerate(arg_indices[1:], 1):
             if index == -1:

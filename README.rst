@@ -225,7 +225,8 @@ For example, consider the command to authorize access to an EC2
 security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":["0.0.0.0/0"]}'
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+      --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":[{"cidr_ip": "0.0.0.0/0"}]}'
 
 --------------------------
 File-based Parameter Input

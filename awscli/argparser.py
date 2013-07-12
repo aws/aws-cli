@@ -118,7 +118,7 @@ class OperationArgParser(CLIArgParser):
     def _build(self, argument_table, name):
         for arg_name in argument_table:
             argument = argument_table[arg_name]
-            argument.add_to_parser(self, '--' + arg_name)
+            argument.add_to_parser(self)
 
     def parse_known_args(self, args):
         if len(args) == 1 and args[0] == 'help':

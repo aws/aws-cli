@@ -324,7 +324,7 @@ class BaseCLIArgument(object):
         """
         pass
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         """Add this object to the parser instance.
 
         This method is called by the associated ``ArgumentParser``
@@ -393,14 +393,13 @@ class BuiltInArgument(BaseCLIArgument):
         # example, see BooleanArgument.add_to_arg_table
         argument_table[self._name] = self
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         """
 
         See the ``BaseCLIArgument.add_to_parser`` docs for more information.
 
         """
-        if not cli_name:
-            cli_name = self.cli_name
+        cli_name = self.cli_name
         parser.add_argument(cli_name, **self.argument_object)
 
     def required(self):
@@ -519,16 +518,13 @@ class CLIArgument(BaseCLIArgument):
         # example, see BooleanArgument.add_to_arg_table
         argument_table[self.name] = self
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         """
 
         See the ``BaseCLIArgument.add_to_parser`` docs for more information.
 
         """
-        # We need to add ourselve to the argparser instance.  For the normal
-        # case we just need to make a single add_argument call.
-        if not cli_name:
-            cli_name = self.cli_name
+        cli_name = self.cli_name
         LOG.debug('add_to_parser: %s' % cli_name)
         parser.add_argument(
             cli_name,
@@ -591,9 +587,8 @@ class CLIArgument(BaseCLIArgument):
 
 class ListArgument(CLIArgument):
 
-    def add_to_parser(self, parser, cli_name=None):
-        if not cli_name:
-            cli_name = self.cli_name
+    def add_to_parser(self, parser):
+        cli_name = self.cli_name
         parser.add_argument(cli_name,
                             nargs='*',
                             type=self.cli_type,
@@ -618,10 +613,16 @@ class BooleanArgument(CLIArgument):
 
     """
 
-    def __init__(self, name, argument_object, operation_object):
+    def __init__(self, name, argument_object, operation_object,
+                 action='store_true', dest=None):
         super(BooleanArgument, self).__init__(name, argument_object,
                                               operation_object)
         self._mutex_group = None
+        self._action = action
+        if dest is None:
+            self._destination = self.name
+        else:
+            self._destination = dest
 
     def add_to_params(self, parameters, value):
         unpacked = self._unpack_argument(value)
@@ -635,48 +636,24 @@ class BooleanArgument(CLIArgument):
             parameters[self.py_name] = unpacked
 
     def add_to_arg_table(self, argument_table):
-        # If this parameter is required, we need to add two command line
-        # arguments, --foo, and --no-foo.  We do this by adding two
-        # entries to the argument table and assigning both values to us.
+        # Boolean parameters are a bit tricky.  For a single boolean parameter
+        # we actually want two CLI params, a --foo, and a --no-foo.  To do this
+        # we need to add two entries to the argument table.  So we can add
+        # ourself as the positive option (--no), and then create a clone of
+        # ourselves for the negative service.  We then insert both into the
+        # arg table.
         argument_table[self.name] = self
-        if self.required:
-            negative_name = 'no-%s' % self.name
-            argument_table[negative_name] = self
+        negative_name = 'no-%s' % self.name
+        negative_version = self.__class__(negative_name, self.argument_object,
+                                          self.operation_object,
+                                          action='store_false', dest=self.name)
+        argument_table[negative_name] = negative_version
 
-    def add_to_parser(self, parser, cli_name=None):
-        # If we're a required parameter we need to add two options
-        # to the argparse.ArgumentParser instance, one for --foo, one for
-        # --no-foo.  We handle this by knowing that we're going to be
-        # called twice (we added two values to the argument table in
-        # add_to_arg_table).  The first time through we create a
-        # mutex group, the second time through we add to this mutex group.
-        if not cli_name:
-            cli_name = self.cli_name
-        if self._is_negative_version(cli_name):
-            action = 'store_false'
-        else:
-            action = 'store_true'
-        if self.required:
-            if self._mutex_group is None:
-                # This is our first time being called, so we need to
-                # create the mutex group.
-                self._mutex_group = parser.add_mutually_exclusive_group(
-                    required=True)
-            self._mutex_group.add_argument(
-                cli_name, help=self.documentation,
-                dest=cli_name[2:], action=action)
-        else:
-            # If we're not a required parameter, we assume we default to False.
-            # In this case we only add a single boolean parameter, '--foo'.
-            # We don't need a '--no-foo' because a user can just not specify
-            # '--foo' and we won't send the parameter to the service.
-            parser.add_argument(cli_name,
-                                help=self.documentation,
-                                action=action,
-                                dest=self.name)
-
-    def _is_negative_version(self, cli_name):
-        return cli_name.startswith('--no-')
+    def add_to_parser(self, parser):
+        parser.add_argument(self.cli_name,
+                            help=self.documentation,
+                            action=self._action,
+                            dest=self._destination)
 
 
 class ServiceOperation(object):

@@ -36,6 +36,17 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
                   'ShouldDecrementDesiredCapacity': 'false'}
         self.assert_params_for_cmd(cmdline, params)
 
+    def test_last_arg_wins(self):
+        cmdline = self.PREFIX
+        cmdline += ' --instance-id i-12345678'
+        cmdline += ' --should-decrement-desired-capacity'
+        cmdline += ' --no-should-decrement-desired-capacity'
+        # Since the --no-should-decrement-desired-capacity was
+        # was added last, it wins.
+        params = {'InstanceId': 'i-12345678',
+                  'ShouldDecrementDesiredCapacity': 'false'}
+        self.assert_params_for_cmd(cmdline, params)
+
 
 if __name__ == "__main__":
     unittest.main()

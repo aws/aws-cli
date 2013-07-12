@@ -244,7 +244,7 @@ the file ip_perms.json::
     {"from_port":22,
      "to_port":22,
      "ip_protocol":"tcp",
-     "ip_ranges":["0.0.0.0/0"]}
+     "ip_ranges":[{"cidr_ip":"0.0.0.0/0"}]}
 
 Then, we could make the same call as above like this::
 

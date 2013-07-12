@@ -40,6 +40,12 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
                       "actual rendered contents:\n%s" % (
                           contains, self.renderer.rendered_contents))
 
+    def assert_not_contains(self, contents):
+        if contents in self.renderer.rendered_contents:
+            self.fail("The contents:\n%s\nwere not suppose to be in the "
+                      "actual rendered contents:\n%s" % (
+                          contents, self.renderer.rendered_contents))
+
     def assert_text_order(self, *args, **kwargs):
         # First we need to find where the SYNOPSIS section starts.
         starting_from = kwargs.pop('starting_from')
@@ -140,3 +146,8 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
     def test_examples_in_operation_help(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('========\nExamples\n========')
+
+    def test_streaming_output_arg(self):
+        self.driver.main(['s3', 'get-object', 'help'])
+        self.assert_not_contains('``--output-file``')
+        self.assert_contains('``output-file`` (string)')

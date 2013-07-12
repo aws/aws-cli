@@ -140,3 +140,11 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
     def test_examples_in_operation_help(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('========\nExamples\n========')
+
+    def test_boolean_param_documented(self):
+        self.driver.main(['autoscaling',
+                          'terminate-instance-in-auto-scaling-group', 'help'])
+        self.assert_contains(
+            '``--should-decrement-desired-capacity`` (boolean)')
+        self.assert_contains(
+            '``--no-should-decrement-desired-capacity`` (boolean)')

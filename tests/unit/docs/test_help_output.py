@@ -11,6 +11,7 @@ at the man output, we look one step before at the generated rst output
 """
 from tests import BaseCLIDriverTest
 
+import six
 import mock
 
 
@@ -22,16 +23,16 @@ class CapturedRenderer(object):
         self.rendered_contents = contents
 
 
-class TestAWSHelpOutput(BaseCLIDriverTest):
+class BaseAWSHelpOutput(BaseCLIDriverTest):
     def setUp(self):
-        super(TestAWSHelpOutput, self).setUp()
+        super(BaseAWSHelpOutput, self).setUp()
         self.renderer_patch = mock.patch('awscli.help.get_renderer')
         self.renderer_mock = self.renderer_patch.start()
         self.renderer = CapturedRenderer()
         self.renderer_mock.return_value = self.renderer
 
     def tearDown(self):
-        super(TestAWSHelpOutput, self).tearDown()
+        super(BaseAWSHelpOutput, self).tearDown()
         self.renderer_patch.stop()
 
     def assert_contains(self, contains):
@@ -39,6 +40,12 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
             self.fail("The expected contents:\n%s\nwere not in the "
                       "actual rendered contents:\n%s" % (
                           contains, self.renderer.rendered_contents))
+
+    def assert_not_contains(self, contents):
+        if contents in self.renderer.rendered_contents:
+            self.fail("The contents:\n%s\nwere not suppose to be in the "
+                      "actual rendered contents:\n%s" % (
+                          contents, self.renderer.rendered_contents))
 
     def assert_text_order(self, *args, **kwargs):
         # First we need to find where the SYNOPSIS section starts.
@@ -58,6 +65,8 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
                           'after it.\n%s' % (args[i], args[i - 1], contents))
             previous = index
 
+
+class TestHelpOutput(BaseAWSHelpOutput):
     def test_output(self):
         self.driver.main(['help'])
         self.assert_contains('***\naws\n***')
@@ -140,3 +149,46 @@ class TestAWSHelpOutput(BaseCLIDriverTest):
     def test_examples_in_operation_help(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('========\nExamples\n========')
+
+
+class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
+    def assert_command_does_not_exist(self, service, command):
+        # Basically try to get the help output for the removed
+        # command verify that we get a SystemExit exception
+        # and that we get something in stderr that says that
+        # we made an invalid choice (because the operation is removed).
+        stderr = six.StringIO()
+        with mock.patch('sys.stderr', stderr):
+            with self.assertRaises(SystemExit):
+                self.driver.main([service, command, 'help'])
+        # We should see an error message complaining about
+        # an invalid choice because the operation has been removed.
+        self.assertIn('argument operation: Invalid choice', stderr.getvalue())
+
+    def test_ses_deprecated_commands(self):
+        self.driver.main(['ses', 'help'])
+        self.assert_not_contains('list-verified-email-addresses')
+        self.assert_not_contains('delete-verified-email-address')
+        self.assert_not_contains('verify-email-address')
+
+        self.assert_command_does_not_exist(
+            'ses', 'list-verified-email-addresses')
+        self.assert_command_does_not_exist(
+            'ses', 'delete-verified-email-address')
+        self.assert_command_does_not_exist(
+            'ses', 'verify-email-address')
+
+    def test_ec2_import_export(self):
+        self.driver.main(['ec2', 'help'])
+        self.assert_not_contains('import-instance')
+        self.assert_not_contains('import-volume')
+        self.assert_command_does_not_exist(
+            'ec2', 'import-instance')
+        self.assert_command_does_not_exist(
+            'ec2', 'import-volume')
+
+    def test_cloudformation(self):
+        self.driver.main(['cloudformation', 'help'])
+        self.assert_not_contains('estimate-template-cost')
+        self.assert_command_does_not_exist(
+            'cloudformation', 'estimate-template-cost')

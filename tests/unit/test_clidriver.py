@@ -189,7 +189,7 @@ class TestCliDriverHooks(unittest.TestCase):
         driver.main('s3 list-objects --bucket foo'.split())
         self.assert_events_fired_in_order([
             # Events fired while parser is being created.
-            'building-command-table',
+            'building-command-table.main',
             'building-top-level-params',
             'top-level-args-parsed',
             'building-command-table.s3',

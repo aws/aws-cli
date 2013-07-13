@@ -98,7 +98,7 @@ class CLIDriver(object):
 
         """
         command_table = self._build_builtin_commands(self.session)
-        self.session.emit('building-command-table',
+        self.session.emit('building-command-table.main',
                           command_table=command_table,
                           session=self.session)
         return command_table

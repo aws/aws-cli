@@ -56,7 +56,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
     def _store_params(self, params):
         self.last_params = deepcopy(params)
 
-    def assert_params_for_cmd(self, cmd, params):
+    def assert_params_for_cmd(self, cmd, params, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
         driver = create_clidriver()
         driver.session.register('before-call', self.before_call)
@@ -65,5 +65,9 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         else:
             cmdlist = cmd
         rc = driver.main(cmdlist)
+        self.assertEqual(
+            rc, expected_rc,
+            "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
+                expected_rc, rc, cmd))
         self.assertDictEqual(params, self.last_params)
         return rc

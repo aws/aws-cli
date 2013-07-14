@@ -14,10 +14,13 @@ from awscli.clidriver import BaseCLIArgument
 
 
 def add_streaming_output_arg(argument_table, operation, **kwargs):
+    # Implementation detail:  hooked up to 'building-argument-table'
+    # event.
     stream_param = operation.is_streaming()
     if stream_param:
         argument_table['output-file'] = StreamingOutputArgument(
-            stream_param, operation)
+            response_key=stream_param, operation=operation,
+            name='output-file')
 
 
 class StreamingOutputArgument(BaseCLIArgument):
@@ -25,16 +28,29 @@ class StreamingOutputArgument(BaseCLIArgument):
     BUFFER_SIZE = 32768
     HELP = 'Filename where the content will be saved'
 
-    def __init__(self, name, argument_object, buffer_size=None):
-        super(StreamingOutputArgument, self).__init__(name, argument_object)
+    def __init__(self, response_key, operation, name, buffer_size=None):
+        super(StreamingOutputArgument, self).__init__(
+            name, argument_object=operation)
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size
+        self._operation = operation
+        # This is the key in the response body where we can find the
+        # streamed contents.
+        self._response_key = response_key
         self._output_file = None
+        self._name = name
+
+    @property
+    def cli_name(self):
+        # Because this is a parameter, not an option, it shouldn't have the
+        # '--' prefix. We want to use the self.py_name to indicate that it's an
+        # argument.
+        return self._name
 
     @property
     def cli_type_name(self):
-        return 'file'
+        return 'string'
 
     @property
     def required(self):
@@ -45,18 +61,18 @@ class StreamingOutputArgument(BaseCLIArgument):
         return self.HELP
 
     def add_to_parser(self, parser, cli_name=None):
-        parser.add_argument(self._name, metavar='output_file',
+        parser.add_argument(self._name, metavar=self.py_name,
                             help=self.HELP)
 
     def add_to_params(self, parameters, value):
         self._output_file = value
-        service_name = self.argument_object.service.endpoint_prefix
-        operation_name = self.argument_object.name
+        service_name = self._operation.service.endpoint_prefix
+        operation_name = self._operation.name
         self._operation.session.register('after-call.%s.%s' % (
             service_name, operation_name), self.save_file)
 
     def save_file(self, http_response, parsed, **kwargs):
-        body = parsed[self._name]
+        body = parsed[self._response_key]
         buffer_size = self._buffer_size
         with open(self._output_file, 'wb') as fp:
             data = body.read(buffer_size)
@@ -65,4 +81,4 @@ class StreamingOutputArgument(BaseCLIArgument):
                 data = body.read(buffer_size)
         # We don't want to include the streaming param in
         # the returned response.
-        del parsed[self._name]
+        del parsed[self._response_key]

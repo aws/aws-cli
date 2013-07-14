@@ -201,3 +201,7 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
         self.assert_contains(
             '``--no-should-decrement-desired-capacity`` (boolean)')
 
+    def test_streaming_output_arg(self):
+        self.driver.main(['s3', 'get-object', 'help'])
+        self.assert_not_contains('``--output-file``')
+        self.assert_contains('``output-file`` (string)')

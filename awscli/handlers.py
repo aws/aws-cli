@@ -19,6 +19,7 @@ registered with the event system.
 from awscli.argprocess import ParamShorthand
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
+from awscli.customizations.removals import register_removals
 
 
 def awscli_initialize(event_handlers):
@@ -37,3 +38,4 @@ def awscli_initialize(event_handlers):
                             add_examples)
     event_handlers.register('building-argument-table',
                             add_streaming_output_arg)
+    register_removals(event_handlers)

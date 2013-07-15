@@ -13,11 +13,7 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import re
-
 import httpretty
-import mock
-
-import awscli.clidriver
 
 
 class TestListObjects(BaseAWSCommandParamsTest):

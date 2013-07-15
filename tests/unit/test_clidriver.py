@@ -83,6 +83,7 @@ class FakeSession(object):
             emitter = HierarchicalEmitter()
         self.emitter = emitter
         self.provider = Provider(self, 'aws')
+        self.profile = None
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -154,6 +155,16 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         rc = driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 0)
+
+    def test_no_profile(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo'.split())
+        self.assertEqual(driver.session.profile, None)
+
+    def test_profile(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --profile foo'.split())
+        self.assertEqual(driver.session.profile, 'foo')
 
 
 class TestCliDriverHooks(unittest.TestCase):

@@ -22,6 +22,17 @@ class Formatter(object):
     def __init__(self, args):
         self._args = args
 
+    def _remove_request_id(self, response_data):
+        # We only want to display the ResponseMetadata (which includes
+        # the request id) if there is an error in the response.
+        # Since all errors have been unified under the Errors key,
+        # this should be a reasonable way to filter.
+        if 'Errors' not in response_data:
+            if 'ResponseMetadata' in response_data:
+                if 'RequestId' in response_data['ResponseMetadata']:
+                    request_id = response_data['ResponseMetadata']['RequestId']
+                del response_data['ResponseMetadata']
+
 
 class FullyBufferedFormatter(Formatter):
     def __call__(self, operation, response, stream=None):
@@ -37,6 +48,7 @@ class FullyBufferedFormatter(Formatter):
         else:
             response_data = response
         try:
+            self._remove_request_id(response_data)
             self._format_response(operation, response_data, stream)
         finally:
             # flush is needed to avoid the "close failed in file object

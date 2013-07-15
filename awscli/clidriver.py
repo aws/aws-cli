@@ -784,6 +784,16 @@ class CLIOperationCaller(object):
             return self._handle_http_response(http_response, response_data)
 
     def _display_response(self, operation, response, args):
+        # We only want to display the ResponseMetadata (which includes
+        # the request id) if there is an error in the response.
+        # Since all errors have been unified under the Errors key,
+        # this should be a reasonable way to filter.
+        if 'Errors' not in response:
+            if 'ResponseMetadata' in response:
+                if 'RequestId' in response['ResponseMetadata']:
+                    request_id = response['ResponseMetadata']['RequestId']
+                    LOG.debug('RequestId: %s', request_id)
+                del response['ResponseMetadata']
         output = args.output
         if output is None:
             output = self._session.get_variable('output')

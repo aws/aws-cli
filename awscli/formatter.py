@@ -10,12 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import sys
 import json
 
 import six
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
+
+
+LOG = logging.getLogger(__name__)
 
 
 class Formatter(object):
@@ -31,6 +35,7 @@ class Formatter(object):
             if 'ResponseMetadata' in response_data:
                 if 'RequestId' in response_data['ResponseMetadata']:
                     request_id = response_data['ResponseMetadata']['RequestId']
+                    LOG.debug('RequestId: %s', request_id)
                 del response_data['ResponseMetadata']
 
 

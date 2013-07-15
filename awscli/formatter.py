@@ -47,7 +47,12 @@ class FullyBufferedFormatter(Formatter):
 class JSONFormatter(FullyBufferedFormatter):
 
     def _format_response(self, operation, response, stream):
-        json.dump(response, stream, indent=4)
+        # For operations that have no response body (e.g. s3 put-object)
+        # the response will be an empty string.  We don't want to print
+        # that out to the user but other "falsey" values like an empty
+        # dictionary should be printed.
+        if response != '':
+            json.dump(response, stream, indent=4)
         stream.write('\n')
 
 

@@ -34,7 +34,7 @@ from botocore.awsrequest import AWSRequest
 from botocore.compat import urljoin, json
 
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Endpoint(object):
@@ -64,7 +64,7 @@ class Endpoint(object):
         return '%s(%s)' % (self.service.endpoint_prefix, self.host)
 
     def make_request(self, operation, params):
-        LOG.debug("Making request for %s (verify_ssl=%s) with params: %s",
+        logger.debug("Making request for %s (verify_ssl=%s) with params: %s",
                      operation, self.verify, params)
         request = self._create_request_object(operation, params)
         prepared_request = self.prepare_request(request)
@@ -94,7 +94,7 @@ class Endpoint(object):
 
     def _get_response(self, request, operation, attempts):
         try:
-            LOG.debug("Sending http request: %s", request)
+            logger.debug("Sending http request: %s", request)
             http_response = self.http_session.send(
                 request, verify=self.verify,
                 stream=operation.is_streaming(),
@@ -118,7 +118,7 @@ class Endpoint(object):
         else:
             # Request needs to be retried, and we need to sleep
             # for the specified number of times.
-            LOG.debug("Response received to retry, sleeping for "
+            logger.debug("Response received to retry, sleeping for "
                          "%s seconds", handler_response)
             time.sleep(handler_response)
             return True
@@ -167,15 +167,15 @@ class JSONEndpoint(Endpoint):
 class RestEndpoint(Endpoint):
 
     def build_uri(self, operation, params):
-        LOG.debug('Building URI for rest endpoint.')
+        logger.debug('Building URI for rest endpoint.')
         uri = operation.http['uri']
         if '?' in uri:
             path, query_params = uri.split('?')
         else:
             path = uri
             query_params = ''
-        LOG.debug('Templated URI path: %s', path)
-        LOG.debug('Templated URI query_params: %s', query_params)
+        logger.debug('Templated URI path: %s', path)
+        logger.debug('Templated URI query_params: %s', query_params)
         path_components = []
         for pc in path.split('/'):
             if pc:
@@ -199,8 +199,8 @@ class RestEndpoint(Endpoint):
                 else:
                     query_param_components.append(key_name)
         query_params = '&'.join(query_param_components)
-        LOG.debug('Rendered path: %s', path)
-        LOG.debug('Rendered query_params: %s', query_params)
+        logger.debug('Rendered path: %s', path)
+        logger.debug('Rendered query_params: %s', query_params)
         return path + '?' + query_params
 
     def _create_request_object(self, operation, params):

@@ -39,7 +39,7 @@ import logging
 from botocore.compat import json
 
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class JSONPayload(object):
@@ -123,7 +123,7 @@ class XMLPayload(object):
         for element in self._elements:
             s += element
         s += '</%s>' % self.root_element_name
-        LOG.debug('assembled XML: %s', s)
+        logger.debug('assembled XML: %s', s)
         return s
 
     def getvalue(self):

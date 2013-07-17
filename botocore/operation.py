@@ -27,7 +27,7 @@ from botocore.paginate import Paginator
 from botocore.payload import XMLPayload, JSONPayload
 from botocore import BotoCoreObject
 
-LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Operation(BotoCoreObject):
@@ -53,7 +53,7 @@ class Operation(BotoCoreObject):
         return 'Operation:%s' % self.name
 
     def call(self, endpoint, **kwargs):
-        LOG.debug("%s called with kwargs: %s", self, kwargs)
+        logger.debug("%s called with kwargs: %s", self, kwargs)
         event = self.session.create_event('before-call',
                                           self.service.endpoint_prefix,
                                           self.name)
@@ -97,7 +97,7 @@ class Operation(BotoCoreObject):
         """
         Build the list of Parameter objects for this operation.
         """
-        LOG.debug("Creating parameter objects for: %s", self)
+        logger.debug("Creating parameter objects for: %s", self)
         params = []
         if self.input and 'members' in self.input:
             for name, data in self.input['members'].items():

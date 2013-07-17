@@ -51,7 +51,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         # interested in testing this part of the request serialization
         # for these tests so we're replacing the file like object
         # with the string contents.
-        params['payload'] = self.payload.read()
+        params['payload'] = self.payload.getvalue().read()
 
     def register_uri(self):
         httpretty.register_uri(httpretty.PUT, re.compile('.*'), body='')
@@ -65,7 +65,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {}}
         self.assert_params_for_cmd(cmdline, result)
-        self.assertIsInstance(self.payload, file_type)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_headers(self):
         cmdline = self.prefix
@@ -80,7 +80,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                               'Content-Encoding': 'x-gzip',
                               'Content-Type': 'text/plain'}}
         self.assert_params_for_cmd(cmdline, result)
-        self.assertEqual(self.payload.read(), b'')
+        self.assertEqual(self.payload.getvalue().read(), b'')
 
 
 if __name__ == "__main__":

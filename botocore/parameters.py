@@ -23,7 +23,6 @@
 import logging
 import base64
 import datetime
-import time
 import six
 import dateutil.parser
 from . import BotoCoreObject
@@ -95,16 +94,11 @@ class Parameter(BotoCoreObject):
                     key = self.name
                 built_params['headers'][key] = value
         elif style == 'rest-json':
-            logger.debug('JSON Payload found')
-            if built_params['payload'] is None:
-                built_params['payload'] = {}
-            self.store_value_json(value, built_params['payload'], label)
+            built_params['payload'].add_param(self, value, label)
         elif style == 'rest-xml' and not self.streaming:
-            xml_payload = self.to_xml(value)
-            logger.debug('XML Payload found: %s', xml_payload)
-            built_params['payload'] = xml_payload
+            built_params['payload'].add_param(self, value, label)
         else:
-            built_params['payload'] = value
+            built_params['payload'].literal_value = value
 
     def build_parameter(self, style, value, built_params, label=''):
         if style == 'query':
@@ -161,9 +155,9 @@ class FloatParameter(Parameter):
 class DoubleParameter(Parameter):
 
     def validate(self, value):
-        if not isinstance(value, double):
+        if not isinstance(value, float):
             raise ValidationError(value=str(value), type_name='double',
-                                   param=self)
+                                  param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -300,7 +294,7 @@ class ListParameter(Parameter):
 
     def build_parameter_query(self, value, built_params, label=''):
         logger.debug("Building parameter for query service, name: %r, label: %r",
-                  self.get_label(), label)
+                     self.get_label(), label)
         value = self.validate(value)
         # If this is not a flattened list, find the label for member
         # items in the list.
@@ -342,7 +336,7 @@ class ListParameter(Parameter):
         else:
             if not label:
                 label = self.xmlname
-            return '<%s>' % label  + inner_xml + '</%s>' % label
+            return '<%s>' % label + inner_xml + '</%s>' % label
 
 
 class MapParameter(Parameter):
@@ -368,8 +362,6 @@ class MapParameter(Parameter):
 
     def build_parameter_json(self, value, built_params, label=''):
         label = self.get_label()
-        key_type = self.keys
-        member_type = self.members
         new_value = {}
         if isinstance(built_params, list):
             built_params.append(new_value)

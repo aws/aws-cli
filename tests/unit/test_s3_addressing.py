@@ -27,8 +27,6 @@ from tests import BaseEnvVar
 from mock import patch, Mock
 
 import botocore.session
-from botocore.awsrequest import AWSRequest
-from botocore.endpoint import RestEndpoint
 
 
 class TestS3Addressing(BaseEnvVar):

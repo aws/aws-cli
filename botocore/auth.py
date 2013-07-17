@@ -395,5 +395,6 @@ AUTH_TYPE_MAPS = {
     'v2': SigV2Auth,
     'v4': SigV4Auth,
     'v3': SigV3Auth,
+    'v3https': SigV3Auth,
     's3': HmacV1Auth,
 }

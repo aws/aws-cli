@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import time
 import logging
 from botocore.parameters import get_parameter
 from botocore.exceptions import MissingParametersError
 from botocore.paginate import Paginator
+from botocore.payload import XMLPayload, JSONPayload
 from botocore import BotoCoreObject
 
-logger = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class Operation(BotoCoreObject):
@@ -53,7 +53,7 @@ class Operation(BotoCoreObject):
         return 'Operation:%s' % self.name
 
     def call(self, endpoint, **kwargs):
-        logger.debug("%s called with kwargs: %s", self, kwargs)
+        LOG.debug("%s called with kwargs: %s", self, kwargs)
         event = self.session.create_event('before-call',
                                           self.service.endpoint_prefix,
                                           self.name)
@@ -97,7 +97,7 @@ class Operation(BotoCoreObject):
         """
         Build the list of Parameter objects for this operation.
         """
-        logger.debug("Creating parameter objects for: %s", self)
+        LOG.debug("Creating parameter objects for: %s", self)
         params = []
         if self.input and 'members' in self.input:
             for name, data in self.input['members'].items():
@@ -110,7 +110,15 @@ class Operation(BotoCoreObject):
         if self.service.type in ('rest-xml', 'rest-json'):
             d['uri_params'] = {}
             d['headers'] = {}
-            d['payload'] = None
+            if self.service.type == 'rest-xml':
+                namespace = self.service.xmlnamespace
+                root_element_name = None
+                if 'shape_name' in self.input:
+                    root_element_name = self.input['shape_name']
+                d['payload'] = XMLPayload(root_element_name=root_element_name,
+                                          namespace=namespace)
+            else:
+                d['payload'] = JSONPayload()
         return d
 
     def build_parameters(self, **kwargs):

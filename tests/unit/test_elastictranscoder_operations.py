@@ -24,6 +24,7 @@
 import unittest
 import botocore.session
 
+JSONPayload = """{"OutputBucket": "etc-output", "Notifications": {"Completed": "etc-topic", "Warning": "etc-topic", "Progressing": "etc-topic", "Error": "etc-topic"}, "Role": "etc-role", "Name": "testpipeline", "InputBucket": "etc-input"}"""
 
 class TestElasticTranscoderOperations(unittest.TestCase):
 
@@ -43,35 +44,7 @@ class TestElasticTranscoderOperations(unittest.TestCase):
                                                     'progressing': 'etc-topic',
                                                     'warning': 'etc-topic',
                                                     'error': 'etc-topic'})
-        result = {'Name': 'testpipeline',
-                  'InputBucket': 'etc-input',
-                  'OutputBucket': 'etc-output',
-                  'Role': 'etc-role',
-                  'Notifications': {'Completed': 'etc-topic',
-                                    'Progressing': 'etc-topic',
-                                    'Warning': 'etc-topic',
-                                    'Error': 'etc-topic'}}
-        self.assertEqual(params['payload'], result)
-
-    def test_create_connection(self):
-        op = self.dc.get_operation('CreatePipeline')
-        params = op.build_parameters(name='testpipeline',
-                                     input_bucket='etc-input',
-                                     output_bucket='etc-output',
-                                     role='etc-role',
-                                     notifications={'completed': 'etc-topic',
-                                                    'progressing': 'etc-topic',
-                                                    'warning': 'etc-topic',
-                                                    'error': 'etc-topic'})
-        result = {'Name': 'testpipeline',
-                  'InputBucket': 'etc-input',
-                  'OutputBucket': 'etc-output',
-                  'Role': 'etc-role',
-                  'Notifications': {'Completed': 'etc-topic',
-                                    'Progressing': 'etc-topic',
-                                    'Warning': 'etc-topic',
-                                    'Error': 'etc-topic'}}
-        self.assertEqual(params['payload'], result)
+        self.assertEqual(params['payload'].getvalue(), JSONPayload)
 
 
 if __name__ == "__main__":

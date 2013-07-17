@@ -29,7 +29,6 @@ from botocore.endpoint import get_endpoint, QueryEndpoint, JSONEndpoint, \
     RestEndpoint
 from botocore.auth import SigV4Auth
 from botocore.session import Session
-from botocore.credentials import Credentials
 from botocore.exceptions import UnknownServiceStyle
 from botocore.exceptions import UnknownSignatureVersionError
 

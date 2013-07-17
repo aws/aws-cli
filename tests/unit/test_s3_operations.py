@@ -25,7 +25,8 @@ import os
 from tests import BaseEnvVar
 import botocore.session
 
-
+XMLBODY1 = """<CreateBucketConfiguration><LocationConstraint>sa-east-1</LocationConstraint></CreateBucketConfiguration>"""
+XMLBODY2 = """<LifecycleConfiguration><Rule><ID>archive-objects-glacier-immediately-upon-creation</ID><Prefix>glacierobjects/</Prefix><Status>Enabled</Status><Transition><Days>0</Days><StorageClass>GLACIER</StorageClass></Transition></Rule></LifecycleConfiguration>"""
 class TestS3Operations(BaseEnvVar):
 
     def setUp(self):
@@ -38,6 +39,37 @@ class TestS3Operations(BaseEnvVar):
         self.bucket_name = 'foo'
         self.key_name = 'bar'
 
+    def test_create_bucket_location(self):
+        op = self.s3.get_operation('CreateBucket')
+        config = {'location_constraint': 'sa-east-1'}
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     acl='public-read',
+                                     create_bucket_configuration=config)
+        headers = {'x-amz-acl': 'public-read'}
+        uri_params = {'Bucket': self.bucket_name}
+        self.maxDiff = None
+        self.assertEqual(params['headers'], headers)
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), XMLBODY1)
+
+    def test_create_bucket_lifecycle(self):
+        op = self.s3.get_operation('PutBucketLifecycle')
+        config = {'rules': [
+                      {'id': 'archive-objects-glacier-immediately-upon-creation',
+                       'prefix': 'glacierobjects/',
+                       'status': 'Enabled',
+                       'transition': {'days': 0,
+                                      'storage_class': 'GLACIER'}
+                       }
+                    ]
+                  }
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     lifecycle_configuration=config)
+        uri_params = {'Bucket': self.bucket_name}
+        self.maxDiff = None
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), XMLBODY2)
+
     def test_put_object(self):
         op = self.s3.get_operation('PutObject')
         file_path = os.path.join(os.path.dirname(__file__),
@@ -49,14 +81,14 @@ class TestS3Operations(BaseEnvVar):
                                      acl='public-read',
                                      content_language='piglatin',
                                      content_type='text/plain')
-        result = {'headers':
-                  {'x-amz-acl': 'public-read',
+        headers = {'x-amz-acl': 'public-read',
                    'Content-Language': 'piglatin',
-                   'Content-Type': 'text/plain'},
-                  'payload': fp,
-                  'uri_params': {'Bucket': 'foo', 'Key': 'bar'}}
+                   'Content-Type': 'text/plain'}
+        uri_params = {'Bucket': 'foo', 'Key': 'bar'}
         self.maxDiff = None
-        self.assertEqual(params, result)
+        self.assertEqual(params['headers'], headers)
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), fp)
 
     def test_complete_multipart_upload(self):
         op = self.s3.get_operation('CompleteMultipartUpload')
@@ -70,7 +102,7 @@ class TestS3Operations(BaseEnvVar):
                                      key=self.key_name,
                                      upload_id='upload_id',
                                      multipart_upload=parts)
-        xml_payload = params['payload']
+        xml_payload = params['payload'].getvalue()
         # We should not see the <Parts><Part><...></Part></Parts>
         # element in the xml_payload.
         # Directly to Part, skipping Parts.

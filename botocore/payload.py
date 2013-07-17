@@ -42,7 +42,21 @@ from botocore.compat import json
 logger = logging.getLogger(__name__)
 
 
-class JSONPayload(object):
+class Payload(object):
+
+    def __init__(self):
+        self._literal_value = None
+
+    @property
+    def literal_value(self):
+        return self._literal_value
+
+    @literal_value.setter
+    def literal_value(self, literal_value):
+        self._literal_value = literal_value
+
+
+class JSONPayload(Payload):
     """
     A JSON payload.
 
@@ -52,6 +66,7 @@ class JSONPayload(object):
     """
 
     def __init__(self):
+        super(JSONPayload, self).__init__()
         self._value = {}
 
     def add_param(self, param, value, label=None):
@@ -64,10 +79,13 @@ class JSONPayload(object):
         """
         Return the value of the payload as a JSON string.
         """
-        return json.dumps(self._value)
+        value = self._literal_value
+        if self._value:
+            value = json.dumps(self._value)
+        return value
 
         
-class XMLPayload(object):
+class XMLPayload(Payload):
     """
     XML Payload.
 
@@ -99,18 +117,10 @@ class XMLPayload(object):
     """
 
     def __init__(self, root_element_name, namespace=None):
+        super(XMLPayload, self).__init__()
         self.root_element_name = root_element_name
         self.namespace = namespace
         self._elements = []
-        self._literal_value = None
-
-    @property
-    def literal_value(self):
-        return self._literal_value
-
-    @literal_value.setter
-    def literal_value(self, literal_value):
-        self._literal_value = literal_value
 
     def add_param(self, param, value, label=None):
         self._elements.append(param.to_xml(value, label))

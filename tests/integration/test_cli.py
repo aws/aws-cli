@@ -192,7 +192,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 0, p.stderr)
         self.assertIn('-----', p.stdout)
         self.assertIn('+-', p.stdout)
-        self.assertIn(' ResponseMetadata ', p.stdout)
+        self.assertIn('DescribeInstances', p.stdout)
 
     def test_version(self):
         p = aws('--version')

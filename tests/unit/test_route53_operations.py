@@ -28,6 +28,7 @@ import botocore.session
 CREATE_HOSTED_ZONE_PAYLOAD="""<CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2012-12-12/"><Name>foobar.com</Name><CallerReference>foobar</CallerReference><HostedZoneConfig><Comment>blahblahblah</Comment></HostedZoneConfig></CreateHostedZoneRequest>"""
 CREATE_RRSET_PAYLOAD="""<ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2012-12-12/"><ChangeBatch><Comment>Adding TXT record</Comment><Changes><Change><Action>CREATE</Action><ResourceRecordSet><Name>midocs.com</Name><Type>TXT</Type><TTL>600</TTL><ResourceRecords><ResourceRecord><Value>"v=foobar"</Value></ResourceRecord></ResourceRecords></ResourceRecordSet></Change></Changes></ChangeBatch></ChangeResourceRecordSetsRequest>"""
 DELETE_RRSET_PAYLOAD="""<ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2012-12-12/"><ChangeBatch><Comment>Adding TXT record</Comment><Changes><Change><Action>DELETE</Action><ResourceRecordSet><Name>midocs.com</Name><Type>TXT</Type><TTL>600</TTL><ResourceRecords><ResourceRecord><Value>"v=foobar"</Value></ResourceRecord></ResourceRecords></ResourceRecordSet></Change></Changes></ChangeBatch></ChangeResourceRecordSetsRequest>"""
+CREATE_HEALTH_CHECK_PAYLOAD="""<CreateHealthCheckRequest xmlns="https://route53.amazonaws.com/doc/2012-12-12/"><CallerReference>foobar</CallerReference><HealthCheckConfig><IPAddress>192.168.10.0</IPAddress><Port>8888</Port><Type>HTTP</Type><ResourcePath>foo/bar</ResourcePath><FullyQualifiedDomainName>foobar.com</FullyQualifiedDomainName></HealthCheckConfig></CreateHealthCheckRequest>"""
 
 
 class TestRoute53Operations(BaseEnvVar):
@@ -82,6 +83,19 @@ class TestRoute53Operations(BaseEnvVar):
         self.maxDiff = None
         self.assertEqual(params['payload'].getvalue(),
                          DELETE_RRSET_PAYLOAD)
+
+    def test_create_healthcheck(self):
+        op = self.route53.get_operation('CreateHealthCheck')
+        hc_config = {'ip_address': '192.168.10.0',
+                     'port': 8888,
+                     'type': 'HTTP',
+                     'resource_path': 'foo/bar',
+                     'fully_qualified_domain_name': 'foobar.com'}
+        params = op.build_parameters(caller_reference='foobar',
+                                     health_check_config=hc_config)
+        self.maxDiff = None
+        self.assertEqual(params['payload'].getvalue(),
+                         CREATE_HEALTH_CHECK_PAYLOAD)
 
 
 if __name__ == "__main__":

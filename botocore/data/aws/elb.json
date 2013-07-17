@@ -5,7 +5,7 @@
     "signature_version": "v4",
     "service_full_name": "Elastic Load Balancing",
     "endpoint_prefix": "elasticloadbalancing",
-    "documentation": "\n    \t<fullname>Elastic Load Balancing</fullname>\n        \n        <p>\n        Elastic Load Balancing is a cost-effective and easy\n        to use web service to help you improve availability and\n        scalability of your application. It makes it easy for\n        you to distribute application loads between two or more\n        EC2 instances. Elastic Load Balancing enables availability\n        through redundancy and supports traffic growth of your application.\n        </p>\n        \n        <p>This guide provides detailed information about Elastic Load Balancing actions, data types, parameters, and errors.</p>\n        \n        <p>Query requests are HTTP or HTTPS requests that use the HTTP verb GET or POST and a Query parameter named Action or Operation. \n        Action is used throughout this documentation, although Operation is supported for backward compatibility with other AWS Query APIs.</p>\n       \n        <p>This reference guide is based on the current WSDL, which is available at:\n            <a href=\"elasticloadbalancing.amazonaws.com/doc/2012-06-01/ElasticLoadBalancing.wsdl\"></a>   \n        </p>\n        \n        <p>For detailed information on constructing a query request using the actions, data types, and parameters mentioned in this guide,\n            go to <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-query-api.html\">Using the Query API</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n                   \n        <p>For detailed information about Elastic Load Balancing features and their associated API calls, go to \n            <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html\">Using Elastic Load Balancing</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n            \n    ",
+    "documentation": "\n    \t<fullname>Elastic Load Balancing</fullname>\n        \n        <p>\n        Elastic Load Balancing is a cost-effective and easy\n        to use web service to help you improve the availability and\n        scalability of your application running on Amazon Elastic Cloud Compute (Amazon EC2). It makes it easy for\n        you to distribute application loads between two or more\n        EC2 instances. Elastic Load Balancing supports the growth in traffic of your application by enabling availability through redundancy.\n        </p>\n        \n        <p>This guide provides detailed information about Elastic Load Balancing \n            actions, data types, and parameters that can be used for sending a \n            query request. Query requests are HTTP or HTTPS requests that use the \n            HTTP verb GET or POST and a query parameter named Action or Operation. \n            Action is used throughout this documentation, although Operation is \n            supported for backward compatibility with other AWS Query APIs.</p>\n                \n        <p>For detailed information on constructing a query request using the actions, data types, and parameters mentioned in this guide,\n            go to <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/using-query-api.html\">Using the Query API</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n                   \n        <p>For detailed information about Elastic Load Balancing features and their associated actions, go to \n            <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html\">Using Elastic Load Balancing</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n        \n        <p>This reference guide is based on the current WSDL, which is available at:\n            <a href=\"http://elasticloadbalancing.amazonaws.com/doc/2012-06-01/ElasticLoadBalancing.wsdl\"></a>   \n        </p>\n            \n    ",
     "operations": {
         "ApplySecurityGroupsToLoadBalancer": {
             "name": "ApplySecurityGroupsToLoadBalancer",
@@ -325,7 +325,7 @@
                     "documentation": "\n        <p>\n        Requested configuration change is invalid.\n        </p>\n    "
                 }
             ],
-            "documentation": "\n        <p>\n        Generates a stickiness policy with sticky session lifetimes that follow \n        that of an application-generated cookie. This policy can be associated\n        only with HTTP/HTTPS listeners.\n        </p>\n        <p>\n        This policy is similar to the policy created by CreateLBCookieStickinessPolicy, \n        except that the lifetime of the special Elastic Load Balancing cookie follows the\n        lifetime of the application-generated cookie specified in the policy configuration. \n        The LoadBalancer only inserts a new stickiness cookie when the application response\n        includes a new application cookie. \n        </p>\n        <p>\n        If the application cookie is explicitly removed or expires, the session stops being\n        sticky until a new application cookie is issued. \n        </p>\n        <note>\n            An application client must receive and send two cookies: the application-generated \n            cookie and the special Elastic Load Balancing cookie named <code>AWSELB</code>. \n            This is the default behavior for many common web browsers.\n        </note>\n    "
+            "documentation": "\n        <p>\n        Generates a stickiness policy with sticky session lifetimes that follow \n        that of an application-generated cookie. This policy can be associated\n        only with HTTP/HTTPS listeners.\n        </p>\n        <p>\n            This policy is similar to the policy created by <a>CreateLBCookieStickinessPolicy</a>, \n        except that the lifetime of the special Elastic Load Balancing cookie follows the\n        lifetime of the application-generated cookie specified in the policy configuration. \n        The LoadBalancer only inserts a new stickiness cookie when the application response\n        includes a new application cookie. \n        </p>\n        <p>\n        If the application cookie is explicitly removed or expires, the session stops being\n        sticky until a new application cookie is issued. \n        </p>\n        <note>\n            An application client must receive and send two cookies: the application-generated \n            cookie and the special Elastic Load Balancing cookie named <code>AWSELB</code>. \n            This is the default behavior for many common web browsers.\n        </note>\n        <p>For information on using <a>CreateAppCookieStickinessPolicy</a>, see <i>Using the Query API</i> in the <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/US_StickySessions.html#US_EnableStickySessionsAppCookies\">Enabling Application-Controlled Sesssion Stickiness</a> section of\n        the <i>Elastic Load Balancing Developer Guide</i>.</p>\n    "
         },
         "CreateLBCookieStickinessPolicy": {
             "name": "CreateLBCookieStickinessPolicy",
@@ -385,7 +385,7 @@
                     "documentation": "\n        <p>\n        Requested configuration change is invalid.\n        </p>\n    "
                 }
             ],
-            "documentation": "\n        <p>\n        Generates a stickiness policy with sticky session lifetimes controlled by the \n        lifetime of the browser (user-agent) or a specified expiration period. This \n        policy can be associated only with HTTP/HTTPS listeners.\n        </p>\n        <p>\n        When a LoadBalancer implements this policy, the LoadBalancer uses a special\n        cookie to track the backend server instance for each request. When the LoadBalancer\n        receives a request, it first checks to see if this cookie is present in the request. \n        If so, the LoadBalancer sends the request to the application server specified in the\n        cookie. If not, the LoadBalancer sends the request to a server that is chosen based on\n        the existing load balancing algorithm.\n        </p>\n        <p>\n        A cookie is inserted into the response for binding subsequent requests from the same user to\n        that server. The validity of the cookie is based on the cookie expiration time, which is \n        specified in the policy configuration. \n        </p>\n    "
+            "documentation": "\n        <p>\n        Generates a stickiness policy with sticky session lifetimes controlled by the \n        lifetime of the browser (user-agent) or a specified expiration period. This \n        policy can be associated only with HTTP/HTTPS listeners.\n        </p>\n        <p>\n        When a LoadBalancer implements this policy, the LoadBalancer uses a special\n        cookie to track the backend server instance for each request. When the LoadBalancer\n        receives a request, it first checks to see if this cookie is present in the request. \n        If so, the LoadBalancer sends the request to the application server specified in the\n        cookie. If not, the LoadBalancer sends the request to a server that is chosen based on\n        the existing load balancing algorithm.\n        </p>\n        <p>\n        A cookie is inserted into the response for binding subsequent requests from the same user to\n        that server. The validity of the cookie is based on the cookie expiration time, which is \n        specified in the policy configuration. \n        </p>\n        \n        <p>For information on using <a>CreateLBCookieStickinessPolicy</a>, see <i>Using the Query API</i> in the <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/US_StickySessions.html#US_EnableStickySessionsLBCookies\">Enabling Duration-Based Sesssion Stickiness</a> section of\n            the <i>Elastic Load Balancing Developer Guide</i>.</p>\n    "
         },
         "CreateLoadBalancer": {
             "name": "CreateLoadBalancer",
@@ -434,7 +434,7 @@
                                 "SSLCertificateId": {
                                     "shape_name": "SSLCertificateId",
                                     "type": "string",
-                                    "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.amazonwebservices.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
+                                    "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.aws.amazon.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
                                 }
                             },
                             "documentation": "\n        <p>\n        The Listener data type.\n        </p>\n    "
@@ -450,7 +450,7 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n        <p>\n        A list of Availability Zones.\n        </p>\n        <p>\n        At least one Availability Zone must be specified.\n        Specified Availability Zones must be in the same EC2 Region\n        as the LoadBalancer.\n        Traffic will be equally distributed across all zones.\n        </p>\n        <p>\n        This list can be modified\n        after the creation of the LoadBalancer.\n        </p>\n    "
+                        "documentation": "\n        <p>\n        A list of Availability Zones.\n        </p>\n        <p>\n        At least one Availability Zone must be specified.\n        Specified Availability Zones must be in the same EC2 Region\n        as the LoadBalancer.\n        Traffic will be equally distributed across all zones.\n        </p>\n        <p>\n        This list can be modified \n        after the creation of the LoadBalancer by calling <a>EnableAvailabilityZonesForLoadBalancer</a>.\n        </p>\n    "
                     },
                     "Subnets": {
                         "shape_name": "Subnets",
@@ -475,7 +475,7 @@
                     "Scheme": {
                         "shape_name": "LoadBalancerScheme",
                         "type": "string",
-                        "documentation": "\n      <p>\n          The type of a LoadBalancer.           \n          This option is only available for LoadBalancers attached to a Amazon VPC.\n          \n          By default, Elastic Load Balancer creates an internet-facing load balancer\n          with publicly resolvable DNS name that resolves to public IP addresses. \n          \n          Specify the value <i>internal</i> for this option to create an internal load \n          balancer with a DNS name that resolves to private IP addresses.\n             \n      </p>  \n    "
+                        "documentation": "\n      <p>The type of a LoadBalancer. </p>          \n      \n      <p>By default, Elastic Load Balancing creates an Internet-facing LoadBalancer\n          with a publicly resolvable DNS name, which resolves to public IP addresses. </p>\n          \n          <p>Specify the value <code>internal</code> for this option to create an internal LoadBalancer\n              with a DNS name that resolves to private IP addresses.</p>\n          \n         <p>This option is only available for LoadBalancers attached to an Amazon VPC.</p>\n         \n    "
                     }
                 },
                 "documentation": "\n    \t<p>\n    \tThe input for the <a>CreateLoadBalancer</a> action.\n    \t</p>\n    "
@@ -542,7 +542,7 @@
                     "documentation": "\n        <p>\n            Invalid value for scheme. Scheme can only be specified for load balancers in VPC.         \n        </p>\n    "
                 }
             ],
-            "documentation": "\n        <p>\n        Creates a new LoadBalancer.\n        </p>\n        <p>\n        After the call has completed successfully, a new LoadBalancer\n        is created; however, it will not be usable until at least\n        one instance has been registered.\n        When the LoadBalancer creation is completed,\n        the client can check whether or not it is usable by\n        using the DescribeInstanceHealth API.\n        The LoadBalancer is usable as soon as any registered instance\n        is <i>InService</i>.\n        </p>\n        <note>\n        Currently, the client's quota of LoadBalancers is\n        limited to ten per Region.\n        </note>\n        <note>\n            <p>\n            LoadBalancer DNS names vary depending on the Region\n            they're created in. For LoadBalancers created in the United States,\n            the DNS name ends with:\n            </p>\n            <ul>\n                <li>\n                <i>us-east-1.elb.amazonaws.com</i> (for the US Standard Region)\n                </li>\n                <li>\n                <i>us-west-1.elb.amazonaws.com</i> (for the Northern California Region)\n                </li>\n            </ul>\n            <p>\n            For LoadBalancers created in the EU (Ireland) Region,\n            the DNS name ends with:\n            </p>\n            <ul>\n                <li>\n                <i>eu-west-1.elb.amazonaws.com</i>\n                </li>\n            </ul>\n        </note>\n    "
+            "documentation": "\n        <p>\n        Creates a new LoadBalancer.\n        </p>\n        <p>\n        After the call has completed successfully, a new LoadBalancer\n        is created; however, it will not be usable until at least\n        one instance has been registered.\n        When the LoadBalancer creation is completed,\n        the client can check whether or not it is usable by\n        using the <a>DescribeInstanceHealth</a> action.\n        The LoadBalancer is usable as soon as any registered instance\n        is <i>InService</i>.\n        </p>\n        <note>\n        Currently, the client's quota of LoadBalancers is\n        limited to ten per Region.\n        </note>\n        <note>\n            <p>\n            LoadBalancer DNS names vary depending on the Region\n            they're created in. For LoadBalancers created in the United States,\n            the DNS name ends with:\n            </p>\n            <ul>\n                <li>\n                    <i>us-east-1.elb.amazonaws.com</i> (for the Northern Virginia Region)\n                </li>\n                <li>\n                <i>us-west-1.elb.amazonaws.com</i> (for the Northern California Region)\n                </li>\n            </ul>\n            <p>\n            For LoadBalancers created in the EU (Ireland) Region,\n            the DNS name ends with:\n            </p>\n            <ul>\n                <li>\n                <i>eu-west-1.elb.amazonaws.com</i>\n                </li>\n            </ul>\n        </note>\n        <p>For information on using <a>CreateLoadBalancer</a> to create a new LoadBalancer in Amazon EC2, go to <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/creating_lb_QueryAPI.html\">Using Query API</a> \n            section in the <i>Creating a Load Balancer With SSL Cipher Settings and Back-end Authentication</i> topic of the <i>Elastic Load Balancing Developer Guide</i>.</p>\n        \n        <p>For information on using <a>CreateLoadBalancer</a> to create a new LoadBalancer in Amazon VPC, see <i>Using the Query API</i> in the <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/USVPC_creating_basic_lb.html\">Creating a Basic Load Balancer in Amazon VPC</a> \n            section in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n    "
         },
         "CreateLoadBalancerListeners": {
             "name": "CreateLoadBalancerListeners",
@@ -553,7 +553,7 @@
                     "LoadBalancerName": {
                         "shape_name": "AccessPointName",
                         "type": "string",
-                        "documentation": "\n   \t<p>\n   \tThe name of the new LoadBalancer. The name must be unique within your AWS account. \n   \t</p>\n   ",
+                        "documentation": "\n   \t<p>\n   \tThe name of the LoadBalancer.  \n   \t</p>\n   ",
                         "required": true
                     },
                     "Listeners": {
@@ -591,7 +591,7 @@
                                 "SSLCertificateId": {
                                     "shape_name": "SSLCertificateId",
                                     "type": "string",
-                                    "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.amazonwebservices.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
+                                    "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.aws.amazon.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
                                 }
                             },
                             "documentation": "\n        <p>\n        The Listener data type.\n        </p>\n    "
@@ -744,7 +744,7 @@
                 "shape_name": "DeleteAccessPointOutput",
                 "type": "structure",
                 "members": {},
-                "documentation": "\n\t\t<p>\n\t\tThe output for the <a>DeleteLoadBalander</a> action.\n\t\t</p>\n    "
+                "documentation": "\n\t\t<p>\n\t\tThe output for the <a>DeleteLoadBalancer</a> action.\n\t\t</p>\n    "
             },
             "errors": [],
             "documentation": "\n        <p>\n        Deletes the specified LoadBalancer.\n        </p>\n        <p>\n        If attempting to recreate the LoadBalancer,\n        the client must reconfigure all the settings.\n        The DNS name associated with a deleted LoadBalancer\n        will no longer be usable.\n        Once deleted, the name and associated DNS record of the\n        LoadBalancer no longer exist and traffic sent to any of its\n        IP addresses will no longer be delivered to client instances.\n        The client will not receive the same DNS name even if a\n        new LoadBalancer with same LoadBalancerName is created.\n        </p>\n        <p>\n        To successfully call this API, the client must provide the same\n        account credentials as were used to create the LoadBalancer.\n        </p>\n        <note>\n        By design, if the LoadBalancer does not exist or has already been deleted,\n        DeleteLoadBalancer still succeeds.\n        </note>\n    "
@@ -789,7 +789,7 @@
                     "documentation": "\n        <p>\n            The specified LoadBalancer could not be found.\n        </p>\n    "
                 }
             ],
-            "documentation": "\n   \t<p>\n   \tDeletes listeners from the LoadBalancer for the specified port.\n   \t</p>\n   "
+            "documentation": "\n   \t<p>\n   \tDeletes listeners from the LoadBalancer for the specified port.\n   \t</p>\n       \n   "
         },
         "DeleteLoadBalancerPolicy": {
             "name": "DeleteLoadBalancerPolicy",
@@ -958,7 +958,7 @@
                                 "State": {
                                     "shape_name": "State",
                                     "type": "string",
-                                    "documentation": "\n        <p>\n        Specifies the current status of the instance.\n        </p>\n    "
+                                    "documentation": "\n        <p>\n        Specifies the current state of the instance.\n        Valid value: InService|OutOfService\n        </p>\n    "
                                 },
                                 "ReasonCode": {
                                     "shape_name": "ReasonCode",
@@ -968,7 +968,7 @@
                                 "Description": {
                                     "shape_name": "Description",
                                     "type": "string",
-                                    "documentation": "\n        <p>\n            Provides a description of the instance.\n        </p>\n    "
+                                    "documentation": "\n        <p>\n            Provides a description of the instance state.\n        </p>\n    "
                                 }
                             },
                             "documentation": "\n        <p>\n        The InstanceState data type.\n        </p>\n    "
@@ -1228,12 +1228,12 @@
                                 "CanonicalHostedZoneName": {
                                     "shape_name": "DNSName",
                                     "type": "string",
-                                    "documentation": "\n        <p>\n        Provides the name of the Amazon Route 53 hosted zone that is associated\n        with the LoadBalancer. For information on how to associate your load\n        balancer with a hosted zone, go to <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-domain-names-with-elb.html\">Using Domain Names With Elastic Load Balancing</a>\n        in the <i>Elastic Load Balancing Developer Guide</i>.\n        </p>\n    "
+                                    "documentation": "\n        <p>\n        Provides the name of the Amazon Route 53 hosted zone that is associated\n        with the LoadBalancer. For information on how to associate your load\n        balancer with a hosted zone, go to <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/using-domain-names-with-elb.html\">Using Domain Names With Elastic Load Balancing</a>\n        in the <i>Elastic Load Balancing Developer Guide</i>.\n        </p>\n    "
                                 },
                                 "CanonicalHostedZoneNameID": {
                                     "shape_name": "DNSName",
                                     "type": "string",
-                                    "documentation": "\n        <p>\n        Provides the ID of the Amazon Route 53 hosted zone name that is associated\n        with the LoadBalancer. For information on how to associate or disassociate your load\n        balancer with a hosted zone, go to <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-domain-names-with-elb.html\">Using Domain Names With Elastic Load Balancing</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>. \n        </p>\n    "
+                                    "documentation": "\n        <p>\n        Provides the ID of the Amazon Route 53 hosted zone name that is associated\n        with the LoadBalancer. For information on how to associate or disassociate your load\n        balancer with a hosted zone, go to <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/using-domain-names-with-elb.html\">Using Domain Names With Elastic Load Balancing</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>. \n        </p>\n    "
                                 },
                                 "ListenerDescriptions": {
                                     "shape_name": "ListenerDescriptions",
@@ -1274,7 +1274,7 @@
                                                     "SSLCertificateId": {
                                                         "shape_name": "SSLCertificateId",
                                                         "type": "string",
-                                                        "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.amazonwebservices.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
+                                                        "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.aws.amazon.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
                                                     }
                                                 },
                                                 "documentation": "\n        <p>\n        The Listener data type.\n        </p>\n    "
@@ -1506,7 +1506,7 @@
                                 "Scheme": {
                                     "shape_name": "LoadBalancerScheme",
                                     "type": "string",
-                                    "documentation": "\n       <p>\n          Specifies the type of a load balancer.\n\n          If it is <i>internet-facing</i>, the load balancer \n           has a publicly resolvable DNS name that resolves to public IP addresses.\n           If it is <i>internal</i>, the load balancer has a publicly resolvable\n           DNS name that resolves to private IP addresses.\n          \n          This option is only available for load balancers attached to a VPC.       \n       </p> \n    "
+                                    "documentation": "\n       <p>Specifies the type of LoadBalancer.</p>\n\n        <p>If the <code>Scheme</code>  is <code>internet-facing</code>, the LoadBalancer\n        has a publicly resolvable DNS name that resolves to public IP addresses.</p>\n        \n        <p>If the <code>Scheme</code>  is <code>internal</code>, the LoadBalancer has a publicly resolvable\n           DNS name that resolves to private IP addresses.</p>\n          \n         <p> This option is only available for LoadBalancers attached to an Amazon VPC. </p> \n    "
                                 }
                             },
                             "documentation": "\n        <p>\n       Contains the result of a successful invocation of <a>DescribeLoadBalancers</a>.\n        </p>\n    "
@@ -1802,7 +1802,7 @@
                     "SSLCertificateId": {
                         "shape_name": "SSLCertificateId",
                         "type": "string",
-                        "documentation": "\n   \t<p>\n   \tThe ID of the SSL certificate chain to use. \n   \tFor more information on SSL certificates, see \n   \t<a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/ManagingServerCerts.html\">\n   \tManaging Server Certificates\n   \t</a>\n   \tin the AWS Identity and Access Management documentation. \n   \t</p>\n   ",
+                        "documentation": "\n   \t<p>\n   \tThe ID of the SSL certificate chain to use. \n   \tFor more information on SSL certificates, see \n   \t<a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/ManagingServerCerts.html\">\n   \tManaging Server Certificates\n   \t</a>\n   \tin the AWS Identity and Access Management documentation. \n   \t</p>\n   ",
                         "required": true
                     }
                 },
@@ -1840,7 +1840,7 @@
                     "documentation": "\n        <p>\n        Requested configuration change is invalid.\n        </p>\n    "
                 }
             ],
-            "documentation": "\n   \t<p>\n   \tSets the certificate that terminates the specified listener's SSL connections. \n   \tThe specified certificate replaces any prior certificate that was used on the same LoadBalancer and port. \n   \t</p>\n   "
+            "documentation": "\n   \t<p>\n   \tSets the certificate that terminates the specified listener's SSL connections. \n   \tThe specified certificate replaces any prior certificate that was used on the same LoadBalancer and port. \n   \t</p>\n       <p>For information on using <a>SetLoadBalancerListenerSSLCertificate</a>, see  <i>Using the Query API </i> in the <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/US_UpdatingLoadBalancerSSL.html\">Updating an SSL Certificate for a Load Balancer</a>\nsection in of the <i>Elastic Load Balancing Developer Guide</i>.</p>\n   "
         },
         "SetLoadBalancerPoliciesForBackendServer": {
             "name": "SetLoadBalancerPoliciesForBackendServer",

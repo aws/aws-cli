@@ -211,14 +211,7 @@ class RestEndpoint(Endpoint):
         uri = urljoin(self.host, uri)
         payload = None
         if params['payload']:
-            # If there is a payload, it really should be a Payload
-            # object.  If it is, call it's getvalue method to find
-            # the real payload.  If it's not, that means somebody
-            # is doing something weird so just use the payload as is.
-            if isinstance(params['payload'], Payload):
-                payload = params['payload'].getvalue()
-            else:
-                payload = params['payload']
+            payload = params['payload'].getvalue()
         if payload is None:
             request = AWSRequest(method=operation.http['method'],
                                  url=uri, headers=params['headers'])

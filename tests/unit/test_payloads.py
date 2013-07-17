@@ -24,9 +24,8 @@
 from tests import unittest
 import botocore.parameters
 import botocore.payload
+from botocore.compat import json
 
-JSON_BODY1 = """{"foo": "value1", "bar": "value2"}"""
-JSON_BODY2 = """{"foo": ["This", "is", "a", "test"]}"""
 XML_BODY1 = """<foobar xmlns="http://foobar.com/"><foo>value1</foo><bar>value2</bar></foobar>"""
 XML_BODY2 = """<foo>value1</foo>"""
 
@@ -39,8 +38,9 @@ class TestPayloads(unittest.TestCase):
         payload.add_param(p, 'value1')
         p = botocore.parameters.StringParameter(None, name='bar')
         payload.add_param(p, 'value2')
-        json_body = payload.getvalue()
-        self.assertEqual(json_body, JSON_BODY1)
+        json_body = json.loads(payload.getvalue())
+        params = {"foo": "value1", "bar": "value2"}
+        self.assertEqual(json_body, params)
 
     def test_json_payload_list(self):
         payload = botocore.payload.JSONPayload()
@@ -49,8 +49,9 @@ class TestPayloads(unittest.TestCase):
         p.handle_subtypes()
         value = ['This', 'is', 'a', 'test']
         payload.add_param(p, value)
-        json_body = payload.getvalue()
-        self.assertEqual(json_body, JSON_BODY2)
+        json_body = json.loads(payload.getvalue())
+        params = {"foo": ["This", "is", "a", "test"]}
+        self.assertEqual(json_body, params)
 
     def test_xml_payload_scalar(self):
         payload = botocore.payload.XMLPayload(root_element_name='foobar',

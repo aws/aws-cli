@@ -23,8 +23,8 @@
 #
 import unittest
 import botocore.session
+from botocore.compat import json
 
-JSONPayload = """{"OutputBucket": "etc-output", "Notifications": {"Completed": "etc-topic", "Warning": "etc-topic", "Progressing": "etc-topic", "Error": "etc-topic"}, "Role": "etc-role", "Name": "testpipeline", "InputBucket": "etc-input"}"""
 
 class TestElasticTranscoderOperations(unittest.TestCase):
 
@@ -44,7 +44,16 @@ class TestElasticTranscoderOperations(unittest.TestCase):
                                                     'progressing': 'etc-topic',
                                                     'warning': 'etc-topic',
                                                     'error': 'etc-topic'})
-        self.assertEqual(params['payload'].getvalue(), JSONPayload)
+        result = {"OutputBucket": "etc-output",
+                  "Notifications": {"Completed": "etc-topic",
+                                    "Warning": "etc-topic",
+                                    "Progressing": "etc-topic",
+                                    "Error": "etc-topic"},
+                  "Role": "etc-role",
+                  "Name": "testpipeline",
+                  "InputBucket": "etc-input"}
+        json_body = json.loads(params['payload'].getvalue())
+        self.assertEqual(json_body, result)
 
 
 if __name__ == "__main__":

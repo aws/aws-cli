@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+import platform
 import time
 import os
 import sys
@@ -42,6 +43,8 @@ class Result(object):
 
 
 def aws(command):
+    if platform.system() == 'Windows':
+        command = _escape_quotes(command)
     full_command = 'python %s %s' % (AWS_CMD, command)
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
@@ -52,6 +55,16 @@ def aws(command):
     return Result(process.returncode,
                   stdout.decode('utf-8'),
                   stderr.decode('utf-8'))
+
+
+def _escape_quotes(command):
+    # For windows we have different rules for escaping.
+    # First, double quotes must be escaped.
+    command = command.replace('"', '\\"')
+    # Second, single quotes do nothing, to quote a value we need
+    # to use double quotes.
+    command = command.replace("'", '"')
+    return command
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):
@@ -87,7 +100,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 1)
         self.assertIn('AWS', p.stdout)
-        self.assertRegexpMatches(p.stdout, 'The.*AWS.*Command Line Interface')
+        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command Line Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')
@@ -97,7 +110,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_operation_help_output(self):
         p = aws('ec2 describe-instances help')
         self.assertEqual(p.rc, 1)
-        self.assertIn('The  describe-instances  operation', p.stdout)
+        # XXX: This is a rendering bug that needs to be fixed in bcdoc.  In
+        # the RST version there are multiple spaces between certain words.
+        # For now we're making the test less strict about formatting, but
+        # we eventually should update this test to check exactly for
+        # 'The describe-instances operation'.
+        self.assertRegexpMatches(p.stdout,
+                                 'The\s+describe-instances\s+operation')
 
     def test_operation_help_with_required_arg(self):
         p = aws('s3 get-object help')

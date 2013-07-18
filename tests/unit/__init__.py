@@ -20,6 +20,7 @@ import httpretty
 import mock
 
 from awscli.clidriver import create_clidriver
+from botocore.payload import Payload
 
 
 class BaseAWSCommandParamsTest(unittest.TestCase):
@@ -55,6 +56,10 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def _store_params(self, params):
         self.last_params = deepcopy(params)
+        for key in self.last_params:
+            value = self.last_params[key]
+            if isinstance(value, Payload):
+                self.last_params[key] = value.getvalue()
 
     def assert_params_for_cmd(self, cmd, params, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)

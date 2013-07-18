@@ -6,9 +6,8 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
+MANBUILDDIR   = $(BUILDDIR)/man1
 SOURCEDIR     = source
-MANBUILDDIR   = ../awscli/doc/man/man1
-TEXTBUILDDIR  = ../awscli/doc/text
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -114,9 +113,9 @@ latexpdf:
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 text:
-	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(TEXTBUILDDIR)
+	$(SPHINXBUILD) -b text $(ALLSPHINXOPTS) $(BUILDDIR)
 	@echo
-	@echo "Build finished. The text files are in $(TEXTBUILDDIR)."
+	@echo "Build finished. The text files are in $(BUILDDIR)."
 
 man:
 	$(SPHINXBUILD) -b man $(ALLSPHINXOPTS) $(MANBUILDDIR)

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+import platform
 import time
 import os
 import sys
@@ -42,6 +43,8 @@ class Result(object):
 
 
 def aws(command):
+    if platform.system() == 'Windows':
+        command = _escape_double_quotes(command)
     full_command = 'python %s %s' % (AWS_CMD, command)
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
@@ -52,6 +55,10 @@ def aws(command):
     return Result(process.returncode,
                   stdout.decode('utf-8'),
                   stderr.decode('utf-8'))
+
+
+def _escape_double_quotes(command):
+    return command.replace('"', '\\"')
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):
@@ -102,8 +109,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # For now we're making the test less strict about formatting, but
         # we eventually should update this test to check exactly for
         # 'The describe-instances operation'.
-        self.assertRegexpMatches('The\s+describe-instances\s+operation',
-                                 p.stdout)
+        self.assertRegexpMatches(p.stdout,
+                                 'The\s+describe-instances\s+operation')
 
     def test_operation_help_with_required_arg(self):
         p = aws('s3 get-object help')

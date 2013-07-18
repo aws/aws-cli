@@ -1,11 +1,11 @@
 {
+    "api_version": "2010-05-08",
+    "type": "query",
+    "result_wrapped": true,
+    "signature_version": "v4",
     "service_full_name": "AWS Identity and Access Management",
     "service_abbreviation": "IAM",
-    "type": "query",
-    "signature_version": "v4",
-    "result_wrapped": true,
     "global_endpoint": "iam.amazonaws.com",
-    "api_version": "2010-05-08",
     "endpoint_prefix": "iam",
     "xmlnamespace": "https://iam.amazonaws.com/doc/2010-05-08/",
     "documentation": "\n    <fullname>AWS Identity and Access Management</fullname>\n\n    <p>This guide provides descriptions of the Identity and Access Management (IAM) API \n      as well as links to related content in the guide, <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/\" target=\"_blank\">Using IAM</a>.</p>\n\n    <p>IAM is a web service that enables AWS customers to manage users and user permissions under their AWS account.\n      For more information about this product go to <a href=\"http://aws.amazon.com/iam/\" target=\"_blank\">AWS Identity and Access Management (IAM)</a>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</p>\n      \n       <p>If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's\ntechnical documentation at <a href=\"http://aws.amazon.com/documentation/\" target=\"_blank\">http://aws.amazon.com/documentation/</a>.</p>\n\t\t\n ",
@@ -1073,7 +1073,7 @@
                                         "required": true
                                     }
                                 },
-                                "documentation": null
+                                "documentation": "\n    <p>The User data type contains information about a user.</p>\n    \n    <p>\n    This data type is used as a response element in the following actions:</p>\n\t<ul>\n      <li><p><a>CreateUser</a></p></li>\n      <li><p><a>GetUser</a></p></li>\n      <li><p><a>ListUsers</a></p></li> \n    </ul>\n  "
                             },
                             "EnableDate": {
                                 "shape_name": "dateType",
@@ -1927,7 +1927,7 @@
                                 "documentation": "\n    <p>Specifies whether to allow IAM users to change their own password.</p>\n  "
                             }
                         },
-                        "documentation": null,
+                        "documentation": "\n    <p>The PasswordPolicy data type contains information about the account password policy.</p>\n\n    <p>\n    This data type is used as a response element in the action <a>GetAccountPasswordPolicy</a>.\n    </p>\n  ",
                         "required": true
                     }
                 },
@@ -2168,7 +2168,7 @@
                 "more_key": "IsTruncated",
                 "input_token": "Marker",
                 "output_token": "Marker",
-                "result_key": "Group",
+                "result_key": "Users",
                 "py_input_token": "marker"
             }
         },
@@ -4699,7 +4699,7 @@
                                             "required": true
                                         }
                                     },
-                                    "documentation": null
+                                    "documentation": "\n    <p>The User data type contains information about a user.</p>\n    \n    <p>\n    This data type is used as a response element in the following actions:</p>\n\t<ul>\n      <li><p><a>CreateUser</a></p></li>\n      <li><p><a>GetUser</a></p></li>\n      <li><p><a>ListUsers</a></p></li> \n    </ul>\n  "
                                 },
                                 "EnableDate": {
                                     "shape_name": "dateType",
@@ -5963,7 +5963,7 @@
             "more_key": "IsTruncated",
             "input_token": "Marker",
             "output_token": "Marker",
-            "result_key": "Group",
+            "result_key": "Users",
             "py_input_token": "marker"
         },
         "ListAccessKeys": {
@@ -6070,6 +6070,33 @@
             "output_token": "Marker",
             "result_key": "VirtualMFADevices",
             "py_input_token": "marker"
+        }
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "general_socket_errors": {
+                    "applies_when": {
+                        "socket_errors": [
+                            "GENERAL_CONNECTION_ERROR"
+                        ]
+                    }
+                },
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "Throttling",
+                            "http_status_code": 400
+                        }
+                    }
+                }
+            }
         }
     }
 }

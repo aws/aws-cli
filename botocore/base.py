@@ -69,10 +69,9 @@ Get the member args for an operations::
 import os
 import sys
 import glob
-import json
 import logging
 
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, json
 import botocore.exceptions
 
 logger = logging.getLogger(__name__)
@@ -82,7 +81,7 @@ _search_paths = []
 
 
 def _load_data(session, data_path):
-    logger.debug('Attempting to Load: %s' % data_path)
+    logger.debug('Attempting to load: %s', data_path)
     data = {}
     file_name = data_path + '.json'
     for path in get_search_path(session):
@@ -90,38 +89,34 @@ def _load_data(session, data_path):
         dir_path = os.path.join(path, data_path)
         # Is the path a directory?
         if os.path.isdir(dir_path):
-            logger.debug('Found data dir: %s' % dir_path)
+            logger.debug('Found data dir: %s', dir_path)
             try:
                 data = []
-                for pn in glob.glob(os.path.join(dir_path, '*.json')):
+                for pn in sorted(glob.glob(os.path.join(dir_path, '*.json'))):
                     fn = os.path.split(pn)[1]
                     fn = os.path.splitext(fn)[0]
                     if not fn.startswith('_'):
                         data.append(fn)
             except:
-                logger.error('Unable to load dir: %s' % dir_path,
+                logger.error('Unable to load dir: %s', dir_path,
                              exc_info=True)
             break
         elif os.path.isfile(file_path):
             fp = open(file_path)
             try:
-                version_info = sys.version_info
-                if version_info[0] == 2 and version_info[1] == 6:
-                    new_data = json.load(fp)
-                else:
-                    new_data = json.load(fp, object_pairs_hook=OrderedDict)
+                new_data = json.load(fp, object_pairs_hook=OrderedDict)
                 fp.close()
-                logger.debug('Found data file: %s' % file_path)
+                logger.debug('Found data file: %s', file_path)
                 if data is not None:
                     data.update(new_data)
                 else:
                     data = new_data
                 break
             except:
-                logger.error('Unable to load file: %s' % file_path,
+                logger.error('Unable to load file: %s', file_path,
                              exc_info=True)
         else:
-            logger.error('Unable to find file: %s' % file_path)
+            logger.error('Unable to find file: %s', file_path)
     if data:
         _data_cache[data_path] = data
     return data

@@ -1,11 +1,11 @@
 {
+  "api_version": "2010-05-08",
+  "type": "query",
+  "result_wrapped": true,
+  "signature_version": "v4",
   "service_full_name": "AWS Identity and Access Management",
   "service_abbreviation": "IAM",
-  "type": "query",
-  "signature_version": "v4",
-  "result_wrapped": true,
   "global_endpoint": "iam.amazonaws.com",
-  "api_version": "2010-05-08",
   "endpoint_prefix": "iam",
   "xmlnamespace": "https://iam.amazonaws.com/doc/2010-05-08/",
   "documentation": "\n    <fullname>AWS Identity and Access Management</fullname>\n\n    <p>This guide provides descriptions of the Identity and Access Management (IAM) API \n      as well as links to related content in the guide, <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/\" target=\"_blank\">Using IAM</a>.</p>\n\n    <p>IAM is a web service that enables AWS customers to manage users and user permissions under their AWS account.\n      For more information about this product go to <a href=\"http://aws.amazon.com/iam/\" target=\"_blank\">AWS Identity and Access Management (IAM)</a>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</p>\n      \n       <p>If you're new to AWS and need additional technical information about a specific AWS product, you can find the product's\ntechnical documentation at <a href=\"http://aws.amazon.com/documentation/\" target=\"_blank\">http://aws.amazon.com/documentation/</a>.</p>\n\t\t\n ",
@@ -1073,7 +1073,7 @@
                     "required": true
                   }
                 },
-                "documentation": null
+                "documentation": "\n    <p>The User data type contains information about a user.</p>\n    \n    <p>\n    This data type is used as a response element in the following actions:</p>\n\t<ul>\n      <li><p><a>CreateUser</a></p></li>\n      <li><p><a>GetUser</a></p></li>\n      <li><p><a>ListUsers</a></p></li> \n    </ul>\n  "
               },
               "EnableDate": {
                 "shape_name": "dateType",
@@ -1927,7 +1927,7 @@
                 "documentation": "\n    <p>Specifies whether to allow IAM users to change their own password.</p>\n  "
               }
             },
-            "documentation": null,
+            "documentation": "\n    <p>The PasswordPolicy data type contains information about the account password policy.</p>\n\n    <p>\n    This data type is used as a response element in the action <a>GetAccountPasswordPolicy</a>.\n    </p>\n  ",
             "required": true
           }
         },
@@ -4608,7 +4608,7 @@
                       "required": true
                     }
                   },
-                  "documentation": null
+                  "documentation": "\n    <p>The User data type contains information about a user.</p>\n    \n    <p>\n    This data type is used as a response element in the following actions:</p>\n\t<ul>\n      <li><p><a>CreateUser</a></p></li>\n      <li><p><a>GetUser</a></p></li>\n      <li><p><a>ListUsers</a></p></li> \n    </ul>\n  "
                 },
                 "EnableDate": {
                   "shape_name": "dateType",
@@ -5851,104 +5851,6 @@
         }
       ],
       "documentation": "\n    <p>Uploads an X.509 signing certificate and associates it with the specified user. Some AWS services\n\tuse X.509 signing certificates to validate requests that are signed with a\n    corresponding private key. When you upload the certificate, its default status is <code>Active</code>.</p>\n\n\t<p>If the <code>UserName</code> field is not specified, the user name is determined implicitly\n\tbased on the AWS Access Key ID used to sign the request. Because this action works for access\n\tkeys under the AWS account, this API can be used to manage root credentials even if the AWS account\n\thas no associated users.</p>\n\n    <note>Because the body of a X.509 certificate can be large, you should use POST rather than GET when\n    \tcalling <code>UploadSigningCertificate</code>. For information about setting up signatures and \n    \tauthorization through the API, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/signing_aws_api_requests.html\" target=\"_blank\">Signing AWS API Requests</a> in the <i>AWS General Reference</i>. For general information about \n    \tusing the Query API with IAM, go to <a href=\"http://docs.amazonwebservices.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\" target=\"_blank\">Making Query Requests</a> in <i>Using IAM</i>.</note>\n\n    <examples>\n\n      <queryrequest>\nPOST / HTTP/1.1\nHost: iam.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\n\nAction=UploadSigningCertificate\n&UserName=Bob\n&CertificateBody=-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----\n&Version=2010-05-08\n&AUTHPARAMS\n      </queryrequest>\n\n      <queryresponse>\n<UploadSigningCertificateResponse>\n   <UploadSigningCertificateResult>\n      <Certificate>\n         <UserName>Bob</UserName>\n         <CertificateId>TA7SMP42TDN5Z26OBPJE7EXAMPLE</CertificateId>\n         <CertificateBody>-----BEGIN CERTIFICATE-----\n    MIICdzCCAeCgAwIBAgIGANc+Ha2wMA0GCSqGSIb3DQEBBQUAMFMxCzAJBgNVBAYT\n    AlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNBV1MxITAfBgNVBAMT\n    GEFXUyBMaW1pdGVkLUFzc3VyYW5jZSBDQTAeFw0wOTAyMDQxNzE5MjdaFw0xMDAy\n    MDQxNzE5MjdaMFIxCzAJBgNVBAYTAlVTMRMwEQYDVQQKEwpBbWF6b24uY29tMRcw\n    FQYDVQQLEw5BV1MtRGV2ZWxvcGVyczEVMBMGA1UEAxMMNTdxNDl0c3ZwYjRtMIGf\n    MA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCpB/vsOwmT/O0td1RqzKjttSBaPjbr\n    dqwNe9BrOyB08fw2+Ch5oonZYXfGUrT6mkYXH5fQot9HvASrzAKHO596FdJA6DmL\n    ywdWe1Oggk7zFSXO1Xv+3vPrJtaYxYo3eRIp7w80PMkiOv6M0XK8ubcTouODeJbf\n    suDqcLnLDxwsvwIDAQABo1cwVTAOBgNVHQ8BAf8EBAMCBaAwFgYDVR0lAQH/BAww\n    CgYIKwYBBQUHAwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQULGNaBphBumaKbDRK\n    CAi0mH8B3mowDQYJKoZIhvcNAQEFBQADgYEAuKxhkXaCLGcqDuweKtO/AEw9ZePH\n    wr0XqsaIK2HZboqruebXEGsojK4Ks0WzwgrEynuHJwTn760xe39rSqXWIOGrOBaX\n    wFpWHVjTFMKk+tSDG1lssLHyYWWdFFU4AnejRGORJYNaRHgVTKjHphc5jEhHm0BX\n    AEaHzTpmEXAMPLE=\n    -----END CERTIFICATE-----</CertificateBody>\n         <Status>Active</Status>\n      </Certificate>\n   </UploadSigningCertificateResult>\n   <ResponseMetadata>\n      <RequestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</RequestId>\n   </ResponseMetadata>\n</UploadSigningCertificateResponse>\n      </queryresponse>\n    </examples>\n  "
-    }
-  },
-  "pagination": {
-    "GetGroup": {
-      "more_key": "IsTruncated",
-      "result_key": "Users",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListAccessKeys": {
-      "more_key": "IsTruncated",
-      "result_key": "AccessKeyMetadata",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListAccountAliases": {
-      "more_key": "IsTruncated",
-      "result_key": "AccountAliases",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListGroupPolicies": {
-      "more_key": "IsTruncated",
-      "result_key": "PolicyNames",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListGroups": {
-      "more_key": "IsTruncated",
-      "result_key": "Groups",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListGroupsForUser": {
-      "more_key": "IsTruncated",
-      "result_key": "Groups",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListInstanceProfiles": {
-      "more_key": "IsTruncated",
-      "result_key": "InstanceProfiles",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListInstanceProfilesForRole": {
-      "more_key": "IsTruncated",
-      "result_key": "InstanceProfiles",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListMFADevices": {
-      "more_key": "IsTruncated",
-      "result_key": "MFADevices",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListRolePolicies": {
-      "more_key": "IsTruncated",
-      "result_key": "PolicyNames",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListRoles": {
-      "more_key": "IsTruncated",
-      "result_key": "Roles",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListServerCertificates": {
-      "more_key": "IsTruncated",
-      "result_key": "ServerCertificateMetadataList",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListSigningCertificates": {
-      "more_key": "IsTruncated",
-      "result_key": "Certificates",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListUserPolicies": {
-      "more_key": "IsTruncated",
-      "result_key": "PolicyNames",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListUsers": {
-      "more_key": "IsTruncated",
-      "result_key": "Users",
-      "output_token": "Marker",
-      "input_token": "Marker"
-    },
-    "ListVirtualMFADevices": {
-      "more_key": "IsTruncated",
-      "result_key": "VirtualMFADevices",
-      "output_token": "Marker",
-      "input_token": "Marker"
     }
   }
 }

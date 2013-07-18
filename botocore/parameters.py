@@ -23,7 +23,6 @@
 import logging
 import base64
 import datetime
-import time
 import six
 import dateutil.parser
 from . import BotoCoreObject
@@ -44,6 +43,7 @@ class Parameter(BotoCoreObject):
         self.max = None
         self.payload = False
         self.streaming = False
+        self.example_fn = None
         BotoCoreObject.__init__(self, **kwargs)
         self.cli_name = '--' + self.cli_name
         self.handle_subtypes()
@@ -94,14 +94,11 @@ class Parameter(BotoCoreObject):
                     key = self.name
                 built_params['headers'][key] = value
         elif style == 'rest-json':
-            built_params['payload'] = value
+            built_params['payload'].add_param(self, value, label)
         elif style == 'rest-xml' and not self.streaming:
-            logger.debug('XML Payload found')
-            xml_payload = self.to_xml(value)
-            logger.debug(xml_payload)
-            built_params['payload'] = xml_payload
+            built_params['payload'].add_param(self, value, label)
         else:
-            built_params['payload'] = value
+            built_params['payload'].literal_value = value
 
     def build_parameter(self, style, value, built_params, label=''):
         if style == 'query':
@@ -158,9 +155,9 @@ class FloatParameter(Parameter):
 class DoubleParameter(Parameter):
 
     def validate(self, value):
-        if not isinstance(value, double):
+        if not isinstance(value, float):
             raise ValidationError(value=str(value), type_name='double',
-                                   param=self)
+                                  param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -296,8 +293,8 @@ class ListParameter(Parameter):
             self.members = get_parameter(self.operation, None, self.members)
 
     def build_parameter_query(self, value, built_params, label=''):
-        logger.debug('name: %s' % self.get_label())
-        logger.debug('label: %s' % label)
+        logger.debug("Building parameter for query service, name: %r, label: %r",
+                     self.get_label(), label)
         value = self.validate(value)
         # If this is not a flattened list, find the label for member
         # items in the list.
@@ -331,13 +328,15 @@ class ListParameter(Parameter):
             self.members.build_parameter_json(v, built_params[label], None)
 
     def to_xml(self, value, label=None):
-        if not label:
-            label = self.xmlname
-        xml = '<%s>' % label
+        inner_xml = ''
         for item in value:
-            xml += self.members.to_xml(item, self.xmlname)
-        xml += '</%s>' % label
-        return xml
+            inner_xml += self.members.to_xml(item, self.xmlname)
+        if self.flattened:
+            return inner_xml
+        else:
+            if not label:
+                label = self.xmlname
+            return '<%s>' % label + inner_xml + '</%s>' % label
 
 
 class MapParameter(Parameter):
@@ -363,8 +362,6 @@ class MapParameter(Parameter):
 
     def build_parameter_json(self, value, built_params, label=''):
         label = self.get_label()
-        key_type = self.keys
-        member_type = self.members
         new_value = {}
         if isinstance(built_params, list):
             built_params.append(new_value)
@@ -419,6 +416,15 @@ class StructParameter(Parameter):
                 member.build_parameter_json(value[member.py_name],
                                             new_value,
                                             member_label)
+
+    def store_value_json(self, value, built_params, label):
+        label = self.get_label()
+        built_params[label] = {}
+        for member in self.members:
+            if member.py_name in value:
+                member.store_value_json(value[member.py_name],
+                                        built_params[label],
+                                        member.name)
 
     def to_xml(self, value, label=None):
         if not label:

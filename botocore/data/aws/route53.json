@@ -1,10 +1,10 @@
 {
+    "api_version": "2012-12-12",
+    "type": "rest-xml",
+    "signature_version": "v3https",
     "service_full_name": "Amazon Route 53",
     "service_abbreviation": "Route 53",
-    "type": "rest-xml",
-    "signature_version": "v3",
     "global_endpoint": "route53.amazonaws.com",
-    "api_version": "2012-12-12",
     "endpoint_prefix": "route53",
     "xmlnamespace": "https://route53.amazonaws.com/doc/2012-12-12/",
     "documentation": "\n   ",
@@ -2070,5 +2070,32 @@
         "protocols": [
             "https"
         ]
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "general_socket_errors": {
+                    "applies_when": {
+                        "socket_errors": [
+                            "GENERAL_CONNECTION_ERROR"
+                        ]
+                    }
+                },
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "Throttling",
+                            "http_status_code": 400
+                        }
+                    }
+                }
+            }
+        }
     }
 }

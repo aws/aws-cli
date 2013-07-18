@@ -21,10 +21,11 @@
 # IN THE SOFTWARE.
 #
 import logging
-from .parameters import get_parameter
-from .exceptions import MissingParametersError
-from .paginate import Paginator
-from . import BotoCoreObject
+from botocore.parameters import get_parameter
+from botocore.exceptions import MissingParametersError
+from botocore.paginate import Paginator
+from botocore.payload import XMLPayload, JSONPayload
+from botocore import BotoCoreObject
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +110,15 @@ class Operation(BotoCoreObject):
         if self.service.type in ('rest-xml', 'rest-json'):
             d['uri_params'] = {}
             d['headers'] = {}
-            d['payload'] = None
+            if self.service.type == 'rest-xml':
+                namespace = self.service.xmlnamespace
+                root_element_name = None
+                if self.input and 'shape_name' in self.input:
+                    root_element_name = self.input['shape_name']
+                d['payload'] = XMLPayload(root_element_name=root_element_name,
+                                          namespace=namespace)
+            else:
+                d['payload'] = JSONPayload()
         return d
 
     def build_parameters(self, **kwargs):
@@ -118,7 +127,6 @@ class Operation(BotoCoreObject):
         given operation formatted as required to pass to the service
         in a request.
         """
-        logger.debug(kwargs)
         built_params = self._get_built_params()
         missing = []
         for param in self.params:

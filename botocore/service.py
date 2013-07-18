@@ -43,16 +43,16 @@ class Service(object):
     :ivar protocols: A list of protocols supported by the service.
     """
 
-    def __init__(self, session, provider_name, service_name,
+    def __init__(self, session, provider, service_name,
                  path='/', port=None):
         self.global_endpoint = None
         self.timestamp_format = 'iso8601'
-        sdata = session.get_service_data(service_name, provider_name)
+        sdata = session.get_service_data(service_name)
         self.__dict__.update(sdata)
         self._operations_data = self.__dict__.pop('operations')
         self._operations = None
         self.session = session
-        self.provider_name = provider_name
+        self.provider = provider
         self.path = path
         self.port = port
         self.cli_name = service_name
@@ -143,15 +143,15 @@ class Service(object):
         return None
 
 
-def get_service(session, service_name, provider_name='aws'):
+def get_service(session, service_name, provider):
     """
     Return a Service object for a given provider name and service name.
 
     :type service_name: str
     :param service_name: The name of the service.
 
-    :type provider_name: str
-    :param provider_name: The name of the provider.
+    :type provider: Provider
+    :param provider: The Provider object associated with the session.
     """
     logger.debug("Creating service object for: %s", service_name)
-    return Service(session, provider_name, service_name)
+    return Service(session, provider, service_name)

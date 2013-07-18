@@ -32,6 +32,9 @@ class TestSNSOperations(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session()
         self.sns = self.session.get_service('sns')
+        self.http_response = Mock()
+        self.http_response.status_code = 200
+        self.parsed_response = {}
 
     def test_subscribe_with_endpoint(self):
         op = self.sns.get_operation('Subscribe')
@@ -46,8 +49,8 @@ class TestSNSOperations(unittest.TestCase):
         self.session.register('before-call.sns.Subscribe',
                               lambda **kwargs: calls.append(kwargs))
         endpoint = Mock()
-        endpoint.make_request.return_value = (sentinel.RESPONSE,
-                                              sentinel.PARSED)
+        endpoint.make_request.return_value = (self.http_response,
+                                              self.parsed_response)
         op.call(endpoint=endpoint, topic_arn='topic_arn', protocol='http',
                 notification_endpoint='http://example.org')
         self.assertEqual(len(calls), 1)
@@ -62,14 +65,14 @@ class TestSNSOperations(unittest.TestCase):
         self.session.register('after-call.sns.Subscribe',
                               lambda **kwargs: calls.append(kwargs))
         endpoint = Mock()
-        endpoint.make_request.return_value = (sentinel.RESPONSE,
-                                              sentinel.PARSED)
+        endpoint.make_request.return_value = (self.http_response,
+                                              self.parsed_response)
         op.call(endpoint=endpoint, topic_arn='topic_arn', protocol='http',
                 notification_endpoint='http://example.org')
         self.assertEqual(len(calls), 1)
         self.assertEqual(calls[0]['operation'], op)
-        self.assertEqual(calls[0]['http_response'], sentinel.RESPONSE)
-        self.assertEqual(calls[0]['parsed'], sentinel.PARSED)
+        self.assertEqual(calls[0]['http_response'], self.http_response)
+        self.assertEqual(calls[0]['parsed'], self.parsed_response)
 
 
 if __name__ == "__main__":

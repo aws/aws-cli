@@ -1416,7 +1416,7 @@
                                                     "documentation": " \n        <p>The value that the actual field value will be compared with.</p>\n    "
                                                 }
                                             },
-                                            "documentation": null
+                                            "documentation": " \n        <p>Contains a logical operation for comparing the value of a field with a specified value.</p> \n    "
                                         }
                                     },
                                     "documentation": "\n        <p>A comparision that is used to determine whether a query should return this object.</p> \n    "
@@ -2146,5 +2146,32 @@
         "protocols": [
             "https"
         ]
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "general_socket_errors": {
+                    "applies_when": {
+                        "socket_errors": [
+                            "GENERAL_CONNECTION_ERROR"
+                        ]
+                    }
+                },
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "Throttling",
+                            "http_status_code": 400
+                        }
+                    }
+                }
+            }
+        }
     }
 }

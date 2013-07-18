@@ -41,18 +41,18 @@ class TestConfig(BaseEnvVar):
         }
 
     def test_config_not_found(self):
-        os.environ['FOO_CONFIG_FILE'] = path('aws_config_notfound')
+        self.environ['FOO_CONFIG_FILE'] = path('aws_config_notfound')
         session = botocore.session.get_session(self.env_vars)
         self.assertEqual(session.get_config(), {})
 
     def test_config_parse_error(self):
-        os.environ['FOO_CONFIG_FILE'] = path('aws_config_bad')
+        self.environ['FOO_CONFIG_FILE'] = path('aws_config_bad')
         session = botocore.session.get_session(self.env_vars)
         self.assertRaises(botocore.exceptions.ConfigParseError,
                           session.get_config)
 
     def test_config(self):
-        os.environ['FOO_CONFIG_FILE'] = path('aws_config')
+        self.environ['FOO_CONFIG_FILE'] = path('aws_config')
         session = botocore.session.get_session(self.env_vars)
         session.get_config()
         self.assertEqual(len(session.available_profiles), 2)
@@ -70,7 +70,7 @@ class TestConfig(BaseEnvVar):
     def test_env_vars_trump_defaults(self):
         env_vars = {'config_file': (
             None, 'FOO_CONFIG_FILE', path('aws_config'))}
-        os.environ['FOO_CONFIG_FILE'] = path('aws_config_other')
+        self.environ['FOO_CONFIG_FILE'] = path('aws_config_other')
         # aws_config has access/secret keys of foo/bar, while
         # aws_config_other has access/secret key of other_foo/other_bar,
         # which is what should be used by the session since env vars
@@ -81,8 +81,8 @@ class TestConfig(BaseEnvVar):
         self.assertEqual(config['aws_secret_access_key'], 'other_bar')
 
     def test_bad_profile(self):
-        os.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
-        os.environ['FOO_DEFAULT_PROFILE'] = 'personal1'
+        self.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
+        self.environ['FOO_DEFAULT_PROFILE'] = 'personal1'
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()
         profiles = session.available_profiles
@@ -94,8 +94,8 @@ class TestConfig(BaseEnvVar):
                                   'aws_secret_access_key': 'key_personal1'})
 
     def test_profile_cached_returns_same_values(self):
-        os.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
-        os.environ['FOO_DEFAULT_PROFILE'] = 'personal1'
+        self.environ['FOO_CONFIG_FILE'] = path('aws_bad_profile')
+        self.environ['FOO_DEFAULT_PROFILE'] = 'personal1'
         session = botocore.session.get_session(self.env_vars)
         # First time is built from scratch.
         config = session.get_config()

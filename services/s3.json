@@ -1,13 +1,13 @@
 {
+  "api_version": "2006-03-01",
   "type": "rest-xml",
   "signature_version": "s3",
   "timestamp_format": "rfc822",
   "checksum_format": "md5",
-  "api_version": "2006-03-01",
-  "endpoint_prefix": "s3",
   "service_full_name": "Amazon Simple Storage Service",
   "service_abbreviation": "Amazon S3",
   "global_endpoint": "s3.amazonaws.com",
+  "endpoint_prefix": "s3",
   "xmlnamespace": "http://s3.amazonaws.com/doc/2006-03-01/",
   "documentation": "",
   "operations": {
@@ -113,17 +113,15 @@
           "Key": {
             "type": "string"
           },
-          "ETag": {
-            "type": "string",
-            "location": "header",
-            "location_name": "ETag",
-            "documentation": "Entity tag for the uploaded object."
-          },
           "Expiration": {
             "type": "timestamp",
             "location": "header",
             "location_name": "x-amz-expiration",
             "documentation": "If the object expiration is configured, this will contain the expiration date (expiry-date) and rule ID (rule-id). The value of rule-id is URL encoded."
+          },
+          "ETag": {
+            "type": "string",
+            "documentation": "Entity tag of the object."
           },
           "ServerSideEncryption": {
             "type": "string",
@@ -149,6 +147,7 @@
     },
     "CopyObject": {
       "name": "CopyObject",
+      "alias": "PutObjectCopy",
       "documentation_url": "http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectCOPY.html",
       "documentation": "Creates a copy of an object that is already stored in Amazon S3.",
       "http": {
@@ -212,7 +211,7 @@
             "location": "header",
             "location_name": "x-amz-copy-source",
             "required": true,
-            "pattern": "/\\/.+\\/.+",
+            "pattern": "\\/.+\\/.+",
             "documentation": "The name of the source bucket and key name of the source object, separated by a slash (/). Must be URL-encoded."
           },
           "CopySourceIfMatch": {
@@ -237,7 +236,7 @@
             "type": "timestamp",
             "location": "header",
             "location_name": "x-amz-copy-source-if-unmodified-since",
-            "documentation": "Copies the object if it hasn''t been modified since the specified time."
+            "documentation": "Copies the object if it hasn't been modified since the specified time."
           },
           "Expires": {
             "type": "timestamp",
@@ -281,7 +280,7 @@
             "documentation": "A map of metadata to store with the object in S3.",
             "keys": {
               "type": "string",
-              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retreiving headers."
+              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retrieving headers."
             },
             "members": {
               "type": "string",
@@ -315,7 +314,7 @@
             ],
             "location": "header",
             "location_name": "x-amz-storage-class",
-            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
+            "documentation": "The type of storage to use for the object. Defaults to 'STANDARD'."
           },
           "WebsiteRedirectLocation": {
             "type": "string",
@@ -576,7 +575,7 @@
             "documentation": "A map of metadata to store with the object in S3.",
             "keys": {
               "type": "string",
-              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retreiving headers."
+              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retrieving headers."
             },
             "members": {
               "type": "string",
@@ -600,7 +599,7 @@
             ],
             "location": "header",
             "location_name": "x-amz-storage-class",
-            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
+            "documentation": "The type of storage to use for the object. Defaults to 'STANDARD'."
           },
           "WebsiteRedirectLocation": {
             "type": "string",
@@ -645,7 +644,7 @@
     "DeleteBucket": {
       "name": "DeleteBucket",
       "documentation_url": "http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketDELETE.html",
-      "documentation": "Deletes the bucket.  All objects (including all object versions and Delete Markers) in the bucket must be deleted before the bucket itself can be deleted.",
+      "documentation": "Deletes the bucket. All objects (including all object versions and Delete Markers) in the bucket must be deleted before the bucket itself can be deleted.",
       "http": {
         "method": "DELETE",
         "uri": "/{Bucket}"
@@ -783,7 +782,7 @@
     "DeleteObject": {
       "name": "DeleteObject",
       "documentation_url": "http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectDELETE.html",
-      "documentation": "Removes the null version (if there is one) of an object and inserts a delete marker, which becomes the latest version of the object. If there isn''t a null version, Amazon S3 does not remove any objects.",
+      "documentation": "Removes the null version (if there is one) of an object and inserts a delete marker, which becomes the latest version of the object. If there isn't a null version, Amazon S3 does not remove any objects.",
       "http": {
         "method": "DELETE",
         "uri": "/{Bucket}/{Key}"
@@ -829,7 +828,7 @@
       "name": "DeleteObjects",
       "alias": "DeleteMultipleObjects",
       "documentation_url": "http://docs.amazonwebservices.com/AmazonS3/latest/API/multiobjectdeleteapi.html",
-      "documentation": "This operation enables you to delete multiple objects from a bucket using a single HTTP request.  You may specify up to 1000 keys.",
+      "documentation": "This operation enables you to delete multiple objects from a bucket using a single HTTP request. You may specify up to 1000 keys.",
       "http": {
         "method": "POST",
         "uri": "/{Bucket}?delete"
@@ -875,7 +874,7 @@
           },
           "MFA": {
             "type": "string",
-            "documentation": "The concatenation of the authentication device''s serial number, a space, and the value that is displayed on your authentication device.",
+            "documentation": "The concatenation of the authentication device's serial number, a space, and the value that is displayed on your authentication device.",
             "location": "header",
             "location_name": "x-amz-mfa"
           }
@@ -1059,6 +1058,15 @@
             "members": {
               "type": "structure",
               "members": {
+                "AllowedHeaders": {
+                  "type": "list",
+                  "flattened": true,
+                  "xmlname": "AllowedHeader",
+                  "documentation": "Specifies which headers are allowed in a pre-flight OPTIONS request.",
+                  "members": {
+                    "type": "string"
+                  }
+                },
                 "AllowedOrigins": {
                   "type": "list",
                   "flattened": true,
@@ -1160,7 +1168,7 @@
                       "type": "string",
                       "enum": [
                         "STANDARD",
-                        "REDUCED_REDUDANCY",
+                        "REDUCED_REDUNDANCY",
                         "GLACIER"
                       ],
                       "documentation": "The class of storage used to store the object."
@@ -1677,6 +1685,7 @@
           "Range": {
             "type": "string",
             "location": "header",
+            "location_name": "Range",
             "documentation": "Downloads the specified range bytes of an object. For more information about the HTTP Range header, go to http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35."
           },
           "ResponseCacheControl": {
@@ -1712,7 +1721,6 @@
           "VersionId": {
             "type": "string",
             "location": "uri",
-            "location_name": "versionId",
             "documentation": "VersionId used to reference a specific version of the object."
           }
         }
@@ -1732,8 +1740,8 @@
             "location_name": "x-amz-delete-marker",
             "documentation": "Specifies whether the object retrieved was (true) or was not (false) a Delete Marker. If false, this response header does not appear in the response.",
             "enum": [
-              true,
-              false
+              "true",
+              "false"
             ]
           },
           "AcceptRanges": {
@@ -1768,6 +1776,7 @@
           "ETag": {
             "type": "string",
             "location": "header",
+            "location_name": "ETag",
             "documentation": "An ETag is an opaque identifier assigned by a web server to a specific version of a resource found at a URL"
           },
           "MissingMeta": {
@@ -1840,7 +1849,7 @@
             "documentation": "A map of metadata to store with the object in S3.",
             "keys": {
               "type": "string",
-              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retreiving headers."
+              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retrieving headers."
             },
             "members": {
               "type": "string",
@@ -1882,7 +1891,6 @@
           "VersionId": {
             "type": "string",
             "location": "uri",
-            "location_name": "versionId",
             "documentation": "VersionId used to reference a specific version of the object."
           }
         }
@@ -2038,7 +2046,7 @@
     "HeadObject": {
       "name": "HeadObject",
       "documentation_url": "http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectHEAD.html",
-      "documentation": "The HEAD operation retrieves metadata from an object without returning the object itself. This operation is useful if you''re only interested in an object''s metadata. To use HEAD, you must have READ access to the object.",
+      "documentation": "The HEAD operation retrieves metadata from an object without returning the object itself. This operation is useful if you're only interested in an object's metadata. To use HEAD, you must have READ access to the object.",
       "http": {
         "method": "HEAD",
         "uri": "/{Bucket}/{Key}?versionId={VersionId}"
@@ -2083,12 +2091,12 @@
           "Range": {
             "type": "string",
             "location": "header",
+            "location_name": "Range",
             "documentation": "Downloads the specified range bytes of an object. For more information about the HTTP Range header, go to http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35."
           },
           "VersionId": {
             "type": "string",
             "location": "uri",
-            "location_name": "versionId",
             "documentation": "VersionId used to reference a specific version of the object."
           }
         }
@@ -2102,8 +2110,8 @@
             "location_name": "x-amz-delete-marker",
             "documentation": "Specifies whether the object retrieved was (true) or was not (false) a Delete Marker. If false, this response header does not appear in the response.",
             "enum": [
-              true,
-              false
+              "true",
+              "false"
             ]
           },
           "AcceptRanges": {
@@ -2138,6 +2146,7 @@
           "ETag": {
             "type": "string",
             "location": "header",
+            "location_name": "ETag",
             "documentation": "An ETag is an opaque identifier assigned by a web server to a specific version of a resource found at a URL"
           },
           "MissingMeta": {
@@ -2210,7 +2219,7 @@
             "documentation": "A map of metadata to store with the object in S3.",
             "keys": {
               "type": "string",
-              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retreiving headers."
+              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retrieving headers."
             },
             "members": {
               "type": "string",
@@ -2373,7 +2382,7 @@
                   "type": "string",
                   "enum": [
                     "STANDARD",
-                    "REDUCED_REDUDANCY",
+                    "REDUCED_REDUNDANCY",
                     "GLACIER"
                   ],
                   "documentation": "The class of storage used to store the object."
@@ -2497,7 +2506,7 @@
                   "type": "string",
                   "enum": [
                     "STANDARD",
-                    "REDUCED_REDUDANCY",
+                    "REDUCED_REDUNDANCY",
                     "GLACIER"
                   ],
                   "documentation": "The class of storage used to store the object."
@@ -2668,7 +2677,7 @@
                   "type": "string",
                   "enum": [
                     "STANDARD",
-                    "REDUCED_REDUDANCY",
+                    "REDUCED_REDUNDANCY",
                     "GLACIER"
                   ],
                   "documentation": "The class of storage used to store the object."
@@ -2844,7 +2853,7 @@
             "type": "string",
             "enum": [
               "STANDARD",
-              "REDUCED_REDUDANCY",
+              "REDUCED_REDUNDANCY",
               "GLACIER"
             ],
             "documentation": "The class of storage used to store the object."
@@ -3031,6 +3040,15 @@
                 "members": {
                   "type": "structure",
                   "members": {
+                    "AllowedHeaders": {
+                      "type": "list",
+                      "flattened": true,
+                      "xmlname": "AllowedHeader",
+                      "documentation": "Specifies which headers are allowed in a pre-flight OPTIONS request.",
+                      "members": {
+                        "type": "string"
+                      }
+                    },
                     "AllowedMethods": {
                       "type": "list",
                       "flattened": true,
@@ -3122,7 +3140,6 @@
                         },
                         "Days": {
                           "type": "integer",
-                          "required": true,
                           "documentation": "Indicates the lifetime, in days, of the objects that are subject to the rule. The value must be a non-zero positive integer."
                         }
                       }
@@ -3161,7 +3178,7 @@
                           "type": "string",
                           "enum": [
                             "STANDARD",
-                            "REDUCED_REDUDANCY",
+                            "REDUCED_REDUNDANCY",
                             "GLACIER"
                           ],
                           "documentation": "The class of storage used to store the object."
@@ -3487,7 +3504,7 @@
           },
           "MFA": {
             "type": "string",
-            "documentation": "The value is the concatenation of the authentication device''s serial number, a space, and the value displayed on your authentication device.",
+            "documentation": "The value is the concatenation of the authentication device's serial number, a space, and the value displayed on your authentication device.",
             "location": "header",
             "location_name": "x-amz-mfa"
           },
@@ -3708,6 +3725,12 @@
             "location_name": "Content-Language",
             "documentation": "The language the content is in."
           },
+          "ContentLength": {
+            "type": "integer",
+            "location": "header",
+            "location_name": "Content-Length",
+            "documentation": "Size of the body in bytes. This parameter is useful when the size of the body cannot be determined automatically."
+          },
           "ContentMD5": {
             "type": "string",
             "location": "header",
@@ -3761,7 +3784,7 @@
             "documentation": "A map of metadata to store with the object in S3.",
             "keys": {
               "type": "string",
-              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retreiving headers."
+              "documentation": "The metadata key. This will be prefixed with x-amz-meta- before sending to S3 as a header. The x-amz-meta- header will be stripped from the key when retrieving headers."
             },
             "members": {
               "type": "string",
@@ -3785,7 +3808,7 @@
             ],
             "location": "header",
             "location_name": "x-amz-storage-class",
-            "documentation": "The type of storage to use for the object.  Defaults to 'STANDARD'."
+            "documentation": "The type of storage to use for the object. Defaults to 'STANDARD'."
           },
           "WebsiteRedirectLocation": {
             "type": "string",
@@ -3804,6 +3827,12 @@
             "location_name": "x-amz-expiration",
             "documentation": "If the object expiration is configured, this will contain the expiration date (expiry-date) and rule ID (rule-id). The value of rule-id is URL encoded."
           },
+          "ETag": {
+            "type": "string",
+            "location": "header",
+            "location_name": "ETag",
+            "documentation": "Entity tag for the uploaded object."
+          },
           "ServerSideEncryption": {
             "type": "string",
             "location": "header",
@@ -3812,12 +3841,6 @@
               "AES256"
             ],
             "documentation": "The Server-side encryption algorithm used when storing this object in S3."
-          },
-          "ETag": {
-            "type": "string",
-            "location": "header",
-            "location_name": "ETag",
-            "documentation": "Entity tag for the uploaded object."
           },
           "VersionId": {
             "type": "string",
@@ -4054,6 +4077,12 @@
             "required": true,
             "location": "uri"
           },
+          "ContentLength": {
+            "type": "integer",
+            "location": "header",
+            "location_name": "Content-Length",
+            "documentation": "Size of the body in bytes. This parameter is useful when the size of the body cannot be determined automatically."
+          },
           "Key": {
             "type": "string",
             "required": true,
@@ -4119,7 +4148,7 @@
             "location": "header",
             "location_name": "x-amz-copy-source",
             "required": true,
-            "pattern": "/\\/.+\\/.+",
+            "pattern": "\\/.+\\/.+",
             "documentation": "The name of the source bucket and key name of the source object, separated by a slash (/). Must be URL-encoded."
           },
           "CopySourceIfMatch": {
@@ -4144,7 +4173,7 @@
             "type": "timestamp",
             "location": "header",
             "location_name": "x-amz-copy-source-if-unmodified-since",
-            "documentation": "Copies the object if it hasn''t been modified since the specified time."
+            "documentation": "Copies the object if it hasn't been modified since the specified time."
           },
           "CopySourceRange": {
             "type": "string",

@@ -1,11 +1,10 @@
 {
-    "service_full_name": "Auto Scaling",
-    "type": "query",
-    "signature_version": "v4",
-    "result_wrapped": true,
     "api_version": "2011-01-01",
+    "type": "query",
+    "result_wrapped": true,
+    "signature_version": "v4",
+    "service_full_name": "Auto Scaling",
     "endpoint_prefix": "autoscaling",
-    "xmlnamespace": "http://autoscaling.amazonaws.com/doc/2011-01-01/",
     "documentation": "\n        <fullname>Auto Scaling</fullname>\n        <p>\n        This guide provides detailed information \n        about Auto Scaling actions, data types, parameters, and errors. For detailed information \n        about Auto Scaling features and their associated API calls, go to the \n        <a href=\"http://docs.amazonwebservices.com/AutoScaling/latest/DeveloperGuide/\">Auto Scaling Developer Guide</a>.\n        </p>\n        <p>\n        Auto Scaling is a web service designed\n        to automatically launch or terminate Amazon Elastic Compute Cloud (Amazon EC2) instances based on\n        user-defined policies, schedules, and health checks. \n        This service is used in conjunction with Amazon CloudWatch \n        and Elastic Load Balancing services.\n        </p>\n        <p>This reference is based on the current WSDL, which is available at:</p>\n        <p><a href=\"http://autoscaling.amazonaws.com/doc/2011-01-01/AutoScaling.wsdl\">http://autoscaling.amazonaws.com/doc/2011-01-01/AutoScaling.wsdl</a>\n        </p>\n        <p><b>Endpoints</b></p>\n        <p>For information about this product's regions and endpoints, go to \n            <a href=\"http://docs.amazonwebservices.com/general/latest/gr/index.html?rande.html\">Regions and Endpoints</a> \n            in the Amazon Web Services General Reference.\n        </p>\n    ",
     "operations": {
         "CreateAutoScalingGroup": {
@@ -3230,6 +3229,7 @@
             "documentation": "\n        <p>\n        Updates the configuration for the specified <a>AutoScalingGroup</a>.\n        </p>\n        <note>\n            <p>\n                To update an Auto Scaling group with a launch configuration\n                that has the <code>InstanceMonitoring</code> flag\n                set to <code>False</code>, you must first ensure that collection\n                of group metrics is disabled. Otherwise, calls to \n                <a>UpdateAutoScalingGroup</a> will fail.\n                If you have previously enabled group metrics collection, \n                you can disable collection of all group metrics\n                by calling <a>DisableMetricsCollection</a>.\n                \n            </p>\n        </note>\n        <p>\n        The new settings are registered upon the completion of this call.\n        Any launch configuration settings take effect on any triggers after\n        this call returns.\n        Triggers that are currently in progress aren't affected.\n        </p>\n        <note>\n            <ul>\n                <li>\n                    <p>If a new value is specified for <i>MinSize</i> without specifying the value for <i>DesiredCapacity</i>, \n                        and if the new <i>MinSize</i> is larger than the current size of the Auto Scaling Group, there\n                        will be an implicit call to <a>SetDesiredCapacity</a> to set the group to the new <i>MinSize</i>. </p>\n                </li>\n                <li>\n                    <p>If a new value is specified for <i>MaxSize</i> without specifying the value for <i>DesiredCapacity</i>, and \n                        the new <i>MaxSize</i> is smaller than the current size of the Auto Scaling Group, there will \n                        be an implicit call to <a>SetDesiredCapacity</a> to set the group to the new <i>MaxSize</i>. </p>\n                </li>\n                <li>\n                    <p>All other optional parameters are left unchanged if not passed in the request.</p>\n                </li>\n            </ul>\n        </note>\n        \n    "
         }
     },
+    "xmlnamespace": "http://autoscaling.amazonaws.com/doc/2011-01-01/",
     "metadata": {
         "regions": {
             "us-east-1": null,
@@ -3303,6 +3303,33 @@
             "output_token": "NextToken",
             "result_key": "Tags",
             "py_input_token": "next_token"
+        }
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "general_socket_errors": {
+                    "applies_when": {
+                        "socket_errors": [
+                            "GENERAL_CONNECTION_ERROR"
+                        ]
+                    }
+                },
+                "throttling": {
+                    "applies_when": {
+                        "response": {
+                            "service_error_code": "Throttling",
+                            "http_status_code": 400
+                        }
+                    }
+                }
+            }
         }
     }
 }

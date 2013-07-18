@@ -29,11 +29,15 @@ if six.PY3:
     from urllib.parse import quote
     from urllib.parse import unquote
     from urllib.parse import urlsplit
+    from urllib.parse import urlunsplit
+    from urllib.parse import urljoin
     from urllib.parse import parse_qsl
 else:
     from urllib import quote
     from urllib import unquote
     from urlparse import urlsplit
+    from urlparse import urlunsplit
+    from urlparse import urljoin
     from urlparse import parse_qsl
     from email.message import Message
     class HTTPHeaders(Message):
@@ -47,16 +51,14 @@ else:
 try:
     from collections import OrderedDict
 except ImportError:
-    # OrderedDicts are used during the annotation process to preserve
-    # the order of keys to create useful diffs.  Not doing this doesn't
-    # break the behavior, it just creates less the useful diffs.
-    # This only applies for python2.6, so we could include a backport
-    # of ordered dict for python2.6 if we felt this was important.
-    # OrderedDicts are also used when parsing the JSON service
-    # descriptions to preserve the order of keys.  Right now, the
-    # order of params printed for help will look different in 2.6
-    # than the other versions so we do probably need to back this.
-    OrderedDict = dict
+    # Python2.6 we use the 3rd party back port.
+    from ordereddict import OrderedDict
+
+
+if sys.version_info[:2] == (2, 6):
+    import simplejson as json
+else:
+    import json
 
 
 @classmethod

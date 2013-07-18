@@ -45,3 +45,21 @@ class BaseEnvVar(unittest.TestCase):
 
     def tearDown(self):
         self.environ_patch.stop()
+
+
+class BaseSessionTest(BaseEnvVar):
+    """Base class used to provide credentials.
+
+    This class can be used as a base class that want to use a real
+    session class but want to be completely isolated from the
+    external environment (including environment variables).
+
+    This class will also set credential vars so you can make fake
+    requests to services.
+
+    """
+
+    def setUp(self):
+        super(BaseSessionTest, self).setUp()
+        self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
+        self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'

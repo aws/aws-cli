@@ -1,11 +1,10 @@
 {
-    "service_full_name": "Elastic Load Balancing",
-    "type": "query",
-    "signature_version": "v4",
-    "result_wrapped": true,
     "api_version": "2012-06-01",
+    "type": "query",
+    "result_wrapped": true,
+    "signature_version": "v4",
+    "service_full_name": "Elastic Load Balancing",
     "endpoint_prefix": "elasticloadbalancing",
-    "xmlnamespace": "http://elasticloadbalancing.amazonaws.com/doc/2012-06-01/",
     "documentation": "\n    \t<fullname>Elastic Load Balancing</fullname>\n        \n        <p>\n        Elastic Load Balancing is a cost-effective and easy\n        to use web service to help you improve availability and\n        scalability of your application. It makes it easy for\n        you to distribute application loads between two or more\n        EC2 instances. Elastic Load Balancing enables availability\n        through redundancy and supports traffic growth of your application.\n        </p>\n        \n        <p>This guide provides detailed information about Elastic Load Balancing actions, data types, parameters, and errors.</p>\n        \n        <p>Query requests are HTTP or HTTPS requests that use the HTTP verb GET or POST and a Query parameter named Action or Operation. \n        Action is used throughout this documentation, although Operation is supported for backward compatibility with other AWS Query APIs.</p>\n       \n        <p>This reference guide is based on the current WSDL, which is available at:\n            <a href=\"elasticloadbalancing.amazonaws.com/doc/2012-06-01/ElasticLoadBalancing.wsdl\"></a>   \n        </p>\n        \n        <p>For detailed information on constructing a query request using the actions, data types, and parameters mentioned in this guide,\n            go to <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/using-query-api.html\">Using the Query API</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n                   \n        <p>For detailed information about Elastic Load Balancing features and their associated API calls, go to \n            <a href=\"http://docs.amazonwebservices.com/ElasticLoadBalancing/latest/DeveloperGuide/UserScenarios.html\">Using Elastic Load Balancing</a>\n            in the <i>Elastic Load Balancing Developer Guide</i>.</p>\n            \n    ",
     "operations": {
         "ApplySecurityGroupsToLoadBalancer": {
@@ -1278,7 +1277,7 @@
                                                         "documentation": "\n   \t<p>\n   \tThe ARN string of the server certificate. \n   \tTo get the ARN of the server certificate, call the AWS Identity and Access Management  \n   \t    <a href=\"http://docs.amazonwebservices.com/IAM/latest/APIReference/index.html?API_UploadServerCertificate.html\">UploadServerCertificate   \t\n   \t</a> API. </p>\n   "
                                                     }
                                                 },
-                                                "documentation": null
+                                                "documentation": "\n        <p>\n        The Listener data type.\n        </p>\n    "
                                             },
                                             "PolicyNames": {
                                                 "shape_name": "PolicyNames",
@@ -1970,6 +1969,7 @@
             "documentation": "\n        <p>\n        Associates, updates, or disables a policy with a listener on the LoadBalancer. \n        You can associate multiple policies with a listener. \n        </p>\n    "
         }
     },
+    "xmlnamespace": "http://elasticloadbalancing.amazonaws.com/doc/2012-06-01/",
     "metadata": {
         "regions": {
             "us-east-1": null,
@@ -1993,6 +1993,25 @@
             "output_token": "NextMarker",
             "result_key": "LoadBalancerDescriptions",
             "py_input_token": "marker"
+        }
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "general_socket_errors": {
+                    "applies_when": {
+                        "socket_errors": [
+                            "GENERAL_CONNECTION_ERROR"
+                        ]
+                    }
+                }
+            }
         }
     }
 }

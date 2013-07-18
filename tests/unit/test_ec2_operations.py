@@ -119,6 +119,21 @@ class TestEC2Operations(unittest.TestCase):
                   'UserData': b64_user_data}
         self.assertEqual(params, result)
 
+    def test_authorize_security_groups_ingress(self):
+        op = self.ec2.get_operation('AuthorizeSecurityGroupIngress')
+        params = op.build_parameters(
+            group_name='MyGroup',
+            ip_permissions={
+                'from_port': 22, 'to_port': 22,
+                'ip_protocol': 'tcp',
+                'ip_ranges': [{'cidr_ip': '0.0.0.0/0'}]})
+        result = {'GroupName': 'MyGroup',
+                  'IpPermissions.1.FromPort': '22',
+                  'IpPermissions.1.ToPort': '22',
+                  'IpPermissions.1.IpProtocol': 'tcp',
+                  'IpPermissions.1.IpRanges.1.CidrIp': '0.0.0.0/0',}
+        self.assertEqual(params, result)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,7 @@
     "signature_version": "v2",
     "result_wrapped": true,
     "global_endpoint": "importexport.amazonaws.com",
-    "api_version": "2010-06-01",
+    "api_version": "2010-06-03",
     "endpoint_prefix": "importexport",
     "xmlnamespace": "http://importexport.amazonaws.com/doc/2010-06-01/",
     "documentation": "\n    <fullname>AWS Import/Export Service</fullname>\n    AWS Import/Export accelerates transferring large amounts of data between\n    the AWS cloud and portable storage devices that you mail to us. AWS\n    Import/Export transfers data directly onto and off of your storage devices\n    using Amazon's high-speed internal network and bypassing the Internet. For\n    large data sets, AWS Import/Export is often faster than Internet transfer\n    and more cost effective than upgrading your connectivity.\n  ",
@@ -880,5 +880,24 @@
         "protocols": [
             "https"
         ]
+    },
+    "retry": {
+        "__default__": {
+            "max_attempts": 5,
+            "delay": {
+                "type": "exponential",
+                "base": "rand",
+                "growth_factor": 2
+            },
+            "policies": {
+                "general_socket_errors": {
+                    "applies_when": {
+                        "socket_errors": [
+                            "GENERAL_CONNECTION_ERROR"
+                        ]
+                    }
+                }
+            }
+        }
     }
 }

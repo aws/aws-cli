@@ -97,6 +97,15 @@ class SessionTest(BaseSessionTest):
         with self.assertRaises(botocore.exceptions.ProfileNotFound):
             session.get_config()
 
+    def test_variable_does_not_exist(self):
+        session = botocore.session.get_session(self.env_vars)
+        self.assertIsNone(session.get_variable('foo/bar'))
+
+    def test_get_aws_services_in_alphabetical_order(self):
+        session = botocore.session.get_session(self.env_vars)
+        services = session.get_data('aws')
+        self.assertEqual(sorted(services), services)
+
     def test_profile_does_not_exist_with_default_profile(self):
         session = botocore.session.get_session(self.env_vars)
         config = session.get_config()
@@ -192,6 +201,27 @@ class SessionTest(BaseSessionTest):
         self.assertEqual(event, 'service-created')
         self.assertRaises(botocore.exceptions.EventNotFound,
                           self.session.create_event, 'foo-bar')
+
+    @mock.patch('logging.getLogger')
+    @mock.patch('logging.FileHandler')
+    def test_logger_name_can_be_passed_in(self, file_handler, get_logger):
+        self.session.set_debug_logger('botocore.hooks')
+        get_logger.assert_called_with('botocore.hooks')
+
+        self.session.set_file_logger('DEBUG', 'debuglog', 'botocore.service')
+        get_logger.assert_called_with('botocore.service')
+        file_handler.assert_called_with('debuglog')
+
+    def test_register_with_unique_id(self):
+        calls = []
+        handler = lambda **kwargs: calls.append(kwargs)
+        self.session.register('foo', handler, unique_id='bar')
+        self.session.emit('foo')
+        self.assertEqual(calls[0]['event_name'], 'foo')
+        calls = []
+        self.session.unregister('foo', unique_id='bar')
+        self.session.emit('foo')
+        self.assertEqual(calls, [])
 
 
 class TestBuiltinEventHandlers(BaseSessionTest):

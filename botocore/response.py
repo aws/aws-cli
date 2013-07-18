@@ -179,6 +179,7 @@ class XmlResponse(Response):
         return data
 
     _handle_timestamp = _handle_string
+    _handle_blob = _handle_string
 
     def _handle_integer(self, elem, shape):
         data = self.get_elem_text(elem)
@@ -267,7 +268,7 @@ class XmlResponse(Response):
             value = self.emit_event(key, shape, value)
             return value
         else:
-            logger.debug('Unhandled type: %s' % shape['type'])
+            logger.debug('Unhandled type: %s', shape['type'])
 
     def fake_shape(self, elem):
         shape = {}
@@ -290,7 +291,6 @@ class XmlResponse(Response):
         return shape
 
     def start(self, elem):
-        logger.debug('start')
         self.value = {}
         if self.operation.output:
             for member_name in self.operation.output['members']:
@@ -324,13 +324,28 @@ class JSONResponse(Response):
             logger.debug('Error loading JSON response body, %r', err)
 
     def get_response_errors(self):
+        # Most JSON services return a __type in error response bodies.
+        # Unfortunately, ElasticTranscoder does not.  It simply returns
+        # a JSON body with a single key, "message".
+        error = None
         if '__type' in self.value:
-            error = {'Type': self.value['__type']}
+            error_type = self.value['__type']
+            error = {'Type': error_type}
             del self.value['__type']
             if 'message' in self.value:
                 error['Message'] = self.value['message']
                 del self.value['message']
+            code = self._parse_code_from_type(error_type)
+            error['Code'] = code
+        elif 'message' in self.value and len(self.value.keys()) == 1:
+            error = {'Type': 'Unspecified', 'Code': 'Unspecified',
+                     'Message': self.value['message']}
+            del self.value['message']
+        if error:
             self.value['Errors'] = [error]
+
+    def _parse_code_from_type(self, error_type):
+        return error_type.rsplit('#', 1)[-1]
 
 
 class StreamingResponse(Response):
@@ -359,13 +374,13 @@ def get_response(session, operation, http_response):
     content_type = http_response.headers['content-type']
     if content_type and ';' in content_type:
         content_type = content_type.split(';')[0]
-    logger.debug('content-type=%s' % content_type)
+        logger.debug('Content type from response: %s', content_type)
     if operation.is_streaming():
         streaming_response = StreamingResponse(session, operation)
         streaming_response.parse(http_response.headers, http_response.raw)
         return (http_response, streaming_response.get_value())
     body = http_response.text
-    logger.debug("Response Body: %s", body)
+    logger.debug("Response Body:\n%s", body)
     if not body:
         return (http_response, body)
     if content_type in ('application/x-amz-json-1.0',

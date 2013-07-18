@@ -22,19 +22,18 @@
 #
 
 import logging
-import json
+import time
+
 from requests.sessions import Session
 from requests.utils import get_environ_proxies
 
-from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 import botocore.response
 import botocore.exceptions
+from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 from botocore.awsrequest import AWSRequest
+from botocore.compat import urljoin, json
+from botocore.payload import Payload
 
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
 
 logger = logging.getLogger(__name__)
 
@@ -65,20 +64,65 @@ class Endpoint(object):
     def __repr__(self):
         return '%s(%s)' % (self.service.endpoint_prefix, self.host)
 
-    def make_request(self, params, list_marker=None):
-        raise NotImplementedError("make_request")
+    def make_request(self, operation, params):
+        logger.debug("Making request for %s (verify_ssl=%s) with params: %s",
+                     operation, self.verify, params)
+        request = self._create_request_object(operation, params)
+        prepared_request = self.prepare_request(request)
+        return self._send_request(prepared_request, operation)
+
+    def _create_request_object(self, operation, params):
+        raise NotImplementedError('_create_request_object')
 
     def prepare_request(self, request):
-        logger.debug('prepare_request')
         if self.auth is not None:
+            event = self.session.create_event('before-auth',
+                                              self.service.endpoint_prefix)
+            self.session.emit(event, endpoint=self,
+                              request=request, auth=self.auth)
             self.auth.add_auth(request=request)
         prepared_request = request.prepare()
         return prepared_request
 
     def _send_request(self, request, operation):
-        return self.http_session.send(request, verify=self.verify,
-                                      stream=operation.is_streaming(),
-                                      proxies=self.proxies)
+        attempts = 1
+        response, exception = self._get_response(request, operation, attempts)
+        while self._needs_retry(attempts, operation, response, exception):
+            attempts += 1
+            response, exception = self._get_response(request, operation,
+                                                     attempts)
+        return response
+
+    def _get_response(self, request, operation, attempts):
+        try:
+            logger.debug("Sending http request: %s", request)
+            http_response = self.http_session.send(
+                request, verify=self.verify,
+                stream=operation.is_streaming(),
+                proxies=self.proxies)
+        except Exception as e:
+            return (None, e)
+        # This returns the http_response and the parsed_data.
+        return (botocore.response.get_response(self.session, operation,
+                                               http_response), None)
+
+    def _needs_retry(self, attempts, operation, response=None,
+                     caught_exception=None):
+        event = self.session.create_event(
+            'needs-retry', self.service.endpoint_prefix, operation.name)
+        handler_response = self.session.emit_first_non_none_response(
+            event, response=response, endpoint=self,
+            operation=operation, attempts=attempts,
+            caught_exception=caught_exception)
+        if handler_response is None:
+            return False
+        else:
+            # Request needs to be retried, and we need to sleep
+            # for the specified number of times.
+            logger.debug("Response received to retry, sleeping for "
+                         "%s seconds", handler_response)
+            time.sleep(handler_response)
+            return True
 
 
 class QueryEndpoint(Endpoint):
@@ -86,23 +130,13 @@ class QueryEndpoint(Endpoint):
     This class handles only AWS/Query style services.
     """
 
-    def make_request(self, operation, params):
-        """
-        Send a request to the endpoint and parse the response
-        and return it and long with the HTTP response object
-        from requests.
-        """
-        logger.debug(params)
-        logger.debug('SSL Verify: %s' % self.verify)
+    def _create_request_object(self, operation, params):
         params['Action'] = operation.name
         params['Version'] = self.service.api_version
         user_agent = self.session.user_agent()
         request = AWSRequest(method='POST', url=self.host,
                              data=params, headers={'User-Agent': user_agent})
-        prepared_request = self.prepare_request(request)
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return request
 
 
 class JSONEndpoint(Endpoint):
@@ -113,14 +147,7 @@ class JSONEndpoint(Endpoint):
     ResponseContentTypes = ['application/x-amz-json-1.1',
                             'application/json']
 
-    def make_request(self, operation, params):
-        """
-        Send a request to the endpoint and parse the response
-        and return it and long with the HTTP response object
-        from requests.
-        """
-        logger.debug(params)
-        logger.debug('SSL Verify: %s' % self.verify)
+    def _create_request_object(self, operation, params):
         user_agent = self.session.user_agent()
         target = '%s.%s' % (self.service.target_prefix, operation.name)
         json_version = '1.0'
@@ -135,23 +162,21 @@ class JSONEndpoint(Endpoint):
                                       'X-Amz-Target': target,
                                       'Content-Type': content_type,
                                       'Content-Encoding': content_encoding})
-        prepared_request = self.prepare_request(request)
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+        return request
 
 
 class RestEndpoint(Endpoint):
 
     def build_uri(self, operation, params):
+        logger.debug('Building URI for rest endpoint.')
         uri = operation.http['uri']
         if '?' in uri:
             path, query_params = uri.split('?')
         else:
             path = uri
             query_params = ''
-        logger.debug('path: %s' % path)
-        logger.debug('query_params: %s' % query_params)
+        logger.debug('Templated URI path: %s', path)
+        logger.debug('Templated URI query_params: %s', query_params)
         path_components = []
         for pc in path.split('/'):
             if pc:
@@ -175,33 +200,26 @@ class RestEndpoint(Endpoint):
                 else:
                     query_param_components.append(key_name)
         query_params = '&'.join(query_param_components)
-        logger.debug('path: %s' % path)
-        logger.debug('query_params: %s' % query_params)
+        logger.debug('Rendered path: %s', path)
+        logger.debug('Rendered query_params: %s', query_params)
         return path + '?' + query_params
 
-    def make_request(self, operation, params):
-        """
-        Send a request to the endpoint and parse the response
-        and return it and long with the HTTP response object
-        from requests.
-        """
-        logger.debug(params)
-        logger.debug('SSL Verify: %s' % self.verify)
+    def _create_request_object(self, operation, params):
         user_agent = self.session.user_agent()
         params['headers']['User-Agent'] = user_agent
         uri = self.build_uri(operation, params)
         uri = urljoin(self.host, uri)
-        if params['payload'] is None:
+        payload = None
+        if params['payload']:
+            payload = params['payload'].getvalue()
+        if payload is None:
             request = AWSRequest(method=operation.http['method'],
                                  url=uri, headers=params['headers'])
         else:
             request = AWSRequest(method=operation.http['method'],
                                  url=uri, headers=params['headers'],
-                                 data=params['payload'])
-        prepared_request = self.prepare_request(request)
-        http_response = self._send_request(prepared_request, operation)
-        return botocore.response.get_response(self.session, operation,
-                                              http_response)
+                                 data=payload)
+        return request
 
 
 def _get_proxies(url):
@@ -211,8 +229,7 @@ def _get_proxies(url):
 
 
 def get_endpoint(service, region_name, endpoint_url):
-    service_type = service.type
-    cls = SERVICE_TO_ENDPOINT.get(service_type)
+    cls = SERVICE_TO_ENDPOINT.get(service.type)
     if cls is None:
         raise botocore.exceptions.UnknownServiceStyle(
             service_style=service.type)

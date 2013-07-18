@@ -41,6 +41,7 @@ logger = logging.getLogger(__name__)
 EMPTY_SHA256_HASH = (
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
 
+
 class SigV2Auth(object):
     """
     Sign a request with Signature V2.
@@ -53,6 +54,7 @@ class SigV2Auth(object):
         self.region_name = region_name
 
     def calc_signature(self, request, params):
+        logger.debug("Calculating signature using v2 auth.")
         split = urlsplit(request.url)
         path = split.path
         if len(path) == 0:
@@ -69,8 +71,7 @@ class SigV2Auth(object):
                          quote(value, safe='-_~'))
         qs = '&'.join(pairs)
         string_to_sign += qs
-        logger.debug('string_to_sign')
-        logger.debug(string_to_sign)
+        logger.debug('String to sign: %s', string_to_sign)
         lhmac.update(string_to_sign.encode('utf-8'))
         b64 = base64.b64encode(lhmac.digest()).strip().decode('utf-8')
         return (qs, b64)
@@ -254,11 +255,13 @@ class SigV4Auth(object):
         if self.credentials.token:
             request.headers['X-Amz-Security-Token'] = self.credentials.token
         canonical_request = self.canonical_request(request)
-        logger.debug('CanonicalRequest:\n%s' % canonical_request)
+        logger.debug("Calculating signature using v4 auth.")
+        logger.debug('CanonicalRequest:\n%s', canonical_request)
         string_to_sign = self.string_to_sign(request, canonical_request)
-        logger.debug('StringToSign:\n%s' % string_to_sign)
+        logger.debug('StringToSign:\n%s', string_to_sign)
         signature = self.signature(string_to_sign)
-        logger.debug('Signature:\n%s' % signature)
+        logger.debug('Signature:\n%s', signature)
+
         l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
         headers_to_sign = self.headers_to_sign(request)
         l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
@@ -285,6 +288,7 @@ class HmacV1Auth(object):
             raise NoCredentialsError
         self.service_name = service_name
         self.region_name = region_name
+        self.auth_path = None  # see comment in canonical_resource below
 
     def sign_string(self, string_to_sign):
         new_hmac = hmac.new(self.credentials.secret_key.encode('utf-8'),
@@ -335,7 +339,16 @@ class HmacV1Auth(object):
     def canonical_resource(self, split):
         # don't include anything after the first ? in the resource...
         # unless it is one of the QSA of interest, defined above
-        buf = split.path
+        # NOTE:
+        # The path in the canonical resource should always be the
+        # full path including the bucket name, even for virtual-hosting
+        # style addressing.  The ``auth_path`` keeps track of the full
+        # path for the canonical resource and would be passed in if
+        # the client was using virtual-hosting style.
+        if self.auth_path:
+            buf = self.auth_path
+        else:
+            buf = split.path
         if split.query:
             qsa = split.query.split('&')
             qsa = [a.split('=', 1) for a in qsa]
@@ -363,12 +376,13 @@ class HmacV1Auth(object):
         string_to_sign = self.canonical_string(method,
                                                split,
                                                headers)
-        logger.debug('StringToSign:\n%s' % string_to_sign)
+        logger.debug('StringToSign:\n%s', string_to_sign)
         return self.sign_string(string_to_sign)
 
     def add_auth(self, request):
+        logger.debug("Calculating signature using hmacv1 auth.")
         split = urlsplit(request.url)
-        logger.debug('Method: %s' % request.method)
+        logger.debug('HTTP request method: %s', request.method)
         signature = self.get_signature(request.method, split,
                                        request.headers)
         request.headers['Authorization'] = ("AWS %s:%s" % (self.credentials.access_key,
@@ -381,5 +395,6 @@ AUTH_TYPE_MAPS = {
     'v2': SigV2Auth,
     'v4': SigV4Auth,
     'v3': SigV3Auth,
+    'v3https': SigV3Auth,
     's3': HmacV1Auth,
 }

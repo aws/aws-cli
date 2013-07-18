@@ -29,6 +29,7 @@ def get_data_files():
 
 packages = [
     'awscli',
+    'awscli.customizations',
 ]
 
 requires = ['botocore>=0.13.1,<0.14.0',

@@ -7,7 +7,7 @@
   "service_abbreviation": "Elastic Beanstalk",
   "endpoint_prefix": "elasticbeanstalk",
   "xmlnamespace": "http://elasticbeanstalk.amazonaws.com/docs/2010-12-01/",
-  "documentation": "\n      <fullname>AWS Elastic Beanstalk</fullname>\n\n      <p>\n         This is the AWS Elastic Beanstalk API Reference. This guide provides detailed information \n         about AWS Elastic Beanstalk actions, data types, parameters, and errors.\n      </p>\n\n      <p>AWS Elastic Beanstalk\n         is a tool that makes it easy for you to create,\n         deploy, and manage scalable, fault-tolerant applications running on\n         Amazon Web Services cloud resources.\n      </p>\n\n      <p>\n         For more information about this product, go to the <a href=\"http://aws.amazon.com/elasticbeanstalk/\">AWS Elastic Beanstalk</a> details page.  \n         The location of the lastest AWS Elastic Beanstalk WSDL is \n         <a href=\"http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl\">http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>.\n      </p>\n       <p><b>Endpoints</b></p>\n       <p>For a list of region-specific endpoints that AWS Elastic Beanstalk supports, go to <a href=\"http://docs.amazonwebservices.com/general/latest/gr/rande.html#elasticbeanstalk_region\">Regions and Endpoints</a> in the \n<i>Amazon Web Services Glossary</i>.</p>\n   ",
+  "documentation": "\n      <fullname>AWS Elastic Beanstalk</fullname>\n\n      <p>\n         This is the AWS Elastic Beanstalk API Reference. This guide provides detailed information \n         about AWS Elastic Beanstalk actions, data types, parameters, and errors.\n      </p>\n\n      <p>AWS Elastic Beanstalk\n         is a tool that makes it easy for you to create,\n         deploy, and manage scalable, fault-tolerant applications running on\n         Amazon Web Services cloud resources.\n      </p>\n\n      <p>\n         For more information about this product, go to the <a href=\"http://aws.amazon.com/elasticbeanstalk/\">AWS Elastic Beanstalk</a> details page.  \n         The location of the lastest AWS Elastic Beanstalk WSDL is \n         <a href=\"http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl\">http://elasticbeanstalk.s3.amazonaws.com/doc/2010-12-01/AWSElasticBeanstalk.wsdl</a>.\n      </p>\n       <p><b>Endpoints</b></p>\n       <p>For a list of region-specific endpoints that AWS Elastic Beanstalk supports, go to <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html#elasticbeanstalk_region\">Regions and Endpoints</a> in the \n<i>Amazon Web Services Glossary</i>.</p>\n   ",
   "operations": {
     "CheckDNSAvailability": {
       "name": "CheckDNSAvailability",
@@ -190,7 +190,7 @@
                 "documentation": "\n      <p>The Amazon S3 key where the data is located.</p>\n   "
               }
             },
-            "documentation": "\n      <p> The Amazon S3 bucket and key that identify the location of the\n         source\n         bundle for this version. </p>\n\n      <p>\n         If data found at the Amazon S3 location exceeds the maximum allowed\n         source bundle size, AWS Elastic Beanstalk\n         returns an\n         <code>InvalidParameterValue</code>\n         error.\n      </p>\n      <p>Default:\n         If not specified, AWS Elastic Beanstalk\n         uses a sample application.\n         If only partially specified (for example, a bucket is provided but not\n         the key)\n         or if no data is found at the Amazon S3 location, AWS Elastic Beanstalk\n         returns an\n         <code>InvalidParameterCombination</code>\n         error.\n      </p>\n   "
+            "documentation": "\n      <p> The Amazon S3 bucket and key that identify the location of the\n         source\n         bundle for this version. </p>\n\n      <p>\n         If data found at the Amazon S3 location exceeds the maximum allowed\n         source bundle size, AWS Elastic Beanstalk\n         returns an\n         <code>InvalidParameterValue</code>\n         error. The maximum size allowed is 512 MB.\n      </p>\n      <p>Default:\n         If not specified, AWS Elastic Beanstalk\n         uses a sample application.\n         If only partially specified (for example, a bucket is provided but not\n         the key)\n         or if no data is found at the Amazon S3 location, AWS Elastic Beanstalk\n         returns an\n         <code>InvalidParameterCombination</code>\n         error.\n      </p>\n   "
           },
           "AutoCreateApplication": {
             "shape_name": "AutoCreateApplication",
@@ -321,7 +321,7 @@
             "shape_name": "SolutionStackName",
             "type": "string",
             "max_length": 100,
-            "documentation": "\n      <p>The name of the solution stack used by this configuration. The solution\n         stack specifies the operating system, architecture, and\n         application\n         server for a configuration template. It determines the set\n         of\n         configuration options as well as the possible and default values.\n      </p>\n\n      <p>\n         Use\n         <a>ListAvailableSolutionStacks</a>\n         to obtain a list of available solution stacks.\n      </p>\n      <p>\n         Default: If the\n         <code>SolutionStackName</code>\n         is not specified and the source configuration\n         parameter is blank, AWS Elastic Beanstalk\n         uses the default solution stack.\n      </p>\n      <p>If\n         not specified and the source configuration parameter is\n         specified, AWS Elastic Beanstalk\n         uses the same solution stack as the source configuration\n         template.\n      </p>\n\n   "
+            "documentation": "\n      <p>The name of the solution stack used by this configuration. The solution\n         stack specifies the operating system, architecture, and\n         application\n         server for a configuration template. It determines the set\n         of\n         configuration options as well as the possible and default values.\n      </p>\n\n      <p>\n         Use\n         <a>ListAvailableSolutionStacks</a>\n         to obtain a list of available solution stacks.\n      </p>\n      <p>\n\t\t\t\t A solution stack name or a source configuration parameter must be specified, otherwise AWS Elastic Beanstalk returns an <code>InvalidParameterValue</code> error. \n      </p>\n      <p>\n\t\t\t\t If a solution stack name is not specified and the source configuration parameter is specified, AWS Elastic Beanstalk uses the same solution stack as the source configuration template.\n      </p>\n\n   "
           },
           "SourceConfiguration": {
             "shape_name": "SourceConfiguration",
@@ -378,7 +378,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         If specified, AWS Elastic Beanstalk\n         sets the specified configuration option to the requested value.\n         The new value overrides the value obtained from the solution stack\n         or the source configuration template.\n      </p>\n   "
           }
@@ -465,7 +465,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         A list of the configuration options and their values in this configuration\n         set.\n\t\t</p>\n   "
           }
@@ -537,7 +537,7 @@
             "type": "string",
             "min_length": 4,
             "max_length": 63,
-            "documentation": "\n      <p>\n         If specified, the environment attempts to use this value as the prefix for the\n         CNAME.\n         If not specified, the environment uses the environment name.\n\t\t</p>\n   "
+            "documentation": "\n      <p>\n         If specified, the environment attempts to use this value as the prefix for the\n         CNAME.\n         If not specified, the CNAME is generated automatically by appending a random alphanumeric string to the environment name.\n\t\t</p>\n   "
           },
           "Description": {
             "shape_name": "Description",
@@ -568,7 +568,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         If specified, AWS Elastic Beanstalk\n         sets the specified configuration options to the requested value in\n         the configuration set for the new environment. These override the values\n         obtained from\n         the solution stack or the configuration template.\n      </p>\n   "
           },
@@ -1439,7 +1439,7 @@
                         "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                       }
                     },
-                    "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+                    "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
                   },
                   "documentation": "\n      <p>\n         A list of the configuration options and their values in this configuration\n         set.\n\t\t</p>\n   "
                 }
@@ -2265,7 +2265,7 @@
           "TerminateResources": {
             "shape_name": "TerminateEnvironmentResources",
             "type": "boolean",
-            "documentation": "\n      <p>\n         Indicates whether the associated AWS resources should shut down\n         when the environment is terminated:\n\t\t</p>\n      <enumValues>\n         <value name=\"true\">\n            <p>\n               <code>true</code>: (default) The user AWS resources\n               (for example, the Auto Scaling group, LoadBalancer, etc.) are terminated\n               along with the environment.\n            </p>\n         </value>\n         <value name=\"false\">\n            <p>\n               <code>false</code>:\n               The environment is removed from the\n\t\t\t\t\tAWS Elastic Beanstalk\n               but the AWS resources continue to operate.\n\n            </p>\n         </value>\n      </enumValues>\n\n      <ul>\n         <li>\n            <code>true</code>: The specified environment as well as the associated\n            AWS resources, such as Auto Scaling group and LoadBalancer, are terminated.\n\n         </li>\n         <li>\n            <code>false</code>: AWS Elastic Beanstalk\n            resource management is removed from the\n            environment, but the AWS resources continue to operate.\n         </li>\n      </ul>\n      <p>\n         For more information, see the\n         <a href=\"http://docs.amazonwebservices.com/elasticbeanstalk/latest/ug/\">\n      AWS Elastic Beanstalk\n            User Guide.\n         </a>\n      </p>\n\n      <p>\n         Default:\n         <code>true</code>\n      </p>\n      <p>\n         Valid Values:\n         <code>true</code>\n         |\n         <code>false</code>\n      </p>\n\n   "
+            "documentation": "\n      <p>\n         Indicates whether the associated AWS resources should shut down\n         when the environment is terminated:\n\t\t</p>\n      <enumValues>\n         <value name=\"true\">\n            <p>\n               <code>true</code>: (default) The user AWS resources\n               (for example, the Auto Scaling group, LoadBalancer, etc.) are terminated\n               along with the environment.\n            </p>\n         </value>\n         <value name=\"false\">\n            <p>\n               <code>false</code>:\n               The environment is removed from the\n\t\t\t\t\tAWS Elastic Beanstalk\n               but the AWS resources continue to operate.\n\n            </p>\n         </value>\n      </enumValues>\n\n      <ul>\n         <li>\n            <code>true</code>: The specified environment as well as the associated\n            AWS resources, such as Auto Scaling group and LoadBalancer, are terminated.\n\n         </li>\n         <li>\n            <code>false</code>: AWS Elastic Beanstalk\n            resource management is removed from the\n            environment, but the AWS resources continue to operate.\n         </li>\n      </ul>\n      <p>\n         For more information, see the\n         <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/ug/\">\n      AWS Elastic Beanstalk\n            User Guide.\n         </a>\n      </p>\n\n      <p>\n         Default:\n         <code>true</code>\n      </p>\n      <p>\n         Valid Values:\n         <code>true</code>\n         |\n         <code>false</code>\n      </p>\n\n   "
           }
         },
         "documentation": "\n\n      <p>This documentation target is not reported in the API reference.</p>\n   "
@@ -2663,7 +2663,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         A list of configuration option settings to update with the new specified\n         option value.\n\t\t</p>\n   "
           },
@@ -2772,7 +2772,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         A list of the configuration options and their values in this configuration\n         set.\n\t\t</p>\n   "
           }
@@ -2851,7 +2851,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         If specified, AWS Elastic Beanstalk\n         updates the configuration set associated with\n         the running environment and sets the specified configuration options to\n         the requested value.\n      </p>\n   "
           },
@@ -3085,7 +3085,7 @@
                   "documentation": "\n      <p>\n         The current value for the configuration option.\n\t\t</p>\n   "
                 }
               },
-              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value.\n\t\t</p>\n\n   "
+              "documentation": "\n      <p>\n         A specification identifying an individual configuration option along with its\n         current value. For a list of possible option values, go to <a href=\"http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html\">Option Values</a> in the \n<i>AWS Elastic Beanstalk Developer Guide</i>.\n\t\t</p>\n\n   "
             },
             "documentation": "\n      <p>\n         A list of the options and desired values to evaluate.\n\t\t</p>\n   ",
             "required": true

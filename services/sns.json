@@ -2,7 +2,7 @@
   "api_version": "2010-03-31",
   "type": "query",
   "result_wrapped": true,
-  "signature_version": "v2",
+  "signature_version": "v4",
   "service_full_name": "Amazon Simple Notification Service",
   "service_abbreviation": "Amazon SNS",
   "endpoint_prefix": "sns",
@@ -1085,7 +1085,7 @@
           "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>The <code>SetSubscriptionAttributes</code> action allows a subscription owner to set an attribute of the topic to a new value.</p>\n\n\n\n  "
+      "documentation": "\n    <p>The <code>SetSubscriptionAttributes</code> action allows a subscription owner to set an attribute of the topic to a new value.</p>\n<examples>\n  <queryrequest>\n    \nThe following example sets the delivery policy to 5 total retries\n  \n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue={\"healthyRetryPolicy\":{\"numRetries\":5}}\n  &SubscriptionArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic%3A80289ba6-0fd4-4079-afb4-ce8c8260f0ca\n  &AttributeName=DeliveryPolicy\n  &Action=SetSubscriptionAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n  \nThe JSON format for the DeliveryPolicy AttributeValue (linebreaks added for readability):\n{\n    \"healthyRetryPolicy\": \n    {\n        \"minDelayTarget\":  <int>,\n        \"maxDelayTarget\": <int>,\n        \"numRetries\": <int>,\n        \"numMaxDelayRetries\": <int>,\n        \"backoffFunction\": \"<linear|arithmetic|geometric|exponential>\"\n    },\n    \"throttlePolicy\":\n    {\n        \"maxReceivesPerSecond\": <int>\n    }\n}\n  </queryrequest>\n <queryresponse>\n  \n<SetSubscriptionAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetSubscriptionAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
     },
     "SetTopicAttributes": {
       "name": "SetTopicAttributes",
@@ -1164,7 +1164,7 @@
           "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>The <code>SetTopicAttributes</code> action allows a topic owner to set an attribute of the topic to a new value.</p>\n\n\n\n  "
+      "documentation": "\n    <p>The <code>SetTopicAttributes</code> action allows a topic owner to set an attribute of the topic to a new value.</p>\n<examples>\n  <queryrequest>\n    \nThe following example sets the DisplayName attribute to MyTopicName\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue=MyTopicName\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &AttributeName=DisplayName\n  &Action=SetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n  \nThe following example sets the delivery policy to 5 total retries\n  \n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue={\"http\":{\"defaultHealthyRetryPolicy\":{\"numRetries\":5}}}\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &AttributeName=DeliveryPolicy\n  &Action=SetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D  \n  \nThe JSON format for the DeliveryPolicy AttributeValue (linebreaks added for readability):\n{\n    \"http\": {\n    \"defaultHealthyRetryPolicy\": \n        {\n        \"minDelayTarget\":  <int>,\n        \"maxDelayTarget\": <int>,\n        \"numRetries\": <int>,\n        \"numMaxDelayRetries\": <int>,\n        \"backoffFunction\": \"<linear|arithmetic|geometric|exponential>\"\n        },\n    \"disableSubscriptionOverrides\": <boolean>,\n    \"defaultThrottlePolicy\": \n        {\n        \"maxReceivesPerSecond\": <int>\n        }\n    }\n}\n  </queryrequest>\n <queryresponse>\n  \n<SetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
     },
     "Subscribe": {
       "name": "Subscribe",

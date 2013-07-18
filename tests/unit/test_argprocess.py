@@ -11,17 +11,34 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+from argparse import Namespace
 
 import botocore.session
-from bcdoc.mangen import OperationDocument
 import six
 
+from awscli.clidriver import CLIArgument
+from awscli.help import OperationHelpCommand
 from awscli.argprocess import detect_shape_structure
 from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthand
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
 
+
+MAPHELP = """--attributes key_name=string,key_name2=string
+Where valid key names are:
+  Policy
+  VisibilityTimeout
+  MaximumMessageSize
+  MessageRetentionPeriod
+  ApproximateNumberOfMessages
+  ApproximateNumberOfMessagesNotVisible
+  CreatedTimestamp
+  LastModifiedTimestamp
+  QueueArn
+  ApproximateNumberOfMessagesDelayed
+  DelaySeconds
+  ReceiveMessageWaitTimeSeconds\n"""
 
 # These tests use real service types so that we can
 # verify the real shapes of services.
@@ -130,6 +147,13 @@ class TestParamShorthand(BaseArgProcessTest):
                 "name = architecture, values = i386"])
         self.assertEqual(returned2, expected)
 
+    def test_list_structure_list_multiple_scalar(self):
+        p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
+        returned = self.simplify(
+            p, ['name=foo,format=hslv3,output_keys=iphone1,iphone2'])
+        self.assertEqual(returned, [{'output_keys': ['iphone1', 'iphone2'],
+                                     'name': 'foo', 'format': 'hslv3'}])
+
     def test_list_structure_scalars(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
         expected = [
@@ -164,6 +188,14 @@ class TestParamShorthand(BaseArgProcessTest):
             'instance_port=4,ssl_certificate_id=ssl_certificate_id2'
         ])
         self.assertEqual(simplified, expected)
+
+    def test_keyval_with_long_values(self):
+        p = self.get_param_object(
+            'dynamodb.UpdateTable.ProvisionedThroughput')
+        value = 'write_capacity_units=10,read_capacity_units=10'
+        returned = self.simplify(p, value)
+        self.assertEqual(returned, {'write_capacity_units': 10,
+                                    'read_capacity_units': 10})
 
     def test_error_messages_for_structure_scalar(self):
         p = self.get_param_object(
@@ -204,6 +236,46 @@ class TestParamShorthand(BaseArgProcessTest):
                                      'valid choices.*name'):
             self.simplify(p, ["names=instance-id,values=foo,bar"])
 
+    def test_csv_syntax_escaped(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ["parameter_key=key,parameter_value=foo\,bar"])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_double_quoted(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ['parameter_key=key,parameter_value="foo,bar"'])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_single_quoted(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        returned = self.simplify(
+            p, ["parameter_key=key,parameter_value='foo,bar'"])
+        expected = [{"parameter_key": "key",
+                     "parameter_value": "foo,bar"}]
+        self.assertEqual(returned, expected)
+
+    def test_csv_syntax_errors(self):
+        p = self.get_param_object('cloudformation.CreateStack.Parameters')
+        error_msg = "Error parsing parameter --parameters.*should be"
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value="foo,bar'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value=foo,bar"'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value=""foo,bar"'])
+        with self.assertRaisesRegexp(ParamError, error_msg):
+            returned = self.simplify(
+                p, ['parameter_key=key,parameter_value="foo,bar\''])
+
 
 class TestDocGen(BaseArgProcessTest):
     # These aren't very extensive doc tests, as we want to stay somewhat
@@ -215,43 +287,55 @@ class TestDocGen(BaseArgProcessTest):
 
     def test_gen_map_type_docs(self):
         p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        # Key parts include:
-        # Title that says it's the shorthand syntax.
-        self.assertIn('Shorthand Syntax', rendered)
-        # sample syntax
-        self.assertIn('key_name=string', rendered)
-        # valid key names
-        self.assertIn('VisibilityTimeout', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        self.assertEqual(doc_string, MAPHELP)
 
     def test_gen_list_scalar_docs(self):
         p = self.get_param_object(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        # Key parts include:
-        # Title that says it's the shorthand syntax.
-        self.assertIn('Shorthand Syntax', rendered)
-        # sample syntax
-        self.assertIn('--instances instance_id1', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        self.assertEqual(doc_string,
+                         '--instances instance_id1 instance_id2 instance_id3')
 
     def test_gen_list_structure_of_scalars_docs(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
-        op_doc = OperationDocument(self.session, p.operation)
-        self.simplify.add_docs(op_doc, p)
-        fp = six.StringIO()
-        op_doc.render(fp=fp)
-        rendered = fp.getvalue()
-        self.assertIn('Shorthand Syntax', rendered)
-        self.assertIn('--listeners', rendered)
-        self.assertIn('protocol=string', rendered)
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        self.assertIn('Key value pairs, with multiple values separated by a space.', doc_string)
+        self.assertIn('protocol=string', doc_string)
+        self.assertIn('load_balancer_port=integer', doc_string)
+        self.assertIn('instance_protocol=string', doc_string)
+        self.assertIn('instance_port=integer', doc_string)
+        self.assertIn('ssl_certificate_id=string', doc_string)
+
+    def test_gen_list_structure_multiple_scalar_docs(self):
+        p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(self.session,
+                                            p.operation, None,
+                                            {p.cli_name: argument})
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        self.assertTrue(p.example_fn)
+        doc_string = p.example_fn(p)
+        s = 'Key value pairs, where values are separated by commas.\n--playlists name=string1,format=string1,output_keys=string1,string2'
+        self.assertEqual(doc_string, s)
 
 
 if __name__ == '__main__':

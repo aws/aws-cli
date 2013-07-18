@@ -21,6 +21,7 @@ The currently supported services include:
 * AWS Security Token Service
 * AWS Storage Gateway
 * Amazon CloudWatch
+* Amazon ElastiCache
 * Amazon Elastic Compute Cloud
 * Amazon Elastic MapReduce
 * Amazon Elastic Transcoder
@@ -121,11 +122,13 @@ To use a config file, create a configuration file like this::
     region=us-west-2
 
 As you can see, you can have multiple ``profiles`` defined in this
-configuration file and specify which profile to use by using the
-``--profile`` option.  If no profile is specified the ``default``
-profile is used.  Once you have created the config file, you need to
-tell aws-cli where to find it.  Do this by setting the appropriate
-environment variable::
+configuration file and specify which profile to use by using the ``--profile``
+option.  If no profile is specified the ``default`` profile is used.  Except
+for the default profile, you **must** prefix each config section of a profile
+group with ``profile``.  For example, if you have a profile named "testing" the
+section header would be ``[profile testing]``.  Once you have created the
+config file, you need to tell aws-cli where to find it.  Do this by setting the
+appropriate environment variable::
 
     $ export AWS_CONFIG_FILE=/path/to/config_file
 
@@ -222,7 +225,8 @@ For example, consider the command to authorize access to an EC2
 security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":["0.0.0.0/0"]}'
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+      --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":[{"cidr_ip": "0.0.0.0/0"}]}'
 
 --------------------------
 File-based Parameter Input
@@ -240,7 +244,7 @@ the file ip_perms.json::
     {"from_port":22,
      "to_port":22,
      "ip_protocol":"tcp",
-     "ip_ranges":["0.0.0.0/0"]}
+     "ip_ranges":[{"cidr_ip":"0.0.0.0/0"}]}
 
 Then, we could make the same call as above like this::
 

@@ -12,11 +12,10 @@
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
 import os
+import csv
 import json
 import logging
-
 import six
-from bcdoc.mangen import OperationDocument
 
 
 SCALAR_TYPES = set([
@@ -94,28 +93,6 @@ class ParamShorthand(object):
     def __init__(self):
         pass
 
-    def add_docs(self, operation_doc, param, **kwargs):
-        """Inject shorthand syntax docs into help text."""
-        shape_structure = detect_shape_structure(param)
-        method = self.SHORTHAND_SHAPES.get(shape_structure)
-        if method is None:
-            return
-        doc_method = getattr(self, '_docs' + method, None)
-        if doc_method is not None:
-            self._add_docs(doc_method, operation_doc, param)
-
-    def _add_docs(self, doc_method, operation_doc, param):
-        operation_doc.indent()
-        p = operation_doc.add_paragraph()
-        p.write(operation_doc.style.italics('Shorthand Syntax'))
-        operation_doc.add_paragraph().write('::')
-        operation_doc.add_paragraph()
-        operation_doc.indent()
-        doc_method(operation_doc, param)
-        operation_doc.add_paragraph()
-        operation_doc.dedent()
-        operation_doc.dedent()
-
     def __call__(self, param, value, **kwargs):
         """Attempt to parse shorthand syntax for values.
 
@@ -140,7 +117,7 @@ class ParamShorthand(object):
             be raised.
 
         """
-        parse_method = self._get_parse_method_for_param(param, value)
+        parse_method = self.get_parse_method_for_param(param, value)
         if parse_method is None:
             return
         else:
@@ -148,20 +125,15 @@ class ParamShorthand(object):
                 LOG.debug("Using %s for param %s", parse_method, param)
                 parsed = getattr(self, parse_method)(param, value)
             except ParamSyntaxError as e:
-                # Give them a helpful error message.
-                doc_method = getattr(self, '_docs' + parse_method, None)
-                if doc_method is None:
+                doc_fn = self._get_example_fn(param)
+                # Try to give them a helpful error message.
+                if doc_fn is None:
                     raise e
                 else:
-                    help_text = six.StringIO()
-                    doc = OperationDocument(param.operation.session,
-                                            param.operation)
-                    doc_method(doc, param)
-                    doc.render(fp=help_text)
-                    raise ParamError(param, help_text.getvalue())
+                    raise ParamError(param, doc_fn(param))
             return parsed
 
-    def _get_parse_method_for_param(self, param, value):
+    def get_parse_method_for_param(self, param, value=None):
         # We first need to make sure this is a parameter that qualifies
         # for simplification.  The first short-circuit case is if it looks
         # like json we immediately return.
@@ -177,29 +149,27 @@ class ParamShorthand(object):
         parse_method = self.SHORTHAND_SHAPES.get(structure)
         return parse_method
 
-    def _docs_list_scalar_list_parse(self, doc, param):
-        doc.add_paragraph().write("Key value pairs, where values are separated "
-                                  "by commas.")
-        doc.add_paragraph()
-        p2 = doc.add_paragraph()
-        if param.members.members[0].type in SCALAR_TYPES:
-            scalar_inner_param = param.members.members[0]
-            scalar_inner_type = scalar_inner_param.type
-            list_inner_param = param.members.members[1]
-            list_inner_type = list_inner_param.members.type
-        else:
-            scalar_inner_param = param.members.members[1]
-            scalar_inner_type = scalar_inner_param.type
-            list_inner_param = param.members.members[0]
-            list_inner_type = list_inner_param.members.type
-        p2.write('%s ' % param.cli_name)
-        p2.write('%s=%s1,' % (scalar_inner_param.py_name,
-                              scalar_inner_type))
-        p2.write('%s=%s1,%s2,' % (list_inner_param.py_name,
-                                  list_inner_type,
-                                  list_inner_type))
-        p2.write('%s=%s2,' % (scalar_inner_param.py_name, scalar_inner_type))
-        p2.write('%s=%s1' % (list_inner_param.py_name, list_inner_type))
+    def _get_example_fn(self, param):
+        doc_fn = None
+        shape_structure = detect_shape_structure(param)
+        method = self.SHORTHAND_SHAPES.get(shape_structure)
+        if method:
+            doc_fn = getattr(self, '_docs' + method, None)
+        return doc_fn
+
+    def add_example_fn(self, arg_name, help_command, **kwargs):
+        """
+        Adds a callable to the ``example_fn`` attribute of the parameter
+        if the parameter type is supported by shorthand syntax.  This
+        callable should return a string containing just the example and
+        not any of the ReST formatting that might be required in the docs.
+        """
+        argument = help_command.arg_table[arg_name]
+        param = argument.argument_object
+        if param:
+            LOG.debug('Adding example fn for: %s' % param.name)
+            doc_fn = self._get_example_fn(param)
+            param.example_fn = doc_fn
 
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
@@ -209,7 +179,7 @@ class ParamShorthand(object):
             arg_types[arg.py_name] = arg.type
         parsed = []
         for v in value:
-            parts = v.split(',')
+            parts = self._split_on_commas(v)
             current_parsed = {}
             current_key = None
             for part in parts:
@@ -237,12 +207,6 @@ class ParamShorthand(object):
             parsed.append(current_parsed)
         return parsed
 
-    def _docs_list_scalar_parse(self, doc, param):
-        detect_shape_structure(param)
-        p2 = doc.add_paragraph()
-        name = param.members.members[0].py_name
-        p2.write('%s %s1 %s2 %s3' % (param.cli_name, name, name, name))
-
     def _list_scalar_parse(self, param, value):
         single_param = param.members.members[0]
         parsed = []
@@ -250,16 +214,6 @@ class ParamShorthand(object):
         for v in value:
             parsed.append({single_param.py_name: v})
         return parsed
-
-    def _docs_list_key_value_parse(self, doc, param):
-        p = doc.add_paragraph()
-        p.write("Key value pairs, with multiple values separated by "
-                "a space.")
-        doc.add_paragraph()
-        p2 = doc.add_paragraph()
-        p2.write('%s ' % param.cli_name)
-        p2.write(','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
-                          for sub_param in param.members.members]))
 
     def _list_key_value_parse(self, param, value):
         # param is a list param.
@@ -271,25 +225,6 @@ class ParamShorthand(object):
             parsed.append(single_struct_param)
         return parsed
 
-    def _docs_key_value_parse(self, doc, param):
-        p = doc.add_paragraph()
-        p.write('%s ' % param.cli_name)
-        if param.type == 'structure':
-            p.write(','.join(['%s=value' % sub_param.py_name
-                            for sub_param in param.members]))
-        elif param.type == 'map':
-            p.write("key_name=string,key_name2=string")
-            if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
-                doc.add_paragraph()
-                p2 = doc.add_paragraph()
-                p2.write("Where valid key names are:")
-                doc.add_paragraph()
-                doc.indent()
-                for value in param.keys.enum:
-                    doc.add_paragraph().write(value)
-                doc.dedent()
-
-
     def _key_value_parse(self, param, value):
         # The expected structure is:
         #  key=value,key2=value
@@ -297,7 +232,7 @@ class ParamShorthand(object):
         # are separated by '='.  All of this should be whitespace
         # insensitive.
         parsed = {}
-        parts = value.split(',')
+        parts = self._split_on_commas(value)
         valid_names = self._create_name_to_params(param)
         for part in parts:
             try:
@@ -319,6 +254,86 @@ class ParamShorthand(object):
             return dict([(p.py_name, p) for p in param.members])
         elif param.type == 'map':
             return dict([(v, None) for v in param.keys.enum])
+
+    def _docs_list_scalar_list_parse(self, param):
+        s = 'Key value pairs, where values are separated by commas.\n'
+        s += '%s ' % param.cli_name
+        inner_params = param.members.members
+        scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
+        list_params = [p for p in inner_params if p.type == 'list']
+        for param in scalar_params:
+            s += '%s=%s1,' % (param.py_name, param.type)
+        for param in list_params[:-1]:
+            param_type = param.members.type
+            s += '%s=%s1,%s2,' % (param.py_name, param_type, param_type)
+        last_param = list_params[-1]
+        param_type = last_param.members.type
+        s += '%s=%s1,%s2' % (last_param.py_name, param_type, param_type)
+        return s
+
+    def _docs_list_scalar_parse(self, param):
+        name = param.members.members[0].py_name
+        return '%s %s1 %s2 %s3' % (param.cli_name, name, name, name)
+
+    def _docs_list_key_value_parse(self, param):
+        s = "Key value pairs, with multiple values separated by a space.\n"
+        s += '%s ' % param.cli_name
+        s += ','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
+                       for sub_param in param.members.members])
+        return s
+
+    def _docs_key_value_parse(self, param):
+        s = '%s ' % param.cli_name
+        if param.type == 'structure':
+            s += ','.join(['%s=value' % sub_param.py_name
+                            for sub_param in param.members])
+        elif param.type == 'map':
+            s += 'key_name=string,key_name2=string'
+            if param.keys.type == 'string' and hasattr(param.keys, 'enum'):
+                s += '\nWhere valid key names are:\n'
+                for value in param.keys.enum:
+                    s += '  %s\n' % value
+        return s
+
+    def _split_on_commas(self, value):
+        if '"' not in value and '\\' not in value and "'" not in value:
+            # No quotes or escaping, just use a simple split.
+            return value.split(',')
+        elif '"' not in value and "'" not in value:
+            # Simple escaping, let the csv module handle it.
+            return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        else:
+            # If there's quotes for the values, we have to handle this
+            # ourselves.
+            return self._split_with_quotes(value)
+
+    def _split_with_quotes(self, value):
+        parts = list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        iter_parts = iter(parts)
+        new_parts = []
+        for part in iter_parts:
+            if part.count('"') == 1:
+                quote_char = '"'
+            elif part.count("'") == 1:
+                quote_char = "'"
+            else:
+                new_parts.append(part)
+                continue
+            # Now that we've found a starting quote char, we
+            # need to combine the parts until we encounter an end quote.
+            current = part
+            chunks = [current.replace(quote_char, '')]
+            while True:
+                try:
+                    current = six.advance_iterator(iter_parts)
+                except StopIteration:
+                    raise ParamSyntaxError(value)
+                chunks.append(current.replace(quote_char, ''))
+                if quote_char in current:
+                    break
+            new_chunk = ','.join(chunks)
+            new_parts.append(new_chunk)
+        return new_parts
 
 
 def unpack_cli_arg(parameter, value):
@@ -359,13 +374,14 @@ def unpack_complex_cli_arg(parameter, value):
             if value.lstrip()[0] == '[':
                 return json.loads(value)
         elif isinstance(value, list) and len(value) == 1:
-            if value[0].lstrip()[0] == '[':
+            single_value = value[0].strip()
+            if single_value and single_value[0] == '[':
                 return json.loads(value[0])
         return [unpack_cli_arg(parameter.members, v) for v in value]
 
 
 def unpack_scalar_cli_arg(parameter, value):
-    if parameter.type == 'integer':
+    if parameter.type == 'integer' or parameter.type == 'long':
         return int(value)
     elif parameter.type == 'float' or parameter.type == 'double':
         # TODO: losing precision on double types
@@ -377,5 +393,7 @@ def unpack_scalar_cli_arg(parameter, value):
             msg = 'Blob values must be a path to a file.'
             raise ValueError(msg)
         return open(file_path, 'rb')
+    elif parameter.type == 'boolean':
+        return bool(value)
     else:
         return str(value)

@@ -11,17 +11,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestChangeMessageVisibility(unittest.TestCase):
+class TestChangeMessageVisibility(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws sqs change-message-visibility'
-        self.queue_url = 'https://queue.amazonaws.com/4444/testcli'
-        self.receipt_handle = 'abcedfghijklmnopqrstuvwxyz'
+    prefix = 'sqs change-message-visibility'
+    queue_url = 'https://queue.amazonaws.com/4444/testcli'
+    receipt_handle = 'abcedfghijklmnopqrstuvwxyz'
 
     def test_all_params(self):
         cmdline = self.prefix
@@ -31,8 +29,7 @@ class TestChangeMessageVisibility(unittest.TestCase):
         result = {'QueueUrl': self.queue_url,
                   'ReceiptHandle': self.receipt_handle,
                   'VisibilityTimeout': '30'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

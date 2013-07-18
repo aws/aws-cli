@@ -13,15 +13,14 @@
 from tests import unittest
 import os
 
-import mock
-
-from awscli.help import get_pager, PAGER, get_provider_help
+from awscli.help import PosixHelpRenderer
 from awscli.clidriver import CLIDriver
 
 
 class TestHelpPager(unittest.TestCase):
 
     def setUp(self):
+        self.renderer = PosixHelpRenderer()
         self.save_pager = os.environ.get('PAGER', None)
         self.save_manpager = os.environ.get('MANPAGER', None)
 
@@ -36,32 +35,23 @@ class TestHelpPager(unittest.TestCase):
             del os.environ['PAGER']
         if 'MANPAGER' in os.environ:
             del os.environ['MANPAGER']
-        self.assertEqual(get_pager(), PAGER)
+        self.assertEqual(self.renderer.get_pager(), self.renderer.PAGER)
 
     def test_manpager(self):
         if 'PAGER' in os.environ:
             del os.environ['PAGER']
         os.environ['MANPAGER'] = 'foobar'
-        self.assertEqual(get_pager(), 'foobar')
+        self.assertEqual(self.renderer.get_pager(), 'foobar')
 
     def test_pager(self):
         if 'MANPAGER' in os.environ:
             del os.environ['MANPAGER']
         os.environ['PAGER'] = 'fiebaz'
-        self.assertEqual(get_pager(), 'fiebaz')
+        self.assertEqual(self.renderer.get_pager(), 'fiebaz')
 
     def test_both(self):
         os.environ['MANPAGER'] = 'foobar'
         os.environ['PAGER'] = 'fiebaz'
-        self.assertEqual(get_pager(), 'foobar')
+        self.assertEqual(self.renderer.get_pager(), 'foobar')
 
-
-class TestGetProviderHelp(unittest.TestCase):
-    @mock.patch('awscli.help.render_docs')
-    def test_help_contents_is_bytes(self, render_docs):
-        driver = CLIDriver()
-        get_provider_help(driver.session)
-        self.assertTrue(render_docs.called)
-        contents = render_docs.call_args[0][0]
-        self.assertIsInstance(contents, bytes)
 

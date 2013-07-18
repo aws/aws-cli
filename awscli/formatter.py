@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import sys
 import json
 
@@ -18,9 +19,24 @@ import six
 from awscli.table import MultiTable, Styler, ColorizedStyler
 
 
+LOG = logging.getLogger(__name__)
+
+
 class Formatter(object):
     def __init__(self, args):
         self._args = args
+
+    def _remove_request_id(self, response_data):
+        # We only want to display the ResponseMetadata (which includes
+        # the request id) if there is an error in the response.
+        # Since all errors have been unified under the Errors key,
+        # this should be a reasonable way to filter.
+        if 'Errors' not in response_data:
+            if 'ResponseMetadata' in response_data:
+                if 'RequestId' in response_data['ResponseMetadata']:
+                    request_id = response_data['ResponseMetadata']['RequestId']
+                    LOG.debug('RequestId: %s', request_id)
+                del response_data['ResponseMetadata']
 
 
 class FullyBufferedFormatter(Formatter):
@@ -36,13 +52,25 @@ class FullyBufferedFormatter(Formatter):
             response_data = response.build_full_result()
         else:
             response_data = response
-        self._format_response(operation, response_data, stream)
+        try:
+            self._remove_request_id(response_data)
+            self._format_response(operation, response_data, stream)
+        finally:
+            # flush is needed to avoid the "close failed in file object
+            # destructor" in python2.x (see http://bugs.python.org/issue11380).
+            stream.flush()
 
 
 class JSONFormatter(FullyBufferedFormatter):
 
     def _format_response(self, operation, response, stream):
-        json.dump(response, stream, indent=4)
+        # For operations that have no response body (e.g. s3 put-object)
+        # the response will be an empty string.  We don't want to print
+        # that out to the user but other "falsey" values like an empty
+        # dictionary should be printed.
+        if response != '':
+            json.dump(response, stream, indent=4)
+        stream.write('\n')
 
 
 class TableFormatter(FullyBufferedFormatter):

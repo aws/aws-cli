@@ -11,15 +11,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
-import sys
+from tests.unit import BaseAWSCommandParamsTest
 
 import mock
 import six
+import httpretty
 
 import awscli
 from awscli.clidriver import CLIDriver
+from awscli.clidriver import create_clidriver
+from awscli.clidriver import BuiltInArgument
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
+from botocore.provider import Provider
 
 
 GET_DATA = {
@@ -27,15 +31,11 @@ GET_DATA = {
         'description': 'description',
         'synopsis': 'usage: foo',
         'options': {
-            "service_name": {
-                "choices": "{provider}/_services",
-                "metavar": "service_name"
-            },
-            "--debug": {
+            "debug": {
                 "action": "store_true",
                 "help": "Turn on debug logging"
             },
-            "--output": {
+            "output": {
                 "choices": [
                     "json",
                     "text",
@@ -43,23 +43,23 @@ GET_DATA = {
                 ],
                 "metavar": "output_format"
             },
-            "--profile": {
+            "profile": {
                 "help": "Use a specific profile from your credential file",
                 "metavar": "profile_name"
             },
-            "--region": {
+            "region": {
                 "choices": "{provider}/_regions",
                 "metavar": "region_name"
             },
-            "--endpoint-url": {
+            "endpoint-url": {
                 "help": "Override service's default URL with the given URL",
                 "metavar": "endpoint_url"
             },
-            "--no-verify-ssl": {
+            "no-verify-ssl": {
                 "action": "store_true",
                 "help": "Override default behavior of verifying SSL certificates"
             },
-            "--no-paginate": {
+            "no-paginate": {
                 "action": "store_false",
                 "help": "Disable automatic pagination",
                 "dest": "paginate"
@@ -82,12 +82,17 @@ class FakeSession(object):
         if emitter is None:
             emitter = HierarchicalEmitter()
         self.emitter = emitter
+        self.provider = Provider(self, 'aws')
+        self.profile = None
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
 
     def emit(self, event_name, **kwargs):
         return self.emitter.emit(event_name, **kwargs)
+
+    def get_available_services(self):
+        return ['s3']
 
     def get_data(self, name):
         return GET_DATA[name]
@@ -100,25 +105,39 @@ class FakeSession(object):
         # so we'll just return a Mock object with
         # enough of the "right stuff".
         service = mock.Mock()
-        list_objects = mock.Mock(name='operation')
-        list_objects.cli_name = 'list-objects'
-        list_objects.params = []
         operation = mock.Mock()
         param = mock.Mock()
         param.type = 'string'
         param.py_name = 'bucket'
         param.cli_name = '--bucket'
+        param.name = 'bucket'
         operation.params = [param]
         operation.cli_name = 'list-objects'
+        operation.name = 'ListObjects'
         operation.is_streaming.return_value = False
         operation.paginate.return_value.build_full_result.return_value = {
             'foo': 'paginate'}
         operation.call.return_value = (mock.Mock(), {'foo': 'bar'})
         self.operation = operation
-        service.operations = [list_objects]
+        service.operations = [operation]
+        service.name = 's3'
         service.cli_name = 's3'
+        service.endpoint_prefix = 's3'
         service.get_operation.return_value = operation
+        operation.service = service
+        operation.service.session = self
         return service
+
+    def get_service_data(self, service_name):
+        import botocore.session
+        s = botocore.session.get_session()
+        actual = s.get_service_data(service_name)
+        foo = actual['operations']['ListObjects']['input']['members']
+        return {'operations': {'ListObjects': {'input': {
+            'members': dict.fromkeys(
+                ['Bucket', 'Delimiter', 'Marker', 'MaxKeys', 'Prefix']),
+        }}}}
+
 
     def user_agent(self):
         return 'user_agent'
@@ -132,10 +151,20 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         self.assertEqual(driver.session, self.session)
 
-    def test_call(self):
+    def test_paginate_rc(self):
         driver = CLIDriver(session=self.session)
         rc = driver.main('s3 list-objects --bucket foo'.split())
         self.assertEqual(rc, 0)
+
+    def test_no_profile(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo'.split())
+        self.assertEqual(driver.session.profile, None)
+
+    def test_profile(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --profile foo'.split())
+        self.assertEqual(driver.session.profile, 'foo')
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -171,9 +200,11 @@ class TestCliDriverHooks(unittest.TestCase):
         driver.main('s3 list-objects --bucket foo'.split())
         self.assert_events_fired_in_order([
             # Events fired while parser is being created.
-            'parser-created.main',
-            'parser-created.s3',
-            'parser-created.s3-list-objects',
+            'building-command-table.main',
+            'building-top-level-params',
+            'top-level-args-parsed',
+            'building-command-table.s3',
+            'building-argument-table.s3.ListObjects',
             'process-cli-arg.s3.list-objects',
         ])
 
@@ -184,14 +215,6 @@ class TestCliDriverHooks(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo'.split())
         self.assertIn(mock.call.paginate(mock.ANY, bucket='foo-altered!'),
-                      self.session.operation.method_calls)
-
-    def test_cli_driver_with_no_paginate(self):
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo --no-paginate'.split())
-        # Because --no-paginate was used, op.call should be used instead of
-        # op.paginate.
-        self.assertIn(mock.call.call(mock.ANY, bucket='foo'),
                       self.session.operation.method_calls)
 
     def test_unknown_params_raises_error(self):
@@ -228,6 +251,73 @@ class TestSearchPath(unittest.TestCase):
         # Our two overrides should be the last two elements in the search path.
         search_path = get_search_path(driver.session)[-2:]
         self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])
+
+
+class TestAWSCommand(BaseAWSCommandParamsTest):
+    # These tests will simulate running actual aws commands
+    # but with the http part mocked out.
+    def setUp(self):
+        super(TestAWSCommand, self).setUp()
+        self.stderr = six.StringIO()
+        self.stderr_patch = mock.patch('sys.stderr', self.stderr)
+        self.stderr_patch.start()
+
+    def tearDown(self):
+        super(TestAWSCommand, self).tearDown()
+        self.stderr_patch.stop()
+
+    def last_request_headers(self):
+        return httpretty.httpretty.last_request.headers
+
+    def test_aws_with_region(self):
+        driver = create_clidriver()
+        driver.main('ec2 describe-instances --region us-east-1'.split())
+        host = self.last_request_headers()['Host']
+        self.assertEqual(host, 'ec2.us-east-1.amazonaws.com')
+
+        driver.main('ec2 describe-instances --region us-west-2'.split())
+        host = self.last_request_headers()['Host']
+        self.assertEqual(host, 'ec2.us-west-2.amazonaws.com')
+
+    def inject_new_param(self, argument_table, **kwargs):
+        argument = BuiltInArgument('unknown-arg', {})
+        argument.add_to_arg_table(argument_table)
+
+    def test_event_emission_for_top_level_params(self):
+        driver = create_clidriver()
+        # --unknown-foo is an known arg, so we expect a 255 rc.
+        rc = driver.main('ec2 describe-instances --unknown-arg foo'.split())
+        self.assertEqual(rc, 255)
+        self.assertIn('Unknown options: --unknown-arg', self.stderr.getvalue())
+
+        # The argument table is memoized in the CLIDriver object. So
+        # when we call main() above, it will get created and cached
+        # and the argument table won't get created again (and therefore
+        # the building-top-level-params event will not get generated again).
+        # So, for this test we need to create a new driver object.
+        driver = create_clidriver()
+        driver.session.register(
+            'building-top-level-params', self.inject_new_param)
+        driver.session.register(
+            'top-level-args-parsed',
+            lambda parsed_args, **kwargs: args_seen.append(parsed_args))
+
+        args_seen = []
+
+        # Now we should get an rc of 0 as the arg is expected
+        # (though nothing actually does anything with the arg).
+        rc = driver.main('ec2 describe-instances --unknown-arg foo'.split())
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(args_seen), 1)
+        self.assertEqual(args_seen[0].unknown_arg, 'foo')
+
+    def test_empty_params_gracefully_handled(self):
+        driver = create_clidriver()
+        # Simulates the equivalent in bash: --identifies ""
+        cmd = 'ses get-identity-dkim-attributes --identities'.split()
+        cmd.append('')
+        rc = driver.main(cmd)
+        self.assertEqual(rc, 0)
 
 
 if __name__ == '__main__':

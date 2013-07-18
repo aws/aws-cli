@@ -44,7 +44,7 @@ class Result(object):
 
 def aws(command):
     if platform.system() == 'Windows':
-        command = _escape_double_quotes(command)
+        command = _escape_quotes(command)
     full_command = 'python %s %s' % (AWS_CMD, command)
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
@@ -57,8 +57,14 @@ def aws(command):
                   stderr.decode('utf-8'))
 
 
-def _escape_double_quotes(command):
-    return command.replace('"', '\\"')
+def _escape_quotes(command):
+    # For windows we have different rules for escaping.
+    # First, double quotes must be escaped.
+    command = command.replace('"', '\\"')
+    # Second, single quotes do nothing, to quote a value we need
+    # to use double quotes.
+    command = command.replace("'", '"')
+    return command
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):

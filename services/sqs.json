@@ -37,7 +37,7 @@
               "xmlname": "AWSAccountId"
             },
             "flattened": true,
-            "documentation": "\n    <p>The AWS account number of the <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/APIReference/Glossary.html\">principal</a>\n      who will be given permission. The principal must have an AWS account, but does\n      not need to be signed up for Amazon SQS.</p>\n  ",
+            "documentation": "\n    <p>The AWS account number of the <a href=\"http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Glossary.html\">principal</a>\n      who will be given permission. The principal must have an AWS account, but does\n      not need to be signed up for Amazon SQS.</p>\n  ",
             "required": true
           },
           "Actions": {
@@ -66,7 +66,7 @@
           "documentation": "\n    <p>The operation that you requested would violate a limit. For example,\n      ReceiveMessage returns this error if the maximum number of messages\n      inflight has already been reached. AddPermission returns this error if\n      the maximum number of permissions for the queue has already been reached.\n    </p>\n  "
         }
       ],
-      "documentation": "\n    <p>The AddPermission action adds a permission to a queue for a specific \n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/APIReference/Glossary.html#d0e3892\">principal</a>.\n      This allows for sharing access to the queue.</p>\n\n    <p>When you create a queue, you have full control access rights for the queue.\n      Only you (as owner of the queue) can grant or deny permissions to the queue.\n      For more information about these permissions, see\n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?acp-overview.html\">Shared\n      Queues</a> in the Amazon SQS Developer Guide.</p>\n\n    <p><code>AddPermission</code> writes an SQS-generated policy. If you want to\n      write your own policy, use SetQueueAttributes to upload your policy. For more\n      information about writing your own policy, see\n      <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?AccessPolicyLanguage.html\">Appendix:\n      The Access Policy Language</a> in the Amazon SQS Developer Guide.</p>\n  "
+      "documentation": "\n    <p>The AddPermission action adds a permission to a queue for a specific \n      <a href=\"http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/Glossary.html\">principal</a>.\n      This allows for sharing access to the queue.</p>\n\n    <p>When you create a queue, you have full control access rights for the queue.\n      Only you (as owner of the queue) can grant or deny permissions to the queue.\n      For more information about these permissions, see\n      <a href=\"http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?acp-overview.html\">Shared\n      Queues</a> in the Amazon SQS Developer Guide.</p>\n\n    <p><code>AddPermission</code> writes an SQS-generated policy. If you want to\n      write your own policy, use SetQueueAttributes to upload your policy. For more\n      information about writing your own policy, see\n      <a href=\"http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/?AccessPolicyLanguage.html\">Appendix:\n      The Access Policy Language</a> in the Amazon SQS Developer Guide.</p>\n  "
     },
     "ChangeMessageVisibility": {
       "name": "ChangeMessageVisibility",
@@ -112,7 +112,7 @@
           "documentation": "\n    <p>The receipt handle provided is not valid.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>The <code>ChangeMessageVisibility</code> action changes the visibility\n      timeout of a specified message in a queue to a new value. The maximum allowed\n      timeout value you can set the value to is 12 hours. This means you can't extend\n      the timeout of a message in an existing queue to more than a total visibility\n      timeout of 12 hours. (For more information visibility timeout, see <a href=\"http://docs.amazonwebservices.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/AboutVT.html\">Visibility\n        Timeout</a> in the Amazon SQS Developer Guide.)</p>\n\n    <p>For example, let's say you have a message and its default message visibility\n      timeout is 30 minutes. You could call <code>ChangeMessageVisiblity</code> with\n      a value of two hours and the effective timeout would be two hours and 30\n      minutes. When that time comes near you could again extend the time out by\n      calling ChangeMessageVisiblity, but this time the maximum allowed timeout would\n      be 9 hours and 30 minutes.</p>\n\n    <important>If you attempt to set the <code>VisibilityTimeout</code> to an\n      amount more than the maximum time left, Amazon SQS returns an error. It will\n      not automatically recalculate and increase the timeout to the maximum time\n      remaining.</important>\n\n    <important>Unlike with a queue, when you change the visibility timeout for a\n      specific message, that timeout value is applied immediately but is not saved in\n      memory for that message. If you don't delete a message after it is received,\n      the visibility timeout for the message the next time it is received reverts to\n      the original timeout value, not the value you set with the\n      ChangeMessageVisibility action.</important>\n  "
+      "documentation": "\n    <p>The <code>ChangeMessageVisibility</code> action changes the visibility\n      timeout of a specified message in a queue to a new value. The maximum allowed\n      timeout value you can set the value to is 12 hours. This means you can't extend\n      the timeout of a message in an existing queue to more than a total visibility\n      timeout of 12 hours. (For more information visibility timeout, see <a href=\"http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/AboutVT.html\">Visibility\n        Timeout</a> in the Amazon SQS Developer Guide.)</p>\n\n    <p>For example, let's say you have a message and its default message visibility\n      timeout is 30 minutes. You could call <code>ChangeMessageVisiblity</code> with\n      a value of two hours and the effective timeout would be two hours and 30\n      minutes. When that time comes near you could again extend the time out by\n      calling ChangeMessageVisiblity, but this time the maximum allowed timeout would\n      be 9 hours and 30 minutes.</p>\n\n    <important>If you attempt to set the <code>VisibilityTimeout</code> to an\n      amount more than the maximum time left, Amazon SQS returns an error. It will\n      not automatically recalculate and increase the timeout to the maximum time\n      remaining.</important>\n\n    <important>Unlike with a queue, when you change the visibility timeout for a\n      specific message, that timeout value is applied immediately but is not saved in\n      memory for that message. If you don't delete a message after it is received,\n      the visibility timeout for the message the next time it is received reverts to\n      the original timeout value, not the value you set with the\n      ChangeMessageVisibility action.</important>\n  "
     },
     "ChangeMessageVisibilityBatch": {
       "name": "ChangeMessageVisibilityBatch",
@@ -151,7 +151,7 @@
                   "documentation": "\n    <p>The new value (in seconds) for the message's visibility timeout.</p>\n  "
                 }
               },
-              "documentation": "\n    <p>Encloses a receipt handle and an entry id for each message in\n      <a>ChangeMessageVisibilityBatchRequest</a>.</p>\n  ",
+              "documentation": "\n    <p>Encloses a receipt handle and an entry id for each message in\n      <a>ChangeMessageVisibilityBatch</a>.</p>\n  ",
               "xmlname": "ChangeMessageVisibilityBatchRequestEntry"
             },
             "flattened": true,
@@ -179,7 +179,7 @@
                   "required": true
                 }
               },
-              "documentation": "\n    <p>Encloses the id of an entry in <a>ChangeMessageVisibilityBatchRequest</a>.</p>\n  ",
+              "documentation": "\n    <p>Encloses the id of an entry in <a>ChangeMessageVisibilityBatch</a>.</p>\n  ",
               "xmlname": "ChangeMessageVisibilityBatchResultEntry"
             },
             "flattened": true,
@@ -437,7 +437,7 @@
                   "required": true
                 }
               },
-              "documentation": "\n    <p>Encloses the id an entry in <a>DeleteMessageBatchRequest</a>.</p>\n  ",
+              "documentation": "\n    <p>Encloses the id an entry in <a>DeleteMessageBatch</a>.</p>\n  ",
               "xmlname": "DeleteMessageBatchResultEntry"
             },
             "flattened": true,
@@ -1010,7 +1010,7 @@
                   "required": true
                 }
               },
-              "documentation": "\n    <p>Encloses a message ID for successfully enqueued message of a\n      <a>SendMessageBatchRequest</a>.</p>\n  ",
+              "documentation": "\n    <p>Encloses a message ID for successfully enqueued message of a\n      <a>SendMessageBatch</a>.</p>\n  ",
               "xmlname": "SendMessageBatchResultEntry"
             },
             "flattened": true,

@@ -113,7 +113,7 @@ class Operation(BotoCoreObject):
             if self.service.type == 'rest-xml':
                 namespace = self.service.xmlnamespace
                 root_element_name = None
-                if 'shape_name' in self.input:
+                if self.input and 'shape_name' in self.input:
                     root_element_name = self.input['shape_name']
                 d['payload'] = XMLPayload(root_element_name=root_element_name,
                                           namespace=namespace)

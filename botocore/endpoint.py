@@ -32,6 +32,7 @@ import botocore.exceptions
 from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 from botocore.awsrequest import AWSRequest
 from botocore.compat import urljoin, json
+from botocore.payload import Payload
 
 
 logger = logging.getLogger(__name__)

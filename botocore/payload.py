@@ -55,6 +55,9 @@ class Payload(object):
     def literal_value(self, literal_value):
         self._literal_value = literal_value
 
+    def getvalue(self):
+        return self._literal_value
+
 
 class JSONPayload(Payload):
     """

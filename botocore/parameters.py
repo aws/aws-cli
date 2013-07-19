@@ -392,11 +392,11 @@ class StructParameter(Parameter):
             label = self.get_label()
         label = '%s.{label}' % label
         for member in self.members:
-            if member.required and member.py_name not in value:
-                msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())
+            if member.required and member.name not in value:
+                msg = 'Expected: %s, Got: %s' % (member.name, value.keys())
                 raise ValueError(msg)
-            if member.py_name in value:
-                member.build_parameter_query(value[member.py_name],
+            if member.name in value:
+                member.build_parameter_query(value[member.name],
                                              built_params,
                                              label)
 
@@ -408,12 +408,12 @@ class StructParameter(Parameter):
         else:
             built_params[label] = new_value
         for member in self.members:
-            if member.required and member.py_name not in value:
-                msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())
+            if member.required and member.name not in value:
+                msg = 'Expected: %s, Got: %s' % (member.name, value.keys())
                 raise ValueError(msg)
-            if member.py_name in value:
+            if member.name in value:
                 member_label = member.get_label()
-                member.build_parameter_json(value[member.py_name],
+                member.build_parameter_json(value[member.name],
                                             new_value,
                                             member_label)
 
@@ -421,8 +421,8 @@ class StructParameter(Parameter):
         label = self.get_label()
         built_params[label] = {}
         for member in self.members:
-            if member.py_name in value:
-                member.store_value_json(value[member.py_name],
+            if member.name in value:
+                member.store_value_json(value[member.name],
                                         built_params[label],
                                         member.name)
 
@@ -431,8 +431,8 @@ class StructParameter(Parameter):
             label = self.get_label()
         xml = '<%s>' % label
         for member in self.members:
-            if member.py_name in value:
-                xml += member.to_xml(value[member.py_name], member.name)
+            if member.name in value:
+                xml += member.to_xml(value[member.name], member.name)
         xml += '</%s>' % label
         return xml
 

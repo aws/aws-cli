@@ -67,12 +67,12 @@ SbkJ0="""
         prefix = 'ChangeMessageVisibilityBatchRequestEntry'
         op = self.sqs.get_operation('ChangeMessageVisibilityBatch')
         params = op.build_parameters(queue_url=self.queue_url,
-                                     entries=[{'receipt_handle':self.receipt_handle,
-                                               'visibility_timeout':45,
-                                               'id':'change_visibility_msg_2'},
-                                              {'receipt_handle':self.receipt_handle,
-                                               'visibility_timeout':45,
-                                               'id':'change_visibility_msg_3'}])
+                                     entries=[{'ReceiptHandle':self.receipt_handle,
+                                               'VisibilityTimeout':45,
+                                               'Id':'change_visibility_msg_2'},
+                                              {'ReceiptHandle':self.receipt_handle,
+                                               'VisibilityTimeout':45,
+                                               'Id':'change_visibility_msg_3'}])
         result = {'QueueUrl': self.queue_url,
                   '%s.1.Id' % prefix: 'change_visibility_msg_2',
                   '%s.1.ReceiptHandle' % prefix: self.receipt_handle,

@@ -29,10 +29,11 @@ def get_data_files():
 
 packages = [
     'awscli',
+    'awscli.customizations',
 ]
 
-requires = ['botocore>=0.12.0,<0.13.0',
-            'bcdoc>=0.4.2,<0.5.0',
+requires = ['botocore>=0.13.1,<0.14.0',
+            'bcdoc>=0.5.0,<0.6.0',
             'six>=1.1.0',
             'colorama==0.2.5',
             'argparse>=1.1',

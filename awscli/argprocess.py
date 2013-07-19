@@ -176,7 +176,7 @@ class ParamShorthand(object):
         # We're looking for key=val1,val2,val3,key2=val1,val2.
         arg_types = {}
         for arg in param.members.members:
-            arg_types[arg.py_name] = arg.type
+            arg_types[arg.name] = arg.type
         parsed = []
         for v in value:
             parts = self._split_on_commas(v)
@@ -212,7 +212,7 @@ class ParamShorthand(object):
         parsed = []
         # We know that value is a list in this case.
         for v in value:
-            parsed.append({single_param.py_name: v})
+            parsed.append({single_param.name: v})
         return parsed
 
     def _list_key_value_parse(self, param, value):
@@ -251,7 +251,7 @@ class ParamShorthand(object):
 
     def _create_name_to_params(self, param):
         if param.type == 'structure':
-            return dict([(p.py_name, p) for p in param.members])
+            return dict([(p.name, p) for p in param.members])
         elif param.type == 'map':
             return dict([(v, None) for v in param.keys.enum])
 
@@ -262,30 +262,30 @@ class ParamShorthand(object):
         scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
         list_params = [p for p in inner_params if p.type == 'list']
         for param in scalar_params:
-            s += '%s=%s1,' % (param.py_name, param.type)
+            s += '%s=%s1,' % (param.name, param.type)
         for param in list_params[:-1]:
             param_type = param.members.type
-            s += '%s=%s1,%s2,' % (param.py_name, param_type, param_type)
+            s += '%s=%s1,%s2,' % (param.name, param_type, param_type)
         last_param = list_params[-1]
         param_type = last_param.members.type
-        s += '%s=%s1,%s2' % (last_param.py_name, param_type, param_type)
+        s += '%s=%s1,%s2' % (last_param.name, param_type, param_type)
         return s
 
     def _docs_list_scalar_parse(self, param):
-        name = param.members.members[0].py_name
+        name = param.members.members[0].name
         return '%s %s1 %s2 %s3' % (param.cli_name, name, name, name)
 
     def _docs_list_key_value_parse(self, param):
         s = "Key value pairs, with multiple values separated by a space.\n"
         s += '%s ' % param.cli_name
-        s += ','.join(['%s=%s' % (sub_param.py_name, sub_param.type)
+        s += ','.join(['%s=%s' % (sub_param.name, sub_param.type)
                        for sub_param in param.members.members])
         return s
 
     def _docs_key_value_parse(self, param):
         s = '%s ' % param.cli_name
         if param.type == 'structure':
-            s += ','.join(['%s=value' % sub_param.py_name
+            s += ','.join(['%s=value' % sub_param.name
                             for sub_param in param.members])
         elif param.type == 'map':
             s += 'key_name=string,key_name2=string'

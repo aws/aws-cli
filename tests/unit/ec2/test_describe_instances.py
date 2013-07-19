@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
-import awscli.clidriver
 
 
 class TestDescribeInstances(BaseAWSCommandParamsTest):
@@ -44,19 +43,19 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_filter_json(self):
-        args = """ --filters {"name":"group-name","values":["foobar"]}"""
+        args = """ --filters {"Name":"group-name","Values":["foobar"]}"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_filter_simple(self):
-        args = """ --filters name=group-name,values=foobar"""
+        args = """ --filters Name=group-name,Values=foobar"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_filter_values(self):
-        args = """ --filters name=group-name,values=foobar,fiebaz"""
+        args = """ --filters Name=group-name,Values=foobar,fiebaz"""
         cmdline = self.prefix + args
         result = {'Filter.1.Value.2': 'fiebaz',
                   'Filter.1.Value.1': 'foobar',
@@ -64,8 +63,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_filters(self):
-        args = (' --filters name=group-name,values=foobar '
-                'name=instance-id,values=i-12345')
+        args = (' --filters Name=group-name,Values=foobar '
+                'Name=instance-id,Values=i-12345')
         cmdline = self.prefix + args
         result = {
             'Filter.1.Name': 'group-name',
@@ -78,8 +77,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
     def test_multiple_filters_alternate(self):
         cmdlist = 'ec2 describe-instances'.split()
         cmdlist.extend(['--filters',
-                        'name = group-name, values= foobar',
-                        'name=instance-id,values=i-12345'])
+                        'Name = group-name, Values= foobar',
+                        'Name=instance-id,Values=i-12345'])
         result = {
             'Filter.1.Name': 'group-name',
             'Filter.1.Value.1': 'foobar',

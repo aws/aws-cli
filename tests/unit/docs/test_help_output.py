@@ -112,14 +112,14 @@ class TestHelpOutput(BaseAWSHelpOutput):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('``--iam-instance-profile``')
         self.assert_contains('JSON Syntax')
-        self.assert_contains('"arn": "string"')
-        self.assert_contains('"name": "string"')
+        self.assert_contains('"Arn": "string"')
+        self.assert_contains('"Name": "string"')
 
     def test_arguments_with_example_shorthand_syntax(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('``--iam-instance-profile``')
         self.assert_contains('Shorthand Syntax')
-        self.assert_contains('--iam-instance-profile arn=value,name=value')
+        self.assert_contains('--iam-instance-profile Arn=value,Name=value')
 
     def test_required_args_come_before_optional_args(self):
         self.driver.main(['ec2', 'run-instances', 'help'])

@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
-import awscli.clidriver
 
 
 class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
@@ -32,8 +31,8 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
     def test_two(self):
         cmdline = self.prefix
         cmdline += ' --image-id ami-d00dbeef'
-        cmdline += (' --launch-permission {"add":[{"user_id":"123456789012"}],'
-                    '"remove":[{"group":"all"}]}')
+        cmdline += (' --launch-permission {"Add":[{"UserId":"123456789012"}],'
+                    '"Remove":[{"Group":"all"}]}')
         result = {'ImageId': 'ami-d00dbeef',
                   'LaunchPermission.Add.1.UserId': '123456789012',
                   'LaunchPermission.Remove.1.Group': 'all',

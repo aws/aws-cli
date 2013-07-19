@@ -13,7 +13,6 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import os
-import awscli.clidriver
 
 
 TWO_INSTANCE_EXPECTED = {
@@ -30,7 +29,7 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
     def test_one_instance(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances {"instance_id":"i-12345678"}'
+        cmdline += ' --instances {"InstanceId":"i-12345678"}'
         result = {'LoadBalancerName': 'my-lb',
                   'Instances.member.1.InstanceId': 'i-12345678'}
         self.assert_params_for_cmd(cmdline, result)
@@ -46,15 +45,15 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
     def test_two_instance(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances {"instance_id":"i-12345678"}'
-        cmdline += ' {"instance_id":"i-87654321"}'
+        cmdline += ' --instances {"InstanceId":"i-12345678"}'
+        cmdline += ' {"InstanceId":"i-87654321"}'
         self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_as_json(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += ' --instances [{"instance_id":"i-12345678"},'
-        cmdline += '{"instance_id":"i-87654321"}]'
+        cmdline += ' --instances [{"InstanceId":"i-12345678"},'
+        cmdline += '{"InstanceId":"i-87654321"}]'
         self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_from_file(self):

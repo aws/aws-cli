@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
-import awscli.clidriver
 
 
 class TestDescribeInstances(BaseAWSCommandParamsTest):
@@ -28,7 +27,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         # (note the space between ``'`` and ``[``)
         args_list.append('--block-device-mapping')
         args_list.append(
-            ' [{"device_name":"/dev/sda1","ebs":{"volume_size":20}}]')
+            ' [{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":20}}]')
         result = {
             'BlockDeviceMapping.1.DeviceName': '/dev/sda1',
             'BlockDeviceMapping.1.Ebs.VolumeSize': '20',

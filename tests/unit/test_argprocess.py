@@ -11,10 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
-from argparse import Namespace
 
 import botocore.session
-import six
 
 from awscli.clidriver import CLIArgument
 from awscli.help import OperationHelpCommand
@@ -81,7 +79,7 @@ class TestArgShapeDetection(BaseArgProcessTest):
             'elb.RegisterInstancesWithLoadBalancer.Instances',
             'list-structure(scalar)')
 
-    def test_list_structure_scalars(self):
+    def test_list_structure_scalars_2(self):
         self.assert_shape_type(
             'elb.CreateLoadBalancer.Listeners',
             'list-structure(scalars)')
@@ -103,8 +101,8 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_simplify_structure_scalars(self):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        value = 'application_name=foo,template_name=bar'
-        json_value = '{"application_name": "foo", "template_name": "bar"}'
+        value = 'ApplicationName=foo,TemplateName=bar'
+        json_value = '{"ApplicationName": "foo", "TemplateName": "bar"}'
         returned = self.simplify(p, value)
         json_version = unpack_cli_arg(p, json_value)
         self.assertEqual(returned, json_version)
@@ -123,84 +121,85 @@ class TestParamShorthand(BaseArgProcessTest):
         # with argparse which means the value will be presented
         # to us as a list.
         returned = self.simplify(p, ['instance-1',  'instance-2'])
-        self.assertEqual(returned, [{'instance_id': 'instance-1'},
-                                    {'instance_id': 'instance-2'}])
+        self.assertEqual(returned, [{'InstanceId': 'instance-1'},
+                                    {'InstanceId': 'instance-2'}])
 
     def test_list_structure_list_scalar(self):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
-        expected = [{"name": "instance-id", "values": ["i-1", "i-2"]},
-                    {"name": "architecture", "values": ["i386"]}]
+        expected = [{"Name": "instance-id", "Values": ["i-1", "i-2"]},
+                    {"Name": "architecture", "Values": ["i386"]}]
         returned = self.simplify(
-            p, ["name=instance-id,values=i-1,i-2",
-                "name=architecture,values=i386"])
+            p, ["Name=instance-id,Values=i-1,i-2",
+                "Name=architecture,Values=i386"])
         self.assertEqual(returned, expected)
 
         # With spaces around the comma.
         returned2 = self.simplify(
-            p, ["name=instance-id, values=i-1,i-2",
-                "name=architecture, values=i386"])
+            p, ["Name=instance-id, Values=i-1,i-2",
+                "Name=architecture, Values=i386"])
         self.assertEqual(returned2, expected)
 
         # Strip off leading/trailing spaces.
         returned3 = self.simplify(
-            p, ["name = instance-id, values = i-1,i-2",
-                "name = architecture, values = i386"])
-        self.assertEqual(returned2, expected)
+            p, ["Name = instance-id, Values = i-1,i-2",
+                "Name = architecture, Values = i386"])
+        self.assertEqual(returned3, expected)
 
     def test_list_structure_list_multiple_scalar(self):
         p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
         returned = self.simplify(
-            p, ['name=foo,format=hslv3,output_keys=iphone1,iphone2'])
-        self.assertEqual(returned, [{'output_keys': ['iphone1', 'iphone2'],
-                                     'name': 'foo', 'format': 'hslv3'}])
+            p, ['Name=foo,Format=hslv3,OutputKeys=iphone1,iphone2'])
+        self.assertEqual(returned, [{'OutputKeys': ['iphone1', 'iphone2'],
+                                     'Name': 'foo', 'Format': 'hslv3'}])
 
-    def test_list_structure_scalars(self):
+    def test_list_structure_scalars_2(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
         expected = [
-            {"protocol": "protocol1",
-             "load_balancer_port": 1,
-             "instance_protocol": "instance_protocol1",
-             "instance_port": 2,
-             "ssl_certificate_id": "ssl_certificate_id1"},
-            {"protocol": "protocol2",
-             "load_balancer_port": 3,
-             "instance_protocol": "instance_protocol2",
-             "instance_port": 4,
-             "ssl_certificate_id": "ssl_certificate_id2"},
+            {"Protocol": "protocol1",
+             "LoadBalancerPort": 1,
+             "InstanceProtocol": "instance_protocol1",
+             "InstancePort": 2,
+             "SSLCertificateId": "ssl_certificate_id1"},
+            {"Protocol": "protocol2",
+             "LoadBalancerPort": 3,
+             "InstanceProtocol": "instance_protocol2",
+             "InstancePort": 4,
+             "SSLCertificateId": "ssl_certificate_id2"},
         ]
         returned = unpack_cli_arg(
-            p, ['{"protocol": "protocol1", "load_balancer_port": 1, '
-                '"instance_protocol": "instance_protocol1", '
-                '"instance_port": 2, "ssl_certificate_id": '
+            p, ['{"Protocol": "protocol1", "LoadBalancerPort": 1, '
+                '"InstanceProtocol": "instance_protocol1", '
+                '"InstancePort": 2, "SSLCertificateId": '
                 '"ssl_certificate_id1"}',
-                '{"protocol": "protocol2", "load_balancer_port": 3, '
-                '"instance_protocol": "instance_protocol2", '
-                '"instance_port": 4, "ssl_certificate_id": '
+                '{"Protocol": "protocol2", "LoadBalancerPort": 3, '
+                '"InstanceProtocol": "instance_protocol2", '
+                '"InstancePort": 4, "SSLCertificateId": '
                 '"ssl_certificate_id2"}',
             ])
+        self.maxDiff = None
         self.assertEqual(returned, expected)
         simplified = self.simplify(p, [
-            'protocol=protocol1,load_balancer_port=1,'
-            'instance_protocol=instance_protocol1,'
-            'instance_port=2,ssl_certificate_id=ssl_certificate_id1',
-            'protocol=protocol2,load_balancer_port=3,'
-            'instance_protocol=instance_protocol2,'
-            'instance_port=4,ssl_certificate_id=ssl_certificate_id2'
+            'Protocol=protocol1,LoadBalancerPort=1,'
+            'InstanceProtocol=instance_protocol1,'
+            'InstancePort=2,SSLCertificateId=ssl_certificate_id1',
+            'Protocol=protocol2,LoadBalancerPort=3,'
+            'InstanceProtocol=instance_protocol2,'
+            'InstancePort=4,SSLCertificateId=ssl_certificate_id2'
         ])
         self.assertEqual(simplified, expected)
 
     def test_keyval_with_long_values(self):
         p = self.get_param_object(
             'dynamodb.UpdateTable.ProvisionedThroughput')
-        value = 'write_capacity_units=10,read_capacity_units=10'
+        value = 'WriteCapacityUnits=10,ReadCapacityUnits=10'
         returned = self.simplify(p, value)
-        self.assertEqual(returned, {'write_capacity_units': 10,
-                                    'read_capacity_units': 10})
+        self.assertEqual(returned, {'WriteCapacityUnits': 10,
+                                    'ReadCapacityUnits': 10})
 
     def test_error_messages_for_structure_scalar(self):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        value = 'application_names==foo,template_name=bar'
+        value = 'ApplicationName==foo,TemplateName=bar'
         error_msg = "Error parsing parameter --source-configuration.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
@@ -208,17 +207,17 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_mispelled_param_name(self):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        error_msg = 'valid choices.*application_name'
+        error_msg = 'valid choices.*ApplicationName'
         with self.assertRaisesRegexp(ParamUnknownKeyError, error_msg):
-            # Typo in 'application_names'
-            self.simplify(p, 'application_namess=foo, template_name=bar')
+            # Typo in 'ApplicationName'
+            self.simplify(p, 'ApplicationNames=foo, TemplateName=bar')
 
     def test_improper_separator(self):
         # If the user uses ':' instead of '=', we should give a good
         # error message.
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        value = 'application_names:foo,template_name:bar'
+        value = 'ApplicationName:foo,TemplateName:bar'
         error_msg = "Error parsing parameter --source-configuration.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
@@ -228,36 +227,36 @@ class TestParamShorthand(BaseArgProcessTest):
         error_msg = "Error parsing parameter --filters.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             returned = self.simplify(
-                p, ["name:tag:Name,values:foo"])
+                p, ["Name:tag:Name,Values:foo"])
 
     def test_unknown_key_for_filters_param(self):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
         with self.assertRaisesRegexp(ParamUnknownKeyError,
-                                     'valid choices.*name'):
-            self.simplify(p, ["names=instance-id,values=foo,bar"])
+                                     'valid choices.*Name'):
+            self.simplify(p, ["Names=instance-id,Values=foo,bar"])
 
     def test_csv_syntax_escaped(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
         returned = self.simplify(
-            p, ["parameter_key=key,parameter_value=foo\,bar"])
-        expected = [{"parameter_key": "key",
-                     "parameter_value": "foo,bar"}]
+            p, ["ParameterKey=key,ParameterValue=foo\,bar"])
+        expected = [{"ParameterKey": "key",
+                     "ParameterValue": "foo,bar"}]
         self.assertEqual(returned, expected)
 
     def test_csv_syntax_double_quoted(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
         returned = self.simplify(
-            p, ['parameter_key=key,parameter_value="foo,bar"'])
-        expected = [{"parameter_key": "key",
-                     "parameter_value": "foo,bar"}]
+            p, ['ParameterKey=key,ParameterValue="foo,bar"'])
+        expected = [{"ParameterKey": "key",
+                     "ParameterValue": "foo,bar"}]
         self.assertEqual(returned, expected)
 
     def test_csv_syntax_single_quoted(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
         returned = self.simplify(
-            p, ["parameter_key=key,parameter_value='foo,bar'"])
-        expected = [{"parameter_key": "key",
-                     "parameter_value": "foo,bar"}]
+            p, ["ParameterKey=key,ParameterValue='foo,bar'"])
+        expected = [{"ParameterKey": "key",
+                     "ParameterValue": "foo,bar"}]
         self.assertEqual(returned, expected)
 
     def test_csv_syntax_errors(self):
@@ -265,16 +264,16 @@ class TestParamShorthand(BaseArgProcessTest):
         error_msg = "Error parsing parameter --parameters.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             returned = self.simplify(
-                p, ['parameter_key=key,parameter_value="foo,bar'])
+                p, ['ParameterKey=key,ParameterValue="foo,bar'])
         with self.assertRaisesRegexp(ParamError, error_msg):
             returned = self.simplify(
-                p, ['parameter_key=key,parameter_value=foo,bar"'])
+                p, ['ParameterKey=key,ParameterValue=foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
             returned = self.simplify(
-                p, ['parameter_key=key,parameter_value=""foo,bar"'])
+                p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
             returned = self.simplify(
-                p, ['parameter_key=key,parameter_value="foo,bar\''])
+                p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
 
 class TestDocGen(BaseArgProcessTest):
@@ -307,7 +306,7 @@ class TestDocGen(BaseArgProcessTest):
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
         self.assertEqual(doc_string,
-                         '--instances instance_id1 instance_id2 instance_id3')
+                         '--instances InstanceId1 InstanceId2 InstanceId3')
 
     def test_gen_list_structure_of_scalars_docs(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
@@ -319,11 +318,11 @@ class TestDocGen(BaseArgProcessTest):
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
         self.assertIn('Key value pairs, with multiple values separated by a space.', doc_string)
-        self.assertIn('protocol=string', doc_string)
-        self.assertIn('load_balancer_port=integer', doc_string)
-        self.assertIn('instance_protocol=string', doc_string)
-        self.assertIn('instance_port=integer', doc_string)
-        self.assertIn('ssl_certificate_id=string', doc_string)
+        self.assertIn('Protocol=string', doc_string)
+        self.assertIn('LoadBalancerPort=integer', doc_string)
+        self.assertIn('InstanceProtocol=string', doc_string)
+        self.assertIn('InstancePort=integer', doc_string)
+        self.assertIn('SSLCertificateId=string', doc_string)
 
     def test_gen_list_structure_multiple_scalar_docs(self):
         p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
@@ -334,7 +333,7 @@ class TestDocGen(BaseArgProcessTest):
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
-        s = 'Key value pairs, where values are separated by commas.\n--playlists name=string1,format=string1,output_keys=string1,string2'
+        s = 'Key value pairs, where values are separated by commas.\n--playlists Name=string1,Format=string1,OutputKeys=string1,string2'
         self.assertEqual(doc_string, s)
 
 

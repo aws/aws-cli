@@ -125,7 +125,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_param_shorthand(self):
         p = aws(
-            'ec2 describe-instances --filters name=instance-id,values=i-123')
+            'ec2 describe-instances --filters Name=instance-id,Values=i-123')
         self.assertEqual(p.rc, 0)
         self.assertIn('Reservations', p.json)
 
@@ -139,7 +139,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_param_with_bad_json(self):
         p = aws(
             'ec2 describe-instances --filters '
-            '\'{"name": "bad-filter", "values": "i-123"}\'')
+            '\'{"Name": "bad-filter", "Values": "i-123"}\'')
         self.assertEqual(p.rc, 1)
         self.assertIn("The filter 'bad-filter' is invalid", p.stdout,
                       "stdout: %s, stderr: %s" % (p.stdout, p.stderr))
@@ -149,7 +149,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.addCleanup(os.rmdir, d)
         param_file = os.path.abspath(os.path.join(d, 'params.json'))
         with open(param_file, 'w') as f:
-            f.write('[{"name": "instance-id", "values": ["i-123"]}]')
+            f.write('[{"Name": "instance-id", "Values": ["i-123"]}]')
         self.addCleanup(os.remove, param_file)
         p = aws('ec2 describe-instances --filters file://%s' % param_file)
         self.assertEqual(p.rc, 0)

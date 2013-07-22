@@ -40,10 +40,10 @@ class TestElasticTranscoderOperations(unittest.TestCase):
                                      input_bucket='etc-input',
                                      output_bucket='etc-output',
                                      role='etc-role',
-                                     notifications={'completed': 'etc-topic',
-                                                    'progressing': 'etc-topic',
-                                                    'warning': 'etc-topic',
-                                                    'error': 'etc-topic'})
+                                     notifications={'Completed': 'etc-topic',
+                                                    'Progressing': 'etc-topic',
+                                                    'Warning': 'etc-topic',
+                                                    'Error': 'etc-topic'})
         result = {"OutputBucket": "etc-output",
                   "Notifications": {"Completed": "etc-topic",
                                     "Warning": "etc-topic",

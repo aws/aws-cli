@@ -41,7 +41,7 @@ class TestS3Operations(BaseEnvVar):
 
     def test_create_bucket_location(self):
         op = self.s3.get_operation('CreateBucket')
-        config = {'location_constraint': 'sa-east-1'}
+        config = {'LocationConstraint': 'sa-east-1'}
         params = op.build_parameters(bucket=self.bucket_name,
                                      acl='public-read',
                                      create_bucket_configuration=config)
@@ -54,12 +54,12 @@ class TestS3Operations(BaseEnvVar):
 
     def test_create_bucket_lifecycle(self):
         op = self.s3.get_operation('PutBucketLifecycle')
-        config = {'rules': [
-                      {'id': 'archive-objects-glacier-immediately-upon-creation',
-                       'prefix': 'glacierobjects/',
-                       'status': 'Enabled',
-                       'transition': {'days': 0,
-                                      'storage_class': 'GLACIER'}
+        config = {'Rules': [
+                      {'ID': 'archive-objects-glacier-immediately-upon-creation',
+                       'Prefix': 'glacierobjects/',
+                       'Status': 'Enabled',
+                       'Transition': {'Days': 0,
+                                      'StorageClass': 'GLACIER'}
                        }
                     ]
                   }
@@ -93,9 +93,9 @@ class TestS3Operations(BaseEnvVar):
     def test_complete_multipart_upload(self):
         op = self.s3.get_operation('CompleteMultipartUpload')
         parts = {
-            'parts': [
-                {'e_tag': '123', 'part_number': 1},
-                {'e_tag': '124', 'part_number': 2},
+            'Parts': [
+                {'ETag': '123', 'PartNumber': 1},
+                {'ETag': '124', 'PartNumber': 2},
             ]
         }
         params = op.build_parameters(bucket=self.bucket_name,

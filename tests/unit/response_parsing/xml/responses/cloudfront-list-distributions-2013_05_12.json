@@ -1,0 +1,102 @@
+{
+    "DistributionList": {
+        "Items": [
+            {
+                "Status": "Deployed", 
+                "CacheBehaviors": {
+                    "Items": [
+                        {
+                            "TrustedSigners": {
+                                "Items": [
+                                    "self", 
+                                    "111122223333"
+                                ], 
+                                "Enabled": true, 
+                                "Quantity": 2
+                            }, 
+                            "TargetOriginId": "example-custom-origin", 
+                            "ViewerProtocolPolicy": "allow-all", 
+                            "ForwardedValues": {
+                                "Cookies": {
+                                    "Forward": "all"
+                                }, 
+                                "QueryString": false
+                            }, 
+                            "PathPattern": "*.jpg", 
+                            "MinTTL": 86400
+                        }
+                    ], 
+                    "Quantity": 1
+                }, 
+                "Origins": {
+                    "Items": [
+                        {
+                            "S3OriginConfig": {
+                                "OriginAccessIdentity": "origin-access-identity/cloudfront/E74FTE3AEXAMPLE"
+                            }, 
+                            "Id": "example-Amazon S3-origin", 
+                            "DomainName": "myawsbucket.s3.amazonaws.com"
+                        }, 
+                        {
+                            "CustomOriginConfig": {
+                                "OriginProtocolPolicy": "match-viewer", 
+                                "HTTPPort": 80, 
+                                "HTTPSPort": 443
+                            }, 
+                            "Id": "example-custom-origin", 
+                            "DomainName": "example.com"
+                        }
+                    ], 
+                    "Quantity": 2
+                }, 
+                "DomainName": "d111111abcdef8.cloudfront.net", 
+                "PriceClass": "PriceClass_All", 
+                "Enabled": true, 
+                "DefaultCacheBehavior": {
+                    "ViewerProtocolPolicy": "https-only", 
+                    "ForwardedValues": {
+                        "Cookies": {
+                            "Forward": "whitelist", 
+                            "WhitelistedNames": {
+                                "Items": [
+                                    "example-cookie"
+                                ], 
+                                "Quantity": 1
+                            }
+                        }, 
+                        "QueryString": true
+                    }, 
+                    "TargetOriginId": "example-Amazon S3-origin", 
+                    "TrustedSigners": {
+                        "Items": [
+                            "self", 
+                            "111122223333", 
+                            "444455556666"
+                        ], 
+                        "Enabled": true, 
+                        "Quantity": 3
+                    }, 
+                    "MinTTL": 0
+                }, 
+                "Comment": "example comment", 
+                "ViewerCertificate": {
+                    "IAMCertificateId": "AS1A2M3P4L5E67SIIXR3J"
+                }, 
+                "LastModifiedTime": "2012-05-19T19:37:58Z", 
+                "Id": "EDFDVBD6EXAMPLE", 
+                "Aliases": {
+                    "Items": [
+                        "www.example.com"
+                    ], 
+                    "Quantity": 1
+                }
+            }
+        ], 
+        "NextMarker": "EMLARXS9EXAMPLE", 
+        "MaxItems": 2, 
+        "Marker": "RMPARXS293KSTG7", 
+        "IsTruncated": true, 
+        "Quantity": 1
+    }, 
+    "ResponseMetadata": {}
+}

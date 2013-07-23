@@ -188,12 +188,16 @@ class BooleanParameter(Parameter):
             raise ValidationError(value=str(value), type_name='boolean',
                                   param=self)
 
-    def build_parameter_query(self, value, built_params, label=''):
-        value = self.validate(value)
+    def _getstring(self, value):
         if value:
             value = 'true'
         else:
             value = 'false'
+        return value
+
+    def build_parameter_query(self, value, built_params, label=''):
+        value = self.validate(value)
+        value = self._getstring(value)
         self.store_value_query(value, built_params, label)
 
     @property
@@ -203,6 +207,11 @@ class BooleanParameter(Parameter):
             false_name = '--no-' + self.cli_name[2:]
         return false_name
 
+    def to_xml(self, value, label=None):
+        if not label:
+            label = self.name
+        value = self._getstring(value)
+        return '<%s>%s</%s>' % (label, value, label)
 
 class TimestampParameter(Parameter):
 
@@ -330,7 +339,10 @@ class ListParameter(Parameter):
     def to_xml(self, value, label=None):
         inner_xml = ''
         for item in value:
-            inner_xml += self.members.to_xml(item, self.xmlname)
+            xmlname = self.xmlname
+            if not xmlname:
+                xmlname = self.members.xmlname
+            inner_xml += self.members.to_xml(item, xmlname)
         if self.flattened:
             return inner_xml
         else:

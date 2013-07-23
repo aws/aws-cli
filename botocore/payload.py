@@ -98,10 +98,10 @@ class XMLPayload(Payload):
 
     There are two types of XML payloads encountered.
 
-    In the case of S3 requests, one (and only one) parameter of an
-    operation can have a ``payload=true`` attribute.  In this case,
-    the value of that single parameter is the complete body of the XML
-    payload.
+    In the case of S3 and CloudFront requests, one (and only one)
+    parameter of an operation can have a ``payload=true`` attribute.
+    In this case, the value of that single parameter is the complete
+    body of the XML payload.
 
     In the case of Route53 requests, the entire input is treated as
     the XML payload.  It will have one or more members whose values
@@ -109,11 +109,15 @@ class XMLPayload(Payload):
     may have other parameters that need to be added to the URI or to
     a header and these parameters are not added to the payload.
 
-    To distinquish between these two types, we use the
-    ``root_element_name`` attribute.  Route53 payloads have a
-    ``root_element_name`` attribute but S3 payloads do not.  I'm not
-    sure if this is the best way to discriminate between the two types
-    but it seems effective.
+    To distinquish between these two types, we use two factors:
+    
+    * ``root_element_name`` attribute.  Route53 payloads have a
+      ``root_element_name`` attribute but S3 payloads do not.
+    * A ``payload=True`` attribute.  Route53 payloads do not have
+      this attribute but S3 and CloudFront do.
+      
+    I'm not sure if this is the best way to discriminate between the
+    two types but it seems effective.
 
     Alternatively, the ``literal_value`` property can be set and this
     value will be returned as-is by the ``getvalue`` method.
@@ -124,8 +128,11 @@ class XMLPayload(Payload):
         self.root_element_name = root_element_name
         self.namespace = namespace
         self._elements = []
+        self._payload = False
 
     def add_param(self, param, value, label=None):
+        if hasattr(param, 'payload') and param.payload:
+            self._payload = True
         self._elements.append(param.to_xml(value, label))
 
     def _assemble_xml(self):
@@ -142,7 +149,7 @@ class XMLPayload(Payload):
     def getvalue(self):
         value = self._literal_value
         if len(self._elements) > 0:
-            if self.root_element_name:
+            if self.root_element_name and not self._payload:
                 value = self._assemble_xml()
             else:
                 value = self._elements[0]

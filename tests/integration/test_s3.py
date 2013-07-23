@@ -74,6 +74,16 @@ class TestS3Objects(BaseS3Test):
         operation.call(self.endpoint, bucket=self.bucket_name, key=key_name,
                        body=body)
 
+    def create_multipart_upload(self, key_name):
+        operation = self.service.get_operation('CreateMultipartUpload')
+        http_response, parsed = operation.call(self.endpoint,
+                                               bucket=self.bucket_name,
+                                               key=key_name)
+        upload_id = parsed['UploadId']
+        self.addCleanup(self.service.get_operation('AbortMultipartUpload').call,
+                        self.endpoint, upload_id=upload_id,
+                        bucket=self.bucket_name, key=key_name)
+
     def test_can_paginate(self):
         for i in range(5):
             key_name = 'key%s' % i
@@ -120,6 +130,76 @@ class TestS3Objects(BaseS3Test):
                                   key='foobarbaz')
         data = response[1]
         self.assertEqual(data['Body'].read().decode('utf-8'), 'body contents')
+
+    def test_paginate_max_items(self):
+        self.create_multipart_upload('foo/key1')
+        self.create_multipart_upload('foo/key1')
+        self.create_multipart_upload('foo/key1')
+        self.create_multipart_upload('foo/key2')
+        self.create_multipart_upload('foobar/key1')
+        self.create_multipart_upload('foobar/key2')
+        self.create_multipart_upload('bar/key1')
+        self.create_multipart_upload('bar/key2')
+
+        operation = self.service.get_operation('ListMultipartUploads')
+
+        # With no max items.
+        pages = operation.paginate(self.endpoint, bucket=self.bucket_name)
+        iterators = pages.result_key_iters()
+        self.assertEqual(len(iterators), 1)
+        self.assertEqual(iterators[0].result_key, 'Uploads')
+        self.assertEqual(len(list(iterators[0])), 8)
+
+        # With a max items of 1.
+        pages = operation.paginate(self.endpoint,
+                                   max_items=1,
+                                   bucket=self.bucket_name)
+        iterators = pages.result_key_iters()
+        self.assertEqual(len(iterators), 1)
+        self.assertEqual(iterators[0].result_key, 'Uploads')
+        self.assertEqual(len(list(iterators[0])), 1)
+
+        # Works similar with build_full_result()
+        pages = operation.paginate(self.endpoint,
+                                   max_items=1,
+                                   bucket=self.bucket_name)
+        full_result = pages.build_full_result()
+        self.assertEqual(len(full_result['Uploads']), 1)
+
+    def test_paginate_within_page_boundaries(self):
+        self.create_object('a')
+        self.create_object('b')
+        self.create_object('c')
+        self.create_object('d')
+        operation = self.service.get_operation('ListObjects')
+        # First do it without a max keys so we're operating on a single page of
+        # results.
+        pages = operation.paginate(self.endpoint, max_items=1,
+                                   bucket=self.bucket_name)
+        first = pages.build_full_result()
+        t1 = first['NextToken']
+
+        pages = operation.paginate(self.endpoint, max_items=1,
+                                   starting_token=t1,
+                                   bucket=self.bucket_name)
+        second = pages.build_full_result()
+        t2 = second['NextToken']
+
+        pages = operation.paginate(self.endpoint, max_items=1,
+                                   starting_token=t2,
+                                   bucket=self.bucket_name)
+        third = pages.build_full_result()
+        t3 = third['NextToken']
+
+        pages = operation.paginate(self.endpoint, max_items=1,
+                                   starting_token=t3,
+                                   bucket=self.bucket_name)
+        fourth = pages.build_full_result()
+
+        self.assertEqual(first['Contents'][-1]['Key'], 'a')
+        self.assertEqual(second['Contents'][-1]['Key'], 'b')
+        self.assertEqual(third['Contents'][-1]['Key'], 'c')
+        self.assertEqual(fourth['Contents'][-1]['Key'], 'd')
 
 
 if __name__ == '__main__':

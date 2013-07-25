@@ -92,7 +92,6 @@ class Paginator(object):
                             page_params['starting_token'],
                             endpoint, kwargs)
 
-
     def _extract_paging_params(self, kwargs):
         return {
             'max_items': kwargs.pop('max_items', None),
@@ -156,7 +155,7 @@ class PageIterator(object):
             truncate_amount = 0
             if self._max_items is not None:
                 truncate_amount = (total_items + num_current_response) \
-                        - self._max_items
+                    - self._max_items
             if truncate_amount > 0:
                 self._truncate_response(parsed, primary_result_key,
                                         truncate_amount, starting_truncation,
@@ -178,7 +177,7 @@ class PageIterator(object):
                 if previous_next_token is not None and \
                         previous_next_token == next_token:
                     message = ("The same next token was received "
-                            "twice: %s" % next_token)
+                               "twice: %s" % next_token)
                     raise PaginationError(message=message)
                 self._inject_token_into_kwargs(current_kwargs, next_token)
                 previous_next_token = next_token
@@ -198,12 +197,13 @@ class PageIterator(object):
                 continue
             op_kwargs[name] = token
 
-    def _handle_first_request(self, parsed, primary_result_key, starting_truncation):
+    def _handle_first_request(self, parsed, primary_result_key,
+                              starting_truncation):
         # First we need to slice into the array and only return
         # the truncated amount.
         starting_truncation = self._parse_starting_token()[1]
         parsed[primary_result_key] = parsed[
-                                         primary_result_key][starting_truncation:]
+            primary_result_key][starting_truncation:]
         # We also need to truncate any secondary result keys
         # because they were not truncated in the previous last
         # response.

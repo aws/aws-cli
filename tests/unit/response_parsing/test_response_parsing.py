@@ -63,6 +63,7 @@ def test_xml_parsing():
                 basename = os.path.splitext(filename)[0]
                 jsonfile = os.path.join(dirname, basename + '.json')
                 sn, opname = basename.split('-', 1)
+                opname = opname.split('_')[0]
                 operation = service.get_operation(opname)
                 r = XmlResponse(session, operation)
                 fp = open(xmlfile)

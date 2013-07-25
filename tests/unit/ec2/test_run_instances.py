@@ -18,8 +18,38 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 run-instances'
 
+    def test_no_count(self):
+        args = ' --image-id ami-foobar'
+        args_list = (self.prefix + args).split()
+        result = {
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_count_scalar(self):
+        args = ' --image-id ami-foobar --count 2'
+        args_list = (self.prefix + args).split()
+        result = {
+            'ImageId': 'ami-foobar',
+            'MaxCount': '2',
+            'MinCount': '2'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_count_range(self):
+        args = ' --image-id ami-foobar --count 5:10'
+        args_list = (self.prefix + args).split()
+        result = {
+            'ImageId': 'ami-foobar',
+            'MaxCount': '10',
+            'MinCount': '5'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
     def test_block_device_mapping(self):
-        args = ' --image-id ami-foobar --min-count 1 --max-count 1'
+        args = ' --image-id ami-foobar --count 1'
         args_list = (self.prefix + args).split()
         # We're switching to list form because we need to test
         # when there's leading spaces.  This is the CLI equivalent

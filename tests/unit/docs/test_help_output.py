@@ -106,7 +106,7 @@ class TestHelpOutput(BaseAWSHelpOutput):
         # Should contain part of the help text from the model.
         self.assert_contains('The run-instances operation launches a specified '
                              'number of instances')
-        self.assert_contains('``--max-count`` (integer)')
+        self.assert_contains('``--count`` (string)')
 
     def test_arguments_with_example_json_syntax(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
@@ -128,8 +128,6 @@ class TestHelpOutput(BaseAWSHelpOutput):
         # each item in the list has to come before the previous arg.
         self.assert_text_order(
             '--image-id <value>',
-            '--min-count <value>',
-            '--max-count <value>',
             '[--key-name <value>]',
             '[--security-groups <value>]', starting_from='Synopsis')
 

@@ -21,6 +21,7 @@ from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
 from awscli.customizations.ec2addcount import ec2_add_count
+from awscli.customizations.paginate import unify_paging_params
 
 
 def awscli_initialize(event_handlers):
@@ -41,4 +42,6 @@ def awscli_initialize(event_handlers):
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.RunInstances',
                             ec2_add_count)
+    event_handlers.register('building-argument-table',
+                            unify_paging_params)
     register_removals(event_handlers)

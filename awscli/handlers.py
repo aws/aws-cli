@@ -20,6 +20,7 @@ from awscli.argprocess import ParamShorthand
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
+from awscli.customizations.ec2addcount import ec2_add_count
 
 
 def awscli_initialize(event_handlers):
@@ -36,6 +37,8 @@ def awscli_initialize(event_handlers):
                             param_shorthand.add_example_fn)
     event_handlers.register('doc-examples.Operation.*',
                             add_examples)
-    event_handlers.register('building-argument-table',
+    event_handlers.register('building-argument-table.s3.*',
                             add_streaming_output_arg)
+    event_handlers.register('building-argument-table.ec2.RunInstances',
+                            ec2_add_count)
     register_removals(event_handlers)

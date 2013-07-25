@@ -63,11 +63,14 @@ class CountArgument(BaseCLIArgument):
                             default='1')
 
     def add_to_params(self, parameters, value):
-        logger.debug('add_to_params: %s', parameters)
-        logger.debug('add_to_params: %s', value)
-        if ':' in value:
-            minstr, maxstr = value.split(':')
-        else:
-            minstr, maxstr = (value, value)
-        parameters['min_count'] = int(minstr)
-        parameters['max_count'] = int(maxstr)
+        try:
+            if ':' in value:
+                minstr, maxstr = value.split(':')
+            else:
+                minstr, maxstr = (value, value)
+            parameters['min_count'] = int(minstr)
+            parameters['max_count'] = int(maxstr)
+        except:
+            msg = ('count parameter should be of '
+                   'form min[:max] (e.g. 1 or 1:10)')
+            raise ValueError(msg)

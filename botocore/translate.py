@@ -70,7 +70,7 @@ def translate(model):
 def handle_op_renames(new_model, enhancements):
     # This allows for operations to be renamed.  The only
     # implemented transformation is removing part of the operation name
-    # (because that's allwe currently need.)
+    # (because that's all we currently need.)
     remove = enhancements.get('transformations', {}).get(
         'operation-name', {}).get('remove')
     if remove is not None:

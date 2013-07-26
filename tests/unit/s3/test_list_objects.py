@@ -37,9 +37,24 @@ class TestListObjects(BaseAWSCommandParamsTest):
     def test_maxkeys(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
-        cmdline += ' --max-keys 100'
-        result = {'uri_params': {'Bucket': 'mybucket',
-                                 'MaxKeys': 100},
+        # The max-items is a customization and therefore won't
+        # show up in the result params.
+        cmdline += ' --max-items 100'
+        result = {'uri_params': {'Bucket': 'mybucket'},
+                  'headers': {},
+                  'payload': None}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_starting_token(self):
+        # We don't need to test this in depth because botocore
+        # tests this.  We just want to make sure this is hooked up
+        # properly.
+        cmdline = self.prefix
+        cmdline += ' --bucket mybucket'
+        # The max-items is a customization and therefore won't
+        # show up in the result params.
+        cmdline += ' --starting-token foo___2'
+        result = {'uri_params': {'Bucket': 'mybucket', 'Marker': 'foo'},
                   'headers': {},
                   'payload': None}
         self.assert_params_for_cmd(cmdline, result)

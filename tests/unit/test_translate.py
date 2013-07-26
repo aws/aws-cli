@@ -196,6 +196,13 @@ SERVICES = {
       ],
       "documentation": "docs"
     },
+    "RealOperation2013_02_04": {
+      "name": "RealOperation2013_02_04",
+      "input": {},
+      "output": {},
+      "errors": [],
+      "documentation": "docs"
+    },
   }
 }
 
@@ -574,6 +581,25 @@ class TestBuildRetryConfig(unittest.TestCase):
         # And we should resolve references.
         self.assertEqual(operation_config['policies']['other'],
                          {"from": {"definition": "file"}})
+
+
+class TestReplacePartOfOperation(unittest.TestCase):
+    def test_replace_operation_key_name(self):
+        enhancements = {
+            'transformations': {
+                'operation-name': {'remove': r'\d{4}_\d{2}_\d{2}'}
+            }
+        }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        # But the key into the operation dict is stripped of the
+        # matched regex.
+        self.assertEqual(list(sorted(new_model['operations'].keys())),
+                         ['AssumeRole', 'RealOperation'])
+        # But the name key attribute is left unchanged.
+        self.assertEqual(new_model['operations']['RealOperation']['name'],
+                         'RealOperation2013_02_04')
 
 
 if __name__ == '__main__':

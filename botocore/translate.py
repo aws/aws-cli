@@ -1,6 +1,7 @@
 """Translate the raw json files into python specific descriptions."""
 import os
 import sys
+import re
 from copy import deepcopy
 
 from botocore.compat import OrderedDict, json
@@ -62,7 +63,27 @@ def translate(model):
     merge_dicts(new_model['operations'], model.enhancements.get('operations', {}))
     add_retry_configs(
         new_model, model.retry.get('retry', {}), definitions=model.retry.get('definitions', {}))
+    handle_op_renames(new_model, model.enhancements)
     return new_model
+
+
+def handle_op_renames(new_model, enhancements):
+    # This allows for operations to be renamed.  The only
+    # implemented transformation is removing part of the operation name
+    # (because that's allwe currently need.)
+    remove = enhancements.get('transformations', {}).get(
+        'operation-name', {}).get('remove')
+    if remove is not None:
+        # We're going to recreate the dictionary because we want to preserve
+        # the order.  This is the only option we have unless we have our own
+        # custom OrderedDict.
+        remove_regex = re.compile(remove)
+        operations = new_model['operations']
+        new_operation = OrderedDict()
+        for key in operations:
+            new_key = remove_regex.sub('', key)
+            new_operation[new_key] = operations[key]
+        new_model['operations'] = new_operation
 
 
 def add_pagination_configs(new_model, pagination):

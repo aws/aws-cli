@@ -595,7 +595,7 @@ class TestReplacePartOfOperation(unittest.TestCase):
         new_model = translate(model)
         # But the key into the operation dict is stripped of the
         # matched regex.
-        self.assertEqual(new_model['operations'].keys(),
+        self.assertEqual(list(new_model['operations'].keys()),
                          ['AssumeRole', 'RealOperation'])
         # But the name key attribute is left unchanged.
         self.assertEqual(new_model['operations']['RealOperation']['name'],

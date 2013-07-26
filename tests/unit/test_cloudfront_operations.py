@@ -259,14 +259,14 @@ class TestCloudFrontOperations(BaseEnvVar):
         self.endpoint = self.cloudfront.get_endpoint('us-east-1')
 
     def test_create_distribution(self):
-        op = self.cloudfront.get_operation('CreateDistribution2013_05_12')
+        op = self.cloudfront.get_operation('CreateDistribution')
         params = op.build_parameters(distribution_config=CREATE_DISTRIBUTION_INPUT)
         self.maxDiff = None
         payload = ''.join([s.strip() for s in CREATE_DISTRIBUTION_PAYLOAD.split('\n')])
         self.assertEqual(params['payload'].getvalue(), payload)
 
     def test_delete_distribution(self):
-        op = self.cloudfront.get_operation('DeleteDistribution2013_05_12')
+        op = self.cloudfront.get_operation('DeleteDistribution')
         params = op.build_parameters(id='IDFDVBD632BHDS5',
                                      if_match='2QWRUHAPOMQZL')
         self.assertIn('Id', params['uri_params'])
@@ -275,14 +275,14 @@ class TestCloudFrontOperations(BaseEnvVar):
         self.assertEqual(params['headers']['If-Match'], '2QWRUHAPOMQZL')
 
     def test_create_origin_access_identity_distribution(self):
-        op = self.cloudfront.get_operation('CreateCloudFrontOriginAccessIdentity2013_05_12')
+        op = self.cloudfront.get_operation('CreateCloudFrontOriginAccessIdentity')
         params = op.build_parameters(cloud_front_origin_access_identity_config=CREATE_ORIGIN_ACCESS_IDENTITY_INPUT)
         self.maxDiff = None
         payload = ''.join([s.strip() for s in CREATE_ORIGIN_ACCESS_IDENTITY_PAYLOAD.split('\n')])
         self.assertEqual(params['payload'].getvalue(), payload)
 
     def test_delete_origin_access_identity(self):
-        op = self.cloudfront.get_operation('DeleteCloudFrontOriginAccessIdentity2013_05_12')
+        op = self.cloudfront.get_operation('DeleteCloudFrontOriginAccessIdentity')
         params = op.build_parameters(id='IDFDVBD632BHDS5',
                                      if_match='2QWRUHAPOMQZL')
         self.assertIn('Id', params['uri_params'])
@@ -291,7 +291,7 @@ class TestCloudFrontOperations(BaseEnvVar):
         self.assertEqual(params['headers']['If-Match'], '2QWRUHAPOMQZL')
 
     def test_create_invalidation(self):
-        op = self.cloudfront.get_operation('CreateInvalidation2013_05_12')
+        op = self.cloudfront.get_operation('CreateInvalidation')
         params = op.build_parameters(distribution_id='IDFDVBD632BHDS5',
                                      invalidation_batch=CREATE_INVALIDATION_INPUT)
         self.maxDiff = None

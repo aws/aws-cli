@@ -45,6 +45,7 @@ def unify_paging_params(argument_table, operation, **kwargs):
     if not operation.can_paginate:
         # We only apply these customizations to paginated responses.
         return
+    logger.debug("Modifying paging parameters for operation: %s", operation)
     _remove_existing_paging_arguments(argument_table, operation)
     argument_table['starting-token'] = PageArgument('starting-token',
                                                     STARTING_TOKEN_HELP,

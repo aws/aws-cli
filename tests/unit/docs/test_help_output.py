@@ -203,3 +203,18 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
         self.driver.main(['s3', 'get-object', 'help'])
         self.assert_not_contains('``--output-file``')
         self.assert_contains('``output-file`` (string)')
+
+
+class TestPagingParamDocs(BaseAWSHelpOutput):
+    def test_starting_token_injected(self):
+        self.driver.main(['s3', 'list-objects', 'help'])
+        self.assert_contains('``--starting-token``')
+
+    def test_max_items_injected(self):
+        self.driver.main(['s3', 'list-objects', 'help'])
+        self.assert_contains('``--max-items``')
+
+    def test_builtin_paging_params_removed(self):
+        self.driver.main(['s3', 'list-objects', 'help'])
+        self.assert_not_contains('``--next-token``')
+        self.assert_not_contains('``--max-keys``')

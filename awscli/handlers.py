@@ -21,6 +21,9 @@ from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
 from awscli.customizations.ec2addcount import ec2_add_count
+from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
+from awscli.customizations.ec2decryptpassword import ec2_process_priv_launch_key
+from awscli.customizations.ec2decryptpassword import decrypt_password_data
 
 
 def awscli_initialize(event_handlers):
@@ -41,4 +44,10 @@ def awscli_initialize(event_handlers):
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.RunInstances',
                             ec2_add_count)
+    event_handlers.register('building-argument-table.ec2.GetPasswordData',
+                            ec2_add_priv_launch_key)
+    event_handlers.register('operation-args-parsed.ec2.GetPasswordData',
+                            ec2_process_priv_launch_key)
+    event_handlers.register('after-parsed.ec2.GetPasswordData.String.PasswordData',
+                            decrypt_password_data)
     register_removals(event_handlers)

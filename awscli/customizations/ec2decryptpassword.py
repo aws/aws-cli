@@ -22,6 +22,14 @@ from botocore.parameters import StringParameter
 logger = logging.getLogger(__name__)
 
 
+def register(event_handler):
+    event_handler.register('building-argument-table.ec2.GetPasswordData',
+                           ec2_add_priv_launch_key)
+    event_handler.register('operation-args-parsed.ec2.GetPasswordData',
+                           ec2_process_priv_launch_key)
+    event_handler.register('after-parsed.ec2.GetPasswordData.String.PasswordData',
+                           decrypt_password_data)
+    
 HELP = """<p>The file that contains the private key used to launch
 the instance (e.g. windows-keypair.pem).  If this is supplied, the
 password data sent from EC2 will be decrypted before display.</p>"""

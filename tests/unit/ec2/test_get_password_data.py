@@ -13,6 +13,7 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import os
+import six
 from awscli.clidriver import create_clidriver
 from awscli.customizations.ec2decryptpassword import _get_key_path
 from botocore.response import XmlResponse
@@ -59,4 +60,5 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         r = XmlResponse(driver.session, operation)
         r.parse(GET_PASSWORD_DATA_RESPONSE, 'utf-8')
         response_data = r.get_value()
-        self.assertEqual(response_data['PasswordData'], '=mG8.r$o-s')
+        self.assertEqual(response_data['PasswordData'],
+                         six.b('=mG8.r$o-s'))

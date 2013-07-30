@@ -106,7 +106,7 @@ class LaunchKeyArgument(BaseCLIArgument):
                     private_key = rsa.PrivateKey.load_pkcs1(six.b(pk_contents))
                     value = base64.b64decode(value)
                     value = rsa.decrypt(value, private_key)
-                    parsed['PasswordData'] = value
+                    parsed['PasswordData'] = six.u(value)
             except Exception:
                 logger.debug('Unable to decrypt PasswordData', exc_info=True)
                 msg = ('Unable to decrypt password data using '

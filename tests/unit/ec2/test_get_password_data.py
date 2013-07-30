@@ -28,20 +28,7 @@ GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8iSGKaLuLTIWatWopVu5c
 </passwordData>
 </GetPasswordDataResponse>"""
 
-GET_PASSWORD_OUTPUT_NO_DECRYPT = """{
-    "InstanceId": "i-12345678", 
-    "Timestamp": "2013-07-27T18:29:23.000Z", 
-    "PasswordData": "GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8iSGKaLuLTIWatWopVu5cMWDKH65U4YFL2g3LqyajBrCFnuSE1piTeS/rPQpoSvBN5FGj9HWqNrglWAJgh9OZNSGgpEojBenL/0rwSpDWL7f/f52M5doYA6q+v0ygEoi1Wq6hcmrBfyA4seW1RlKgnUru5Y9oc1hFHi53E3b1EkjGqCsCemVUwumBj8uwCLJRaMcqrCxK1smtAsiSqk0Jk9jpN2vcQgnMPypEdmEEXyWHwq55fjy6ch+sqYcwumIL5QcFW2JQ5+XBEoFhC66gOsAXow=="
-}
-"""
-
-GET_PASSWORD_OUTPUT = """{
-    "InstanceId": "i-12345678", 
-    "Timestamp": "2013-07-27T18:29:23.000Z", 
-    "PasswordData": "=mG8.r$o-s"
-}
-"""
-
+PASSWORD_DATA = "GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8iSGKaLuLTIWatWopVu5cMWDKH65U4YFL2g3LqyajBrCFnuSE1piTeS/rPQpoSvBN5FGj9HWqNrglWAJgh9OZNSGgpEojBenL/0rwSpDWL7f/f52M5doYA6q+v0ygEoi1Wq6hcmrBfyA4seW1RlKgnUru5Y9oc1hFHi53E3b1EkjGqCsCemVUwumBj8uwCLJRaMcqrCxK1smtAsiSqk0Jk9jpN2vcQgnMPypEdmEEXyWHwq55fjy6ch+sqYcwumIL5QcFW2JQ5+XBEoFhC66gOsAXow=="
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
 
@@ -58,8 +45,14 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        self.assertEqual(sys.stdout.getvalue(), GET_PASSWORD_OUTPUT_NO_DECRYPT)
+        output = sys.stdout.getvalue()
         sys.stdout = save
+        pos = output.find('"InstanceId": "i-12345678"')
+        self.assertTrue(pos != 1, 'InstanceId not found')
+        pos = output.find('"Timestamp": "2013-07-27T18:29:23.000Z"')
+        self.assertTrue(pos != 1, 'Timestamp not found')
+        pos = output.find('"Password": "%s"' % PASSWORD_DATA)
+        self.assertTrue(pos != 1, 'Password Data not found')
 
     def test_nonexistent_priv_launch_key(self):
         args = ' --instance-id i-12345678 --priv-launch-key foo.pem'
@@ -76,5 +69,11 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        self.assertEqual(sys.stdout.getvalue(), GET_PASSWORD_OUTPUT)
+        output = sys.stdout.getvalue()
         sys.stdout = save
+        pos = output.find('"InstanceId": "i-12345678"')
+        self.assertTrue(pos != 1, 'InstanceId not found')
+        pos = output.find('"Timestamp": "2013-07-27T18:29:23.000Z"')
+        self.assertTrue(pos != 1, 'Timestamp not found')
+        pos = output.find('"PasswordData": "=mG8.r$o-s"')
+        self.assertTrue(pos != 1, 'Password not found')

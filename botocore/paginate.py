@@ -61,7 +61,7 @@ class Paginator(object):
         return input_token
 
     def _get_more_results_token(self, config):
-        more_results = config.get('more_results')
+        more_results = config.get('more_key')
         if more_results is not None:
             return jmespath.compile(more_results)
 

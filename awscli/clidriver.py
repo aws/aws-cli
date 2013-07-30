@@ -111,7 +111,6 @@ class CLIDriver(object):
         return commands
 
     def _build_argument_table(self):
-        LOG.debug('_build_argument_table')
         argument_table = OrderedDict()
         cli_data = self._get_cli_data()
         cli_arguments = cli_data.get('options', None)
@@ -134,7 +133,6 @@ class CLIDriver(object):
             argument_object.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
-        LOG.debug('_build_argument_table_again')
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
         return argument_table
@@ -273,8 +271,6 @@ class ServiceCommand(CLICommand):
         command_table = OrderedDict()
         service_object = self._get_service_object()
         for operation_object in service_object.operations:
-            LOG.debug(operation_object)
-            LOG.debug('operation.name=%s' % operation_object.name)
             cli_name = xform_name(operation_object.name, '-')
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
@@ -527,7 +523,6 @@ class CLIArgument(BaseCLIArgument):
 
         """
         cli_name = self.cli_name
-        LOG.debug('add_to_parser: %s' % cli_name)
         parser.add_argument(
             cli_name,
             help=self.documentation,
@@ -550,8 +545,10 @@ class CLIArgument(BaseCLIArgument):
             # just associating the key and value in the params dict as down
             # below.  Sometimes this can be more complicated, and subclasses
             # can customize as they need.
-            LOG.debug('add_to_params: %s' % self.py_name)
-            parameters[self.argument_object.py_name] = self._unpack_argument(value)
+            unpacked = self._unpack_argument(value)
+            LOG.debug('Unpacked value of "%s" for parameter "%s": %s', value,
+                      self.argument_object.py_name, unpacked)
+            parameters[self.argument_object.py_name] = unpacked
 
     def _unpack_argument(self, value):
         if not hasattr(self.argument_object, 'no_paramfile'):
@@ -674,7 +671,6 @@ class ServiceOperation(object):
 
     def __init__(self, name, operation_object, operation_caller,
                  service_object):
-        LOG.debug('creating ServiceOperation: %s' % name)
         self._arg_table = None
         self._name = name
         self._operation_object = operation_object

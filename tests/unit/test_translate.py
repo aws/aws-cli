@@ -88,6 +88,18 @@ SERVICES = {
               "type": "string",
               "documentation": None
           },
+          "TokenToken": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": None,
+              "xmlname": "tokenToken"
+          },
+          "MaxResults": {
+              "shape_name": "Integer",
+              "type": "int",
+              "documentation": None,
+              "xmlname": "maxResults"
+          }
         },
         "documentation": "docs"
       },
@@ -164,7 +176,7 @@ SERVICES = {
               "type": "string",
               "documentation": None,
               "xmlname": "nextToken"
-          }
+          },
         },
         "documentation": "docs"
       },
@@ -312,7 +324,7 @@ class TestTranslateModel(unittest.TestCase):
                 'AssumeRole': {
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
-                    'max_results': 'MaxResults',
+                    'limit_key': 'MaxResults',
                     'result_key': 'Credentials',
                 }
             }
@@ -325,7 +337,7 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': 'NextToken',
                 'py_input_token': 'next_token',
                 'output_token': 'NextToken',
-                'max_results': 'MaxResults',
+                'limit_key': 'MaxResults',
                 'result_key': 'Credentials',
             })
 
@@ -338,7 +350,7 @@ class TestTranslateModel(unittest.TestCase):
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
                     'py_input_token': 'other_value',
-                    'max_results': 'MaxResults',
+                    'limit_key': 'MaxResults',
                     'result_key': 'Credentials',
                 }
             }
@@ -353,7 +365,7 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': 'NextToken',
                 'py_input_token': 'other_value',
                 'output_token': 'NextToken',
-                'max_results': 'MaxResults',
+                'limit_key': 'MaxResults',
                 'result_key': 'Credentials',
             })
 
@@ -403,7 +415,7 @@ class TestTranslateModel(unittest.TestCase):
         extra = {
             'pagination': {
                 'AssumeRole': {
-                    'input_token': ['Token', 'TokenToken'],
+                    'input_token': ['NextToken', 'TokenToken'],
                     'output_token': ['NextToken', 'NextTokenToken'],
                     'result_key': 'Credentials'
                 }
@@ -414,8 +426,8 @@ class TestTranslateModel(unittest.TestCase):
         op = new_model['operations']['AssumeRole']
         self.assertDictEqual(
             op['pagination'], {
-                'input_token': ['Token', 'TokenToken'],
-                'py_input_token': ['token', 'token_token'],
+                'input_token': ['NextToken', 'TokenToken'],
+                'py_input_token': ['next_token', 'token_token'],
                 'output_token': ['NextToken', 'NextTokenToken'],
                 'result_key': 'Credentials',
             })
@@ -452,7 +464,7 @@ class TestTranslateModel(unittest.TestCase):
         extra = {
             'pagination': {
                 'AssumeRole': {
-                    'input_token': ['Token', 'TokenToken'],
+                    'input_token': ['NextToken'],
                     'output_token': ['NextToken', 'NextTokenToken'],
                     'result_key': ['Credentials', 'AssumedRoleUser'],
                 }
@@ -462,14 +474,54 @@ class TestTranslateModel(unittest.TestCase):
         new_model = translate(self.model)
         self.assertEqual(new_model['pagination'], extra['pagination'])
 
-    def test_translate_operation_casing(self):
-        pass
+    def test_expected_schema_exists(self):
+        # In this case, the key 'output_tokens' is suppose to be 'output_token'
+        # so we should get an error when this happens.
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': ['Token', 'TokenToken'],
+                    'output_tokens': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
-    def test_translate_param_casing(self):
-        pass
+    def test_input_tokens_exist_in_model(self):
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    # In this case, "DoesNotExist" token is not in the input
+                    # model, so we get an exception complaining about this.
+                    'input_token': ['NextToken', 'DoesNotExist'],
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
-    def test_map_types_to_python_types(self):
-        pass
+    def test_validate_limit_key_is_in_input(self):
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': 'NextToken',
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                    # In this case, "DoesNotExist" token is not in the input
+                    # model, so we get an exception complaining about this.
+                    'limit_key': 'DoesNotExist',
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
 
 class TestDictMerg(unittest.TestCase):

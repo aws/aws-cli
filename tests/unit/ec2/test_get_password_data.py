@@ -13,10 +13,11 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import os
-import six
+import sys
+import re
+from six.moves import cStringIO
+import httpretty
 from awscli.clidriver import create_clidriver
-from awscli.customizations.ec2decryptpassword import _get_key_path
-from botocore.response import XmlResponse
 
 GET_PASSWORD_DATA_RESPONSE = """<?xml version="1.0" encoding="UTF-8"?>
 <GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-02-01/">
@@ -28,10 +29,21 @@ GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8iSGKaLuLTIWatWopVu5c
 </passwordData>
 </GetPasswordDataResponse>"""
 
+GET_PASSWORD_OUTPUT = """{
+    "InstanceId": "i-12345678", 
+    "Timestamp": "2013-07-27T18:29:23.000Z", 
+    "PasswordData": "=mG8.r$o-s"
+}
+"""
+
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 get-password-data'
+
+    def register_uri(self):
+        httpretty.register_uri(httpretty.POST, re.compile('.*'),
+                               body=GET_PASSWORD_DATA_RESPONSE)
 
     def test_no_priv_launch_key(self):
         args = ' --instance-id i-12345678'
@@ -46,19 +58,13 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result, expected_rc=255)
 
     def test_priv_launch_key(self):
-        driver = create_clidriver()
+        save = sys.stdout
+        sys.stdout = cStringIO()
         key_path = os.path.join(os.path.dirname(__file__),
                                 'testcli.pem')
         args = ' --instance-id i-12345678 --priv-launch-key %s' % key_path
         cmdline = self.prefix + args
-        cmdlist = cmdline.split()
-        rc = driver.main(cmdlist)
-        self.assertEqual(rc, 0)
-        self.assertEqual(key_path, _get_key_path())
-        service = driver.session.get_service('ec2')
-        operation = service.get_operation('GetPasswordData')
-        r = XmlResponse(driver.session, operation)
-        r.parse(GET_PASSWORD_DATA_RESPONSE, 'utf-8')
-        response_data = r.get_value()
-        self.assertEqual(response_data['PasswordData'],
-                         six.b('=mG8.r$o-s'))
+        result = {'InstanceId': 'i-12345678'}
+        self.assert_params_for_cmd(cmdline, result, expected_rc=0)
+        self.assertEqual(sys.stdout.getvalue(), GET_PASSWORD_OUTPUT)
+        sys.stdout = save

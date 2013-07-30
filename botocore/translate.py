@@ -96,6 +96,7 @@ def add_pagination_configs(new_model, pagination):
         new_model['pagination'] = pagination
     for name in pagination:
         config = pagination[name]
+        _check_known_pagination_keys(config)
         if 'py_input_token' not in config:
             input_token = config['input_token']
             if isinstance(input_token, list):
@@ -124,6 +125,15 @@ def add_pagination_configs(new_model, pagination):
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)
         operation['pagination'] = config.copy()
+
+
+def _check_known_pagination_keys(config):
+    # Verify that the pagination config only has keys we expect to see.
+    expected = set(['input_token', 'py_input_token', 'output_token',
+                    'result_key', 'limit_key', 'more_key'])
+    for key in config:
+        if key not in expected:
+            raise ValueError("Unknown key in pagination config: %s" % key)
 
 
 def add_retry_configs(new_model, retry_model, definitions):

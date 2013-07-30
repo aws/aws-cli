@@ -312,7 +312,7 @@ class TestTranslateModel(unittest.TestCase):
                 'AssumeRole': {
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
-                    'max_results': 'MaxResults',
+                    'limit_key': 'MaxResults',
                     'result_key': 'Credentials',
                 }
             }
@@ -325,7 +325,7 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': 'NextToken',
                 'py_input_token': 'next_token',
                 'output_token': 'NextToken',
-                'max_results': 'MaxResults',
+                'limit_key': 'MaxResults',
                 'result_key': 'Credentials',
             })
 
@@ -338,7 +338,7 @@ class TestTranslateModel(unittest.TestCase):
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
                     'py_input_token': 'other_value',
-                    'max_results': 'MaxResults',
+                    'limit_key': 'MaxResults',
                     'result_key': 'Credentials',
                 }
             }
@@ -353,7 +353,7 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': 'NextToken',
                 'py_input_token': 'other_value',
                 'output_token': 'NextToken',
-                'max_results': 'MaxResults',
+                'limit_key': 'MaxResults',
                 'result_key': 'Credentials',
             })
 
@@ -462,8 +462,21 @@ class TestTranslateModel(unittest.TestCase):
         new_model = translate(self.model)
         self.assertEqual(new_model['pagination'], extra['pagination'])
 
-    def test_translate_operation_casing(self):
-        pass
+    def test_expected_schema_exists(self):
+        # In this case, the key 'output_tokens' is suppose to be 'output_token'
+        # so we should get an error when this happens.
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': ['Token', 'TokenToken'],
+                    'output_tokens': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
     def test_translate_param_casing(self):
         pass

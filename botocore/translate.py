@@ -121,6 +121,7 @@ def add_pagination_configs(new_model, pagination):
                 raise ValueError("result_key %r is not an output member: %s" %
                                 (result_key,
                                  operation['output']['members'].keys()))
+        _check_input_keys_match(config, operation)
         if operation is None:
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)
@@ -134,6 +135,24 @@ def _check_known_pagination_keys(config):
     for key in config:
         if key not in expected:
             raise ValueError("Unknown key in pagination config: %s" % key)
+
+
+def _check_input_keys_match(config, operation):
+    input_tokens = config['input_token']
+    if not isinstance(input_tokens, list):
+        input_tokens = [input_tokens]
+    valid_input_names = operation['input']['members']
+    for token in input_tokens:
+        if token not in valid_input_names:
+            raise ValueError("input_token refers to a non existent "
+                             "input name for operation %s: %s.  "
+                             "Must be one of: %s" % (operation['name'], token,
+                                                     list(valid_input_names)))
+    if 'limit_key' in config and config['limit_key'] not in valid_input_names:
+        raise ValueError("limit_key refers to a non existent input name for "
+                         "operation %s: %s.  Must be one of: %s" % (
+                             operation['name'], config['limit_key'],
+                             list(valid_input_names)))
 
 
 def add_retry_configs(new_model, retry_model, definitions):

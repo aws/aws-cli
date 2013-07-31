@@ -43,4 +43,4 @@ def add_examples(help_command, **kwargs):
         help_command.doc.style.h2('Examples')
         fp = open(doc_path)
         for line in fp.readlines():
-            help_command.doc.writeraw(line)
+            help_command.doc.write(line)

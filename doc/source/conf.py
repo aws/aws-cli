@@ -19,7 +19,6 @@ import sys, os
 sys.path.insert(0, os.path.abspath('.'))
 
 import bootstrapdocs
-#import guzzle_sphinx_theme
 
 # -- General configuration -----------------------------------------------------
 
@@ -174,8 +173,8 @@ htmlhelp_basename = 'aws-clidoc'
 
 # Adds an HTML table visitor to apply Bootstrap table classes
 html_translator_class = 'guzzle_sphinx_theme.HTMLTranslator'
-p = [os.path.abspath('.')]
-p = os.path.join('guzzle_sphinx_theme')
+p = os.path.abspath('.')
+p = os.path.join(p, 'guzzle_sphinx_theme')
 html_theme_path = [p]
 html_theme = 'guzzle_sphinx_theme'
 

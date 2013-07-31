@@ -20,7 +20,7 @@ class CapturedRenderer(object):
         self.rendered_contents = ''
 
     def render(self, contents):
-        self.rendered_contents = contents
+        self.rendered_contents = contents.decode('utf-8')
 
 
 class BaseAWSHelpOutput(BaseCLIDriverTest):

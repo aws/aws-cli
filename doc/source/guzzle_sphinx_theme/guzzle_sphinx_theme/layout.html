@@ -1,0 +1,150 @@
+{%- extends "basic/layout.html" %}
+
+{# Do this so that bootstrap is included before the main css file #}
+{%- block htmltitle %}
+  {{ super() }}
+  <link rel="stylesheet" type="text/css" href="{{ pathto('_static/bootstrap.min.css', 1) }}" />
+  <script type="text/javascript" src="{{ pathto('_static/jquery-1.9.1.min.js')}}"></script>
+{%- endblock %}
+
+{# Displays the next and previous links both before and after content #}
+{% macro render_relations(class='footer-links', add_spacer=0) -%}
+  {% if prev or next %}
+    <div class="{{ class }}">
+      <ul class="breadcrumb pull-right">
+        {%- if prev and prev.title != '&lt;no title&gt;' %}
+        <li>
+          <a href="{{ prev.link|e }}" title="{{ _('previous chapter')}} (use the left arrow)">&larr; {{ prev.title }}</a>
+          {%- if next and next.title != '&lt;no title&gt;' %}
+          <span class="divider">/</span>
+          {% endif %}
+        </li>
+        {%- endif %}
+        {%- if next and next.title != '&lt;no title&gt;' %}
+          <li><a href="{{ next.link|e }}" title="{{ _('next chapter')}} (use the right arrow)">{{ next.title }} &rarr;</a></li>
+        {%- endif %}
+      </ul>
+    </div>
+  {% else %}
+    {% if add_spacer %}
+      <div class="rel-spacer clearer"></div>
+    {% endif %}
+  {% endif %}
+{%- endmacro %}
+
+{%- block extrahead %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{{ pathto('_static/bootstrap-responsive.min.css', 1) }}" />
+  {% if theme_touch_icon %}
+  <link rel="apple-touch-icon" href="{{ pathto('_static/' ~ theme_touch_icon, 1) }}" />
+  {% endif %}
+  {{ super() }}
+{% endblock %}
+
+{% block header %}
+  <div class="navbar navbar-fixed-top {{ theme_navbar_class }}">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href="{{ pathto(master_doc) }}">{{ theme_project_nav_name }}</a>
+        <ul class="nav">
+          {%- block nav_links %}
+            <li><a href="{{ pathto(master_doc) }}">Home</a></li>
+          {%- endblock %}
+        </ul>
+        {%- if theme_github_user and theme_github_repo %}
+        <div class="pull-right" id="github-stars">
+          <iframe src="http://ghbtns.com/github-btn.html?user={{ theme_github_user }}&repo={{ theme_github_repo }}&type=watch&count=true&size=small"
+                  allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+        </div>
+        {%- endif %}
+      </div>
+    </div>
+  </div>
+  {{ super() }}
+{% endblock %}
+
+{%- block content %}
+
+  {%- if pagename == 'index' and theme_index_template %}
+    {% include theme_index_template %}
+  {%- else %}
+    <div class="container">
+
+      {%- block top_rel_links %}
+        {{ render_relations('top-links', 1) }}
+      {%- endblock %}
+
+      {%- block document_wrapper %}
+        <div class="document clearer">
+          {%- block sidebar1 %}{{ sidebar() }}{% endblock %}
+          {%- block document %}
+            <div class="body">
+              {% block body %} {% endblock %}
+            </div>
+          {%- endblock %}
+          {%- block sidebar2 %}{# Place holder for other sidebar #}{% endblock %}
+          <div class="clearfix"></div>
+        </div>
+      {%- endblock %}
+
+      {%- block bottom_rel_links %}
+        {{ render_relations('footer-links') }}
+      {%- endblock %}
+
+      {%- block comments -%}
+        {% if theme_disqus_comments_shortname %}
+        <div class="container comment-container">
+          {% include "comments.html" %}
+        </div>
+        {% endif %}
+      {%- endblock %}
+
+    </div>
+  {%- endif %}
+{%- endblock %}
+
+{%- block footer %}
+
+  {%- block footer_wrapper %}
+  <div class="footer container">
+    &copy; Copyright {{ copyright }}. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  {%- endblock %}
+
+  {%- block ga %}
+    {%- if theme_google_analytics_account %}
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '{{ theme_google_analytics_account }}']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    {%- endif %}
+  {%- endblock %}
+
+  {% block key_events %}
+    {% if theme_bind_key_events %}
+      <script type="text/javascript">
+        $(document).keydown(function(e){
+          if (e.keyCode == 37) {
+            {% if prev %}
+            window.location = '{{ prev.link }}';
+            return false;
+            {% endif %}
+          } else if (e.keyCode == 39) {
+            {% if next %}
+            window.location = '{{ next.link }}';
+            return false;
+            {% endif %}
+          }
+        });
+      </script>
+    {% endif %}
+  {% endblock %}
+
+{%- endblock %}
+

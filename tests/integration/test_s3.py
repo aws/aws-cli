@@ -71,8 +71,9 @@ class TestS3Objects(BaseS3Test):
     def create_object(self, key_name, body='foo'):
         self.keys.append(key_name)
         operation = self.service.get_operation('PutObject')
-        operation.call(self.endpoint, bucket=self.bucket_name, key=key_name,
-                       body=body)
+        response = operation.call(self.endpoint, bucket=self.bucket_name, key=key_name,
+                                  body=body)[0]
+        self.assertEqual(response.status_code, 200)
 
     def create_multipart_upload(self, key_name):
         operation = self.service.get_operation('CreateMultipartUpload')
@@ -200,6 +201,14 @@ class TestS3Objects(BaseS3Test):
         self.assertEqual(second['Contents'][-1]['Key'], 'b')
         self.assertEqual(third['Contents'][-1]['Key'], 'c')
         self.assertEqual(fourth['Contents'][-1]['Key'], 'd')
+
+    def test_unicode_key_put_list(self):
+        # Verify we can upload a key with a unicode char and list it as well.
+        self.create_object('\u2713')
+        operation = self.service.get_operation('ListObjects')
+        parsed = operation.call(self.endpoint, bucket=self.bucket_name)[1]
+        self.assertEqual(len(parsed['Contents']), 1)
+        self.assertEqual(parsed['Contents'][0]['Key'], '\u2713')
 
 
 if __name__ == '__main__':

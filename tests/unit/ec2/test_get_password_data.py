@@ -15,8 +15,10 @@ from tests.unit import BaseAWSCommandParamsTest
 import os
 import sys
 import re
+
 from six.moves import cStringIO
 import httpretty
+import mock
 
 GET_PASSWORD_DATA_RESPONSE = """<?xml version="1.0" encoding="UTF-8"?>
 <GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-02-01/">
@@ -39,41 +41,39 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
                                body=GET_PASSWORD_DATA_RESPONSE)
 
     def test_no_priv_launch_key(self):
-        save = sys.stdout
-        sys.stdout = cStringIO()
+        captured = cStringIO()
         args = ' --instance-id i-12345678'
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
-        self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        output = sys.stdout.getvalue()
-        sys.stdout = save
-        pos = output.find('"InstanceId": "i-12345678"')
-        self.assertTrue(pos != 1, 'InstanceId not found')
-        pos = output.find('"Timestamp": "2013-07-27T18:29:23.000Z"')
-        self.assertTrue(pos != 1, 'Timestamp not found')
-        pos = output.find('"Password": "%s"' % PASSWORD_DATA)
-        self.assertTrue(pos != 1, 'Password Data not found')
+        with mock.patch('sys.stdout', captured):
+            self.assert_params_for_cmd(cmdline, result, expected_rc=0)
+        output = captured.getvalue()
+        self.assertIn('"InstanceId": "i-12345678"', output)
+        self.assertIn('"Timestamp": "2013-07-27T18:29:23.000Z"', output)
+        self.assertIn('"PasswordData": "%s"' % PASSWORD_DATA, output)
 
     def test_nonexistent_priv_launch_key(self):
         args = ' --instance-id i-12345678 --priv-launch-key foo.pem'
         cmdline = self.prefix + args
         result = {}
-        self.assert_params_for_cmd(cmdline, result, expected_rc=255)
+        captured = cStringIO()
+        with mock.patch('sys.stderr', captured):
+            self.assert_params_for_cmd(cmdline, result, expected_rc=255)
+        error_msg = captured.getvalue()
+        self.assertEqual(error_msg, ('priv-launch-key should be a path to '
+                                     'the local SSH private key file used '
+                                     'to launch the instance.\n'))
 
     def test_priv_launch_key(self):
-        save = sys.stdout
-        sys.stdout = cStringIO()
+        captured = cStringIO()
         key_path = os.path.join(os.path.dirname(__file__),
                                 'testcli.pem')
         args = ' --instance-id i-12345678 --priv-launch-key %s' % key_path
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
-        self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        output = sys.stdout.getvalue()
-        sys.stdout = save
-        pos = output.find('"InstanceId": "i-12345678"')
-        self.assertTrue(pos != 1, 'InstanceId not found')
-        pos = output.find('"Timestamp": "2013-07-27T18:29:23.000Z"')
-        self.assertTrue(pos != 1, 'Timestamp not found')
-        pos = output.find('"PasswordData": "=mG8.r$o-s"')
-        self.assertTrue(pos != 1, 'Password not found')
+        with mock.patch('sys.stdout', captured):
+            self.assert_params_for_cmd(cmdline, result, expected_rc=0)
+        output = captured.getvalue()
+        self.assertIn('"InstanceId": "i-12345678"', output)
+        self.assertIn('"Timestamp": "2013-07-27T18:29:23.000Z"', output)
+        self.assertIn('"PasswordData": "=mG8.r$o-s"', output)

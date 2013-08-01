@@ -382,7 +382,7 @@ def get_response(session, operation, http_response):
     body = http_response.content
     logger.debug("Response Body:\n%s", body)
     if not body:
-        return (http_response, body)
+        return (http_response, '')
     if content_type in ('application/x-amz-json-1.0',
                         'application/x-amz-json-1.1', 'application/json'):
         json_response = JSONResponse(session, operation)

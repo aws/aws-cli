@@ -166,16 +166,12 @@ LIST_OF_DICTS_TABLE = """\
 """
 
 
+# First record has "Tags" scalar, second record does not.
 INNER_LIST = {
     "Snapshots": [
         {
             "Description": "TestVolume1",
-            "Tags": [
-                {
-                    "Value": "TestVolume",
-                    "Key": "Name"
-                }
-            ],
+            "Tags": [{"Value": "TestVolume", "Key": "Name"}],
             "VolumeId": "vol-12345",
             "State": "completed",
             "VolumeSize": 8,
@@ -221,6 +217,45 @@ INNER_LIST_TABLE = """\
 |+------------------------------------------------------------+----------+-----------+-------------+---------------------------+------------+---------------+--------------+|
 """
 
+LIST_WITH_MISSING_KEYS = {
+    "Snapshots": [
+        {
+            "Description": "TestVolume1",
+            "Tags": "foo",
+            "VolumeId": "vol-12345",
+            "State": "completed",
+            "VolumeSize": 8,
+            "Progress": "100%",
+            "StartTime": "2012-05-23T21:46:41.000Z",
+            "SnapshotId": "snap-1234567",
+            "OwnerId": "12345"
+        },
+        {
+            "Description": "description",
+            "VolumeId": "vol-e543b98b",
+            "State": "completed",
+            "VolumeSize": 8,
+            "Progress": "100%",
+            "StartTime": "2012-05-25T00:07:20.000Z",
+            "SnapshotId": "snap-23456",
+            "OwnerId": "12345"
+        }
+    ]
+}
+
+LIST_WITH_MISSING_KEYS_TABLE = """\
+-----------------------------------------------------------------------------------------------------------------------------------------
+|                                                             OperationName                                                             |
++---------------------------------------------------------------------------------------------------------------------------------------+
+||                                                              Snapshots                                                              ||
+|+-------------+----------+-----------+---------------+---------------------------+------------+-------+----------------+--------------+|
+|| Description | OwnerId  | Progress  |  SnapshotId   |         StartTime         |   State    | Tags  |   VolumeId     | VolumeSize   ||
+|+-------------+----------+-----------+---------------+---------------------------+------------+-------+----------------+--------------+|
+||  TestVolume1|  12345   |  100%     |  snap-1234567 |  2012-05-23T21:46:41.000Z |  completed |  foo  |  vol-12345     |  8           ||
+||  description|  12345   |  100%     |  snap-23456   |  2012-05-25T00:07:20.000Z |  completed |       |  vol-e543b98b  |  8           ||
+|+-------------+----------+-----------+---------------+---------------------------+------------+-------+----------------+--------------+|
+"""
+
 
 class Object(object):
     def __init__(self, **kwargs):
@@ -262,3 +297,7 @@ class TestTableFormatter(unittest.TestCase):
     def test_empty_table(self):
         self.assert_data_renders_to(data={},
                                     table='')
+
+    def test_missing_keys(self):
+        self.assert_data_renders_to(data=LIST_WITH_MISSING_KEYS,
+                                    table=LIST_WITH_MISSING_KEYS_TABLE)

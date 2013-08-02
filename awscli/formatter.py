@@ -149,7 +149,9 @@ class TableFormatter(FullyBufferedFormatter):
                                        indent_level=indent_level)
                 self.table.add_row_header(headers)
             first = False
-            self.table.add_row([element[header] for header in headers])
+            # Use .get() to account for the fact that sometimes an element
+            # may not have all the keys from the header.
+            self.table.add_row([element.get(header, '') for header in headers])
             for remaining in more:
                 # Some of the non scalar attributes may not necessarily
                 # be in every single element of the list, so we need to

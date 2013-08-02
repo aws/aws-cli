@@ -28,6 +28,7 @@ AWS_CMD = os.path.join(
     os.path.dirname(
         os.path.dirname(
             os.path.dirname(os.path.abspath(__file__)))), 'bin', 'aws')
+print(__file__)
 LOG = logging.getLogger('awscli.tests.integration.test_cli')
 
 

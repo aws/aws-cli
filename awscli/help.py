@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import logging
 import os
 import platform
 from subprocess import Popen, PIPE
@@ -25,6 +26,9 @@ import bcdoc.clidocevents
 from bcdoc.textwriter import TextWriter
 
 from awscli.argprocess import ParamShorthand
+
+
+LOG = logging.getLogger('awscli.help')
 
 
 class HelpRenderer(object):
@@ -61,13 +65,16 @@ class PosixHelpRenderer(HelpRenderer):
 
     def render(self, contents):
         cmdline = ['rst2man.py']
+        LOG.debug("Running command: %s", cmdline)
         p2 = Popen(cmdline, stdin=PIPE, stdout=PIPE)
         p2.stdin.write(contents)
         p2.stdin.close()
         cmdline = ['groff', '-man', '-T', 'ascii']
+        LOG.debug("Running command: %s", cmdline)
         p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
         pager = self.get_pager()
         cmdline = [pager]
+        LOG.debug("Running command: %s", cmdline)
         p4 = Popen(cmdline, stdin=p3.stdout)
         p4.communicate()
         sys.exit(1)

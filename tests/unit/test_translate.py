@@ -19,7 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import sys
 from tests import unittest
 from botocore.translate import ModelFiles, translate, merge_dicts
 
@@ -215,6 +214,25 @@ SERVICES = {
       "errors": [],
       "documentation": "docs"
     },
+    "DeprecatedOperation": {
+      "input": {
+        "shape_name": "DeprecatedOperationRequest",
+        "type": "structure",
+        "members": {
+          "FooBar": {
+            "shape_name": "foobarType",
+            "type": "string",
+            "documentation": "blah blah <![CDATA[\n\nfoobar ]]>blah blah",
+          },
+          "FieBaz": {
+            "shape_name": "fiebazType",
+            "type": "string",
+            "documentation": "Don't use this, it's deprecated"
+          }
+        }
+      },
+      "documentation": "This is my <![CDATA[none of \nthis stuff should be here]]> stuff"
+    }
   }
 }
 
@@ -648,10 +666,50 @@ class TestReplacePartOfOperation(unittest.TestCase):
         # But the key into the operation dict is stripped of the
         # matched regex.
         self.assertEqual(list(sorted(new_model['operations'].keys())),
-                         ['AssumeRole', 'RealOperation'])
+                         ['AssumeRole', 'DeprecatedOperation', 'RealOperation'])
         # But the name key attribute is left unchanged.
         self.assertEqual(new_model['operations']['RealOperation']['name'],
                          'RealOperation2013_02_04')
+
+
+class TestRemovalOfDeprecatedParams(unittest.TestCase):
+    
+    def test_remove_deprecated_params(self):
+        enhancements = {
+            'transformations': {
+                'remove-deprecated-params': {'deprecated_keyword': 'deprecated'}
+                }
+            }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        operation = new_model['operations']['DeprecatedOperation']
+        # The deprecated param should be gone, the other should remain
+        self.assertIn('FooBar', operation['input']['members'])
+        self.assertNotIn('FieBaz', operation['input']['members'])
+
+        
+class TestFilteringOfDocumentation(unittest.TestCase):
+    
+    def test_remove_deprecated_params(self):
+        enhancements = {
+            "transformations": {
+                "filter-documentation": {
+                    "filter": {
+                        "regex": "<!\\[CDATA\\[.*\\]\\]>",
+                        "replacement": ""
+                        }
+                    }
+                }
+            }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        operation = new_model['operations']['DeprecatedOperation']
+        # The deprecated param should be gone, the other should remain
+        self.assertEqual(operation['documentation'], 'This is my  stuff')
+        param = operation['input']['members']['FooBar']
+        self.assertEqual(param['documentation'], 'blah blah blah blah')
 
 
 if __name__ == '__main__':

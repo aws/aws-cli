@@ -140,7 +140,7 @@ class TableFormatter(FullyBufferedFormatter):
                               indent_level=indent_level + 1)
 
     def _build_sub_table_from_list(self, current, indent_level, title):
-        headers, more = self._group_scalar_keys(current[0])
+        headers, more = self._group_scalar_keys_from_list(current)
         self.table.add_row_header(headers)
         first = True
         for element in current:
@@ -149,7 +149,9 @@ class TableFormatter(FullyBufferedFormatter):
                                        indent_level=indent_level)
                 self.table.add_row_header(headers)
             first = False
-            self.table.add_row([element[header] for header in headers])
+            # Use .get() to account for the fact that sometimes an element
+            # may not have all the keys from the header.
+            self.table.add_row([element.get(header, '') for header in headers])
             for remaining in more:
                 # Some of the non scalar attributes may not necessarily
                 # be in every single element of the list, so we need to
@@ -160,6 +162,20 @@ class TableFormatter(FullyBufferedFormatter):
 
     def _scalar_type(self, element):
         return not isinstance(element, (list, dict))
+
+    def _group_scalar_keys_from_list(self, list_of_dicts):
+        # We want to make sure we catch all the keys in the list of dicts.
+        # Most of the time each list element has the same keys, but sometimes
+        # a list element will have keys not defined in other elements.
+        headers = set()
+        more = set()
+        for item in list_of_dicts:
+            current_headers, current_more = self._group_scalar_keys(item)
+            headers.update(current_headers)
+            more.update(current_more)
+        headers = list(sorted(headers))
+        more = list(sorted(more))
+        return headers, more
 
     def _group_scalar_keys(self, current):
         # Given a dict, separate the keys into those whose values are

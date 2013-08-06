@@ -1,3 +1,15 @@
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 import os
 
 
@@ -11,7 +23,6 @@ class FileFormat(object):
 
         :param src: The path of the source
         :type src: string
-
         :param dest: The path of the dest
         :type dest: string
         :param parameters: A dictionary that will be formed when the arguments
@@ -21,15 +32,6 @@ class FileFormat(object):
             the operation is being preformed on a local directory/
             all objects under a common prefix in s3 or false when
             it is on a single file/object.
-
-        :var dir_op: True when the operation being preformed is on a
-            directory/objects under a common prefix or false when it
-            is a single file
-
-        :var use_src_name: True when the destination file/object will take on
-            the name of the source file/object.  False when it
-            will take on the name the user specified in the
-            command line.
 
         :returns: A dictionary that will be passed to a file generator.
             The dictionary contains the keys src, dest, dir_op, and
@@ -41,8 +43,15 @@ class FileFormat(object):
         src_type, src_path = self.identify_type(src)
         dest_type, dest_path = self.identify_type(dest)
         format_table = {'s3': self.s3_format, 'local': self.local_format}
+        # :var dir_op: True when the operation being preformed is on a
+        #     directory/objects under a common prefix or false when it
+        #     is a single file
         dir_op = parameters['dir_op']
-        src_path, unused_var = format_table[src_type](src_path, dir_op)
+        src_path = format_table[src_type](src_path, dir_op)[0]
+        # :var use_src_name: True when the destination file/object will take on
+        #     the name of the source file/object.  False when it
+        #     will take on the name the user specified in the
+        #     command line.
         dest_path, use_src_name = format_table[dest_type](dest_path, dir_op)
         files = {'src': {'path': src_path, 'type': src_type},
                  'dest': {'path': dest_path, 'type': dest_type},

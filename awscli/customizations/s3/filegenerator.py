@@ -1,14 +1,20 @@
-from datetime import datetime, timedelta
-import glob
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+from datetime import datetime
 import os
-import time
-import six
-import sys
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
-
-from awscli import EnvironmentVariables
 
 
 def find_bucket_key(s3_path):
@@ -38,33 +44,26 @@ def get_file_stat(path):
 class FileInfo(object):
     """
     This class contains important details about a file.  If the object's
-    parameters are fully specifed it can be sent to the S3 Handler to preform
+    parameters are fully specifed it can be sent to the S3 Handler to perform
     the appropriate operations.
 
     :param src: the source path
     :type src: string
-
     :param dest: the destination path
     :type dest: string
-
     :param compare_key: the name of the file relative to the specified
-        directory/prefix.  This variable is used when preforming synching
+        directory/prefix.  This variable is used when performing synching
         or if the destination file is adopting the source file's name.
     :type compare_key: string
-
     :param size: The size of the file in bytes.
     :type size: integer
-
     :param last_update: the local time of last modification.
     :type last_update: datetime object
-
     :param src_type: if the source file is s3 or local.
     :type src_type: string
-
     :param dest_type: if the destination is s3 or local.
     :param dest_type: string
-
-    :param operation: the operation being preformed.
+    :param operation: the operation being performed.
     :param operation: string
 
     Note that a local file will always have its absolute path, and a s3 file
@@ -91,11 +90,11 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     fileinfo objects to send to a comparator or S3 Handler.
     """
-    def __init__(self, session, operation="", parameters={}):
+    def __init__(self, session, operation="", parameters=None):
         self.session = session
         self.service = self.session.get_service('s3')
         region = self.session.get_config()['region']
-        if parameters.get('region', ''):
+        if parameters and parameters.get('region', ''):
             region = parameters['region']
         self.endpoint = self.service.get_endpoint(region)
         self.operation = operation

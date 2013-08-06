@@ -1,3 +1,15 @@
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 import hashlib
 from operator import itemgetter
 import requests
@@ -31,13 +43,11 @@ class FakeSession(object):
                                 'Size': 15,
                                 'LastModified': '2013-07-15T17:03:43.000Z',
                                 'ETag': 'ad35657fshafq4tg46'}}}
-
     :var self.service:  This is a mock serice to emulate botocore's
         session module
 
     :param md5_error: If true, some operations will raise an exception
         signaling the md5's do not match
-
     :param connection_error: If true, some operations will raise an exception
         signalling that there was a connection_error.
     """
@@ -229,7 +239,7 @@ class FakeOperation(object):
                 if end == '':
                     body = body[int(beginning):]
                 else:
-                    body = body[int(beginning):(int(end)+1)]
+                    body = body[int(beginning):(int(end) + 1)]
             mock_response = MagicMock()
             mock_response.read = MagicMock(return_value=body)
             response_data['Body'] = mock_response
@@ -344,4 +354,4 @@ class FakeHttp(object):
     etag's.  So only formatted etag's are included in this class.
     """
     def __init__(self, etag):
-        self.headers = {'ETag': '\''+etag+'\''}
+        self.headers = {'ETag': '\'' + etag + '\''}

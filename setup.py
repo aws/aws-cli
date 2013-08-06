@@ -28,7 +28,7 @@ def get_data_files():
 packages = [
     'awscli',
     'awscli.customizations',
-    'awscli.customizations.S3Plugin'
+    'awscli.customizations.s3'
 ]
 
 requires = ['botocore>=0.14.0,<0.15.0',

@@ -1,3 +1,15 @@
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 import argparse
 import os
 import six
@@ -190,7 +202,6 @@ def add_s3_examples(help_command, **kwargs):
     the help docs for each command.  Each command should have one of these
     example docs.
     """
-    print(awscli.__file__)
     doc_path = os.path.join(
         os.path.dirname(
             os.path.dirname(
@@ -202,7 +213,7 @@ def add_s3_examples(help_command, **kwargs):
         help_command.doc.style.h2('Examples')
         fp = open(doc_path)
         for line in fp.readlines():
-            help_command.doc.writeraw(line)
+            help_command.doc.write(line)
 
 
 class S3DocumentEventHandler(CLIDocumentEventHandler):
@@ -231,7 +242,7 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
                 help_command.doc.style.h2('Important Concepts')
                 fp = open(doc_path)
                 for line in fp.readlines():
-                    help_command.doc.writeraw(line)
+                    help_command.doc.write(line)
 
     def doc_synopsis_start(self, help_command, **kwargs):
         if help_command.obj._name != 's3':

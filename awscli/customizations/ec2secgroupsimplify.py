@@ -22,51 +22,8 @@ authorize operations:
 * --cidr -  The CIDR range. Cannot be used when specifying a source or
   destination security group.
 """
-import logging
 
 from awscli.customizations import CustomArgument
-
-
-logger = logging.getLogger(__name__)
-
-EVENTS = [
-        'building-argument-table.ec2.AuthorizeSecurityGroupIngress',
-        'building-argument-table.ec2.AuthorizeSecurityGroupEgress',
-        'building-argument-table.ec2.RevokeSecurityGroupIngress',
-        'building-argument-table.ec2.RevokeSecurityGroupEgress'
-        ]
-PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
-                 '<p>Valid protocol values: <code>tcp</code>, '
-                 '<code>udp</code>, <code>icmp</code></p>')
-PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
-             '  A single integer or a range (min-max). You can '
-             'specify <code>all</code> to mean all ports</p>')
-CIDR_DOCS = '<p>The CIDR IP range.</p>'
-SOURCEGROUP_DOCS = ('<p>The name of the source security group. '
-                    'Cannot be used when specifying a CIDR IP address.')
-GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
-                   'group. Cannot be used when specifying a CIDR IP '
-                   'address.</p>')
-
-def register_secgroup(event_handler):
-    for event in EVENTS:
-        event_handler.register(event, _add_params)
-
-
-def _build_ip_permissions(params, key, value):
-    logger.debug('_build_ip_permissions: %s=%s', key, value)
-    if 'ip_permissions' not in params:
-        params['ip_permissions'] = [{}]
-    if key == 'CidrIp':
-        if 'IpRanges' not in params['ip_permissions'][0]:
-            params['ip_permissions'][0]['IpRanges'] = []
-        params['ip_permissions'][0]['IpRanges'].append(value)
-    elif key in ('GroupId', 'GroupName', 'UserId'):
-        if 'UserIdGroupPairs' not in params['ip_permissions'][0]:
-            params['ip_permissions'][0]['UserIdGroupPairs'] = [{}]
-        params['ip_permissions'][0]['UserIdGroupPairs'][0][key] = value
-    else:
-        params['ip_permissions'][0][key] = value
 
 
 def _add_params(argument_table, operation, **kwargs):
@@ -83,6 +40,77 @@ def _add_params(argument_table, operation, **kwargs):
     arg = GroupOwnerArgument(operation, 'group-owner',
                              documentation=GROUPOWNER_DOCS)
     argument_table['group-owner'] = arg
+
+
+def _check_args(parsed_args, **kwargs):
+    # This function checks the parsed args.  If the user specified
+    # the --ip-permissions option with any of the scalar options we
+    # raise an error.
+    arg_dict = vars(parsed_args)
+    if arg_dict['ip-permissions']:
+        for key in ('protocol', 'group-id', 'port', 'cidr',
+                    'source-group', 'group-owner'):
+            if arg_dict[key]:
+                msg = ('Mixing the --ip-permissions option '
+                       'with the simple, scalar options is '
+                       'not recommended.')
+                raise ValueError(msg)
+
+def _add_docs(help_command, **kwargs):
+    doc = help_command.doc
+    doc.style.new_paragraph()
+    doc.style.start_note()
+    msg = ('To specify multiple rules in a single command '
+           'use the <code>--ip-permissions</code> option')
+    doc.include_doc_string(msg)
+    doc.style.end_note()
+
+
+EVENTS = [
+    ('building-argument-table.ec2.AuthorizeSecurityGroupIngress', _add_params),
+    ('building-argument-table.ec2.AuthorizeSecurityGroupEgress', _add_params),
+    ('building-argument-table.ec2.RevokeSecurityGroupIngress', _add_params),
+    ('building-argument-table.ec2.RevokeSecurityGroupEgress', _add_params),
+    ('operation-args-parsed.ec2.AuthorizeSecurityGroupIngress', _check_args),
+    ('operation-args-parsed.ec2.AuthorizeSecurityGroupEgress', _check_args),
+    ('operation-args-parsed.ec2.RevokeSecurityGroupIngress', _check_args),
+    ('operation-args-parsed.ec2.RevokeSecurityGroupEgress', _check_args),
+    ('doc-description.Operation.authorize-security-group-ingress', _add_docs),
+    ('doc-description.Operation.authorize-security-group-egress', _add_docs),
+    ('doc-description.Operation.revoke-security-group-ingress', _add_docs),
+    ('doc-description.Operation.revoke-security-groupdoc-ingress', _add_docs),
+    ]
+PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
+                 '<p>Valid protocol values: <code>tcp</code>, '
+                 '<code>udp</code>, <code>icmp</code></p>')
+PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
+             '  A single integer or a range (min-max). You can '
+             'specify <code>all</code> to mean all ports</p>')
+CIDR_DOCS = '<p>The CIDR IP range.</p>'
+SOURCEGROUP_DOCS = ('<p>The name of the source security group. '
+                    'Cannot be used when specifying a CIDR IP address.')
+GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
+                   'group. Cannot be used when specifying a CIDR IP '
+                   'address.</p>')
+
+def register_secgroup(event_handler):
+    for event, handler in EVENTS:
+        event_handler.register(event, handler)
+
+
+def _build_ip_permissions(params, key, value):
+    if 'ip_permissions' not in params:
+        params['ip_permissions'] = [{}]
+    if key == 'CidrIp':
+        if 'IpRanges' not in params['ip_permissions'][0]:
+            params['ip_permissions'][0]['IpRanges'] = []
+        params['ip_permissions'][0]['IpRanges'].append(value)
+    elif key in ('GroupId', 'GroupName', 'UserId'):
+        if 'UserIdGroupPairs' not in params['ip_permissions'][0]:
+            params['ip_permissions'][0]['UserIdGroupPairs'] = [{}]
+        params['ip_permissions'][0]['UserIdGroupPairs'][0][key] = value
+    else:
+        params['ip_permissions'][0][key] = value
 
 
 class ProtocolArgument(CustomArgument):
@@ -105,7 +133,6 @@ class ProtocolArgument(CustomArgument):
 class PortArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
-        logger.debug('PortArgument value=%s', value)
         if value:
             try:
                 if value == '-1' or value == 'all':
@@ -118,8 +145,8 @@ class PortArgument(CustomArgument):
                 _build_ip_permissions(parameters, 'FromPort', int(fromstr))
                 _build_ip_permissions(parameters, 'ToPort', int(tostr))
             except ValueError:
-                msg = ('port parameter should be of '
-                       'form from[-to] (e.g. 22 or 22-25)')
+                msg = ('port parameter should be of the '
+                       'form <from[-to]> (e.g. 22 or 22-25)')
                 raise ValueError(msg)
 
 

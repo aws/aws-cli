@@ -697,6 +697,11 @@ class ServiceOperation(object):
         if remaining:
             raise UnknownArgumentError(
                 "Unknown options: %s" % ', '.join(remaining))
+        service_name = self._service_object.endpoint_prefix
+        operation_name = self._operation_object.name
+        event = 'operation-args-parsed.%s.%s' % (service_name,
+                                                 operation_name)
+        self._emit(event, parsed_args=parsed_args)
         call_parameters = self._build_call_parameters(parsed_args,
                                                       self.arg_table)
         return self._operation_caller.invoke(

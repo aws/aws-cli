@@ -13,6 +13,8 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 
+from six.moves import cStringIO
+import mock
 
 class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
 
@@ -65,6 +67,14 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                   'IpPermissions.1.IpProtocol': 'tcp',
                   'IpPermissions.1.IpRanges.1.CidrIp': '192.168.100.0/24'}
         self.assert_params_for_cmd(args_list, result)
+
+    def test_both(self):
+        captured = cStringIO()
+        json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""
+        args = ' --group-name foobar --port 100 --ip-permissions %s' % json
+        args_list = (self.prefix + args).split()
+        with mock.patch('sys.stderr', captured):
+            self.assert_params_for_cmd(args_list, {}, expected_rc=255)
 
 
 class TestAuthorizeSecurityGroupEgress(BaseAWSCommandParamsTest):

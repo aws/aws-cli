@@ -14,7 +14,6 @@ import hashlib
 from operator import itemgetter
 import requests
 from six import StringIO
-import sys
 
 from mock import MagicMock
 

@@ -16,7 +16,7 @@ import os
 
 class Filter(object):
     """
-    This is a universal exclude/include filter
+    This is a universal exclude/include filter.
     """
     def __init__(self, parameters=None):
         """

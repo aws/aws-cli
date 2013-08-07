@@ -14,53 +14,19 @@ import datetime
 import os
 import random
 import sys
-import threading
-import time
-if sys.version_info[:2] == (2, 6):
-    import unittest2 as unittest
-else:
-    import unittest
+from tests import unittest
 
 from awscli import EnvironmentVariables
-from tests.unit.customizations.s3.fake_session import FakeSession
-from tests.unit.customizations.s3.filegenerator_test import \
-    make_loc_files, clean_loc_files, make_s3_files, s3_cleanup, create_bucket
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.filegenerator import FileInfo
-
-
-def list_contents(bucket, session):
-    """
-    This is a helper function used to return the contents of a list
-    object operation
-    """
-    session = session
-    service = session.get_service('s3')
-    region = session.get_config()['region']
-    endpoint = service.get_endpoint(region)
-    operation = service.get_operation('ListObjects')
-    http_response, r_data = operation.call(endpoint, bucket=bucket)
-    return r_data['Contents']
-
-
-def list_buckets(session):
-    """
-    This is a helper function used to return the contents of a list
-    buckets operation
-    """
-    session = session
-    service = session.get_service('s3')
-    region = session.get_config()['region']
-    endpoint = service.get_endpoint(region)
-    operation = service.get_operation('ListBuckets')
-    html_response, response_data = operation.call(endpoint)
-    contents = response_data['Buckets']
-    return contents
+from tests.unit.customizations.s3.fake_session import FakeSession
+from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
+    make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets
 
 
 class S3HandlerTestDeleteList(unittest.TestCase):
     """
-    This tests the ability to delete both files locally and in s3
+    This tests the ability to delete both files locally and in s3.
     """
     def setUp(self):
         self.session = FakeSession()
@@ -75,7 +41,7 @@ class S3HandlerTestDeleteList(unittest.TestCase):
     def test_loc_delete(self):
         """
         Test delete local file tasks.  The local files are the same
-        generated from filegenerator_test.py
+        generated from filegenerator_test.py.
         """
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
@@ -143,18 +109,18 @@ class S3HandlerTestUpload(unittest.TestCase):
         """
         Test the abiltiy to upload a file without the use of threads.
         """
-        # Confirm there are no objects in the bucket
+        # Confirm there are no objects in the bucket.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
-        # Create file info objects to perform upload
+        # Create file info objects to perform upload.
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=self.s3_files[i],
                                   operation='upload', size=0))
-        # Perform the upload
+        # Perform the upload.
         self.s3_handler.call(tasks)
-        # Confirm the files were uploaded
+        # Confirm the files were uploaded.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
 
     def test_upload_fail(self):
@@ -172,7 +138,7 @@ class S3HandlerTestUpload(unittest.TestCase):
                                   dest=fail_s3_files[i],
                                   operation='upload', size=0))
         self.s3_handler.call(tasks)
-        # Confirm only one of the files was uploaded
+        # Confirm only one of the files was uploaded.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
 
     def test_multi_upload(self):
@@ -208,18 +174,18 @@ class S3HandlerExceptionSingleTaskTest(unittest.TestCase):
         s3_cleanup(self.bucket, self.session)
 
     def test_upload(self):
-        # Confirm there are no objects in the bucket
+        # Confirm there are no objects in the bucket.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
-        # Create file info objects to perform upload
+        # Create file info objects to perform upload.
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=self.s3_files[i],
                                   operation='upload', size=0))
-        # Perform the upload
+        # Perform the upload.
         self.s3_handler.call(tasks)
-        # Confirm despite the exceptions, the files were uploaded
+        # Confirm despite the exceptions, the files were uploaded.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
 
 
@@ -275,18 +241,18 @@ class S3HandlerTestMove(unittest.TestCase):
         s3_cleanup(self.bucket2, self.session)
 
     def test_move(self):
-        # Confirm there are no objects in the bucket
+        # Confirm there are no objects in the bucket.
         self.assertEqual(len(list_contents(self.bucket2, self.session)), 0)
-        # Create file info objects to perform move
+        # Create file info objects to perform move.
         tasks = []
         for i in range(len(self.s3_files)):
             tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
                                   dest=self.s3_files2[i], dest_type='s3',
                                   operation='move', size=0))
-        # Perform the move
+        # Perform the move.
         self.s3_handler.call(tasks)
         # Confirm the files were moved.  The origial bucket had three
-        # objects. Only two were moved
+        # objects. Only two were moved.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
         self.assertEqual(len(list_contents(self.bucket2, self.session)), 2)
 
@@ -321,10 +287,10 @@ class S3HandlerTestDownload(unittest.TestCase):
         s3_cleanup(self.bucket, self.session)
 
     def test_download(self):
-        # Confirm that the files do not exist
+        # Confirm that the files do not exist.
         for filename in self.loc_files:
             self.assertEqual(os.path.exists(filename), False)
-        # Create file info objects to perform download
+        # Create file info objects to perform download.
         tasks = []
         time = datetime.datetime.now()
         for i in range(len(self.s3_files)):
@@ -332,12 +298,12 @@ class S3HandlerTestDownload(unittest.TestCase):
                                   dest=self.loc_files[i], dest_type='local',
                                   last_update=time, operation='download',
                                   size=0))
-        # Perform the download
+        # Perform the download.
         self.s3_handler.call(tasks)
-        # Confirm that the files now exist
+        # Confirm that the files now exist.
         for filename in self.loc_files:
             self.assertEqual(os.path.exists(filename), True)
-        # Ensure the contents are as expected
+        # Ensure the contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:
@@ -351,12 +317,12 @@ class S3HandlerTestDownload(unittest.TestCase):
                                   dest=self.loc_files[i], dest_type='local',
                                   last_update=time, operation='download',
                                   size=15))
-        # Perform the multipart  download
+        # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
-        # Confirm that the files now exist
+        # Confirm that the files now exist.
         for filename in self.loc_files:
             self.assertEqual(os.path.exists(filename), True)
-        # Ensure the contents are as expected
+        # Ensure the contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:
@@ -378,12 +344,12 @@ class S3HandlerTestDownload(unittest.TestCase):
                                   dest=self.loc_files[i], dest_type='local',
                                   last_update=time, operation='download',
                                   size=15))
-        # Perform the multipart  download
+        # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
-        # Confirm that the files now exist
+        # Confirm that the files now exist.
         for filename in self.loc_files:
             self.assertEqual(os.path.exists(filename), True)
-        # Ensure that contents are as expected
+        # Ensure that contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:

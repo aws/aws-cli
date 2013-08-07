@@ -17,15 +17,14 @@ import sys
 
 import awscli
 from awscli import EnvironmentVariables
-from awscli.argparser import CLIArgParser, ServiceArgParser, OperationArgParser
+from awscli.argparser import ServiceArgParser, OperationArgParser
 from awscli.help import HelpCommand, ServiceHelpCommand
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import find_bucket_key, \
     FileInfo, FileGenerator
 from awscli.customizations.s3.filters import Filter
-from awscli.customizations.s3.s3handler import S3Handler, \
-    print_operation, check_error
+from awscli.customizations.s3.s3handler import S3Handler, check_error
 from bcdoc.clidocs import CLIDocumentEventHandler
 import bcdoc.clidocevents
 
@@ -338,7 +337,6 @@ class S3(object):
         on.
         """
         self._create_operations_table()
-
         service_parser = self._create_service_parser(self.op_table)
         parsed_args, remaining = service_parser.parse_known_args(args)
         return self.op_table[parsed_args.operation](remaining, parsed_globals)
@@ -502,7 +500,7 @@ class CommandArchitecture(object):
     name of the command and the parameters passed to the command line.  After
     the instructions are generated the second step involves using the
     lsit of instructions to wire together an assortment of generators to
-    perform the command
+    perform the command.
     """
     def __init__(self, session, cmd, parameters):
         self.session = session
@@ -658,7 +656,7 @@ class CommandParameters(object):
     def check_path_type(self, paths):
         """
         This initial check ensures that the path types for the specified
-        command is correct
+        command is correct.
         """
         template_type = {'s3s3': ['copy', 'sync', 'mv'],
                          's3local': ['get', 'sync'],

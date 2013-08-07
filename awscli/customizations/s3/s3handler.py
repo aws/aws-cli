@@ -29,6 +29,10 @@ from awscli.customizations.s3.filegenerator import find_bucket_key
 from botocore.compat import quote
 
 LOGGER = logging.getLogger(__name__)
+MULTI_THRESHOLD = 8*(1024**2)
+CHUNKSIZE = 7*(1024**2)
+NUM_THREADS = 3
+NUM_MULTI_THREADS = 3
 
 
 class MD5Error(Exception):
@@ -41,18 +45,18 @@ class MD5Error(Exception):
 class NoBlockQueue(Queue.Queue):
     """
     This queue ensures that joining does not block interrupt signals.
-    It also contains a threading event ``done`` that breaks the
+    It also contains a threading event ``interrupt`` that breaks the
     while loop if signaled
     """
-    def __init__(self, done=None):
+    def __init__(self, interrupt=None):
         Queue.Queue.__init__(self)
-        self.done = done
+        self.interrupt = interrupt
 
     def join(self):
         self.all_tasks_done.acquire()
         try:
             while self.unfinished_tasks:
-                if self.done and self.done.isSet():
+                if self.interrupt and self.interrupt.isSet():
                     break
                 self.all_tasks_done.wait(1)
         finally:
@@ -148,12 +152,6 @@ def operate(service, cmd, kwargs):
     return response_data, http_response
 
 
-MULTI_THRESHOLD = 8*(1024**2)
-CHUNKSIZE = 7*(1024**2)
-NUM_THREADS = 3
-
-
-
 class S3Handler(object):
     """
     This class holds all of the file info objects yielded to it.
@@ -191,7 +189,8 @@ class S3Handler(object):
                 thread = S3HandlerThread(self.session, self.queue, self.lock,
                                          self.done, self.params,
                                          self.multi_threshold, self.chunksize,
-                                         self.printQueue, self.interrupt)
+                                         self.printQueue, self.interrupt,
+                                         NUM_MULTI_THREADS)
                 thread.setDaemon(True)
                 self.thread_list.append(thread)
                 thread.start()
@@ -234,7 +233,8 @@ class S3HandlerThread(threading.Thread):
     taken from the s3 handler's queue.
     """
     def __init__(self, session, queue, lock, done, parameters,
-                 multi_threshold, chunksize, printQueue, interrupt):
+                 multi_threshold, chunksize, printQueue, interrupt,
+                 num_multi_threads):
         threading.Thread.__init__(self)
         self.session = session
         self.service = self.session.get_service('s3')
@@ -249,6 +249,7 @@ class S3HandlerThread(threading.Thread):
         self.multi_chunksize = chunksize
         self.printQueue = printQueue
         self.interrupt = interrupt
+        self.num_multi_threads = num_multi_threads
 
     def run(self):
         while True:
@@ -486,7 +487,7 @@ class S3HandlerThread(threading.Thread):
         size_uploads = self.multi_chunksize
         num_uploads = int(math.ceil(filename.size/float(size_uploads)))
         thread_list = []
-        for i in range(NUM_THREADS):
+        for i in range(self.num_multi_threads):
             thread = UploadPartThread(self.session, task_queue,
                                       complete_upload_queue, self.multi_done,
                                       self.parameters['region'],
@@ -538,7 +539,7 @@ class S3HandlerThread(threading.Thread):
         num_uploads = int(filename.size/size_uploads)
         with open(filename.dest, 'wb') as f:
             thread_list = []
-            for i in range(NUM_THREADS - 1):
+            for i in range(self.num_multi_threads - 1):
                 thread = DownloadPartThread(self.session, task_queue,
                                             write_queue, self.multi_done,
                                             self.parameters['region'],

@@ -12,61 +12,25 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
+
+# The following tests are performed to ensure that the commands work.
+# It does not check every possible parameter that can be thrown as
+# those are checked by tests in other classes
+
 import os
 import random
-import six
-import sys
-from subprocess import Popen, PIPE
-if sys.version_info[:2] == (2, 6):
-    import unittest2 as unittest
-else:
-    import unittest
+from tests import unittest
 
-
-import awscli
-import botocore.session
-
-AWS_CMD = os.path.join(
-    os.path.dirname(
-        os.path.dirname(os.path.abspath(awscli.__file__))), 'bin', 'aws')
-
-LOG = logging.getLogger('awscli.tests.integration.test_cli')
-
-
-class Result(object):
-    def __init__(self, rc, stdout, stderr):
-        self.rc = rc
-        self.stdout = stdout
-        self.stderr = stderr
-
-
-def aws(command):
-    full_command = 'python %s %s' % (AWS_CMD, command)
-    LOG.debug("Running command: %s", full_command)
-    env = os.environ.copy()
-    env['AWS_DEFAULT_REGION'] = "us-west-2"
-    process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
-                    env=env)
-    stdout, stderr = process.communicate()
-    return Result(process.returncode,
-                  stdout.decode('utf-8'),
-                  stderr.decode('utf-8'))
-
-"""
-The following tests are preformed to ensure that the commands work.
-It does not check every possible parameter that can be thrown as
-those are checked by tests in other classes
-"""
+from tests.integration import Result, aws
 
 
 class TestLs(unittest.TestCase):
     """
-    This tests using the ls command
+    This tests using the ``ls`` command.
     """
     def test_ls_bucket(self):
         """
-        test the ability to list buckets
+        Test the ability to list buckets.
         """
         p = aws('s3 ls s3://')
         self.assertEqual(p.rc, 0)
@@ -75,7 +39,7 @@ class TestLs(unittest.TestCase):
 
     def test_fail_format(self):
         """
-        test to ensure parameter checking works
+        Test to ensure parameter checking works.
         """
         cmds = ['s3 ls', 's3 ls test', 's3 ls s3:// --dryrun']
         for cmd in cmds:
@@ -85,7 +49,7 @@ class TestLs(unittest.TestCase):
 
 class TestMbRb(unittest.TestCase):
     """
-    Tests primarily using rb and mb command
+    Tests primarily using ``rb`` and ``mb`` command.
     """
     def setUp(self):
         rand1 = random.randrange(5000)
@@ -94,7 +58,7 @@ class TestMbRb(unittest.TestCase):
 
     def test_mb_rb(self):
         """
-        Tests the ability to make and remove buckets
+        Tests the ability to make and remove buckets.
         """
         p = aws('s3 mb s3://%s' % self.bucket_name)
         self.assertEqual(p.rc, 0)
@@ -131,7 +95,7 @@ class TestMbRb(unittest.TestCase):
 
 class TestDryrun(unittest.TestCase):
     """
-    This ensures that dryrun works
+    This ensures that dryrun works.
     """
     def setUp(self):
         self.filename1 = 'testTest1.txt'
@@ -150,17 +114,17 @@ class TestDryrun(unittest.TestCase):
             os.remove(self.filename1)
 
     def test_dryrun(self):
-        #make a bucket
+        # Make a bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name)
 
-        #put file into bucket
+        # Put file into bucket.
         p = aws('s3 put %s s3://%s --dryrun' % (self.filename1,
                                                 self.bucket_name))
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
 
-        #make sure the file is not in the bucket
+        # Make sure the file is not in the bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name)
         self.assertNotIn(self.filename1, p.stdout)
 
@@ -193,45 +157,45 @@ class TestPutMvGet(unittest.TestCase):
     def test_put_mv_get(self):
         """
         This tests the ability to put a single file in s3
-        move it to a different bucket
+        move it to a different bucket.
         and download the file locally
         """
-        #make a bucket
+        # Make a bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name)
 
-        #put file into bucket
+        # Put file into bucket.
         p = aws('s3 put %s s3://%s' % (self.filename1, self.bucket_name))
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
 
-        #make sure object is in bucket
+        # Make sure object is in bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name)
         self.assertIn(self.filename1, p.stdout)
 
-        #make another bucket
+        # Make another bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name2)
 
-        #move the file from the original bucket to the new bucket
-        p = aws('s3 mv s3://%s s3://%s' % (self.bucket_name+self.filename1,
+        # Move the file from the original bucket to the new bucket.
+        p = aws('s3 mv s3://%s s3://%s' % (self.bucket_name + self.filename1,
                                            self.bucket_name2))
 
-        #ensure it is no longer in the original bucket
+        # Ensure it is no longer in the original bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name)
         self.assertNotIn(self.filename1, p.stdout)
 
-        #ensure it is in the new bucket
+        # Ensure it is in the new bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name2)
         self.assertIn(self.filename1, p.stdout)
 
-        #make a new name for the file and download it
+        # Make a new name for the file and download it.
         p = aws('s3 get s3://%s %s' % (self.bucket_name2 + self.filename1,
                                        self.filename2))
 
         with open(self.filename2, 'rb') as file2:
             data = file2.read()
 
-        #ensure the contents are the same
+        # Ensure the contents are the same.
         self.assertEqual(data, b'This is a test.')
 
 
@@ -239,8 +203,10 @@ class TestSync(unittest.TestCase):
     def setUp(self):
         filename1 = 'testTest1.txt'
         filename2 = 'testTest2.txt'
-        self.path1 = os.path.abspath('.')+os.sep+'some_dir'+os.sep+filename1
-        self.path2 = os.path.abspath('.')+os.sep+'some_dir'+os.sep+filename2
+        self.path1 = os.path.abspath('.') + os.sep + 'some_dir' \
+            + os.sep + filename1
+        self.path2 = os.path.abspath('.') + os.sep + 'some_dir' \
+            + os.sep + filename2
         if not os.path.exists('some_dir'):
             os.mkdir('some_dir')
         with open(self.path1, 'wb') as file1:
@@ -260,40 +226,40 @@ class TestSync(unittest.TestCase):
 
     def test_sync(self):
         """
-        Test the ability to preform a sync.
+        Test the ability to preform a ``sync``.
         """
         filename1 = 'testTest1.txt'
         filename2 = 'testTest2.txt'
 
-        #make a bucket
+        # Make a bucket.
         rand1 = random.randrange(5000)
         rand2 = random.randrange(5000)
         bucket_name = str(rand1) + 'mybucket' + str(rand2) + '/'
         p = aws('s3 mb s3://%s' % bucket_name)
 
-        #sync the directory and the bucket
+        # Sync the directory and the bucket.
         p = aws('s3 sync %s s3://%s' % ('some_dir', bucket_name))
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
 
-        #ensure both files are in the bucket
+        # Ensure both files are in the bucket.
         p = aws('s3 ls s3://%s' % bucket_name)
         self.assertIn(filename1, p.stdout)
         self.assertIn(filename2, p.stdout)
 
-        #test force remove bucket which is a recursive delete
+        # Test force remove bucket which is a recursive delete.
         p = aws('s3 rb --force s3://%s' % bucket_name)
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
 
-        #make sure the recursive delete was successful
+        # Make sure the recursive delete was successful.
         p = aws('s3 ls s3://%s' % bucket_name)
         self.assertNotIn(filename1, p.stdout)
         self.assertNotIn(filename2, p.stdout)
 
-        #ensure the bucket was deleted as well
+        # Ensure the bucket was deleted as well.
         p = aws('s3 ls s3://')
         self.assertNotIn(bucket_name, p.stdout)
 
@@ -302,7 +268,7 @@ class UnicodeTest(unittest.TestCase):
     """
     The purpose of these tests are to ensure that the commands can handle
     unicode characters in both keyname and from those generated for both
-    uploading and downloading files
+    uploading and downloading files.
     """
     def setUp(self):
         self.filename1 = 'êxample.txt'
@@ -342,7 +308,7 @@ class UnicodeTest(unittest.TestCase):
         with open(self.path2, 'rb') as file2:
             data = file2.read()
 
-        #ensure the contents are the same
+        # Ensure the contents are the same.
         self.assertEqual(data, b'This is a test.')
 
     def test_recur_put_get(self):
@@ -355,7 +321,7 @@ class UnicodeTest(unittest.TestCase):
         with open(self.path1, 'rb') as file2:
             data = file2.read()
 
-        #ensure the contents are the same
+        # Ensure the contents are the same.
         self.assertEqual(data, b'This is a test.')
 
 

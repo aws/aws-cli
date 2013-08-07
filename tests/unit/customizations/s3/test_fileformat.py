@@ -25,12 +25,12 @@ class FileFormatTest(unittest.TestCase):
         Format a paths for directory operation.  There are slashes at the
         end of the paths.
         """
-        src = '.'+os.sep
+        src = '.' + os.sep
         dest = 's3://kyknapp/golfVid/'
         parameters = {'dir_op': True}
         files = self.file_format.format(src, dest, parameters)
 
-        ref_files = {'src': {'path': os.path.abspath(src)+os.sep,
+        ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
                      'dir_op': True, 'use_src_name': True}
@@ -46,7 +46,7 @@ class FileFormatTest(unittest.TestCase):
         parameters = {'dir_op': True}
         files = self.file_format.format(src, dest, parameters)
 
-        ref_files = {'src': {'path': os.path.abspath(src)+os.sep,
+        ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
                      'dir_op': True, 'use_src_name': True}
@@ -75,13 +75,13 @@ class FileFormatTest(unittest.TestCase):
         destination directory given.
         """
         src = 's3://kyknapp/golfVid/hello.txt'
-        dest = 'someFile'+os.sep
+        dest = 'someFile' + os.sep
         parameters = {'dir_op': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
-                     'dest': {'path': os.path.abspath(dest)+os.sep,
+                     'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
                      'dir_op': False, 'use_src_name': True}
         self.assertEqual(files, ref_files)

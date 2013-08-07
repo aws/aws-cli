@@ -23,7 +23,7 @@ class ComparatorTest(unittest.TestCase):
 
     def test_compare_key_equal(self):
         """
-        Confirms checking compare key works
+        Confirms checking compare key works.
         """
         src_files = []
         dest_files = []
@@ -47,7 +47,7 @@ class ComparatorTest(unittest.TestCase):
 
     def test_compare_size(self):
         """
-        Confirms compare size works
+        Confirms compare size works.
         """
         src_files = []
         dest_files = []
@@ -73,7 +73,7 @@ class ComparatorTest(unittest.TestCase):
 
     def test_compare_lastmod_upload(self):
         """
-        Confirms compare time works for uploads
+        Confirms compare time works for uploads.
         """
         src_files = []
         dest_files = []
@@ -127,7 +127,7 @@ class ComparatorTest(unittest.TestCase):
 
     def test_compare_lastmod_download(self):
         """
-        Confirms compare time works for downloads
+        Confirms compare time works for downloads.
         """
         src_files = []
         dest_files = []
@@ -152,7 +152,7 @@ class ComparatorTest(unittest.TestCase):
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
 
-        # If the source is newer than the destination do not download
+        # If the source is newer than the destination do not download.
         src_file = FileInfo(src='', dest='',
                             compare_key='comparator_test.py', size=10,
                             last_update=future_time, src_type='s3',

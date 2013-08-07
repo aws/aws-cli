@@ -11,61 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
-import platform
 import time
 import os
 import sys
-import logging
-import json
 import tempfile
 import random
 import shutil
-from subprocess import Popen, PIPE
 
 import botocore.session
-
-AWS_CMD = os.path.join(
-    os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))), 'bin', 'aws')
-print(__file__)
-LOG = logging.getLogger('awscli.tests.integration.test_cli')
-
-
-class Result(object):
-    def __init__(self, rc, stdout, stderr):
-        self.rc = rc
-        self.stdout = stdout
-        self.stderr = stderr
-
-    @property
-    def json(self):
-        return json.loads(self.stdout)
-
-
-def aws(command):
-    if platform.system() == 'Windows':
-        command = _escape_quotes(command)
-    full_command = 'python %s %s' % (AWS_CMD, command)
-    LOG.debug("Running command: %s", full_command)
-    env = os.environ.copy()
-    env['AWS_DEFAULT_REGION'] = "us-east-1"
-    process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
-                    env=env)
-    stdout, stderr = process.communicate()
-    return Result(process.returncode,
-                  stdout.decode('utf-8'),
-                  stderr.decode('utf-8'))
-
-
-def _escape_quotes(command):
-    # For windows we have different rules for escaping.
-    # First, double quotes must be escaped.
-    command = command.replace('"', '\\"')
-    # Second, single quotes do nothing, to quote a value we need
-    # to use double quotes.
-    command = command.replace("'", '"')
-    return command
+from tests.integration import Result, aws
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):

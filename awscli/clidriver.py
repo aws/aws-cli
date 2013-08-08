@@ -772,7 +772,9 @@ class CLIOperationCaller(object):
         self._session = session
 
     def invoke(self, operation_object, parameters, parsed_globals):
-        endpoint = operation_object.service.get_endpoint(parsed_globals.region)
+        endpoint = operation_object.service.get_endpoint(
+            region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url)
         endpoint.verify = not parsed_globals.no_verify_ssl
         if operation_object.can_paginate and parsed_globals.paginate:
             pages = operation_object.paginate(endpoint, **parameters)

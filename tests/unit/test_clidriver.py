@@ -280,6 +280,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         host = self.last_request_headers()['Host']
         self.assertEqual(host, 'ec2.us-west-2.amazonaws.com')
 
+    def test_aws_with_endpoint_url(self):
+        driver = create_clidriver()
+        driver.main('ec2 describe-instances --endpoint-url https://foobar.com/'.split())
+        host = self.last_request_headers()['Host']
+        self.assertEqual(host, 'foobar.com')
+
     def inject_new_param(self, argument_table, **kwargs):
         argument = BuiltInArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)

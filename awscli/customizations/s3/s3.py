@@ -58,32 +58,32 @@ the amount of arguments it takes, and the optional parameters that can appear
 on the same line as the command.  It also contains descriptions and usage
 keys for help command and doc generation.
 """
-cmd_dict = {'put': {'nargs': 2, 'params': ['dryrun', 'quiet', 'recursive',
-                                           'include', 'exclude', 'acl']},
-            'get': {'nargs': 2, 'params': ['dryrun', 'quiet', 'recursive',
-                                           'include', 'exclude']},
-            'copy': {'nargs': 2, 'params': ['dryrun', 'quiet', 'recursive',
-                                            'include', 'exclude', 'acl']},
-            'mv': {'nargs': 2, 'params': ['dryrun', 'quiet', 'recursive',
-                                          'include', 'exclude', 'acl']},
-            'rm': {'nargs': 1, 'params': ['dryrun', 'quiet', 'recursive',
-                                          'include', 'exclude']},
-            'sync': {'nargs': 2, 'params': ['dryrun', 'delete', 'exclude',
-                                            'include', 'quiet', 'acl']},
-            'ls': {'nargs': 1, 'params': []},
-            'mb': {'nargs': 1, 'params': []},
-            'rb': {'nargs': 1, 'params': ['force']}
+cmd_dict = {'cp': {'options': {'nargs': 2},
+                   'params': ['dryrun', 'quiet', 'recursive',
+                              'include', 'exclude', 'acl']},
+            'mv': {'options': {'nargs': 2},
+                   'params': ['dryrun', 'quiet', 'recursive',
+                              'include', 'exclude', 'acl']},
+            'rm': {'options': {'nargs': 1},
+                   'params': ['dryrun', 'quiet', 'recursive',
+                              'include', 'exclude']},
+            'sync': {'options': {'nargs': 2},
+                     'params': ['dryrun', 'delete', 'exclude',
+                                'include', 'quiet', 'acl']},
+            'ls': {'options': {'nargs': '?', 'default': 's3://'},
+                   'params': [], 'default': 's3://'},
+            'mb': {'options': {'nargs': 1}, 'params': []},
+            'rb': {'options': {'nargs': 1}, 'params': ['force']}
             }
 
-cmd_dict['put']['description'] = "Uploads a file to S3"
-cmd_dict['put']['usage'] = "<LocalPath> <S3Path>"
-cmd_dict['get']['description'] = "Downloads an S3 object locally"
-cmd_dict['get']['usage'] = "<S3Path> <LocalPath>"
-cmd_dict['copy']['description'] = "Copies an S3 object to another location" \
-                                  "in S3"
-cmd_dict['copy']['usage'] = "<S3Path> <S3Path>"
-cmd_dict['mv']['description'] = "Moves an S3 object to another location in S3"
-cmd_dict['mv']['usage'] = "<S3Path> <S3Path>"
+cmd_dict['cp']['description'] = "Copies a local file or S3 object to another \
+                                location locally or in S3"
+cmd_dict['cp']['usage'] = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
+                          "or <S3Path> <S3Path>"
+cmd_dict['mv']['description'] = "Moves a local file or S3 object to" \
+                                "another location locally or in S3"
+cmd_dict['mv']['usage'] = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
+                          "or <S3Path> <S3Path>"
 cmd_dict['rm']['description'] = "Deletes an S3 object"
 cmd_dict['rm']['usage'] = "<S3Path>"
 cmd_dict['sync']['description'] = "Syncs directories and S3 prefixes"
@@ -91,7 +91,7 @@ cmd_dict['sync']['usage'] = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
                             "or <S3Path> <S3Path>"
 cmd_dict['ls']['description'] = "List S3 objects and common prefixes " \
                                 "under a prefix or all S3 buckets"
-cmd_dict['ls']['usage'] = "<S3Path>"
+cmd_dict['ls']['usage'] = "<S3Path> or NONE"
 cmd_dict['mb']['description'] = "Creates an S3 bucket"
 cmd_dict['mb']['usage'] = "<S3Path>"
 cmd_dict['rb']['description'] = "Deletes an S3 bucket"
@@ -178,7 +178,8 @@ def add_commands(operation_table, session, **kwargs):
     This create the S3Command objects for each command
     """
     for cmd in cmd_dict.keys():
-        operation_table[cmd] = S3Command(cmd, session, cmd_dict[cmd]['nargs'],
+        operation_table[cmd] = S3Command(cmd, session,
+                                         cmd_dict[cmd]['options'],
                                          cmd_dict[cmd]['description'],
                                          cmd_dict[cmd]['usage'])
 
@@ -379,14 +380,14 @@ class S3Command(object):
     This is the object corresponding to a S3 command.
     """
 
-    def __init__(self, name, session, nargs, documentation="", usage=""):
+    def __init__(self, name, session, options, documentation="", usage=""):
         """
         It stores the name of the command, its current session, and how many
         arguments the command requires.
         """
         self._name = name
         self._session = session
-        self.nargs = nargs
+        self.options = options
         self.documentation = documentation
         self.usage = usage
 
@@ -416,6 +417,8 @@ class S3Command(object):
                                         arg_table=param_table)
             help_object(remaining, parsed_globals)
         else:
+            if not isinstance(parsed_args.paths, list):
+                parsed_args.paths = [parsed_args.paths]
             for i in range(len(parsed_args.paths)):
                 path = parsed_args.paths[i]
                 if isinstance(path, six.binary_type):
@@ -474,7 +477,7 @@ class S3Command(object):
         the number of positional argument that must follow the command's name.
         """
         parser = OperationArgParser(parameter_table, self._name)
-        parser.add_argument("paths", nargs=self.nargs)
+        parser.add_argument("paths", **self.options)
         return parser
 
 
@@ -548,26 +551,29 @@ class CommandArchitecture(object):
         """
         src = self.parameters['src']
         dest = self.parameters['dest']
+        paths_type = self.parameters['paths_type']
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
 
-        cmd_translation = {'put': 'upload', 'get': 'download', 'copy': 'copy',
-                           'sync': '', 'rm': 'delete', 'mv': 'move',
-                           'ls': 'list_objects', 'mb': 'make_bucket',
-                           'rb': 'remove_bucket'}
-        file_generator = FileGenerator(self.session, cmd_translation[self.cmd],
+        cmd_translation = {}
+        cmd_translation['locals3'] = {'cp': 'upload', 'sync': 'upload',
+                                      'mv': 'move'}
+        cmd_translation['s3s3'] = {'cp': 'copy', 'sync': 'copy', 'mv': 'move'}
+        cmd_translation['s3local'] = {'cp': 'download', 'sync': 'download',
+                                      'mv': 'move'}
+        cmd_translation['s3'] = {'rm': 'delete', 'ls': 'list_objects',
+                                 'mb': 'make_bucket', 'rb': 'remove_bucket'}
+        operation = cmd_translation[paths_type][self.cmd]
+
+        file_generator = FileGenerator(self.session, operation,
                                        self.parameters)
-        rev_generator = FileGenerator(self.session, cmd_translation[self.cmd],
+        rev_generator = FileGenerator(self.session, '',
                                       self.parameters)
         fileinfo = [FileInfo(src=files['src']['path'],
-                             size=0, operation=cmd_translation[self.cmd])]
+                             size=0, operation=operation)]
         s3handler = S3Handler(self.session, self.parameters)
-        command_dict = {}
-        command_dict['put'] = {'setup': [files],
-                               'file_generator': [file_generator],
-                               'filters': [Filter(self.parameters)],
-                               's3_handler': [s3handler]}
 
+        command_dict = {}
         command_dict['sync'] = {'setup': [files, rev_files],
                                 'file_generator': [file_generator,
                                                    rev_generator],
@@ -576,15 +582,10 @@ class CommandArchitecture(object):
                                 'comparator': [Comparator(self.parameters)],
                                 's3_handler': [s3handler]}
 
-        command_dict['get'] = {'setup': [files],
-                               'file_generator': [file_generator],
-                               'filters': [Filter(self.parameters)],
-                               's3_handler': [s3handler]}
-
-        command_dict['copy'] = {'setup': [files],
-                                'file_generator': [file_generator],
-                                'filters': [Filter(self.parameters)],
-                                's3_handler': [s3handler]}
+        command_dict['cp'] = {'setup': [files],
+                              'file_generator': [file_generator],
+                              'filters': [Filter(self.parameters)],
+                              's3_handler': [s3handler]}
 
         command_dict['rm'] = {'setup': [files],
                               'file_generator': [file_generator],
@@ -658,9 +659,9 @@ class CommandParameters(object):
         This initial check ensures that the path types for the specified
         command is correct.
         """
-        template_type = {'s3s3': ['copy', 'sync', 'mv'],
-                         's3local': ['get', 'sync'],
-                         'locals3': ['put', 'sync'],
+        template_type = {'s3s3': ['cp', 'sync', 'mv'],
+                         's3local': ['cp', 'sync', 'mv'],
+                         'locals3': ['cp', 'sync', 'mv'],
                          's3': ['ls', 'mb', 'rb', 'rm'],
                          'local': [], 'locallocal': []}
         paths_type = ''
@@ -672,7 +673,7 @@ class CommandParameters(object):
             else:
                 paths_type = paths_type + 'local'
         if self.cmd in template_type[paths_type]:
-            pass
+            self.parameters['paths_type'] = paths_type
         else:
             raise TypeError("%s\nError: Invalid argument type" % usage)
 
@@ -746,7 +747,7 @@ class CommandParameters(object):
                 bucket, key = find_bucket_key(self.parameters['src'][5:])
                 path = 's3://'+bucket
                 try:
-                    del_objects = S3Command('rm', self.session, 1)
+                    del_objects = S3Command('rm', self.session, {'nargs': 1})
                     del_objects([path, '--recursive'], parsed_globals)
                 except:
                     pass

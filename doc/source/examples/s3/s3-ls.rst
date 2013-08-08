@@ -1,9 +1,10 @@
 1) The following ``ls`` command lists all of the bucket owned by the user.
 In this example, the user owns the buckets ``mybucket`` and ``mybucket2``.
-The ``CreationTime`` is arbitrary.
+The ``CreationTime`` is arbitrary.  Note if ``s3://`` is used for the path
+argument ``<S3Path>``, it will list all of the buckets as well.
 ::
 
-    aws s3 ls s3://
+    aws s3 ls
 
 *Output:*
 ::

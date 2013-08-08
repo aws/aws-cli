@@ -32,7 +32,7 @@ class TestLs(unittest.TestCase):
         """
         Test the ability to list buckets.
         """
-        p = aws('s3 ls s3://')
+        p = aws('s3 ls')
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
@@ -41,7 +41,7 @@ class TestLs(unittest.TestCase):
         """
         Test to ensure parameter checking works.
         """
-        cmds = ['s3 ls', 's3 ls test', 's3 ls s3:// --dryrun']
+        cmds = ['s3 cp', 's3 ls test', 's3 ls s3:// --dryrun']
         for cmd in cmds:
             p = aws(cmd)
             self.assertNotEqual(p.rc, 0)
@@ -65,7 +65,7 @@ class TestMbRb(unittest.TestCase):
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
 
-        p = aws('s3 ls s3://')
+        p = aws('s3 ls')
         self.assertIn(self.bucket_name, p.stdout)
 
         p = aws('s3 rb s3://%s' % self.bucket_name)
@@ -73,7 +73,7 @@ class TestMbRb(unittest.TestCase):
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
 
-        p = aws('s3 ls s3://')
+        p = aws('s3 ls')
         self.assertNotIn(self.bucket_name, p.stdout)
 
     def test_fail_mb_rb(self):
@@ -117,9 +117,9 @@ class TestDryrun(unittest.TestCase):
         # Make a bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name)
 
-        # Put file into bucket.
-        p = aws('s3 put %s s3://%s --dryrun' % (self.filename1,
-                                                self.bucket_name))
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s --dryrun' % (self.filename1,
+                                               self.bucket_name))
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
@@ -129,7 +129,7 @@ class TestDryrun(unittest.TestCase):
         self.assertNotIn(self.filename1, p.stdout)
 
 
-class TestPutMvGet(unittest.TestCase):
+class TestCpMv(unittest.TestCase):
     def setUp(self):
         self.filename1 = 'testTest1.txt'
         self.filename2 = 'testTest2.txt'
@@ -154,7 +154,7 @@ class TestPutMvGet(unittest.TestCase):
         if os.path.exists(self.filename2):
             os.remove(self.filename2)
 
-    def test_put_mv_get(self):
+    def test_cp_mv_cp(self):
         """
         This tests the ability to put a single file in s3
         move it to a different bucket.
@@ -163,8 +163,8 @@ class TestPutMvGet(unittest.TestCase):
         # Make a bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name)
 
-        # Put file into bucket.
-        p = aws('s3 put %s s3://%s' % (self.filename1, self.bucket_name))
+        # copy file into bucket.
+        p = aws('s3 cp %s s3://%s' % (self.filename1, self.bucket_name))
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
@@ -188,9 +188,9 @@ class TestPutMvGet(unittest.TestCase):
         p = aws('s3 ls s3://%s' % self.bucket_name2)
         self.assertIn(self.filename1, p.stdout)
 
-        # Make a new name for the file and download it.
-        p = aws('s3 get s3://%s %s' % (self.bucket_name2 + self.filename1,
-                                       self.filename2))
+        # Make a new name for the file and copy it locally.
+        p = aws('s3 cp s3://%s %s' % (self.bucket_name2 + self.filename1,
+                                      self.filename2))
 
         with open(self.filename2, 'rb') as file2:
             data = file2.read()
@@ -260,7 +260,7 @@ class TestSync(unittest.TestCase):
         self.assertNotIn(filename2, p.stdout)
 
         # Ensure the bucket was deleted as well.
-        p = aws('s3 ls s3://')
+        p = aws('s3 ls')
         self.assertNotIn(bucket_name, p.stdout)
 
 
@@ -297,13 +297,13 @@ class UnicodeTest(unittest.TestCase):
         if os.path.exists('some_dir'):
             os.rmdir('some_dir')
 
-    def test_put_get(self):
+    def test_cp(self):
         file_path1 = 'some_dir' + os.sep + self.filename1
         file_path2 = 'some_dir' + os.sep + self.filename2
-        p = aws('s3 put %s s3://%s --quiet' % (file_path1, self.bucket_name))
+        p = aws('s3 cp %s s3://%s --quiet' % (file_path1, self.bucket_name))
         self.assertEqual(p.rc, 0)
         s3_path = self.bucket_name + self.filename1
-        p = aws('s3 get s3://%s %s --quiet' % (s3_path, file_path2))
+        p = aws('s3 cp s3://%s %s --quiet' % (s3_path, file_path2))
         self.assertEqual(p.rc, 0)
         with open(self.path2, 'rb') as file2:
             data = file2.read()
@@ -311,12 +311,12 @@ class UnicodeTest(unittest.TestCase):
         # Ensure the contents are the same.
         self.assertEqual(data, b'This is a test.')
 
-    def test_recur_put_get(self):
-        p = aws('s3 put %s s3://%s --quiet --recursive' % ('some_dir',
-                                                           self.bucket_name))
+    def test_recur_cp(self):
+        p = aws('s3 cp %s s3://%s --quiet --recursive' % ('some_dir',
+                                                          self.bucket_name))
         self.assertEqual(p.rc, 0)
-        p = aws('s3 get s3://%s %s --quiet --recursive' % (self.bucket_name,
-                                                           'some_dir'))
+        p = aws('s3 cp s3://%s %s --quiet --recursive' % (self.bucket_name,
+                                                          'some_dir'))
         self.assertEqual(p.rc, 0)
         with open(self.path1, 'rb') as file2:
             data = file2.read()

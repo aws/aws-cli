@@ -74,15 +74,10 @@ class Comparator(object):
         # :var dest_take: Take the next dest file from the generated files if
         #     true
         dest_take = True
-
-        operation_table = {'locals3': 'upload', 's3local': 'download',
-                           's3s3': 'copy'}
         while True:
             try:
                 if (not src_done) and src_take:
                     src_file = advance_iterator(src_files)
-                    src_file.operation = operation_table[src_file.src_type +
-                                                         src_file.dest_type]
             except StopIteration:
                 src_file = None
                 src_done = True

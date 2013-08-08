@@ -34,11 +34,9 @@ Some commands perform operations only on single files and S3 objects.  The
 following commands are single file/object operations if no ``--recursive``
 flag is provided.
 
-    * ``get``
+    * ``cp``
     * ``mv``
-    * ``rm``
-    * ``put``
-    * ``copy``  
+    * ``rm``  
 
 For this type of operation, the first path argument, the source, must exist
 and be a local file or S3 object.  The second path argument, the destination,
@@ -53,8 +51,7 @@ path is a ``S3Path``, the forward slash must always be used.  If a slash
 is at the end of the destination, the destination file or object will
 adopt the name of the source file or object.  Otherwise, if there is no
 slash at the end, the file or object will be saved under the name provided.
-See examples in ``get``, ``mv``, ``put``, ``copy`` to illustrate this
-description.
+See examples in ``cp`` and ``mv`` to illustrate this description.
 
 Directory and S3 Prefix Operations
 ++++++++++++++++++++++++++++++++++

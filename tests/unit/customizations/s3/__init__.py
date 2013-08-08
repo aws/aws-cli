@@ -12,6 +12,28 @@
 # language governing permissions and limitations under the License.
 import os
 import random
+from tests import unittest
+
+from mock import patch
+
+
+class S3HandlerBaseTest(unittest.TestCase):
+    """
+    This class is used to patch the wait() calls used by the queues.
+    This makes the tests much faster because the wait is a significantly
+    shorter amount of time.
+    """
+    def setUp(self):
+        get = 'awscli.customizations.s3.s3handler.QUEUE_TIMEOUT_GET'
+        wait = 'awscli.customizations.s3.s3handler.QUEUE_TIMEOUT_WAIT'
+        self.get_timeout_patch = patch(get, 0.01)
+        self.wait_timeout_patch = patch(wait, 0.01)
+        self.mock_get = self.get_timeout_patch.start()
+        self.mock_wait = self.wait_timeout_patch.start()
+
+    def tearDown(self):
+        self.get_timeout_patch.stop()
+        self.wait_timeout_patch.stop()
 
 
 def make_loc_files():

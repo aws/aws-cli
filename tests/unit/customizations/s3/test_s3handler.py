@@ -16,25 +16,30 @@ import random
 import sys
 from tests import unittest
 
+from mock import patch
+
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.filegenerator import FileInfo
 from tests.unit.customizations.s3.fake_session import FakeSession
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets
+    make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets, \
+    S3HandlerBaseTest
 
 
-class S3HandlerTestDeleteList(unittest.TestCase):
+class S3HandlerTestDeleteList(S3HandlerBaseTest):
     """
     This tests the ability to delete both files locally and in s3.
     """
     def setUp(self):
+        super(S3HandlerTestDeleteList, self).setUp()
         self.session = FakeSession()
         self.s3_handler = S3Handler(self.session)
         self.bucket = make_s3_files(self.session)
         self.loc_files = make_loc_files()
 
     def tearDown(self):
+        super(S3HandlerTestDeleteList, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
@@ -85,12 +90,13 @@ class S3HandlerTestDeleteList(unittest.TestCase):
         s3_handler.call([file_info])
 
 
-class S3HandlerTestUpload(unittest.TestCase):
+class S3HandlerTestUpload(S3HandlerBaseTest):
     """
     This class tests the ability to upload objects into an S3 bucket as
     well as multipart uploads
     """
     def setUp(self):
+        super(S3HandlerTestUpload, self).setUp()
         self.session = FakeSession()
         self.s3_handler = S3Handler(self.session, {'acl': ['private']})
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
@@ -102,6 +108,7 @@ class S3HandlerTestUpload(unittest.TestCase):
                          self.bucket + '/another_directory/text2.txt']
 
     def tearDown(self):
+        super(S3HandlerTestUpload, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
@@ -156,12 +163,13 @@ class S3HandlerTestUpload(unittest.TestCase):
         self.s3_handler_multi.call(tasks)
 
 
-class S3HandlerExceptionSingleTaskTest(unittest.TestCase):
+class S3HandlerExceptionSingleTaskTest(S3HandlerBaseTest):
     """
     This tests the ability to handle connection and md5 exceptions.
     The command used in this general test is a put command.
     """
     def setUp(self):
+        super(S3HandlerExceptionSingleTaskTest, self).setUp()
         self.session = FakeSession(True, True)
         self.s3_handler = S3Handler(self.session)
         self.bucket = create_bucket(self.session)
@@ -170,6 +178,7 @@ class S3HandlerExceptionSingleTaskTest(unittest.TestCase):
                          self.bucket + '/another_directory/text2.txt']
 
     def tearDown(self):
+        super(S3HandlerExceptionSingleTaskTest, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
@@ -189,13 +198,14 @@ class S3HandlerExceptionSingleTaskTest(unittest.TestCase):
         self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
 
 
-class S3HandlerExceptionMultiTaskTest(unittest.TestCase):
+class S3HandlerExceptionMultiTaskTest(S3HandlerBaseTest):
     """
     This tests the ability to handle multipart upload exceptions.
     This includes a standard error stemming from an operation on
     a nonexisting bucket, connection error, and md5 error.
     """
     def setUp(self):
+        super(S3HandlerExceptionMultiTaskTest, self).setUp()
         self.session = FakeSession(True, True)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
                                           chunksize=2)
@@ -205,6 +215,7 @@ class S3HandlerExceptionMultiTaskTest(unittest.TestCase):
                          self.bucket + '/another_directory/text2.txt']
 
     def tearDown(self):
+        super(S3HandlerExceptionMultiTaskTest, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
@@ -220,13 +231,49 @@ class S3HandlerExceptionMultiTaskTest(unittest.TestCase):
         self.s3_handler_multi.call(tasks)
 
 
-class S3HandlerTestMove(unittest.TestCase):
+class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     """
     This class tests the ability to move s3 objects.  The move
-    operation uses a copy then delete.  Thus, tests the ability
-    to copy objects as well as delete
+    operation uses a upload then delete.
     """
     def setUp(self):
+        super(S3HandlerTestMvLocalS3, self).setUp()
+        self.session = FakeSession()
+        self.s3_handler = S3Handler(self.session, {'acl': ['private']})
+        self.bucket = create_bucket(self.session)
+        self.loc_files = make_loc_files()
+        self.s3_files = [self.bucket + '/text1.txt',
+                         self.bucket + '/another_directory/text2.txt']
+
+    def tearDown(self):
+        super(S3HandlerTestMvLocalS3, self).tearDown()
+        clean_loc_files(self.loc_files)
+        s3_cleanup(self.bucket, self.session)
+
+    def test_move(self):
+        # Create file info objects to perform move.
+        files = [self.loc_files[0], self.loc_files[1]]
+        tasks = []
+        for i in range(len(files)):
+            tasks.append(FileInfo(src=self.loc_files[i], src_type='local',
+                                  dest=self.s3_files[i], dest_type='s3',
+                                  operation='move', size=0))
+        # Perform the move.
+        self.s3_handler.call(tasks)
+        # Confirm the files were uploaded.
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
+        # Confirm local files do not exist.
+        for filename in files:
+            self.assertFalse(os.path.exists(filename))
+
+
+class S3HandlerTestMvS3S3(S3HandlerBaseTest):
+    """
+    This class tests the ability to move s3 objects.  The move
+    operation uses a copy then delete.
+    """
+    def setUp(self):
+        super(S3HandlerTestMvS3S3, self).setUp()
         self.session = FakeSession()
         self.s3_handler = S3Handler(self.session, {'acl': ['private']})
         self.bucket = make_s3_files(self.session)
@@ -237,6 +284,7 @@ class S3HandlerTestMove(unittest.TestCase):
                           self.bucket2 + '/another_directory/text2.txt']
 
     def tearDown(self):
+        super(S3HandlerTestMvS3S3, self).tearDown()
         s3_cleanup(self.bucket, self.session)
         s3_cleanup(self.bucket2, self.session)
 
@@ -257,12 +305,59 @@ class S3HandlerTestMove(unittest.TestCase):
         self.assertEqual(len(list_contents(self.bucket2, self.session)), 2)
 
 
-class S3HandlerTestDownload(unittest.TestCase):
+class S3HandlerTestMvS3Local(S3HandlerBaseTest):
+    """
+    This class tests the ability to move s3 objects.  The move
+    operation uses a download then delete.
+    """
+    def setUp(self):
+        super(S3HandlerTestMvS3Local, self).setUp()
+        self.session = FakeSession()
+        self.s3_handler = S3Handler(self.session)
+        self.bucket = make_s3_files(self.session)
+        self.s3_files = [self.bucket + '/text1.txt',
+                         self.bucket + '/another_directory/text2.txt']
+        directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
+        filename1 = directory1 + "text1.txt"
+        directory2 = directory1 + 'another_directory' + os.sep
+        filename2 = directory2 + "text2.txt"
+        self.loc_files = [filename1, filename2]
+
+    def tearDown(self):
+        super(S3HandlerTestMvS3Local, self).tearDown()
+        clean_loc_files(self.loc_files)
+        s3_cleanup(self.bucket, self.session)
+
+    def test_move(self):
+        # Create file info objects to perform move.
+        tasks = []
+        time = datetime.datetime.now()
+        for i in range(len(self.s3_files)):
+            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
+                                  dest=self.loc_files[i], dest_type='local',
+                                  last_update=time, operation='move',
+                                  size=0))
+        # Perform the move.
+        self.s3_handler.call(tasks)
+        # Confirm that the files now exist.
+        for filename in self.loc_files:
+            self.assertEqual(os.path.exists(filename), True)
+        # Ensure the contents are as expected.
+        with open(self.loc_files[0], 'rb') as filename:
+            self.assertEqual(filename.read(), b'This is a test.')
+        with open(self.loc_files[1], 'rb') as filename:
+            self.assertEqual(filename.read(), b'This is another test.')
+        # Ensure the objects are no longer in the bucket.
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+
+
+class S3HandlerTestDownload(S3HandlerBaseTest):
     """
     This class tests the ability to download s3 objects locally as well
     as using multipart downloads
     """
     def setUp(self):
+        super(S3HandlerTestDownload, self).setUp()
         self.session = FakeSession()
         self.s3_handler = S3Handler(self.session)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
@@ -283,6 +378,7 @@ class S3HandlerTestDownload(unittest.TestCase):
                                                  chunksize=2)
 
     def tearDown(self):
+        super(S3HandlerTestDownload, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
@@ -376,16 +472,18 @@ class S3HandlerTestDownload(unittest.TestCase):
             self.assertEqual(filename.read(), b'This is another test.')
 
 
-class S3HandlerTestBucket(unittest.TestCase):
+class S3HandlerTestBucket(S3HandlerBaseTest):
     """
     Test the ability to make a bucket then remove it.
     """
     def setUp(self):
+        super(S3HandlerTestBucket, self).setUp()
         self.session = FakeSession()
         self.s3_handler = S3Handler(self.session)
         self.bucket = None
 
     def tearDown(self):
+        super(S3HandlerTestBucket, self).tearDown()
         s3_cleanup(self.bucket, self.session)
 
     def test_bucket(self):

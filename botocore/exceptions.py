@@ -128,14 +128,22 @@ class ValidationError(BotoCoreError):
     """
     An exception occurred validating parameters.
 
+    Subclasses must accept a ``value`` and ``param``
+    argument in their ``__init__``.
+
     :ivar value: The value that was being validated.
+    :ivar param: The parameter that failed validation.
     :ivar type_name: The name of the underlying type.
     """
     fmt = ("Invalid value ('{value}') for param {param} "
            "of type {type_name} ")
 
 
-class UnknownKeyError(BotoCoreError):
+# These exceptions subclass from ValidationError so that code
+# can just 'except ValidationError' to catch any possibly validation
+# error.
+
+class UnknownKeyError(ValidationError):
     """
     Unknown key in a struct paramster.
 
@@ -147,7 +155,20 @@ class UnknownKeyError(BotoCoreError):
            "of: {choices}")
 
 
-class UnknownParameterError(BotoCoreError):
+class RangeError(ValidationError):
+    """
+    A parameter value was out of the valid range.
+
+    :ivar value: The value that was being checked.
+    :ivar param: The parameter that failed validation.
+    :ivar min_value: The specified minimum value.
+    :ivar max_value: The specified maximum value.
+    """
+    fmt = ('Value out of range for param {param}: '
+           '{min_value} <= {value} <= {max_value}')
+
+
+class UnknownParameterError(ValidationError):
     """
     Unknown top level parameter.
 
@@ -157,17 +178,6 @@ class UnknownParameterError(BotoCoreError):
     """
     fmt = ("Unknown parameter '{name}' for operation {operation}.  Must be one "
            "of: {choices}")
-
-
-class RangeError(BotoCoreError):
-    """
-    A parameter value was out of the valid range.
-
-    :ivar value: The value that was being checked.
-    :ivar min_value: The specified minimum value.
-    :ivar max_value: The specified maximum value.
-    """
-    fmt = 'Value out of range: {min_value} <= {value} <= {max_value}'
 
 
 class UnknownServiceStyle(BotoCoreError):

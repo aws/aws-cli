@@ -125,7 +125,8 @@ class TestParameters(unittest.TestCase):
         with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter_query(value=8.4,
                                     built_params=d)
-        with self.assertRaises(botocore.exceptions.RangeError):
+        with self.assertRaisesRegexp(botocore.exceptions.RangeError,
+                                     'foo'):
             p.build_parameter_query(value=100,
                                     built_params=d)
 
@@ -175,6 +176,37 @@ class TestParameters(unittest.TestCase):
         with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter_query(value='100',
                                     built_params=d)
+
+    def test_list_fails_member_validation(self):
+        p = botocore.parameters.ListParameter(operation=None, name='foo',
+                                              members={'type': 'string'})
+        d = {}
+        # None is not of type string.
+        value = ['This', 'is', None, 'test']
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter('query', value, d)
+
+    def test_list_struct_fails_validation(self):
+        members = {
+            "shape_name": "Foo",
+            "type": "structure",
+            "members": {
+                "foo": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "required": True,
+                },
+            },
+        }
+        p = botocore.parameters.ListParameter(operation=None, name='foo',
+                                              members=members)
+        d = {}
+        # 'notfoo' is an unknown key so this will raise an exception
+        # when we try to validate this value.
+        value = [{'foo': 'bar'}, {'foo': 'baz'}, {'notfoo': 'bad'}]
+        with self.assertRaisesRegexp(botocore.exceptions.ValidationError,
+                                     'element of None:foo'):
+            p.build_parameter('query', value, d)
 
     def test_plain_list(self):
         # Test a plain vanilla list.

@@ -126,11 +126,13 @@ class IntegerParameter(Parameter):
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -145,11 +147,13 @@ class FloatParameter(Parameter):
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -164,11 +168,13 @@ class DoubleParameter(Parameter):
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -266,11 +272,13 @@ class StringParameter(Parameter):
         if self.min:
             if len(value) < self.min:
                 raise RangeError(value=len(value),
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if len(value) > self.max:
                 raise RangeError(value=len(value),
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -299,6 +307,15 @@ class ListParameter(Parameter):
     def validate(self, value):
         if not isinstance(value, (list, tuple)):
             value = [value]
+        for item in value:
+            try:
+                self.members.validate(item)
+            except ValidationError as e:
+                # ValidationError must provide a value
+                # argument so we can safely access that key.
+                raise ValidationError(value=e.kwargs['value'],
+                                      param='element of %s' % self,
+                                      type_name='list')
         return value
 
     def _handle_subtypes(self):

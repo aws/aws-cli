@@ -44,9 +44,8 @@ class TestPayloads(unittest.TestCase):
 
     def test_json_payload_list(self):
         payload = botocore.payload.JSONPayload()
-        p = botocore.parameters.ListParameter(None, name='foo')
-        p.members = {'type': 'string'}
-        p.handle_subtypes()
+        p = botocore.parameters.ListParameter(None, name='foo',
+                                              members={'type': 'string'})
         value = ['This', 'is', 'a', 'test']
         payload.add_param(p, value)
         json_body = json.loads(payload.getvalue())
@@ -71,6 +70,7 @@ class TestPayloads(unittest.TestCase):
         payload.add_param(p, 'value2')
         xml_body = payload.getvalue()
         self.assertEqual(xml_body, XML_BODY2)
+
 
 if __name__ == "__main__":
     unittest.main()

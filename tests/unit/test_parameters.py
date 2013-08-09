@@ -22,10 +22,14 @@
 # IN THE SOFTWARE.
 #
 from tests import unittest
+import time
+
+import mock
+import dateutil.parser
+
 import botocore.parameters
 import botocore.exceptions
-import dateutil.parser
-import time
+
 
 
 class FakeService(object):
@@ -171,13 +175,10 @@ class TestParameters(unittest.TestCase):
                           p.build_parameter_query,
                           value='100', built_params=d)
 
-    def test_list(self):
-        #
-        # Test a plain vanilla list
-        #
-        p = botocore.parameters.ListParameter(None, name='foo')
-        p.members = {'type': 'string'}
-        p.handle_subtypes()
+    def test_plain_list(self):
+        # Test a plain vanilla list.
+        p = botocore.parameters.ListParameter(operation=None, name='foo',
+                                              members={'type': 'string'})
         d = {}
         value = ['This', 'is', 'a', 'test']
         p.build_parameter_query(value, d)
@@ -185,14 +186,13 @@ class TestParameters(unittest.TestCase):
                               'foo.member.2': 'is',
                               'foo.member.3': 'a',
                               'foo.member.1': 'This'})
-        #
+
+    def test_list_with_xmlname(self):
         # Test a list where the member specifies an xmlname.
         # This should be ignored.
-        #
-        p = botocore.parameters.ListParameter(None, name='foo')
-        p.members = {'type': 'string',
-                     'xmlname': 'bar'}
-        p.handle_subtypes()
+        p = botocore.parameters.ListParameter(
+            operation=None, name='foo',
+            members={'type': 'string', 'xmlname': 'bar'})
         d = {}
         value = ['This', 'is', 'a', 'test']
         p.build_parameter_query(value, d)
@@ -203,16 +203,15 @@ class TestParameters(unittest.TestCase):
         d = {}
         p.build_parameter_json(value, d)
         self.assertEquals(d, {'foo': ['This', 'is', 'a', 'test']})
-        #
+
+    def test_flattened_list(self):
         # Test a flattened list.  Member should always define
         # and xmlname attribute.
-        #
-        p = botocore.parameters.ListParameter(None, name='foo')
-        p.flattened = True
-        p.members = {'type': 'string',
-                     'xmlname': 'bar'}
-        p.handle_subtypes()
+        p = botocore.parameters.ListParameter(
+            operation=None, name='foo', flattened=True,
+            members={'type': 'string', 'xmlname': 'bar'})
         d = {}
+        value = ['This', 'is', 'a', 'test']
         p.build_parameter_query(value, d)
         self.assertEquals(d, {'bar.4': 'test',
                               'bar.1': 'This',

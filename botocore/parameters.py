@@ -46,9 +46,9 @@ class Parameter(BotoCoreObject):
         self.example_fn = None
         BotoCoreObject.__init__(self, **kwargs)
         self.cli_name = '--' + self.cli_name
-        self.handle_subtypes()
+        self._handle_subtypes()
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
         pass
 
     def validate(self, value):
@@ -297,7 +297,7 @@ class ListParameter(Parameter):
             value = [value]
         return value
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
         if self.members:
             self.members = get_parameter(self.operation, None, self.members)
 
@@ -357,7 +357,7 @@ class MapParameter(Parameter):
         if not isinstance(value, dict):
             raise ValidationError(value=str(value), type_name='map', param=self)
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
         if self.members:
             self.members = get_parameter(self.operation, None, self.members)
         if self.keys:
@@ -390,7 +390,7 @@ class StructParameter(Parameter):
             raise ValidationError(value=str(value), type_name='structure',
                                   param=self)
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
         if self.members:
             l = []
             for name, data in self.members.items():

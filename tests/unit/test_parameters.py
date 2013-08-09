@@ -68,9 +68,9 @@ class TestParameters(unittest.TestCase):
         epoch = 1365722595
         p.build_parameter_query(epoch, d)
         self.assertEqual(d['foo'], iso)
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value='not a date string', built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value='not a date string',
+                                    built_params=d)
 
     def test_epoch_timestamp_from_iso(self):
         op = FakeOperation('unixTimestamp')
@@ -80,9 +80,9 @@ class TestParameters(unittest.TestCase):
         epoch = 1365722595
         p.build_parameter_query(iso, d)
         self.assertEqual(d['foo'], str(epoch))
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value='not a date string', built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value='not a date string',
+                                    built_params=d)
 
     def test_epoch_timestamp_from_epoch(self):
         op = FakeOperation('unixTimestamp')
@@ -91,9 +91,9 @@ class TestParameters(unittest.TestCase):
         epoch = 1365722595
         p.build_parameter_query(epoch, d)
         self.assertEqual(d['foo'], str(epoch))
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value='not a date string', built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value='not a date string',
+                                    built_params=d)
 
     def test_string(self):
         p = botocore.parameters.StringParameter(None, name='foo')
@@ -101,9 +101,9 @@ class TestParameters(unittest.TestCase):
         value = 'This is a test'
         p.build_parameter_query(value, d)
         self.assertEqual(d['foo'], value)
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value=1, built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value=1,
+                                    built_params=d)
 
     def test_integer(self):
         p = botocore.parameters.IntegerParameter(None, name='foo')
@@ -112,9 +112,9 @@ class TestParameters(unittest.TestCase):
         self.assertEqual(d['foo'], '123')
         p.build_parameter_json(123, d)
         self.assertEqual(d['foo'], 123)
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value=123.4, built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value=123.4,
+                                    built_params=d)
 
     def test_integer_range(self):
         p = botocore.parameters.IntegerParameter(None, name='foo',
@@ -122,12 +122,12 @@ class TestParameters(unittest.TestCase):
         d = {}
         p.build_parameter_query(9, d)
         self.assertEqual(d['foo'], '9')
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value=8.4, built_params=d)
-        self.assertRaises(botocore.exceptions.RangeError,
-                          p.build_parameter_query,
-                          value=100, built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value=8.4,
+                                    built_params=d)
+        with self.assertRaises(botocore.exceptions.RangeError):
+            p.build_parameter_query(value=100,
+                                    built_params=d)
 
     def test_float(self):
         p = botocore.parameters.FloatParameter(None, name='foo')
@@ -136,21 +136,22 @@ class TestParameters(unittest.TestCase):
         self.assertEqual(d['foo'], '123.4')
         p.build_parameter_json(123.4, d)
         self.assertEqual(d['foo'], 123.4)
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value='true', built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value=True,
+                                    built_params=d)
 
     def test_float_range(self):
         p = botocore.parameters.FloatParameter(None, name='foo',
                                                min=0, max=10)
         d = {}
         p.build_parameter_query(9.0, d)
-        assert d['foo'] == '9.0'
+        self.assertEqual(d['foo'], '9.0')
         p.build_parameter_json(9.0, d)
-        assert d['foo'] == 9.0
-        self.assertRaises(botocore.exceptions.RangeError,
-                          p.build_parameter_query,
-                          value=100.0, built_params=d)
+        self.assertEqual(d['foo'], 9.0)
+        with self.assertRaises(botocore.exceptions.RangeError):
+            p.build_parameter_query(value=100.0,
+                                    built_params=d)
+
 
     def test_boolean(self):
         p = botocore.parameters.BooleanParameter(None, name='foo')
@@ -171,9 +172,9 @@ class TestParameters(unittest.TestCase):
         self.assertEqual(d['foo'], 'true')
         p.build_parameter_json(True, d)
         self.assertEqual(d['foo'], True)
-        self.assertRaises(botocore.exceptions.ValidationError,
-                          p.build_parameter_query,
-                          value='100', built_params=d)
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter_query(value='100',
+                                    built_params=d)
 
     def test_plain_list(self):
         # Test a plain vanilla list.

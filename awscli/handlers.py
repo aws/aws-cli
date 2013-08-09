@@ -25,6 +25,7 @@ from awscli.customizations.paginate import unify_paging_params
 from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2secgroupsimplify import register_secgroup
 from awscli.customizations.preview import register_preview_commands
+from awscli.customizations.ec2bundleinstance import register_bundleinstance
 
 
 def awscli_initialize(event_handlers):
@@ -50,5 +51,6 @@ def awscli_initialize(event_handlers):
     event_handlers.register('building-argument-table.ec2.GetPasswordData',
                             ec2_add_priv_launch_key)
     register_secgroup(event_handlers)
+    register_bundleinstance(event_handlers)
     register_removals(event_handlers)
     register_preview_commands(event_handlers)

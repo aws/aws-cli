@@ -26,7 +26,9 @@ import datetime
 import six
 import dateutil.parser
 from botocore import BotoCoreObject
-from botocore.exceptions import ValidationError, RangeError
+from botocore.exceptions import ValidationError, RangeError, UnknownKeyError
+from botocore.exceptions import MissingParametersError
+
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +103,7 @@ class Parameter(BotoCoreObject):
             built_params['payload'].literal_value = value
 
     def build_parameter(self, style, value, built_params, label=''):
+        self.validate(value)
         if style == 'query':
             self.build_parameter_query(value, built_params, label)
         elif style == 'json':
@@ -392,6 +395,32 @@ class StructParameter(Parameter):
         if not isinstance(value, dict):
             raise ValidationError(value=str(value), type_name='structure',
                                   param=self)
+        self._validate_known_keys(value)
+        self._validate_required_keys(value)
+        for member in self.members:
+            sub_value = value.get(member.name)
+            if sub_value is not None:
+                member.validate(sub_value)
+
+    def _validate_known_keys(self, value):
+        valid_keys = [p.name for p in self.members]
+        for key in value:
+            if key not in valid_keys:
+                raise UnknownKeyError(
+                    value=key, choices=', '.join(valid_keys), param=self.name)
+
+    def _validate_required_keys(self, value):
+        # There are some inner params that are marked as required
+        # even though the parent param is not marked required.
+        # It would be a good enhancement to also validate those
+        # params.
+        missing = []
+        for required in [p.name for p in self.members if p.required]:
+            if required not in value:
+                missing.append(required)
+        if missing:
+            raise MissingParametersError(object_name=self,
+                                         missing=', '.join(missing))
 
     def _handle_subtypes(self):
         if self.members:

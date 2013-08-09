@@ -220,5 +220,60 @@ class TestParameters(unittest.TestCase):
                               'bar.3': 'a'})
 
 
+class TestStructureParamaters(unittest.TestCase):
+
+    def setUp(self):
+        self.members = {
+            "AvailabilityZone": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "",
+            },
+            "GroupName": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "",
+            },
+            "Tenancy": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": "",
+            }
+        }
+        self.p = botocore.parameters.StructParameter(
+            operation=None, name='Foo',
+            members=self.members)
+
+    def test_struct_parameter_query_build(self):
+        d = {}
+        self.p.build_parameter_query({'AvailabilityZone': 'foo',
+                                      'GroupName': 'bar',
+                                      'Tenancy': 'baz'}, d)
+        self.assertEqual(d, {
+            'Foo.AvailabilityZone': 'foo',
+            'Foo.GroupName': 'bar',
+            'Foo.Tenancy': 'baz',
+        })
+
+    def test_struct_type_validation(self):
+        self.p.validate({'AvailabilityZone': 'foo',
+                         'GroupName': 'bar',
+                         'Tenancy': 'baz'})
+        with self.assertRaisesRegexp(
+                botocore.exceptions.ValidationError,
+                ("Invalid value \('not a dict'\) for param "
+                 "None:Foo of type structure")):
+            self.p.validate('not a dict')
+
+    def test_struct_unknown_keys_validation(self):
+        # Unknown key 'group_name' key
+        with self.assertRaises(botocore.exceptions.UnknownKeyError):
+            # Missing the 'GroupName' key
+            self.p.validate({'AvailabilityZone': 'foo',
+                             'group_name': 'unknown',
+                             'Tenancy': 'baz'})
+
+
+
 if __name__ == "__main__":
     unittest.main()

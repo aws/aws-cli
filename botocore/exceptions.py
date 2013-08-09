@@ -113,10 +113,15 @@ class MissingParametersError(BotoCoreError):
     """
     One or more required parameters were not supplied.
 
-    :ivar missing: str
-    :ivar missing: The names of the missing parameters
+    :ivar object: The object that has missing parameters.
+        This can be an operation or a parameter (in the
+        case of inner params).  The str() of this object
+        will be used so it doesn't need to implement anything
+        other than str().
+    :ivar missing: The names of the missing parameters.
     """
-    fmt = 'The following required parameters are missing: {missing}'
+    fmt = ('The following required parameters are missing for '
+           '{object_name}: {missing}')
 
 
 class ValidationError(BotoCoreError):
@@ -126,8 +131,32 @@ class ValidationError(BotoCoreError):
     :ivar value: The value that was being validated.
     :ivar type_name: The name of the underlying type.
     """
-    fmt = ('Unable to convert value ({value}) to type {type_name} '
-           'for param {param}')
+    fmt = ("Invalid value ('{value}') for param {param} "
+           "of type {type_name} ")
+
+
+class UnknownKeyError(BotoCoreError):
+    """
+    Unknown key in a struct paramster.
+
+    :ivar value: The value that was being checked.
+    :ivar param: The name of the parameter.
+    :ivar choices: The valid choices the value can be.
+    """
+    fmt = ("Unknown key '{value}' for param '{param}'.  Must be one "
+           "of: {choices}")
+
+
+class UnknownParameterError(BotoCoreError):
+    """
+    Unknown top level parameter.
+
+    :ivar name: The name of the unknown parameter.
+    :ivar operation: The name of the operation.
+    :ivar choices: The valid choices the parameter name can be.
+    """
+    fmt = ("Unknown parameter '{name}' for operation {operation}.  Must be one "
+           "of: {choices}")
 
 
 class RangeError(BotoCoreError):

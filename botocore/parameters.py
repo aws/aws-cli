@@ -25,8 +25,8 @@ import base64
 import datetime
 import six
 import dateutil.parser
-from . import BotoCoreObject
-from .exceptions import ValidationError, RangeError
+from botocore import BotoCoreObject
+from botocore.exceptions import ValidationError, RangeError
 
 logger = logging.getLogger(__name__)
 

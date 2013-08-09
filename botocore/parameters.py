@@ -213,6 +213,7 @@ class BooleanParameter(Parameter):
         value = self._getstring(value)
         return '<%s>%s</%s>' % (label, value, label)
 
+
 class TimestampParameter(Parameter):
 
     Epoch = datetime.datetime(1970, 1, 1)
@@ -302,8 +303,8 @@ class ListParameter(Parameter):
             self.members = get_parameter(self.operation, None, self.members)
 
     def build_parameter_query(self, value, built_params, label=''):
-        logger.debug("Building parameter for query service, name: %r, label: %r",
-                     self.get_label(), label)
+        logger.debug("Building parameter for query service, name: %r, "
+                     "label: %r", self.get_label(), label)
         value = self.validate(value)
         # If this is not a flattened list, find the label for member
         # items in the list.
@@ -355,7 +356,8 @@ class MapParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, dict):
-            raise ValidationError(value=str(value), type_name='map', param=self)
+            raise ValidationError(value=str(value),
+                                  type_name='map', param=self)
 
     def _handle_subtypes(self):
         if self.members:
@@ -369,8 +371,9 @@ class MapParameter(Parameter):
         member_type = self.members
         for i, v in enumerate(value, 1):
             built_params['%s.%d.%s' % (label, i, key_type.xmlname)] = v
-            member_type.build_parameter_query(value[v], built_params,
-                                              '%s.%d.%s' % (label, i, member_type.xmlname))
+            member_type.build_parameter_query(
+                value[v], built_params,
+                '%s.%d.%s' % (label, i, member_type.xmlname))
 
     def build_parameter_json(self, value, built_params, label=''):
         label = self.get_label()

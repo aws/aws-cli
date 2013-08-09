@@ -45,6 +45,7 @@ from botocore import handlers
 AllEvents = {
     'after-call': '.%s.%s',
     'after-parsed': '.%s.%s.%s.%s',
+    'before-parameter-build': '.%s.%s',
     'before-call': '.%s.%s',
     'service-created': '',
     'before-auth': '.%s',

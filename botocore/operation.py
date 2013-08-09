@@ -54,10 +54,22 @@ class Operation(BotoCoreObject):
 
     def call(self, endpoint, **kwargs):
         logger.debug("%s called with kwargs: %s", self, kwargs)
+        # It probably seems a little weird to be firing two different
+        # events here.  The reason is that the first event is fired
+        # with the parameters exactly as supplied.  The second event
+        # is fired with the built parameters.  Generally, it's easier
+        # to manipulate the former but at times, like with ReST operations
+        # that build an XML or JSON payload, you have to wait for
+        # build_parameters to do it's job and the latter is necessary.
+        event = self.session.create_event('before-parameter-build',
+                                          self.service.endpoint_prefix,
+                                          self.name)
+        self.session.emit(event, operation=self, endpoint=endpoint,
+                          params=kwargs)
+        params = self.build_parameters(**kwargs)
         event = self.session.create_event('before-call',
                                           self.service.endpoint_prefix,
                                           self.name)
-        params = self.build_parameters(**kwargs)
         self.session.emit(event, operation=self, endpoint=endpoint,
                           params=params)
         response = endpoint.make_request(self, params)

@@ -134,3 +134,13 @@ def find_chunksize(size, current_chunksize):
         return MAX_SINGLE_UPLOAD_SIZE
     else:
         return chunksize
+
+
+class MultiCounter(object):
+    """
+    This class is used as a way to keep track of how many multipart
+    operations are in progress.  It also is used to track how many
+    part operations are occuring.
+    """
+    def __init__(self):
+        self.count = 0

@@ -12,11 +12,12 @@
 # language governing permissions and limitations under the License.
 import logging
 import math
+import os
 import threading
 import time
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET
+    NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize
 from awscli.customizations.s3.executer import Executer
 from awscli.customizations.s3.tasks import BasicTask
@@ -27,15 +28,14 @@ LOGGER = logging.getLogger(__name__)
 class S3Handler(object):
     """
     This class sets up the process to perform the tasks sent to it.  It
-    sources the main queue ``self.queue`` from which threads in the
-    ``Executer`` class pull tasks from to complete.
+    sources the ``self.executer`` from which threads inside the
+    class pull tasks from to complete.
     """
     def __init__(self, session, params=None, multi_threshold=MULTI_THRESHOLD,
                  chunksize=CHUNKSIZE):
         self.session = session
         self.done = threading.Event()
         self.interrupt = threading.Event()
-        self.queue = NoBlockQueue(self.interrupt)
         self.printQueue = NoBlockQueue()
         self.params = {'dryrun': False, 'quiet': False, 'acl': None}
         self.params['region'] = self.session.get_config()['region']
@@ -44,7 +44,7 @@ class S3Handler(object):
                 self.params[key] = params[key]
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
-        self.executer = Executer(queue=self.queue, done=self.done,
+        self.executer = Executer(done=self.done,
                                  num_threads=NUM_THREADS,
                                  timeout=QUEUE_TIMEOUT_GET,
                                  printQueue=self.printQueue,
@@ -59,7 +59,7 @@ class S3Handler(object):
         multipart operation and add the necessary attributes if so.  Each
         object is then wrapped with a ``BasicTask`` object which is
         essentially a thread of execution for a thread to follow.  These
-        tasks are then added to the main queue.
+        tasks are then submitted to the main executer.
         """
         self.done.clear()
         self.interrupt.clear()
@@ -72,36 +72,43 @@ class S3Handler(object):
                 num_uploads = 1
                 is_larger = False
                 chunksize = self.chunksize
+                too_large = False
                 if hasattr(filename, 'size'):
                     is_larger = filename.size > self.multi_threshold
+                    too_large = filename.size > MAX_UPLOAD_SIZE
                 if is_larger:
                     if filename.operation == 'upload':
                         num_uploads = int(math.ceil(filename.size /
                                                     float(chunksize)))
                         chunksize = find_chunksize(filename.size, chunksize)
-                        filename.set_multi(queue=self.queue,
+                        filename.set_multi(executer=self.executer,
                                            printQueue=self.printQueue,
                                            interrupt=self.interrupt,
                                            chunksize=chunksize)
                     elif filename.operation == 'download':
                         num_uploads = int(filename.size / chunksize)
-                        filename.set_multi(queue=self.queue,
+                        filename.set_multi(executer=self.executer,
                                            printQueue=self.printQueue,
                                            interrupt=self.interrupt,
                                            chunksize=chunksize)
                 task = BasicTask(session=self.session, filename=filename,
-                                 queue=self.queue, done=self.done,
+                                 executer=self.executer, done=self.done,
                                  parameters=self.params,
                                  multi_threshold=self.multi_threshold,
                                  chunksize=chunksize,
                                  printQueue=self.printQueue,
                                  interrupt=self.interrupt)
-                self.queue.put(task)
+                if too_large and filename.operation=='upload':
+                    warning = "Warning %s exceeds 5 TB and upload is " \
+                              "being skipped" % os.path.relpath(filename.src)
+                    self.printQueue.put({'result': warning})
+                else:
+                    self.executer.submit(task)
                 tot_files += 1
                 tot_parts += num_uploads
             self.executer.print_thread.totalFiles = tot_files
             self.executer.print_thread.totalParts = tot_parts
-            self.queue.join()
+            self.executer.wait()
             self.printQueue.join()
 
         except Exception as e:

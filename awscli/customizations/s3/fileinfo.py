@@ -11,7 +11,7 @@ from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
-from awscli.customizations.s3.utils import find_bucket_key, \
+from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue
 
 
@@ -78,7 +78,7 @@ class TaskInfo(object):
     of these objects will not be enough to run a listing or bucket command.
     unless ``session`` and ``region`` are specified upon instantiation.
     To make it fully operational, ``set_session`` needs to be used.
-    This class is the parent class of the more extensive ``TaskInfo`` object.
+    This class is the parent class of the more extensive ``FileInfo`` object.
 
     :param src: the source path
     :type src: string
@@ -234,18 +234,18 @@ class FileInfo(TaskInfo):
 
         # Required for multipart uploads and downloads.  Use ``set_multi``
         # function to set these.
-        self.queue = None
+        self.executer = None
         self.printQueue = None
         self.is_multi = False
         self.interrupt = None
         self.chunksize = None
 
-    def set_multi(self, queue, printQueue, interrupt, chunksize):
+    def set_multi(self, executer, printQueue, interrupt, chunksize):
         """
         This sets all of the necessary attributes to perform a multipart
         operation.
         """
-        self.queue = queue
+        self.executer = executer
         self.printQueue = printQueue
         self.is_multi = True
         self.interrupt = interrupt
@@ -333,14 +333,15 @@ class FileInfo(TaskInfo):
         Performs multipart uploads.  It initiates the multipart upload.
         It creates a queue ``part_queue`` which is directly responsible
         with controlling the progress of the multipart upload.  It then
-        creates ``UploadPartTasks`` for threads to run via the main queue
-        ``queue``.  This fucntion waits for all of the parts in the
+        creates ``UploadPartTasks`` for threads to run via the
+        ``executer``.  This fucntion waits for all of the parts in the
         multipart upload to finish, and then it completes the multipart
         upload.  This method waits on its parts to finish.  So, threads
         are required to process the parts for this function to complete.
         """
         part_queue = NoBlockQueue(self.interrupt)
         complete_upload_queue = Queue.PriorityQueue()
+        part_counter = MultiCounter()
         bucket, key = find_bucket_key(self.dest)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         if self.parameters['acl']:
@@ -353,14 +354,22 @@ class FileInfo(TaskInfo):
         for i in range(1, (num_uploads + 1)):
             part_info = (self, upload_id, i, size_uploads)
             part_queue.put(part_info)
-            task = UploadPartTask(session=self.session, queue=self.queue,
+            task = UploadPartTask(session=self.session, executer=self.executer,
                                   part_queue=part_queue,
                                   dest_queue=complete_upload_queue,
                                   region=self.region,
                                   printQueue=self.printQueue,
-                                  interrupt=self.interrupt)
-            self.queue.put(task)
+                                  interrupt=self.interrupt,
+                                  part_counter=part_counter)
+            self.executer.submit(task)
         part_queue.join()
+        # The following ensures that if the multipart upload is in progress,
+        # all part uploads finish before aborting or completing.  This
+        # really only applies when an interrupt signal is sent because the
+        # ``part_queue.join()`` ensures this if the process is not
+        # interrupted.
+        while part_counter.count:
+            time.sleep(0.1)
         parts_list = []
         while not complete_upload_queue.empty():
             part = complete_upload_queue.get()
@@ -382,7 +391,7 @@ class FileInfo(TaskInfo):
         s3 of particular object to a task.It creates a queue ``part_queue``
         which is directly responsible with controlling the progress of the
         multipart download.  It then creates ``DownloadPartTasks`` for
-        threads to run via the main queue ``queue``. This fucntion waits
+        threads to run via the ``executer``. This fucntion waits
         for all of the parts in the multipart download to finish, and then
         the last modification time is changed to the last modified time
         of the s3 object.  This method waits on its parts to finish.
@@ -391,6 +400,7 @@ class FileInfo(TaskInfo):
         """
         part_queue = NoBlockQueue(self.interrupt)
         dest_queue = NoBlockQueue(self.interrupt)
+        part_counter = MultiCounter()
         write_lock = threading.Lock()
         d = os.path.dirname(self.dest)
         try:
@@ -405,14 +415,22 @@ class FileInfo(TaskInfo):
                 part = (self, i, size_uploads)
                 part_queue.put(part)
                 task = DownloadPartTask(session=self.session,
-                                        queue=self.queue,
+                                        executer=self.executer,
                                         part_queue=part_queue,
                                         dest_queue=dest_queue,
                                         f=f, region=self.region,
                                         printQueue=self.printQueue,
-                                        write_lock=write_lock)
-                self.queue.put(task)
+                                        write_lock=write_lock,
+                                        part_counter=part_counter)
+                self.executer.submit(task)
             part_queue.join()
+            # The following ensures that if the multipart download is
+            # in progress, all part uploads finish before releasing the
+            # the file handle.  This really only applies when an interrupt
+            # signal is sent because the ``part_queue.join()`` ensures this
+            # if the process is not interrupted.
+            while part_counter.count:
+                time.sleep(0.1)
         part_list = []
         while not dest_queue.empty():
             part = dest_queue.get()

@@ -4,18 +4,9 @@ import sys
 import threading
 
 from awscli.customizations.s3.tasks import BasicTask
+from awscli.customizations.s3.utils import MultiCounter, NoBlockQueue
 
 LOGGER = logging.getLogger(__name__)
-
-
-class MultiCounter(object):
-    """
-    This class is used as a way to keep track of how many multipart
-    operations are in progress.  If multipart operations are not
-    tracked and limited deadlock can occur.
-    """
-    def __init__(self):
-        self.count = 0
 
 
 class Executer(object):
@@ -24,9 +15,9 @@ class Executer(object):
     and cleans up the threads when done.  The two type of threads the
     ``Executer``runs is a worker and a print thread.
     """
-    def __init__(self, queue, done, num_threads, timeout,
+    def __init__(self, done, num_threads, timeout,
                  printQueue, quiet, interrupt, max_multi):
-        self.queue = queue
+        self.queue = None
         self.done = done
         self.num_threads = num_threads
         self.timeout = timeout
@@ -39,6 +30,7 @@ class Executer(object):
         self.multi_counter = MultiCounter()
 
     def start(self):
+        self.queue = NoBlockQueue(self.interrupt)
         self.multi_counter.count = 0
         self.print_thread = PrintThread(self.printQueue, self.done,
                                         self.quiet, self.interrupt,
@@ -55,7 +47,23 @@ class Executer(object):
             self.threads_list.append(worker)
             worker.start()
 
+    def submit(self, task):
+        """
+        This is the function used to submit a task to the ``Executer``.
+        """
+        self.queue.put(task)
+
+    def wait(self):
+        """
+        This is the function used to wait on all of the tasks to finish
+        in the ``Executer``.
+        """
+        self.queue.join()
+
     def join(self):
+        """
+        This is used to clean up the ``Executer``.
+        """
         for thread in self.threads_list:
             thread.join()
 

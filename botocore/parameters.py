@@ -288,8 +288,9 @@ class BlobParameter(Parameter):
 
     def validate(self, value):
         if self.payload and self.streaming:
-            # Streaming blobs should be file-like objects
-            if not hasattr(value, 'read'):
+            # Streaming blobs should be file-like objects or be strings.
+            if not hasattr(value, 'read') and not isinstance(value,
+                                                             six.string_types):
                 raise ValidationError(value=str(value), type_name='blob',
                                       param=self)
         else:

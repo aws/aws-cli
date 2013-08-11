@@ -16,23 +16,11 @@ import unittest
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.utils import get_file_stat, find_bucket_key
+from awscli.customizations.s3.utils import get_file_stat
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, compare_files
 from tests.unit.customizations.s3.fake_session import FakeSession
-
-
-class FindBucketKey(unittest.TestCase):
-    """
-    This test ensures the find_bucket_key function works when
-    unicode is used
-    """
-    def test_unicode(self):
-        s3_path = '\u1234' + u'/' + '\u5678'
-        bucket, key = find_bucket_key(s3_path)
-        self.assertEqual(bucket, '\u1234')
-        self.assertEqual(key, '\u5678')
 
 
 class LocalFileGeneratorTest(unittest.TestCase):

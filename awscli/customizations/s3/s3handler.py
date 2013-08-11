@@ -17,7 +17,7 @@ import time
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET
-from awscli.customizations.s3.utils import NoBlockQueue
+from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize
 from awscli.customizations.s3.executer import Executer
 from awscli.customizations.s3.tasks import BasicTask
 
@@ -71,27 +71,29 @@ class S3Handler(object):
             for filename in files:
                 num_uploads = 1
                 is_larger = False
+                chunksize = self.chunksize
                 if hasattr(filename, 'size'):
                     is_larger = filename.size > self.multi_threshold
                 if is_larger:
                     if filename.operation == 'upload':
                         num_uploads = int(math.ceil(filename.size /
-                                                    float(self.chunksize)))
+                                                    float(chunksize)))
+                        chunksize = find_chunksize(filename.size, chunksize)
                         filename.set_multi(queue=self.queue,
                                            printQueue=self.printQueue,
                                            interrupt=self.interrupt,
-                                           chunksize=self.chunksize)
+                                           chunksize=chunksize)
                     elif filename.operation == 'download':
-                        num_uploads = int(filename.size/self.chunksize)
+                        num_uploads = int(filename.size / chunksize)
                         filename.set_multi(queue=self.queue,
                                            printQueue=self.printQueue,
                                            interrupt=self.interrupt,
-                                           chunksize=self.chunksize)
+                                           chunksize=chunksize)
                 task = BasicTask(session=self.session, filename=filename,
                                  queue=self.queue, done=self.done,
                                  parameters=self.params,
                                  multi_threshold=self.multi_threshold,
-                                 chunksize=self.chunksize,
+                                 chunksize=chunksize,
                                  printQueue=self.printQueue,
                                  interrupt=self.interrupt)
                 self.queue.put(task)

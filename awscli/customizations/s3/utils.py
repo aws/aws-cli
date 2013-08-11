@@ -12,12 +12,14 @@
 # language governing permissions and limitations under the License.
 from datetime import datetime
 import hashlib
+import math
 import os
 from six.moves import queue as Queue
 
 from dateutil.tz import tzlocal
 
-from awscli.customizations.s3.constants import QUEUE_TIMEOUT_WAIT
+from awscli.customizations.s3.constants import QUEUE_TIMEOUT_WAIT, \
+    MAX_PARTS, MAX_SINGLE_UPLOAD_SIZE
 
 
 class MD5Error(Exception):
@@ -114,3 +116,21 @@ def operate(service, cmd, kwargs):
     http_response, response_data = operation.call(**kwargs)
     check_error(response_data)
     return response_data, http_response
+
+
+def find_chunksize(size, current_chunksize):
+    """
+    The purpose of this function is determine a chunksize so that
+    the number of parts in a multipart upload is not greater than
+    the ``MAX_PARTS``.  If the ``chunksize`` is greater than
+    ``MAX_SINGLE_UPLOAD_SIZE`` it returns ``MAX_SINGLE_UPLOAD_SIZE``.
+    """
+    chunksize = current_chunksize
+    num_parts = int(math.ceil(size / float(chunksize)))
+    while num_parts > MAX_PARTS:
+        chunksize *= 2
+        num_parts = int(math.ceil(size / float(chunksize)))
+    if chunksize > MAX_SINGLE_UPLOAD_SIZE:
+        return MAX_SINGLE_UPLOAD_SIZE
+    else:
+        return chunksize

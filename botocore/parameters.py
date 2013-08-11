@@ -315,7 +315,7 @@ class ListParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, (list, tuple)):
-            value = [value]
+            raise ValidationError(value=value, type_name='list', param=self)
         for item in value:
             try:
                 self.members.validate(item)

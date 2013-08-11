@@ -51,9 +51,17 @@ class Parameter(BotoCoreObject):
         self._handle_subtypes()
 
     def _handle_subtypes(self):
+        # Subclasses can implement this method to handle
+        # any members they might have (useful for complex types).
         pass
 
     def validate(self, value):
+        """Validate the value.
+
+        If a parameter decides the value is not a valid value
+        then they can raise a ``ValidationError``.
+
+        """
         pass
 
     def get_label(self):

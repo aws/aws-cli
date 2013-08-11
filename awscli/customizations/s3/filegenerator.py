@@ -10,85 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from datetime import datetime
 import os
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
-
-def find_bucket_key(s3_path):
-    """
-    This is a helper function that given an s3 path such that the path is of
-    the form: bucket/key
-    It will return the bucket and the key represented by the s3 path
-    """
-    s3_components = s3_path.split('/')
-    bucket = s3_components[0]
-    s3_key = ""
-    if len(s3_components) > 1:
-        s3_key = '/'.join(s3_components[1:])
-    return bucket, s3_key
-
-
-def get_file_stat(path):
-    """
-    This is a helper function that given a local path return the size of
-    the file in bytes and time of last modification
-    """
-    stats = os.stat(path)
-    update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    return stats.st_size, update_time
-
-
-class FileInfo(object):
-    """
-    This class contains important details about a file.  If the object's
-    parameters are fully specifed it can be sent to the S3 Handler to perform
-    the appropriate operations.
-
-    :param src: the source path
-    :type src: string
-    :param dest: the destination path
-    :type dest: string
-    :param compare_key: the name of the file relative to the specified
-        directory/prefix.  This variable is used when performing synching
-        or if the destination file is adopting the source file's name.
-    :type compare_key: string
-    :param size: The size of the file in bytes.
-    :type size: integer
-    :param last_update: the local time of last modification.
-    :type last_update: datetime object
-    :param src_type: if the source file is s3 or local.
-    :type src_type: string
-    :param dest_type: if the destination is s3 or local.
-    :param dest_type: string
-    :param operation: the operation being performed.
-    :param operation: string
-
-    Note that a local file will always have its absolute path, and a s3 file
-    will have its path in the form of bucket/key
-    """
-    def __init__(self, src, dest=None, compare_key=None, size=None,
-                 last_update=None, src_type=None, dest_type=None,
-                 operation=None):
-        self.src = src
-        self.dest = dest
-        self.compare_key = compare_key
-        self.size = size
-        self.last_update = last_update
-        self.src_type = src_type
-        self.dest_type = dest_type
-        self.operation = operation
+from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 
 
 class FileGenerator(object):
     """
     This is a class the creates a generator to yield files based on information
-    returned from the fileformat class.  It is universal in the sense that
+    returned from the ``FileFormat`` class.  It is universal in the sense that
     it will handle s3 files, local files, local directories, and s3 objects
     under the same common prefix.  The generator yields corresponding
-    fileinfo objects to send to a comparator or S3 Handler.
+    ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, session, operation="", parameters=None):
         self.session = session
@@ -101,8 +38,8 @@ class FileGenerator(object):
 
     def call(self, files):
         """
-        This is the generalized function to yield the fileinfo objects.
-        dir_op and use_src_name flags affect which files are used and
+        This is the generalized function to yield the ``FileInfo`` objects.
+        ``dir_op`` and ``use_src_name`` flags affect which files are used and
         ensure the proper destination paths and compare keys are formed.
         """
         src = files['src']

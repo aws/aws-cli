@@ -21,10 +21,11 @@ from awscli.argparser import ServiceArgParser, OperationArgParser
 from awscli.help import HelpCommand, ServiceHelpCommand
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileformat import FileFormat
-from awscli.customizations.s3.filegenerator import find_bucket_key, \
-    FileInfo, FileGenerator
+from awscli.customizations.s3.filegenerator import FileGenerator
+from awscli.customizations.s3.fileinfo import FileInfo, TaskInfo
 from awscli.customizations.s3.filters import Filter
-from awscli.customizations.s3.s3handler import S3Handler, check_error
+from awscli.customizations.s3.s3handler import S3Handler
+from awscli.customizations.s3.utils import find_bucket_key, check_error
 from bcdoc.clidocs import CLIDocumentEventHandler
 import bcdoc.clidocevents
 
@@ -198,9 +199,9 @@ def add_cmd_params(parameter_table, command, **kwargs):
 def add_s3_examples(help_command, **kwargs):
     """
     This function is used to add examples for each command.  It reads in
-    reStructuredTexts in the ``docs/examples`` directory and injects them into
-    the help docs for each command.  Each command should have one of these
-    example docs.
+    reStructuredTexts in the ``doc/source/examples`` directory
+    and injects them into the help docs for each command.  Each command
+    should have one of these example docs.
     """
     doc_path = os.path.join(
         os.path.dirname(
@@ -299,7 +300,7 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
 class S3HelpCommand(HelpCommand):
     """
     This is a wrapper to handle the interactions between the commmand and the
-    documentation pipeline/
+    documentation pipeline.
     """
     EventHandlerClass = S3DocumentEventHandler
     event_class = 'S3'
@@ -334,7 +335,7 @@ class S3(object):
         This function instantiates the operations table to be filled with
         commands.  Creates a parser based off of the commands in the
         operations table.  Parses the valid arguments and passes the
-        remaining off to a corresponding S3Command object to be called
+        remaining off to a corresponding ``S3Command`` object to be called
         on.
         """
         self._create_operations_table()
@@ -352,7 +353,7 @@ class S3(object):
 
     def _create_operations_table(self):
         """
-        Creates an empty dictionary to be filled with S3Command objects
+        Creates an empty dictionary to be filled with ``S3Command`` objects
         when the event is emmitted.
         """
 
@@ -399,7 +400,7 @@ class S3Command(object):
         any extra parameters included in the command line.  The argument
         are parsed and put into a namespace.  All of the parameters in the
         namespace are then stored in a dictionary.  This newly created
-        dictionary is passed to a CommandParameters object that stores
+        dictionary is passed to a ``CommandParameters`` object that stores
         all of the parameters and does much of the initial error checking for
         the plugin.  The formatted dictionary of parameters in the
         CommandParameters are passed to a CommandArchitecture object and
@@ -534,7 +535,7 @@ class CommandArchitecture(object):
         the command name.  Then using the instruction, another dictionary
         can be indexed to obtain the objects corresponding to the
         particular instruction for that command.  To begin the wiring,
-        either a FileFormat or FileInfo object, depending on the
+        either a ``FileFormat`` or ``TaskInfo`` object, depending on the
         command, is put into a list.  Then the function enters a while loop
         that pops off an instruction.  It then determines the object needed
         and calls the call function of the object using the list as the input.
@@ -569,8 +570,8 @@ class CommandArchitecture(object):
                                        self.parameters)
         rev_generator = FileGenerator(self.session, '',
                                       self.parameters)
-        fileinfo = [FileInfo(src=files['src']['path'],
-                             size=0, operation=operation)]
+        taskinfo = [TaskInfo(src=files['src']['path'],
+                             src_type='s3', operation=operation)]
         s3handler = S3Handler(self.session, self.parameters)
 
         command_dict = {}
@@ -597,13 +598,13 @@ class CommandArchitecture(object):
                               'filters': [Filter(self.parameters)],
                               's3_handler': [s3handler]}
 
-        command_dict['ls'] = {'setup': [fileinfo],
+        command_dict['ls'] = {'setup': [taskinfo],
                               's3_handler': [s3handler]}
 
-        command_dict['mb'] = {'setup': [fileinfo],
+        command_dict['mb'] = {'setup': [taskinfo],
                               's3_handler': [s3handler]}
 
-        command_dict['rb'] = {'setup': [fileinfo],
+        command_dict['rb'] = {'setup': [taskinfo],
                               's3_handler': [s3handler]}
 
         files = command_dict[self.cmd]['setup']
@@ -627,7 +628,7 @@ class CommandParameters(object):
     """
     def __init__(self, session, cmd, parameters):
         """
-        Stores command name and parameters.  Ensures that the dir_op flag
+        Stores command name and parameters.  Ensures that the ``dir_op`` flag
         is true if a certain command is being used.
         """
         self.session = session
@@ -682,7 +683,7 @@ class CommandParameters(object):
         This checks the source paths to deem if they are valid.  The check
         performed in S3 is first it lists the objects using the source path.
         If there is an error like the bucket does not exist, the error will be
-        caught with check_error() funciton.  If the operation is on a
+        caught with ``check_error()`` funciton.  If the operation is on a
         single object in s3, it checks that a list of object was returned and
         that the first object listed is the name of the specified in the
         command line.  If the operation is on objects under a common prefix,

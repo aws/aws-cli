@@ -22,7 +22,8 @@ import os
 
 import botocore.session
 from awscli import EnvironmentVariables
-from awscli.customizations.s3.filegenerator import FileInfo, FileGenerator
+from awscli.customizations.s3.filegenerator import FileGenerator
+from awscli.customizations.s3.fileinfo import FileInfo
 from tests.unit.customizations.s3 import make_s3_files, s3_cleanup, \
     compare_files
 

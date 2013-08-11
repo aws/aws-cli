@@ -14,8 +14,9 @@ import os
 import unittest
 
 from awscli import EnvironmentVariables
-from awscli.customizations.s3.filegenerator import FileInfo, \
-    FileGenerator, get_file_stat, find_bucket_key
+from awscli.customizations.s3.filegenerator import FileGenerator
+from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.utils import get_file_stat, find_bucket_key
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, compare_files

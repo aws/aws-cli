@@ -13,7 +13,7 @@
 import os
 import unittest
 
-from awscli.customizations.s3.filegenerator import FileInfo
+from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.filters import Filter
 
 

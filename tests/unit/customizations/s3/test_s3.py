@@ -163,7 +163,7 @@ class S3ParameterTest(unittest.TestCase):
         parser = argparse.ArgumentParser()
         s3_param.add_to_parser(parser)
         parsed_args = parser.parse_args(['--test'])
-        self.assertEqual(parsed_args.destination, True)
+        self.assertTrue(parsed_args.destination)
 
 
 class CommandArchitectureTest(S3HandlerBaseTest):
@@ -346,7 +346,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         cmd_arc = CommandArchitecture(self.session, 'mb', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
-        output_str = "(dryrun) make_bucket: %s" % s3_prefix[5:-1]
+        output_str = "(dryrun) make_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_rb(self):
@@ -361,7 +361,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
-        output_str = "(dryrun) remove_bucket: %s" % s3_prefix[5:-1]
+        output_str = "(dryrun) remove_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
 
 

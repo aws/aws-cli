@@ -20,7 +20,7 @@ from mock import patch
 
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.s3handler import S3Handler
-from awscli.customizations.s3.filegenerator import FileInfo
+from awscli.customizations.s3.fileinfo import FileInfo
 from tests.unit.customizations.s3.fake_session import FakeSession
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets, \
@@ -51,12 +51,12 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
         for filename in files:
-            self.assertEqual(os.path.exists(filename), True)
+            self.assertTrue(os.path.exists(filename))
             tasks.append(FileInfo(src=filename, src_type='local',
                                   dest_type='s3', operation='delete', size=0))
         self.s3_handler.call(tasks)
         for filename in files:
-            self.assertEqual(os.path.exists(filename), False)
+            self.assertFalse(os.path.exists(filename))
 
     def test_s3_delete(self):
         """
@@ -341,7 +341,7 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
         self.s3_handler.call(tasks)
         # Confirm that the files now exist.
         for filename in self.loc_files:
-            self.assertEqual(os.path.exists(filename), True)
+            self.assertTrue(os.path.exists(filename))
         # Ensure the contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
@@ -385,7 +385,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
     def test_download(self):
         # Confirm that the files do not exist.
         for filename in self.loc_files:
-            self.assertEqual(os.path.exists(filename), False)
+            self.assertFalse(os.path.exists(filename))
         # Create file info objects to perform download.
         tasks = []
         time = datetime.datetime.now()
@@ -398,7 +398,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         self.s3_handler.call(tasks)
         # Confirm that the files now exist.
         for filename in self.loc_files:
-            self.assertEqual(os.path.exists(filename), True)
+            self.assertTrue(os.path.exists(filename))
         # Ensure the contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
@@ -417,7 +417,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         self.s3_handler_multi.call(tasks)
         # Confirm that the files now exist.
         for filename in self.loc_files:
-            self.assertEqual(os.path.exists(filename), True)
+            self.assertTrue(os.path.exists(filename))
         # Ensure the contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
@@ -444,7 +444,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         self.s3_handler_multi.call(tasks)
         # Confirm that the files now exist.
         for filename in self.loc_files:
-            self.assertEqual(os.path.exists(filename), True)
+            self.assertTrue(os.path.exists(filename))
         # Ensure that contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
@@ -465,7 +465,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
                                   size=15))
         self.s3_handler_multi_except.call(tasks)
         for filename in self.loc_files:
-            self.assertEqual(os.path.exists(filename), True)
+            self.assertTrue(os.path.exists(filename))
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:

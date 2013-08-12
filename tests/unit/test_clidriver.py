@@ -335,17 +335,32 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                       "file does not exist: does/not/exist.json",
                       self.stderr.getvalue())
 
-    def test_http_file_param_does_not_exist(self):
+
+class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
+
+    def setUp(self):
+        super(TestHTTPParamFileDoesNotExist, self).setUp()
+        self.stderr = six.StringIO()
+        self.stderr_patch = mock.patch('sys.stderr', self.stderr)
+        self.stderr_patch.start()
+
+    def tearDown(self):
+        super(TestHTTPParamFileDoesNotExist, self).tearDown()
+        self.stderr_patch.stop()
+
+    def register_uri(self):
         httpretty.register_uri(httpretty.GET, 'http://does/not/exist.json',
                                body='', status=404)
+
+    def test_http_file_param_does_not_exist(self):
         driver = create_clidriver()
         rc = driver.main('ec2 describe-instances '
                          '--filters http://does/not/exist.json'.split())
         self.assertEqual(rc, 255)
         self.assertIn("Bad value for argument '--filters': "
-                      "Unable to retrieve http://does/not/exist.json: "
-                      "received non 200 status code of 404",
-                      self.stderr.getvalue())
+                    "Unable to retrieve http://does/not/exist.json: "
+                    "received non 200 status code of 404",
+                    self.stderr.getvalue())
 
 
 

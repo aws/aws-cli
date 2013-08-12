@@ -54,15 +54,15 @@ class TestEC2Operations(unittest.TestCase):
 
     def test_describe_instances_filter(self):
         op = self.ec2.get_operation('DescribeInstances')
-        params = op.build_parameters(filters={'Name': 'group-name',
-                                              'Values': ['foobar']})
+        params = op.build_parameters(filters=[{'Name': 'group-name',
+                                               'Values': ['foobar']}])
         result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
         self.assertEqual(params, result)
 
     def test_describe_instances_filter_values(self):
         op = self.ec2.get_operation('DescribeInstances')
-        params = op.build_parameters(filters={'Name': 'group-name',
-                                              'Values': ['foobar', 'fiebaz']})
+        params = op.build_parameters(filters=[{'Name': 'group-name',
+                                               'Values': ['foobar', 'fiebaz']}])
         result = {'Filter.1.Value.2': 'fiebaz',
                   'Filter.1.Value.1': 'foobar',
                   'Filter.1.Name': 'group-name'}
@@ -123,10 +123,10 @@ class TestEC2Operations(unittest.TestCase):
         op = self.ec2.get_operation('AuthorizeSecurityGroupIngress')
         params = op.build_parameters(
             group_name='MyGroup',
-            ip_permissions={
+            ip_permissions=[{
                 'FromPort': 22, 'ToPort': 22,
                 'IpProtocol': 'tcp',
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]})
+                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]}])
         result = {'GroupName': 'MyGroup',
                   'IpPermissions.1.FromPort': '22',
                   'IpPermissions.1.ToPort': '22',

@@ -186,6 +186,15 @@ class TestParameters(unittest.TestCase):
         with self.assertRaises(botocore.exceptions.ValidationError):
             p.build_parameter('query', value, d)
 
+    def test_list_type_validation(self):
+        p = botocore.parameters.ListParameter(operation=None, name='foo',
+                                              members={'type': 'string'})
+        d = {}
+        # None is not of type string.
+        value = 'not a list'
+        with self.assertRaises(botocore.exceptions.ValidationError):
+            p.build_parameter('query', value, d)
+
     def test_list_struct_fails_validation(self):
         members = {
             "shape_name": "Foo",

@@ -52,11 +52,11 @@ class TestELBOperations(unittest.TestCase):
 
     def test_create_load_balancer_listeners(self):
         op = self.elb.get_operation('CreateLoadBalancerListeners')
-        params = op.build_parameters(listeners={'InstancePort':80,
-                                                'SSLCertificateId': 'foobar',
-                                                'LoadBalancerPort':81,
-                                                'Protocol':'HTTPS',
-                                                'InstanceProtocol':'HTTP'},
+        params = op.build_parameters(listeners=[{'InstancePort':80,
+                                                 'SSLCertificateId': 'foobar',
+                                                 'LoadBalancerPort':81,
+                                                 'Protocol':'HTTPS',
+                                                 'InstanceProtocol':'HTTP'}],
                                      load_balancer_name='foobar')
         result = {'Listeners.member.1.LoadBalancerPort': '81',
                   'Listeners.member.1.InstancePort': '80',

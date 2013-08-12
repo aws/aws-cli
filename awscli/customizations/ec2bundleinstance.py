@@ -86,6 +86,7 @@ def _add_params(argument_table, operation, **kwargs):
     argument_table['owner-sak'] = arg
     arg = BundleArgument(storage_param='UploadPolicy',
                          operation=operation, name='policy',
+                         documentation=POLICY_DOCS)
     argument_table['policy'] = arg
 
 

@@ -45,6 +45,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.environ_patch.start()
 
     def tearDown(self):
+        # This clears all the previous registrations.
+        httpretty.httpretty.reset()
         httpretty.disable()
         self.environ_patch.stop()
 

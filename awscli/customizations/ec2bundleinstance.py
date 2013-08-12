@@ -48,25 +48,17 @@ POLICY_DOCS = ("An Amazon S3 upload policy that gives "
                "your secret access key, so we can create a policy "
                "signature for you (the secret access key is not passed "
                "to Amazon EC2). If you do not provide this parameter, "
-               "the --owner-sak is required, and we generate an upload "
-               "policy and policy signature for you automatically. For "
-               "more information about upload policies and how to sign "
-               "them, see the sections about policy construction and "
-               "signatures in the "
+               "we generate an upload policy for you automatically. "
+               "For more information about upload policies see the "
+               "sections about policy construction and signatures in the "
                '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/HTTPPOSTForms.html">'
                'Amazon Simple Storage Service Developer Guide</a>.')
                
 # --owner-sak
 OWNER_SAK_DOCS = ('The AWS secret access key for the owner of the '
                   'Amazon S3 bucket specified in the --bucket '
-                  'parameter. This parameter is required in either of '
-                  'these cases:<ul>'
-                  "<li>If you don't provide the --policy parameter</li>"
-                  "<li>If you provide the --policy parameter, but "
-                  "don't provide the --policy-signature parameter</li></ul>"
-                  '<p>The command line tools client uses the secret '
-                  'access key to sign a policy for you, but does not '
-                  'send the secret access key to Amazon EC2.</p>')
+                  'parameter. This parameter is required so that a '
+                  'signature can be computed for the policy.')
 
 
 def _add_params(argument_table, operation, **kwargs):
@@ -76,18 +68,24 @@ def _add_params(argument_table, operation, **kwargs):
     storage_arg = argument_table.get('storage')
     storage_param = storage_arg.argument_object
     storage_param.required = False
-    arg = BucketArgument(operation, 'bucket',
+    arg = BundleArgument(storage_param='Bucket',
+                         operation=operation, name='bucket',
                          documentation=BUCKET_DOCS)
     argument_table['bucket'] = arg
-    arg = PrefixArgument(operation, 'prefix', documentation=PREFIX_DOCS)
+    arg = BundleArgument(storage_param='Prefix',
+                         operation=operation, name='prefix',
+                         documentation=PREFIX_DOCS)
     argument_table['prefix'] = arg
-    arg = OwnerAKIDArgument(operation, 'owner-akid',
-                            documentation=OWNER_AKID_DOCS)
+    arg = BundleArgument(storage_param='AWSAccessKeyId',
+                         operation=operation, name='owner-akid',
+                         documentation=OWNER_AKID_DOCS)
     argument_table['owner-akid'] = arg
-    arg = OwnerSAKArgument(operation, 'owner-sak',
-                           documentation=OWNER_SAK_DOCS)
+    arg = BundleArgument(storage_param='_SAK',
+                         operation=operation, name='owner-sak',
+                         documentation=OWNER_SAK_DOCS)
     argument_table['owner-sak'] = arg
-    arg = PolicyArgument(operation, 'policy',
+    arg = BundleArgument(storage_param='UploadPolicy',
+                         operation=operation, name='policy',
                          documentation=POLICY_DOCS)
     argument_table['policy'] = arg
 
@@ -151,21 +149,10 @@ def _check_params(**kwargs):
         _generate_signature(storage)
 
 
-def _add_docs(help_command, **kwargs):
-    doc = help_command.doc
-    doc.style.new_paragraph()
-    doc.style.start_note()
-    msg = ('To specify multiple rules in a single command '
-           'use the <code>--ip-permissions</code> option')
-    doc.include_doc_string(msg)
-    doc.style.end_note()
-
-
 EVENTS = [
     ('building-argument-table.ec2.BundleInstance', _add_params),
     ('operation-args-parsed.ec2.BundleInstance', _check_args),
     ('before-parameter-build.ec2.BundleInstance', _check_params),
-    ('doc-description.Operation.bundle-instance', _add_docs),
     ]
 
 
@@ -182,36 +169,12 @@ def _build_storage(params, key, value):
     params['storage']['S3'][key] = value
 
 
-class BucketArgument(CustomArgument):
+class BundleArgument(CustomArgument):
+
+    def __init__(self, storage_param, *args, **kwargs):
+        super(BundleArgument, self).__init__(*args, **kwargs)
+        self._storage_param = storage_param
 
     def add_to_params(self, parameters, value):
         if value:
-            _build_storage(parameters, 'Bucket', value)
-
-
-class PrefixArgument(CustomArgument):
-
-    def add_to_params(self, parameters, value):
-        if value:
-            _build_storage(parameters, 'Prefix', value)
-
-            
-class OwnerAKIDArgument(CustomArgument):
-
-    def add_to_params(self, parameters, value):
-        if value:
-            _build_storage(parameters, 'AWSAccessKeyId', value)
-        
-
-class OwnerSAKArgument(CustomArgument):
-
-    def add_to_params(self, parameters, value):
-        if value:
-            _build_storage(parameters, '_SAK', value)
-
-
-class PolicyArgument(CustomArgument):
-
-    def add_to_params(self, parameters, value):
-        if value:
-            _build_storage(parameters, 'UploadPolicy', value)
+            _build_storage(parameters, self._storage_param, value)

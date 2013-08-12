@@ -326,6 +326,28 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = driver.main(cmd)
         self.assertEqual(rc, 0)
 
+    def test_file_param_does_not_exist(self):
+        driver = create_clidriver()
+        rc = driver.main('ec2 describe-instances '
+                         '--filters file://does/not/exist.json'.split())
+        self.assertEqual(rc, 255)
+        self.assertIn("Bad value for argument '--filters': "
+                      "file does not exist: does/not/exist.json",
+                      self.stderr.getvalue())
+
+    def test_http_file_param_does_not_exist(self):
+        httpretty.register_uri(httpretty.GET, 'http://does/not/exist.json',
+                               body='', status=404)
+        driver = create_clidriver()
+        rc = driver.main('ec2 describe-instances '
+                         '--filters http://does/not/exist.json'.split())
+        self.assertEqual(rc, 255)
+        self.assertIn("Bad value for argument '--filters': "
+                      "Unable to retrieve http://does/not/exist.json: "
+                      "received non 200 status code of 404",
+                      self.stderr.getvalue())
+
+
 
 if __name__ == '__main__':
     unittest.main()

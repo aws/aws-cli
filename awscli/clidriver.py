@@ -21,7 +21,7 @@ from botocore.compat import copy_kwargs, OrderedDict
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
-from awscli.paramfile import get_paramfile
+from awscli.paramfile import get_paramfile, ResourceLoadingError
 from awscli.plugin import load_plugins
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
@@ -36,6 +36,9 @@ LOG = logging.getLogger('awscli.clidriver')
 
 
 class UnknownArgumentError(Exception):
+    pass
+
+class BadArgumentError(Exception):
     pass
 
 
@@ -570,13 +573,19 @@ class CLIArgument(BaseCLIArgument):
 
     def _handle_param_file(self, value):
         session = self.operation_object.service.session
+        # If the arg is suppose to be a list type, just
+        # get the first element in the list, as it may
+        # refer to a file:// (or http/https) type.
+        potential_param_value = value
         if isinstance(value, list) and len(value) == 1:
-            temp = value[0]
-        else:
-            temp = value
-        temp = get_paramfile(session, temp)
-        if temp:
-            value = temp
+            potential_param_value = value[0]
+        try:
+            actual_value = get_paramfile(session, potential_param_value)
+        except ResourceLoadingError as e:
+            raise BadArgumentError(
+                "Bad value for argument '%s': %s" % (self.cli_name, e))
+        if actual_value is not None:
+            value = actual_value
         return value
 
     def _emit(self, name, **kwargs):

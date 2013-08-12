@@ -23,6 +23,7 @@
 import logging
 from botocore.parameters import get_parameter
 from botocore.exceptions import MissingParametersError
+from botocore.exceptions import UnknownParameterError
 from botocore.paginate import Paginator
 from botocore.payload import XMLPayload, JSONPayload
 from botocore import BotoCoreObject
@@ -129,6 +130,7 @@ class Operation(BotoCoreObject):
         """
         built_params = self._get_built_params()
         missing = []
+        self._check_for_unknown_params(kwargs)
         for param in self.params:
             if param.required:
                 missing.append(param)
@@ -139,9 +141,17 @@ class Operation(BotoCoreObject):
                                       kwargs[param.py_name],
                                       built_params)
         if missing:
-            missing_str = ','.join([p.py_name for p in missing])
-            raise MissingParametersError(missing=missing_str)
+            missing_str = ', '.join([p.py_name for p in missing])
+            raise MissingParametersError(missing=missing_str,
+                                         object_name=self)
         return built_params
+
+    def _check_for_unknown_params(self, kwargs):
+        valid_names = [p.py_name for p in self.params]
+        for key in kwargs:
+            if key not in valid_names:
+                raise UnknownParameterError(name=key, operation=self,
+                                            choices=', '.join(valid_names))
 
     def is_streaming(self):
         is_streaming = False

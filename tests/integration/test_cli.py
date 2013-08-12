@@ -132,14 +132,14 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_param_json(self):
         p = aws(
             'ec2 describe-instances --filters '
-            '\'{"Name": "instance-id", "Values": "i-123"}\'')
+            '\'{"Name": "instance-id", "Values": ["i-123"]}\'')
         self.assertEqual(p.rc, 0, p.stdout + p.stderr)
         self.assertIn('Reservations', p.json)
 
     def test_param_with_bad_json(self):
         p = aws(
             'ec2 describe-instances --filters '
-            '\'{"Name": "bad-filter", "Values": "i-123"}\'')
+            '\'{"Name": "bad-filter", "Values": ["i-123"]}\'')
         self.assertEqual(p.rc, 1)
         self.assertIn("The filter 'bad-filter' is invalid", p.stdout,
                       "stdout: %s, stderr: %s" % (p.stdout, p.stderr))

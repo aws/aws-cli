@@ -132,7 +132,7 @@ def _generate_signature(params):
     if policy and sak:
         policy = base64.b64encode(six.b(policy)).decode('utf-8')
         new_hmac = hmac.new(sak.encode('utf-8'), digestmod=sha1)
-        new_hmac.update(policy)
+        new_hmac.update(six.b(policy))
         ps = base64.encodestring(new_hmac.digest()).strip().decode('utf-8')
         params['UploadPolicySignature'] = ps
         del params['_SAK']

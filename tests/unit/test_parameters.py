@@ -260,6 +260,22 @@ class TestParameters(unittest.TestCase):
                               'bar.2': 'is',
                               'bar.3': 'a'})
 
+    def test_type_blob_validation(self):
+        p = botocore.parameters.BlobParameter(
+            operation=None, name='Foo', payload=True)
+        bytearray_type = bytearray(b'foo')
+        byte_type = bytes(b'foo')
+        str_type = str('foo')
+        self.assertEqual(p.validate(str_type), str_type)
+        self.assertEqual(p.validate(byte_type), byte_type)
+        self.assertEqual(p.validate(bytearray_type), bytearray_type)
+
+    def test_blob_conversion_to_base64(self):
+        # Blobs that are not in the payload should be base64-encoded
+        p = botocore.parameters.BlobParameter(
+            operation=None, name='Foo', payload=False)
+        self.assertEqual(p.validate('foo'), 'Zm9v')
+
 
 class TestStructureParamaters(unittest.TestCase):
 

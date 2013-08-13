@@ -295,14 +295,14 @@ class StringParameter(Parameter):
 class BlobParameter(Parameter):
 
     def validate(self, value):
+        allowed_types = six.string_types + (bytes, bytearray,)
         if self.payload and self.streaming:
             # Streaming blobs should be file-like objects or be strings.
-            if not hasattr(value, 'read') and not isinstance(value,
-                                                             six.string_types):
+            if not hasattr(value, 'read') and not isinstance(allowed_types):
                 raise ValidationError(value=str(value), type_name='blob',
                                       param=self)
         else:
-            if not isinstance(value, six.string_types):
+            if not isinstance(value, allowed_types):
                 raise ValidationError(value=str(value), type_name='string',
                                       param=self)
             if not hasattr(self, 'payload') or self.payload is False:

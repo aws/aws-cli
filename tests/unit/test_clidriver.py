@@ -205,6 +205,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'top-level-args-parsed',
             'building-command-table.s3',
             'building-argument-table.s3.ListObjects',
+            'operation-args-parsed.s3.ListObjects',
             'process-cli-arg.s3.list-objects',
         ])
 
@@ -279,6 +280,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         host = self.last_request_headers()['Host']
         self.assertEqual(host, 'ec2.us-west-2.amazonaws.com')
 
+    def test_aws_with_endpoint_url(self):
+        driver = create_clidriver()
+        driver.main('ec2 describe-instances --endpoint-url https://foobar.com/'.split())
+        host = self.last_request_headers()['Host']
+        self.assertEqual(host, 'foobar.com')
+
     def inject_new_param(self, argument_table, **kwargs):
         argument = BuiltInArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)
@@ -318,6 +325,43 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         cmd.append('')
         rc = driver.main(cmd)
         self.assertEqual(rc, 0)
+
+    def test_file_param_does_not_exist(self):
+        driver = create_clidriver()
+        rc = driver.main('ec2 describe-instances '
+                         '--filters file://does/not/exist.json'.split())
+        self.assertEqual(rc, 255)
+        self.assertIn("Bad value for argument '--filters': "
+                      "file does not exist: does/not/exist.json",
+                      self.stderr.getvalue())
+
+
+class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
+
+    def setUp(self):
+        super(TestHTTPParamFileDoesNotExist, self).setUp()
+        self.stderr = six.StringIO()
+        self.stderr_patch = mock.patch('sys.stderr', self.stderr)
+        self.stderr_patch.start()
+
+    def tearDown(self):
+        super(TestHTTPParamFileDoesNotExist, self).tearDown()
+        self.stderr_patch.stop()
+
+    def register_uri(self):
+        httpretty.register_uri(httpretty.GET, 'http://does/not/exist.json',
+                               body='', status=404)
+
+    def test_http_file_param_does_not_exist(self):
+        driver = create_clidriver()
+        rc = driver.main('ec2 describe-instances '
+                         '--filters http://does/not/exist.json'.split())
+        self.assertEqual(rc, 255)
+        self.assertIn("Bad value for argument '--filters': "
+                    "Unable to retrieve http://does/not/exist.json: "
+                    "received non 200 status code of 404",
+                    self.stderr.getvalue())
+
 
 
 if __name__ == '__main__':

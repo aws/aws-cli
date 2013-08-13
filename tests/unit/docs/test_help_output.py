@@ -20,7 +20,7 @@ class CapturedRenderer(object):
         self.rendered_contents = ''
 
     def render(self, contents):
-        self.rendered_contents = contents
+        self.rendered_contents = contents.decode('utf-8')
 
 
 class BaseAWSHelpOutput(BaseCLIDriverTest):
@@ -106,20 +106,20 @@ class TestHelpOutput(BaseAWSHelpOutput):
         # Should contain part of the help text from the model.
         self.assert_contains('The run-instances operation launches a specified '
                              'number of instances')
-        self.assert_contains('``--max-count`` (integer)')
+        self.assert_contains('``--count`` (string)')
 
     def test_arguments_with_example_json_syntax(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('``--iam-instance-profile``')
         self.assert_contains('JSON Syntax')
-        self.assert_contains('"arn": "string"')
-        self.assert_contains('"name": "string"')
+        self.assert_contains('"Arn": "string"')
+        self.assert_contains('"Name": "string"')
 
     def test_arguments_with_example_shorthand_syntax(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('``--iam-instance-profile``')
         self.assert_contains('Shorthand Syntax')
-        self.assert_contains('--iam-instance-profile arn=value,name=value')
+        self.assert_contains('--iam-instance-profile Arn=value,Name=value')
 
     def test_required_args_come_before_optional_args(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
@@ -128,8 +128,6 @@ class TestHelpOutput(BaseAWSHelpOutput):
         # each item in the list has to come before the previous arg.
         self.assert_text_order(
             '--image-id <value>',
-            '--min-count <value>',
-            '--max-count <value>',
             '[--key-name <value>]',
             '[--security-groups <value>]', starting_from='Synopsis')
 
@@ -205,3 +203,18 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
         self.driver.main(['s3', 'get-object', 'help'])
         self.assert_not_contains('``--output-file``')
         self.assert_contains('``output-file`` (string)')
+
+
+class TestPagingParamDocs(BaseAWSHelpOutput):
+    def test_starting_token_injected(self):
+        self.driver.main(['s3', 'list-objects', 'help'])
+        self.assert_contains('``--starting-token``')
+
+    def test_max_items_injected(self):
+        self.driver.main(['s3', 'list-objects', 'help'])
+        self.assert_contains('``--max-items``')
+
+    def test_builtin_paging_params_removed(self):
+        self.driver.main(['s3', 'list-objects', 'help'])
+        self.assert_not_contains('``--next-token``')
+        self.assert_not_contains('``--max-keys``')

@@ -5,9 +5,7 @@ distutils/setuptools install script.
 """
 
 import os
-import sys
 import awscli
-import glob
 
 try:
     from setuptools import setup
@@ -37,7 +35,8 @@ requires = ['botocore>=0.13.1,<0.14.0',
             'six>=1.1.0',
             'colorama==0.2.5',
             'argparse>=1.1',
-            'docutils>=0.10']
+            'docutils>=0.10',
+            'rsa==3.1.1']
 
 
 setup(

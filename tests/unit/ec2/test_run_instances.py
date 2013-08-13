@@ -12,15 +12,44 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
-import awscli.clidriver
 
 
 class TestDescribeInstances(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 run-instances'
 
+    def test_no_count(self):
+        args = ' --image-id ami-foobar'
+        args_list = (self.prefix + args).split()
+        result = {
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_count_scalar(self):
+        args = ' --image-id ami-foobar --count 2'
+        args_list = (self.prefix + args).split()
+        result = {
+            'ImageId': 'ami-foobar',
+            'MaxCount': '2',
+            'MinCount': '2'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_count_range(self):
+        args = ' --image-id ami-foobar --count 5:10'
+        args_list = (self.prefix + args).split()
+        result = {
+            'ImageId': 'ami-foobar',
+            'MaxCount': '10',
+            'MinCount': '5'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
     def test_block_device_mapping(self):
-        args = ' --image-id ami-foobar --min-count 1 --max-count 1'
+        args = ' --image-id ami-foobar --count 1'
         args_list = (self.prefix + args).split()
         # We're switching to list form because we need to test
         # when there's leading spaces.  This is the CLI equivalent
@@ -28,7 +57,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         # (note the space between ``'`` and ``[``)
         args_list.append('--block-device-mapping')
         args_list.append(
-            ' [{"device_name":"/dev/sda1","ebs":{"volume_size":20}}]')
+            ' [{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":20}}]')
         result = {
             'BlockDeviceMapping.1.DeviceName': '/dev/sda1',
             'BlockDeviceMapping.1.Ebs.VolumeSize': '20',

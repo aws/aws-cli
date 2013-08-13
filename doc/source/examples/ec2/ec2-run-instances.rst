@@ -6,7 +6,7 @@ t1.micro. The key pair and security groups are named MyKeyPair and
 MySecurityGroup, and are assumed to have been created previously.
 ::
 
-    aws ec2 run-instances --image-id ami-554ac83c --min-count 1 --max-count 1 --key-name MyKeyPair --security-groups MySecurityGroup
+    aws ec2 run-instances --image-id ami-554ac83c count 1--key-name MyKeyPair --security-groups MySecurityGroup
 
 This command output a JSON block that contains descriptive information about the instance.
 

@@ -28,8 +28,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
     def test_create_stack_string_params(self):
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
-        cmdline += ' --parameters parameter_key=foo,parameter_value=bar'
-        cmdline += ' parameter_key=foo2,parameter_value=bar2'
+        cmdline += ' --parameters ParameterKey=foo,ParameterValue=bar'
+        cmdline += ' ParameterKey=foo2,ParameterValue=bar2'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters.member.1.ParameterKey': 'foo',
                   'Parameters.member.1.ParameterValue': 'bar',
@@ -42,7 +42,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         # we need to be able to quote the value or escape the comma.
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
-        cmdline += ' --parameters parameter_key=foo,parameter_value=one\,two'
+        cmdline += ' --parameters ParameterKey=foo,ParameterValue=one\,two'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters.member.1.ParameterKey': 'foo',
                   'Parameters.member.1.ParameterValue': 'one,two',
@@ -53,7 +53,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
         # Note how we're quoting the value of parameter_value.
-        cmdline += ' --parameters parameter_key=foo,parameter_value="one,two"'
+        cmdline += ' --parameters ParameterKey=foo,ParameterValue="one,two"'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters.member.1.ParameterKey': 'foo',
                   'Parameters.member.1.ParameterValue': 'one,two',

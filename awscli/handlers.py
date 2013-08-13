@@ -20,6 +20,10 @@ from awscli.argprocess import ParamShorthand
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
+from awscli.customizations.ec2addcount import ec2_add_count
+from awscli.customizations.paginate import unify_paging_params
+from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
+from awscli.customizations.ec2secgroupsimplify import register_secgroup
 
 
 def awscli_initialize(event_handlers):
@@ -36,6 +40,13 @@ def awscli_initialize(event_handlers):
                             param_shorthand.add_example_fn)
     event_handlers.register('doc-examples.Operation.*',
                             add_examples)
-    event_handlers.register('building-argument-table',
+    event_handlers.register('building-argument-table.s3.*',
                             add_streaming_output_arg)
+    event_handlers.register('building-argument-table.ec2.RunInstances',
+                            ec2_add_count)
+    event_handlers.register('building-argument-table',
+                            unify_paging_params)
+    event_handlers.register('building-argument-table.ec2.GetPasswordData',
+                            ec2_add_priv_launch_key)
+    register_secgroup(event_handlers)
     register_removals(event_handlers)

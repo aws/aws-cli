@@ -72,9 +72,12 @@ class CreateTablesTest(unittest.TestCase):
     def test_s3(self):
         """
         Ensures that the table for the service was created properly.
+        Also ensures the original s3 service is renamed to ``s3api``.
         """
-        self.services = {}
+        self.services = {'s3': 'Original S3 service'}
         add_s3(self.services, True)
+        orig_service = self.services.pop('s3api')
+        self.assertEqual(orig_service, 'Original S3 service')
         for service in self.services.keys():
             self.assertIn(service, ['s3'])
 

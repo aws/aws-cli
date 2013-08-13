@@ -74,7 +74,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
                                  'The\s+describe-instances\s+operation')
 
     def test_operation_help_with_required_arg(self):
-        p = aws('s3 get-object help')
+        p = aws('s3api get-object help')
         self.assertEqual(p.rc, 1, p.stderr)
         self.assertIn('get-object', p.stdout)
 
@@ -118,7 +118,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
         self.put_object(bucket=bucket_name, key='foobar',
                         content='foobar contents')
-        p = aws('s3 get-object --bucket %s --key foobar %s' % (
+        p = aws('s3api get-object --bucket %s --key foobar %s' % (
             bucket_name, os.path.join(d, 'foobar')))
         self.assertEqual(p.rc, 0)
         with open(os.path.join(d, 'foobar')) as f:

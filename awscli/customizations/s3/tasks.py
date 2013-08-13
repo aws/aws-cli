@@ -145,7 +145,7 @@ class UploadPartTask(object):
                 else:
                     stream_body = bytearray(body)
                 params = {'endpoint': self.endpoint, 'bucket': bucket,
-                          'key': key, 'part_number': part_number,
+                          'key': key, 'part_number': str(part_number),
                           'upload_id': upload_id,
                           'body': stream_body}
                 response_data, http = operate(self.service, 'UploadPart',

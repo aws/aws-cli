@@ -25,6 +25,8 @@ from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo, TaskInfo
 from awscli.customizations.s3.filters import Filter
 from awscli.customizations.s3.s3handler import S3Handler
+from awscli.customizations.s3.description import add_command_descriptions, \
+    add_param_descriptions
 from awscli.customizations.s3.utils import find_bucket_key, check_error
 from bcdoc.clidocs import CLIDocumentEventHandler
 import bcdoc.clidocevents
@@ -77,26 +79,8 @@ cmd_dict = {'cp': {'options': {'nargs': 2},
             'rb': {'options': {'nargs': 1}, 'params': ['force']}
             }
 
-cmd_dict['cp']['description'] = "Copies a local file or S3 object to another \
-                                location locally or in S3"
-cmd_dict['cp']['usage'] = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-                          "or <S3Path> <S3Path>"
-cmd_dict['mv']['description'] = "Moves a local file or S3 object to" \
-                                "another location locally or in S3"
-cmd_dict['mv']['usage'] = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-                          "or <S3Path> <S3Path>"
-cmd_dict['rm']['description'] = "Deletes an S3 object"
-cmd_dict['rm']['usage'] = "<S3Path>"
-cmd_dict['sync']['description'] = "Syncs directories and S3 prefixes"
-cmd_dict['sync']['usage'] = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-                            "or <S3Path> <S3Path>"
-cmd_dict['ls']['description'] = "List S3 objects and common prefixes " \
-                                "under a prefix or all S3 buckets"
-cmd_dict['ls']['usage'] = "<S3Path> or NONE"
-cmd_dict['mb']['description'] = "Creates an S3 bucket"
-cmd_dict['mb']['usage'] = "<S3Path>"
-cmd_dict['rb']['description'] = "Deletes an S3 bucket"
-cmd_dict['rb']['usage'] = "<S3Path>"
+add_command_descriptions(cmd_dict)
+
 
 """
 This is a dictionary useful for keeping track of the parameters passed to
@@ -119,30 +103,7 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                                                'public-read-write']}}
                }
 
-params_dict['dryrun']['documents'] = "Displays the operations that would " \
-    "be performed using the specified command without actually running them."
-
-params_dict['quiet']['documents'] = "Does not display the operations " \
-    "performed from the specified command."
-
-params_dict['recursive']['documents'] = "Command is performed on all files " \
-    "or objects under the specified directory or prefix."
-
-params_dict['delete']['documents'] = "Files that exist in the destination " \
-    "but not in the source are deleted during sync."
-
-params_dict['exclude']['documents'] = "Exclude all files or objects from " \
-    "the command that follow the specified pattern."
-
-params_dict['include']['documents'] = "Include all files or objects in " \
-    "the command that follow the specified pattern."
-
-params_dict['acl']['documents'] = "Sets the ACl for the object when the " \
-    "command is performed.  Only accepts values of ``private``, \
-    ``public-read``, or ``public-read-write``."
-
-params_dict['force']['documents'] = "Deletes all objects in the bucket " \
-    "including the bucket itself."
+add_param_descriptions(params_dict)
 
 
 def awscli_initialize(cli):
@@ -169,9 +130,13 @@ def s3_plugin_initialize(event_handlers):
 
 def add_s3(command_table, session, **kwargs):
     """
-    This creates a new service object for the s3 plugin
+    This creates a new service object for the s3 plugin.  It sends the
+    old s3 commands to the namespace ``s3api``.
     """
+    original_s3 = command_table['s3']
+    command_table['s3api'] = original_s3
     command_table['s3'] = S3('s3', session)
+    #print(command_table)
 
 
 def add_commands(operation_table, session, **kwargs):
@@ -328,7 +293,7 @@ class S3(object):
         self._session = session
         self.op_table = op_table
         self.documentation = "This provides higher level S3 commands for " \
-                             "AWS CLI"
+                             "the AWS CLI."
 
     def __call__(self, args, parsed_globals):
         """

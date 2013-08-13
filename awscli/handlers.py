@@ -24,6 +24,7 @@ from awscli.customizations.ec2addcount import ec2_add_count
 from awscli.customizations.paginate import unify_paging_params
 from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2secgroupsimplify import register_secgroup
+from awscli.customizations.s3.s3 import s3_plugin_initialize
 
 
 def awscli_initialize(event_handlers):
@@ -49,4 +50,5 @@ def awscli_initialize(event_handlers):
     event_handlers.register('building-argument-table.ec2.GetPasswordData',
                             ec2_add_priv_launch_key)
     register_secgroup(event_handlers)
+    s3_plugin_initialize(event_handlers)
     register_removals(event_handlers)

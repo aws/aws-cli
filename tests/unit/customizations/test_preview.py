@@ -17,6 +17,7 @@ import six
 
 from awscli.customizations import preview
 from awscli.clidriver import create_clidriver
+from tests import BaseCLIDriverTest
 from tests.unit import BaseAWSCommandParamsTest
 
 
@@ -66,3 +67,11 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 1)
         self.assertIn(preview.PREVIEW_SERVICES['cloudsearch'],
                       self.stderr.getvalue())
+
+    @mock.patch('awscli.help.get_renderer')
+    def test_preview_mode_not_in_provider_help(self, renderer):
+        self.driver.main(['help'])
+        contents = renderer.return_value.render.call_args
+        # The preview services should not be in the help output.
+        for service in preview.PREVIEW_SERVICES:
+            self.assertNotIn(service, contents)

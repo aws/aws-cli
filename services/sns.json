@@ -7,7 +7,7 @@
   "service_abbreviation": "Amazon SNS",
   "endpoint_prefix": "sns",
   "xmlnamespace": "http://sns.amazonaws.com/doc/2010-03-31/",
-  "documentation": "\n    <fullname>Amazon Simple Notification Service</fullname>\n    \n\t<p>Amazon Simple Notification Service (Amazon SNS) is a web service that enables you to build distributed web-enabled applications. \n    \tApplications can use Amazon SNS to easily push real-time notification messages \n    \tto interested subscribers over multiple delivery protocols. For more information about this product\n\t\tsee <a href=\"http://aws.amazon.com/sns/\">http://aws.amazon.com/sns</a>. For detailed information about Amazon SNS features and their associated API calls,\n\t\tsee the <a href=\"http://docs.aws.amazon.com/sns/latest/gsg/\">Amazon SNS Getting Started Guide</a>.\n\t</p>\n    <p>We also provide SDKs that enable you to access Amazon SNS from your preferred programming language. \n      The SDKs contain functionality that automatically takes care of tasks such as: cryptographically signing your service requests, \n      retrying requests, and handling error responses. For a list of available SDKs, go to <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.    \n  </p>  \n\n  ",
+  "documentation": "\n    <fullname>Amazon Simple Notification Service</fullname>\n    \n\t<p>Amazon Simple Notification Service (Amazon SNS) is a web service that enables you to build distributed web-enabled applications. \n    \tApplications can use Amazon SNS to easily push real-time notification messages \n    \tto interested subscribers over multiple delivery protocols. For more information about this product\n\t\tsee <a href=\"http://aws.amazon.com/sns/\">http://aws.amazon.com/sns</a>. For detailed information about Amazon SNS features and their associated API calls,\n\t\tsee the <a href=\"http://docs.aws.amazon.com/sns/latest/dg/\">Amazon SNS Developer Guide</a>.\n\t</p>\n    <p>We also provide SDKs that enable you to access Amazon SNS from your preferred programming language. \n      The SDKs contain functionality that automatically takes care of tasks such as: cryptographically signing your service requests, \n      retrying requests, and handling error responses. For a list of available SDKs, go to <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.    \n  </p>  \n\n  ",
   "operations": {
     "AddPermission": {
       "name": "AddPermission",
@@ -129,7 +129,7 @@
             "documentation": "\n    <p>Disallows unauthenticated unsubscribes of the subscription. \n    If the value of this parameter is <code>true</code> and the request has an AWS signature, then only the topic owner\n    and the subscription owner can unsubscribe the endpoint.  The unsubscribe\n    action requires AWS authentication. </p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    Input for ConfirmSubscription action.\n  "
       },
       "output": {
         "shape_name": "ConfirmSubscriptionResponse",
@@ -141,7 +141,7 @@
             "documentation": "\n    <p>The ARN of the created subscription.</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    Response for ConfirmSubscriptions action.\n  "
       },
       "errors": [
         {
@@ -207,6 +207,200 @@
       ],
       "documentation": "\n    <p>The <code>ConfirmSubscription</code> action verifies an endpoint owner's intent to receive messages by validating\n      the token sent to the endpoint by an earlier <code>Subscribe</code> action. If the\n      token is valid, the action creates a new subscription and returns its\n      Amazon Resource Name (ARN). This call requires an AWS signature only when the <code>AuthenticateOnUnsubscribe</code> flag is set to \"true\".</p>\n<examples>\n <queryrequest>\n\n  https://sns.us-east-1.amazonaws.com/\n  ?Action=ConfirmSubscription\n  &TopicArn=arn:aws:sns:us-east-1:123456789012:My-Topic\n  &Token=51b2ff3edb475b7d91550e0ab6edf0c1de2a34e6ebaf6\n   c2262a001bcb7e051c43aa00022ceecce70bd2a67b2042da8d8\n   eb47fef7a4e4e942d23e7fa56146b9ee35da040b4b8af564cc4\n   184a7391c834cb75d75c22981f776ad1ce8805e9bab29da2329\n   985337bb8095627907b46c8577c8440556b6f86582a95475802\n   6f41fc62041c4b3f67b0f5921232b5dae5aaca1\n\n </queryrequest>\n <queryresponse>\n  \n<ConfirmSubscriptionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ConfirmSubscriptionResult>\n    <SubscriptionArn>arn:aws:sns:us-east-1:123456789012:My-Topic:80289ba6-0fd4-4079-afb4-ce8c8260f0ca</SubscriptionArn>\n  </ConfirmSubscriptionResult>\n  <ResponseMetadata>\n    <RequestId>7a50221f-3774-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</ConfirmSubscriptionResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
     },
+    "CreatePlatformApplication": {
+      "name": "CreatePlatformApplication",
+      "input": {
+        "shape_name": "CreatePlatformApplicationInput",
+        "type": "structure",
+        "members": {
+          "Name": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>Application names must be made up of only uppercase and lowercase ASCII letters, numbers, underscores, hyphens, and periods, and must be between 1 and 256 characters long.</p>    \n  ",
+            "required": true
+          },
+          "Platform": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>The following platforms are supported: ADM (Amazon Device Messaging), APNS (Apple Push Notification Service), APNS_SANDBOX, and GCM (Google Cloud Messaging).</p>     \n  ",
+            "required": true
+          },
+          "Attributes": {
+            "shape_name": "MapStringToString",
+            "type": "map",
+            "keys": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n    <p>For a list of attributes, see <a href=\"http://docs.aws.amazon.com/sns/latest/api/API_SetPlatformApplicationAttributes.html\">SetPlatformApplicationAttributes</a></p>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for CreatePlatformApplication action.</p>    \n  "
+      },
+      "output": {
+        "shape_name": "CreatePlatformApplicationResponse",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>PlatformApplicationArn is returned.</p>    \n  "
+          }
+        },
+        "documentation": "\n    <p>Response from CreatePlatformApplication action.</p>    \n  "
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        }
+      ],
+      "documentation": "\n    \n    <p>The <code>CreatePlatformApplication</code> action creates a platform application object for one of the supported push notification services, \n      such as APNS and GCM, to which devices and mobile apps may register. You must specify PlatformPrincipal and PlatformCredential attributes when using \n      the <code>CreatePlatformApplication</code> action. The PlatformPrincipal is received from the notification service. For APNS/APNS_SANDBOX, PlatformPrincipal is \"SSL certificate\". \n      For GCM, PlatformPrincipal is not applicable. For ADM, <!--  , WNS and MPNS--> PlatformPrincipal is \"client id\". The PlatformCredential is also received from the notification service. \n      For APNS/APNS_SANDBOX, PlatformCredential is \"private key\". For GCM, PlatformCredential is \"API key\". For ADM,<!--  , WNS and MPNS--> PlatformCredential is \"client secret\".      \n      The PlatformApplicationArn that is returned when using <code>CreatePlatformApplication</code> is then used as an attribute for the <code>CreatePlatformEndpoint</code> action.\n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>. \n    </p>\n    \n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAttributes.entry.2.key=PlatformPrincipal\n&SignatureMethod=HmacSHA256\n&Attributes.entry.1.value=AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo\n&Attributes.entry.2.value=There+is+no+principal+for+GCM\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Signature=82sHzg1Wfbgisw3i%2BHA2OgBmRktsqUKFinknkq3u%2FQ4%3D\n&Timestamp=2013-07-01T15%3A49%3A50.354Z\n&Name=gcmpushapp\n&Attributes.entry.1.key=PlatformCredential\n&Action=CreatePlatformApplication\n&Version=2010-03-31\n&SignatureVersion=2\n&Platform=GCM\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<CreatePlatformApplicationResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <CreatePlatformApplicationResult>\n    <PlatformApplicationArn>arn:aws:sns:us-west-2:123456789012:app/GCM/gcmpushapp</PlatformApplicationArn>\n  </CreatePlatformApplicationResult>\n  <ResponseMetadata>\n    <RequestId>b6f0e78b-e9d4-5a0e-b973-adc04e8a4ff9</RequestId>\n  </ResponseMetadata>\n</CreatePlatformApplicationResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
+    "CreatePlatformEndpoint": {
+      "name": "CreatePlatformEndpoint",
+      "input": {
+        "shape_name": "CreatePlatformEndpointInput",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>PlatformApplicationArn returned from CreatePlatformApplication is used to create a an endpoint.</p>    \n  ",
+            "required": true
+          },
+          "Token": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>Unique identifier created by the notification service for an app on a device. \n      The specific name for Token will vary, depending on which notification service is being used. \n      For example, when using APNS as the notification service, you need the device token. \n      Alternatively, when using GCM or ADM, the device token equivalent is called the registration ID.</p>         \n  ",
+            "required": true
+          },
+          "CustomUserData": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>Arbitrary user data to associate with the endpoint. SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</p>    \n  "
+          },
+          "Attributes": {
+            "shape_name": "MapStringToString",
+            "type": "map",
+            "keys": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n    <p>For a list of attributes, see <a href=\"http://docs.aws.amazon.com/sns/latest/api/API_SetEndpointAttributes.html\">SetEndpointAttributes</a>.</p>    \n  "
+          }
+        },
+        "documentation": "\n    <p>Input for CreatePlatformEndpoint action.</p>    \n  "
+      },
+      "output": {
+        "shape_name": "CreateEndpointResponse",
+        "type": "structure",
+        "members": {
+          "EndpointArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>EndpointArn returned from CreateEndpoint action.</p>    \n  "
+          }
+        },
+        "documentation": "\n    <p>Response from CreateEndpoint action.</p>\n  "
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>CreatePlatformEndpoint</code> creates an endpoint for a device and mobile app on one of the supported push notification services, such as GCM and APNS. \n      <code>CreatePlatformEndpoint</code> requires the PlatformApplicationArn that is returned from <code>CreatePlatformApplication</code>. The EndpointArn that is\n      returned when using <code>CreatePlatformEndpoint</code> can then be used by the <code>Publish</code> action to send a message to a mobile app or by the <code>Subscribe</code> \n      action for subscription to a topic.        \n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nPlatformApplicationArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aapp%2FGCM%2Fgcmpushapp\n&Action=CreatePlatformEndpoint\n&SignatureMethod=HmacSHA256\n&CustomUserData=UserId%3D27576823\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Token=APA91bGi7fFachkC1xjlqT66VYEucGHochmf1VQAr9k...jsM0PKPxKhddCzx6paEsyay9Zn3D4wNUJb8m6HZrBEXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=Rg5vXBS6OfgPtWkt1u32p1w14uiGh%2BKOicvXNWTEz2w%3D\n&Timestamp=2013-07-01T15%3A49%3A50.598Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<CreatePlatformEndpointResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <CreatePlatformEndpointResult>\n    <EndpointArn>arn:aws:sns:us-west-2:123456789012:endpoint/GCM/gcmpushapp/5e3e9847-3183-3f18-a7e8-671c3a57d4b3</EndpointArn>\n  </CreatePlatformEndpointResult>\n  <ResponseMetadata>\n    <RequestId>6613341d-3e15-53f7-bf3c-7e56994ba278</RequestId>\n  </ResponseMetadata>\n</CreatePlatformEndpointResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
     "CreateTopic": {
       "name": "CreateTopic",
       "input": {
@@ -220,7 +414,7 @@
             "required": true
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for CreateTopic action.</p>\n  "
       },
       "output": {
         "shape_name": "CreateTopicResponse",
@@ -232,7 +426,7 @@
             "documentation": "\n    <p>The Amazon Resource Name (ARN) assigned to the created topic.</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Response from CreateTopic action.</p>\n  "
       },
       "errors": [
         {
@@ -285,6 +479,118 @@
         }
       ],
       "documentation": "\n    <p>The <code>CreateTopic</code> action creates a topic to which notifications can be published. Users can create\n     at most 100 topics. For more information, see <a href=\"http://aws.amazon.com/sns/\">http://aws.amazon.com/sns</a>. \n     This action is idempotent, so if the requester already owns a topic with the specified name, that topic's ARN is \n     returned without creating a new topic.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?Name=My-Topic\n  &Action=CreateTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=gfzIF53exFVdpSNb8AiwN3Lv%2FNYXh6S%2Br3yySK70oX4%3D\n\n </queryrequest>\n <queryresponse>\n  \n   <CreateTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n     <CreateTopicResult>\n       <TopicArn>arn:aws:sns:us-east-1:123456789012:My-Topic</TopicArn>\n     </CreateTopicResult>\n     <ResponseMetadata>\n       <RequestId>a8dec8b3-33a4-11df-8963-01868b7c937a</RequestId>\n     </ResponseMetadata>\n   </CreateTopicResponse>\n  \n </queryresponse>\n</examples>\n  "
+    },
+    "DeleteEndpoint": {
+      "name": "DeleteEndpoint",
+      "input": {
+        "shape_name": "DeleteEndpointInput",
+        "type": "structure",
+        "members": {
+          "EndpointArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>EndpointArn of endpoint to delete.</p>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for DeleteEndpoint action.</p>    \n  "
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>DeleteEndpoint</code> action, which is idempotent, deletes the endpoint from SNS. \n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>    \n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAction=DeleteEndpoint\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&EndpointArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aendpoint%2FGCM%2Fgcmpushapp%2F5e3e9847-3183-3f18-a7e8-671c3a57d4b3\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=LIc6GI3JbNhmHBEDmSxzZp648XPe5CMeFny%2BTQFtomQ%3D\n&Timestamp=2013-07-01T23%3A00%3A12.456Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<DeleteEndpointResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>c1d2b191-353c-5a5f-8969-fbdd3900afa8</RequestId>\n  </ResponseMetadata>\n</DeleteEndpointResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
+    "DeletePlatformApplication": {
+      "name": "DeletePlatformApplication",
+      "input": {
+        "shape_name": "DeletePlatformApplicationInput",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>PlatformApplicationArn of platform application object to delete.</p>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for DeletePlatformApplication action.</p>    \n  "
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>DeletePlatformApplication</code> action deletes a platform application object for one of the supported push notification services, \n      such as APNS and GCM.\n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nPlatformApplicationArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aapp%2FGCM%2Fgcmpushapp\n&Action=DeletePlatformApplication\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=Mh7X%2BQo%2BGpcm5B1IpkovBaRiJCJOqvFlIOYzL62SGrg%3D\n&Timestamp=2013-07-01T23%3A02%3A03.872Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<DeletePlatformApplicationResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>097dac18-7a77-5823-a8dd-e65476dcb037</RequestId>\n  </ResponseMetadata>\n</DeletePlatformApplicationResponse>\n\n      </queryresponse>\n    </examples>    \n  "
     },
     "DeleteTopic": {
       "name": "DeleteTopic",
@@ -354,6 +660,184 @@
       ],
       "documentation": "\n    <p>The <code>DeleteTopic</code> action deletes a topic and all its subscriptions. Deleting a topic might\n      prevent some messages previously sent to the topic from being delivered to\n      subscribers. This action is idempotent, so deleting a topic that does not\n      exist does not result in an error.</p>\n<examples>\n<queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=DeleteTopic\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n\n</queryrequest>\n<queryresponse>\n\n<DeleteTopicResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>f3aa9ac9-3c3d-11df-8235-9dab105e9c32</RequestId>\n  </ResponseMetadata>\n</DeleteTopicResponse>\n\n</queryresponse>\n</examples>\n  "
     },
+    "GetEndpointAttributes": {
+      "name": "GetEndpointAttributes",
+      "input": {
+        "shape_name": "GetEndpointAttributesInput",
+        "type": "structure",
+        "members": {
+          "EndpointArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>EndpointArn for GetEndpointAttributes input.</p>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for GetEndpointAttributes action.</p>    \n  "
+      },
+      "output": {
+        "shape_name": "GetEndpointAttributesResponse",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape_name": "MapStringToString",
+            "type": "map",
+            "keys": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n    <p>Attributes include the following:</p>\n    <ul>\n      <!-- Policy is not yet supported. Will remove comments once it is available -->\n      <li>\n<code>CustomUserData</code> -- arbitrary user data to associate with the endpoint. SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</li>\n      <li>\n<code>Enabled</code> -- flag that enables/disables delivery to the endpoint. \n        Message Processor will set this to false when a notification service indicates to SNS that the endpoint is invalid. \n        Users can set it back to true, typically after updating Token.</li>\n      <!-- <li><code>Policy</code>  access policy controlling who can send messages to this endpoint .</li> -->\n      <li>\n<code>Token</code> -- device token, also referred to as a registration id, for an app and mobile device. \n        This is returned from the notification service when an app and mobile device are registered with the notification service.</li>           \n    </ul> \n  "
+          }
+        },
+        "documentation": "\n    <p>Response from GetEndpointAttributes of the EndpointArn.</p>    \n  "
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>GetEndpointAttributes</code> retrieves the endpoint attributes for a device on one of the supported push notification services, such as GCM and APNS. \n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAction=GetEndpointAttributes\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&EndpointArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aendpoint%2FGCM%2Fgcmpushapp%2F5e3e9847-3183-3f18-a7e8-671c3a57d4b3\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=%2B2egbEoT4npw3p5H3wiIdzZBoTn4KI3UWmMFyBsHH9c%3D\n&Timestamp=2013-07-01T22%3A44%3A56.515Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<GetEndpointAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetEndpointAttributesResult>\n    <Attributes>\n      <entry>\n        <key>Enabled</key>\n        <value>true</value>\n      </entry>\n      <entry>\n        <key>CustomUserData</key>\n        <value>UserId=01234567</value>\n      </entry>\n      <entry>\n        <key>Token</key>\n        <value>APA91bGi7fFachkC1xjlqT66VYEucGHochmf1VQAr9k...jsM0PKPxKhddCzx6paEsyay9Zn3D4wNUJb8m6HZrBEXAMPLE</value>\n      </entry>\n    </Attributes>\n  </GetEndpointAttributesResult>\n  <ResponseMetadata>\n    <RequestId>6c725a19-a142-5b77-94f9-1055a9ea04e7</RequestId>\n  </ResponseMetadata>\n</GetEndpointAttributesResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
+    "GetPlatformApplicationAttributes": {
+      "name": "GetPlatformApplicationAttributes",
+      "input": {
+        "shape_name": "GetPlatformApplicationAttributesInput",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>PlatformApplicationArn for GetPlatformApplicationAttributesInput.</p>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for GetPlatformApplicationAttributes action.</p>    \n  "
+      },
+      "output": {
+        "shape_name": "GetPlatformApplicationAttributesResponse",
+        "type": "structure",
+        "members": {
+          "Attributes": {
+            "shape_name": "MapStringToString",
+            "type": "map",
+            "keys": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n    <p>Attributes include the following:</p>\n    <ul>      \n      <!-- AllowEndpointPolicies, EventDeliveryAttemptFailure, and Policy are not yet supported. Will remove comments once it is available -->\n      <!-- <li><code>AllowEndpointPolicies</code>  true or false (default false) - If true, then policies on endpoints will be evaluated to determine if the topic or user has the rights to send messages to it.  \n      If false, the endpoint policy will be ignored and only the mobile app policy will be considered.</li> -->\n      <li>\n<code>EventEndpointCreated</code> -- Topic ARN to which EndpointCreated event notifications should be sent.</li>\n      <li>\n<code>EventEndpointDeleted</code> -- Topic ARN to which EndpointDeleted event notifications should be sent.</li>\n      <li>\n<code>EventEndpointUpdated</code> -- Topic ARN to which EndpointUpdate event notifications should be sent.</li>\n      <!-- <li><code>EventDeliveryAttemptFailure</code>  Topic ARN to which DeliveryAttemptFailure event notifications should be sent upon Direct Publish delivery attempt failures to one of the application's endpoints.</li> -->\n      <li>\n<code>EventDeliveryFailure</code> -- Topic ARN to which DeliveryFailure event notifications should be sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.</li>\n      <!-- <li><code>Policy</code>   Access policy controlling who can send messages to endpoints under this mobile app.</li> -->\n    </ul>\n  "
+          }
+        },
+        "documentation": "\n    <p>Response for GetPlatformApplicationAttributes action.</p>        \n  "
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>GetPlatformApplicationAttributes</code> action retrieves the attributes of the platform application object for the supported push notification services, \n      such as APNS and GCM.\n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nPlatformApplicationArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aapp%2FGCM%2Fgcmpushapp\n&Action=GetPlatformApplicationAttributes\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=UGMaCq8CCJGSYXO9Ehr2VuHIBYSe6WbxkqgMKRslTK4%3D\n&Timestamp=2013-07-01T22%3A40%3A50.643Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<GetPlatformApplicationAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetPlatformApplicationAttributesResult>\n    <Attributes>\n      <entry>\n        <key>AllowEndpointPolicies</key>\n        <value>false</value>\n      </entry>\n    </Attributes>\n  </GetPlatformApplicationAttributesResult>\n  <ResponseMetadata>\n    <RequestId>74848df2-87f6-55ed-890c-c7be80442462</RequestId>\n  </ResponseMetadata>\n</GetPlatformApplicationAttributesResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
     "GetSubscriptionAttributes": {
       "name": "GetSubscriptionAttributes",
       "input": {
@@ -367,7 +851,7 @@
             "required": true
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for GetSubscriptionAttributes.</p>\n  "
       },
       "output": {
         "shape_name": "GetSubscriptionAttributesResponse",
@@ -389,7 +873,7 @@
             "documentation": "\n    <p>A map of the subscription's attributes. Attributes in this map include the following:</p>\n    <ul>\n      <li>\n<code>SubscriptionArn</code> -- the subscription's ARN</li>\n      <li>\n<code>TopicArn</code> -- the topic ARN that the subscription is associated with</li>\n      <li>\n<code>Owner</code> -- the AWS account ID of the subscription's owner</li>\n      <li>\n<code>ConfirmationWasAuthenticated</code> -- true if the subscription confirmation request was authenticated</li>\n      <li>\n<code>DeliveryPolicy</code> -- the JSON serialization of the subscription's delivery policy</li>\n      <li>\n<code>EffectiveDeliveryPolicy</code> -- the JSON serialization of the effective delivery policy that takes \n    into account the topic delivery policy and account system defaults</li>\n    </ul>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Response for GetSubscriptionAttributes action.</p>\n  "
       },
       "errors": [
         {
@@ -456,7 +940,7 @@
             "required": true
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for GetTopicAttributes action.</p>    \n  "
       },
       "output": {
         "shape_name": "GetTopicAttributesResponse",
@@ -475,10 +959,10 @@
               "type": "string",
               "documentation": null
             },
-            "documentation": "\n    <p>A map of the topic's attributes. Attributes in this map include the following:</p>\n    <ul>\n      <li>\n<code>TopicArn</code> -- the topic's ARN</li>\n      <li>\n<code>Owner</code> -- the AWS account ID of the topic's owner</li>\n      <li>\n<code>Policy</code> -- the JSON serialization of the topic's access control policy</li>\n      <li>\n<code>DisplayName</code> -- the human-readable name used in the \"From\" field for notifications to email and email-json endpoints</li>\n      <li>\n<code>SubscriptionsPending</code> -- the number of subscriptions pending confirmation on this topic</li>\n      <li>\n<code>SubscriptionsConfirmed</code> -- the number of confirmed subscriptions on this topic</li>\n      <li>\n<code>SubscriptionsDeleted</code> -- the number of deleted subscriptions on this topic</li>\n      <li>\n<code>DeliveryPolicy</code> -- the JSON serialization of the topic's delivery policy</li>\n      <li>\n<code>EffectiveDeliveryPolicy</code> -- the JSON serialization of the effective delivery policy that takes into account system defaults</li>\n    </ul>\n  "
+            "documentation": "\n    <p>A map of the topic's attributes. Attributes in this map include the following:</p>\n    <ul>\n      <li>\n<code>TopicArn</code> -- the topic's ARN</li>\n      <li>\n<code>Owner</code> -- the AWS account ID of the topic's owner</li>\n      <li>\n<code>Policy</code> -- the JSON serialization of the topic's access control policy</li>\n      <li>\n<code>DisplayName</code> -- the human-readable name used in the \"From\" field for notifications to email and email-json endpoints</li>\n      <li>\n<code>SubscriptionsPending</code> -- the number of subscriptions pending confirmation on this topic</li>\n      <li>\n<code>SubscriptionsConfirmed</code> -- the number of confirmed subscriptions on this topic</li>\n      <li>\n<code>SubscriptionsDeleted</code> -- the number of deleted subscriptions on this topic</li>\n      <li>\n<code>DeliveryPolicy</code> -- the JSON serialization of the topic's delivery policy</li>\n      <li>\n<code>EffectiveDeliveryPolicy</code> -- the JSON serialization of the effective delivery policy that takes into account system defaults</li>      \n    </ul>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Response for GetTopicAttributes action.</p>\n  "
       },
       "errors": [
         {
@@ -532,6 +1016,220 @@
       ],
       "documentation": "\n    <p>The <code>GetTopicAttributes</code> action returns all of the properties of a topic. \n    Topic properties returned might differ based on the authorization of the user. </p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &Action=GetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=92lBGRVq0%2BxhaACaBGqtdemy%2Bi9isfgyTljCbJM80Yk%3D\n\n </queryrequest>\n <queryresponse>\n  \n<GetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <GetTopicAttributesResult>\n    <Attributes>\n      <entry>\n        <key>Owner</key>\n        <value>123456789012</value>\n      </entry>\n      <entry>\n        <key>Policy</key>\n        <value>{\n&quot;Version&quot;:&quot;2008-10-17&quot;,&quot;Id&quot;:&quot;us-east-1/698519295917/test__default_policy_ID&quot;,&quot;Statement&quot; : [{&quot;Effect&quot;:&quot;Allow&quot;,&quot;Sid&quot;:&quot;us-east-1/698519295917/test__default_statement_ID&quot;,&quot;Principal&quot; : {&quot;AWS&quot;: &quot;*&quot;},&quot;Action&quot;:[&quot;SNS:GetTopicAttributes&quot;,&quot;SNS:SetTopicAttributes&quot;,&quot;SNS:AddPermission&quot;,&quot;SNS:RemovePermission&quot;,&quot;SNS:DeleteTopic&quot;,&quot;SNS:Subscribe&quot;,&quot;SNS:ListSubscriptionsByTopic&quot;,&quot;SNS:Publish&quot;,&quot;SNS:Receive&quot;],&quot;Resource&quot;:&quot;arn:aws:sns:us-east-1:698519295917:test&quot;,&quot;Condition&quot; : {&quot;StringLike&quot; : {&quot;AWS:SourceArn&quot;: &quot;arn:aws:*:*:698519295917:*&quot;}}}]}</value>\n      </entry>\n      <entry>\n        <key>TopicArn</key>\n        <value>arn:aws:sns:us-east-1:123456789012:My-Topic</value>\n      </entry>\n    </Attributes>\n  </GetTopicAttributesResult>\n  <ResponseMetadata>\n    <RequestId>057f074c-33a7-11df-9540-99d0768312d3</RequestId>\n  </ResponseMetadata>\n</GetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n  "
     },
+    "ListEndpointsByPlatformApplication": {
+      "name": "ListEndpointsByPlatformApplication",
+      "input": {
+        "shape_name": "ListEndpointsByPlatformApplicationInput",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>PlatformApplicationArn for ListEndpointsByPlatformApplicationInput action.</p>    \n  ",
+            "required": true
+          },
+          "NextToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>NextToken string is used when calling ListEndpointsByPlatformApplication action to retrieve additional records that are available after the first page results.</p>        \n  "
+          }
+        },
+        "documentation": "\n    <p>Input for ListEndpointsByPlatformApplication action.</p>    \n  "
+      },
+      "output": {
+        "shape_name": "ListEndpointsByPlatformApplicationResponse",
+        "type": "structure",
+        "members": {
+          "Endpoints": {
+            "shape_name": "ListOfEndpoints",
+            "type": "list",
+            "members": {
+              "shape_name": "Endpoint",
+              "type": "structure",
+              "members": {
+                "EndpointArn": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n    <p>EndpointArn for mobile app and device.</p>    \n  "
+                },
+                "Attributes": {
+                  "shape_name": "MapStringToString",
+                  "type": "map",
+                  "keys": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "members": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": "\n    <p>Attributes for endpoint.</p>    \n  "
+                }
+              },
+              "documentation": "\n    <p>Endpoint for mobile app and device.</p>    \n  "
+            },
+            "documentation": "\n    <p>Endpoints returned for ListEndpointsByPlatformApplication action.</p>    \n  "
+          },
+          "NextToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>NextToken string is returned when calling ListEndpointsByPlatformApplication action if additional records are available after the first page results.</p>    \n  "
+          }
+        },
+        "documentation": "\n    <p>Response for ListEndpointsByPlatformApplication action.</p>    \n  "
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>ListEndpointsByPlatformApplication</code> action lists the endpoints and endpoint attributes for devices in a supported push notification service, such as GCM and APNS. \n      The results for <code>ListEndpointsByPlatformApplication</code> are paginated and return a limited list of endpoints, up to 100.\n      If additional records are available after the first page results, then a NextToken string will be returned. \n      To receive the next page, you call <code>ListEndpointsByPlatformApplication</code> again using the NextToken string received from the previous call. \n      When there are no more records to return, NextToken will be null.\n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nPlatformApplicationArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aapp%2FGCM%2Fgcmpushapp\n&Action=ListEndpointsByPlatformApplication\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=e6H4sJSCRBBlh%2BaigB%2FtYgp4%2Bjl7dikAQ6WKf%2BMTwNM%3D\n&Timestamp=2013-07-01T23%3A00%3A52.515Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<ListEndpointsByPlatformApplicationResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListEndpointsByPlatformApplicationResult>\n    <Endpoints>\n      <member>\n        <EndpointArn>arn:aws:sns:us-west-2:123456789012:endpoint/GCM/gcmpushapp/5e3e9847-3183-3f18-a7e8-671c3a57d4b3</EndpointArn>\n        <Attributes>\n          <entry>\n            <key>Enabled</key>\n            <value>true</value>\n          </entry>\n          <entry>\n            <key>CustomUserData</key>\n            <value>UserId=27576823</value>\n          </entry>\n          <entry>\n            <key>Token</key>\n            <value>APA91bGi7fFachkC1xjlqT66VYEucGHochmf1VQAr9k...jsM0PKPxKhddCzx6paEsyay9Zn3D4wNUJb8m6HZrBEXAMPLE</value>\n          </entry>\n        </Attributes>\n      </member>\n    </Endpoints>\n  </ListEndpointsByPlatformApplicationResult>\n  <ResponseMetadata>\n    <RequestId>9a48768c-dac8-5a60-aec0-3cc27ea08d96</RequestId>\n  </ResponseMetadata>\n</ListEndpointsByPlatformApplicationResponse>\n\n      </queryresponse>\n    </examples>\n    \n  "
+    },
+    "ListPlatformApplications": {
+      "name": "ListPlatformApplications",
+      "input": {
+        "shape_name": "ListPlatformApplicationsInput",
+        "type": "structure",
+        "members": {
+          "NextToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>NextToken string is used when calling ListPlatformApplications action to retrieve additional records that are available after the first page results.</p>    \n  "
+          }
+        },
+        "documentation": "\n    <p>Input for ListPlatformApplications action.</p>    \n  "
+      },
+      "output": {
+        "shape_name": "ListPlatformApplicationsResponse",
+        "type": "structure",
+        "members": {
+          "PlatformApplications": {
+            "shape_name": "ListOfPlatformApplications",
+            "type": "list",
+            "members": {
+              "shape_name": "PlatformApplication",
+              "type": "structure",
+              "members": {
+                "PlatformApplicationArn": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n    <p>PlatformApplicationArn for platform application object.</p>    \n  "
+                },
+                "Attributes": {
+                  "shape_name": "MapStringToString",
+                  "type": "map",
+                  "keys": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "members": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null
+                  },
+                  "documentation": "\n    <p>Attributes for platform application object.</p>    \n  "
+                }
+              },
+              "documentation": "\n    <p>Platform application object.</p>    \n  "
+            },
+            "documentation": "\n    <p>Platform applications returned when calling ListPlatformApplications action.</p>    \n  "
+          },
+          "NextToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>NextToken string is returned when calling ListPlatformApplications action if additional records are available after the first page results.</p>    \n  "
+          }
+        },
+        "documentation": "\n    <p>Response for ListPlatformApplications action.</p>    \n  "
+      },
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>ListPlatformApplications</code> action lists the platform application objects for the supported push notification services, \n      such as APNS and GCM. The results for <code>ListPlatformApplications</code> are paginated and return a limited list of applications, up to 100.\n      If additional records are available after the first page results, then a NextToken string will be returned. \n      To receive the next page, you call <code>ListPlatformApplications</code> using the NextToken string received from the previous call. \n      When there are no more records to return, NextToken will be null.\n      \n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAction=ListPlatformApplications\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=drVbTuyR5N9e88WJMNPzBOjNFNvawkCaMfZI0xa9kIQ%3D\n&Timestamp=2013-07-01T22%3A33%3A55.618Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<ListPlatformApplicationsResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ListPlatformApplicationsResult>\n    <PlatformApplications>\n      <member>\n        <PlatformApplicationArn>arn:aws:sns:us-west-2:123456789012:app/APNS_SANDBOX/apnspushapp</PlatformApplicationArn>\n        <Attributes>\n          <entry>\n            <key>AllowEndpointPolicies</key>\n            <value>false</value>\n          </entry>\n        </Attributes>\n      </member>\n      <member>\n        <PlatformApplicationArn>arn:aws:sns:us-west-2:123456789012:app/GCM/gcmpushapp</PlatformApplicationArn>\n        <Attributes>\n          <entry>\n            <key>AllowEndpointPolicies</key>\n            <value>false</value>\n          </entry>\n        </Attributes>\n      </member>\n    </PlatformApplications>\n  </ListPlatformApplicationsResult>\n  <ResponseMetadata>\n    <RequestId>315a335e-85d8-52df-9349-791283cbb529</RequestId>\n  </ResponseMetadata>\n</ListPlatformApplicationsResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
     "ListSubscriptions": {
       "name": "ListSubscriptions",
       "input": {
@@ -544,7 +1242,7 @@
             "documentation": "\n    <p>Token returned by the previous <code>ListSubscriptions</code> request.</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    Input for ListSubscriptions action.\n  "
       },
       "output": {
         "shape_name": "ListSubscriptionsResponse",
@@ -653,7 +1351,7 @@
             "documentation": "\n    <p>Token returned by the previous <code>ListSubscriptionsByTopic</code> request.</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for ListSubscriptionsByTopic action.</p>    \n  "
       },
       "output": {
         "shape_name": "ListSubscriptionsByTopicResponse",
@@ -702,7 +1400,7 @@
             "documentation": "\n    <p>Token to pass along to the next <code>ListSubscriptionsByTopic</code> request. This element is returned if there are more subscriptions to retrieve.</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Response for ListSubscriptionsByTopic action.</p>    \n  "
       },
       "errors": [
         {
@@ -797,7 +1495,7 @@
             "documentation": "\n      <p>Token to pass along to the next <code>ListTopics</code> request. This element is returned if there are additional topics to retrieve.</p>\n    "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Response for ListTopics action.</p>\n  "
       },
       "errors": [
         {
@@ -848,8 +1546,12 @@
           "TopicArn": {
             "shape_name": "topicARN",
             "type": "string",
-            "documentation": "\n    <p>The topic you want to publish to.</p>\n  ",
-            "required": true
+            "documentation": "\n    <p>The topic you want to publish to.</p>\n  "
+          },
+          "TargetArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>Either TopicArn or EndpointArn, but not both.</p>    \n  "
           },
           "Message": {
             "shape_name": "message",
@@ -868,7 +1570,7 @@
             "documentation": "\n    <p>Set <code>MessageStructure</code> to <code>json</code> if you want to send\n      a different message for each protocol. For example, using one publish action,\n      you can send a short message to your SMS subscribers and a longer message to\n      your email subscribers.\n      If you set <code>MessageStructure</code> to <code>json</code>, the value of \n      the <code>Message</code> parameter must:\n    </p>\n    <ul>\n      <li>be a syntactically valid JSON object; and</li>\n      <li>contain at least a top-level JSON key of \"default\" with a value that is a string.</li>\n    </ul>\n    <p> You can define other top-level keys that define the message you want to send\n      to a specific transport protocol (e.g., \"http\"). </p>\n    <p>For information about sending different messages for each protocol using\n      the AWS Management Console, go to <a href=\"http://docs.aws.amazon.com/sns/latest/gsg/Publish.html#sns-message-formatting-by-protocol\">Create \n        Different Messages for Each Protocol</a> in the <i>Amazon Simple Notification Service\n      Getting Started Guide</i>.\n    </p>\n\n      <p>Valid value: <code>json</code></p>\n    "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for Publish action.</p>\n  "
       },
       "output": {
         "shape_name": "PublishResponse",
@@ -880,7 +1582,7 @@
             "documentation": "\n    <p>Unique identifier assigned to the published message.</p>\n    <p>Length Constraint: Maximum 100 characters</p>\n\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Response for Publish action.</p>\n  "
       },
       "errors": [
         {
@@ -920,6 +1622,30 @@
           "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
         },
         {
+          "shape_name": "EndpointDisabledException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": "\n    <p>Message for endpoint disabled.</p>    \n  "
+            }
+          },
+          "documentation": "\n    <p>Exception error indicating endpoint disabled.</p>    \n  "
+        },
+        {
+          "shape_name": "PlatformApplicationDisabledException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": "\n    <p>Message for platform application disabled.</p>    \n  "
+            }
+          },
+          "documentation": "\n    <p>Exception error indicating platform application disabled.</p>    \n  "
+        },
+        {
           "shape_name": "AuthorizationErrorException",
           "type": "structure",
           "members": {
@@ -932,7 +1658,7 @@
           "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>The <code>Publish</code> action sends a message to all of a topic's subscribed endpoints. When a\n    <code>messageId</code> is returned, the message has been saved and Amazon SNS will attempt to deliver it \n      to the topic's subscribers shortly. The format of the outgoing message to each\n      subscribed endpoint depends on the notification protocol selected.</p>\n    <examples>\n      <queryrequest>\n        \n  The following example publishes the same message to all protocols:\n  \n  http://sns.us-east-1.amazonaws.com/\n  ?Subject=My%20first%20message\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A698519295917%3AMy-Topic\n  &Message=Hello%20world%21\n  &Action=Publish\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n  &Signature=9GZysQ4Jpnz%2BHklqM7VFTvEcjR2LIUtn6jW47054xxE%3D\n  \n  Use the following JSON object format for the Message parameter to send different messages to each protocol (linebreaks added for readability):\n  {\n  \"default\" : \"some message\",\n  \"email\" : \"some email message\",\n  \"email-json\" : \"some email-json message\",\n  \"http\" : \"some http message\",\n  \"https\" : \"some https message\",\n  \"sqs\" : \"some sqs message\"\n  }\n  \n\n      </queryrequest>\n      <queryresponse>\n        \n<PublishResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <PublishResult>\n    <MessageId>94f20ce6-13c5-43a0-9a9e-ca52d816e90b</MessageId>\n  </PublishResult>\n  <ResponseMetadata>\n    <RequestId>f187a3c1-376f-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</PublishResponse>\n  \n      </queryresponse>\n    </examples>\n  "
+      "documentation": "\n    <p>The <code>Publish</code> action sends a message to all of a topic's subscribed endpoints. When a\n    <code>messageId</code> is returned, the message has been saved and Amazon SNS will attempt to deliver it \n      to the topic's subscribers shortly. The format of the outgoing message to each\n      subscribed endpoint depends on the notification protocol selected.</p>\n    <p>To use the <code>Publish</code> action for sending a message to a mobile endpoint, such as an app on a Kindle device or mobile phone, \n      you must specify the EndpointArn. The EndpointArn is returned when making a call with the <code>CreatePlatformEndpoint</code> action. \n      The second example below shows a request and response for publishing to a mobile endpoint.\n    </p>\n    <examples>\n      <queryrequest>\n        \n  The following example publishes the same message to all protocols:\n  \n  http://sns.us-east-1.amazonaws.com/\n  ?Subject=My%20first%20message\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A698519295917%3AMy-Topic\n  &Message=Hello%20world%21\n  &Action=Publish\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n  &Signature=9GZysQ4Jpnz%2BHklqM7VFTvEcjR2LIUtn6jW47054xxE%3D\n  \n  Use the following JSON object format for the Message parameter to send different messages to each protocol (linebreaks added for readability):\n  {\n  \"default\" : \"some message\",\n  \"email\" : \"some email message\",\n  \"email-json\" : \"some email-json message\",\n  \"http\" : \"some http message\",\n  \"https\" : \"some https message\",\n  \"sqs\" : \"some sqs message\"\n  }\n  \n\n      </queryrequest>\n      <queryresponse>\n        \n<PublishResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <PublishResult>\n    <MessageId>94f20ce6-13c5-43a0-9a9e-ca52d816e90b</MessageId>\n  </PublishResult>\n  <ResponseMetadata>\n    <RequestId>f187a3c1-376f-11df-8963-01868b7c937a</RequestId>\n  </ResponseMetadata>\n</PublishResponse>\n  \n      </queryresponse>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAction=Publish\n&Message=%7B%22default%22%3A%22This+is+the+default+Message%22%2C%22APNS_SANDBOX%22%3A%22%7B+%5C%22aps%5C%22+%3A+%7B+%5C%22alert%5C%22+%3A+%5C%22You+have+got+email.%5C%22%2C+%5C%22badge%5C%22+%3A+9%2C%5C%22sound%5C%22+%3A%5C%22default%5C%22%7D%7D%22%7D\n&TargetArn=arn%3Aaws%3Asns%3Aus-west-2%3A803981987763%3Aendpoint%2FAPNS_SANDBOX%2Fpushapp%2F98e9ced9-f136-3893-9d60-776547eafebb\n&SignatureMethod=HmacSHA256\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=vmqc4XRupKAxsDAdN4j4Ayw5LQljXMps3kss4bkDfCk%3D\n&Timestamp=2013-07-18T22%3A44%3A09.452Z\n&MessageStructure=json\n  \n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<PublishResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <PublishResult>\n    <MessageId>567910cd-659e-55d4-8ccb-5aaf14679dc0</MessageId>\n  </PublishResult>\n  <ResponseMetadata>\n    <RequestId>d74b8436-ae13-5ab4-a9ff-ce54dfea72a0</RequestId>\n  </ResponseMetadata>\n</PublishResponse>\n  \n      </queryresponse>\n    </examples>\n  "
     },
     "RemovePermission": {
       "name": "RemovePermission",
@@ -953,7 +1679,7 @@
             "required": true
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for RemovePermission action.</p>    \n  "
       },
       "output": null,
       "errors": [
@@ -1008,6 +1734,174 @@
       ],
       "documentation": "\n    <p>The <code>RemovePermission</code> action removes a statement from a topic's access control policy.</p>\n<examples>\n <queryrequest>\n\n  http://sns.us-east-1.amazonaws.com/\n  ?TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Test\n  &Label=NewPermission\n  &Action=RemovePermission\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key ID)\n  &Signature=N1abwRY9i7zaSQmbAlm71pPf9EEFOqNbQL1alzw2yCg%3D\n\n </queryrequest>\n <queryresponse>\n  \n<RemovePermissionResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>d170b150-33a8-11df-995a-2d6fbe836cc1</RequestId>\n  </ResponseMetadata>\n</RemovePermissionResponse>\n  \n </queryresponse>\n</examples>\n  "
     },
+    "SetEndpointAttributes": {
+      "name": "SetEndpointAttributes",
+      "input": {
+        "shape_name": "SetEndpointAttributesInput",
+        "type": "structure",
+        "members": {
+          "EndpointArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>EndpointArn used for SetEndpointAttributes action.</p>    \n  ",
+            "required": true
+          },
+          "Attributes": {
+            "shape_name": "MapStringToString",
+            "type": "map",
+            "keys": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n    <p>A map of the endpoint attributes. Attributes in this map include the following:</p>\n    <ul>\n      <!-- Policy is not yet supported. Will remove comments once it is available -->\n      <li>\n<code>CustomUserData</code> -- arbitrary user data to associate with the endpoint. SNS does not use this data. The data must be in UTF-8 format and less than 2KB.</li>\n      <li>\n<code>Enabled</code> -- flag that enables/disables delivery to the endpoint. \n        Message Processor will set this to false when a notification service indicates to SNS that the endpoint is invalid. \n        Users can set it back to true, typically after updating Token.</li>\n      <!-- <li><code>Policy</code>  access policy controlling who can send messages to this endpoint .</li> -->\n      <li>\n<code>Token</code> -- device token, also referred to as a registration id, for an app and mobile device. \n        This is returned from the notification service when an app and mobile device are registered with the notification service.</li>           \n    </ul>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for SetEndpointAttributes action.</p>    \n  "
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>SetEndpointAttributes</code> action sets the attributes for an endpoint for a device on one of the supported push notification services, such as GCM and APNS.\n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAttributes.entry.1.key=CustomUserData\n&Action=SetEndpointAttributes\n&SignatureMethod=HmacSHA256\n&Attributes.entry.1.value=My+custom+userdata\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&EndpointArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aendpoint%2FGCM%2Fgcmpushapp%2F5e3e9847-3183-3f18-a7e8-671c3a57d4b3\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=CFTGfGOS5vgSU3%2FZgv2h%2FJdWgr2JQdDJSrUU9k38wSM%3D\n&Timestamp=2013-07-01T22%3A56%3A45.582Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<SetEndpointAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>2fe0bfc7-3e85-5ee5-a9e2-f58b35e85f6a</RequestId>\n  </ResponseMetadata>\n</SetEndpointAttributesResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
+    "SetPlatformApplicationAttributes": {
+      "name": "SetPlatformApplicationAttributes",
+      "input": {
+        "shape_name": "SetPlatformApplicationAttributesInput",
+        "type": "structure",
+        "members": {
+          "PlatformApplicationArn": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n    <p>PlatformApplicationArn for SetPlatformApplicationAttributes action.</p>    \n  ",
+            "required": true
+          },
+          "Attributes": {
+            "shape_name": "MapStringToString",
+            "type": "map",
+            "keys": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null
+            },
+            "documentation": "\n    <p>A map of the platform application attributes. Attributes in this map include the following:</p>\n    <ul>\n      <!-- AllowEndpointPolicies, EventDeliveryAttemptFailure, and Policy are not yet supported. Will remove comments once it is available -->\n      <li>\n<code>PlatformCredential</code> -- The credential received from the notification service. For APNS/APNS_SANDBOX, PlatformCredential is \"private key\". \n        For GCM, PlatformCredential is \"API key\". For ADM,<!--  , WNS and MPNS--> PlatformCredential is \"client secret\".</li>\n      <li>\n<code>PlatformPrincipal</code> -- The principal received from the notification service. For APNS/APNS_SANDBOX, PlatformPrincipal is \"SSL certificate\". \n        For GCM, PlatformPrincipal is not applicable. For ADM,<!--  , WNS and MPNS--> PlatformPrincipal is \"client id\".</li>\n      <!-- <li><code>AllowEndpointPolicies</code>  true or false (default false) - If true, then policies on endpoints will be evaluated to determine if the topic or user has the rights to send messages to it.  \n      If false, the endpoint policy will be ignored and only the mobile app policy will be considered.</li> -->\n      <li>\n<code>EventEndpointCreated</code> -- Topic ARN to which EndpointCreated event notifications should be sent.</li>\n      <li>\n<code>EventEndpointDeleted</code> -- Topic ARN to which EndpointDeleted event notifications should be sent.</li>\n      <li>\n<code>EventEndpointUpdated</code> -- Topic ARN to which EndpointUpdate event notifications should be sent.</li>\n      <!-- <li><code>EventDeliveryAttemptFailure</code>  Topic ARN to which DeliveryAttemptFailure event notifications should be sent upon Direct Publish delivery attempt failures to one of the application's endpoints.</li> -->\n      <li>\n<code>EventDeliveryFailure</code> -- Topic ARN to which DeliveryFailure event notifications should be sent upon Direct Publish delivery failure (permanent) to one of the application's endpoints.</li>\n      <!-- <li><code>Policy</code>   Access policy controlling who can send messages to endpoints under this mobile app.</li> -->\n    </ul>    \n  ",
+            "required": true
+          }
+        },
+        "documentation": "\n    <p>Input for SetPlatformApplicationAttributes action.</p>    \n  "
+      },
+      "output": null,
+      "errors": [
+        {
+          "shape_name": "InvalidParameterException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that a request parameter does not comply with the associated constraints.</p>\n  "
+        },
+        {
+          "shape_name": "InternalErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates an internal service error.</p>\n  "
+        },
+        {
+          "shape_name": "AuthorizationErrorException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
+        },
+        {
+          "shape_name": "NotFoundException",
+          "type": "structure",
+          "members": {
+            "message": {
+              "shape_name": "string",
+              "type": "string",
+              "documentation": null
+            }
+          },
+          "documentation": "\n    <p>Indicates that the requested resource does not exist.</p>\n  "
+        }
+      ],
+      "documentation": "\n    <p>The <code>SetPlatformApplicationAttributes</code> action sets the attributes of the platform application object for the supported push notification services, \n      such as APNS and GCM.\n      For more information, see <a href=\"http://docs.aws.amazon.com/sns/latest/dg/SNSMobilePush.html\">Using Amazon SNS Mobile Push Notifications</a>.\n    </p>\n    <examples>\n      <queryrequest>\n        \nPOST http://sns.us-west-2.amazonaws.com/ HTTP/1.1\n...\nAttributes.entry.1.key=EventEndpointCreated&PlatformApplicationArn=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Aapp%2FGCM%2Fgcmpushapp\n&Action=SetPlatformApplicationAttributes\n&SignatureMethod=HmacSHA256\n&Attributes.entry.1.value=arn%3Aaws%3Asns%3Aus-west-2%3A123456789012%3Atopicarn\n&AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&SignatureVersion=2\n&Version=2010-03-31\n&Signature=06L2TsW3jiH%2FGKDYuT8w4NojSrTf4Ig2GKqGeJPhPT4%3D\n&Timestamp=2013-07-01T22%3A53%3A17.800Z\n\n      </queryrequest>\n      <queryresponse>\n        \nHTTP/1.1 200 OK\n...\n<SetPlatformApplicationAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>cf577bcc-b3dc-5463-88f1-3180b9412395</RequestId>\n  </ResponseMetadata>\n</SetPlatformApplicationAttributesResponse>\n\n      </queryresponse>\n    </examples>    \n  "
+    },
     "SetSubscriptionAttributes": {
       "name": "SetSubscriptionAttributes",
       "input": {
@@ -1032,7 +1926,7 @@
             "documentation": "\n    <p>The new value for the attribute in JSON format.</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for SetSubscriptionAttributes action.</p>\n  "
       },
       "output": null,
       "errors": [
@@ -1111,7 +2005,7 @@
             "documentation": "\n    <p>The new value for the attribute.</p>\n    \n\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for SetTopicAttributes action.</p>    \n  "
       },
       "output": null,
       "errors": [
@@ -1164,7 +2058,7 @@
           "documentation": "\n    <p>Indicates that the user has been denied access to the requested resource.</p>\n  "
         }
       ],
-      "documentation": "\n    <p>The <code>SetTopicAttributes</code> action allows a topic owner to set an attribute of the topic to a new value.</p>\n<examples>\n  <queryrequest>\n    \nThe following example sets the DisplayName attribute to MyTopicName\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue=MyTopicName\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &AttributeName=DisplayName\n  &Action=SetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n  \nThe following example sets the delivery policy to 5 total retries\n  \n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue={\"http\":{\"defaultHealthyRetryPolicy\":{\"numRetries\":5}}}\n  &TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &AttributeName=DeliveryPolicy\n  &Action=SetTopicAttributes\n  &SignatureVersion=2\n  &SignatureMethod=HmacSHA256\n  &Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &AWSAccessKeyId=(AWS Access Key Id)\n  &Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D  \n  \nThe JSON format for the DeliveryPolicy AttributeValue (linebreaks added for readability):\n{\n    \"http\": {\n    \"defaultHealthyRetryPolicy\": \n        {\n        \"minDelayTarget\":  <int>,\n        \"maxDelayTarget\": <int>,\n        \"numRetries\": <int>,\n        \"numMaxDelayRetries\": <int>,\n        \"backoffFunction\": \"<linear|arithmetic|geometric|exponential>\"\n        },\n    \"disableSubscriptionOverrides\": <boolean>,\n    \"defaultThrottlePolicy\": \n        {\n        \"maxReceivesPerSecond\": <int>\n        }\n    }\n}\n  </queryrequest>\n <queryresponse>\n  \n<SetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
+      "documentation": "\n    <p>The <code>SetTopicAttributes</code> action allows a topic owner to set an attribute of the topic to a new value.</p>\n<examples>\n  <queryrequest>\nThe following example sets the DisplayName attribute to MyTopicName\n\n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue=MyTopicName\n  &amp;TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &amp;AttributeName=DisplayName\n  &amp;Action=SetTopicAttributes\n  &amp;SignatureVersion=2\n  &amp;SignatureMethod=HmacSHA256\n  &amp;Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &amp;AWSAccessKeyId=(AWS Access Key Id)\n  &amp;Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D\n  \nThe following example sets the delivery policy to 5 total retries\n  \n  http://sns.us-east-1.amazonaws.com/\n  ?AttributeValue={\"http\":{\"defaultHealthyRetryPolicy\":{\"numRetries\":5}}}\n  &amp;TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMy-Topic\n  &amp;AttributeName=DeliveryPolicy\n  &amp;Action=SetTopicAttributes\n  &amp;SignatureVersion=2\n  &amp;SignatureMethod=HmacSHA256\n  &amp;Timestamp=2010-03-31T12%3A00%3A00.000Z\n  &amp;AWSAccessKeyId=(AWS Access Key Id)\n  &amp;Signature=mQA3nJI%2BcmAIY7r8HCArGElSqPX5JG4UGzF4yo0RygE%3D  \n  \nThe JSON format for the DeliveryPolicy AttributeValue (linebreaks added for readability):\n{\n    \"http\": {\n    \"defaultHealthyRetryPolicy\": \n        {\n        \"minDelayTarget\":  &lt;int&gt;,\n        \"maxDelayTarget\": &lt;int&gt;,\n        \"numRetries\": &lt;int&gt;,\n        \"numMaxDelayRetries\": &lt;int&gt;,\n        \"backoffFunction\": \"&lt;linear|arithmetic|geometric|exponential&gt;\"\n        },\n    \"disableSubscriptionOverrides\": &lt;boolean&gt;,\n    \"defaultThrottlePolicy\": \n        {\n        \"maxReceivesPerSecond\": &lt;int&gt;\n        }\n    }\n  </queryrequest>\n <queryresponse>\n  \n<SetTopicAttributesResponse xmlns=\"http://sns.amazonaws.com/doc/2010-03-31/\">\n  <ResponseMetadata>\n    <RequestId>a8763b99-33a7-11df-a9b7-05d48da6f042</RequestId>\n  </ResponseMetadata>\n</SetTopicAttributesResponse>\n  \n </queryresponse>\n</examples>\n\n\n  "
     },
     "Subscribe": {
       "name": "Subscribe",
@@ -1181,16 +2075,16 @@
           "Protocol": {
             "shape_name": "protocol",
             "type": "string",
-            "documentation": "\n    <p>The protocol you want to use. Supported protocols include:</p>\n    <ul>\n      <li>\n<code>http</code> -- delivery of JSON-encoded message via HTTP POST</li>\n      <li>\n<code>https</code> -- delivery of JSON-encoded message via HTTPS POST</li>\n      <li>\n<code>email</code> -- delivery of message via SMTP</li>\n      <li>\n<code>email-json</code> -- delivery of JSON-encoded message via SMTP</li>\n      <li>\n<code>sms</code> -- delivery of message via SMS</li>\n      <li>\n<code>sqs</code> -- delivery of JSON-encoded message to an Amazon SQS queue</li>\n    </ul>\n  ",
+            "documentation": "\n    <p>The protocol you want to use. Supported protocols include:</p>\n    <ul>\n      <li>\n<code>http</code> -- delivery of JSON-encoded message via HTTP POST</li>\n      <li>\n<code>https</code> -- delivery of JSON-encoded message via HTTPS POST</li>\n      <li>\n<code>email</code> -- delivery of message via SMTP</li>\n      <li>\n<code>email-json</code> -- delivery of JSON-encoded message via SMTP</li>\n      <li>\n<code>sms</code> -- delivery of message via SMS</li>\n      <li>\n<code>sqs</code> -- delivery of JSON-encoded message to an Amazon SQS queue</li>\n      <li>\n<code>application</code> -- delivery of JSON-encoded message to an EndpointArn for a mobile app and device.</li>\n    </ul>\n  ",
             "required": true
           },
           "Endpoint": {
             "shape_name": "endpoint",
             "type": "string",
-            "documentation": "\n    <p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p>\n    <ul>\n      <li>For the <code>http</code> protocol, the endpoint is an URL beginning with \"http://\"</li>\n      <li>For the <code>https</code> protocol, the endpoint is a URL beginning with \"https://\"</li>\n      <li>For the <code>email</code> protocol, the endpoint is an email address</li>\n      <li>For the <code>email-json</code> protocol, the endpoint is an email address</li>\n      <li>For the <code>sms</code> protocol, the endpoint is a phone number of an SMS-enabled device</li>\n      <li>For the <code>sqs</code> protocol, the endpoint is the ARN of an Amazon SQS queue</li>\n    </ul>\n  "
+            "documentation": "\n    <p>The endpoint that you want to receive notifications. Endpoints vary by protocol:</p>\n    <ul>\n      <li>For the <code>http</code> protocol, the endpoint is an URL beginning with \"http://\"</li>\n      <li>For the <code>https</code> protocol, the endpoint is a URL beginning with \"https://\"</li>\n      <li>For the <code>email</code> protocol, the endpoint is an email address</li>\n      <li>For the <code>email-json</code> protocol, the endpoint is an email address</li>\n      <li>For the <code>sms</code> protocol, the endpoint is a phone number of an SMS-enabled device</li>\n      <li>For the <code>sqs</code> protocol, the endpoint is the ARN of an Amazon SQS queue</li>\n      <li>For the <code>application</code> protocol, the endpoint is the EndpointArn of a mobile app and device.</li>\n    </ul>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    Input for Subscribe action.\n  "
       },
       "output": {
         "shape_name": "SubscribeResponse",
@@ -1202,7 +2096,7 @@
             "documentation": "\n    <p>The ARN of the subscription, if the service was able to create a \n    subscription immediately (without requiring endpoint owner confirmation).</p>\n  "
           }
         },
-        "documentation": null
+        "documentation": "\n    Response for Subscribe action.\n  "
       },
       "errors": [
         {
@@ -1281,7 +2175,7 @@
             "required": true
           }
         },
-        "documentation": null
+        "documentation": "\n    <p>Input for Unsubscribe action.</p>\n  "
       },
       "output": null,
       "errors": [

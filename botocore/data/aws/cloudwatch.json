@@ -177,7 +177,7 @@
             ],
             "documentation": "\n\t\t<p>\n\t\tRetrieves history for the specified alarm.\n\t\tFilter alarms by date range or item type.\n\t\tIf an alarm name is not specified,\n\t\tAmazon CloudWatch returns histories for\n\t\tall of the owner's alarms.\n\t\t</p>\n\t\t<note>\n\t\tAmazon CloudWatch retains the history of an alarm\n\t\tfor two weeks, whether or not you delete the alarm.\n\t\t</note>\n\t",
             "pagination": {
-                "limit_key": "MaxResults",
+                "limit_key": "MaxRecords",
                 "input_token": "NextToken",
                 "output_token": "NextToken",
                 "result_key": "AlarmHistoryItems",
@@ -528,7 +528,7 @@
             ],
             "documentation": "\n\t\t<p>\n\t\tRetrieves alarms with the specified names.\n\t\tIf no name is specified, all alarms for the user are returned.\n\t\tAlarms can be retrieved by using only a prefix for the alarm name,\n\t\tthe alarm state, or a prefix for any action.\n\t\t</p>\n\t",
             "pagination": {
-                "limit_key": "MaxResults",
+                "limit_key": "MaxRecords",
                 "input_token": "NextToken",
                 "output_token": "NextToken",
                 "result_key": "MetricAlarms",
@@ -1419,7 +1419,6 @@
             ],
             "documentation": "\n\t\t<p>\n\t\tReturns a list of valid metrics stored for the AWS account owner.\n\t\tReturned metrics can be used with <code>GetMetricStatistics</code>\n\t\tto obtain statistical data for a given metric.\n\t\t</p>\n\t\t<note>\n\t\tUp to 500 results are returned for any one call.  To retrieve further\n\t\tresults, use returned <code>NextToken</code> values with subsequent\n\t\t<code>ListMetrics</code> operations.\n\t\t</note>\n\t\t<note>\n\t\t\tIf you create a metric with the <a>PutMetricData</a> action,\n\t\t\tallow up to fifteen minutes for the metric to appear in calls\n\t\t\tto the <code>ListMetrics</code> action.\n\t\t</note>\n\t",
             "pagination": {
-                "limit_key": "MaxResults",
                 "input_token": "NextToken",
                 "output_token": "NextToken",
                 "result_key": "Metrics",
@@ -1940,21 +1939,20 @@
     },
     "pagination": {
         "DescribeAlarmHistory": {
-            "limit_key": "MaxResults",
+            "limit_key": "MaxRecords",
             "input_token": "NextToken",
             "output_token": "NextToken",
             "result_key": "AlarmHistoryItems",
             "py_input_token": "next_token"
         },
         "DescribeAlarms": {
-            "limit_key": "MaxResults",
+            "limit_key": "MaxRecords",
             "input_token": "NextToken",
             "output_token": "NextToken",
             "result_key": "MetricAlarms",
             "py_input_token": "next_token"
         },
         "ListMetrics": {
-            "limit_key": "MaxResults",
             "input_token": "NextToken",
             "output_token": "NextToken",
             "result_key": "Metrics",
@@ -1975,6 +1973,27 @@
                         "socket_errors": [
                             "GENERAL_CONNECTION_ERROR"
                         ]
+                    }
+                },
+                "general_server_error": {
+                    "applies_when": {
+                        "response": {
+                            "http_status_code": 500
+                        }
+                    }
+                },
+                "service_unavailable": {
+                    "applies_when": {
+                        "response": {
+                            "http_status_code": 503
+                        }
+                    }
+                },
+                "limit_exceeded": {
+                    "applies_when": {
+                        "response": {
+                            "http_status_code": 509
+                        }
                     }
                 }
             }

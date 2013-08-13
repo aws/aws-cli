@@ -54,15 +54,15 @@ class TestEC2Operations(unittest.TestCase):
 
     def test_describe_instances_filter(self):
         op = self.ec2.get_operation('DescribeInstances')
-        params = op.build_parameters(filters={'name': 'group-name',
-                                              'values': ['foobar']})
+        params = op.build_parameters(filters=[{'Name': 'group-name',
+                                               'Values': ['foobar']}])
         result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name'}
         self.assertEqual(params, result)
 
     def test_describe_instances_filter_values(self):
         op = self.ec2.get_operation('DescribeInstances')
-        params = op.build_parameters(filters={'name': 'group-name',
-                                              'values': ['foobar', 'fiebaz']})
+        params = op.build_parameters(filters=[{'Name': 'group-name',
+                                               'Values': ['foobar', 'fiebaz']}])
         result = {'Filter.1.Value.2': 'fiebaz',
                   'Filter.1.Value.1': 'foobar',
                   'Filter.1.Name': 'group-name'}
@@ -71,8 +71,8 @@ class TestEC2Operations(unittest.TestCase):
     def test_create_tags(self):
         op = self.ec2.get_operation('CreateTags')
         params = op.build_parameters(resources=['i-12345678', 'i-87654321'],
-                                     tags=[{'key': 'key1', 'value': 'value1'},
-                                           {'key': 'key2', 'value': 'value2'}])
+                                     tags=[{'Key': 'key1', 'Value': 'value1'},
+                                           {'Key': 'key2', 'Value': 'value2'}])
         result = {'ResourceId.1': 'i-12345678',
                   'ResourceId.2': 'i-87654321',
                   'Tag.1.Key': 'key1', 'Tag.1.Value': 'value1',
@@ -84,13 +84,13 @@ class TestEC2Operations(unittest.TestCase):
         params = op.build_parameters(spot_price='1.00',
                                      instance_count=1,
                                      launch_specification={
-                                         'image_id': 'ami-33ec795a',
-                                         'instance_type': 'cc2.8xlarge',
-                                         'block_device_mappings': [
-                                             {"device_name": "/dev/sdb", "virtual_name": "ephemeral0"},
-                                             {"device_name": "/dev/sdc", "virtual_name": "ephemeral1"},
-                                             {"device_name": "/dev/sdd", "virtual_name": "ephemeral2"},
-                                             {"device_name": "/dev/sde", "virtual_name": "ephemeral3"}]})
+                                         'ImageId': 'ami-33ec795a',
+                                         'InstanceType': 'cc2.8xlarge',
+                                         'BlockDeviceMappings': [
+                                             {"DeviceName": "/dev/sdb", "VirtualName": "ephemeral0"},
+                                             {"DeviceName": "/dev/sdc", "VirtualName": "ephemeral1"},
+                                             {"DeviceName": "/dev/sdd", "VirtualName": "ephemeral2"},
+                                             {"DeviceName": "/dev/sde", "VirtualName": "ephemeral3"}]})
         result = {'SpotPrice': '1.00',
                   'InstanceCount': '1',
                   'LaunchSpecification.ImageId': 'ami-33ec795a',
@@ -123,10 +123,10 @@ class TestEC2Operations(unittest.TestCase):
         op = self.ec2.get_operation('AuthorizeSecurityGroupIngress')
         params = op.build_parameters(
             group_name='MyGroup',
-            ip_permissions={
-                'from_port': 22, 'to_port': 22,
-                'ip_protocol': 'tcp',
-                'ip_ranges': [{'cidr_ip': '0.0.0.0/0'}]})
+            ip_permissions=[{
+                'FromPort': 22, 'ToPort': 22,
+                'IpProtocol': 'tcp',
+                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]}])
         result = {'GroupName': 'MyGroup',
                   'IpPermissions.1.FromPort': '22',
                   'IpPermissions.1.ToPort': '22',

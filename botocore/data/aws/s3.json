@@ -2368,6 +2368,21 @@
                                 }
                             }
                         }
+                    },
+                    "Prefix": {
+                        "type": "string"
+                    },
+                    "CommonPrefixes": {
+                        "type": "list",
+                        "flattened": true,
+                        "members": {
+                            "type": "structure",
+                            "members": {
+                                "Prefix": {
+                                    "type": "string"
+                                }
+                            }
+                        }
                     }
                 },
                 "shape_name": "ListMultipartUploadsOutput"
@@ -2375,7 +2390,7 @@
             "errors": [],
             "pagination": {
                 "limit_key": "MaxUploads",
-                "more_results": "IsTruncated",
+                "more_key": "IsTruncated",
                 "output_token": [
                     "NextKeyMarker",
                     "NextUploadIdMarker"
@@ -2573,7 +2588,7 @@
             },
             "errors": [],
             "pagination": {
-                "more_results": "IsTruncated",
+                "more_key": "IsTruncated",
                 "limit_key": "MaxKeys",
                 "output_token": [
                     "NextKeyMarker",
@@ -2712,7 +2727,7 @@
                 }
             ],
             "pagination": {
-                "more_results": "IsTruncated",
+                "more_key": "IsTruncated",
                 "limit_key": "MaxKeys",
                 "output_token": "NextMarker or Contents[-1].Key",
                 "input_token": "Marker",
@@ -2858,8 +2873,9 @@
             },
             "errors": [],
             "pagination": {
-                "limit_key": "IsTruncated",
-                "output_tokens": "NextPartNumberMarker",
+                "more_key": "IsTruncated",
+                "limit_key": "MaxParts",
+                "output_token": "NextPartNumberMarker",
                 "input_token": "PartNumberMarker",
                 "result_key": "Parts",
                 "py_input_token": "part_number_marker"
@@ -4233,7 +4249,7 @@
     "pagination": {
         "ListMultipartUploads": {
             "limit_key": "MaxUploads",
-            "more_results": "IsTruncated",
+            "more_key": "IsTruncated",
             "output_token": [
                 "NextKeyMarker",
                 "NextUploadIdMarker"
@@ -4249,7 +4265,7 @@
             ]
         },
         "ListObjectVersions": {
-            "more_results": "IsTruncated",
+            "more_key": "IsTruncated",
             "limit_key": "MaxKeys",
             "output_token": [
                 "NextKeyMarker",
@@ -4266,7 +4282,7 @@
             ]
         },
         "ListObjects": {
-            "more_results": "IsTruncated",
+            "more_key": "IsTruncated",
             "limit_key": "MaxKeys",
             "output_token": "NextMarker or Contents[-1].Key",
             "input_token": "Marker",
@@ -4277,8 +4293,9 @@
             "py_input_token": "marker"
         },
         "ListParts": {
-            "limit_key": "IsTruncated",
-            "output_tokens": "NextPartNumberMarker",
+            "more_key": "IsTruncated",
+            "limit_key": "MaxParts",
+            "output_token": "NextPartNumberMarker",
             "input_token": "PartNumberMarker",
             "result_key": "Parts",
             "py_input_token": "part_number_marker"
@@ -4298,6 +4315,27 @@
                         "socket_errors": [
                             "GENERAL_CONNECTION_ERROR"
                         ]
+                    }
+                },
+                "general_server_error": {
+                    "applies_when": {
+                        "response": {
+                            "http_status_code": 500
+                        }
+                    }
+                },
+                "service_unavailable": {
+                    "applies_when": {
+                        "response": {
+                            "http_status_code": 503
+                        }
+                    }
+                },
+                "limit_exceeded": {
+                    "applies_when": {
+                        "response": {
+                            "http_status_code": 509
+                        }
                     }
                 }
             }

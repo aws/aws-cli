@@ -44,7 +44,7 @@ class TestRoute53Operations(BaseEnvVar):
 
     def test_create_hosted_zone(self):
         op = self.route53.get_operation('CreateHostedZone')
-        hzc = {'comment': 'blahblahblah'}
+        hzc = {'Comment': 'blahblahblah'}
         params = op.build_parameters(name=self.hosted_zone_name,
                                      caller_reference='foobar',
                                      hosted_zone_config=hzc)
@@ -54,14 +54,14 @@ class TestRoute53Operations(BaseEnvVar):
 
     def test_create_resource_record_sets(self):
         op = self.route53.get_operation('ChangeResourceRecordSets')
-        batch = {"comment": "Adding TXT record",
-                 "changes": [{"action":"CREATE",
-                              "resource_record_set":{
-                                "name":"midocs.com",
-                                "type":"TXT",
-                                "ttl":600,
-                                "resource_records":[
-                                  {"value":"\"v=foobar\""}]}}]}
+        batch = {"Comment": "Adding TXT record",
+                 "Changes": [{"Action":"CREATE",
+                              "ResourceRecordSet":{
+                                "Name":"midocs.com",
+                                "Type":"TXT",
+                                "TTL":600,
+                                "ResourceRecords":[
+                                  {"Value":"\"v=foobar\""}]}}]}
         params = op.build_parameters(hosted_zone_id='1111',
                                      change_batch=batch)
         self.maxDiff = None
@@ -70,14 +70,14 @@ class TestRoute53Operations(BaseEnvVar):
 
     def test_delete_resource_record_sets(self):
         op = self.route53.get_operation('ChangeResourceRecordSets')
-        batch = {"comment": "Adding TXT record",
-                 "changes": [{"action":"DELETE",
-                              "resource_record_set":{
-                                "name":"midocs.com",
-                                "type":"TXT",
-                                "ttl":600,
-                                "resource_records":[
-                                  {"value":"\"v=foobar\""}]}}]}
+        batch = {"Comment": "Adding TXT record",
+                 "Changes": [{"Action":"DELETE",
+                              "ResourceRecordSet":{
+                                "Name":"midocs.com",
+                                "Type":"TXT",
+                                "TTL":600,
+                                "ResourceRecords":[
+                                  {"Value":"\"v=foobar\""}]}}]}
         params = op.build_parameters(hosted_zone_id='1111',
                                      change_batch=batch)
         self.maxDiff = None
@@ -86,11 +86,11 @@ class TestRoute53Operations(BaseEnvVar):
 
     def test_create_healthcheck(self):
         op = self.route53.get_operation('CreateHealthCheck')
-        hc_config = {'ip_address': '192.168.10.0',
-                     'port': 8888,
-                     'type': 'HTTP',
-                     'resource_path': 'foo/bar',
-                     'fully_qualified_domain_name': 'foobar.com'}
+        hc_config = {'IPAddress': '192.168.10.0',
+                     'Port': 8888,
+                     'Type': 'HTTP',
+                     'ResourcePath': 'foo/bar',
+                     'FullyQualifiedDomainName': 'foobar.com'}
         params = op.build_parameters(caller_reference='foobar',
                                      health_check_config=hc_config)
         self.maxDiff = None

@@ -19,7 +19,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import sys
 from tests import unittest
 from botocore.translate import ModelFiles, translate, merge_dicts
 
@@ -88,6 +87,18 @@ SERVICES = {
               "type": "string",
               "documentation": None
           },
+          "TokenToken": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": None,
+              "xmlname": "tokenToken"
+          },
+          "MaxResults": {
+              "shape_name": "Integer",
+              "type": "int",
+              "documentation": None,
+              "xmlname": "maxResults"
+          }
         },
         "documentation": "docs"
       },
@@ -164,7 +175,7 @@ SERVICES = {
               "type": "string",
               "documentation": None,
               "xmlname": "nextToken"
-          }
+          },
         },
         "documentation": "docs"
       },
@@ -196,6 +207,32 @@ SERVICES = {
       ],
       "documentation": "docs"
     },
+    "RealOperation2013_02_04": {
+      "name": "RealOperation2013_02_04",
+      "input": {},
+      "output": {},
+      "errors": [],
+      "documentation": "docs"
+    },
+    "DeprecatedOperation": {
+      "input": {
+        "shape_name": "DeprecatedOperationRequest",
+        "type": "structure",
+        "members": {
+          "FooBar": {
+            "shape_name": "foobarType",
+            "type": "string",
+            "documentation": "blah blah <![CDATA[\n\nfoobar ]]>blah blah",
+          },
+          "FieBaz": {
+            "shape_name": "fiebazType",
+            "type": "string",
+            "documentation": "Don't use this, it's deprecated"
+          }
+        }
+      },
+      "documentation": "This is my <![CDATA[none of \nthis stuff should be here]]> stuff"
+    }
   }
 }
 
@@ -305,7 +342,7 @@ class TestTranslateModel(unittest.TestCase):
                 'AssumeRole': {
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
-                    'max_results': 'MaxResults',
+                    'limit_key': 'MaxResults',
                     'result_key': 'Credentials',
                 }
             }
@@ -318,7 +355,7 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': 'NextToken',
                 'py_input_token': 'next_token',
                 'output_token': 'NextToken',
-                'max_results': 'MaxResults',
+                'limit_key': 'MaxResults',
                 'result_key': 'Credentials',
             })
 
@@ -331,7 +368,7 @@ class TestTranslateModel(unittest.TestCase):
                     'input_token': 'NextToken',
                     'output_token': 'NextToken',
                     'py_input_token': 'other_value',
-                    'max_results': 'MaxResults',
+                    'limit_key': 'MaxResults',
                     'result_key': 'Credentials',
                 }
             }
@@ -346,7 +383,7 @@ class TestTranslateModel(unittest.TestCase):
                 'input_token': 'NextToken',
                 'py_input_token': 'other_value',
                 'output_token': 'NextToken',
-                'max_results': 'MaxResults',
+                'limit_key': 'MaxResults',
                 'result_key': 'Credentials',
             })
 
@@ -396,7 +433,7 @@ class TestTranslateModel(unittest.TestCase):
         extra = {
             'pagination': {
                 'AssumeRole': {
-                    'input_token': ['Token', 'TokenToken'],
+                    'input_token': ['NextToken', 'TokenToken'],
                     'output_token': ['NextToken', 'NextTokenToken'],
                     'result_key': 'Credentials'
                 }
@@ -407,8 +444,8 @@ class TestTranslateModel(unittest.TestCase):
         op = new_model['operations']['AssumeRole']
         self.assertDictEqual(
             op['pagination'], {
-                'input_token': ['Token', 'TokenToken'],
-                'py_input_token': ['token', 'token_token'],
+                'input_token': ['NextToken', 'TokenToken'],
+                'py_input_token': ['next_token', 'token_token'],
                 'output_token': ['NextToken', 'NextTokenToken'],
                 'result_key': 'Credentials',
             })
@@ -445,7 +482,7 @@ class TestTranslateModel(unittest.TestCase):
         extra = {
             'pagination': {
                 'AssumeRole': {
-                    'input_token': ['Token', 'TokenToken'],
+                    'input_token': ['NextToken'],
                     'output_token': ['NextToken', 'NextTokenToken'],
                     'result_key': ['Credentials', 'AssumedRoleUser'],
                 }
@@ -455,14 +492,54 @@ class TestTranslateModel(unittest.TestCase):
         new_model = translate(self.model)
         self.assertEqual(new_model['pagination'], extra['pagination'])
 
-    def test_translate_operation_casing(self):
-        pass
+    def test_expected_schema_exists(self):
+        # In this case, the key 'output_tokens' is suppose to be 'output_token'
+        # so we should get an error when this happens.
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': ['Token', 'TokenToken'],
+                    'output_tokens': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
-    def test_translate_param_casing(self):
-        pass
+    def test_input_tokens_exist_in_model(self):
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    # In this case, "DoesNotExist" token is not in the input
+                    # model, so we get an exception complaining about this.
+                    'input_token': ['NextToken', 'DoesNotExist'],
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
-    def test_map_types_to_python_types(self):
-        pass
+    def test_validate_limit_key_is_in_input(self):
+        extra = {
+            'pagination': {
+                'AssumeRole': {
+                    'input_token': 'NextToken',
+                    'output_token': ['NextToken', 'NextTokenToken'],
+                    'result_key': ['Credentials', 'AssumedRoleUser'],
+                    # In this case, "DoesNotExist" token is not in the input
+                    # model, so we get an exception complaining about this.
+                    'limit_key': 'DoesNotExist',
+                }
+            }
+        }
+        self.model.enhancements = extra
+        with self.assertRaises(ValueError):
+            translate(self.model)
 
 
 class TestDictMerg(unittest.TestCase):
@@ -574,6 +651,65 @@ class TestBuildRetryConfig(unittest.TestCase):
         # And we should resolve references.
         self.assertEqual(operation_config['policies']['other'],
                          {"from": {"definition": "file"}})
+
+
+class TestReplacePartOfOperation(unittest.TestCase):
+    def test_replace_operation_key_name(self):
+        enhancements = {
+            'transformations': {
+                'operation-name': {'remove': r'\d{4}_\d{2}_\d{2}'}
+            }
+        }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        # But the key into the operation dict is stripped of the
+        # matched regex.
+        self.assertEqual(list(sorted(new_model['operations'].keys())),
+                         ['AssumeRole', 'DeprecatedOperation', 'RealOperation'])
+        # But the name key attribute is left unchanged.
+        self.assertEqual(new_model['operations']['RealOperation']['name'],
+                         'RealOperation2013_02_04')
+
+
+class TestRemovalOfDeprecatedParams(unittest.TestCase):
+    
+    def test_remove_deprecated_params(self):
+        enhancements = {
+            'transformations': {
+                'remove-deprecated-params': {'deprecated_keyword': 'deprecated'}
+                }
+            }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        operation = new_model['operations']['DeprecatedOperation']
+        # The deprecated param should be gone, the other should remain
+        self.assertIn('FooBar', operation['input']['members'])
+        self.assertNotIn('FieBaz', operation['input']['members'])
+
+        
+class TestFilteringOfDocumentation(unittest.TestCase):
+    
+    def test_remove_deprecated_params(self):
+        enhancements = {
+            "transformations": {
+                "filter-documentation": {
+                    "filter": {
+                        "regex": "<!\\[CDATA\\[.*\\]\\]>",
+                        "replacement": ""
+                        }
+                    }
+                }
+            }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        operation = new_model['operations']['DeprecatedOperation']
+        # The deprecated param should be gone, the other should remain
+        self.assertEqual(operation['documentation'], 'This is my  stuff')
+        param = operation['input']['members']['FooBar']
+        self.assertEqual(param['documentation'], 'blah blah blah blah')
 
 
 if __name__ == '__main__':

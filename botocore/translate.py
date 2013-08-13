@@ -1,6 +1,6 @@
 """Translate the raw json files into python specific descriptions."""
 import os
-import sys
+import re
 from copy import deepcopy
 
 from botocore.compat import OrderedDict, json
@@ -62,7 +62,87 @@ def translate(model):
     merge_dicts(new_model['operations'], model.enhancements.get('operations', {}))
     add_retry_configs(
         new_model, model.retry.get('retry', {}), definitions=model.retry.get('definitions', {}))
+    handle_op_renames(new_model, model.enhancements)
+    handle_remove_deprecated_params(new_model, model.enhancements)
+    handle_filter_documentation(new_model, model.enhancements)
     return new_model
+
+
+def handle_op_renames(new_model, enhancements):
+    # This allows for operations to be renamed.  The only
+    # implemented transformation is removing part of the operation name
+    # (because that's all we currently need.)
+    remove = enhancements.get('transformations', {}).get(
+        'operation-name', {}).get('remove')
+    if remove is not None:
+        # We're going to recreate the dictionary because we want to preserve
+        # the order.  This is the only option we have unless we have our own
+        # custom OrderedDict.
+        remove_regex = re.compile(remove)
+        operations = new_model['operations']
+        new_operation = OrderedDict()
+        for key in operations:
+            new_key = remove_regex.sub('', key)
+            new_operation[new_key] = operations[key]
+        new_model['operations'] = new_operation
+
+def handle_remove_deprecated_params(new_model, enhancements):
+    # This removes any parameter whose documentation string contains
+    # the specified phrase that marks a deprecated parameter.
+    keyword = enhancements.get('transformations', {}).get(
+        'remove-deprecated-params', {}).get('deprecated_keyword')
+    if keyword is not None:
+        operations = new_model['operations']
+        for op_name in operations:
+            operation = operations[op_name]
+            params = operation.get('input', {}).get('members')
+            if params:
+                new_params = OrderedDict()
+                for param_name in params:
+                    param = params[param_name]
+                    docs = param['documentation']
+                    if docs and docs.find(keyword) >= 0:
+                        continue
+                    new_params[param_name] = param
+                operation['input']['members'] = new_params
+
+
+def _filter_param_doc(param, replacement, regex):
+    # Recurse into complex parameters looking for documentation.
+    doc = param.get('documentation')
+    if doc:
+        param['documentation'] = regex.sub(replacement, doc)
+    if param['type'] == 'structure':
+        for member_name in param['members']:
+            member = param['members'][member_name]
+            _filter_param_doc(member, replacement, regex)
+    if param['type'] == 'map':
+        _filter_param_doc(param['keys'], replacement, regex)
+        _filter_param_doc(param['members'], replacement, regex)
+    elif param['type'] == 'list':
+        _filter_param_doc(param['members'], replacement, regex)
+
+
+def handle_filter_documentation(new_model, enhancements):
+    #This provides a way to filter undesireable content (e.g. CDATA)
+    #from documentation strings
+    filter = enhancements.get('transformations', {}).get(
+        'filter-documentation', {}).get('filter')
+    if filter is not None:
+        filter_regex = re.compile(filter.get('regex', ''), re.DOTALL)
+        replacement = filter.get('replacement')
+        operations = new_model['operations']
+        for op_name in operations:
+            operation = operations[op_name]
+            doc = operation.get('documentation')
+            if doc:
+                new_doc = filter_regex.sub(replacement, doc)
+                operation['documentation'] = new_doc
+            params = operation.get('input', {}).get('members')
+            if params:
+                for param_name in params:
+                    param = params[param_name]
+                    _filter_param_doc(param, replacement, filter_regex) 
 
 
 def add_pagination_configs(new_model, pagination):
@@ -75,6 +155,7 @@ def add_pagination_configs(new_model, pagination):
         new_model['pagination'] = pagination
     for name in pagination:
         config = pagination[name]
+        _check_known_pagination_keys(config)
         if 'py_input_token' not in config:
             input_token = config['input_token']
             if isinstance(input_token, list):
@@ -99,10 +180,38 @@ def add_pagination_configs(new_model, pagination):
                 raise ValueError("result_key %r is not an output member: %s" %
                                 (result_key,
                                  operation['output']['members'].keys()))
+        _check_input_keys_match(config, operation)
         if operation is None:
             raise ValueError("Tried to add a pagination config for non "
                              "existent operation '%s'" % name)
         operation['pagination'] = config.copy()
+
+
+def _check_known_pagination_keys(config):
+    # Verify that the pagination config only has keys we expect to see.
+    expected = set(['input_token', 'py_input_token', 'output_token',
+                    'result_key', 'limit_key', 'more_key'])
+    for key in config:
+        if key not in expected:
+            raise ValueError("Unknown key in pagination config: %s" % key)
+
+
+def _check_input_keys_match(config, operation):
+    input_tokens = config['input_token']
+    if not isinstance(input_tokens, list):
+        input_tokens = [input_tokens]
+    valid_input_names = operation['input']['members']
+    for token in input_tokens:
+        if token not in valid_input_names:
+            raise ValueError("input_token refers to a non existent "
+                             "input name for operation %s: %s.  "
+                             "Must be one of: %s" % (operation['name'], token,
+                                                     list(valid_input_names)))
+    if 'limit_key' in config and config['limit_key'] not in valid_input_names:
+        raise ValueError("limit_key refers to a non existent input name for "
+                         "operation %s: %s.  Must be one of: %s" % (
+                             operation['name'], config['limit_key'],
+                             list(valid_input_names)))
 
 
 def add_retry_configs(new_model, retry_model, definitions):

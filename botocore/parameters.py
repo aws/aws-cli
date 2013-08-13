@@ -25,8 +25,10 @@ import base64
 import datetime
 import six
 import dateutil.parser
-from . import BotoCoreObject
-from .exceptions import ValidationError, RangeError
+from botocore import BotoCoreObject
+from botocore.exceptions import ValidationError, RangeError, UnknownKeyError
+from botocore.exceptions import MissingParametersError
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +48,20 @@ class Parameter(BotoCoreObject):
         self.example_fn = None
         BotoCoreObject.__init__(self, **kwargs)
         self.cli_name = '--' + self.cli_name
-        self.handle_subtypes()
+        self._handle_subtypes()
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
+        # Subclasses can implement this method to handle
+        # any members they might have (useful for complex types).
         pass
 
     def validate(self, value):
+        """Validate the value.
+
+        If a parameter decides the value is not a valid value
+        then they can raise a ``ValidationError``.
+
+        """
         pass
 
     def get_label(self):
@@ -101,6 +111,7 @@ class Parameter(BotoCoreObject):
             built_params['payload'].literal_value = value
 
     def build_parameter(self, style, value, built_params, label=''):
+        self.validate(value)
         if style == 'query':
             self.build_parameter_query(value, built_params, label)
         elif style == 'json':
@@ -123,11 +134,13 @@ class IntegerParameter(Parameter):
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -142,11 +155,13 @@ class FloatParameter(Parameter):
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -161,11 +176,13 @@ class DoubleParameter(Parameter):
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if value > self.max:
                 raise RangeError(value=value,
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -188,12 +205,16 @@ class BooleanParameter(Parameter):
             raise ValidationError(value=str(value), type_name='boolean',
                                   param=self)
 
-    def build_parameter_query(self, value, built_params, label=''):
-        value = self.validate(value)
+    def _getstring(self, value):
         if value:
             value = 'true'
         else:
             value = 'false'
+        return value
+
+    def build_parameter_query(self, value, built_params, label=''):
+        value = self.validate(value)
+        value = self._getstring(value)
         self.store_value_query(value, built_params, label)
 
     @property
@@ -202,6 +223,12 @@ class BooleanParameter(Parameter):
         if self.required:
             false_name = '--no-' + self.cli_name[2:]
         return false_name
+
+    def to_xml(self, value, label=None):
+        if not label:
+            label = self.name
+        value = self._getstring(value)
+        return '<%s>%s</%s>' % (label, value, label)
 
 
 class TimestampParameter(Parameter):
@@ -253,11 +280,13 @@ class StringParameter(Parameter):
         if self.min:
             if len(value) < self.min:
                 raise RangeError(value=len(value),
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         if self.max:
             if len(value) > self.max:
                 raise RangeError(value=len(value),
+                                 param=self,
                                  min_value=self.min,
                                  max_value=self.max)
         return value
@@ -266,13 +295,14 @@ class StringParameter(Parameter):
 class BlobParameter(Parameter):
 
     def validate(self, value):
+        allowed_types = six.string_types + (bytes, bytearray,)
         if self.payload and self.streaming:
-            # Streaming blobs should be file-like objects
-            if not hasattr(value, 'read'):
+            # Streaming blobs should be file-like objects or be strings.
+            if not hasattr(value, 'read') and not isinstance(value, allowed_types):
                 raise ValidationError(value=str(value), type_name='blob',
                                       param=self)
         else:
-            if not isinstance(value, six.string_types):
+            if not isinstance(value, allowed_types):
                 raise ValidationError(value=str(value), type_name='string',
                                       param=self)
             if not hasattr(self, 'payload') or self.payload is False:
@@ -285,16 +315,25 @@ class ListParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, (list, tuple)):
-            value = [value]
+            raise ValidationError(value=value, type_name='list', param=self)
+        for item in value:
+            try:
+                self.members.validate(item)
+            except ValidationError as e:
+                # ValidationError must provide a value
+                # argument so we can safely access that key.
+                raise ValidationError(value=e.kwargs['value'],
+                                      param='element of %s' % self,
+                                      type_name='list')
         return value
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
         if self.members:
             self.members = get_parameter(self.operation, None, self.members)
 
     def build_parameter_query(self, value, built_params, label=''):
-        logger.debug("Building parameter for query service, name: %r, label: %r",
-                     self.get_label(), label)
+        logger.debug("Building parameter for query service, name: %r, "
+                     "label: %r", self.get_label(), label)
         value = self.validate(value)
         # If this is not a flattened list, find the label for member
         # items in the list.
@@ -330,7 +369,10 @@ class ListParameter(Parameter):
     def to_xml(self, value, label=None):
         inner_xml = ''
         for item in value:
-            inner_xml += self.members.to_xml(item, self.xmlname)
+            xmlname = self.xmlname
+            if not xmlname:
+                xmlname = self.members.xmlname
+            inner_xml += self.members.to_xml(item, xmlname)
         if self.flattened:
             return inner_xml
         else:
@@ -343,9 +385,10 @@ class MapParameter(Parameter):
 
     def validate(self, value):
         if not isinstance(value, dict):
-            raise ValidationError(value=str(value), type_name='map', param=self)
+            raise ValidationError(value=str(value),
+                                  type_name='map', param=self)
 
-    def handle_subtypes(self):
+    def _handle_subtypes(self):
         if self.members:
             self.members = get_parameter(self.operation, None, self.members)
         if self.keys:
@@ -357,8 +400,9 @@ class MapParameter(Parameter):
         member_type = self.members
         for i, v in enumerate(value, 1):
             built_params['%s.%d.%s' % (label, i, key_type.xmlname)] = v
-            member_type.build_parameter_query(value[v], built_params,
-                                              '%s.%d.%s' % (label, i, member_type.xmlname))
+            member_type.build_parameter_query(
+                value[v], built_params,
+                '%s.%d.%s' % (label, i, member_type.xmlname))
 
     def build_parameter_json(self, value, built_params, label=''):
         label = self.get_label()
@@ -377,8 +421,34 @@ class StructParameter(Parameter):
         if not isinstance(value, dict):
             raise ValidationError(value=str(value), type_name='structure',
                                   param=self)
+        self._validate_known_keys(value)
+        self._validate_required_keys(value)
+        for member in self.members:
+            sub_value = value.get(member.name)
+            if sub_value is not None:
+                member.validate(sub_value)
 
-    def handle_subtypes(self):
+    def _validate_known_keys(self, value):
+        valid_keys = [p.name for p in self.members]
+        for key in value:
+            if key not in valid_keys:
+                raise UnknownKeyError(
+                    value=key, choices=', '.join(valid_keys), param=self.name)
+
+    def _validate_required_keys(self, value):
+        # There are some inner params that are marked as required
+        # even though the parent param is not marked required.
+        # It would be a good enhancement to also validate those
+        # params.
+        missing = []
+        for required in [p.name for p in self.members if p.required]:
+            if required not in value:
+                missing.append(required)
+        if missing:
+            raise MissingParametersError(object_name=self,
+                                         missing=', '.join(missing))
+
+    def _handle_subtypes(self):
         if self.members:
             l = []
             for name, data in self.members.items():
@@ -392,11 +462,11 @@ class StructParameter(Parameter):
             label = self.get_label()
         label = '%s.{label}' % label
         for member in self.members:
-            if member.required and member.py_name not in value:
-                msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())
+            if member.required and member.name not in value:
+                msg = 'Expected: %s, Got: %s' % (member.name, value.keys())
                 raise ValueError(msg)
-            if member.py_name in value:
-                member.build_parameter_query(value[member.py_name],
+            if member.name in value:
+                member.build_parameter_query(value[member.name],
                                              built_params,
                                              label)
 
@@ -408,12 +478,12 @@ class StructParameter(Parameter):
         else:
             built_params[label] = new_value
         for member in self.members:
-            if member.required and member.py_name not in value:
-                msg = 'Expected: %s, Got: %s' % (member.py_name, value.keys())
+            if member.required and member.name not in value:
+                msg = 'Expected: %s, Got: %s' % (member.name, value.keys())
                 raise ValueError(msg)
-            if member.py_name in value:
+            if member.name in value:
                 member_label = member.get_label()
-                member.build_parameter_json(value[member.py_name],
+                member.build_parameter_json(value[member.name],
                                             new_value,
                                             member_label)
 
@@ -421,8 +491,8 @@ class StructParameter(Parameter):
         label = self.get_label()
         built_params[label] = {}
         for member in self.members:
-            if member.py_name in value:
-                member.store_value_json(value[member.py_name],
+            if member.name in value:
+                member.store_value_json(value[member.name],
                                         built_params[label],
                                         member.name)
 
@@ -431,8 +501,8 @@ class StructParameter(Parameter):
             label = self.get_label()
         xml = '<%s>' % label
         for member in self.members:
-            if member.py_name in value:
-                xml += member.to_xml(value[member.py_name], member.name)
+            if member.name in value:
+                xml += member.to_xml(value[member.name], member.name)
         xml += '</%s>' % label
         return xml
 

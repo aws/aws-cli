@@ -31,7 +31,7 @@ import botocore.response
 import botocore.exceptions
 from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
 from botocore.awsrequest import AWSRequest
-from botocore.compat import urljoin, json
+from botocore.compat import urljoin, json, quote
 from botocore.payload import Payload
 
 
@@ -182,7 +182,7 @@ class RestEndpoint(Endpoint):
             if pc:
                 pc = pc.format(**params['uri_params'])
             path_components.append(pc)
-        path = '/'.join(path_components)
+        path = quote('/'.join(path_components))
         query_param_components = []
         for qpc in query_params.split('&'):
             if qpc:

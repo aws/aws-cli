@@ -20,6 +20,27 @@
       "applies_when": {
         "socket_errors": ["GENERAL_CONNECTION_ERROR"]
       }
+    },
+    "general_server_error": {
+      "applies_when": {
+        "response": {
+          "http_status_code": 500
+        }
+      }
+    },
+    "service_unavailable": {
+      "applies_when": {
+        "response": {
+          "http_status_code": 503
+        }
+      }
+    },
+    "limit_exceeded": {
+      "applies_when": {
+        "response": {
+          "http_status_code": 509
+        }
+      }
     }
   },
   "retry": {
@@ -31,7 +52,10 @@
         "growth_factor": 2
       },
       "policies": {
-          "general_socket_errors": {"$ref": "general_socket_errors"}
+          "general_socket_errors": {"$ref": "general_socket_errors"},
+          "general_server_error": {"$ref": "general_server_error"},
+          "service_unavailable": {"$ref": "service_unavailable"},
+          "limit_exceeded": {"$ref": "limit_exceeded"}
       }
     },
     "autoscaling": {

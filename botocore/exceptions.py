@@ -113,32 +113,71 @@ class MissingParametersError(BotoCoreError):
     """
     One or more required parameters were not supplied.
 
-    :ivar missing: str
-    :ivar missing: The names of the missing parameters
+    :ivar object: The object that has missing parameters.
+        This can be an operation or a parameter (in the
+        case of inner params).  The str() of this object
+        will be used so it doesn't need to implement anything
+        other than str().
+    :ivar missing: The names of the missing parameters.
     """
-    fmt = 'The following required parameters are missing: {missing}'
+    fmt = ('The following required parameters are missing for '
+           '{object_name}: {missing}')
 
 
 class ValidationError(BotoCoreError):
     """
     An exception occurred validating parameters.
 
+    Subclasses must accept a ``value`` and ``param``
+    argument in their ``__init__``.
+
     :ivar value: The value that was being validated.
+    :ivar param: The parameter that failed validation.
     :ivar type_name: The name of the underlying type.
     """
-    fmt = ('Unable to convert value ({value}) to type {type_name} '
-           'for param {param}')
+    fmt = ("Invalid value ('{value}') for param {param} "
+           "of type {type_name} ")
 
 
-class RangeError(BotoCoreError):
+# These exceptions subclass from ValidationError so that code
+# can just 'except ValidationError' to catch any possibly validation
+# error.
+
+class UnknownKeyError(ValidationError):
+    """
+    Unknown key in a struct paramster.
+
+    :ivar value: The value that was being checked.
+    :ivar param: The name of the parameter.
+    :ivar choices: The valid choices the value can be.
+    """
+    fmt = ("Unknown key '{value}' for param '{param}'.  Must be one "
+           "of: {choices}")
+
+
+class RangeError(ValidationError):
     """
     A parameter value was out of the valid range.
 
     :ivar value: The value that was being checked.
+    :ivar param: The parameter that failed validation.
     :ivar min_value: The specified minimum value.
     :ivar max_value: The specified maximum value.
     """
-    fmt = 'Value out of range: {min_value} <= {value} <= {max_value}'
+    fmt = ('Value out of range for param {param}: '
+           '{min_value} <= {value} <= {max_value}')
+
+
+class UnknownParameterError(ValidationError):
+    """
+    Unknown top level parameter.
+
+    :ivar name: The name of the unknown parameter.
+    :ivar operation: The name of the operation.
+    :ivar choices: The valid choices the parameter name can be.
+    """
+    fmt = ("Unknown parameter '{name}' for operation {operation}.  Must be one "
+           "of: {choices}")
 
 
 class UnknownServiceStyle(BotoCoreError):

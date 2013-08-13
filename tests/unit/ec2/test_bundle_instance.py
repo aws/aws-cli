@@ -65,7 +65,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
 
     def test_policy_provided(self):
         policy = '{"notarealpolicy":true}'
-        base64policy = base64.encodestring(six.b(policy)).strip()
+        base64policy = base64.encodestring(six.b(policy)).strip().decode('utf-8')
         policy_signature = 'a5SmoLOxoM0MHpOdC25nE7KIafg='
         args = ' --instance-id i-12345678 --owner-akid AKIAIOSFODNN7EXAMPLE'
         args += ' --owner-sak wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'

@@ -226,7 +226,7 @@ security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
     $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
-      --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":[{"cidr_ip": "0.0.0.0/0"}]}'
+      --ip-permissions '{"FromPort":22,"ToPort":22,"IpProtocol":"tcp","IpRanges":[{"cidr_ip": "0.0.0.0/0"}]}'
 
 --------------------------
 File-based Parameter Input
@@ -241,10 +241,10 @@ Rather than provide the value of the ``--ip-permissions`` parameter directly
 in the command, you could first store the values in a file.  Let's call
 the file ip_perms.json::
 
-    {"from_port":22,
-     "to_port":22,
-     "ip_protocol":"tcp",
-     "ip_ranges":[{"cidr_ip":"0.0.0.0/0"}]}
+    {"FromPort":22,
+     "ToPort":22,
+     "IpProtocol":"tcp",
+     "IpRanges":[{"cidr_ip":"0.0.0.0/0"}]}
 
 Then, we could make the same call as above like this::
 

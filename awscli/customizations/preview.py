@@ -100,6 +100,11 @@ def _get_allowed_services(session):
 
 
 class PreviewModeCommand(CLICommand):
+    # This is a hidden attribute that tells the doc system
+    # not to document this command in the provider help.
+    # This is an internal implementation detail.
+    _UNDOCUMENTED = True
+
     ENABLE_DOCS = textwrap.dedent("""\
     However, if you'd like to use a basic set of {service} commands with the
     AWS CLI, you can enable this service by adding the following to your CLI
@@ -109,6 +114,7 @@ class PreviewModeCommand(CLICommand):
         {service}=true
 
     """)
+
     def __init__(self, service_name, service_help):
         self._service_name = service_name
         self._service_help = service_help

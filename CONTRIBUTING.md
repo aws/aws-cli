@@ -5,15 +5,15 @@ http://botocore.readthedocs.org/
 
 Contributing Code
 -----------------
-* A good patch:
+* A good pull request:
 
-  * is clear.
-  * works across all supported versions of Python.
-  * follows the existing style of the code base (PEP-8).
-  * has comments included as needed.
+  * Is clear.
+  * Works across all supported versions of Python.
+  * Follows the existing style of the code base (PEP-8).
+  * Has comments included as needed.
 
 * A test case that demonstrates the previous flaw that now passes
-  with the included patch.
+  with the included patch, or demonstrates the newly added feature.
 * If it adds/changes a public API, it must also include documentation
   for those changes.
 * Must be appropriately licensed (New BSD).
@@ -34,6 +34,6 @@ Reporting An Issue/Feature
     * botocore
     * Optionally of the other dependencies involved
 
-  * If possile, create a pull request with a (failing) test case demonstrating
+  * If possible, create a pull request with a (failing) test case demonstrating
     what's wrong. This makes the process for fixing bugs quicker & gets issues
     resolved sooner.

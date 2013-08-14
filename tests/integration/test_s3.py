@@ -204,11 +204,15 @@ class TestS3Objects(BaseS3Test):
 
     def test_unicode_key_put_list(self):
         # Verify we can upload a key with a unicode char and list it as well.
-        self.create_object('\u2713')
+        key_name = u'\u2713'
+        self.create_object(key_name)
         operation = self.service.get_operation('ListObjects')
         parsed = operation.call(self.endpoint, bucket=self.bucket_name)[1]
         self.assertEqual(len(parsed['Contents']), 1)
-        self.assertEqual(parsed['Contents'][0]['Key'], '\u2713')
+        self.assertEqual(parsed['Contents'][0]['Key'], key_name)
+        operation = self.service.get_operation('GetObject')
+        parsed = operation.call(self.endpoint, bucket=self.bucket_name, key=key_name)[1]
+        self.assertEqual(parsed['Body'].read().decode('utf-8'), 'foo')
 
 
 if __name__ == '__main__':

@@ -11,17 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import os
-import awscli.clidriver
 
 
-class TestUpdateConfigurationTemplate(unittest.TestCase):
+class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.maxDiff = None
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws elasticbeanstalk update-configuration-template'
+    prefix = 'elasticbeanstalk update-configuration-template'
 
     def test_file(self):
         data_path = os.path.join(os.path.dirname(__file__),
@@ -29,7 +25,7 @@ class TestUpdateConfigurationTemplate(unittest.TestCase):
         cmdline = self.prefix
         cmdline += ' --application-name FooBar'
         cmdline += ' --template-name x86_64_m1_medium_config'
-        cmdline += ' --option-settings file:%s' % data_path
+        cmdline += ' --option-settings file://%s' % data_path
         cmdline += ' --description This_is_a_test'
         result = {'ApplicationName': 'FooBar',
                   'TemplateName': 'x86_64_m1_medium_config',
@@ -40,8 +36,7 @@ class TestUpdateConfigurationTemplate(unittest.TestCase):
                   'OptionSettings.member.2.Namespace': 'aws:elasticbeanstalk:container:tomcat:jvmoptions',
                   'OptionSettings.member.2.OptionName': 'Xms',
                   'OptionSettings.member.2.Value': '1256m'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

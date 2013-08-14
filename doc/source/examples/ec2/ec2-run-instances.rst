@@ -2,7 +2,7 @@
 
 The following ``run-instances`` command launches a single Amazon EC2 instance::
 
-    aws ec2 run-instances --image-id ami-554ac83c --min-count 1 --max-count 1 --key-name MyKeyPair --security-groups MySecurityGroup
+    aws ec2 run-instances --image-id ami-554ac83c count 1--key-name MyKeyPair --security-groups MySecurityGroup
 
 The key pair and security group, named MyKeyPair and MySecurityGroup, must exist already.
 

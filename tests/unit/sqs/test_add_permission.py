@@ -11,16 +11,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestAddPermission(unittest.TestCase):
+class TestAddPermission(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws sqs add-permission'
-        self.queue_url = 'https://queue.amazonaws.com/4444/testcli'
+    prefix = 'sqs add-permission'
+    queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
     def test_all_param(self):
         cmdline = self.prefix
@@ -32,8 +30,7 @@ class TestAddPermission(unittest.TestCase):
                   'ActionName.1': 'SendMessage',
                   'AWSAccountId.1': '888888888888',
                   'Label': 'FooBarLabel'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_accounts(self):
         cmdline = self.prefix
@@ -46,8 +43,7 @@ class TestAddPermission(unittest.TestCase):
                   'AWSAccountId.1': '888888888888',
                   'AWSAccountId.2': '999999999999',
                   'Label': 'FooBarLabel'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_actions(self):
         cmdline = self.prefix
@@ -60,8 +56,7 @@ class TestAddPermission(unittest.TestCase):
                   'ActionName.2': 'ReceiveMessage',
                   'AWSAccountId.1': '888888888888',
                   'Label': 'FooBarLabel'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

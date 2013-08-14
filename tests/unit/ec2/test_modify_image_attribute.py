@@ -11,15 +11,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
-import awscli.clidriver
+from tests.unit import BaseAWSCommandParamsTest
 
 
-class TestModifyInstanceAttribute(unittest.TestCase):
+class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 modify-image-attribute'
+    prefix = 'ec2 modify-image-attribute'
 
     def test_one(self):
         cmdline = self.prefix
@@ -29,17 +26,18 @@ class TestModifyInstanceAttribute(unittest.TestCase):
         result = {'ImageId': 'ami-d00dbeef',
                   'OperationType': 'add',
                   'UserId.1': '0123456789012'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_two(self):
         cmdline = self.prefix
         cmdline += ' --image-id ami-d00dbeef'
-        cmdline += ' --launch-permission {"add":[{"user_id":"123456789012"}]}'
+        cmdline += (' --launch-permission {"Add":[{"UserId":"123456789012"}],'
+                    '"Remove":[{"Group":"all"}]}')
         result = {'ImageId': 'ami-d00dbeef',
-                  'LaunchPermission.Add.1.UserId': '123456789012'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+                  'LaunchPermission.Add.1.UserId': '123456789012',
+                  'LaunchPermission.Remove.1.Group': 'all',
+                  }
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

@@ -12,15 +12,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import unittest
+from tests.unit import BaseAWSCommandParamsTest
 import os
 import awscli.clidriver
 
 
-class TestCreateLayer(unittest.TestCase):
+class TestCreateLayer(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws opsworks create-layer'
+    prefix = 'opsworks create-layer'
 
     def test_attributes_file(self):
         data_path = os.path.join(os.path.dirname(__file__),
@@ -30,7 +29,7 @@ class TestCreateLayer(unittest.TestCase):
         cmdline += ' --type rails-app'
         cmdline += ' --name Rails_App_Server'
         cmdline += ' --enable-auto-healing'
-        cmdline += ' --attributes file:%s' % data_path
+        cmdline += ' --attributes file://%s' % data_path
         cmdline += ' --shortname foo'
         result = {'StackId': '35959772-cd1e-4082-8346-79096d4179f2',
                   'Type': 'rails-app',
@@ -57,10 +56,7 @@ class TestCreateLayer(unittest.TestCase):
                                  "GangliaUrl": None,
                                  "HaproxyStatsUser": None}
                   }
-        params = self.driver.test(cmdline)
-        self.maxDiff = None
-        for key in result:
-            self.assertEqual(result[key], params[key])
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

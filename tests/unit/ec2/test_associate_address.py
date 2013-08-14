@@ -11,23 +11,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import unittest
-import awscli.clidriver
+from tests.unit import BaseAWSCommandParamsTest
 
 
-class TestAssociateAddress(unittest.TestCase):
+class TestAssociateAddress(BaseAWSCommandParamsTest):
 
-    def setUp(self):
-        self.driver = awscli.clidriver.CLIDriver()
-        self.prefix = 'aws ec2 associate-address'
+    prefix = 'ec2 associate-address'
 
     def test_basic(self):
         cmdline = self.prefix
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --public-ip 192.168.0.0'
         result = {'InstanceId': 'i-12345678', 'PublicIp': '192.168.0.0'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_vpc_basic(self):
         cmdline = self.prefix
@@ -39,8 +35,7 @@ class TestAssociateAddress(unittest.TestCase):
                   'PublicIp': '192.168.0.0',
                   'AllowReassociation': 'true',
                   'AllocationId': 'eipalloc-12345678'}
-        params = self.driver.test(cmdline)
-        self.assertEqual(params, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

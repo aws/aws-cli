@@ -21,6 +21,7 @@ The currently supported services include:
 * AWS Security Token Service
 * AWS Storage Gateway
 * Amazon CloudWatch
+* Amazon ElastiCache
 * Amazon Elastic Compute Cloud
 * Amazon Elastic MapReduce
 * Amazon Elastic Transcoder
@@ -39,7 +40,7 @@ The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 
 .. attention::
    We recommend that all customers regularly monitor the
-   [Amazon Web Services Security Bulletins website](https://aws.amazon.com/security/security-bulletins) for any important security bulletins related to
+   `Amazon Web Services Security Bulletins website`_ for any important security bulletins related to
    aws-cli.
 
 ------------
@@ -121,11 +122,13 @@ To use a config file, create a configuration file like this::
     region=us-west-2
 
 As you can see, you can have multiple ``profiles`` defined in this
-configuration file and specify which profile to use by using the
-``--profile`` option.  If no profile is specified the ``default``
-profile is used.  Once you have created the config file, you need to
-tell aws-cli where to find it.  Do this by setting the appropriate
-environment variable::
+configuration file and specify which profile to use by using the ``--profile``
+option.  If no profile is specified the ``default`` profile is used.  Except
+for the default profile, you **must** prefix each config section of a profile
+group with ``profile``.  For example, if you have a profile named "testing" the
+section header would be ``[profile testing]``.  Once you have created the
+config file, you need to tell aws-cli where to find it.  Do this by setting the
+appropriate environment variable::
 
     $ export AWS_CONFIG_FILE=/path/to/config_file
 
@@ -143,23 +146,23 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries or both.  The following table documents these.
 
-=========== ============ ===================== ============================
-Variable    Config Entry Environment Variable  Description
-=========== ============ ===================== ============================
-profile                  AWS_DEFAULT_PROFILE   Default profile name
------------ ------------ --------------------- ----------------------------
-region      region       AWS_DEFAULT_REGION    Default AWS Region
------------ ------------ --------------------- ----------------------------
-config_file              AWS_CONFIG_FILE       Alternate location of config
------------ ------------ --------------------- ----------------------------
-output      output       AWS_DEFAULT_OUTPUT    Default output style
------------ ------------ --------------------- ----------------------------
-access_key  access_key   AWS_ACCESS_KEY_ID     AWS Access Key
------------ ------------ --------------------- ----------------------------
-secret_key  secret_key   AWS_SECRET_ACCESS_KEY AWS Secret Key
------------ ------------ --------------------- ----------------------------
-token       token        AWS_SECURITY_TOKEN    AWS Token (temp credentials)
-=========== ============ ===================== ============================
+=========== ===================== ===================== ============================
+Variable    Config Entry          Environment Variable  Description
+=========== ===================== ===================== ============================
+profile                           AWS_DEFAULT_PROFILE   Default profile name
+----------- --------------------- --------------------- ----------------------------
+region      region                AWS_DEFAULT_REGION    Default AWS Region
+----------- --------------------- --------------------- ----------------------------
+config_file                       AWS_CONFIG_FILE       Alternate location of config
+----------- --------------------- --------------------- ----------------------------
+output      output                AWS_DEFAULT_OUTPUT    Default output style
+----------- --------------------- --------------------- ----------------------------
+access_key  aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
+----------- --------------------- --------------------- ----------------------------
+secret_key  aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
+----------- --------------------- --------------------- ----------------------------
+token       aws_security_token    AWS_SECURITY_TOKEN    AWS Token (temp credentials)
+=========== ===================== ===================== ============================
 
 ^^^^^^^^
 Examples
@@ -222,12 +225,8 @@ For example, consider the command to authorize access to an EC2
 security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":["0.0.0.0/0"]}'
-
-You could also place the JSON in a file, called port22.json for example,
-and use this::
-
-    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions /path/to/port22.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+      --ip-permissions '{"FromPort":22,"ToPort":22,"IpProtocol":"tcp","IpRanges":[{"cidr_ip": "0.0.0.0/0"}]}'
 
 --------------------------
 File-based Parameter Input
@@ -242,16 +241,17 @@ Rather than provide the value of the ``--ip-permissions`` parameter directly
 in the command, you could first store the values in a file.  Let's call
 the file ip_perms.json::
 
-    {"from_port":22,
-     "to_port":22,
-     "ip_protocol":"tcp",
-     "ip_ranges":["0.0.0.0/0"]}
+    {"FromPort":22,
+     "ToPort":22,
+     "IpProtocol":"tcp",
+     "IpRanges":[{"cidr_ip":"0.0.0.0/0"}]}
 
 Then, we could make the same call as above like this::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions file://ip_perms.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions file://ip_perms.json
 
-The ``file:`` prefix on the parameter value signals that the parameter value
+The ``file://`` prefix on the parameter value signals that the parameter value
 is actually a reference to a file that contains the actual parameter value.
 aws-cli will open the file, read the value and pass use that value as the
 parameter value.
@@ -267,9 +267,10 @@ URI-based Parameter Input
 
 Similar to the file-based input described above, aws-cli also includes a
 way to use data from a URI as the value of a parameter.  The idea is exactly
-the same except the prefix used is ``https:`` or ``http:``::
+the same except the prefix used is ``https://`` or ``http://``::
 
-    aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
+    $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
+        --ip-permissions http://mybucket.s3.amazonaws.com/ip_perms.json
 
 --------------
 Command Output
@@ -283,3 +284,5 @@ output for other uses.
 There is also an ASCII table format available.  You can select this
 style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
+
+.. _Amazon Web Services Security Bulletins website: https://aws.amazon.com/security/security-bulletins

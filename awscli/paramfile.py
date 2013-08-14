@@ -19,37 +19,9 @@ import six
 
 logger = logging.getLogger(__name__)
 
-def get_file(session, prefix, path):
-    s = None
-    file_path = path[len(prefix):]
-    file_path = os.path.expanduser(file_path)
-    file_path = os.path.expandvars(file_path)
-    if os.path.isfile(file_path):
-        try:
-            fp = open(file_path)
-            s = fp.read()
-            fp.close()
-        except:
-            msg = 'Unable to load paramfile: %s' % path
-            logger.debug(msg)
-    return s
 
-def get_uri(session, prefix, uri):
-    s = None
-    try:
-        r = requests.get(uri)
-        if r.status_code == 200:
-            s = r.text
-    except:
-        msg = 'Unable to retrieve: %s' % uri
-        logger.debug(msg)
-    return s
-
-# TODO - Add s3n: support
-
-PrefixMap = {'file:': get_file,
-             'http:': get_uri,
-             'https:': get_uri}
+class ResourceLoadingError(Exception):
+    pass
 
 
 def get_paramfile(session, path):
@@ -67,3 +39,35 @@ def get_paramfile(session, path):
             if path.startswith(prefix):
                 data = PrefixMap[prefix](session, prefix, path)
     return data
+
+
+def get_file(session, prefix, path):
+    file_path = path[len(prefix):]
+    file_path = os.path.expanduser(file_path)
+    file_path = os.path.expandvars(file_path)
+    if not os.path.isfile(file_path):
+        raise ResourceLoadingError("file does not exist: %s" % file_path)
+    try:
+        with open(file_path) as f:
+            return f.read()
+    except (OSError, IOError) as e:
+        raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
+            path, e))
+
+
+def get_uri(session, prefix, uri):
+    try:
+        r = requests.get(uri)
+        if r.status_code == 200:
+            return r.text
+        else:
+            raise ResourceLoadingError(
+                "received non 200 status code of %s" % (
+                    r.status_code))
+    except Exception as e:
+        raise ResourceLoadingError('Unable to retrieve %s: %s' % (uri, e))
+
+
+PrefixMap = {'file://': get_file,
+             'http://': get_uri,
+             'https://': get_uri}

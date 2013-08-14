@@ -162,19 +162,19 @@ def register_bundleinstance(event_handler):
         event_handler.register(event, handler)
 
 
-def _build_storage(params, key, value):
-    # Build up the Storage data structure
-    if 'storage' not in params:
-        params['storage'] = {'S3': {}}
-    params['storage']['S3'][key] = value
-
-
 class BundleArgument(CustomArgument):
 
     def __init__(self, storage_param, *args, **kwargs):
         super(BundleArgument, self).__init__(*args, **kwargs)
         self._storage_param = storage_param
 
+    def _build_storage(self, params, value):
+        # Build up the Storage data structure
+        if 'storage' not in params:
+            params['storage'] = {'S3': {}}
+        params['storage']['S3'][self._storage_param] = value
+
+
     def add_to_params(self, parameters, value):
         if value:
-            _build_storage(parameters, self._storage_param, value)
+            self._build_storage(parameters, value)

@@ -13,7 +13,6 @@
 import os
 import unittest
 
-from awscli import EnvironmentVariables
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import get_file_stat
@@ -29,7 +28,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
             + os.sep + 'text1.txt'
         self.local_dir = os.path.abspath('.') + os.sep + 'some_directory' \
             + os.sep
-        self.session = botocore.session.get_session(EnvironmentVariables)
+        self.session = FakeSession()
         self.files = make_loc_files()
 
     def tearDown(self):
@@ -44,7 +43,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                             'dest': {'path': 'bucket/text1.txt',
                                      'type': 's3'},
                             'dir_op': False, 'use_src_name': False}
-        files = FileGenerator(self.session).call(input_local_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_local_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -67,7 +67,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                            'dest': {'path': 'bucket/',
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        files = FileGenerator(self.session).call(input_local_dir)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_local_dir)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -109,7 +110,8 @@ class S3FileGeneratorTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.file1[:-1], 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        files = FileGenerator(self.session).call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_s3_file)
         self.assertEqual(len(list(files)), 0)
 
     def test_s3_file(self):
@@ -120,7 +122,8 @@ class S3FileGeneratorTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        files = FileGenerator(self.session).call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -145,7 +148,8 @@ class S3FileGeneratorTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        files = FileGenerator(self.session).call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -178,7 +182,9 @@ class S3FileGeneratorTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        files = FileGenerator(self.session, 'delete').call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, 'delete', params).call(
+            input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)

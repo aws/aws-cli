@@ -62,6 +62,9 @@ class FakeSession(object):
     def get_service(self, service='s3'):
         return self.service
 
+    def emit(self, *args, **kwargs):
+        pass
+
 
 class FakeService(object):
     """

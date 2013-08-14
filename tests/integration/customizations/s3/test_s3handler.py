@@ -38,7 +38,8 @@ class S3HandlerTestDeleteList(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.loc_files = make_loc_files()
 
@@ -87,11 +88,13 @@ class S3HandlerTestDeleteList(unittest.TestCase):
         """
         prefix_name = self.bucket + '/'
         file_info = FileInfo(src=prefix_name, operation='list_objects', size=0)
-        s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
         file_info = FileInfo(src='', operation='list_objects', size=0)
-        s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
 
@@ -102,10 +105,11 @@ class S3HandlerTestUpload(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.s3_handler = S3Handler(self.session, {'acl': ['private']})
+        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
                                           chunksize=2,
-                                          params={'acl': ['private']})
+                                          params=params)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -158,7 +162,8 @@ class S3HandlerTestMove(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.s3_handler = S3Handler(self.session, {'acl': ['private']})
+        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.bucket2 = create_bucket(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
@@ -194,9 +199,10 @@ class S3HandlerTestDownload(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
-                                          chunksize=2)
+                                          chunksize=2, params=params)
         self.bucket = make_s3_files(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
@@ -259,7 +265,8 @@ class S3HandlerTestBucket(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = None
 
     def tearDown(self):

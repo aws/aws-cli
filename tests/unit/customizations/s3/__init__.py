@@ -82,7 +82,7 @@ def make_s3_files(session):
     as it tests the ability to handle directories when generating s3 files.
     """
     service = session.get_service('s3')
-    region = session.get_config()['region']
+    region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     bucket = create_bucket(session)
 
@@ -109,7 +109,7 @@ def create_bucket(session):
     :returns: the name of the bucket created
     """
     service = session.get_service('s3')
-    region = session.get_config()['region']
+    region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     rand1 = random.randrange(5000)
     rand2 = random.randrange(5000)
@@ -128,7 +128,7 @@ def s3_cleanup(bucket, session):
     Function to cleanup generated s3 bucket and files.
     """
     service = session.get_service('s3')
-    region = session.get_config()['region']
+    region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     operation = service.get_operation('DeleteObject')
     http_response, r_data = operation.call(endpoint,
@@ -165,7 +165,7 @@ def list_contents(bucket, session):
     object operation.
     """
     service = session.get_service('s3')
-    region = session.get_config()['region']
+    region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     operation = service.get_operation('ListObjects')
     http_response, r_data = operation.call(endpoint, bucket=bucket)
@@ -178,7 +178,7 @@ def list_buckets(session):
     buckets operation.
     """
     service = session.get_service('s3')
-    region = session.get_config()['region']
+    region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     operation = service.get_operation('ListBuckets')
     html_response, response_data = operation.call(endpoint)

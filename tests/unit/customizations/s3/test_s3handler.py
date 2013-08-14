@@ -34,7 +34,8 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestDeleteList, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.loc_files = make_loc_files()
 
@@ -83,10 +84,11 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         """
         prefix_name = self.bucket + '/'
         file_info = FileInfo(src=prefix_name, operation='list_objects', size=0)
-        s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
         file_info = FileInfo(src='', operation='list_objects', size=0)
-        s3_handler = S3Handler(self.session)
+        s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
 
@@ -98,10 +100,11 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestUpload, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session, {'acl': ['private']})
+        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
                                           chunksize=2,
-                                          params={'acl': ['private']})
+                                          params=params)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -171,7 +174,8 @@ class S3HandlerExceptionSingleTaskTest(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerExceptionSingleTaskTest, self).setUp()
         self.session = FakeSession(True, True)
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -207,8 +211,9 @@ class S3HandlerExceptionMultiTaskTest(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerExceptionMultiTaskTest, self).setUp()
         self.session = FakeSession(True, True)
-        self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
-                                          chunksize=2)
+        params = {'region': 'us-east-1'}
+        self.s3_handler_multi = S3Handler(self.session, params,
+                                          multi_threshold=10, chunksize=2)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -239,7 +244,8 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestMvLocalS3, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session, {'acl': ['private']})
+        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -275,7 +281,8 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestMvS3S3, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session, {'acl': ['private']})
+        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.bucket2 = create_bucket(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
@@ -313,7 +320,8 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestMvS3Local, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
@@ -359,9 +367,10 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestDownload, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session)
-        self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
-                                          chunksize=2)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
+        self.s3_handler_multi = S3Handler(self.session, params,
+                                          multi_threshold=10, chunksize=2)
         self.bucket = make_s3_files(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
@@ -373,7 +382,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
 
         self.fail_session = FakeSession(connection_error=True)
         self.fail_session.s3 = self.session.s3
-        self.s3_handler_multi_except = S3Handler(self.fail_session,
+        self.s3_handler_multi_except = S3Handler(self.fail_session, params,
                                                  multi_threshold=10,
                                                  chunksize=2)
 
@@ -479,7 +488,8 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestBucket, self).setUp()
         self.session = FakeSession()
-        self.s3_handler = S3Handler(self.session)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
         self.bucket = None
 
     def tearDown(self):

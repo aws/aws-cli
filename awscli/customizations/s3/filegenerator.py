@@ -27,12 +27,10 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, session, operation="", parameters=None):
+    def __init__(self, session, operation, parameters):
         self.session = session
         self.service = self.session.get_service('s3')
-        region = self.session.get_config()['region']
-        if parameters and parameters.get('region', ''):
-            region = parameters['region']
+        region = parameters['region']
         self.endpoint = self.service.get_endpoint(region)
         self.operation = operation
 

@@ -31,16 +31,16 @@ class S3Handler(object):
     sources the ``self.executer`` from which threads inside the
     class pull tasks from to complete.
     """
-    def __init__(self, session, params=None, multi_threshold=MULTI_THRESHOLD,
+    def __init__(self, session, params, multi_threshold=MULTI_THRESHOLD,
                  chunksize=CHUNKSIZE):
         self.session = session
         self.done = threading.Event()
         self.interrupt = threading.Event()
         self.printQueue = NoBlockQueue()
         self.params = {'dryrun': False, 'quiet': False, 'acl': None}
-        self.params['region'] = self.session.get_config()['region']
+        self.params['region'] = params['region']
         for key in self.params.keys():
-            if params and key in params:
+            if key in params:
                 self.params[key] = params[key]
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
@@ -98,7 +98,7 @@ class S3Handler(object):
                                  chunksize=chunksize,
                                  printQueue=self.printQueue,
                                  interrupt=self.interrupt)
-                if too_large and filename.operation=='upload':
+                if too_large and filename.operation == 'upload':
                     warning = "Warning %s exceeds 5 TB and upload is " \
                               "being skipped" % os.path.relpath(filename.src)
                     self.printQueue.put({'result': warning})

@@ -16,7 +16,6 @@ import six
 import sys
 
 import awscli
-from awscli import EnvironmentVariables
 from awscli.argparser import ServiceArgParser, OperationArgParser
 from awscli.help import HelpCommand, ServiceHelpCommand
 from awscli.customizations.s3.comparator import Comparator
@@ -725,7 +724,13 @@ class CommandParameters(object):
         If the region is specified on the command line it takes priority
         over specification via a configuration file or environment variable.
         """
-        region = self.session.get_config()['region']
+        configuration = self.session.get_config()
+        env = os.environ.copy()
+        region = None
+        if 'region' in configuration.keys():
+            region = configuration['region']
+        if 'AWS_DEFAULT_REGION' in env.keys():
+            region = env['AWS_DEFAULT_REGION']
         parsed_region = None
         if 'region' in parsed_globals:
             parsed_region = getattr(parsed_globals, 'region')

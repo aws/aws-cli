@@ -15,7 +15,7 @@
 # The only difference is that these tests use botocore's actual session
 # variables to communicate with s3 as these are integration tests.  Therefore,
 # only tests that use sessions are included as integration tests.
-
+import argparse
 import os
 from tests import unittest
 
@@ -31,6 +31,9 @@ class CommandParametersTest(unittest.TestCase):
         self.session = botocore.session.get_session(EnvironmentVariables)
         self.loc_files = make_loc_files()
         self.bucket = make_s3_files(self.session)
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--region')
+        self.parsed_globals = parser.parse_args(['--region', 'us-east-1'])
 
     def tearDown(self):
         clean_loc_files(self.loc_files)
@@ -58,7 +61,7 @@ class CommandParametersTest(unittest.TestCase):
         for filename in files:
             parameters['dir_op'] = filename[1]
             cmd_parameter = CommandParameters(self.session, 'put', parameters)
-            cmd_parameter.check_region([])
+            cmd_parameter.check_region(self.parsed_globals)
             cmd_parameter.check_src_path(filename[0])
 
     def test_check_src_path_fail(self):
@@ -86,7 +89,7 @@ class CommandParametersTest(unittest.TestCase):
         for filename in files:
             parameters['dir_op'] = filename[1]
             cmd_parameter = CommandParameters(self.session, 'put', parameters)
-            cmd_parameter.check_region([])
+            cmd_parameter.check_region(self.parsed_globals)
             with self.assertRaises(Exception):
                 cmd_parameter.check_src_path(filename[0])
 

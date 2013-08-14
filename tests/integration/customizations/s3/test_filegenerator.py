@@ -46,7 +46,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.file1[:-1], 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        files = FileGenerator(self.session).call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_s3_file)
         self.assertEqual(len(list(files)), 0)
 
     def test_s3_file(self):
@@ -57,7 +58,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        files = FileGenerator(self.session).call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -82,7 +84,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        files = FileGenerator(self.session).call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, '', params).call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -115,7 +118,9 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        files = FileGenerator(self.session, 'delete').call(input_s3_file)
+        params = {'region': 'us-east-1'}
+        files = FileGenerator(self.session, 'delete', params).call(
+            input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)

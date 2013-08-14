@@ -36,13 +36,13 @@ class Comparator(object):
         are the generated files for both the source and the destination.  The
         key concept in this function is that no matter the type of where the
         files are coming from, they are listed in the same order, least to
-        greatest using ascii values.  This allows for easy comparisons to
+        greatest in collation order.  This allows for easy comparisons to
         determine if file needs to be added or deleted.  Comparison keys are
         used to determine if two files are the same and each file has a
         unique comparison key.  If they are the same compare the size and
         last modified times to see if a file needs to be updated.   Ultimately,
         it will yield a sequence of file info objectsthat will be sent to
-        the S3 Handler.
+        the ``S3Handler``.
 
         :param src_files: The generated FileInfo objects from the source.
         :param dest_files: The genereated FileInfo objects from the dest.

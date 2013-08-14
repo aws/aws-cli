@@ -63,7 +63,6 @@ class S3Handler(object):
         """
         self.done.clear()
         self.interrupt.clear()
-        current_time = time.time()
         try:
             self.executer.start()
             tot_files = 0
@@ -119,4 +118,3 @@ class S3Handler(object):
 
         self.done.set()
         self.executer.join()
-        total_time = time.time() - current_time

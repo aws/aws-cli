@@ -373,6 +373,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
 
 class CommandParametersTest(unittest.TestCase):
     def setUp(self):
+        self.environ = {}
+        self.environ_patch = patch('os.environ', self.environ)
+        self.environ_patch.start()
         self.session = FakeSession()
         self.mock = MagicMock()
         self.mock.get_config = MagicMock(return_value={'region': None})
@@ -380,6 +383,7 @@ class CommandParametersTest(unittest.TestCase):
         self.bucket = make_s3_files(self.session)
 
     def tearDown(self):
+        self.environ_patch.stop()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 

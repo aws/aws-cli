@@ -6,7 +6,6 @@ import requests
 from six import StringIO
 from six.moves import queue as Queue
 import sys
-import threading
 
 from awscli.customizations.s3.constants import QUEUE_TIMEOUT_GET
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
@@ -84,6 +83,7 @@ class BasicTask(object):
             self.executer.submit(copy.copy(self))
         except Exception as e:
             fail = 1
+            LOGGER.debug(e, exc_info=True)
             error = str(e)
         try:
             if filename.operation != 'list_objects' and not retry:

@@ -1,3 +1,15 @@
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 import logging
 from six.moves import queue as Queue
 import sys
@@ -70,7 +82,7 @@ class Executer(object):
 
 class Worker(threading.Thread):
     """
-    This is thread is in charge of performing the tasks provided via
+    This thread is in charge of performing the tasks provided via
     the main queue ``queue``.  Across all ``worker`` threads, there can
     only be the ``max_multi`` amount of multipart operations at a time or
     deadlock occurs because ``worker`` threads are needed to perform the
@@ -112,12 +124,12 @@ class Worker(threading.Thread):
 
     def check_multi(self, function):
         """
-        This is a helper function used to handle the number of in preogress
+        This is a helper function used to handle the number of in progress
         multipart operations.  The function determines if the number of
         multipart operations in progress ``multi_counter.count`` is equal
         to the maximum ``max_multi``.  If it is not equal it increments
         ``multi_counter.count`` and allows the thread to proceed.
-        howevere if it at the limit. The thread puts the task back into
+        However if it is at the limit, The thread puts the task back into
         the queue so that it performs a task that is not initiating a
         multipart operation.
         """
@@ -178,7 +190,6 @@ class PrintThread(threading.Thread):
                         self.progress_dict[print_str]['total'] = total_part
                 else:
                     print_components = print_str.split(':')
-                    error = print_components[0].endswith('failed')
                     final_str += print_str.ljust(self.progressLength, ' ')
                     final_str += '\n'
                     if print_task.get('error', ''):
@@ -190,10 +201,6 @@ class PrintThread(threading.Thread):
                         self.numParts += 1
                     self.file_count += 1
 
-                current_files = self.progress_dict.keys()
-                total_files = len(current_files)
-                total_parts = 0
-                completed_parts = 0
                 is_done = self.totalFiles == self.file_count
                 if not self.interrupt.isSet() and not is_done:
                     prog_str = "Completed %s " % self.numParts

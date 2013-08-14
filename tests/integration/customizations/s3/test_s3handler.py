@@ -276,18 +276,21 @@ class S3HandlerTestBucket(unittest.TestCase):
         rand1 = random.randrange(5000)
         rand2 = random.randrange(5000)
         self.bucket = str(rand1) + 'mybucket' + str(rand2) + '/'
-        orig_number_buckets = len(list_buckets(self.session))
 
         file_info = FileInfo(src=self.bucket, operation='make_bucket', size=0)
         self.s3_handler.call([file_info])
-        number_buckets = len(list_buckets(self.session))
-        self.assertEqual(orig_number_buckets + 1, number_buckets)
+        buckets_list = []
+        for bucket in list_buckets(self.session):
+            buckets_list.append(bucket['Name'])
+        self.assertIn(self.bucket[:-1], buckets_list)
 
         file_info = FileInfo(src=self.bucket, operation='remove_bucket',
                              size=0)
         self.s3_handler.call([file_info])
-        number_buckets = len(list_buckets(self.session))
-        self.assertEqual(orig_number_buckets, number_buckets)
+        buckets_list = []
+        for bucket in list_buckets(self.session):
+            buckets_list.append(bucket['Name'])
+        self.assertNotIn(self.bucket[:-1], buckets_list)
 
 
 if __name__ == "__main__":

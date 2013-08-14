@@ -17,18 +17,17 @@ import sys
 
 import awscli
 from awscli.argparser import ServiceArgParser, OperationArgParser
-from awscli.help import HelpCommand, ServiceHelpCommand
+from awscli.help import HelpCommand
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
-from awscli.customizations.s3.fileinfo import FileInfo, TaskInfo
+from awscli.customizations.s3.fileinfo import TaskInfo
 from awscli.customizations.s3.filters import Filter
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.description import add_command_descriptions, \
     add_param_descriptions
 from awscli.customizations.s3.utils import find_bucket_key, check_error
 from bcdoc.clidocs import CLIDocumentEventHandler
-import bcdoc.clidocevents
 
 
 class AppendFilter(argparse.Action):
@@ -135,7 +134,6 @@ def add_s3(command_table, session, **kwargs):
     original_s3 = command_table['s3']
     command_table['s3api'] = original_s3
     command_table['s3'] = S3('s3', session)
-    #print(command_table)
 
 
 def add_commands(operation_table, session, **kwargs):
@@ -234,7 +232,6 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
     def doc_options_start(self, help_command, **kwargs):
         if help_command.obj._name != 's3':
             doc = help_command.doc
-            operation = help_command.obj
             doc.style.h2('Options')
             if len(help_command.arg_table) == 0:
                 doc.write('*None*\n')

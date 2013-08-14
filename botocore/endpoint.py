@@ -182,7 +182,7 @@ class RestEndpoint(Endpoint):
             if pc:
                 pc = pc.format(**params['uri_params'])
             path_components.append(pc)
-        path = quote('/'.join(path_components))
+        path = quote('/'.join(path_components).encode('utf-8'))
         query_param_components = []
         for qpc in query_params.split('&'):
             if qpc:

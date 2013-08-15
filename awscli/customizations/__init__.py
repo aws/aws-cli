@@ -35,7 +35,7 @@ Using a convention like this, we could perhaps automatically discover
 all customizations and register them without having to manually edit
 ``handlers.py`` each time.
 """
-from awscli.clidriver import BaseCLIArgument
+from awscli.arguments import BaseCLIArgument
 
 
 class CustomArgument(BaseCLIArgument):

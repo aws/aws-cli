@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.clidriver import BaseCLIArgument
+from awscli.arguments import BaseCLIArgument
 from botocore.parameters import StringParameter
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ class CountArgument(BaseCLIArgument):
     def documentation(self):
         return HELP
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         parser.add_argument(self.cli_name, metavar=self.py_name,
                             help='Number of instances to launch',
                             default='1')

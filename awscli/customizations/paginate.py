@@ -22,7 +22,7 @@ For any operation that can be paginated, we will:
 """
 import logging
 
-from awscli.clidriver import BaseCLIArgument
+from awscli.arguments import BaseCLIArgument
 from botocore.parameters import StringParameter
 
 logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ class PageArgument(BaseCLIArgument):
     def documentation(self):
         return self._documentation
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         parser.add_argument(self.cli_name, dest=self._name,
                             type=self.type_map[self._parse_type])
 

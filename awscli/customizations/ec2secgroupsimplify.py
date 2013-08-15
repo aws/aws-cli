@@ -156,7 +156,7 @@ class CidrArgument(CustomArgument):
         if value:
             value = [{'CidrIp': value}]
             _build_ip_permissions(parameters, 'IpRanges', value)
-        
+
 
 class SourceGroupArgument(CustomArgument):
 
@@ -173,5 +173,3 @@ class GroupOwnerArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value:
             _build_ip_permissions(parameters, 'UserId', value)
-        
-                

@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.clidriver import BaseCLIArgument
+from awscli.arguments import BaseCLIArgument
 
 
 def add_streaming_output_arg(argument_table, operation, **kwargs):
@@ -60,7 +60,7 @@ class StreamingOutputArgument(BaseCLIArgument):
     def documentation(self):
         return self.HELP
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         parser.add_argument(self._name, metavar=self.py_name,
                             help=self.HELP)
 

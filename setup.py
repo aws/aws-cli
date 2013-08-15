@@ -40,7 +40,7 @@ setup(
     name='botocore',
     version=botocore.__version__,
     description='Low-level, data-driven core of boto 3.',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     author='Mitch Garnaat',
     author_email='garnaat@amazon.com',
     url='https://github.com/boto/botocore',

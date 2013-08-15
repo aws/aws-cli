@@ -246,5 +246,17 @@ class TestRetryInterface(BaseSessionTest):
         self.assertEqual(self.total_calls, 3)
 
 
+class TestRestEndpoint(unittest.TestCase):
+
+    def test_encode_uri_params_unicode(self):
+        uri = '/{foo}/{bar}'
+        operation = Mock()
+        operation.http = {'uri': uri}
+        params = {'uri_params': {'foo': u'\u2713', 'bar': 'bar'}}
+        endpoint = RestEndpoint(Mock(), None, None, None)
+        built_uri = endpoint.build_uri(operation, params)
+        self.assertEqual(built_uri, '/%E2%9C%93/bar?')
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -26,6 +26,7 @@ import time
 
 from requests.sessions import Session
 from requests.utils import get_environ_proxies
+import six
 
 import botocore.response
 import botocore.exceptions
@@ -180,7 +181,7 @@ class RestEndpoint(Endpoint):
         path_components = []
         for pc in path.split('/'):
             if pc:
-                pc = pc.format(**params['uri_params'])
+                pc = six.text_type(pc).format(**params['uri_params'])
             path_components.append(pc)
         path = quote('/'.join(path_components).encode('utf-8'))
         query_param_components = []

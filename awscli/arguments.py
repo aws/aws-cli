@@ -46,6 +46,9 @@ class BaseCLIArgument(object):
 
     """
 
+    def __init__(self, name):
+        self._name = name
+
     def add_to_arg_table(self, argument_table):
         """Add this object to the argument_table.
 

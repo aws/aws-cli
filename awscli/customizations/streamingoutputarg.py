@@ -18,9 +18,9 @@ def add_streaming_output_arg(argument_table, operation, **kwargs):
     # event.
     stream_param = operation.is_streaming()
     if stream_param:
-        argument_table['output-file'] = StreamingOutputArgument(
+        argument_table['outfile'] = StreamingOutputArgument(
             response_key=stream_param, operation=operation,
-            name='output-file')
+            name='outfile')
 
 
 class StreamingOutputArgument(BaseCLIArgument):

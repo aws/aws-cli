@@ -374,10 +374,11 @@ class ServiceOperation(object):
         service_params = {}
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.
-        for name, value in vars(args).items():
-            if name in arg_table:
-                arg_object = arg_table[name]
-                arg_object.add_to_params(service_params, value)
+        parsed_args = vars(args)
+        for arg_name, arg_object in arg_table.items():
+            py_name = arg_object.py_name
+            if py_name in parsed_args:
+                arg_object.add_to_params(service_params, parsed_args[py_name])
         return service_params
 
     def _create_argument_table(self):

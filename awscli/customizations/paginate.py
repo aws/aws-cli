@@ -111,7 +111,7 @@ class PageArgument(BaseCLIArgument):
         return self._documentation
 
     def add_to_parser(self, parser):
-        parser.add_argument(self.cli_name, dest=self._name,
+        parser.add_argument(self.cli_name, dest=self.py_name,
                             type=self.type_map[self._parse_type])
 
     def add_to_params(self, parameters, value):

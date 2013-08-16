@@ -60,7 +60,7 @@ class LaunchKeyArgument(BaseCLIArgument):
         return HELP
 
     def add_to_parser(self, parser):
-        parser.add_argument(self.cli_name, dest=self._name,
+        parser.add_argument(self.cli_name, dest=self.py_name,
                             help='SSH Private Key file')
 
     def add_to_params(self, parameters, value):

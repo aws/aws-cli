@@ -42,12 +42,11 @@ class CustomArgument(BaseCLIArgument):
 
     Documentation = 'Documentation goes here'
 
-    def __init__(self, operation, name, cli_type_name='string',
-                 documentation=None, default=None):
-        self._operation = operation
+    def __init__(self, name, cli_type_name='string',
+                 help_text=None, default=None):
         self._name = name
         self._cli_type_name = cli_type_name
-        self._documentation = documentation
+        self._documentation = help_text
         self._default = default
 
     @property

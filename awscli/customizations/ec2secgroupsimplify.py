@@ -23,22 +23,23 @@ authorize operations:
   destination security group.
 """
 
-from awscli.customizations import CustomArgument
+#from awscli.customizations import CustomArgument
+from awscli.arguments import CustomArgument
 
 
 def _add_params(argument_table, operation, **kwargs):
-    arg = ProtocolArgument(operation, 'protocol',
-                           documentation=PROTOCOL_DOCS)
+    arg = ProtocolArgument('protocol',
+                           help_text=PROTOCOL_DOCS)
     argument_table['protocol'] = arg
-    arg = PortArgument(operation, 'port', documentation=PORT_DOCS)
+    arg = PortArgument('port', help_text=PORT_DOCS)
     argument_table['port'] = arg
-    arg = CidrArgument(operation, 'cidr', documentation=CIDR_DOCS)
+    arg = CidrArgument('cidr', help_text=CIDR_DOCS)
     argument_table['cidr'] = arg
-    arg = SourceGroupArgument(operation, 'source-group',
-                              documentation=SOURCEGROUP_DOCS)
+    arg = SourceGroupArgument('source-group',
+                              help_text=SOURCEGROUP_DOCS)
     argument_table['source-group'] = arg
-    arg = GroupOwnerArgument(operation, 'group-owner',
-                             documentation=GROUPOWNER_DOCS)
+    arg = GroupOwnerArgument('group-owner',
+                             help_text=GROUPOWNER_DOCS)
     argument_table['group-owner'] = arg
 
 
@@ -47,9 +48,9 @@ def _check_args(parsed_args, **kwargs):
     # the --ip-permissions option with any of the scalar options we
     # raise an error.
     arg_dict = vars(parsed_args)
-    if arg_dict['ip-permissions']:
-        for key in ('protocol', 'group-id', 'port', 'cidr',
-                    'source-group', 'group-owner'):
+    if arg_dict['ip_permissions']:
+        for key in ('protocol', 'group_id', 'port', 'cidr',
+                    'source_group', 'group_owner'):
             if arg_dict[key]:
                 msg = ('Mixing the --ip-permissions option '
                        'with the simple, scalar options is '

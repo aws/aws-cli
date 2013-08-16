@@ -148,11 +148,11 @@ class CustomArgument(BaseCLIArgument):
 
         """
         cli_name = self.cli_name
-        kwargs = {
-            'action': self._action,
-        }
+        kwargs = {}
         if self._dest is not None:
             kwargs['dest'] = self._dest
+        if self._action is not None:
+            kwargs['action'] = self._action
         if self._default is not None:
             kwargs['default'] = self._default
         if self._choices:
@@ -271,8 +271,7 @@ class CLIArgument(BaseCLIArgument):
             cli_name,
             help=self.documentation,
             type=self.cli_type,
-            required=self.required,
-            dest=self.name)
+            required=self.required)
 
     def add_to_params(self, parameters, value):
         if value is None:
@@ -341,8 +340,7 @@ class ListArgument(CLIArgument):
         parser.add_argument(cli_name,
                             nargs='*',
                             type=self.cli_type,
-                            required=self.required,
-                            dest=self.name)
+                            required=self.required)
 
 
 class BooleanArgument(CLIArgument):
@@ -369,7 +367,7 @@ class BooleanArgument(CLIArgument):
         self._mutex_group = None
         self._action = action
         if dest is None:
-            self._destination = self.name
+            self._destination = self.py_name
         else:
             self._destination = dest
 
@@ -395,7 +393,8 @@ class BooleanArgument(CLIArgument):
         negative_name = 'no-%s' % self.name
         negative_version = self.__class__(negative_name, self.argument_object,
                                           self.operation_object,
-                                          action='store_false', dest=self.name)
+                                          action='store_false',
+                                          dest=self._destination)
         argument_table[negative_name] = negative_version
 
     def add_to_parser(self, parser):

@@ -47,21 +47,18 @@ The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 Installation
 ------------
 
-The easiest way to install aws-cli is to use ``easy_install`` or ``pip``::
-
-    $ easy_install awscli
-
-or, if you are not installing in a ``virtualenv``::
-
-    $ sudo easy_install awscli
-
-Using ``pip``, it would simply be::
+The easiest way to install aws-cli is to use ``pip``::
 
     $ pip install awscli
 
-or::
+or, if you are not installing in a ``virtualenv``::
 
     $ sudo pip install awscli
+
+If you have the aws-cli installed and want to upgrade to the latest version
+you can run::
+
+    $ pip install --upgrade awscli
 
 This will install the aws-cli package as well as all dependencies.  You can
 also just clone the git repo or download the tarball.  Once you have the

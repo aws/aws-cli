@@ -20,7 +20,7 @@ import httpretty
 import awscli
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
-from awscli.clidriver import DictBasedArgument
+from awscli.clidriver import CustomArgument
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
 from botocore.provider import Provider
@@ -287,7 +287,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(host, 'foobar.com')
 
     def inject_new_param(self, argument_table, **kwargs):
-        argument = DictBasedArgument('unknown-arg', {})
+        argument = CustomArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)
 
     def test_event_emission_for_top_level_params(self):

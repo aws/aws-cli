@@ -60,7 +60,7 @@ class BaseCLIArgument(object):
         :param argument_table: The argument table.  The key is the argument
             name, and the value is an object implementing this interface.
         """
-        pass
+        argument_table[self.name] = self
 
     def add_to_parser(self, parser):
         """Add this object to the parser instance.
@@ -117,7 +117,7 @@ class BaseCLIArgument(object):
         return self._name
 
 
-class DictBasedArgument(BaseCLIArgument):
+class CustomArgument(BaseCLIArgument):
     """
     Represents a CLI argument that is configured from a dictionary.
 
@@ -128,23 +128,18 @@ class DictBasedArgument(BaseCLIArgument):
     """
 
     def __init__(self, name, help_text='', dest=None, default=None,
-                 action=None, required=None, choices=None):
+                 action=None, required=None, choices=None,
+                 cli_type_name=None):
         self._name = name
         self._help = help_text
         self._dest = dest
         self._default = default
         self._action = action
         self._required = required
+        self._cli_type_name = cli_type_name
         if choices is None:
             choices = []
         self._choices = choices
-
-    def add_to_arg_table(self, argument_table):
-        # This is used by the ServiceOperation so we can add ourselves
-        # to the argument table.  For the normal case, we use our name
-        # as the key, and ourself as the value.  For a more complicated
-        # example, see BooleanArgument.add_to_arg_table
-        argument_table[self._name] = self
 
     def add_to_parser(self, parser):
         """
@@ -167,6 +162,8 @@ class DictBasedArgument(BaseCLIArgument):
         parser.add_argument(cli_name, **kwargs)
 
     def required(self):
+        if self._required is None:
+            return False
         return self._required
 
     @property
@@ -175,10 +172,14 @@ class DictBasedArgument(BaseCLIArgument):
 
     @property
     def cli_type_name(self):
-        cli_type_name = 'string'
-        if self._action in ['store_true', 'store_false']:
+        if self._cli_type_name is not None:
+            return self._cli_type_name
+        elif self._action in ['store_true', 'store_false']:
             cli_type_name = 'boolean'
-        return cli_type_name
+        else:
+            # Default to 'string' type if we don't have any
+            # other info.
+            return 'string'
 
     @property
     def cli_type(self):
@@ -258,13 +259,6 @@ class CLIArgument(BaseCLIArgument):
     @property
     def cli_type(self):
         return self.TYPE_MAP.get(self.argument_object.type, str)
-
-    def add_to_arg_table(self, argument_table):
-        # This is used by the ServiceOperation so we can add ourselves
-        # to the argument table.  For the normal case, we use our name
-        # as the key, and ourself as the value.  For a more complicated
-        # example, see BooleanArgument.add_to_arg_table
-        argument_table[self.name] = self
 
     def add_to_parser(self, parser):
         """

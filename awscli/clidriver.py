@@ -27,7 +27,7 @@ from awscli.argparser import OperationArgParser
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
-from awscli.arguments import DictBasedArgument
+from awscli.arguments import CustomArgument
 from awscli.arguments import ListArgument
 from awscli.arguments import BooleanArgument
 from awscli.arguments import CLIArgument
@@ -138,7 +138,7 @@ class CLIDriver(object):
         return argument_table
 
     def _create_argument_object(self, option_name, option_params):
-        return DictBasedArgument(
+        return CustomArgument(
             option_name, help_text=option_params.get('help', ''),
             dest=option_params.get('dest'),default=option_params.get('default'),
             action=option_params.get('action'),

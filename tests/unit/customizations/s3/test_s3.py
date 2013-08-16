@@ -182,6 +182,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
     def tearDown(self):
         self.output.close()
         sys.stdout = self.saved_stdout
+
         super(CommandArchitectureTest, self).setUp()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)

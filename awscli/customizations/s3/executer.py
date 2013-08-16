@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+from six import print_
 from six.moves import queue as Queue
 import sys
 import threading
 
 from awscli.customizations.s3.tasks import BasicTask
-from awscli.customizations.s3.utils import MultiCounter, NoBlockQueue
+from awscli.customizations.s3.utils import MultiCounter, NoBlockQueue, \
+    uni_print
 
 LOGGER = logging.getLogger(__name__)
 
@@ -216,7 +218,7 @@ class PrintThread(threading.Thread):
                     self.progressLength = length_prog
                     final_str += prog_str
                 if not self.quiet:
-                    sys.stdout.write(final_str)
+                    uni_print(final_str)
                     sys.stdout.flush()
                 self.printQueue.task_done()
             except Queue.Empty:

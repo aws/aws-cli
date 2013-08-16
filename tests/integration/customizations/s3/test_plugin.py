@@ -274,7 +274,7 @@ class UnicodeTest(unittest.TestCase):
         self.filename1 = 'êxample.txt'
         self.filename2 = 'êxample2.txt'
         self.path1 = os.path.abspath('.') + os.sep + 'some_dir' \
-            + os.sep+self.filename1
+            + os.sep + self.filename1
         self.path2 = os.path.abspath('.') + os.sep + 'some_dir' \
             + os.sep+self.filename2
         if not os.path.exists('some_dir'):
@@ -312,10 +312,10 @@ class UnicodeTest(unittest.TestCase):
         self.assertEqual(data, b'This is a test.')
 
     def test_recur_cp(self):
-        p = aws('s3 cp %s s3://%s --quiet --recursive' % ('some_dir',
+        p = aws('s3 cp %s s3://%s --recursive --quiet' % ('some_dir',
                                                           self.bucket_name))
         self.assertEqual(p.rc, 0)
-        p = aws('s3 cp s3://%s %s --quiet --recursive' % (self.bucket_name,
+        p = aws('s3 cp s3://%s %s --recursive --quiet' % (self.bucket_name,
                                                           'some_dir'))
         self.assertEqual(p.rc, 0)
         with open(self.path1, 'rb') as file2:

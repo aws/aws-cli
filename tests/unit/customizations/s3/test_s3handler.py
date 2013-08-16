@@ -16,8 +16,6 @@ import random
 import sys
 from tests import unittest
 
-from mock import patch
-
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.fileinfo import FileInfo

@@ -14,7 +14,9 @@ from datetime import datetime
 import hashlib
 import math
 import os
+from six import PY3
 from six.moves import queue as Queue
+import sys
 
 from dateutil.tz import tzlocal
 
@@ -144,3 +146,23 @@ class MultiCounter(object):
     """
     def __init__(self):
         self.count = 0
+
+
+def uni_print(statement):
+    """
+    This function is used to properly write unicode to stdout.  It
+    ensures that the proper encoding is used if the statement is
+    not in a version type of string.  The initial check is to
+    allow if ``sys.stdout`` does not use an encoding
+    """
+    if hasattr(sys.stdout, 'encoding'):
+        encoding = sys.stdout.encoding
+    else:
+        encoding = None
+    if encoding:
+        if PY3:
+            sys.stdout.write(statement)
+        else:
+            sys.stdout.write(statement.encode(sys.stdout.encoding))
+    else:
+        sys.stdout.write(statement)

@@ -12,7 +12,8 @@ from dateutil.tz import tzlocal
 from botocore.compat import quote
 from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
-    retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue
+    retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
+    uni_print
 
 
 def make_last_mod_str(last_mod):
@@ -134,8 +135,8 @@ class TaskInfo(object):
             buckets = response_data['Buckets']
             for bucket in buckets:
                 last_mod_str = make_last_mod_str(bucket['CreationDate'])
-                print_str = last_mod_str + ' ' + bucket['Name']
-                sys.stdout.write("%s\n" % print_str)
+                print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
+                uni_print(print_str)
                 sys.stdout.flush()
         else:
             operation = self.service.get_operation('ListObjects')
@@ -159,8 +160,8 @@ class TaskInfo(object):
                     prefix_components = common_prefix['Prefix'].split('/')
                     prefix = prefix_components[-2]
                     pre_string = "PRE".rjust(30, " ")
-                    print_str = pre_string + ' ' + prefix+'/'
-                    sys.stdout.write("%s\n" % print_str)
+                    print_str = pre_string + ' ' + prefix + '/\n'
+                    uni_print(print_str)
                     sys.stdout.flush()
                 for content in contents:
                     last_mod_str = make_last_mod_str(content['LastModified'])
@@ -168,8 +169,8 @@ class TaskInfo(object):
                     filename_components = content['Key'].split('/')
                     filename = filename_components[-1]
                     print_str = last_mod_str + ' ' + size_str + ' ' + \
-                        filename
-                    sys.stdout.write("%s\n" % print_str)
+                        filename + '\n'
+                    uni_print(print_str)
                     sys.stdout.flush()
 
     def make_bucket(self):

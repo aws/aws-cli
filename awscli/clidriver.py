@@ -223,6 +223,11 @@ class CLICommand(object):
         # Subclasses are expected to implement this method.
         pass
 
+    def create_help_command(self):
+        # Subclasses are expected to implement this method if they want
+        # help docs.
+        return None
+
 
 class BuiltInCommand(CLICommand):
     """

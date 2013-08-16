@@ -25,6 +25,9 @@ def do_operation(driver, service_path, operation_name, operation_command):
     file_path = os.path.join(service_path,
                              operation_name + '.rst')
     help_command = operation_command.create_help_command()
+    if help_command is None:
+        # Do not document anything that does not have a help command.
+        return
     help_command.doc.target = 'html'
     help_command.renderer = FileRenderer(file_path)
     help_command(None, None)
@@ -37,6 +40,9 @@ def do_service(driver, ref_path, service_name, service_command):
         os.mkdir(service_path)
     index_path = os.path.join(service_path, 'index.rst')
     help_command = service_command.create_help_command()
+    if help_command is None:
+        # Do not document anything that does not have a help command.
+        return
     help_command.doc.target = 'html'
     help_command.renderer = FileRenderer(index_path)
     help_command(None, None)
@@ -69,6 +75,8 @@ def build_service_list(tut_path, ref_path, driver):
         if service_name == 'help':
             continue
         service_command = help_command.command_table[service_name]
+        if not hasattr(service_command, '_service_object'):
+            continue
         service = service_command._service_object
         l.append((service.service_full_name, service_name))
     l = sorted(l, key=lambda x: x[0])

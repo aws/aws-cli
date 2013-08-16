@@ -41,8 +41,8 @@ class LaunchKeyArgument(BaseCLIArgument):
         param = StringParameter(operation,
                                 name=name,
                                 type='string')
-        super(LaunchKeyArgument, self).__init__(
-            name, argument_object=param)
+        self._name = name
+        self.argument_object = param
         self._operation = operation
         self._name = name
         self._key_path = None

@@ -29,8 +29,8 @@ class StreamingOutputArgument(BaseCLIArgument):
     HELP = 'Filename where the content will be saved'
 
     def __init__(self, response_key, operation, name, buffer_size=None):
-        super(StreamingOutputArgument, self).__init__(
-            name, argument_object=operation)
+        self._name = name
+        self.argument_object = operation
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size

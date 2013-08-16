@@ -46,10 +46,6 @@ class BaseCLIArgument(object):
 
     """
 
-    def __init__(self, name, argument_object):
-        self._name = name
-        self.argument_object = argument_object
-
     def add_to_arg_table(self, argument_table):
         """Add this object to the argument_table.
 
@@ -118,12 +114,25 @@ class BaseCLIArgument(object):
         return self._name
 
 
-class BuiltInArgument(BaseCLIArgument):
+class DictBasedArgument(BaseCLIArgument):
     """
-    Represents a CLI argument that maps to the top-level command.
-    These are global arguments that are not associated with any
-    particular service.
+    Represents a CLI argument that is configured from a dictionary.
+
+    For example, the "top level" arguments used for the CLI
+    (--region, --output) can use a DictBasedArgument argument,
+    as these are described in the cli.json file as dictionaries.
+
     """
+
+    def __init__(self, name, argument_dict):
+        self._name = name
+        self.argument_object = argument_dict
+        self._help = argument_dict.get('help', '')
+        self._dest = argument_dict.get('dest')
+        self._choices = argument_dict.get('choices', [])
+        self._default = argument_dict.get('default')
+        self._action = argument_dict.get('action')
+        self._required = argument_dict.get('required', False)
 
     def add_to_arg_table(self, argument_table):
         # This is used by the ServiceOperation so we can add ourselves
@@ -142,42 +151,29 @@ class BuiltInArgument(BaseCLIArgument):
         parser.add_argument(cli_name, **self.argument_object)
 
     def required(self):
-        required = False
-        if 'required' in self.argument_object:
-            required = self.argument_object['required']
-        return required
+        return self._required
 
     @property
     def documentation(self):
-        documentation = ''
-        if 'help' in self.argument_object:
-            documentation = self.argument_object['help']
-        return documentation
+        return self._help
 
     @property
     def cli_type_name(self):
         cli_type_name = 'string'
-        if 'action' in self.argument_object:
-            if self.argument_object['action'] in ['store_true',
-                                                  'store_false']:
-                cli_type_name = 'boolean'
+        if self._action in ['store_true', 'store_false']:
+            cli_type_name = 'boolean'
         return cli_type_name
 
     @property
     def cli_type(self):
         cli_type = str
-        if 'action' in self.argument_object:
-            if self.argument_object['action'] in ['store_true',
-                                                  'store_false']:
-                cli_type = bool
+        if self._action in ['store_true', 'store_false']:
+            cli_type = bool
         return cli_type
 
     @property
     def choices(self):
-        choices = []
-        if 'choices' in self.argument_object:
-            choices = self.argument_object['choices']
-        return choices
+        return self._choices
 
 
 class CLIArgument(BaseCLIArgument):
@@ -215,7 +211,8 @@ class CLIArgument(BaseCLIArgument):
             this object.
 
         """
-        super(CLIArgument, self).__init__(name, argument_object)
+        self._name = name
+        self.argument_object = argument_object
         self.operation_object = operation_object
 
     @property

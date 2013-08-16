@@ -88,7 +88,8 @@ class PageArgument(BaseCLIArgument):
 
     def __init__(self, name, documentation, operation, parse_type):
         param = StringParameter(operation, name=name, type=parse_type)
-        super(PageArgument, self).__init__(name, argument_object=param)
+        self._name = name
+        self.argument_object = param
         self._name = name
         self._documentation = documentation
         self._parse_type = parse_type

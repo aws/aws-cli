@@ -36,8 +36,7 @@ class CountArgument(BaseCLIArgument):
 
     def __init__(self, operation, name):
         param = StringParameter(operation, name='count', type='string')
-        super(CountArgument, self).__init__(
-            name, argument_object=param)
+        self.argument_object = param
         self._operation = operation
         self._name = name
 

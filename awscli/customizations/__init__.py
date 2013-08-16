@@ -44,8 +44,6 @@ class CustomArgument(BaseCLIArgument):
 
     def __init__(self, operation, name, cli_type_name='string',
                  documentation=None, default=None):
-        super(CustomArgument, self).__init__(
-            name, argument_object=None)
         self._operation = operation
         self._name = name
         self._cli_type_name = cli_type_name

@@ -27,7 +27,7 @@ from awscli.argparser import OperationArgParser
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
-from awscli.arguments import BuiltInArgument
+from awscli.arguments import DictBasedArgument
 from awscli.arguments import ListArgument
 from awscli.arguments import BooleanArgument
 from awscli.arguments import CLIArgument
@@ -128,7 +128,7 @@ class CLIDriver(object):
                     choices_path = choices.format(provider=provider)
                     choices = list(self.session.get_data(choices_path))
                 option_params['choices'] = choices
-            argument_object = BuiltInArgument(option, option_params)
+            argument_object = DictBasedArgument(option, option_params)
             argument_object.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
@@ -287,8 +287,8 @@ class ServiceCommand(CLICommand):
                                   arg_table=None)
 
     def _create_parser(self):
-        # Also add a 'help' command.
         command_table = self._get_command_table()
+        # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         self.session.emit('building-command-table.%s' % self.name,
                           command_table=command_table)

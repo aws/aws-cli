@@ -128,13 +128,22 @@ class CLIDriver(object):
                     choices_path = choices.format(provider=provider)
                     choices = list(self.session.get_data(choices_path))
                 option_params['choices'] = choices
-            argument_object = DictBasedArgument(option, option_params)
+            argument_object = self._create_argument_object(option,
+                                                           option_params)
             argument_object.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
         return argument_table
+
+    def _create_argument_object(self, option_name, option_params):
+        return DictBasedArgument(
+            option_name, help_text=option_params.get('help', ''),
+            dest=option_params.get('dest'),default=option_params.get('default'),
+            action=option_params.get('action'),
+            required=option_params.get('required'),
+            choices=option_params.get('choices'))
 
     def create_help_command(self):
         cli_data = self._get_cli_data()

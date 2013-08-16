@@ -124,15 +124,17 @@ class DictBasedArgument(BaseCLIArgument):
 
     """
 
-    def __init__(self, name, argument_dict):
+    def __init__(self, name, help_text='', dest=None, default=None,
+                 action=None, required=None, choices=None):
         self._name = name
-        self.argument_object = argument_dict
-        self._help = argument_dict.get('help', '')
-        self._dest = argument_dict.get('dest')
-        self._choices = argument_dict.get('choices', [])
-        self._default = argument_dict.get('default')
-        self._action = argument_dict.get('action')
-        self._required = argument_dict.get('required', False)
+        self._help = help_text
+        self._dest = dest
+        self._default = default
+        self._action = action
+        self._required = required
+        if choices is None:
+            choices = []
+        self._choices = choices
 
     def add_to_arg_table(self, argument_table):
         # This is used by the ServiceOperation so we can add ourselves
@@ -148,7 +150,18 @@ class DictBasedArgument(BaseCLIArgument):
 
         """
         cli_name = self.cli_name
-        parser.add_argument(cli_name, **self.argument_object)
+        kwargs = {
+            'action': self._action,
+        }
+        if self._dest is not None:
+            kwargs['dest'] = self._dest
+        if self._default is not None:
+            kwargs['default'] = self._default
+        if self._choices:
+            kwargs['choices'] = self._choices
+        if self._required is not None:
+            kwargs['required'] = self._required
+        parser.add_argument(cli_name, **kwargs)
 
     def required(self):
         return self._required

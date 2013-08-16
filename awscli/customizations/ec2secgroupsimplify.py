@@ -23,7 +23,6 @@ authorize operations:
   destination security group.
 """
 
-#from awscli.customizations import CustomArgument
 from awscli.arguments import CustomArgument
 
 

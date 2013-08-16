@@ -343,6 +343,7 @@ class FileInfo(TaskInfo):
         part_queue = NoBlockQueue(self.interrupt)
         complete_upload_queue = Queue.PriorityQueue()
         part_counter = MultiCounter()
+        counter_lock = threading.Lock()
         bucket, key = find_bucket_key(self.dest)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         if self.parameters['acl']:
@@ -361,7 +362,8 @@ class FileInfo(TaskInfo):
                                   region=self.region,
                                   printQueue=self.printQueue,
                                   interrupt=self.interrupt,
-                                  part_counter=part_counter)
+                                  part_counter=part_counter,
+                                  counter_lock=counter_lock)
             self.executer.submit(task)
         part_queue.join()
         # The following ensures that if the multipart upload is in progress,
@@ -403,6 +405,7 @@ class FileInfo(TaskInfo):
         dest_queue = NoBlockQueue(self.interrupt)
         part_counter = MultiCounter()
         write_lock = threading.Lock()
+        counter_lock = threading.Lock()
         d = os.path.dirname(self.dest)
         try:
             if not os.path.exists(d):
@@ -422,7 +425,8 @@ class FileInfo(TaskInfo):
                                         f=f, region=self.region,
                                         printQueue=self.printQueue,
                                         write_lock=write_lock,
-                                        part_counter=part_counter)
+                                        part_counter=part_counter,
+                                        counter_lock=counter_lock)
                 self.executer.submit(task)
             part_queue.join()
             # The following ensures that if the multipart download is

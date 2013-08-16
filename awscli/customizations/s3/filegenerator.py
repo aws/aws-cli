@@ -109,9 +109,13 @@ class FileGenerator(object):
                 last_update = parse(content['LastModified'])
                 last_update = last_update.astimezone(tzlocal())
                 if size == 0 and src_path.endswith('/'):
-                    if self.operation != 'delete':
-                        pass
-                    else:
+                    if self.operation == 'delete':
+                        # This is to filter out manually created folders
+                        # in S3.  They have a size zero and would be
+                        # undesirably downloaded.  Local directories
+                        # are automatically created when they do not
+                        # exist locally.  But user should be able to
+                        # delete them.
                         yield src_path, size, last_update
                 elif not dir_op and s3_path != src_path:
                     pass

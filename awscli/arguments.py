@@ -95,15 +95,15 @@ class BaseCLIArgument(object):
 
     @property
     def cli_type_name(self):
-        pass
+        raise NotImplementedError("cli_type_name")
 
     @property
     def required(self):
-        pass
+        raise NotImplementedError("required")
 
     @property
     def documentation(self):
-        pass
+        raise NotImplementedError("documentation")
 
     @property
     def py_name(self):

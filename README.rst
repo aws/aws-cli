@@ -47,21 +47,18 @@ The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 Installation
 ------------
 
-The easiest way to install aws-cli is to use ``easy_install`` or ``pip``::
-
-    $ easy_install awscli
-
-or, if you are not installing in a ``virtualenv``::
-
-    $ sudo easy_install awscli
-
-Using ``pip``, it would simply be::
+The easiest way to install aws-cli is to use `pip`_::
 
     $ pip install awscli
 
-or::
+or, if you are not installing in a ``virtualenv``::
 
     $ sudo pip install awscli
+
+If you have the aws-cli installed and want to upgrade to the latest version
+you can run::
+
+    $ pip install --upgrade awscli
 
 This will install the aws-cli package as well as all dependencies.  You can
 also just clone the git repo or download the tarball.  Once you have the
@@ -286,3 +283,4 @@ style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
 
 .. _Amazon Web Services Security Bulletins website: https://aws.amazon.com/security/security-bulletins
+.. _pip: http://www.pip-installer.org/en/latest/

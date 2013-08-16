@@ -18,7 +18,7 @@ import httpretty
 
 class TestListObjects(BaseAWSCommandParamsTest):
 
-    prefix = 's3 list-objects'
+    prefix = 's3api list-objects'
 
     def register_uri(self):
         body = """<ListBucketResult xmlns="http://s3.amazonaws.com/">

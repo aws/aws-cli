@@ -85,7 +85,7 @@ class TestHelpOutput(BaseAWSHelpOutput):
         self.assert_contains('* auto')
         # Then we should see the services.
         self.assert_contains('* ec2')
-        self.assert_contains('* s3')
+        self.assert_contains('* s3api')
         self.assert_contains('* sts')
 
     def test_service_help_output(self):
@@ -200,21 +200,21 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
             '``--no-should-decrement-desired-capacity`` (boolean)')
 
     def test_streaming_output_arg(self):
-        self.driver.main(['s3', 'get-object', 'help'])
+        self.driver.main(['s3api', 'get-object', 'help'])
         self.assert_not_contains('``--output-file``')
         self.assert_contains('``output-file`` (string)')
 
 
 class TestPagingParamDocs(BaseAWSHelpOutput):
     def test_starting_token_injected(self):
-        self.driver.main(['s3', 'list-objects', 'help'])
+        self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_contains('``--starting-token``')
 
     def test_max_items_injected(self):
-        self.driver.main(['s3', 'list-objects', 'help'])
+        self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_contains('``--max-items``')
 
     def test_builtin_paging_params_removed(self):
-        self.driver.main(['s3', 'list-objects', 'help'])
+        self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_not_contains('``--next-token``')
         self.assert_not_contains('``--max-keys``')

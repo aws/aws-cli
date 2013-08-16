@@ -33,7 +33,7 @@ except NameError:
 
 class TestGetObject(BaseAWSCommandParamsTest):
 
-    prefix = 's3 put-object'
+    prefix = 's3api put-object'
 
     def setUp(self):
         super(TestGetObject, self).setUp()

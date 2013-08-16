@@ -22,7 +22,7 @@ import awscli.clidriver
 
 class TestGetObject(BaseAWSCommandParamsTest):
 
-    prefix = 's3 get-object'
+    prefix = 's3api get-object'
 
     def register_uri(self):
         httpretty.register_uri(httpretty.GET, re.compile('.*'), body='')

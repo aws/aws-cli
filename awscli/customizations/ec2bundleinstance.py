@@ -19,7 +19,7 @@ import datetime
 
 import six
 
-from awscli.customizations import CustomArgument
+from awscli.arguments import CustomArgument
 
 logger = logging.getLogger('ec2bundleinstance')
 
@@ -53,7 +53,7 @@ POLICY_DOCS = ("An Amazon S3 upload policy that gives "
                "sections about policy construction and signatures in the "
                '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/HTTPPOSTForms.html">'
                'Amazon Simple Storage Service Developer Guide</a>.')
-               
+
 # --owner-sak
 OWNER_SAK_DOCS = ('The AWS secret access key for the owner of the '
                   'Amazon S3 bucket specified in the --bucket '
@@ -69,24 +69,24 @@ def _add_params(argument_table, operation, **kwargs):
     storage_param = storage_arg.argument_object
     storage_param.required = False
     arg = BundleArgument(storage_param='Bucket',
-                         operation=operation, name='bucket',
-                         documentation=BUCKET_DOCS)
+                         name='bucket',
+                         help_text=BUCKET_DOCS)
     argument_table['bucket'] = arg
     arg = BundleArgument(storage_param='Prefix',
-                         operation=operation, name='prefix',
-                         documentation=PREFIX_DOCS)
+                         name='prefix',
+                         help_text=PREFIX_DOCS)
     argument_table['prefix'] = arg
     arg = BundleArgument(storage_param='AWSAccessKeyId',
-                         operation=operation, name='owner-akid',
-                         documentation=OWNER_AKID_DOCS)
+                         name='owner-akid',
+                         help_text=OWNER_AKID_DOCS)
     argument_table['owner-akid'] = arg
     arg = BundleArgument(storage_param='_SAK',
-                         operation=operation, name='owner-sak',
-                         documentation=OWNER_SAK_DOCS)
+                         name='owner-sak',
+                         help_text=OWNER_SAK_DOCS)
     argument_table['owner-sak'] = arg
     arg = BundleArgument(storage_param='UploadPolicy',
-                         operation=operation, name='policy',
-                         documentation=POLICY_DOCS)
+                         name='policy',
+                         help_text=POLICY_DOCS)
     argument_table['policy'] = arg
 
 
@@ -124,7 +124,7 @@ def _generate_policy(params):
                            prefix=params['Prefix'])
     params['UploadPolicy'] = policy
 
-    
+
 def _generate_signature(params):
     # If we have a policy and a sak, create the signature.
     policy = params.get('UploadPolicy')
@@ -136,7 +136,7 @@ def _generate_signature(params):
         ps = base64.encodestring(new_hmac.digest()).strip().decode('utf-8')
         params['UploadPolicySignature'] = ps
         del params['_SAK']
-        
+
 
 def _check_params(**kwargs):
     # Called just before call but prior to building the params.

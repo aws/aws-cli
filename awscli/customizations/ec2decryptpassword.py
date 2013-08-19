@@ -16,7 +16,7 @@ import base64
 import rsa
 import six
 
-from awscli.clidriver import BaseCLIArgument
+from awscli.arguments import BaseCLIArgument
 from botocore.parameters import StringParameter
 
 logger = logging.getLogger(__name__)
@@ -41,10 +41,11 @@ class LaunchKeyArgument(BaseCLIArgument):
         param = StringParameter(operation,
                                 name=name,
                                 type='string')
-        super(LaunchKeyArgument, self).__init__(
-            name, argument_object=param)
+        self._name = name
+        self.argument_object = param
         self._operation = operation
         self._name = name
+        self._key_path = None
 
     @property
     def cli_type_name(self):
@@ -58,9 +59,8 @@ class LaunchKeyArgument(BaseCLIArgument):
     def documentation(self):
         return HELP
 
-    def add_to_parser(self, parser, cli_name=None):
-        logger.debug('add_to_parser: %s %s', self.cli_name, self._name)
-        parser.add_argument(self.cli_name, dest=self._name,
+    def add_to_parser(self, parser):
+        parser.add_argument(self.cli_name, dest=self.py_name,
                             help='SSH Private Key file')
 
     def add_to_params(self, parameters, value):
@@ -95,7 +95,7 @@ class LaunchKeyArgument(BaseCLIArgument):
         that private key to decrypt the password data and replace it
         in the returned data dictionary.
         """
-        if self._key_path:
+        if self._key_path is not None:
             logger.debug("Decrypting password data using: %s", self._key_path)
             value = parsed.get('PasswordData')
             if not value:
@@ -114,6 +114,3 @@ class LaunchKeyArgument(BaseCLIArgument):
                 msg = ('Unable to decrypt password data using '
                        'provided private key file.')
                 raise ValueError(msg)
-
-
-            

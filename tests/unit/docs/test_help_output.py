@@ -201,8 +201,8 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
 
     def test_streaming_output_arg(self):
         self.driver.main(['s3api', 'get-object', 'help'])
-        self.assert_not_contains('``--output-file``')
-        self.assert_contains('``output-file`` (string)')
+        self.assert_not_contains('``--outfile``')
+        self.assert_contains('``outfile`` (string)')
 
 
 class TestPagingParamDocs(BaseAWSHelpOutput):

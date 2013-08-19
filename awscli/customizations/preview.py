@@ -29,9 +29,7 @@ import logging
 import sys
 import textwrap
 
-from botocore.parameters import StringParameter
-
-from awscli.clidriver import BaseCLIArgument, CLICommand
+from awscli.clidriver import CLICommand
 
 
 logger = logging.getLogger(__name__)

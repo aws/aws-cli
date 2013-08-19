@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.clidriver import BaseCLIArgument
+from awscli.arguments import BaseCLIArgument
 
 
 def add_streaming_output_arg(argument_table, operation, **kwargs):
@@ -18,9 +18,9 @@ def add_streaming_output_arg(argument_table, operation, **kwargs):
     # event.
     stream_param = operation.is_streaming()
     if stream_param:
-        argument_table['output-file'] = StreamingOutputArgument(
+        argument_table['outfile'] = StreamingOutputArgument(
             response_key=stream_param, operation=operation,
-            name='output-file')
+            name='outfile')
 
 
 class StreamingOutputArgument(BaseCLIArgument):
@@ -29,8 +29,8 @@ class StreamingOutputArgument(BaseCLIArgument):
     HELP = 'Filename where the content will be saved'
 
     def __init__(self, response_key, operation, name, buffer_size=None):
-        super(StreamingOutputArgument, self).__init__(
-            name, argument_object=operation)
+        self._name = name
+        self.argument_object = operation
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size
@@ -60,7 +60,7 @@ class StreamingOutputArgument(BaseCLIArgument):
     def documentation(self):
         return self.HELP
 
-    def add_to_parser(self, parser, cli_name=None):
+    def add_to_parser(self, parser):
         parser.add_argument(self._name, metavar=self.py_name,
                             help=self.HELP)
 

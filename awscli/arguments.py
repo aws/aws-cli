@@ -140,6 +140,11 @@ class CustomArgument(BaseCLIArgument):
         if choices is None:
             choices = []
         self._choices = choices
+        # TODO: We should eliminate this altogether.
+        # You should not have to depend on an argument_object
+        # as part of the interface.  Currently the argprocess
+        # and docs code relies on this object.
+        self.argument_object = None
 
     def add_to_parser(self, parser):
         """

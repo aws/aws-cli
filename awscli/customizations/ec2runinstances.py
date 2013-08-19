@@ -22,7 +22,7 @@ This functionality (and much more) is also available using the
 ``--network-interfaces`` complex argument.  This just makes two of
 the most commonly used features available more easily.
 """
-from awscli.customizations import CustomArgument
+from awscli.arguments import CustomArgument
 
 
 # --secondary-private-ip-address
@@ -33,7 +33,7 @@ SECONDARY_PRIVATE_IP_ADDRESSES_DOCS = (
     'but do not need a specific address, use the '
     '--secondary-private-ip-address-count option.')
 
-# --secondary-private-ip-address-count                                  
+# --secondary-private-ip-address-count
 SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS = (
     '[EC2-VPC] The number of secondary IP addresses to assign to '
     'the network interface or instance.')
@@ -41,12 +41,12 @@ SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS = (
 
 def _add_params(argument_table, operation, **kwargs):
     arg = SecondaryPrivateIpAddressesArgument(
-        operation=operation, name='secondary-private-ip-addresses',
-        documentation=SECONDARY_PRIVATE_IP_ADDRESSES_DOCS)
+        name='secondary-private-ip-addresses',
+        help_text=SECONDARY_PRIVATE_IP_ADDRESSES_DOCS)
     argument_table['secondary-private-ip-addresses'] = arg
     arg = SecondaryPrivateIpAddressCountArgument(
-        operation=operation, name='secondary-private-ip-address-count',
-        documentation=SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS)
+        name='secondary-private-ip-address-count',
+        help_text=SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS)
     argument_table['secondary-private-ip-address-count'] = arg
 
 
@@ -55,9 +55,9 @@ def _check_args(parsed_args, **kwargs):
     # the --network-interfaces option with any of the scalar options we
     # raise an error.
     arg_dict = vars(parsed_args)
-    if arg_dict['network-interfaces']:
-        for key in ('secondary-private-ip-addresses',
-                    'secondary-private-ip-address-count'):
+    if arg_dict['network_interfaces']:
+        for key in ('secondary_private_ip_addresses',
+                    'secondary_private_ip_address_count'):
             if arg_dict[key]:
                 msg = ('Mixing the --network-interfaces option '
                        'with the simple, scalar options is '
@@ -80,7 +80,7 @@ def _build_network_interfaces(params, key, value):
     # Build up the NetworkInterfaces data structure
     if 'network_interfaces' not in params:
         params['network_interfaces'] = [{'DeviceIndex': 0}]
-        
+
     if key == 'PrivateIpAddresses':
         if 'PrivateIpAddresses' not in params['network_interfaces'][0]:
             params['network_interfaces'][0]['PrivateIpAddresses'] = value
@@ -91,7 +91,7 @@ def _build_network_interfaces(params, key, value):
 class SecondaryPrivateIpAddressesArgument(CustomArgument):
 
     def add_to_parser(self, parser, cli_name=None):
-        parser.add_argument(self.cli_name, dest=self._name,
+        parser.add_argument(self.cli_name, dest=self.py_name,
                             default=self._default, nargs='*')
 
     def add_to_params(self, parameters, value):
@@ -106,7 +106,7 @@ class SecondaryPrivateIpAddressesArgument(CustomArgument):
 class SecondaryPrivateIpAddressCountArgument(CustomArgument):
 
     def add_to_parser(self, parser, cli_name=None):
-        parser.add_argument(self.cli_name, dest=self._name,
+        parser.add_argument(self.cli_name, dest=self.py_name,
                             default=self._default, type=int)
 
     def add_to_params(self, parameters, value):

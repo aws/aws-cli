@@ -67,7 +67,8 @@ def calculate_md5(event_name, params, **kwargs):
     if params['payload'] and not 'Content-MD5' in params['headers']:
         md5 = hashlib.md5()
         md5.update(params['payload'].getvalue())
-        params['headers']['Content-MD5'] = base64.b64encode(md5.digest())
+        value = base64.b64encode(md5.digest()).decode('utf-8')
+        params['headers']['Content-MD5'] = value
 
 
 def check_dns_name(bucket_name):

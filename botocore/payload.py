@@ -153,5 +153,4 @@ class XMLPayload(Payload):
                 value = self._assemble_xml()
             else:
                 value = self._elements[0]
-            value = value.encode('utf-8')
         return value

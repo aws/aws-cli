@@ -66,7 +66,7 @@ def decode_jsondoc(event_name, shape, value, **kwargs):
 def calculate_md5(event_name, params, **kwargs):
     if params['payload'] and not 'Content-MD5' in params['headers']:
         md5 = hashlib.md5()
-        md5.update(params['payload'].getvalue())
+        md5.update(six.b(params['payload'].getvalue()))
         value = base64.b64encode(md5.digest()).decode('utf-8')
         params['headers']['Content-MD5'] = value
 

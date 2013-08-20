@@ -46,11 +46,11 @@ def awscli_initialize(event_handlers):
                             add_examples)
     event_handlers.register('building-argument-table.s3.*',
                             add_streaming_output_arg)
-    event_handlers.register('building-argument-table.ec2.RunInstances',
+    event_handlers.register('building-argument-table.ec2.run-instances',
                             ec2_add_count)
     event_handlers.register('building-argument-table',
                             unify_paging_params)
-    event_handlers.register('building-argument-table.ec2.GetPasswordData',
+    event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)

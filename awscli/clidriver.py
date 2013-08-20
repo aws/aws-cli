@@ -234,19 +234,6 @@ class CLICommand(object):
         return None
 
 
-class BuiltInCommand(CLICommand):
-    """
-    A top-level command that is not associated with a service.
-
-    For example, if you want to implement ``aws mycommand``
-    we would create a BuiltInCommand object for that.
-    """
-
-    def __init__(self, name, session):
-        self.name = name
-        self.session = session
-
-
 class ServiceCommand(CLICommand):
     """A service command for the CLI.
 
@@ -256,7 +243,7 @@ class ServiceCommand(CLICommand):
     """
 
     def __init__(self, name, session):
-        self.name = name
+        self._name = name
         self.session = session
         self._command_table = None
         self._service_object = None
@@ -268,7 +255,7 @@ class ServiceCommand(CLICommand):
 
     def _get_service_object(self):
         if self._service_object is None:
-            self._service_object = self.session.get_service(self.name)
+            self._service_object = self.session.get_service(self._name)
         return self._service_object
 
     def __call__(self, args, parsed_globals):
@@ -287,6 +274,7 @@ class ServiceCommand(CLICommand):
             cli_name = xform_name(operation_object.name, '-')
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
+                parent_name=self._name,
                 operation_object=operation_object,
                 operation_caller=CLIOperationCaller(self.session),
                 service_object=service_object)
@@ -304,10 +292,11 @@ class ServiceCommand(CLICommand):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
-        self.session.emit('building-command-table.%s' % self.name,
-                          command_table=command_table)
+        self.session.emit('building-command-table.%s' % self._name,
+                          command_table=command_table,
+                          session=self.session)
         return ServiceArgParser(
-            operations_table=command_table, service_name=self.name)
+            operations_table=command_table, service_name=self._name)
 
 
 class ServiceOperation(object):
@@ -324,10 +313,32 @@ class ServiceOperation(object):
     }
     DEFAULT_ARG_CLASS = CLIArgument
 
-    def __init__(self, name, operation_object, operation_caller,
+    def __init__(self, name, parent_name, operation_object, operation_caller,
                  service_object):
+        """
+
+        :type name: str
+        :param name: The name of the operation/subcommand.
+
+        :type parent_name: str
+        :param parent_name: The name of the parent command.
+
+        :type operation_object: ``botocore.operation.Operation``
+        :param operation_object: The operation associated with this subcommand.
+
+        :type operation_caller: ``CLIOperationCaller``
+        :param operation_caller: An object that can properly call the
+            operation.
+
+        :type service_object: ``botocore.service.Service``
+        :param service_object: The service associated wtih the object.
+
+        """
         self._arg_table = None
         self._name = name
+        # These is used so we can figure out what the proper event
+        # name should be <parent name>.<name>.
+        self._parent_name = parent_name
         self._operation_object = operation_object
         self._operation_caller = operation_caller
         self._service_object = service_object
@@ -354,8 +365,8 @@ class ServiceOperation(object):
                 "Unknown options: %s" % ', '.join(remaining))
         service_name = self._service_object.endpoint_prefix
         operation_name = self._operation_object.name
-        event = 'operation-args-parsed.%s.%s' % (service_name,
-                                                 operation_name)
+        event = 'operation-args-parsed.%s.%s' % (self._parent_name,
+                                                 self._name)
         self._emit(event, parsed_args=parsed_args)
         call_parameters = self._build_call_parameters(parsed_args,
                                                       self.arg_table)
@@ -396,7 +407,6 @@ class ServiceOperation(object):
         # when calling an operation so we'd have to optimize that first
         # before using get_parameter() in the cli would be advantageous
         for argument in self._operation_object.params:
-            #cli_arg_name = xform_name(argument.name, '-')
             cli_arg_name = argument.cli_name[2:]
             arg_class = self.ARG_TYPES.get(argument.type,
                                            self.DEFAULT_ARG_CLASS)
@@ -406,8 +416,8 @@ class ServiceOperation(object):
         LOG.debug(argument_table)
         service_name = self._service_object.endpoint_prefix
         operation_name = self._operation_object.name
-        self._emit('building-argument-table.%s.%s' % (service_name,
-                                                      operation_name),
+        self._emit('building-argument-table.%s.%s' % (self._parent_name,
+                                                      self._name),
                    operation=self._operation_object,
                    argument_table=argument_table)
         return argument_table

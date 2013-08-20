@@ -28,10 +28,12 @@ import botocore.session
 XMLBODY1 = """<CreateBucketConfiguration><LocationConstraint>sa-east-1</LocationConstraint></CreateBucketConfiguration>"""
 XMLBODY2 = """<LifecycleConfiguration><Rule><ID>archive-objects-glacier-immediately-upon-creation</ID><Prefix>glacierobjects/</Prefix><Status>Enabled</Status><Transition><Days>0</Days><StorageClass>GLACIER</StorageClass></Transition></Rule></LifecycleConfiguration>"""
 XMLBODY3 = """<Tagging><TagSet><Tag><Key>key1</Key><Value>value1</Value></Tag><Tag><Key>key2</Key><Value>value2</Value></Tag></TagSet></Tagging>"""
-
+XMLBODY4 = """<CORSConfiguration><CORSRule><AllowedHeader>*</AllowedHeader><AllowedMethod>PUT</AllowedMethod><AllowedMethod>POST</AllowedMethod><AllowedMethod>DELETE</AllowedMethod><AllowedOrigin>http://www.example1.com</AllowedOrigin><ExposeHeader>x-amz-server-side-encryption</ExposeHeader><MaxAgeSeconds>3000</MaxAgeSeconds></CORSRule><CORSRule><AllowedMethod>GET</AllowedMethod><AllowedOrigin>*</AllowedOrigin></CORSRule></CORSConfiguration>"""
 
 class TestS3Operations(BaseEnvVar):
 
+    maxDiff = None
+    
     def setUp(self):
         super(TestS3Operations, self).setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'foo'
@@ -50,7 +52,6 @@ class TestS3Operations(BaseEnvVar):
                                      create_bucket_configuration=config)
         headers = {'x-amz-acl': 'public-read'}
         uri_params = {'Bucket': self.bucket_name}
-        self.maxDiff = None
         self.assertEqual(params['headers'], headers)
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), XMLBODY1)
@@ -68,10 +69,16 @@ class TestS3Operations(BaseEnvVar):
                   }
         params = op.build_parameters(bucket=self.bucket_name,
                                      lifecycle_configuration=config)
+        # There is a handler for the before-call event that will
+        # add the Content-MD5 header to the parameters if it is not
+        # already there.  We are going to fire the event here to
+        # simulate that and make sure the right header is added.
+        self.session.emit('before-call.s3.PutBucketLifecycle', params=params)
         uri_params = {'Bucket': self.bucket_name}
-        self.maxDiff = None
+        headers = {'Content-MD5': '5bNG1b31rFf4z+aleBKqWw=='}
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), XMLBODY2)
+        self.assertEqual(params['headers'], headers)
 
     def test_put_bucket_tagging(self):
         op = self.s3.get_operation('PutBucketTagging')
@@ -84,10 +91,45 @@ class TestS3Operations(BaseEnvVar):
                       'Value': 'value2'}]}
         params = op.build_parameters(bucket=self.bucket_name,
                                      tagging=tag_set)
+        # There is a handler for the before-call event that will
+        # add the Content-MD5 header to the parameters if it is not
+        # already there.  We are going to fire the event here to
+        # simulate that and make sure the right header is added.
+        self.session.emit('before-call.s3.PutBucketTagging', params=params)
         uri_params = {'Bucket': self.bucket_name}
-        self.maxDiff = None
+        headers = {'Content-MD5': '5s++BGwLE2moBAK9duxpFw=='}
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), XMLBODY3)
+        self.assertEqual(params['headers'], headers)
+
+    def test_put_bucket_cors(self):
+        op = self.s3.get_operation('PutBucketCors')
+        cors = {"CORSRules": [
+                {
+                    "AllowedHeaders": ["*"],
+                    "AllowedMethods": ["PUT", "POST", "DELETE"],
+                    "AllowedOrigins": ["http://www.example1.com"],
+                    "MaxAgeSeconds": 3000,
+                    "ExposeHeaders": ["x-amz-server-side-encryption"]
+                    },
+                {
+                    "AllowedMethods": ["GET"],
+                    "AllowedOrigins": ["*"]
+                    }
+                ]
+                }
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     cors_configuration=cors)
+        # There is a handler for the before-call event that will
+        # add the Content-MD5 header to the parameters if it is not
+        # already there.  We are going to fire the event here to
+        # simulate that and make sure the right header is added.
+        self.session.emit('before-call.s3.PutBucketCors', params=params)
+        uri_params = {'Bucket': self.bucket_name}
+        headers = {'Content-MD5': 'uj9D08gqRQUY0al4Po043w=='}
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), XMLBODY4)
+        self.assertEqual(params['headers'], headers)
 
     def test_put_object(self):
         op = self.s3.get_operation('PutObject')
@@ -104,7 +146,6 @@ class TestS3Operations(BaseEnvVar):
                    'Content-Language': 'piglatin',
                    'Content-Type': 'text/plain'}
         uri_params = {'Bucket': 'foo', 'Key': 'bar'}
-        self.maxDiff = None
         self.assertEqual(params['headers'], headers)
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), fp)

@@ -64,6 +64,7 @@ def translate(model):
         new_model, model.retry.get('retry', {}), definitions=model.retry.get('definitions', {}))
     handle_op_renames(new_model, model.enhancements)
     handle_remove_deprecated_params(new_model, model.enhancements)
+    handle_remove_deprecated_operations(new_model, model.enhancements)
     handle_filter_documentation(new_model, model.enhancements)
     return new_model
 
@@ -85,6 +86,25 @@ def handle_op_renames(new_model, enhancements):
             new_key = remove_regex.sub('', key)
             new_operation[new_key] = operations[key]
         new_model['operations'] = new_operation
+
+
+def handle_remove_deprecated_operations(new_model, enhancements):
+    # This removes any operation whose documentation string contains
+    # the specified phrase that marks a deprecated parameter.
+    keyword = enhancements.get('transformations', {}).get(
+        'remove-deprecated-operations', {}).get('deprecated_keyword')
+    remove = []
+    if keyword is not None:
+        operations = new_model['operations']
+        for op_name in operations:
+            operation = operations[op_name]
+            if operation:
+                docs = operation['documentation']
+                if docs and docs.find(keyword) >= 0:
+                    remove.append(op_name)
+    for op in remove:
+        del new_model['operations'][op]
+
 
 def handle_remove_deprecated_params(new_model, enhancements):
     # This removes any parameter whose documentation string contains

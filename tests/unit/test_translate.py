@@ -232,6 +232,25 @@ SERVICES = {
         }
       },
       "documentation": "This is my <![CDATA[none of \nthis stuff should be here]]> stuff"
+    },
+    "DeprecatedOperation2": {
+      "input": {
+        "shape_name": "DeprecatedOperation2Request",
+        "type": "structure",
+        "members": {
+          "FooBar": {
+            "shape_name": "foobarType",
+            "type": "string",
+            "documentation": "blah blah blah blah",
+          },
+          "FieBaz": {
+            "shape_name": "fiebazType",
+            "type": "string",
+            "documentation": ""
+          }
+        }
+      },
+      "documentation": "This operation has been deprecated."
     }
   }
 }
@@ -666,7 +685,8 @@ class TestReplacePartOfOperation(unittest.TestCase):
         # But the key into the operation dict is stripped of the
         # matched regex.
         self.assertEqual(list(sorted(new_model['operations'].keys())),
-                         ['AssumeRole', 'DeprecatedOperation', 'RealOperation'])
+                         ['AssumeRole', 'DeprecatedOperation',
+                          'DeprecatedOperation2', 'RealOperation'])
         # But the name key attribute is left unchanged.
         self.assertEqual(new_model['operations']['RealOperation']['name'],
                          'RealOperation2013_02_04')
@@ -687,6 +707,21 @@ class TestRemovalOfDeprecatedParams(unittest.TestCase):
         # The deprecated param should be gone, the other should remain
         self.assertIn('FooBar', operation['input']['members'])
         self.assertNotIn('FieBaz', operation['input']['members'])
+
+class TestRemovalOfDeprecatedOps(unittest.TestCase):
+    
+    def test_remove_deprecated_ops(self):
+        enhancements = {
+            'transformations': {
+                'remove-deprecated-operations':
+                    {'deprecated_keyword': 'deprecated'}
+                }
+            }
+        model = ModelFiles(SERVICES, regions={}, retry={},
+                           enhancements=enhancements)
+        new_model = translate(model)
+        # The deprecated operation should be gone
+        self.assertNotIn('DeprecatedOperation2', new_model['operations'])
 
         
 class TestFilteringOfDocumentation(unittest.TestCase):

@@ -27,6 +27,9 @@ import botocore.session
 
 XMLBODY1 = """<CreateBucketConfiguration><LocationConstraint>sa-east-1</LocationConstraint></CreateBucketConfiguration>"""
 XMLBODY2 = """<LifecycleConfiguration><Rule><ID>archive-objects-glacier-immediately-upon-creation</ID><Prefix>glacierobjects/</Prefix><Status>Enabled</Status><Transition><Days>0</Days><StorageClass>GLACIER</StorageClass></Transition></Rule></LifecycleConfiguration>"""
+XMLBODY3 = """<Tagging><TagSet><Tag><Key>key1</Key><Value>value1</Value></Tag><Tag><Key>key2</Key><Value>value2</Value></Tag></TagSet></Tagging>"""
+
+
 class TestS3Operations(BaseEnvVar):
 
     def setUp(self):
@@ -69,6 +72,22 @@ class TestS3Operations(BaseEnvVar):
         self.maxDiff = None
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), XMLBODY2)
+
+    def test_put_bucket_tagging(self):
+        op = self.s3.get_operation('PutBucketTagging')
+        tag_set = {'TagSet': [
+                    {
+                      'Key': 'key1',
+                      'Value': 'value1'},
+                    {
+                      'Key': 'key2',
+                      'Value': 'value2'}]}
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     tagging=tag_set)
+        uri_params = {'Bucket': self.bucket_name}
+        self.maxDiff = None
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), XMLBODY3)
 
     def test_put_object(self):
         op = self.s3.get_operation('PutObject')

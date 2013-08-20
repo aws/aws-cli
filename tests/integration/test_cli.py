@@ -78,6 +78,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 1, p.stderr)
         self.assertIn('get-object', p.stdout)
 
+    def test_help_with_warning_blocks(self):
+        p = aws('elastictranscoder create-pipeline help')
+        self.assertEqual(p.rc, 1, p.stderr)
+        # Check text that appears in the warning block to ensure
+        # the block was actually rendered.
+        self.assertIn('To receive notifications', p.stdout)
+
     def test_param_shorthand(self):
         p = aws(
             'ec2 describe-instances --filters Name=instance-id,Values=i-123')

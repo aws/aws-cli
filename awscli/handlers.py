@@ -28,6 +28,7 @@ from awscli.customizations.preview import register_preview_commands
 from awscli.customizations.ec2bundleinstance import register_bundleinstance
 from awscli.customizations.s3.s3 import s3_plugin_initialize
 from awscli.customizations.ec2runinstances import register_runinstances
+from awscli.customizations.rds import register_rds_modify_split
 
 
 def awscli_initialize(event_handlers):
@@ -58,3 +59,4 @@ def awscli_initialize(event_handlers):
     register_runinstances(event_handlers)
     register_removals(event_handlers)
     register_preview_commands(event_handlers)
+    register_rds_modify_split(event_handlers)

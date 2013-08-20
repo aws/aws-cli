@@ -34,25 +34,6 @@
             "errors": [],
             "documentation": "\n        <p>Deletes the specified identity (email address or domain) from the list of verified identities.</p>\n        <p>This action is throttled at one request per second.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:25:58 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=w943pl3zIvtszwzZxypi+LsgjzquvhYhnG42S6b2WLo=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 135\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=DeleteIdentity\n&Identity=domain.com\n&Timestamp=2012-05-12T05%3A25%3A58.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<DeleteIdentityResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <DeleteIdentityResult/>\n  <ResponseMetadata>\n    <RequestId>d96bd874-9bf2-11e1-8ee7-c98a0037a2b6</RequestId>\n  </ResponseMetadata>\n</DeleteIdentityResponse>\n          \n            </queryresponse>\n        </examples>\n    "
         },
-        "DeleteVerifiedEmailAddress": {
-            "name": "DeleteVerifiedEmailAddress",
-            "input": {
-                "shape_name": "DeleteVerifiedEmailAddressRequest",
-                "type": "structure",
-                "members": {
-                    "EmailAddress": {
-                        "shape_name": "Address",
-                        "type": "string",
-                        "documentation": "\n        <p>An email address to be removed from the list of verified addresses.</p>\n    ",
-                        "required": true
-                    }
-                },
-                "documentation": "\n        <p>Represents a request instructing the service to delete an address from the list of verified email addresses.</p>\n    "
-            },
-            "output": null,
-            "errors": [],
-            "documentation": "\n        <p>Deletes the specified email address from the list of verified addresses.</p>\n        <important>The DeleteVerifiedEmailAddress action is deprecated as of the May 15, 2012 release\n        of Domain Verification. The DeleteIdentity action is now preferred.</important>\n        <p>This action is throttled at one request per second.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:20:50 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=Rxzyd6cQe/YjkV4yoQAZ243OzzNjFgrsclizTKwRIRc=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 142\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=DeleteVerifiedEmailAddress\n&EmailAddress=user%40example.com\n&Timestamp=2011-08-18T22%3A20%3A50.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<DeleteVerifiedEmailAddressResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>5634af08-c865-11e0-8986-3f99a698f914</RequestId>\n  </ResponseMetadata>\n</DeleteVerifiedEmailAddressResponse>\n          \n            </queryresponse>\n        </examples>\n    "
-        },
         "GetIdentityDkimAttributes": {
             "name": "GetIdentityDkimAttributes",
             "input": {
@@ -397,29 +378,6 @@
                 "result_key": "Identities",
                 "py_input_token": "next_token"
             }
-        },
-        "ListVerifiedEmailAddresses": {
-            "name": "ListVerifiedEmailAddresses",
-            "input": null,
-            "output": {
-                "shape_name": "ListVerifiedEmailAddressesResponse",
-                "type": "structure",
-                "members": {
-                    "VerifiedEmailAddresses": {
-                        "shape_name": "AddressList",
-                        "type": "list",
-                        "members": {
-                            "shape_name": "Address",
-                            "type": "string",
-                            "documentation": null
-                        },
-                        "documentation": "\n        <p>A list of email addresses that have been verified.</p>\n    "
-                    }
-                },
-                "documentation": "\n        <p>Represents a list of all the email addresses verified for the current user.</p>\n    "
-            },
-            "errors": [],
-            "documentation": "\n        <p>Returns a list containing all of the email addresses that have been verified.</p>\n        <important>The ListVerifiedEmailAddresses action is deprecated as of the May 15, 2012 release of \n        Domain Verification. The ListIdentities action is now preferred.</important>\n        <p>This action is throttled at one request per second.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:05:09 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=II0+vvDKGMv71vToBwzR6vZ1hxe/VUE8tWEFUNTUqgE=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 108\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=ListVerifiedEmailAddresses\n&Timestamp=2011-08-18T22%3A05%3A09.000Z%\n          \n            </queryrequest>\n            <queryresponse>\n                \n<ListVerifiedEmailAddressesResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ListVerifiedEmailAddressesResult>\n    <VerifiedEmailAddresses>\n      <member>example@amazon.com</member>\n    </VerifiedEmailAddresses>\n  </ListVerifiedEmailAddressesResult>\n  <ResponseMetadata>\n    <RequestId>3dd50e97-c865-11e0-b235-099eb63d928d</RequestId>\n  </ResponseMetadata>\n</ListVerifiedEmailAddressesResponse>\n          \n            </queryresponse>\n        </examples>\n    "
         },
         "SendEmail": {
             "name": "SendEmail",
@@ -809,25 +767,6 @@
             },
             "errors": [],
             "documentation": "\n        <p>Verifies a domain.</p>\n        <p>This action is throttled at one request per second.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Sat, 12 May 2012 05:24:02 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=Wr+6RCfV+QgjLki2dtIrlecMK9+RrsDaTG5uWneDAu8=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 139\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyDomainIdentity\n&Domain=domain.com\n&Timestamp=2012-05-12T05%3A24%3A02.000Z\n&Version=2010-12-01\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyDomainIdentityResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <VerifyDomainIdentityResult>\n    <VerificationToken>QTKknzFg2J4ygwa+XvHAxUl1hyHoY0gVfZdfjIedHZ0=</VerificationToken>\n  </VerifyDomainIdentityResult>\n  <ResponseMetadata>\n    <RequestId>94f6368e-9bf2-11e1-8ee7-c98a0037a2b6</RequestId>\n  </ResponseMetadata>\n</VerifyDomainIdentityResponse>\n          \n            </queryresponse>\n        </examples>\n    "
-        },
-        "VerifyEmailAddress": {
-            "name": "VerifyEmailAddress",
-            "input": {
-                "shape_name": "VerifyEmailAddressRequest",
-                "type": "structure",
-                "members": {
-                    "EmailAddress": {
-                        "shape_name": "Address",
-                        "type": "string",
-                        "documentation": "\n        <p>The email address to be verified.</p>\n    ",
-                        "required": true
-                    }
-                },
-                "documentation": "\n        <p>Represents a request instructing the service to begin email address verification.</p>\n    "
-            },
-            "output": null,
-            "errors": [],
-            "documentation": "\n        <p>Verifies an email address. This action causes a confirmation email message to be \n        sent to the specified address.</p>\n        <important>The VerifyEmailAddress action is deprecated as of the May 15, 2012 release\n        of Domain Verification. The VerifyEmailIdentity action is now preferred.</important>\n        <p>This action is throttled at one request per second.</p>\n        <examples>\n            <queryrequest>\n                \nPOST / HTTP/1.1\nDate: Thu, 18 Aug 2011 22:28:27 GMT\nHost: email.us-east-1.amazonaws.com\nContent-Type: application/x-www-form-urlencoded\nX-Amzn-Authorization: AWS3 AWSAccessKeyId=AKIAIOSFODNN7EXAMPLE,\n Signature=o9NK68jraFg5BnaTQiQhpxj2x1dGONOEFHHgsM6o5as=,\n Algorithm=HmacSHA256, SignedHeaders=Date;Host\nContent-Length: 132\n\nAWSAccessKeyId=AKIAIOSFODNN7EXAMPLE\n&Action=VerifyEmailAddress\n&EmailAddress=user%40example.com\n&Timestamp=2011-08-18T22%3A28%3A27.000Z\n          \n            </queryrequest>\n            <queryresponse>\n                \n<VerifyEmailAddressResponse xmlns=\"http://ses.amazonaws.com/doc/2010-12-01/\">\n  <ResponseMetadata>\n    <RequestId>8edd7eb2-c864-11e0-9f8f-3da8fc215a7e</RequestId>\n  </ResponseMetadata>\n</VerifyEmailAddressResponse>\n          \n            </queryresponse>\n        </examples>\n    "
         },
         "VerifyEmailIdentity": {
             "name": "VerifyEmailIdentity",

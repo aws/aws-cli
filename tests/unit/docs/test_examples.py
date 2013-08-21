@@ -30,6 +30,7 @@ from tests import BaseAWSHelpOutputTest
 COMMAND_EXAMPLES = {
     'cloudwatch': ['put-metric-data'],
     's3': ['cp', 'ls', 'mb', 'mv', 'rb', 'rm', 'sync'],
+    's3api': ['get-object', 'put-object'],
     'ec2': ['run-instances', 'start-instances', 'stop-instances'],
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],

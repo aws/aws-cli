@@ -19,3 +19,10 @@ def rename_argument(argument_table, existing_name, new_name):
     argument_table[new_name] = current
     current.name = new_name
     del argument_table[existing_name]
+
+
+def rename_command(command_table, existing_name, new_name):
+    current = command_table[existing_name]
+    command_table[new_name] = current
+    current.name = new_name
+    del command_table[existing_name]

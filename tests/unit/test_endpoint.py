@@ -257,6 +257,15 @@ class TestRestEndpoint(unittest.TestCase):
         built_uri = endpoint.build_uri(operation, params)
         self.assertEqual(built_uri, '/%E2%9C%93/bar?')
 
+    def test_quote_uri_safe_key(self):
+        uri = '/{foo}/{bar}'
+        operation = Mock()
+        operation.http = {'uri': uri}
+        params = {'uri_params': {'foo': 'foo', 'bar': 'bar~'}}
+        endpoint = RestEndpoint(Mock(), None, None, None)
+        built_uri = endpoint.build_uri(operation, params)
+        self.assertEqual(built_uri, '/foo/bar~?')
+
 
 if __name__ == '__main__':
     unittest.main()

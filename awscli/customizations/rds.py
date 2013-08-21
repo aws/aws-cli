@@ -57,26 +57,13 @@ def _building_command_table(command_table, session, **kwargs):
     # add-option-group and remove-option-group
     rds_service = session.get_service('rds')
     modify_operation = rds_service.get_operation('modify-option-group')
-    command_table['add-option-to-option-group'] = AddOptionGroupCommand(
+    command_table['add-option-to-option-group'] = ServiceOperation(
         parent_name='rds', name='add-option-to-option-group',
         operation_object=modify_operation,
         operation_caller=CLIOperationCaller(session),
         service_object=rds_service)
-    command_table['remove-option-from-option-group'] = RemoveOptionGroupCommand(
+    command_table['remove-option-from-option-group'] = ServiceOperation(
         parent_name='rds', name='remove-option-from-option-group',
         operation_object=modify_operation,
         operation_caller=CLIOperationCaller(session),
         service_object=rds_service)
-
-
-class AddOptionGroupCommand(ServiceOperation):
-    pass
-
-
-class RemoveOptionGroupCommand(ServiceOperation):
-    pass
-
-
-
-class OptionsParam(CustomArgument):
-    pass

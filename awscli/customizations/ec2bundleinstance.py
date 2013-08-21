@@ -150,8 +150,8 @@ def _check_params(**kwargs):
 
 
 EVENTS = [
-    ('building-argument-table.ec2.BundleInstance', _add_params),
-    ('operation-args-parsed.ec2.BundleInstance', _check_args),
+    ('building-argument-table.ec2.bundle-instance', _add_params),
+    ('operation-args-parsed.ec2.bundle-instance', _check_args),
     ('before-parameter-build.ec2.BundleInstance', _check_params),
     ]
 

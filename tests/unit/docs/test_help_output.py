@@ -204,6 +204,14 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
         self.assert_not_contains('``--outfile``')
         self.assert_contains('``outfile`` (string)')
 
+    def test_rds_add_arg_help_has_correct_command_name(self):
+        self.driver.main(['rds', 'add-option-to-option-group', 'help'])
+        self.assert_contains('add-option-to-option-group')
+
+    def test_rds_remove_arg_help_has_correct_command_name(self):
+        self.driver.main(['rds', 'remove-option-from-option-group', 'help'])
+        self.assert_contains('remove-option-from-option-group')
+
 
 class TestPagingParamDocs(BaseAWSHelpOutput):
     def test_starting_token_injected(self):

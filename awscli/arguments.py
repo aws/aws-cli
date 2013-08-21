@@ -116,6 +116,10 @@ class BaseCLIArgument(object):
     def name(self):
         return self._name
 
+    @name.setter
+    def name(self, value):
+        self._name = value
+
 
 class CustomArgument(BaseCLIArgument):
     """
@@ -236,10 +240,6 @@ class CLIArgument(BaseCLIArgument):
         self._name = name
         self.argument_object = argument_object
         self.operation_object = operation_object
-
-    @property
-    def name(self):
-        return self._name
 
     @property
     def py_name(self):

@@ -67,14 +67,14 @@ def _add_docs(help_command, **kwargs):
 
 
 EVENTS = [
-    ('building-argument-table.ec2.AuthorizeSecurityGroupIngress', _add_params),
-    ('building-argument-table.ec2.AuthorizeSecurityGroupEgress', _add_params),
-    ('building-argument-table.ec2.RevokeSecurityGroupIngress', _add_params),
-    ('building-argument-table.ec2.RevokeSecurityGroupEgress', _add_params),
-    ('operation-args-parsed.ec2.AuthorizeSecurityGroupIngress', _check_args),
-    ('operation-args-parsed.ec2.AuthorizeSecurityGroupEgress', _check_args),
-    ('operation-args-parsed.ec2.RevokeSecurityGroupIngress', _check_args),
-    ('operation-args-parsed.ec2.RevokeSecurityGroupEgress', _check_args),
+    ('building-argument-table.ec2.authorize-security-group-ingress', _add_params),
+    ('building-argument-table.ec2.authorize-security-group-egress', _add_params),
+    ('building-argument-table.ec2.revoke-security-group-ingress', _add_params),
+    ('building-argument-table.ec2.revoke-security-group-egress', _add_params),
+    ('operation-args-parsed.ec2.authorize-security-group-ingress', _check_args),
+    ('operation-args-parsed.ec2.authorize-security-group-egress', _check_args),
+    ('operation-args-parsed.ec2.revoke-security-group-ingress', _check_args),
+    ('operation-args-parsed.ec2.revoke-security-group-egress', _check_args),
     ('doc-description.Operation.authorize-security-group-ingress', _add_docs),
     ('doc-description.Operation.authorize-security-group-egress', _add_docs),
     ('doc-description.Operation.revoke-security-group-ingress', _add_docs),

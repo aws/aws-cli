@@ -18,6 +18,7 @@ import logging
 
 import httpretty
 import mock
+import six
 
 from awscli.clidriver import create_clidriver
 from botocore.payload import Payload
@@ -63,7 +64,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             if isinstance(value, Payload):
                 self.last_params[key] = value.getvalue()
 
-    def assert_params_for_cmd(self, cmd, params, expected_rc=0):
+    def assert_params_for_cmd(self, cmd, params, expected_rc=0,
+                              stderr_contains=None):
         logging.debug("Calling cmd: %s", cmd)
         driver = create_clidriver()
         driver.session.register('before-call', self.before_call)
@@ -71,7 +73,14 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             cmdlist = cmd.split()
         else:
             cmdlist = cmd
-        rc = driver.main(cmdlist)
+        if stderr_contains is not None:
+            captured = six.StringIO()
+            with mock.patch('sys.stderr', captured):
+                rc = driver.main(cmdlist)
+            stderr = captured.getvalue()
+            self.assertIn(stderr_contains, stderr)
+        else:
+            rc = driver.main(cmdlist)
         self.assertEqual(
             rc, expected_rc,
             "Unexpected rc (expected: %s, actual: %s) for command: %s" % (

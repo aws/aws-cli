@@ -65,8 +65,8 @@ def _check_args(parsed_args, **kwargs):
                 raise ValueError(msg)
 
 EVENTS = [
-    ('building-argument-table.ec2.RunInstances', _add_params),
-    ('operation-args-parsed.ec2.RunInstances', _check_args),
+    ('building-argument-table.ec2.run-instances', _add_params),
+    ('operation-args-parsed.ec2.run-instances', _check_args),
     ]
 
 

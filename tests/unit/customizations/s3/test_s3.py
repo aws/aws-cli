@@ -26,8 +26,7 @@ from awscli.customizations.s3.s3 import AppendFilter, cmd_dict, \
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
-from tests.unit.docs.test_help_output import CapturedRenderer, \
-    BaseAWSHelpOutput
+from tests import BaseAWSHelpOutputTest
 
 
 class AppendFilterTest(unittest.TestCase):
@@ -555,7 +554,7 @@ class CommandParametersTest(unittest.TestCase):
             cmd_params2.check_region(parsed_args2)
 
 
-class HelpDocTest(BaseAWSHelpOutput):
+class HelpDocTest(BaseAWSHelpOutputTest):
     def setUp(self):
         super(HelpDocTest, self).setUp()
         self.session = botocore.session.get_session()

@@ -166,11 +166,8 @@ def add_s3_examples(help_command, **kwargs):
     should have one of these example docs.
     """
     doc_path = os.path.join(
-        os.path.dirname(
-            os.path.dirname(
-                os.path.abspath(awscli.__file__))), 'doc', 'source',
-                                                    'examples', 's3')
-    file_name = 's3-%s.rst' % help_command.obj._name
+        os.path.abspath(os.path.dirname(awscli.__file__)), 'examples', 's3')
+    file_name = '%s.rst' % help_command.obj._name
     doc_path = os.path.join(doc_path, file_name)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')

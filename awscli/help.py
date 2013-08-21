@@ -254,10 +254,11 @@ class OperationHelpCommand(HelpCommand):
 
     """
 
-    def __init__(self, session, service, operation, arg_table):
+    def __init__(self, session, service, operation, arg_table, name):
         HelpCommand.__init__(self, session, operation, None, arg_table)
         self.service = service
         self.param_shorthand = ParamShorthand()
+        self._name = name
 
     EventHandlerClass = OperationDocumentEventHandler
 
@@ -267,4 +268,4 @@ class OperationHelpCommand(HelpCommand):
 
     @property
     def name(self):
-        return self.obj.cli_name
+        return self._name

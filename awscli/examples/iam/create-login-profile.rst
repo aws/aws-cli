@@ -22,6 +22,5 @@ If the account password policy allows them to, IAM users can change their own pa
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
  
-.. _Managing Passwords: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html
 
 

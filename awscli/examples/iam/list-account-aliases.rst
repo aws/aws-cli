@@ -12,5 +12,3 @@ Output::
     
 For more information, see `Using an Alias for Your AWS Account ID`_ in the *Using IAM* guide.
 
-.. _Using an Alias for Your AWS Account ID: http://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html
-

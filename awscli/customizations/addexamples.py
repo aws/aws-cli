@@ -36,8 +36,7 @@ def add_examples(help_command, **kwargs):
                 os.path.abspath(__file__))), 'examples')
     doc_path = os.path.join(doc_path,
                             help_command.service.endpoint_prefix)
-    file_name = '%s-%s.rst' % (help_command.service.endpoint_prefix,
-                               help_command.obj.cli_name)
+    file_name = '%s.rst' % (help_command.obj.cli_name)
     doc_path = os.path.join(doc_path, file_name)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')

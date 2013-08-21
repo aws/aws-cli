@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import sys
+import re
 import botocore.session
 import botocore.operation
 from botocore import xform_name
@@ -19,7 +20,7 @@ from awscli import EnvironmentVariables
 
 
 def return_choices(choices):
-    print('\n'.join(choices))
+    print(' \n'.join(choices))
     sys.exit(0)
 
 
@@ -49,7 +50,7 @@ def complete(cmdline, point):
     operation_map = {}
     service_name = None
     operation_name = None
-    words = cmdline[0:point].split()
+    words = re.split(r"\s+", cmdline[0:point])
     current_word = words[-1]
     if len(words) >= 2:
         previous_word = words[-2]
@@ -58,7 +59,7 @@ def complete(cmdline, point):
     std_options = session.get_data('cli/options')
     service_names = session.get_data('aws')
     # First find all non-options words in command line
-    non_options = [w for w in words if not w.startswith('-')]
+    non_options = [w for w in words[:-1] if not w.startswith('-')]
     # Look for a service name in the non_options
     for w in non_options:
         if w in service_names:

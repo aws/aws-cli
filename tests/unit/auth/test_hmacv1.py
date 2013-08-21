@@ -79,3 +79,16 @@ class TestHMACV1(unittest.TestCase):
         sig = self.hmacv1.get_signature('PUT', split,
                                         HTTPHeaders.from_pairs(pairs))
         self.assertEqual(sig, 'P7pBz3Z4p3GxysRSJ/gR8nk7D4o=')
+
+    def test_bucket_operations(self):
+        # Check that the standard operations on buckets that are
+        # specified as query strings end up in the canonical resource.
+        operations = ('acl', 'cors', 'lifecycle', 'policy',
+                      'notification', 'logging', 'tagging',
+                      'requestPayment', 'versioning', 'website')
+        for operation in operations:
+            url = '/quotes?%s' % operation
+            split = urlsplit(url)
+            cr = self.hmacv1.canonical_resource(split)
+            self.assertEqual(cr, '/quotes?%s' % operation)
+        

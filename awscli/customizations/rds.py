@@ -24,7 +24,6 @@ modify-option-group).
 
 """
 
-from awscli.arguments import CustomArgument
 from awscli.clidriver import ServiceOperation
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations import utils
@@ -38,11 +37,11 @@ def register_rds_modify_split(cli):
                  _rename_remove_option)
 
 
-
 def _rename_add_option(argument_table, **kwargs):
     utils.rename_argument(argument_table, 'options-to-include',
                           new_name='options')
     del argument_table['options-to-remove']
+
 
 def _rename_remove_option(argument_table, **kwargs):
     utils.rename_argument(argument_table, 'options-to-remove',
@@ -52,7 +51,8 @@ def _rename_remove_option(argument_table, **kwargs):
 
 def _building_command_table(command_table, session, **kwargs):
     # Hooked up to building-command-table.rds
-    modify_command = command_table['modify-option-group']
+    # We don't need the modify-option-group operation.
+    del command_table['modify-option-group']
     # We're going to replace modify-option-group with two commands:
     # add-option-group and remove-option-group
     rds_service = session.get_service('rds')

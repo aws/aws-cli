@@ -204,6 +204,20 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
         self.assert_not_contains('``--outfile``')
         self.assert_contains('``outfile`` (string)')
 
+    def test_rds_add_arg_help_has_correct_command_name(self):
+        self.driver.main(['rds', 'add-option-to-option-group', 'help'])
+        self.assert_contains('add-option-to-option-group')
+
+    def test_rds_remove_arg_help_has_correct_command_name(self):
+        self.driver.main(['rds', 'remove-option-from-option-group', 'help'])
+        self.assert_contains('remove-option-from-option-group')
+
+    def test_modify_operation_not_in_help(self):
+        self.driver.main(['rds', 'help'])
+        # This was split into add/remove commands.  The modify
+        # command should not be available.
+        self.assert_not_contains('modify-option-group')
+
 
 class TestPagingParamDocs(BaseAWSHelpOutput):
     def test_starting_token_injected(self):

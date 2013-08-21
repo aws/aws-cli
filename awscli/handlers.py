@@ -28,6 +28,7 @@ from awscli.customizations.preview import register_preview_commands
 from awscli.customizations.ec2bundleinstance import register_bundleinstance
 from awscli.customizations.s3.s3 import s3_plugin_initialize
 from awscli.customizations.ec2runinstances import register_runinstances
+from awscli.customizations.rds import register_rds_modify_split
 
 
 def awscli_initialize(event_handlers):
@@ -46,11 +47,11 @@ def awscli_initialize(event_handlers):
                             add_examples)
     event_handlers.register('building-argument-table.s3.*',
                             add_streaming_output_arg)
-    event_handlers.register('building-argument-table.ec2.RunInstances',
+    event_handlers.register('building-argument-table.ec2.run-instances',
                             ec2_add_count)
     event_handlers.register('building-argument-table',
                             unify_paging_params)
-    event_handlers.register('building-argument-table.ec2.GetPasswordData',
+    event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
@@ -58,3 +59,4 @@ def awscli_initialize(event_handlers):
     register_runinstances(event_handlers)
     register_removals(event_handlers)
     register_preview_commands(event_handlers)
+    register_rds_modify_split(event_handlers)

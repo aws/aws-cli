@@ -41,9 +41,9 @@ def awscli_initialize(event_handlers):
     # the examplefn to generate the sample shorthand syntax
     # in the docs.  Registering here should ensure that this
     # handler gets called first but it still feels a bit brittle.
-    event_handlers.register('doc-option-example.Operation.*.*',
+    event_handlers.register('doc-option-example.*.*.*',
                             param_shorthand.add_example_fn)
-    event_handlers.register('doc-examples.Operation.*',
+    event_handlers.register('doc-examples.*.*',
                             add_examples)
     event_handlers.register('building-argument-table.s3.*',
                             add_streaming_output_arg)

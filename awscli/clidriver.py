@@ -377,7 +377,7 @@ class ServiceOperation(object):
         return OperationHelpCommand(
             self._service_object.session, self._service_object,
             self._operation_object, arg_table=self.arg_table,
-            name=self._name)
+            name=self._name, event_class=self._parent_name)
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from

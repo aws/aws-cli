@@ -31,6 +31,17 @@ from awscli.argprocess import ParamShorthand
 LOG = logging.getLogger('awscli.help')
 
 
+def get_renderer():
+    """
+    Return the appropriate HelpRenderer implementation for the
+    current platform.
+    """
+    if platform.system() == 'Windows':
+        return WindowsHelpRenderer()
+    else:
+        return PosixHelpRenderer()
+
+
 class HelpRenderer(object):
     """
     Interface for a help renderer.
@@ -100,17 +111,6 @@ class RawRenderer(HelpRenderer):
     def render(self, contents):
         sys.stdout.write(contents)
         sys.exit(1)
-
-
-def get_renderer():
-    """
-    Return the appropriate HelpRenderer implementation for the
-    current platform.
-    """
-    if platform.system() == 'Windows':
-        return WindowsHelpRenderer()
-    else:
-        return PosixHelpRenderer()
 
 
 class HelpCommand(object):
@@ -207,6 +207,7 @@ class ProviderHelpCommand(HelpCommand):
     This is what is called when ``aws help`` is run.
 
     """
+    EventHandlerClass = ProviderDocumentEventHandler
 
     def __init__(self, session, command_table, arg_table,
                  description, synopsis, usage):
@@ -216,7 +217,6 @@ class ProviderHelpCommand(HelpCommand):
         self.synopsis = synopsis
         self.help_usage = usage
 
-    EventHandlerClass = ProviderDocumentEventHandler
 
     @property
     def event_class(self):
@@ -253,18 +253,20 @@ class OperationHelpCommand(HelpCommand):
     e.g. ``aws ec2 describe-instances help``.
 
     """
+    EventHandlerClass = OperationDocumentEventHandler
 
-    def __init__(self, session, service, operation, arg_table, name):
+    def __init__(self, session, service, operation, arg_table, name,
+                 event_class):
         HelpCommand.__init__(self, session, operation, None, arg_table)
         self.service = service
         self.param_shorthand = ParamShorthand()
         self._name = name
+        self._event_class = event_class
 
-    EventHandlerClass = OperationDocumentEventHandler
 
     @property
     def event_class(self):
-        return 'Operation'
+        return self._event_class
 
     @property
     def name(self):

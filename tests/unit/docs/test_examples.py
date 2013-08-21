@@ -28,6 +28,7 @@ from tests import BaseAWSHelpOutputTest
 # output.  This isn't mean to be an exhaustive list, but should help catch
 # things like command table renames, virtual commands, etc.
 COMMAND_EXAMPLES = {
+    'cloudwatch': ['put-metric-data'],
     's3': ['cp', 'ls', 'mb', 'mv', 'rb', 'rm', 'sync'],
     'ec2': ['run-instances', 'start-instances', 'stop-instances'],
     'swf': ['deprecate-domain', 'describe-domain'],

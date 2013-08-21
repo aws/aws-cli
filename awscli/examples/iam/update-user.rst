@@ -14,5 +14,3 @@ Output::
 
 For more information, see `Renaming Users and Groups`_ in the *Using IAM* guide.
  
-.. _Renaming Users and Groups: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Renaming.html
- 

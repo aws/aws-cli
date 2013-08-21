@@ -103,17 +103,10 @@ class Parameter(BotoCoreObject):
                 else:
                     key = self.name
                 built_params['headers'][key] = value
-        elif style == 'rest-json':
-            built_params['payload'].add_param(self, value, label)
-        elif style == 'rest-xml':
-            if self.type in ('string', 'blob'):
-                # If the param type is string or blob, we don't construct
-                # an XML body, we just use the value as it is.
-                built_params['payload'].literal_value = value
-            else:
-                # This is a complex payload.  Store the elements and
-                # let the Payload object construct the value for us.
-                built_params['payload'].add_param(self, value, label)
+        elif style == 'rest-json' or style == 'rest-xml':
+            payload = built_params.get('payload')
+            if payload:
+                payload.add_param(self, value, label)
 
     def build_parameter(self, style, value, built_params, label=''):
         self.validate(value)

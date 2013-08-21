@@ -55,6 +55,12 @@ class Payload(object):
     def literal_value(self, literal_value):
         self._literal_value = literal_value
 
+    def add_param(self, param, value, label=None):
+        """
+        Add a parameter to this JSON payload.
+        """
+        self._literal_value = value
+
     def getvalue(self):
         return self._literal_value
 

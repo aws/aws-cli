@@ -321,7 +321,9 @@ class ServiceCommand(CLICommand):
         return ServiceHelpCommand(session=self.session,
                                   obj=service_object,
                                   command_table=command_table,
-                                  arg_table=None)
+                                  arg_table=None,
+                                  event_class='Operation',
+                                  name=self._name)
 
     def _create_parser(self):
         command_table = self._get_command_table()

@@ -237,13 +237,20 @@ class ServiceHelpCommand(HelpCommand):
 
     EventHandlerClass = ServiceDocumentEventHandler
 
+    def __init__(self, session, obj, command_table, arg_table, name,
+                 event_class):
+        super(ServiceHelpCommand, self).__init__(session, obj, command_table,
+                                                 arg_table)
+        self._name = name
+        self._event_class = event_class
+
     @property
     def event_class(self):
-        return 'Service'
+        return self._event_class
 
     @property
     def name(self):
-        return self.obj.endpoint_prefix
+        return self._name
 
 
 class OperationHelpCommand(HelpCommand):
@@ -262,7 +269,6 @@ class OperationHelpCommand(HelpCommand):
         self.param_shorthand = ParamShorthand()
         self._name = name
         self._event_class = event_class
-
 
     @property
     def event_class(self):

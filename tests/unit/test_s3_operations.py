@@ -30,6 +30,11 @@ XMLBODY2 = """<LifecycleConfiguration><Rule><ID>archive-objects-glacier-immediat
 XMLBODY3 = """<Tagging><TagSet><Tag><Key>key1</Key><Value>value1</Value></Tag><Tag><Key>key2</Key><Value>value2</Value></Tag></TagSet></Tagging>"""
 XMLBODY4 = """<CORSConfiguration><CORSRule><AllowedHeader>*</AllowedHeader><AllowedMethod>PUT</AllowedMethod><AllowedMethod>POST</AllowedMethod><AllowedMethod>DELETE</AllowedMethod><AllowedOrigin>http://www.example1.com</AllowedOrigin><ExposeHeader>x-amz-server-side-encryption</ExposeHeader><MaxAgeSeconds>3000</MaxAgeSeconds></CORSRule><CORSRule><AllowedMethod>GET</AllowedMethod><AllowedOrigin>*</AllowedOrigin></CORSRule></CORSConfiguration>"""
 
+POLICY = ('{"Version": "2008-10-17","Statement": [{"Sid": "AddPerm",'
+          '"Effect": "Allow","Principal": {"AWS": "*"},'
+          '"Action": "s3:GetObject", "Resource": "arn:aws:s3:::BUCKET_NAME/*"'
+          '}]}')
+
 class TestS3Operations(BaseEnvVar):
 
     maxDiff = None
@@ -130,6 +135,15 @@ class TestS3Operations(BaseEnvVar):
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), XMLBODY4)
         self.assertEqual(params['headers'], headers)
+
+    def test_put_bucket_policy(self):
+        op = self.s3.get_operation('PutBucketPolicy')
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     policy=POLICY)
+        uri_params = {'Bucket': self.bucket_name}
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), POLICY)
+        self.assertEqual(params['headers'], {})
 
     def test_put_object(self):
         op = self.s3.get_operation('PutObject')

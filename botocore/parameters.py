@@ -103,12 +103,10 @@ class Parameter(BotoCoreObject):
                 else:
                     key = self.name
                 built_params['headers'][key] = value
-        elif style == 'rest-json':
-            built_params['payload'].add_param(self, value, label)
-        elif style == 'rest-xml' and not self.streaming:
-            built_params['payload'].add_param(self, value, label)
-        else:
-            built_params['payload'].literal_value = value
+        elif style == 'rest-json' or style == 'rest-xml':
+            payload = built_params.get('payload')
+            if payload is not None:
+                payload.add_param(self, value, label)
 
     def build_parameter(self, style, value, built_params, label=''):
         self.validate(value)

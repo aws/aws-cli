@@ -165,8 +165,8 @@ class ParamShorthand(object):
         not any of the ReST formatting that might be required in the docs.
         """
         argument = help_command.arg_table[arg_name]
-        param = argument.argument_object
-        if param:
+        if hasattr(argument, 'argument_object') and argument.argument_object:
+            param = argument.argument_object
             LOG.debug('Adding example fn for: %s' % param.name)
             doc_fn = self._get_example_fn(param)
             param.example_fn = doc_fn

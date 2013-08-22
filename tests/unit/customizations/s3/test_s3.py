@@ -26,8 +26,7 @@ from awscli.customizations.s3.s3 import AppendFilter, cmd_dict, \
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
-from tests.unit.docs.test_help_output import CapturedRenderer, \
-    BaseAWSHelpOutput
+from tests import BaseAWSHelpOutputTest
 
 
 class AppendFilterTest(unittest.TestCase):
@@ -74,10 +73,12 @@ class CreateTablesTest(unittest.TestCase):
         Ensures that the table for the service was created properly.
         Also ensures the original s3 service is renamed to ``s3api``.
         """
-        self.services = {'s3': 'Original S3 service'}
+        s3_service = Mock()
+        s3_service.name = 's3'
+        self.services = {'s3': s3_service}
         add_s3(self.services, True)
         orig_service = self.services.pop('s3api')
-        self.assertEqual(orig_service, 'Original S3 service')
+        self.assertEqual(orig_service, s3_service)
         for service in self.services.keys():
             self.assertIn(service, ['s3'])
 
@@ -555,7 +556,7 @@ class CommandParametersTest(unittest.TestCase):
             cmd_params2.check_region(parsed_args2)
 
 
-class HelpDocTest(BaseAWSHelpOutput):
+class HelpDocTest(BaseAWSHelpOutputTest):
     def setUp(self):
         super(HelpDocTest, self).setUp()
         self.session = botocore.session.get_session()

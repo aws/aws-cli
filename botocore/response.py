@@ -318,7 +318,7 @@ class JSONResponse(Response):
 
     def parse(self, s, encoding):
         try:
-            decoded = s.decode('utf-8')
+            decoded = s.decode(encoding)
             self.value = json.loads(decoded)
             self.get_response_errors()
         except Exception as err:

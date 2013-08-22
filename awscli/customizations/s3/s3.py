@@ -18,6 +18,7 @@ import sys
 import awscli
 from awscli.argparser import ServiceArgParser, OperationArgParser
 from awscli.help import HelpCommand
+from awscli.customizations import utils
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
@@ -131,8 +132,7 @@ def add_s3(command_table, session, **kwargs):
     This creates a new service object for the s3 plugin.  It sends the
     old s3 commands to the namespace ``s3api``.
     """
-    original_s3 = command_table['s3']
-    command_table['s3api'] = original_s3
+    utils.rename_command(command_table, 's3', 's3api')
     command_table['s3'] = S3('s3', session)
 
 
@@ -166,11 +166,8 @@ def add_s3_examples(help_command, **kwargs):
     should have one of these example docs.
     """
     doc_path = os.path.join(
-        os.path.dirname(
-            os.path.dirname(
-                os.path.abspath(awscli.__file__))), 'doc', 'source',
-                                                    'examples', 's3')
-    file_name = 's3-%s.rst' % help_command.obj._name
+        os.path.abspath(os.path.dirname(awscli.__file__)), 'examples', 's3')
+    file_name = '%s.rst' % help_command.obj._name
     doc_path = os.path.join(doc_path, file_name)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')

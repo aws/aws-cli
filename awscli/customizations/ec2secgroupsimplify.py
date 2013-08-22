@@ -75,10 +75,10 @@ EVENTS = [
     ('operation-args-parsed.ec2.authorize-security-group-egress', _check_args),
     ('operation-args-parsed.ec2.revoke-security-group-ingress', _check_args),
     ('operation-args-parsed.ec2.revoke-security-group-egress', _check_args),
-    ('doc-description.Operation.authorize-security-group-ingress', _add_docs),
-    ('doc-description.Operation.authorize-security-group-egress', _add_docs),
-    ('doc-description.Operation.revoke-security-group-ingress', _add_docs),
-    ('doc-description.Operation.revoke-security-groupdoc-ingress', _add_docs),
+    ('doc-description.ec2.authorize-security-group-ingress', _add_docs),
+    ('doc-description.ec2.authorize-security-group-egress', _add_docs),
+    ('doc-description.ec2.revoke-security-group-ingress', _add_docs),
+    ('doc-description.ec2.revoke-security-groupdoc-ingress', _add_docs),
     ]
 PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
                  '<p>Valid protocol values: <code>tcp</code>, '

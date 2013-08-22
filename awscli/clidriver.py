@@ -106,7 +106,9 @@ class CLIDriver(object):
         commands = OrderedDict()
         services = session.get_available_services()
         for service_name in services:
-            commands[service_name] = ServiceCommand(service_name, self.session)
+            commands[service_name] = ServiceCommand(cli_name=service_name,
+                                                    session=self.session,
+                                                    service_name=service_name)
         return commands
 
     def _build_argument_table(self):
@@ -211,6 +213,16 @@ class CLICommand(object):
 
     """
 
+    @property
+    def name(self):
+        # Subclasses must implement a name.
+        raise NotImplementedError("name")
+
+    @name.setter
+    def name(self, value):
+        # Subclasses must implement setting/changing the cmd name.
+        raise NotImplementedError("name")
+
     def __call__(self, args, parsed_globals):
         """Invoke CLI operation.
 
@@ -242,11 +254,34 @@ class ServiceCommand(CLICommand):
 
     """
 
-    def __init__(self, name, session):
-        self._name = name
+    def __init__(self, cli_name, session, service_name=None):
+        # The cli_name is the name the user types, the name we show
+        # in doc, etc.
+        # The service_name is the name we used internally with botocore.
+        # For example, we have the 's3api' as the cli_name for the service
+        # but this is actually bound to the 's3' service name in botocore,
+        # i.e. we load s3.json from the botocore data dir.  Most of
+        # the time these are the same thing but in the case of renames,
+        # we want users/external things to be able to rename the cli name
+        # but *not* the service name, as this has to be exactly what
+        # botocore expects.
+        self._name = cli_name
         self.session = session
         self._command_table = None
         self._service_object = None
+        if service_name is None:
+            # Then default to using the cli name.
+            self._service_name = cli_name
+        else:
+            self._service_name = service_name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     def _get_command_table(self):
         if self._command_table is None:
@@ -255,7 +290,7 @@ class ServiceCommand(CLICommand):
 
     def _get_service_object(self):
         if self._service_object is None:
-            self._service_object = self.session.get_service(self._name)
+            self._service_object = self.session.get_service(self._service_name)
         return self._service_object
 
     def __call__(self, args, parsed_globals):
@@ -286,7 +321,9 @@ class ServiceCommand(CLICommand):
         return ServiceHelpCommand(session=self.session,
                                   obj=service_object,
                                   command_table=command_table,
-                                  arg_table=None)
+                                  arg_table=None,
+                                  event_class='Operation',
+                                  name=self._name)
 
     def _create_parser(self):
         command_table = self._get_command_table()
@@ -377,7 +414,7 @@ class ServiceOperation(object):
         return OperationHelpCommand(
             self._service_object.session, self._service_object,
             self._operation_object, arg_table=self.arg_table,
-            name=self._name)
+            name=self._name, event_class=self._parent_name)
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from

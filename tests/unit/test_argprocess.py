@@ -289,7 +289,7 @@ class TestDocGen(BaseArgProcessTest):
         argument = CLIArgument(p.cli_name, p, p.operation)
         help_command = OperationHelpCommand(
             self.session, p.operation, None, {p.cli_name: argument},
-            name='set-queue-attributes')
+            name='set-queue-attributes', event_class='sqs')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
@@ -302,7 +302,8 @@ class TestDocGen(BaseArgProcessTest):
         help_command = OperationHelpCommand(
             self.session, p.operation, None,
             {p.cli_name: argument},
-            name='register-instances-with-load-balancer')
+            name='register-instances-with-load-balancer',
+            event_class='elb')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
@@ -314,7 +315,7 @@ class TestDocGen(BaseArgProcessTest):
         argument = CLIArgument(p.cli_name, p, p.operation)
         help_command = OperationHelpCommand(
             self.session, p.operation, None, {p.cli_name: argument},
-            name='create-load-balancer')
+            name='create-load-balancer', event_class='elb')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
@@ -330,7 +331,7 @@ class TestDocGen(BaseArgProcessTest):
         argument = CLIArgument(p.cli_name, p, p.operation)
         help_command = OperationHelpCommand(
             self.session, p.operation, None, {p.cli_name: argument},
-            name='create-job')
+            name='create-job', event_class='elastictranscoder')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)

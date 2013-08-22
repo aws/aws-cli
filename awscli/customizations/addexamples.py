@@ -19,7 +19,7 @@ inserted into the generated help for an Operation.  To get this to
 work you need to:
 
 * Register the ``add_examples`` function below with the
-  ``doc-examples.Operation.*`` event.
+  ``doc-examples.*.*`` event.
 * Create a file containing ReST format fragment with the examples.
   The file needs to be created in the ``examples/<service_name>``
   directory and needs to be named ``<service_name>-<op_name>.rst``.
@@ -27,6 +27,10 @@ work you need to:
 
 """
 import os
+import logging
+
+
+LOG = logging.getLogger(__name__)
 
 
 def add_examples(help_command, **kwargs):
@@ -35,9 +39,10 @@ def add_examples(help_command, **kwargs):
             os.path.dirname(
                 os.path.abspath(__file__))), 'examples')
     doc_path = os.path.join(doc_path,
-                            help_command.service.endpoint_prefix)
-    file_name = '%s.rst' % (help_command.obj.cli_name)
+                            help_command.event_class)
+    file_name = '%s.rst' % (help_command.name)
     doc_path = os.path.join(doc_path, file_name)
+    LOG.debug("Looking for example file at: %s", doc_path)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')
         fp = open(doc_path)

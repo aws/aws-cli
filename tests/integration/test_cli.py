@@ -191,6 +191,17 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 255)
         self.assertIn("Unknown option", p.stderr, p.stderr)
 
+    def test_json_param_parsing(self):
+        # This is convered by unit tests in botocore, but this is a sanity
+        # check that we get a json response from a json service.
+        p = aws('swf list-domains --registration-status REGISTERED')
+        self.assertEqual(p.rc, 0)
+        self.assertIn('{', p.stdout, p.stdout)
+
+        p = aws('dynamodb list-tables')
+        self.assertEqual(p.rc, 0)
+        self.assertIn('{', p.stdout, p.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()

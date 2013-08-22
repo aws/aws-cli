@@ -318,7 +318,8 @@ class JSONResponse(Response):
 
     def parse(self, s, encoding):
         try:
-            self.value = json.loads(s, encoding=encoding)
+            decoded = s.decode('utf-8')
+            self.value = json.loads(decoded)
             self.get_response_errors()
         except Exception as err:
             logger.debug('Error loading JSON response body, %r', err)

@@ -98,9 +98,8 @@ def test_json_parsing():
             sn, opname = basename.split('-', 1)
             operation = service.get_operation(opname)
             r = JSONResponse(session, operation)
-            fp = open(inputfile)
-            jsondoc = fp.read()
-            fp.close()
+            with open(inputfile, 'rb') as fp:
+                jsondoc = fp.read()
             r.parse(jsondoc, 'utf-8')
             save_jsonfile(outputfile, r)
             fp = open(outputfile)

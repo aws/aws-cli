@@ -33,6 +33,9 @@ else:
     import unittest
 
 
+import botocore.session
+
+
 class BaseEnvVar(unittest.TestCase):
     def setUp(self):
         # Automatically patches out os.environ for you
@@ -63,3 +66,17 @@ class BaseSessionTest(BaseEnvVar):
         super(BaseSessionTest, self).setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'access_key'
         self.environ['AWS_SECRET_ACCESS_KEY'] = 'secret_key'
+
+
+class TestParamSerialization(BaseSessionTest):
+    def setUp(self):
+        super(TestParamSerialization, self).setUp()
+        self.session = botocore.session.get_session()
+
+    def assert_params_serialize_to(self, dotted_name, input_params,
+                                   serialized_params):
+        service_name, operation_name = dotted_name.split('.')
+        service = self.session.get_service(service_name)
+        operation = service.get_operation(operation_name)
+        serialized = operation.build_parameters(**input_params)
+        self.assertDictEqual(serialized, serialized_params)

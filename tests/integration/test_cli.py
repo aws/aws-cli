@@ -17,6 +17,7 @@ import sys
 import tempfile
 import random
 import shutil
+import json
 
 import botocore.session
 from tests.integration import Result, aws
@@ -196,11 +197,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # check that we get a json response from a json service.
         p = aws('swf list-domains --registration-status REGISTERED')
         self.assertEqual(p.rc, 0)
-        self.assertIn('{', p.stdout, p.stdout)
+        self.assertIsInstance(p.json, dict)
 
         p = aws('dynamodb list-tables')
         self.assertEqual(p.rc, 0)
-        self.assertIn('{', p.stdout, p.stdout)
+        self.assertIsInstance(p.json, dict)
 
 
 if __name__ == '__main__':

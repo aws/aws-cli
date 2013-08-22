@@ -1,13 +1,16 @@
 import os
-import re
 import glob
 import json
 import pprint
 import logging
 import difflib
+import unittest
+
+from mock import Mock
+
 
 import botocore.session
-from botocore.response import XmlResponse, JSONResponse
+from botocore.response import XmlResponse, JSONResponse, get_response
 
 log = logging.getLogger(__name__)
 
@@ -107,3 +110,54 @@ def test_json_parsing():
             data = json.load(fp)
             fp.close()
             yield check_dicts, inputfile, r.get_value(), data
+
+
+class TestHeaderParsing(unittest.TestCase):
+
+    maxDiff = None
+
+    def setUp(self):
+        self.session = botocore.session.get_session()
+        self.s3 = self.session.get_service('s3')
+    
+    def test_put_object(self):
+        http_response = Mock()
+        http_response.encoding = 'utf-8'
+        http_response.headers = {'Date': 'Thu, 22 Aug 2013 02:11:57 GMT',
+                                 'Content-Length': '0',
+                                 'x-amz-request-id': '2B74ECB010FF029E',
+                                 'ETag': '"b081e66e7e0c314285c655cafb4d1e71"',
+                                 'x-amz-id-2': 'bKECRRBFttBRVbJPIVBLQwwipI0i+s9HMvNFdttR17ouR0pvQSKEJUR+1c6cW1nQ',
+                                 'Server': 'AmazonS3',
+                                 'content-type': 'text/xml'}
+        http_response.content = ''
+        put_object = self.s3.get_operation('PutObject')
+        expected = {"ETag": '"b081e66e7e0c314285c655cafb4d1e71"'}
+        response_data = get_response(self.session, put_object, http_response)[1]
+        self.assertEqual(response_data, expected)
+
+    def test_head_object(self):
+        http_response = Mock()
+        http_response.encoding = 'utf-8'
+        http_response.headers = {'Date': 'Thu, 22 Aug 2013 02:11:57 GMT',
+                                 'Content-Length': '265',
+                                 'x-amz-request-id': '2B74ECB010FF029E',
+                                 'ETag': '"40d06eb6194712ac1c915783004ef730"',
+                                 'Server': 'AmazonS3',
+                                 'content-type': 'binary/octet-stream',
+                                 'Content-Type': 'binary/octet-stream',
+                                 'accept-ranges': 'bytes',
+                                 'Last-Modified': 'Tue, 20 Aug 2013 18:33:25 GMT',
+                                 'x-amz-server-side-encryption': 'AES256'
+                                 }
+        http_response.content = ''
+        put_object = self.s3.get_operation('HeadObject')
+        expected = {"AcceptRanges": "bytes", 
+                    "ContentType": "binary/octet-stream", 
+                    "LastModified": "Tue, 20 Aug 2013 18:33:25 GMT", 
+                    "ContentLength": "265", 
+                    "ETag": '"40d06eb6194712ac1c915783004ef730"', 
+                    "ServerSideEncryption": "AES256"
+                    }
+        response_data = get_response(self.session, put_object, http_response)[1]
+        self.assertEqual(response_data, expected)

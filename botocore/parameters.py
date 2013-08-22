@@ -105,7 +105,7 @@ class Parameter(BotoCoreObject):
                 built_params['headers'][key] = value
         elif style == 'rest-json' or style == 'rest-xml':
             payload = built_params.get('payload')
-            if payload:
+            if payload is not None:
                 payload.add_param(self, value, label)
 
     def build_parameter(self, style, value, built_params, label=''):

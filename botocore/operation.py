@@ -125,9 +125,7 @@ class Operation(BotoCoreObject):
         """
         payload = None
         for param in self.params:
-            logger.debug('_find_payload: %s', param.name)
             if hasattr(param, 'payload') and param.payload:
-                logger.debug('found payload param')
                 payload = param
                 break
         return payload
@@ -140,7 +138,7 @@ class Operation(BotoCoreObject):
             if self.service.type == 'rest-xml':
                 payload = self._find_payload()
                 if payload and payload.type in ('blob', 'string'):
-                    # If we have a paylaod parameter which is a scalar
+                    # If we have a payload parameter which is a scalar
                     # type (either string or blob) it means we need a
                     # simple payload object rather than an XMLPayload.
                     d['payload'] = Payload()

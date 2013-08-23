@@ -129,9 +129,6 @@ class FakeSession(object):
         return service
 
     def get_service_data(self, service_name):
-        import botocore.session
-        s = botocore.session.get_session()
-        actual = s.get_service_data(service_name)
         return {'operations': {'ListObjects': {'input': {
             'members': dict.fromkeys(
                 ['Bucket', 'Delimiter', 'Marker', 'MaxKeys', 'Prefix']),

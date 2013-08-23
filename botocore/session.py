@@ -427,7 +427,7 @@ class Session(object):
         log = logging.getLogger(logger_name)
         log.setLevel(log_level)
 
-        ch = logging.StreamHandler(stream=stream)
+        ch = logging.StreamHandler(stream)
         ch.setLevel(log_level)
 
         # create formatter

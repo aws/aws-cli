@@ -129,10 +129,6 @@ class FakeSession(object):
         return service
 
     def get_service_data(self, service_name):
-        import botocore.session
-        s = botocore.session.get_session()
-        actual = s.get_service_data(service_name)
-        foo = actual['operations']['ListObjects']['input']['members']
         return {'operations': {'ListObjects': {'input': {
             'members': dict.fromkeys(
                 ['Bucket', 'Delimiter', 'Marker', 'MaxKeys', 'Prefix']),
@@ -207,6 +203,26 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-argument-table.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
             'process-cli-arg.s3.list-objects',
+        ])
+
+    def test_create_help_command(self):
+        # When we generate the HTML docs, we don't actually run
+        # commands, we just call the create_help_command methods.
+        # We want to make sure that in this case, the corresponding
+        # building-command-table events are fired.
+        # The test above will prove that is true when running a command.
+        # This test proves it is true when generating the HTML docs.
+        self.emitter.emit.return_value = []
+        self.session.emitter = self.emitter
+        driver = CLIDriver(session=self.session)
+        main_hc = driver.create_help_command()
+        command = main_hc.command_table['s3']
+        command.create_help_command()
+        self.assert_events_fired_in_order([
+            # Events fired while parser is being created.
+            'building-command-table.main',
+            'building-top-level-params',
+            'building-command-table.s3',
         ])
 
     def test_cli_driver_changes_args(self):

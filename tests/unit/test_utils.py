@@ -42,9 +42,3 @@ class TestCSVSplit(unittest.TestCase):
     def test_escape_backslash(self):
         self.assertEqual(split_on_commas('foo,bar\\\\,baz\\\\,qux'),
                          ['foo', 'bar\\', 'baz\\', 'qux'])
-
-    def test_bad_values(self):
-        with self.assertRaises(ValueError):
-            split_on_commas('missing_start_quote"')
-        with self.assertRaises(ValueError):
-            split_on_commas('"missing_end_quote')

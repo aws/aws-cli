@@ -313,6 +313,9 @@ class ServiceCommand(CLICommand):
                 operation_object=operation_object,
                 operation_caller=CLIOperationCaller(self.session),
                 service_object=service_object)
+        self.session.emit('building-command-table.%s' % self._name,
+                          command_table=command_table,
+                          session=self.session)
         return command_table
 
     def create_help_command(self):
@@ -329,9 +332,6 @@ class ServiceCommand(CLICommand):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
-        self.session.emit('building-command-table.%s' % self._name,
-                          command_table=command_table,
-                          session=self.session)
         return ServiceArgParser(
             operations_table=command_table, service_name=self._name)
 

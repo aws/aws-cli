@@ -14,7 +14,6 @@ from tests import unittest
 import os
 
 from awscli.help import PosixHelpRenderer
-from awscli.clidriver import CLIDriver
 
 
 class TestHelpPager(unittest.TestCase):
@@ -35,23 +34,44 @@ class TestHelpPager(unittest.TestCase):
             del os.environ['PAGER']
         if 'MANPAGER' in os.environ:
             del os.environ['MANPAGER']
-        self.assertEqual(self.renderer.get_pager(), self.renderer.PAGER)
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         self.renderer.PAGER.split())
 
     def test_manpager(self):
+        pager_cmd = 'foobar'
         if 'PAGER' in os.environ:
             del os.environ['PAGER']
-        os.environ['MANPAGER'] = 'foobar'
-        self.assertEqual(self.renderer.get_pager(), 'foobar')
+        os.environ['MANPAGER'] = pager_cmd
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         pager_cmd.split())
 
     def test_pager(self):
+        pager_cmd = 'fiebaz'
         if 'MANPAGER' in os.environ:
             del os.environ['MANPAGER']
-        os.environ['PAGER'] = 'fiebaz'
-        self.assertEqual(self.renderer.get_pager(), 'fiebaz')
+        os.environ['PAGER'] = pager_cmd
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         pager_cmd.split())
 
     def test_both(self):
         os.environ['MANPAGER'] = 'foobar'
         os.environ['PAGER'] = 'fiebaz'
-        self.assertEqual(self.renderer.get_pager(), 'foobar')
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         'foobar'.split())
 
+    def test_manpager_with_args(self):
+        pager_cmd = 'less -X'
+        if 'PAGER' in os.environ:
+            del os.environ['PAGER']
+        os.environ['MANPAGER'] = pager_cmd
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         pager_cmd.split())
 
+    def test_pager_with_args(self):
+        pager_cmd = 'less -X --clearscreen'
+        if 'MANPAGER' in os.environ:
+            del os.environ['MANPAGER']
+        os.environ['PAGER'] = pager_cmd
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         pager_cmd.split())
+        

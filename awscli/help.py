@@ -66,13 +66,13 @@ class PosixHelpRenderer(HelpRenderer):
 
     PAGER = 'more'
 
-    def get_pager(self):
+    def get_pager_cmdline(self):
         pager = self.PAGER
         if 'MANPAGER' in os.environ:
             pager = os.environ['MANPAGER']
         elif 'PAGER' in os.environ:
             pager = os.environ['PAGER']
-        return pager
+        return pager.split()
 
     def render(self, contents):
         cmdline = ['rst2man.py']
@@ -83,8 +83,7 @@ class PosixHelpRenderer(HelpRenderer):
         cmdline = ['groff', '-man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
         p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
-        pager = self.get_pager()
-        cmdline = [pager]
+        cmdline = self.get_pager_cmdline()
         LOG.debug("Running command: %s", cmdline)
         p4 = Popen(cmdline, stdin=p3.stdout)
         p4.communicate()
@@ -200,7 +199,6 @@ class HelpCommand(object):
         self.renderer.render(self.doc.getvalue())
 
 
-
 class ProviderHelpCommand(HelpCommand):
     """Implements top level help command.
 
@@ -216,7 +214,6 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
-
 
     @property
     def event_class(self):

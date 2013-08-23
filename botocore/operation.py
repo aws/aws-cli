@@ -25,7 +25,7 @@ from botocore.parameters import get_parameter
 from botocore.exceptions import MissingParametersError
 from botocore.exceptions import UnknownParameterError
 from botocore.paginate import Paginator
-from botocore.payload import XMLPayload, JSONPayload
+from botocore.payload import Payload, XMLPayload, JSONPayload
 from botocore import BotoCoreObject
 
 logger = logging.getLogger(__name__)
@@ -118,18 +118,40 @@ class Operation(BotoCoreObject):
                 params.append(param)
         return params
 
+    def _find_payload(self):
+        """
+        Searches the parameters for an operation to find the payload
+        parameter, if it exists.  Returns that param or None.
+        """
+        payload = None
+        for param in self.params:
+            if hasattr(param, 'payload') and param.payload:
+                payload = param
+                break
+        return payload
+
     def _get_built_params(self):
         d = {}
         if self.service.type in ('rest-xml', 'rest-json'):
             d['uri_params'] = {}
             d['headers'] = {}
             if self.service.type == 'rest-xml':
-                namespace = self.service.xmlnamespace
-                root_element_name = None
-                if self.input and 'shape_name' in self.input:
-                    root_element_name = self.input['shape_name']
-                d['payload'] = XMLPayload(root_element_name=root_element_name,
-                                          namespace=namespace)
+                payload = self._find_payload()
+                if payload and payload.type in ('blob', 'string'):
+                    # If we have a payload parameter which is a scalar
+                    # type (either string or blob) it means we need a
+                    # simple payload object rather than an XMLPayload.
+                    d['payload'] = Payload()
+                else:
+                    # Otherwise, use an XMLPayload.  Since Route53
+                    # doesn't actually use the payload attribute, we
+                    # have to err on the safe side.
+                    namespace = self.service.xmlnamespace
+                    root_element_name = None
+                    if self.input and 'shape_name' in self.input:
+                        root_element_name = self.input['shape_name']
+                    d['payload'] = XMLPayload(root_element_name=root_element_name,
+                                              namespace=namespace)
             else:
                 d['payload'] = JSONPayload()
         return d

@@ -66,8 +66,9 @@ def decode_jsondoc(event_name, shape, value, **kwargs):
 def calculate_md5(event_name, params, **kwargs):
     if params['payload'] and not 'Content-MD5' in params['headers']:
         md5 = hashlib.md5()
-        md5.update(params['payload'])
-        params['headers']['Content-MD5'] = base64.b64encode(md5.digest())
+        md5.update(six.b(params['payload'].getvalue()))
+        value = base64.b64encode(md5.digest()).decode('utf-8')
+        params['headers']['Content-MD5'] = value
 
 
 def check_dns_name(bucket_name):
@@ -174,6 +175,8 @@ BUILTIN_HANDLERS = [
     ('after-parsed.cloudformation.*.TemplateBody.TemplateBody',
      decode_jsondoc),
     ('before-call.s3.PutBucketTagging', calculate_md5),
+    ('before-call.s3.PutBucketLifecycle', calculate_md5),
+    ('before-call.s3.PutBucketCors', calculate_md5),
     ('before-auth.s3', fix_s3_host),
     ('service-created', register_retries_for_service),
 ]

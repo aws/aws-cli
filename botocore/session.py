@@ -399,15 +399,41 @@ class Session(object):
         Convenience function to quickly configure full debug output
         to go to the console.
         """
-        log = logging.getLogger(logger_name)
-        log.setLevel(logging.DEBUG)
+        self.set_stream_logger(logger_name, logging.DEBUG)
 
-        # create console handler and set level to debug
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+    def set_stream_logger(self, logger_name, log_level, stream=None,
+                          format_string=None):
+        """
+        Convenience method to configure a stream logger.
+
+        :type logger_name: str
+        :param logger_name: The name of the logger to configure
+
+        :type log_level: str
+        :param log_level: The log level to set for the logger.  This
+            is any param supported by the ``.setLevel()`` method of
+            a ``Log`` object.
+
+        :type stream: file
+        :param stream: A file like object to log to.  If none is provided
+            then sys.stderr will be used.
+
+        :type format_string: str
+        :param format_string: The format string to use for the log
+            formatter.  If none is provided this will default to
+            ``self.FmtString``.
+
+        """
+        log = logging.getLogger(logger_name)
+        log.setLevel(log_level)
+
+        ch = logging.StreamHandler(stream)
+        ch.setLevel(log_level)
 
         # create formatter
-        formatter = logging.Formatter(self.FmtString)
+        if format_string is None:
+            format_string = self.FmtString
+        formatter = logging.Formatter(format_string)
 
         # add formatter to ch
         ch.setFormatter(formatter)

@@ -23,8 +23,11 @@
 import logging
 import base64
 import datetime
+import decimal
+
 import six
 import dateutil.parser
+
 from botocore import BotoCoreObject
 from botocore.exceptions import ValidationError, RangeError, UnknownKeyError
 from botocore.exceptions import MissingParametersError
@@ -103,12 +106,10 @@ class Parameter(BotoCoreObject):
                 else:
                     key = self.name
                 built_params['headers'][key] = value
-        elif style == 'rest-json':
-            built_params['payload'].add_param(self, value, label)
-        elif style == 'rest-xml' and not self.streaming:
-            built_params['payload'].add_param(self, value, label)
-        else:
-            built_params['payload'].literal_value = value
+        elif style == 'rest-json' or style == 'rest-xml':
+            payload = built_params.get('payload')
+            if payload is not None:
+                payload.add_param(self, value, label)
 
     def build_parameter(self, style, value, built_params, label=''):
         self.validate(value)
@@ -149,9 +150,27 @@ class IntegerParameter(Parameter):
 class FloatParameter(Parameter):
 
     def validate(self, value):
-        if not isinstance(value, float):
+        original_value = value
+        # So isinstance(True, int) -> True.
+        # For a float parameter we should not allow a bool.
+        if isinstance(value, bool):
             raise ValidationError(value=str(value), type_name='float',
                                   param=self)
+        elif not isinstance(value, float):
+            # If the value is a float, that's good enough for a float
+            # param.  Also you can't go directly from a float -> Decimal
+            # in python2.6.
+            # Otherwise the value has to look like a decimal,
+            # so we just need to validate that it converts to a
+            # decimal without issue and then run it through the min
+            # max range validations.
+            try:
+                # We don't want to type convert here, but we need
+                # to convert it to something we can use < and > against.
+                value = decimal.Decimal(value)
+            except (decimal.InvalidOperation, TypeError):
+                raise ValidationError(value=str(value), type_name='float',
+                                    param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -164,7 +183,7 @@ class FloatParameter(Parameter):
                                  param=self,
                                  min_value=self.min,
                                  max_value=self.max)
-        return value
+        return original_value
 
 
 class DoubleParameter(Parameter):

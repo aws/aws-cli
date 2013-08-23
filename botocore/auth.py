@@ -280,7 +280,7 @@ class HmacV1Auth(object):
                      'response-content-language', 'response-expires',
                      'response-cache-control', 'response-content-disposition',
                      'response-content-encoding', 'delete', 'lifecycle',
-                     'tagging', 'restore', 'storageClass']
+                     'tagging', 'restore', 'storageClass', 'notification']
 
     def __init__(self, credentials, service_name=None, region_name=None):
         self.credentials = credentials

@@ -35,13 +35,19 @@ class Response(object):
     def __init__(self, session, operation):
         self.session = session
         self.operation = operation
-        self.value = None
+        self.value = {}
 
     def parse(self, s, encoding):
         pass
 
     def get_value(self):
-        return self.value
+        value = ''
+        if self.value:
+            value = self.value
+        return value
+
+    def merge_header_values(self, headers):
+        pass
 
 
 class XmlResponse(Response):
@@ -313,12 +319,23 @@ class XmlResponse(Response):
                         self.value[child_tag] = self.handle_elem(child_tag,
                                                                  child, shape)
 
+    def merge_header_values(self, headers):
+        if self.operation.output:
+            for member_name in self.operation.output['members']:
+                member = self.operation.output['members'][member_name]
+                location = member.get('location')
+                if location == 'header':
+                    location_name = member.get('location_name')
+                    if location_name in headers:
+                        self.value[member_name] = headers[location_name]
+
 
 class JSONResponse(Response):
 
     def parse(self, s, encoding):
         try:
-            self.value = json.loads(s, encoding=encoding)
+            decoded = s.decode(encoding)
+            self.value = json.loads(decoded)
             self.get_response_errors()
         except Exception as err:
             logger.debug('Error loading JSON response body, %r', err)
@@ -381,16 +398,18 @@ def get_response(session, operation, http_response):
         return (http_response, streaming_response.get_value())
     body = http_response.content
     logger.debug("Response Body:\n%s", body)
-    if not body:
-        return (http_response, '')
     if content_type in ('application/x-amz-json-1.0',
                         'application/x-amz-json-1.1', 'application/json'):
         json_response = JSONResponse(session, operation)
-        json_response.parse(body, encoding)
+        if body:
+            json_response.parse(body, encoding)
+        json_response.merge_header_values(http_response.headers)
         return (http_response, json_response.get_value())
     # We are defaulting to an XML response handler because many query
     # services send XML error responses but do not include a Content-Type
     # header.
     xml_response = XmlResponse(session, operation)
-    xml_response.parse(body, encoding)
+    if body:
+        xml_response.parse(body, encoding)
+    xml_response.merge_header_values(http_response.headers)
     return (http_response, xml_response.get_value())

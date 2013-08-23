@@ -84,6 +84,7 @@ class FakeSession(object):
         self.emitter = emitter
         self.provider = Provider(self, 'aws')
         self.profile = None
+        self.stream_logger_args = None
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -138,9 +139,11 @@ class FakeSession(object):
                 ['Bucket', 'Delimiter', 'Marker', 'MaxKeys', 'Prefix']),
         }}}}
 
-
     def user_agent(self):
         return 'user_agent'
+
+    def set_stream_logger(self, *args, **kwargs):
+        self.stream_logger_args = (args, kwargs)
 
 
 class TestCliDriver(unittest.TestCase):
@@ -165,6 +168,12 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --profile foo'.split())
         self.assertEqual(driver.session.profile, 'foo')
+
+    def test_error_logger(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --profile foo'.split())
+        expected = {'log_level': 'ERROR', 'logger_name': 'awscli'}
+        self.assertEqual(driver.session.stream_logger_args[1], expected)
 
 
 class TestCliDriverHooks(unittest.TestCase):

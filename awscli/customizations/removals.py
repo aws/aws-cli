@@ -45,10 +45,10 @@ class CommandRemover(object):
                               self._create_remover(remove_commands))
 
     def _create_remover(self, commands_to_remove):
-        return partial(remove_commands, commands_to_remove=commands_to_remove)
+        return partial(_remove_commands, commands_to_remove=commands_to_remove)
 
 
-def remove_commands(command_table, commands_to_remove, **kwargs):
+def _remove_commands(command_table, commands_to_remove, **kwargs):
     # Hooked up to building-command-table.<service>
     for command in commands_to_remove:
         try:

@@ -20,7 +20,7 @@ import httpretty
 import awscli
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
-from awscli.clidriver import BuiltInArgument
+from awscli.clidriver import CustomArgument
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
 from botocore.provider import Provider
@@ -84,6 +84,7 @@ class FakeSession(object):
         self.emitter = emitter
         self.provider = Provider(self, 'aws')
         self.profile = None
+        self.stream_logger_args = None
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -129,18 +130,16 @@ class FakeSession(object):
         return service
 
     def get_service_data(self, service_name):
-        import botocore.session
-        s = botocore.session.get_session()
-        actual = s.get_service_data(service_name)
-        foo = actual['operations']['ListObjects']['input']['members']
         return {'operations': {'ListObjects': {'input': {
             'members': dict.fromkeys(
                 ['Bucket', 'Delimiter', 'Marker', 'MaxKeys', 'Prefix']),
         }}}}
 
-
     def user_agent(self):
         return 'user_agent'
+
+    def set_stream_logger(self, *args, **kwargs):
+        self.stream_logger_args = (args, kwargs)
 
 
 class TestCliDriver(unittest.TestCase):
@@ -165,6 +164,12 @@ class TestCliDriver(unittest.TestCase):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --profile foo'.split())
         self.assertEqual(driver.session.profile, 'foo')
+
+    def test_error_logger(self):
+        driver = CLIDriver(session=self.session)
+        driver.main('s3 list-objects --bucket foo --profile foo'.split())
+        expected = {'log_level': 'ERROR', 'logger_name': 'awscli'}
+        self.assertEqual(driver.session.stream_logger_args[1], expected)
 
 
 class TestCliDriverHooks(unittest.TestCase):
@@ -204,9 +209,29 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-top-level-params',
             'top-level-args-parsed',
             'building-command-table.s3',
-            'building-argument-table.s3.ListObjects',
-            'operation-args-parsed.s3.ListObjects',
+            'building-argument-table.s3.list-objects',
+            'operation-args-parsed.s3.list-objects',
             'process-cli-arg.s3.list-objects',
+        ])
+
+    def test_create_help_command(self):
+        # When we generate the HTML docs, we don't actually run
+        # commands, we just call the create_help_command methods.
+        # We want to make sure that in this case, the corresponding
+        # building-command-table events are fired.
+        # The test above will prove that is true when running a command.
+        # This test proves it is true when generating the HTML docs.
+        self.emitter.emit.return_value = []
+        self.session.emitter = self.emitter
+        driver = CLIDriver(session=self.session)
+        main_hc = driver.create_help_command()
+        command = main_hc.command_table['s3']
+        command.create_help_command()
+        self.assert_events_fired_in_order([
+            # Events fired while parser is being created.
+            'building-command-table.main',
+            'building-top-level-params',
+            'building-command-table.s3',
         ])
 
     def test_cli_driver_changes_args(self):
@@ -287,7 +312,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(host, 'foobar.com')
 
     def inject_new_param(self, argument_table, **kwargs):
-        argument = BuiltInArgument('unknown-arg', {})
+        argument = CustomArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)
 
     def test_event_emission_for_top_level_params(self):

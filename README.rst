@@ -47,21 +47,18 @@ The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 Installation
 ------------
 
-The easiest way to install aws-cli is to use ``easy_install`` or ``pip``::
-
-    $ easy_install awscli
-
-or, if you are not installing in a ``virtualenv``::
-
-    $ sudo easy_install awscli
-
-Using ``pip``, it would simply be::
+The easiest way to install aws-cli is to use `pip`_::
 
     $ pip install awscli
 
-or::
+or, if you are not installing in a ``virtualenv``::
 
     $ sudo pip install awscli
+
+If you have the aws-cli installed and want to upgrade to the latest version
+you can run::
+
+    $ pip install --upgrade awscli
 
 This will install the aws-cli package as well as all dependencies.  You can
 also just clone the git repo or download the tarball.  Once you have the
@@ -180,7 +177,7 @@ To include it in your config file::
     [default]
     aws_access_key_id=<default access key>
     aws_secret_access_key=<default secret key>
-    region=us-west-1  # This will be used as the defaul
+    region=us-west-1  # This will be used as the default
 
 Similarly, the ``profile`` variable can be used to specify which profile to use
 if one is not explicitly specified on the command line via the
@@ -226,7 +223,7 @@ security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
     $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
-      --ip-permissions '{"from_port":22,"to_port":22,"ip_protocol":"tcp","ip_ranges":[{"cidr_ip": "0.0.0.0/0"}]}'
+      --ip-permissions '{"FromPort":22,"ToPort":22,"IpProtocol":"tcp","IpRanges":[{"cidr_ip": "0.0.0.0/0"}]}'
 
 --------------------------
 File-based Parameter Input
@@ -241,10 +238,10 @@ Rather than provide the value of the ``--ip-permissions`` parameter directly
 in the command, you could first store the values in a file.  Let's call
 the file ip_perms.json::
 
-    {"from_port":22,
-     "to_port":22,
-     "ip_protocol":"tcp",
-     "ip_ranges":[{"cidr_ip":"0.0.0.0/0"}]}
+    {"FromPort":22,
+     "ToPort":22,
+     "IpProtocol":"tcp",
+     "IpRanges":[{"cidr_ip":"0.0.0.0/0"}]}
 
 Then, we could make the same call as above like this::
 
@@ -286,3 +283,4 @@ style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
 
 .. _Amazon Web Services Security Bulletins website: https://aws.amazon.com/security/security-bulletins
+.. _pip: http://www.pip-installer.org/en/latest/

@@ -287,9 +287,9 @@ class TestDocGen(BaseArgProcessTest):
     def test_gen_map_type_docs(self):
         p = self.get_param_object('sqs.SetQueueAttributes.Attributes')
         argument = CLIArgument(p.cli_name, p, p.operation)
-        help_command = OperationHelpCommand(self.session,
-                                            p.operation, None,
-                                            {p.cli_name: argument})
+        help_command = OperationHelpCommand(
+            self.session, p.operation, None, {p.cli_name: argument},
+            name='set-queue-attributes', event_class='sqs')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
@@ -299,9 +299,11 @@ class TestDocGen(BaseArgProcessTest):
         p = self.get_param_object(
             'elb.RegisterInstancesWithLoadBalancer.Instances')
         argument = CLIArgument(p.cli_name, p, p.operation)
-        help_command = OperationHelpCommand(self.session,
-                                            p.operation, None,
-                                            {p.cli_name: argument})
+        help_command = OperationHelpCommand(
+            self.session, p.operation, None,
+            {p.cli_name: argument},
+            name='register-instances-with-load-balancer',
+            event_class='elb')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
@@ -311,9 +313,9 @@ class TestDocGen(BaseArgProcessTest):
     def test_gen_list_structure_of_scalars_docs(self):
         p = self.get_param_object('elb.CreateLoadBalancer.Listeners')
         argument = CLIArgument(p.cli_name, p, p.operation)
-        help_command = OperationHelpCommand(self.session,
-                                            p.operation, None,
-                                            {p.cli_name: argument})
+        help_command = OperationHelpCommand(
+            self.session, p.operation, None, {p.cli_name: argument},
+            name='create-load-balancer', event_class='elb')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
@@ -327,9 +329,9 @@ class TestDocGen(BaseArgProcessTest):
     def test_gen_list_structure_multiple_scalar_docs(self):
         p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
         argument = CLIArgument(p.cli_name, p, p.operation)
-        help_command = OperationHelpCommand(self.session,
-                                            p.operation, None,
-                                            {p.cli_name: argument})
+        help_command = OperationHelpCommand(
+            self.session, p.operation, None, {p.cli_name: argument},
+            name='create-job', event_class='elastictranscoder')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)

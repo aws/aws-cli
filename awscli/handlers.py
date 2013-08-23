@@ -24,6 +24,11 @@ from awscli.customizations.ec2addcount import ec2_add_count
 from awscli.customizations.paginate import unify_paging_params
 from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2secgroupsimplify import register_secgroup
+from awscli.customizations.preview import register_preview_commands
+from awscli.customizations.ec2bundleinstance import register_bundleinstance
+from awscli.customizations.s3.s3 import s3_plugin_initialize
+from awscli.customizations.ec2runinstances import register_runinstances
+from awscli.customizations.rds import register_rds_modify_split
 
 
 def awscli_initialize(event_handlers):
@@ -36,17 +41,22 @@ def awscli_initialize(event_handlers):
     # the examplefn to generate the sample shorthand syntax
     # in the docs.  Registering here should ensure that this
     # handler gets called first but it still feels a bit brittle.
-    event_handlers.register('doc-option-example.Operation.*.*',
+    event_handlers.register('doc-option-example.*.*.*',
                             param_shorthand.add_example_fn)
-    event_handlers.register('doc-examples.Operation.*',
+    event_handlers.register('doc-examples.*.*',
                             add_examples)
-    event_handlers.register('building-argument-table.s3.*',
+    event_handlers.register('building-argument-table.s3api.*',
                             add_streaming_output_arg)
-    event_handlers.register('building-argument-table.ec2.RunInstances',
+    event_handlers.register('building-argument-table.ec2.run-instances',
                             ec2_add_count)
     event_handlers.register('building-argument-table',
                             unify_paging_params)
-    event_handlers.register('building-argument-table.ec2.GetPasswordData',
+    event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
     register_secgroup(event_handlers)
+    register_bundleinstance(event_handlers)
+    s3_plugin_initialize(event_handlers)
+    register_runinstances(event_handlers)
     register_removals(event_handlers)
+    register_preview_commands(event_handlers)
+    register_rds_modify_split(event_handlers)

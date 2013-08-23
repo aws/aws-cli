@@ -23,22 +23,22 @@ authorize operations:
   destination security group.
 """
 
-from awscli.customizations import CustomArgument
+from awscli.arguments import CustomArgument
 
 
 def _add_params(argument_table, operation, **kwargs):
-    arg = ProtocolArgument(operation, 'protocol',
-                           documentation=PROTOCOL_DOCS)
+    arg = ProtocolArgument('protocol',
+                           help_text=PROTOCOL_DOCS)
     argument_table['protocol'] = arg
-    arg = PortArgument(operation, 'port', documentation=PORT_DOCS)
+    arg = PortArgument('port', help_text=PORT_DOCS)
     argument_table['port'] = arg
-    arg = CidrArgument(operation, 'cidr', documentation=CIDR_DOCS)
+    arg = CidrArgument('cidr', help_text=CIDR_DOCS)
     argument_table['cidr'] = arg
-    arg = SourceGroupArgument(operation, 'source-group',
-                              documentation=SOURCEGROUP_DOCS)
+    arg = SourceGroupArgument('source-group',
+                              help_text=SOURCEGROUP_DOCS)
     argument_table['source-group'] = arg
-    arg = GroupOwnerArgument(operation, 'group-owner',
-                             documentation=GROUPOWNER_DOCS)
+    arg = GroupOwnerArgument('group-owner',
+                             help_text=GROUPOWNER_DOCS)
     argument_table['group-owner'] = arg
 
 
@@ -47,9 +47,9 @@ def _check_args(parsed_args, **kwargs):
     # the --ip-permissions option with any of the scalar options we
     # raise an error.
     arg_dict = vars(parsed_args)
-    if arg_dict['ip-permissions']:
-        for key in ('protocol', 'group-id', 'port', 'cidr',
-                    'source-group', 'group-owner'):
+    if arg_dict['ip_permissions']:
+        for key in ('protocol', 'group_id', 'port', 'cidr',
+                    'source_group', 'group_owner'):
             if arg_dict[key]:
                 msg = ('Mixing the --ip-permissions option '
                        'with the simple, scalar options is '
@@ -67,18 +67,18 @@ def _add_docs(help_command, **kwargs):
 
 
 EVENTS = [
-    ('building-argument-table.ec2.AuthorizeSecurityGroupIngress', _add_params),
-    ('building-argument-table.ec2.AuthorizeSecurityGroupEgress', _add_params),
-    ('building-argument-table.ec2.RevokeSecurityGroupIngress', _add_params),
-    ('building-argument-table.ec2.RevokeSecurityGroupEgress', _add_params),
-    ('operation-args-parsed.ec2.AuthorizeSecurityGroupIngress', _check_args),
-    ('operation-args-parsed.ec2.AuthorizeSecurityGroupEgress', _check_args),
-    ('operation-args-parsed.ec2.RevokeSecurityGroupIngress', _check_args),
-    ('operation-args-parsed.ec2.RevokeSecurityGroupEgress', _check_args),
-    ('doc-description.Operation.authorize-security-group-ingress', _add_docs),
-    ('doc-description.Operation.authorize-security-group-egress', _add_docs),
-    ('doc-description.Operation.revoke-security-group-ingress', _add_docs),
-    ('doc-description.Operation.revoke-security-groupdoc-ingress', _add_docs),
+    ('building-argument-table.ec2.authorize-security-group-ingress', _add_params),
+    ('building-argument-table.ec2.authorize-security-group-egress', _add_params),
+    ('building-argument-table.ec2.revoke-security-group-ingress', _add_params),
+    ('building-argument-table.ec2.revoke-security-group-egress', _add_params),
+    ('operation-args-parsed.ec2.authorize-security-group-ingress', _check_args),
+    ('operation-args-parsed.ec2.authorize-security-group-egress', _check_args),
+    ('operation-args-parsed.ec2.revoke-security-group-ingress', _check_args),
+    ('operation-args-parsed.ec2.revoke-security-group-egress', _check_args),
+    ('doc-description.ec2.authorize-security-group-ingress', _add_docs),
+    ('doc-description.ec2.authorize-security-group-egress', _add_docs),
+    ('doc-description.ec2.revoke-security-group-ingress', _add_docs),
+    ('doc-description.ec2.revoke-security-groupdoc-ingress', _add_docs),
     ]
 PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
                  '<p>Valid protocol values: <code>tcp</code>, '
@@ -156,7 +156,7 @@ class CidrArgument(CustomArgument):
         if value:
             value = [{'CidrIp': value}]
             _build_ip_permissions(parameters, 'IpRanges', value)
-        
+
 
 class SourceGroupArgument(CustomArgument):
 
@@ -173,5 +173,3 @@ class GroupOwnerArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value:
             _build_ip_permissions(parameters, 'UserId', value)
-        
-                

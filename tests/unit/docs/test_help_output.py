@@ -1,4 +1,16 @@
 #!/usr/bin/env python
+# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 """Test help output for the AWS CLI.
 
 The purpose of these docs is to test that the generated output looks how
@@ -9,64 +21,13 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
-from tests import BaseCLIDriverTest
+from tests import BaseAWSHelpOutputTest
 
 import six
 import mock
 
 
-class CapturedRenderer(object):
-    def __init__(self):
-        self.rendered_contents = ''
-
-    def render(self, contents):
-        self.rendered_contents = contents.decode('utf-8')
-
-
-class BaseAWSHelpOutput(BaseCLIDriverTest):
-    def setUp(self):
-        super(BaseAWSHelpOutput, self).setUp()
-        self.renderer_patch = mock.patch('awscli.help.get_renderer')
-        self.renderer_mock = self.renderer_patch.start()
-        self.renderer = CapturedRenderer()
-        self.renderer_mock.return_value = self.renderer
-
-    def tearDown(self):
-        super(BaseAWSHelpOutput, self).tearDown()
-        self.renderer_patch.stop()
-
-    def assert_contains(self, contains):
-        if contains not in self.renderer.rendered_contents:
-            self.fail("The expected contents:\n%s\nwere not in the "
-                      "actual rendered contents:\n%s" % (
-                          contains, self.renderer.rendered_contents))
-
-    def assert_not_contains(self, contents):
-        if contents in self.renderer.rendered_contents:
-            self.fail("The contents:\n%s\nwere not suppose to be in the "
-                      "actual rendered contents:\n%s" % (
-                          contents, self.renderer.rendered_contents))
-
-    def assert_text_order(self, *args, **kwargs):
-        # First we need to find where the SYNOPSIS section starts.
-        starting_from = kwargs.pop('starting_from')
-        args = list(args)
-        contents = self.renderer.rendered_contents
-        self.assertIn(starting_from, contents)
-        start_index = contents.find(starting_from)
-        arg_indices = [contents.find(arg, start_index) for arg in args]
-        previous = arg_indices[0]
-        for i, index in enumerate(arg_indices[1:], 1):
-            if index == -1:
-                self.fail('The string %r was not found in the contents: %s'
-                          % (args[index], contents))
-            if index < previous:
-                self.fail('The string %r came before %r, but was suppose to come '
-                          'after it.\n%s' % (args[i], args[i - 1], contents))
-            previous = index
-
-
-class TestHelpOutput(BaseAWSHelpOutput):
+class TestHelpOutput(BaseAWSHelpOutputTest):
     def test_output(self):
         self.driver.main(['help'])
         self.assert_contains('***\naws\n***')
@@ -85,7 +46,7 @@ class TestHelpOutput(BaseAWSHelpOutput):
         self.assert_contains('* auto')
         # Then we should see the services.
         self.assert_contains('* ec2')
-        self.assert_contains('* s3')
+        self.assert_contains('* s3api')
         self.assert_contains('* sts')
 
     def test_service_help_output(self):
@@ -149,7 +110,7 @@ class TestHelpOutput(BaseAWSHelpOutput):
         self.assert_contains('========\nExamples\n========')
 
 
-class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
+class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
         # Basically try to get the help output for the removed
         # command verify that we get a SystemExit exception
@@ -200,21 +161,35 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutput):
             '``--no-should-decrement-desired-capacity`` (boolean)')
 
     def test_streaming_output_arg(self):
-        self.driver.main(['s3', 'get-object', 'help'])
-        self.assert_not_contains('``--output-file``')
-        self.assert_contains('``output-file`` (string)')
+        self.driver.main(['s3api', 'get-object', 'help'])
+        self.assert_not_contains('``--outfile``')
+        self.assert_contains('``outfile`` (string)')
+
+    def test_rds_add_arg_help_has_correct_command_name(self):
+        self.driver.main(['rds', 'add-option-to-option-group', 'help'])
+        self.assert_contains('add-option-to-option-group')
+
+    def test_rds_remove_arg_help_has_correct_command_name(self):
+        self.driver.main(['rds', 'remove-option-from-option-group', 'help'])
+        self.assert_contains('remove-option-from-option-group')
+
+    def test_modify_operation_not_in_help(self):
+        self.driver.main(['rds', 'help'])
+        # This was split into add/remove commands.  The modify
+        # command should not be available.
+        self.assert_not_contains('modify-option-group')
 
 
-class TestPagingParamDocs(BaseAWSHelpOutput):
+class TestPagingParamDocs(BaseAWSHelpOutputTest):
     def test_starting_token_injected(self):
-        self.driver.main(['s3', 'list-objects', 'help'])
+        self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_contains('``--starting-token``')
 
     def test_max_items_injected(self):
-        self.driver.main(['s3', 'list-objects', 'help'])
+        self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_contains('``--max-items``')
 
     def test_builtin_paging_params_removed(self):
-        self.driver.main(['s3', 'list-objects', 'help'])
+        self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_not_contains('``--next-token``')
         self.assert_not_contains('``--max-keys``')

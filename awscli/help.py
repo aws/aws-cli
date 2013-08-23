@@ -31,6 +31,17 @@ from awscli.argprocess import ParamShorthand
 LOG = logging.getLogger('awscli.help')
 
 
+def get_renderer():
+    """
+    Return the appropriate HelpRenderer implementation for the
+    current platform.
+    """
+    if platform.system() == 'Windows':
+        return WindowsHelpRenderer()
+    else:
+        return PosixHelpRenderer()
+
+
 class HelpRenderer(object):
     """
     Interface for a help renderer.
@@ -55,13 +66,13 @@ class PosixHelpRenderer(HelpRenderer):
 
     PAGER = 'more'
 
-    def get_pager(self):
+    def get_pager_cmdline(self):
         pager = self.PAGER
         if 'MANPAGER' in os.environ:
             pager = os.environ['MANPAGER']
         elif 'PAGER' in os.environ:
             pager = os.environ['PAGER']
-        return pager
+        return pager.split()
 
     def render(self, contents):
         cmdline = ['rst2man.py']
@@ -72,8 +83,7 @@ class PosixHelpRenderer(HelpRenderer):
         cmdline = ['groff', '-man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
         p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
-        pager = self.get_pager()
-        cmdline = [pager]
+        cmdline = self.get_pager_cmdline()
         LOG.debug("Running command: %s", cmdline)
         p4 = Popen(cmdline, stdin=p3.stdout)
         p4.communicate()
@@ -100,17 +110,6 @@ class RawRenderer(HelpRenderer):
     def render(self, contents):
         sys.stdout.write(contents)
         sys.exit(1)
-
-
-def get_renderer():
-    """
-    Return the appropriate HelpRenderer implementation for the
-    current platform.
-    """
-    if platform.system() == 'Windows':
-        return WindowsHelpRenderer()
-    else:
-        return PosixHelpRenderer()
 
 
 class HelpCommand(object):
@@ -200,13 +199,13 @@ class HelpCommand(object):
         self.renderer.render(self.doc.getvalue())
 
 
-
 class ProviderHelpCommand(HelpCommand):
     """Implements top level help command.
 
     This is what is called when ``aws help`` is run.
 
     """
+    EventHandlerClass = ProviderDocumentEventHandler
 
     def __init__(self, session, command_table, arg_table,
                  description, synopsis, usage):
@@ -215,8 +214,6 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
-
-    EventHandlerClass = ProviderDocumentEventHandler
 
     @property
     def event_class(self):
@@ -237,13 +234,20 @@ class ServiceHelpCommand(HelpCommand):
 
     EventHandlerClass = ServiceDocumentEventHandler
 
+    def __init__(self, session, obj, command_table, arg_table, name,
+                 event_class):
+        super(ServiceHelpCommand, self).__init__(session, obj, command_table,
+                                                 arg_table)
+        self._name = name
+        self._event_class = event_class
+
     @property
     def event_class(self):
-        return 'Service'
+        return self._event_class
 
     @property
     def name(self):
-        return self.obj.endpoint_prefix
+        return self._name
 
 
 class OperationHelpCommand(HelpCommand):
@@ -253,18 +257,20 @@ class OperationHelpCommand(HelpCommand):
     e.g. ``aws ec2 describe-instances help``.
 
     """
+    EventHandlerClass = OperationDocumentEventHandler
 
-    def __init__(self, session, service, operation, arg_table):
+    def __init__(self, session, service, operation, arg_table, name,
+                 event_class):
         HelpCommand.__init__(self, session, operation, None, arg_table)
         self.service = service
         self.param_shorthand = ParamShorthand()
-
-    EventHandlerClass = OperationDocumentEventHandler
+        self._name = name
+        self._event_class = event_class
 
     @property
     def event_class(self):
-        return 'Operation'
+        return self._event_class
 
     @property
     def name(self):
-        return self.obj.cli_name
+        return self._name

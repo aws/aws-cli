@@ -212,6 +212,15 @@ class SessionTest(BaseSessionTest):
         get_logger.assert_called_with('botocore.service')
         file_handler.assert_called_with('debuglog')
 
+    @mock.patch('logging.getLogger')
+    @mock.patch('logging.StreamHandler')
+    @mock.patch('logging.Formatter')
+    def test_general_purpose_logger(self, formatter, file_handler, get_logger):
+        self.session.set_stream_logger('foo.bar', 'ERROR', format_string='foo')
+        get_logger.assert_called_with('foo.bar')
+        get_logger.return_value.setLevel.assert_called_with('ERROR')
+        formatter.assert_called_with('foo')
+
     def test_register_with_unique_id(self):
         calls = []
         handler = lambda **kwargs: calls.append(kwargs)

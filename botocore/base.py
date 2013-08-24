@@ -67,7 +67,6 @@ Get the member args for an operations::
 
 """
 import os
-import sys
 import glob
 import logging
 
@@ -129,7 +128,7 @@ def _load_nested_data(session, data_path):
     mod_names = data_path.split('/')
     for i, md in enumerate(mod_names):
         mod_name = '/'.join(mod_names[0:i + 1])
-        d = _load_data(session, mod_name)
+        _load_data(session, mod_name)
     data = None
     prefixes = [dp for dp in _data_cache.keys() if data_path.startswith(dp)]
     if prefixes:

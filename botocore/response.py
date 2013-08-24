@@ -127,7 +127,7 @@ class XmlResponse(Response):
         if defn['type'] == 'structure':
             for member_name in defn['members']:
                 self.build_element_map(defn['members'][member_name],
-                                         member_name)
+                                       member_name)
         elif defn['type'] == 'list':
             self.build_element_map(defn['members'], None)
         elif defn['type'] == 'map':
@@ -254,10 +254,9 @@ class XmlResponse(Response):
 
     def emit_event(self, tag, shape, value):
         if 'shape_name' in shape:
-            event = self.session.create_event('after-parsed',
-                                              self.operation.service.endpoint_prefix,
-                                              self.operation.name,
-                                              shape['shape_name'], tag)
+            event = self.session.create_event(
+                'after-parsed', self.operation.service.endpoint_prefix,
+                self.operation.name, shape['shape_name'], tag)
             rv = first_non_none_response(self.session.emit(event,
                                                            shape=shape,
                                                            value=value),

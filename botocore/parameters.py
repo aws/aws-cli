@@ -170,7 +170,7 @@ class FloatParameter(Parameter):
                 value = decimal.Decimal(value)
             except (decimal.InvalidOperation, TypeError):
                 raise ValidationError(value=str(value), type_name='float',
-                                    param=self)
+                                      param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,

@@ -255,7 +255,6 @@ class Session(object):
         :raises: ConfigNotFound, ConfigParseError, ProfileNotFound
         :rtype: dict
         """
-        config = self.full_config
         profile_name = self.get_variable('profile')
         profile_map = self._build_profile_map()
         # If a profile is not explicitly set return the default

@@ -84,7 +84,7 @@ def check_dns_name(bucket_name):
     labels = bucket_name.split('.')
     if len(labels) == 4:
         # Must make sure this is not formatted like an IP address
-        if all([(d.isdigit() and int(d)<256) for d in labels]):
+        if all([(d.isdigit() and int(d) < 256) for d in labels]):
             return False
     for label in bucket_name.split('.'):
         if len(label) == 0:

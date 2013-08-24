@@ -28,12 +28,10 @@ import hmac
 import logging
 from email.utils import formatdate
 from operator import itemgetter
-from botocore.exceptions import UnknownSignatureVersionError
 from botocore.exceptions import NoCredentialsError
 from botocore.utils import normalize_url_path
 from botocore.compat import HTTPHeaders
-from botocore.compat import quote, unquote, urlsplit, parse_qsl
-from six.moves import http_client
+from botocore.compat import quote, unquote, urlsplit
 
 logger = logging.getLogger(__name__)
 
@@ -180,7 +178,7 @@ class SigV4Auth(object):
         headers = []
         for key in set(headers_to_sign):
             value = ','.join(v.strip() for v in
-                            sorted(headers_to_sign.get_all(key)))
+                             sorted(headers_to_sign.get_all(key)))
             headers.append('%s:%s' % (key, value))
         headers.sort()
         return '\n'.join(headers)
@@ -247,7 +245,6 @@ class SigV4Auth(object):
     def add_auth(self, request):
         # This could be a retry.  Make sure the previous
         # authorization header is removed first.
-        split = urlsplit(request.url)
         if 'Authorization' in request.headers:
             del request.headers['Authorization']
         if 'Date' not in request.headers:
@@ -305,7 +302,7 @@ class HmacV1Auth(object):
             found = False
             for key in headers:
                 lk = key.lower()
-                if headers[key] != None and lk == ih:
+                if headers[key] is not  None and lk == ih:
                     hoi.append(headers[key].strip())
                     found = True
             if not found:
@@ -316,11 +313,11 @@ class HmacV1Auth(object):
         custom_headers = {}
         for key in headers:
             lk = key.lower()
-            if headers[key] != None:
+            if headers[key] is not  None:
                 # TODO: move hardcoded prefix to provider
                 if lk.startswith('x-amz-'):
                     custom_headers[lk] = ','.join(v.strip() for v in
-                                                   headers.get_all(key))
+                                                  headers.get_all(key))
         sorted_header_keys = sorted(custom_headers.keys())
         hoi = []
         for key in sorted_header_keys:

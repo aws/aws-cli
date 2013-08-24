@@ -291,7 +291,6 @@ class _PrefixTrie(object):
 
         """
         key_parts = key.split('.')
-        previous = None
         current = self._root
         self._remove_item(current, key_parts, value, index=0)
 

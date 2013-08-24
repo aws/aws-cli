@@ -93,7 +93,7 @@ class JSONPayload(Payload):
             value = json.dumps(self._value)
         return value
 
-        
+
 class XMLPayload(Payload):
     """
     XML Payload.
@@ -116,12 +116,12 @@ class XMLPayload(Payload):
     a header and these parameters are not added to the payload.
 
     To distinquish between these two types, we use two factors:
-    
+
     * ``root_element_name`` attribute.  Route53 payloads have a
       ``root_element_name`` attribute but S3 payloads do not.
     * A ``payload=True`` attribute.  Route53 payloads do not have
       this attribute but S3 and CloudFront do.
-      
+
     I'm not sure if this is the best way to discriminate between the
     two types but it seems effective.
 

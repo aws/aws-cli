@@ -30,10 +30,10 @@ import six
 
 import botocore.response
 import botocore.exceptions
-from botocore.auth import AUTH_TYPE_MAPS, UnknownSignatureVersionError
+from botocore.auth import AUTH_TYPE_MAPS
+from botocore.exceptions import UnknownSignatureVersionError
 from botocore.awsrequest import AWSRequest
 from botocore.compat import urljoin, json, quote
-from botocore.payload import Payload
 
 
 logger = logging.getLogger(__name__)
@@ -238,9 +238,9 @@ def get_endpoint(service, region_name, endpoint_url):
     auth = None
     if hasattr(service, 'signature_version'):
         auth = _get_auth(service.signature_version,
-            credentials=service.session.get_credentials(),
-            service_name=service_name,
-            region_name=region_name)
+                         credentials=service.session.get_credentials(),
+                         service_name=service_name,
+                         region_name=region_name)
     proxies = _get_proxies(endpoint_url)
     return cls(service, region_name, endpoint_url, auth=auth, proxies=proxies)
 

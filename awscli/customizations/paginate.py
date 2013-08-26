@@ -115,4 +115,5 @@ class PageArgument(BaseCLIArgument):
                             type=self.type_map[self._parse_type])
 
     def add_to_params(self, parameters, value):
-        parameters[self.py_name] = value
+        if value is not None:
+            parameters[self.py_name] = value

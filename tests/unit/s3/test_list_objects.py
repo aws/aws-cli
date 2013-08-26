@@ -51,10 +51,16 @@ class TestListObjects(BaseAWSCommandParamsTest):
         # properly.
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
-        # The max-items is a customization and therefore won't
-        # show up in the result params.
         cmdline += ' --starting-token foo___2'
         result = {'uri_params': {'Bucket': 'mybucket', 'Marker': 'foo'},
+                  'headers': {},
+                  'payload': None}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_no_paginate(self):
+        cmdline = self.prefix
+        cmdline += ' --bucket mybucket --no-paginate'
+        result = {'uri_params': {'Bucket': 'mybucket'},
                   'headers': {},
                   'payload': None}
         self.assert_params_for_cmd(cmdline, result)

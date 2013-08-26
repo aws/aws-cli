@@ -275,12 +275,12 @@ Command Output
 
 The default output for commands is currently JSON.  This may change in the
 future but for now it provides the most complete output.  You may find the
-[jq](http://stedolan.github.com/jq/) tool useful in processing the JSON
+`jq <http://stedolan.github.com/jq/>`_ tool useful in processing the JSON
 output for other uses.
 
 There is also an ASCII table format available.  You can select this
 style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
 
-.. _Amazon Web Services Security Bulletins website: https://aws.amazon.com/security/security-bulletins
+.. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/

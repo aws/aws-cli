@@ -30,6 +30,7 @@ from awscli.customizations.s3.s3 import s3_plugin_initialize
 from awscli.customizations.ec2runinstances import register_runinstances
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.putmetricdata import register_put_metric_data
+from awscli.customizations.sessendemail import register_ses_send_email
 
 
 def awscli_initialize(event_handlers):
@@ -62,3 +63,4 @@ def awscli_initialize(event_handlers):
     register_preview_commands(event_handlers)
     register_rds_modify_split(event_handlers)
     register_put_metric_data(event_handlers)
+    register_ses_send_email(event_handlers)

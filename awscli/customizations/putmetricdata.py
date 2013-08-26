@@ -25,11 +25,17 @@ cloudwatch put-metric-data operation:
 
 from awscli.arguments import CustomArgument
 from awscli.utils import split_on_commas
+from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 
 def register_put_metric_data(event_handler):
     event_handler.register('building-argument-table.cloudwatch.put-metric-data',
                            _promote_args)
+    event_handler.register(
+        'operation-args-parsed.cloudwatch.put-metric-data',
+        validate_mutually_exclusive_handler(
+            ['metric_data'], ['metric_name', 'timestamp', 'unit', 'value',
+                              'dimensions', 'statistic_values']))
 
 
 def _promote_args(argument_table, operation, **kwargs):

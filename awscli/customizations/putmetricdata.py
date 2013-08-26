@@ -80,6 +80,11 @@ def insert_first_element(name):
             if value is None:
                 return
             if name not in parameters:
+                # We're taking a shortcut here and assuming that the first
+                # element is a struct type, hence the default value of
+                # a dict.  If this was going to be more general we'd need
+                # to have this paramterized, i.e. you pass in some sort of
+                # factory function that creates the initial starting value.
                 parameters[name] = [{}]
             first_element = parameters[name][0]
             return func(self, first_element, value)

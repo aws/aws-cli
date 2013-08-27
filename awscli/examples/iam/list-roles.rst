@@ -6,7 +6,7 @@ The following ``list-roles`` commmand lists IAM roles for the current account::
 
 Output::
 
-  [
+  "Roles": [
       {
           "AssumeRolePolicyDocument": <URL-encoded-JSON>,
           "RoleId": "AIDACKCEVSQ6C2EXAMPLE",
@@ -27,5 +27,5 @@ Output::
 
 For more information, see `Creating a Role`_ in the *Using IAM* guide.
 
-.. _Creating a Role: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
+.. _`Creating a Role`: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
 

@@ -7,20 +7,18 @@ The following ``create-login-profile`` commmand creates a password for the IAM u
 Output::
 
   {
-      "ResponseMetadata": {
-          "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
-      },
       "LoginProfile": {
           "UserName": "Bob",
           "CreateDate": "2013-06-07T00:16:22.090Z"
       }
   }
 
-To set a password policy for the account, use the ``update-account-password-policy`` command. If the new password violates the account password policy, the command returns a ``PasswordPolicyViolation`` error. 
+To set a password policy for the account, use the ``update-account-password-policy`` command. If the new password violates the account password policy, the command returns a ``PasswordPolicyViolation`` error.
 
 If the account password policy allows them to, IAM users can change their own passwords using the ``change-password`` command.
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
- 
+
+.. _`Managing Passwords`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html
 
 

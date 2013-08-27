@@ -28,12 +28,10 @@ Output::
         "SigningCertificatesPerUserQuota": 2,
         "ServerCertificatesQuota": 10,
         "RolesQuota": 250
-    },
-    "ResponseMetadata": {
-        "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
     }
-  } 
-    
+  }
+
 For more information about entity limitations, see `Limitations on IAM Entities`_ in the *Using IAM* guide.
 
+.. _`Limitations on IAM Entities`: http://docs.aws.amazon.com/IAM/latest/UserGuide/LimitationsOnEntities.html
 

@@ -14,15 +14,12 @@ Output::
         "InstanceProfileName": "ExampleInstanceProfile",
         "Path": "/",
         "Arn": "arn:aws:iam::123456789012:instance-profile/ExampleInstanceProfile"
-    },
-    "ResponseMetadata": {
-        "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
     }
   }
-    
+
 To add a role to an instance profile, use the ``add-role-to-instance-profile`` command.
 
 For more information, see `Instance Profiles`_ in the *Using IAM* guide.
 
-.. _Instance Profiles: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
+.. _`Instance Profiles`: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
 

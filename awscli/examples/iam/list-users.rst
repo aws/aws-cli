@@ -6,7 +6,7 @@ The following ``list-users`` commmand lists the IAM users in the current account
 
 Output::
 
-  [
+  "Users": [
       {
           "UserName": "Adele",
           "Path": "/",
@@ -24,6 +24,6 @@ Output::
   ]
 
 For more information, see `Listing Users`_ in the *Using IAM* guide.
- 
-.. _Listing Users: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_GetListOfUsers.html
- 
+
+.. _`Listing Users`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_GetListOfUsers.html
+

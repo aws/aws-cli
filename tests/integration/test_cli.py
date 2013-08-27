@@ -133,6 +133,17 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             contents = f.read()
         self.assertEqual(contents, 'foobar contents')
 
+    def test_no_paginate_arg(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+        bucket_name = 'nopaginate' + str(
+            int(time.time())) + str(random.randint(1, 100))
+
+        self.put_object(bucket=bucket_name, key='foobar',
+                        content='foobar contents')
+        p = aws('s3api list-objects --bucket %s --no-paginate' % bucket_name)
+        self.assertEqual(p.rc, 0, p.stdout + p.stderr)
+
     def test_top_level_options_debug(self):
         p = aws('ec2 describe-instances --debug')
         self.assertEqual(p.rc, 0)

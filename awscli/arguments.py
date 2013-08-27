@@ -132,7 +132,7 @@ class CustomArgument(BaseCLIArgument):
     """
 
     def __init__(self, name, help_text='', dest=None, default=None,
-                 action=None, required=None, choices=None,
+                 action=None, required=None, choices=None, nargs=None,
                  cli_type_name=None):
         self._name = name
         self._help = help_text
@@ -140,6 +140,7 @@ class CustomArgument(BaseCLIArgument):
         self._default = default
         self._action = action
         self._required = required
+        self._nargs = nargs
         self._cli_type_name = cli_type_name
         if choices is None:
             choices = []
@@ -168,6 +169,8 @@ class CustomArgument(BaseCLIArgument):
             kwargs['choices'] = self._choices
         if self._required is not None:
             kwargs['required'] = self._required
+        if self._nargs is not None:
+            kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
 
     def required(self):

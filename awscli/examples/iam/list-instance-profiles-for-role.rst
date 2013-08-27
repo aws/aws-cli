@@ -6,7 +6,7 @@ The following ``list-instance-profiles-for-role`` commmand lists the instance pr
 
 Output::
 
-  [
+  "InstanceProfiles": [
       {
           "InstanceProfileId": "AIDGPMS9RO4H3FEXAMPLE",
           "Roles": [
@@ -28,5 +28,5 @@ Output::
 
 For more information, see `Instance Profiles`_ in the *Using IAM* guide.
 
-.. _Instance Profiles: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
+.. _`Instance Profiles`: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
 

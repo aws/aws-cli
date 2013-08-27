@@ -6,7 +6,7 @@ The following ``list-groups-for-user`` commmand dislpays the groups that the IAM
 
 Output::
 
-  [
+  "Groups": [
       {
           "Path": "/",
           "CreateDate": "2013-05-06T01:18:08Z",
@@ -24,7 +24,7 @@ Output::
   ]
 
 For more information, see `Creating and Listing Groups`_ in the *Using IAM* guide.
- 
-.. _Creating and Listing Groups: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_CreatingAndListingGroups.html
- 
- 
+
+.. _`Creating and Listing Groups`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_CreatingAndListingGroups.html
+
+

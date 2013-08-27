@@ -4,7 +4,7 @@ The following example uses the ``list-objects`` command to display the names of 
 The example uses jq_ to filter the output of ``list-objects`` down to the key value and size for each object.
 ::
 
-  aws s3api list-objects --bucket text-content | jq ".Contents[] | {Key, Size }
+  aws s3 list-objects --bucket text-content | jq ".Contents[] | {Key, Size }
 
 For more information about objects, see `Working with Amazon S3 Objects`_ in the *Amazon S3 Developer Guide*.
 

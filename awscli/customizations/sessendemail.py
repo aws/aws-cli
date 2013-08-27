@@ -27,11 +27,11 @@ from awscli.arguments import CustomArgument
 from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 TO_HELP = ('The email addresses of the primary recipients.  '
-           'You can specify multiple recipients')
+           'You can specify multiple recipients as space-separated values')
 CC_HELP = ('The email addresses of copy recipients (Cc).  '
-           'You can specify multiple recipients')
+           'You can specify multiple recipients as space-separated values')
 BCC_HELP = ('The email addresses of blind-carbon-copy recipients (Bcc).  '
-            'You can specify multiple recipients')
+            'You can specify multiple recipients as space-separated values')
 SUBJECT_HELP = 'The subject of the message'
 TEXT_HELP = 'The raw text body of the message'
 HTML_HELP = 'The HTML body of the message'
@@ -91,7 +91,7 @@ class AddressesArgument(CustomArgument):
     def __init__(self, name, json_key, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, cli_type_name=None):
         super(AddressesArgument, self).__init__(name=name, help_text=help_text,
-                                                required=required, nargs='*')
+                                                required=required, nargs='+')
         self._json_key = json_key
     
     def add_to_params(self, parameters, value):

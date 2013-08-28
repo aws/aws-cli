@@ -55,7 +55,7 @@ class FileArgument(StatefulArgument):
         # calling the service.
         outfile = os.path.expandvars(value)
         outfile = os.path.expanduser(outfile)
-        if not os.access(outfile, os.W_OK):
+        if not os.access(os.path.dirname(outfile), os.W_OK):
             raise ValueError('Unable to write to file: %s' % outfile)
         self._value = outfile
         
@@ -66,7 +66,7 @@ class IAMVMFAWrapper(object):
     def __init__(self, event_handler):
         self._event_handler = event_handler
         self._operation = None
-        self._outfile = StatefulArgument(
+        self._outfile = FileArgument(
             'outfile', help_text=OUTPUT_HELP, required=True)
         self._method = StatefulArgument(
             'bootstrap-method', help_text=BOOTSTRAP_HELP,
@@ -81,7 +81,7 @@ class IAMVMFAWrapper(object):
         self._operation = operation
         argument_table['outfile'] = self._outfile
         argument_table['bootstrap-method'] = self._method
-        
+
     def _save_file(self, http_response, parsed, **kwargs):
         method = self._method.value
         outfile = self._outfile.value

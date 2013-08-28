@@ -199,7 +199,7 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_error_messages_for_structure_scalar(self):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        value = 'ApplicationName==foo,TemplateName=bar'
+        value = 'ApplicationName:foo,TemplateName=bar'
         error_msg = "Error parsing parameter --source-configuration.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)

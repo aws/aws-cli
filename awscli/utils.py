@@ -36,12 +36,16 @@ def _split_with_quotes(value):
     iter_parts = iter(parts)
     new_parts = []
     for part in iter_parts:
-        if part.count('"') == 1:
-            quote_char = '"'
-        elif part.count("'") == 1:
-            quote_char = "'"
-        else:
+        quote_char = _find_quote_char_in_part(part)
+        if quote_char is None:
             new_parts.append(part)
+            continue
+        elif part.count(quote_char) == 2:
+            # Starting and ending quote are in this part.
+            # While it's not needed right now, this will
+            # break down if we ever need to escape quotes while
+            # quoting a value.
+            new_parts.append(part.replace(quote_char, ''))
             continue
         # Now that we've found a starting quote char, we
         # need to combine the parts until we encounter an end quote.
@@ -51,7 +55,6 @@ def _split_with_quotes(value):
             try:
                 current = six.advance_iterator(iter_parts)
             except StopIteration:
-                #raise ParamSyntaxError(value)
                 raise ValueError(value)
             chunks.append(current.replace(quote_char, ''))
             if quote_char in current:
@@ -59,3 +62,20 @@ def _split_with_quotes(value):
         new_chunk = ','.join(chunks)
         new_parts.append(new_chunk)
     return new_parts
+
+
+def _find_quote_char_in_part(part):
+    if '"' not in part and "'" not in part:
+        return
+    quote_char = None
+    double_quote = part.find('"')
+    single_quote = part.find("'")
+    if double_quote >= 0 and single_quote == -1:
+        quote_char = '"'
+    elif single_quote >= 0 and double_quote == -1:
+        quote_char = "'"
+    elif double_quote < single_quote:
+        quote_char = '"'
+    elif single_quote < double_quote:
+        quote_char = "'"
+    return quote_char

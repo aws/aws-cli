@@ -13,7 +13,6 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import os
-import sys
 import re
 
 from six.moves import cStringIO
@@ -21,7 +20,7 @@ import httpretty
 import mock
 
 GET_PASSWORD_DATA_RESPONSE = """<?xml version="1.0" encoding="UTF-8"?>
-<GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-02-01/">
+<GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-07-15/">
     <requestId>000000000000</requestId>
     <instanceId>i-12345678</instanceId>
     <timestamp>2013-07-27T18:29:23.000Z</timestamp>

@@ -25,10 +25,30 @@ import os
 from tests import BaseEnvVar
 import botocore.session
 
-XMLBODY1 = """<CreateBucketConfiguration><LocationConstraint>sa-east-1</LocationConstraint></CreateBucketConfiguration>"""
-XMLBODY2 = """<LifecycleConfiguration><Rule><ID>archive-objects-glacier-immediately-upon-creation</ID><Prefix>glacierobjects/</Prefix><Status>Enabled</Status><Transition><Days>0</Days><StorageClass>GLACIER</StorageClass></Transition></Rule></LifecycleConfiguration>"""
-XMLBODY3 = """<Tagging><TagSet><Tag><Key>key1</Key><Value>value1</Value></Tag><Tag><Key>key2</Key><Value>value2</Value></Tag></TagSet></Tagging>"""
-XMLBODY4 = """<CORSConfiguration><CORSRule><AllowedHeader>*</AllowedHeader><AllowedMethod>PUT</AllowedMethod><AllowedMethod>POST</AllowedMethod><AllowedMethod>DELETE</AllowedMethod><AllowedOrigin>http://www.example1.com</AllowedOrigin><ExposeHeader>x-amz-server-side-encryption</ExposeHeader><MaxAgeSeconds>3000</MaxAgeSeconds></CORSRule><CORSRule><AllowedMethod>GET</AllowedMethod><AllowedOrigin>*</AllowedOrigin></CORSRule></CORSConfiguration>"""
+XMLBODY1 = ('<CreateBucketConfiguration><LocationConstraint>sa-east-1'
+            '</LocationConstraint></CreateBucketConfiguration>')
+XMLBODY2 = ('<LifecycleConfiguration><Rule><ID>archive-objects-glacier-'
+            'immediately-upon-creation</ID><Prefix>glacierobjects/</Prefix>'
+            '<Status>Enabled</Status><Transition><Days>0</Days>'
+            '<StorageClass>GLACIER</StorageClass></Transition></Rule>'
+            '</LifecycleConfiguration>')
+XMLBODY3 = ('<Tagging><TagSet><Tag><Key>key1</Key><Value>value1</Value></Tag>'
+            '<Tag><Key>key2</Key><Value>value2</Value></Tag></TagSet></Tagging>')
+XMLBODY4 = ('<CORSConfiguration><CORSRule><AllowedHeader>*</AllowedHeader>'
+            '<AllowedMethod>PUT</AllowedMethod><AllowedMethod>POST</AllowedMethod>'
+            '<AllowedMethod>DELETE</AllowedMethod>'
+            '<AllowedOrigin>http://www.example1.com</AllowedOrigin>'
+            '<ExposeHeader>x-amz-server-side-encryption</ExposeHeader>'
+            '<MaxAgeSeconds>3000</MaxAgeSeconds></CORSRule><CORSRule>'
+            '<AllowedMethod>GET</AllowedMethod><AllowedOrigin>*</AllowedOrigin>'
+            '</CORSRule></CORSConfiguration>')
+XMLBODY5 = ('<BucketLoggingStatus><LoggingEnabled><TargetBucket>mybucketlogs'
+            '</TargetBucket><TargetGrants><Grant><Grantee '
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+            'xsi:type="AmazonCustomerByEmail"><EmailAddress>user@company.com'
+            '</EmailAddress></Grantee><Permission>READ</Permission></Grant>'
+            '</TargetGrants><TargetPrefix>mybucket-access_log-/</TargetPrefix>'
+            '</LoggingEnabled></BucketLoggingStatus>')
 
 POLICY = ('{"Version": "2008-10-17","Statement": [{"Sid": "AddPerm",'
           '"Effect": "Allow","Principal": {"AWS": "*"},'
@@ -143,6 +163,23 @@ class TestS3Operations(BaseEnvVar):
         uri_params = {'Bucket': self.bucket_name}
         self.assertEqual(params['uri_params'], uri_params)
         self.assertEqual(params['payload'].getvalue(), POLICY)
+        self.assertEqual(params['headers'], {})
+
+    def test_put_bucket_logging(self):
+        op = self.s3.get_operation('PutBucketLogging')
+        logging = {'LoggingEnabled':
+                       {'TargetBucket': 'mybucketlogs',
+                        'TargetPrefix': 'mybucket-access_log-/',
+                        'TargetGrants':
+                            [{'Grantee':
+                                  {'Type': 'AmazonCustomerByEmail',
+                                   'EmailAddress': 'user@company.com'},
+                              'Permission': 'READ'}]}}
+        params = op.build_parameters(bucket=self.bucket_name,
+                                     bucket_logging_status=logging)
+        uri_params = {'Bucket': self.bucket_name}
+        self.assertEqual(params['uri_params'], uri_params)
+        self.assertEqual(params['payload'].getvalue(), XMLBODY5)
         self.assertEqual(params['headers'], {})
 
     def test_put_object(self):

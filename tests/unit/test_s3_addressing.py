@@ -92,7 +92,7 @@ class TestS3Addressing(BaseEnvVar):
                                      content_type='text/plain')
         prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
-                         'https://my.valid.name.s3.amazonaws.com/mykeyname')
+                         'https://s3-us-west-2.amazonaws.com/my.valid.name/mykeyname')
         fp.close()
 
     def test_put_object_dns_name_classic(self):
@@ -109,7 +109,7 @@ class TestS3Addressing(BaseEnvVar):
                                      content_type='text/plain')
         prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
-                         'https://my.valid.name.s3.amazonaws.com/mykeyname')
+                         'https://s3.amazonaws.com/my.valid.name/mykeyname')
         fp.close()
 
     def test_put_object_dns_name_single_letter_non_classic(self):
@@ -126,7 +126,7 @@ class TestS3Addressing(BaseEnvVar):
                                      content_type='text/plain')
         prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
-                         'https://a.valid.name.s3.amazonaws.com/mykeyname')
+                         'https://s3-us-west-2.amazonaws.com/a.valid.name/mykeyname')
         fp.close()
 
     def test_get_object_non_dns_name_non_classic(self):
@@ -164,7 +164,7 @@ class TestS3Addressing(BaseEnvVar):
                                      key='mykeyname')
         prepared_request = self.get_prepared_request(op, params)
         self.assertEqual(prepared_request.url,
-                         'https://192.168.5.256.s3.amazonaws.com/mykeyname')
+                         'https://s3.amazonaws.com/192.168.5.256/mykeyname')
 
 
 if __name__ == "__main__":

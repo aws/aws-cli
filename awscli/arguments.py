@@ -380,15 +380,12 @@ class BooleanArgument(CLIArgument):
             self._destination = dest
 
     def add_to_params(self, parameters, value):
-        unpacked = self._unpack_argument(value)
-        if not unpacked and not self.required:
-            # Any False non-required value is just omitted
-            # from the parameter dict.  This could cause problems
-            # if there are non required parameters that default to
-            # True.
-            return
-        else:
-            parameters[self.py_name] = unpacked
+        # If a value was explicitly specified (so value is True/False
+        # but *not* None) then we add it to the params dict.
+        # If the value was not explicitly set (value is None)
+        # we don't add it to the params dict.
+        if value is not None:
+            parameters[self.py_name] = value
 
     def add_to_arg_table(self, argument_table):
         # Boolean parameters are a bit tricky.  For a single boolean parameter
@@ -409,4 +406,5 @@ class BooleanArgument(CLIArgument):
         parser.add_argument(self.cli_name,
                             help=self.documentation,
                             action=self._action,
+                            default=None,
                             dest=self._destination)

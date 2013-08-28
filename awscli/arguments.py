@@ -187,7 +187,7 @@ class CustomArgument(BaseCLIArgument):
         if self._cli_type_name is not None:
             return self._cli_type_name
         elif self._action in ['store_true', 'store_false']:
-            cli_type_name = 'boolean'
+            return 'boolean'
         else:
             # Default to 'string' type if we don't have any
             # other info.

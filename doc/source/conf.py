@@ -42,7 +42,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'aws-cli'
+project = u'AWS CLI'
 copyright = u'2013, Amazon Web Services'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -125,7 +125,7 @@ pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = ['_static']
+html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -136,7 +136,9 @@ pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+  '**': ['sidebarlogo.html', 'localtoc.html', 'searchbox.html', 'feedback.html']
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -195,7 +197,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'aws-cli.tex', u'aws-cli Documentation',
+  ('index', 'aws-cli.tex', u'AWS CLI Documentation',
    u'Amazon Web Services', 'manual'),
 ]
 

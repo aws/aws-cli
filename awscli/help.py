@@ -31,6 +31,12 @@ from awscli.argprocess import ParamShorthand
 LOG = logging.getLogger('awscli.help')
 
 
+class ExecutableNotFoundError(Exception):
+    def __init__(self, executable_name):
+        super(ExecutableNotFoundError, self).__init__(
+            'Could not find executable named "%s"' % executable_name)
+
+
 def get_renderer():
     """
     Return the appropriate HelpRenderer implementation for the
@@ -75,19 +81,45 @@ class PosixHelpRenderer(HelpRenderer):
         return pager.split()
 
     def render(self, contents):
-        cmdline = ['rst2man.py']
+        rst2man = self._get_rst2man_name()
+        cmdline = [rst2man]
         LOG.debug("Running command: %s", cmdline)
-        p2 = Popen(cmdline, stdin=PIPE, stdout=PIPE)
+        p2 = self._popen(cmdline, stdin=PIPE, stdout=PIPE)
         p2.stdin.write(contents)
         p2.stdin.close()
+        if not self._exists_on_path('groff'):
+            raise ExecutableNotFoundError('groff')
         cmdline = ['groff', '-man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
-        p3 = Popen(cmdline, stdin=p2.stdout, stdout=PIPE)
+        p3 = self._popen(cmdline, stdin=p2.stdout, stdout=PIPE)
         cmdline = self.get_pager_cmdline()
         LOG.debug("Running command: %s", cmdline)
-        p4 = Popen(cmdline, stdin=p3.stdout)
+        p4 = self._popen(cmdline, stdin=p3.stdout)
         p4.communicate()
         sys.exit(1)
+
+    def _get_rst2man_name(self):
+        if self._exists_on_path('rst2man.py'):
+            return 'rst2man.py'
+        elif self._exists_on_path('rst2man'):
+            # Some distros like ubuntu will rename rst2man.py to rst2man
+            # if you install their version (i.e. "apt-get install
+            # python-docutils").  Though they could technically rename
+            # this to anything we'll support it renamed to 'rst2man' by
+            # explicitly checking for this case ourself.
+            return 'rst2man'
+        else:
+            # Give them the original name as set from docutils.
+            raise ExecutableNotFoundError('rst2man.py')
+
+    def _exists_on_path(self, name):
+        # Since we're only dealing with POSIX systems, we can
+        # ignore things like PATHEXT.
+        return any([os.path.exists(os.path.join(p, name))
+                    for p in os.environ.get('PATH', []).split(os.pathsep)])
+
+    def _popen(self, *args, **kwargs):
+        return Popen(*args, **kwargs)
 
 
 class WindowsHelpRenderer(HelpRenderer):

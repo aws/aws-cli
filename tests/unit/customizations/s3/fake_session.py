@@ -154,6 +154,7 @@ class FakeOperation(object):
             content['Size'] = len(body)
             content['LastModified'] = '2013-07-15T17:03:43.000Z'
             content['ETag'] = etag
+            content['ContentType'] = kwargs.get('content_type')
             self.session.s3[bucket][key] = content
         else:
             response_data['Errors'] = [{'Message': 'Bucket does not exist'}]

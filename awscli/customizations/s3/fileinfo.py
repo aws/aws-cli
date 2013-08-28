@@ -5,6 +5,7 @@ from six.moves import queue as Queue
 import sys
 import time
 import threading
+import mimetypes
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -269,6 +270,7 @@ class FileInfo(TaskInfo):
                 params['body'] = stream_body
             if self.parameters['acl']:
                 params['acl'] = self.parameters['acl'][0]
+            params['content_type'] = mimetypes.guess_type(self.src)[0]
             response_data, http = operate(self.service, 'PutObject', params)
             etag = retrieve_http_etag(http)
             check_etag(etag, body)

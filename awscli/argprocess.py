@@ -237,7 +237,7 @@ class ParamShorthand(object):
         valid_names = self._create_name_to_params(param)
         for part in parts:
             try:
-                key, value = part.split('=')
+                key, value = part.split('=', 1)
             except ValueError:
                 raise ParamSyntaxError(part)
             key = key.strip()

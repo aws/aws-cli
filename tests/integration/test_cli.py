@@ -56,7 +56,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 1)
         self.assertIn('AWS', p.stdout)
-        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command Line Interface')
+        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')
@@ -156,20 +156,20 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_help_usage_top_level(self):
         p = aws('')
-        self.assertIn('usage: aws [options] <service_name> '
-                      '<operation> [parameters]', p.stderr)
+        self.assertIn('usage: aws [options] <command> '
+                      '<subcommand> [parameters]', p.stderr)
         self.assertIn('too few arguments', p.stderr)
 
     def test_help_usage_service_level(self):
         p = aws('ec2')
-        self.assertIn('usage: aws [options] <service_name> '
-                      '<operation> [parameters]', p.stderr)
+        self.assertIn('usage: aws [options] <command> '
+                      '<subcommand> [parameters]', p.stderr)
         self.assertIn('too few arguments', p.stderr)
 
     def test_help_usage_operation_level(self):
         p = aws('ec2 run-instances')
-        self.assertIn('usage: aws [options] <service_name> '
-                      '<operation> [parameters]', p.stderr)
+        self.assertIn('usage: aws [options] <command> '
+                      '<subcommand> [parameters]', p.stderr)
 
     def test_unknown_argument(self):
         p = aws('ec2 describe-instances --filterss')

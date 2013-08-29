@@ -75,7 +75,7 @@ class MainArgParser(CLIArgParser):
 
 class ServiceArgParser(CLIArgParser):
 
-    Usage = ("aws [options] <service_name> <operation> [parameters]")
+    Usage = ("aws [options] <command> <subcommand> [parameters]")
 
     def __init__(self, operations_table, service_name):
         super(ServiceArgParser, self).__init__(
@@ -92,7 +92,7 @@ class ServiceArgParser(CLIArgParser):
 
 class OperationArgParser(CLIArgParser):
     Formatter = argparse.RawTextHelpFormatter
-    Usage = ("aws [options] <service_name> <operation> [parameters]")
+    Usage = ("aws [options] <command> <subcommand> [parameters]")
 
     type_map = {
         'structure': str,

@@ -209,9 +209,9 @@ Will automatically use the global endpoint for the IAM service
 regardless of the value of the ``AWS_DEFAULT_REGION`` environment
 variable or the ``region`` variable specified in your profile.
 
------------------------
+--------------------
 JSON Parameter Input
------------------------
+--------------------
 
 Many options that need to be provided are simple string or numeric
 values.  However, some operations require JSON data structures

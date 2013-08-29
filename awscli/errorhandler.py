@@ -17,6 +17,14 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
+class ClientError(Exception):
+    pass
+
+
+class ServerError(Exception):
+    pass
+
+
 class ErrorHandler(object):
     """
     This class is responsible for handling any HTTP errors that occur
@@ -28,23 +36,18 @@ class ErrorHandler(object):
     with an appropriate error code.
     """
 
-    ClientError = "A client error ({error_code}) occurred: {error_message}"
-    ServerError = "A server error ({error_code}) occurred: {error_message}"
-
     def __call__(self, http_response, parsed, operation, **kwargs):
         LOG.debug('HTTP Response Code: %d', http_response.status_code)
         if http_response.status_code >= 500:
             code, message = self._get_error_code_and_message(parsed)
-            sys.stderr.write(self.ServerError.format(error_code=code,
-                                                     error_message=message))
-            sys.stderr.write('\n')
-            sys.exit(http_response.status_code - 399)
+            msg = "A server error ({error_code}) occurred: {error_message}"
+            msg = msg.format(error_code=code, error_message=message)
+            raise ServerError(msg)
         if http_response.status_code >= 400 or http_response.status_code == 301:
             code, message = self._get_error_code_and_message(parsed)
-            sys.stderr.write(self.ClientError.format(error_code=code,
-                                                     error_message=message))
-            sys.stderr.write('\n')
-            sys.exit(http_response.status_code - 399)
+            msg = "A client error ({error_code}) occurred: {error_message}"
+            msg = msg.format(error_code=code, error_message=message)
+            raise ClientError(msg)
         return 0
 
     def _get_error_code_and_message(self, response):

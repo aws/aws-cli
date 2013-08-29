@@ -492,12 +492,12 @@ class CLIOperationCaller(object):
             pages = operation_object.paginate(endpoint, **parameters)
             self._display_response(operation_object, pages,
                                    parsed_globals)
-            return 0
         else:
             http_response, response_data = operation_object.call(endpoint,
                                                                  **parameters)
             self._display_response(operation_object, response_data,
                                    parsed_globals)
+        return 0
 
     def _display_response(self, operation, response, args):
         output = args.output

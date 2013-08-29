@@ -32,8 +32,8 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['help'])
         self.assert_contains('***\naws\n***')
         self.assert_contains(
-            'The AWS Command Line Interface is a unified tool that provides a '
-            'consistent interface for interacting with all parts of AWS')
+            'The AWS Command Line Interface is a unified tool '
+            'to manage your AWS services.')
         # Verify we see the docs for top level params, so pick
         # a few representative types of params.
         self.assert_contains('``--endpoint-url``')

@@ -21,7 +21,7 @@ import os
 import random
 from tests import unittest
 
-from tests.integration import Result, aws
+from tests.integration import aws
 
 
 class TestLs(unittest.TestCase):
@@ -36,6 +36,8 @@ class TestLs(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
     def test_fail_format(self):
         """
@@ -64,6 +66,8 @@ class TestMbRb(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
         p = aws('s3 ls')
         self.assertIn(self.bucket_name, p.stdout)
@@ -72,6 +76,8 @@ class TestMbRb(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
         p = aws('s3 ls')
         self.assertNotIn(self.bucket_name, p.stdout)
@@ -84,13 +90,11 @@ class TestMbRb(unittest.TestCase):
         """
         bucket_name = "mybucket"
         p = aws('s3 mb s3://%s' % bucket_name)
-        self.assertIn("Error:", p.stdout)
-        self.assertIn("failed:", p.stdout)
+        self.assertIn("BucketAlreadyExists", p.stdout)
 
         bucket_name = "mybucket"
         p = aws('s3 rb s3://%s' % bucket_name)
-        self.assertIn("Error:", p.stdout)
-        self.assertIn("failed:", p.stdout)
+        self.assertIn("AccessDenied", p.stdout)
 
 
 class TestDryrun(unittest.TestCase):
@@ -123,6 +127,8 @@ class TestDryrun(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
         # Make sure the file is not in the bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name)
@@ -168,6 +174,8 @@ class TestCpMv(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
         # Make sure object is in bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name)
@@ -242,6 +250,8 @@ class TestSync(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
         # Ensure both files are in the bucket.
         p = aws('s3 ls s3://%s' % bucket_name)
@@ -253,6 +263,8 @@ class TestSync(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
+        self.assertNotIn("client error", p.stdout)
+        self.assertNotIn("server error", p.stdout)
 
         # Make sure the recursive delete was successful.
         p = aws('s3 ls s3://%s' % bucket_name)

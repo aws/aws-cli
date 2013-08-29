@@ -58,7 +58,8 @@ def do_provider(driver):
     help_command.doc.target = 'html'
     help_command.renderer = FileRenderer(os.path.join(REF_PATH, 'index.rst'))
     help_command(None, None)
-    for service_name in help_command.command_table:
+    services = sorted(help_command.command_table)
+    for service_name in services:
         if service_name == 'help':
             continue
         service_command = help_command.command_table[service_name]
@@ -79,7 +80,7 @@ def build_service_list(tut_path, ref_path, driver):
             continue
         service = service_command._service_object
         l.append((service.service_full_name, service_name))
-    l = sorted(l, key=lambda x: x[0])
+    l = sorted(l, key=lambda x: x[1])
     for full_name, service_name in l:
         service_ref_path = os.path.join(ref_path, service_name)
         service_ref_path = os.path.join(service_ref_path, 'index')

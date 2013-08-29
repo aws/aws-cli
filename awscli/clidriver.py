@@ -32,7 +32,6 @@ from awscli.arguments import ListArgument
 from awscli.arguments import BooleanArgument
 from awscli.arguments import CLIArgument
 from awscli.arguments import UnknownArgumentError
-from awscli.arguments import BadArgumentError
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -472,7 +471,14 @@ class ServiceOperation(object):
 
 
 class CLIOperationCaller(object):
-    """Call an AWS operation and format the response."""
+    """
+    Call an AWS operation and format the response.
+
+    This class handles the non-error path.  If an HTTP error occurs
+    on the call to the service operation, it will be detected and
+    handled by the :class:`awscli.errorhandler.ErrorHandler` which
+    is registered on the ``after-call`` event.
+    """
 
     def __init__(self, session):
         self._session = session
@@ -492,7 +498,6 @@ class CLIOperationCaller(object):
                                                                  **parameters)
             self._display_response(operation_object, response_data,
                                    parsed_globals)
-            return self._handle_http_response(http_response, response_data)
 
     def _display_response(self, operation, response, args):
         output = args.output
@@ -501,33 +506,3 @@ class CLIOperationCaller(object):
         formatter = get_formatter(output, args)
         formatter(operation, response)
 
-    def _handle_http_response(self, http_response, response_data):
-        if http_response.status_code >= 500:
-            msg = self._session.get_data('messages/ServerError')
-            code, message = self._get_error_code_and_message(response_data)
-            sys.stderr.write(msg.format(error_code=code,
-                                        error_message=message))
-            sys.stderr.write('\n')
-            return http_response.status_code - 399
-        if http_response.status_code >= 400:
-            msg = self._session.get_data('messages/ClientError')
-            code, message = self._get_error_code_and_message(response_data)
-            sys.stderr.write(msg.format(error_code=code,
-                                        error_message=message))
-            sys.stderr.write('\n')
-            return http_response.status_code - 399
-        return 0
-
-    def _get_error_code_and_message(self, response):
-        code = 'Unknown'
-        message = 'Unknown'
-        if 'Errors' in response:
-            if isinstance(response['Errors'], list):
-                error = response['Errors'][-1]
-                if 'Code' in error:
-                    code = error['Code']
-                elif 'Type' in error:
-                    code = error['Type']
-                if 'Message' in error:
-                    message = error['Message']
-        return (code, message)

@@ -137,12 +137,11 @@ regardless of the value of the ``AWS_DEFAULT_REGION`` environment
 variable or the ``region`` variable specified in your profile.
 
 
-Complex Parameter Input
+JSON Parameter Input
 -----------------------
 Many options that need to be provided are simple string or numeric
-values.  However, some operations require complex data structures
-as input parameters.  These options must be provided as JSON data
-structures, either on the command line or in files.
+values.  However, some operations require JSON data structures
+as input parameters, either on the command line or in files.
 
 For example, consider the command to authorize access to an EC2
 security group.  In this case, we will add ingress access to port 22

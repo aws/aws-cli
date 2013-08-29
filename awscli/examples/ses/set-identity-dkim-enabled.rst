@@ -4,7 +4,7 @@ The following example uses the ``set-identity-dkim-enabled`` command to disable 
 
     aws ses set-identity-dkim-enabled --identity user@example.com --no-dkim-enabled
 
-Output::    
+Output::
 
  {
     "ResponseMetadata": {
@@ -15,5 +15,5 @@ Output::
 
 For more information about Easy DKIM, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
-.. _Easy DKIM in Amazon SES: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html
+.. _`Easy DKIM in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html
 

@@ -1,7 +1,7 @@
 Authorize an AWS Account to Restore a Snapshot
 ----------------------------------------------
 
-This example authorizes the AWS account `444455556666` to restore the snapshot `my-snapshot-id`.
+This example authorizes the AWS account ``444455556666`` to restore the snapshot ``my-snapshot-id``.
 By default, the output is in JSON format.
 
 Command::

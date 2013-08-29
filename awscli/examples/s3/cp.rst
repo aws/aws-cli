@@ -4,8 +4,7 @@ bucket and key.
 
     aws s3 cp test.txt s3://mybucket/test2.txt
 
-*Output:*
-::
+*Output*::
 
     upload: test.txt to s3://mybucket/test2.txt
 

@@ -45,6 +45,6 @@ Result::
        }
     }
 
-If you want to purchase a reserved node offering, you can call `purchase-reserved-node-offering` using a valid
+If you want to purchase a reserved node offering, you can call ``purchase-reserved-node-offering`` using a valid
 *ReservedNodeOfferingId*.
 

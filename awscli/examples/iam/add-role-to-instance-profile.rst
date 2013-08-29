@@ -8,5 +8,5 @@ To create an instance profile, use the ``create-instance-profile`` command.
 
 For more information, see `Instance Profiles`_ in the *Using IAM* guide.
 
-.. `_Instance Profiles`: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
+.. _`Instance Profiles`: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
 

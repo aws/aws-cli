@@ -237,7 +237,7 @@ class ParamShorthand(object):
         valid_names = self._create_name_to_params(param)
         for part in parts:
             try:
-                key, value = part.split('=')
+                key, value = part.split('=', 1)
             except ValueError:
                 raise ParamSyntaxError(part)
             key = key.strip()
@@ -333,7 +333,8 @@ def unpack_complex_cli_arg(parameter, value):
         if value.lstrip()[0] == '{':
             d = json.loads(value)
         else:
-            msg = 'Structure option value must be JSON or path to file.'
+            msg = 'The value for parameter "%s" must be JSON or path to file.' % (
+                parameter.cli_name)
             raise ValueError(msg)
         return d
     elif parameter.type == 'list':

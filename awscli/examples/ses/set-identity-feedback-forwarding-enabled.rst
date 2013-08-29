@@ -4,7 +4,7 @@ The following example uses the ``set-identity-feedback-forwarding-enabled`` comm
 
     aws ses set-identity-feedback-forwarding-enabled --identity user@example.com --forwarding-enabled
 
-Output::    
+Output::
 
  {
     "ResponseMetadata": {
@@ -15,5 +15,5 @@ Output::
 
 For more information about feedback notifications, see `Bounce and Complaint Notifications in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
-.. _Bounce and Complaint Notifications in Amazon SES: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/bounce-complaint-notifications.html
+.. _`Bounce and Complaint Notifications in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/bounce-complaint-notifications.html
 

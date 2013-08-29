@@ -12,8 +12,8 @@ The topic ARN is returned::
       },
       "TopicArn": "arn:aws:sns:us-east-1:123456789012:MyTopic"
   }
-       
+
 For more information, see `Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`_ in the *AWS Command Line Interface User Guide*.
 
-.. _Using the AWS Command Line Interface with Amazon SQS and Amazon SNS: http://docs.aws.amazon.com/cli/latest/userguide/cli-sqs-queue-sns-topic.html
+.. _`Using the AWS Command Line Interface with Amazon SQS and Amazon SNS`: http://docs.aws.amazon.com/cli/latest/userguide/cli-sqs-queue-sns-topic.html
 

@@ -43,8 +43,8 @@ Output::
         }
     ]
   }
-  
+
 For more information, see `Deploying Apps`_ in the *OpsWorks User Guide*.
 
-.. _Deploying Apps: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html
+.. _`Deploying Apps`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html
 

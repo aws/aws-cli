@@ -10,14 +10,15 @@ Here are the contents of that file::
 
   [
     {
-      "MetricName": "New Posts",
-      "Timestamp": "Wednesday, June 12, 2013 8:28:20 PM",
-      "Value": 0.50,
-      "Unit": "Count"
+      "metric_name": "New Posts",
+      "timestamp": "Wednesday, June 12, 2013 8:28:20 PM",
+      "value": 0.50,
+      "unit": "Count"
     }
   ]
 
 For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch Developer Guide*.
 
-.. _Publishing Custom Metrics: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
+.. _`Publishing Custom Metrics`: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
+
 

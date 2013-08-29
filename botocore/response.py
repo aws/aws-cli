@@ -24,7 +24,7 @@ import sys
 import xml.etree.cElementTree
 from botocore import ScalarTypes
 from .hooks import first_non_none_response
-import json
+from botocore.compat import json
 import logging
 
 logger = logging.getLogger(__name__)

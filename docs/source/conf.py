@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'botocore'
-copyright = u'2012, Mitch Garnaat'
+copyright = u'2013, Mitch Garnaat'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -215,7 +215,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'botocore', u'botocore Documentation',
-     [u'Mitch Garnaat'], 1)
+     [u'Mitch Garnaat'], 3)
 ]
 
 # If true, show URL addresses after external links.

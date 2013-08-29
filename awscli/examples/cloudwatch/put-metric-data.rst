@@ -2,7 +2,7 @@
 
 The following example uses the ``put-metric-data`` command to publish a custom metric to Amazon CloudWatch::
 
-  aws cloudwatch put-metric-data --namespace "Usage Metrics" --metric-data file://metric.json 
+  aws cloudwatch put-metric-data --namespace "Usage Metrics" --metric-data file://metric.json
 
 The values for the metric itself are stored in the JSON file, ``metric.json``.
 
@@ -19,5 +19,6 @@ Here are the contents of that file::
 
 For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch Developer Guide*.
 
-.. _Create an Amazon EC2 Key Pair: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-keypairs.html
+.. _`Publishing Custom Metrics`: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
+
 

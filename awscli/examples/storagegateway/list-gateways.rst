@@ -1,7 +1,6 @@
 **To list gateways for an account**
 
-The following ``list-gateways`` command lists all the gateways defined for an account.
-::
+The following ``list-gateways`` command lists all the gateways defined for an account::
 
     aws storagegateway list-gateways
 

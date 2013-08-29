@@ -1,7 +1,7 @@
 Describe Resize
 ---------------
 
-This example describes the latest resize of a cluster. The request was for 3 nodes of type `dw.hs1.8xlarge`.
+This example describes the latest resize of a cluster. The request was for 3 nodes of type ``dw.hs1.8xlarge``.
 
 Command::
 

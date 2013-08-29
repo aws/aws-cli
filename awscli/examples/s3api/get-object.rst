@@ -1,4 +1,5 @@
-**Get an object**
+Get an object
+-------------
 
 The following example uses the ``get-object`` command to download an object from Amazon S3::
 
@@ -6,4 +7,4 @@ The following example uses the ``get-object`` command to download an object from
 
 For more information about retrieving objects, see `Getting Objects`_ in the *Amazon S3 Developer Guide*.
 
-.. _Getting Objects: http://docs.aws.amazon.com/AmazonS3/latest/dev/GettingObjectsUsingAPIs.html
+.. _`Getting Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/GettingObjectsUsingAPIs.html

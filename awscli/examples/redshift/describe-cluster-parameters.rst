@@ -35,7 +35,7 @@ Result::
        ]
     }
 
-You can also obtain the same information in text format using the `--output text` option.
+You can also obtain the same information in text format using the ``--output text`` option.
 
 Command::
 

@@ -4,7 +4,7 @@ The following example uses the ``delete-identity`` command to delete an identity
 
     aws ses delete-identity --identity user@example.com
 
-Output::    
+Output::
 
  {
     "ResponseMetadata": {
@@ -15,4 +15,4 @@ Output::
 
 For more information about verified identities, see `Verifying Email Addresses and Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
-.. _Verifying Email Addresses and Domains in Amazon SES: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html
+.. _`Verifying Email Addresses and Domains in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html

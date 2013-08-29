@@ -1,8 +1,8 @@
 Revoke the Authorization of an AWS Account to Restore a Snapshot
 ----------------------------------------------------------------
 
-This example revokes the authorization of the AWS account `444455556666` to
-restore the snapshot `my-snapshot-id`. By default, the output is in JSON
+This example revokes the authorization of the AWS account ``444455556666`` to
+restore the snapshot ``my-snapshot-id``. By default, the output is in JSON
 format.
 
 Command::

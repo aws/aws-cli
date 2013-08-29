@@ -47,7 +47,7 @@ Output::
     ]
   }
 
-For more information, see `Instances`_ in the *OpsWorks User Guide*.
+For more information, see Instances_ in the *OpsWorks User Guide*.
 
 .. _Instances: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html
 

@@ -6,15 +6,17 @@ The following ``list-signing-certificates`` commmand lists the signing certifica
 
 Output::
 
-  "Certificates: "[
-    {
+  {
+    "Certificates: "[
+      {
         "UserName": "Bob",
         "Status": "Inactive",
         "CertificateBody": "-----BEGIN CERTIFICATE-----<certificate-body>-----END CERTIFICATE-----",
         "CertificateId": "TA7SMP42TDN5Z26OBPJE7EXAMPLE",
         "UploadDate": "2013-06-06T21:40:08Z"
-    }
-  ]
+      }
+    ]
+  }
 
 For more information, see `Creating and Uploading a User Signing Certificate`_ in the *Using IAM* guide.
 

@@ -1,49 +1,19 @@
-**To view information about a security group**
+**To display information about a security group**
 
-The following example uses the ``describe-security-groups`` command to view information about the security group named WebServerSG::
+This example displays information about the security group named MySecurityGroup.
 
-    aws ec2 describe-security-groups --group-names WebServerSG
+Command::
 
-The output of this command is a JSON block that describes the security group, similar to the following::
+  aws ec2 describe-security-groups --group-names MySecurityGroup
+
+Output::
 
   {
       "SecurityGroups": [
           {
-              "IpPermissionsEgress": [
-                  {
-                      "IpProtocol": "-1",
-                      "IpRanges": [
-                          {
-                              "CidrIp": "0.0.0.0/0"
-                          }
-                      ],
-                      "UserIdGroupPairs": []
-                  }
-              ],
-              "Description": "For web servers",
+              "IpPermissionsEgress": [],
+              "Description": "My security group",
               "IpPermissions": [
-                  {
-                      "ToPort": 80,
-                      "IpProtocol": "tcp",
-                      "IpRanges": [
-                          {
-                              "CidrIp": "0.0.0.0/0"
-                          }
-                      ],
-                      "UserIdGroupPairs": [],
-                      "FromPort": 80
-                  },
-                  {
-                      "ToPort": 443,
-                      "IpProtocol": "tcp",
-                      "IpRanges": [
-                          {
-                              "CidrIp": "0.0.0.0/0"
-                          }
-                      ],
-                      "UserIdGroupPairs": [],
-                      "FromPort": 443
-                  },              
                   {
                       "ToPort": 22,
                       "IpProtocol": "tcp",
@@ -56,18 +26,14 @@ The output of this command is a JSON block that describes the security group, si
                       "FromPort": 22
                   }
               ],
-              "GroupName": "WebServerSG",
-              "VpcId": "vpc-44eb7ef7"
-              "OwnerId": "803981987763",
-              "GroupId": "sg-903004f8",              
+              "GroupName": "MySecurityGroup",
+              "OwnerId": "123456789012",
+              "GroupId": "sg-903004f8",
           }
-      ],
-      "ResponseMetadata": {
-          "RequestId": "afb680df-d7b1-4f6a-b1a7-344fdb1e3532"
-      }
+      ]
   }
 
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 
-.. _Using Security Groups: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html
+.. _`Using Security Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html
 

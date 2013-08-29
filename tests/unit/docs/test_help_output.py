@@ -156,9 +156,8 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.driver.main(['autoscaling',
                           'terminate-instance-in-auto-scaling-group', 'help'])
         self.assert_contains(
-            '``--should-decrement-desired-capacity`` (boolean)')
-        self.assert_contains(
-            '``--no-should-decrement-desired-capacity`` (boolean)')
+            ('``--should-decrement-desired-capacity`` | '
+             '``--no-should-decrement-desired-capacity`` (boolean)'))
 
     def test_streaming_output_arg(self):
         self.driver.main(['s3api', 'get-object', 'help'])
@@ -193,3 +192,15 @@ class TestPagingParamDocs(BaseAWSHelpOutputTest):
         self.driver.main(['s3api', 'list-objects', 'help'])
         self.assert_not_contains('``--next-token``')
         self.assert_not_contains('``--max-keys``')
+
+
+class TestMergeBooleanGroupArgs(BaseAWSHelpOutputTest):
+    def test_merge_bool_args(self):
+        # Boolean args need to be group together so rather than
+        # --foo foo docs
+        # --no-foo foo docs again
+        #
+        # We instead have:
+        # --foo | --no-foo foo docs
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('``--dry-run`` | ``--no-dry-run``')

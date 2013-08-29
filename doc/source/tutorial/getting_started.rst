@@ -1,14 +1,9 @@
 ****************************
-Getting Started With aws-cli
+Getting Started With AWS CLI
 ****************************
 
 This package provides a unified command line interface to many
 Amazon Web Services.
-
-The currently supported services include:
-
-.. include:: services.rst
-
 
 The aws-cli package should work on Python versions 2.6.x - 3.3.x.
 

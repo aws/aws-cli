@@ -13,42 +13,47 @@
 from tests import unittest
 import os
 
-from awscli.help import PosixHelpRenderer
+import mock
+
+from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
+
+
+class FakePosixHelpRenderer(PosixHelpRenderer):
+    def __init__(self):
+        self.exists_on_path = {}
+        self.popen_calls = []
+
+    def _exists_on_path(self, name):
+        return self.exists_on_path.get(name)
+
+    def _popen(self, *args, **kwargs):
+        self.popen_calls.append((args, kwargs))
+        return mock.Mock()
 
 
 class TestHelpPager(unittest.TestCase):
 
     def setUp(self):
+        self.environ = {}
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
         self.renderer = PosixHelpRenderer()
-        self.save_pager = os.environ.get('PAGER', None)
-        self.save_manpager = os.environ.get('MANPAGER', None)
 
     def tearDown(self):
-        if self.save_pager is not None:
-            os.environ['PAGER'] = self.save_pager
-        if self.save_manpager is not None:
-            os.environ['MANPAGER'] = self.save_manpager
+        self.environ_patch.stop()
 
     def test_no_env_vars(self):
-        if 'PAGER' in os.environ:
-            del os.environ['PAGER']
-        if 'MANPAGER' in os.environ:
-            del os.environ['MANPAGER']
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          self.renderer.PAGER.split())
 
     def test_manpager(self):
         pager_cmd = 'foobar'
-        if 'PAGER' in os.environ:
-            del os.environ['PAGER']
         os.environ['MANPAGER'] = pager_cmd
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          pager_cmd.split())
 
     def test_pager(self):
         pager_cmd = 'fiebaz'
-        if 'MANPAGER' in os.environ:
-            del os.environ['MANPAGER']
         os.environ['PAGER'] = pager_cmd
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          pager_cmd.split())
@@ -61,17 +66,44 @@ class TestHelpPager(unittest.TestCase):
 
     def test_manpager_with_args(self):
         pager_cmd = 'less -X'
-        if 'PAGER' in os.environ:
-            del os.environ['PAGER']
         os.environ['MANPAGER'] = pager_cmd
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          pager_cmd.split())
 
     def test_pager_with_args(self):
         pager_cmd = 'less -X --clearscreen'
-        if 'MANPAGER' in os.environ:
-            del os.environ['MANPAGER']
         os.environ['PAGER'] = pager_cmd
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          pager_cmd.split())
-        
+
+    @mock.patch('sys.exit', mock.Mock())
+    def test_with_rst2man_py_exists(self):
+        renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['rst2man.py'] = True
+        renderer.exists_on_path['rst2man'] = False
+        renderer.exists_on_path['groff'] = True
+        renderer.render('foo')
+        # First call should be to rst2man.py not rst2man
+        # List of tuples, so the first popen call's first position args
+        # first element is the cmdlist ['rst2man.py']
+        self.assertEqual(renderer.popen_calls[0][0][0], ['rst2man.py'])
+
+    @mock.patch('sys.exit', mock.Mock())
+    def test_with_rst2man_py_does_not_exist(self):
+        renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['rst2man.py'] = False
+        renderer.exists_on_path['rst2man'] = True
+        renderer.exists_on_path['groff'] = True
+        renderer.render('foo')
+        # First call should be to rst2man not rst2man.py
+        self.assertEqual(renderer.popen_calls[0][0][0], ['rst2man'])
+
+    @mock.patch('sys.exit', mock.Mock())
+    def test_no_rst2man_exists(self):
+        renderer = FakePosixHelpRenderer()
+        # Simulate neither rst2man.py nor rst2man existing on the path.
+        renderer.exists_on_path['rst2man.py'] = False
+        renderer.exists_on_path['rst2man'] = False
+        with self.assertRaisesRegexp(ExecutableNotFoundError,
+                                     'Could not find executable named "rst2man.py"'):
+            renderer.render('foo')

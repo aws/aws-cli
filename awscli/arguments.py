@@ -122,6 +122,12 @@ class BaseCLIArgument(object):
 
     @property
     def choices(self):
+        """List valid choices for argument value.
+
+        If this value is not None then this should return a list of valid
+        values for the argument.
+
+        """
         return None
 
     @name.setter

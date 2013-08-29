@@ -192,12 +192,13 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Description')
         doc.include_doc_string(command.documentation)
         if help_command.obj._name == 's3':
-            doc_path = os.path.join(
-                os.path.dirname(
-                    os.path.dirname(
-                        os.path.abspath(awscli.__file__))), 'doc', 'source',
-                                                            'tutorial', 's3')
-            doc_path = os.path.join(doc_path, 'concepts.rst')
+            doc_dir = os.path.join(
+                os.path.dirname(os.path.abspath(awscli.__file__)),
+                'examples', help_command.event_class.lower())
+            # The file is named '_concepts.rst' so that it doesn't
+            # collide with any s3 commands, in the rare chance we
+            # create a subcommand called "concepts".
+            doc_path = os.path.join(doc_dir, '_concepts.rst')
             if os.path.isfile(doc_path):
                 help_command.doc.style.h2('Important Concepts')
                 fp = open(doc_path)

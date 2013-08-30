@@ -4,7 +4,8 @@ The following ``update-assume-role-policy`` commmand updates the trust policy fo
 
   aws iam update-assume-role-policy --role-name Test-Tole --policy-document file://Test-Role-Trust-Policy.json
 
-The trust policy is defined as a JSON document in the *Test-Role-Trust-Policy.json* file. (The file name and extension do not have significance.) The trust policy must specify a principal.
+The trust policy is defined as a JSON document in the *Test-Role-Trust-Policy.json* file. (The file name and extension
+do not have significance.) The trust policy must specify a principal.
 
 To update the permissions policy for a role, use the ``put-role-policy`` command.
 

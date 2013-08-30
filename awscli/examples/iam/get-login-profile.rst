@@ -13,7 +13,8 @@ Output::
       }
   }
 
-The ``get-login-profile`` can be used to verify that an IAM user has a password. The command returns a ``NoSuchEntity`` error if no password is defined for the user.
+The ``get-login-profile`` can be used to verify that an IAM user has a password. The command returns a ``NoSuchEntity``
+error if no password is defined for the user.
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
 

@@ -6,7 +6,7 @@ By default, the output is in JSON format.
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-security-groups
+   aws redshift describe-cluster-security-groups
 
 Result::
 

@@ -6,7 +6,7 @@ is created.
 
 Command::
 
-    PROMPT> aws redshift delete-cluster --cluster-identifier mycluster --skip-final-cluster-snapshot
+   aws redshift delete-cluster --cluster-identifier mycluster --skip-final-cluster-snapshot
 
 
 Delete a Cluster, Allowing a Final Cluster Snapshot
@@ -16,6 +16,6 @@ This example deletes a cluster, but specifies a final cluster snapshot.
 
 Command::
 
-    PROMPT> aws redshift delete-cluster --cluster-identifier mycluster --final-cluster-snapshot-identifier myfinalsnapshot
+   aws redshift delete-cluster --cluster-identifier mycluster --final-cluster-snapshot-identifier myfinalsnapshot
 
 

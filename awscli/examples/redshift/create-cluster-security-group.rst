@@ -5,7 +5,7 @@ This example creates a new cluster security group. By default, the output is in 
 
 Command::
 
-    PROMPT> aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group"
+   aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group"
 
 Result::
 
@@ -30,7 +30,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Command::
 
-    PROMPT> aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group" --output text
+   aws redshift create-cluster-security-group --cluster-security-group-name mysecuritygroup --description "This is my cluster security group" --output text
 
 Result::
 

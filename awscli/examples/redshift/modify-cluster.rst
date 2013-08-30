@@ -5,7 +5,7 @@ This example shows how to associate a cluster security group with the specified 
 
 Command::
 
-    PROMPT> aws redshift modify-cluster --cluster-identifier mycluster --cluster-security-groups mysecuritygroup
+   aws redshift modify-cluster --cluster-identifier mycluster --cluster-security-groups mysecuritygroup
 
 
 Modify the Maintenance Window for a Cluster
@@ -16,7 +16,7 @@ starting Sundays at 11:15 PM, and ending Mondays at 3:15 AM.
 
 Command::
 
-    PROMPT> aws redshift modify-cluster --cluster-identifier mycluster --preferred-maintenance-window Sun:23:15-Mon:03:15
+   aws redshift modify-cluster --cluster-identifier mycluster --preferred-maintenance-window Sun:23:15-Mon:03:15
 
 Change the Master Password for the Cluster
 ------------------------------------------
@@ -25,6 +25,6 @@ This example shows how to change the master password for a cluster.
 
 Command::
 
-    PROMPT> aws redshift modify-cluster --cluster-identifier mycluster --master-user-password A1b2c3d4
+   aws redshift modify-cluster --cluster-identifier mycluster --master-user-password A1b2c3d4
 
 

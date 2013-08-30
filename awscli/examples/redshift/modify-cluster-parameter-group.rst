@@ -5,7 +5,7 @@ This example shows how to modify the *wlm_json_configuration* parameter for work
 
 Command::
 
-    PROMPT> aws redshift modify-cluster-parameter-group --parameter-group-name myclusterparametergroup --parameters '{"parameter_name":"wlm_json_configuration","parameter_value":"\[{\\"user_group\\":\[\\"example_user_group1\\"],\\"query_group\\":\[\\"example_query_group1\\"],\\"query_concurrency\\":7},{\\"query_concurrency\\":5}]"}'
+   aws redshift modify-cluster-parameter-group --parameter-group-name myclusterparametergroup --parameters '{"parameter_name":"wlm_json_configuration","parameter_value":"\[{\\"user_group\\":\[\\"example_user_group1\\"],\\"query_group\\":\[\\"example_query_group1\\"],\\"query_concurrency\\":7},{\\"query_concurrency\\":5}]"}'
 
 Result::
 

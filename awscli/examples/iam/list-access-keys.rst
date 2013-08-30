@@ -21,7 +21,8 @@ Output::
       }
   ]
 
-You cannot list the secret access keys for IAM users. If the secret access keys are lost, you must create new access keys using the ``create-access-keys`` command.
+You cannot list the secret access keys for IAM users. If the secret access keys are lost, you must create new access
+keys using the ``create-access-keys`` command.
 
 For more information, see `Creating, Modifying, and Viewing User Security Credentials`_ in the *Using IAM* guide.
 

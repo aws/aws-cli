@@ -6,7 +6,7 @@ This example returns a description of the default cluster parameters for the
 
 Command::
 
-    PROMPT> aws redshift describe-default-cluster-parameters --parameter-group-family redshift-1.0
+   aws redshift describe-default-cluster-parameters --parameter-group-family redshift-1.0
 
 Result::
 

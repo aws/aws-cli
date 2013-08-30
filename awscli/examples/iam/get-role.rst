@@ -17,7 +17,8 @@ Output::
     }
   }
 
-The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the ``list-role-policies`` command.
+The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the
+``list-role-policies`` command.
 
 For more information, see `Creating a Role`_ in the *Using IAM* guide.
 

@@ -5,7 +5,7 @@ This example describes the latest resize of a cluster. The request was for 3 nod
 
 Command::
 
-    PROMPT> aws redshift describe-resize --cluster-identifier mycluster
+   aws redshift describe-resize --cluster-identifier mycluster
 
 Result::
 

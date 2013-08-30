@@ -5,7 +5,7 @@ This example returns a description of all cluster subnet groups.  By default, th
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-subnet-groups
+   aws redshift describe-cluster-subnet-groups
 
 Result::
 

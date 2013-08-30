@@ -1,6 +1,7 @@
 **To describe Elastic IPs**
 
-The following ``describe-elastic-ips`` commmand describes the Elastic IP addresses in an instance, whose ID is ``b62f3e04-e9eb-436c-a91f-d9e9a396b7b0``::
+The following ``describe-elastic-ips`` commmand describes the Elastic IP addresses in an instance, whose ID is
+``b62f3e04-e9eb-436c-a91f-d9e9a396b7b0``::
 
   aws opsworks describe-elastic-ips --instance-id b62f3e04-e9eb-436c-a91f-d9e9a396b7b0
 

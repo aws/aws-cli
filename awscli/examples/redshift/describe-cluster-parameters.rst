@@ -5,14 +5,11 @@ This example retrieves the parameters for the named parameter group.  By default
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-parameters --parameter-group-name myclusterparametergroup
+   aws redshift describe-cluster-parameters --parameter-group-name myclusterparametergroup
 
 Result::
 
     {
-       "ResponseMetadata": {
-          "RequestId": "c2ae881a-64cc-11e2-9e70-918437dd236d"
-       },
        "Parameters": [
           {
              "Description": "Sets the display format for date and time values.",
@@ -39,7 +36,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-parameters --parameter-group-name myclusterparametergroup --output text
+   aws redshift describe-cluster-parameters --parameter-group-name myclusterparametergroup --output text
 
 Result::
 

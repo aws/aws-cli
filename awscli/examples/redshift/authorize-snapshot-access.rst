@@ -6,7 +6,7 @@ By default, the output is in JSON format.
 
 Command::
 
-    PROMPT> aws redshift authorize-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
+   aws redshift authorize-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
 
 Result::
 

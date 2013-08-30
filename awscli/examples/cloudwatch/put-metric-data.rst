@@ -10,10 +10,10 @@ Here are the contents of that file::
 
   [
     {
-      "metric_name": "New Posts",
-      "timestamp": "Wednesday, June 12, 2013 8:28:20 PM",
-      "value": 0.50,
-      "unit": "Count"
+      "MetricName": "New Posts",
+      "Timestamp": "Wednesday, June 12, 2013 8:28:20 PM",
+      "Value": 0.50,
+      "Unit": "Count"
     }
   ]
 

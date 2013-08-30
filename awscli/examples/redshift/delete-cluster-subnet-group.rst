@@ -5,7 +5,7 @@ This example deletes a cluster subnet group.
 
 Command::
 
-    PROMPT> aws redshift delete-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup
+   aws redshift delete-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup
 
 Result::
 

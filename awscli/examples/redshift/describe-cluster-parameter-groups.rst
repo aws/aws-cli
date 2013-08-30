@@ -6,7 +6,7 @@ account, with column headers.  By default, the output is in JSON format.
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-parameter-groups
+   aws redshift describe-cluster-parameter-groups
 
 Result::
 
@@ -26,7 +26,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-parameter-groups --output text
+   aws redshift describe-cluster-parameter-groups --output text
 
 Result::
 

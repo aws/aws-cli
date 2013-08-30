@@ -6,7 +6,7 @@ purchase.
 
 Command::
 
-    PROMPT> aws redshift describe-reserved-node-offerings
+   aws redshift describe-reserved-node-offerings
 
 Result::
 

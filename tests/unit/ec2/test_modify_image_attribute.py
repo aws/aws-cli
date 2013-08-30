@@ -39,6 +39,14 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
                   }
         self.assert_params_for_cmd(cmdline, result)
 
+    def test_assert_error_in_bad_json_path(self):
+        cmdline = self.prefix
+        cmdline += ' --image-id ami-d00dbeef'
+        cmdline += ' --launch-permission THISISNOTJSON'
+        # The arg name should be in the error message.
+        self.assert_params_for_cmd(cmdline, {}, expected_rc=255,
+                                   stderr_contains='launch-permission')
+
 
 if __name__ == "__main__":
     unittest.main()

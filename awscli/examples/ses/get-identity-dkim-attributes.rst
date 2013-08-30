@@ -4,7 +4,7 @@ The following example uses the ``get-identity-dkim-attributes`` command to retri
 
     aws ses get-identity-dkim-attributes --identities "example.com" "user@example.com"
 
-Output::    
+Output::
 
  {
     "DkimAttributes": {
@@ -28,8 +28,8 @@ Output::
  }
 
 
-If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output. 
+If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output.
 
 For more information about Easy DKIM, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
-.. _Easy DKIM in Amazon SES: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html
+.. _`Easy DKIM in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html

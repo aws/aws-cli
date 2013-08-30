@@ -1,12 +1,13 @@
 **To lists the instance profiles for an IAM role**
 
-The following ``list-instance-profiles-for-role`` commmand lists the instance profiles that are associated with the role ``Test-Role``::
+The following ``list-instance-profiles-for-role`` commmand lists the instance profiles that are associated with the role
+``Test-Role``::
 
   aws iam list-instance-profiles-for-role --role-name Test-Role
 
 Output::
 
-  [
+  "InstanceProfiles": [
       {
           "InstanceProfileId": "AIDGPMS9RO4H3FEXAMPLE",
           "Roles": [
@@ -28,5 +29,5 @@ Output::
 
 For more information, see `Instance Profiles`_ in the *Using IAM* guide.
 
-.. _Instance Profiles: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
+.. _`Instance Profiles`: http://docs.aws.amazon.com/IAM/latest/UserGuide/instance-profiles.html
 

@@ -14,15 +14,13 @@ Output::
         "RoleName": "Test-Role",
         "Path": "/",
         "Arn": "arn:aws:iam::123456789012:role/Test-Role"
-    },
-    "ResponseMetadata": {
-        "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
     }
   }
-  
-The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the ``list-role-policies`` command.  
-    
+
+The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the
+``list-role-policies`` command.
+
 For more information, see `Creating a Role`_ in the *Using IAM* guide.
 
-.. _Creating a Role: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
+.. _`Creating a Role`: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
 

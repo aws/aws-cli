@@ -1,4 +1,5 @@
-**Delete an object**
+Delete an object
+----------------
 
 The following example uses the ``get-object`` command to download an object from Amazon S3::
 
@@ -6,4 +7,4 @@ The following example uses the ``get-object`` command to download an object from
 
 For more information about deleting objects, see `Deleting Objects`_ in the *Amazon S3 Developer Guide*.
 
-.. _Deleting Objects: http://docs.aws.amazon.com/AmazonS3/latest/dev/DeletingObjects.html
+.. _`Deleting Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/DeletingObjects.html

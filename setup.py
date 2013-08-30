@@ -1,17 +1,14 @@
 #!/usr/bin/env python
-
-"""
-distutils/setuptools install script.
-"""
-
 import os
-import awscli
+import sys
 
 from setuptools import setup, find_packages
 
+import awscli
 
-requires = ['botocore>=0.15.0,<0.16.0',
-            'bcdoc>=0.7.0,<0.8.0',
+
+requires = ['botocore>=0.16.0,<0.17.0',
+            'bcdoc>=0.8.0,<0.9.0',
             'six>=1.1.0',
             'colorama==0.2.5',
             'argparse>=1.1',
@@ -19,7 +16,7 @@ requires = ['botocore>=0.15.0,<0.16.0',
             'rsa==3.1.1']
 
 
-setup(
+setup_options = dict(
     name='awscli',
     version=awscli.__version__,
     description='Universal Command Line Environment for AWS.',
@@ -47,3 +44,24 @@ setup(
         'Programming Language :: Python :: 3.3',
     ),
 )
+
+if 'py2exe' in sys.argv:
+    # This will actually give us a py2exe command.
+    import py2exe
+    # And we have some py2exe specific options.
+    setup_options['options'] = {
+        'py2exe': {
+            'optimize': 0,
+            'skip_archive': True,
+            'includes': ['ConfigParser', 'urllib', 'httplib',
+                         'docutils.readers.standalone',
+                         'docutils.parsers.rst',
+                         'docutils.languages.en',
+                         'xml.etree.ElementTree', 'HTMLParser',
+                         'awscli.handlers'],
+        }
+    }
+    setup_options['console'] = ['bin/aws']
+
+
+setup(**setup_options)

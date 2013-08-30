@@ -13,14 +13,12 @@
 from tests import unittest
 import time
 import os
-import sys
 import tempfile
 import random
 import shutil
-import json
 
 import botocore.session
-from tests.integration import Result, aws
+from tests.integration import aws
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):
@@ -56,7 +54,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 1)
         self.assertIn('AWS', p.stdout)
-        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command Line Interface')
+        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')
@@ -103,8 +101,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws(
             'ec2 describe-instances --filters '
             '\'{"Name": "bad-filter", "Values": ["i-123"]}\'')
-        self.assertEqual(p.rc, 1)
-        self.assertIn("The filter 'bad-filter' is invalid", p.stdout,
+        self.assertEqual(p.rc, 255)
+        self.assertIn("The filter 'bad-filter' is invalid", p.stderr,
                       "stdout: %s, stderr: %s" % (p.stdout, p.stderr))
 
     def test_param_with_file(self):
@@ -133,6 +131,17 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             contents = f.read()
         self.assertEqual(contents, 'foobar contents')
 
+    def test_no_paginate_arg(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+        bucket_name = 'nopaginate' + str(
+            int(time.time())) + str(random.randint(1, 100))
+
+        self.put_object(bucket=bucket_name, key='foobar',
+                        content='foobar contents')
+        p = aws('s3api list-objects --bucket %s --no-paginate' % bucket_name)
+        self.assertEqual(p.rc, 0, p.stdout + p.stderr)
+
     def test_top_level_options_debug(self):
         p = aws('ec2 describe-instances --debug')
         self.assertEqual(p.rc, 0)
@@ -145,20 +154,20 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_help_usage_top_level(self):
         p = aws('')
-        self.assertIn('usage: aws [options] <service_name> '
-                      '<operation> [parameters]', p.stderr)
+        self.assertIn('usage: aws [options] <command> '
+                      '<subcommand> [parameters]', p.stderr)
         self.assertIn('too few arguments', p.stderr)
 
     def test_help_usage_service_level(self):
         p = aws('ec2')
-        self.assertIn('usage: aws [options] <service_name> '
-                      '<operation> [parameters]', p.stderr)
+        self.assertIn('usage: aws [options] <command> '
+                      '<subcommand> [parameters]', p.stderr)
         self.assertIn('too few arguments', p.stderr)
 
     def test_help_usage_operation_level(self):
         p = aws('ec2 run-instances')
-        self.assertIn('usage: aws [options] <service_name> '
-                      '<operation> [parameters]', p.stderr)
+        self.assertIn('usage: aws [options] <command> '
+                      '<subcommand> [parameters]', p.stderr)
 
     def test_unknown_argument(self):
         p = aws('ec2 describe-instances --filterss')

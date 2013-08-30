@@ -19,5 +19,6 @@ Here are the contents of that file::
 
 For more information, see `Publishing Custom Metrics`_ in the *Amazon CloudWatch Developer Guide*.
 
-.. _Publishing Custom Metrics: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
+.. _`Publishing Custom Metrics`: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/publishingMetrics.html
+
 

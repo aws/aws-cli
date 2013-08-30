@@ -209,14 +209,13 @@ Will automatically use the global endpoint for the IAM service
 regardless of the value of the ``AWS_DEFAULT_REGION`` environment
 variable or the ``region`` variable specified in your profile.
 
------------------------
-Complex Parameter Input
------------------------
+--------------------
+JSON Parameter Input
+--------------------
 
 Many options that need to be provided are simple string or numeric
-values.  However, some operations require complex data structures
-as input parameters.  These options must be provided as JSON data
-structures, either on the command line or in files.
+values.  However, some operations require JSON data structures
+as input parameters either on the command line or in files.
 
 For example, consider the command to authorize access to an EC2
 security group.  In this case, we will add ingress access to port 22
@@ -275,12 +274,12 @@ Command Output
 
 The default output for commands is currently JSON.  This may change in the
 future but for now it provides the most complete output.  You may find the
-[jq](http://stedolan.github.com/jq/) tool useful in processing the JSON
+`jq <http://stedolan.github.com/jq/>`_ tool useful in processing the JSON
 output for other uses.
 
 There is also an ASCII table format available.  You can select this
 style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
 
-.. _Amazon Web Services Security Bulletins website: https://aws.amazon.com/security/security-bulletins
+.. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/

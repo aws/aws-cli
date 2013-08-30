@@ -93,6 +93,10 @@ class BaseCLIArgument(object):
         pass
 
     @property
+    def name(self):
+        return self._name
+
+    @property
     def cli_name(self):
         return '--' + self._name
 
@@ -109,16 +113,41 @@ class BaseCLIArgument(object):
         raise NotImplementedError("documentation")
 
     @property
+    def cli_type(self):
+        raise NotImplementedError("cli_type")
+
+    @property
     def py_name(self):
         return self._name.replace('-', '_')
 
     @property
-    def name(self):
-        return self._name
+    def choices(self):
+        """List valid choices for argument value.
+
+        If this value is not None then this should return a list of valid
+        values for the argument.
+
+        """
+        return None
 
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def group_name(self):
+        """Get the group name associated with the argument.
+
+        An argument can be part of a group.  This property will
+        return the name of that group.
+
+        This base class has no default behavior for groups, code
+        that consumes argument objects can use them for whatever
+        purposes they like (documentation, mututally exclusive group
+        validation, etc.).
+
+        """
+        return None
 
 
 class CustomArgument(BaseCLIArgument):
@@ -132,15 +161,17 @@ class CustomArgument(BaseCLIArgument):
     """
 
     def __init__(self, name, help_text='', dest=None, default=None,
-                 action=None, required=None, choices=None,
-                 cli_type_name=None):
+                 action=None, required=None, choices=None, nargs=None,
+                 cli_type_name=None, group_name=None):
         self._name = name
         self._help = help_text
         self._dest = dest
         self._default = default
         self._action = action
         self._required = required
+        self._nargs = nargs
         self._cli_type_name = cli_type_name
+        self._group_name = group_name
         if choices is None:
             choices = []
         self._choices = choices
@@ -168,6 +199,8 @@ class CustomArgument(BaseCLIArgument):
             kwargs['choices'] = self._choices
         if self._required is not None:
             kwargs['required'] = self._required
+        if self._nargs is not None:
+            kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
 
     def required(self):
@@ -184,7 +217,7 @@ class CustomArgument(BaseCLIArgument):
         if self._cli_type_name is not None:
             return self._cli_type_name
         elif self._action in ['store_true', 'store_false']:
-            cli_type_name = 'boolean'
+            return 'boolean'
         else:
             # Default to 'string' type if we don't have any
             # other info.
@@ -200,6 +233,10 @@ class CustomArgument(BaseCLIArgument):
     @property
     def choices(self):
         return self._choices
+
+    @property
+    def group_name(self):
+        return self._group_name
 
 
 class CLIArgument(BaseCLIArgument):
@@ -366,7 +403,7 @@ class BooleanArgument(CLIArgument):
     """
 
     def __init__(self, name, argument_object, operation_object,
-                 action='store_true', dest=None):
+                 action='store_true', dest=None, group_name=None):
         super(BooleanArgument, self).__init__(name, argument_object,
                                               operation_object)
         self._mutex_group = None
@@ -375,17 +412,18 @@ class BooleanArgument(CLIArgument):
             self._destination = self.py_name
         else:
             self._destination = dest
+        if group_name is None:
+            self._group_name = self.name
+        else:
+            self._group_name = group_name
 
     def add_to_params(self, parameters, value):
-        unpacked = self._unpack_argument(value)
-        if not unpacked and not self.required:
-            # Any False non-required value is just omitted
-            # from the parameter dict.  This could cause problems
-            # if there are non required parameters that default to
-            # True.
-            return
-        else:
-            parameters[self.py_name] = unpacked
+        # If a value was explicitly specified (so value is True/False
+        # but *not* None) then we add it to the params dict.
+        # If the value was not explicitly set (value is None)
+        # we don't add it to the params dict.
+        if value is not None:
+            parameters[self.py_name] = value
 
     def add_to_arg_table(self, argument_table):
         # Boolean parameters are a bit tricky.  For a single boolean parameter
@@ -399,11 +437,17 @@ class BooleanArgument(CLIArgument):
         negative_version = self.__class__(negative_name, self.argument_object,
                                           self.operation_object,
                                           action='store_false',
-                                          dest=self._destination)
+                                          dest=self._destination,
+                                          group_name=self.group_name)
         argument_table[negative_name] = negative_version
 
     def add_to_parser(self, parser):
         parser.add_argument(self.cli_name,
                             help=self.documentation,
                             action=self._action,
+                            default=None,
                             dest=self._destination)
+
+    @property
+    def group_name(self):
+        return self._group_name

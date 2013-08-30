@@ -1,6 +1,7 @@
 **To get information about IAM entities in the current account**
 
-The following ``get-account-summary`` command returns information about the current IAM entities and current IAM entity limitations in the account::
+The following ``get-account-summary`` command returns information about the current IAM entities and current IAM entity
+limitations in the account::
 
     aws iam get-account-summary
 
@@ -28,12 +29,7 @@ Output::
         "SigningCertificatesPerUserQuota": 2,
         "ServerCertificatesQuota": 10,
         "RolesQuota": 250
-    },
-    "ResponseMetadata": {
-        "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
     }
-  } 
-    
+  }
+
 For more information about entity limitations, see `Limitations on IAM Entities`_ in the *Using IAM* guide.
-
-

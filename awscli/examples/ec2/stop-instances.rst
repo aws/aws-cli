@@ -1,10 +1,12 @@
 **To stop an Amazon EC2 instance**
 
-The following ``stop-instances`` command stops a single running instance with the instance ID of ``i-1a2b3c4d``::
+This example stops a running instance with the instance ID ``i-1a2b3c4d``.
 
-    aws ec2 stop-instances --instance-ids i-1a2b3c4d
+Command::
 
-This command outputs a JSON block that contains descriptive information about the action, similar to the following::
+  aws ec2 stop-instances --instance-ids i-1a2b3c4d
+
+Output::
 
     {
         "StoppingInstances": [
@@ -19,13 +21,10 @@ This command outputs a JSON block that contains descriptive information about th
                     "Name": "running"
                 }
             }
-        ],
-        "ResponseMetadata": {
-            "RequestId": "1597c0de-ae8e-41d2-b773-940dfEXAMPLE"
-        }
+        ]
     }
 
-For more information, see `Stopping, Starting, and Terminating Instances`_ in the *EC2 User Guide*.
+For more information, see `Stop and Start Your Instance`_ in the *Amazon Elastic Compute Cloud User Guide*.
 
-.. _Stopping, Starting, and Terminating Instances: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-stopping-starting-terminating.html
+.. _`Stop and Start Your Instance`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html
 

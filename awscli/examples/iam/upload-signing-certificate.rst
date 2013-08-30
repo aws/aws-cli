@@ -18,10 +18,10 @@ Output::
           "UploadDate": "2013-06-06T21:40:08.121Z"
       }
   }
-  
+
 The certificate is in a file named *certificate.pem* in PEM format.
 
 For more information, see `Creating and Uploading a User Signing Certificate`_ in the *Using IAM* guide.
 
-.. _Creating and Uploading a User Signing Certificate: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_UploadCertificate.html
+.. _`Creating and Uploading a User Signing Certificate`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_UploadCertificate.html
 

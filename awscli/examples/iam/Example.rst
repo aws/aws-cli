@@ -10,9 +10,8 @@ Output::
       "ResponseMetadata": {
           "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
       }
-  }    
+  }
 
 For more information, see `Create New IAM Users and Groups`_ in the *AWS Command Line Interface User Guide*.
 
-.. _Create New IAM Users and Groups: http://docs.aws.amazon.com/cli/latest/userguide/cli-iam-new-user-group.html
-
+.. _`Create New IAM Users and Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-iam-new-user-group.html

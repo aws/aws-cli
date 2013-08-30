@@ -30,7 +30,8 @@ Output::
       }
     ]
   }
-For more information, see `Apps`_ in the *OpsWorks User Guide*.
+
+For more information, see Apps_ in the *OpsWorks User Guide*.
 
 .. _Apps: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps.html
 

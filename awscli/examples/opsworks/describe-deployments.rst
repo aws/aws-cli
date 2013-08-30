@@ -1,6 +1,7 @@
 **To describe deployments**
 
-The following ``describe-deployments`` commmand describes the deployments in a stack, whose ID is ``38ee91e2-abdc-4208-a107-0b7168b3cc7a``::
+The following ``describe-deployments`` commmand describes the deployments in a stack, whose ID is
+``38ee91e2-abdc-4208-a107-0b7168b3cc7a``::
 
   aws opsworks describe-deployments --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
 
@@ -43,8 +44,8 @@ Output::
         }
     ]
   }
-  
+
 For more information, see `Deploying Apps`_ in the *OpsWorks User Guide*.
 
-.. _Deploying Apps: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html
+.. _`Deploying Apps`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-deploying.html
 

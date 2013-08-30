@@ -1,6 +1,7 @@
 **To describe instances**
 
-The following ``describe-instances`` commmand describes the instances in a stack, whose ID is ``38ee91e2-abdc-4208-a107-0b7168b3cc7a``::
+The following ``describe-instances`` commmand describes the instances in a stack, whose ID is
+``38ee91e2-abdc-4208-a107-0b7168b3cc7a``::
 
   aws opsworks describe-instances --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
 
@@ -47,7 +48,7 @@ Output::
     ]
   }
 
-For more information, see `Instances`_ in the *OpsWorks User Guide*.
+For more information, see Instances_ in the *OpsWorks User Guide*.
 
 .. _Instances: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html
 

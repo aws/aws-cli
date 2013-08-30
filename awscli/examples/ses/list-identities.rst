@@ -5,7 +5,7 @@ The following example uses the ``list-identities`` command to list all identitie
 
     aws ses list-identities
 
-Output::    
+Output::
 
  [
     "user@example.com",
@@ -14,9 +14,9 @@ Output::
 
 
 The list that is returned contains all identities regardless of verification status (verified, pending verification, failure, etc.).
- 
+
 In this example, email addresses *and* domains are returned because we did not specify the identity-type parameter.
 
 For more information about verification, see `Verifying Email Addresses and Domains in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
-.. _Verifying Email Addresses and Domains in Amazon SES: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html
+.. _`Verifying Email Addresses and Domains in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html

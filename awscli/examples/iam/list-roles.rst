@@ -6,26 +6,52 @@ The following ``list-roles`` commmand lists IAM roles for the current account::
 
 Output::
 
-  [
+  {
+    "Roles": [
       {
-          "AssumeRolePolicyDocument": <URL-encoded-JSON>,
-          "RoleId": "AIDACKCEVSQ6C2EXAMPLE",
-          "CreateDate": "2013-05-11T00:02:27Z",
-          "RoleName": "ExampleRole",
-          "Path": "/",
-          "Arn": "arn:aws:iam::123456789012:role/ExampleRole"
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Effect": "Allow",
+              "Sid": ""
+            }
+          ]
+        },
+        "RoleId": "AROAJ52OTH4H7LEXAMPLE",
+        "CreateDate": "2013-05-11T00:02:27Z",
+        "RoleName": "ExampleRole1",
+        "Path": "/",
+        "Arn": "arn:aws:iam::123456789012:role/ExampleRole1"
       },
       {
-          "AssumeRolePolicyDocument": <URL-encoded-JSON>,
-          "RoleId": "AIDGPMS9RO4H3FEXAMPLE",
-          "CreateDate": "2013-04-18T05:01:58Z",
-          "RoleName": "Test-Role",
-          "Path": "/",
-          "Arn": "arn:aws:iam::123456789012:role/Test-Role"
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Principal": {
+                "Service": "elastictranscoder.amazonaws.com"
+              },
+              "Effect": "Allow",
+              "Sid": ""
+            }
+          ]
+        },
+        "RoleId": "AROAI4QRP7UFT7EXAMPLE",
+        "CreateDate": "2013-04-18T05:01:58Z",
+        "RoleName": "emr-access",
+        "Path": "/",
+        "Arn": "arn:aws:iam::123456789012:role/emr-access"
       }
-  ]
+    ]
+  }
 
 For more information, see `Creating a Role`_ in the *Using IAM* guide.
 
-.. _Creating a Role: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
+.. _`Creating a Role`: http://docs.aws.amazon.com/IAM/latest/UserGuide/creating-role.html
 

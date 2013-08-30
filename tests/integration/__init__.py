@@ -48,7 +48,11 @@ def _escape_quotes(command):
 def aws(command):
     if platform.system() == 'Windows':
         command = _escape_quotes(command)
-    full_command = 'python %s %s' % (AWS_CMD, command)
+    if 'AWS_TEST_COMMAND' in os.environ:
+        aws_command = os.environ['AWS_TEST_COMMAND']
+    else:
+        aws_command = 'python %s' % AWS_CMD
+    full_command = '%s %s' % (aws_command, command)
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
     env['AWS_DEFAULT_REGION'] = "us-east-1"

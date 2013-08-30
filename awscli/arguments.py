@@ -93,6 +93,10 @@ class BaseCLIArgument(object):
         pass
 
     @property
+    def name(self):
+        return self._name
+
+    @property
     def cli_name(self):
         return '--' + self._name
 
@@ -109,16 +113,41 @@ class BaseCLIArgument(object):
         raise NotImplementedError("documentation")
 
     @property
+    def cli_type(self):
+        raise NotImplementedError("cli_type")
+
+    @property
     def py_name(self):
         return self._name.replace('-', '_')
 
     @property
-    def name(self):
-        return self._name
+    def choices(self):
+        """List valid choices for argument value.
+
+        If this value is not None then this should return a list of valid
+        values for the argument.
+
+        """
+        return None
 
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def group_name(self):
+        """Get the group name associated with the argument.
+
+        An argument can be part of a group.  This property will
+        return the name of that group.
+
+        This base class has no default behavior for groups, code
+        that consumes argument objects can use them for whatever
+        purposes they like (documentation, mututally exclusive group
+        validation, etc.).
+
+        """
+        return None
 
 
 class CustomArgument(BaseCLIArgument):
@@ -133,7 +162,7 @@ class CustomArgument(BaseCLIArgument):
 
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
-                 cli_type_name=None):
+                 cli_type_name=None, group_name=None):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -142,6 +171,7 @@ class CustomArgument(BaseCLIArgument):
         self._required = required
         self._nargs = nargs
         self._cli_type_name = cli_type_name
+        self._group_name = group_name
         if choices is None:
             choices = []
         self._choices = choices
@@ -203,6 +233,10 @@ class CustomArgument(BaseCLIArgument):
     @property
     def choices(self):
         return self._choices
+
+    @property
+    def group_name(self):
+        return self._group_name
 
 
 class CLIArgument(BaseCLIArgument):
@@ -369,7 +403,7 @@ class BooleanArgument(CLIArgument):
     """
 
     def __init__(self, name, argument_object, operation_object,
-                 action='store_true', dest=None):
+                 action='store_true', dest=None, group_name=None):
         super(BooleanArgument, self).__init__(name, argument_object,
                                               operation_object)
         self._mutex_group = None
@@ -378,6 +412,10 @@ class BooleanArgument(CLIArgument):
             self._destination = self.py_name
         else:
             self._destination = dest
+        if group_name is None:
+            self._group_name = self.name
+        else:
+            self._group_name = group_name
 
     def add_to_params(self, parameters, value):
         # If a value was explicitly specified (so value is True/False
@@ -399,7 +437,8 @@ class BooleanArgument(CLIArgument):
         negative_version = self.__class__(negative_name, self.argument_object,
                                           self.operation_object,
                                           action='store_false',
-                                          dest=self._destination)
+                                          dest=self._destination,
+                                          group_name=self.group_name)
         argument_table[negative_name] = negative_version
 
     def add_to_parser(self, parser):
@@ -408,3 +447,7 @@ class BooleanArgument(CLIArgument):
                             action=self._action,
                             default=None,
                             dest=self._destination)
+
+    @property
+    def group_name(self):
+        return self._group_name

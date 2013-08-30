@@ -17,6 +17,7 @@ registered with the event system.
 
 """
 from awscli.argprocess import ParamShorthand
+from awscli.errorhandler import ErrorHandler
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
@@ -33,9 +34,12 @@ from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 
+
 def awscli_initialize(event_handlers):
     param_shorthand = ParamShorthand()
     event_handlers.register('process-cli-arg', param_shorthand)
+    error_handler = ErrorHandler()
+    event_handlers.register('after-call.*.*', error_handler)
     # The following will get fired for every option we are
     # documenting.  It will attempt to add an example_fn on to
     # the parameter object if the parameter supports shorthand

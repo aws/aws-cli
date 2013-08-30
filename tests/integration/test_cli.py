@@ -13,14 +13,12 @@
 from tests import unittest
 import time
 import os
-import sys
 import tempfile
 import random
 import shutil
-import json
 
 import botocore.session
-from tests.integration import Result, aws
+from tests.integration import aws
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):
@@ -103,8 +101,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws(
             'ec2 describe-instances --filters '
             '\'{"Name": "bad-filter", "Values": ["i-123"]}\'')
-        self.assertEqual(p.rc, 1)
-        self.assertIn("The filter 'bad-filter' is invalid", p.stdout,
+        self.assertEqual(p.rc, 255)
+        self.assertIn("The filter 'bad-filter' is invalid", p.stderr,
                       "stdout: %s, stderr: %s" % (p.stdout, p.stderr))
 
     def test_param_with_file(self):

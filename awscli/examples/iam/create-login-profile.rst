@@ -21,4 +21,3 @@ For more information, see `Managing Passwords`_ in the *Using IAM* guide.
 
 .. _`Managing Passwords`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html
 
-

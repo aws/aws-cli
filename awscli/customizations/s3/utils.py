@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from datetime import datetime
+import mimetypes
 import hashlib
 import math
 import os
@@ -166,3 +167,11 @@ def uni_print(statement):
             sys.stdout.write(statement.encode(sys.stdout.encoding))
     else:
         sys.stdout.write(statement)
+
+
+def guess_content_type(filename):
+    """Given a filename, guess it's content type.
+
+    If the type cannot be guessed, a value of None is returned.
+    """
+    return mimetypes.guess_type(filename)[0]

@@ -75,3 +75,7 @@ def add_param_descriptions(params_dict):
 
     params_dict['force']['documents'] = "Deletes all objects in the bucket " \
         "including the bucket itself."
+
+    params_dict['no-guess-mime-type']['documents'] = (
+        "Do not try to guess the mime type for uploaded files.  By default the "
+        "mime type of a file is guessed when it is uploaded.")

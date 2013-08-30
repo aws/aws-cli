@@ -114,9 +114,6 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         s3_cleanup(self.bucket, self.session)
 
     def test_upload(self):
-        """
-        Test the abiltiy to upload a file without the use of threads.
-        """
         # Confirm there are no objects in the bucket.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
         # Create file info objects to perform upload.
@@ -130,6 +127,11 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         self.s3_handler.call(tasks)
         # Confirm the files were uploaded.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
+        # Verify the guessed content type.
+        self.assertEqual(
+            self.session.s3[self.bucket][
+                'another_directory/text2.txt']['ContentType'],
+            'text/plain')
 
     def test_upload_fail(self):
         """
@@ -162,6 +164,10 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
                                   dest=self.s3_files[i], size=15,
                                   operation='upload'))
         self.s3_handler_multi.call(tasks)
+        self.assertEqual(
+            self.session.s3[self.bucket][
+                'another_directory/text2.txt']['ContentType'],
+            'text/plain')
 
 
 class S3HandlerExceptionSingleTaskTest(S3HandlerBaseTest):

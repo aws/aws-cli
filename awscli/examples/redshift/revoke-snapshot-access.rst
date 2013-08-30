@@ -7,7 +7,7 @@ format.
 
 Command::
 
-    PROMPT> aws redshift revoke-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
+   aws redshift revoke-snapshot-access --snapshot-id my-snapshot-id --account-with-restore-access 444455556666
 
 Result::
 

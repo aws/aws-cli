@@ -5,7 +5,7 @@ This example returns a description of all cluster versions.  By default, the out
 
 Command::
 
-    PROMPT> aws redshift copy-cluster-snapshot --source-snapshot-identifier cm:examplecluster-2013-01-22-19-27-58 --target-snapshot-identifier my-saved-snapshot-copy
+   aws redshift copy-cluster-snapshot --source-snapshot-identifier cm:examplecluster-2013-01-22-19-27-58 --target-snapshot-identifier my-saved-snapshot-copy
 
 Result::
 

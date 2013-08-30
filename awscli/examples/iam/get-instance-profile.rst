@@ -1,6 +1,7 @@
 **To get information about an instance profile**
 
-The following ``get-instance-profile`` commmand gets information about the instance profile named ``ExampleInstanceProfile``::
+The following ``get-instance-profile`` commmand gets information about the instance profile named
+``ExampleInstanceProfile``::
 
   aws iam get-instance-profile --instance-profile-name ExampleInstanceProfile
 

@@ -5,7 +5,7 @@ This example returns a description of all clusters for the account.  By default,
 
 Command::
 
-    PROMPT> aws redshift describe-clusters
+   aws redshift describe-clusters
 
 Result::
 
@@ -51,7 +51,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Command::
 
-    PROMPT> aws redshift describe-clusters --output text
+   aws redshift describe-clusters --output text
 
 Result::
 

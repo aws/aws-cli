@@ -6,7 +6,7 @@ calling ``describe-reserved-node-offerings``.
 
 Command::
 
-    PROMPT> aws redshift purchase-reserved-node-offering --reserved-node-offering-id ceb6a579-cf4c-4343-be8b-d832c45ab51c
+   aws redshift purchase-reserved-node-offering --reserved-node-offering-id ceb6a579-cf4c-4343-be8b-d832c45ab51c
 
 Result::
 

@@ -5,7 +5,7 @@ This example creates a new cluster subnet group.
 
 Command::
 
-    PROMPT> aws redshift create-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup  --description "My subnet group" --subnet-ids subnet-763fdd1c
+   aws redshift create-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup  --description "My subnet group" --subnet-ids subnet-763fdd1c
 
 Result::
 

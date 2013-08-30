@@ -5,7 +5,7 @@ This example shows how to modify the list of subnets in a cache subnet group.  B
 
 Command::
 
-    PROMPT> aws redshift modify-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup --subnet-ids subnet-763fdd1 subnet-ac830e9
+   aws redshift modify-cluster-subnet-group --cluster-subnet-group-name mysubnetgroup --subnet-ids subnet-763fdd1 subnet-ac830e9
 
 Result::
 

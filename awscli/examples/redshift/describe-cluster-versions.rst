@@ -5,7 +5,7 @@ This example returns a description of all cluster versions.  By default, the out
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-versions
+   aws redshift describe-cluster-versions
 
 Result::
 

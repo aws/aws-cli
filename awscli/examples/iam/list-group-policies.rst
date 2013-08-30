@@ -1,6 +1,7 @@
 **To list the policies for IAM groups in the current account**
 
-The following ``list-group-policies`` commmand lists the names of policies that are attached to the IAM group named ``Admins`` in the current account::
+The following ``list-group-policies`` commmand lists the names of policies that are attached to the IAM group named
+``Admins`` in the current account::
 
   aws iam list-group-policies --group-name Admins
 

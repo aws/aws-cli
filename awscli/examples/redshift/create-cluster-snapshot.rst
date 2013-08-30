@@ -5,7 +5,7 @@ This example creates a new cluster snapshot.  By default, the output is in JSON 
 
 Command::
 
-    PROMPT> aws redshift create-cluster-snapshot --cluster-identifier mycluster --snapshot-identifier my-snapshot-id
+   aws redshift create-cluster-snapshot --cluster-identifier mycluster --snapshot-identifier my-snapshot-id
 
 Result::
 

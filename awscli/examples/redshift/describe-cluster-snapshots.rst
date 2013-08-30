@@ -6,7 +6,7 @@ account.  By default, the output is in JSON format.
 
 Command::
 
-    PROMPT> aws redshift describe-cluster-snapshots
+   aws redshift describe-cluster-snapshots
 
 Result::
 

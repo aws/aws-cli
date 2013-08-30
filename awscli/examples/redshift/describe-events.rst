@@ -5,7 +5,7 @@ this example returns all events. By default, the output is in JSON format.
 
 Command::
 
-    PROMPT> aws redshift describe-events
+   aws redshift describe-events
 
 Result::
 
@@ -26,7 +26,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Command::
 
-    PROMPT> aws redshift describe-events --output text
+   aws redshift describe-events --output text
 
 Result::
 

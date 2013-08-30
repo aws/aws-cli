@@ -4,7 +4,8 @@ The following ``update-login-profile`` commmand creates a new password for the I
 
   aws iam update-login-profile --user-name Bob --password <password>
 
-To set a password policy for the account, use the ``update-account-password-policy`` command. If the new password violates the account password policy, the command returns a ``PasswordPolicyViolation`` error.
+To set a password policy for the account, use the ``update-account-password-policy`` command. If the new password
+violates the account password policy, the command returns a ``PasswordPolicyViolation`` error.
 
 If the account password policy allows them to, IAM users can change their own passwords using the ``change-password`` command.
 

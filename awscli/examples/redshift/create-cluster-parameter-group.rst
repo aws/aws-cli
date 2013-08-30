@@ -5,7 +5,7 @@ This example creates a new cluster parameter group.
 
 Command::
 
-    PROMPT> aws redshift create-cluster-parameter-group --parameter-group-name myclusterparametergroup --parameter-group-family redshift-1.0 --description "My first cluster parameter group"
+   aws redshift create-cluster-parameter-group --parameter-group-name myclusterparametergroup --parameter-group-family redshift-1.0 --description "My first cluster parameter group"
 
 Result::
 

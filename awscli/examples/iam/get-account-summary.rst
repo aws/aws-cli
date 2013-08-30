@@ -1,6 +1,7 @@
 **To get information about IAM entities in the current account**
 
-The following ``get-account-summary`` command returns information about the current IAM entities and current IAM entity limitations in the account::
+The following ``get-account-summary`` command returns information about the current IAM entities and current IAM entity
+limitations in the account::
 
     aws iam get-account-summary
 

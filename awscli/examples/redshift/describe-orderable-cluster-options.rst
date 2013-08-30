@@ -5,7 +5,7 @@ This example returns descriptions of all orderable cluster options.  By default,
 
 Command::
 
-    PROMPT> aws redshift describe-orderable-cluster-options
+   aws redshift describe-orderable-cluster-options
 
 Result::
 
@@ -47,7 +47,7 @@ You can also obtain the same information in text format using the ``--output tex
 
 Command::
 
-    PROMPT> aws redshift describe-orderable-cluster-options --output text
+   aws redshift describe-orderable-cluster-options --output text
 
 Result::
 

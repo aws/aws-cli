@@ -5,7 +5,7 @@ This example shows a reserved node offering that has been purchased.
 
 Command::
 
-    PROMPT> aws redshift describe-reserved-nodes
+   aws redshift describe-reserved-nodes
 
 Result::
 

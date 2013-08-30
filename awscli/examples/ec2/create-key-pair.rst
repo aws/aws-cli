@@ -6,8 +6,6 @@ Command::
 
   aws ec2 create-key-pair --key-name MyKeyPair
 
-Output:
-
 The output is an ASCII version of the private key and key fingerprint. You need to save the key to a file.
 
 For more information, see `Using Key Pairs`_ in the *AWS Command Line Interface User Guide*.

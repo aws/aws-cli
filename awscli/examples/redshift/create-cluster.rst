@@ -5,7 +5,7 @@ This example creates a cluster with the minimal set of parameters. By default, t
 
 Command::
 
-    PROMPT> aws redshift create-cluster --node-type dw.hs1.xlarge --number-of-nodes 2 --master-username adminuser --master-user-password TopSecret1 --cluster-identifier mycluster
+   aws redshift create-cluster --node-type dw.hs1.xlarge --number-of-nodes 2 --master-username adminuser --master-user-password TopSecret1 --cluster-identifier mycluster
 
 Result::
 

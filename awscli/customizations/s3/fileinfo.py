@@ -14,7 +14,7 @@ from botocore.compat import quote
 from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
-    uni_print
+    uni_print, guess_content_type
 
 
 def make_last_mod_str(last_mod):
@@ -270,12 +270,19 @@ class FileInfo(TaskInfo):
                 params['body'] = stream_body
             if self.parameters['acl']:
                 params['acl'] = self.parameters['acl'][0]
-            params['content_type'] = mimetypes.guess_type(self.src)[0]
+            if self.parameters['guess_mime_type']:
+                self._inject_content_type(params, self.src)
             response_data, http = operate(self.service, 'PutObject', params)
             etag = retrieve_http_etag(http)
             check_etag(etag, body)
         else:
             self.multi_upload()
+
+    def _inject_content_type(self, params, filename):
+        # Add a content type param if we can guess the type.
+        guessed_type = guess_content_type(filename)
+        if guessed_type is not None:
+            params['content_type'] = guessed_type
 
     def download(self):
         """
@@ -350,6 +357,8 @@ class FileInfo(TaskInfo):
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         if self.parameters['acl']:
             params['acl'] = self.parameters['acl'][0]
+        if self.parameters['guess_mime_type']:
+            self._inject_content_type(params, self.src)
         response_data, http = operate(self.service, 'CreateMultipartUpload',
                                       params)
         upload_id = response_data['UploadId']

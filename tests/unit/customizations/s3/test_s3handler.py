@@ -164,6 +164,10 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
                                   dest=self.s3_files[i], size=15,
                                   operation='upload'))
         self.s3_handler_multi.call(tasks)
+        self.assertEqual(
+            self.session.s3[self.bucket][
+                'another_directory/text2.txt']['ContentType'],
+            'text/plain')
 
 
 class S3HandlerExceptionSingleTaskTest(S3HandlerBaseTest):

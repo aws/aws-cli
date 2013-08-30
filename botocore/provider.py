@@ -39,5 +39,6 @@ class Provider(object):
                               sn in self.session.get_available_services()]
         return self._services
 
+
 def get_provider(session, provider_name):
     return Provider(session, provider_name)

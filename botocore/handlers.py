@@ -76,28 +76,24 @@ def check_dns_name(bucket_name):
     Check to see if the ``bucket_name`` complies with the
     restricted DNS naming conventions necessary to allow
     access via virtual-hosting style.
+
+    Even though "." characters are perfectly valid in this DNS
+    naming scheme, we are going to punt on any name containing a
+    "." character because these will cause SSL cert validation
+    problems if we try to use virtual-hosting style addressing.
     """
+    if '.' in bucket_name:
+        return False
     n = len(bucket_name)
     if n < 3 or n > 63:
         # Wrong length
         return False
-    labels = bucket_name.split('.')
-    if len(labels) == 4:
-        # Must make sure this is not formatted like an IP address
-        if all([(d.isdigit() and int(d)<256) for d in labels]):
+    if n == 1:
+        if not bucket_name.isalnum():
             return False
-    for label in bucket_name.split('.'):
-        if len(label) == 0:
-            # Must be two '.' in a row
-            return False
-        if len(label) == 1:
-            if label.isalnum():
-                continue
-            # Any single character label must be alphanumeric
-            return False
-        match = LabelRE.match(label)
-        if match is None or match.end() != len(label):
-            return False
+    match = LabelRE.match(bucket_name)
+    if match is None or match.end() != len(bucket_name):
+        return False
     return True
 
 
@@ -115,15 +111,15 @@ def fix_s3_host(event_name, endpoint, request, auth, **kwargs):
     auth.auth_path = parts.path
     path_parts = parts.path.split('/')
     if len(path_parts) > 1:
-        # If the operation is on a bucket, the auth_path must be
-        # terminated with a '/' character.
-        if len(path_parts) == 2:
-            if auth.auth_path[-1] != '/':
-                auth.auth_path += '/'
         bucket_name = path_parts[1]
         logger.debug('Checking for DNS compatible bucket for: %s',
                      request.url)
         if check_dns_name(bucket_name):
+            # If the operation is on a bucket, the auth_path must be
+            # terminated with a '/' character.
+            if len(path_parts) == 2:
+                if auth.auth_path[-1] != '/':
+                    auth.auth_path += '/'
             path_parts.remove(bucket_name)
             host = bucket_name + '.' + endpoint.service.global_endpoint
             new_tuple = (parts.scheme, host, '/'.join(path_parts),

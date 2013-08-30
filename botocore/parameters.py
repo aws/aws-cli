@@ -170,7 +170,7 @@ class FloatParameter(Parameter):
                 value = decimal.Decimal(value)
             except (decimal.InvalidOperation, TypeError):
                 raise ValidationError(value=str(value), type_name='float',
-                                    param=self)
+                                      param=self)
         if self.min:
             if value < self.min:
                 raise RangeError(value=value,
@@ -518,9 +518,20 @@ class StructParameter(Parameter):
     def to_xml(self, value, label=None):
         if not label:
             label = self.get_label()
-        xml = '<%s>' % label
+        xml = '<%s' % label
+        if hasattr(self, 'xmlnamespace'):
+            xml += ' xmlns:%s="%s" ' % (self.xmlnamespace['prefix'],
+                                       self.xmlnamespace['uri'])
+            # Now we need to look for members that have an
+            # xmlattribute attribute with a value of True.
+            # The value of these attributes belongs in the xmlattribute
+            # not in the body of the element.
+            for member in self.members:
+                if hasattr(member, 'xmlattribute'):
+                    xml += '%s="%s"' % (member.xmlname, value[member.name])
+        xml += '>'
         for member in self.members:
-            if member.name in value:
+            if member.name in value and not hasattr(member, 'xmlattribute'):
                 xml += member.to_xml(value[member.name], member.name)
         xml += '</%s>' % label
         return xml

@@ -161,11 +161,10 @@ class TestCpMv(unittest.TestCase):
             os.remove(self.filename2)
 
     def test_cp_mv_cp(self):
-        """
-        This tests the ability to put a single file in s3
-        move it to a different bucket.
-        and download the file locally
-        """
+        # This tests the ability to put a single file in s3
+        # move it to a different bucket.
+        # and download the file locally
+
         # Make a bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name)
 
@@ -180,6 +179,12 @@ class TestCpMv(unittest.TestCase):
         # Make sure object is in bucket.
         p = aws('s3 ls s3://%s' % self.bucket_name)
         self.assertIn(self.filename1, p.stdout)
+
+        # Verify the content type was guessed.  We're using
+        # the s3api command for this.
+        p = aws('s3api head-object --bucket %s --key %s' % (
+            self.bucket_name.rstrip('/'), self.filename1))
+        self.assertEqual(p.json['ContentType'], 'text/plain')
 
         # Make another bucket.
         p = aws('s3 mb s3://%s' % self.bucket_name2)

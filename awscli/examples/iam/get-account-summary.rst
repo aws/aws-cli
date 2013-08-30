@@ -33,6 +33,3 @@ Output::
   }
 
 For more information about entity limitations, see `Limitations on IAM Entities`_ in the *Using IAM* guide.
-
-.. _`Limitations on IAM Entities`: http://docs.aws.amazon.com/IAM/latest/UserGuide/LimitationsOnEntities.html
-

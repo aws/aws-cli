@@ -6,6 +6,3 @@ characters and to require one or more numbers in the password::
     aws iam update-account-password-policy --minimum-password-length 8 --require-numbers
 
 For more information, see `Managing an IAM Password Policy`_ in the *Using IAM* guide.
-
-.. _`Managing an IAM Password Policy`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html
-

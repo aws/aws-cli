@@ -18,7 +18,3 @@ To set a password policy for the account, use the ``update-account-password-poli
 If the account password policy allows them to, IAM users can change their own passwords using the ``change-password`` command.
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
-
-.. _`Managing Passwords`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html
-
-

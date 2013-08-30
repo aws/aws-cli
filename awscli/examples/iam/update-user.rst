@@ -5,6 +5,3 @@ The following ``update-user`` commmand changes the name of the IAM user ``Bob`` 
   aws iam update-user --user-name Bob --new-user-name Robert
 
 For more information, see `Renaming Users and Groups`_ in the *Using IAM* guide.
-
-.. _`Renaming Users and Groups`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Renaming.html
-

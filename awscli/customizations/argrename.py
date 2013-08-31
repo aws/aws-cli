@@ -15,6 +15,7 @@
 
 from awscli.customizations import utils
 
+
 ARGUMENT_RENAMES = {
     # Mapping of original arg to renamed arg.
     # The key is <service>.<operation>.argname
@@ -23,6 +24,9 @@ ARGUMENT_RENAMES = {
     # could say 'ec2.*.dry-run': 'renamed-arg-name', or if you wanted
     # to rename across all services you could say '*.*.dry-run': 'new-name'.
     'ec2.create-image.no-no-reboot': 'reboot',
+    'ec2.*.no-egress': 'ingress',
+    'ec2.*.no-disable-api-termination': 'enable-api-termination',
+    'dynamodb.query.no-scan-index-forward': 'scan-index-reversed',
 }
 
 

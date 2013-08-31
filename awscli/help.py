@@ -223,12 +223,13 @@ class HelpCommand(object):
 
     def __call__(self, args, parsed_globals):
         # Create an event handler for a Provider Document
-        self.EventHandlerClass(self)
+        instance = self.EventHandlerClass(self)
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         bcdoc.clidocevents.generate_events(self.session, self)
         self.renderer.render(self.doc.getvalue())
+        instance.unregister()
 
 
 class ProviderHelpCommand(HelpCommand):

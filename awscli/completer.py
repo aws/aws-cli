@@ -12,6 +12,7 @@
 import awscli.clidriver
 import sys
 import logging
+import copy
 
 LOG = logging.getLogger(__name__)
 
@@ -32,35 +33,19 @@ class Completer(object):
         self.previous_word = None
         self.non_options = None
 
-    def complete(self, cmdline, point):
-        self.command_name = None
-        if point is None:
-            point = len(cmdline)
-        self.point = point
-        self.words = cmdline[0:point].split()
-        self.current_word = self.words[-1]
-        if len(self.words) >= 2:
-            self.previous_word = self.words[-2]
-        else:
-            self.previous_word = None
-        self.non_options = [w for w in self.words if not w.startswith('-')]
-        # Look for a service name in the non_options
-        for w in self.non_options:
-            if w in self.main_hc.command_table:
-                self.command_name = w
-                break
-        if not self.command_name:
-            # If we didn't find any command names in the cmdline
-            # lets try to complete provider options
-            return self._complete_provider()
-        return self._complete_command()
-
-    def _find_possible_options(self, arg_table=None):
-        all_options = self.main_options
-        if arg_table:
-            all_options = all_options + arg_table.keys()
-        cw = self.current_word.lstrip('-')
-        return ['--' + n for n in all_options if n.startswith(cw)]
+    def _complete_option(self, option_name):
+        if option_name == '--region':
+            return ['us-east-1', 'ap-northeast-1', 'sa-east-1',
+                    'ap-southeast-1', 'ap-southeast-2', 'us-west-2',
+                    'us-west-1', 'eu-west-1', 'us-gov-west-1']
+        if option_name == '--endpoint-url':
+            return []
+        if option_name == '--output':
+            return ['json', 'table', 'text']
+        if option_name == '--profile':
+            return self.driver.session.available_profiles
+        return []
+        
 
     def _complete_provider(self):
         retval = []
@@ -79,15 +64,6 @@ class Completer(object):
 
     def _complete_command(self):
         retval = []
-        self.subcommand_name = None
-        self.command_hc = self.main_hc.command_table[self.command_name].create_help_command()
-        # Look for complete subcommand name in cmdline
-        for w in self.non_options:
-            if w in self.command_hc.command_table:
-                self.subcommand_name = w
-                break
-        if self.subcommand_name:
-            return self._complete_subcommand()
         if self.current_word == self.command_name:
             retval = self.command_hc.command_table.keys()
         elif self.current_word.startswith('-'):
@@ -100,13 +76,87 @@ class Completer(object):
 
     def _complete_subcommand(self):
         retval = []
-        self.subcommand_hc = self.command_hc.command_table[self.subcommand_name].create_help_command()
         if self.current_word == self.subcommand_name:
             retval = []
         elif self.current_word.startswith('-'):
-            retval = self._find_possible_options(self.subcommand_hc.arg_table)
+            retval = self._find_possible_options()
         return retval
-        
+
+    def _find_possible_options(self):
+        all_options = copy.copy(self.main_options)
+        if self.subcommand_hc:
+            all_options = all_options + self.subcommand_hc.arg_table.keys()
+        for opt in self.options:
+            # Look thru list of options on cmdline. If there are
+            # options that have already been specified and they are
+            # not the current word, remove them from list of possibles.
+            if opt != self.current_word:
+                stripped_opt = opt.lstrip('-')
+                if stripped_opt in all_options:
+                    all_options.remove(stripped_opt)
+        cw = self.current_word.lstrip('-')
+        possibles = ['--' + n for n in all_options if n.startswith(cw)]
+        if len(possibles) == 1 and possibles[0] == self.current_word:
+            return self._complete_option(possibles[0])
+        return possibles
+
+    def _process_command_line(self):
+        # Process the command line and try to find:
+        #     - command_name
+        #     - subcommand_name
+        #     - words
+        #     - current_word
+        #     - previous_word
+        #     - non_options
+        #     - options
+        self.command_name = None
+        self.subcommand_name = None
+        self.words = self.cmdline[0:self.point].split()
+        self.current_word = self.words[-1]
+        if len(self.words) >= 2:
+            self.previous_word = self.words[-2]
+        else:
+            self.previous_word = None
+        self.non_options = [w for w in self.words if not w.startswith('-')]
+        self.options = [w for w in self.words if w.startswith('-')]
+        # Look for a command name in the non_options
+        for w in self.non_options:
+            if w in self.main_hc.command_table:
+                self.command_name = w
+                cmd_obj = self.main_hc.command_table[self.command_name]
+                self.command_hc = cmd_obj.create_help_command()
+                if self.command_hc.command_table:
+                    # Look for subcommand name
+                    for w in self.non_options:
+                        if w in self.command_hc.command_table:
+                            self.subcommand_name = w
+                            cmd_obj = self.command_hc.command_table[self.subcommand_name]
+                            self.subcommand_hc = cmd_obj.create_help_command()
+                            break
+                break
+
+    def complete(self, cmdline, point):
+        self.cmdline = cmdline
+        self.command_name = None
+        if point is None:
+            point = len(cmdline)
+        self.point = point
+        self._process_command_line()
+        if not self.command_name:
+            # If we didn't find any command names in the cmdline
+            # lets try to complete provider options
+            return self._complete_provider()
+        if self.command_name and not self.subcommand_name:
+            return self._complete_command()
+        return self._complete_subcommand()
+
+
+def complete(cmdline, point):
+    choices = Completer().complete(cmdline, point)
+    print(' \n'.join(choices))
+    sys.exit(0)
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 3:
         cmdline = sys.argv[1]
@@ -116,5 +166,4 @@ if __name__ == '__main__':
     else:
         print('usage: %s <cmdline> <point>' % sys.argv[0])
         sys.exit(1)
-    completer = Completer()
-    print(completer.complete(cmdline, point))
+    print(complete(cmdline, point))

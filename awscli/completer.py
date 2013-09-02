@@ -45,7 +45,6 @@ class Completer(object):
         if option_name == '--profile':
             return self.driver.session.available_profiles
         return []
-        
 
     def _complete_provider(self):
         retval = []

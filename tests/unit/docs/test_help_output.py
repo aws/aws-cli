@@ -109,6 +109,11 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('========\nExamples\n========')
 
+    def test_add_help_for_dryrun(self):
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('DryRunOperation')
+        self.assert_contains('UnauthorizedOperation')
+        
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):

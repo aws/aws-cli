@@ -84,7 +84,7 @@ class Completer(object):
     def _find_possible_options(self):
         all_options = copy.copy(self.main_options)
         if self.subcommand_hc:
-            all_options = all_options + self.subcommand_hc.arg_table.keys()
+            all_options = all_options + list(self.subcommand_hc.arg_table.keys())
         for opt in self.options:
             # Look thru list of options on cmdline. If there are
             # options that have already been specified and they are

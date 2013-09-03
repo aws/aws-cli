@@ -32,7 +32,7 @@ setup_options = dict(
     install_requires=requires,
     license=open("LICENSE.txt").read(),
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Natural Language :: English',

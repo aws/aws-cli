@@ -154,7 +154,12 @@ class FakeOperation(object):
             content['Size'] = len(body)
             content['LastModified'] = '2013-07-15T17:03:43.000Z'
             content['ETag'] = etag
-            self.session.s3[bucket][key] = content
+            if 'content_type' in kwargs:
+                content['ContentType'] = kwargs['content_type']
+            if key in self.session.s3[bucket]:
+                self.session.s3[bucket][key].update(content)
+            else:
+                self.session.s3[bucket][key] = content
         else:
             response_data['Errors'] = [{'Message': 'Bucket does not exist'}]
         if self.session.md5_error:
@@ -324,6 +329,12 @@ class FakeOperation(object):
         A dummy function that returns an arbitrary upload id necessary
         for a multipart upload.
         """
+        bucket = kwargs['bucket']
+        if bucket in self.session.s3:
+            content = {}
+            key = kwargs['key']
+            content['ContentType'] = kwargs.get('content_type')
+            self.session.s3[bucket][key] = content
         return FakeHttp(''), {'UploadId': 'upload_id'}
 
     def upload_part(self, kwargs):

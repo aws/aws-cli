@@ -7,9 +7,6 @@ The following ``upload-signing-certificate`` commmand uploads a signing certific
 Output::
 
   {
-      "ResponseMetadata": {
-          "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
-      },
       "Certificate": {
           "UserName": "Bob",
           "Status": "Active",

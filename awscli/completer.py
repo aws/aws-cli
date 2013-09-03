@@ -35,13 +35,12 @@ class Completer(object):
 
     def _complete_option(self, option_name):
         if option_name == '--region':
-            return ['us-east-1', 'ap-northeast-1', 'sa-east-1',
-                    'ap-southeast-1', 'ap-southeast-2', 'us-west-2',
-                    'us-west-1', 'eu-west-1', 'us-gov-west-1']
+            return self.driver.session.get_data('aws/_regions').keys()
         if option_name == '--endpoint-url':
             return []
         if option_name == '--output':
-            return ['json', 'table', 'text']
+            cli_data = self.driver.session.get_data('cli')
+            return cli_data['options']['output']['choices']
         if option_name == '--profile':
             return self.driver.session.available_profiles
         return []
@@ -153,7 +152,6 @@ class Completer(object):
 def complete(cmdline, point):
     choices = Completer().complete(cmdline, point)
     print(' \n'.join(choices))
-    sys.exit(0)
 
 
 if __name__ == '__main__':

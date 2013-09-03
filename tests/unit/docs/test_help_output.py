@@ -109,6 +109,11 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('========\nExamples\n========')
 
+    def test_add_help_for_dryrun(self):
+        self.driver.main(['ec2', 'run-instances', 'help'])
+        self.assert_contains('DryRunOperation')
+        self.assert_contains('UnauthorizedOperation')
+        
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
@@ -219,3 +224,12 @@ class TestJSONListScalarDocs(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'terminate-instances', 'help'])
         self.assert_not_contains('["string", ...]')
         self.assert_contains('"string" "string"')
+
+
+class TestParamRename(BaseAWSHelpOutputTest):
+    def test_create_image_renames(self):
+        # We're just cherry picking this particular operation to verify
+        # that the rename arg customizations are working.
+        self.driver.main(['ec2', 'create-image', 'help'])
+        self.assert_not_contains('no-no-reboot')
+        self.assert_contains('--reboot')

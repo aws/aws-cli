@@ -33,6 +33,8 @@ from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
+from awscli.customizations.argrename import register_arg_renames
+from awscli.customizations.dryrundocs import register_dryrun_docs
 
 
 def awscli_initialize(event_handlers):
@@ -69,3 +71,5 @@ def awscli_initialize(event_handlers):
     register_put_metric_data(event_handlers)
     register_ses_send_email(event_handlers)
     IAMVMFAWrapper(event_handlers)
+    register_arg_renames(event_handlers)
+    register_dryrun_docs(event_handlers)

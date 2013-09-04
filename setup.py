@@ -8,7 +8,7 @@ import awscli
 
 
 requires = ['botocore>=0.16.0,<0.17.0',
-            'bcdoc>=0.8.0,<0.9.0',
+            'bcdoc>=0.9.0,<0.10.0',
             'six>=1.1.0',
             'colorama==0.2.5',
             'argparse>=1.1',
@@ -32,7 +32,7 @@ setup_options = dict(
     install_requires=requires,
     license=open("LICENSE.txt").read(),
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Natural Language :: English',

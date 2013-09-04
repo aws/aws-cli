@@ -1,6 +1,6 @@
 **To change the password for an IAM user**
 
-The following ``change-password`` commmand lets an IAM user change his or her own password::
+The following ``change-password`` command lets an IAM user change his or her own password::
 
   aws iam change-password --old-password <password> --new-password <password>
 

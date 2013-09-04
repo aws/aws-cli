@@ -1,6 +1,6 @@
 **To delete an instance profile**
 
-The following ``delete-instance-profile`` commmand deletes the instance profile named ``ExampleInstanceProfile``::
+The following ``delete-instance-profile`` command deletes the instance profile named ``ExampleInstanceProfile``::
 
   aws iam delete-instance-profile --instance-profile-name ExampleInstanceProfile
 

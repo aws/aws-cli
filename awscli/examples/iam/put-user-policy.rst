@@ -1,6 +1,6 @@
 **To attach a policy to an IAM user**
 
-The following ``put-user-policy`` commmand attaches a policy to the IAM user named ``Bob``::
+The following ``put-user-policy`` command attaches a policy to the IAM user named ``Bob``::
 
   aws iam put-user-policy --user-name Bob --policy-name ExamplePolicy --policy-document file://AdminPolicy.json
 

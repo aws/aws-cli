@@ -1,6 +1,6 @@
 **To create an IAM group**
 
-The following ``create-group`` commmand creates an IAM group named ``Admins``::
+The following ``create-group`` command creates an IAM group named ``Admins``::
 
   aws iam create-group --group-name Admins
 

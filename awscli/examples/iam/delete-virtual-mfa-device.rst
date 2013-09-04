@@ -1,6 +1,6 @@
 **To remove a virtual MFA device**
 
-The following ``delete-virtual-mfa-device`` commmand remmoves the specified MFA device from the current account::
+The following ``delete-virtual-mfa-device`` command removes the specified MFA device from the current account::
 
   aws iam delete-virtual-mfa-device --serial-number arn:aws:iam::123456789012:mfa/MFATest
 

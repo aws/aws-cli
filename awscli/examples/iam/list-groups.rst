@@ -1,6 +1,6 @@
 **To list the IAM groups for the current account**
 
-The following ``list-groups`` commmand lists the IAM groups in the current account::
+The following ``list-groups`` command lists the IAM groups in the current account::
 
   aws iam list-groups
 

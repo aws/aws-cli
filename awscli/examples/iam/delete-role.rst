@@ -1,6 +1,6 @@
 **To delete an IAM role**
 
-The following ``delete-role`` commmand removes the role named ``Test-Role``::
+The following ``delete-role`` command removes the role named ``Test-Role``::
 
   aws iam delete-role --role-name Test-Role
 

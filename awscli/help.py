@@ -70,7 +70,7 @@ class PosixHelpRenderer(HelpRenderer):
     Linux and MacOS X.
     """
 
-    PAGER = 'more'
+    PAGER = 'less'
 
     def get_pager_cmdline(self):
         pager = self.PAGER

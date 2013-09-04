@@ -63,13 +63,15 @@ class Completer(object):
     def _complete_command(self):
         retval = []
         if self.current_word == self.command_name:
-            retval = self.command_hc.command_table.keys()
+            if self.command_hc:
+                retval = self.command_hc.command_table.keys()
         elif self.current_word.startswith('-'):
             retval = self._find_possible_options()
         else:
             # See if they have entered a partial command name
-            retval = [n for n in self.command_hc.command_table
-                      if n.startswith(self.current_word)]
+            if self.command_hc:
+                retval = [n for n in self.command_hc.command_table
+                          if n.startswith(self.current_word)]
         return retval
 
     def _complete_subcommand(self):
@@ -123,7 +125,7 @@ class Completer(object):
                 self.command_name = w
                 cmd_obj = self.main_hc.command_table[self.command_name]
                 self.command_hc = cmd_obj.create_help_command()
-                if self.command_hc.command_table:
+                if self.command_hc and self.command_hc.command_table:
                     # Look for subcommand name
                     for w in self.non_options:
                         if w in self.command_hc.command_table:

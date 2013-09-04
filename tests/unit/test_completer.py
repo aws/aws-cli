@@ -68,6 +68,7 @@ COMPLETIONS = [
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--acl',
                                      '--exclude', '--include'] + GLOBALOPTS)),
+    ('aws emr ', -1, set([])),
     ]
 
 

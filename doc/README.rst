@@ -4,7 +4,7 @@ Building The Documentation
 
 The process for building the documention is:
 
-* Run ``rstgen`` which does the following:
+* Run ``htmlgen`` which does the following:
 
   * Generates all of the source reference ReST files.
   * Generates the ``aws_man_pages.json`` file which contains the list

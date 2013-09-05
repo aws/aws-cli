@@ -387,7 +387,7 @@ def get_response(session, operation, http_response):
     encoding = 'utf-8'
     if http_response.encoding:
         encoding = http_response.encoding
-    content_type = http_response.headers['content-type']
+    content_type = http_response.headers.get('content-type')
     if content_type and ';' in content_type:
         content_type = content_type.split(';')[0]
         logger.debug('Content type from response: %s', content_type)

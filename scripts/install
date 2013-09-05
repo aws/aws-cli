@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+import os
+import sys
+from contextlib import contextmanager
+import tempfile
+import subprocess
+
+PACKAGES_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'packages')
+INSTALL_DIR = os.path.expanduser('~/.local/lib/aws')
+
+
+class BadRCError(Exception):
+    pass
+
+
+@contextmanager
+def cd(dirname):
+    original = os.getcwd()
+    os.chdir(dirname)
+    try:
+        yield
+    finally:
+        os.chdir(original)
+
+
+def run(cmd):
+    sys.stdout.write("Running cmd: %s\n" % cmd)
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+    rc = p.wait()
+    if rc != 0:
+        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
+            rc, cmd, p.stderr.read() + p.stdout.read()))
+    return p.stdout.read()
+
+
+def create_install_structure(working_dir):
+    if not os.path.isdir(INSTALL_DIR):
+        os.makedirs(INSTALL_DIR)
+    _create_virtualenv(location=INSTALL_DIR, working_dir=working_dir)
+
+
+def _create_virtualenv(location, working_dir):
+    # working_dir is used (generally somewhere in /tmp) so that we
+    # don't modify the install/packages directories.
+    with cd(PACKAGES_DIR):
+        venv = [p for p in os.listdir('.') if p.startswith('virtualenv')][0]
+        run('tar xvfz %s -C %s' % (venv, working_dir))
+    with cd(working_dir):
+        # We know that virtualenv is the only dir in this directory
+        # so we can listdir()[0] it.
+        with cd(os.listdir('.')[0]):
+            run('%s virtualenv.py --python %s %s' % (sys.executable,
+                                                     sys.executable,
+                                                     location))
+
+
+def create_working_dir():
+    d = tempfile.mkdtemp()
+    return d
+
+
+def pip_install_packages():
+    cli_tarball = [p for p in os.listdir(PACKAGES_DIR) if p.startswith('awscli')]
+    assert len(cli_tarball) == 1
+    cli_tarball = cli_tarball[0]
+    pip_script = os.path.join(INSTALL_DIR, 'bin', 'pip')
+    with cd(PACKAGES_DIR):
+        run('%s install --no-index --find-links file://%s %s' % (
+            pip_script, PACKAGES_DIR, cli_tarball))
+
+
+def main():
+    working_dir = create_working_dir()
+    create_install_structure(working_dir)
+    pip_install_packages()
+    print("You can now run: %s --version" % os.path.join(INSTALL_DIR, 'bin', 'aws'))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,139 @@
+#!/usr/bin/env python
+"""Script to create self contained install.
+
+The goal of this script is simple:
+
+  * Create a self contained install of the CLI that
+  has requires no external resources during installation.
+
+It does this by using all the normal python tooling
+(virtualenv, pip) but provides a simple, easy to use
+interface for those not familiar with the python
+ecosystem.
+
+"""
+import os
+import sys
+import subprocess
+import shutil
+import tempfile
+from contextlib import contextmanager
+# Assuming you have the awscli deps installed, so
+# using requests is ok.
+import requests
+# These are package versions that are needed to boostrap
+# the installation process.  It is *not* the deps required
+# by awscli/botocore.
+PACKAGE_VERSION = {
+    'virtualenv': '1.10.1',
+}
+
+
+class BadRCError(Exception):
+    pass
+
+
+@contextmanager
+def cd(dirname):
+    original = os.getcwd()
+    os.chdir(dirname)
+    try:
+        yield
+    finally:
+        os.chdir(original)
+
+
+def run(cmd):
+    sys.stdout.write("Running cmd: %s\n" % cmd)
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+    rc = p.wait()
+    if rc != 0:
+        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
+            rc, cmd, p.stderr.read() + p.stdout.read()))
+    return p.stdout.read()
+
+
+def create_scratch_dir():
+    # This creates the dir where all the bundling occurs.
+    # First we need a top level dir.
+    dirname = tempfile.mkdtemp(prefix='bundle')
+    # Then we need to create a dir where all the packages
+    # will come from.
+    os.mkdir(os.path.join(dirname, 'packages'))
+    return dirname
+
+
+def download_package_tarballs(dirname, packages):
+    with cd(dirname):
+        for package in packages:
+            run('pip install -d . %s==%s' % (
+                package, PACKAGE_VERSION[package]))
+
+
+def download_cli_deps(scratch_dir):
+    # As far as i can tell this is a bug in pip.
+    # Running 'pip intall -d . ~/clidir' does not work.
+    # Running 'pip install -d foo ~/clidir' results
+    # in python consuming 100% CPU.
+    # This problem is surprisingly hard, specifically that
+    # of downloading all the dependent python packages of
+    # the awscli as tarballs.
+    # So here's what we do.
+    # Step one create a virtualenv.
+    venv_dir = '/tmp/venv-%s' % os.path.basename(scratch_dir)
+    run('virtualenv %s' % venv_dir)
+    pip = os.path.join(venv_dir, 'bin', 'pip')
+    assert os.path.isfile(pip)
+    awscli_dir = os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))
+    with cd(scratch_dir):
+        run('%s install -d . -e %s' % (pip, awscli_dir))
+    # Remove the awscli package, we'll create our own sdist.
+    _remove_cli_zip(scratch_dir)
+
+
+def _remove_cli_zip(scratch_dir):
+    clidir = [f for f in os.listdir(scratch_dir) if f.startswith('awscli')]
+    assert len(clidir) == 1
+    os.remove(os.path.join(scratch_dir, clidir[0]))
+
+
+def add_cli_sdist(scratch_dir):
+    awscli_dir = os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))
+    if os.path.exists(os.path.join(awscli_dir, 'dist')):
+        shutil.rmtree(os.path.join(awscli_dir, 'dist'))
+    with cd(awscli_dir):
+        run('python setup.py sdist')
+        filename = os.listdir('dist')[0]
+        os.rename(os.path.join('dist', filename),
+                os.path.join(scratch_dir, filename))
+
+
+def create_bootstrap_script(scratch_dir):
+    install_script = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), 'install')
+    shutil.copy(install_script, os.path.join(scratch_dir, 'install'))
+
+
+def zip_dir(scratch_dir):
+    pass
+
+
+def main():
+    scratch_dir = create_scratch_dir()
+    package_dir = os.path.join(scratch_dir, 'packages')
+    print("Bundle dir at: %s" % scratch_dir)
+    download_package_tarballs(
+        package_dir, packages=['virtualenv'])
+    download_cli_deps(package_dir)
+    add_cli_sdist(package_dir)
+    create_bootstrap_script(scratch_dir)
+    zip_dir(scratch_dir)
+    print("Bundled install is at: %s" % scratch_dir)
+    print("You can cd to this directory and run './install'")
+
+
+if __name__ == '__main__':
+    main()

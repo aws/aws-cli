@@ -1,6 +1,6 @@
 **To delete a key pair**
 
-This example deletes the key pair named MyKeyPair.
+This example deletes the key pair named ``MyKeyPair``.
 
 Command::
 

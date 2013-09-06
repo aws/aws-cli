@@ -1,7 +1,5 @@
 **To describe an Amazon EC2 instance**
 
-This example describes an Amazon EC2 instance.
-
 Command::
 
   aws ec2 describe-instances --instance-ids i-5203422c

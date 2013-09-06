@@ -1,6 +1,6 @@
 **To reboot an Amazon EC2 instance**
 
-This example reboots a instance with the instance ID ``i-1a2b3c4d``.
+This example reboots the specified instance.
 
 Command::
 

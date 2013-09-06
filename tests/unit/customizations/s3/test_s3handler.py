@@ -272,7 +272,7 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestMvLocalS3, self).setUp()
         self.session = FakeSession()
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()

@@ -260,6 +260,16 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
+    def test_move_unicode(self):
+        self.bucket2 = make_s3_files(self.session, key1=u'\u2713')
+        tasks = [FileInfo(src=self.bucket2 + '/' + u'\u2713',
+                          src_type='s3',
+                          dest=self.bucket + '/' + u'\u2713',
+                          dest_type='s3', operation='move',
+                          size=0)]
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+
     def test_move(self):
         # Create file info objects to perform move.
         files = [self.loc_files[0], self.loc_files[1]]

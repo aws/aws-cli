@@ -17,6 +17,7 @@ import platform
 from subprocess import Popen, PIPE
 
 from docutils.core import publish_string
+from docutils.writers import manpage
 import bcdoc
 from bcdoc.clidocs import ReSTDocument
 from bcdoc.clidocs import ProviderDocumentEventHandler
@@ -81,21 +82,17 @@ class PosixHelpRenderer(HelpRenderer):
         return pager.split()
 
     def render(self, contents):
-        rst2man = self._get_rst2man_name()
-        cmdline = [rst2man]
-        LOG.debug("Running command: %s", cmdline)
-        p2 = self._popen(cmdline, stdin=PIPE, stdout=PIPE)
-        p2.stdin.write(contents)
-        p2.stdin.close()
+        man_contents = publish_string(contents, writer=manpage.Writer())
         if not self._exists_on_path('groff'):
             raise ExecutableNotFoundError('groff')
         cmdline = ['groff', '-man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
-        p3 = self._popen(cmdline, stdin=p2.stdout, stdout=PIPE)
+        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE)
+        groff_output = p3.communicate(input=man_contents)[0]
         cmdline = self.get_pager_cmdline()
         LOG.debug("Running command: %s", cmdline)
-        p4 = self._popen(cmdline, stdin=p3.stdout)
-        p4.communicate()
+        p4 = self._popen(cmdline, stdin=PIPE)
+        p4.communicate(input=groff_output)
         sys.exit(1)
 
     def _get_rst2man_name(self):

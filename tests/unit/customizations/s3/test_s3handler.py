@@ -90,6 +90,30 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         s3_handler.call([file_info])
 
 
+class S3HandlerTestURLEncodeDeletes(S3HandlerBaseTest):
+    def setUp(self):
+        super(S3HandlerTestURLEncodeDeletes, self).setUp()
+        self.session = FakeSession()
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
+        self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
+
+    def tearDown(self):
+        super(S3HandlerTestURLEncodeDeletes, self).tearDown()
+        s3_cleanup(self.bucket, self.session)
+
+    def test_s3_delete_url_encode(self):
+        """
+        Tests S3 deletes. The files used are the same generated from
+        filegenerators_test.py.  This includes the create s3 file.
+        """
+        key = self.bucket + '/a+b/foo'
+        tasks = [FileInfo(src=key, src_type='s3', dest_type='local', operation='delete', size=0)]
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+
+
 class S3HandlerTestUpload(S3HandlerBaseTest):
     """
     This class tests the ability to upload objects into an S3 bucket as

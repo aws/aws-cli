@@ -85,6 +85,25 @@ class TestS3Objects(BaseS3Test):
                         self.endpoint, upload_id=upload_id,
                         bucket=self.bucket_name, key=key_name)
 
+    def test_can_delete_urlencoded_object(self):
+        key_name = 'a+b/foo'
+        self.create_object(key_name=key_name)
+        self.keys.pop()
+        bucket_contents = self.service.get_operation('ListObjects').call(
+            self.endpoint, bucket=self.bucket_name)[1]['Contents']
+        self.assertEqual(len(bucket_contents), 1)
+        self.assertEqual(bucket_contents[0]['Key'], 'a+b/foo')
+
+        subdir_contents = self.service.get_operation('ListObjects').call(
+            self.endpoint, bucket=self.bucket_name, prefix='a+b')[1]['Contents']
+        self.assertEqual(len(subdir_contents), 1)
+        self.assertEqual(subdir_contents[0]['Key'], 'a+b/foo')
+
+        operation = self.service.get_operation('DeleteObject')
+        response = operation.call(self.endpoint, bucket=self.bucket_name,
+                                  key=key_name)[0]
+        self.assertEqual(response.status_code, 204)
+
     def test_can_paginate(self):
         for i in range(5):
             key_name = 'key%s' % i

@@ -196,8 +196,10 @@ class RestEndpoint(Endpoint):
                     value_name = value_name.strip('{}')
                     if value_name in params['uri_params']:
                         value = params['uri_params'][value_name]
-                        query_param_components.append('%s=%s' % (key_name,
-                                                                 value))
+                        if isinstance(value, six.string_types):
+                            value = quote(value.encode('utf-8'), safe='/~')
+                        query_param_components.append('%s=%s' % (
+                            key_name, value))
                 else:
                     query_param_components.append(key_name)
         query_params = '&'.join(query_param_components)

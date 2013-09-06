@@ -97,6 +97,26 @@ class S3HandlerTestDeleteList(unittest.TestCase):
         s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
+class S3HandlerTestDeleteList(unittest.TestCase):
+    def setUp(self):
+        self.session = botocore.session.get_session(EnvironmentVariables)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
+        self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
+        self.loc_files = make_loc_files()
+
+    def tearDown(self):
+        clean_loc_files(self.loc_files)
+        s3_cleanup(self.bucket, self.session, key1='a+b/foo', key2=None)
+
+    def test_delete_url_encode(self):
+        key = self.bucket + '/a+b/foo'
+        tasks = [FileInfo(src=key, src_type='s3',
+                          dest_type='local', operation='delete', size=0)]
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+
 
 class S3HandlerTestUpload(unittest.TestCase):
     """

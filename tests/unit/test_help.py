@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
+import sys
 import os
 
 import mock
@@ -76,6 +77,7 @@ class TestHelpPager(unittest.TestCase):
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          pager_cmd.split())
 
+    @unittest.skipIf(sys.platform.startswith('win'), "requires posix system")
     @mock.patch('sys.exit', mock.Mock())
     def test_no_groff_exists(self):
         renderer = FakePosixHelpRenderer()

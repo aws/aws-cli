@@ -60,7 +60,7 @@ class BaseCLIArgument(object):
         :param argument_table: The argument table.  The key is the argument
             name, and the value is an object implementing this interface.
         """
-        argument_table[self.name] = self
+        argument_table[self._name] = self
 
     def add_to_parser(self, parser):
         """Add this object to the parser instance.

@@ -4,6 +4,12 @@ import sys
 from contextlib import contextmanager
 import tempfile
 import subprocess
+# We're using optparse because we need to support 2.6
+# which doesn't have argparse.  Given that argparse is
+# a dependency that eventually gets installed, we could
+# try to bootstrap, but using optparse is just easier.
+import optparse
+
 
 PACKAGES_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'packages')
@@ -35,10 +41,10 @@ def run(cmd):
     return p.stdout.read()
 
 
-def create_install_structure(working_dir):
-    if not os.path.isdir(INSTALL_DIR):
-        os.makedirs(INSTALL_DIR)
-    _create_virtualenv(location=INSTALL_DIR, working_dir=working_dir)
+def create_install_structure(working_dir, install_dir):
+    if not os.path.isdir(install_dir):
+        os.makedirs(install_dir)
+    _create_virtualenv(location=install_dir, working_dir=working_dir)
 
 
 def _create_virtualenv(location, working_dir):
@@ -61,21 +67,47 @@ def create_working_dir():
     return d
 
 
-def pip_install_packages():
+def pip_install_packages(install_dir):
     cli_tarball = [p for p in os.listdir(PACKAGES_DIR) if p.startswith('awscli')]
     assert len(cli_tarball) == 1
     cli_tarball = cli_tarball[0]
-    pip_script = os.path.join(INSTALL_DIR, 'bin', 'pip')
+    pip_script = os.path.join(install_dir, 'bin', 'pip')
     with cd(PACKAGES_DIR):
         run('%s install --no-index --find-links file://%s %s' % (
             pip_script, PACKAGES_DIR, cli_tarball))
 
 
+def create_symlink(real_location, symlink_name):
+    if os.path.isfile(symlink_name):
+        print("Symlink already exists: %s" % symlink_name)
+        print("Removing symlink.")
+        os.remove(symlink_name)
+    os.symlink(real_location, symlink_name)
+    return True
+
+
 def main():
+    parser = optparse.OptionParser()
+    parser.add_option('-i', '--install-dir', help="The location to install "
+                      "the AWS CLI.  The default value is ~/.local/lib/aws",
+                      default=INSTALL_DIR)
+    parser.add_option('-b', '--bin-location', help="If this argument is "
+                      "provided, then a symlink will be created at this "
+                      "location that points to the aws executable. "
+                      "This argument is useful if you want to put the aws "
+                      "executable somewhere already on your path, e.g. "
+                      "-b /usr/local/bin/aws.  This is an optional argument. "
+                      "If you do not provide this argument you will have to "
+                      "add INSTALL_DIR/bin to your PATH.")
+    opts, args = parser.parse_args()
     working_dir = create_working_dir()
-    create_install_structure(working_dir)
-    pip_install_packages()
-    print("You can now run: %s --version" % os.path.join(INSTALL_DIR, 'bin', 'aws'))
+    create_install_structure(working_dir, opts.install_dir)
+    pip_install_packages(opts.install_dir)
+    real_location = os.path.join(opts.install_dir, 'bin', 'aws')
+    if opts.bin_location and create_symlink(real_location, opts.bin_location):
+        print("You can now run: %s --version" % opts.bin_location)
+    else:
+        print("You can now run: %s --version" % real_location)
 
 
 if __name__ == '__main__':

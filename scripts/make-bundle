@@ -26,6 +26,14 @@ import requests
 # by awscli/botocore.
 PACKAGE_VERSION = {
     'virtualenv': '1.10.1',
+    # These packages are included because they are required for
+    # python2.6, but our normal dependency downloading via pip
+    # only works if you use python2.6.  To fix this issue, we're
+    # explicitly saying that we need to download these packages
+    # even if pip doesn't think we need them.  That way we can
+    # run make-bundle in python versions besides 2.6.
+    'ordereddict': '1.1',
+    'simplejson': '3.3.0',
 }
 
 
@@ -126,7 +134,7 @@ def main():
     package_dir = os.path.join(scratch_dir, 'packages')
     print("Bundle dir at: %s" % scratch_dir)
     download_package_tarballs(
-        package_dir, packages=['virtualenv'])
+        package_dir, packages=['virtualenv', 'ordereddict', 'simplejson'])
     download_cli_deps(package_dir)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)

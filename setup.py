@@ -30,7 +30,7 @@ setup_options = dict(
     package_dir={'awscli': 'awscli'},
     package_data={'awscli': ['data/*.json', 'examples/*/*']},
     install_requires=requires,
-    license=open("LICENSE.txt").read(),
+    license="Apache Software License 2.0",
     classifiers=(
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

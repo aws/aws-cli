@@ -9,7 +9,7 @@ Output::
   {
       "Stacks":  [
           {
-              "StackId": "arn:aws:cloudformation:us-west-2:803981987763:stack/myteststack/a69442d0-0b8f-11e3-8b8a-500150b352e0",
+              "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/myteststack/466df9e0-0dff-08e3-8e2f-5088487c4896",
               "Description": "AWS CloudFormation Sample Template S3_Bucket: Sample template showing how to create a publicly accessible S3 bucket. **WARNING** This template creates an S3 bucket. You will be billed for the AWS resources used if you create a stack from this template.",
               "Tags": [],
               "Outputs": [

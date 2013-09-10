@@ -93,13 +93,14 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
                                                   bucket=bucket,
                                                   key=key1,
                                                   body=string1)
-    http_response, response_data = operation.call(endpoint,
-                                                  bucket=bucket,
-                                                  key='another_directory/')
-    http_response, r_data = operation.call(endpoint,
-                                           bucket=bucket,
-                                           key='another_directory/%s' % key2,
-                                           body=string2)
+    if key2 is not None:
+        http_response, response_data = operation.call(endpoint,
+                                                    bucket=bucket,
+                                                    key='another_directory/')
+        http_response, r_data = operation.call(endpoint,
+                                            bucket=bucket,
+                                            key='another_directory/%s' % key2,
+                                            body=string2)
     return bucket
 
 
@@ -134,12 +135,13 @@ def s3_cleanup(bucket, session, key1='text1.txt', key2='text2.txt'):
     http_response, r_data = operation.call(endpoint,
                                            bucket=bucket,
                                            key=key1)
-    http_response, r_data = operation.call(endpoint,
-                                           bucket=bucket,
-                                           key='another_directory/')
-    http_response, r_data = operation.call(endpoint,
-                                           bucket=bucket,
-                                           key='another_directory/%s' % key2)
+    if key2 is not None:
+        http_response, r_data = operation.call(endpoint,
+                                            bucket=bucket,
+                                            key='another_directory/')
+        http_response, r_data = operation.call(endpoint,
+                                            bucket=bucket,
+                                            key='another_directory/%s' % key2)
     operation = service.get_operation('DeleteBucket')
     http_response, r_data = operation.call(endpoint, bucket=bucket)
 

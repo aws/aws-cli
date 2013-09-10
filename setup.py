@@ -4,7 +4,6 @@
 distutils/setuptools install script.
 """
 
-import os
 import sys
 import botocore
 
@@ -18,7 +17,7 @@ packages = [
     'botocore',
 ]
 
-requires = ['requests==1.2.0',
+requires = ['requests==1.2.3',
             'six>=1.1.0',
             'jmespath==0.0.2',
             'python-dateutil>=2.1']

@@ -144,23 +144,23 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries or both.  The following table documents these.
 
-=========== ===================== ===================== ============================
-Variable    Config Entry          Environment Variable  Description
-=========== ===================== ===================== ============================
-profile                           AWS_DEFAULT_PROFILE   Default profile name
------------ --------------------- --------------------- ----------------------------
-region      region                AWS_DEFAULT_REGION    Default AWS Region
------------ --------------------- --------------------- ----------------------------
-config_file                       AWS_CONFIG_FILE       Alternate location of config
------------ --------------------- --------------------- ----------------------------
-output      output                AWS_DEFAULT_OUTPUT    Default output style
------------ --------------------- --------------------- ----------------------------
-access_key  aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
------------ --------------------- --------------------- ----------------------------
-secret_key  aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
------------ --------------------- --------------------- ----------------------------
-token       aws_security_token    AWS_SECURITY_TOKEN    AWS Token (temp credentials)
-=========== ===================== ===================== ============================
+=========== ========= ===================== ===================== ============================
+Variable    Option    Config Entry          Environment Variable  Description
+=========== ========= ===================== ===================== ============================
+profile     --profile profile               AWS_DEFAULT_PROFILE   Default profile name
+----------- --------- --------------------- --------------------- ----------------------------
+region      --region  region                AWS_DEFAULT_REGION    Default AWS Region
+----------- --------- --------------------- --------------------- ----------------------------
+config_file                                 AWS_CONFIG_FILE       Alternate location of config
+----------- --------- --------------------- --------------------- ----------------------------
+output      --output  output                AWS_DEFAULT_OUTPUT    Default output style
+----------- --------- --------------------- --------------------- ----------------------------
+access_key            aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
+----------- --------- --------------------- --------------------- ----------------------------
+secret_key            aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
+----------- --------- --------------------- --------------------- ----------------------------
+token                 aws_security_token    AWS_SECURITY_TOKEN    AWS Token (temp credentials)
+=========== ========= ===================== ===================== ============================
 
 ^^^^^^^^
 Examples

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import sys
 
 from setuptools import setup, find_packages
@@ -11,9 +10,13 @@ requires = ['botocore>=0.16.0,<0.17.0',
             'bcdoc>=0.9.0,<0.10.0',
             'six>=1.1.0',
             'colorama==0.2.5',
-            'argparse>=1.1',
             'docutils>=0.10',
             'rsa==3.1.1']
+
+if sys.version_info[:2] == (2, 6):
+    # For python2.6 we have to require argparse since it
+    # was not in stdlib until 2.7.
+    requires.append('argparse>=1.1')
 
 
 setup_options = dict(

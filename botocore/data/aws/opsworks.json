@@ -7,7 +7,7 @@
     "service_full_name": "AWS OpsWorks",
     "endpoint_prefix": "opsworks",
     "xmlnamespace": "http://opsworks.amazonaws.com/doc/2013-02-18/",
-    "documentation": "\n      <fullname>AWS OpsWorks</fullname>  \n   ",
+    "documentation": "\n      <fullname>AWS OpsWorks</fullname> \n      <p>Welcome to the  <i>AWS OpsWorks API Reference</i>. This guide provides descriptions, syntax, and usage examples about AWS OpsWorks\n         actions and data types, including common parameters and error codes. </p>\n      <p>AWS OpsWorks is an application management service that provides an integrated experience for overseeing the\n         complete application lifecycle. For information about this product, go to the\n         <a href=\"http://aws.amazon.com/opsworks/\">AWS OpsWorks</a> details page. </p>\n      <p><b>Endpoints</b></p>\n      <p>AWS OpsWorks supports only one endpoint, opsworks.us-east-1.amazonaws.com (HTTPS), so you must connect to that endpoint. You can then use the API\n         to direct AWS OpsWorks to create stacks in any AWS Region.</p>\n      <p><b>Chef Version</b></p>\n      <p>When you call <a>CreateStack</a>, <a>CloneStack</a>, or <a>UpdateStack</a> we recommend you use\n         the <code>ConfigurationManager</code> parameter to specify the Chef version, 0.9 or 11.4.\n         The default value is currently 0.9. However, we expect to change the default value to 11.4 in September 2013.</p>\n     \n   ",
     "operations": {
         "AttachElasticLoadBalancer": {
             "name": "AttachElasticLoadBalancer",
@@ -18,13 +18,13 @@
                     "ElasticLoadBalancerName": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The Elastic Load Balancing load balancer's name.</p>\n   ",
+                        "documentation": "\n      <p>The Elastic Load Balancing instance's name.</p>\n   ",
                         "required": true
                     },
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The ID of the layer that the Elastic Load Balancing load balancer is to be attached to.</p>\n   ",
+                        "documentation": "\n      <p>The ID of the layer that the Elastic Load Balancing instance is to be attached to.</p>\n   ",
                         "required": true
                     }
                 },
@@ -57,7 +57,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Attaches an Elastic Load Balancing load balancer to a specified layer.</p>\n      <note>You must create the Elastic Load Balancing load balancer separately, by using the Elastic Load Balancing console, API, or CLI. For more information,\n         see <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/Welcome.html\">\n            Elastic Load Balancing Developer Guide</a>.</note>\n   "
+            "documentation": "\n      <p>Attaches an Elastic Load Balancing instance to a specified layer.</p>\n      <note>You must create the Elastic Load Balancing instance separately, by using the Elastic Load Balancing console, API, or CLI. For more information,\n         see <a href=\"http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/Welcome.html\">\n            Elastic Load Balancing Developer Guide</a>.</note>\n   "
         },
         "CloneStack": {
             "name": "CloneStack",
@@ -82,6 +82,11 @@
                         "documentation": "\n      <p>The cloned stack AWS region, such as \"us-east-1\". For more information about AWS regions, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   ",
                         "cli_name": "stack-region"
                     },
+                    "VpcId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>The ID of the VPC that the cloned stack is to be launched into. It must be in the specified region.\n         All instances will be launched into this VPC, and you cannot change the ID later.</p>\n      <ul>\n         <li>If your account supports EC2 Classic, the default value is no VPC.</li>\n         <li>If you account does not support EC2 Classic, the default value is\n            the default VPC for the specified region.</li>\n      </ul>   \n      <p>If the VPC ID corresponds to a default VPC and you have specified either the <code>DefaultAvailabilityZone</code> or \n         the <code>DefaultSubnetId</code> parameter only, AWS OpsWorks infers the value of the other parameter.\n         If you specify neither parameter, AWS OpsWorks sets these parameters to the first valid Availability Zone for the specified\n         region and the corresponding default VPC subnet ID, respectively. </p>\n      <p>If you specify a nondefault VPC ID, note the following:</p>\n      <ul>\n         <li>It must belong to a VPC in your account that is in the specified region.</li>\n         <li>You must specify a value for <code>DefaultSubnetId</code>.</li>\n      </ul>\n      <p>For more information on how to use AWS OpsWorks with a VPC, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html\">Running a Stack in a VPC</a>. For more information on\n         default VPC and EC2 Classic, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html\">Supported Platforms</a>.\n      </p>\n   "
+                    },
                     "Attributes": {
                         "shape_name": "StackAttributes",
                         "type": "map",
@@ -103,7 +108,7 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the OpsWorks console,\n         it creates the role for you. You can obtain an existing stack's IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n      <note>You must set this parameter to a valid service role ARN or the action will fail; there is no default value.\n         You can specify the source stack's service role ARN, if you prefer, but you must do so explicitly.</note>\n   ",
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. If you create a stack by using the AWS OpsWorks console,\n         it creates the role for you. You can obtain an existing stack's IAM ARN programmatically by calling <a>DescribePermissions</a>. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>\n      <note>You must set this parameter to a valid service role ARN or the action will fail; there is no default value.\n         You can specify the source stack's service role ARN, if you prefer, but you must do so explicitly.</note>\n   ",
                         "required": true
                     },
                     "DefaultInstanceProfileArn": {
@@ -114,22 +119,44 @@
                     "DefaultOs": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n    "
+                        "documentation": "\n      <p>The cloned stack's default operating system, which must be set to <code>Amazon Linux</code> or <code>Ubuntu 12.04 LTS</code>.\n         The default option is <code>Amazon Linux</code>.\n      </p>\n    "
                     },
                     "HostnameTheme": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate hostnames for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates hostnames by appending integers to the layer's shortname.\n         The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated hostname, call <code>GetHostNameSuggestion</code>, which returns a hostname based on the current theme.</p>   "
+                        "documentation": "\n      <p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate host names for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates host names by appending integers to the layer's short name.\n         The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>   "
                     },
                     "DefaultAvailabilityZone": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack's Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n    "
+                        "documentation": "\n      <p>The cloned stack's default Availability Zone, which must be in the specified region. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.\n         If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone.\n         For more information, see the <code>VpcId</code> parameter description.\n      </p>\n   "
+                    },
+                    "DefaultSubnetId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>The stack's default subnet ID.\n         All instances will be launched into this subnet unless you specify otherwise when you create the instance.\n         If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in the same zone.\n         For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description.\n      </p>\n   "
                     },
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON\n         values. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">.\n         Use Custom JSON to Modify the Stack Configuration JSON</a></p>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON\n         values. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">Use Custom JSON to Modify the Stack Configuration JSON</a></p>\n   "
+                    },
+                    "ConfigurationManager": {
+                        "shape_name": "StackConfigurationManager",
+                        "type": "structure",
+                        "members": {
+                            "Name": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n      <p>The name. This parameter must be set to \"Chef\".</p>\n   "
+                            },
+                            "Version": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n      <p>The Chef version. This parameter must be set to \"0.9\" or \"11.4\". The default value is \"0.9\".\n         However, we expect to change the default value to \"11.4\" in September 2013.</p>\n   "
+                            }
+                        },
+                        "documentation": "\n      <p>The configuration manager. When you clone a stack we recommend that you use the configuration manager to\n         specify the Chef version, 0.9 or 11.4. The default value is currently 0.9.\n         However, we expect to change the default value to 11.4 in September 2013.</p>\n   "
                     },
                     "UseCustomCookbooks": {
                         "shape_name": "Boolean",
@@ -175,10 +202,10 @@
                             "Revision": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
+                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                     },
                     "DefaultSshKeyName": {
                         "shape_name": "String",
@@ -291,7 +318,7 @@
                             "static",
                             "other"
                         ],
-                        "documentation": "\n      <p>The app type. Each supported type is associated with a particular layer. For example, PHP applications are associated with a PHP layer.\n         OpsWorks deploys an application to those instances that are members of the corresponding layer.</p>\n    ",
+                        "documentation": "\n      <p>The app type. Each supported type is associated with a particular layer. For example, PHP applications are associated with a PHP layer.\n         AWS OpsWorks deploys an application to those instances that are members of the corresponding layer.</p>\n    ",
                         "required": true
                     },
                     "AppSource": {
@@ -332,7 +359,7 @@
                             "Revision": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
                         "documentation": "\n      <p>A <code>Source</code> object that specifies the app repository.</p>\n   "
@@ -486,7 +513,7 @@
                                     "restart",
                                     "undeploy"
                                 ],
-                                "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
+                                "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, AWS OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
                                 "required": true
                             },
                             "Args": {
@@ -521,7 +548,7 @@
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                     }
                 },
                 "documentation": null
@@ -592,7 +619,7 @@
                     "InstanceType": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance type. OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that you use to specify the various types are in the API Name column of the Available Instance Types table.</p>\n   ",
+                        "documentation": "\n      <p>The instance type. AWS OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that you use to specify the various types are in the API Name column of the Available Instance Types table.</p>\n   ",
                         "required": true
                     },
                     "AutoScalingType": {
@@ -612,7 +639,12 @@
                     "Os": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance's operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
+                        "documentation": "\n      <p>The instance operating system, which must be set to one of the following.</p>\n      <ul>\n         <li>Standard operating systems: <code>Amazon Linux</code> or <code>Ubuntu 12.04 LTS</code>\n</li>\n         <li>Custom AMIs: <code>Custom</code>\n</li>\n      </ul>\n      <p>The default option is <code>Amazon Linux</code>. If you set this parameter to <code>Custom</code>, you must use the\n         <a>CreateInstance</a> action's AmiId parameter to specify\n         the custom AMI that you want to use. For more information on the standard operating systems, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html\">Operating Systems</a>For more information\n         on how to use custom AMIs with OpsWorks, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html\">Using Custom AMIs</a>.</p>\n   "
+                    },
+                    "AmiId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>A custom AMI ID to be used to create the instance. The AMI should be based on one of the standard AWS OpsWorks APIs:\n         Amazon Linux or Ubuntu 12.04 LTS. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html\">Instances</a></p>   "
                     },
                     "SshKeyName": {
                         "shape_name": "String",
@@ -623,6 +655,11 @@
                         "shape_name": "String",
                         "type": "string",
                         "documentation": "\n      <p>The instance Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
+                    },
+                    "SubnetId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>The ID of the instance's subnet. If the stack is running in a VPC, you can use this parameter\n         to override the stack's default subnet ID value and direct AWS OpsWorks to launch the instance in a different subnet.\n      </p>\n   "
                     },
                     "Architecture": {
                         "shape_name": "Architecture",
@@ -641,6 +678,12 @@
                             "instance-store"
                         ],
                         "documentation": "\n      <p>The instance root device type. For more information, see \n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device\">Storage for the Root Device</a>.</p>\n   "
+                    },
+                    "InstallUpdatesOnBoot": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "box": true,
+                        "documentation": "\n      <p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>.\n         To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by\n         using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or\n         manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances.\n      </p>\n      <note>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</note>\n   "
                     }
                 },
                 "documentation": null
@@ -723,7 +766,7 @@
                     "Shortname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": " \n      <p>The layer short name, which is used internally by OpsWorks and by Chef recipes. The shortname is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters, which are limited to the alphanumeric\n         characters, '-', '_', and '.'.</p>\n   ",
+                        "documentation": " \n      <p>The layer short name, which is used internally by AWS OpsWorks and by Chef recipes. The short name is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters, which are limited to the alphanumeric\n         characters, '-', '_', and '.'.</p>\n   ",
                         "required": true
                     },
                     "Attributes": {
@@ -893,6 +936,12 @@
                             }
                         },
                         "documentation": "\n      <p>A <code>LayerCustomRecipes</code> object that specifies the layer custom recipes.</p>\n   "
+                    },
+                    "InstallUpdatesOnBoot": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "box": true,
+                        "documentation": "\n      <p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>.\n         To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by\n         using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or\n         manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances.\n      </p>\n      <note>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</note>\n   "
                     }
                 },
                 "documentation": null
@@ -935,7 +984,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Creates a layer. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-create.html\">How to Create a Layer</a>.</p>\n      <note>You should use <b>CreateLayer</b> for non-custom layer types such as PHP App Server only if the stack does not have an existing layer of that type.\n         A stack can have at most one instance of each non-custom layer; if you attempt to create a second instance, <b>CreateLayer</b> fails. A stack can have an arbitrary\n         number of custom layers, so you can call <b>CreateLayer</b> as many times as you like for that layer type.</note>\n   "
+            "documentation": "\n      <p>Creates a layer. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers-basics-create.html\">How to Create a Layer</a>.</p>\n      <note>You should use <b>CreateLayer</b> for noncustom layer types such as PHP App Server only if the stack does not have an existing layer of that type.\n         A stack can have at most one instance of each noncustom layer; if you attempt to create a second instance, <b>CreateLayer</b> fails. A stack can have an arbitrary\n         number of custom layers, so you can call <b>CreateLayer</b> as many times as you like for that layer type.</note>\n   "
         },
         "CreateStack": {
             "name": "CreateStack",
@@ -955,6 +1004,11 @@
                         "documentation": "\n      <p>The stack AWS region, such as \"us-east-1\". For more information about Amazon regions, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   ",
                         "required": true,
                         "cli_name": "stack-region"
+                    },
+                    "VpcId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>The ID of the VPC that the stack is to be launched into. It must be in the specified region.\n         All instances will be launched into this VPC, and you cannot change the ID later.</p>\n      <ul>\n         <li>If your account supports EC2 Classic, the default value is no VPC.</li>\n         <li>If you account does not support EC2 Classic, the default value is\n            the default VPC for the specified region.</li>\n      </ul>   \n      <p>If the VPC ID corresponds to a default VPC and you have specified either the <code>DefaultAvailabilityZone</code> or \n         the <code>DefaultSubnetId</code> parameter only, AWS OpsWorks infers the value of the other parameter.\n         If you specify neither parameter, AWS OpsWorks sets these parameters to the first valid Availability Zone for the specified\n         region and the corresponding default VPC subnet ID, respectively.</p>\n      <p>If you specify a nondefault VPC ID, note the following:</p>\n      <ul>\n         <li>It must belong to a VPC in your account that is in the specified region.</li>\n         <li>You must specify a value for <code>DefaultSubnetId</code>.</li>\n      </ul>\n      <p>For more information on how to use AWS OpsWorks with a VPC, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-vpc.html\">Running a Stack in a VPC</a>. For more information on\n         default VPC and EC2 Classic, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html\">Supported Platforms</a>.\n      </p>\n   "
                     },
                     "Attributes": {
                         "shape_name": "StackAttributes",
@@ -977,7 +1031,7 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n   ",
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n   ",
                         "required": true
                     },
                     "DefaultInstanceProfileArn": {
@@ -989,22 +1043,44 @@
                     "DefaultOs": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
+                        "documentation": "\n      <p>The stack's default operating system, which must be set to <code>Amazon Linux</code> or <code>Ubuntu 12.04 LTS</code>.\n         The default option is <code>Amazon Linux</code>.\n      </p>\n   "
                     },
                     "HostnameTheme": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate hostnames for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates hostnames by appending integers to the layer's shortname.\n      The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated hostname, call <code>GetHostNameSuggestion</code>, which returns a hostname based on the current theme.</p>\n   "
+                        "documentation": "\n      <p>The stack's host name theme, with spaces are replaced by underscores. The theme is used to generate host names for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates host names by appending integers to the layer's short name.\n      The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>\n   "
                     },
                     "DefaultAvailabilityZone": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack default Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
+                        "documentation": "\n      <p>The stack's default Availability Zone, which must be in the specified region. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.\n         If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone.\n         For more information, see the <code>VpcId</code> parameter description.\n      </p>\n   "
+                    },
+                    "DefaultSubnetId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>The stack's default subnet ID.\n         All instances will be launched into this subnet unless you specify otherwise when you create the instance.\n         If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone.\n         For information on default values and when this parameter is required, see the <code>VpcId</code> parameter description.\n      </p>\n   "
                     },
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                    },
+                    "ConfigurationManager": {
+                        "shape_name": "StackConfigurationManager",
+                        "type": "structure",
+                        "members": {
+                            "Name": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n      <p>The name. This parameter must be set to \"Chef\".</p>\n   "
+                            },
+                            "Version": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n      <p>The Chef version. This parameter must be set to \"0.9\" or \"11.4\". The default value is \"0.9\".\n         However, we expect to change the default value to \"11.4\" in September 2013.</p>\n   "
+                            }
+                        },
+                        "documentation": "\n      <p>The configuration manager. When you create a stack we recommend that you use the configuration manager to\n         specify the Chef version, 0.9 or 11.4. The default value is currently 0.9.\n         However, we expect to change the default value to 11.4 in September 2013.</p>\n   "
                     },
                     "UseCustomCookbooks": {
                         "shape_name": "Boolean",
@@ -1050,10 +1126,10 @@
                             "Revision": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
+                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                     },
                     "DefaultSshKeyName": {
                         "shape_name": "String",
@@ -1079,7 +1155,7 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack ID, which is an opaque string that you use to identify the stack when performing actions such as <code>DescribeStacks</code>.</p>\n   "
+                        "documentation": "\n      <p>The stack ID, which is an opaque string that you use to identify the stack when performing actions\n         such as <code>DescribeStacks</code>.</p>\n   "
                     }
                 },
                 "documentation": "<p>Contains the response to a <code>CreateStack</code> request.</p>   "
@@ -1495,7 +1571,7 @@
                                         "Revision": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                            "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                                         }
                                     },
                                     "documentation": "\n     <p>A <code>Source</code> object that describes the app repository.</p>\n   "
@@ -1599,7 +1675,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Requests a description of a specified set of apps.</p>\n   "
+            "documentation": "\n      <p>Requests a description of a specified set of apps.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeCommands": {
             "name": "DescribeCommands",
@@ -1726,7 +1802,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes the results of specified commands.</p>\n   "
+            "documentation": "\n      <p>Describes the results of specified commands.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeDeployments": {
             "name": "DescribeDeployments",
@@ -1828,7 +1904,7 @@
                                                 "restart",
                                                 "undeploy"
                                             ],
-                                            "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
+                                            "documentation": "\n      <p>Specifies the deployment operation. You can specify only one command.</p>\n      <p>For stacks, the available commands are:</p>\n      <ul>\n         <li>\n<code></code>execute_recipes: Execute the recipes that are specified by the <code>Args</code> parameter.</li>\n         <li>\n<code></code>install_dependencies: Installs the stack's dependencies.</li>\n         <li>\n<code></code>update_custom_cookbooks: Update the stack's custom cookbooks.</li>\n         <li>\n<code></code>update_dependencies: Update the stack's dependencies.</li>\n      </ul>\n      <p>For apps, the available commands are:</p>\n      <ul>\n         <li>\n<code>deploy</code>: Deploy the app.</li>\n         <li>\n<code>rollback</code> Roll the app back to the previous version. When you update an app, AWS OpsWorks stores the previous version,\n            up to a maximum of five versions. You can use this command to roll an app back as many as four versions.</li>\n         <li>\n<code>start</code>: Start the app's web or application server.</li>\n         <li>\n<code>stop</code>: Stop the app's web or application server.</li>\n         <li>\n<code>restart</code>: Restart the app's web or application server.</li>\n         <li>\n<code>undeploy</code>: Undeploy the app.</li>\n      </ul>\n   ",
                                             "required": true
                                         },
                                         "Args": {
@@ -1862,7 +1938,7 @@
                                 "CustomJson": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>A string that contains user-defined custom JSON. It is used to override the corresponding default stack configuration JSON values for \n         stack. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                                    "documentation": "\n      <p>A string that contains user-defined custom JSON. It is used to override the corresponding default stack configuration JSON values for \n         stack. The string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
                                 },
                                 "InstanceIds": {
                                     "shape_name": "Strings",
@@ -1908,7 +1984,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Requests a description of a specified set of deployments.</p>\n   "
+            "documentation": "\n      <p>Requests a description of a specified set of deployments.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeElasticIps": {
             "name": "DescribeElasticIps",
@@ -1919,7 +1995,7 @@
                     "InstanceId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the\n        Elastic IP addresses associated with the specified instance.</p>\n   "
+                        "documentation": "\n      <p>The instance ID. If you include this parameter, <code>DescribeElasticIps</code> returns a description of the\n         Elastic IP addresses associated with the specified instance.</p>\n   "
                     },
                     "Ips": {
                         "shape_name": "Strings",
@@ -1948,12 +2024,17 @@
                                 "Ip": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The Elastic IP address</p>\n   "
+                                    "documentation": "\n      <p>The IP address</p>\n   "
                                 },
                                 "Name": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The Elastic IP address name.</p>\n   "
+                                    "documentation": "\n      <p>The name.</p>\n   "
+                                },
+                                "Domain": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": "\n      <p>The domain.</p>\n   "
                                 },
                                 "Region": {
                                     "shape_name": "String",
@@ -1994,7 +2075,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes an instance's <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP addresses</a>.</p>\n   "
+            "documentation": "\n      <p>Describes <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP addresses</a>.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeElasticLoadBalancers": {
             "name": "DescribeElasticLoadBalancers",
@@ -2005,7 +2086,7 @@
                     "StackId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A stack ID. The action describes the Elastic Load Balancing load balancers for the stack.</p>\n   "
+                        "documentation": "\n      <p>A stack ID. The action describes the Elastic Load Balancing instances for the stack.</p>\n   "
                     },
                     "LayerIds": {
                         "shape_name": "Strings",
@@ -2015,7 +2096,7 @@
                             "type": "string",
                             "documentation": null
                         },
-                        "documentation": "\n      <p>A list of layer IDs. The action describes the Elastic Load Balancing load balancers for the specified layers.</p>\n   "
+                        "documentation": "\n      <p>A list of layer IDs. The action describes the Elastic Load Balancing instances for the specified layers.</p>\n   "
                     }
                 },
                 "documentation": null
@@ -2034,27 +2115,32 @@
                                 "ElasticLoadBalancerName": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The Elastic Load Balancing load balancer's name.</p>\n   "
+                                    "documentation": "\n      <p>The Elastic Load Balancing instance's name.</p>\n   "
                                 },
                                 "Region": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The load balancer's AWS region.</p>\n   "
+                                    "documentation": "\n      <p>The instance's AWS region.</p>\n   "
                                 },
                                 "DnsName": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The load balancer's public DNS name.</p>\n   "
+                                    "documentation": "\n      <p>The instance's public DNS name.</p>\n   "
                                 },
                                 "StackId": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The ID of the stack that the load balancer is associated with.</p>\n   "
+                                    "documentation": "\n      <p>The ID of the stack that the instance is associated with.</p>\n   "
                                 },
                                 "LayerId": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The ID of the layer that the load balancer is attached to.</p>\n   "
+                                    "documentation": "\n      <p>The ID of the layer that the instance is attached to.</p>\n   "
+                                },
+                                "VpcId": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": "\n      <p>The VPC ID.</p>\n   "
                                 },
                                 "AvailabilityZones": {
                                     "shape_name": "Strings",
@@ -2064,7 +2150,17 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": "\n      <p>The load balancer's Availability Zones.</p>\n   "
+                                    "documentation": "\n      <p>A list of Availability Zones.</p>\n   "
+                                },
+                                "SubnetIds": {
+                                    "shape_name": "Strings",
+                                    "type": "list",
+                                    "members": {
+                                        "shape_name": "String",
+                                        "type": "string",
+                                        "documentation": null
+                                    },
+                                    "documentation": "\n      <p>A list of subnet IDs, if the stack is running in a VPC.</p>\n   "
                                 },
                                 "Ec2InstanceIds": {
                                     "shape_name": "Strings",
@@ -2074,12 +2170,12 @@
                                         "type": "string",
                                         "documentation": null
                                     },
-                                    "documentation": "\n      <p>A list of the EC2 instances that the Elastic Load Balancing load balancer is managing traffic for.</p>\n   "
+                                    "documentation": "\n      <p>A list of the EC2 instances that the Elastic Load Balancing instance is managing traffic for.</p>\n   "
                                 }
                             },
-                            "documentation": "\n      <p>Describes an Elastic Load Balancing load balancer.</p>\n   "
+                            "documentation": "\n      <p>Describes an Elastic Load Balancing instance.</p>\n   "
                         },
-                        "documentation": "\n      <p>A list of <code>ElasticLoadBalancer</code> objects that describe the specified Elastic Load Balancing load balancers.</p>\n   "
+                        "documentation": "\n      <p>A list of <code>ElasticLoadBalancer</code> objects that describe the specified Elastic Load Balancing instances.</p>\n   "
                     }
                 },
                 "documentation": "\n      <p>Contains the response to a <code>DescribeElasticLoadBalancers</code> request.</p>\n   "
@@ -2110,7 +2206,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes a stack's Elastic Load Balancing load balancers.</p>\n   "
+            "documentation": "\n      <p>Describes a stack's Elastic Load Balancing instances.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeInstances": {
             "name": "DescribeInstances",
@@ -2195,7 +2291,7 @@
                                 "InstanceType": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The instance type. OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that specify the various types are in the API Name column of the Available Instance Types table.</p>\n   "
+                                    "documentation": "\n      <p>The instance type. AWS OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that specify the various types are in the API Name column of the Available Instance Types table.</p>\n   "
                                 },
                                 "InstanceProfileArn": {
                                     "shape_name": "String",
@@ -2212,10 +2308,20 @@
                                     "type": "string",
                                     "documentation": "\n      <p>The instance operating system.</p>\n   "
                                 },
+                                "AmiId": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": "\n      <p>A custom AMI ID to be used to create the instance. The AMI should be based on one of the standard AWS OpsWorks APIs:\n         Amazon Linux or Ubuntu 12.04 LTS. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html\">Instances</a></p>\n   "
+                                },
                                 "AvailabilityZone": {
                                     "shape_name": "String",
                                     "type": "string",
                                     "documentation": "\n      <p>The instance Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
+                                },
+                                "SubnetId": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": "\n      <p>The instance's subnet ID, if the stack is running in a VPC.</p>\n   "
                                 },
                                 "PublicDns": {
                                     "shape_name": "String",
@@ -2298,6 +2404,12 @@
                                     "shape_name": "String",
                                     "type": "string",
                                     "documentation": "\n      <p>The root device volume ID.</p>\n   "
+                                },
+                                "InstallUpdatesOnBoot": {
+                                    "shape_name": "Boolean",
+                                    "type": "boolean",
+                                    "box": true,
+                                    "documentation": "\n      <p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>.\n         If this value is set to <code>false</code>, you must then update your instances manually by\n         using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or\n         manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances.\n      </p>\n      <note>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</note>\n   "
                                 }
                             },
                             "documentation": "\n     <p>Describes an instance.</p>\n   "
@@ -2333,7 +2445,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Requests a description of a set of instances associated with a specified ID or IDs.</p>      \n   "
+            "documentation": "\n      <p>Requests a description of a set of instances.</p>      \n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeLayers": {
             "name": "DescribeLayers",
@@ -2583,7 +2695,7 @@
                                             "documentation": "\n      <p>An array of custom recipe names to be run following a <code>shutdown</code> event.</p>\n   "
                                         }
                                     },
-                                    "documentation": "\n      <p>OpsWorks supports five life<?oxy_delete author=\"witsoej\" timestamp=\"20130319T132659-0700\" content=\"-\">cycle events, <b>setup</b>, <b>configuration</b>, <b>deploy</b>, <b>undeploy</b>, and <b>shutdown</b>.\n         For each layer, OpsWorks runs a set of standard recipes for each event.\n         In addition, you can provide custom recipes for any or all layers and events. OpsWorks runs custom event recipes after the standard recipes.\n         <code>LayerCustomRecipes</code> specifies the custom recipes for a particular layer to be run in response to each of the five events.\n      </p>\n      \n      <p>To specify a recipe, use the cookbook's directory name in the repository\n         followed by two colons and the recipe name, which is the recipe's file name without the .rb extension. For example: phpapp2::dbsetup\n         specifies the dbsetup.rb recipe in the repository's phpapp2 folder.\n      </p>\n   "
+                                    "documentation": "\n      <p>AWS OpsWorks supports five life<?oxy_delete author=\"witsoej\" timestamp=\"20130319T132659-0700\" content=\"-\">cycle events, <b>setup</b>, <b>configuration</b>, <b>deploy</b>, <b>undeploy</b>, and <b>shutdown</b>.\n         For each layer, AWS OpsWorks runs a set of standard recipes for each event.\n         In addition, you can provide custom recipes for any or all layers and events. AWS OpsWorks runs custom event recipes after the standard recipes.\n         <code>LayerCustomRecipes</code> specifies the custom recipes for a particular layer to be run in response to each of the five events.\n      </p>\n      \n      <p>To specify a recipe, use the cookbook's directory name in the repository\n         followed by two colons and the recipe name, which is the recipe's file name without the .rb extension. For example: phpapp2::dbsetup\n         specifies the dbsetup.rb recipe in the repository's phpapp2 folder.\n      </p>\n   "
                                 },
                                 "CustomRecipes": {
                                     "shape_name": "Recipes",
@@ -2646,6 +2758,12 @@
                                     "shape_name": "DateTime",
                                     "type": "string",
                                     "documentation": "\n      <p>Date when the layer was created.</p>\n   "
+                                },
+                                "InstallUpdatesOnBoot": {
+                                    "shape_name": "Boolean",
+                                    "type": "boolean",
+                                    "box": true,
+                                    "documentation": "\n      <p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>.\n         If this value is set to <code>false</code>, you must then update your instances manually by\n         using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or\n         manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances.\n      </p>\n      <note>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</note>\n   "
                                 }
                             },
                             "documentation": "\n     <p>Describes a layer.</p>\n   "
@@ -2681,7 +2799,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Requests a description of one or more layers in a specified stack.</p>\n   "
+            "documentation": "\n      <p>Requests a description of one or more layers in a specified stack.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeLoadBasedAutoScaling": {
             "name": "DescribeLoadBasedAutoScaling",
@@ -2747,7 +2865,7 @@
                                             "type": "integer",
                                             "min_length": 1,
                                             "max_length": 100,
-                                            "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
+                                            "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that AWS OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, AWS OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct AWS OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
                                         },
                                         "CpuThreshold": {
                                             "shape_name": "Double",
@@ -2768,7 +2886,7 @@
                                             "documentation": "\n      <p>The load threshold. For more information about how load is computed, see\n         <a href=\"http://en.wikipedia.org/wiki/Load_%28computing%29\">Load (computing)</a>.</p>\n   "
                                         }
                                     },
-                                    "documentation": "\n      <p>A <code>LoadBasedAutoscalingInstruction</code> object that describes the upscaling configuration, which \n         defines how and when OpsWorks increases the number of instances.</p> \n   "
+                                    "documentation": "\n      <p>A <code>LoadBasedAutoscalingInstruction</code> object that describes the upscaling configuration, which \n         defines how and when AWS OpsWorks increases the number of instances.</p> \n   "
                                 },
                                 "DownScaling": {
                                     "shape_name": "AutoScalingThresholds",
@@ -2792,7 +2910,7 @@
                                             "type": "integer",
                                             "min_length": 1,
                                             "max_length": 100,
-                                            "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
+                                            "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that AWS OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, AWS OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct AWS OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
                                         },
                                         "CpuThreshold": {
                                             "shape_name": "Double",
@@ -2813,7 +2931,7 @@
                                             "documentation": "\n      <p>The load threshold. For more information about how load is computed, see\n         <a href=\"http://en.wikipedia.org/wiki/Load_%28computing%29\">Load (computing)</a>.</p>\n   "
                                         }
                                     },
-                                    "documentation": "\n      <p>A <code>LoadBasedAutoscalingInstruction</code> object that describes the downscaling configuration, which \n         defines how and when OpsWorks reduces the number of instances.</p>\n   "
+                                    "documentation": "\n      <p>A <code>LoadBasedAutoscalingInstruction</code> object that describes the downscaling configuration, which \n         defines how and when AWS OpsWorks reduces the number of instances.</p>\n   "
                                 }
                             },
                             "documentation": "\n      <p>Describes a layer's load-based auto scaling configuration.</p> \n   "
@@ -2849,7 +2967,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes load-based auto scaling configurations for specified layers.</p>\n   "
+            "documentation": "\n      <p>Describes load-based auto scaling configurations for specified layers.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribePermissions": {
             "name": "DescribePermissions",
@@ -3063,7 +3181,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describe an instance's RAID arrays.</p>\n   "
+            "documentation": "\n      <p>Describe an instance's RAID arrays.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeServiceErrors": {
             "name": "DescribeServiceErrors",
@@ -3136,7 +3254,7 @@
                                     "documentation": "\n      <p>When the error occurred.</p>\n   "
                                 }
                             },
-                            "documentation": "\n      <p>Describes an OpsWorks service error.</p>\n   "
+                            "documentation": "\n      <p>Describes an AWS OpsWorks service error.</p>\n   "
                         },
                         "documentation": "\n      <p>An array of <code>ServiceError</code> objects that describe the specified service errors.</p>\n   "
                     }
@@ -3169,7 +3287,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes OpsWorks service errors.</p>\n   "
+            "documentation": "\n      <p>Describes AWS OpsWorks service errors.</p>\n   "
         },
         "DescribeStacks": {
             "name": "DescribeStacks",
@@ -3216,6 +3334,11 @@
                                     "type": "string",
                                     "documentation": "\n      <p>The stack AWS region, such as \"us-east-1\". For more information about AWS regions, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
                                 },
+                                "VpcId": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": "\n      <p>The VPC ID, if the stack is running in a VPC.</p>\n   "
+                                },
                                 "Attributes": {
                                     "shape_name": "StackAttributes",
                                     "type": "map",
@@ -3247,7 +3370,7 @@
                                 "DefaultOs": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
+                                    "documentation": "\n      <p>The stack's default operating system, which must be set to <code>Amazon Linux</code> or <code>Ubuntu 12.04 LTS</code>.\n         The default option is <code>Amazon Linux</code>.\n      </p>\n   "
                                 },
                                 "HostnameTheme": {
                                     "shape_name": "String",
@@ -3259,10 +3382,32 @@
                                     "type": "string",
                                     "documentation": "\n      <p>The stack's default Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
                                 },
+                                "DefaultSubnetId": {
+                                    "shape_name": "String",
+                                    "type": "string",
+                                    "documentation": "\n      <p>The default subnet ID, if the stack is running in a VPC.</p>\n   "
+                                },
                                 "CustomJson": {
                                     "shape_name": "String",
                                     "type": "string",
-                                    "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values.\nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                                    "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values.\nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                                },
+                                "ConfigurationManager": {
+                                    "shape_name": "StackConfigurationManager",
+                                    "type": "structure",
+                                    "members": {
+                                        "Name": {
+                                            "shape_name": "String",
+                                            "type": "string",
+                                            "documentation": "\n      <p>The name. This parameter must be set to \"Chef\".</p>\n   "
+                                        },
+                                        "Version": {
+                                            "shape_name": "String",
+                                            "type": "string",
+                                            "documentation": "\n      <p>The Chef version. This parameter must be set to \"0.9\" or \"11.4\". The default value is \"0.9\".\n         However, we expect to change the default value to \"11.4\" in September 2013.</p>\n   "
+                                        }
+                                    },
+                                    "documentation": "\n      <p>The configuration manager.</p>\n   "
                                 },
                                 "UseCustomCookbooks": {
                                     "shape_name": "Boolean",
@@ -3308,10 +3453,10 @@
                                         "Revision": {
                                             "shape_name": "String",
                                             "type": "string",
-                                            "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                            "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                                         }
                                     },
-                                    "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
+                                    "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                                 },
                                 "DefaultSshKeyName": {
                                     "shape_name": "String",
@@ -3550,7 +3695,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes time-based auto scaling configurations for specified instances.</p>\n   "
+            "documentation": "\n      <p>Describes time-based auto scaling configurations for specified instances.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DescribeUserProfiles": {
             "name": "DescribeUserProfiles",
@@ -3769,7 +3914,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Describes an instance's Amazon EBS volumes.</p>\n   "
+            "documentation": "\n      <p>Describes an instance's Amazon EBS volumes.</p>\n      <note>You must specify at least one of the parameters.</note>\n   "
         },
         "DetachElasticLoadBalancer": {
             "name": "DetachElasticLoadBalancer",
@@ -3780,13 +3925,13 @@
                     "ElasticLoadBalancerName": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The Elastic Load Balancing load balancer's name.</p>\n   ",
+                        "documentation": "\n      <p>The Elastic Load Balancing instance's name.</p>\n   ",
                         "required": true
                     },
                     "LayerId": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The ID of the layer that the Elastic Load Balancing load balancer is attached to.</p>\n   ",
+                        "documentation": "\n      <p>The ID of the layer that the Elastic Load Balancing instance is attached to.</p>\n   ",
                         "required": true
                     }
                 },
@@ -3807,7 +3952,7 @@
                     "documentation": "\n      <p>Indicates that a resource was not found.</p>\n   "
                 }
             ],
-            "documentation": "\n      <p>Detaches a specified Elastic Load Balancing load balancer from it's layer.</p>\n   "
+            "documentation": "\n      <p>Detaches a specified Elastic Load Balancing instance from it's layer.</p>\n   "
         },
         "GetHostnameSuggestion": {
             "name": "GetHostnameSuggestion",
@@ -3836,7 +3981,7 @@
                     "Hostname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The generated hostname.</p>\n   "
+                        "documentation": "\n      <p>The generated host name.</p>\n   "
                     }
                 },
                 "documentation": " <p>Contains the response to a <code>GetHostnameSuggestion</code> request.</p> "
@@ -3855,7 +4000,7 @@
                     "documentation": "\n     <p>Indicates that a request was invalid.</p>      \n   "
                 }
             ],
-            "documentation": "\n      <p>Gets a generated hostname for the specified layer, based on the current hostname theme.</p>\n   "
+            "documentation": "\n      <p>Gets a generated host name for the specified layer, based on the current host name theme.</p>\n   "
         },
         "RebootInstance": {
             "name": "RebootInstance",
@@ -3941,7 +4086,7 @@
                                 "type": "integer",
                                 "min_length": 1,
                                 "max_length": 100,
-                                "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
+                                "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that AWS OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, AWS OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct AWS OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
                             },
                             "CpuThreshold": {
                                 "shape_name": "Double",
@@ -3962,7 +4107,7 @@
                                 "documentation": "\n      <p>The load threshold. For more information about how load is computed, see\n         <a href=\"http://en.wikipedia.org/wiki/Load_%28computing%29\">Load (computing)</a>.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>An <code>AutoScalingThresholds</code> object with the upscaling threshold configuration. If the load exceeds\n         these thresholds for a specified amount of time, OpsWorks starts a specified number of instances.</p>\n   "
+                        "documentation": "\n      <p>An <code>AutoScalingThresholds</code> object with the upscaling threshold configuration. If the load exceeds\n         these thresholds for a specified amount of time, AWS OpsWorks starts a specified number of instances.</p>\n   "
                     },
                     "DownScaling": {
                         "shape_name": "AutoScalingThresholds",
@@ -3986,7 +4131,7 @@
                                 "type": "integer",
                                 "min_length": 1,
                                 "max_length": 100,
-                                "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
+                                "documentation": "\n      <p>The amount of time (in minutes) after a scaling event occurs that AWS OpsWorks should ignore metrics\n         and not raise any additional scaling events.\n         For example, AWS OpsWorks adds new instances following an upscaling event but the instances\n         won't start reducing the load until they have been booted and configured.\n         There is no point in raising additional scaling events during that operation, which typically takes several minutes.\n         <code>IgnoreMetricsTime</code> allows you to direct AWS OpsWorks to not raise any scaling events long enough\n         to get the new instances online.</p>\n   "
                             },
                             "CpuThreshold": {
                                 "shape_name": "Double",
@@ -4007,7 +4152,7 @@
                                 "documentation": "\n      <p>The load threshold. For more information about how load is computed, see\n         <a href=\"http://en.wikipedia.org/wiki/Load_%28computing%29\">Load (computing)</a>.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>An <code>AutoScalingThresholds</code> object with the downscaling threshold configuration. If the load falls\n         below these thresholds for a specified amount of time, OpsWorks stops a specified number of instances.</p>\n   "
+                        "documentation": "\n      <p>An <code>AutoScalingThresholds</code> object with the downscaling threshold configuration. If the load falls\n         below these thresholds for a specified amount of time, AWS OpsWorks stops a specified number of instances.</p>\n   "
                     }
                 },
                 "documentation": null
@@ -4507,7 +4652,7 @@
                             "Revision": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
                         "documentation": "\n      <p>A <code>Source</code> object that specifies the app repository.</p>\n   "
@@ -4629,7 +4774,7 @@
                     "InstanceType": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance type. OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that you use to specify the various types are in the API Name column of the Available Instance Types table.</p>\n   "
+                        "documentation": "\n      <p>The instance type. AWS OpsWorks supports all instance types except Cluster Compute, Cluster GPU, and High Memory Cluster.\n         For more information, see <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.\n         The parameter values that you use to specify the various types are in the API Name column of the Available Instance Types table.</p>\n   "
                     },
                     "AutoScalingType": {
                         "shape_name": "AutoScalingType",
@@ -4648,7 +4793,12 @@
                     "Os": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The instance operating system.</p>\n   "
+                        "documentation": "\n      <p>The instance operating system, which must be set to one of the following.</p>\n      <ul>\n         <li>Standard operating systems: <code>Amazon Linux</code> or <code>Ubuntu 12.04 LTS</code>\n</li>\n         <li>Custom AMIs: <code>Custom</code>\n</li>\n      </ul>\n      <p>The default option is <code>Amazon Linux</code>. If you set this parameter to <code>Custom</code>, you must use the\n         <a>CreateInstance</a> action's AmiId parameter to specify\n         the custom AMI that you want to use. For more information on the standard operating systems, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html\">Operating Systems</a>For more information\n         on how to use custom AMIs with OpsWorks, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html\">Using Custom AMIs</a>.</p>\n   "
+                    },
+                    "AmiId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>A custom AMI ID to be used to create the instance. The AMI should be based on one of the standard AWS OpsWorks APIs:\n         Amazon Linux or Ubuntu 12.04 LTS. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances.html\">Instances</a></p>\n   "
                     },
                     "SshKeyName": {
                         "shape_name": "String",
@@ -4663,6 +4813,12 @@
                             "i386"
                         ],
                         "documentation": "\n      <p>The instance architecture. Instance types do not necessarily support both architectures.\n         For a list of the architectures that are supported by the different instance types, see\n         <a href=\"http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance Families and Types</a>.</p>\n   "
+                    },
+                    "InstallUpdatesOnBoot": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "box": true,
+                        "documentation": "\n      <p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>.\n         To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by\n         using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or\n         manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances.\n      </p>\n      <note>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</note>\n   "
                     }
                 },
                 "documentation": null
@@ -4716,7 +4872,7 @@
                     "Shortname": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The layer short name, which is used internally by OpsWorksand by Chef. The shortname is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters and must be in the following format:\n         /\\A[a-z0-9\\-\\_\\.]+\\Z/.</p>\n   "
+                        "documentation": "\n      <p>The layer short name, which is used internally by AWS OpsWorksand by Chef. The short name is also used as the name for the\n         directory where your app files are installed. It can have a maximum of 200 characters and must be in the following format:\n         /\\A[a-z0-9\\-\\_\\.]+\\Z/.</p>\n   "
                     },
                     "Attributes": {
                         "shape_name": "LayerAttributes",
@@ -4885,6 +5041,12 @@
                             }
                         },
                         "documentation": "\n      <p>A <code>LayerCustomRecipes</code> object that specifies the layer's custom recipes.</p>      \n   "
+                    },
+                    "InstallUpdatesOnBoot": {
+                        "shape_name": "Boolean",
+                        "type": "boolean",
+                        "box": true,
+                        "documentation": "\n      <p>Whether to install operating system and package updates when the instance boots. The default value is <code>true</code>.\n         To control when updates are installed, set this value to <code>false</code>. You must then update your instances manually by\n         using <a>CreateDeployment</a> to run the <code>update_dependencies</code> stack command or\n         manually running <code>yum</code> (Amazon Linux) or <code>apt-get</code> (Ubuntu) on the instances.\n      </p>\n      <note>We strongly recommend using the default value of <code>true</code>, to ensure that your instances have the latest security updates.</note>\n   "
                     }
                 },
                 "documentation": null
@@ -4956,7 +5118,7 @@
                     "ServiceRoleArn": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n      <note>You must set this parameter to a valid service role ARN or the action will fail; there is no default value.\n         You can specify the stack's current service role ARN, if you prefer, but you must do so explicitly.</note>\n   "
+                        "documentation": "\n      <p>The stack AWS Identity and Access Management (IAM) role, which allows AWS OpsWorks to work with AWS resources on your behalf.\n         You must set this parameter to the Amazon Resource Name (ARN) for an existing IAM role. For more information about IAM ARNs, see\n         <a href=\"http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html\">Using Identifiers</a>.</p>   \n      <note>You must set this parameter to a valid service role ARN or the action will fail; there is no default value.\n         You can specify the stack's current service role ARN, if you prefer, but you must do so explicitly.</note>\n   "
                     },
                     "DefaultInstanceProfileArn": {
                         "shape_name": "String",
@@ -4966,22 +5128,44 @@
                     "DefaultOs": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The cloned stack default operating system, which must be either \"Amazon Linux\" or \"Ubuntu 12.04 LTS\".</p>\n   "
+                        "documentation": "\n      <p>The stack's default operating system, which must be set to <code>Amazon Linux</code> or <code>Ubuntu 12.04 LTS</code>.\n         The default option is <code>Amazon Linux</code>.\n      </p>\n   "
                     },
                     "HostnameTheme": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack's new host name theme, with spaces are replaced by underscores. The theme is used to generate hostnames for the stack's instances. By default,\n         <code>HostnameTheme</code> is set to Layer_Dependent, which creates hostnames by appending integers to the layer's shortname.\n         The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated hostname, call <code>GetHostNameSuggestion</code>, which returns a hostname based on the current theme.</p>      \n   "
+                        "documentation": "\n      <p>The stack's new host name theme, with spaces are replaced by underscores. The theme is used to generate host names for the stack's instances.\n         By default, <code>HostnameTheme</code> is set to Layer_Dependent, which creates host names by appending integers to the layer's short name.\n         The other themes are:</p>\n      <ul>\n         <li>Baked_Goods</li>\n         <li>Clouds</li>\n         <li>European_Cities</li>\n         <li>Fruits</li>\n         <li>Greek_Deities</li>\n         <li>Legendary_Creatures_from_Japan</li>\n         <li>Planets_and_Moons</li>\n         <li>Roman_Deities</li>\n         <li>Scottish_Islands</li>\n         <li>US_Cities</li>\n         <li>Wild_Cats</li>\n      </ul>\n      <p>To obtain a generated host name, call <code>GetHostNameSuggestion</code>, which returns a host name based on the current theme.</p>      \n   "
                     },
                     "DefaultAvailabilityZone": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>The stack new default Availability Zone. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.</p>\n   "
+                        "documentation": "\n      <p>The stack's default Availability Zone, which must be in the specified region. For more information, see\n         <a href=\"http://docs.aws.amazon.com/general/latest/gr/rande.html\">Regions and Endpoints</a>.\n         If you also specify a value for <code>DefaultSubnetId</code>, the subnet must be in the same zone.\n         For more information, see <a>CreateStack</a>.\n      </p>\n   "
+                    },
+                    "DefaultSubnetId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>The stack's default subnet ID.\n         All instances will be launched into this subnet unless you specify otherwise when you create the instance.\n         If you also specify a value for <code>DefaultAvailabilityZone</code>, the subnet must be in that zone.\n         For more information, see <a>CreateStack</a>.\n      </p>\n   "
                     },
                     "CustomJson": {
                         "shape_name": "String",
                         "type": "string",
-                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">\n         Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                        "documentation": "\n      <p>A string that contains user-defined, custom JSON. It is used to override the corresponding default stack configuration JSON values. \nThe string should be in the following format and must escape characters such as '\"'.:</p>\n      <code>\"{\\\"key1\\\": \\\"value1\\\", \\\"key2\\\": \\\"value2\\\",...}\"</code>\n      <p>For more information on custom JSON, see <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html\">Use Custom JSON to Modify the Stack Configuration JSON</a>.</p>\n   "
+                    },
+                    "ConfigurationManager": {
+                        "shape_name": "StackConfigurationManager",
+                        "type": "structure",
+                        "members": {
+                            "Name": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n      <p>The name. This parameter must be set to \"Chef\".</p>\n   "
+                            },
+                            "Version": {
+                                "shape_name": "String",
+                                "type": "string",
+                                "documentation": "\n      <p>The Chef version. This parameter must be set to \"0.9\" or \"11.4\". The default value is \"0.9\".\n         However, we expect to change the default value to \"11.4\" in September 2013.</p>\n   "
+                            }
+                        },
+                        "documentation": "\n      <p>The configuration manager. When you update a stack you can optionally use the configuration manager to\n         specify the Chef version, 0.9 or 11.4. If you omit this parameter, AWS OpsWorks does not change\n         the Chef version.\n      </p>\n   "
                     },
                     "UseCustomCookbooks": {
                         "shape_name": "Boolean",
@@ -5027,10 +5211,10 @@
                             "Revision": {
                                 "shape_name": "String",
                                 "type": "string",
-                                "documentation": "\n      <p>The application's version. OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
+                                "documentation": "\n      <p>The application's version. AWS OpsWorks enables you to easily deploy new versions of an application.\n         One of the simplest approaches is to have branches or revisions in your repository that represent different\n         versions that can potentially be deployed.</p>\n   "
                             }
                         },
-                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-installingcustom.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
+                        "documentation": "\n      <p>Contains the information required to retrieve an app or cookbook from a repository. For more information, see\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html\">Creating Apps</a> or\n         <a href=\"http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html\">Custom Recipes and Cookbooks</a>.</p>\n   "
                     },
                     "DefaultSshKeyName": {
                         "shape_name": "String",

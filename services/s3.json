@@ -785,7 +785,7 @@
       "documentation": "Removes the null version (if there is one) of an object and inserts a delete marker, which becomes the latest version of the object. If there isn't a null version, Amazon S3 does not remove any objects.",
       "http": {
         "method": "DELETE",
-        "uri": "/{Bucket}/{Key}"
+        "uri": "/{Bucket}/{Key}?versionId={VersionId}"
       },
       "input": {
         "type": "structure",
@@ -799,6 +799,17 @@
             "type": "string",
             "required": true,
             "location": "uri"
+          },
+          "MFA": {
+            "type": "string",
+            "documentation": "The concatenation of the authentication device's serial number, a space, and the value that is displayed on your authentication device.",
+            "location": "header",
+            "location_name": "x-amz-mfa"
+          },
+          "VersionId": {
+            "type": "string",
+            "location": "uri",
+            "documentation": "VersionId used to reference a specific version of the object."
           }
         }
       },
@@ -1502,7 +1513,7 @@
             "type": "string",
             "enum": [
               "Enabled",
-              "Disabled"
+              "Suspended"
             ],
             "documentation": "The versioning state of the bucket."
           },
@@ -1601,6 +1612,10 @@
                   "type": "structure",
                   "documentation": "Container for redirect information. You can redirect requests to another host, to another page, or with another protocol. In the event of an error, you can can specify a different error code to return.",
                   "members": {
+                    "HostName": {
+                      "type": "string",
+                      "documentation": "The host name to use in the redirect request."
+                    },
                     "ReplaceKeyPrefixWith": {
                       "type": "string",
                       "documentation": "The object key prefix to use in the redirect request. For example, to redirect requests for all pages with prefix docs/ (objects in the docs/ folder) to documents/, you can set a condition block with KeyPrefixEquals set to docs/ and in the Redirect set ReplaceKeyPrefixWith to /documents. Not required if one of the siblings is present. Can be present only if ReplaceKeyWith is not provided."
@@ -1612,10 +1627,6 @@
                     "HttpRedirectCode": {
                       "type": "string",
                       "documentation": "The HTTP redirect code to use on the response. Not required if one of the siblings is present."
-                    },
-                    "HostName": {
-                      "type": "string",
-                      "documentation": "Name of the host where requests will be redirected."
                     },
                     "Protocol": {
                       "type": "string",
@@ -2359,6 +2370,9 @@
             "type": "boolean",
             "documentation": "Indicates whether the returned list of multipart uploads is truncated. A value of true indicates that the list was truncated. The list can be truncated if the number of multipart uploads exceeds the limit allowed or specified by max uploads."
           },
+          "Prefix": {
+            "type": "string"
+          },
           "Uploads": {
             "type": "list",
             "flattened": true,
@@ -2411,6 +2425,18 @@
                       "documentation": "Name of the Principal."
                     }
                   }
+                }
+              }
+            }
+          },
+          "CommonPrefixes": {
+            "type": "list",
+            "flattened": true,
+            "members": {
+              "type": "structure",
+              "members": {
+                "Prefix": {
+                  "type": "string"
                 }
               }
             }
@@ -3504,7 +3530,7 @@
           },
           "MFA": {
             "type": "string",
-            "documentation": "The value is the concatenation of the authentication device's serial number, a space, and the value displayed on your authentication device.",
+            "documentation": "The concatenation of the authentication device's serial number, a space, and the value that is displayed on your authentication device.",
             "location": "header",
             "location_name": "x-amz-mfa"
           },
@@ -3525,7 +3551,7 @@
                 "type": "string",
                 "enum": [
                   "Enabled",
-                  "Disabled"
+                  "Suspended"
                 ],
                 "documentation": "The versioning state of the bucket."
               }
@@ -3629,8 +3655,7 @@
                       "members": {
                         "HostName": {
                           "type": "string",
-                          "required": true,
-                          "documentation": "Name of the host where requests will be redirected."
+                          "documentation": "The host name to use in the redirect request."
                         },
                         "HttpRedirectCode": {
                           "type": "string",

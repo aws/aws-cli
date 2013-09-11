@@ -1,19 +1,23 @@
 #!/usr/bin/env python
-import os
-import sys
-from contextlib import contextmanager
-import tempfile
-import subprocess
 # We're using optparse because we need to support 2.6
 # which doesn't have argparse.  Given that argparse is
 # a dependency that eventually gets installed, we could
 # try to bootstrap, but using optparse is just easier.
 import optparse
+import os
+import platform
+import sys
+import subprocess
+import tarfile
+import tempfile
+
+from contextlib import contextmanager
 
 
 PACKAGES_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'packages')
-INSTALL_DIR = os.path.expanduser('~/.local/lib/aws')
+INSTALL_DIR = os.path.expanduser(os.path.join(
+    '~', '.local', 'lib', 'aws'))
 
 
 class BadRCError(Exception):
@@ -33,12 +37,26 @@ def cd(dirname):
 def run(cmd):
     sys.stdout.write("Running cmd: %s\n" % cmd)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    rc = p.wait()
-    if rc != 0:
+                         stderr=subprocess.STDOUT)
+    (stdout, stderr) = p.communicate()
+    if p.returncode != 0:
         raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            rc, cmd, p.stderr.read() + p.stdout.read()))
-    return p.stdout.read()
+            p.returncode, cmd, stdout))
+
+    return stdout
+
+
+def bin_path():
+    """
+    Get the system's binary path, either `bin` on reasonable
+    systems or `Scripts` on Windows.
+    """
+    path = 'bin'
+
+    if platform.system() == 'Windows':
+        path = 'Scripts'
+
+    return path
 
 
 def create_install_structure(working_dir, install_dir):
@@ -52,7 +70,9 @@ def _create_virtualenv(location, working_dir):
     # don't modify the install/packages directories.
     with cd(PACKAGES_DIR):
         venv = [p for p in os.listdir('.') if p.startswith('virtualenv')][0]
-        run('tar xvfz %s -C %s' % (venv, working_dir))
+        compressed = tarfile.open(venv)
+        compressed.extractall(path=working_dir)
+        compressed.close()
     with cd(working_dir):
         # We know that virtualenv is the only dir in this directory
         # so we can listdir()[0] it.
@@ -71,7 +91,8 @@ def pip_install_packages(install_dir):
     cli_tarball = [p for p in os.listdir(PACKAGES_DIR) if p.startswith('awscli')]
     assert len(cli_tarball) == 1
     cli_tarball = cli_tarball[0]
-    pip_script = os.path.join(install_dir, 'bin', 'pip')
+    pip_script = os.path.join(install_dir, bin_path(), 'pip')
+
     with cd(PACKAGES_DIR):
         run('%s install --no-index --find-links file://%s %s' % (
             pip_script, PACKAGES_DIR, cli_tarball))
@@ -103,7 +124,7 @@ def main():
     working_dir = create_working_dir()
     create_install_structure(working_dir, opts.install_dir)
     pip_install_packages(opts.install_dir)
-    real_location = os.path.join(opts.install_dir, 'bin', 'aws')
+    real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
     if opts.bin_location and create_symlink(real_location, opts.bin_location):
         print("You can now run: %s --version" % opts.bin_location)
     else:

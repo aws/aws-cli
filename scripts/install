@@ -38,11 +38,10 @@ def run(cmd):
     sys.stdout.write("Running cmd: %s\n" % cmd)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
-    (stdout, stderr) = p.communicate()
+    stdout, stderr = p.communicate()
     if p.returncode != 0:
         raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            p.returncode, cmd, stdout))
-
+            p.returncode, cmd, stdout + stderr))
     return stdout
 
 
@@ -88,7 +87,8 @@ def create_working_dir():
 
 
 def pip_install_packages(install_dir):
-    cli_tarball = [p for p in os.listdir(PACKAGES_DIR) if p.startswith('awscli')]
+    cli_tarball = [p for p in os.listdir(PACKAGES_DIR)
+                   if p.startswith('awscli')]
     assert len(cli_tarball) == 1
     cli_tarball = cli_tarball[0]
     pip_script = os.path.join(install_dir, bin_path(), 'pip')
@@ -120,7 +120,7 @@ def main():
                       "-b /usr/local/bin/aws.  This is an optional argument. "
                       "If you do not provide this argument you will have to "
                       "add INSTALL_DIR/bin to your PATH.")
-    opts, args = parser.parse_args()
+    opts = parser.parse_args()[0]
     working_dir = create_working_dir()
     create_install_structure(working_dir, opts.install_dir)
     pip_install_packages(opts.install_dir)

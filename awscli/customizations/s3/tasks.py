@@ -45,7 +45,7 @@ class BasicTask(object):
     perform its designated operation.
     """
     def __init__(self, session, filename, executer, done, parameters,
-                 multi_threshold, chunksize, printQueue, interrupt):
+                 multi_threshold, chunksize, print_queue, interrupt):
         self.session = session
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint(parameters['region'])
@@ -58,7 +58,7 @@ class BasicTask(object):
         self.multi_threshold = multi_threshold
         self.multi_chunksize = chunksize
         self.executer = executer
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.done = done
         self.interrupt = interrupt
 
@@ -92,7 +92,7 @@ class BasicTask(object):
                 print_dict = {'result': print_op}
                 if fail:
                     print_dict['error'] = error
-                self.printQueue.put(print_dict)
+                self.print_queue.put(print_dict)
                 pass
         except Exception as e:
             LOGGER.debug('%s' % str(e))
@@ -108,7 +108,7 @@ class UploadPartTask(object):
     object.
     """
     def __init__(self, session, executer, part_queue, dest_queue,
-                 region, printQueue, interrupt, part_counter,
+                 region, print_queue, interrupt, part_counter,
                  counter_lock):
         self.session = session
         self.service = self.session.get_service('s3')
@@ -116,7 +116,7 @@ class UploadPartTask(object):
         self.executer = executer
         self.part_queue = part_queue
         self.dest_queue = dest_queue
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.part_counter = part_counter
         self.counter_lock = counter_lock
 
@@ -162,7 +162,7 @@ class UploadPartTask(object):
                 total = int(math.ceil(filename.size/float(part_size)))
                 part_str = {'total': total}
                 print_result['part'] = part_str
-                self.printQueue.put(print_result)
+                self.print_queue.put(print_result)
             except requests.ConnectionError as e:
                 connect_error = str(e)
                 LOGGER.debug("%s part upload failure: %s" %
@@ -192,7 +192,7 @@ class DownloadPartTask(object):
     the ``FileInfo`` object.
     """
     def __init__(self, session, executer, part_queue, dest_queue,
-                 f, region, printQueue, write_lock, part_counter,
+                 f, region, print_queue, write_lock, part_counter,
                  counter_lock):
         self.session = session
         self.service = self.session.get_service('s3')
@@ -201,7 +201,7 @@ class DownloadPartTask(object):
         self.part_queue = part_queue
         self.dest_queue = dest_queue
         self.f = f
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.write_lock = write_lock
         self.part_counter = part_counter
         self.counter_lock = counter_lock
@@ -237,7 +237,7 @@ class DownloadPartTask(object):
                 print_result = {'result': print_str}
                 part_str = {'total': int(filename.size / size_uploads)}
                 print_result['part'] = part_str
-                self.printQueue.put(print_result)
+                self.print_queue.put(print_result)
                 self.dest_queue.put(part_number)
             except requests.ConnectionError as e:
                 connect_error = str(e)

@@ -237,18 +237,18 @@ class FileInfo(TaskInfo):
         # Required for multipart uploads and downloads.  Use ``set_multi``
         # function to set these.
         self.executer = None
-        self.printQueue = None
+        self.print_queue = None
         self.is_multi = False
         self.interrupt = None
         self.chunksize = None
 
-    def set_multi(self, executer, printQueue, interrupt, chunksize):
+    def set_multi(self, executer, print_queue, interrupt, chunksize):
         """
         This sets all of the necessary attributes to perform a multipart
         operation.
         """
         self.executer = executer
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.is_multi = True
         self.interrupt = interrupt
         self.chunksize = chunksize
@@ -371,7 +371,7 @@ class FileInfo(TaskInfo):
                                   part_queue=part_queue,
                                   dest_queue=complete_upload_queue,
                                   region=self.region,
-                                  printQueue=self.printQueue,
+                                  print_queue=self.print_queue,
                                   interrupt=self.interrupt,
                                   part_counter=part_counter,
                                   counter_lock=counter_lock)
@@ -434,7 +434,7 @@ class FileInfo(TaskInfo):
                                         part_queue=part_queue,
                                         dest_queue=dest_queue,
                                         f=f, region=self.region,
-                                        printQueue=self.printQueue,
+                                        print_queue=self.print_queue,
                                         write_lock=write_lock,
                                         part_counter=part_counter,
                                         counter_lock=counter_lock)

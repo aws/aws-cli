@@ -36,7 +36,7 @@ class S3Handler(object):
         self.session = session
         self.done = threading.Event()
         self.interrupt = threading.Event()
-        self.printQueue = NoBlockQueue()
+        self.print_queue = NoBlockQueue()
         self.params = {'dryrun': False, 'quiet': False, 'acl': None, 'guess_mime_type': True}
         self.params['region'] = params['region']
         for key in self.params.keys():
@@ -47,7 +47,7 @@ class S3Handler(object):
         self.executer = Executer(done=self.done,
                                  num_threads=NUM_THREADS,
                                  timeout=QUEUE_TIMEOUT_GET,
-                                 printQueue=self.printQueue,
+                                 print_queue=self.print_queue,
                                  quiet=self.params['quiet'],
                                  interrupt=self.interrupt,
                                  max_multi=NUM_MULTI_THREADS)
@@ -81,13 +81,13 @@ class S3Handler(object):
                                                     float(chunksize)))
                         chunksize = find_chunksize(filename.size, chunksize)
                         filename.set_multi(executer=self.executer,
-                                           printQueue=self.printQueue,
+                                           print_queue=self.print_queue,
                                            interrupt=self.interrupt,
                                            chunksize=chunksize)
                     elif filename.operation == 'download':
                         num_uploads = int(filename.size / chunksize)
                         filename.set_multi(executer=self.executer,
-                                           printQueue=self.printQueue,
+                                           print_queue=self.print_queue,
                                            interrupt=self.interrupt,
                                            chunksize=chunksize)
                 task = BasicTask(session=self.session, filename=filename,
@@ -95,26 +95,26 @@ class S3Handler(object):
                                  parameters=self.params,
                                  multi_threshold=self.multi_threshold,
                                  chunksize=chunksize,
-                                 printQueue=self.printQueue,
+                                 print_queue=self.print_queue,
                                  interrupt=self.interrupt)
                 if too_large and filename.operation == 'upload':
                     warning = "Warning %s exceeds 5 TB and upload is " \
                               "being skipped" % os.path.relpath(filename.src)
-                    self.printQueue.put({'result': warning})
+                    self.print_queue.put({'result': warning})
                 else:
                     self.executer.submit(task)
                 tot_files += 1
                 tot_parts += num_uploads
-            self.executer.print_thread.totalFiles = tot_files
-            self.executer.print_thread.totalParts = tot_parts
+            self.executer.print_thread.total_files = tot_files
+            self.executer.print_thread.total_parts = tot_parts
             self.executer.wait()
-            self.printQueue.join()
+            self.print_queue.join()
 
         except Exception as e:
             LOGGER.debug('%s' % str(e))
         except KeyboardInterrupt:
             self.interrupt.set()
-            self.printQueue.put({'result': "Cleaning up. Please wait..."})
+            self.print_queue.put({'result': "Cleaning up. Please wait..."})
 
         self.done.set()
         self.executer.join()

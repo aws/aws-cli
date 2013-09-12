@@ -29,12 +29,12 @@ class Executer(object):
     ``Executer``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, timeout,
-                 printQueue, quiet, interrupt, max_multi):
+                 print_queue, quiet, interrupt, max_multi):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
         self.timeout = timeout
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.quiet = quiet
         self.interrupt = interrupt
         self.threads_list = []
@@ -45,7 +45,7 @@ class Executer(object):
     def start(self):
         self.queue = NoBlockQueue(self.interrupt)
         self.multi_counter.count = 0
-        self.print_thread = PrintThread(self.printQueue, self.done,
+        self.print_thread = PrintThread(self.print_queue, self.done,
                                         self.quiet, self.interrupt,
                                         self.timeout)
         self.print_thread.setDaemon(True)
@@ -155,24 +155,24 @@ class PrintThread(threading.Thread):
     out. Otherwise, it is a part of a multipart upload/download and
     only shows the most current part upload/download.
     """
-    def __init__(self, printQueue, done, quiet, interrupt, timeout):
+    def __init__(self, print_queue, done, quiet, interrupt, timeout):
         threading.Thread.__init__(self)
         self.progress_dict = {}
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.done = done
         self.quiet = quiet
-        self.progressLength = 0
+        self.progress_length = 0
         self.interrupt = interrupt
         self.timeout = timeout
-        self.numParts = 0
-        self.totalParts = 0
-        self.totalFiles = '...'
+        self.num_parts = 0
+        self.total_parts = 0
+        self.total_files = '...'
         self.file_count = 0
 
     def run(self):
         while True:
             try:
-                print_task = self.printQueue.get(True, self.timeout)
+                print_task = self.print_queue.get(True, self.timeout)
                 print_str = print_task['result']
                 final_str = ''
                 if print_task.get('part', ''):
@@ -182,7 +182,7 @@ class PrintThread(threading.Thread):
                     print_str = ':'.join(op_list[1:])
                     print_part = print_task['part']
                     total_part = print_part['total']
-                    self.numParts += 1
+                    self.num_parts += 1
                     if print_str in self.progress_dict:
                         self.progress_dict[print_str]['parts'] += 1
                     else:
@@ -191,7 +191,7 @@ class PrintThread(threading.Thread):
                         self.progress_dict[print_str]['total'] = total_part
                 else:
                     print_components = print_str.split(':')
-                    final_str += print_str.ljust(self.progressLength, ' ')
+                    final_str += print_str.ljust(self.progress_length, ' ')
                     final_str += '\n'
                     if print_task.get('error', ''):
                         final_str += print_task['error'] + '\n'
@@ -199,27 +199,27 @@ class PrintThread(threading.Thread):
                     if key in self.progress_dict:
                         self.progress_dict.pop(print_str, None)
                     else:
-                        self.numParts += 1
+                        self.num_parts += 1
                     self.file_count += 1
 
-                is_done = self.totalFiles == self.file_count
+                is_done = self.total_files == self.file_count
                 if not self.interrupt.isSet() and not is_done:
-                    prog_str = "Completed %s " % self.numParts
-                    num_files = self.totalFiles
-                    if self.totalFiles != '...':
-                        prog_str += "of %s " % self.totalParts
-                        num_files = self.totalFiles - self.file_count
+                    prog_str = "Completed %s " % self.num_parts
+                    num_files = self.total_files
+                    if self.total_files != '...':
+                        prog_str += "of %s " % self.total_parts
+                        num_files = self.total_files - self.file_count
                     prog_str += "part(s) with %s file(s) remaining" % \
                         num_files
                     length_prog = len(prog_str)
                     prog_str += '\r'
-                    prog_str = prog_str.ljust(self.progressLength, ' ')
-                    self.progressLength = length_prog
+                    prog_str = prog_str.ljust(self.progress_length, ' ')
+                    self.progress_length = length_prog
                     final_str += prog_str
                 if not self.quiet:
                     uni_print(final_str)
                     sys.stdout.flush()
-                self.printQueue.task_done()
+                self.print_queue.task_done()
             except Queue.Empty:
                 pass
             if self.done.isSet():

@@ -36,7 +36,8 @@ class S3Handler(object):
         self.done = threading.Event()
         self.interrupt = threading.Event()
         self.print_queue = NoBlockQueue()
-        self.params = {'dryrun': False, 'quiet': False, 'acl': None, 'guess_mime_type': True}
+        self.params = {'dryrun': False, 'quiet': False,
+                       'acl': None, 'guess_mime_type': True}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
@@ -110,7 +111,8 @@ class S3Handler(object):
             self.print_queue.join()
 
         except Exception as e:
-            LOGGER.debug('%s' % str(e))
+            LOGGER.debug('Exception caught during task execution: %s',
+                         str(e), exc_info=True)
         except KeyboardInterrupt:
             self.interrupt.set()
             self.print_queue.put({'result': "Cleaning up. Please wait..."})

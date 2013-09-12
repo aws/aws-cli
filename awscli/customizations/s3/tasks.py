@@ -14,7 +14,7 @@ from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
 LOGGER = logging.getLogger(__name__)
 
 
-def print_operation(filename, fail, dryrun=False):
+def print_operation(filename, failed, dryrun=False):
     """
     Helper function used to print out what an operation did and whether
     it failed.
@@ -22,7 +22,7 @@ def print_operation(filename, fail, dryrun=False):
     print_str = filename.operation
     if dryrun:
         print_str = '(dryrun) ' + print_str
-    if fail:
+    if failed:
         print_str += " failed"
     print_str += ": "
     if filename.src_type == "s3":
@@ -44,7 +44,7 @@ class BasicTask(object):
     attributes like ``session`` object in order for the filename to
     perform its designated operation.
     """
-    def __init__(self, session, filename, executer, done, parameters,
+    def __init__(self, session, filename, done, parameters,
                  multi_threshold, chunksize, print_queue, interrupt):
         self.session = session
         self.service = self.session.get_service('s3')
@@ -57,43 +57,52 @@ class BasicTask(object):
         self.parameters = parameters
         self.multi_threshold = multi_threshold
         self.multi_chunksize = chunksize
-        self.executer = executer
         self.print_queue = print_queue
         self.done = done
         self.interrupt = interrupt
 
     def __call__(self):
-        fail = 0
-        error = ''
-        retry = 0
+        max_attempts = 3
+        self._execute_task(self, max_attempts)
+
+    def _execute_task(self, attempts, last_error=''):
+        if attempts == 0:
+            # We've run out of retries.
+            self._queue_print_message(self.filename, failed=True,
+                                      dryrun=self.parameters['dryrun'],
+                                      error_message=last_error)
         filename = self.filename
         try:
             if not self.parameters['dryrun']:
                 getattr(filename, filename.operation)()
         except requests.ConnectionError as e:
-            retry = 1
             connect_error = str(e)
-            LOGGER.debug("%s %s failure: %s" %
-                         (filename.src, filename.operation, connect_error))
-            self.executer.submit(copy.copy(self))
+            LOGGER.debug("%s %s failure: %s",
+                         filename.src, filename.operation, connect_error)
+            self._execute_task(attempts - 1, last_error=str(e))
         except MD5Error as e:
-            retry = 1
-            LOGGER.debug("%s %s failure: Data was corrupted" %
-                         (filename.src, filename.operation))
-            self.executer.submit(copy.copy(self))
+            LOGGER.debug("%s %s failure: Data was corrupted: %s",
+                         filename.src, filename.operation, e)
+            self._execute_task(attempts - 1, last_error=str(e))
         except Exception as e:
-            fail = 1
-            LOGGER.debug(e, exc_info=True)
-            error = str(e)
+            LOGGER.debug(str(e), exc_info=True)
+            self._queue_print_message(filename, failed=True,
+                                      dryrun=self.parameters['dryrun'],
+                                      error_message=str(e))
+        else:
+            self._queue_print_message(filename, failed=False,
+                                      dryrun=self.parameters['dryrun'])
+
+    def _queue_print_message(self, filename, failed, dryrun,
+                             error_message=None):
         try:
-            if filename.operation != 'list_objects' and not retry:
-                print_op = print_operation(filename, fail,
+            if filename.operation != 'list_objects':
+                print_op = print_operation(filename, failed,
                                            self.parameters['dryrun'])
                 print_dict = {'result': print_op}
-                if fail:
-                    print_dict['error'] = error
+                if error_message is not None:
+                    print_dict['error'] = error_message
                 self.print_queue.put(print_dict)
-                pass
         except Exception as e:
             LOGGER.debug('%s' % str(e))
 

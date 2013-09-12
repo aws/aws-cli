@@ -93,12 +93,12 @@ class S3Handler(object):
             if is_multipart_task:
                 num_uploads = self._enqueue_multipart_tasks(filename)
             task = BasicTask(session=self.session, filename=filename,
-                                executer=self.executer, done=self.done,
-                                parameters=self.params,
-                                multi_threshold=self.multi_threshold,
-                                chunksize=self.chunksize,
-                                print_queue=self.print_queue,
-                                interrupt=self.interrupt)
+                             done=self.done,
+                             parameters=self.params,
+                             multi_threshold=self.multi_threshold,
+                             chunksize=self.chunksize,
+                             print_queue=self.print_queue,
+                             interrupt=self.interrupt)
             if too_large and filename.operation == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \
                             "being skipped" % os.path.relpath(filename.src)

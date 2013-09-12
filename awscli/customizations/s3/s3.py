@@ -251,13 +251,11 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
     def doc_subitems_start(self, help_command, **kwargs):
         if help_command.command_table:
             doc = help_command.doc
-            command = help_command.obj
             doc.style.h2('Available Commands')
             doc.style.toctree()
 
     def doc_subitem(self, command_name, help_command, **kwargs):
         doc = help_command.doc
-        command = help_command.obj
         doc.style.tocitem(command_name)
 
 

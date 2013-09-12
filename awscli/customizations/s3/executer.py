@@ -157,22 +157,23 @@ class PrintThread(threading.Thread):
     """
     def __init__(self, print_queue, done, quiet, interrupt, timeout):
         threading.Thread.__init__(self)
-        self.progress_dict = {}
-        self.print_queue = print_queue
-        self.done = done
-        self.quiet = quiet
-        self.progress_length = 0
-        self.interrupt = interrupt
-        self.timeout = timeout
-        self.num_parts = 0
+        self._progress_dict = {}
+        self._interrupt = interrupt
+        self._print_queue = print_queue
+        self._done = done
+        self._quiet = quiet
+        self._timeout = timeout
+        self._progress_length = 0
+        self._num_parts = 0
+        self._file_count = 0
+
         self.total_parts = 0
         self.total_files = '...'
-        self.file_count = 0
 
     def run(self):
         while True:
             try:
-                print_task = self.print_queue.get(True, self.timeout)
+                print_task = self._print_queue.get(True, self._timeout)
                 print_str = print_task['result']
                 final_str = ''
                 if print_task.get('part', ''):
@@ -182,45 +183,45 @@ class PrintThread(threading.Thread):
                     print_str = ':'.join(op_list[1:])
                     print_part = print_task['part']
                     total_part = print_part['total']
-                    self.num_parts += 1
-                    if print_str in self.progress_dict:
-                        self.progress_dict[print_str]['parts'] += 1
+                    self._num_parts += 1
+                    if print_str in self._progress_dict:
+                        self._progress_dict[print_str]['parts'] += 1
                     else:
-                        self.progress_dict[print_str] = {}
-                        self.progress_dict[print_str]['parts'] = 1
-                        self.progress_dict[print_str]['total'] = total_part
+                        self._progress_dict[print_str] = {}
+                        self._progress_dict[print_str]['parts'] = 1
+                        self._progress_dict[print_str]['total'] = total_part
                 else:
                     print_components = print_str.split(':')
-                    final_str += print_str.ljust(self.progress_length, ' ')
+                    final_str += print_str.ljust(self._progress_length, ' ')
                     final_str += '\n'
                     if print_task.get('error', ''):
                         final_str += print_task['error'] + '\n'
                     key = ':'.join(print_components[1:])
-                    if key in self.progress_dict:
-                        self.progress_dict.pop(print_str, None)
+                    if key in self._progress_dict:
+                        self._progress_dict.pop(print_str, None)
                     else:
-                        self.num_parts += 1
-                    self.file_count += 1
+                        self._num_parts += 1
+                    self._file_count += 1
 
-                is_done = self.total_files == self.file_count
-                if not self.interrupt.isSet() and not is_done:
-                    prog_str = "Completed %s " % self.num_parts
+                is_done = self.total_files == self._file_count
+                if not self._interrupt.isSet() and not is_done:
+                    prog_str = "Completed %s " % self._num_parts
                     num_files = self.total_files
                     if self.total_files != '...':
                         prog_str += "of %s " % self.total_parts
-                        num_files = self.total_files - self.file_count
+                        num_files = self.total_files - self._file_count
                     prog_str += "part(s) with %s file(s) remaining" % \
                         num_files
                     length_prog = len(prog_str)
                     prog_str += '\r'
-                    prog_str = prog_str.ljust(self.progress_length, ' ')
-                    self.progress_length = length_prog
+                    prog_str = prog_str.ljust(self._progress_length, ' ')
+                    self._progress_length = length_prog
                     final_str += prog_str
-                if not self.quiet:
+                if not self._quiet:
                     uni_print(final_str)
                     sys.stdout.flush()
-                self.print_queue.task_done()
+                self._print_queue.task_done()
             except Queue.Empty:
                 pass
-            if self.done.isSet():
+            if self._done.isSet():
                 break

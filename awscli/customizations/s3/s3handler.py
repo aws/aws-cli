@@ -14,7 +14,6 @@ import logging
 import math
 import os
 import threading
-import time
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE

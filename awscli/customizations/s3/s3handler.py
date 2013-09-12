@@ -65,48 +65,9 @@ class S3Handler(object):
         self.interrupt.clear()
         try:
             self.executer.start()
-            tot_files = 0
-            tot_parts = 0
-            for filename in files:
-                num_uploads = 1
-                is_larger = False
-                chunksize = self.chunksize
-                too_large = False
-                if hasattr(filename, 'size'):
-                    is_larger = filename.size > self.multi_threshold
-                    too_large = filename.size > MAX_UPLOAD_SIZE
-                if is_larger:
-                    if filename.operation == 'upload':
-                        num_uploads = int(math.ceil(filename.size /
-                                                    float(chunksize)))
-                        chunksize = find_chunksize(filename.size, chunksize)
-                        filename.set_multi(executer=self.executer,
-                                           print_queue=self.print_queue,
-                                           interrupt=self.interrupt,
-                                           chunksize=chunksize)
-                    elif filename.operation == 'download':
-                        num_uploads = int(filename.size / chunksize)
-                        filename.set_multi(executer=self.executer,
-                                           print_queue=self.print_queue,
-                                           interrupt=self.interrupt,
-                                           chunksize=chunksize)
-                task = BasicTask(session=self.session, filename=filename,
-                                 executer=self.executer, done=self.done,
-                                 parameters=self.params,
-                                 multi_threshold=self.multi_threshold,
-                                 chunksize=chunksize,
-                                 print_queue=self.print_queue,
-                                 interrupt=self.interrupt)
-                if too_large and filename.operation == 'upload':
-                    warning = "Warning %s exceeds 5 TB and upload is " \
-                              "being skipped" % os.path.relpath(filename.src)
-                    self.print_queue.put({'result': warning})
-                else:
-                    self.executer.submit(task)
-                tot_files += 1
-                tot_parts += num_uploads
-            self.executer.print_thread.set_total_files(tot_files)
-            self.executer.print_thread.set_total_parts(tot_parts)
+            total_files, total_parts = self._enqueue_tasks(files)
+            self.executer.print_thread.set_total_files(total_files)
+            self.executer.print_thread.set_total_parts(total_parts)
             self.executer.wait()
             self.print_queue.join()
 
@@ -119,3 +80,51 @@ class S3Handler(object):
 
         self.done.set()
         self.executer.join()
+
+    def _enqueue_tasks(self, files):
+        total_files = 0
+        total_parts = 0
+        for filename in files:
+            num_uploads = 1
+            is_multipart_task = False
+            too_large = False
+            if hasattr(filename, 'size'):
+                is_multipart_task = filename.size > self.multi_threshold
+                too_large = filename.size > MAX_UPLOAD_SIZE
+            if is_multipart_task:
+                num_uploads = self._enqueue_multipart_tasks(filename)
+            task = BasicTask(session=self.session, filename=filename,
+                                executer=self.executer, done=self.done,
+                                parameters=self.params,
+                                multi_threshold=self.multi_threshold,
+                                chunksize=self.chunksize,
+                                print_queue=self.print_queue,
+                                interrupt=self.interrupt)
+            if too_large and filename.operation == 'upload':
+                warning = "Warning %s exceeds 5 TB and upload is " \
+                            "being skipped" % os.path.relpath(filename.src)
+                self.print_queue.put({'result': warning})
+            else:
+                self.executer.submit(task)
+            total_files += 1
+            total_parts += num_uploads
+        return total_files, total_parts
+
+    def _enqueue_multipart_tasks(self, filename):
+        num_uploads = 1
+        chunksize = self.chunksize
+        if filename.operation == 'upload':
+            num_uploads = int(math.ceil(filename.size /
+                                        float(chunksize)))
+            chunksize = find_chunksize(filename.size, chunksize)
+            filename.set_multi(executer=self.executer,
+                                print_queue=self.print_queue,
+                                interrupt=self.interrupt,
+                                chunksize=chunksize)
+        elif filename.operation == 'download':
+            num_uploads = int(filename.size / chunksize)
+            filename.set_multi(executer=self.executer,
+                                print_queue=self.print_queue,
+                                interrupt=self.interrupt,
+                                chunksize=chunksize)
+        return num_uploads

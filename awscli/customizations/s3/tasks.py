@@ -48,7 +48,6 @@ class BasicTask(object):
                  multi_threshold, chunksize, print_queue, interrupt):
         self.session = session
         self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint(parameters['region'])
 
         self.filename = filename
         self.filename.set_session(self.session, parameters['region'])

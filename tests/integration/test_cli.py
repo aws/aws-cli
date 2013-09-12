@@ -82,7 +82,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 1, p.stderr)
         # Check text that appears in the warning block to ensure
         # the block was actually rendered.
-        self.assertIn('To receive notifications', p.stdout)
+        self.assertRegexpMatches(p.stdout, 'To\s+receive\s+notifications')
 
     def test_param_shorthand(self):
         p = aws(

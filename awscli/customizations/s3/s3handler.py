@@ -77,7 +77,6 @@ class S3Handler(object):
         except KeyboardInterrupt:
             self.interrupt.set()
             self.print_queue.put({'result': "Cleaning up. Please wait..."})
-
         self.done.set()
         self.executer.join()
 
@@ -114,17 +113,25 @@ class S3Handler(object):
         num_uploads = 1
         chunksize = self.chunksize
         if filename.operation == 'upload':
-            num_uploads = int(math.ceil(filename.size /
-                                        float(chunksize)))
-            chunksize = find_chunksize(filename.size, chunksize)
-            filename.set_multi(executer=self.executer,
-                                print_queue=self.print_queue,
-                                interrupt=self.interrupt,
-                                chunksize=chunksize)
+            self._enqueue_multipart_upload_tasks(filename)
         elif filename.operation == 'download':
             num_uploads = int(filename.size / chunksize)
             filename.set_multi(executer=self.executer,
                                 print_queue=self.print_queue,
                                 interrupt=self.interrupt,
                                 chunksize=chunksize)
+        return num_uploads
+
+    def _enqueue_multipart_upload_tasks(self, filename):
+        # First we need to create a CreateMultipartUpload task,
+        # then create UploadTask objects for each of the parts.
+        # And finally enqueue a CompleteMultipartUploadTask
+        chunksize = find_chunksize(filename.size, self.chunksize)
+        num_uploads = int(math.ceil(filename.size /
+                                    float(chunksize)))
+        chunksize = find_chunksize(filename.size, chunksize)
+        filename.set_multi(executer=self.executer,
+                            print_queue=self.print_queue,
+                            interrupt=self.interrupt,
+                            chunksize=chunksize)
         return num_uploads

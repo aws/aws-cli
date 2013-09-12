@@ -166,9 +166,18 @@ class PrintThread(threading.Thread):
         self._progress_length = 0
         self._num_parts = 0
         self._file_count = 0
+        self._lock = threading.Lock()
 
-        self.total_parts = 0
-        self.total_files = '...'
+        self._total_parts = 0
+        self._total_files = '...'
+
+    def set_total_parts(self, total_parts):
+        with self._lock:
+            self._total_parts = total_parts
+
+    def set_total_files(self, total_files):
+        with self._lock:
+            self._total_files = total_files
 
     def run(self):
         while True:
@@ -203,13 +212,13 @@ class PrintThread(threading.Thread):
                         self._num_parts += 1
                     self._file_count += 1
 
-                is_done = self.total_files == self._file_count
+                is_done = self._total_files == self._file_count
                 if not self._interrupt.isSet() and not is_done:
                     prog_str = "Completed %s " % self._num_parts
-                    num_files = self.total_files
-                    if self.total_files != '...':
-                        prog_str += "of %s " % self.total_parts
-                        num_files = self.total_files - self._file_count
+                    num_files = self._total_files
+                    if self._total_files != '...':
+                        prog_str += "of %s " % self._total_parts
+                        num_files = self._total_files - self._file_count
                     prog_str += "part(s) with %s file(s) remaining" % \
                         num_files
                     length_prog = len(prog_str)

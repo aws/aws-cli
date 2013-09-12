@@ -105,8 +105,8 @@ class S3Handler(object):
                     self.executer.submit(task)
                 tot_files += 1
                 tot_parts += num_uploads
-            self.executer.print_thread.total_files = tot_files
-            self.executer.print_thread.total_parts = tot_parts
+            self.executer.print_thread.set_total_files(tot_files)
+            self.executer.print_thread.set_total_parts(tot_parts)
             self.executer.wait()
             self.print_queue.join()
 

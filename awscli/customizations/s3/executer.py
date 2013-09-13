@@ -173,54 +173,66 @@ class PrintThread(threading.Thread):
         while True:
             try:
                 print_task = self.printQueue.get(True, self.timeout)
-                print_str = print_task['result']
-                final_str = ''
-                if print_task.get('part', ''):
-                    # Normalize keys so failures and sucess
-                    # look the same.
-                    op_list = print_str.split(':')
-                    print_str = ':'.join(op_list[1:])
-                    print_part = print_task['part']
-                    total_part = print_part['total']
-                    self.numParts += 1
-                    if print_str in self.progress_dict:
-                        self.progress_dict[print_str]['parts'] += 1
-                    else:
-                        self.progress_dict[print_str] = {}
-                        self.progress_dict[print_str]['parts'] = 1
-                        self.progress_dict[print_str]['total'] = total_part
-                else:
-                    print_components = print_str.split(':')
-                    final_str += print_str.ljust(self.progressLength, ' ')
-                    final_str += '\n'
-                    if print_task.get('error', ''):
-                        final_str += print_task['error'] + '\n'
-                    key = ':'.join(print_components[1:])
-                    if key in self.progress_dict:
-                        self.progress_dict.pop(print_str, None)
-                    else:
-                        self.numParts += 1
-                    self.file_count += 1
-
-                is_done = self.totalFiles == self.file_count
-                if not self.interrupt.isSet() and not is_done:
-                    prog_str = "Completed %s " % self.numParts
-                    num_files = self.totalFiles
-                    if self.totalFiles != '...':
-                        prog_str += "of %s " % self.totalParts
-                        num_files = self.totalFiles - self.file_count
-                    prog_str += "part(s) with %s file(s) remaining" % \
-                        num_files
-                    length_prog = len(prog_str)
-                    prog_str += '\r'
-                    prog_str = prog_str.ljust(self.progressLength, ' ')
-                    self.progressLength = length_prog
-                    final_str += prog_str
-                if not self.quiet:
-                    uni_print(final_str)
-                    sys.stdout.flush()
-                self.printQueue.task_done()
+                try:
+                    self._process_print_task(print_task)
+                except Exception as e:
+                    LOGGER.debug("Error processing print task: %s", e,
+                                 exc_info=True)
+                finally:
+                    # Because the shutdown logic requires that the print
+                    # queue finish, we need to have all the print tasks
+                    # finished, even if an exception happens trying to print
+                    # them.
+                    self.printQueue.task_done()
             except Queue.Empty:
                 pass
             if self.done.isSet():
                 break
+
+    def _process_print_task(self, print_task):
+        print_str = print_task['result']
+        final_str = ''
+        if print_task.get('part', ''):
+            # Normalize keys so failures and sucess
+            # look the same.
+            op_list = print_str.split(':')
+            print_str = ':'.join(op_list[1:])
+            print_part = print_task['part']
+            total_part = print_part['total']
+            self.numParts += 1
+            if print_str in self.progress_dict:
+                self.progress_dict[print_str]['parts'] += 1
+            else:
+                self.progress_dict[print_str] = {}
+                self.progress_dict[print_str]['parts'] = 1
+                self.progress_dict[print_str]['total'] = total_part
+        else:
+            print_components = print_str.split(':')
+            final_str += print_str.ljust(self.progressLength, ' ')
+            final_str += '\n'
+            if print_task.get('error', ''):
+                final_str += print_task['error'] + '\n'
+            key = ':'.join(print_components[1:])
+            if key in self.progress_dict:
+                self.progress_dict.pop(print_str, None)
+            else:
+                self.numParts += 1
+            self.file_count += 1
+
+        is_done = self.totalFiles == self.file_count
+        if not self.interrupt.isSet() and not is_done:
+            prog_str = "Completed %s " % self.numParts
+            num_files = self.totalFiles
+            if self.totalFiles != '...':
+                prog_str += "of %s " % self.totalParts
+                num_files = self.totalFiles - self.file_count
+            prog_str += "part(s) with %s file(s) remaining" % \
+                num_files
+            length_prog = len(prog_str)
+            prog_str += '\r'
+            prog_str = prog_str.ljust(self.progressLength, ' ')
+            self.progressLength = length_prog
+            final_str += prog_str
+        if not self.quiet:
+            uni_print(final_str)
+            sys.stdout.flush()

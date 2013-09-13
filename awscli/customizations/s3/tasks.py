@@ -14,6 +14,10 @@ from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
 LOGGER = logging.getLogger(__name__)
 
 
+class UploadCancelledError(Exception):
+    pass
+
+
 def print_operation(filename, failed, dryrun=False):
     """
     Helper function used to print out what an operation did and whether
@@ -296,8 +300,10 @@ class MultipartUploadContext(object):
         self._upload_id = None
         self._expected_parts = expected_parts
         self._parts = []
-        self._upload_id_condition = threading.Condition()
-        self._parts_condition = threading.Condition()
+        self._lock = threading.Lock()
+        self._upload_id_condition = threading.Condition(self._lock)
+        self._parts_condition = threading.Condition(self._lock)
+        self._cancelled = False
 
     def announce_upload_id(self, upload_id):
         with self._upload_id_condition:
@@ -313,10 +319,18 @@ class MultipartUploadContext(object):
         with self._parts_condition:
             while len(self._parts) < self._expected_parts:
                 self._parts_condition.wait(timeout=1)
+                if self._cancelled:
+                    raise UploadCancelledError("Upload has been cancelled.")
             return list(sorted(self._parts, key=lambda p: p['PartNumber']))
 
     def wait_for_upload_id(self):
         with self._upload_id_condition:
             while self._upload_id is None:
                 self._upload_id_condition.wait(timeout=1)
+                if self._cancelled:
+                    raise UploadCancelledError("Upload has been cancelled.")
             return self._upload_id
+
+    def cancel_upload(self):
+        with self._lock:
+            self._cancelled = True

@@ -15,6 +15,7 @@ import random
 import threading
 
 from awscli.customizations.s3.tasks import MultipartUploadContext
+from awscli.customizations.s3.tasks import UploadCancelledError
 
 
 class TestMultipartUploadContext(unittest.TestCase):
@@ -24,6 +25,7 @@ class TestMultipartUploadContext(unittest.TestCase):
         self.calls = []
         self.threads = []
         self.call_lock = threading.Lock()
+        self.caught_exception = None
 
     def tearDown(self):
         self.join_threads()
@@ -54,7 +56,11 @@ class TestMultipartUploadContext(unittest.TestCase):
     def upload_part(self, part_number):
         # This simulates what a thread would do if it wanted to upload
         # a part.  First it would wait for the upload id.
-        upload_id = self.context.wait_for_upload_id()
+        try:
+            upload_id = self.context.wait_for_upload_id()
+        except Exception as e:
+            self.caught_exception = e
+            return
         with self.call_lock:
             self.calls.append(('upload_part', part_number, upload_id))
         # Then it would call UploadPart here.
@@ -63,8 +69,12 @@ class TestMultipartUploadContext(unittest.TestCase):
                                             part_number=part_number)
 
     def complete_upload(self):
-        upload_id = self.context.wait_for_upload_id()
-        parts = self.context.wait_for_parts_to_finish()
+        try:
+            upload_id = self.context.wait_for_upload_id()
+            parts = self.context.wait_for_parts_to_finish()
+        except Exception as e:
+            self.caught_exception = e
+            return
         with self.call_lock:
             self.calls.append(('complete_upload', upload_id, parts))
 
@@ -158,3 +168,21 @@ class TestMultipartUploadContext(unittest.TestCase):
                 self.assertEqual(call[2], 'my_upload_id')
                 parts.add(call[1])
             self.assertEqual(len(parts), expected_parts)
+
+    def test_can_cancel_tasks(self):
+        # Let's say that we want have a thread waiting for the upload id.
+        upload_part_thread = threading.Thread(target=self.upload_part,
+                                            args=(1,))
+        self.start_thread(upload_part_thread)
+        # But for whatever reason we aren't able to call CreateMultipartUpload.
+        # We'd like to let the other thread know that it should abort.
+        self.context.cancel_upload()
+        # The start thread should be finished.
+        self.join_threads()
+        # No s3 calls should have been made.
+        self.assertEqual(self.calls, [])
+        # And any thread that tries to wait for data will get an exception.
+        with self.assertRaises(UploadCancelledError):
+            self.context.wait_for_upload_id()
+        with self.assertRaises(UploadCancelledError):
+            self.context.wait_for_parts_to_finish()

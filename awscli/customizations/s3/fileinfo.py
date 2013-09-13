@@ -5,7 +5,6 @@ from six.moves import queue as Queue
 import sys
 import time
 import threading
-import mimetypes
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -338,13 +337,25 @@ class FileInfo(TaskInfo):
             raise Exception("Invalid path arguments for mv")
         self.delete()
 
+    def create_multipart_upload(self):
+        bucket, key = find_bucket_key(self.dest)
+        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+        if self.parameters['acl']:
+            params['acl'] = self.parameters['acl'][0]
+        if self.parameters['guess_mime_type']:
+            self._inject_content_type(params, self.src)
+        response_data, http = operate(self.service, 'CreateMultipartUpload',
+                                      params)
+        upload_id = response_data['UploadId']
+        return upload_id
+
     def multi_upload(self):
         """
         Performs multipart uploads.  It initiates the multipart upload.
         It creates a queue ``part_queue`` which is directly responsible
         with controlling the progress of the multipart upload.  It then
         creates ``UploadPartTasks`` for threads to run via the
-        ``executer``.  This fucntion waits for all of the parts in the
+        ``executer``.  This function waits for all of the parts in the
         multipart upload to finish, and then it completes the multipart
         upload.  This method waits on its parts to finish.  So, threads
         are required to process the parts for this function to complete.

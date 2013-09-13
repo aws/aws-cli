@@ -19,7 +19,7 @@ from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize
 from awscli.customizations.s3.executer import Executer
-from awscli.customizations.s3.tasks import BasicTask
+from awscli.customizations.s3 import tasks
 
 LOGGER = logging.getLogger(__name__)
 
@@ -84,22 +84,24 @@ class S3Handler(object):
         total_files = 0
         total_parts = 0
         for filename in files:
+            filename.set_session(self.session, self.params['region'])
             num_uploads = 1
             is_multipart_task = False
             too_large = False
             if hasattr(filename, 'size'):
                 is_multipart_task = filename.size > self.multi_threshold
                 too_large = filename.size > MAX_UPLOAD_SIZE
-            if is_multipart_task:
-                num_uploads = self._enqueue_multipart_tasks(filename)
-            task = BasicTask(session=self.session, filename=filename,
-                             parameters=self.params,
-                             print_queue=self.print_queue)
             if too_large and filename.operation == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \
                             "being skipped" % os.path.relpath(filename.src)
                 self.print_queue.put({'result': warning})
+            elif is_multipart_task:
+                num_uploads = self._enqueue_multipart_tasks(filename)
             else:
+                task = tasks.BasicTask(
+                    session=self.session, filename=filename,
+                    parameters=self.params,
+                    print_queue=self.print_queue)
                 self.executer.submit(task)
             total_files += 1
             total_parts += num_uploads
@@ -109,7 +111,7 @@ class S3Handler(object):
         num_uploads = 1
         chunksize = self.chunksize
         if filename.operation == 'upload':
-            self._enqueue_multipart_upload_tasks(filename)
+            num_uploads = self._enqueue_multipart_upload_tasks(filename)
         elif filename.operation == 'download':
             num_uploads = int(filename.size / chunksize)
             filename.set_multi(executer=self.executer,
@@ -121,13 +123,28 @@ class S3Handler(object):
     def _enqueue_multipart_upload_tasks(self, filename):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
-        # And finally enqueue a CompleteMultipartUploadTask
+        # And finally enqueue a CompleteMultipartUploadTask.
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_uploads = int(math.ceil(filename.size /
                                     float(chunksize)))
-        chunksize = find_chunksize(filename.size, chunksize)
-        filename.set_multi(executer=self.executer,
-                            print_queue=self.print_queue,
-                            interrupt=self.interrupt,
-                            chunksize=chunksize)
+        upload_context = tasks.MultipartUploadContext(
+            expected_parts=num_uploads)
+        create_multipart_upload_task = tasks.CreateMultipartUploadTask(
+            session=self.session, filename=filename,
+            parameters=self.params,
+            print_queue=self.print_queue, upload_context=upload_context)
+        self.executer.submit(create_multipart_upload_task)
+
+        for i in range(1, (num_uploads + 1)):
+            task = tasks.UploadPartTask(
+                part_number=i, chunk_size=chunksize,
+                print_queue=self.print_queue, upload_context=upload_context,
+                filename=filename)
+            self.executer.submit(task)
+
+        complete_multipart_upload_task = tasks.CompleteMultipartUploadTask(
+            session=self.session, filename=filename, parameters=self.params,
+            print_queue=self.print_queue, upload_context=upload_context)
+        self.executer.submit(complete_multipart_upload_task)
+
         return num_uploads

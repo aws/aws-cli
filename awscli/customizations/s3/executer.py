@@ -111,7 +111,8 @@ class Worker(threading.Thread):
                     try:
                         function()
                     except Exception as e:
-                        LOGGER.debug('%s' % str(e))
+                        LOGGER.debug('Error calling task: %s', e,
+                                     exc_info=True)
                 else:
                     self.queue.put(function)
                 if self.is_multi_start:

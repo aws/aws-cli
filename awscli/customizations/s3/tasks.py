@@ -44,8 +44,7 @@ class BasicTask(object):
     attributes like ``session`` object in order for the filename to
     perform its designated operation.
     """
-    def __init__(self, session, filename, done, parameters,
-                 multi_threshold, chunksize, print_queue, interrupt):
+    def __init__(self, session, filename, parameters, print_queue):
         self.session = session
         self.service = self.session.get_service('s3')
 
@@ -54,11 +53,7 @@ class BasicTask(object):
         self.filename.parameters = parameters
 
         self.parameters = parameters
-        self.multi_threshold = multi_threshold
-        self.multi_chunksize = chunksize
         self.print_queue = print_queue
-        self.done = done
-        self.interrupt = interrupt
 
     def __call__(self):
         max_attempts = 3

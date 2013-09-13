@@ -89,7 +89,9 @@ class S3Handler(object):
             is_multipart_task = False
             too_large = False
             if hasattr(filename, 'size'):
-                is_multipart_task = filename.size > self.multi_threshold
+                is_multipart_task = (
+                    filename.size > self.multi_threshold and
+                    filename.operation == 'upload')
                 too_large = filename.size > MAX_UPLOAD_SIZE
             if too_large and filename.operation == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \

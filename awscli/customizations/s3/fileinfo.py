@@ -6,6 +6,7 @@ import sys
 import time
 import threading
 import mimetypes
+import logging
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -15,6 +16,8 @@ from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
     uni_print, guess_content_type
+
+LOG = logging.getLogger(__name__)
 
 
 def make_last_mod_str(last_mod):
@@ -232,7 +235,8 @@ class FileInfo(TaskInfo):
         if parameters:
             self.parameters = parameters
         else:
-            self.parameters = {'acl': None}
+            self.parameters = {'acl': None,
+                               'sse': None}
 
         # Required for multipart uploads and downloads.  Use ``set_multi``
         # function to set these.
@@ -253,6 +257,31 @@ class FileInfo(TaskInfo):
         self.interrupt = interrupt
         self.chunksize = chunksize
 
+    def _handle_object_params(self, params):
+        LOG.debug('parameters=%s', self.parameters)
+        if self.parameters['acl']:
+            params['acl'] = self.parameters['acl'][0]
+        if self.parameters['sse']:
+            params['server_side_encryption'] = 'AES256'
+        if self.parameters['storage_class']:
+            params['storage_class'] = self.parameters['storage_class'][0]
+        if self.parameters['website_redirect']:
+            params['website_redirect_location'] = self.parameters['website_redirect'][0]
+        if self.parameters['guess_mime_type']:
+            self._inject_content_type(params, self.src)
+        if self.parameters['content_type']:
+            params['content_type'] = self.parameters['content_type'][0]
+        if self.parameters['headers']:
+            for header in self.parameters['headers']:
+                try:
+                    name, value = header.split(':')
+                except:
+                    raise ValueError('header values should be of the'
+                                     'form name:value')
+                param_name = name.lower().replace('-', '_')
+                params[param_name] = value
+                    
+
     def upload(self):
         """
         Redirects the file to the multipart upload function if the file is
@@ -268,15 +297,13 @@ class FileInfo(TaskInfo):
             params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
             if body:
                 params['body'] = stream_body
-            if self.parameters['acl']:
-                params['acl'] = self.parameters['acl'][0]
-            if self.parameters['guess_mime_type']:
-                self._inject_content_type(params, self.src)
+            self._handle_object_params(params)
             response_data, http = operate(self.service, 'PutObject', params)
             etag = retrieve_http_etag(http)
             check_etag(etag, body)
         else:
             self.multi_upload()
+
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.
@@ -305,8 +332,7 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.dest)
         params = {'endpoint': self.endpoint, 'bucket': bucket,
                   'copy_source': copy_source, 'key': key}
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
+        self._handle_object_params(params)
         response_data, http = operate(self.service, 'CopyObject', params)
 
     def delete(self):
@@ -355,10 +381,7 @@ class FileInfo(TaskInfo):
         counter_lock = threading.Lock()
         bucket, key = find_bucket_key(self.dest)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
-        if self.parameters['guess_mime_type']:
-            self._inject_content_type(params, self.src)
+        self._handle_object_params(params)
         response_data, http = operate(self.service, 'CreateMultipartUpload',
                                       params)
         upload_id = response_data['UploadId']
@@ -456,3 +479,4 @@ class FileInfo(TaskInfo):
         last_update_tuple = self.last_update.timetuple()
         mod_timestamp = time.mktime(last_update_tuple)
         os.utime(self.dest, (int(mod_timestamp), int(mod_timestamp)))
+

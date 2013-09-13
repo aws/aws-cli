@@ -63,17 +63,22 @@ keys for help command and doc generation.
 cmd_dict = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
-                              'no-guess-mime-type']},
+                              'no-guess-mime-type', 'headers',
+                              'sse', 'storage-class',
+                              'website-redirect', 'content-type']},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude', 'acl']},
+                              'include', 'exclude', 'acl', 'headers',
+                              'sse', 'storage-class',
+                              'website-redirect', 'content-type']},
             'rm': {'options': {'nargs': 1},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude']},
             'sync': {'options': {'nargs': 2},
                      'params': ['dryrun', 'delete', 'exclude',
                                 'include', 'quiet', 'acl',
-                                'no-guess-mime-type']},
+                                'no-guess-mime-type', 'headers',
+                                'sse', 'storage-class', 'content-type']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
                    'params': [], 'default': 's3://'},
             'mb': {'options': {'nargs': 1}, 'params': []},
@@ -96,6 +101,7 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'no-guess-mime-type': {'options': {'action': 'store_false',
                                                   'dest': 'guess_mime_type',
                                                   'default': True}},
+               'content-type': {'options': {'nargs': 1}},
                'recursive': {'options': {'action': 'store_true',
                                          'dest': 'dir_op'}},
                'exclude': {'options': {'action': AppendFilter, 'nargs': 1,
@@ -104,7 +110,13 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                            'dest': 'filters'}},
                'acl': {'options': {'nargs': 1,
                                    'choices': ['private', 'public-read',
-                                               'public-read-write']}}
+                                               'public-read-write']}},
+               'sse': {'options': {'action': 'store_true'}},
+               'storage-class': {'options': {'nargs': 1,
+                                             'choices': ['STANDARD',
+                                                         'REDUCED_REDUNDANCY']}},
+               'website-redirect': {'options': {'nargs': 1}},
+               'headers': {'options': {'nargs':'+'}},
                }
 
 add_param_descriptions(params_dict)
@@ -223,8 +235,11 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
         argument = help_command.arg_table[arg_name]
         option_str = argument._name
         if 'nargs' in argument.options:
-            for i in range(argument.options['nargs']):
-                option_str += " <value>"
+            if argument.options['nargs'] == '+':
+                option_str += " <value> [<value>...]"
+            else:
+                for i in range(argument.options['nargs']):
+                    option_str += " <value>"
         doc.writeln('[--%s]' % option_str)
 
     def doc_synopsis_end(self, help_command, **kwargs):
@@ -742,3 +757,6 @@ class CommandParameters(object):
             self.parameters['region'] = parsed_region
         else:
             self.parameters['region'] = region
+
+
+

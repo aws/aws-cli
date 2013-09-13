@@ -79,3 +79,27 @@ def add_param_descriptions(params_dict):
     params_dict['no-guess-mime-type']['documents'] = (
         "Do not try to guess the mime type for uploaded files.  By default the "
         "mime type of a file is guessed when it is uploaded.")
+
+    params_dict['content-type']['documents'] = (
+        "Specify an explicit content type for this operation.  "
+        "This value overrides any guessed mime types.")
+
+    params_dict['sse']['documents'] = (
+        "Enable Server Side Encryption of the object in S3")
+
+    params_dict['headers']['documents'] = (
+        "Specify additional HTTP headers to send with the request to S3.  "
+        'For example, --headers "content-encoding:gzip"')
+
+    params_dict['storage-class']['documents'] = (
+        "The type of storage to use for the object. "
+        "Defaults to 'STANDARD'")
+
+    params_dict['website-redirect']['documents'] = (
+        "If the bucket is configured as a website, redirects requests "
+        "for this object to another object in the same bucket or to an "
+        "external URL. Amazon S3 stores the value of this header in the "
+        "object metadata.")
+
+
+

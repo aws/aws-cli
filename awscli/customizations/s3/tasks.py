@@ -59,8 +59,7 @@ class BasicTask(object):
         self.print_queue = print_queue
 
     def __call__(self):
-        max_attempts = 3
-        self._execute_task(self, max_attempts)
+        self._execute_task(attempts=3)
 
     def _execute_task(self, attempts, last_error=''):
         if attempts == 0:
@@ -134,7 +133,6 @@ class UploadPartTask(object):
         try:
             LOGGER.debug("Waiting for upload id.")
             upload_id = self._upload_context.wait_for_upload_id()
-            LOGGER.debug("Received upload id: %s", upload_id)
             body = self._read_part()
             bucket, key = find_bucket_key(self._filename.dest)
             if sys.version_info[:2] == (2, 6):
@@ -162,7 +160,9 @@ class UploadPartTask(object):
         except Exception as e:
             LOGGER.debug('Error during part upload: %s' , e,
                          exc_info=True)
-        LOGGER.debug("Part number %s completed for filename: %s",
+            self._upload_context.cancel_upload()
+        else:
+            LOGGER.debug("Part number %s completed for filename: %s",
                      self._part_number, self._filename.src)
 
 
@@ -247,9 +247,19 @@ class CreateMultipartUploadTask(BasicTask):
     def __call__(self):
         LOGGER.debug("Creating multipart upload for file: %s",
                      self.filename.src)
-        upload_id = self.filename.create_multipart_upload()
-        LOGGER.debug("Announcing upload id: %s", upload_id)
-        self._upload_context.announce_upload_id(upload_id)
+        try:
+            upload_id = self.filename.create_multipart_upload()
+            LOGGER.debug("Announcing upload id: %s", upload_id)
+            self._upload_context.announce_upload_id(upload_id)
+        except Exception as e:
+            LOGGER.debug("Error trying to create multipart upload: %s",
+                         e, exc_info=True)
+            self._upload_context.cancel_upload()
+            print_op = print_operation(self.filename, True,
+                                        self.parameters['dryrun'])
+            print_task = {'result': print_op, 'error': str(e)}
+            self.print_queue.put(print_task)
+            raise e
 
 
 class CompleteMultipartUploadTask(BasicTask):
@@ -272,9 +282,23 @@ class CompleteMultipartUploadTask(BasicTask):
             'upload_id': upload_id,
             'multipart_upload': {'Parts': parts},
         }
-        operate(self.filename.service, 'CompleteMultipartUpload', params)
-        LOGGER.debug("Multipart upload completed for: %s",
-                     self.filename.src)
+        try:
+            operate(self.filename.service, 'CompleteMultipartUpload', params)
+        except Exception as e:
+            LOGGER.debug("Error trying to complete multipart upload: %s",
+                         e, exc_info=True)
+            print_task = {
+                'result': print_operation(self.filename, failed=True,
+                                          dryrun=self.parameters['dryrun']),
+                'error': str(e)
+            }
+        else:
+            LOGGER.debug("Multipart upload completed for: %s",
+                        self.filename.src)
+            print_op = print_operation(self.filename, False,
+                                       self.parameters['dryrun'])
+            print_task = {'result': print_op}
+        self.print_queue.put(print_task)
 
 
 class MultipartUploadContext(object):
@@ -296,6 +320,12 @@ class MultipartUploadContext(object):
     This class is thread safe.
 
     """
+    # These are the valid states for this object.
+    _UNSTARTED = '_UNSTARTED'
+    _STARTED = '_STARTED'
+    _CANCELLED = '_CANCELLED'
+    _COMPLETED = '_COMPLETED'
+
     def __init__(self, expected_parts):
         self._upload_id = None
         self._expected_parts = expected_parts
@@ -303,11 +333,12 @@ class MultipartUploadContext(object):
         self._lock = threading.Lock()
         self._upload_id_condition = threading.Condition(self._lock)
         self._parts_condition = threading.Condition(self._lock)
-        self._cancelled = False
+        self._state = self._UNSTARTED
 
     def announce_upload_id(self, upload_id):
         with self._upload_id_condition:
             self._upload_id = upload_id
+            self._state = self._STARTED
             self._upload_id_condition.notifyAll()
 
     def announce_finished_part(self, etag, part_number):
@@ -318,19 +349,76 @@ class MultipartUploadContext(object):
     def wait_for_parts_to_finish(self):
         with self._parts_condition:
             while len(self._parts) < self._expected_parts:
-                self._parts_condition.wait(timeout=1)
-                if self._cancelled:
+                if self._state == self._CANCELLED:
                     raise UploadCancelledError("Upload has been cancelled.")
+                self._parts_condition.wait(timeout=1)
             return list(sorted(self._parts, key=lambda p: p['PartNumber']))
 
     def wait_for_upload_id(self):
         with self._upload_id_condition:
             while self._upload_id is None:
-                self._upload_id_condition.wait(timeout=1)
-                if self._cancelled:
+                if self._state == self._CANCELLED:
                     raise UploadCancelledError("Upload has been cancelled.")
+                self._upload_id_condition.wait(timeout=1)
             return self._upload_id
 
-    def cancel_upload(self):
+    def cancel_upload(self, canceller=None, args=None, kwargs=None):
+        """Cancel the upload.
+
+        If the upload is already in progress (via ``self.in_progress()``)
+        you can provide a ``canceller`` argument that can be used to cancel
+        the multipart upload request (typically this would call something like
+        AbortMultipartUpload.  The canceller argument is a function that takes
+        a single argument, which is the upload id::
+
+            def my_canceller(upload_id):
+                cancel.upload(bucket, key, upload_id)
+
+        The ``canceller`` callable will only be called if the
+        task is in progress.  If the task has not been started or is
+        complete, then ``canceller`` will not be called.
+
+        Note that ``canceller`` is called while an exclusive lock is held,
+        so you cannot make any calls into the MultipartUploadContext object
+        in the ``canceller`` object.
+
+        """
         with self._lock:
-            self._cancelled = True
+            if self._state == self._STARTED and canceller is not None:
+                if args is None:
+                    args = ()
+                if kwargs is None:
+                    kwargs = {}
+                canceller(self._upload_id, *args, **kwargs)
+            self._state = self._CANCELLED
+
+    def in_progress(self):
+        """Determines whether or not the multipart upload is in process.
+
+        Note that this has a very short gap from the time that a
+        CreateMultipartUpload is called to the time the
+        MultipartUploadContext object is told about the upload
+        where this method will return False even though the multipart
+        upload is in fact in progress.  This is solely based on whether
+        or not the MultipartUploadContext has been notified about an
+        upload id.
+        """
+        with self._lock:
+            return self._state == self._STARTED
+
+    def is_complete(self):
+        with self._lock:
+            return self._state == self._COMPLETED
+
+    def is_cancelled(self):
+        with self._lock:
+            return self._state == self._CANCELLED
+
+    def announce_completed(self):
+        """Let the context object know that the upload is complete.
+
+        This should be called after a CompleteMultipartUpload operation.
+
+        """
+        with self._lock:
+            self._state = self._COMPLETED

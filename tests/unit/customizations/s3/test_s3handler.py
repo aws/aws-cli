@@ -490,13 +490,12 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
         # Confirm that the files now exist.
-        for filename in self.loc_files:
-            self.assertTrue(os.path.exists(filename))
+        self.assertTrue(os.path.exists(self.loc_files[0]))
+        # The second file should not exist.
+        self.assertFalse(os.path.exists(self.loc_files[1]))
         # Ensure that contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
-        with open(self.loc_files[1], 'rb') as filename:
-            self.assertNotEqual(filename.read(), b'This is a test.')
 
     def test_multi_download_exceptions(self):
         """

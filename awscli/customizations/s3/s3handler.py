@@ -17,7 +17,8 @@ import threading
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE
-from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize
+from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
+    operate, find_bucket_key
 from awscli.customizations.s3.executer import Executer
 from awscli.customizations.s3 import tasks
 
@@ -51,6 +52,7 @@ class S3Handler(object):
                                  quiet=self.params['quiet'],
                                  interrupt=self.interrupt,
                                  max_multi=NUM_MULTI_THREADS)
+        self._multipart_uploads = []
 
     def call(self, files):
         """
@@ -77,8 +79,45 @@ class S3Handler(object):
         except KeyboardInterrupt:
             self.interrupt.set()
             self.print_queue.put({'result': "Cleaning up. Please wait..."})
+        self._shutdown()
+
+
+    def _shutdown(self):
+        # self.done will tell threads to shutdown.
         self.done.set()
+        # This waill wait until all the threads are joined.
         self.executer.join()
+        # And finally we need to make a pass through all the existing
+        # multipart uploads and abort any pending multipart uploads.
+        self._abort_pending_multipart_uploads()
+
+    def _abort_pending_multipart_uploads(self):
+        # For the purpose of aborting uploads, we consider any
+        # upload context with an upload id.
+        for upload, filename in self._multipart_uploads:
+            if upload.is_cancelled():
+                try:
+                    upload_id = upload.wait_for_upload_id()
+                except tasks.UploadCancelledError:
+                    pass
+                else:
+                    # This means that the upload went from STARTED -> CANCELLED.
+                    # This could happen if a part thread decided to cancel the
+                    # upload.  We need to explicitly abort the upload here.
+                    self._cancel_upload(upload.wait_for_upload_id(), filename)
+            upload.cancel_upload(self._cancel_upload, args=(filename,))
+
+    def _cancel_upload(self, upload_id, filename):
+        bucket, key = find_bucket_key(filename.dest)
+        params = {
+            'bucket': bucket,
+            'key': key,
+            'upload_id': upload_id,
+            'endpoint': filename.endpoint,
+        }
+        LOGGER.debug("Aborting multipart upload for: %s", key)
+        response_data, http = operate(
+            filename.service, 'AbortMultipartUpload', params)
 
     def _enqueue_tasks(self, files):
         total_files = 0
@@ -148,5 +187,5 @@ class S3Handler(object):
             session=self.session, filename=filename, parameters=self.params,
             print_queue=self.print_queue, upload_context=upload_context)
         self.executer.submit(complete_multipart_upload_task)
-
+        self._multipart_uploads.append((upload_context, filename))
         return num_uploads

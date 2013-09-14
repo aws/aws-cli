@@ -101,5 +101,9 @@ def add_param_descriptions(params_dict):
         "external URL. Amazon S3 stores the value of this header in the "
         "object metadata.")
 
-
+    params_dict['grants']['documents'] = (
+        "Grant specific permissions to individual users or groups.  "
+        "You can supply a list of grants of the form "
+        "``permission:grantee`` where permission is one of: "
+        "``read``, ``readacl``, ``writeacp``, ``full``")
 

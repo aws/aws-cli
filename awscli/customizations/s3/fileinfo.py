@@ -6,7 +6,6 @@ import sys
 import time
 import threading
 import mimetypes
-import logging
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -16,8 +15,6 @@ from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
     uni_print, guess_content_type
-
-LOG = logging.getLogger(__name__)
 
 
 def make_last_mod_str(last_mod):
@@ -257,10 +254,29 @@ class FileInfo(TaskInfo):
         self.interrupt = interrupt
         self.chunksize = chunksize
 
+    def _permission_to_param(self, permission):
+        if permission == 'read':
+            return 'grant_read'
+        if permission == 'full':
+            return 'grant_full_control'
+        if permission == 'readacl':
+            return 'grant_read_acp'
+        if permission == 'writeacl':
+            return 'grant_write_acp'
+        raise ValueError('permission must be one of: '
+                         'read|readacl|writeacl|full')
+
     def _handle_object_params(self, params):
-        LOG.debug('parameters=%s', self.parameters)
         if self.parameters['acl']:
             params['acl'] = self.parameters['acl'][0]
+        if self.parameters['grants']:
+            for grant in self.parameters['grants']:
+                try:
+                    permission, grantee = grant.split(':')
+                except ValueError:
+                    raise ValueError('grants should be of the form '
+                                     'permission=principal')
+                params[self._permission_to_param(permission)] = grantee
         if self.parameters['sse']:
             params['server_side_encryption'] = 'AES256'
         if self.parameters['storage_class']:
@@ -275,7 +291,7 @@ class FileInfo(TaskInfo):
             for header in self.parameters['headers']:
                 try:
                     name, value = header.split(':')
-                except:
+                except ValueError:
                     raise ValueError('header values should be of the'
                                      'form name:value')
                 param_name = name.lower().replace('-', '_')

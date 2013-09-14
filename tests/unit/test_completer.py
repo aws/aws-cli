@@ -66,12 +66,13 @@ COMPLETIONS = [
                              '--recursive', '--website-redirect',
                              '--quiet', '--acl', '--headers', '--storage-class',
                              '--sse', '--exclude', '--include',
-                             '--content-type'] + GLOBALOPTS)),
+                             '--content-type', '--grants'] + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
                                      '--website-redirect', '--acl',
                                      '--headers', '--storage-class', '--sse',
-                                     '--exclude', '--include'] + GLOBALOPTS)),
+                                     '--exclude', '--include',
+                                     '--grants'] + GLOBALOPTS)),
     ('aws emr ', -1, set([])),
     ]
 

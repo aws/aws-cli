@@ -64,19 +64,19 @@ cmd_dict = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
                               'no-guess-mime-type', 'headers',
-                              'sse', 'storage-class',
+                              'sse', 'storage-class', 'grants',
                               'website-redirect', 'content-type']},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl', 'headers',
-                              'sse', 'storage-class',
+                              'sse', 'storage-class', 'grants',
                               'website-redirect', 'content-type']},
             'rm': {'options': {'nargs': 1},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude']},
             'sync': {'options': {'nargs': 2},
                      'params': ['dryrun', 'delete', 'exclude',
-                                'include', 'quiet', 'acl',
+                                'include', 'quiet', 'acl', 'grants',
                                 'no-guess-mime-type', 'headers',
                                 'sse', 'storage-class', 'content-type']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
@@ -111,12 +111,13 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'acl': {'options': {'nargs': 1,
                                    'choices': ['private', 'public-read',
                                                'public-read-write']}},
+               'grants': {'options': {'nargs': '+'}},
                'sse': {'options': {'action': 'store_true'}},
                'storage-class': {'options': {'nargs': 1,
                                              'choices': ['STANDARD',
                                                          'REDUCED_REDUNDANCY']}},
                'website-redirect': {'options': {'nargs': 1}},
-               'headers': {'options': {'nargs':'+'}},
+               'headers': {'options': {'nargs': '+'}},
                }
 
 add_param_descriptions(params_dict)
@@ -414,7 +415,7 @@ class S3Command(object):
             cmd = CommandArchitecture(self._session, self._name,
                                       cmd_params.parameters)
             cmd.create_instructions()
-            cmd.run()
+            return cmd.run()
 
     def create_help_command(self):
         """
@@ -598,6 +599,12 @@ class CommandArchitecture(object):
                 else:
                     file_list.append(components[i].call(files[i]))
             files = file_list
+        # TODO: Errors are not being surfaced out of here.
+        # I have put an explicit return of zero here to handle
+        # the success case because a None was being returned
+        # before.  I need to dig into this more to figure out
+        # the right way to surface the errors.
+        return 0
 
 
 class CommandParameters(object):

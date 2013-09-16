@@ -29,12 +29,12 @@ class Executer(object):
     ``Executer``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, timeout,
-                 printQueue, quiet, interrupt, max_multi):
+                 print_queue, quiet, interrupt, max_multi):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
         self.timeout = timeout
-        self.printQueue = printQueue
+        self.print_queue = print_queue
         self.quiet = quiet
         self.interrupt = interrupt
         self.threads_list = []
@@ -45,7 +45,7 @@ class Executer(object):
     def start(self):
         self.queue = NoBlockQueue(self.interrupt)
         self.multi_counter.count = 0
-        self.print_thread = PrintThread(self.printQueue, self.done,
+        self.print_thread = PrintThread(self.print_queue, self.done,
                                         self.quiet, self.interrupt,
                                         self.timeout)
         self.print_thread.setDaemon(True)
@@ -111,7 +111,8 @@ class Worker(threading.Thread):
                     try:
                         function()
                     except Exception as e:
-                        LOGGER.debug('%s' % str(e))
+                        LOGGER.debug('Error calling task: %s', e,
+                                     exc_info=True)
                 else:
                     self.queue.put(function)
                 if self.is_multi_start:
@@ -155,72 +156,94 @@ class PrintThread(threading.Thread):
     out. Otherwise, it is a part of a multipart upload/download and
     only shows the most current part upload/download.
     """
-    def __init__(self, printQueue, done, quiet, interrupt, timeout):
+    def __init__(self, print_queue, done, quiet, interrupt, timeout):
         threading.Thread.__init__(self)
-        self.progress_dict = {}
-        self.printQueue = printQueue
-        self.done = done
-        self.quiet = quiet
-        self.progressLength = 0
-        self.interrupt = interrupt
-        self.timeout = timeout
-        self.numParts = 0
-        self.totalParts = 0
-        self.totalFiles = '...'
-        self.file_count = 0
+        self._progress_dict = {}
+        self._interrupt = interrupt
+        self._print_queue = print_queue
+        self._done = done
+        self._quiet = quiet
+        self._timeout = timeout
+        self._progress_length = 0
+        self._num_parts = 0
+        self._file_count = 0
+        self._lock = threading.Lock()
+
+        self._total_parts = 0
+        self._total_files = '...'
+
+    def set_total_parts(self, total_parts):
+        with self._lock:
+            self._total_parts = total_parts
+
+    def set_total_files(self, total_files):
+        with self._lock:
+            self._total_files = total_files
 
     def run(self):
         while True:
             try:
-                print_task = self.printQueue.get(True, self.timeout)
-                print_str = print_task['result']
-                final_str = ''
-                if print_task.get('part', ''):
-                    # Normalize keys so failures and sucess
-                    # look the same.
-                    op_list = print_str.split(':')
-                    print_str = ':'.join(op_list[1:])
-                    print_part = print_task['part']
-                    total_part = print_part['total']
-                    self.numParts += 1
-                    if print_str in self.progress_dict:
-                        self.progress_dict[print_str]['parts'] += 1
-                    else:
-                        self.progress_dict[print_str] = {}
-                        self.progress_dict[print_str]['parts'] = 1
-                        self.progress_dict[print_str]['total'] = total_part
-                else:
-                    print_components = print_str.split(':')
-                    final_str += print_str.ljust(self.progressLength, ' ')
-                    final_str += '\n'
-                    if print_task.get('error', ''):
-                        final_str += print_task['error'] + '\n'
-                    key = ':'.join(print_components[1:])
-                    if key in self.progress_dict:
-                        self.progress_dict.pop(print_str, None)
-                    else:
-                        self.numParts += 1
-                    self.file_count += 1
-
-                is_done = self.totalFiles == self.file_count
-                if not self.interrupt.isSet() and not is_done:
-                    prog_str = "Completed %s " % self.numParts
-                    num_files = self.totalFiles
-                    if self.totalFiles != '...':
-                        prog_str += "of %s " % self.totalParts
-                        num_files = self.totalFiles - self.file_count
-                    prog_str += "part(s) with %s file(s) remaining" % \
-                        num_files
-                    length_prog = len(prog_str)
-                    prog_str += '\r'
-                    prog_str = prog_str.ljust(self.progressLength, ' ')
-                    self.progressLength = length_prog
-                    final_str += prog_str
-                if not self.quiet:
-                    uni_print(final_str)
-                    sys.stdout.flush()
-                self.printQueue.task_done()
+                print_task = self._print_queue.get(True, self._timeout)
+                try:
+                    self._process_print_task(print_task)
+                except Exception as e:
+                    LOGGER.debug("Error processing print task: %s", e,
+                                 exc_info=True)
+                finally:
+                    # Because the shutdown logic requires that the print
+                    # queue finish, we need to have all the print tasks
+                    # finished, even if an exception happens trying to print
+                    # them.
+                    self._print_queue.task_done()
             except Queue.Empty:
                 pass
-            if self.done.isSet():
+            if self._done.isSet():
                 break
+
+    def _process_print_task(self, print_task):
+        print_str = print_task['result']
+        final_str = ''
+        if print_task.get('part', ''):
+            # Normalize keys so failures and sucess
+            # look the same.
+            op_list = print_str.split(':')
+            print_str = ':'.join(op_list[1:])
+            print_part = print_task['part']
+            total_part = print_part['total']
+            self._num_parts += 1
+            if print_str in self._progress_dict:
+                self._progress_dict[print_str]['parts'] += 1
+            else:
+                self._progress_dict[print_str] = {}
+                self._progress_dict[print_str]['parts'] = 1
+                self._progress_dict[print_str]['total'] = total_part
+        else:
+            print_components = print_str.split(':')
+            final_str += print_str.ljust(self._progress_length, ' ')
+            final_str += '\n'
+            if print_task.get('error', ''):
+                final_str += print_task['error'] + '\n'
+            key = ':'.join(print_components[1:])
+            if key in self._progress_dict:
+                self._progress_dict.pop(print_str, None)
+            else:
+                self._num_parts += 1
+            self._file_count += 1
+
+        is_done = self._total_files == self._file_count
+        if not self._interrupt.isSet() and not is_done:
+            prog_str = "Completed %s " % self._num_parts
+            num_files = self._total_files
+            if self._total_files != '...':
+                prog_str += "of %s " % self._total_parts
+                num_files = self._total_files - self._file_count
+            prog_str += "part(s) with %s file(s) remaining" % \
+                num_files
+            length_prog = len(prog_str)
+            prog_str += '\r'
+            prog_str = prog_str.ljust(self._progress_length, ' ')
+            self._progress_length = length_prog
+            final_str += prog_str
+        if not self._quiet:
+            uni_print(final_str)
+            sys.stdout.flush()

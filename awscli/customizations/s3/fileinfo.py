@@ -5,12 +5,12 @@ from six.moves import queue as Queue
 import sys
 import time
 import threading
-import mimetypes
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
+from botocore import xform_name
 from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
@@ -287,16 +287,23 @@ class FileInfo(TaskInfo):
             self._inject_content_type(params, self.src)
         if self.parameters['content_type']:
             params['content_type'] = self.parameters['content_type'][0]
-        if self.parameters['headers']:
-            for header in self.parameters['headers']:
+        if self.parameters['params']:
+            available_params = ('CacheControl', 'ContentDisposition',
+                                'ContentEncoding', 'ContentLanguage',
+                                'Expires')
+            for param in self.parameters['params']:
                 try:
-                    name, value = header.split(':')
+                    name, value = param.split('=')
                 except ValueError:
-                    raise ValueError('header values should be of the'
-                                     'form name:value')
-                param_name = name.lower().replace('-', '_')
-                params[param_name] = value
-                    
+                    raise ValueError('param values should be of the'
+                                     'form name=value')
+                if name in available_params:
+                    param_name = xform_name(name)
+                    params[param_name] = value
+                else:
+                    msg = ('param name must be one of: '
+                           '|'.join(available_params))
+                    raise ValueError(msg)
 
     def upload(self):
         """

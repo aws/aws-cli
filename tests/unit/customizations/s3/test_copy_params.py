@@ -138,8 +138,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        cmdline += ' --headers content-encoding:x-gzip'
-        cmdline += ' content-language:piglatin'
+        cmdline += ' --params ContentEncoding=x-gzip'
+        cmdline += ' ContentLanguage=piglatin'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {'Content-Encoding': 'x-gzip',

@@ -14,7 +14,6 @@ import logging
 import math
 import os
 import threading
-import time
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE
@@ -40,7 +39,7 @@ class S3Handler(object):
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
                        'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
-                       'headers': None, 'content_type': None, 'grants': None}
+                       'params': None, 'content_type': None, 'grants': None}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:

@@ -87,9 +87,9 @@ def add_param_descriptions(params_dict):
     params_dict['sse']['documents'] = (
         "Enable Server Side Encryption of the object in S3")
 
-    params_dict['headers']['documents'] = (
-        "Specify additional HTTP headers to send with the request to S3.  "
-        'For example, --headers "content-encoding:gzip"')
+    params_dict['params']['documents'] = (
+        "Specify additional parameter name/value pairs to send with "
+        'the request to S3.  For example, --params "ContentEncoding=gzip"')
 
     params_dict['storage-class']['documents'] = (
         "The type of storage to use for the object. "

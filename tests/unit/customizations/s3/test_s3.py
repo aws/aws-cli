@@ -102,7 +102,7 @@ class CreateTablesTest(unittest.TestCase):
         params_list = ['dryrun', 'delete', 'quiet', 'recursive', 'exclude',
                        'include', 'acl', 'force', 'no-guess-mime-type',
                        'sse', 'storage-class', 'website-redirect',
-                       'headers', 'content-type', 'grants']
+                       'params', 'content-type', 'grants']
         for cmd in commands_list:
             self.parameters = {}
             add_cmd_params(self.parameters, cmd)

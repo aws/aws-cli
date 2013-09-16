@@ -177,6 +177,20 @@ class TestGetObject(BaseAWSCommandParamsTest):
         #self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
         self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
 
+    def test_content_type(self):
+        cmdline = self.prefix
+        cmdline += self.file_path
+        cmdline += ' s3://mybucket/mykey'
+        cmdline += ' --content-type text/xml'
+        result = {'uri_params': {'Bucket': 'mybucket',
+                                 'Key': 'mykey'},
+                  'headers': {'Content-Type': 'text/xml'}}
+        self.assert_params_for_cmd(cmdline, result, expected_rc=0)
+        if sys.version_info[:2] == (2, 6):
+            self.assertIsInstance(self.payload.getvalue(), StringIO)
+        else:
+            self.assertIsInstance(self.payload.getvalue(), bytearray)
+
 
 if __name__ == "__main__":
     unittest.main()

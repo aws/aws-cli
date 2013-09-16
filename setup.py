@@ -11,7 +11,7 @@ requires = ['botocore>=0.16.0,<0.17.0',
             'six>=1.1.0',
             'colorama==0.2.5',
             'docutils>=0.10',
-            'rsa==3.1.1']
+            'rsa==3.1.2']
 
 if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it

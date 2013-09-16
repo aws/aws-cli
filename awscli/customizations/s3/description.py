@@ -89,7 +89,9 @@ def add_param_descriptions(params_dict):
 
     params_dict['params']['documents'] = (
         "Specify additional parameter name/value pairs to send with "
-        'the request to S3.  For example, --params "ContentEncoding=gzip"')
+        'the request to S3.  For example, --params "ContentEncoding=gzip".  '
+        'Possible names are: CacheControl, ContentDisposition, '
+        'ContentEncoding, ContentLanguage, Expires')
 
     params_dict['storage-class']['documents'] = (
         "The type of storage to use for the object. "

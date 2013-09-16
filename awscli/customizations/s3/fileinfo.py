@@ -1,7 +1,5 @@
-import math
 import os
 from six import StringIO
-from six.moves import queue as Queue
 import sys
 import time
 import threading
@@ -10,7 +8,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
-from awscli.customizations.s3.tasks import UploadPartTask, DownloadPartTask
+from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
     uni_print, guess_content_type
@@ -197,7 +195,7 @@ class FileInfo(TaskInfo):
     """
     This is a child object of the ``TaskInfo`` object.  It can perform more
     operations such as ``upload``, ``download``, ``copy``, ``delete``,
-    ``move``, `multi_upload``, and ``multi_download``.  Similiarly to
+    ``move``, and ``multi_download``.  Similiarly to
     ``TaskInfo`` objects attributes like ``session`` need to be set in order
     to perform operations. Multipart operations need to run ``set_multi`` in
     order to be able to run.
@@ -257,25 +255,22 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart upload function if the file is
         large.  If it is small enough, it puts the file as an object in s3.
         """
-        if not self.is_multi:
-            body = read_file(self.src)
-            bucket, key = find_bucket_key(self.dest)
-            if sys.version_info[:2] == (2, 6):
-                stream_body = StringIO(body)
-            else:
-                stream_body = bytearray(body)
-            params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-            if body:
-                params['body'] = stream_body
-            if self.parameters['acl']:
-                params['acl'] = self.parameters['acl'][0]
-            if self.parameters['guess_mime_type']:
-                self._inject_content_type(params, self.src)
-            response_data, http = operate(self.service, 'PutObject', params)
-            etag = retrieve_http_etag(http)
-            check_etag(etag, body)
+        body = read_file(self.src)
+        bucket, key = find_bucket_key(self.dest)
+        if sys.version_info[:2] == (2, 6):
+            stream_body = StringIO(body)
         else:
-            self.multi_upload()
+            stream_body = bytearray(body)
+        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+        if body:
+            params['body'] = stream_body
+        if self.parameters['acl']:
+            params['acl'] = self.parameters['acl'][0]
+        if self.parameters['guess_mime_type']:
+            self._inject_content_type(params, self.src)
+        response_data, http = operate(self.service, 'PutObject', params)
+        etag = retrieve_http_etag(http)
+        check_etag(etag, body)
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.
@@ -348,67 +343,6 @@ class FileInfo(TaskInfo):
                                       params)
         upload_id = response_data['UploadId']
         return upload_id
-
-    def multi_upload(self):
-        """
-        Performs multipart uploads.  It initiates the multipart upload.
-        It creates a queue ``part_queue`` which is directly responsible
-        with controlling the progress of the multipart upload.  It then
-        creates ``UploadPartTasks`` for threads to run via the
-        ``executer``.  This function waits for all of the parts in the
-        multipart upload to finish, and then it completes the multipart
-        upload.  This method waits on its parts to finish.  So, threads
-        are required to process the parts for this function to complete.
-        """
-        part_queue = NoBlockQueue(self.interrupt)
-        complete_upload_queue = Queue.PriorityQueue()
-        part_counter = MultiCounter()
-        counter_lock = threading.Lock()
-        bucket, key = find_bucket_key(self.dest)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
-        if self.parameters['guess_mime_type']:
-            self._inject_content_type(params, self.src)
-        response_data, http = operate(self.service, 'CreateMultipartUpload',
-                                      params)
-        upload_id = response_data['UploadId']
-        size_uploads = self.chunksize
-        num_uploads = int(math.ceil(self.size/float(size_uploads)))
-        for i in range(1, (num_uploads + 1)):
-            part_info = (self, upload_id, i, size_uploads)
-            part_queue.put(part_info)
-            task = UploadPartTask(session=self.session, executer=self.executer,
-                                  part_queue=part_queue,
-                                  dest_queue=complete_upload_queue,
-                                  region=self.region,
-                                  print_queue=self.print_queue,
-                                  interrupt=self.interrupt,
-                                  part_counter=part_counter,
-                                  counter_lock=counter_lock)
-            self.executer.submit(task)
-        part_queue.join()
-        # The following ensures that if the multipart upload is in progress,
-        # all part uploads finish before aborting or completing.  This
-        # really only applies when an interrupt signal is sent because the
-        # ``part_queue.join()`` ensures this if the process is not
-        # interrupted.
-        while part_counter.count:
-            time.sleep(0.1)
-        parts_list = []
-        while not complete_upload_queue.empty():
-            part = complete_upload_queue.get()
-            parts_list.append(part[1])
-        if len(parts_list) == num_uploads:
-            parts = {'Parts': parts_list}
-            params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key,
-                      'upload_id': upload_id, 'multipart_upload': parts}
-            operate(self.service, 'CompleteMultipartUpload', params)
-        else:
-            abort_params = {'endpoint': self.endpoint, 'bucket': bucket,
-                            'key': key, 'upload_id': upload_id}
-            operate(self.service, 'AbortMultipartUpload', abort_params)
-            raise Exception()
 
     def multi_download(self):
         """

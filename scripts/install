@@ -1,0 +1,135 @@
+#!/usr/bin/env python
+# We're using optparse because we need to support 2.6
+# which doesn't have argparse.  Given that argparse is
+# a dependency that eventually gets installed, we could
+# try to bootstrap, but using optparse is just easier.
+import optparse
+import os
+import platform
+import sys
+import subprocess
+import tarfile
+import tempfile
+
+from contextlib import contextmanager
+
+
+PACKAGES_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'packages')
+INSTALL_DIR = os.path.expanduser(os.path.join(
+    '~', '.local', 'lib', 'aws'))
+
+
+class BadRCError(Exception):
+    pass
+
+
+@contextmanager
+def cd(dirname):
+    original = os.getcwd()
+    os.chdir(dirname)
+    try:
+        yield
+    finally:
+        os.chdir(original)
+
+
+def run(cmd):
+    sys.stdout.write("Running cmd: %s\n" % cmd)
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    stdout, stderr = p.communicate()
+    if p.returncode != 0:
+        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
+            p.returncode, cmd, stdout + stderr))
+    return stdout
+
+
+def bin_path():
+    """
+    Get the system's binary path, either `bin` on reasonable
+    systems or `Scripts` on Windows.
+    """
+    path = 'bin'
+
+    if platform.system() == 'Windows':
+        path = 'Scripts'
+
+    return path
+
+
+def create_install_structure(working_dir, install_dir):
+    if not os.path.isdir(install_dir):
+        os.makedirs(install_dir)
+    _create_virtualenv(location=install_dir, working_dir=working_dir)
+
+
+def _create_virtualenv(location, working_dir):
+    # working_dir is used (generally somewhere in /tmp) so that we
+    # don't modify the install/packages directories.
+    with cd(PACKAGES_DIR):
+        venv = [p for p in os.listdir('.') if p.startswith('virtualenv')][0]
+        compressed = tarfile.open(venv)
+        compressed.extractall(path=working_dir)
+        compressed.close()
+    with cd(working_dir):
+        # We know that virtualenv is the only dir in this directory
+        # so we can listdir()[0] it.
+        with cd(os.listdir('.')[0]):
+            run('%s virtualenv.py --python %s %s' % (sys.executable,
+                                                     sys.executable,
+                                                     location))
+
+
+def create_working_dir():
+    d = tempfile.mkdtemp()
+    return d
+
+
+def pip_install_packages(install_dir):
+    cli_tarball = [p for p in os.listdir(PACKAGES_DIR)
+                   if p.startswith('awscli')]
+    assert len(cli_tarball) == 1
+    cli_tarball = cli_tarball[0]
+    pip_script = os.path.join(install_dir, bin_path(), 'pip')
+
+    with cd(PACKAGES_DIR):
+        run('%s install --no-index --find-links file://%s %s' % (
+            pip_script, PACKAGES_DIR, cli_tarball))
+
+
+def create_symlink(real_location, symlink_name):
+    if os.path.isfile(symlink_name):
+        print("Symlink already exists: %s" % symlink_name)
+        print("Removing symlink.")
+        os.remove(symlink_name)
+    os.symlink(real_location, symlink_name)
+    return True
+
+
+def main():
+    parser = optparse.OptionParser()
+    parser.add_option('-i', '--install-dir', help="The location to install "
+                      "the AWS CLI.  The default value is ~/.local/lib/aws",
+                      default=INSTALL_DIR)
+    parser.add_option('-b', '--bin-location', help="If this argument is "
+                      "provided, then a symlink will be created at this "
+                      "location that points to the aws executable. "
+                      "This argument is useful if you want to put the aws "
+                      "executable somewhere already on your path, e.g. "
+                      "-b /usr/local/bin/aws.  This is an optional argument. "
+                      "If you do not provide this argument you will have to "
+                      "add INSTALL_DIR/bin to your PATH.")
+    opts = parser.parse_args()[0]
+    working_dir = create_working_dir()
+    create_install_structure(working_dir, opts.install_dir)
+    pip_install_packages(opts.install_dir)
+    real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
+    if opts.bin_location and create_symlink(real_location, opts.bin_location):
+        print("You can now run: %s --version" % opts.bin_location)
+    else:
+        print("You can now run: %s --version" % real_location)
+
+
+if __name__ == '__main__':
+    main()

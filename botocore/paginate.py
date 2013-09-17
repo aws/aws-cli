@@ -111,12 +111,7 @@ class PageIterator(object):
         self._starting_token = starting_token
         self._endpoint = endpoint
         self._op_kwargs = op_kwargs
-        self._http_responses = []
         self._resume_token = None
-
-    @property
-    def http_responses(self):
-        return self._http_responses
 
     @property
     def resume_token(self):
@@ -142,7 +137,6 @@ class PageIterator(object):
         while True:
             http_response, parsed = self._operation.call(endpoint,
                                                          **current_kwargs)
-            self._http_responses.append(http_response)
             if first_request:
                 # The first request is handled differently.  We could
                 # possibly have a resume/starting token that tells us where

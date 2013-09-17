@@ -45,6 +45,6 @@ def add_examples(help_command, **kwargs):
     LOG.debug("Looking for example file at: %s", doc_path)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')
-        fp = open(doc_path)
-        for line in fp.readlines():
-            help_command.doc.write(line)
+        with open(doc_path) as fp:
+            for line in fp.readlines():
+                help_command.doc.write(line)

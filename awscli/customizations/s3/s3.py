@@ -176,9 +176,9 @@ def add_s3_examples(help_command, **kwargs):
     doc_path = os.path.join(doc_path, file_name)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')
-        fp = open(doc_path)
-        for line in fp.readlines():
-            help_command.doc.write(line)
+        with open(doc_path) as fp:
+            for line in fp.readlines():
+                help_command.doc.write(line)
 
 
 class S3DocumentEventHandler(CLIDocumentEventHandler):
@@ -206,9 +206,9 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
             doc_path = os.path.join(doc_dir, '_concepts.rst')
             if os.path.isfile(doc_path):
                 help_command.doc.style.h2('Important Concepts')
-                fp = open(doc_path)
-                for line in fp.readlines():
-                    help_command.doc.write(line)
+                with open(doc_path) as fp:
+                    for line in fp.readlines():
+                        help_command.doc.write(line)
 
     def doc_synopsis_start(self, help_command, **kwargs):
         if help_command.obj._name != 's3':

@@ -16,9 +16,8 @@ class FileRenderer(HelpRenderer):
         self._file_path = file_path
 
     def render(self, contents):
-        fp = open(self._file_path, 'wb')
-        fp.write(contents)
-        fp.close()
+        with open(self._file_path, 'wb') as fp:
+            fp.write(contents)
 
 
 def do_operation(driver, service_path, operation_name, operation_command):

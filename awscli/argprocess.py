@@ -360,7 +360,8 @@ def unpack_scalar_cli_arg(parameter, value):
         if not os.path.isfile(file_path):
             msg = 'Blob values must be a path to a file.'
             raise ValueError(msg)
-        return open(file_path, 'rb')
+        with open(file_path, 'rb') as blob_file:
+            return blob_file
     elif parameter.type == 'boolean':
         return bool(value)
     else:

@@ -29,7 +29,7 @@ class Executer(object):
     ``Executer``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, timeout,
-                 print_queue, quiet, interrupt, max_multi):
+                 print_queue, quiet, interrupt, max_multi, max_queue_size):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
@@ -41,9 +41,10 @@ class Executer(object):
         self.max_multi = max_multi
         self.multi_lock = threading.Lock()
         self.multi_counter = MultiCounter()
+        self._max_queue_size = max_queue_size
 
     def start(self):
-        self.queue = NoBlockQueue(self.interrupt)
+        self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
         self.multi_counter.count = 0
         self.print_thread = PrintThread(self.print_queue, self.done,
                                         self.quiet, self.interrupt,

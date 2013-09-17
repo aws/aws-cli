@@ -1,6 +1,8 @@
 from tests import unittest
+from six.moves import queue
 
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
+from awscli.customizations.s3.utils import NoBlockQueue
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -48,6 +50,27 @@ class FindChunksizeTest(unittest.TestCase):
         size = MAX_SINGLE_UPLOAD_SIZE * 2
         self.assertEqual(find_chunksize(size, chunksize),
                          MAX_SINGLE_UPLOAD_SIZE)
+
+
+class TestNoBlockQueue(unittest.TestCase):
+    def test_max_size(self):
+        q = NoBlockQueue(maxsize=3)
+        q.put(1)
+        q.put(2)
+        q.put(3)
+        with self.assertRaises(queue.Full):
+            q.put(4, block=False)
+
+    def test_no_max_size(self):
+        q = NoBlockQueue()
+        q.put(1)
+        q.put(2)
+        q.put(3)
+        q.put(4)
+        self.assertEqual(q.get(), 1)
+        self.assertEqual(q.get(), 2)
+        self.assertEqual(q.get(), 3)
+        self.assertEqual(q.get(), 4)
 
 
 if __name__ == "__main__":

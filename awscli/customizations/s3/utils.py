@@ -39,8 +39,8 @@ class NoBlockQueue(Queue.Queue):
     while loop if signaled.  The ``interrupt`` signal is optional.
     If left out, this should act like a normal queue.
     """
-    def __init__(self, interrupt=None):
-        Queue.Queue.__init__(self)
+    def __init__(self, interrupt=None, maxsize=0):
+        Queue.Queue.__init__(self, maxsize=maxsize)
         self.interrupt = interrupt
 
     def join(self):

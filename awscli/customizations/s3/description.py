@@ -84,14 +84,26 @@ def add_param_descriptions(params_dict):
         "Specify an explicit content type for this operation.  "
         "This value overrides any guessed mime types.")
 
+    params_dict['cache-control']['documents'] = \
+        "Specifies caching behavior along the request/reply chain."
+
+    params_dict['content-disposition']['documents'] = \
+        "Specifies presentational information for the object."
+    
+    params_dict['content-encoding']['documents'] = (
+        "Specifies what content encodings have been "
+        "applied to the object and thus what decoding mechanisms "
+        "must be applied to obtain the media-type referenced "
+        "by the Content-Type header field.")
+    
+    params_dict['content-language']['documents'] = \
+        "The language the content is in."
+
+    params_dict['expires']['documents'] = \
+        "The date and time at which the object is no longer cacheable."
+    
     params_dict['sse']['documents'] = (
         "Enable Server Side Encryption of the object in S3")
-
-    params_dict['params']['documents'] = (
-        "Specify additional parameter name/value pairs to send with "
-        'the request to S3.  For example, --params "ContentEncoding=gzip".  '
-        'Possible names are: CacheControl, ContentDisposition, '
-        'ContentEncoding, ContentLanguage, Expires')
 
     params_dict['storage-class']['documents'] = (
         "The type of storage to use for the object. "
@@ -106,6 +118,6 @@ def add_param_descriptions(params_dict):
     params_dict['grants']['documents'] = (
         "Grant specific permissions to individual users or groups.  "
         "You can supply a list of grants of the form "
-        "``permission:grantee`` where permission is one of: "
+        "``permission=grantee`` where permission is one of: "
         "``read``, ``readacl``, ``writeacp``, ``full``")
 

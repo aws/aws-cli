@@ -18,9 +18,6 @@ import copy
 
 from tests.unit import BaseAWSCommandParamsTest
 import httpretty
-import six
-
-import awscli.clidriver
 
 if sys.version_info[:2] == (2, 6):
     from StringIO import StringIO
@@ -134,12 +131,12 @@ class TestGetObject(BaseAWSCommandParamsTest):
         else:
             self.assertIsInstance(self.payload.getvalue(), bytearray)
 
-    def test_headers(self):
+    def test_content_params(self):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        cmdline += ' --params ContentEncoding=x-gzip'
-        cmdline += ' ContentLanguage=piglatin'
+        cmdline += ' --content-encoding x-gzip'
+        cmdline += ' --content-language piglatin'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {'Content-Encoding': 'x-gzip',
@@ -154,8 +151,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        cmdline += ' --grants read:bob'
-        cmdline += ' full:alice'
+        cmdline += ' --grants read=bob'
+        cmdline += ' full=alice'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {'x-amz-grant-full-control': 'alice',
@@ -170,7 +167,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        cmdline += ' --grants read=bob'
+        cmdline += ' --grants read:bob'
         # This should have an rc of 255 but the error is not
         # being processed correctly at the moment.  Need to track
         # this down.

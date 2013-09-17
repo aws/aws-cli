@@ -270,7 +270,7 @@ class FileInfo(TaskInfo):
         if self.parameters['grants']:
             for grant in self.parameters['grants']:
                 try:
-                    permission, grantee = grant.split(':')
+                    permission, grantee = grant.split('=', 1)
                 except ValueError:
                     raise ValueError('grants should be of the form '
                                      'permission=principal')
@@ -285,23 +285,16 @@ class FileInfo(TaskInfo):
             self._inject_content_type(params, self.src)
         if self.parameters['content_type']:
             params['content_type'] = self.parameters['content_type'][0]
-        if self.parameters['params']:
-            available_params = ('CacheControl', 'ContentDisposition',
-                                'ContentEncoding', 'ContentLanguage',
-                                'Expires')
-            for param in self.parameters['params']:
-                try:
-                    name, value = param.split('=')
-                except ValueError:
-                    raise ValueError('param values should be of the'
-                                     'form name=value')
-                if name in available_params:
-                    param_name = xform_name(name)
-                    params[param_name] = value
-                else:
-                    msg = ('param name must be one of: '
-                           '|'.join(available_params))
-                    raise ValueError(msg)
+        if self.parameters['cache_control']:
+            params['cache_control'] = self.parameters['cache_control'][0]
+        if self.parameters['content_disposition']:
+            params['content_disposition'] = self.parameters['content_disposition'][0]
+        if self.parameters['content_encoding']:
+            params['content_encoding'] = self.parameters['content_encoding'][0]
+        if self.parameters['content_language']:
+            params['content_language'] = self.parameters['content_language'][0]
+        if self.parameters['expires']:
+            params['expires'] = self.parameters['expires'][0]
 
     def upload(self):
         """

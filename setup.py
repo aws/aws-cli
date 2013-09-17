@@ -56,12 +56,8 @@ if 'py2exe' in sys.argv:
         'py2exe': {
             'optimize': 0,
             'skip_archive': True,
-            'includes': ['ConfigParser', 'urllib', 'httplib',
-                         'docutils.readers.standalone',
-                         'docutils.parsers.rst',
-                         'docutils.languages.en',
-                         'xml.etree.ElementTree', 'HTMLParser',
-                         'awscli.handlers'],
+            'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
+                         'awscli', 'ConfigParser', 'xml.etree'],
         }
     }
     setup_options['console'] = ['bin/aws']

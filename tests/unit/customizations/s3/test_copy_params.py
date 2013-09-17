@@ -137,10 +137,14 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --content-encoding x-gzip'
         cmdline += ' --content-language piglatin'
+        cmdline += ' --cache-control max-age=3600,must-revalidate'
+        cmdline += ' --content-disposition attachment;filename="fname.ext"'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {'Content-Encoding': 'x-gzip',
-                              'Content-Language': 'piglatin'}}
+                              'Content-Language': 'piglatin',
+                              'Content-Disposition': 'attachment;filename="fname.ext"',
+                              'Cache-Control': 'max-age=3600,must-revalidate'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
         if sys.version_info[:2] == (2, 6):
             self.assertIsInstance(self.payload.getvalue(), StringIO)

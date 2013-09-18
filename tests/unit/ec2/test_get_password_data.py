@@ -20,7 +20,7 @@ import httpretty
 import mock
 
 GET_PASSWORD_DATA_RESPONSE = """<?xml version="1.0" encoding="UTF-8"?>
-<GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-07-15/">
+<GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-08-15/">
     <requestId>000000000000</requestId>
     <instanceId>i-12345678</instanceId>
     <timestamp>2013-07-27T18:29:23.000Z</timestamp>

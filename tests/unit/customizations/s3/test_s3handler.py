@@ -90,6 +90,30 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         s3_handler.call([file_info])
 
 
+class S3HandlerTestURLEncodeDeletes(S3HandlerBaseTest):
+    def setUp(self):
+        super(S3HandlerTestURLEncodeDeletes, self).setUp()
+        self.session = FakeSession()
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
+        self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
+
+    def tearDown(self):
+        super(S3HandlerTestURLEncodeDeletes, self).tearDown()
+        s3_cleanup(self.bucket, self.session)
+
+    def test_s3_delete_url_encode(self):
+        """
+        Tests S3 deletes. The files used are the same generated from
+        filegenerators_test.py.  This includes the create s3 file.
+        """
+        key = self.bucket + '/a+b/foo'
+        tasks = [FileInfo(src=key, src_type='s3', dest_type='local', operation='delete', size=0)]
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+
+
 class S3HandlerTestUpload(S3HandlerBaseTest):
     """
     This class tests the ability to upload objects into an S3 bucket as
@@ -248,7 +272,7 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestMvLocalS3, self).setUp()
         self.session = FakeSession()
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
@@ -259,6 +283,16 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
         super(S3HandlerTestMvLocalS3, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
+
+    def test_move_unicode(self):
+        self.bucket2 = make_s3_files(self.session, key1=u'\u2713')
+        tasks = [FileInfo(src=self.bucket2 + '/' + u'\u2713',
+                          src_type='s3',
+                          dest=self.bucket + '/' + u'\u2713',
+                          dest_type='s3', operation='move',
+                          size=0)]
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
 
     def test_move(self):
         # Create file info objects to perform move.
@@ -456,13 +490,12 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
         # Confirm that the files now exist.
-        for filename in self.loc_files:
-            self.assertTrue(os.path.exists(filename))
+        self.assertTrue(os.path.exists(self.loc_files[0]))
+        # The second file should not exist.
+        self.assertFalse(os.path.exists(self.loc_files[1]))
         # Ensure that contents are as expected.
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
-        with open(self.loc_files[1], 'rb') as filename:
-            self.assertNotEqual(filename.read(), b'This is a test.')
 
     def test_multi_download_exceptions(self):
         """

@@ -63,11 +63,22 @@ COMPLETIONS = [
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
     ('aws s3 cp -', -1, set(['--no-guess-mime-type', '--dryrun',
-                             '--recursive', '--quiet', '--acl',
-                             '--exclude', '--include'] + GLOBALOPTS)),
+                             '--recursive', '--website-redirect',
+                             '--quiet', '--acl', '--storage-class',
+                             '--sse', '--exclude', '--include',
+                             '--cache-control', '--content-type',
+                             '--content-disposition',
+                             '--content-encoding', '--content-language',
+                             '--expires', '--grants'] + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
-                                     '--recursive', '--acl',
-                                     '--exclude', '--include'] + GLOBALOPTS)),
+                                     '--recursive', '--content-type',
+                                     '--content-disposition', '--cache-control',
+                                     '--content-encoding', '--content-language',
+                                     '--expires', '--website-redirect', '--acl',
+                                     '--storage-class', '--sse',
+                                     '--exclude', '--include',
+                                     '--grants'] + GLOBALOPTS)),
+    ('aws emr ', -1, set([])),
     ]
 
 
@@ -91,3 +102,5 @@ def test_completions():
             point = len(cmdline)
         results = set(completer.complete(cmdline, point))
         yield check_completer, cmdline, results, expected_results
+
+

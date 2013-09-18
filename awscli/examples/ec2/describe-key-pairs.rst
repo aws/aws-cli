@@ -1,6 +1,6 @@
 **To display a key pair**
 
-This example displays the fingerprint for the key pair named MyKeyPair.
+This example displays the fingerprint for the key pair named ``MyKeyPair``.
 
 Command::
 

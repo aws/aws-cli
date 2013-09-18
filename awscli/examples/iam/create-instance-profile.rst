@@ -1,6 +1,6 @@
 **To create an instance profile**
 
-The following ``create-instance-profile`` commmand creates an instance profile named ``ExampleInstanceProfile``::
+The following ``create-instance-profile`` command creates an instance profile named ``ExampleInstanceProfile``::
 
   aws iam create-instance-profile --instance-profile-name ExampleInstanceProfile
 

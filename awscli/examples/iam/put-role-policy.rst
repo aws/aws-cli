@@ -1,6 +1,6 @@
 **To attach a permissions policy to an IAM role**
 
-The following ``put-role-policy`` commmand adds a permissions policy to the role named ``Test-Role``::
+The following ``put-role-policy`` command adds a permissions policy to the role named ``Test-Role``::
 
   aws iam put-role-policy --role-name Test-Role --policy-name ExamplePolicy --policy-document file://AdminPolicy.json
 

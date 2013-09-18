@@ -75,7 +75,7 @@ def clean_loc_files(files):
                 os.rmdir(filename)
 
 
-def make_s3_files(session):
+def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
     """
     Creates a randomly generated bucket in s3 with the files text1.txt and
     another_directory/text2.txt inside.  The directory is manually created
@@ -91,15 +91,16 @@ def make_s3_files(session):
     string2 = "This is another test."
     http_response, response_data = operation.call(endpoint,
                                                   bucket=bucket,
-                                                  key='text1.txt',
+                                                  key=key1,
                                                   body=string1)
-    http_response, response_data = operation.call(endpoint,
-                                                  bucket=bucket,
-                                                  key='another_directory/')
-    http_response, r_data = operation.call(endpoint,
-                                           bucket=bucket,
-                                           key='another_directory/text2.txt',
-                                           body=string2)
+    if key2 is not None:
+        http_response, response_data = operation.call(endpoint,
+                                                    bucket=bucket,
+                                                    key='another_directory/')
+        http_response, r_data = operation.call(endpoint,
+                                            bucket=bucket,
+                                            key='another_directory/%s' % key2,
+                                            body=string2)
     return bucket
 
 
@@ -123,7 +124,7 @@ def create_bucket(session):
     return bucket_name
 
 
-def s3_cleanup(bucket, session):
+def s3_cleanup(bucket, session, key1='text1.txt', key2='text2.txt'):
     """
     Function to cleanup generated s3 bucket and files.
     """
@@ -133,13 +134,14 @@ def s3_cleanup(bucket, session):
     operation = service.get_operation('DeleteObject')
     http_response, r_data = operation.call(endpoint,
                                            bucket=bucket,
-                                           key='text1.txt')
-    http_response, r_data = operation.call(endpoint,
-                                           bucket=bucket,
-                                           key='another_directory/')
-    http_response, r_data = operation.call(endpoint,
-                                           bucket=bucket,
-                                           key='another_directory/text2.txt')
+                                           key=key1)
+    if key2 is not None:
+        http_response, r_data = operation.call(endpoint,
+                                            bucket=bucket,
+                                            key='another_directory/')
+        http_response, r_data = operation.call(endpoint,
+                                            bucket=bucket,
+                                            key='another_directory/%s' % key2)
     operation = service.get_operation('DeleteBucket')
     http_response, r_data = operation.call(endpoint, bucket=bucket)
 

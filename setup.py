@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import sys
 
 from setuptools import setup, find_packages
@@ -7,13 +6,17 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore>=0.16.0,<0.17.0',
-            'bcdoc>=0.9.0,<0.10.0',
+requires = ['botocore>=0.17.0,<0.18.0',
+            'bcdoc>=0.10.0,<0.11.0',
             'six>=1.1.0',
             'colorama==0.2.5',
-            'argparse>=1.1',
             'docutils>=0.10',
-            'rsa==3.1.1']
+            'rsa==3.1.2']
+
+if sys.version_info[:2] == (2, 6):
+    # For python2.6 we have to require argparse since it
+    # was not in stdlib until 2.7.
+    requires.append('argparse>=1.1')
 
 
 setup_options = dict(
@@ -30,9 +33,9 @@ setup_options = dict(
     package_dir={'awscli': 'awscli'},
     package_data={'awscli': ['data/*.json', 'examples/*/*']},
     install_requires=requires,
-    license=open("LICENSE.txt").read(),
+    license="Apache License 2.0",
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Natural Language :: English',
@@ -53,12 +56,8 @@ if 'py2exe' in sys.argv:
         'py2exe': {
             'optimize': 0,
             'skip_archive': True,
-            'includes': ['ConfigParser', 'urllib', 'httplib',
-                         'docutils.readers.standalone',
-                         'docutils.parsers.rst',
-                         'docutils.languages.en',
-                         'xml.etree.ElementTree', 'HTMLParser',
-                         'awscli.handlers'],
+            'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
+                         'awscli', 'ConfigParser', 'xml.etree'],
         }
     }
     setup_options['console'] = ['bin/aws']

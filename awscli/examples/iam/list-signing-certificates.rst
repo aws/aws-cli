@@ -1,6 +1,6 @@
 **To list the signing certificates for an IAM user**
 
-The following ``list-signing-certificates`` commmand lists the signing certificates for the IAM user named ``Bob``::
+The following ``list-signing-certificates`` command lists the signing certificates for the IAM user named ``Bob``::
 
   aws iam list-signing-certificates --user-name Bob
 

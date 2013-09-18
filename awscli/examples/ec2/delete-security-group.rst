@@ -1,6 +1,6 @@
 **To delete a security group**
 
-This example deletes the security group named MySecurityGroup.
+This example deletes the security group named ``MySecurityGroup``.
 
 Command::
 

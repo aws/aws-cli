@@ -39,8 +39,8 @@ class NoBlockQueue(Queue.Queue):
     while loop if signaled.  The ``interrupt`` signal is optional.
     If left out, this should act like a normal queue.
     """
-    def __init__(self, interrupt=None):
-        Queue.Queue.__init__(self)
+    def __init__(self, interrupt=None, maxsize=0):
+        Queue.Queue.__init__(self, maxsize=maxsize)
         self.interrupt = interrupt
 
     def join(self):
@@ -156,17 +156,17 @@ def uni_print(statement):
     not in a version type of string.  The initial check is to
     allow if ``sys.stdout`` does not use an encoding
     """
-    if hasattr(sys.stdout, 'encoding'):
-        encoding = sys.stdout.encoding
+    encoding = getattr(sys.stdout, 'encoding', None)
+    if encoding is not None and not PY3:
+        sys.stdout.write(statement.encode(sys.stdout.encoding))
     else:
-        encoding = None
-    if encoding:
-        if PY3:
+        try:
             sys.stdout.write(statement)
-        else:
-            sys.stdout.write(statement.encode(sys.stdout.encoding))
-    else:
-        sys.stdout.write(statement)
+        except UnicodeEncodeError:
+            # Some file like objects like cStringIO will
+            # try to decode as ascii.  Interestingly enough
+            # this works with a normal StringIO.
+            sys.stdout.write(statement.encode('utf-8'))
 
 
 def guess_content_type(filename):

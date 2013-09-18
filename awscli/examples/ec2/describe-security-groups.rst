@@ -1,6 +1,6 @@
 **To display information about a security group**
 
-This example displays information about the security group named MySecurityGroup.
+This example displays information about the security group named ``MySecurityGroup``.
 
 Command::
 

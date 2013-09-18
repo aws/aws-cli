@@ -97,6 +97,26 @@ class S3HandlerTestDeleteList(unittest.TestCase):
         s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
+class S3HandlerTestDeleteList(unittest.TestCase):
+    def setUp(self):
+        self.session = botocore.session.get_session(EnvironmentVariables)
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params)
+        self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
+        self.loc_files = make_loc_files()
+
+    def tearDown(self):
+        clean_loc_files(self.loc_files)
+        s3_cleanup(self.bucket, self.session, key1='a+b/foo', key2=None)
+
+    def test_delete_url_encode(self):
+        key = self.bucket + '/a+b/foo'
+        tasks = [FileInfo(src=key, src_type='s3',
+                          dest_type='local', operation='delete', size=0)]
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+
 
 class S3HandlerTestUpload(unittest.TestCase):
     """
@@ -152,6 +172,34 @@ class S3HandlerTestUpload(unittest.TestCase):
         self.s3_handler_multi.call(tasks)
         print_op = "Error: Your proposed upload is smaller than the minimum"
         self.assertIn(print_op, self.output.getvalue())
+
+
+class S3HandlerTestUnicodeMove(unittest.TestCase):
+    def setUp(self):
+        self.session = botocore.session.get_session(EnvironmentVariables)
+        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.s3_handler = S3Handler(self.session, params)
+        self.bucket = make_s3_files(self.session, key1=u'\u2713')
+        self.bucket2 = create_bucket(self.session)
+        self.s3_files = [self.bucket + '/' + u'\u2713']
+        self.s3_files2 = [self.bucket2 + '/' + u'\u2713']
+
+    def tearDown(self):
+        s3_cleanup(self.bucket, self.session, key1=u'\u2713')
+        s3_cleanup(self.bucket2, self.session, key1=u'\u2713')
+
+    def test_move_unicode(self):
+        # Confirm there are no objects in the bucket.
+        self.assertEqual(len(list_contents(self.bucket2, self.session)), 0)
+        # Create file info objects to perform move.
+        tasks = []
+        for i in range(len(self.s3_files)):
+            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
+                                  dest=self.s3_files2[i], dest_type='s3',
+                                  operation='move', size=0))
+        # Perform the move.
+        self.s3_handler.call(tasks)
+        self.assertEqual(len(list_contents(self.bucket2, self.session)), 1)
 
 
 class S3HandlerTestMove(unittest.TestCase):

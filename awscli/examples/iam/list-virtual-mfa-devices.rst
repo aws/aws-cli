@@ -1,6 +1,6 @@
 **To list virtual MFA devices**
 
-The following ``list-virtual-mfa-devices`` commmand lists the virtual MFA devices that have been configured for the current account::
+The following ``list-virtual-mfa-devices`` command lists the virtual MFA devices that have been configured for the current account::
 
   aws iam list-virtual-mfa-devices
 
@@ -15,7 +15,7 @@ Output::
         "SerialNumber": "arn:aws:iam::123456789012:mfa/Fred"
       }
     ]
-}
+  }
 
 For more information, see `Using a Virtual MFA Device with AWS`_ in the *Using IAM* guide.
 

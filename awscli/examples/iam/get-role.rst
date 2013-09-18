@@ -1,6 +1,6 @@
 **To get information about an IAM role**
 
-The following ``get-role`` commmand gets information about the role named ``Test-Role``::
+The following ``get-role`` command gets information about the role named ``Test-Role``::
 
   aws iam get-role --role-name Test-Role
 
@@ -17,8 +17,7 @@ Output::
     }
   }
 
-The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the
-``list-role-policies`` command.
+The command displays the trust policy attached to the role. To list the permissions policies attached to a role, use the ``list-role-policies`` command.
 
 For more information, see `Creating a Role`_ in the *Using IAM* guide.
 

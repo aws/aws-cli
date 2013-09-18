@@ -20,6 +20,3 @@ If the account password policy allows them to, IAM users can change their own pa
 Store the password in a secure location. If the password is lost, it cannot be recovered, and you will have to delete the login profile (``delete-login-profile``) and then create a new login profile.
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
-
-.. _`Managing Passwords`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html
-

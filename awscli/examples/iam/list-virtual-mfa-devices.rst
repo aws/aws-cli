@@ -15,7 +15,7 @@ Output::
         "SerialNumber": "arn:aws:iam::123456789012:mfa/Fred"
       }
     ]
-}
+  }
 
 For more information, see `Using a Virtual MFA Device with AWS`_ in the *Using IAM* guide.
 

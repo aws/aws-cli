@@ -7,6 +7,3 @@ The following ``update-account-password-policy`` command sets the password polic
 Changes to an account's password policy affect any new passwords that are created for IAM users in the account. Password policy changes do not affect existing passwords.
 
 For more information, see `Managing an IAM Password Policy`_ in the *Using IAM* guide.
-
-.. _`Managing an IAM Password Policy`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html
-

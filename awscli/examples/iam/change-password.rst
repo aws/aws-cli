@@ -9,6 +9,3 @@ To set a password policy for the account, use the ``update-account-password-poli
 If this command is called using account (root) credentials, the command returns an ``InvalidUserType`` error.
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
-
-.. _`Managing Passwords`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html
-

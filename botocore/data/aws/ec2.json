@@ -16977,6 +16977,14 @@
                         },
                         "documentation": "\n        <p>\n        The block device mappings for the new AMI, which specify how different\n        block devices (ex: EBS volumes and ephemeral drives) will be\n        exposed on instances launched from the new image.\n        </p>\n    ",
                         "flattened": true
+                    },
+                    "VirtualizationType": {
+                        "type": "string",
+                        "enum": [
+                            "paravirtual",
+                            "hvm"
+                        ],
+                        "documentation": "The type of virtualization"
                     }
                 },
                 "documentation": "\n        <p>\n        A request to register an AMI with Amazon EC2. Images must be registered\n        before they can be launched.\n        To launch instances, use the <a>RunInstances</a> operation.\n        </p>\n        <p>\n        Each AMI is associated with an unique ID which is provided by the Amazon\n        EC2 service through this operation.\n        If needed, you can deregister an AMI at any time.\n        </p>\n        <note>\n            <p>\n            AMIs backed by Amazon EBS are automatically registered when you\n            create the image.\n            However, you can use this to register a snapshot of an instance backed by\n            Amazon EBS.\n            Amazon EBS snapshots are not guaranteed to be bootable. For information on\n            creating AMIs backed by Amazon EBS,\n            go to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic\n            Compute Cloud User Guide.\n            </p>\n        </note>\n        <p>\n        Any modifications to an AMI backed by Amazon S3 invalidates this\n        registration.\n        If you make changes to an image, deregister the previous image and\n        register the new image.\n        </p>\n   "

@@ -274,7 +274,6 @@ class TestKeyIterators(unittest.TestCase):
         self.assertEqual(len(iterators), 1)
         self.assertEqual(list(iterators[0]),
                          ["User1", "User2", "User3"])
-        self.assertEqual(len(pages.http_responses), 3)
 
     def test_build_full_result_with_single_key(self):
         responses = [

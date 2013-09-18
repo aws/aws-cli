@@ -58,7 +58,7 @@ POLICY = ('{"Version": "2008-10-17","Statement": [{"Sid": "AddPerm",'
 class TestS3Operations(BaseEnvVar):
 
     maxDiff = None
-    
+
     def setUp(self):
         super(TestS3Operations, self).setUp()
         self.environ['AWS_ACCESS_KEY_ID'] = 'foo'

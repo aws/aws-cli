@@ -1,12 +1,12 @@
 {
-  "api_version": "2013-07-15",
+  "api_version": "2013-08-15",
   "type": "query",
   "result_wrapped": false,
   "signature_version": "v2",
   "service_full_name": "Amazon Elastic Compute Cloud",
   "service_abbreviation": "Amazon EC2",
   "endpoint_prefix": "ec2",
-  "xmlnamespace": "http://ec2.amazonaws.com/doc/2013-07-15",
+  "xmlnamespace": "http://ec2.amazonaws.com/doc/2013-08-15",
   "documentation": "\n        <p>\n        Amazon Elastic Compute Cloud (Amazon EC2) is a web service that provides\n        resizable compute capacity in the cloud.\n        It is designed to make web-scale computing easier for developers.\n        </p>\n        <p>\n        Amazon EC2's simple web service interface allows you to obtain and configure\n        capacity with minimal friction. It provides you with complete control of your\n        computing resources and lets you run on Amazon's proven computing environment.\n        Amazon EC2 reduces the time required to obtain and boot new server instances to\n        minutes, allowing you to quickly scale capacity, both up and down, as your\n        computing requirements change. Amazon EC2 changes the economics of computing by\n        allowing you to pay only for capacity that you actually use. Amazon EC2 provides\n        developers the tools to build failure resilient applications and isolate\n        themselves from common failure scenarios.\n        </p>\n        <p>\n        Visit <a href=\"http://aws.amazon.com/ec2/\">http://aws.amazon.com/ec2/</a> for\n        more information.\n        </p>\n    ",
   "operations": {
     "ActivateLicense": {
@@ -9783,6 +9783,12 @@
                   "documentation": "\n        <p>\n        The date and time the Reserved Instances started.\n        </p>\n    ",
                   "xmlname": "start"
                 },
+                "End": {
+                  "shape_name": "DateTime",
+                  "type": "timestamp",
+                  "documentation": null,
+                  "xmlname": "end"
+                },
                 "Duration": {
                   "shape_name": "Long",
                   "type": "long",
@@ -10110,6 +10116,203 @@
 
       ],
       "documentation": null
+    },
+    "DescribeReservedInstancesModifications": {
+      "name": "DescribeReservedInstancesModifications",
+      "input": {
+        "shape_name": "DescribeReservedInstancesModificationsRequest",
+        "type": "structure",
+        "members": {
+          "ReservedInstancesModificationIds": {
+            "shape_name": "ReservedInstancesModificationIdStringList",
+            "type": "list",
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null,
+              "xmlname": "ReservedInstancesModificationId"
+            },
+            "documentation": "\n      <p>\n      An optional list of Reserved Instances modification IDs to describe.\n      </p>\n    ",
+            "flattened": true
+          },
+          "NextToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n      <p>\n      A string specifying the next paginated set of results to return.\n      </p>\n   "
+          },
+          "Filters": {
+            "shape_name": "FilterList",
+            "type": "list",
+            "members": {
+              "shape_name": "Filter",
+              "type": "structure",
+              "members": {
+                "Name": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n       <p>\n       Specifies the name of the filter.\n       </p>\n   "
+                },
+                "Values": {
+                  "shape_name": "ValueStringList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "String",
+                    "type": "string",
+                    "documentation": null,
+                    "xmlname": "Value"
+                  },
+                  "documentation": "\n       <p>\n       Contains one or more values for the filter.\n       </p>\n   ",
+                  "flattened": true
+                }
+              },
+              "documentation": "\n       <p>\n       A filter used to limit results when describing tags.\n       Multiple values can be specified per filter.\n       A tag must match at least one of the specified values for it to be\n       returned from an operation.\n       </p>\n       <p>\n       Wildcards can be included in filter values;\n       <code>*</code> specifies that zero or more characters\n       must match, and <code>?</code> specifies that exactly one\n       character must match.  Use a backslash to escape special characters.\n       For example, a filter value of <code>\\*amazon\\?\\\\</code>\n       specifies the literal string <code>*amazon?\\</code>.\n       </p>\n   ",
+              "xmlname": "Filter"
+            },
+            "documentation": "\n      <p>\n      A list of filters used to match properties for ReservedInstancesModifications.\n      For a complete reference to the available filter keys for this operation, see the\n      <a href=\"http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/\">Amazon EC2 API reference</a>.\n      </p>\n    ",
+            "flattened": true
+          }
+        },
+        "documentation": "\n      <p>\n      A request to describe the modifications made to Reserved Instances in\n      your account.\n      </p>\n    "
+      },
+      "output": {
+        "shape_name": "DescribeReservedInstancesModificationsResult",
+        "type": "structure",
+        "members": {
+          "ReservedInstancesModifications": {
+            "shape_name": "ReservedInstancesModificationList",
+            "type": "list",
+            "members": {
+              "shape_name": "ReservedInstancesModification",
+              "type": "structure",
+              "members": {
+                "ReservedInstancesModificationId": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n      <p>\n      The unique ID for the submitted modification request.\n      </p>\n    ",
+                  "xmlname": "reservedInstancesModificationId"
+                },
+                "ReservedInstancesIds": {
+                  "shape_name": "ReservedIntancesIds",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ReservedInstancesId",
+                    "type": "structure",
+                    "members": {
+                      "ReservedInstancesId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": null,
+                        "xmlname": "reservedInstancesId"
+                      }
+                    },
+                    "documentation": null,
+                    "xmlname": "item"
+                  },
+                  "documentation": "\n      <p>\n      The IDs of the Reserved Instances submitted for modification.\n      </p>\n    ",
+                  "xmlname": "reservedInstancesSet"
+                },
+                "ModificationResults": {
+                  "shape_name": "ReservedInstancesModificationResultList",
+                  "type": "list",
+                  "members": {
+                    "shape_name": "ReservedInstancesModificationResult",
+                    "type": "structure",
+                    "members": {
+                      "ReservedInstancesId": {
+                        "shape_name": "String",
+                        "type": "string",
+                        "documentation": "\n      <p>\n      The ID for the Reserved Instances created as part of the modification request.\n      </p>\n    ",
+                        "xmlname": "reservedInstancesId"
+                      },
+                      "TargetConfiguration": {
+                        "shape_name": "ReservedInstancesConfiguration",
+                        "type": "structure",
+                        "members": {
+                          "AvailabilityZone": {
+                            "shape_name": "String",
+                            "type": "string",
+                            "documentation": "\n      <p>\n      The Availability Zone for the modified Reserved Instances.\n      </p>\n    ",
+                            "xmlname": "availabilityZone"
+                          },
+                          "Platform": {
+                            "shape_name": "String",
+                            "type": "string",
+                            "documentation": "\n      <p>\n      The network platform of the modified Reserved Instances, which is either\n      EC2-Classic or EC2-VPC.\n      </p>\n    ",
+                            "xmlname": "platform"
+                          },
+                          "InstanceCount": {
+                            "shape_name": "Integer",
+                            "type": "integer",
+                            "documentation": "\n      <p>\n      The number of modified Reserved Instances.\n      </p>\n    ",
+                            "xmlname": "instanceCount"
+                          }
+                        },
+                        "documentation": "\n      <p>\n      The configuration settings for the modified Reserved Instances.\n      </p>\n    ",
+                        "xmlname": "targetConfiguration"
+                      }
+                    },
+                    "documentation": "\n      <p>\n      The resulting information about the modified Reserved Instances.\n      </p>\n    ",
+                    "xmlname": "item"
+                  },
+                  "documentation": "\n      <p>\n      The resulting information about the modified Reserved Instances.\n      </p>\n    ",
+                  "xmlname": "modificationResultSet"
+                },
+                "CreateDate": {
+                  "shape_name": "DateTime",
+                  "type": "timestamp",
+                  "documentation": "\n      <p>\n      The time the modification request was created.\n      </p>\n    ",
+                  "xmlname": "createDate"
+                },
+                "UpdateDate": {
+                  "shape_name": "DateTime",
+                  "type": "timestamp",
+                  "documentation": "\n      <p>\n      The time the modification request was last updated.\n      </p>\n    ",
+                  "xmlname": "updateDate"
+                },
+                "EffectiveDate": {
+                  "shape_name": "DateTime",
+                  "type": "timestamp",
+                  "documentation": "\n      <p>\n      The time the modification becomes effective.\n      </p>\n    ",
+                  "xmlname": "effectiveDate"
+                },
+                "Status": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n      <p>\n      The status of the modification request, which can be any of the following\n      values: processing, fulfilled, failed.\n      </p>\n    ",
+                  "xmlname": "status"
+                },
+                "StatusMessage": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n      <p>\n      The reason for the status.\n      </p>\n    ",
+                  "xmlname": "statusMessage"
+                },
+                "ClientToken": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n      <p>\n      The idempotency token for the modification request.\n      </p>\n    ",
+                  "xmlname": "clientToken"
+                }
+              },
+              "documentation": "\n      <p>\n      Information about a specific modification request to your Reserved Instances.\n      </p>\n    ",
+              "xmlname": "item"
+            },
+            "documentation": "\n      <p>\n      The list of Reserved Instances modification requests.\n      </p>\n    ",
+            "xmlname": "reservedInstancesModificationsSet"
+          },
+          "NextToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n      <p>\n      The string specifying the next paginated set of results to return.\n      </p>\n    ",
+            "xmlname": "nextToken"
+          }
+        },
+        "documentation": "\n      <p>\n      The result of describing Reserved Instances modifications.\n      </p>\n    "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>\n        The DescribeReservedInstancesModifications operation describes modifications\n        made to Reserved Instances in your account.\n        </p>\n    "
     },
     "DescribeReservedInstancesOfferings": {
       "name": "DescribeReservedInstancesOfferings",
@@ -15230,6 +15433,81 @@
 
       ],
       "documentation": null
+    },
+    "ModifyReservedInstances": {
+      "name": "ModifyReservedInstances",
+      "input": {
+        "shape_name": "ModifyReservedInstancesRequest",
+        "type": "structure",
+        "members": {
+          "ClientToken": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n        <p>\n        A unique, case-sensitive, token you provide to ensure idempotency\n        of your modification request.\n        </p>\n   "
+          },
+          "ReservedInstancesIds": {
+            "shape_name": "ReservedInstancesIdStringList",
+            "type": "list",
+            "members": {
+              "shape_name": "String",
+              "type": "string",
+              "documentation": null,
+              "xmlname": "ReservedInstancesId"
+            },
+            "documentation": "\n        <p>\n        The IDs of the Reserved Instances to modify.\n        </p>\n   ",
+            "required": true,
+            "flattened": true
+          },
+          "TargetConfigurations": {
+            "shape_name": "ReservedInstancesConfigurationList",
+            "type": "list",
+            "members": {
+              "shape_name": "ReservedInstancesConfiguration",
+              "type": "structure",
+              "members": {
+                "AvailabilityZone": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n      <p>\n      The Availability Zone for the modified Reserved Instances.\n      </p>\n    "
+                },
+                "Platform": {
+                  "shape_name": "String",
+                  "type": "string",
+                  "documentation": "\n      <p>\n      The network platform of the modified Reserved Instances, which is either\n      EC2-Classic or EC2-VPC.\n      </p>\n    "
+                },
+                "InstanceCount": {
+                  "shape_name": "Integer",
+                  "type": "integer",
+                  "documentation": "\n      <p>\n      The number of modified Reserved Instances.\n      </p>\n    "
+                }
+              },
+              "documentation": "\n      <p>\n      The configuration settings for the modified Reserved Instances.\n      </p>\n    ",
+              "xmlname": "ReservedInstancesConfigurationSetItemType"
+            },
+            "documentation": "\n        <p>\n        The configuration settings for the Reserved Instances to modify.\n        </p>\n   ",
+            "required": true,
+            "flattened": true
+          }
+        },
+        "documentation": "\n        <p>\n        A request to modify the Reserved Instances.\n        </p>\n   "
+      },
+      "output": {
+        "shape_name": "ModifyReservedInstancesResult",
+        "type": "structure",
+        "members": {
+          "ReservedInstancesModificationId": {
+            "shape_name": "String",
+            "type": "string",
+            "documentation": "\n        <p>\n        The unique ID for the submitted modification request.\n        </p>\n   ",
+            "xmlname": "reservedInstancesModificationId"
+          }
+        },
+        "documentation": "\n        <p>\n        The result of modifying Reserved Instances. Contains the\n        ID of the modification request.\n        </p>\n   "
+      },
+      "errors": [
+
+      ],
+      "documentation": "\n        <p>\n        The ModifyReservedInstances operation modifies the Availability Zone,\n        instance count, or network platform (EC2-Classic or EC2-VPC) of your Reserved\n        Instances.\n        </p>\n    "
     },
     "ModifySnapshotAttribute": {
       "name": "ModifySnapshotAttribute",

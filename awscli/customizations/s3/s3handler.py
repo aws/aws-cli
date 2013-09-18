@@ -38,8 +38,13 @@ class S3Handler(object):
         self.done = threading.Event()
         self.interrupt = threading.Event()
         self.print_queue = NoBlockQueue()
-        self.params = {'dryrun': False, 'quiet': False,
-                       'acl': None, 'guess_mime_type': True}
+        self.params = {'dryrun': False, 'quiet': False, 'acl': None,
+                       'guess_mime_type': True, 'sse': False,
+                       'storage_class': None, 'website_redirect': None,
+                       'content_type': None, 'cache_control': None,
+                       'content_disposition': None, 'content_encoding': None,
+                       'content_language': None, 'expires': None,
+                       'grants': None}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:

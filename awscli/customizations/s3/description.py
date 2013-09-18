@@ -79,3 +79,45 @@ def add_param_descriptions(params_dict):
     params_dict['no-guess-mime-type']['documents'] = (
         "Do not try to guess the mime type for uploaded files.  By default the "
         "mime type of a file is guessed when it is uploaded.")
+
+    params_dict['content-type']['documents'] = (
+        "Specify an explicit content type for this operation.  "
+        "This value overrides any guessed mime types.")
+
+    params_dict['cache-control']['documents'] = \
+        "Specifies caching behavior along the request/reply chain."
+
+    params_dict['content-disposition']['documents'] = \
+        "Specifies presentational information for the object."
+    
+    params_dict['content-encoding']['documents'] = (
+        "Specifies what content encodings have been "
+        "applied to the object and thus what decoding mechanisms "
+        "must be applied to obtain the media-type referenced "
+        "by the Content-Type header field.")
+    
+    params_dict['content-language']['documents'] = \
+        "The language the content is in."
+
+    params_dict['expires']['documents'] = \
+        "The date and time at which the object is no longer cacheable."
+    
+    params_dict['sse']['documents'] = (
+        "Enable Server Side Encryption of the object in S3")
+
+    params_dict['storage-class']['documents'] = (
+        "The type of storage to use for the object. "
+        "Defaults to 'STANDARD'")
+
+    params_dict['website-redirect']['documents'] = (
+        "If the bucket is configured as a website, redirects requests "
+        "for this object to another object in the same bucket or to an "
+        "external URL. Amazon S3 stores the value of this header in the "
+        "object metadata.")
+
+    params_dict['grants']['documents'] = (
+        "Grant specific permissions to individual users or groups.  "
+        "You can supply a list of grants of the form "
+        "``permission=grantee`` where permission is one of: "
+        "``read``, ``readacl``, ``writeacp``, ``full``")
+

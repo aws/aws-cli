@@ -1,6 +1,6 @@
 **To rename an IAM group**
 
-The following ``update-group`` commmand changes the name of the IAM group ``Test`` to ``Test-1``::
+The following ``update-group`` command changes the name of the IAM group ``Test`` to ``Test-1``::
 
   aws iam update-group --group-name Test --new-group-name Test-1
 

@@ -1,6 +1,6 @@
 **To create a security group**
 
-This example creates a security group named MySecurityGroup.
+This example creates a security group named ``MySecurityGroup``.
 
 Command::
 

@@ -1,7 +1,6 @@
-**To list details for a policy for an IAM user**
+**To list policy details for an IAM user**
 
-The following ``get-user-policy`` commmand lists the details of the specified policy that is attached to the IAM user
-named ``Bob``::
+The following ``get-user-policy`` command lists the details of the specified policy that is attached to the IAM user named ``Bob``::
 
   aws iam get-user-policy --user-name Bob --policy-name ExamplePolicy
 

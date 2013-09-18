@@ -1,6 +1,6 @@
 **To lists the instance profiles for the account**
 
-The following ``list-instance-profiles`` commmand lists the instance profiles that are associated with the current account::
+The following ``list-instance-profiles`` command lists the instance profiles that are associated with the current account::
 
   aws iam list-instance-profiles
 

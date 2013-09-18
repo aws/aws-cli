@@ -1,6 +1,6 @@
 **To stop an Amazon EC2 instance**
 
-This example stops a running instance with the instance ID ``i-1a2b3c4d``.
+This example stops the specified Amazon EBS-backed instance.
 
 Command::
 

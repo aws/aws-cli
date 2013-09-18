@@ -1,6 +1,6 @@
 **To start an Amazon EC2 instance**
 
-This example starts a instance with the instance ID ``i-1a2b3c4d``.
+This example starts the specified Amazon EBS-backed instance.
 
 Command::
 

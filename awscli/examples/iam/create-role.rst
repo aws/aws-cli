@@ -1,6 +1,6 @@
 **To create an IAM role**
 
-The following ``create-role`` commmand creates a role named ``Test-Role`` and attaches a trust policy to it::
+The following ``create-role`` command creates a role named ``Test-Role`` and attaches a trust policy to it::
 
   aws iam create-role --role-name Test-Role --assume-role-policy-document file://Test-Role-Trust-Policy.json
 

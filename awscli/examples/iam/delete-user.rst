@@ -1,6 +1,6 @@
 **To delete an IAM user**
 
-The following ``delete-user`` commmand removes the IAM user named ``Bob`` from the current account::
+The following ``delete-user`` command removes the IAM user named ``Bob`` from the current account::
 
   aws iam delete-user --user-name Bob
 

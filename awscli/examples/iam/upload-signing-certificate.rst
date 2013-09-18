@@ -1,15 +1,12 @@
 **To upload a signing certificate for an IAM user**
 
-The following ``upload-signing-certificate`` commmand uploads a signing certificate for the IAM user named ``Bob``::
+The following ``upload-signing-certificate`` command uploads a signing certificate for the IAM user named ``Bob``::
 
   aws iam upload-signing-certificate --user-name Bob --certificate-body file://certificate.pem
 
 Output::
 
   {
-      "ResponseMetadata": {
-          "RequestId": "b9cd3e32-4a54-11e2-8110-65075b2814da"
-      },
       "Certificate": {
           "UserName": "Bob",
           "Status": "Active",

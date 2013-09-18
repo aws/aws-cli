@@ -1,8 +1,8 @@
 **To launch an Amazon EC2 instance**
 
-This example launches a single Amazon EC2 instance of type t1.micro.
+This example launches a single Amazon EC2 instance of type ``t1.micro``.
 
-The key pair and security group, named MyKeyPair and MySecurityGroup, must exist.
+The key pair and security group, named ``MyKeyPair`` and ``MySecurityGroup``, must exist.
 
 Command::
 

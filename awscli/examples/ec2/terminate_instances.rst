@@ -1,6 +1,6 @@
 **To terminate an Amazon EC2 instance**
 
-This example terminates an Amazon EC2 instance.
+This example terminates the specified instance.
 
 Command::
 

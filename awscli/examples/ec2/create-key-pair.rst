@@ -1,6 +1,6 @@
 **To create a key pair**
 
-This example creates a key pair named MyKeyPair.
+This example creates a key pair named ``MyKeyPair``.
 
 Command::
 

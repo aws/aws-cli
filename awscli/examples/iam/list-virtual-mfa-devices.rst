@@ -1,6 +1,6 @@
 **To list virtual MFA devices**
 
-The following ``list-virtual-mfa-devices`` commmand lists the virtual MFA devices that have been configured for the current account::
+The following ``list-virtual-mfa-devices`` command lists the virtual MFA devices that have been configured for the current account::
 
   aws iam list-virtual-mfa-devices
 

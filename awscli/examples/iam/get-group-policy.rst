@@ -1,7 +1,6 @@
 **To get information about a policy attached to an IAM group**
 
-The following ``get-group-policy`` commmand gets information about the specified policy attached to the group named
-``Test-Group``::
+The following ``get-group-policy`` command gets information about the specified policy attached to the group named ``Test-Group``::
 
   aws iam get-group-policy --group-name Test-Group --policy-name S3-ReadOnly-Policy
 

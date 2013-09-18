@@ -1,6 +1,6 @@
 **To delete a signing certificate for an IAM user**
 
-The following ``delete-signing-certificate`` commmand deletes the specified signing certificate for the IAM user named ``Bob``::
+The following ``delete-signing-certificate`` command deletes the specified signing certificate for the IAM user named ``Bob``::
 
   aws iam delete-signing-certificate --user-name Bob --certificate-id TA7SMP42TDN5Z26OBPJE7EXAMPLE
 

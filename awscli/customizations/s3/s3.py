@@ -63,17 +63,31 @@ keys for help command and doc generation.
 cmd_dict = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
-                              'no-guess-mime-type']},
+                              'no-guess-mime-type',
+                              'sse', 'storage-class', 'grants',
+                              'website-redirect', 'content-type',
+                              'cache-control', 'content-disposition',
+                              'content-encoding', 'content-language',
+                              'expires']},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude', 'acl']},
+                              'include', 'exclude', 'acl',
+                              'sse', 'storage-class', 'grants',
+                              'website-redirect', 'content-type',
+                              'cache-control', 'content-disposition',
+                              'content-encoding', 'content-language',
+                              'expires']},
             'rm': {'options': {'nargs': 1},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude']},
             'sync': {'options': {'nargs': 2},
                      'params': ['dryrun', 'delete', 'exclude',
-                                'include', 'quiet', 'acl',
-                                'no-guess-mime-type']},
+                                'include', 'quiet', 'acl', 'grants',
+                                'no-guess-mime-type',
+                                'sse', 'storage-class', 'content-type',
+                                'cache-control', 'content-disposition',
+                                'content-encoding', 'content-language',
+                                'expires']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
                    'params': [], 'default': 's3://'},
             'mb': {'options': {'nargs': 1}, 'params': []},
@@ -96,6 +110,7 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'no-guess-mime-type': {'options': {'action': 'store_false',
                                                   'dest': 'guess_mime_type',
                                                   'default': True}},
+               'content-type': {'options': {'nargs': 1}},
                'recursive': {'options': {'action': 'store_true',
                                          'dest': 'dir_op'}},
                'exclude': {'options': {'action': AppendFilter, 'nargs': 1,
@@ -104,7 +119,18 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                            'dest': 'filters'}},
                'acl': {'options': {'nargs': 1,
                                    'choices': ['private', 'public-read',
-                                               'public-read-write']}}
+                                               'public-read-write']}},
+               'grants': {'options': {'nargs': '+'}},
+               'sse': {'options': {'action': 'store_true'}},
+               'storage-class': {'options': {'nargs': 1,
+                                             'choices': ['STANDARD',
+                                                         'REDUCED_REDUNDANCY']}},
+               'website-redirect': {'options': {'nargs': 1}},
+               'cache-control': {'options': {'nargs': 1}},
+               'content-disposition': {'options': {'nargs': 1}},
+               'content-encoding': {'options': {'nargs': 1}},
+               'content-language': {'options': {'nargs': 1}},
+               'expires': {'options': {'nargs': 1}},
                }
 
 add_param_descriptions(params_dict)
@@ -223,8 +249,11 @@ class S3DocumentEventHandler(CLIDocumentEventHandler):
         argument = help_command.arg_table[arg_name]
         option_str = argument._name
         if 'nargs' in argument.options:
-            for i in range(argument.options['nargs']):
-                option_str += " <value>"
+            if argument.options['nargs'] == '+':
+                option_str += " <value> [<value>...]"
+            else:
+                for i in range(argument.options['nargs']):
+                    option_str += " <value>"
         doc.writeln('[--%s]' % option_str)
 
     def doc_synopsis_end(self, help_command, **kwargs):
@@ -397,7 +426,7 @@ class S3Command(object):
             cmd = CommandArchitecture(self._session, self._name,
                                       cmd_params.parameters)
             cmd.create_instructions()
-            cmd.run()
+            return cmd.run()
 
     def create_help_command(self):
         """
@@ -581,6 +610,12 @@ class CommandArchitecture(object):
                 else:
                     file_list.append(components[i].call(files[i]))
             files = file_list
+        # TODO: Errors are not being surfaced out of here.
+        # I have put an explicit return of zero here to handle
+        # the success case because a None was being returned
+        # before.  I need to dig into this more to figure out
+        # the right way to surface the errors.
+        return 0
 
 
 class CommandParameters(object):
@@ -740,3 +775,6 @@ class CommandParameters(object):
             self.parameters['region'] = parsed_region
         else:
             self.parameters['region'] = region
+
+
+

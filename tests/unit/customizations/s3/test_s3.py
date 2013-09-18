@@ -100,7 +100,11 @@ class CreateTablesTest(unittest.TestCase):
         """
         commands_list = ['cp', 'mv', 'rm', 'sync', 'ls', 'mb', 'rb']
         params_list = ['dryrun', 'delete', 'quiet', 'recursive', 'exclude',
-                       'include', 'acl', 'force', 'no-guess-mime-type']
+                       'include', 'acl', 'force', 'no-guess-mime-type',
+                       'sse', 'storage-class', 'website-redirect',
+                       'content-type', 'cache-control', 'content-disposition',
+                       'content-language', 'content-encoding', 'expires',
+                       'grants']
         for cmd in commands_list:
             self.parameters = {}
             add_cmd_params(self.parameters, cmd)
@@ -610,3 +614,4 @@ class HelpDocTest(BaseAWSHelpOutputTest):
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -8,6 +8,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
+from botocore import xform_name
 from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
@@ -229,7 +230,8 @@ class FileInfo(TaskInfo):
         if parameters:
             self.parameters = parameters
         else:
-            self.parameters = {'acl': None}
+            self.parameters = {'acl': None,
+                               'sse': None}
 
         # Required for multipart uploads and downloads.  Use ``set_multi``
         # function to set these.
@@ -250,6 +252,50 @@ class FileInfo(TaskInfo):
         self.interrupt = interrupt
         self.chunksize = chunksize
 
+    def _permission_to_param(self, permission):
+        if permission == 'read':
+            return 'grant_read'
+        if permission == 'full':
+            return 'grant_full_control'
+        if permission == 'readacl':
+            return 'grant_read_acp'
+        if permission == 'writeacl':
+            return 'grant_write_acp'
+        raise ValueError('permission must be one of: '
+                         'read|readacl|writeacl|full')
+
+    def _handle_object_params(self, params):
+        if self.parameters['acl']:
+            params['acl'] = self.parameters['acl'][0]
+        if self.parameters['grants']:
+            for grant in self.parameters['grants']:
+                try:
+                    permission, grantee = grant.split('=', 1)
+                except ValueError:
+                    raise ValueError('grants should be of the form '
+                                     'permission=principal')
+                params[self._permission_to_param(permission)] = grantee
+        if self.parameters['sse']:
+            params['server_side_encryption'] = 'AES256'
+        if self.parameters['storage_class']:
+            params['storage_class'] = self.parameters['storage_class'][0]
+        if self.parameters['website_redirect']:
+            params['website_redirect_location'] = self.parameters['website_redirect'][0]
+        if self.parameters['guess_mime_type']:
+            self._inject_content_type(params, self.src)
+        if self.parameters['content_type']:
+            params['content_type'] = self.parameters['content_type'][0]
+        if self.parameters['cache_control']:
+            params['cache_control'] = self.parameters['cache_control'][0]
+        if self.parameters['content_disposition']:
+            params['content_disposition'] = self.parameters['content_disposition'][0]
+        if self.parameters['content_encoding']:
+            params['content_encoding'] = self.parameters['content_encoding'][0]
+        if self.parameters['content_language']:
+            params['content_language'] = self.parameters['content_language'][0]
+        if self.parameters['expires']:
+            params['expires'] = self.parameters['expires'][0]
+
     def upload(self):
         """
         Redirects the file to the multipart upload function if the file is
@@ -264,13 +310,11 @@ class FileInfo(TaskInfo):
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         if body:
             params['body'] = stream_body
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
-        if self.parameters['guess_mime_type']:
-            self._inject_content_type(params, self.src)
+        self._handle_object_params(params)
         response_data, http = operate(self.service, 'PutObject', params)
         etag = retrieve_http_etag(http)
         check_etag(etag, body)
+
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.
@@ -299,8 +343,7 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.dest)
         params = {'endpoint': self.endpoint, 'bucket': bucket,
                   'copy_source': copy_source, 'key': key}
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
+        self._handle_object_params(params)
         response_data, http = operate(self.service, 'CopyObject', params)
 
     def delete(self):
@@ -335,10 +378,7 @@ class FileInfo(TaskInfo):
     def create_multipart_upload(self):
         bucket, key = find_bucket_key(self.dest)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
-        if self.parameters['guess_mime_type']:
-            self._inject_content_type(params, self.src)
+        self._handle_object_params(params)
         response_data, http = operate(self.service, 'CreateMultipartUpload',
                                       params)
         upload_id = response_data['UploadId']
@@ -401,3 +441,4 @@ class FileInfo(TaskInfo):
         last_update_tuple = self.last_update.timetuple()
         mod_timestamp = time.mktime(last_update_tuple)
         os.utime(self.dest, (int(mod_timestamp), int(mod_timestamp)))
+

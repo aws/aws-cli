@@ -179,6 +179,22 @@ p = os.path.abspath('.')
 p = os.path.join(p, 'guzzle_sphinx_theme')
 html_theme_path = [p]
 html_theme = 'guzzle_sphinx_theme'
+# Register the theme as an extension to generate a sitemap.xml
+extensions.append("guzzle_sphinx_theme")
+
+html_theme_options = {
+    # Set the name of the project to appear in the nav menu
+    "project_nav_name": "AWS CLI",
+    # Set your GitHub user and repo to enable GitHub stars links
+    "github_user": "aws",
+    "github_repo": "aws-cli",
+    # Set to true to bind left and right key events to turn the page
+    "bind_key_events": False,
+    # Specify a base_url used to generate sitemap.xml links. If not
+    # specified, then no sitemap will be built.
+    "base_url": "http://docs.aws.amazon.com/cli/latest/",
+}
+
 
 
 # -- Options for LaTeX output --------------------------------------------------

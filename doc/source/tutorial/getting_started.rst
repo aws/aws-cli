@@ -79,7 +79,7 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<default secret key>
     region=us-west-1  # optional, to define default region for this profile
 
-    [testing]
+    [profile testing]
     aws_access_key_id=<testing access key>
     aws_secret_access_key=<testing secret key>
     region=us-west-2

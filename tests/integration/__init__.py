@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import platform
+import sys
 from subprocess import Popen, PIPE
 
 AWS_CMD = os.path.join(
@@ -58,6 +59,7 @@ def aws(command):
     process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
                     env=env)
     stdout, stderr = process.communicate()
+    encoding = getattr(sys.stdout, 'encoding', 'utf-8')
     return Result(process.returncode,
-                  stdout.decode('utf-8'),
-                  stderr.decode('utf-8'))
+                  stdout.decode(encoding),
+                  stderr.decode(encoding))

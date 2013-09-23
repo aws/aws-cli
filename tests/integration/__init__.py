@@ -59,7 +59,7 @@ def aws(command):
     process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
                     env=env)
     stdout, stderr = process.communicate()
-    encoding = getattr(sys.stdout, 'encoding', 'utf-8')
+    encoding = getattr(sys.__stdout__, 'encoding', 'utf-8')
     return Result(process.returncode,
                   stdout.decode(encoding),
                   stderr.decode(encoding))

@@ -298,7 +298,24 @@ class CompleteMultipartUploadTask(BasicTask):
             print_op = print_operation(self.filename, False,
                                        self.parameters['dryrun'])
             print_task = {'result': print_op}
+            self._upload_context.announce_completed()
         self.print_queue.put(print_task)
+
+
+class RemoveFileTask(BasicTask):
+    def __init__(self, local_filename, upload_context):
+        self._local_filename = local_filename
+        self._upload_context = upload_context
+        # This 'filename' attr has to be here because other objects
+        # introspect tasks objects.  This should eventually be removed
+        # but it's needed for now.
+        self.filename = None
+
+    def __call__(self):
+        LOGGER.debug("Waiting for upload to complete.")
+        self._upload_context.wait_for_completion()
+        LOGGER.debug("Removing local file: %s", self._local_filename)
+        os.remove(self._local_filename)
 
 
 class MultipartUploadContext(object):
@@ -333,6 +350,7 @@ class MultipartUploadContext(object):
         self._lock = threading.Lock()
         self._upload_id_condition = threading.Condition(self._lock)
         self._parts_condition = threading.Condition(self._lock)
+        self._upload_complete_condition = threading.Condition(self._lock)
         self._state = self._UNSTARTED
 
     def announce_upload_id(self, upload_id):
@@ -361,6 +379,13 @@ class MultipartUploadContext(object):
                     raise UploadCancelledError("Upload has been cancelled.")
                 self._upload_id_condition.wait(timeout=1)
             return self._upload_id
+
+    def wait_for_completion(self):
+        with self._upload_complete_condition:
+            while not self._state == self._COMPLETED:
+                if self._state == self._CANCELLED:
+                    raise UploadCancelledError("Upload has been cancelled.")
+                self._upload_complete_condition.wait(timeout=1)
 
     def cancel_upload(self, canceller=None, args=None, kwargs=None):
         """Cancel the upload.
@@ -420,5 +445,6 @@ class MultipartUploadContext(object):
         This should be called after a CompleteMultipartUpload operation.
 
         """
-        with self._lock:
+        with self._upload_complete_condition:
             self._state = self._COMPLETED
+            self._upload_complete_condition.notifyAll()

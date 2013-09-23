@@ -281,7 +281,7 @@ class TestUnicode(BaseS3CLICommand):
         self.assert_no_errors(p)
 
         # Download the file to the second example2.txt filename.
-        p = aws('s3 cp %s %s' % (s3_example1_txt, local_example2_txt))
+        p = aws('s3 cp %s %s --quiet' % (s3_example1_txt, local_example2_txt))
         self.assert_no_errors(p)
         with open(local_example2_txt, 'rb') as f:
             self.assertEqual(f.read(), b'example1 contents')
@@ -290,14 +290,14 @@ class TestUnicode(BaseS3CLICommand):
         bucket_name = self.create_bucket()
         local_example1_txt = self.files.create_file('êxample1.txt', 'example1 contents')
         local_example2_txt = self.files.create_file('êxample2.txt', 'example2 contents')
-        p = aws('s3 cp %s s3://%s --recursive' % (
+        p = aws('s3 cp %s s3://%s --recursive --quiet' % (
             self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
 
         os.remove(local_example1_txt)
         os.remove(local_example2_txt)
 
-        p = aws('s3 cp s3://%s %s --recursive' % (
+        p = aws('s3 cp s3://%s %s --recursive --quiet' % (
             bucket_name, self.files.rootdir))
         self.assert_no_errors(p)
         self.assertEqual(open(local_example1_txt).read(), 'example1 contents')

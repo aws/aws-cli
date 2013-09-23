@@ -118,7 +118,7 @@ class BaseS3CLICommand(unittest.TestCase):
         http, parsed = operation.call(
             self.endpoint, bucket=bucket_name, key=key_name)
         self.assertEqual(http.status_code, 200)
-        return parsed['Body'].read()
+        return parsed['Body'].read().decode('utf-8')
 
     def key_exists(self, bucket_name, key_name):
         operation = self.service.get_operation('HeadObject')

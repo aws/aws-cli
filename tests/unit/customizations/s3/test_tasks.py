@@ -34,25 +34,6 @@ class TestMultipartUploadContext(unittest.TestCase):
         for thread in self.threads:
             thread.join()
 
-    def test_normal_non_threaded(self):
-        # The context object is pretty straightforward.
-        # This shows the non threaded usage of this object.
-        context = MultipartUploadContext(expected_parts=3)
-        # First you can announce an upload id.
-        context.announce_upload_id('my_upload_id')
-        # Then a thread that was waiting on the id would be notified.
-        self.assertEqual(context.wait_for_upload_id(), 'my_upload_id')
-        # Then thread would chug away at the parts.
-        context.announce_finished_part(etag='etag1', part_number=1)
-        context.announce_finished_part(etag='etag2', part_number=2)
-        context.announce_finished_part(etag='etag3', part_number=3)
-        # Then a thread that was waiting for all the parts to finish
-        # would be notified.
-        self.assertEqual(context.wait_for_parts_to_finish(), [
-            {'ETag': 'etag1', 'PartNumber': 1},
-            {'ETag': 'etag2', 'PartNumber': 2},
-            {'ETag': 'etag3', 'PartNumber': 3}])
-
     def upload_part(self, part_number):
         # This simulates what a thread would do if it wanted to upload
         # a part.  First it would wait for the upload id.
@@ -77,6 +58,16 @@ class TestMultipartUploadContext(unittest.TestCase):
             return
         with self.call_lock:
             self.calls.append(('complete_upload', upload_id, parts))
+            self.context.announce_completed()
+
+    def wait_for_upload_complete(self):
+        try:
+            self.context.wait_for_completion()
+        except Exception as e:
+            self.caught_exception = e
+            return
+        with self.call_lock:
+            self.calls.append(('arbitrary_post_complete_operation',))
 
     def create_upload(self, upload_id):
         with self.call_lock:
@@ -86,6 +77,28 @@ class TestMultipartUploadContext(unittest.TestCase):
     def start_thread(self, thread):
         thread.start()
         self.threads.append(thread)
+
+    def test_normal_non_threaded(self):
+        # The context object is pretty straightforward.
+        # This shows the non threaded usage of this object.
+        context = MultipartUploadContext(expected_parts=3)
+        # First you can announce an upload id.
+        context.announce_upload_id('my_upload_id')
+        # Then a thread that was waiting on the id would be notified.
+        self.assertEqual(context.wait_for_upload_id(), 'my_upload_id')
+        # Then thread would chug away at the parts.
+        context.announce_finished_part(etag='etag1', part_number=1)
+        context.announce_finished_part(etag='etag2', part_number=2)
+        context.announce_finished_part(etag='etag3', part_number=3)
+        # Then a thread that was waiting for all the parts to finish
+        # would be notified.
+        self.assertEqual(context.wait_for_parts_to_finish(), [
+            {'ETag': 'etag1', 'PartNumber': 1},
+            {'ETag': 'etag2', 'PartNumber': 2},
+            {'ETag': 'etag3', 'PartNumber': 3}])
+        context.announce_completed()
+        # This will return right away since we've already announced completion.
+        self.assertIsNone(context.wait_for_completion())
 
     def test_basic_threaded_parts(self):
         # Now while test_normal_non_threaded showed the conceptual idea,
@@ -107,6 +120,13 @@ class TestMultipartUploadContext(unittest.TestCase):
         complete_upload_thread = threading.Thread(target=self.complete_upload)
         self.start_thread(complete_upload_thread)
 
+        # We'll also have some other arbitrary thread that's just waiting for
+        # the whole upload to be complete.  This is not the same as
+        # complete_upload_thread, as that thread is used to complete the
+        # upload.  This thread wants to know when *that* process is all done.
+        arbitrary_waiting_thread = threading.Thread(target=self.wait_for_upload_complete)
+        self.start_thread(arbitrary_waiting_thread)
+
         # Then finally the CreateMultipartUpload completes and we
         # announce the upload id.
         self.create_upload('my_upload_id')
@@ -114,12 +134,16 @@ class TestMultipartUploadContext(unittest.TestCase):
         # multipart upload thread.
         self.join_threads()
 
+        self.assertIsNone(self.caught_exception)
         # We can verify that the invariants still hold.
+        self.assertEqual(len(self.calls), 4)
         # First there should be three calls, create, upload, complete.
-        self.assertEqual(len(self.calls), 3)
         self.assertEqual(self.calls[0][0], 'create_multipart_upload')
         self.assertEqual(self.calls[1][0], 'upload_part')
         self.assertEqual(self.calls[2][0], 'complete_upload')
+        # Then anything that was waiting for the operation to complete should
+        # be called afterwards.
+        self.assertEqual(self.calls[3][0], 'arbitrary_post_complete_operation')
 
         # Verify the correct args were used.
         self.assertEqual(self.calls[0][1], 'my_upload_id')
@@ -151,6 +175,7 @@ class TestMultipartUploadContext(unittest.TestCase):
                 threading.Thread(target=self.complete_upload),
                 threading.Thread(target=self.create_upload,
                                 args=('my_upload_id',)),
+                threading.Thread(target=self.wait_for_upload_complete),
             ]
             for i in range(1, expected_parts + 1):
                 all_threads.append(
@@ -161,9 +186,11 @@ class TestMultipartUploadContext(unittest.TestCase):
                 self.start_thread(thread)
             self.join_threads()
             self.assertEqual(self.calls[0][0], 'create_multipart_upload')
-            self.assertEqual(self.calls[-1][0], 'complete_upload')
+            self.assertEqual(self.calls[-1][0],
+                             'arbitrary_post_complete_operation')
+            self.assertEqual(self.calls[-2][0], 'complete_upload')
             parts = set()
-            for call in self.calls[1:-1]:
+            for call in self.calls[1:-2]:
                 self.assertEqual(call[0], 'upload_part')
                 self.assertEqual(call[2], 'my_upload_id')
                 parts.add(call[1])
@@ -186,3 +213,17 @@ class TestMultipartUploadContext(unittest.TestCase):
             self.context.wait_for_upload_id()
         with self.assertRaises(UploadCancelledError):
             self.context.wait_for_parts_to_finish()
+
+    def test_cancel_threads_waiting_for_completion(self):
+        # So we have a thread waiting for the entire upload to complete.
+        arbitrary_waiting_thread = threading.Thread(target=self.wait_for_upload_complete)
+        self.start_thread(arbitrary_waiting_thread)
+
+        # And as it's waiting, something happens and we cancel the upload.
+        self.context.cancel_upload()
+
+        # The thread should exit.
+        self.join_threads()
+
+        # And we should have seen an exception being raised.
+        self.assertIsInstance(self.caught_exception, UploadCancelledError)

@@ -225,15 +225,15 @@ class TestCp(BaseS3CLICommand):
 
     def test_guess_mime_type(self):
         bucket_name = self.create_bucket()
-        bar_png = self.files.create_file('bar.png', 'fake png image')
-        p = aws('s3 cp %s s3://%s/bar.png' % (bar_png, bucket_name))
+        bar_png = self.files.create_file('bar.jpeg', 'fake png image')
+        p = aws('s3 cp %s s3://%s/bar.jpeg' % (bar_png, bucket_name))
         self.assert_no_errors(p)
 
         # We should have correctly guessed the content type based on the
         # filename extension.
         self.assertEqual(
-            self.content_type_for_key(bucket_name, key_name='bar.png'),
-            'image/png')
+            self.content_type_for_key(bucket_name, key_name='bar.jpeg'),
+            'image/jpeg')
 
 
 class TestSync(BaseS3CLICommand):

@@ -113,12 +113,8 @@ def create_bucket(session):
     region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     rand1 = random.randrange(5000)
-    rand2 = random.randrange(5000)
-    bucket_name = str(rand1) + 'mybucket' + str(rand2)
+    bucket_name = 'awscli-s3test-' + str(rand1)
     params = {'endpoint': endpoint, 'bucket': bucket_name}
-    if region != 'us-east-1':
-        bucket_config = {'LocationConstraint': region}
-        params['create_bucket_configuration'] = bucket_config
     operation = service.get_operation('CreateBucket')
     http_response, response_data = operation.call(**params)
     return bucket_name

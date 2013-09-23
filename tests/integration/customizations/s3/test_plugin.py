@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -16,330 +15,342 @@
 # The following tests are performed to ensure that the commands work.
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
-
 import os
 import random
 from tests import unittest
+import tempfile
+import shutil
+
+import botocore.session
 
 from tests.integration import aws
+from tests.unit.customizations.s3 import create_bucket as _create_bucket
 
 
-class TestLs(unittest.TestCase):
-    """
-    This tests using the ``ls`` command.
-    """
-    def test_ls_bucket(self):
+class FileCreator(object):
+    def __init__(self):
+        self.rootdir = tempfile.mkdtemp()
+
+    def remove_all(self):
+        shutil.rmtree(self.rootdir)
+
+    def create_file(self, filename, contents):
+        """Creates a file in a tmpdir
+
+        ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
+        It will be translated into a full path in a tmp dir.
+
+        Returns the full path to the file.
         """
-        Test the ability to list buckets.
+        full_path = os.path.join(self.rootdir, filename)
+        with open(full_path, 'w') as f:
+            f.write(contents)
+        return full_path
+
+    def full_path(self, filename):
+        """Translate relative path to full path in temp dir.
+
+        f.full_path('foo/bar.txt') -> /tmp/asdfasd/foo/bar.txt
         """
-        p = aws('s3 ls')
-        self.assertEqual(p.rc, 0)
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
-
-    def test_fail_format(self):
-        """
-        Test to ensure parameter checking works.
-        """
-        cmds = ['s3 cp', 's3 ls test', 's3 ls s3:// --dryrun']
-        for cmd in cmds:
-            p = aws(cmd)
-            self.assertNotEqual(p.rc, 0)
+        return os.path.join(self.rootdir, filename)
 
 
-class TestMbRb(unittest.TestCase):
-    """
-    Tests primarily using ``rb`` and ``mb`` command.
-    """
-    def setUp(self):
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket_name = str(rand1) + 'mybucket' + str(rand2)
+class BaseS3CLICommand(unittest.TestCase):
+    """Base class for aws s3 command.
 
-    def test_mb_rb(self):
-        """
-        Tests the ability to make and remove buckets.
-        """
-        p = aws('s3 mb s3://%s' % self.bucket_name)
-        self.assertEqual(p.rc, 0)
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
+    This contains convenience functions to make writing these tests easier
+    and more streamlined.
 
-        p = aws('s3 ls')
-        self.assertIn(self.bucket_name, p.stdout)
-
-        p = aws('s3 rb s3://%s' % self.bucket_name)
-        self.assertEqual(p.rc, 0)
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
-
-        p = aws('s3 ls')
-        self.assertNotIn(self.bucket_name, p.stdout)
-
-    def test_fail_mb_rb(self):
-        """
-        Makes sure that mb and rb fail properly.
-        Note: mybucket is not available to create and therefore
-        you cannot delete it as well.
-        """
-        bucket_name = "mybucket"
-        p = aws('s3 mb s3://%s' % bucket_name)
-        self.assertIn("BucketAlreadyExists", p.stdout)
-
-        bucket_name = "mybucket"
-        p = aws('s3 rb s3://%s' % bucket_name)
-        self.assertIn("AccessDenied", p.stdout)
-
-
-class TestDryrun(unittest.TestCase):
-    """
-    This ensures that dryrun works.
     """
     def setUp(self):
-        self.filename1 = 'testTest1.txt'
-        path = os.path.abspath('.') + os.sep + self.filename1
-        with open(path, 'wb') as file1:
-            string1 = b"This is a test."
-            file1.write(string1)
+        self.files = FileCreator()
+        self.session = botocore.session.get_session()
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.extra_setup()
 
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket_name = str(rand1) + 'mybucket' + str(rand2) + '/'
+    def extra_setup(self):
+        # Subclasses can use this to define extra setup steps.
+        pass
 
     def tearDown(self):
-        p = aws('s3 rb s3://%s' % self.bucket_name)
-        if os.path.exists(self.filename1):
-            os.remove(self.filename1)
+        self.files.remove_all()
+        self.extra_teardown()
 
-    def test_dryrun(self):
-        # Make a bucket.
-        p = aws('s3 mb s3://%s' % self.bucket_name)
+    def extra_teardown(self):
+        # Subclasses can use this to define extra teardown steps.
+        pass
 
-        # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s --dryrun' % (self.filename1,
-                                               self.bucket_name))
+    def create_bucket(self):
+        bucket_name = _create_bucket(self.session)
+        self.addCleanup(self.delete_bucket, bucket_name)
+        return bucket_name
+
+    def put_object(self, bucket_name, key_name, contents):
+        operation = self.service.get_operation('PutObject')
+        http = operation.call(self.endpoint, bucket=bucket_name,
+                              key=key_name, body=contents)[0]
+        self.assertEqual(http.status_code, 200)
+        self.addCleanup(self.delete_key, bucket_name, key_name)
+
+    def delete_bucket(self, bucket_name):
+        self.remove_all_objects(bucket_name)
+        operation = self.service.get_operation('DeleteBucket')
+        response = operation.call(self.endpoint, bucket=bucket_name)[0]
+        self.assertEqual(response.status_code, 204, response.content)
+
+    def remove_all_objects(self, bucket_name):
+        operation = self.service.get_operation('ListObjects')
+        pages = operation.paginate(self.endpoint, bucket=bucket_name)
+        parsed = pages.build_full_result()
+        key_names = [obj['Key'] for obj in parsed['Contents']]
+        for key_name in key_names:
+            self.delete_key(bucket_name, key_name)
+
+    def delete_key(self, bucket_name, key_name):
+        operation = self.service.get_operation('DeleteObject')
+        response = operation.call(self.endpoint, bucket=bucket_name,
+                                  key=key_name)[0]
+        self.assertEqual(response.status_code, 204)
+
+    def get_key_contents(self, bucket_name, key_name):
+        operation = self.service.get_operation('GetObject')
+        http, parsed = operation.call(
+            self.endpoint, bucket=bucket_name, key=key_name)
+        self.assertEqual(http.status_code, 200)
+        return parsed['Body'].read().decode('utf-8')
+
+    def key_exists(self, bucket_name, key_name):
+        operation = self.service.get_operation('HeadObject')
+        http, parsed = operation.call(
+            self.endpoint, bucket=bucket_name, key=key_name)
+        return http.status_code == 200
+
+    def list_buckets(self):
+        operation = self.service.get_operation('ListBuckets')
+        http, parsed = operation.call(self.endpoint)
+        self.assertEqual(http.status_code, 200)
+        return parsed['Buckets']
+
+    def content_type_for_key(self, bucket_name, key_name):
+        operation = self.service.get_operation('HeadObject')
+        http, parsed = operation.call(
+            self.endpoint, bucket=bucket_name, key=key_name)
+        self.assertEqual(http.status_code, 200)
+        return parsed['ContentType']
+
+    def assert_no_errors(self, p):
         self.assertEqual(p.rc, 0)
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
         self.assertNotIn("client error", p.stdout)
         self.assertNotIn("server error", p.stdout)
 
-        # Make sure the file is not in the bucket.
-        p = aws('s3 ls s3://%s' % self.bucket_name)
-        self.assertNotIn(self.filename1, p.stdout)
+
+class TestMoveCommand(BaseS3CLICommand):
+
+    def test_mv_local_to_s3(self):
+        bucket_name = self.create_bucket()
+        full_path = self.files.create_file('foo.txt', 'this is foo.txt')
+        aws('s3 mv %s s3://%s/foo.txt' % (full_path,
+                                          bucket_name))
+        # When we move an object, the local file is gone:
+        self.assertTrue(not os.path.exists(full_path))
+        # And now resides in s3.
+        contents = self.get_key_contents(bucket_name, 'foo.txt')
+        self.assertEqual(contents, 'this is foo.txt')
+
+    def test_mv_s3_to_local(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', 'this is foo.txt')
+        full_path = self.files.full_path('foo.txt')
+        aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, full_path))
+        self.assertTrue(os.path.exists(full_path))
+        with open(full_path, 'r') as f:
+            self.assertEqual(f.read(), 'this is foo.txt')
+
+    def test_mv_s3_to_s3(self):
+        from_bucket = self.create_bucket()
+        to_bucket = self.create_bucket()
+        self.put_object(from_bucket, 'foo.txt', 'this is foo.txt')
+
+        aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        contents = self.get_key_contents(to_bucket, 'foo.txt')
+        self.assertEqual(contents, 'this is foo.txt')
+        # And verify that the object no longer exists in the from_bucket.
+        self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
+
+    def test_mv_with_large_file(self):
+        bucket_name = self.create_bucket()
+        # 40MB will force a multipart upload.
+        file_contents = 'abcd' * (1024 * 1024 * 10)
+        foo_txt = self.files.create_file('foo.txt', file_contents)
+        aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
+        # When we move an object, the local file is gone:
+        self.assertTrue(not os.path.exists(foo_txt))
+        # And now resides in s3.
+        contents = self.get_key_contents(bucket_name, 'foo.txt')
+        self.assertEqual(len(contents), len(file_contents))
 
 
-class TestCpMv(unittest.TestCase):
-    def setUp(self):
-        self.filename1 = 'testTest1.txt'
-        self.filename2 = 'testTest2.txt'
-        path = os.path.abspath('.') + os.sep + self.filename1
-        with open(path, 'wb') as file1:
-            string1 = b"This is a test."
-            file1.write(string1)
+class TestCp(BaseS3CLICommand):
 
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket_name = str(rand1) + 'mybucket' + str(rand2) + '/'
-
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket_name2 = str(rand1) + 'mybucket' + str(rand2) + '/'
-
-    def tearDown(self):
-        if os.path.exists(self.filename1):
-            os.remove(self.filename1)
-        aws('s3 rb --force s3://%s' % self.bucket_name)
-        aws('s3 rb --force s3://%s' % self.bucket_name2)
-        if os.path.exists(self.filename2):
-            os.remove(self.filename2)
-
-    def test_cp_mv_cp(self):
+    def test_cp_to_and_from_s3(self):
         # This tests the ability to put a single file in s3
         # move it to a different bucket.
         # and download the file locally
-
-        # Make a bucket.
-        p = aws('s3 mb s3://%s' % self.bucket_name)
+        bucket_name = self.create_bucket()
 
         # copy file into bucket.
-        p = aws('s3 cp %s s3://%s' % (self.filename1, self.bucket_name))
-        self.assertEqual(p.rc, 0)
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
+        foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
+        p = aws('s3 cp %s s3://%s/foo.txt' % (foo_txt, bucket_name))
+        self.assert_no_errors(p)
 
         # Make sure object is in bucket.
-        p = aws('s3 ls s3://%s' % self.bucket_name)
-        self.assertIn(self.filename1, p.stdout)
+        self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
+        self.assertEqual(
+            self.get_key_contents(bucket_name, key_name='foo.txt'),
+            'this is foo.txt')
 
-        # Verify the content type was guessed.  We're using
-        # the s3api command for this.
-        p = aws('s3api head-object --bucket %s --key %s' % (
-            self.bucket_name.rstrip('/'), self.filename1))
-        self.assertEqual(p.json['ContentType'], 'text/plain')
-
-        # Make another bucket.
-        p = aws('s3 mb s3://%s' % self.bucket_name2)
-
-        # Move the file from the original bucket to the new bucket.
-        p = aws('s3 mv s3://%s s3://%s' % (self.bucket_name + self.filename1,
-                                           self.bucket_name2))
-
-        # Ensure it is no longer in the original bucket.
-        p = aws('s3 ls s3://%s' % self.bucket_name)
-        self.assertNotIn(self.filename1, p.stdout)
-
-        # Ensure it is in the new bucket.
-        p = aws('s3 ls s3://%s' % self.bucket_name2)
-        self.assertIn(self.filename1, p.stdout)
+        self.assertEqual(
+            self.content_type_for_key(bucket_name, key_name='foo.txt'),
+            'text/plain')
 
         # Make a new name for the file and copy it locally.
-        p = aws('s3 cp s3://%s %s' % (self.bucket_name2 + self.filename1,
-                                      self.filename2))
+        full_path = self.files.full_path('bar.txt')
+        p = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, full_path))
 
-        with open(self.filename2, 'rb') as file2:
-            data = file2.read()
+        with open(full_path, 'r') as f:
+            self.assertEqual(f.read(), 'this is foo.txt')
 
-        # Ensure the contents are the same.
-        self.assertEqual(data, b'This is a test.')
+    def test_guess_mime_type(self):
+        bucket_name = self.create_bucket()
+        bar_png = self.files.create_file('bar.png', 'fake png image')
+        p = aws('s3 cp %s s3://%s/bar.png' % (bar_png, bucket_name))
+        self.assert_no_errors(p)
+
+        # We should have correctly guessed the content type based on the
+        # filename extension.
+        self.assertEqual(
+            self.content_type_for_key(bucket_name, key_name='bar.png'),
+            'image/png')
 
 
-class TestSync(unittest.TestCase):
-    def setUp(self):
-        filename1 = 'testTest1.txt'
-        filename2 = 'testTest2.txt'
-        self.path1 = os.path.abspath('.') + os.sep + 'some_dir' \
-            + os.sep + filename1
-        self.path2 = os.path.abspath('.') + os.sep + 'some_dir' \
-            + os.sep + filename2
-        if not os.path.exists('some_dir'):
-            os.mkdir('some_dir')
-        with open(self.path1, 'wb') as file1:
-            string1 = b"This is a test."
-            file1.write(string1)
-        with open(self.path2, 'wb') as file2:
-            string2 = b"Another Test."
-            file2.write(string2)
-
-    def tearDown(self):
-        if os.path.exists(self.path1):
-            os.remove(self.path1)
-        if os.path.exists(self.path2):
-            os.remove(self.path2)
-        if os.path.exists('some_dir'):
-            os.rmdir('some_dir')
-
-    def test_sync(self):
-        """
-        Test the ability to preform a ``sync``.
-        """
-        filename1 = 'testTest1.txt'
-        filename2 = 'testTest2.txt'
-
-        # Make a bucket.
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        bucket_name = str(rand1) + 'mybucket' + str(rand2) + '/'
-        p = aws('s3 mb s3://%s' % bucket_name)
+class TestSync(BaseS3CLICommand):
+    def test_sync_to_from_s3(self):
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+        bar_txt = self.files.create_file('bar.txt', 'bar contents')
 
         # Sync the directory and the bucket.
-        p = aws('s3 sync %s s3://%s' % ('some_dir', bucket_name))
-        self.assertEqual(p.rc, 0)
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
+        p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
 
         # Ensure both files are in the bucket.
-        p = aws('s3 ls s3://%s' % bucket_name)
-        self.assertIn(filename1, p.stdout)
-        self.assertIn(filename2, p.stdout)
+        self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
+        self.assertTrue(self.key_exists(bucket_name, 'bar.txt'))
 
-        # Test force remove bucket which is a recursive delete.
-        p = aws('s3 rb --force s3://%s' % bucket_name)
-        self.assertEqual(p.rc, 0)
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
-
-        # Make sure the recursive delete was successful.
-        p = aws('s3 ls s3://%s' % bucket_name)
-        self.assertNotIn(filename1, p.stdout)
-        self.assertNotIn(filename2, p.stdout)
-
-        # Ensure the bucket was deleted as well.
-        p = aws('s3 ls')
-        self.assertNotIn(bucket_name, p.stdout)
+        # Sync back down.  First remote the local files.
+        os.remove(foo_txt)
+        os.remove(bar_txt)
+        p = aws('s3 sync s3://%s %s' % (bucket_name, self.files.rootdir))
+        # The files should be back now.
+        self.assertTrue(os.path.isfile(foo_txt))
+        self.assertTrue(os.path.isfile(bar_txt))
+        with open(foo_txt, 'r') as f:
+            self.assertEqual(f.read(), 'foo contents')
+        with open(bar_txt, 'r') as f:
+            self.assertEqual(f.read(), 'bar contents')
 
 
-class UnicodeTest(unittest.TestCase):
+class TestUnicode(BaseS3CLICommand):
     """
     The purpose of these tests are to ensure that the commands can handle
     unicode characters in both keyname and from those generated for both
     uploading and downloading files.
     """
-    def setUp(self):
-        self.filename1 = 'êxample.txt'
-        self.filename2 = 'êxample2.txt'
-        self.path1 = os.path.abspath('.') + os.sep + 'some_dir' \
-            + os.sep + self.filename1
-        self.path2 = os.path.abspath('.') + os.sep + 'some_dir' \
-            + os.sep+self.filename2
-        if not os.path.exists('some_dir'):
-            os.mkdir('some_dir')
-        with open(self.path1, 'wb') as file1:
-            string1 = b"This is a test."
-            file1.write(string1)
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket_name = str(rand1) + 'mybucket' + str(rand2) + '/'
-        p = aws('s3 mb s3://%s' % self.bucket_name)
-
-    def tearDown(self):
-        aws('s3 rm --recursive s3://%s --quiet' % self.bucket_name)
-        aws('s3 rb s3://%s' % self.bucket_name)
-        if os.path.exists(self.path1):
-            os.remove(self.path1)
-        if os.path.exists(self.path2):
-            os.remove(self.path2)
-        if os.path.exists('some_dir'):
-            os.rmdir('some_dir')
 
     def test_cp(self):
-        file_path1 = 'some_dir' + os.sep + self.filename1
-        file_path2 = 'some_dir' + os.sep + self.filename2
-        p = aws('s3 cp %s s3://%s --quiet' % (file_path1, self.bucket_name))
-        self.assertEqual(p.rc, 0)
-        s3_path = self.bucket_name + self.filename1
-        p = aws('s3 cp s3://%s %s --quiet' % (s3_path, file_path2))
-        self.assertEqual(p.rc, 0)
-        with open(self.path2, 'rb') as file2:
-            data = file2.read()
+        bucket_name = self.create_bucket()
+        local_example1_txt = self.files.create_file('êxample.txt', 'example1 contents')
+        s3_example1_txt = 's3://%s/%s' % (bucket_name,
+                                          os.path.basename(local_example1_txt))
+        local_example2_txt = self.files.full_path('êxample2.txt')
 
-        # Ensure the contents are the same.
-        self.assertEqual(data, b'This is a test.')
+        p = aws('s3 cp %s %s' % (local_example1_txt, s3_example1_txt))
+        self.assert_no_errors(p)
 
-    def test_recur_cp(self):
-        p = aws('s3 cp %s s3://%s --recursive --quiet' % ('some_dir',
-                                                          self.bucket_name))
-        self.assertEqual(p.rc, 0)
-        p = aws('s3 cp s3://%s %s --recursive --quiet' % (self.bucket_name,
-                                                          'some_dir'))
-        self.assertEqual(p.rc, 0)
-        with open(self.path1, 'rb') as file2:
-            data = file2.read()
+        # Download the file to the second example2.txt filename.
+        p = aws('s3 cp %s %s' % (s3_example1_txt, local_example2_txt))
+        self.assert_no_errors(p)
+        with open(local_example2_txt, 'rb') as f:
+            self.assertEqual(f.read(), b'example1 contents')
 
-        # Ensure the contents are the same.
-        self.assertEqual(data, b'This is a test.')
+    def test_recursive_cp(self):
+        bucket_name = self.create_bucket()
+        local_example1_txt = self.files.create_file('êxample1.txt', 'example1 contents')
+        local_example2_txt = self.files.create_file('êxample2.txt', 'example2 contents')
+        p = aws('s3 cp %s s3://%s --recursive' % (
+            self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+
+        os.remove(local_example1_txt)
+        os.remove(local_example2_txt)
+
+        p = aws('s3 cp s3://%s %s --recursive' % (
+            bucket_name, self.files.rootdir))
+        self.assert_no_errors(p)
+        self.assertEqual(open(local_example1_txt).read(), 'example1 contents')
+        self.assertEqual(open(local_example2_txt).read(), 'example2 contents')
+
+
+class TestLs(BaseS3CLICommand):
+    """
+    This tests using the ``ls`` command.
+    """
+    def test_ls_bucket(self):
+        p = aws('s3 ls')
+        self.assert_no_errors(p)
+
+
+class TestMbRb(BaseS3CLICommand):
+    """
+    Tests primarily using ``rb`` and ``mb`` command.
+    """
+    def extra_setup(self):
+        self.bucket_name = 'awscli-s3integ-' + str(random.randint(1, 1000))
+
+    def test_mb_rb(self):
+        p = aws('s3 mb s3://%s' % self.bucket_name)
+        self.assert_no_errors(p)
+
+        response = self.list_buckets()
+        self.assertIn(self.bucket_name, [b['Name'] for b in response])
+
+        p = aws('s3 rb s3://%s' % self.bucket_name)
+        self.assert_no_errors(p)
+
+    def test_fail_mb_rb(self):
+        # Choose a bucket name that already exists.
+        p = aws('s3 mb s3://mybucket')
+        # TODO: assert error code test.
+        self.assertIn("BucketAlreadyExists", p.stdout)
+
+
+class TestDryrun(BaseS3CLICommand):
+    """
+    This ensures that dryrun works.
+    """
+    def test_dryrun(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s --dryrun' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        self.assert_no_errors(p)
+        self.assertFalse(self.key_exists(bucket_name, 'foo.txt'))
 
 
 if __name__ == "__main__":

@@ -86,7 +86,6 @@ class S3Handler(object):
             self.print_queue.put({'result': "Cleaning up. Please wait..."})
         self._shutdown()
 
-
     def _shutdown(self):
         # self.done will tell threads to shutdown.
         self.done.set()

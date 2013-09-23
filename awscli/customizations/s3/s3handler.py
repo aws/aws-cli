@@ -129,12 +129,9 @@ class S3Handler(object):
         for filename in files:
             filename.set_session(self.session, self.params['region'])
             num_uploads = 1
-            is_multipart_task = False
+            is_multipart_task = self._is_multipart_task(filename)
             too_large = False
             if hasattr(filename, 'size'):
-                is_multipart_task = (
-                    filename.size > self.multi_threshold and
-                    filename.operation == 'upload')
                 too_large = filename.size > MAX_UPLOAD_SIZE
             if too_large and filename.operation == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \
@@ -152,11 +149,29 @@ class S3Handler(object):
             total_parts += num_uploads
         return total_files, total_parts
 
+    def _is_multipart_task(self, filename):
+        # First we need to determine if it's an operation that even
+        # qualifies for multipart upload.
+        if hasattr(filename, 'size'):
+            is_multipart_operation = (
+                filename.operation == 'upload' or
+                filename.operation == 'move' and (
+                    filename.src_type == 'local' and
+                    filename.dest_type == 's3'))
+            above_multipart_threshold = filename.size > self.multi_threshold
+            return is_multipart_operation and above_multipart_threshold
+        else:
+            return False
+
     def _enqueue_multipart_tasks(self, filename):
         num_uploads = 1
         chunksize = self.chunksize
         if filename.operation == 'upload':
             num_uploads = self._enqueue_multipart_upload_tasks(filename)
+        elif filename.operation == 'move':
+            # Already checked that this is a local -> s3 move.
+            num_uploads = self._enqueue_multipart_upload_tasks(
+                filename, remove_local_file=True)
         elif filename.operation == 'download':
             num_uploads = int(filename.size / chunksize)
             filename.set_multi(executer=self.executer,
@@ -165,7 +180,7 @@ class S3Handler(object):
                                 chunksize=chunksize)
         return num_uploads
 
-    def _enqueue_multipart_upload_tasks(self, filename):
+    def _enqueue_multipart_upload_tasks(self, filename, remove_local_file=False):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.
@@ -192,4 +207,8 @@ class S3Handler(object):
             print_queue=self.print_queue, upload_context=upload_context)
         self.executer.submit(complete_multipart_upload_task)
         self._multipart_uploads.append((upload_context, filename))
+        if remove_local_file:
+            remove_task = tasks.RemoveFileTask(local_filename=filename.src,
+                                               upload_context=upload_context)
+            self.executer.submit(remove_task)
         return num_uploads

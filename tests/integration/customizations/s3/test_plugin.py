@@ -140,7 +140,9 @@ class BaseS3CLICommand(unittest.TestCase):
         return parsed['ContentType']
 
     def assert_no_errors(self, p):
-        self.assertEqual(p.rc, 0)
+        self.assertEqual(
+            p.rc, 0,
+            "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr))
         self.assertNotIn("Error:", p.stdout)
         self.assertNotIn("failed:", p.stdout)
         self.assertNotIn("client error", p.stdout)
@@ -164,10 +166,13 @@ class TestMoveCommand(BaseS3CLICommand):
         bucket_name = self.create_bucket()
         self.put_object(bucket_name, 'foo.txt', 'this is foo.txt')
         full_path = self.files.full_path('foo.txt')
+        self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
         aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, full_path))
         self.assertTrue(os.path.exists(full_path))
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
+        # The s3 file should not be there anymore.
+        self.assertTrue(not self.key_exists(bucket_name, key_name='foo.txt'))
 
     def test_mv_s3_to_s3(self):
         from_bucket = self.create_bucket()
@@ -185,7 +190,8 @@ class TestMoveCommand(BaseS3CLICommand):
         # 40MB will force a multipart upload.
         file_contents = 'abcd' * (1024 * 1024 * 10)
         foo_txt = self.files.create_file('foo.txt', file_contents)
-        aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
+        p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
+        self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(foo_txt))
         # And now resides in s3.

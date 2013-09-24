@@ -8,7 +8,6 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
-from botocore import xform_name
 from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
@@ -198,8 +197,8 @@ class FileInfo(TaskInfo):
     operations such as ``upload``, ``download``, ``copy``, ``delete``,
     ``move``, and ``multi_download``.  Similiarly to
     ``TaskInfo`` objects attributes like ``session`` need to be set in order
-    to perform operations. Multipart operations need to run ``set_multi`` in
-    order to be able to run.
+    to perform operations.
+
     :param dest: the destination path
     :type dest: string
     :param compare_key: the name of the file relative to the specified
@@ -232,25 +231,6 @@ class FileInfo(TaskInfo):
         else:
             self.parameters = {'acl': None,
                                'sse': None}
-
-        # Required for multipart uploads and downloads.  Use ``set_multi``
-        # function to set these.
-        self.executer = None
-        self.print_queue = None
-        self.is_multi = False
-        self.interrupt = None
-        self.chunksize = None
-
-    def set_multi(self, executer, print_queue, interrupt, chunksize):
-        """
-        This sets all of the necessary attributes to perform a multipart
-        operation.
-        """
-        self.executer = executer
-        self.print_queue = print_queue
-        self.is_multi = True
-        self.interrupt = interrupt
-        self.chunksize = chunksize
 
     def _permission_to_param(self, permission):
         if permission == 'read':
@@ -327,13 +307,10 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart download function if the file is
         large.  If it is small enough, it gets the file as an object from s3.
         """
-        if not self.is_multi:
-            bucket, key = find_bucket_key(self.src)
-            params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-            response_data, http = operate(self.service, 'GetObject', params)
-            save_file(self.dest, response_data, self.last_update)
-        else:
-            self.multi_download()
+        bucket, key = find_bucket_key(self.src)
+        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+        response_data, http = operate(self.service, 'GetObject', params)
+        save_file(self.dest, response_data, self.last_update)
 
     def copy(self):
         """

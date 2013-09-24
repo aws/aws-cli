@@ -497,26 +497,6 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
 
-    def test_multi_download_exceptions(self):
-        """
-        Ensure multipart downloads can handle connection errors properly
-        and correctly download the file.
-        """
-        tasks = []
-        time = datetime.datetime.now()
-        for i in range(len(self.s3_files)):
-            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
-                                  dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation='download',
-                                  size=15))
-        self.s3_handler_multi_except.call(tasks)
-        for filename in self.loc_files:
-            self.assertTrue(os.path.exists(filename))
-        with open(self.loc_files[0], 'rb') as filename:
-            self.assertEqual(filename.read(), b'This is a test.')
-        with open(self.loc_files[1], 'rb') as filename:
-            self.assertEqual(filename.read(), b'This is another test.')
-
 
 class S3HandlerTestBucket(S3HandlerBaseTest):
     """

@@ -2,19 +2,24 @@ import logging
 import math
 import os
 import requests
-from six import StringIO
-from six.moves import queue as Queue
 import sys
+import time
 import threading
 
-from awscli.customizations.s3.constants import QUEUE_TIMEOUT_GET
+from six import StringIO
+
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, retrieve_http_etag
+
 
 LOGGER = logging.getLogger(__name__)
 
 
 class UploadCancelledError(Exception):
+    pass
+
+
+class DownloadCancelledError(Exception):
     pass
 
 
@@ -166,6 +171,44 @@ class UploadPartTask(object):
                      self._part_number, self._filename.src)
 
 
+class CreateLocalFileTask(object):
+    def __init__(self, context, filename):
+        self._context = context
+        self._filename = filename
+
+    def __call__(self):
+        dirname = os.path.dirname(self._filename.dest)
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+        # Always create the file.  Even if it exists, we need to
+        # wipe out the existing contents.
+        with open(self._filename.dest, 'wb'):
+            pass
+        self._context.announce_file_created()
+        sys.stdout.flush()
+
+
+class CompleteDownloadTask(object):
+    def __init__(self, context, filename, print_queue, params):
+        self._context = context
+        self._filename = filename
+        self._print_queue = print_queue
+        self._parameters = params
+
+    def __call__(self):
+        # When the file is downloading, we have a few things we need to do:
+        # 1) Fix up the last modified time to match s3.
+        # 2) Tell the print_queue we're done.
+        self._context.wait_for_completion()
+        last_update_tuple = self._filename.last_update.timetuple()
+        mod_timestamp = time.mktime(last_update_tuple)
+        os.utime(self._filename.dest, (int(mod_timestamp), int(mod_timestamp)))
+        print_op = print_operation(self._filename, False,
+                                   self._parameters['dryrun'])
+        print_task = {'result': print_op}
+        self._print_queue.put(print_task)
+
+
 class DownloadPartTask(object):
     """
     This task downloads and writes a part to a file.  This task pulls
@@ -174,67 +217,69 @@ class DownloadPartTask(object):
     in order to keep track and complete the multipart download initiated by
     the ``FileInfo`` object.
     """
-    def __init__(self, session, executer, part_queue, dest_queue,
-                 f, region, print_queue, write_lock, part_counter,
-                 counter_lock):
-        self.session = session
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint(region)
-        self.executer = executer
-        self.part_queue = part_queue
-        self.dest_queue = dest_queue
-        self.f = f
-        self.print_queue = print_queue
-        self.write_lock = write_lock
-        self.part_counter = part_counter
-        self.counter_lock = counter_lock
+
+    # Amount to read from response body at a time.
+    ITERATE_CHUNK_SIZE = 1024 * 1024
+
+    def __init__(self, part_number, chunk_size, print_queue, service,
+                 filename, context):
+        self._part_number = part_number
+        self._chunk_size = chunk_size
+        self._print_queue = print_queue
+        self._filename = filename
+        self._service = filename.service
+        self._context = context
 
     def __call__(self):
+        total_file_size = self._filename.size
+        start_range = self._part_number * self._chunk_size
+        if self._part_number == int(total_file_size / self._chunk_size) - 1:
+            end_range = ''
+        else:
+            end_range = start_range + self._chunk_size - 1
+        range_param = 'bytes=%s-%s' % (start_range, end_range)
+        LOGGER.debug("Downloading bytes range of %s for file %s", range_param,
+                     self._filename.dest)
+        bucket, key = find_bucket_key(self._filename.src)
+        params = {'endpoint': self._filename.endpoint, 'bucket': bucket,
+                  'key': key, 'range': range_param}
         try:
-            part_info = self.part_queue.get(True, QUEUE_TIMEOUT_GET)
-            with self.counter_lock:
-                self.part_counter.count += 1
-            filename = part_info[0]
-            part_number = part_info[1]
-            size_uploads = part_info[2]
-            last_part_number = int(filename.size / size_uploads) - 1
-            beginning_range = part_number*size_uploads
-            str_range = "bytes="
-            if part_number == last_part_number:
-                str_range += str(beginning_range) + "-"
-            else:
-                end_range = beginning_range + size_uploads - 1
-                str_range += str(beginning_range) + "-" + str(end_range)
-            bucket, key = find_bucket_key(filename.src)
-            try:
-                params = {'endpoint': self.endpoint, 'bucket': bucket,
-                          'key': key, 'range': str_range}
-                response_data, http = operate(self.service, 'GetObject',
-                                              params)
-                body = response_data['Body'].read()
-                with self.write_lock:
-                    self.f.seek(part_number*size_uploads)
-                    self.f.write(body)
+            LOGGER.debug("Making GetObject requests with byte range: %s",
+                         range_param)
+            response_data, http = operate(self._service, 'GetObject',
+                                          params)
+            LOGGER.debug("Response received from GetObject")
+            body = response_data['Body']
+            self._write_to_file(body)
+            self._context.announce_completed_part(self._part_number)
 
-                print_str = print_operation(filename, 0)
-                print_result = {'result': print_str}
-                part_str = {'total': int(filename.size / size_uploads)}
-                print_result['part'] = part_str
-                self.print_queue.put(print_result)
-                self.dest_queue.put(part_number)
-            except requests.ConnectionError as e:
-                connect_error = str(e)
-                LOGGER.debug("%s part download failure: %s" %
-                            (part_info[0].src, connect_error))
-                self.part_queue.put(part_info)
-                self.executer.submit(self)
-            except Exception as e:
-                LOGGER.debug('%s' % str(e))
-            self.part_queue.task_done()
-            with self.counter_lock:
-                self.part_counter.count -= 1
-        except Queue.Empty:
-            pass
+            print_str = print_operation(self._filename, 0)
+            print_result = {'result': print_str}
+            part_str = {'total': int(self._filename.size / self._chunk_size)}
+            print_result['part'] = part_str
+            self._print_queue.put(print_result)
+        except Exception as e:
+            LOGGER.debug(
+                'Exception caught downloading byte range: %s',
+                e, exc_info=True)
+            self._context.cancel()
+            raise e
+
+    def _write_to_file(self, body):
+        self._context.wait_for_file_created()
+        LOGGER.debug("Writing part number %s to file: %s",
+                     self._part_number, self._filename.dest)
+        iterate_chunk_size = self.ITERATE_CHUNK_SIZE
+        with open(self._filename.dest, 'rb+') as f:
+            f.seek(self._part_number * self._chunk_size)
+            current = body.read(iterate_chunk_size)
+            while current:
+                f.write(current)
+                sys.stdout.flush()
+                current = body.read(iterate_chunk_size)
+        LOGGER.debug("Done writing part number %s to file: %s",
+                     self._part_number, self._filename.dest)
+
 
 
 class CreateMultipartUploadTask(BasicTask):
@@ -260,6 +305,21 @@ class CreateMultipartUploadTask(BasicTask):
             print_task = {'result': print_op, 'error': str(e)}
             self.print_queue.put(print_task)
             raise e
+
+
+class RemoveRemoteObjectTask(object):
+    def __init__(self, filename, context):
+        self._context = context
+        self._filename = filename
+
+    def __call__(self):
+        LOGGER.debug("Waiting for download to finish.")
+        self._context.wait_for_completion()
+        bucket, key = find_bucket_key(self._filename.src)
+        params = {'endpoint': self._filename.endpoint,
+                  'bucket': bucket, 'key': key}
+        response_data, http = operate(
+            self._filename.service, 'DeleteObject', params)
 
 
 class CompleteMultipartUploadTask(BasicTask):
@@ -448,3 +508,62 @@ class MultipartUploadContext(object):
         with self._upload_complete_condition:
             self._state = self._COMPLETED
             self._upload_complete_condition.notifyAll()
+
+
+class MultipartDownloadContext(object):
+
+    _STATES = {
+        'UNSTARTED': 'UNSTARTED',
+        'STARTED': 'STARTED',
+        'COMPLETED': 'COMPLETED',
+        'CANCELLED':'CANCELLED'
+    }
+
+    def __init__(self, num_parts, lock=None):
+        self.num_parts = num_parts
+
+        if lock is None:
+            lock = threading.Lock()
+        self._lock = lock
+        self._created_condition = threading.Condition(self._lock)
+        self._completed_condition = threading.Condition(self._lock)
+        self._state = self._STATES['UNSTARTED']
+        self._finished_parts = set()
+
+    def announce_completed_part(self, part_number):
+        with self._completed_condition:
+            self._finished_parts.add(part_number)
+            if len(self._finished_parts) == self.num_parts:
+                self._state = self._STATES['COMPLETED']
+                self._completed_condition.notifyAll()
+
+    def announce_file_created(self):
+        with self._created_condition:
+            self._state = self._STATES['STARTED']
+            self._created_condition.notifyAll()
+
+    def wait_for_file_created(self):
+        with self._created_condition:
+            while not self._state == self._STATES['STARTED']:
+                if self._state == self._STATES['CANCELLED']:
+                    raise DownloadCancelledError("Download has been cancelled.")
+                self._created_condition.wait(timeout=1)
+
+    def wait_for_completion(self):
+        with self._completed_condition:
+            while not self._state == self._STATES['COMPLETED']:
+                if self._state == self._STATES['CANCELLED']:
+                    raise DownloadCancelledError("Download has been cancelled.")
+                self._completed_condition.wait(timeout=1)
+
+    def cancel(self):
+        with self._lock:
+            self._state = self._STATES['CANCELLED']
+
+    def is_cancelled(self):
+        with self._lock:
+            return self._state == self._STATES['CANCELLED']
+
+    def is_started(self):
+        with self._lock:
+            return self._state == self._STATES['STARTED']

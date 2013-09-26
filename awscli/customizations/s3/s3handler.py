@@ -16,7 +16,7 @@ import os
 import threading
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE, \
+    NUM_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE, \
     MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
     operate, find_bucket_key
@@ -55,7 +55,7 @@ class S3Handler(object):
             done=self.done, num_threads=NUM_THREADS,
             timeout=QUEUE_TIMEOUT_GET, print_queue=self.print_queue,
             quiet=self.params['quiet'], interrupt=self.interrupt,
-            max_multi=NUM_MULTI_THREADS, max_queue_size=MAX_QUEUE_SIZE,
+            max_queue_size=MAX_QUEUE_SIZE,
         )
         self._multipart_uploads = []
         self._multipart_downloads = []
@@ -200,7 +200,8 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
-        create_file_task = tasks.CreateLocalFileTask(context=context, filename=filename)
+        create_file_task = tasks.CreateLocalFileTask(context=context,
+                                                     filename=filename)
         self.executer.submit(create_file_task)
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
@@ -219,7 +220,8 @@ class S3Handler(object):
             self.executer.submit(remove_task)
         return num_downloads
 
-    def _enqueue_multipart_upload_tasks(self, filename, remove_local_file=False):
+    def _enqueue_multipart_upload_tasks(self, filename,
+                                        remove_local_file=False):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.

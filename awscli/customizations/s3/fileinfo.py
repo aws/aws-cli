@@ -8,7 +8,6 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
-from botocore import xform_name
 from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
     retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
@@ -196,10 +195,10 @@ class FileInfo(TaskInfo):
     """
     This is a child object of the ``TaskInfo`` object.  It can perform more
     operations such as ``upload``, ``download``, ``copy``, ``delete``,
-    ``move``, and ``multi_download``.  Similiarly to
+    ``move``.  Similiarly to
     ``TaskInfo`` objects attributes like ``session`` need to be set in order
-    to perform operations. Multipart operations need to run ``set_multi`` in
-    order to be able to run.
+    to perform operations.
+
     :param dest: the destination path
     :type dest: string
     :param compare_key: the name of the file relative to the specified
@@ -232,25 +231,6 @@ class FileInfo(TaskInfo):
         else:
             self.parameters = {'acl': None,
                                'sse': None}
-
-        # Required for multipart uploads and downloads.  Use ``set_multi``
-        # function to set these.
-        self.executer = None
-        self.print_queue = None
-        self.is_multi = False
-        self.interrupt = None
-        self.chunksize = None
-
-    def set_multi(self, executer, print_queue, interrupt, chunksize):
-        """
-        This sets all of the necessary attributes to perform a multipart
-        operation.
-        """
-        self.executer = executer
-        self.print_queue = print_queue
-        self.is_multi = True
-        self.interrupt = interrupt
-        self.chunksize = chunksize
 
     def _permission_to_param(self, permission):
         if permission == 'read':
@@ -327,13 +307,10 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart download function if the file is
         large.  If it is small enough, it gets the file as an object from s3.
         """
-        if not self.is_multi:
-            bucket, key = find_bucket_key(self.src)
-            params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-            response_data, http = operate(self.service, 'GetObject', params)
-            save_file(self.dest, response_data, self.last_update)
-        else:
-            self.multi_download()
+        bucket, key = find_bucket_key(self.src)
+        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+        response_data, http = operate(self.service, 'GetObject', params)
+        save_file(self.dest, response_data, self.last_update)
 
     def copy(self):
         """
@@ -383,62 +360,3 @@ class FileInfo(TaskInfo):
                                       params)
         upload_id = response_data['UploadId']
         return upload_id
-
-    def multi_download(self):
-        """
-        This performs the multipart download.  It assigns ranges to get from
-        s3 of particular object to a task.It creates a queue ``part_queue``
-        which is directly responsible with controlling the progress of the
-        multipart download.  It then creates ``DownloadPartTasks`` for
-        threads to run via the ``executer``. This fucntion waits
-        for all of the parts in the multipart download to finish, and then
-        the last modification time is changed to the last modified time
-        of the s3 object.  This method waits on its parts to finish.
-        So, threads are required to process the parts for this function
-        to complete.
-        """
-        part_queue = NoBlockQueue(self.interrupt)
-        dest_queue = NoBlockQueue(self.interrupt)
-        part_counter = MultiCounter()
-        write_lock = threading.Lock()
-        counter_lock = threading.Lock()
-        d = os.path.dirname(self.dest)
-        try:
-            if not os.path.exists(d):
-                os.makedirs(d)
-        except Exception:
-            pass
-        size_uploads = self.chunksize
-        num_uploads = int(self.size/size_uploads)
-        with open(self.dest, 'wb') as f:
-            for i in range(num_uploads):
-                part = (self, i, size_uploads)
-                part_queue.put(part)
-                task = DownloadPartTask(session=self.session,
-                                        executer=self.executer,
-                                        part_queue=part_queue,
-                                        dest_queue=dest_queue,
-                                        f=f, region=self.region,
-                                        print_queue=self.print_queue,
-                                        write_lock=write_lock,
-                                        part_counter=part_counter,
-                                        counter_lock=counter_lock)
-                self.executer.submit(task)
-            part_queue.join()
-            # The following ensures that if the multipart download is
-            # in progress, all part uploads finish before releasing the
-            # the file handle.  This really only applies when an interrupt
-            # signal is sent because the ``part_queue.join()`` ensures this
-            # if the process is not interrupted.
-            while part_counter.count:
-                time.sleep(0.1)
-        part_list = []
-        while not dest_queue.empty():
-            part = dest_queue.get()
-            part_list.append(part)
-        if len(part_list) != num_uploads:
-            raise Exception()
-        last_update_tuple = self.last_update.timetuple()
-        mod_timestamp = time.mktime(last_update_tuple)
-        os.utime(self.dest, (int(mod_timestamp), int(mod_timestamp)))
-

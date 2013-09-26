@@ -16,7 +16,7 @@ import os
 import threading
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, NUM_MULTI_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE, \
+    NUM_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE, \
     MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
     operate, find_bucket_key
@@ -55,9 +55,10 @@ class S3Handler(object):
             done=self.done, num_threads=NUM_THREADS,
             timeout=QUEUE_TIMEOUT_GET, print_queue=self.print_queue,
             quiet=self.params['quiet'], interrupt=self.interrupt,
-            max_multi=NUM_MULTI_THREADS, max_queue_size=MAX_QUEUE_SIZE,
+            max_queue_size=MAX_QUEUE_SIZE,
         )
         self._multipart_uploads = []
+        self._multipart_downloads = []
 
     def call(self, files):
         """
@@ -94,6 +95,7 @@ class S3Handler(object):
         # And finally we need to make a pass through all the existing
         # multipart uploads and abort any pending multipart uploads.
         self._abort_pending_multipart_uploads()
+        self._remove_pending_downloads()
 
     def _abort_pending_multipart_uploads(self):
         # For the purpose of aborting uploads, we consider any
@@ -101,7 +103,7 @@ class S3Handler(object):
         for upload, filename in self._multipart_uploads:
             if upload.is_cancelled():
                 try:
-                    upload_id = upload.wait_for_upload_id()
+                    upload.wait_for_upload_id()
                 except tasks.UploadCancelledError:
                     pass
                 else:
@@ -110,6 +112,23 @@ class S3Handler(object):
                     # upload.  We need to explicitly abort the upload here.
                     self._cancel_upload(upload.wait_for_upload_id(), filename)
             upload.cancel_upload(self._cancel_upload, args=(filename,))
+
+    def _remove_pending_downloads(self):
+        # The downloads case is easier than the uploads case because we don't
+        # need to make any service calls.  To properly cleanup we just need
+        # to go through the multipart downloads that were in progress but
+        # cancelled and remove the local file.
+        for context, local_filename in self._multipart_downloads:
+            if (context.is_cancelled() or context.is_started()) and \
+                    os.path.exists(local_filename):
+                # The file is in an inconsistent state (not all the parts
+                # were written to the file) so we should remove the
+                # local file rather than leave it in a bad state.  We don't
+                # want to remove the files if the download has *not* been
+                # started because we haven't touched the file yet, so it's
+                # better to leave the old version of the file rather than
+                # deleting the file entirely.
+                os.remove(local_filename)
 
     def _cancel_upload(self, upload_id, filename):
         bucket, key = find_bucket_key(filename.dest)
@@ -153,34 +172,56 @@ class S3Handler(object):
         # First we need to determine if it's an operation that even
         # qualifies for multipart upload.
         if hasattr(filename, 'size'):
-            is_multipart_operation = (
-                filename.operation == 'upload' or
-                filename.operation == 'move' and (
-                    filename.src_type == 'local' and
-                    filename.dest_type == 's3'))
             above_multipart_threshold = filename.size > self.multi_threshold
-            return is_multipart_operation and above_multipart_threshold
+            if above_multipart_threshold:
+                if filename.operation in ('upload', 'download', 'move'):
+                    return True
+                else:
+                    return False
         else:
             return False
 
     def _enqueue_multipart_tasks(self, filename):
         num_uploads = 1
-        chunksize = self.chunksize
         if filename.operation == 'upload':
             num_uploads = self._enqueue_multipart_upload_tasks(filename)
         elif filename.operation == 'move':
-            # Already checked that this is a local -> s3 move.
-            num_uploads = self._enqueue_multipart_upload_tasks(
-                filename, remove_local_file=True)
+            if filename.src_type == 'local' and filename.dest_type == 's3':
+                num_uploads = self._enqueue_multipart_upload_tasks(
+                    filename, remove_local_file=True)
+            else:
+                num_uploads = self._enqueue_range_download_tasks(
+                    filename, remove_remote_file=True)
         elif filename.operation == 'download':
-            num_uploads = int(filename.size / chunksize)
-            filename.set_multi(executer=self.executer,
-                                print_queue=self.print_queue,
-                                interrupt=self.interrupt,
-                                chunksize=chunksize)
+            num_uploads = self._enqueue_range_download_tasks(filename)
         return num_uploads
 
-    def _enqueue_multipart_upload_tasks(self, filename, remove_local_file=False):
+    def _enqueue_range_download_tasks(self, filename, remove_remote_file=False):
+        chunksize = find_chunksize(filename.size, self.chunksize)
+        num_downloads = int(filename.size / chunksize)
+        context = tasks.MultipartDownloadContext(num_downloads)
+        create_file_task = tasks.CreateLocalFileTask(context=context,
+                                                     filename=filename)
+        self.executer.submit(create_file_task)
+        for i in range(num_downloads):
+            task = tasks.DownloadPartTask(
+                part_number=i, chunk_size=chunksize,
+                print_queue=self.print_queue, service=filename.service,
+                filename=filename, context=context)
+            self.executer.submit(task)
+        complete_file_task = tasks.CompleteDownloadTask(
+            context=context, filename=filename, print_queue=self.print_queue,
+            params=self.params)
+        self.executer.submit(complete_file_task)
+        self._multipart_downloads.append((context, filename.dest))
+        if remove_remote_file:
+            remove_task = tasks.RemoveRemoteObjectTask(
+                filename=filename, context=context)
+            self.executer.submit(remove_task)
+        return num_downloads
+
+    def _enqueue_multipart_upload_tasks(self, filename,
+                                        remove_local_file=False):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.

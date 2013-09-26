@@ -14,6 +14,7 @@ import hashlib
 from operator import itemgetter
 import requests
 from six import StringIO
+from io import BytesIO
 
 from botocore.compat import unquote
 from mock import MagicMock
@@ -251,8 +252,7 @@ class FakeOperation(object):
                     body = body[int(beginning):]
                 else:
                     body = body[int(beginning):(int(end) + 1)]
-            mock_response = MagicMock()
-            mock_response.read = MagicMock(return_value=body)
+            mock_response = BytesIO(body)
             response_data['Body'] = mock_response
             etag = self.session.s3[bucket][key]['ETag']
             response_data['ETag'] = etag + '--'

@@ -274,7 +274,6 @@ class DownloadPartTask(object):
             current = body.read(iterate_chunk_size)
             while current:
                 f.write(current)
-                sys.stdout.flush()
                 current = body.read(iterate_chunk_size)
         LOGGER.debug("Done writing part number %s to file: %s",
                      self._part_number, self._filename.dest)

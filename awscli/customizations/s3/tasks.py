@@ -185,7 +185,6 @@ class CreateLocalFileTask(object):
         with open(self._filename.dest, 'wb'):
             pass
         self._context.announce_file_created()
-        sys.stdout.flush()
 
 
 class CompleteDownloadTask(object):

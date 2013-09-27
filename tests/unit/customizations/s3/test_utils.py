@@ -1,8 +1,9 @@
 from tests import unittest
 from six.moves import queue
+import tempfile
 
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
-from awscli.customizations.s3.utils import NoBlockQueue
+from awscli.customizations.s3.utils import NoBlockQueue, ReadFileChunk
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -71,6 +72,36 @@ class TestNoBlockQueue(unittest.TestCase):
         self.assertEqual(q.get(), 2)
         self.assertEqual(q.get(), 3)
         self.assertEqual(q.get(), 4)
+
+
+class TestReadFileChunk(unittest.TestCase):
+    def test_read_entire_chunk(self):
+        f = tempfile.NamedTemporaryFile()
+        f.write('onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(f.name, start_byte=0, size=3)
+        self.assertEqual(chunk.read(), 'one')
+        self.assertEqual(chunk.read(), '')
+
+    def test_read_with_amount_size(self):
+        f = tempfile.NamedTemporaryFile()
+        f.write('onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(f.name, start_byte=11, size=4)
+        self.assertEqual(chunk.read(1), 'f')
+        self.assertEqual(chunk.read(1), 'o')
+        self.assertEqual(chunk.read(1), 'u')
+        self.assertEqual(chunk.read(1), 'r')
+        self.assertEqual(chunk.read(1), '')
+
+    def test_read_past_end_of_file(self):
+        f = tempfile.NamedTemporaryFile()
+        f.write('onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(f.name, start_byte=36, size=100000)
+        self.assertEqual(chunk.read(), 'ten')
+        self.assertEqual(chunk.read(), '')
+        self.assertEqual(len(chunk), 3)
 
 
 if __name__ == "__main__":

@@ -233,6 +233,7 @@ class TestCp(BaseS3CLICommand):
         # Make a new name for the file and copy it locally.
         full_path = self.files.full_path('bar.txt')
         p = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, full_path))
+        self.assert_no_errors(p)
 
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')

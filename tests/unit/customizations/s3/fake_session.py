@@ -151,7 +151,7 @@ class FakeOperation(object):
                     body = body.getvalue()
                 if hasattr(body, 'read'):
                     body = body.read()
-                if not isinstance(body, bytearray):
+                elif not isinstance(body, bytearray):
                     body = body.encode('utf-8')
                 content['Body'] = body
                 m = hashlib.md5()

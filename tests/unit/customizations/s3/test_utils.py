@@ -77,30 +77,30 @@ class TestNoBlockQueue(unittest.TestCase):
 class TestReadFileChunk(unittest.TestCase):
     def test_read_entire_chunk(self):
         f = tempfile.NamedTemporaryFile()
-        f.write('onetwothreefourfivesixseveneightnineten')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
         f.flush()
         chunk = ReadFileChunk(f.name, start_byte=0, size=3)
-        self.assertEqual(chunk.read(), 'one')
-        self.assertEqual(chunk.read(), '')
+        self.assertEqual(chunk.read(), b'one')
+        self.assertEqual(chunk.read(), b'')
 
     def test_read_with_amount_size(self):
         f = tempfile.NamedTemporaryFile()
-        f.write('onetwothreefourfivesixseveneightnineten')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
         f.flush()
         chunk = ReadFileChunk(f.name, start_byte=11, size=4)
-        self.assertEqual(chunk.read(1), 'f')
-        self.assertEqual(chunk.read(1), 'o')
-        self.assertEqual(chunk.read(1), 'u')
-        self.assertEqual(chunk.read(1), 'r')
-        self.assertEqual(chunk.read(1), '')
+        self.assertEqual(chunk.read(1), b'f')
+        self.assertEqual(chunk.read(1), b'o')
+        self.assertEqual(chunk.read(1), b'u')
+        self.assertEqual(chunk.read(1), b'r')
+        self.assertEqual(chunk.read(1), b'')
 
     def test_read_past_end_of_file(self):
         f = tempfile.NamedTemporaryFile()
-        f.write('onetwothreefourfivesixseveneightnineten')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
         f.flush()
         chunk = ReadFileChunk(f.name, start_byte=36, size=100000)
-        self.assertEqual(chunk.read(), 'ten')
-        self.assertEqual(chunk.read(), '')
+        self.assertEqual(chunk.read(), b'ten')
+        self.assertEqual(chunk.read(), b'')
         self.assertEqual(len(chunk), 3)
 
 

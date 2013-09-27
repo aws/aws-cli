@@ -149,6 +149,8 @@ class FakeOperation(object):
                 body = kwargs['body']
                 if isinstance(body, StringIO):
                     body = body.getvalue()
+                if hasattr(body, 'read'):
+                    body = body.read()
                 if not isinstance(body, bytearray):
                     body = body.encode('utf-8')
                 content['Body'] = body

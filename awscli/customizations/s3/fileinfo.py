@@ -2,16 +2,14 @@ import os
 from six import StringIO
 import sys
 import time
-import threading
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
-from awscli.customizations.s3.tasks import DownloadPartTask
-from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
-    retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
-    uni_print, guess_content_type
+from awscli.customizations.s3.utils import find_bucket_key, \
+        retrieve_http_etag, check_etag, check_error, operate, \
+        uni_print, guess_content_type
 
 
 def make_last_mod_str(last_mod):
@@ -91,11 +89,11 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type=None, operation=None, session=None,
+    def __init__(self, src, src_type=None, operation_name=None, session=None,
                  region=None):
         self.src = src
         self.src_type = src_type
-        self.operation = operation
+        self.operation_name = operation_name
 
         self.session = session
         self.region = region
@@ -216,9 +214,10 @@ class FileInfo(TaskInfo):
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation=None, session=None, region=None, parameters=None):
+                 operation_name=None, session=None, region=None, parameters=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
-                                       operation=operation, session=session,
+                                       operation_name=operation_name,
+                                       session=session,
                                        region=region)
         self.dest = dest
         self.dest_type = dest_type

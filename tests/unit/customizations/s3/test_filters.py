@@ -23,16 +23,16 @@ class FiltersTest(unittest.TestCase):
         self.loc_file1 = FileInfo(src=os.path.abspath('test.txt'), dest='',
                                   compare_key='', size=10,
                                   last_update=0, src_type='local',
-                                  dest_type='s3', operation='')
+                                  dest_type='s3', operation_name='')
         self.loc_file2 = FileInfo(src=os.path.abspath('test.jpg'), dest='',
                                   compare_key='', size=10,
                                   last_update=0, src_type='local',
-                                  dest_type='s3', operation='')
+                                  dest_type='s3', operation_name='')
         path = 'directory' + os.sep + 'test.jpg'
         self.loc_file3 = FileInfo(src=os.path.abspath(path), dest='',
                                   compare_key='', size=10,
                                   last_update=0, src_type='local',
-                                  dest_type='s3', operation='')
+                                  dest_type='s3', operation_name='')
         self.local_files.append(self.loc_file1)
         self.local_files.append(self.loc_file2)
         self.local_files.append(self.loc_file3)
@@ -41,15 +41,15 @@ class FiltersTest(unittest.TestCase):
         self.s3_file1 = FileInfo('bucket/test.txt', dest='',
                                  compare_key='', size=10,
                                  last_update=0, src_type='s3',
-                                 dest_type='s3', operation='')
+                                 dest_type='s3', operation_name='')
         self.s3_file2 = FileInfo('bucket/test.jpg', dest='',
                                  compare_key='', size=10,
                                  last_update=0, src_type='s3',
-                                 dest_type='s3', operation='')
+                                 dest_type='s3', operation_name='')
         self.s3_file3 = FileInfo('bucket/key/test.jpg', dest='',
                                  compare_key='', size=10,
                                  last_update=0, src_type='s3',
-                                 dest_type='s3', operation='')
+                                 dest_type='s3', operation_name='')
         self.s3_files.append(self.s3_file1)
         self.s3_files.append(self.s3_file2)
         self.s3_files.append(self.s3_file3)

@@ -152,7 +152,7 @@ class S3Handler(object):
             too_large = False
             if hasattr(filename, 'size'):
                 too_large = filename.size > MAX_UPLOAD_SIZE
-            if too_large and filename.operation == 'upload':
+            if too_large and filename.operation_name == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \
                             "being skipped" % os.path.relpath(filename.src)
                 self.print_queue.put({'result': warning})
@@ -174,7 +174,7 @@ class S3Handler(object):
         if hasattr(filename, 'size'):
             above_multipart_threshold = filename.size > self.multi_threshold
             if above_multipart_threshold:
-                if filename.operation in ('upload', 'download', 'move'):
+                if filename.operation_name in ('upload', 'download', 'move'):
                     return True
                 else:
                     return False
@@ -183,16 +183,16 @@ class S3Handler(object):
 
     def _enqueue_multipart_tasks(self, filename):
         num_uploads = 1
-        if filename.operation == 'upload':
+        if filename.operation_name == 'upload':
             num_uploads = self._enqueue_multipart_upload_tasks(filename)
-        elif filename.operation == 'move':
+        elif filename.operation_name == 'move':
             if filename.src_type == 'local' and filename.dest_type == 's3':
                 num_uploads = self._enqueue_multipart_upload_tasks(
                     filename, remove_local_file=True)
             else:
                 num_uploads = self._enqueue_range_download_tasks(
                     filename, remove_remote_file=True)
-        elif filename.operation == 'download':
+        elif filename.operation_name == 'download':
             num_uploads = self._enqueue_range_download_tasks(filename)
         return num_uploads
 

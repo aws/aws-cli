@@ -52,7 +52,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
         file_info = FileInfo(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation='')
+                             dest_type='s3', operation_name='')
         ref_list = [file_info]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -76,7 +76,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
         file_info = FileInfo(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation='')
+                             dest_type='s3', operation_name='')
         path = self.local_dir + 'another_directory' + os.sep \
             + 'text2.txt'
         size, last_update = get_file_stat(path)
@@ -85,7 +85,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                               compare_key='another_directory/text2.txt',
                               size=size, last_update=last_update,
                               src_type='local',
-                              dest_type='s3', operation='')
+                              dest_type='s3', operation_name='')
         ref_list = [file_info2, file_info]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -132,7 +132,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                              size=result_list[0].size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation='')
+                             dest_type='local', operation_name='')
 
         ref_list = [file_info]
         self.assertEqual(len(result_list), len(ref_list))
@@ -159,14 +159,14 @@ class S3FileGeneratorTest(unittest.TestCase):
                              size=result_list[0].size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation='')
+                             dest_type='local', operation_name='')
         file_info2 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=result_list[1].size,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation='')
+                              dest_type='local', operation_name='')
 
         ref_list = [file_info, file_info2]
         self.assertEqual(len(result_list), len(ref_list))
@@ -195,21 +195,21 @@ class S3FileGeneratorTest(unittest.TestCase):
                               size=result_list[0].size,
                               last_update=result_list[0].last_update,
                               src_type='s3',
-                              dest_type='local', operation='delete')
+                              dest_type='local', operation_name='delete')
         file_info2 = FileInfo(src=self.file2,
                               dest='another_directory' + os.sep + 'text2.txt',
                               compare_key='another_directory/text2.txt',
                               size=result_list[1].size,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation='delete')
+                              dest_type='local', operation_name='delete')
         file_info3 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=result_list[2].size,
                               last_update=result_list[2].last_update,
                               src_type='s3',
-                              dest_type='local', operation='delete')
+                              dest_type='local', operation_name='delete')
 
         ref_list = [file_info1, file_info2, file_info3]
         self.assertEqual(len(result_list), len(ref_list))

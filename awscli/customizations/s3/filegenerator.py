@@ -27,12 +27,12 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, session, operation, parameters):
+    def __init__(self, session, operation_name, parameters):
         self.session = session
         self.service = self.session.get_service('s3')
         region = parameters['region']
         self.endpoint = self.service.get_endpoint(region)
-        self.operation = operation
+        self.operation_name = operation_name
 
     def call(self, files):
         """
@@ -63,7 +63,7 @@ class FileGenerator(object):
             yield FileInfo(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
-                           dest_type=dest_type, operation=self.operation)
+                           dest_type=dest_type, operation_name=self.operation_name)
 
     def list_files(self, path, dir_op):
         """
@@ -109,7 +109,7 @@ class FileGenerator(object):
                 last_update = parse(content['LastModified'])
                 last_update = last_update.astimezone(tzlocal())
                 if size == 0 and src_path.endswith('/'):
-                    if self.operation == 'delete':
+                    if self.operation_name == 'delete':
                         # This is to filter out manually created folders
                         # in S3.  They have a size zero and would be
                         # undesirably downloaded.  Local directories

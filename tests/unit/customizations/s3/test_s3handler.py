@@ -52,7 +52,7 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         for filename in files:
             self.assertTrue(os.path.exists(filename))
             tasks.append(FileInfo(src=filename, src_type='local',
-                                  dest_type='s3', operation='delete', size=0))
+                                  dest_type='s3', operation_name='delete', size=0))
         self.s3_handler.call(tasks)
         for filename in files:
             self.assertFalse(os.path.exists(filename))
@@ -68,7 +68,7 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         tasks = []
         for key in keys:
             tasks.append(FileInfo(src=key, src_type='s3',
-                                  dest_type='local', operation='delete',
+                                  dest_type='local', operation_name='delete',
                                   size=0))
         self.assertEqual(len(list_contents(self.bucket, self.session)), 3)
         self.s3_handler.call(tasks)
@@ -81,11 +81,11 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
         operation
         """
         prefix_name = self.bucket + '/'
-        file_info = FileInfo(src=prefix_name, operation='list_objects', size=0)
+        file_info = FileInfo(src=prefix_name, operation_name='list_objects', size=0)
         params = {'region': 'us-east-1'}
         s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
-        file_info = FileInfo(src='', operation='list_objects', size=0)
+        file_info = FileInfo(src='', operation_name='list_objects', size=0)
         s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
@@ -108,7 +108,7 @@ class S3HandlerTestURLEncodeDeletes(S3HandlerBaseTest):
         filegenerators_test.py.  This includes the create s3 file.
         """
         key = self.bucket + '/a+b/foo'
-        tasks = [FileInfo(src=key, src_type='s3', dest_type='local', operation='delete', size=0)]
+        tasks = [FileInfo(src=key, src_type='s3', dest_type='local', operation_name='delete', size=0)]
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
         self.s3_handler.call(tasks)
         self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
@@ -146,7 +146,7 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=self.s3_files[i],
-                                  operation='upload', size=0))
+                                  operation_name='upload', size=0))
         # Perform the upload.
         self.s3_handler.call(tasks)
         # Confirm the files were uploaded.
@@ -170,7 +170,7 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=fail_s3_files[i],
-                                  operation='upload', size=0))
+                                  operation_name='upload', size=0))
         self.s3_handler.call(tasks)
         # Confirm only one of the files was uploaded.
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
@@ -186,7 +186,7 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=self.s3_files[i], size=15,
-                                  operation='upload'))
+                                  operation_name='upload'))
         self.s3_handler_multi.call(tasks)
         self.assertEqual(
             self.session.s3[self.bucket][
@@ -223,7 +223,7 @@ class S3HandlerExceptionSingleTaskTest(S3HandlerBaseTest):
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=self.s3_files[i],
-                                  operation='upload', size=0))
+                                  operation_name='upload', size=0))
         # Perform the upload.
         self.s3_handler.call(tasks)
         # Confirm despite the exceptions, the files were uploaded.
@@ -260,7 +260,7 @@ class S3HandlerExceptionMultiTaskTest(S3HandlerBaseTest):
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i],
                                   dest=fail_s3_files[i], size=15,
-                                  operation='upload'))
+                                  operation_name='upload'))
         self.s3_handler_multi.call(tasks)
 
 
@@ -289,7 +289,7 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
         tasks = [FileInfo(src=self.bucket2 + '/' + u'\u2713',
                           src_type='s3',
                           dest=self.bucket + '/' + u'\u2713',
-                          dest_type='s3', operation='move',
+                          dest_type='s3', operation_name='move',
                           size=0)]
         self.s3_handler.call(tasks)
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
@@ -301,7 +301,7 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
         for i in range(len(files)):
             tasks.append(FileInfo(src=self.loc_files[i], src_type='local',
                                   dest=self.s3_files[i], dest_type='s3',
-                                  operation='move', size=0))
+                                  operation_name='move', size=0))
         # Perform the move.
         self.s3_handler.call(tasks)
         # Confirm the files were uploaded.
@@ -341,7 +341,7 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
         for i in range(len(self.s3_files)):
             tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
                                   dest=self.s3_files2[i], dest_type='s3',
-                                  operation='move', size=0))
+                                  operation_name='move', size=0))
         # Perform the move.
         self.s3_handler.call(tasks)
         # Confirm the files were moved.  The origial bucket had three
@@ -381,7 +381,7 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
         for i in range(len(self.s3_files)):
             tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
                                   dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation='move',
+                                  last_update=time, operation_name='move',
                                   size=0))
         # Perform the move.
         self.s3_handler.call(tasks)
@@ -439,7 +439,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         for i in range(len(self.s3_files)):
             tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
                                   dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation='download',
+                                  last_update=time, operation_name='download',
                                   size=0))
         # Perform the download.
         self.s3_handler.call(tasks)
@@ -458,7 +458,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         for i in range(len(self.s3_files)):
             tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
                                   dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation='download',
+                                  last_update=time, operation_name='download',
                                   size=15))
         # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
@@ -485,7 +485,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         for i in range(len(self.s3_files)):
             tasks.append(FileInfo(src=wrong_s3_files[i], src_type='s3',
                                   dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation='download',
+                                  last_update=time, operation_name='download',
                                   size=15))
         # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
@@ -519,12 +519,12 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
         self.bucket = str(rand1) + 'mybucket' + str(rand2) + '/'
         orig_number_buckets = len(list_buckets(self.session))
 
-        file_info = FileInfo(src=self.bucket, operation='make_bucket', size=0)
+        file_info = FileInfo(src=self.bucket, operation_name='make_bucket', size=0)
         self.s3_handler.call([file_info])
         number_buckets = len(list_buckets(self.session))
         self.assertEqual(orig_number_buckets + 1, number_buckets)
 
-        file_info = FileInfo(src=self.bucket, operation='remove_bucket',
+        file_info = FileInfo(src=self.bucket, operation_name='remove_bucket',
                              size=0)
         self.s3_handler.call([file_info])
         number_buckets = len(list_buckets(self.session))

@@ -15,9 +15,8 @@ from six.moves import queue as Queue
 import sys
 import threading
 
-from awscli.customizations.s3.tasks import BasicTask
-from awscli.customizations.s3.utils import MultiCounter, NoBlockQueue, \
-    uni_print
+from awscli.customizations.s3.utils import NoBlockQueue, uni_print
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,7 +28,7 @@ class Executer(object):
     ``Executer``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, timeout,
-                 print_queue, quiet, interrupt, max_multi, max_queue_size):
+                 print_queue, quiet, interrupt, max_queue_size):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
@@ -38,14 +37,10 @@ class Executer(object):
         self.quiet = quiet
         self.interrupt = interrupt
         self.threads_list = []
-        self.max_multi = max_multi
-        self.multi_lock = threading.Lock()
-        self.multi_counter = MultiCounter()
         self._max_queue_size = max_queue_size
 
     def start(self):
         self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
-        self.multi_counter.count = 0
         self.print_thread = PrintThread(self.print_queue, self.done,
                                         self.quiet, self.interrupt,
                                         self.timeout)
@@ -54,9 +49,7 @@ class Executer(object):
         self.print_thread.start()
         for i in range(self.num_threads):
             worker = Worker(queue=self.queue, done=self.done,
-                            timeout=self.timeout, multi_lock=self.multi_lock,
-                            multi_counter=self.multi_counter,
-                            max_multi=self.max_multi)
+                            timeout=self.timeout)
             worker.setDaemon(True)
             self.threads_list.append(worker)
             worker.start()
@@ -85,69 +78,29 @@ class Executer(object):
 class Worker(threading.Thread):
     """
     This thread is in charge of performing the tasks provided via
-    the main queue ``queue``.  Across all ``worker`` threads, there can
-    only be the ``max_multi`` amount of multipart operations at a time or
-    deadlock occurs because ``worker`` threads are needed to perform the
-    part operations of multipart operations.  The ``worker`` threads share
-    a lock in order to accurately track these multipart operations.
+    the main queue ``queue``.
     """
-    def __init__(self, queue, done, timeout, multi_lock,
-                 multi_counter, max_multi):
+    def __init__(self, queue, done, timeout):
         threading.Thread.__init__(self)
+        # This is the queue where work (tasks) are submitted.
         self.queue = queue
         self.done = done
         self.timeout = timeout
-        self.multi_lock = multi_lock
-        self.multi_counter = multi_counter
-        self.max_multi = max_multi
-        self.is_multi_start = False
 
     def run(self):
         while True:
             try:
                 function = self.queue.get(True, self.timeout)
-                with self.multi_lock:
-                    putback = self.check_multi(function)
-                if not putback:
-                    try:
-                        function()
-                    except Exception as e:
-                        LOGGER.debug('Error calling task: %s', e,
-                                     exc_info=True)
-                else:
-                    self.queue.put(function)
-                if self.is_multi_start:
-                    with self.multi_lock:
-                        self.multi_counter.count -= 1
+                try:
+                    function()
+                except Exception as e:
+                    LOGGER.debug('Error calling task: %s', e,
+                                    exc_info=True)
                 self.queue.task_done()
             except Queue.Empty:
                 pass
             if self.done.isSet():
                 break
-
-    def check_multi(self, function):
-        """
-        This is a helper function used to handle the number of in progress
-        multipart operations.  The function determines if the number of
-        multipart operations in progress ``multi_counter.count`` is equal
-        to the maximum ``max_multi``.  If it is not equal it increments
-        ``multi_counter.count`` and allows the thread to proceed.
-        However if it is at the limit, The thread puts the task back into
-        the queue so that it performs a task that is not initiating a
-        multipart operation.
-        """
-        self.is_multi_start = False
-        putback = False
-        if isinstance(function, BasicTask):
-            if hasattr(function.filename, 'is_multi'):
-                self.is_multi_start = function.filename.is_multi
-            is_maxed = self.multi_counter.count == self.max_multi
-            if is_maxed and self.is_multi_start:
-                putback = True
-                self.is_multi_start = False
-            elif not is_maxed and self.is_multi_start:
-                self.multi_counter.count += 1
-        return putback
 
 
 class PrintThread(threading.Thread):

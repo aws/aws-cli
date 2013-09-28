@@ -86,7 +86,7 @@ class FileGenerator(object):
                     name.decode(sys.getdefaultencoding())
                     return True
                 except UnicodeDecodeError:
-                    print 'Bad filename: %s, Skip to upload' % name
+                    print ('Bad filename: %s, Skip to upload' % name)
                     return False
 
             names = [ x for x in listdir(path) if is_pass_decode_test(x) ]

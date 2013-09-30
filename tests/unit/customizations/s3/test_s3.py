@@ -207,9 +207,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
-        params = {'filters': True}
+        params = {'filters': True, 'region': 'us-east-1'}
         for cmd in cmds:
-            cmd_arc = CommandArchitecture(self.session, cmd, {})
+            cmd_arc = CommandArchitecture(self.session, cmd, {'region': 'us-east-1'})
             cmd_arc.create_instructions()
             self.assertEqual(cmd_arc.instructions, instructions[cmd])
 

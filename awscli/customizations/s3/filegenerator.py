@@ -27,12 +27,10 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, session, operation, parameters):
-        self.session = session
-        self.service = self.session.get_service('s3')
-        region = parameters['region']
-        self.endpoint = self.service.get_endpoint(region)
-        self.operation = operation
+    def __init__(self, service, endpoint, operation_name, parameters):
+        self._service = service
+        self._endpoint = endpoint
+        self.operation_name = operation_name
 
     def call(self, files):
         """
@@ -63,7 +61,9 @@ class FileGenerator(object):
             yield FileInfo(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
-                           dest_type=dest_type, operation=self.operation)
+                           service=self._service, endpoint=self._endpoint,
+                           dest_type=dest_type,
+                           operation_name=self.operation_name)
 
     def list_files(self, path, dir_op):
         """
@@ -97,9 +97,9 @@ class FileGenerator(object):
         common prefix.  It yields the file's source path, size, and last
         update.
         """
-        operation = self.service.get_operation('ListObjects')
+        operation = self._service.get_operation('ListObjects')
         bucket, prefix = find_bucket_key(s3_path)
-        iterator = operation.paginate(self.endpoint, bucket=bucket,
+        iterator = operation.paginate(self._endpoint, bucket=bucket,
                                       prefix=prefix)
         for html_response, response_data in iterator:
             contents = response_data['Contents']
@@ -109,7 +109,7 @@ class FileGenerator(object):
                 last_update = parse(content['LastModified'])
                 last_update = last_update.astimezone(tzlocal())
                 if size == 0 and src_path.endswith('/'):
-                    if self.operation == 'delete':
+                    if self.operation_name == 'delete':
                         # This is to filter out manually created folders
                         # in S3.  They have a size zero and would be
                         # undesirably downloaded.  Local directories

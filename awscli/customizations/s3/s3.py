@@ -123,8 +123,9 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'grants': {'options': {'nargs': '+'}},
                'sse': {'options': {'action': 'store_true'}},
                'storage-class': {'options': {'nargs': 1,
-                                             'choices': ['STANDARD',
-                                                         'REDUCED_REDUNDANCY']}},
+                                             'choices': [
+                                                 'STANDARD',
+                                                 'REDUCED_REDUNDANCY']}},
                'website-redirect': {'options': {'nargs': 1}},
                'cache-control': {'options': {'nargs': 1}},
                'content-disposition': {'options': {'nargs': 1}},
@@ -502,6 +503,8 @@ class CommandArchitecture(object):
         self.cmd = cmd
         self.parameters = parameters
         self.instructions = []
+        self._service = self.session.get_service('s3')
+        self._endpoint = self._service.get_endpoint(self.parameters['region'])
 
     def create_instructions(self):
         """
@@ -555,14 +558,18 @@ class CommandArchitecture(object):
                                       'mv': 'move'}
         cmd_translation['s3'] = {'rm': 'delete', 'ls': 'list_objects',
                                  'mb': 'make_bucket', 'rb': 'remove_bucket'}
-        operation = cmd_translation[paths_type][self.cmd]
+        operation_name = cmd_translation[paths_type][self.cmd]
 
-        file_generator = FileGenerator(self.session, operation,
+        file_generator = FileGenerator(self._service, self._endpoint,
+                                       operation_name,
                                        self.parameters)
-        rev_generator = FileGenerator(self.session, '',
+        rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters)
         taskinfo = [TaskInfo(src=files['src']['path'],
-                             src_type='s3', operation=operation)]
+                             src_type='s3',
+                             operation_name=operation_name,
+                             service=self._service,
+                             endpoint=self._endpoint)]
         s3handler = S3Handler(self.session, self.parameters)
 
         command_dict = {}

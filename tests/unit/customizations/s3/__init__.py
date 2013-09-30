@@ -154,7 +154,7 @@ def compare_files(self, result_file, ref_file):
     self.assertEqual(result_file.last_update, ref_file.last_update)
     self.assertEqual(result_file.src_type, ref_file.src_type)
     self.assertEqual(result_file.dest_type, ref_file.dest_type)
-    self.assertEqual(result_file.operation, ref_file.operation)
+    self.assertEqual(result_file.operation_name, ref_file.operation_name)
 
 
 def list_contents(bucket, session):

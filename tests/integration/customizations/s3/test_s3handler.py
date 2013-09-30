@@ -78,9 +78,13 @@ class S3HandlerTestDeleteList(unittest.TestCase):
                 self.bucket + '/another_directory/']
         tasks = []
         for key in keys:
-            tasks.append(FileInfo(src=key, src_type='s3',
-                                  dest_type='local', operation_name='delete',
-                                  size=0))
+            tasks.append(FileInfo(
+                src=key, src_type='s3',
+                dest_type='local', operation_name='delete',
+                size=0,
+                service=self.service,
+                endpoint=self.endpoint,
+            ))
         self.assertEqual(len(list_contents(self.bucket, self.session)), 3)
         self.s3_handler.call(tasks)
         self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
@@ -92,12 +96,22 @@ class S3HandlerTestDeleteList(unittest.TestCase):
         operation
         """
         prefix_name = self.bucket + '/'
-        file_info = FileInfo(src=prefix_name, operation_name='list_objects', size=0)
+        file_info = FileInfo(
+            src=prefix_name,
+            operation_name='list_objects',
+            size=0,
+            service=self.service,
+            endpoint=self.endpoint,
+        )
         params = {'region': 'us-east-1'}
         s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
 
-        file_info = FileInfo(src='', operation_name='list_objects', size=0)
+        file_info = FileInfo(
+            src='', operation_name='list_objects', size=0,
+            service=self.service,
+            endpoint=self.endpoint,
+        )
         params = {'region': 'us-east-1'}
         s3_handler = S3Handler(self.session, params)
         s3_handler.call([file_info])
@@ -105,6 +119,8 @@ class S3HandlerTestDeleteList(unittest.TestCase):
 class S3HandlerTestDeleteList(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
@@ -116,8 +132,11 @@ class S3HandlerTestDeleteList(unittest.TestCase):
 
     def test_delete_url_encode(self):
         key = self.bucket + '/a+b/foo'
-        tasks = [FileInfo(src=key, src_type='s3',
-                          dest_type='local', operation_name='delete', size=0)]
+        tasks = [FileInfo(
+            src=key, src_type='s3',
+            dest_type='local', operation_name='delete', size=0,
+            service=self.service, endpoint=self.endpoint,
+        )]
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
         self.s3_handler.call(tasks)
         self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
@@ -130,6 +149,8 @@ class S3HandlerTestUpload(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private']}
         self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
@@ -156,9 +177,13 @@ class S3HandlerTestUpload(unittest.TestCase):
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
         for i in range(len(files)):
-            tasks.append(FileInfo(src=self.loc_files[i],
-                                  dest=self.s3_files[i],
-                                  operation_name='upload', size=0))
+            tasks.append(FileInfo(
+                src=self.loc_files[i],
+                dest=self.s3_files[i],
+                operation_name='upload', size=0,
+                service=self.service,
+                endpoint=self.endpoint,
+            ))
         # Perform the upload.
         self.s3_handler.call(tasks)
         # Confirm the files were uploaded.
@@ -168,9 +193,13 @@ class S3HandlerTestUpload(unittest.TestCase):
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
         for i in range(len(files)):
-            tasks.append(FileInfo(src=self.loc_files[i],
-                                  dest=self.s3_files[i], size=15,
-                                  operation_name='upload'))
+            tasks.append(FileInfo(
+                src=self.loc_files[i],
+                dest=self.s3_files[i], size=15,
+                operation_name='upload',
+                service=self.service,
+                endpoint=self.endpoint,
+            ))
 
         # Note nothing is uploaded because the file is too small
         # a print statement will show up if it fails.
@@ -182,6 +211,8 @@ class S3HandlerTestUpload(unittest.TestCase):
 class S3HandlerTestUnicodeMove(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private']}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session, key1=u'\u2713')
@@ -199,9 +230,12 @@ class S3HandlerTestUnicodeMove(unittest.TestCase):
         # Create file info objects to perform move.
         tasks = []
         for i in range(len(self.s3_files)):
-            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
-                                  dest=self.s3_files2[i], dest_type='s3',
-                                  operation_name='move', size=0))
+            tasks.append(FileInfo(
+                src=self.s3_files[i], src_type='s3',
+                dest=self.s3_files2[i], dest_type='s3',
+                operation_name='move', size=0,
+                service=self.service, endpoint=self.endpoint
+            ))
         # Perform the move.
         self.s3_handler.call(tasks)
         self.assertEqual(len(list_contents(self.bucket2, self.session)), 1)
@@ -215,6 +249,8 @@ class S3HandlerTestMove(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private']}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
@@ -234,9 +270,12 @@ class S3HandlerTestMove(unittest.TestCase):
         # Create file info objects to perform move.
         tasks = []
         for i in range(len(self.s3_files)):
-            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
-                                  dest=self.s3_files2[i], dest_type='s3',
-                                  operation_name='move', size=0))
+            tasks.append(FileInfo(
+                src=self.s3_files[i], src_type='s3',
+                dest=self.s3_files2[i], dest_type='s3',
+                operation_name='move', size=0,
+                service=self.service, endpoint=self.endpoint
+            ))
         # Perform the move.
         self.s3_handler.call(tasks)
         # Confirm the files were moved.  The origial bucket had three
@@ -252,6 +291,8 @@ class S3HandlerTestDownload(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
@@ -277,10 +318,14 @@ class S3HandlerTestDownload(unittest.TestCase):
         tasks = []
         time = datetime.datetime.now()
         for i in range(len(self.s3_files)):
-            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
-                                  dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation_name='download',
-                                  size=0))
+            tasks.append(FileInfo(
+                src=self.s3_files[i], src_type='s3',
+                dest=self.loc_files[i], dest_type='local',
+                last_update=time, operation_name='download',
+                size=0,
+                service=self.service,
+                endpoint=self.endpoint
+            ))
         # Perform the download.
         self.s3_handler.call(tasks)
         # Confirm that the files now exist.
@@ -296,10 +341,14 @@ class S3HandlerTestDownload(unittest.TestCase):
         tasks = []
         time = datetime.datetime.now()
         for i in range(len(self.s3_files)):
-            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
-                                  dest=self.loc_files[i], dest_type='local',
-                                  last_update=time, operation_name='download',
-                                  size=15))
+            tasks.append(FileInfo(
+                src=self.s3_files[i], src_type='s3',
+                dest=self.loc_files[i], dest_type='local',
+                last_update=time, operation_name='download',
+                size=15,
+                service=self.service,
+                endpoint=self.endpoint,
+            ))
         # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
         # Confirm that the files now exist.
@@ -332,15 +381,20 @@ class S3HandlerTestBucket(unittest.TestCase):
         rand2 = random.randrange(5000)
         self.bucket = str(rand1) + 'mybucket' + str(rand2) + '/'
 
-        file_info = FileInfo(src=self.bucket, operation_name='make_bucket', size=0)
+        file_info = FileInfo(
+            src=self.bucket, operation_name='make_bucket', size=0,
+            service=self.service,
+            endpoint=self.endpoint,
+        )
         self.s3_handler.call([file_info])
         buckets_list = []
         for bucket in list_buckets(self.session):
             buckets_list.append(bucket['Name'])
         self.assertIn(self.bucket[:-1], buckets_list)
 
-        file_info = FileInfo(src=self.bucket, operation_name='remove_bucket',
-                             size=0)
+        file_info = FileInfo(
+            src=self.bucket, operation_name='remove_bucket', size=0,
+            service=self.service, endpoint=self.endpoint)
         self.s3_handler.call([file_info])
         buckets_list = []
         for bucket in list_buckets(self.session):

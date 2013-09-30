@@ -17,7 +17,7 @@ from six import StringIO
 from io import BytesIO
 
 from botocore.compat import unquote
-from mock import MagicMock
+from mock import MagicMock, Mock
 
 from awscli.customizations.s3.filegenerator import find_bucket_key
 
@@ -78,7 +78,9 @@ class FakeService(object):
         self.session = session
 
     def get_endpoint(self, region):
-        return region
+        endpoint = Mock()
+        endpoint.region_name = region
+        return endpoint
 
     def get_operation(self, name):
         return FakeOperation(name, self.session)

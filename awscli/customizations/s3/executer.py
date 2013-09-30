@@ -58,6 +58,7 @@ class Executer(object):
         """
         This is the function used to submit a task to the ``Executer``.
         """
+        LOGGER.debug("Submitting task: %s", task)
         self.queue.put(task)
 
     def wait(self):

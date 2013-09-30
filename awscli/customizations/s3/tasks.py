@@ -28,7 +28,7 @@ def print_operation(filename, failed, dryrun=False):
     Helper function used to print out what an operation did and whether
     it failed.
     """
-    print_str = filename.operation
+    print_str = filename.operation_name
     if dryrun:
         print_str = '(dryrun) ' + print_str
     if failed:
@@ -38,7 +38,7 @@ def print_operation(filename, failed, dryrun=False):
         print_str = print_str + "s3://" + filename.src
     else:
         print_str += os.path.relpath(filename.src)
-    if filename.operation not in ["delete", "make_bucket", "remove_bucket"]:
+    if filename.operation_name not in ["delete", "make_bucket", "remove_bucket"]:
         if filename.dest_type == "s3":
             print_str += " to s3://" + filename.dest
         else:
@@ -75,15 +75,15 @@ class BasicTask(object):
         filename = self.filename
         try:
             if not self.parameters['dryrun']:
-                getattr(filename, filename.operation)()
+                getattr(filename, filename.operation_name)()
         except requests.ConnectionError as e:
             connect_error = str(e)
             LOGGER.debug("%s %s failure: %s",
-                         filename.src, filename.operation, connect_error)
+                         filename.src, filename.operation_name, connect_error)
             self._execute_task(attempts - 1, last_error=str(e))
         except MD5Error as e:
             LOGGER.debug("%s %s failure: Data was corrupted: %s",
-                         filename.src, filename.operation, e)
+                         filename.src, filename.operation_name, e)
             self._execute_task(attempts - 1, last_error=str(e))
         except Exception as e:
             LOGGER.debug(str(e), exc_info=True)
@@ -97,7 +97,7 @@ class BasicTask(object):
     def _queue_print_message(self, filename, failed, dryrun,
                              error_message=None):
         try:
-            if filename.operation != 'list_objects':
+            if filename.operation_name != 'list_objects':
                 print_op = print_operation(filename, failed,
                                            self.parameters['dryrun'])
                 print_dict = {'result': print_op}

@@ -2,16 +2,14 @@ import os
 from six import StringIO
 import sys
 import time
-import threading
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
-from awscli.customizations.s3.tasks import DownloadPartTask
-from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
-    retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
-    uni_print, guess_content_type
+from awscli.customizations.s3.utils import find_bucket_key, \
+        retrieve_http_etag, check_etag, check_error, operate, \
+        uni_print, guess_content_type
 
 
 def make_last_mod_str(last_mod):
@@ -76,8 +74,6 @@ class TaskInfo(object):
     functions needed to perform the task.  Note that just instantiating one
     of these objects will not be enough to run a listing or bucket command.
     unless ``session`` and ``region`` are specified upon instantiation.
-    To make it fully operational, ``set_session`` needs to be used.
-    This class is the parent class of the more extensive ``FileInfo`` object.
 
     :param src: the source path
     :type src: string
@@ -91,29 +87,12 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type=None, operation=None, session=None,
-                 region=None):
+    def __init__(self, src, src_type, operation_name, service, endpoint):
         self.src = src
         self.src_type = src_type
-        self.operation = operation
-
-        self.session = session
-        self.region = region
-        self.service = None
-        self.endpoint = None
-        if self.session and self.region:
-            self.set_session(self.session, self.region)
-
-    def set_session(self, session, region):
-        """
-        Given a session and region set the service and endpoint.  This enables
-        operations to be performed as ``self.session`` is required to perform
-        an operation.
-        """
-        self.session = session
-        self.region = region
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint(self.region)
+        self.operation_name = operation_name
+        self.service = service
+        self.endpoint = endpoint
 
     def list_objects(self):
         """
@@ -176,9 +155,9 @@ class TaskInfo(object):
         This opereation makes a bucket.
         """
         bucket, key = find_bucket_key(self.src)
-        bucket_config = {'LocationConstraint': self.region}
+        bucket_config = {'LocationConstraint': self.endpoint.region_name}
         params = {'endpoint': self.endpoint, 'bucket': bucket}
-        if self.region != 'us-east-1':
+        if self.endpoint.region_name != 'us-east-1':
             params['create_bucket_configuration'] = bucket_config
         response_data, http = operate(self.service, 'CreateBucket', params)
 
@@ -216,17 +195,19 @@ class FileInfo(TaskInfo):
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation=None, session=None, region=None, parameters=None):
+                 operation_name=None, service=None, endpoint=None,
+                 parameters=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
-                                       operation=operation, session=session,
-                                       region=region)
+                                       operation_name=operation_name,
+                                       service=service,
+                                       endpoint=endpoint)
         self.dest = dest
         self.dest_type = dest_type
         self.compare_key = compare_key
         self.size = size
         self.last_update = last_update
         # Usually inject ``parameters`` from ``BasicTask`` class.
-        if parameters:
+        if parameters is not None:
             self.parameters = parameters
         else:
             self.parameters = {'acl': None,
@@ -260,7 +241,8 @@ class FileInfo(TaskInfo):
         if self.parameters['storage_class']:
             params['storage_class'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:
-            params['website_redirect_location'] = self.parameters['website_redirect'][0]
+            params['website_redirect_location'] = \
+                    self.parameters['website_redirect'][0]
         if self.parameters['guess_mime_type']:
             self._inject_content_type(params, self.src)
         if self.parameters['content_type']:
@@ -268,7 +250,8 @@ class FileInfo(TaskInfo):
         if self.parameters['cache_control']:
             params['cache_control'] = self.parameters['cache_control'][0]
         if self.parameters['content_disposition']:
-            params['content_disposition'] = self.parameters['content_disposition'][0]
+            params['content_disposition'] = \
+                    self.parameters['content_disposition'][0]
         if self.parameters['content_encoding']:
             params['content_encoding'] = self.parameters['content_encoding'][0]
         if self.parameters['content_language']:

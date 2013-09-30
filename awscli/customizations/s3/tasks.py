@@ -139,10 +139,6 @@ class UploadPartTask(object):
             upload_id = self._upload_context.wait_for_upload_id()
             body = self._read_part()
             bucket, key = find_bucket_key(self._filename.dest)
-            #if sys.version_info[:2] == (2, 6):
-            #    body = StringIO(body)
-            #else:
-            #    body = bytearray(body)
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
                       'part_number': str(self._part_number),

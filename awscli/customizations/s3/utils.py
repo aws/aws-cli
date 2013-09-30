@@ -225,4 +225,9 @@ class ReadFileChunk(object):
         self._fileobj.close()
 
     def __iter__(self):
+        # This is a workaround for http://bugs.python.org/issue17575
+        # Basically httplib will try to iterate over the contents, even
+        # if its a file like object.  This wasn't noticed because we've
+        # already exhausted the stream so iterating over the file immediately
+        # steps, which is what we're simulating here.
         return iter([])

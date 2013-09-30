@@ -74,8 +74,6 @@ class TaskInfo(object):
     functions needed to perform the task.  Note that just instantiating one
     of these objects will not be enough to run a listing or bucket command.
     unless ``session`` and ``region`` are specified upon instantiation.
-    To make it fully operational, ``set_session`` needs to be used.
-    This class is the parent class of the more extensive ``FileInfo`` object.
 
     :param src: the source path
     :type src: string
@@ -95,18 +93,6 @@ class TaskInfo(object):
         self.operation_name = operation_name
         self.service = service
         self.endpoint = endpoint
-
-    def set_session(self, session, region):
-        """
-        Given a session and region set the service and endpoint.  This enables
-        operations to be performed as ``self.session`` is required to perform
-        an operation.
-        """
-        return
-        self.session = session
-        self.region = region
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint(self.region)
 
     def list_objects(self):
         """

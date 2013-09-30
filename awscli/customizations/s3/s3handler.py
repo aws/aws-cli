@@ -146,7 +146,6 @@ class S3Handler(object):
         total_files = 0
         total_parts = 0
         for filename in files:
-            filename.set_session(self.session, self.params['region'])
             num_uploads = 1
             is_multipart_task = self._is_multipart_task(filename)
             too_large = False

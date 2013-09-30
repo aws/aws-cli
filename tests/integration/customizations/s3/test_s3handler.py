@@ -38,6 +38,8 @@ class S3HandlerTestDeleteList(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
@@ -56,9 +58,12 @@ class S3HandlerTestDeleteList(unittest.TestCase):
         tasks = []
         for filename in files:
             self.assertTrue(os.path.exists(filename))
-            tasks.append(FileInfo(src=filename, src_type='local',
-                                  dest_type='s3', operation_name='delete',
-                                  size=0))
+            tasks.append(FileInfo(
+                src=filename, src_type='local',
+                dest_type='s3', operation_name='delete',
+                size=0,
+                service=self.service,
+                endpoint=self.endpoint))
         self.s3_handler.call(tasks)
         for filename in files:
             self.assertFalse(os.path.exists(filename))
@@ -313,6 +318,8 @@ class S3HandlerTestBucket(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = None

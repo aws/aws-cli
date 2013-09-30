@@ -89,18 +89,12 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type=None, operation_name=None, session=None,
-                 region=None):
+    def __init__(self, src, src_type, operation_name, service, endpoint):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
-
-        self.session = session
-        self.region = region
-        self.service = None
-        self.endpoint = None
-        if self.session and self.region:
-            self.set_session(self.session, self.region)
+        self.service = service
+        self.endpoint = endpoint
 
     def set_session(self, session, region):
         """
@@ -108,6 +102,7 @@ class TaskInfo(object):
         operations to be performed as ``self.session`` is required to perform
         an operation.
         """
+        return
         self.session = session
         self.region = region
         self.service = self.session.get_service('s3')
@@ -174,9 +169,9 @@ class TaskInfo(object):
         This opereation makes a bucket.
         """
         bucket, key = find_bucket_key(self.src)
-        bucket_config = {'LocationConstraint': self.region}
+        bucket_config = {'LocationConstraint': self.endpoint.region_name}
         params = {'endpoint': self.endpoint, 'bucket': bucket}
-        if self.region != 'us-east-1':
+        if self.endpoint.region_name != 'us-east-1':
             params['create_bucket_configuration'] = bucket_config
         response_data, http = operate(self.service, 'CreateBucket', params)
 
@@ -214,18 +209,19 @@ class FileInfo(TaskInfo):
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, session=None, region=None, parameters=None):
+                 operation_name=None, service=None, endpoint=None,
+                 parameters=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
-                                       session=session,
-                                       region=region)
+                                       service=service,
+                                       endpoint=endpoint)
         self.dest = dest
         self.dest_type = dest_type
         self.compare_key = compare_key
         self.size = size
         self.last_update = last_update
         # Usually inject ``parameters`` from ``BasicTask`` class.
-        if parameters:
+        if parameters is not None:
             self.parameters = parameters
         else:
             self.parameters = {'acl': None,
@@ -259,7 +255,8 @@ class FileInfo(TaskInfo):
         if self.parameters['storage_class']:
             params['storage_class'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:
-            params['website_redirect_location'] = self.parameters['website_redirect'][0]
+            params['website_redirect_location'] = \
+                    self.parameters['website_redirect'][0]
         if self.parameters['guess_mime_type']:
             self._inject_content_type(params, self.src)
         if self.parameters['content_type']:
@@ -267,7 +264,8 @@ class FileInfo(TaskInfo):
         if self.parameters['cache_control']:
             params['cache_control'] = self.parameters['cache_control'][0]
         if self.parameters['content_disposition']:
-            params['content_disposition'] = self.parameters['content_disposition'][0]
+            params['content_disposition'] = \
+                    self.parameters['content_disposition'][0]
         if self.parameters['content_encoding']:
             params['content_encoding'] = self.parameters['content_encoding'][0]
         if self.parameters['content_language']:

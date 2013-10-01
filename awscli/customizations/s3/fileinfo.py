@@ -60,17 +60,26 @@ def save_file(filename, response_data, last_update):
     except Exception:
         pass
     md5 = hashlib.md5()
+    file_chunks = iter(partial(body.read, 1024 * 1024), b'')
     with open(filename, 'wb') as out_file:
-        for chunk in iter(partial(body.read, 1024 * 1024), b''):
-            md5.update(chunk)
-            out_file.write(chunk)
-    if '-' not in etag:
+        if not _is_multipart_etag(etag):
+            for chunk in file_chunks:
+                md5.update(chunk)
+                out_file.write(chunk)
+        else:
+            for chunk in file_chunks:
+                out_file.write(chunk)
+    if not _is_multipart_etag(etag):
         if etag != md5.hexdigest():
             os.remove(filename)
             raise MD5Error(filename)
     last_update_tuple = last_update.timetuple()
     mod_timestamp = time.mktime(last_update_tuple)
     os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+
+
+def _is_multipart_etag(etag):
+    return '-' in etag
 
 
 class TaskInfo(object):

@@ -137,15 +137,18 @@ class UploadPartTask(object):
         try:
             LOGGER.debug("Waiting for upload id.")
             upload_id = self._upload_context.wait_for_upload_id()
-            body = self._read_part()
             bucket, key = find_bucket_key(self._filename.dest)
+            body = self._read_part()
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
                       'part_number': str(self._part_number),
                       'upload_id': upload_id,
                       'body': body}
-            response_data, http = operate(
-                self._filename.service, 'UploadPart', params)
+            try:
+                response_data, http = operate(
+                    self._filename.service, 'UploadPart', params)
+            finally:
+                body.close()
             etag = retrieve_http_etag(http)
             self._upload_context.announce_finished_part(
                 etag=etag, part_number=self._part_number)

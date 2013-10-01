@@ -21,7 +21,7 @@ from mock import Mock, MagicMock, patch
 
 from awscli.customizations.s3.s3 import AppendFilter, \
     awscli_initialize, add_s3, add_cmd_params, \
-    S3, S3Command, S3Parameter, CommandArchitecture, CommandParameters
+    S3, S3SubCommand, S3Parameter, CommandArchitecture, CommandParameters
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
@@ -100,9 +100,9 @@ class CreateTablesTest(unittest.TestCase):
                 self.assertIn(param, params_list)
 
 
-class S3CommandTest(unittest.TestCase):
+class S3SubCommandTest(unittest.TestCase):
     """
-    This checks top make sure that the S3Command properly handles commands
+    This checks top make sure that the S3SubCommand properly handles commands
     passed to it.
     """
     def setUp(self):
@@ -120,7 +120,7 @@ class S3CommandTest(unittest.TestCase):
         This just checks to make sure no exceptions get thrown for a
         proper command.
         """
-        s3_command = S3Command('ls', self.session, {'nargs': 1})
+        s3_command = S3SubCommand('ls', self.session, {'nargs': 1})
         s3_command(['s3://'], [])
 
     def test_call_error(self):
@@ -128,7 +128,7 @@ class S3CommandTest(unittest.TestCase):
         This checks to make sure an improper command throws an
         exception.
         """
-        s3_command = S3Command('ls', self.session,  {'nargs': 1})
+        s3_command = S3SubCommand('ls', self.session,  {'nargs': 1})
         with self.assertRaises(Exception):
             s3_command(['s3://', '--sfdf'], [])
 
@@ -562,7 +562,7 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         parts.  Note the examples are not included because
         the event was not registered.
         """
-        s3command = S3Command('cp', self.session, {'nargs': 2})
+        s3command = S3SubCommand('cp', self.session, {'nargs': 2})
         parser = argparse.ArgumentParser()
         parser.add_argument('--paginate', action='store_true')
         parsed_global = parser.parse_args(['--paginate'])
@@ -578,7 +578,7 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         if help is the only argument left to be parsed.  There should not
         have any contents in the docs.
         """
-        s3_command = S3Command('sync', self.session, {'nargs': 2})
+        s3_command = S3SubCommand('sync', self.session, {'nargs': 2})
         s3_command(['help'], [])
         self.assert_contains('sync')
         self.assert_contains("Synopsis")

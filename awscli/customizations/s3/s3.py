@@ -229,7 +229,7 @@ class S3(object):
         This function instantiates the operations table to be filled with
         commands.  Creates a parser based off of the commands in the
         operations table.  Parses the valid arguments and passes the
-        remaining off to a corresponding ``S3Command`` object to be called
+        remaining off to a corresponding ``S3SubCommand`` object to be called
         on.
         """
         subcommand_table = self._create_subcommand_table()
@@ -238,26 +238,24 @@ class S3(object):
         return subcommand_table[parsed_args.operation](
             remaining, parsed_globals)
 
-    def _create_service_parser(self, operation_table):
+    def _create_service_parser(self, subcommand_table):
         """
         Creates the parser required to parse the commands on the
         command line
         """
         return ServiceArgParser(
-            operations_table=operation_table, service_name=self._name)
+            operations_table=subcommand_table, service_name=self._name)
 
     def _create_subcommand_table(self):
         """
-        Creates an empty dictionary to be filled with ``S3Command`` objects
+        Creates an empty dictionary to be filled with ``S3SubCommand`` objects
         when the event is emmitted.
         """
         subcommand_table = {}
         for cmd in CMD_DICT.keys():
-            subcommand_table[cmd] = S3Command(cmd, self._session,
-                                              CMD_DICT[cmd]['options'],
-                                              CMD_DICT[cmd]['description'],
-                                              CMD_DICT[cmd]['usage'])
-
+            subcommand_table[cmd] = S3SubCommand(
+                cmd, self._session, CMD_DICT[cmd]['options'],
+                CMD_DICT[cmd]['description'], CMD_DICT[cmd]['usage'])
 
         self._session.emit('building-operation-table.%s' % self._name,
                            operation_table=subcommand_table,
@@ -279,9 +277,9 @@ class S3(object):
                              arg_table=None)
 
 
-class S3Command(object):
+class S3SubCommand(object):
     """
-    This is the object corresponding to a S3 command.
+    This is the object corresponding to a S3 subcommand.
     """
 
     def __init__(self, name, session, options, documentation="", usage=""):
@@ -663,7 +661,7 @@ class CommandParameters(object):
                 bucket, key = find_bucket_key(self.parameters['src'][5:])
                 path = 's3://'+bucket
                 try:
-                    del_objects = S3Command('rm', self.session, {'nargs': 1})
+                    del_objects = S3SubCommand('rm', self.session, {'nargs': 1})
                     del_objects([path, '--recursive'], parsed_globals)
                 except:
                     pass

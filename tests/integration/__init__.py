@@ -93,9 +93,9 @@ def aws(command, collect_memory=False):
 def _wait_and_collect_mem(process):
     # We only know how to collect memory on mac/linux.
     if platform.system() == 'Darwin':
-        get_memory = _mac_get_memory
+        get_memory = _get_memory_with_ps
     elif platform.system() == 'Linux':
-        get_memory = _linux_get_memory
+        get_memory = _get_memory_with_ps
     else:
         raise ValueError(
             "Can't collect memory for process on platform %s." %
@@ -113,8 +113,8 @@ def _wait_and_collect_mem(process):
     return stdout, stderr, memory
 
 
-def _mac_get_memory(pid):
-    # It's probably possible to do with proc_pidinfo and ctypes,
+def _get_memory_with_ps(pid):
+    # It's probably possible to do with proc_pidinfo and ctypes on a Mac,
     # but we'll do it the easy way with parsing ps output.
     command_list = 'ps u -p'.split()
     command_list.append(str(pid))
@@ -127,7 +127,3 @@ def _mac_get_memory(pid):
         # USER       PID  %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
         # user     47102   0.0  0.1  2437000   4496 s002  S+    7:04PM   0:00.12 python2.6
         return int(stdout.splitlines()[1].split()[5]) * 1024
-
-
-def _linux_get_memory(pid):
-    raise NotImplementedError('_linux_get_memory')

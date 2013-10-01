@@ -54,12 +54,10 @@ class AppendFilter(argparse.Action):
         setattr(namespace, self.dest, filter_list)
 
 
-"""
-This is a dictionary useful for automatically adding the different commands,
-the amount of arguments it takes, and the optional parameters that can appear
-on the same line as the command.  It also contains descriptions and usage
-keys for help command and doc generation.
-"""
+# This is a dictionary useful for automatically adding the different commands,
+# the amount of arguments it takes, and the optional parameters that can appear
+# on the same line as the command.  It also contains descriptions and usage
+# keys for help command and doc generation.
 cmd_dict = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
@@ -97,12 +95,10 @@ cmd_dict = {'cp': {'options': {'nargs': 2},
 add_command_descriptions(cmd_dict)
 
 
-"""
-This is a dictionary useful for keeping track of the parameters passed to
-add_argument when the parameter is added to the parser.  The documents
-key is a description of what the parameter does and is used for the help
-command and doc generation.
-"""
+# This is a dictionary useful for keeping track of the parameters passed to
+# add_argument when the parameter is added to the parser.  The documents
+# key is a description of what the parameter does and is used for the help
+# command and doc generation.
 params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},

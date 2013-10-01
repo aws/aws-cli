@@ -58,6 +58,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         params['payload'] = None
 
     def register_uri(self):
+        httpretty.register_uri(httpretty.GET, re.compile('.*'), body='',
+                               status_code=200)
         httpretty.register_uri(httpretty.PUT, re.compile('.*'), body='',
                                etag='"120ea8a25e5d487bf68b5f7096440019"',
                                content_length=0)
@@ -155,7 +157,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         # being processed correctly at the moment.  Need to track
         # this down.
         #self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
-        self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected_rc=0)
 
     def test_content_type(self):
         cmdline = self.prefix

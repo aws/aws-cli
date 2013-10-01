@@ -33,10 +33,12 @@ class Result(object):
         self.rc = rc
         self.stdout = stdout
         self.stderr = stderr
+        LOG.debug("rc: %s", rc)
+        LOG.debug("stdout: %s", stdout)
+        LOG.debug("stderr: %s", stderr)
         if memory_usage is None:
             memory_usage = []
         self.memory_usage = memory_usage
-
 
     @property
     def json(self):

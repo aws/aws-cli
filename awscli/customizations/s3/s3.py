@@ -567,6 +567,27 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+        self.check_dest_path(self.parameters['dest'])
+
+    def check_dest_path(self, destination):
+        if destination.startswith('s3://') and \
+                self.cmd in ['ls', 'cp', 'sync', 'mv']:
+            bucket, key = find_bucket_key(destination[5:])
+            # A bucket is not always provided (like 'aws s3 ls')
+            # so only verify the bucket exists if we actually have
+            # a bucket.
+            if bucket:
+                self._verify_bucket_exists(bucket)
+
+    def _verify_bucket_exists(self, bucket_name):
+        session = self.session
+        service = session.get_service('s3')
+        endpoint = service.get_endpoint(self.parameters['region'])
+        operation = service.get_operation('ListObjects')
+        # This will raise an exception if the bucket does not exist.
+        html_response, response_data = operation.call(endpoint,
+                                                      bucket=bucket_name,
+                                                      max_keys=0)
 
     def check_path_type(self, paths):
         """
@@ -596,7 +617,7 @@ class CommandParameters(object):
         This checks the source paths to deem if they are valid.  The check
         performed in S3 is first it lists the objects using the source path.
         If there is an error like the bucket does not exist, the error will be
-        caught with ``check_error()`` funciton.  If the operation is on a
+        caught with ``check_error()`` function.  If the operation is on a
         single object in s3, it checks that a list of object was returned and
         that the first object listed is the name of the specified in the
         command line.  If the operation is on objects under a common prefix,

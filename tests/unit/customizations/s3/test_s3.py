@@ -29,10 +29,6 @@ from tests import BaseAWSHelpOutputTest
 
 
 class AppendFilterTest(unittest.TestCase):
-    """
-    This ensures that the custom action produces the correct format
-    for the namespace variable
-    """
     def test_call(self):
         parser = argparse.ArgumentParser()
 
@@ -193,11 +189,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                                                 's3_handler'])
 
     def test_run_cp_put(self):
-        """
-        This ensures that the architecture sets up correctly for a ``cp`` put
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``cp`` put
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
         rel_local_file = os.path.relpath(local_file)
@@ -212,11 +206,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_cp_get(self):
-        """
-        This ensures that the architecture sets up correctly for a ``cp`` get
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``cp`` get
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
         rel_local_file = os.path.relpath(local_file)
@@ -231,11 +223,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_cp_copy(self):
-        """
-        This ensures that the architecture sets up correctly for a ``cp`` copy
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``cp`` copy
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
@@ -248,11 +238,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_mv(self):
-        """
-        This ensures that the architecture sets up correctly for a ``mv``
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``mv``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
@@ -265,11 +253,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_remove(self):
-        """
-        This ensures that the architecture sets up correctly for a ``rm``
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``rm``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
@@ -282,11 +268,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_sync(self):
-        """
-        This ensures that the architecture sets up correctly for a ``sync``
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``sync``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
         s3_prefix = 's3://' + self.bucket + '/'
@@ -303,11 +287,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_ls(self):
-        """
-        This ensures that the architecture sets up correctly for a ``ls``
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``ls``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
@@ -317,11 +299,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         cmd_arc.run()
 
     def test_run_mb(self):
-        """
-        This ensures that the architecture sets up correctly for a ``rb``
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``rb``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
@@ -333,11 +313,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_rb(self):
-        """
-        This ensures that the architecture sets up correctly for a ``mb``
-        command.  It is just just a dry run, but all of the components need
-        to be wired correctly for it to work.
-        """
+        # This ensures that the architecture sets up correctly for a ``mb``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
@@ -365,36 +343,10 @@ class CommandParametersTest(unittest.TestCase):
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
-    def test_add_paths(self):
-        """
-        This ensures that the paths are assigned properly in the
-        class's parameters dictionary.
-        """
-        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
-        path1 = [s3_file, 's3://some_file']
-        path2 = [s3_file]
-        cmd_params = CommandParameters(self.session, 'cp', {})
-        cmd_params2 = CommandParameters(self.session, 'rm', {})
-        cmd_params.check_region([])
-        cmd_params2.check_region([])
-        cmd_params.add_paths(path1)
-        cmd_params2.add_paths(path2)
-        ref_params = {'dir_op': False, 'src': s3_file,
-                      'dest': 's3://some_file',
-                      'region': self.session.get_config()['region'],
-                      'paths_type': 's3s3'}
-        self.assertEqual(cmd_params.parameters, ref_params)
-        ref_params2 = {'dir_op': False, 'src': s3_file, 'dest': s3_file,
-                       'region': self.session.get_config()['region'],
-                       'paths_type': 's3'}
-        self.assertEqual(cmd_params2.parameters, ref_params2)
-
     def test_check_path_type_pass(self):
-        """
-        This tests the class's ability to determine whether the correct
-        path types have been passed for a particular command.  It test every
-        possible combination that is correct for every command.
-        """
+        # This tests the class's ability to determine whether the correct
+        # path types have been passed for a particular command.  It test every
+        # possible combination that is correct for every command.
         cmds = {'cp': ['locals3', 's3s3', 's3local'],
                 'mv': ['locals3', 's3s3', 's3local'],
                 'rm': ['s3'], 'ls': ['s3'], 'mb': ['s3'], 'rb': ['s3'],
@@ -417,12 +369,9 @@ class CommandParametersTest(unittest.TestCase):
                 cmd_param.check_path_type(combos[path_args])
 
     def test_check_path_type_fail(self):
-        """
-        This tests the class's ability to determine whether the correct
-        path types have been passed for a particular command. It test every
-        possible combination that is incorrect for every command.
-        """
-
+        # This tests the class's ability to determine whether the correct
+        # path types have been passed for a particular command. It test every
+        # possible combination that is incorrect for every command.
         cmds = {'cp': ['local', 'locallocal', 's3'],
                 'mv': ['local', 'locallocal', 's3'],
                 'rm': ['local', 'locallocal', 's3s3', 'locals3', 's3local'],
@@ -449,12 +398,10 @@ class CommandParametersTest(unittest.TestCase):
                     cmd_param.check_path_type(combos[path_args])
 
     def test_check_src_path_pass(self):
-        """
-        This tests to see if all of the checks on the source path works.  It
-        does so by testing if s3 objects and and prefixes exist as well as
-        local files and directories.  All of these should not throw an
-        exception.
-        """
+        # This tests to see if all of the checks on the source path works.  It
+        # does so by testing if s3 objects and and prefixes exist as well as
+        # local files and directories.  All of these should not throw an
+        # exception.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
         s3_prefix = 's3://' + self.bucket
@@ -474,12 +421,10 @@ class CommandParametersTest(unittest.TestCase):
             cmd_parameter.check_src_path(filename[0])
 
     def test_check_src_path_fail(self):
-        """
-        This tests to see if all of the checks on the source path works.  It
-        does so by testing if s3 objects and and prefixes do not exist as well
-        as local files and directories.  All of these should throw an
-        exception.
-        """
+        # This tests to see if all of the checks on the source path works.  It
+        # does so by testing if s3 objects and and prefixes do not exist as well
+        # as local files and directories.  All of these should throw an
+        # exception.
         local_file = self.loc_files[0]
         local_dir = self.loc_files[3]
         fake_s3_file = 's3://' + self.bucket + '/' + 'text1.tx'
@@ -502,21 +447,17 @@ class CommandParametersTest(unittest.TestCase):
                 cmd_parameter.check_src_path(filename[0])
 
     def test_check_force(self):
-        """
-        This checks to make sure that the force parameter is run. If
-        successful. The delete command will fail as the bucket is empty
-        and be caught by the exception.
-        """
+        # This checks to make sure that the force parameter is run. If
+        # successful. The delete command will fail as the bucket is empty
+        # and be caught by the exception.
         cmd_params = CommandParameters(self.session, 'rb', {'force': True})
         cmd_params.parameters['src'] = 's3://mybucket'
         cmd_params.check_force(None, None)
 
     def test_region(self):
-        """
-        This tests the ability to specify the region and throw an error
-        if a region is never specified whether if it is an environment
-        variable, config file, or parsed global.
-        """
+        # This tests the ability to specify the region and throw an error
+        # if a region is never specified whether if it is an environment
+        # variable, config file, or parsed global.
         cmd_params = CommandParameters(self.session, 'mb', {})
         parser = argparse.ArgumentParser()
         parser.add_argument('--region', nargs=1)
@@ -540,11 +481,9 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         super(HelpDocTest, self).tearDown()
 
     def test_s3_help(self):
-        """
-        This tests the help command for the s3 service. This
-        checks to make sure the appropriate descriptions are
-        added including the tutorial.
-        """
+        # This tests the help command for the s3 service. This
+        # checks to make sure the appropriate descriptions are
+        # added including the tutorial.
         s3 = S3('s3', self.session)
         parser = argparse.ArgumentParser()
         parser.add_argument('--paginate', action='store_true')
@@ -556,12 +495,10 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         self.assert_contains("* rb")
 
     def test_s3command_help(self):
-        """
-        This tests the help command for an s3 command. This
-        checks to make sure the command prints appropriate
-        parts.  Note the examples are not included because
-        the event was not registered.
-        """
+        # This tests the help command for an s3 command. This
+        # checks to make sure the command prints appropriate
+        # parts.  Note the examples are not included because
+        # the event was not registered.
         s3command = S3SubCommand('cp', self.session, {'nargs': 2})
         parser = argparse.ArgumentParser()
         parser.add_argument('--paginate', action='store_true')
@@ -573,15 +510,14 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         self.assert_contains("Displays the operations that would be")
 
     def test_help(self):
-        """
-        This ensures that the file appropriately redirects to help object
-        if help is the only argument left to be parsed.  There should not
-        have any contents in the docs.
-        """
+        # This ensures that the file appropriately redirects to help object
+        # if help is the only argument left to be parsed.  There should not
+        # have any contents in the docs.
         s3_command = S3SubCommand('sync', self.session, {'nargs': 2})
         s3_command(['help'], [])
         self.assert_contains('sync')
         self.assert_contains("Synopsis")
+
 
 if __name__ == "__main__":
     unittest.main()

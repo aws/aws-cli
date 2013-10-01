@@ -58,7 +58,7 @@ class AppendFilter(argparse.Action):
 # the amount of arguments it takes, and the optional parameters that can appear
 # on the same line as the command.  It also contains descriptions and usage
 # keys for help command and doc generation.
-cmd_dict = {'cp': {'options': {'nargs': 2},
+CMD_DICT = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
                               'no-guess-mime-type',
@@ -92,7 +92,7 @@ cmd_dict = {'cp': {'options': {'nargs': 2},
             'rb': {'options': {'nargs': 1}, 'params': ['force']}
             }
 
-add_command_descriptions(cmd_dict)
+add_command_descriptions(CMD_DICT)
 
 
 # This is a dictionary useful for keeping track of the parameters passed to
@@ -141,9 +141,8 @@ def awscli_initialize(cli):
     file
     """
     cli.register("building-command-table.main", add_s3)
-    cli.register("building-operation-table.s3", add_commands)
     cli.register("doc-examples.S3.*", add_s3_examples)
-    for cmd in cmd_dict.keys():
+    for cmd in CMD_DICT.keys():
         cli.register("building-parameter-table.s3.%s" % cmd, add_cmd_params)
 
 
@@ -164,23 +163,12 @@ def add_s3(command_table, session, **kwargs):
     command_table['s3'] = S3('s3', session)
 
 
-def add_commands(operation_table, session, **kwargs):
-    """
-    This create the S3Command objects for each command
-    """
-    for cmd in cmd_dict.keys():
-        operation_table[cmd] = S3Command(cmd, session,
-                                         cmd_dict[cmd]['options'],
-                                         cmd_dict[cmd]['description'],
-                                         cmd_dict[cmd]['usage'])
-
-
 def add_cmd_params(parameter_table, command, **kwargs):
     """
     This creates the ParameterArgument object for each possible parameter
     in a specified command
     """
-    for param in cmd_dict[command]['params']:
+    for param in CMD_DICT[command]['params']:
         parameter_table[param] = S3Parameter(param,
                                              params_dict[param]['options'],
                                              params_dict[param]['documents'])
@@ -229,11 +217,10 @@ class S3(object):
     The service for the plugin.
     """
 
-    def __init__(self, name, session, op_table={}):
+    def __init__(self, name, session):
         self._name = name
         self._service_object = S3Service()
         self._session = session
-        self.op_table = op_table
         self.documentation = "This provides higher level S3 commands for " \
                              "the AWS CLI."
 
@@ -245,10 +232,11 @@ class S3(object):
         remaining off to a corresponding ``S3Command`` object to be called
         on.
         """
-        self._create_operations_table()
-        service_parser = self._create_service_parser(self.op_table)
+        subcommand_table = self._create_subcommand_table()
+        service_parser = self._create_service_parser(subcommand_table)
         parsed_args, remaining = service_parser.parse_known_args(args)
-        return self.op_table[parsed_args.operation](remaining, parsed_globals)
+        return subcommand_table[parsed_args.operation](
+            remaining, parsed_globals)
 
     def _create_service_parser(self, operation_table):
         """
@@ -258,28 +246,36 @@ class S3(object):
         return ServiceArgParser(
             operations_table=operation_table, service_name=self._name)
 
-    def _create_operations_table(self):
+    def _create_subcommand_table(self):
         """
         Creates an empty dictionary to be filled with ``S3Command`` objects
         when the event is emmitted.
         """
+        subcommand_table = {}
+        for cmd in CMD_DICT.keys():
+            subcommand_table[cmd] = S3Command(cmd, self._session,
+                                              CMD_DICT[cmd]['options'],
+                                              CMD_DICT[cmd]['description'],
+                                              CMD_DICT[cmd]['usage'])
+
 
         self._session.emit('building-operation-table.%s' % self._name,
-                           operation_table=self.op_table,
+                           operation_table=subcommand_table,
                            session=self._session)
-        self.op_table['help'] = S3HelpCommand(self._session, self,
-                                              command_table=self.op_table,
-                                              arg_table=None)
+        subcommand_table['help'] = S3HelpCommand(self._session, self,
+                                                command_table=subcommand_table,
+                                                arg_table=None)
+        return subcommand_table
 
     def create_help_command(self):
         """
         This function returns a help command object with a filled command
         table.  This command is necessary for generating html docs.
         """
-        command_table = {}
-        add_commands(command_table, self._session)
+        subcommand_table = self._create_subcommand_table()
+        del subcommand_table['help']
         return S3HelpCommand(self._session, self,
-                             command_table=command_table,
+                             command_table=subcommand_table,
                              arg_table=None)
 
 
@@ -586,7 +582,7 @@ class CommandParameters(object):
                          'local': [], 'locallocal': []}
         paths_type = ''
         usage = "usage: aws s3 %s %s" % (self.cmd,
-                                         cmd_dict[self.cmd]['usage'])
+                                         CMD_DICT[self.cmd]['usage'])
         for i in range(len(paths)):
             if paths[i].startswith('s3://'):
                 paths_type = paths_type + 's3'

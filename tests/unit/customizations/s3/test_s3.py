@@ -20,8 +20,8 @@ import awscli
 import botocore.session
 from mock import Mock, MagicMock, patch
 
-from awscli.customizations.s3.s3 import AppendFilter, cmd_dict, \
-    params_dict, awscli_initialize, add_s3, add_commands, add_cmd_params, \
+from awscli.customizations.s3.s3 import AppendFilter, \
+    params_dict, awscli_initialize, add_s3, add_cmd_params, \
     S3, S3Command, S3Parameter, CommandArchitecture, CommandParameters
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -82,17 +82,6 @@ class CreateTablesTest(unittest.TestCase):
         for service in self.services.keys():
             self.assertIn(service, ['s3'])
 
-    def test_command(self):
-        """
-        Ensures that all of the commands generated in the table
-        are elgible commands.
-        """
-        self.commands = {}
-        commands_list = ['cp', 'mv', 'rm', 'sync', 'ls', 'mb', 'rb']
-        add_commands(self.commands, True)
-        for command in self.commands.keys():
-            self.assertIn(command, commands_list)
-
     def test_parameters(self):
         """
         Ensures that all of the parameters generated for a specified
@@ -110,21 +99,6 @@ class CreateTablesTest(unittest.TestCase):
             add_cmd_params(self.parameters, cmd)
             for param in self.parameters.keys():
                 self.assertIn(param, params_list)
-
-
-class S3Test(unittest.TestCase):
-    """
-    This test to ensure the command object can be called from
-    parsing a command in the service object.
-    """
-    def setUp(self):
-        self.mock = MagicMock(return_value='test service')
-
-    def test_call(self):
-        session = botocore.session.get_session()
-        s3 = S3('s3', session, {'s3': self.mock})
-        response = s3(['s3'], [])
-        self.assertEqual(response, "test service")
 
 
 class S3CommandTest(unittest.TestCase):

@@ -280,20 +280,19 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart upload function if the file is
         large.  If it is small enough, it puts the file as an object in s3.
         """
-        body = open(self.src, 'rb')
-        bucket, key = find_bucket_key(self.dest)
-        params = {
-            'endpoint': self.endpoint,
-            'bucket': bucket,
-            'key': key,
-            'body': body,
-        }
-        self._handle_object_params(params)
-        response_data, http = operate(self.service, 'PutObject', params)
-        etag = retrieve_http_etag(http)
-        body.seek(0)
-        check_etag(etag, body)
-
+        with open(self.src, 'rb') as body:
+            bucket, key = find_bucket_key(self.dest)
+            params = {
+                'endpoint': self.endpoint,
+                'bucket': bucket,
+                'key': key,
+                'body': body,
+            }
+            self._handle_object_params(params)
+            response_data, http = operate(self.service, 'PutObject', params)
+            etag = retrieve_http_etag(http)
+            body.seek(0)
+            check_etag(etag, body)
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.

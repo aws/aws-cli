@@ -9,7 +9,7 @@ import threading
 from six import StringIO
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
-    operate, retrieve_http_etag
+    operate, retrieve_http_etag, ReadFileChunk
 
 
 LOGGER = logging.getLogger(__name__)
@@ -128,9 +128,8 @@ class UploadPartTask(object):
     def _read_part(self):
         actual_filename = self._filename.src
         in_file_part_number = self._part_number - 1
-        with open(actual_filename, 'rb') as in_file:
-            in_file.seek(in_file_part_number * self._chunk_size)
-            return in_file.read(self._chunk_size)
+        starting_byte = in_file_part_number * self._chunk_size
+        return ReadFileChunk(actual_filename, starting_byte, self._chunk_size)
 
     def __call__(self):
         LOGGER.debug("Uploading part %s for filename: %s",
@@ -140,10 +139,6 @@ class UploadPartTask(object):
             upload_id = self._upload_context.wait_for_upload_id()
             body = self._read_part()
             bucket, key = find_bucket_key(self._filename.dest)
-            if sys.version_info[:2] == (2, 6):
-                body = StringIO(body)
-            else:
-                body = bytearray(body)
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
                       'part_number': str(self._part_number),

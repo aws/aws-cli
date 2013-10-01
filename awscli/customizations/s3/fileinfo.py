@@ -1,15 +1,16 @@
 import os
-from six import StringIO
 import sys
 import time
+from functools import partial
+import hashlib
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
-        retrieve_http_etag, check_etag, check_error, operate, \
-        uni_print, guess_content_type
+        retrieve_http_etag, check_etag, check_error, operate, uni_print, \
+        guess_content_type, MD5Error
 
 
 def make_last_mod_str(last_mod):
@@ -50,20 +51,35 @@ def save_file(filename, response_data, last_update):
     data to the file.  It also modifies the last modified time to that
     of the S3 object.
     """
-    data = response_data['Body'].read()
+    body = response_data['Body']
     etag = response_data['ETag'][1:-1]
-    check_etag(etag, data)
     d = os.path.dirname(filename)
     try:
         if not os.path.exists(d):
             os.makedirs(d)
     except Exception:
         pass
+    md5 = hashlib.md5()
+    file_chunks = iter(partial(body.read, 1024 * 1024), b'')
     with open(filename, 'wb') as out_file:
-        out_file.write(data)
+        if not _is_multipart_etag(etag):
+            for chunk in file_chunks:
+                md5.update(chunk)
+                out_file.write(chunk)
+        else:
+            for chunk in file_chunks:
+                out_file.write(chunk)
+    if not _is_multipart_etag(etag):
+        if etag != md5.hexdigest():
+            os.remove(filename)
+            raise MD5Error(filename)
     last_update_tuple = last_update.timetuple()
     mod_timestamp = time.mktime(last_update_tuple)
     os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+
+
+def _is_multipart_etag(etag):
+    return '-' in etag
 
 
 class TaskInfo(object):
@@ -264,18 +280,18 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart upload function if the file is
         large.  If it is small enough, it puts the file as an object in s3.
         """
-        body = read_file(self.src)
+        body = open(self.src, 'rb')
         bucket, key = find_bucket_key(self.dest)
-        if sys.version_info[:2] == (2, 6):
-            stream_body = StringIO(body)
-        else:
-            stream_body = bytearray(body)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        if body:
-            params['body'] = stream_body
+        params = {
+            'endpoint': self.endpoint,
+            'bucket': bucket,
+            'key': key,
+            'body': body,
+        }
         self._handle_object_params(params)
         response_data, http = operate(self.service, 'PutObject', params)
         etag = retrieve_http_etag(http)
+        body.seek(0)
         check_etag(etag, body)
 
 

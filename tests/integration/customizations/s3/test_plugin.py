@@ -20,11 +20,13 @@ import random
 from tests import unittest
 import tempfile
 import shutil
+import platform
 
 import botocore.session
 
 from tests.integration import aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
+from awscli.customizations.s3 import constants
 
 
 class FileCreator(object):
@@ -231,6 +233,7 @@ class TestCp(BaseS3CLICommand):
         # Make a new name for the file and copy it locally.
         full_path = self.files.full_path('bar.txt')
         p = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, full_path))
+        self.assert_no_errors(p)
 
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
@@ -373,6 +376,46 @@ class TestDryrun(BaseS3CLICommand):
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
         self.assertFalse(self.key_exists(bucket_name, 'foo.txt'))
+
+
+@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                 'Memory tests only supported on mac/linux')
+class TestMemoryUtilization(BaseS3CLICommand):
+    # These tests verify the memory utilization and growth are what we expect.
+    def extra_setup(self):
+        expected_memory_usage = constants.NUM_THREADS * constants.CHUNKSIZE
+        # margin for things like python VM overhead, botocore service
+        # objects, etc.  1.5 is really generous, perhaps over time this can be
+        # lowered.
+        runtime_margin = 1.5
+        self.max_mem_allowed = runtime_margin * expected_memory_usage
+
+    def assert_max_memory_used(self, process, max_mem_allowed, full_command):
+        peak_memory = max(process.memory_usage)
+        if peak_memory > self.max_mem_allowed:
+            failure_message = (
+                'Exceeded max memory allowed (%s MB) for command '
+                '"%s": %s MB' % (self.max_mem_allowed / 1024.0 / 1024.0,
+                              full_command,
+                              peak_memory / 1024.0 / 1024.0))
+            self.fail(failure_message)
+
+    def test_transfer_single_large_file(self):
+        # 40MB will force a multipart upload.
+        bucket_name = self.create_bucket()
+        file_contents = 'abcdabcd' * (1024 * 1024 * 10)
+        foo_txt = self.files.create_file('foo.txt', file_contents)
+        full_command = 's3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name)
+        p = aws(full_command, collect_memory=True)
+        self.assert_no_errors(p)
+        self.assert_max_memory_used(p, self.max_mem_allowed, full_command)
+
+        # Verify downloading it back down obeys memory utilization.
+        download_full_command = 's3 mv s3://%s/foo.txt %s' % (
+            bucket_name, foo_txt)
+        p = aws(download_full_command, collect_memory=True)
+        self.assert_no_errors(p)
+        self.assert_max_memory_used(p, self.max_mem_allowed, download_full_command)
 
 
 if __name__ == "__main__":

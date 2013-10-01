@@ -149,7 +149,9 @@ class FakeOperation(object):
                 body = kwargs['body']
                 if isinstance(body, StringIO):
                     body = body.getvalue()
-                if not isinstance(body, bytearray):
+                if hasattr(body, 'read'):
+                    body = body.read()
+                elif not isinstance(body, bytearray):
                     body = body.encode('utf-8')
                 content['Body'] = body
                 m = hashlib.md5()

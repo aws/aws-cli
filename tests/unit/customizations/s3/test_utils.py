@@ -1,8 +1,12 @@
 from tests import unittest
+import os
+import tempfile
+import shutil
+
 from six.moves import queue
 
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
-from awscli.customizations.s3.utils import NoBlockQueue
+from awscli.customizations.s3.utils import NoBlockQueue, ReadFileChunk
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -71,6 +75,45 @@ class TestNoBlockQueue(unittest.TestCase):
         self.assertEqual(q.get(), 2)
         self.assertEqual(q.get(), 3)
         self.assertEqual(q.get(), 4)
+
+
+class TestReadFileChunk(unittest.TestCase):
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
+    def test_read_entire_chunk(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=0, size=3)
+        self.assertEqual(chunk.read(), b'one')
+        self.assertEqual(chunk.read(), b'')
+
+    def test_read_with_amount_size(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=11, size=4)
+        self.assertEqual(chunk.read(1), b'f')
+        self.assertEqual(chunk.read(1), b'o')
+        self.assertEqual(chunk.read(1), b'u')
+        self.assertEqual(chunk.read(1), b'r')
+        self.assertEqual(chunk.read(1), b'')
+
+    def test_read_past_end_of_file(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=36, size=100000)
+        self.assertEqual(chunk.read(), b'ten')
+        self.assertEqual(chunk.read(), b'')
+        self.assertEqual(len(chunk), 3)
 
 
 if __name__ == "__main__":

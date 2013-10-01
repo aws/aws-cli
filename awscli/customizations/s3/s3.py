@@ -99,7 +99,7 @@ add_command_descriptions(CMD_DICT)
 # add_argument when the parameter is added to the parser.  The documents
 # key is a description of what the parameter does and is used for the help
 # command and doc generation.
-params_dict = {'dryrun': {'options': {'action': 'store_true'}},
+PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},
                'force': {'options': {'action': 'store_true'}},
@@ -130,7 +130,7 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'expires': {'options': {'nargs': 1}},
                }
 
-add_param_descriptions(params_dict)
+add_param_descriptions(PARAMS_DICT)
 
 
 def awscli_initialize(cli):
@@ -170,8 +170,8 @@ def add_cmd_params(parameter_table, command, **kwargs):
     """
     for param in CMD_DICT[command]['params']:
         parameter_table[param] = S3Parameter(param,
-                                             params_dict[param]['options'],
-                                             params_dict[param]['documents'])
+                                             PARAMS_DICT[param]['options'],
+                                             PARAMS_DICT[param]['documents'])
 
 
 def add_s3_examples(help_command, **kwargs):

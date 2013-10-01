@@ -16,12 +16,11 @@ from six import StringIO
 import sys
 from tests import unittest
 
-import awscli
 import botocore.session
 from mock import Mock, MagicMock, patch
 
 from awscli.customizations.s3.s3 import AppendFilter, \
-    params_dict, awscli_initialize, add_s3, add_cmd_params, \
+    awscli_initialize, add_s3, add_cmd_params, \
     S3, S3Command, S3Parameter, CommandArchitecture, CommandParameters
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -309,7 +308,6 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         command.  It is just just a dry run, but all of the components need
         to be wired correctly for it to work.
         """
-        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
@@ -487,7 +485,6 @@ class CommandParametersTest(unittest.TestCase):
         fake_s3_file = 's3://' + self.bucket + '/' + 'text1.tx'
         fake_local_file = local_file[:-1]
         fake_s3_prefix = 's3://' + self.bucket + '/' + 'fake/'
-        fake_local_dir = local_dir + os.sep + 'fake' + os.sep
 
         # :var files: a list of tuples where the first element is a single
         #     element list of file paths. The second element is a boolean

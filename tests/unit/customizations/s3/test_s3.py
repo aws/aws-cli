@@ -313,7 +313,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_rb(self):
-        # This ensures that the architecture sets up correctly for a ``mb``
+        # This ensures that the architecture sets up correctly for a ``rb``
         # command.  It is just just a dry run, but all of the components need
         # to be wired correctly for it to work.
         s3_prefix = 's3://' + self.bucket + '/'
@@ -322,9 +322,25 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'region': 'us-east-1'}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
-        cmd_arc.run()
+        rc = cmd_arc.run()
         output_str = "(dryrun) remove_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
+        self.assertEqual(rc, 0)
+
+    def test_run_rb_nonzero_rc(self):
+        # This ensures that the architecture sets up correctly for a ``rb``
+        # command.  It is just just a dry run, but all of the components need
+        # to be wired correctly for it to work.
+        s3_prefix = 's3://' + self.bucket + '/'
+        params = {'dir_op': True, 'dryrun': False, 'quiet': False,
+                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
+                  'region': 'us-east-1'}
+        cmd_arc = CommandArchitecture(self.session, 'rb', params)
+        cmd_arc.create_instructions()
+        rc = cmd_arc.run()
+        output_str = "remove_bucket failed: %s" % s3_prefix
+        self.assertIn(output_str, self.output.getvalue())
+        self.assertEqual(rc, 1)
 
 
 class CommandParametersTest(unittest.TestCase):

@@ -526,12 +526,18 @@ class CommandArchitecture(object):
                 else:
                     file_list.append(components[i].call(files[i]))
             files = file_list
-        # TODO: Errors are not being surfaced out of here.
-        # I have put an explicit return of zero here to handle
-        # the success case because a None was being returned
-        # before.  I need to dig into this more to figure out
-        # the right way to surface the errors.
-        return 0
+        # This is kinda quirky, but each call through the instructions
+        # will replaces the files attr with the return value of the
+        # file_list.  The very last call is a single list of
+        # [s3_handler], and the s3_handler returns the number of
+        # tasks failed.  This means that files[0] now contains
+        # the number of failed tasks.  In terms of the RC, we're
+        # keeping it simple and saying that > 0 failed tasks
+        # will give a 1 RC.
+        rc = 0
+        if files[0] > 0:
+            rc = 1
+        return rc
 
 
 class CommandParameters(object):

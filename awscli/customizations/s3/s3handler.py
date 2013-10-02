@@ -37,7 +37,7 @@ class S3Handler(object):
         self.session = session
         self.done = threading.Event()
         self.interrupt = threading.Event()
-        self.print_queue = NoBlockQueue()
+        self.result_queue = NoBlockQueue()
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
                        'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
@@ -53,7 +53,7 @@ class S3Handler(object):
         self.chunksize = chunksize
         self.executer = Executer(
             done=self.done, num_threads=NUM_THREADS,
-            timeout=QUEUE_TIMEOUT_GET, print_queue=self.print_queue,
+            timeout=QUEUE_TIMEOUT_GET, result_queue=self.result_queue,
             quiet=self.params['quiet'], interrupt=self.interrupt,
             max_queue_size=MAX_QUEUE_SIZE,
         )
@@ -77,15 +77,17 @@ class S3Handler(object):
             self.executer.print_thread.set_total_files(total_files)
             self.executer.print_thread.set_total_parts(total_parts)
             self.executer.wait()
-            self.print_queue.join()
+            self.result_queue.join()
 
         except Exception as e:
             LOGGER.debug('Exception caught during task execution: %s',
                          str(e), exc_info=True)
         except KeyboardInterrupt:
             self.interrupt.set()
-            self.print_queue.put({'result': "Cleaning up. Please wait..."})
+            self.result_queue.put({'message': "Cleaning up. Please wait...",
+                                   'error': False})
         self._shutdown()
+        return self.executer.num_tasks_failed
 
     def _shutdown(self):
         # self.done will tell threads to shutdown.
@@ -154,7 +156,7 @@ class S3Handler(object):
             if too_large and filename.operation_name == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \
                             "being skipped" % os.path.relpath(filename.src)
-                self.print_queue.put({'result': warning})
+                self.result_queue.put({'message': warning, 'error': True})
             elif is_multipart_task and not self.params['dryrun']:
                 # If we're in dryrun mode, then we don't need the
                 # real multipart tasks.  We can just use a BasicTask
@@ -167,7 +169,7 @@ class S3Handler(object):
                 task = tasks.BasicTask(
                     session=self.session, filename=filename,
                     parameters=self.params,
-                    print_queue=self.print_queue)
+                    result_queue=self.result_queue)
                 self.executer.submit(task)
             total_files += 1
             total_parts += num_uploads
@@ -211,11 +213,11 @@ class S3Handler(object):
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
-                print_queue=self.print_queue, service=filename.service,
+                result_queue=self.result_queue, service=filename.service,
                 filename=filename, context=context)
             self.executer.submit(task)
         complete_file_task = tasks.CompleteDownloadTask(
-            context=context, filename=filename, print_queue=self.print_queue,
+            context=context, filename=filename, result_queue=self.result_queue,
             params=self.params)
         self.executer.submit(complete_file_task)
         self._multipart_downloads.append((context, filename.dest))
@@ -238,19 +240,19 @@ class S3Handler(object):
         create_multipart_upload_task = tasks.CreateMultipartUploadTask(
             session=self.session, filename=filename,
             parameters=self.params,
-            print_queue=self.print_queue, upload_context=upload_context)
+            result_queue=self.result_queue, upload_context=upload_context)
         self.executer.submit(create_multipart_upload_task)
 
         for i in range(1, (num_uploads + 1)):
             task = tasks.UploadPartTask(
                 part_number=i, chunk_size=chunksize,
-                print_queue=self.print_queue, upload_context=upload_context,
+                result_queue=self.result_queue, upload_context=upload_context,
                 filename=filename)
             self.executer.submit(task)
 
         complete_multipart_upload_task = tasks.CompleteMultipartUploadTask(
             session=self.session, filename=filename, parameters=self.params,
-            print_queue=self.print_queue, upload_context=upload_context)
+            result_queue=self.result_queue, upload_context=upload_context)
         self.executer.submit(complete_multipart_upload_task)
         self._multipart_uploads.append((upload_context, filename))
         if remove_local_file:

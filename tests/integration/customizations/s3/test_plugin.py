@@ -206,6 +206,11 @@ class TestMoveCommand(BaseS3CLICommand):
         self.assertTrue(os.path.exists(foo_txt))
         self.assertEqual(os.path.getsize(foo_txt), len(file_contents))
 
+    def test_mv_to_nonexistent_bucket(self):
+        full_path = self.files.create_file('foo.txt', 'this is foo.txt')
+        p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
+        self.assertEqual(p.rc, 255)
+
 
 class TestCp(BaseS3CLICommand):
 
@@ -260,6 +265,11 @@ class TestCp(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertEqual(os.path.getsize(local_foo_txt), len(foo_contents))
 
+    def test_cp_to_nonexistent_bucket(self):
+        foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
+        p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
+        self.assertEqual(p.rc, 255)
+
 
 class TestSync(BaseS3CLICommand):
     def test_sync_to_from_s3(self):
@@ -286,6 +296,14 @@ class TestSync(BaseS3CLICommand):
             self.assertEqual(f.read(), 'foo contents')
         with open(bar_txt, 'r') as f:
             self.assertEqual(f.read(), 'bar contents')
+
+    def test_sync_to_nonexistent_bucket(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+        bar_txt = self.files.create_file('bar.txt', 'bar contents')
+
+        # Sync the directory and the bucket.
+        p = aws('s3 sync %s s3://noexist-bkt-nme-1412' % (self.files.rootdir,))
+        self.assertEqual(p.rc, 255)
 
 
 class TestUnicode(BaseS3CLICommand):
@@ -336,6 +354,10 @@ class TestLs(BaseS3CLICommand):
     def test_ls_bucket(self):
         p = aws('s3 ls')
         self.assert_no_errors(p)
+
+    def test_ls_non_existent_bucket(self):
+        p = aws('s3 ls s3://foobara99842u4wbts829381')
+        self.assertEqual(p.rc, 255)
 
 
 class TestMbRb(BaseS3CLICommand):

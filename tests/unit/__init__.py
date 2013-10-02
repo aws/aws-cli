@@ -64,7 +64,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             if isinstance(value, Payload):
                 self.last_params[key] = value.getvalue()
 
-    def assert_params_for_cmd(self, cmd, params, expected_rc=0,
+    def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
                               stderr_contains=None):
         logging.debug("Calling cmd: %s", cmd)
         driver = create_clidriver()
@@ -85,5 +85,6 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             rc, expected_rc,
             "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
                 expected_rc, rc, cmd))
-        self.assertDictEqual(params, self.last_params)
+        if params is not None:
+            self.assertDictEqual(params, self.last_params)
         return rc

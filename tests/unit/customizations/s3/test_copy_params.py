@@ -153,11 +153,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read:bob'
-        # This should have an rc of 255 but the error is not
-        # being processed correctly at the moment.  Need to track
-        # this down.
-        #self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
-        self.assert_params_for_cmd(cmdline, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected_rc=1)
 
     def test_content_type(self):
         cmdline = self.prefix

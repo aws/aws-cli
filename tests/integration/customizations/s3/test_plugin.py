@@ -380,8 +380,8 @@ class TestMbRb(BaseS3CLICommand):
     def test_fail_mb_rb(self):
         # Choose a bucket name that already exists.
         p = aws('s3 mb s3://mybucket')
-        # TODO: assert error code test.
         self.assertIn("BucketAlreadyExists", p.stdout)
+        self.assertEqual(p.rc, 1)
 
 
 class TestDryrun(BaseS3CLICommand):

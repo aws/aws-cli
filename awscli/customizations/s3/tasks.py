@@ -135,6 +135,8 @@ class UploadPartTask(object):
             LOGGER.debug("Waiting for upload id.")
             upload_id = self._upload_context.wait_for_upload_id()
             bucket, key = find_bucket_key(self._filename.dest)
+            total = int(math.ceil(
+                self._filename.size/float(self._chunk_size)))
             body = self._read_part()
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
@@ -151,14 +153,22 @@ class UploadPartTask(object):
                 etag=etag, part_number=self._part_number)
 
             message = print_operation(self._filename, 0)
-            total = int(math.ceil(
-                self._filename.size/float(self._chunk_size)))
             result = {'message': message, 'total_parts': total,
                       'error': False}
             self._result_queue.put(result)
+        except UploadCancelledError as e:
+            # We don't need to do anything in this case.  The task
+            # has been cancelled, and the task that cancelled the
+            # task has already queued a message.
+            LOGGER.debug("Not uploading part, task has been cancelled.")
         except Exception as e:
             LOGGER.debug('Error during part upload: %s' , e,
                          exc_info=True)
+            message = print_operation(self._filename, failed=True,
+                                      dryrun=False)
+            message += '\n' + str(e)
+            result = {'message': message, 'error': True}
+            self._result_queue.put(result)
             self._upload_context.cancel_upload()
         else:
             LOGGER.debug("Part number %s completed for filename: %s",

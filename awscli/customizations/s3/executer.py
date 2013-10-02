@@ -38,13 +38,21 @@ class Executer(object):
         self.interrupt = interrupt
         self.threads_list = []
         self._max_queue_size = max_queue_size
+        self.print_thread = None
+
+    @property
+    def num_tasks_failed(self):
+        tasks_failed = 0
+        if self.print_thread is not None:
+            tasks_failed = self.print_thread.num_errors_seen
+        return tasks_failed
 
     def start(self):
-        self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
         self.print_thread = PrintThread(self.result_queue, self.done,
                                         self.quiet, self.interrupt,
                                         self.timeout)
-        self.print_thread.setDaemon(True)
+        self.print_thread.daemon = True
+        self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
         self.threads_list.append(self.print_thread)
         self.print_thread.start()
         for i in range(self.num_threads):
@@ -140,11 +148,9 @@ class PrintThread(threading.Thread):
         self._total_parts = 0
         self._total_files = '...'
 
-        # This is a public boolean attribute that clients
-        # can inspect to determine whether or not we saw
-        # any results indicating that an error occurred.  It's
-        # no more granular than True/False for now.
-        self.errors_seen = False
+        # This is a public attribute that clients can inspect to determine
+        # whether or not we saw any results indicating that an error occurred.
+        self.num_errors_seen = 0
 
     def set_total_parts(self, total_parts):
         with self._lock:
@@ -177,6 +183,8 @@ class PrintThread(threading.Thread):
 
     def _process_print_task(self, print_task):
         print_str = print_task['message']
+        if print_task['error']:
+            self.num_errors_seen += 1
         final_str = ''
         if 'total_parts' in print_task:
             # Normalize keys so failures and sucess
@@ -195,8 +203,6 @@ class PrintThread(threading.Thread):
             print_components = print_str.split(':')
             final_str += print_str.ljust(self._progress_length, ' ')
             final_str += '\n'
-            #if print_task.get('error', ''):
-            #    final_str += print_task['error'] + '\n'
             key = ':'.join(print_components[1:])
             if key in self._progress_dict:
                 self._progress_dict.pop(print_str, None)

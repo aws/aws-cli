@@ -87,6 +87,7 @@ class S3Handler(object):
             self.result_queue.put({'message': "Cleaning up. Please wait...",
                                    'error': False})
         self._shutdown()
+        return self.executer.num_tasks_failed
 
     def _shutdown(self):
         # self.done will tell threads to shutdown.

@@ -372,10 +372,38 @@ class TestDryrun(BaseS3CLICommand):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s --dryrun' % (foo_txt, bucket_name))
+        p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, bucket_name))
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
         self.assertFalse(self.key_exists(bucket_name, 'foo.txt'))
+
+    def test_dryrun_large_files(self):
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'a' * 1024 * 1024 * 10)
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        self.assert_no_errors(p)
+        self.assertFalse(
+            self.key_exists(bucket_name, 'foo.txt'),
+            "The key 'foo.txt' exists in S3. It looks like the --dryrun "
+            "argument was not obeyed.")
+
+    def test_dryrun_download_large_file(self):
+        bucket_name = self.create_bucket()
+        full_path = self.files.create_file('largefile', 'a' * 1024 * 1024 * 10)
+        with open(full_path, 'rb') as body:
+            self.put_object(bucket_name, 'foo.txt', body)
+
+        foo_txt = self.files.full_path('foo.txt')
+        p = aws('s3 cp s3://%s/foo.txt %s --dryrun' % (bucket_name, foo_txt))
+        self.assertEqual(p.rc, 0)
+        self.assert_no_errors(p)
+        self.assertFalse(
+            os.path.exists(foo_txt),
+            "The file 'foo.txt' exists locally. It looks like the --dryrun "
+            "argument was not obeyed.")
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],

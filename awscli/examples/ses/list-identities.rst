@@ -7,11 +7,13 @@ The following example uses the ``list-identities`` command to list all identitie
 
 Output::
 
- [
-    "user@example.com",
-    "example.com"
- ]
-
+ {
+     "Identities": [
+       "user@example.com",
+       "example.com"
+     ]
+ }
+  
 
 The list that is returned contains all identities regardless of verification status (verified, pending verification, failure, etc.).
 

@@ -155,7 +155,13 @@ class S3Handler(object):
                 warning = "Warning %s exceeds 5 TB and upload is " \
                             "being skipped" % os.path.relpath(filename.src)
                 self.print_queue.put({'result': warning})
-            elif is_multipart_task:
+            elif is_multipart_task and not self.params['dryrun']:
+                # If we're in dryrun mode, then we don't need the
+                # real multipart tasks.  We can just use a BasicTask
+                # in the else clause below, which will print out the
+                # fact that it's transferring a file rather than
+                # the specific part tasks required to perform the
+                # transfer.
                 num_uploads = self._enqueue_multipart_tasks(filename)
             else:
                 task = tasks.BasicTask(

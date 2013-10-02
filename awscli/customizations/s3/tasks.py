@@ -2,11 +2,8 @@ import logging
 import math
 import os
 import requests
-import sys
 import time
 import threading
-
-from six import StringIO
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, retrieve_http_etag, ReadFileChunk
@@ -53,7 +50,7 @@ class BasicTask(object):
     attributes like ``session`` object in order for the filename to
     perform its designated operation.
     """
-    def __init__(self, session, filename, parameters, print_queue):
+    def __init__(self, session, filename, parameters, result_queue):
         self.session = session
         self.service = self.session.get_service('s3')
 
@@ -61,7 +58,7 @@ class BasicTask(object):
         self.filename.parameters = parameters
 
         self.parameters = parameters
-        self.print_queue = print_queue
+        self.result_queue = result_queue
 
     def __call__(self):
         self._execute_task(attempts=3)
@@ -98,12 +95,12 @@ class BasicTask(object):
                              error_message=None):
         try:
             if filename.operation_name != 'list_objects':
-                print_op = print_operation(filename, failed,
-                                           self.parameters['dryrun'])
-                print_dict = {'result': print_op}
+                message = print_operation(filename, failed,
+                                          self.parameters['dryrun'])
                 if error_message is not None:
-                    print_dict['error'] = error_message
-                self.print_queue.put(print_dict)
+                    message += '\n' + error_message
+                result = {'message': message, 'error': failed}
+                self.result_queue.put(result)
         except Exception as e:
             LOGGER.debug('%s' % str(e))
 
@@ -118,8 +115,8 @@ class UploadPartTask(object):
     object.
     """
     def __init__(self, part_number, chunk_size,
-                 print_queue, upload_context, filename):
-        self._print_queue = print_queue
+                 result_queue, upload_context, filename):
+        self._result_queue = result_queue
         self._upload_context = upload_context
         self._part_number = part_number
         self._chunk_size = chunk_size
@@ -153,13 +150,12 @@ class UploadPartTask(object):
             self._upload_context.announce_finished_part(
                 etag=etag, part_number=self._part_number)
 
-            print_str = print_operation(self._filename, 0)
-            print_result = {'result': print_str}
+            message = print_operation(self._filename, 0)
             total = int(math.ceil(
                 self._filename.size/float(self._chunk_size)))
-            part_str = {'total': total}
-            print_result['part'] = part_str
-            self._print_queue.put(print_result)
+            result = {'message': message, 'total_parts': total,
+                      'error': False}
+            self._result_queue.put(result)
         except Exception as e:
             LOGGER.debug('Error during part upload: %s' , e,
                          exc_info=True)
@@ -186,24 +182,24 @@ class CreateLocalFileTask(object):
 
 
 class CompleteDownloadTask(object):
-    def __init__(self, context, filename, print_queue, params):
+    def __init__(self, context, filename, result_queue, params):
         self._context = context
         self._filename = filename
-        self._print_queue = print_queue
+        self._result_queue = result_queue
         self._parameters = params
 
     def __call__(self):
         # When the file is downloading, we have a few things we need to do:
         # 1) Fix up the last modified time to match s3.
-        # 2) Tell the print_queue we're done.
+        # 2) Tell the result_queue we're done.
         self._context.wait_for_completion()
         last_update_tuple = self._filename.last_update.timetuple()
         mod_timestamp = time.mktime(last_update_tuple)
         os.utime(self._filename.dest, (int(mod_timestamp), int(mod_timestamp)))
-        print_op = print_operation(self._filename, False,
-                                   self._parameters['dryrun'])
-        print_task = {'result': print_op}
-        self._print_queue.put(print_task)
+        message = print_operation(self._filename, False,
+                                  self._parameters['dryrun'])
+        print_task = {'message': message, 'error': False}
+        self._result_queue.put(print_task)
 
 
 class DownloadPartTask(object):
@@ -218,11 +214,11 @@ class DownloadPartTask(object):
     # Amount to read from response body at a time.
     ITERATE_CHUNK_SIZE = 1024 * 1024
 
-    def __init__(self, part_number, chunk_size, print_queue, service,
+    def __init__(self, part_number, chunk_size, result_queue, service,
                  filename, context):
         self._part_number = part_number
         self._chunk_size = chunk_size
-        self._print_queue = print_queue
+        self._result_queue = result_queue
         self._filename = filename
         self._service = filename.service
         self._context = context
@@ -250,11 +246,11 @@ class DownloadPartTask(object):
             self._write_to_file(body)
             self._context.announce_completed_part(self._part_number)
 
-            print_str = print_operation(self._filename, 0)
-            print_result = {'result': print_str}
-            part_str = {'total': int(self._filename.size / self._chunk_size)}
-            print_result['part'] = part_str
-            self._print_queue.put(print_result)
+            message = print_operation(self._filename, 0)
+            total_parts = int(self._filename.size / self._chunk_size)
+            result = {'message': message, 'error': False,
+                      'total_parts': total_parts}
+            self._result_queue.put(result)
         except Exception as e:
             LOGGER.debug(
                 'Exception caught downloading byte range: %s',
@@ -279,10 +275,10 @@ class DownloadPartTask(object):
 
 
 class CreateMultipartUploadTask(BasicTask):
-    def __init__(self, session, filename, parameters, print_queue,
+    def __init__(self, session, filename, parameters, result_queue,
                  upload_context):
         super(CreateMultipartUploadTask, self).__init__(
-            session, filename, parameters, print_queue)
+            session, filename, parameters, result_queue)
         self._upload_context = upload_context
 
     def __call__(self):
@@ -296,10 +292,11 @@ class CreateMultipartUploadTask(BasicTask):
             LOGGER.debug("Error trying to create multipart upload: %s",
                          e, exc_info=True)
             self._upload_context.cancel_upload()
-            print_op = print_operation(self.filename, True,
-                                        self.parameters['dryrun'])
-            print_task = {'result': print_op, 'error': str(e)}
-            self.print_queue.put(print_task)
+            message = print_operation(self.filename, True,
+                                      self.parameters['dryrun'])
+            message += '\n' + str(e)
+            result = {'message': message, 'error': True}
+            self.result_queue.put(result)
             raise e
 
 
@@ -319,10 +316,10 @@ class RemoveRemoteObjectTask(object):
 
 
 class CompleteMultipartUploadTask(BasicTask):
-    def __init__(self, session, filename, parameters, print_queue,
+    def __init__(self, session, filename, parameters, result_queue,
                  upload_context):
         super(CompleteMultipartUploadTask, self).__init__(
-            session, filename, parameters, print_queue)
+            session, filename, parameters, result_queue)
         self._upload_context = upload_context
 
     def __call__(self):
@@ -343,19 +340,22 @@ class CompleteMultipartUploadTask(BasicTask):
         except Exception as e:
             LOGGER.debug("Error trying to complete multipart upload: %s",
                          e, exc_info=True)
-            print_task = {
-                'result': print_operation(self.filename, failed=True,
-                                          dryrun=self.parameters['dryrun']),
-                'error': str(e)
+            message = print_operation(
+                self.filename, failed=True,
+                dryrun=self.parameters['dryrun'])
+            message += '\n' + str(e)
+            result = {
+                'message': message,
+                'error': True
             }
         else:
             LOGGER.debug("Multipart upload completed for: %s",
                         self.filename.src)
-            print_op = print_operation(self.filename, False,
-                                       self.parameters['dryrun'])
-            print_task = {'result': print_op}
+            message = print_operation(self.filename, False,
+                                      self.parameters['dryrun'])
+            result = {'message': message, 'error': False}
             self._upload_context.announce_completed()
-        self.print_queue.put(print_task)
+        self.result_queue.put(result)
 
 
 class RemoveFileTask(BasicTask):

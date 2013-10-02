@@ -28,12 +28,12 @@ class Executer(object):
     ``Executer``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, timeout,
-                 print_queue, quiet, interrupt, max_queue_size):
+                 result_queue, quiet, interrupt, max_queue_size):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
         self.timeout = timeout
-        self.print_queue = print_queue
+        self.result_queue = result_queue
         self.quiet = quiet
         self.interrupt = interrupt
         self.threads_list = []
@@ -41,7 +41,7 @@ class Executer(object):
 
     def start(self):
         self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
-        self.print_thread = PrintThread(self.print_queue, self.done,
+        self.print_thread = PrintThread(self.result_queue, self.done,
                                         self.quiet, self.interrupt,
                                         self.timeout)
         self.print_thread.setDaemon(True)
@@ -110,12 +110,25 @@ class PrintThread(threading.Thread):
     completely finished it is permanently write the result to standard
     out. Otherwise, it is a part of a multipart upload/download and
     only shows the most current part upload/download.
+
+    Result Queue
+    ------------
+
+    Result queue items are dictionaries that have the following keys:
+
+        * message: An arbitrary string associated with the entry.   This
+            can be used to communicate the result of the task.
+        * error: Boolean indicating whether or not the task completely
+            successfully.
+        * total_parts: The total number of parts for multipart transfers (
+            deprecated, will be removed in the future).
+
     """
-    def __init__(self, print_queue, done, quiet, interrupt, timeout):
+    def __init__(self, result_queue, done, quiet, interrupt, timeout):
         threading.Thread.__init__(self)
         self._progress_dict = {}
         self._interrupt = interrupt
-        self._print_queue = print_queue
+        self._result_queue = result_queue
         self._done = done
         self._quiet = quiet
         self._timeout = timeout
@@ -126,6 +139,12 @@ class PrintThread(threading.Thread):
 
         self._total_parts = 0
         self._total_files = '...'
+
+        # This is a public boolean attribute that clients
+        # can inspect to determine whether or not we saw
+        # any results indicating that an error occurred.  It's
+        # no more granular than True/False for now.
+        self.errors_seen = False
 
     def set_total_parts(self, total_parts):
         with self._lock:
@@ -138,7 +157,8 @@ class PrintThread(threading.Thread):
     def run(self):
         while True:
             try:
-                print_task = self._print_queue.get(True, self._timeout)
+                print_task = self._result_queue.get(True, self._timeout)
+                LOGGER.debug("Received print task: %s", print_task)
                 try:
                     self._process_print_task(print_task)
                 except Exception as e:
@@ -149,22 +169,21 @@ class PrintThread(threading.Thread):
                     # queue finish, we need to have all the print tasks
                     # finished, even if an exception happens trying to print
                     # them.
-                    self._print_queue.task_done()
+                    self._result_queue.task_done()
             except Queue.Empty:
                 pass
             if self._done.isSet():
                 break
 
     def _process_print_task(self, print_task):
-        print_str = print_task['result']
+        print_str = print_task['message']
         final_str = ''
-        if print_task.get('part', ''):
+        if 'total_parts' in print_task:
             # Normalize keys so failures and sucess
             # look the same.
             op_list = print_str.split(':')
             print_str = ':'.join(op_list[1:])
-            print_part = print_task['part']
-            total_part = print_part['total']
+            total_part = print_task['total_parts']
             self._num_parts += 1
             if print_str in self._progress_dict:
                 self._progress_dict[print_str]['parts'] += 1
@@ -176,8 +195,8 @@ class PrintThread(threading.Thread):
             print_components = print_str.split(':')
             final_str += print_str.ljust(self._progress_length, ' ')
             final_str += '\n'
-            if print_task.get('error', ''):
-                final_str += print_task['error'] + '\n'
+            #if print_task.get('error', ''):
+            #    final_str += print_task['error'] + '\n'
             key = ':'.join(print_components[1:])
             if key in self._progress_dict:
                 self._progress_dict.pop(print_str, None)

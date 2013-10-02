@@ -22,10 +22,7 @@ Output::
             "Bounces": 0,
             "Rejects": 0
         }
-    ],
-    "ResponseMetadata": {
-        "RequestId": "e28c6e7e-d398-11e2-9fb3-a9e049693859"
-    }
+    ]
  }
 
 

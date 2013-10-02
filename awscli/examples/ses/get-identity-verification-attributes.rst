@@ -14,9 +14,6 @@ Output::
         "user2@example.com": {
             "VerificationStatus": "Pending"
         }
-    },
-    "ResponseMetadata": {
-        "RequestId": "1ce6c9b9-d482-11e2-bc12-e98118b9c6e7"
     }
  }
 

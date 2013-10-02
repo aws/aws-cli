@@ -8,9 +8,6 @@ Output::
 
  {
     "Max24HourSend": 200.0,
-    "ResponseMetadata": {
-        "RequestId": "595fcd1b-d393-11e2-8ebc-b50f89f8edba"
-    },
     "SentLast24Hours": 1.0,
     "MaxSendRate": 1.0
  }

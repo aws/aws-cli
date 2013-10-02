@@ -7,10 +7,7 @@ The following example uses the ``verify-domain-identity`` command to verify a do
 Output::
 
  {
-    "VerificationToken": "eoEmxw+YaYhb3h3iVJHuXMJXqeu1q1/wwmvjuEXAMPLE",
-    "ResponseMetadata": {
-        "RequestId": "9a50c7ce-d47a-11e2-aa3e-07064a188c70"
-    }
+    "VerificationToken": "eoEmxw+YaYhb3h3iVJHuXMJXqeu1q1/wwmvjuEXAMPLE"
  }
 
 

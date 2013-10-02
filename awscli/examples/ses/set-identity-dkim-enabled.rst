@@ -4,15 +4,6 @@ The following example uses the ``set-identity-dkim-enabled`` command to disable 
 
     aws ses set-identity-dkim-enabled --identity user@example.com --no-dkim-enabled
 
-Output::
-
- {
-    "ResponseMetadata": {
-        "RequestId": "d53662b0-d48b-11e2-a44f-d12a819ed5d3"
-    }
- }
-
-
 For more information about Easy DKIM, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
 .. _`Easy DKIM in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html

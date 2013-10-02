@@ -21,12 +21,8 @@ Output::
             "DkimEnabled": false,
             "DkimVerificationStatus": "NotStarted"
         }
-    },
-    "ResponseMetadata": {
-        "RequestId": "a940cbc6-d489-11e2-bcae-7f3ef3347984"
     }
  }
-
 
 If you call this command with an identity that you have never submitted for verification, that identity won't appear in the output.
 

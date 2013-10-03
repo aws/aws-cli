@@ -2,14 +2,11 @@
 
 The following example uses the ``send-email`` command to send a formatted email::
 
-    aws ses send-email --source sender@example.com --destination file://c:\temp\destination.json --message file://c:\temp\message.json
+    aws ses send-email --from sender@example.com --destination file://c:\temp\destination.json --message file://c:\temp\message.json
 
 Output::
 
  {
-    "ResponseMetadata": {
-        "RequestId": "31f3102a-d3aa-11e2-8d2d-31a6f641cb5f"
-    },
     "MessageId": "EXAMPLEf3a5efcd1-51adec81-d2a4-4e3f-9fe2-5d85c1b23783-000000"
  }
 
@@ -18,26 +15,26 @@ The destination and the message are JSON data structures saved in .json files in
 ``destination.json``::
 
  {
-   "to_addresses":  ["recipient1@example.com", "recipient2@example.com"],
-   "cc_addresses":  ["recipient3@example.com"],
-   "bcc_addresses": []
+   "ToAddresses":  ["recipient1@example.com", "recipient2@example.com"],
+   "CcAddresses":  ["recipient3@example.com"],
+   "BccAddresses": []
  }
 
 ``message.json``::
 
  {
-    "subject": {
-        "data": "Test email sent using the AWS CLI",
-        "charset": "UTF-8"
+    "Subject": {
+        "Data": "Test email sent using the AWS CLI",
+        "Charset": "UTF-8"
     },
-    "body": {
-        "text": {
-            "data": "This is the message body in text format.",
-            "charset": "UTF-8"
+    "Body": {
+        "Text": {
+            "Data": "This is the message body in text format.",
+            "Charset": "UTF-8"
         },
-        "html": {
-            "data": "This message body contains HTML formatting. It can, for example, contain links like this one: <a class=\"ulink\" href=\"http://docs.aws.amazon.com/ses/latest/DeveloperGuide\" target=\"_blank\">Amazon SES Developer Guide</a>.",
-            "charset": "UTF-8"
+        "Html": {
+            "Data": "This message body contains HTML formatting. It can, for example, contain links like this one: <a class=\"ulink\" href=\"http://docs.aws.amazon.com/ses/latest/DeveloperGuide\" target=\"_blank\">Amazon SES Developer Guide</a>.",
+            "Charset": "UTF-8"
         }
     }
  }

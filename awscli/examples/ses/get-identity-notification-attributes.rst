@@ -16,12 +16,8 @@ Output::
         "user2@example.com": {
             "ForwardingEnabled": true
         }
-    },
-    "ResponseMetadata": {
-        "RequestId": "303335b1-d484-11e2-b9bf-5b6577ad6eb1"
     }
  }
-
 
 If email feedback forwarding is disabled, then this command returns the Amazon Resource Names (ARNs) of the SNS topics that bounce and complaint notifications are sent to.
 

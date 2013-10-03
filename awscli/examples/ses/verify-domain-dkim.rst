@@ -11,12 +11,8 @@ Output::
         "EXAMPLEq76owjnks3lnluwg65scbemvw",
         "EXAMPLEi3dnsj67hstzaj673klariwx2",
         "EXAMPLEwfbtcukvimehexktmdtaz6naj"
-    ],
-    "ResponseMetadata": {
-        "RequestId": "8ee3fd8f-d47e-11e2-8f01-25643675e25c"
-    }
+    ]
  }
-
 
 To set up DKIM, you must use the returned DKIM tokens to update your domain's DNS settings with CNAME records that point to DKIM public keys hosted by Amazon SES. For more information, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 

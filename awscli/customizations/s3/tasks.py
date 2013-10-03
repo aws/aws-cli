@@ -6,7 +6,7 @@ import time
 import threading
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
-    operate, retrieve_http_etag, ReadFileChunk
+    operate, retrieve_http_etag, ReadFileChunk, relative_path
 
 
 LOGGER = logging.getLogger(__name__)
@@ -34,12 +34,12 @@ def print_operation(filename, failed, dryrun=False):
     if filename.src_type == "s3":
         print_str = print_str + "s3://" + filename.src
     else:
-        print_str += os.path.relpath(filename.src)
+        print_str += relative_path(filename.src)
     if filename.operation_name not in ["delete", "make_bucket", "remove_bucket"]:
         if filename.dest_type == "s3":
             print_str += " to s3://" + filename.dest
         else:
-            print_str += " to " + os.path.relpath(filename.dest)
+            print_str += " to " + relative_path(filename.dest)
     return print_str
 
 

@@ -19,7 +19,7 @@ from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE, \
     MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
-    operate, find_bucket_key
+    operate, find_bucket_key, relative_path
 from awscli.customizations.s3.executer import Executer
 from awscli.customizations.s3 import tasks
 
@@ -155,7 +155,7 @@ class S3Handler(object):
                 too_large = filename.size > MAX_UPLOAD_SIZE
             if too_large and filename.operation_name == 'upload':
                 warning = "Warning %s exceeds 5 TB and upload is " \
-                            "being skipped" % os.path.relpath(filename.src)
+                            "being skipped" % relative_path(filename.src)
                 self.result_queue.put({'message': warning, 'error': True})
             elif is_multipart_task and not self.params['dryrun']:
                 # If we're in dryrun mode, then we don't need the

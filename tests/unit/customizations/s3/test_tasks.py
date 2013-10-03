@@ -13,9 +13,11 @@
 from tests import unittest
 import random
 import threading
+import mock
 
 from awscli.customizations.s3.tasks import MultipartUploadContext
 from awscli.customizations.s3.tasks import UploadCancelledError
+from awscli.customizations.s3.tasks import print_operation
 
 
 class TestMultipartUploadContext(unittest.TestCase):
@@ -227,3 +229,15 @@ class TestMultipartUploadContext(unittest.TestCase):
 
         # And we should have seen an exception being raised.
         self.assertIsInstance(self.caught_exception, UploadCancelledError)
+
+
+class TestPrintOperation(unittest.TestCase):
+    def test_print_operation(self):
+        filename = mock.Mock()
+        filename.operation_name = 'upload'
+        filename.src = r'e:\foo'
+        filename.src_type = 'local'
+        filename.dest = r's3://foo'
+        filename.dest_type = 's3'
+        message = print_operation(filename, failed=False)
+        self.assertIn(r'e:\foo', message)

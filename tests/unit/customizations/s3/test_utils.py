@@ -2,11 +2,14 @@ from tests import unittest
 import os
 import tempfile
 import shutil
+import ntpath
 
 from six.moves import queue
+import mock
 
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
 from awscli.customizations.s3.utils import NoBlockQueue, ReadFileChunk
+from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -114,6 +117,20 @@ class TestReadFileChunk(unittest.TestCase):
         self.assertEqual(chunk.read(), b'ten')
         self.assertEqual(chunk.read(), b'')
         self.assertEqual(len(chunk), 3)
+
+
+class TestRelativePath(unittest.TestCase):
+    def test_relpath_normal(self):
+        self.assertEqual(relative_path('/tmp/foo/bar', '/tmp/foo'),
+                         '.' + os.sep + 'bar')
+
+    # We need to patch out relpath with the ntpath version so
+    # we can simulate testing drives on windows.
+    @mock.patch('os.path.relpath', ntpath.relpath)
+    def test_relpath_with_error(self):
+        # Just want to check we don't get an exception raised,
+        # which is what was happening previously.
+        self.assertIn(r'foo\bar', relative_path(r'c:\foo\bar'))
 
 
 if __name__ == "__main__":

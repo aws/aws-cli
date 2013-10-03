@@ -180,6 +180,22 @@ def guess_content_type(filename):
     return mimetypes.guess_type(filename)[0]
 
 
+def relative_path(filename, start=os.path.curdir):
+    """Cross platform relative path of a filename.
+
+    If no relative path can be calculated (i.e different
+    drives on Windows), then instead of raising a ValueError,
+    the absolulate path is returned.
+
+    """
+    try:
+        dirname, basename = os.path.split(filename)
+        relative_dir = os.path.relpath(dirname, start)
+        return os.path.join(relative_dir, basename)
+    except ValueError:
+        return os.path.abspath(filename)
+
+
 class ReadFileChunk(object):
     def __init__(self, filename, start_byte, size):
         self._filename = filename

@@ -185,7 +185,7 @@ def relative_path(filename, start=os.path.curdir):
 
     If no relative path can be calculated (i.e different
     drives on Windows), then instead of raising a ValueError,
-    the absolulate path is returned.
+    the absolute path is returned.
 
     """
     try:

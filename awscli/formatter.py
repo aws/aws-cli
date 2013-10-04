@@ -14,8 +14,6 @@ import logging
 import sys
 import json
 
-import six
-
 from awscli.table import MultiTable, Styler, ColorizedStyler
 
 
@@ -195,35 +193,63 @@ class TableFormatter(FullyBufferedFormatter):
 
 class TextFormatter(FullyBufferedFormatter):
 
-    def _output(self, data, stream, label=None):
-        """
-        A very simple, very stupid text formatter that has no
-        knowledge of the output as defined in the JSON model.
-        """
-        if isinstance(data, dict):
-            scalars = []
-            non_scalars = []
-            for key, val in data.items():
-                if isinstance(val, dict):
-                    non_scalars.append((key, val))
-                elif isinstance(val, list):
-                    non_scalars.append((key, val))
-                elif not isinstance(val, six.string_types):
-                    scalars.append(str(val))
+    def _text_format(self, item, stream, identifier=None, scalar_keys=None):
+        if isinstance(item, dict):
+            scalars, non_scalars = self._partition_dict(item, scalar_keys=scalar_keys)
+            if scalars:
+                if identifier is not None:
+                    scalars.insert(0, identifier.upper())
+                stream.write('\t'.join(scalars))
+                stream.write('\n')
+            for new_identifier, non_scalar in non_scalars:
+                self._text_format(item=non_scalar, stream=stream,
+                             identifier=new_identifier)
+        elif item and isinstance(item, list):
+            if isinstance(item[0], dict):
+                all_keys = self._all_scalar_keys(item)
+                for element in item:
+                    self._text_format(element,
+                                 stream=stream,
+                                 identifier=identifier,
+                                 scalar_keys=all_keys)
+            else:
+                # For a bare list, just print the contents.
+                stream.write('\t'.join([str(el) for el in item]))
+                stream.write('\n')
+
+    def _all_scalar_keys(self, list_of_dicts):
+        keys_seen = set()
+        for item_dict in list_of_dicts:
+            for key, value in item_dict.items():
+                if not isinstance(value, (dict, list)):
+                    keys_seen.add(key)
+        return list(sorted(keys_seen))
+
+    def _partition_dict(self, item_dict, scalar_keys):
+        # Given a dictionary, partition it into two list based on the
+        # values associated with the keys.
+        # {'foo': 'scalar', 'bar': 'scalar', 'baz': ['not, 'scalar']}
+        # scalar = [('foo', 'scalar'), ('bar', 'scalar')]
+        # non_scalar = [('baz', ['not', 'scalar'])]
+        scalar = []
+        non_scalar = []
+        if scalar_keys is None:
+            for key, value in sorted(item_dict.items()):
+                if isinstance(value, (dict, list)):
+                    non_scalar.append((key, value))
                 else:
-                    scalars.append(val)
-            if label:
-                scalars.insert(0, label.upper())
-            stream.write('\t'.join(scalars))
-            stream.write('\n')
-            for label, non_scalar in non_scalars:
-                self._output(non_scalar, stream, label)
-        elif isinstance(data, list):
-            for d in data:
-                self._output(d, stream)
+                    scalar.append(str(value))
+        else:
+            for key in scalar_keys:
+                scalar.append(str(item_dict.get(key, '')))
+            remaining_keys = sorted(set(item_dict.keys()) - set(scalar_keys))
+            for remaining_key in remaining_keys:
+                if remaining_key in item_dict:
+                    non_scalar.append((remaining_key, item_dict[remaining_key]))
+        return scalar, non_scalar
 
     def _format_response(self, operation, response, stream):
-        self._output(response, stream)
+        self._text_format(response, stream)
 
 
 def get_formatter(format_type, args):

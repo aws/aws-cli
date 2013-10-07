@@ -59,6 +59,35 @@ class TestSection(unittest.TestCase):
             'ZOO\t0\t1\t2\n'
         )
 
+    def test_different_keys_in_sublists(self):
+        self.assert_text_renders_to(
+            #                                missing "b"        adds "d"
+            {'foo': [dict(a=1, b=2, c=3), dict(a=4, c=5), dict(a=6, d=7)]},
+            'FOO\t1\t2\t3\t\n'
+            'FOO\t4\t\t5\t\n'
+            'FOO\t6\t\t\t7\n'
+        )
+
+    def test_different_keys_in_nested_sublists(self):
+        self.assert_text_renders_to({'bar':[
+            {'foo': [dict(a=1, b=2, c=3), dict(a=4, c=5)]},
+            {'foo': [dict(b=6, d=7), dict(b=8, c=9)]},
+        ]},
+            'FOO\t1\t2\t3\n'
+            'FOO\t4\t\t5\n'
+            'FOO\t6\t\t7\n'
+            'FOO\t8\t9\t\n'
+        )
+
+    def test_scalars_and_complex_types(self):
+        self.assert_text_renders_to(
+            {'foo': [dict(a=1, b=dict(y='y', z='z'), c=3),
+                     dict(a=4, b=dict(y='y', z='z'), c=6)]},
+            'FOO\t1\t3\n'
+            'B\ty\tz\n'
+            'FOO\t4\t6\n'
+            'B\ty\tz\n')
+
 
 if __name__ == '__main__':
     unittest.main()

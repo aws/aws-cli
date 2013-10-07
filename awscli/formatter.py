@@ -15,6 +15,7 @@ import sys
 import json
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
+from awscli import text
 
 
 LOG = logging.getLogger(__name__)
@@ -193,63 +194,8 @@ class TableFormatter(FullyBufferedFormatter):
 
 class TextFormatter(FullyBufferedFormatter):
 
-    def _text_format(self, item, stream, identifier=None, scalar_keys=None):
-        if isinstance(item, dict):
-            scalars, non_scalars = self._partition_dict(item, scalar_keys=scalar_keys)
-            if scalars:
-                if identifier is not None:
-                    scalars.insert(0, identifier.upper())
-                stream.write('\t'.join(scalars))
-                stream.write('\n')
-            for new_identifier, non_scalar in non_scalars:
-                self._text_format(item=non_scalar, stream=stream,
-                             identifier=new_identifier)
-        elif item and isinstance(item, list):
-            if isinstance(item[0], dict):
-                all_keys = self._all_scalar_keys(item)
-                for element in item:
-                    self._text_format(element,
-                                 stream=stream,
-                                 identifier=identifier,
-                                 scalar_keys=all_keys)
-            else:
-                # For a bare list, just print the contents.
-                stream.write('\t'.join([str(el) for el in item]))
-                stream.write('\n')
-
-    def _all_scalar_keys(self, list_of_dicts):
-        keys_seen = set()
-        for item_dict in list_of_dicts:
-            for key, value in item_dict.items():
-                if not isinstance(value, (dict, list)):
-                    keys_seen.add(key)
-        return list(sorted(keys_seen))
-
-    def _partition_dict(self, item_dict, scalar_keys):
-        # Given a dictionary, partition it into two list based on the
-        # values associated with the keys.
-        # {'foo': 'scalar', 'bar': 'scalar', 'baz': ['not, 'scalar']}
-        # scalar = [('foo', 'scalar'), ('bar', 'scalar')]
-        # non_scalar = [('baz', ['not', 'scalar'])]
-        scalar = []
-        non_scalar = []
-        if scalar_keys is None:
-            for key, value in sorted(item_dict.items()):
-                if isinstance(value, (dict, list)):
-                    non_scalar.append((key, value))
-                else:
-                    scalar.append(str(value))
-        else:
-            for key in scalar_keys:
-                scalar.append(str(item_dict.get(key, '')))
-            remaining_keys = sorted(set(item_dict.keys()) - set(scalar_keys))
-            for remaining_key in remaining_keys:
-                if remaining_key in item_dict:
-                    non_scalar.append((remaining_key, item_dict[remaining_key]))
-        return scalar, non_scalar
-
     def _format_response(self, operation, response, stream):
-        self._text_format(response, stream)
+        text.format_text(response, stream)
 
 
 def get_formatter(format_type, args):

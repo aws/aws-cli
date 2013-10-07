@@ -88,6 +88,25 @@ class TestSection(unittest.TestCase):
             'FOO\t4\t6\n'
             'B\ty\tz\n')
 
+    def test_nested_list_of_lists(self):
+        self.assert_text_renders_to(
+            [['1', '2', '3'], ['4', '5', '6']],
+            '1\t2\t3\n'
+            '4\t5\t6\n'
+        )
+
+    def test_deeply_nested_lists(self):
+        self.assert_text_renders_to(
+            [
+                [['1', '2', '3'], ['4', '5', '6']],
+                [['7', '8', '9'], ['0', '1', '2']],
+            ],
+            '1\t2\t3\n'
+            '4\t5\t6\n'
+            '7\t8\t9\n'
+            '0\t1\t2\n'
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

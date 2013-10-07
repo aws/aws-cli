@@ -192,9 +192,35 @@ class TableFormatter(FullyBufferedFormatter):
         return headers, more
 
 
-class TextFormatter(FullyBufferedFormatter):
+class TextFormatter(Formatter):
 
-    def _format_response(self, operation, response, stream):
+    def __call__(self, operation, response, stream=None):
+        if stream is None:
+            stream = sys.stdout
+        try:
+            if operation.can_paginate and self._args.paginate:
+                # TODO: update botocore to expose this as a public property.
+                result_keys = response._result_key
+                for _, page in response:
+                    current = {}
+                    for result_key in result_keys:
+                        current[result_key] = page[result_key]
+                    self._format_response(current, stream)
+                if response.resume_token:
+                    # Tell the user about the next token so they can continue
+                    # if they want.
+                    self._format_response(
+                        {'NextToken': {'NextToken': response.resume_token}},
+                        stream)
+            else:
+                self._remove_request_id(response)
+                self._format_response(response, stream)
+        finally:
+            # flush is needed to avoid the "close failed in file object
+            # destructor" in python2.x (see http://bugs.python.org/issue11380).
+            stream.flush()
+
+    def _format_response(self, response, stream):
         text.format_text(response, stream)
 
 

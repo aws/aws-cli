@@ -18,6 +18,7 @@ import time
 import subprocess
 import shutil
 import tempfile
+import zipfile
 from contextlib import contextmanager
 # These are package versions that are needed to boostrap
 # the installation process.  It is *not* the deps required
@@ -126,7 +127,18 @@ def create_bootstrap_script(scratch_dir):
 
 
 def zip_dir(scratch_dir):
-    pass
+    basename = 'awscli-bundle.zip'
+    dirname, tmpdir = os.path.split(scratch_dir)
+    final_dir_name = os.path.join(dirname, 'awscli-bundle')
+    if os.path.isdir(final_dir_name):
+        shutil.rmtree(final_dir_name)
+    os.rename(scratch_dir, final_dir_name)
+    with cd(dirname):
+        with zipfile.ZipFile(basename, 'w', zipfile.ZIP_DEFLATED) as zipped:
+            for root, dirnames, filenames in os.walk('awscli-bundle'):
+                for filename in filenames:
+                    zipped.write(os.path.join(root, filename))
+    return os.path.join(dirname, basename)
 
 
 def main():
@@ -139,9 +151,8 @@ def main():
     download_cli_deps(package_dir)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)
-    zip_dir(scratch_dir)
-    print("Bundled install is at: %s" % scratch_dir)
-    print("You can cd to this directory and run './install'")
+    zip_filename = zip_dir(scratch_dir)
+    print("Zipped bundle installer is at: %s" % zip_filename)
 
 
 if __name__ == '__main__':

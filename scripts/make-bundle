@@ -14,13 +14,11 @@ ecosystem.
 """
 import os
 import sys
+import time
 import subprocess
 import shutil
 import tempfile
 from contextlib import contextmanager
-# Assuming you have the awscli deps installed, so
-# using requests is ok.
-import requests
 # These are package versions that are needed to boostrap
 # the installation process.  It is *not* the deps required
 # by awscli/botocore.
@@ -34,6 +32,7 @@ PACKAGE_VERSION = {
     # run make-bundle in python versions besides 2.6.
     'ordereddict': '1.1',
     'simplejson': '3.3.0',
+    'argparse': '1.2.1',
 }
 
 
@@ -90,7 +89,7 @@ def download_cli_deps(scratch_dir):
     # the awscli as tarballs.
     # So here's what we do.
     # Step one create a virtualenv.
-    venv_dir = '/tmp/venv-%s' % os.path.basename(scratch_dir)
+    venv_dir = '/tmp/venv-%s' % str(int(time.time()))
     run('virtualenv %s' % venv_dir)
     pip = os.path.join(venv_dir, 'bin', 'pip')
     assert os.path.isfile(pip)
@@ -135,7 +134,8 @@ def main():
     package_dir = os.path.join(scratch_dir, 'packages')
     print("Bundle dir at: %s" % scratch_dir)
     download_package_tarballs(
-        package_dir, packages=['virtualenv', 'ordereddict', 'simplejson'])
+        package_dir,
+        packages=['virtualenv', 'ordereddict', 'simplejson', 'argparse'])
     download_cli_deps(package_dir)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)

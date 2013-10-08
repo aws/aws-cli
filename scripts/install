@@ -37,7 +37,7 @@ def cd(dirname):
 def run(cmd):
     sys.stdout.write("Running cmd: %s\n" % cmd)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
+                         stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if p.returncode != 0:
         raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (

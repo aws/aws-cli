@@ -42,9 +42,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         args = ' --instance-id i-12345678'
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
-        with mock.patch('sys.stdout', captured):
-            self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        output = captured.getvalue()
+        output = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
         self.assertIn('"InstanceId": "i-12345678"', output)
         self.assertIn('"Timestamp": "2013-07-27T18:29:23.000Z"', output)
         self.assertIn('"PasswordData": "%s"' % PASSWORD_DATA, output)
@@ -54,9 +52,8 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {}
         captured = cStringIO()
-        with mock.patch('sys.stderr', captured):
-            self.assert_params_for_cmd(cmdline, result, expected_rc=255)
-        error_msg = captured.getvalue()
+        error_msg = self.assert_params_for_cmd(
+            cmdline, result, expected_rc=255)[1]
         self.assertEqual(error_msg, ('priv-launch-key should be a path to '
                                      'the local SSH private key file used '
                                      'to launch the instance.\n'))
@@ -68,9 +65,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         args = ' --instance-id i-12345678 --priv-launch-key %s' % key_path
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
-        with mock.patch('sys.stdout', captured):
-            self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        output = captured.getvalue()
+        output = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
         self.assertIn('"InstanceId": "i-12345678"', output)
         self.assertIn('"Timestamp": "2013-07-27T18:29:23.000Z"', output)
         self.assertIn('"PasswordData": "=mG8.r$o-s"', output)

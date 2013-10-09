@@ -13,6 +13,7 @@
 import logging
 import sys
 import json
+import jmespath
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
@@ -53,6 +54,9 @@ class FullyBufferedFormatter(Formatter):
             response_data = response
         try:
             self._remove_request_id(response_data)
+            if self._args.query is not None:
+                expression = jmespath.compile(self._args.query)
+                response_data = expression.search(response_data)
             self._format_response(operation, response_data, stream)
         finally:
             # flush is needed to avoid the "close failed in file object
@@ -221,6 +225,9 @@ class TextFormatter(Formatter):
             stream.flush()
 
     def _format_response(self, response, stream):
+        if self._args.query is not None:
+            expression = jmespath.compile(self._args.query)
+            response = expression.search(response)
         text.format_text(response, stream)
 
 

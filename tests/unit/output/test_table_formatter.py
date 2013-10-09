@@ -299,6 +299,7 @@ KEYS_NOT_FROM_FIRST_ROW_TABLE = """\
 class Object(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+        self.query = None
 
 
 class TestTableFormatter(unittest.TestCase):

@@ -1,18 +1,16 @@
 import os
-from six import StringIO
 import sys
 import time
-import threading
+from functools import partial
+import hashlib
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from botocore.compat import quote
-from botocore import xform_name
-from awscli.customizations.s3.tasks import DownloadPartTask
-from awscli.customizations.s3.utils import find_bucket_key, MultiCounter, \
-    retrieve_http_etag, check_etag, check_error, operate, NoBlockQueue, \
-    uni_print, guess_content_type
+from awscli.customizations.s3.utils import find_bucket_key, \
+        retrieve_http_etag, check_etag, check_error, operate, uni_print, \
+        guess_content_type, MD5Error
 
 
 def make_last_mod_str(last_mod):
@@ -53,20 +51,35 @@ def save_file(filename, response_data, last_update):
     data to the file.  It also modifies the last modified time to that
     of the S3 object.
     """
-    data = response_data['Body'].read()
+    body = response_data['Body']
     etag = response_data['ETag'][1:-1]
-    check_etag(etag, data)
     d = os.path.dirname(filename)
     try:
         if not os.path.exists(d):
             os.makedirs(d)
     except Exception:
         pass
+    md5 = hashlib.md5()
+    file_chunks = iter(partial(body.read, 1024 * 1024), b'')
     with open(filename, 'wb') as out_file:
-        out_file.write(data)
+        if not _is_multipart_etag(etag):
+            for chunk in file_chunks:
+                md5.update(chunk)
+                out_file.write(chunk)
+        else:
+            for chunk in file_chunks:
+                out_file.write(chunk)
+    if not _is_multipart_etag(etag):
+        if etag != md5.hexdigest():
+            os.remove(filename)
+            raise MD5Error(filename)
     last_update_tuple = last_update.timetuple()
     mod_timestamp = time.mktime(last_update_tuple)
     os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+
+
+def _is_multipart_etag(etag):
+    return '-' in etag
 
 
 class TaskInfo(object):
@@ -77,8 +90,6 @@ class TaskInfo(object):
     functions needed to perform the task.  Note that just instantiating one
     of these objects will not be enough to run a listing or bucket command.
     unless ``session`` and ``region`` are specified upon instantiation.
-    To make it fully operational, ``set_session`` needs to be used.
-    This class is the parent class of the more extensive ``FileInfo`` object.
 
     :param src: the source path
     :type src: string
@@ -92,29 +103,12 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type=None, operation=None, session=None,
-                 region=None):
+    def __init__(self, src, src_type, operation_name, service, endpoint):
         self.src = src
         self.src_type = src_type
-        self.operation = operation
-
-        self.session = session
-        self.region = region
-        self.service = None
-        self.endpoint = None
-        if self.session and self.region:
-            self.set_session(self.session, self.region)
-
-    def set_session(self, session, region):
-        """
-        Given a session and region set the service and endpoint.  This enables
-        operations to be performed as ``self.session`` is required to perform
-        an operation.
-        """
-        self.session = session
-        self.region = region
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint(self.region)
+        self.operation_name = operation_name
+        self.service = service
+        self.endpoint = endpoint
 
     def list_objects(self):
         """
@@ -177,9 +171,9 @@ class TaskInfo(object):
         This opereation makes a bucket.
         """
         bucket, key = find_bucket_key(self.src)
-        bucket_config = {'LocationConstraint': self.region}
+        bucket_config = {'LocationConstraint': self.endpoint.region_name}
         params = {'endpoint': self.endpoint, 'bucket': bucket}
-        if self.region != 'us-east-1':
+        if self.endpoint.region_name != 'us-east-1':
             params['create_bucket_configuration'] = bucket_config
         response_data, http = operate(self.service, 'CreateBucket', params)
 
@@ -196,10 +190,10 @@ class FileInfo(TaskInfo):
     """
     This is a child object of the ``TaskInfo`` object.  It can perform more
     operations such as ``upload``, ``download``, ``copy``, ``delete``,
-    ``move``, and ``multi_download``.  Similiarly to
+    ``move``.  Similiarly to
     ``TaskInfo`` objects attributes like ``session`` need to be set in order
-    to perform operations. Multipart operations need to run ``set_multi`` in
-    order to be able to run.
+    to perform operations.
+
     :param dest: the destination path
     :type dest: string
     :param compare_key: the name of the file relative to the specified
@@ -217,40 +211,23 @@ class FileInfo(TaskInfo):
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation=None, session=None, region=None, parameters=None):
+                 operation_name=None, service=None, endpoint=None,
+                 parameters=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
-                                       operation=operation, session=session,
-                                       region=region)
+                                       operation_name=operation_name,
+                                       service=service,
+                                       endpoint=endpoint)
         self.dest = dest
         self.dest_type = dest_type
         self.compare_key = compare_key
         self.size = size
         self.last_update = last_update
         # Usually inject ``parameters`` from ``BasicTask`` class.
-        if parameters:
+        if parameters is not None:
             self.parameters = parameters
         else:
             self.parameters = {'acl': None,
                                'sse': None}
-
-        # Required for multipart uploads and downloads.  Use ``set_multi``
-        # function to set these.
-        self.executer = None
-        self.print_queue = None
-        self.is_multi = False
-        self.interrupt = None
-        self.chunksize = None
-
-    def set_multi(self, executer, print_queue, interrupt, chunksize):
-        """
-        This sets all of the necessary attributes to perform a multipart
-        operation.
-        """
-        self.executer = executer
-        self.print_queue = print_queue
-        self.is_multi = True
-        self.interrupt = interrupt
-        self.chunksize = chunksize
 
     def _permission_to_param(self, permission):
         if permission == 'read':
@@ -280,7 +257,8 @@ class FileInfo(TaskInfo):
         if self.parameters['storage_class']:
             params['storage_class'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:
-            params['website_redirect_location'] = self.parameters['website_redirect'][0]
+            params['website_redirect_location'] = \
+                    self.parameters['website_redirect'][0]
         if self.parameters['guess_mime_type']:
             self._inject_content_type(params, self.src)
         if self.parameters['content_type']:
@@ -288,7 +266,8 @@ class FileInfo(TaskInfo):
         if self.parameters['cache_control']:
             params['cache_control'] = self.parameters['cache_control'][0]
         if self.parameters['content_disposition']:
-            params['content_disposition'] = self.parameters['content_disposition'][0]
+            params['content_disposition'] = \
+                    self.parameters['content_disposition'][0]
         if self.parameters['content_encoding']:
             params['content_encoding'] = self.parameters['content_encoding'][0]
         if self.parameters['content_language']:
@@ -301,20 +280,19 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart upload function if the file is
         large.  If it is small enough, it puts the file as an object in s3.
         """
-        body = read_file(self.src)
-        bucket, key = find_bucket_key(self.dest)
-        if sys.version_info[:2] == (2, 6):
-            stream_body = StringIO(body)
-        else:
-            stream_body = bytearray(body)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        if body:
-            params['body'] = stream_body
-        self._handle_object_params(params)
-        response_data, http = operate(self.service, 'PutObject', params)
-        etag = retrieve_http_etag(http)
-        check_etag(etag, body)
-
+        with open(self.src, 'rb') as body:
+            bucket, key = find_bucket_key(self.dest)
+            params = {
+                'endpoint': self.endpoint,
+                'bucket': bucket,
+                'key': key,
+                'body': body,
+            }
+            self._handle_object_params(params)
+            response_data, http = operate(self.service, 'PutObject', params)
+            etag = retrieve_http_etag(http)
+            body.seek(0)
+            check_etag(etag, body)
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.
@@ -327,13 +305,10 @@ class FileInfo(TaskInfo):
         Redirects the file to the multipart download function if the file is
         large.  If it is small enough, it gets the file as an object from s3.
         """
-        if not self.is_multi:
-            bucket, key = find_bucket_key(self.src)
-            params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-            response_data, http = operate(self.service, 'GetObject', params)
-            save_file(self.dest, response_data, self.last_update)
-        else:
-            self.multi_download()
+        bucket, key = find_bucket_key(self.src)
+        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+        response_data, http = operate(self.service, 'GetObject', params)
+        save_file(self.dest, response_data, self.last_update)
 
     def copy(self):
         """
@@ -383,62 +358,3 @@ class FileInfo(TaskInfo):
                                       params)
         upload_id = response_data['UploadId']
         return upload_id
-
-    def multi_download(self):
-        """
-        This performs the multipart download.  It assigns ranges to get from
-        s3 of particular object to a task.It creates a queue ``part_queue``
-        which is directly responsible with controlling the progress of the
-        multipart download.  It then creates ``DownloadPartTasks`` for
-        threads to run via the ``executer``. This fucntion waits
-        for all of the parts in the multipart download to finish, and then
-        the last modification time is changed to the last modified time
-        of the s3 object.  This method waits on its parts to finish.
-        So, threads are required to process the parts for this function
-        to complete.
-        """
-        part_queue = NoBlockQueue(self.interrupt)
-        dest_queue = NoBlockQueue(self.interrupt)
-        part_counter = MultiCounter()
-        write_lock = threading.Lock()
-        counter_lock = threading.Lock()
-        d = os.path.dirname(self.dest)
-        try:
-            if not os.path.exists(d):
-                os.makedirs(d)
-        except Exception:
-            pass
-        size_uploads = self.chunksize
-        num_uploads = int(self.size/size_uploads)
-        with open(self.dest, 'wb') as f:
-            for i in range(num_uploads):
-                part = (self, i, size_uploads)
-                part_queue.put(part)
-                task = DownloadPartTask(session=self.session,
-                                        executer=self.executer,
-                                        part_queue=part_queue,
-                                        dest_queue=dest_queue,
-                                        f=f, region=self.region,
-                                        print_queue=self.print_queue,
-                                        write_lock=write_lock,
-                                        part_counter=part_counter,
-                                        counter_lock=counter_lock)
-                self.executer.submit(task)
-            part_queue.join()
-            # The following ensures that if the multipart download is
-            # in progress, all part uploads finish before releasing the
-            # the file handle.  This really only applies when an interrupt
-            # signal is sent because the ``part_queue.join()`` ensures this
-            # if the process is not interrupted.
-            while part_counter.count:
-                time.sleep(0.1)
-        part_list = []
-        while not dest_queue.empty():
-            part = dest_queue.get()
-            part_list.append(part)
-        if len(part_list) != num_uploads:
-            raise Exception()
-        last_update_tuple = self.last_update.timetuple()
-        mod_timestamp = time.mktime(last_update_tuple)
-        os.utime(self.dest, (int(mod_timestamp), int(mod_timestamp)))
-

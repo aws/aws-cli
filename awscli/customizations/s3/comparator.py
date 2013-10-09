@@ -108,7 +108,7 @@ class Comparator(object):
                 elif compare_keys == 'greater_than':
                     src_take = False
                     dest_take = True
-                    dest_file.operation = 'delete'
+                    dest_file.operation_name = 'delete'
                     if self.delete:
                         yield dest_file
 
@@ -118,7 +118,7 @@ class Comparator(object):
 
             elif src_done and (not dest_done):
                 dest_take = True
-                dest_file.operation = 'delete'
+                dest_file.operation_name = 'delete'
                 if self.delete:
                     yield dest_file
 
@@ -159,7 +159,7 @@ class Comparator(object):
         src_time = src_file.last_update
         dest_time = dest_file.last_update
         delta = dest_time - src_time
-        cmd = src_file.operation
+        cmd = src_file.operation_name
         if cmd == "upload" or cmd == "copy":
             if total_seconds(delta) >= 0:
                 return True

@@ -29,6 +29,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
         self.local_dir = os.path.abspath('.') + os.sep + 'some_directory' \
             + os.sep
         self.session = FakeSession()
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
         self.files = make_loc_files()
 
     def tearDown(self):
@@ -44,7 +46,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                      'type': 's3'},
                             'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.session, '', params).call(input_local_file)
+        files = FileGenerator(self.service,
+                              self.endpoint, '', params).call(input_local_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -52,7 +55,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
         file_info = FileInfo(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation='')
+                             dest_type='s3', operation_name='',
+                             service=None, endpoint=None)
         ref_list = [file_info]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -68,7 +72,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.session, '', params).call(input_local_dir)
+        files = FileGenerator(self.service, self.endpoint,
+                              '', params).call(input_local_dir)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -76,7 +81,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
         file_info = FileInfo(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation='')
+                             dest_type='s3', operation_name='',
+                             service=None, endpoint=None)
         path = self.local_dir + 'another_directory' + os.sep \
             + 'text2.txt'
         size, last_update = get_file_stat(path)
@@ -85,7 +91,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                               compare_key='another_directory/text2.txt',
                               size=size, last_update=last_update,
                               src_type='local',
-                              dest_type='s3', operation='')
+                              dest_type='s3', operation_name='',
+                              service=None, endpoint=None)
         ref_list = [file_info2, file_info]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -98,6 +105,8 @@ class S3FileGeneratorTest(unittest.TestCase):
         self.bucket = make_s3_files(self.session)
         self.file1 = self.bucket + '/' + 'text1.txt'
         self.file2 = self.bucket + '/' + 'another_directory/text2.txt'
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
 
     def tearDown(self):
         s3_cleanup(self.bucket, self.session)
@@ -111,7 +120,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.session, '', params).call(input_s3_file)
+        files = FileGenerator(self.service, self.endpoint, '', params).call(input_s3_file)
         self.assertEqual(len(list(files)), 0)
 
     def test_s3_file(self):
@@ -123,7 +132,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.session, '', params).call(input_s3_file)
+        files = FileGenerator(self.service, self.endpoint, '', params).call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -132,7 +141,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                              size=result_list[0].size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation='')
+                             dest_type='local', operation_name='',
+                             service=None, endpoint=None)
 
         ref_list = [file_info]
         self.assertEqual(len(result_list), len(ref_list))
@@ -149,7 +159,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.session, '', params).call(input_s3_file)
+        files = FileGenerator(self.service, self.endpoint, '', params).call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -159,14 +169,16 @@ class S3FileGeneratorTest(unittest.TestCase):
                              size=result_list[0].size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation='')
+                             dest_type='local', operation_name='',
+                             service=None, endpoint=None)
         file_info2 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=result_list[1].size,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation='')
+                              dest_type='local', operation_name='',
+                              service=None, endpoint=None)
 
         ref_list = [file_info, file_info2]
         self.assertEqual(len(result_list), len(ref_list))
@@ -183,7 +195,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.session, 'delete', params).call(
+        files = FileGenerator(self.service, self.endpoint, 'delete', params).call(
             input_s3_file)
         result_list = []
         for filename in files:
@@ -195,21 +207,24 @@ class S3FileGeneratorTest(unittest.TestCase):
                               size=result_list[0].size,
                               last_update=result_list[0].last_update,
                               src_type='s3',
-                              dest_type='local', operation='delete')
+                              dest_type='local', operation_name='delete',
+                              service=None, endpoint=None)
         file_info2 = FileInfo(src=self.file2,
                               dest='another_directory' + os.sep + 'text2.txt',
                               compare_key='another_directory/text2.txt',
                               size=result_list[1].size,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation='delete')
+                              dest_type='local', operation_name='delete',
+                              service=None, endpoint=None)
         file_info3 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=result_list[2].size,
                               last_update=result_list[2].last_update,
                               src_type='s3',
-                              dest_type='local', operation='delete')
+                              dest_type='local', operation_name='delete',
+                              service=None, endpoint=None)
 
         ref_list = [file_info1, file_info2, file_info3]
         self.assertEqual(len(result_list), len(ref_list))

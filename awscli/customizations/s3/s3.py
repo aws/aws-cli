@@ -28,7 +28,7 @@ from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.description import add_command_descriptions, \
     add_param_descriptions
 from awscli.customizations.s3.utils import find_bucket_key, check_error
-from bcdoc.clidocs import CLIDocumentEventHandler
+from awscli.customizations.s3.dochandler import S3DocumentEventHandler
 
 
 class AppendFilter(argparse.Action):
@@ -54,13 +54,11 @@ class AppendFilter(argparse.Action):
         setattr(namespace, self.dest, filter_list)
 
 
-"""
-This is a dictionary useful for automatically adding the different commands,
-the amount of arguments it takes, and the optional parameters that can appear
-on the same line as the command.  It also contains descriptions and usage
-keys for help command and doc generation.
-"""
-cmd_dict = {'cp': {'options': {'nargs': 2},
+# This is a dictionary useful for automatically adding the different commands,
+# the amount of arguments it takes, and the optional parameters that can appear
+# on the same line as the command.  It also contains descriptions and usage
+# keys for help command and doc generation.
+CMD_DICT = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
                               'no-guess-mime-type',
@@ -94,16 +92,14 @@ cmd_dict = {'cp': {'options': {'nargs': 2},
             'rb': {'options': {'nargs': 1}, 'params': ['force']}
             }
 
-add_command_descriptions(cmd_dict)
+add_command_descriptions(CMD_DICT)
 
 
-"""
-This is a dictionary useful for keeping track of the parameters passed to
-add_argument when the parameter is added to the parser.  The documents
-key is a description of what the parameter does and is used for the help
-command and doc generation.
-"""
-params_dict = {'dryrun': {'options': {'action': 'store_true'}},
+# This is a dictionary useful for keeping track of the parameters passed to
+# add_argument when the parameter is added to the parser.  The documents
+# key is a description of what the parameter does and is used for the help
+# command and doc generation.
+PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},
                'force': {'options': {'action': 'store_true'}},
@@ -123,8 +119,9 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'grants': {'options': {'nargs': '+'}},
                'sse': {'options': {'action': 'store_true'}},
                'storage-class': {'options': {'nargs': 1,
-                                             'choices': ['STANDARD',
-                                                         'REDUCED_REDUNDANCY']}},
+                                             'choices': [
+                                                 'STANDARD',
+                                                 'REDUCED_REDUNDANCY']}},
                'website-redirect': {'options': {'nargs': 1}},
                'cache-control': {'options': {'nargs': 1}},
                'content-disposition': {'options': {'nargs': 1}},
@@ -133,7 +130,7 @@ params_dict = {'dryrun': {'options': {'action': 'store_true'}},
                'expires': {'options': {'nargs': 1}},
                }
 
-add_param_descriptions(params_dict)
+add_param_descriptions(PARAMS_DICT)
 
 
 def awscli_initialize(cli):
@@ -144,9 +141,8 @@ def awscli_initialize(cli):
     file
     """
     cli.register("building-command-table.main", add_s3)
-    cli.register("building-operation-table.s3", add_commands)
     cli.register("doc-examples.S3.*", add_s3_examples)
-    for cmd in cmd_dict.keys():
+    for cmd in CMD_DICT.keys():
         cli.register("building-parameter-table.s3.%s" % cmd, add_cmd_params)
 
 
@@ -167,26 +163,15 @@ def add_s3(command_table, session, **kwargs):
     command_table['s3'] = S3('s3', session)
 
 
-def add_commands(operation_table, session, **kwargs):
-    """
-    This create the S3Command objects for each command
-    """
-    for cmd in cmd_dict.keys():
-        operation_table[cmd] = S3Command(cmd, session,
-                                         cmd_dict[cmd]['options'],
-                                         cmd_dict[cmd]['description'],
-                                         cmd_dict[cmd]['usage'])
-
-
 def add_cmd_params(parameter_table, command, **kwargs):
     """
     This creates the ParameterArgument object for each possible parameter
     in a specified command
     """
-    for param in cmd_dict[command]['params']:
+    for param in CMD_DICT[command]['params']:
         parameter_table[param] = S3Parameter(param,
-                                             params_dict[param]['options'],
-                                             params_dict[param]['documents'])
+                                             PARAMS_DICT[param]['options'],
+                                             PARAMS_DICT[param]['documents'])
 
 
 def add_s3_examples(help_command, **kwargs):
@@ -205,87 +190,6 @@ def add_s3_examples(help_command, **kwargs):
         fp = open(doc_path)
         for line in fp.readlines():
             help_command.doc.write(line)
-
-
-class S3DocumentEventHandler(CLIDocumentEventHandler):
-    """
-    This is the document handler for both the service, s3, and
-    the commands. It is the basis for the help command and generating docs.
-    """
-    def doc_title(self, help_command, **kwargs):
-        doc = help_command.doc
-        command = help_command.obj
-        doc.style.h1(command._name)
-
-    def doc_description(self, help_command, **kwargs):
-        doc = help_command.doc
-        command = help_command.obj
-        doc.style.h2('Description')
-        doc.include_doc_string(command.documentation)
-        if help_command.obj._name == 's3':
-            doc_dir = os.path.join(
-                os.path.dirname(os.path.abspath(awscli.__file__)),
-                'examples', help_command.event_class.lower())
-            # The file is named '_concepts.rst' so that it doesn't
-            # collide with any s3 commands, in the rare chance we
-            # create a subcommand called "concepts".
-            doc_path = os.path.join(doc_dir, '_concepts.rst')
-            if os.path.isfile(doc_path):
-                help_command.doc.style.h2('Important Concepts')
-                fp = open(doc_path)
-                for line in fp.readlines():
-                    help_command.doc.write(line)
-
-    def doc_synopsis_start(self, help_command, **kwargs):
-        if help_command.obj._name != 's3':
-            doc = help_command.doc
-            command = help_command.obj
-            doc.style.h2('Synopsis')
-            doc.style.start_codeblock()
-            doc.writeln('%s %s' % (command._name, command.usage))
-
-    def doc_synopsis_option(self, arg_name, help_command, **kwargs):
-        doc = help_command.doc
-        argument = help_command.arg_table[arg_name]
-        option_str = argument._name
-        if 'nargs' in argument.options:
-            if argument.options['nargs'] == '+':
-                option_str += " <value> [<value>...]"
-            else:
-                for i in range(argument.options['nargs']):
-                    option_str += " <value>"
-        doc.writeln('[--%s]' % option_str)
-
-    def doc_synopsis_end(self, help_command, **kwargs):
-        if help_command.obj._name != 's3':
-            doc = help_command.doc
-            doc.style.end_codeblock()
-
-    def doc_options_start(self, help_command, **kwargs):
-        if help_command.obj._name != 's3':
-            doc = help_command.doc
-            doc.style.h2('Options')
-            if len(help_command.arg_table) == 0:
-                doc.write('*None*\n')
-
-    def doc_option(self, arg_name, help_command, **kwargs):
-        doc = help_command.doc
-        argument = help_command.arg_table[arg_name]
-        doc.write('``--%s``\n' % argument._name)
-        doc.style.indent()
-        doc.include_doc_string(argument.documentation)
-        doc.style.dedent()
-        doc.style.new_paragraph()
-
-    def doc_subitems_start(self, help_command, **kwargs):
-        if help_command.command_table:
-            doc = help_command.doc
-            doc.style.h2('Available Commands')
-            doc.style.toctree()
-
-    def doc_subitem(self, command_name, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.tocitem(command_name)
 
 
 class S3HelpCommand(HelpCommand):
@@ -313,11 +217,10 @@ class S3(object):
     The service for the plugin.
     """
 
-    def __init__(self, name, session, op_table={}):
+    def __init__(self, name, session):
         self._name = name
         self._service_object = S3Service()
         self._session = session
-        self.op_table = op_table
         self.documentation = "This provides higher level S3 commands for " \
                              "the AWS CLI."
 
@@ -326,50 +229,57 @@ class S3(object):
         This function instantiates the operations table to be filled with
         commands.  Creates a parser based off of the commands in the
         operations table.  Parses the valid arguments and passes the
-        remaining off to a corresponding ``S3Command`` object to be called
+        remaining off to a corresponding ``S3SubCommand`` object to be called
         on.
         """
-        self._create_operations_table()
-        service_parser = self._create_service_parser(self.op_table)
+        subcommand_table = self._create_subcommand_table()
+        service_parser = self._create_service_parser(subcommand_table)
         parsed_args, remaining = service_parser.parse_known_args(args)
-        return self.op_table[parsed_args.operation](remaining, parsed_globals)
+        return subcommand_table[parsed_args.operation](
+            remaining, parsed_globals)
 
-    def _create_service_parser(self, operation_table):
+    def _create_service_parser(self, subcommand_table):
         """
         Creates the parser required to parse the commands on the
         command line
         """
         return ServiceArgParser(
-            operations_table=operation_table, service_name=self._name)
+            operations_table=subcommand_table, service_name=self._name)
 
-    def _create_operations_table(self):
+    def _create_subcommand_table(self):
         """
-        Creates an empty dictionary to be filled with ``S3Command`` objects
+        Creates an empty dictionary to be filled with ``S3SubCommand`` objects
         when the event is emmitted.
         """
+        subcommand_table = {}
+        for cmd in CMD_DICT.keys():
+            subcommand_table[cmd] = S3SubCommand(
+                cmd, self._session, CMD_DICT[cmd]['options'],
+                CMD_DICT[cmd]['description'], CMD_DICT[cmd]['usage'])
 
         self._session.emit('building-operation-table.%s' % self._name,
-                           operation_table=self.op_table,
+                           operation_table=subcommand_table,
                            session=self._session)
-        self.op_table['help'] = S3HelpCommand(self._session, self,
-                                              command_table=self.op_table,
-                                              arg_table=None)
+        subcommand_table['help'] = S3HelpCommand(self._session, self,
+                                                command_table=subcommand_table,
+                                                arg_table=None)
+        return subcommand_table
 
     def create_help_command(self):
         """
         This function returns a help command object with a filled command
         table.  This command is necessary for generating html docs.
         """
-        command_table = {}
-        add_commands(command_table, self._session)
+        subcommand_table = self._create_subcommand_table()
+        del subcommand_table['help']
         return S3HelpCommand(self._session, self,
-                             command_table=command_table,
+                             command_table=subcommand_table,
                              arg_table=None)
 
 
-class S3Command(object):
+class S3SubCommand(object):
     """
-    This is the object corresponding to a S3 command.
+    This is the object corresponding to a S3 subcommand.
     """
 
     def __init__(self, name, session, options, documentation="", usage=""):
@@ -502,6 +412,8 @@ class CommandArchitecture(object):
         self.cmd = cmd
         self.parameters = parameters
         self.instructions = []
+        self._service = self.session.get_service('s3')
+        self._endpoint = self._service.get_endpoint(self.parameters['region'])
 
     def create_instructions(self):
         """
@@ -555,14 +467,18 @@ class CommandArchitecture(object):
                                       'mv': 'move'}
         cmd_translation['s3'] = {'rm': 'delete', 'ls': 'list_objects',
                                  'mb': 'make_bucket', 'rb': 'remove_bucket'}
-        operation = cmd_translation[paths_type][self.cmd]
+        operation_name = cmd_translation[paths_type][self.cmd]
 
-        file_generator = FileGenerator(self.session, operation,
+        file_generator = FileGenerator(self._service, self._endpoint,
+                                       operation_name,
                                        self.parameters)
-        rev_generator = FileGenerator(self.session, '',
+        rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters)
         taskinfo = [TaskInfo(src=files['src']['path'],
-                             src_type='s3', operation=operation)]
+                             src_type='s3',
+                             operation_name=operation_name,
+                             service=self._service,
+                             endpoint=self._endpoint)]
         s3handler = S3Handler(self.session, self.parameters)
 
         command_dict = {}
@@ -610,12 +526,18 @@ class CommandArchitecture(object):
                 else:
                     file_list.append(components[i].call(files[i]))
             files = file_list
-        # TODO: Errors are not being surfaced out of here.
-        # I have put an explicit return of zero here to handle
-        # the success case because a None was being returned
-        # before.  I need to dig into this more to figure out
-        # the right way to surface the errors.
-        return 0
+        # This is kinda quirky, but each call through the instructions
+        # will replaces the files attr with the return value of the
+        # file_list.  The very last call is a single list of
+        # [s3_handler], and the s3_handler returns the number of
+        # tasks failed.  This means that files[0] now contains
+        # the number of failed tasks.  In terms of the RC, we're
+        # keeping it simple and saying that > 0 failed tasks
+        # will give a 1 RC.
+        rc = 0
+        if files[0] > 0:
+            rc = 1
+        return rc
 
 
 class CommandParameters(object):
@@ -651,6 +573,27 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+        self.check_dest_path(self.parameters['dest'])
+
+    def check_dest_path(self, destination):
+        if destination.startswith('s3://') and \
+                self.cmd in ['ls', 'cp', 'sync', 'mv']:
+            bucket, key = find_bucket_key(destination[5:])
+            # A bucket is not always provided (like 'aws s3 ls')
+            # so only verify the bucket exists if we actually have
+            # a bucket.
+            if bucket:
+                self._verify_bucket_exists(bucket)
+
+    def _verify_bucket_exists(self, bucket_name):
+        session = self.session
+        service = session.get_service('s3')
+        endpoint = service.get_endpoint(self.parameters['region'])
+        operation = service.get_operation('ListObjects')
+        # This will raise an exception if the bucket does not exist.
+        html_response, response_data = operation.call(endpoint,
+                                                      bucket=bucket_name,
+                                                      max_keys=0)
 
     def check_path_type(self, paths):
         """
@@ -664,7 +607,7 @@ class CommandParameters(object):
                          'local': [], 'locallocal': []}
         paths_type = ''
         usage = "usage: aws s3 %s %s" % (self.cmd,
-                                         cmd_dict[self.cmd]['usage'])
+                                         CMD_DICT[self.cmd]['usage'])
         for i in range(len(paths)):
             if paths[i].startswith('s3://'):
                 paths_type = paths_type + 's3'
@@ -680,7 +623,7 @@ class CommandParameters(object):
         This checks the source paths to deem if they are valid.  The check
         performed in S3 is first it lists the objects using the source path.
         If there is an error like the bucket does not exist, the error will be
-        caught with ``check_error()`` funciton.  If the operation is on a
+        caught with ``check_error()`` function.  If the operation is on a
         single object in s3, it checks that a list of object was returned and
         that the first object listed is the name of the specified in the
         command line.  If the operation is on objects under a common prefix,
@@ -745,7 +688,7 @@ class CommandParameters(object):
                 bucket, key = find_bucket_key(self.parameters['src'][5:])
                 path = 's3://'+bucket
                 try:
-                    del_objects = S3Command('rm', self.session, {'nargs': 1})
+                    del_objects = S3SubCommand('rm', self.session, {'nargs': 1})
                     del_objects([path, '--recursive'], parsed_globals)
                 except:
                     pass
@@ -775,6 +718,3 @@ class CommandParameters(object):
             self.parameters['region'] = parsed_region
         else:
             self.parameters['region'] = region
-
-
-

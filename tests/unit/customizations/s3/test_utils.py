@@ -1,8 +1,15 @@
 from tests import unittest
+import os
+import tempfile
+import shutil
+import ntpath
+
 from six.moves import queue
+import mock
 
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
-from awscli.customizations.s3.utils import NoBlockQueue
+from awscli.customizations.s3.utils import NoBlockQueue, ReadFileChunk
+from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -71,6 +78,59 @@ class TestNoBlockQueue(unittest.TestCase):
         self.assertEqual(q.get(), 2)
         self.assertEqual(q.get(), 3)
         self.assertEqual(q.get(), 4)
+
+
+class TestReadFileChunk(unittest.TestCase):
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tempdir)
+
+    def test_read_entire_chunk(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=0, size=3)
+        self.assertEqual(chunk.read(), b'one')
+        self.assertEqual(chunk.read(), b'')
+
+    def test_read_with_amount_size(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=11, size=4)
+        self.assertEqual(chunk.read(1), b'f')
+        self.assertEqual(chunk.read(1), b'o')
+        self.assertEqual(chunk.read(1), b'u')
+        self.assertEqual(chunk.read(1), b'r')
+        self.assertEqual(chunk.read(1), b'')
+
+    def test_read_past_end_of_file(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=36, size=100000)
+        self.assertEqual(chunk.read(), b'ten')
+        self.assertEqual(chunk.read(), b'')
+        self.assertEqual(len(chunk), 3)
+
+
+class TestRelativePath(unittest.TestCase):
+    def test_relpath_normal(self):
+        self.assertEqual(relative_path('/tmp/foo/bar', '/tmp/foo'),
+                         '.' + os.sep + 'bar')
+
+    # We need to patch out relpath with the ntpath version so
+    # we can simulate testing drives on windows.
+    @mock.patch('os.path.relpath', ntpath.relpath)
+    def test_relpath_with_error(self):
+        # Just want to check we don't get an exception raised,
+        # which is what was happening previously.
+        self.assertIn(r'foo\bar', relative_path(r'c:\foo\bar'))
 
 
 if __name__ == "__main__":

@@ -14,9 +14,10 @@ import hashlib
 from operator import itemgetter
 import requests
 from six import StringIO
+from io import BytesIO
 
 from botocore.compat import unquote
-from mock import MagicMock
+from mock import MagicMock, Mock
 
 from awscli.customizations.s3.filegenerator import find_bucket_key
 
@@ -77,7 +78,9 @@ class FakeService(object):
         self.session = session
 
     def get_endpoint(self, region):
-        return region
+        endpoint = Mock()
+        endpoint.region_name = region
+        return endpoint
 
     def get_operation(self, name):
         return FakeOperation(name, self.session)
@@ -146,7 +149,9 @@ class FakeOperation(object):
                 body = kwargs['body']
                 if isinstance(body, StringIO):
                     body = body.getvalue()
-                if not isinstance(body, bytearray):
+                if hasattr(body, 'read'):
+                    body = body.read()
+                elif not isinstance(body, bytearray):
                     body = body.encode('utf-8')
                 content['Body'] = body
                 m = hashlib.md5()
@@ -251,8 +256,7 @@ class FakeOperation(object):
                     body = body[int(beginning):]
                 else:
                     body = body[int(beginning):(int(end) + 1)]
-            mock_response = MagicMock()
-            mock_response.read = MagicMock(return_value=body)
+            mock_response = BytesIO(body)
             response_data['Body'] = mock_response
             etag = self.session.s3[bucket][key]['ETag']
             response_data['ETag'] = etag + '--'

@@ -15,10 +15,11 @@ import mimetypes
 import hashlib
 import math
 import os
+import sys
+from functools import partial
+
 from six import PY3
 from six.moves import queue as Queue
-import sys
-
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.constants import QUEUE_TIMEOUT_WAIT, \
@@ -85,13 +86,15 @@ def retrieve_http_etag(http_response):
     return http_response.headers['ETag'][1:-1]
 
 
-def check_etag(etag, data):
+def check_etag(etag, fileobj):
     """
     This fucntion checks the etag and the md5 checksum to ensure no
     data was corrupted upon transfer.
     """
+    get_chunk = partial(fileobj.read, 1024 * 1024)
     m = hashlib.md5()
-    m.update(data)
+    for chunk in iter(get_chunk, b''):
+        m.update(chunk)
     if '-' not in etag:
         if etag != m.hexdigest():
             raise MD5Error
@@ -175,3 +178,72 @@ def guess_content_type(filename):
     If the type cannot be guessed, a value of None is returned.
     """
     return mimetypes.guess_type(filename)[0]
+
+
+def relative_path(filename, start=os.path.curdir):
+    """Cross platform relative path of a filename.
+
+    If no relative path can be calculated (i.e different
+    drives on Windows), then instead of raising a ValueError,
+    the absolute path is returned.
+
+    """
+    try:
+        dirname, basename = os.path.split(filename)
+        relative_dir = os.path.relpath(dirname, start)
+        return os.path.join(relative_dir, basename)
+    except ValueError:
+        return os.path.abspath(filename)
+
+
+class ReadFileChunk(object):
+    def __init__(self, filename, start_byte, size):
+        self._filename = filename
+        self._start_byte = start_byte
+        self._fileobj = open(self._filename, 'rb')
+        self._size = self._calculate_file_size(self._fileobj, requested_size=size,
+                                               start_byte=start_byte)
+        self._fileobj.seek(self._start_byte)
+        self._amount_read = 0
+
+    def _calculate_file_size(self, fileobj, requested_size, start_byte):
+        actual_file_size = os.fstat(fileobj.fileno()).st_size
+        max_chunk_size = actual_file_size - start_byte
+        return min(max_chunk_size, requested_size)
+
+    def read(self, amount=None):
+        if amount is None:
+            remaining = self._size - self._amount_read
+            data = self._fileobj.read(remaining)
+            self._amount_read += remaining
+            return data
+        else:
+            actual_amount = min(self._size - self._amount_read, amount)
+            data = self._fileobj.read(actual_amount)
+            self._amount_read += actual_amount
+            return data
+
+    def close(self):
+        self._fileobj.close()
+
+    def __len__(self):
+        # __len__ is defined because requests will try to determine the length
+        # of the stream to set a content length.  In the normal case
+        # of the file it will just stat the file, but we need to change that
+        # behavior.  By providing a __len__, requests will use that instead
+        # of stat'ing the file.
+        return self._size
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self._fileobj.close()
+
+    def __iter__(self):
+        # This is a workaround for http://bugs.python.org/issue17575
+        # Basically httplib will try to iterate over the contents, even
+        # if its a file like object.  This wasn't noticed because we've
+        # already exhausted the stream so iterating over the file immediately
+        # steps, which is what we're simulating here.
+        return iter([])

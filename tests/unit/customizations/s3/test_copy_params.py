@@ -58,6 +58,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         params['payload'] = None
 
     def register_uri(self):
+        httpretty.register_uri(httpretty.GET, re.compile('.*'), body='',
+                               status_code=200)
         httpretty.register_uri(httpretty.PUT, re.compile('.*'), body='',
                                etag='"120ea8a25e5d487bf68b5f7096440019"',
                                content_length=0)
@@ -70,10 +72,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_sse(self):
         cmdline = self.prefix
@@ -84,10 +83,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'x-amz-server-side-encryption': 'AES256'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_storage_class(self):
         cmdline = self.prefix
@@ -98,10 +94,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'x-amz-storage-class': 'REDUCED_REDUNDANCY'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_website_redirect(self):
         cmdline = self.prefix
@@ -112,10 +105,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'x-amz-website-redirect-location': '/foobar'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_acl(self):
         cmdline = self.prefix
@@ -126,10 +116,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'x-amz-acl': 'public-read'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_content_params(self):
         cmdline = self.prefix
@@ -146,10 +133,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                               'Content-Disposition': 'attachment;filename="fname.ext"',
                               'Cache-Control': 'max-age=3600,must-revalidate'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_grants(self):
         cmdline = self.prefix
@@ -162,21 +146,14 @@ class TestGetObject(BaseAWSCommandParamsTest):
                   'headers': {'x-amz-grant-full-control': 'alice',
                               'x-amz-grant-read': 'bob'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
     def test_grants_bad(self):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read:bob'
-        # This should have an rc of 255 but the error is not
-        # being processed correctly at the moment.  Need to track
-        # this down.
-        #self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
-        self.assert_params_for_cmd(cmdline, {}, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected_rc=1)
 
     def test_content_type(self):
         cmdline = self.prefix
@@ -187,10 +164,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'Content-Type': 'text/xml'}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0)
-        if sys.version_info[:2] == (2, 6):
-            self.assertIsInstance(self.payload.getvalue(), StringIO)
-        else:
-            self.assertIsInstance(self.payload.getvalue(), bytearray)
+        self.assertIsInstance(self.payload.getvalue(), file_type)
 
 
 if __name__ == "__main__":

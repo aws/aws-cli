@@ -113,12 +113,8 @@ def create_bucket(session):
     region = 'us-east-1'
     endpoint = service.get_endpoint(region)
     rand1 = random.randrange(5000)
-    rand2 = random.randrange(5000)
-    bucket_name = str(rand1) + 'mybucket' + str(rand2)
+    bucket_name = 'awscli-s3test-' + str(rand1)
     params = {'endpoint': endpoint, 'bucket': bucket_name}
-    if region != 'us-east-1':
-        bucket_config = {'LocationConstraint': region}
-        params['create_bucket_configuration'] = bucket_config
     operation = service.get_operation('CreateBucket')
     http_response, response_data = operation.call(**params)
     return bucket_name
@@ -158,7 +154,7 @@ def compare_files(self, result_file, ref_file):
     self.assertEqual(result_file.last_update, ref_file.last_update)
     self.assertEqual(result_file.src_type, ref_file.src_type)
     self.assertEqual(result_file.dest_type, ref_file.dest_type)
-    self.assertEqual(result_file.operation, ref_file.operation)
+    self.assertEqual(result_file.operation_name, ref_file.operation_name)
 
 
 def list_contents(bucket, session):

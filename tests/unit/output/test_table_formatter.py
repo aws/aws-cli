@@ -296,6 +296,72 @@ KEYS_NOT_FROM_FIRST_ROW_TABLE = """\
 |+-------------+-----------+----------+-----------+---------------+-------------+------------+-------+-------------+--------------+|
 """
 
+JMESPATH_FILTERED_RESPONSE = [
+    [
+        [
+            "i-12345",
+            "ami-12345",
+            "ebs",
+            "t1.micro",
+            "running",
+            "disabled",
+            "util"
+        ]
+    ],
+    [
+        [
+            "i-56789",
+            "ami-56789",
+            "ebs",
+            "c1.medium",
+            "running",
+            "disabled",
+            "myname"
+        ]
+    ],
+]
+JMESPATH_FILTERED_RESPONSE_TABLE = """\
+-------------------------------------------------------------------------------
+|                                OperationName                                |
++---------+------------+------+------------+----------+------------+----------+
+|  i-12345|  ami-12345 |  ebs |  t1.micro  |  running |  disabled  |  util    |
+|  i-56789|  ami-56789 |  ebs |  c1.medium |  running |  disabled  |  myname  |
++---------+------------+------+------------+----------+------------+----------+
+"""
+
+
+JMESPATH_FILTERED_RESPONSE_DICT = [
+    [
+        {
+            "InstanceId": "i-cac4f8f8",
+            "RootDeviceType": "ebs",
+            "InstanceType": "t1.micro",
+            "ImageId": "ami-422ea672"
+        }
+    ],
+    [
+        {
+            "InstanceId": "i-985ad1ad",
+            "RootDeviceType": "ebs",
+            "InstanceType": "c1.medium",
+            "ImageId": "ami-e7f968d7"
+        }
+    ],
+]
+
+
+JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
+------------------------------------------------------------------
+|                          OperationName                         |
++--------------+-------------+----------------+------------------+
+|    ImageId   | InstanceId  | InstanceType   | RootDeviceType   |
++--------------+-------------+----------------+------------------+
+|  ami-422ea672|  i-cac4f8f8 |  t1.micro      |  ebs             |
+|  ami-e7f968d7|  i-985ad1ad |  c1.medium     |  ebs             |
++--------------+-------------+----------------+------------------+
+"""
+
+
 class Object(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
@@ -346,3 +412,11 @@ class TestTableFormatter(unittest.TestCase):
     def test_new_keys_after_first_row(self):
         self.assert_data_renders_to(data=KEYS_NOT_FROM_FIRST_ROW,
                                     table=KEYS_NOT_FROM_FIRST_ROW_TABLE)
+
+    def test_jmespath_filtered_response(self):
+        self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE,
+                                    table=JMESPATH_FILTERED_RESPONSE_TABLE)
+
+    def test_jmespath_filtered_dict_response(self):
+        self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE_DICT,
+                                    table=JMESPATH_FILTERED_RESPONSE_DICT_TABLE)

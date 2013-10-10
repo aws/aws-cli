@@ -113,13 +113,19 @@ class TableFormatter(FullyBufferedFormatter):
     def _build_table(self, title, current, indent_level=0):
         if not current:
             return False
-        self.table.new_section(title, indent_level=indent_level)
+        if title is not None:
+            self.table.new_section(title, indent_level=indent_level)
         if isinstance(current, list):
             if isinstance(current[0], dict):
                 self._build_sub_table_from_list(current, indent_level, title)
             else:
                 for item in current:
-                    self.table.add_row([item])
+                    if self._scalar_type(item):
+                        self.table.add_row([item])
+                    elif all(self._scalar_type(el) for el in item):
+                        self.table.add_row(item)
+                    else:
+                        self._build_table(title=None, current=item)
         if isinstance(current, dict):
             # Render a single row section with keys as header
             # and the row as the values, unless the value

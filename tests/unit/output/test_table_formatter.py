@@ -333,32 +333,32 @@ JMESPATH_FILTERED_RESPONSE_TABLE = """\
 JMESPATH_FILTERED_RESPONSE_DICT = [
     [
         {
-            "InstanceId": "i-cac4f8f8",
+            "InstanceId": "i-12345",
             "RootDeviceType": "ebs",
             "InstanceType": "t1.micro",
-            "ImageId": "ami-422ea672"
+            "ImageId": "ami-12345"
         }
     ],
     [
         {
-            "InstanceId": "i-985ad1ad",
+            "InstanceId": "i-56789",
             "RootDeviceType": "ebs",
             "InstanceType": "c1.medium",
-            "ImageId": "ami-e7f968d7"
+            "ImageId": "ami-56789"
         }
     ],
 ]
 
 
 JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
-------------------------------------------------------------------
-|                          OperationName                         |
-+--------------+-------------+----------------+------------------+
-|    ImageId   | InstanceId  | InstanceType   | RootDeviceType   |
-+--------------+-------------+----------------+------------------+
-|  ami-422ea672|  i-cac4f8f8 |  t1.micro      |  ebs             |
-|  ami-e7f968d7|  i-985ad1ad |  c1.medium     |  ebs             |
-+--------------+-------------+----------------+------------------+
+---------------------------------------------------------------
+|                        OperationName                        |
++-----------+-------------+----------------+------------------+
+|  ImageId  | InstanceId  | InstanceType   | RootDeviceType   |
++-----------+-------------+----------------+------------------+
+|  ami-12345|  i-12345    |  t1.micro      |  ebs             |
+|  ami-56789|  i-56789    |  c1.medium     |  ebs             |
++-----------+-------------+----------------+------------------+
 """
 
 
@@ -384,6 +384,9 @@ class TestTableFormatter(unittest.TestCase):
         self.formatter(Object(name='OperationName', can_paginate=False),
                               data, self.stream)
         rendered = self.stream.getvalue()
+        print("Expected")
+        print(table)
+        print("\nActual")
         print(rendered)
         self.assertEqual(rendered, table)
 

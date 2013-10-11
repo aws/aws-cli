@@ -11,25 +11,21 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
-from copy import deepcopy
 import os
-import re
+import copy
 import logging
 
-import httpretty
 import mock
 import six
+import requests
 
 from awscli.clidriver import create_clidriver
-from botocore.payload import Payload
 
 
 class BaseAWSCommandParamsTest(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
-        httpretty.enable()
-        self.register_uri()
         self.last_params = {}
         # awscli/__init__.py injects AWS_DATA_PATH at import time
         # so that we can find cli.json.  This might be fixed in the
@@ -44,29 +40,33 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
+        self.http_response = requests.models.Response()
+        self.http_response.status_code = 200
+        self.parsed_response = {}
+        self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
+        self.make_request_is_patched = False
 
     def tearDown(self):
         # This clears all the previous registrations.
-        httpretty.httpretty.reset()
-        httpretty.disable()
         self.environ_patch.stop()
-
-    def register_uri(self):
-        httpretty.register_uri(httpretty.POST, re.compile('.*'), body='')
+        if self.make_request_is_patched:
+            self.make_request_patch.stop()
 
     def before_call(self, params, **kwargs):
         self._store_params(params)
 
     def _store_params(self, params):
-        self.last_params = deepcopy(params)
-        for key in self.last_params:
-            value = self.last_params[key]
-            if isinstance(value, Payload):
-                self.last_params[key] = value.getvalue()
+        self.last_params = params
+
+    def patch_make_request(self):
+        make_request_patch = self.make_request_patch.start()
+        make_request_patch.return_value = (self.http_response, self.parsed_response)
+        self.make_request_is_patched = True
 
     def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
-                              stderr_contains=None):
+                              stderr_contains=None, ignore_params=None):
         logging.debug("Calling cmd: %s", cmd)
+        self.patch_make_request()
         driver = create_clidriver()
         driver.session.register('before-call', self.before_call)
         if not isinstance(cmd, list):
@@ -86,5 +86,12 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
                 expected_rc, rc, cmd))
         if params is not None:
-            self.assertDictEqual(params, self.last_params)
+            last_params = copy.copy(self.last_params)
+            if ignore_params is not None:
+                for key in ignore_params:
+                    try:
+                        del last_params[key]
+                    except KeyError:
+                        pass
+            self.assertDictEqual(params, last_params)
         return rc

@@ -15,7 +15,7 @@ from tests.unit import BaseAWSCommandParamsTest
 import os
 import re
 
-import httpretty
+import six
 
 import awscli.clidriver
 
@@ -24,8 +24,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
 
     prefix = 's3api get-object'
 
-    def register_uri(self):
-        httpretty.register_uri(httpretty.GET, re.compile('.*'), body='')
+    def setUp(self):
+        super(TestGetObject, self).setUp()
+        self.parsed_response = {'Body': six.StringIO()}
 
     def remove_file_if_exists(self, filename):
         if os.path.isfile(filename):
@@ -38,10 +39,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
-                  'headers': {},
-                  'payload': None}
+                  'headers': {},}
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
     def test_range(self):
         cmdline = self.prefix
@@ -51,10 +51,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
-                  'headers': {'Range': 'bytes=0-499'},
-                  'payload': None}
+                  'headers': {'Range': 'bytes=0-499'},}
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
     def test_response_headers(self):
         cmdline = self.prefix
@@ -67,10 +66,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey',
                                  'ResponseCacheControl': 'No-cache',
                                  'ResponseContentEncoding': 'x-gzip'},
-                  'headers': {},
-                  'payload': None}
+                  'headers': {},}
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
 
 if __name__ == "__main__":

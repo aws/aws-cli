@@ -13,26 +13,22 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import re
-import httpretty
 
 
 class TestListObjects(BaseAWSCommandParamsTest):
 
     prefix = 's3api list-objects'
 
-    def register_uri(self):
-        body = """<ListBucketResult xmlns="http://s3.amazonaws.com/">
-        </ListBucketResult>
-        """
-        httpretty.register_uri(httpretty.GET, re.compile('.*'), body=body)
+    def setUp(self):
+        super(TestListObjects, self).setUp()
+        self.parsed_response = {'Contents': []}
 
     def test_simple(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
         result = {'uri_params': {'Bucket': 'mybucket'},
-                  'headers': {},
-                  'payload': None}
-        self.assert_params_for_cmd(cmdline, result)
+                  'headers': {},}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
     def test_maxkeys(self):
         cmdline = self.prefix
@@ -41,9 +37,8 @@ class TestListObjects(BaseAWSCommandParamsTest):
         # show up in the result params.
         cmdline += ' --max-items 100'
         result = {'uri_params': {'Bucket': 'mybucket'},
-                  'headers': {},
-                  'payload': None}
-        self.assert_params_for_cmd(cmdline, result)
+                  'headers': {},}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
     def test_starting_token(self):
         # We don't need to test this in depth because botocore
@@ -53,17 +48,15 @@ class TestListObjects(BaseAWSCommandParamsTest):
         cmdline += ' --bucket mybucket'
         cmdline += ' --starting-token foo___2'
         result = {'uri_params': {'Bucket': 'mybucket', 'Marker': 'foo'},
-                  'headers': {},
-                  'payload': None}
-        self.assert_params_for_cmd(cmdline, result)
+                  'headers': {},}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
     def test_no_paginate(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket --no-paginate'
         result = {'uri_params': {'Bucket': 'mybucket'},
-                  'headers': {},
-                  'payload': None}
-        self.assert_params_for_cmd(cmdline, result)
+                  'headers': {},}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
 
 if __name__ == "__main__":

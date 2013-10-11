@@ -159,7 +159,7 @@ class FakeOperation(object):
                 etag = m.hexdigest()
             content['Size'] = len(body)
             content['LastModified'] = '2013-07-15T17:03:43.000Z'
-            content['ETag'] = etag
+            content['ETag'] = '"%s"' % etag
             if 'content_type' in kwargs:
                 content['ContentType'] = kwargs['content_type']
             if key in self.session.s3[bucket]:
@@ -174,7 +174,8 @@ class FakeOperation(object):
         elif self.session.connection_error:
             self.session.connection_error = False
             raise requests.ConnectionError()
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def create_bucket(self, kwargs):
         """
@@ -188,7 +189,8 @@ class FakeOperation(object):
             self.session.s3[bucket] = {}
         else:
             response_data['Errors'] = [{'Message': 'Bucket already exists'}]
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def delete_object(self, kwargs):
         """
@@ -204,7 +206,8 @@ class FakeOperation(object):
                 self.session.s3[bucket].pop(key)
         else:
             response_data['Errors'] = [{'Message': 'Bucket does not exist'}]
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def copy_object(self, kwargs):
         """
@@ -227,7 +230,8 @@ class FakeOperation(object):
             self.session.s3[bucket][key] = src
         else:
             response_data['Errors'] = [{'Message': 'Bucket does not exist'}]
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def get_object(self, kwargs):
         """
@@ -265,7 +269,7 @@ class FakeOperation(object):
         if self.session.connection_error:
             self.session.connection_error = False
             raise requests.ConnectionError
-        return FakeHttp(etag), response_data
+        return FakeHttp(), response_data
 
     def delete_bucket(self, kwargs):
         """
@@ -282,7 +286,8 @@ class FakeOperation(object):
                 response_data['Errors'] = [{'Message': 'Bucket not empty'}]
         else:
             response_data['Errors'] = [{'Message': 'Bucket does not exist'}]
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def list_buckets(self, kwargs):
         """
@@ -297,7 +302,8 @@ class FakeOperation(object):
             response_data['Buckets'].append(bucket_dict)
         response_data['Contents'] = sorted(response_data['Buckets'],
                                            key=lambda k: k['Name'])
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def list_objects(self, kwargs):
         """
@@ -330,7 +336,8 @@ class FakeOperation(object):
                 response_data['Contents'].append(key_dict)
         response_data['Contents'] = sorted(response_data['Contents'],
                                            key=lambda k: k['Key'])
-        return FakeHttp(etag), response_data
+        response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
 
     def create_multi_upload(self, kwargs):
         """
@@ -343,7 +350,7 @@ class FakeOperation(object):
             key = kwargs['key']
             content['ContentType'] = kwargs.get('content_type')
             self.session.s3[bucket][key] = content
-        return FakeHttp(''), {'UploadId': 'upload_id'}
+        return FakeHttp(), {'UploadId': 'upload_id'}
 
     def upload_part(self, kwargs):
         """
@@ -358,14 +365,14 @@ class FakeOperation(object):
         A function that acts as a mock function for
         CompleteMultipartUpload calls
         """
-        return FakeHttp(''), {}
+        return FakeHttp(), {}
 
     def abort_multi_upload(self, kwargs):
         """
         A function that acts as a mock function for
         CompleteMultipartUpload calls
         """
-        return FakeHttp(''), {}
+        return FakeHttp(), {}
 
 
 class FakeHttp(object):
@@ -374,5 +381,5 @@ class FakeHttp(object):
     call method.  The http responses are only used to retrieve
     etag's.  So only formatted etag's are included in this class.
     """
-    def __init__(self, etag):
-        self.headers = {'ETag': '\'' + etag + '\''}
+    def __init__(self, status_code=200):
+        self.status_code = status_code

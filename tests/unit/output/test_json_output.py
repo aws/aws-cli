@@ -17,28 +17,19 @@ import sys
 import re
 
 from six.moves import cStringIO
-import httpretty
 import mock
-
-ADD_USER_RESPONSE = """\
-<AddUserToGroupResponse xmlns="https://iam.amazonaws.com/doc/2010-05-08/">
-  <ResponseMetadata>
-      <RequestId>b8ff9277-0c3a-11e3-941e-8d1b33bbf528</RequestId>
-  </ResponseMetadata>
-</AddUserToGroupResponse>
-"""
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
 
     prefix = 'iam add-user-to-group '
 
-    def register_uri(self):
-        httpretty.register_uri(httpretty.POST, re.compile('.*'),
-                               body=ADD_USER_RESPONSE)
 
     def test_empty_response_prints_nothing(self):
         captured = cStringIO()
+        # This is the default response, but we want to be explicit
+        # that we're returning an empty dict.
+        self.parsed_response = {}
         args = ' --group-name foo --user-name bar'
         cmdline = self.prefix + args
         result = {'GroupName': 'foo', 'UserName': 'bar'}

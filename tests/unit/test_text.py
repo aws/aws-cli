@@ -107,6 +107,10 @@ class TestSection(unittest.TestCase):
             '0\t1\t2\n'
         )
 
+    def test_unicode_text(self):
+        self.assert_text_renders_to([['1', '2', u'\u2713']],
+                                    u'1\t2\t\u2713\n')
+
 
 if __name__ == '__main__':
     unittest.main()

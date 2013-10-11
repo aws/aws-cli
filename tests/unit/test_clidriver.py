@@ -24,7 +24,6 @@ from awscli.clidriver import CustomArgument
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
 from botocore.provider import Provider
-import botocore.service
 
 
 GET_DATA = {
@@ -356,7 +355,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
     def test_empty_params_gracefully_handled(self):
-        driver = create_clidriver()
         # Simulates the equivalent in bash: --identifies ""
         cmd = 'ses get-identity-dkim-attributes --identities'.split()
         cmd.append('')

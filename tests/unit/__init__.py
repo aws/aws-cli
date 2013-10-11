@@ -11,9 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests import unittest
-from copy import deepcopy
 import os
-import re
 import copy
 import logging
 
@@ -22,7 +20,6 @@ import six
 import requests
 
 from awscli.clidriver import create_clidriver
-from botocore.payload import Payload
 
 
 class BaseAWSCommandParamsTest(unittest.TestCase):

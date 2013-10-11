@@ -9,7 +9,7 @@ from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
-        retrieve_http_etag, check_etag, check_error, operate, uni_print, \
+        check_etag, check_error, operate, uni_print, \
         guess_content_type, MD5Error
 
 
@@ -290,7 +290,7 @@ class FileInfo(TaskInfo):
             }
             self._handle_object_params(params)
             response_data, http = operate(self.service, 'PutObject', params)
-            etag = retrieve_http_etag(http)
+            etag = response_data['ETag'][1:-1]
             body.seek(0)
             check_etag(etag, body)
 

@@ -80,7 +80,17 @@ class FileGenerator(object):
             size, last_update = get_file_stat(path)
             yield path, size, last_update
         else:
-            names = sorted(listdir(path))
+            import sys
+            def is_pass_decode_test(name):
+                try:
+                    name.decode(sys.getdefaultencoding())
+                    return True
+                except UnicodeDecodeError:
+                    print ('Bad filename: %s, Skip to upload' % name)
+                    return False
+
+            names = [ x for x in listdir(path) if is_pass_decode_test(x) ]
+
             for name in names:
                 file_path = join(path, name)
                 if isdir(file_path):
@@ -121,3 +131,6 @@ class FileGenerator(object):
                     pass
                 else:
                     yield src_path, size, last_update
+
+
+

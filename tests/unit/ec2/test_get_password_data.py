@@ -16,28 +16,26 @@ import os
 import re
 
 from six.moves import cStringIO
-import httpretty
 import mock
 
-GET_PASSWORD_DATA_RESPONSE = """<?xml version="1.0" encoding="UTF-8"?>
-<GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2013-10-01/">
-    <requestId>000000000000</requestId>
-    <instanceId>i-12345678</instanceId>
-    <timestamp>2013-07-27T18:29:23.000Z</timestamp>
-    <passwordData>&#xd;
-GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8iSGKaLuLTIWatWopVu5cMWDKH65U4YFL2g3LqyajBrCFnuSE1piTeS/rPQpoSvBN5FGj9HWqNrglWAJgh9OZNSGgpEojBenL/0rwSpDWL7f/f52M5doYA6q+v0ygEoi1Wq6hcmrBfyA4seW1RlKgnUru5Y9oc1hFHi53E3b1EkjGqCsCemVUwumBj8uwCLJRaMcqrCxK1smtAsiSqk0Jk9jpN2vcQgnMPypEdmEEXyWHwq55fjy6ch+sqYcwumIL5QcFW2JQ5+XBEoFhC66gOsAXow==&#xd;
-</passwordData>
-</GetPasswordDataResponse>"""
 
-PASSWORD_DATA = "GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8iSGKaLuLTIWatWopVu5cMWDKH65U4YFL2g3LqyajBrCFnuSE1piTeS/rPQpoSvBN5FGj9HWqNrglWAJgh9OZNSGgpEojBenL/0rwSpDWL7f/f52M5doYA6q+v0ygEoi1Wq6hcmrBfyA4seW1RlKgnUru5Y9oc1hFHi53E3b1EkjGqCsCemVUwumBj8uwCLJRaMcqrCxK1smtAsiSqk0Jk9jpN2vcQgnMPypEdmEEXyWHwq55fjy6ch+sqYcwumIL5QcFW2JQ5+XBEoFhC66gOsAXow=="
+PASSWORD_DATA = ("GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8i"
+                 "SGKaLuLTIWatWopVu5cMWDKH65U4YFL2g3LqyajBrCFnuSE1piTeS/rPQpoSv"
+                 "BN5FGj9HWqNrglWAJgh9OZNSGgpEojBenL/0rwSpDWL7f/f52M5doYA6q+v0y"
+                 "gEoi1Wq6hcmrBfyA4seW1RlKgnUru5Y9oc1hFHi53E3b1EkjGqCsCemVUwumB"
+                 "j8uwCLJRaMcqrCxK1smtAsiSqk0Jk9jpN2vcQgnMPypEdmEEXyWHwq55fjy6c"
+                 "h+sqYcwumIL5QcFW2JQ5+XBEoFhC66gOsAXow==")
+
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 get-password-data'
 
-    def register_uri(self):
-        httpretty.register_uri(httpretty.POST, re.compile('.*'),
-                               body=GET_PASSWORD_DATA_RESPONSE)
+    def setUp(self):
+        super(TestGetPasswordData, self).setUp()
+        self.parsed_response = {'InstanceId': 'i-12345678',
+                                'Timestamp': '2013-07-27T18:29:23.000Z',
+                                'PasswordData': PASSWORD_DATA}
 
     def test_no_priv_launch_key(self):
         captured = cStringIO()

@@ -6,7 +6,7 @@ import time
 import threading
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
-    operate, retrieve_http_etag, ReadFileChunk, relative_path
+    operate, ReadFileChunk, relative_path
 
 
 LOGGER = logging.getLogger(__name__)
@@ -148,7 +148,7 @@ class UploadPartTask(object):
                     self._filename.service, 'UploadPart', params)
             finally:
                 body.close()
-            etag = retrieve_http_etag(http)
+            etag = response_data['ETag'][1:-1]
             self._upload_context.announce_finished_part(
                 etag=etag, part_number=self._part_number)
 

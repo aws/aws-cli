@@ -226,8 +226,7 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
         error_msg = "Error parsing parameter --filters.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
-            returned = self.simplify(
-                p, ["Name:tag:Name,Values:foo"])
+            self.simplify(p, ["Name:tag:Name,Values:foo"])
 
     def test_unknown_key_for_filters_param(self):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
@@ -263,17 +262,13 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
         error_msg = "Error parsing parameter --parameters.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
-            returned = self.simplify(
-                p, ['ParameterKey=key,ParameterValue="foo,bar'])
+            self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar'])
         with self.assertRaisesRegexp(ParamError, error_msg):
-            returned = self.simplify(
-                p, ['ParameterKey=key,ParameterValue=foo,bar"'])
+            self.simplify(p, ['ParameterKey=key,ParameterValue=foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
-            returned = self.simplify(
-                p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
+            self.simplify(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
         with self.assertRaisesRegexp(ParamError, error_msg):
-            returned = self.simplify(
-                p, ['ParameterKey=key,ParameterValue="foo,bar\''])
+            self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
 
 class TestDocGen(BaseArgProcessTest):

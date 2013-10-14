@@ -209,8 +209,7 @@ class TextFormatter(Formatter):
             stream = sys.stdout
         try:
             if operation.can_paginate and self._args.paginate:
-                # TODO: update botocore to expose this as a public property.
-                result_keys = response._result_key
+                result_keys = response.result_keys
                 for _, page in response:
                     current = {}
                     for result_key in result_keys:

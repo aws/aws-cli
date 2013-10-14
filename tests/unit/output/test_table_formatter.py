@@ -384,11 +384,14 @@ class TestTableFormatter(unittest.TestCase):
         self.formatter(Object(name='OperationName', can_paginate=False),
                               data, self.stream)
         rendered = self.stream.getvalue()
-        print("Expected")
-        print(table)
-        print("\nActual")
-        print(rendered)
-        self.assertEqual(rendered, table)
+        if rendered != table:
+            error_message = ['Expected table rendering does not match '
+                             'the actual table rendering:']
+            error_message.append('Expected:')
+            error_message.append(table)
+            error_message.append('Actual:')
+            error_message.append(rendered)
+            self.fail('\n'.join(error_message))
 
     def test_list_table(self):
         self.assert_data_renders_to(data=SIMPLE_LIST, table=SIMPLE_LIST_TABLE)

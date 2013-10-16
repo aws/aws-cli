@@ -43,6 +43,9 @@ GET_DATA = {
                 ],
                 "metavar": "output_format"
             },
+            "query": {
+                "help": "<p>A JMESPath query to use in filtering the response data.</p>"
+            },
             "profile": {
                 "help": "Use a specific profile from your credential file",
                 "metavar": "profile_name"

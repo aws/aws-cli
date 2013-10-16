@@ -65,26 +65,9 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
                               stderr_contains=None, ignore_params=None):
-        logging.debug("Calling cmd: %s", cmd)
-        self.patch_make_request()
-        driver = create_clidriver()
-        driver.session.register('before-call', self.before_call)
-        if not isinstance(cmd, list):
-            cmdlist = cmd.split()
-        else:
-            cmdlist = cmd
+        stdout, stderr, rc = self.run_cmd(cmd, expected_rc)
         if stderr_contains is not None:
-            captured = six.StringIO()
-            with mock.patch('sys.stderr', captured):
-                rc = driver.main(cmdlist)
-            stderr = captured.getvalue()
             self.assertIn(stderr_contains, stderr)
-        else:
-            rc = driver.main(cmdlist)
-        self.assertEqual(
-            rc, expected_rc,
-            "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
-                expected_rc, rc, cmd))
         if params is not None:
             last_params = copy.copy(self.last_params)
             if ignore_params is not None:
@@ -94,4 +77,26 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
                     except KeyError:
                         pass
             self.assertDictEqual(params, last_params)
-        return rc
+        return stdout, stderr, rc
+
+    def run_cmd(self, cmd, expected_rc=0):
+        logging.debug("Calling cmd: %s", cmd)
+        self.patch_make_request()
+        driver = create_clidriver()
+        driver.session.register('before-call', self.before_call)
+        if not isinstance(cmd, list):
+            cmdlist = cmd.split()
+        else:
+            cmdlist = cmd
+        captured_stderr = six.StringIO()
+        captured_stdout = six.StringIO()
+        with mock.patch('sys.stderr', captured_stderr):
+            with mock.patch('sys.stdout', captured_stdout):
+                rc = driver.main(cmdlist)
+        stderr = captured_stderr.getvalue()
+        stdout = captured_stdout.getvalue()
+        self.assertEqual(
+            rc, expected_rc,
+            "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
+                expected_rc, rc, cmd))
+        return stdout, stderr, rc

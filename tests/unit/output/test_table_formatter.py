@@ -296,9 +296,76 @@ KEYS_NOT_FROM_FIRST_ROW_TABLE = """\
 |+-------------+-----------+----------+-----------+---------------+-------------+------------+-------+-------------+--------------+|
 """
 
+JMESPATH_FILTERED_RESPONSE = [
+    [
+        [
+            "i-12345",
+            "ami-12345",
+            "ebs",
+            "t1.micro",
+            "running",
+            "disabled",
+            "util"
+        ]
+    ],
+    [
+        [
+            "i-56789",
+            "ami-56789",
+            "ebs",
+            "c1.medium",
+            "running",
+            "disabled",
+            "myname"
+        ]
+    ],
+]
+JMESPATH_FILTERED_RESPONSE_TABLE = """\
+-------------------------------------------------------------------------------
+|                                OperationName                                |
++---------+------------+------+------------+----------+------------+----------+
+|  i-12345|  ami-12345 |  ebs |  t1.micro  |  running |  disabled  |  util    |
+|  i-56789|  ami-56789 |  ebs |  c1.medium |  running |  disabled  |  myname  |
++---------+------------+------+------------+----------+------------+----------+
+"""
+
+
+JMESPATH_FILTERED_RESPONSE_DICT = [
+    [
+        {
+            "InstanceId": "i-12345",
+            "RootDeviceType": "ebs",
+            "InstanceType": "t1.micro",
+            "ImageId": "ami-12345"
+        }
+    ],
+    [
+        {
+            "InstanceId": "i-56789",
+            "RootDeviceType": "ebs",
+            "InstanceType": "c1.medium",
+            "ImageId": "ami-56789"
+        }
+    ],
+]
+
+
+JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
+---------------------------------------------------------------
+|                        OperationName                        |
++-----------+-------------+----------------+------------------+
+|  ImageId  | InstanceId  | InstanceType   | RootDeviceType   |
++-----------+-------------+----------------+------------------+
+|  ami-12345|  i-12345    |  t1.micro      |  ebs             |
+|  ami-56789|  i-56789    |  c1.medium     |  ebs             |
++-----------+-------------+----------------+------------------+
+"""
+
+
 class Object(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+        self.query = None
 
 
 class TestTableFormatter(unittest.TestCase):
@@ -317,8 +384,14 @@ class TestTableFormatter(unittest.TestCase):
         self.formatter(Object(name='OperationName', can_paginate=False),
                               data, self.stream)
         rendered = self.stream.getvalue()
-        print(rendered)
-        self.assertEqual(rendered, table)
+        if rendered != table:
+            error_message = ['Expected table rendering does not match '
+                             'the actual table rendering:']
+            error_message.append('Expected:')
+            error_message.append(table)
+            error_message.append('Actual:')
+            error_message.append(rendered)
+            self.fail('\n'.join(error_message))
 
     def test_list_table(self):
         self.assert_data_renders_to(data=SIMPLE_LIST, table=SIMPLE_LIST_TABLE)
@@ -345,3 +418,11 @@ class TestTableFormatter(unittest.TestCase):
     def test_new_keys_after_first_row(self):
         self.assert_data_renders_to(data=KEYS_NOT_FROM_FIRST_ROW,
                                     table=KEYS_NOT_FROM_FIRST_ROW_TABLE)
+
+    def test_jmespath_filtered_response(self):
+        self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE,
+                                    table=JMESPATH_FILTERED_RESPONSE_TABLE)
+
+    def test_jmespath_filtered_dict_response(self):
+        self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE_DICT,
+                                    table=JMESPATH_FILTERED_RESPONSE_DICT_TABLE)

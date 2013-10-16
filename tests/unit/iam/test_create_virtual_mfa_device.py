@@ -69,5 +69,4 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
         result = {}
-        with mock.patch('sys.stderr', captured):
-            self.assert_params_for_cmd(cmdline, result, expected_rc=255)
+        self.assert_params_for_cmd(cmdline, result, expected_rc=255)

@@ -216,6 +216,10 @@ class ReadFileChunk(object):
             self._amount_read += actual_amount
             return data
 
+    def seek(self, where):
+        self._fileobj.seek(self._start_byte + where)
+        self._amount_read = where
+
     def close(self):
         self._fileobj.close()
 

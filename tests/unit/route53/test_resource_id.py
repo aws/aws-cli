@@ -37,30 +37,6 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result, expected_rc=0,
                                    ignore_params=['payload'])[0]
 
-        
-class TestGetHealthCheck(BaseAWSCommandParamsTest):
-
-    prefix = 'route53 get-health-check'
-
-    def setUp(self):
-        super(TestGetHealthCheck, self).setUp()
-
-    def test_full_resource_id(self):
-        args = ' --health-check-id /healthcheck/ZD3IYMVP1KDDM'
-        cmdline = self.prefix + args
-        result = {'uri_params': {'HealthCheckId': 'ZD3IYMVP1KDDM'},
-                  'headers': {}}
-        self.assert_params_for_cmd(cmdline, result, expected_rc=0,
-                                   ignore_params=['payload'])[0]
-
-    def test_short_resource_id(self):
-        args = ' --health-check-id ZD3IYMVP1KDDM'
-        cmdline = self.prefix + args
-        result = {'uri_params': {'HealthCheckId': 'ZD3IYMVP1KDDM'},
-                  'headers': {}}
-        self.assert_params_for_cmd(cmdline, result, expected_rc=0,
-                                   ignore_params=['payload'])[0]
-
 
 class TestGetChange(BaseAWSCommandParamsTest):
 

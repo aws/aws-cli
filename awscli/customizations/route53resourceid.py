@@ -23,7 +23,7 @@ def register_resource_id(cli):
 
 def _check_for_resource_id(param, value, **kwargs):
     if hasattr(param, 'shape_name'):
-        if param.shape_name in ('ResourceId', 'HealthCheckId'):
+        if param.shape_name == 'ResourceId':
             orig_value = value
             value = value.split('/')[-1]
             logger.debug('ResourceId %s -> %s', orig_value, value)

@@ -15,7 +15,7 @@ from tests.unit import BaseAWSCommandParamsTest
 
 import mock
 import six
-import httpretty
+import requests.models
 
 import awscli
 from awscli.clidriver import CLIDriver
@@ -42,6 +42,9 @@ GET_DATA = {
                     "table"
                 ],
                 "metavar": "output_format"
+            },
+            "query": {
+                "help": "<p>A JMESPath query to use in filtering the response data.</p>"
             },
             "profile": {
                 "help": "Use a specific profile from your credential file",
@@ -292,24 +295,34 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         super(TestAWSCommand, self).tearDown()
         self.stderr_patch.stop()
 
-    def last_request_headers(self):
-        return httpretty.httpretty.last_request.headers
-
-    def test_aws_with_region(self):
-        driver = create_clidriver()
-        driver.main('ec2 describe-instances --region us-east-1'.split())
-        host = self.last_request_headers()['Host']
-        self.assertEqual(host, 'ec2.us-east-1.amazonaws.com')
-
-        driver.main('ec2 describe-instances --region us-west-2'.split())
-        host = self.last_request_headers()['Host']
-        self.assertEqual(host, 'ec2.us-west-2.amazonaws.com')
+    def record_get_endpoint_args(self, *args, **kwargs):
+        self.get_endpoint_args = (args, kwargs)
+        self.real_get_endpoint(*args, **kwargs)
 
     def test_aws_with_endpoint_url(self):
-        driver = create_clidriver()
-        driver.main('ec2 describe-instances --endpoint-url https://foobar.com/'.split())
-        host = self.last_request_headers()['Host']
-        self.assertEqual(host, 'foobar.com')
+        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
+            http_response = requests.models.Response()
+            http_response.status_code = 200
+            endpoint.return_value.make_request.return_value = (
+                http_response, {})
+            self.assert_params_for_cmd(
+                'ec2 describe-instances --endpoint-url https://foobar.com/',
+                expected_rc=0)
+        endpoint.assert_called_with(region_name=None,
+                                    endpoint_url='https://foobar.com/')
+
+    def test_aws_with_region(self):
+        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
+            http_response = requests.models.Response()
+            http_response.status_code = 200
+            endpoint.return_value.make_request.return_value = (
+                http_response, {})
+            self.assert_params_for_cmd(
+                'ec2 describe-instances --region us-east-1',
+                expected_rc=0)
+        endpoint.assert_called_with(region_name='us-east-1',
+                                    endpoint_url=None)
+
 
     def inject_new_param(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', {})
@@ -338,18 +351,17 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
         # Now we should get an rc of 0 as the arg is expected
         # (though nothing actually does anything with the arg).
+        self.patch_make_request()
         rc = driver.main('ec2 describe-instances --unknown-arg foo'.split())
         self.assertEqual(rc, 0)
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
     def test_empty_params_gracefully_handled(self):
-        driver = create_clidriver()
         # Simulates the equivalent in bash: --identifies ""
         cmd = 'ses get-identity-dkim-attributes --identities'.split()
         cmd.append('')
-        rc = driver.main(cmd)
-        self.assertEqual(rc, 0)
+        self.assert_params_for_cmd(cmd,expected_rc=0)
 
     def test_file_param_does_not_exist(self):
         driver = create_clidriver()
@@ -373,19 +385,15 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
         super(TestHTTPParamFileDoesNotExist, self).tearDown()
         self.stderr_patch.stop()
 
-    def register_uri(self):
-        httpretty.register_uri(httpretty.GET, 'http://does/not/exist.json',
-                               body='', status=404)
-
     def test_http_file_param_does_not_exist(self):
-        driver = create_clidriver()
-        rc = driver.main('ec2 describe-instances '
-                         '--filters http://does/not/exist.json'.split())
-        self.assertEqual(rc, 255)
-        self.assertIn("Bad value for argument '--filters': "
-                    "Unable to retrieve http://does/not/exist.json: "
-                    "received non 200 status code of 404",
-                    self.stderr.getvalue())
+        error_msg = ("Bad value for argument '--filters': "
+                     "Unable to retrieve http://does/not/exist.json: "
+                     "received non 200 status code of 404")
+        with mock.patch('requests.get') as get:
+            get.return_value.status_code = 404
+            self.assert_params_for_cmd(
+                'ec2 describe-instances --filters http://does/not/exist.json',
+                expected_rc=255, stderr_contains=error_msg)
 
 
 

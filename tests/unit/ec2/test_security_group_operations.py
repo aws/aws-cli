@@ -73,24 +73,23 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""
         args = ' --group-name foobar --port 100 --ip-permissions %s' % json
         args_list = (self.prefix + args).split()
-        with mock.patch('sys.stderr', captured):
-            self.assert_params_for_cmd(args_list, {}, expected_rc=255)
+        self.assert_params_for_cmd(args_list, {}, expected_rc=255)
 
 
 class TestAuthorizeSecurityGroupEgress(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 authorize-security-group-egress'
 
-        
+
 class TestRevokeSecurityGroupIngress(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 revoke-security-group-ingress'
 
-        
+
 class TestRevokeSecurityGroupEgress(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 revoke-security-group-egress'
 
-        
+
 if __name__ == "__main__":
     unittest.main()

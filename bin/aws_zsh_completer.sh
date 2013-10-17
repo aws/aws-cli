@@ -15,7 +15,8 @@
 # It is planned to write a proper zsh auto completion soon. Please talk
 # to Frank Becker <fb@alien8.de>.
 
-autoload -U bashcompinit
+autoload -Uz bashcompinit compinit
+compinit
 bashcompinit -i
 
 _bash_complete() {

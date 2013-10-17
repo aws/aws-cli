@@ -20,7 +20,7 @@ LOG = logging.getLogger(__name__)
 
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl',
               '--no-paginate', '--output', '--profile',
-              '--region', '--version', '--color']
+              '--region', '--version', '--color', '--query']
 
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudfront',
@@ -53,13 +53,13 @@ COMPLETIONS = [
                                    'sa-east-1', 'ap-southeast-1',
                                    'ap-southeast-2', 'us-west-2',
                                    'us-west-1', 'eu-west-1',
-                                   'us-gov-west-1'])),
+                                   'us-gov-west-1', 'fips-us-gov-west-1'])),
     ('aws ec2 --debug describe-instances --instance-ids ', -1,
      set([])),
     ('aws ec2 --debug describe-instances --instance-ids i-12345678 - ', -1,
      set(['--filters', '--dry-run', '--no-dry-run', '--endpoint-url',
            '--no-verify-ssl', '--no-paginate', '--output', '--profile',
-              '--region', '--version', '--color'])),
+              '--region', '--version', '--color', '--query'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
     ('aws s3 cp -', -1, set(['--no-guess-mime-type', '--dryrun',

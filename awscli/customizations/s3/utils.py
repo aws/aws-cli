@@ -79,13 +79,6 @@ def get_file_stat(path):
     return stats.st_size, update_time
 
 
-def retrieve_http_etag(http_response):
-    """
-    Retrieves etag from http response.
-    """
-    return http_response.headers['ETag'][1:-1]
-
-
 def check_etag(etag, fileobj):
     """
     This fucntion checks the etag and the md5 checksum to ensure no
@@ -222,6 +215,10 @@ class ReadFileChunk(object):
             data = self._fileobj.read(actual_amount)
             self._amount_read += actual_amount
             return data
+
+    def seek(self, where):
+        self._fileobj.seek(self._start_byte + where)
+        self._amount_read = where
 
     def close(self):
         self._fileobj.close()

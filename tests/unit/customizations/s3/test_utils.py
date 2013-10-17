@@ -108,6 +108,16 @@ class TestReadFileChunk(unittest.TestCase):
         self.assertEqual(chunk.read(1), b'r')
         self.assertEqual(chunk.read(1), b'')
 
+    def test_reset_stream_emulation(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=11, size=4)
+        self.assertEqual(chunk.read(), b'four')
+        chunk.seek(0)
+        self.assertEqual(chunk.read(), b'four')
+
     def test_read_past_end_of_file(self):
         filename = os.path.join(self.tempdir, 'foo')
         f = open(filename, 'wb')

@@ -2,7 +2,7 @@
 
 The following ``describe-scaling-activities`` command describes the scaling activities for the specified Auto Scaling group::
 
-    aws autoscaling describe-scaling-activities --auto-scaling-group-name my-test-asg
+    aws autoscaling describe-scaling-activities --auto-scaling-group-name my-test-windows-asg
 
 The output of this command is a JSON block that describes the scaling activities for the specified Auto Scaling group, similar to the following::
 

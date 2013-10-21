@@ -69,7 +69,7 @@ class TestPluginCanBePackage(unittest.TestCase):
         del sys.modules['__fake_plugin__.__fake__']
 
     def test_plugin_register(self):
-        emitter = plugin.load_plugins(
+        plugin.load_plugins(
             {'fake_plugin': '__fake_plugin__.__fake__.bar'})
         self.assertTrue(self.fake_module.called)
 

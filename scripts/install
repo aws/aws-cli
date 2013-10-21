@@ -103,6 +103,9 @@ def create_symlink(real_location, symlink_name):
         print("Symlink already exists: %s" % symlink_name)
         print("Removing symlink.")
         os.remove(symlink_name)
+    symlink_dir_name = os.path.dirname(symlink_name)
+    if not os.path.isdir(symlink_dir_name):
+        os.makedirs(symlink_dir_name)
     os.symlink(real_location, symlink_name)
     return True
 

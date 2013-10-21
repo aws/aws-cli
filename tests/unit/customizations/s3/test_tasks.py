@@ -167,8 +167,6 @@ class TestMultipartUploadContext(unittest.TestCase):
         # I've run this with much larger values, but 100 is a good
         # tradeoff with coverage vs. execution time.
         for i in range(100):
-            if i % 100 == 0:
-                print(i)
             expected_parts = random.randint(2, 50)
             self.context = MultipartUploadContext(expected_parts=expected_parts)
             self.threads = []

@@ -1,0 +1,79 @@
+# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+
+#     http://aws.amazon.com/apache2.0/
+
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+import six
+
+
+def format_text(data, stream):
+    _format_text(data, stream)
+
+
+def _format_text(item, stream, identifier=None, scalar_keys=None):
+    if isinstance(item, dict):
+        scalars, non_scalars = _partition_dict(item, scalar_keys=scalar_keys)
+        if scalars:
+            if identifier is not None:
+                scalars.insert(0, identifier.upper())
+            stream.write('\t'.join(scalars))
+            stream.write('\n')
+        for new_identifier, non_scalar in non_scalars:
+            _format_text(item=non_scalar, stream=stream,
+                            identifier=new_identifier)
+    elif item and isinstance(item, list):
+        if isinstance(item[0], dict):
+            all_keys = _all_scalar_keys(item)
+            for element in item:
+                _format_text(element,
+                                stream=stream,
+                                identifier=identifier,
+                                scalar_keys=all_keys)
+        elif isinstance(item[0], list):
+            for list_element in item:
+                _format_text(list_element, stream=stream,
+                             identifier=identifier)
+        else:
+            # For a bare list, just print the contents.
+            stream.write('\t'.join([six.text_type(el) for el in item]))
+            stream.write('\n')
+
+
+def _all_scalar_keys(list_of_dicts):
+    keys_seen = set()
+    for item_dict in list_of_dicts:
+        for key, value in item_dict.items():
+            if not isinstance(value, (dict, list)):
+                keys_seen.add(key)
+    return list(sorted(keys_seen))
+
+
+def _partition_dict(item_dict, scalar_keys):
+    # Given a dictionary, partition it into two list based on the
+    # values associated with the keys.
+    # {'foo': 'scalar', 'bar': 'scalar', 'baz': ['not, 'scalar']}
+    # scalar = [('foo', 'scalar'), ('bar', 'scalar')]
+    # non_scalar = [('baz', ['not', 'scalar'])]
+    scalar = []
+    non_scalar = []
+    if scalar_keys is None:
+        for key, value in sorted(item_dict.items()):
+            if isinstance(value, (dict, list)):
+                non_scalar.append((key, value))
+            else:
+                scalar.append(six.text_type(value))
+    else:
+        for key in scalar_keys:
+            scalar.append(six.text_type(item_dict.get(key, '')))
+        remaining_keys = sorted(set(item_dict.keys()) - set(scalar_keys))
+        for remaining_key in remaining_keys:
+            if remaining_key in item_dict:
+                non_scalar.append((remaining_key, item_dict[remaining_key]))
+    return scalar, non_scalar

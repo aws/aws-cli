@@ -120,8 +120,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 ' --destination {"ToAddresses":["fie@baz.com"]}'
                 ' --to fie2@baz.com')
         args_list = (self.prefix + args).split()
-        with mock.patch('sys.stderr', captured):
-            self.assert_params_for_cmd(args_list, {}, expected_rc=255)
+        self.assert_params_for_cmd(args_list, {}, expected_rc=255)
 
     def test_both_message_and_text(self):
         captured = cStringIO()
@@ -130,6 +129,4 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 ' --destination {"ToAddresses":["fie@baz.com"]}'
                 ' --text This_is_another_body')
         args_list = (self.prefix + args).split()
-        with mock.patch('sys.stderr', captured):
-            self.assert_params_for_cmd(args_list, {}, expected_rc=255)
-            
+        self.assert_params_for_cmd(args_list, {}, expected_rc=255)

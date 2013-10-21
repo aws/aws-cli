@@ -16,7 +16,6 @@ import re
 import copy
 
 from tests.unit import BaseAWSCommandParamsTest
-import httpretty
 import six
 
 import awscli.clidriver
@@ -39,24 +38,6 @@ class TestGetObject(BaseAWSCommandParamsTest):
         super(TestGetObject, self).setUp()
         self.file_path = os.path.join(os.path.dirname(__file__),
                                       'test_put_object_data')
-        self.payload = None
-
-    def _store_params(self, params):
-        # Copy the params dict without the payload attribute.
-        self.payload = params['payload']
-        self.last_params = params.copy()
-        del self.last_params['payload']
-        self.last_params = copy.deepcopy(self.last_params)
-        # There appears to be a bug in httpretty and python3, and we're not
-        # interested in testing this part of the request serialization for
-        # these tests so we're replacing the file like object with nothing.  We
-        # can still verify that the params['payload'] is the expected file like
-        # object that has the correct contents but we won't test that it's
-        # serialized properly.
-        params['payload'] = None
-
-    def register_uri(self):
-        httpretty.register_uri(httpretty.PUT, re.compile('.*'), body='')
 
     def test_simple(self):
         cmdline = self.prefix
@@ -66,8 +47,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {}}
-        self.assert_params_for_cmd(cmdline, result)
-        self.assertIsInstance(self.payload.getvalue(), file_type)
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        self.assertIsInstance(self.last_params['payload'].getvalue(), file_type)
 
     def test_headers(self):
         cmdline = self.prefix
@@ -81,8 +62,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
                   'headers': {'x-amz-acl': 'public-read',
                               'Content-Encoding': 'x-gzip',
                               'Content-Type': 'text/plain'}}
-        self.assert_params_for_cmd(cmdline, result)
-        self.assertEqual(self.payload.getvalue().read(), b'This is a test.')
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        payload = self.last_params['payload'].getvalue()
+        self.assertEqual(payload.name, self.file_path)
 
 
 if __name__ == "__main__":

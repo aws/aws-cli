@@ -13,10 +13,10 @@
 import logging
 import sys
 import json
-
-import six
+import jmespath
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
+from awscli import text
 
 
 LOG = logging.getLogger(__name__)
@@ -54,6 +54,9 @@ class FullyBufferedFormatter(Formatter):
             response_data = response
         try:
             self._remove_request_id(response_data)
+            if self._args.query is not None:
+                expression = jmespath.compile(self._args.query)
+                response_data = expression.search(response_data)
             self._format_response(operation, response_data, stream)
         finally:
             # flush is needed to avoid the "close failed in file object
@@ -110,13 +113,19 @@ class TableFormatter(FullyBufferedFormatter):
     def _build_table(self, title, current, indent_level=0):
         if not current:
             return False
-        self.table.new_section(title, indent_level=indent_level)
+        if title is not None:
+            self.table.new_section(title, indent_level=indent_level)
         if isinstance(current, list):
             if isinstance(current[0], dict):
                 self._build_sub_table_from_list(current, indent_level, title)
             else:
                 for item in current:
-                    self.table.add_row([item])
+                    if self._scalar_type(item):
+                        self.table.add_row([item])
+                    elif all(self._scalar_type(el) for el in item):
+                        self.table.add_row(item)
+                    else:
+                        self._build_table(title=None, current=item)
         if isinstance(current, dict):
             # Render a single row section with keys as header
             # and the row as the values, unless the value
@@ -193,37 +202,38 @@ class TableFormatter(FullyBufferedFormatter):
         return headers, more
 
 
-class TextFormatter(FullyBufferedFormatter):
+class TextFormatter(Formatter):
 
-    def _output(self, data, stream, label=None):
-        """
-        A very simple, very stupid text formatter that has no
-        knowledge of the output as defined in the JSON model.
-        """
-        if isinstance(data, dict):
-            scalars = []
-            non_scalars = []
-            for key, val in data.items():
-                if isinstance(val, dict):
-                    non_scalars.append((key, val))
-                elif isinstance(val, list):
-                    non_scalars.append((key, val))
-                elif not isinstance(val, six.string_types):
-                    scalars.append(str(val))
-                else:
-                    scalars.append(val)
-            if label:
-                scalars.insert(0, label.upper())
-            stream.write('\t'.join(scalars))
-            stream.write('\n')
-            for label, non_scalar in non_scalars:
-                self._output(non_scalar, stream, label)
-        elif isinstance(data, list):
-            for d in data:
-                self._output(d, stream)
+    def __call__(self, operation, response, stream=None):
+        if stream is None:
+            stream = sys.stdout
+        try:
+            if operation.can_paginate and self._args.paginate:
+                result_keys = response.result_keys
+                for _, page in response:
+                    current = {}
+                    for result_key in result_keys:
+                        current[result_key] = page[result_key]
+                    self._format_response(current, stream)
+                if response.resume_token:
+                    # Tell the user about the next token so they can continue
+                    # if they want.
+                    self._format_response(
+                        {'NextToken': {'NextToken': response.resume_token}},
+                        stream)
+            else:
+                self._remove_request_id(response)
+                self._format_response(response, stream)
+        finally:
+            # flush is needed to avoid the "close failed in file object
+            # destructor" in python2.x (see http://bugs.python.org/issue11380).
+            stream.flush()
 
-    def _format_response(self, operation, response, stream):
-        self._output(response, stream)
+    def _format_response(self, response, stream):
+        if self._args.query is not None:
+            expression = jmespath.compile(self._args.query)
+            response = expression.search(response)
+        text.format_text(response, stream)
 
 
 def get_formatter(format_type, args):

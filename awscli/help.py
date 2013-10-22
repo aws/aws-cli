@@ -14,6 +14,7 @@ import sys
 import logging
 import os
 import platform
+import shlex
 from subprocess import Popen, PIPE
 
 from docutils.core import publish_string
@@ -79,7 +80,7 @@ class PosixHelpRenderer(HelpRenderer):
             pager = os.environ['MANPAGER']
         elif 'PAGER' in os.environ:
             pager = os.environ['PAGER']
-        return pager.split()
+        return shlex.split(pager)
 
     def render(self, contents):
         man_contents = publish_string(contents, writer=manpage.Writer())

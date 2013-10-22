@@ -86,3 +86,9 @@ class TestHelpPager(unittest.TestCase):
         with self.assertRaisesRegexp(ExecutableNotFoundError,
                                      'Could not find executable named "groff"'):
             renderer.render('foo')
+
+    def test_shlex_split_for_pager_var(self):
+        pager_cmd = '/bin/sh -c "col -bx | vim -c \'set ft=man\' -"'
+        os.environ['PAGER'] = pager_cmd
+        self.assertEqual(self.renderer.get_pager_cmdline(),
+                         ['/bin/sh', '-c', "col -bx | vim -c 'set ft=man' -"])

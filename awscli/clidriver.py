@@ -202,6 +202,7 @@ class CLIDriver(object):
             # loading of plugins, etc.
             self.session.set_debug_logger(logger_name='botocore')
             self.session.set_debug_logger(logger_name='awscli')
+            self.session.set_debug_logger(logger_name='requests')
         else:
             self.session.set_stream_logger(logger_name='awscli', log_level='ERROR')
 

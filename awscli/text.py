@@ -44,6 +44,11 @@ def _format_text(item, stream, identifier=None, scalar_keys=None):
             # For a bare list, just print the contents.
             stream.write('\t'.join([six.text_type(el) for el in item]))
             stream.write('\n')
+    else:
+        # If it's not a list or a dict, we just write the scalar
+        # value out directly.
+        stream.write(item)
+        stream.write('\n')
 
 
 def _all_scalar_keys(list_of_dicts):

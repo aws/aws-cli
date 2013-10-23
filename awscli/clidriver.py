@@ -23,7 +23,7 @@ from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
-from awscli.argparser import OperationArgParser
+from awscli.argparser import ArgTableArgParser
 from awscli.help import ProviderHelpCommand
 from awscli.help import ServiceHelpCommand
 from awscli.help import OperationHelpCommand
@@ -247,6 +247,10 @@ class CLICommand(object):
         # help docs.
         return None
 
+    @property
+    def arg_table(self):
+        return {}
+
 
 class ServiceCommand(CLICommand):
     """A service command for the CLI.
@@ -467,7 +471,7 @@ class ServiceOperation(object):
         return session.emit(name, **kwargs)
 
     def _create_operation_parser(self, arg_table):
-        parser = OperationArgParser(arg_table, self._name)
+        parser = ArgTableArgParser(arg_table)
         return parser
 
 

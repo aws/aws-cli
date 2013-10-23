@@ -4,14 +4,6 @@ Building The Documentation
 
 The process for building the documention is:
 
-* Run ``rstgen`` which does the following:
-
-  * Generates all of the source reference ReST files.
-  * Generates the ``aws_man_pages.json`` file which contains the list
-    of all man pages to be generated as needed by ``conf.py``.
-  * Generates ``tutorial/services.rst`` which is included by
-    ``tutorial/getting_started.rst``.
-
 * Run ``make html`` which will build all of the HTML documentation
   into the ``build/html`` directory.
 

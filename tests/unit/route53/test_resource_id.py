@@ -14,6 +14,28 @@
 from tests.unit import BaseAWSCommandParamsTest
 
 
+CHANGEBATCH_JSON = ('{"Comment":"string","Changes":['
+                    '{"Action":"CREATE","ResourceRecordSet":{'
+                    '"Name":"test-foo.bar.com",'
+                    '"Type":"CNAME",'
+                    '"TTL":300,'
+                    '"ResourceRecords":['
+                    '{"Value":"foo-bar-com.us-west-1.elb.amazonaws.com"}'
+                    ']}}]}')
+
+CHANGEBATCH_XML = ('<ChangeResourceRecordSetsRequest '
+                   'xmlns="https://route53.amazonaws.com/doc/2012-12-12/">'
+                   '<ChangeBatch><Comment>string</Comment>'
+                   '<Changes><Change><Action>CREATE</Action>'
+                   '<ResourceRecordSet>'
+                   '<Name>test-foo.bar.com</Name>'
+                   '<Type>CNAME</Type><TTL>300</TTL>'
+                   '<ResourceRecords><ResourceRecord>'
+                   '<Value>foo-bar-com.us-west-1.elb.amazonaws.com</Value>'
+                   '</ResourceRecord></ResourceRecords>'
+                   '</ResourceRecordSet></Change></Changes>'
+                   '</ChangeBatch></ChangeResourceRecordSetsRequest>')
+
 class TestGetHostedZone(BaseAWSCommandParamsTest):
 
     prefix = 'route53 get-hosted-zone'
@@ -36,6 +58,25 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
                   'headers': {}}
         self.assert_params_for_cmd(cmdline, result, expected_rc=0,
                                    ignore_params=['payload'])[0]
+
+
+class TestChangeResourceRecord(BaseAWSCommandParamsTest):
+
+    prefix = 'route53 change-resource-record-sets'
+
+    def setUp(self):
+        super(TestChangeResourceRecord, self).setUp()
+
+    def test_full_resource_id(self):
+        args = ' --hosted-zone-id /change/ZD3IYMVP1KDDM'
+        args += ' --change-batch %s' % CHANGEBATCH_JSON
+        cmdline = self.prefix + args
+        result = {'uri_params': {'HostedZoneId': 'ZD3IYMVP1KDDM'},
+                  'headers': {}}
+        self.assert_params_for_cmd(cmdline, result, expected_rc=0,
+                                   ignore_params=['payload'])[0]
+        self.assertEqual(self.last_params['payload'].getvalue(),
+                         CHANGEBATCH_XML)
 
 
 class TestGetChange(BaseAWSCommandParamsTest):

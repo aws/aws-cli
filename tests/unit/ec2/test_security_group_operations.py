@@ -68,6 +68,17 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                   'IpPermissions.1.IpRanges.1.CidrIp': '192.168.100.0/24'}
         self.assert_params_for_cmd(args_list, result)
 
+    def test_ip_permissions_with_group_id(self):
+        json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""
+        args = ' --group-id sg-12345678 --ip-permissions %s' % json
+        args_list = (self.prefix + args).split()
+        result = {'GroupId': 'sg-12345678',
+                  'IpPermissions.1.FromPort': '8000',
+                  'IpPermissions.1.ToPort': '9000',
+                  'IpPermissions.1.IpProtocol': 'tcp',
+                  'IpPermissions.1.IpRanges.1.CidrIp': '192.168.100.0/24'}
+        self.assert_params_for_cmd(args_list, result)
+
     def test_both(self):
         captured = cStringIO()
         json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""

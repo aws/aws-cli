@@ -111,6 +111,9 @@ class TestSection(unittest.TestCase):
         self.assert_text_renders_to([['1', '2', u'\u2713']],
                                     u'1\t2\t\u2713\n')
 
+    def test_single_scalar_value(self):
+        self.assert_text_renders_to('foobarbaz', 'foobarbaz\n')
+
 
 if __name__ == '__main__':
     unittest.main()

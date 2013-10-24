@@ -10,7 +10,7 @@ The output of this command is a JSON block that describes the scaling activities
           "Activities": [
               {
                   "Description": "Launching a new EC2 instance: i-4ba0837f",
-                  "AutoScalingGroupName": "my-test-windows-asg",
+                  "AutoScalingGroupName": "my-test-asg",
                   "ActivityId": "f9f2d65b-f1f2-43e7-b46d-d86756459699",
                   "Details": "{"Availability Zone":"us-west-2c"}",
                   "StartTime": "2013-08-19T20:53:29.930Z",

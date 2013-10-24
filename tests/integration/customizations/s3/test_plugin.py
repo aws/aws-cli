@@ -270,6 +270,14 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
         self.assertEqual(p.rc, 255)
 
+    def test_cp_empty_file(self):
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', contents='')
+        p = aws('s3 cp %s s3://%s/' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        self.assertNotIn('failed', p.stderr)
+        self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
+
 
 class TestSync(BaseS3CLICommand):
     def test_sync_to_from_s3(self):
@@ -304,6 +312,16 @@ class TestSync(BaseS3CLICommand):
         # Sync the directory and the bucket.
         p = aws('s3 sync %s s3://noexist-bkt-nme-1412' % (self.files.rootdir,))
         self.assertEqual(p.rc, 255)
+
+    def test_sync_with_empty_files(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+        empty_txt = self.files.create_file('bar.txt', contents='')
+        bucket_name = self.create_bucket()
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assertEqual(p.rc, 0)
+        self.assertNotIn('failed', p.stderr)
+        self.assertTrue(
+            self.key_exists(bucket_name=bucket_name, key_name='bar.txt'))
 
 
 class TestUnicode(BaseS3CLICommand):

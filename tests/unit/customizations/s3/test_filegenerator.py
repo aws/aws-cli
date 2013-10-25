@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 import unittest
+import tempfile
+import shutil
 
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo
@@ -97,6 +99,30 @@ class LocalFileGeneratorTest(unittest.TestCase):
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])
+
+
+class TestListFilesLocally(unittest.TestCase):
+    maxDiff = None
+
+    def setUp(self):
+        self.directory = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.directory)
+
+    def test_list_files_is_in_sorted_order(self):
+        p = os.path.join
+        open(p(self.directory, 'test-123.txt'), 'w').close()
+        open(p(self.directory, 'test-321.txt'), 'w').close()
+        open(p(self.directory, 'test123.txt'), 'w').close()
+        open(p(self.directory, 'test321.txt'), 'w').close()
+        os.mkdir(p(self.directory, 'test'))
+        open(p(self.directory, 'test', 'foo.txt'), 'w').close()
+
+        file_generator = FileGenerator(None, None, None, None)
+        values = list(el[0] for el in file_generator.list_files(
+            self.directory, dir_op=True))
+        self.assertEqual(values, list(sorted(values)))
 
 
 class S3FileGeneratorTest(unittest.TestCase):

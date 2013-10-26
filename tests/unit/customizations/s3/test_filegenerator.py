@@ -15,6 +15,8 @@ import unittest
 import tempfile
 import shutil
 
+import six
+
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import get_file_stat
@@ -105,7 +107,7 @@ class TestListFilesLocally(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
-        self.directory = tempfile.mkdtemp()
+        self.directory = six.text_type(tempfile.mkdtemp())
 
     def tearDown(self):
         shutil.rmtree(self.directory)
@@ -123,6 +125,35 @@ class TestListFilesLocally(unittest.TestCase):
         values = list(el[0] for el in file_generator.list_files(
             self.directory, dir_op=True))
         self.assertEqual(values, list(sorted(values)))
+
+    def test_list_local_files_with_unicode_chars(self):
+        p = os.path.join
+        open(p(self.directory, u'a'), 'w').close()
+        open(p(self.directory, u'a\u0300'), 'w').close()
+        open(p(self.directory, u'a\u0300-1'), 'w').close()
+        open(p(self.directory, u'a\u03001'), 'w').close()
+        open(p(self.directory, u'z'), 'w').close()
+        open(p(self.directory, u'\u00e6'), 'w').close()
+        os.mkdir(p(self.directory, u'a\u0300a'))
+        open(p(self.directory, u'a\u0300a', u'a'), 'w').close()
+        open(p(self.directory, u'a\u0300a', u'z'), 'w').close()
+        open(p(self.directory, u'a\u0300a', u'\u00e6'), 'w').close()
+
+        file_generator = FileGenerator(None, None, None, None)
+        values = list(el[0] for el in file_generator.list_files(
+            self.directory, dir_op=True))
+        expected_order = [os.path.join(self.directory, el) for el in [
+            u"a",
+            u"a\u0300",
+            u"a\u0300-1",
+            u"a\u03001",
+            u"a\u0300a%sa" % os.path.sep,
+            u"a\u0300a%sz" % os.path.sep,
+            u"a\u0300a%s\u00e6" % os.path.sep,
+            u"z",
+            u"\u00e6"
+        ]]
+        self.assertEqual(values, expected_order)
 
 
 class S3FileGeneratorTest(unittest.TestCase):

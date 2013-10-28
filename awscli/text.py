@@ -28,22 +28,23 @@ def _format_text(item, stream, identifier=None, scalar_keys=None):
         for new_identifier, non_scalar in non_scalars:
             _format_text(item=non_scalar, stream=stream,
                             identifier=new_identifier)
-    elif item and isinstance(item, list):
-        if isinstance(item[0], dict):
-            all_keys = _all_scalar_keys(item)
-            for element in item:
-                _format_text(element,
-                                stream=stream,
-                                identifier=identifier,
-                                scalar_keys=all_keys)
-        elif isinstance(item[0], list):
-            for list_element in item:
-                _format_text(list_element, stream=stream,
-                             identifier=identifier)
-        else:
-            # For a bare list, just print the contents.
-            stream.write('\t'.join([six.text_type(el) for el in item]))
-            stream.write('\n')
+    elif isinstance(item, list):
+        if item:
+            if isinstance(item[0], dict):
+                all_keys = _all_scalar_keys(item)
+                for element in item:
+                    _format_text(element,
+                                    stream=stream,
+                                    identifier=identifier,
+                                    scalar_keys=all_keys)
+            elif isinstance(item[0], list):
+                for list_element in item:
+                    _format_text(list_element, stream=stream,
+                                 identifier=identifier)
+            else:
+                # For a bare list, just print the contents.
+                stream.write('\t'.join([six.text_type(el) for el in item]))
+                stream.write('\n')
     else:
         # If it's not a list or a dict, we just write the scalar
         # value out directly.

@@ -80,10 +80,28 @@ class FileGenerator(object):
             size, last_update = get_file_stat(path)
             yield path, size, last_update
         else:
-            names = sorted(listdir(path))
+            # We need to list files in byte order based on the full
+            # expanded path of the key: 'test/1/2/3.txt'  However, listdir()
+            # will only give us contents a single directory at a time, so we'll
+            # get 'test'.  At the same time we don't want to load the entire
+            # list of files into memory.  This is handled by first going
+            # through the current directory contents and adding the directory
+            # separator to any directories.  We can then sort the contents,
+            # and ensure byte order.
+            names = listdir(path)
+            for i, name in enumerate(names):
+                file_path = join(path, name)
+                if isdir(file_path):
+                    names[i] = name + os.path.sep
+            names.sort()
             for name in names:
                 file_path = join(path, name)
                 if isdir(file_path):
+                    # Anything in a directory will have a prefix of this
+                    # current directory and will come before the
+                    # remaining contents in this directory.  This means we need
+                    # to recurse into this sub directory before yielding the
+                    # rest of this directory's contents.
                     for x in self.list_files(file_path, dir_op):
                         yield x
                 else:

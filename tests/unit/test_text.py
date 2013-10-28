@@ -126,7 +126,7 @@ class TestSection(unittest.TestCase):
         # We also need this test as well as test_empty_list
         # because we want to ensure that write() is never called with
         # a list object.
-        fake_stream = mock.Mock(spec=sys.stdout)
+        fake_stream = mock.Mock()
         self.format_text(data=[], stream=fake_stream)
         # We should not call .write() at all for an empty list.
         self.assertFalse(fake_stream.write.called)

@@ -212,6 +212,10 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 0)
         self.assertIsInstance(p.json, dict)
 
+    def test_pagination_with_text_output(self):
+        p = aws('iam list-users --output text')
+        self.assertEqual(p.rc, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

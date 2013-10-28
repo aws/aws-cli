@@ -36,12 +36,13 @@ The currently supported services include:
 * Elastic Load Balancing
 
 
-The aws-cli package should work on Python versions 2.6.x - 3.3.x.
+The aws-cli package should work on Python versions 2.6.x, 2.7.x, and 3.3.x.
 
 .. attention::
    We recommend that all customers regularly monitor the
    `Amazon Web Services Security Bulletins website`_ for any important security bulletins related to
    aws-cli.
+
 
 ------------
 Installation
@@ -66,6 +67,16 @@ awscli directory structure on your workstation, you can just::
 
     $ cd <path_to_awscli>
     $ python setup.py install
+
+
+------------
+CLI Releases
+------------
+
+The release notes for the AWS CLI can be found `here <http://aws.amazon.com/releasenotes/CLI>`__.
+You can also find a `CHANGELOG <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__
+in the github repo.
+
 
 ------------------
 Command Completion

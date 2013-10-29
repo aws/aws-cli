@@ -1,9 +1,10 @@
 import logging
 import math
 import os
-import requests
 import time
 import threading
+
+from botocore.vendored import requests
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, ReadFileChunk, relative_path

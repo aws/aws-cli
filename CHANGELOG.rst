@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.2.2
+=====
 
 * Fix an issue causing ``s3 sync`` with the ``--delete`` incorrectly deleting files (issue 440)
 * Fix an issue with ``--output text`` combined with paginated results (boto/botocore#165)

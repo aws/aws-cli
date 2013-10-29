@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import hashlib
 from operator import itemgetter
-import requests
+from botocore.vendored import requests
 from six import StringIO
 from io import BytesIO
 

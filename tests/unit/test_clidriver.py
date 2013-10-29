@@ -15,7 +15,7 @@ from tests.unit import BaseAWSCommandParamsTest
 
 import mock
 import six
-import requests.models
+from botocore.vendored.requests import models
 
 import awscli
 from awscli.clidriver import CLIDriver
@@ -301,7 +301,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_aws_with_endpoint_url(self):
         with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = requests.models.Response()
+            http_response = models.Response()
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
@@ -313,7 +313,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_aws_with_region(self):
         with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = requests.models.Response()
+            http_response = models.Response()
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
@@ -389,7 +389,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
         error_msg = ("Bad value for argument '--filters': "
                      "Unable to retrieve http://does/not/exist.json: "
                      "received non 200 status code of 404")
-        with mock.patch('requests.get') as get:
+        with mock.patch('botocore.vendored.requests.get') as get:
             get.return_value.status_code = 404
             self.assert_params_for_cmd(
                 'ec2 describe-instances --filters http://does/not/exist.json',

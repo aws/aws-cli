@@ -119,7 +119,8 @@ def _generate_policy(params):
     # Creates a policy that provides access for 24 hours.
     delta = datetime.timedelta(hours=24)
     expires = datetime.datetime.utcnow() + delta
-    policy = POLICY.format(expires=expires.isoformat(),
+    expires_iso = expires.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    policy = POLICY.format(expires=expires_iso,
                            bucket=params['Bucket'],
                            prefix=params['Prefix'])
     params['UploadPolicy'] = policy

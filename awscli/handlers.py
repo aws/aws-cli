@@ -36,6 +36,7 @@ from awscli.customizations.iamvirtmfa import IAMVMFAWrapper
 from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.dryrundocs import register_dryrun_docs
 from awscli.customizations.route53resourceid import register_resource_id
+from awscli.customizations.configure import register_configure_cmd
 
 
 def awscli_initialize(event_handlers):
@@ -75,3 +76,4 @@ def awscli_initialize(event_handlers):
     register_arg_renames(event_handlers)
     register_dryrun_docs(event_handlers)
     register_resource_id(event_handlers)
+    register_configure_cmd(event_handlers)

@@ -7,7 +7,7 @@ import awscli
 
 
 requires = ['botocore>=0.22.0,<0.23.0',
-            'bcdoc>=0.10.0,<0.11.0',
+            'bcdoc>=0.11.0,<0.12.0',
             'six>=1.1.0',
             'colorama==0.2.5',
             'docutils>=0.10',

@@ -90,40 +90,28 @@ class ServiceArgParser(CLIArgParser):
         self.add_argument('operation', choices=list(operations_table.keys()))
 
 
-class OperationArgParser(CLIArgParser):
-    Formatter = argparse.RawTextHelpFormatter
+class ArgTableArgParser(CLIArgParser):
+    """CLI arg parser based on an argument table."""
     Usage = ("aws [options] <command> <subcommand> [parameters]")
 
-    type_map = {
-        'structure': str,
-        'map': str,
-        'timestamp': str,
-        'list': str,
-        'string': str,
-        'float': float,
-        'integer': str,
-        'long': int,
-        'boolean': bool,
-        'double': float,
-        'blob': str}
-
-    def __init__(self, argument_table, name):
-        super(OperationArgParser, self).__init__(
+    def __init__(self, argument_table):
+        super(ArgTableArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
             usage=self.Usage,
             conflict_handler='resolve')
-        self._build(argument_table, name)
+        self._build(argument_table)
 
-    def _build(self, argument_table, name):
+    def _build(self, argument_table):
         for arg_name in argument_table:
             argument = argument_table[arg_name]
             argument.add_to_parser(self)
 
-    def parse_known_args(self, args):
+    def parse_known_args(self, args, namespace=None):
         if len(args) == 1 and args[0] == 'help':
             namespace = argparse.Namespace()
             namespace.help = 'help'
             return namespace, []
         else:
-            return super(OperationArgParser, self).parse_known_args(args)
+            return super(ArgTableArgParser, self).parse_known_args(
+                args, namespace)

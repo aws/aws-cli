@@ -16,7 +16,8 @@ import six
 import sys
 
 import awscli
-from awscli.argparser import ServiceArgParser, OperationArgParser
+from awscli.arguments import BaseCLIArgument
+from awscli.argparser import ServiceArgParser, ArgTableArgParser
 from awscli.help import HelpCommand
 from awscli.customizations import utils
 from awscli.customizations.s3.comparator import Comparator
@@ -374,16 +375,16 @@ class S3SubCommand(object):
 
     def _create_operation_parser(self, parameter_table):
         """
-        This creates the OperationArgParser for the command.  It adds
+        This creates the ArgTableArgParser for the command.  It adds
         an extra argument to the parser, paths, which represents a required
         the number of positional argument that must follow the command's name.
         """
-        parser = OperationArgParser(parameter_table, self._name)
+        parser = ArgTableArgParser(parameter_table)
         parser.add_argument("paths", **self.options)
         return parser
 
 
-class S3Parameter(object):
+class S3Parameter(BaseCLIArgument):
     """
     This is a class that is used to add a parameter to the the parser along
     with its respective actions, dest, etc.
@@ -391,7 +392,11 @@ class S3Parameter(object):
     def __init__(self, name, options, documentation=''):
         self._name = name
         self.options = options
-        self.documentation = documentation
+        self._documentation = documentation
+
+    @property
+    def documentation(self):
+        return self._documentation
 
     def add_to_parser(self, parser):
         parser.add_argument('--'+self._name, **self.options)

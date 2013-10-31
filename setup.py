@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore>=0.22.0,<0.23.0',
+requires = ['botocore>=0.23.0,<0.24.0',
             'bcdoc>=0.11.0,<0.12.0',
             'six>=1.1.0',
             'colorama==0.2.5',

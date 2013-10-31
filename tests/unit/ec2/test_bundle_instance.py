@@ -25,11 +25,12 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
 
     prefix = 'ec2 bundle-instance'
 
-    Base64Policy = ('eyJleHBpcmF0aW9uIjogIjIwMTMtMDgtMTBUMDA6MDA6MDAiL'
-                    'CJjb25kaXRpb25zIjogW3siYnVja2V0IjogIm15YnVja2V0In'
-                    '0seyJhY2wiOiAiZWMyLWJ1bmRsZS1yZWFkIn0sWyJzdGFydHM'
-                    'td2l0aCIsICIka2V5IiwgImZvb2JhciJdXX0=')
-    PolicySignature = '0Wr6cr2Je//jinxyiuL4qMs51Lk='
+    Base64Policy = ('eyJleHBpcmF0aW9uIjogIjIwMTMtMDgtMTBUMDA6MDA6MDAuM'
+                    'DAwMDAwWiIsImNvbmRpdGlvbnMiOiBbeyJidWNrZXQiOiAibXl'
+                    'idWNrZXQifSx7ImFjbCI6ICJlYzItYnVuZGxlLXJlYWQifSxbI'
+                    'nN0YXJ0cy13aXRoIiwgIiRrZXkiLCAiZm9vYmFyIl1dfQ==')
+
+    PolicySignature = 'ynxybUMv9YuGbPl7HZ8AFJW/2t0='
     
     def setUp(self):
         super(TestBundleInstance, self).setUp()
@@ -62,6 +63,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
                    'Storage.S3.UploadPolicy': self.Base64Policy,
                    'Storage.S3.UploadPolicySignature': self.PolicySignature}
         self.assert_params_for_cmd(args_list, result)
+        
 
     def test_policy_provided(self):
         policy = '{"notarealpolicy":true}'

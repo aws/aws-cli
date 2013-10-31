@@ -17,7 +17,7 @@ import logging
 
 import mock
 import six
-import requests
+from botocore.vendored import requests
 
 from awscli.clidriver import create_clidriver
 

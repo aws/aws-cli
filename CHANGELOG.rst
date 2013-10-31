@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.2.3
+=====
+
+* Add a new ``configure`` command that allows users to interactively specify
+  configuration values (pull request 455)
+* Add support for new EMR APIs, termination of specific cluster instances, and
+  unlimited EMR steps
+* Update Amazon CloudFront command to the 2013-09-27 API version
+* Fix issue where Expires timestamp in bundle-instance policy is incorrect
+  (issue 456)
+* The requests library is now vendored in botocore (at version 2.0.1)
+* Fix an issue where timestamps used for Signature Version 4 weren't being
+  refreshed (boto/botocore#162).
+
+
 1.2.2
 =====
 

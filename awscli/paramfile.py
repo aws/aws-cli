@@ -14,8 +14,10 @@
 
 import logging
 import os
-import requests
+
+from botocore.vendored import requests
 import six
+
 
 logger = logging.getLogger(__name__)
 

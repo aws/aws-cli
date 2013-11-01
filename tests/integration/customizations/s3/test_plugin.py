@@ -270,6 +270,14 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
         self.assertEqual(p.rc, 255)
 
+    def test_cp_empty_file(self):
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', contents='')
+        p = aws('s3 cp %s s3://%s/' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        self.assertNotIn('failed', p.stderr)
+        self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
+
 
 class TestSync(BaseS3CLICommand):
     def test_sync_to_from_s3(self):
@@ -304,6 +312,51 @@ class TestSync(BaseS3CLICommand):
         # Sync the directory and the bucket.
         p = aws('s3 sync %s s3://noexist-bkt-nme-1412' % (self.files.rootdir,))
         self.assertEqual(p.rc, 255)
+
+    def test_sync_with_empty_files(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+        empty_txt = self.files.create_file('bar.txt', contents='')
+        bucket_name = self.create_bucket()
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assertEqual(p.rc, 0)
+        self.assertNotIn('failed', p.stderr)
+        self.assertTrue(
+            self.key_exists(bucket_name=bucket_name, key_name='bar.txt'))
+
+    def test_sync_with_delete_option_with_same_prefix(self):
+        # Test for issue 440 (https://github.com/aws/aws-cli/issues/440)
+        # First, we need to create a directory structure that has a dir with
+        # the same prefix as some of the files:
+        #
+        #  test/foo.txt
+        #  test-123.txt
+        #  test-321.txt
+        #  test.txt
+        bucket_name = self.create_bucket()
+        # create test/foo.txt
+        nested_dir = os.path.join(self.files.rootdir, 'test')
+        os.mkdir(nested_dir)
+        self.files.create_file(os.path.join(nested_dir, 'foo.txt'),
+                               contents='foo.txt contents')
+        # Then create test-123.txt, test-321.txt, test.txt.
+        self.files.create_file('test-123.txt', 'test-123.txt contents')
+        self.files.create_file('test-321.txt', 'test-321.txt contents')
+        self.files.create_file('test.txt', 'test.txt contents')
+
+        # Now sync this content up to s3.
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+
+        # Now here's the issue.  If we try to sync the contents down
+        # with the --delete flag we should *not* see any output, the
+        # sync operation should determine that nothing is different and
+        # therefore do nothing.  We can just use --dryrun to show the issue.
+        p = aws('s3 sync s3://%s/ %s --dryrun' % (
+            bucket_name, self.files.rootdir))
+        # These assertion methods will give better error messages than just
+        # checking if the output is empty.
+        self.assertNotIn('download:', p.stdout)
+        self.assertNotIn('delete:', p.stdout)
+        self.assertEqual('', p.stdout)
 
 
 class TestUnicode(BaseS3CLICommand):

@@ -189,7 +189,11 @@ class HelpCommand(object):
     def __init__(self, session, obj, command_table, arg_table):
         self.session = session
         self.obj = obj
+        if command_table is None:
+            command_table = {}
         self.command_table = command_table
+        if arg_table is None:
+            arg_table = {}
         self.arg_table = arg_table
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')

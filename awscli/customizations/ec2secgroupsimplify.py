@@ -48,12 +48,11 @@ def _check_args(parsed_args, **kwargs):
     # raise an error.
     arg_dict = vars(parsed_args)
     if arg_dict['ip_permissions']:
-        for key in ('protocol', 'group_id', 'port', 'cidr',
+        for key in ('protocol', 'port', 'cidr',
                     'source_group', 'group_owner'):
             if arg_dict[key]:
-                msg = ('Mixing the --ip-permissions option '
-                       'with the simple, scalar options is '
-                       'not recommended.')
+                msg = ('The --%s option is not compatible '
+                       'with the --ip-permissions option ') % key
                 raise ValueError(msg)
 
 def _add_docs(help_command, **kwargs):

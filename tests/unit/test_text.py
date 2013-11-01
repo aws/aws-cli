@@ -20,6 +20,7 @@
 # IN THE SOFTWARE.
 #
 import unittest
+import sys
 
 import six
 import mock
@@ -28,8 +29,9 @@ from awscli import text
 
 
 class TestSection(unittest.TestCase):
-    def format_text(self, data):
-        stream = six.StringIO()
+    def format_text(self, data, stream=None):
+        if stream is None:
+            stream = six.StringIO()
         text.format_text(data, stream=stream)
         return stream.getvalue()
 
@@ -113,6 +115,21 @@ class TestSection(unittest.TestCase):
 
     def test_single_scalar_value(self):
         self.assert_text_renders_to('foobarbaz', 'foobarbaz\n')
+
+    def test_empty_list(self):
+        self.assert_text_renders_to([], '')
+
+    def test_empty_inner_list(self):
+        self.assert_text_renders_to([[]], '')
+
+    def test_empty_list_mock_calls(self):
+        # We also need this test as well as test_empty_list
+        # because we want to ensure that write() is never called with
+        # a list object.
+        fake_stream = mock.Mock()
+        self.format_text(data=[], stream=fake_stream)
+        # We should not call .write() at all for an empty list.
+        self.assertFalse(fake_stream.write.called)
 
 
 if __name__ == '__main__':

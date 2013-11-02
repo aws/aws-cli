@@ -24,7 +24,7 @@ bucket and key.
 file locally.
 ::
 
-    aws s3 mv s3://mybucket/test.txt test2.txt 
+    aws s3 mv s3://mybucket/test.txt test2.txt
 
 *Output:*
 ::
@@ -52,7 +52,7 @@ the objects ``test1.txt`` and ``test2.txt``.
 
 *Output:*
 ::
-    
+
     move: s3://mybucket/test1.txt to test1.txt
     move: s3://mybucket/test2.txt to test2.txt
 
@@ -63,11 +63,11 @@ parameter.  In this example, the directory ``myDir`` has the files
 ``test1.txt`` and ``test2.jpg``.
 ::
 
-    aws s3 mv myDir s3://mybucket/ --recursive --exclude *.jpg
+    aws s3 mv myDir s3://mybucket/ --recursive --exclude "*.jpg"
 
 *Output:*
 ::
-    
+
     move: myDir/test1.txt to s3://mybucket2/test1.txt
 
 7) When passed with the parameter ``--recursive``, the following ``mv``
@@ -77,11 +77,11 @@ In this example, the bucket ``mybucket`` has the objects ``test1.txt``
 and ``another/test1.txt``.
 ::
 
-    aws s3 mv s3://mybucket/ s3://mybucket2/ --recursive --exclude mybucket/another/*
+    aws s3 mv s3://mybucket/ s3://mybucket2/ --recursive --exclude "mybucket/another/*"
 
 *Output:*
 ::
-    
+
     move: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
 
 8) The following ``mv`` command moves a single object to a specified

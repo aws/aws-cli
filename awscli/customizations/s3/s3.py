@@ -333,18 +333,7 @@ class ListCommand(S3SubCommand):
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
                                       prefix=key, delimiter='/')
-        sys.stdout.write("\nBucket: %s\n" % bucket)
-        sys.stdout.write("Prefix: %s\n\n" % key)
-        header_str = "LastWriteTime".rjust(19, ' ')
-        header_str = header_str + ' ' + "Length".rjust(10, ' ')
-        header_str = header_str + ' ' + "Name"
-        underline_str = "-------------".rjust(19, ' ')
-        underline_str = underline_str + ' ' + "------".rjust(10, ' ')
-        underline_str = underline_str + ' ' + "----"
-        sys.stdout.write("%s\n" % header_str)
-        sys.stdout.write("%s\n" % underline_str)
-        for html_response, response_data in iterator:
-            check_error(response_data)
+        for _, response_data in iterator:
             common_prefixes = response_data['CommonPrefixes']
             contents = response_data['Contents']
             for common_prefix in common_prefixes:
@@ -366,13 +355,7 @@ class ListCommand(S3SubCommand):
 
     def _list_all_buckets(self):
         operation = self.service.get_operation('ListBuckets')
-        html_response, response_data = operation.call(self.endpoint)
-        header_str = "CreationTime".rjust(19, ' ')
-        header_str = header_str + ' ' + "Bucket"
-        underline_str = "------------".rjust(19, ' ')
-        underline_str = underline_str + ' ' + "------"
-        sys.stdout.write("\n%s\n" % header_str)
-        sys.stdout.write("%s\n" % underline_str)
+        response_data = operation.call(self.endpoint)[1]
         buckets = response_data['Buckets']
         for bucket in buckets:
             last_mod_str = self._make_last_mod_str(bucket['CreationDate'])

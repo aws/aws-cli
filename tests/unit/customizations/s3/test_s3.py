@@ -468,7 +468,7 @@ class CommandParametersTest(unittest.TestCase):
         # and be caught by the exception.
         cmd_params = CommandParameters(self.session, 'rb', {'force': True})
         cmd_params.parameters['src'] = 's3://mybucket'
-        cmd_params.check_force(None, None)
+        cmd_params.check_force(None)
 
     def test_region(self):
         # This tests the ability to specify the region and throw an error

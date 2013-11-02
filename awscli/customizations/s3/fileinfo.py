@@ -13,29 +13,6 @@ from awscli.customizations.s3.utils import find_bucket_key, \
         guess_content_type, MD5Error
 
 
-def make_last_mod_str(last_mod):
-    """
-    This function creates the last modified time string whenever objects
-    or buckets are being listed
-    """
-    last_mod = parse(last_mod)
-    last_mod = last_mod.astimezone(tzlocal())
-    last_mod_tup = (str(last_mod.year), str(last_mod.month).zfill(2),
-                    str(last_mod.day).zfill(2), str(last_mod.hour).zfill(2),
-                    str(last_mod.minute).zfill(2),
-                    str(last_mod.second).zfill(2))
-    last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
-    return last_mod_str.ljust(19, ' ')
-
-
-def make_size_str(size):
-    """
-    This function creates the size string when objects are being listed.
-    """
-    size_str = str(size)
-    return size_str.rjust(10, ' ')
-
-
 def read_file(filename):
     """
     This reads the file into a form that can be sent to S3
@@ -109,62 +86,6 @@ class TaskInfo(object):
         self.operation_name = operation_name
         self.service = service
         self.endpoint = endpoint
-
-    def list_objects(self):
-        """
-        List all of the buckets if no bucket is specified.  List the objects
-        and common prefixes under a specified prefix.
-        """
-        bucket, key = find_bucket_key(self.src)
-        if bucket == '':
-            operation = self.service.get_operation('ListBuckets')
-            html_response, response_data = operation.call(self.endpoint)
-            header_str = "CreationTime".rjust(19, ' ')
-            header_str = header_str + ' ' + "Bucket"
-            underline_str = "------------".rjust(19, ' ')
-            underline_str = underline_str + ' ' + "------"
-            sys.stdout.write("\n%s\n" % header_str)
-            sys.stdout.write("%s\n" % underline_str)
-            buckets = response_data['Buckets']
-            for bucket in buckets:
-                last_mod_str = make_last_mod_str(bucket['CreationDate'])
-                print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
-                uni_print(print_str)
-                sys.stdout.flush()
-        else:
-            operation = self.service.get_operation('ListObjects')
-            iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                          prefix=key, delimiter='/')
-            sys.stdout.write("\nBucket: %s\n" % bucket)
-            sys.stdout.write("Prefix: %s\n\n" % key)
-            header_str = "LastWriteTime".rjust(19, ' ')
-            header_str = header_str + ' ' + "Length".rjust(10, ' ')
-            header_str = header_str + ' ' + "Name"
-            underline_str = "-------------".rjust(19, ' ')
-            underline_str = underline_str + ' ' + "------".rjust(10, ' ')
-            underline_str = underline_str + ' ' + "----"
-            sys.stdout.write("%s\n" % header_str)
-            sys.stdout.write("%s\n" % underline_str)
-            for html_response, response_data in iterator:
-                check_error(response_data)
-                common_prefixes = response_data['CommonPrefixes']
-                contents = response_data['Contents']
-                for common_prefix in common_prefixes:
-                    prefix_components = common_prefix['Prefix'].split('/')
-                    prefix = prefix_components[-2]
-                    pre_string = "PRE".rjust(30, " ")
-                    print_str = pre_string + ' ' + prefix + '/\n'
-                    uni_print(print_str)
-                    sys.stdout.flush()
-                for content in contents:
-                    last_mod_str = make_last_mod_str(content['LastModified'])
-                    size_str = make_size_str(content['Size'])
-                    filename_components = content['Key'].split('/')
-                    filename = filename_components[-1]
-                    print_str = last_mod_str + ' ' + size_str + ' ' + \
-                        filename + '\n'
-                    uni_print(print_str)
-                    sys.stdout.flush()
 
     def make_bucket(self):
         """

@@ -118,14 +118,17 @@ class ProtocolArgument(CustomArgument):
         if value:
             try:
                 int_value = int(value)
-                if int_value < 0 or int_value > 255:
-                    msg = ('protocol numbers must be in the range 0-255')
+                if (int_value < 0 or int_value > 255) and int_value != -1:
+                    msg = ('protocol numbers must be in the range 0-255 '
+                           'or -1 to specify all protocols')
                     raise ValueError(msg)
             except ValueError:
-                if value not in ('tcp', 'udp', 'icmp'):
+                if value not in ('tcp', 'udp', 'icmp', 'all'):
                     msg = ('protocol parameter should be one of: '
-                           'tcp|udp|icmp or any valid protocol number.')
+                           'tcp|udp|icmp|all or any valid protocol number.')
                     raise ValueError(msg)
+                if value == 'all':
+                    value = '-1'
             _build_ip_permissions(parameters, 'IpProtocol', value)
 
 

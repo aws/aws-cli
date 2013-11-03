@@ -431,7 +431,7 @@ class CommandArchitecture(object):
         instruction list because it sends the request to S3 and does not
         yield anything.
         """
-        if self.cmd not in ['ls', 'mb', 'rb']:
+        if self.cmd not in ['mb', 'rb']:
             self.instructions.append('file_generator')
         if self.parameters.get('filters'):
             self.instructions.append('filters')
@@ -473,8 +473,11 @@ class CommandArchitecture(object):
         cmd_translation['s3s3'] = {'cp': 'copy', 'sync': 'copy', 'mv': 'move'}
         cmd_translation['s3local'] = {'cp': 'download', 'sync': 'download',
                                       'mv': 'move'}
-        cmd_translation['s3'] = {'rm': 'delete', 'ls': 'list_objects',
-                                 'mb': 'make_bucket', 'rb': 'remove_bucket'}
+        cmd_translation['s3'] = {
+            'rm': 'delete',
+            'mb': 'make_bucket',
+            'rb': 'remove_bucket'
+        }
         operation_name = cmd_translation[paths_type][self.cmd]
 
         file_generator = FileGenerator(self._service, self._endpoint,
@@ -511,9 +514,6 @@ class CommandArchitecture(object):
         command_dict['mv'] = {'setup': [files],
                               'file_generator': [file_generator],
                               'filters': [Filter(self.parameters)],
-                              's3_handler': [s3handler]}
-
-        command_dict['ls'] = {'setup': [taskinfo],
                               's3_handler': [s3handler]}
 
         command_dict['mb'] = {'setup': [taskinfo],
@@ -563,7 +563,7 @@ class CommandParameters(object):
         self.parameters = parameters
         if 'dir_op' not in parameters:
             self.parameters['dir_op'] = False
-        if self.cmd in ['sync', 'ls', 'mb', 'rb']:
+        if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
 
     def add_paths(self, paths):
@@ -585,7 +585,7 @@ class CommandParameters(object):
 
     def check_dest_path(self, destination):
         if destination.startswith('s3://') and \
-                self.cmd in ['ls', 'cp', 'sync', 'mv']:
+                self.cmd in ['cp', 'sync', 'mv']:
             bucket, key = find_bucket_key(destination[5:])
             # A bucket is not always provided (like 'aws s3 ls')
             # so only verify the bucket exists if we actually have
@@ -611,7 +611,7 @@ class CommandParameters(object):
         template_type = {'s3s3': ['cp', 'sync', 'mv'],
                          's3local': ['cp', 'sync', 'mv'],
                          'locals3': ['cp', 'sync', 'mv'],
-                         's3': ['ls', 'mb', 'rb', 'rm'],
+                         's3': ['mb', 'rb', 'rm'],
                          'local': [], 'locallocal': []}
         paths_type = ''
         usage = "usage: aws s3 %s %s" % (self.cmd,
@@ -644,7 +644,7 @@ class CommandParameters(object):
         src_path = paths[0]
         dir_op = self.parameters['dir_op']
         if src_path.startswith('s3://'):
-            if self.cmd in ['ls', 'mb', 'rb']:
+            if self.cmd in ['mb', 'rb']:
                 return
             session = self.session
             service = session.get_service('s3')

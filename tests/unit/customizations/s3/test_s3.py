@@ -111,22 +111,14 @@ class S3SubCommandTest(unittest.TestCase):
     def tearDown(self):
         self.cmd_arc_patch.stop()
 
-    def test_call(self):
-        """
-        This just checks to make sure no exceptions get thrown for a
-        proper command.
-        """
-        s3_command = S3SubCommand('ls', self.session, {'nargs': 1})
-        s3_command(['s3://'], [])
-
     def test_call_error(self):
         """
         This checks to make sure an improper command throws an
         exception.
         """
-        s3_command = S3SubCommand('ls', self.session,  {'nargs': 1})
-        with self.assertRaises(Exception):
-            s3_command(['s3://', '--sfdf'], [])
+        s3_command = S3SubCommand('cp', self.session,  {'nargs': 2})
+        with self.assertRaisesRegexp(ValueError, 'Unknown options'):
+            s3_command(['foo', 's3://', '--sfdf'], [])
 
 
 class S3ParameterTest(unittest.TestCase):
@@ -166,13 +158,12 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         This tests to make sure the instructions for any command is generated
         properly.
         """
-        cmds = ['cp', 'mv', 'rm', 'sync', 'ls', 'mb', 'rb']
+        cmds = ['cp', 'mv', 'rm', 'sync', 'mb', 'rb']
 
         instructions = {'cp': ['file_generator', 's3_handler'],
                         'mv': ['file_generator', 's3_handler'],
                         'rm': ['file_generator', 's3_handler'],
                         'sync': ['file_generator', 'comparator', 's3_handler'],
-                        'ls': ['s3_handler'],
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
@@ -286,18 +277,6 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
 
-    def test_run_ls(self):
-        # This ensures that the architecture sets up correctly for a ``ls``
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
-        s3_prefix = 's3://' + self.bucket + '/'
-        params = {'dir_op': True, 'dryrun': True, 'quiet': False,
-                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1'}
-        cmd_arc = CommandArchitecture(self.session, 'ls', params)
-        cmd_arc.create_instructions()
-        cmd_arc.run()
-
     def test_run_mb(self):
         # This ensures that the architecture sets up correctly for a ``rb``
         # command.  It is just just a dry run, but all of the components need
@@ -365,7 +344,7 @@ class CommandParametersTest(unittest.TestCase):
         # possible combination that is correct for every command.
         cmds = {'cp': ['locals3', 's3s3', 's3local'],
                 'mv': ['locals3', 's3s3', 's3local'],
-                'rm': ['s3'], 'ls': ['s3'], 'mb': ['s3'], 'rb': ['s3'],
+                'rm': ['s3'], 'mb': ['s3'], 'rb': ['s3'],
                 'sync': ['locals3', 's3s3', 's3local']}
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]

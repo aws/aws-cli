@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -434,14 +435,6 @@ class TestLs(BaseS3CLICommand):
         self.assertIn('8 foo.txt', p.stdout)
         self.assertIn('8 foo', p.stdout)
         self.assertIn('8 bar.txt', p.stdout)
-        # Specifying an object just lists the object.
-        # Note that we have foo and foo.txt, but we should
-        # only see the 'foo' file.
-        p = aws('s3 ls s3://%s/foo' % bucket_name)
-        self.assertRegexpMatches(
-            p.stdout,
-            r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+8 foo')
-        self.assertNotIn('8 foo.txt', p.stdout)
 
 
 class TestMbRb(BaseS3CLICommand):

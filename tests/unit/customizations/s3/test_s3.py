@@ -15,13 +15,15 @@ import os
 from six import StringIO
 import sys
 from tests import unittest
+import mock
 
 import botocore.session
 from mock import Mock, MagicMock, patch
 
 from awscli.customizations.s3.s3 import AppendFilter, \
     awscli_initialize, add_s3, add_cmd_params, \
-    S3, S3SubCommand, S3Parameter, CommandArchitecture, CommandParameters
+    S3, S3SubCommand, S3Parameter, CommandArchitecture, CommandParameters, \
+    ListCommand
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
@@ -514,6 +516,44 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         self.assert_contains("Synopsis")
 
 
+class TestLSCommand(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.session.get_service.return_value.get_operation.return_value\
+                .call.return_value = (None, {'Buckets': []})
+        self.session.get_service.return_value.get_operation.return_value\
+                .paginate.return_value = [
+                    (None, {'Contents': [], 'CommonPrefixes': []})]
+
+    def test_ls_command_with_no_args(self):
+        options = {'default': 's3://', 'nargs': '?'}
+        ls_command = ListCommand('ls', self.session, options)
+        ls_command([], mock.Mock())
+        # We should only be a single call.
+        self.session.get_service.return_value.get_operation.assert_called_with(
+            'ListBuckets')
+        call = self.session.get_service.return_value.get_operation\
+                .return_value.call
+        self.assertEqual(call.call_count, 1)
+        self.assertEqual(call.call_args[1], {})
+
+    def test_ls_command_for_bucket(self):
+        options = {'default': 's3://', 'nargs': '?'}
+        ls_command = ListCommand('ls', self.session, options)
+        ls_command(['s3://mybucket/'], mock.Mock())
+        call = self.session.get_service.return_value.get_operation\
+                .return_value.call
+        paginate = self.session.get_service.return_value.get_operation\
+                .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        # And only a single pagination call to ListObjects.
+        self.session.get_service.return_value.get_operation.assert_called_with(
+            'ListObjects')
+        self.assertEqual(
+            paginate.call_args[1], {'bucket': u'mybucket',
+                                    'delimiter': '/', 'prefix': u''})
+
+
 if __name__ == "__main__":
     unittest.main()
-

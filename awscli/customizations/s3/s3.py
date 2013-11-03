@@ -213,8 +213,22 @@ class S3SubCommand(object):
 
     def __init__(self, name, session, options, documentation="", usage=""):
         """
-        It stores the name of the command, its current session, and how many
-        arguments the command requires.
+
+        :type name: str
+        :param name: The name of the subcommand (``ls``, ``cp``, etc.)
+
+        :type session: ``botocore.session.Session``
+        :param session: Session object.
+
+        :type options: dict
+        :param options: The options for the ``paths`` argument.
+
+        :type documentation: str
+        :param documentation: Documentation for the subcommand.
+
+        :type usage: str
+        :param usage: The usage string of the subcommand
+
         """
         self._name = name
         self._session = session
@@ -324,7 +338,7 @@ class ListCommand(S3SubCommand):
         self.service = self._session.get_service('s3')
         self.endpoint = self.service.get_endpoint(parsed_globals.region)
         if not bucket:
-            bucket = self._list_all_buckets()
+            self._list_all_buckets()
         else:
             self._list_all_objects(bucket, key)
         return 0
@@ -362,7 +376,6 @@ class ListCommand(S3SubCommand):
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
             sys.stdout.flush()
-        return bucket
 
     def _make_last_mod_str(self, last_mod):
         """
@@ -402,7 +415,7 @@ class S3Parameter(BaseCLIArgument):
         return self._documentation
 
     def add_to_parser(self, parser):
-        parser.add_argument('--'+self._name, **self.options)
+        parser.add_argument('--' + self._name, **self.options)
 
 
 class CommandArchitecture(object):

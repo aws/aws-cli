@@ -14,7 +14,6 @@
 from tests.unit import BaseAWSCommandParamsTest
 
 from six.moves import cStringIO
-import mock
 
 class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
 
@@ -37,6 +36,32 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                    'IpPermissions.1.FromPort': '-1',
                    'IpPermissions.1.ToPort': '-1',
                    'IpPermissions.1.IpProtocol': 'tcp',
+                   'IpPermissions.1.IpRanges.1.CidrIp': '0.0.0.0/0'}
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_all_protocol(self):
+        args = ' --group-name foobar --protocol all --port all --cidr 0.0.0.0/0'
+        args_list = (self.prefix + args).split()
+        result =  {'GroupName': 'foobar',
+                   'IpPermissions.1.FromPort': '-1',
+                   'IpPermissions.1.ToPort': '-1',
+                   'IpPermissions.1.IpProtocol': '-1',
+                   'IpPermissions.1.IpRanges.1.CidrIp': '0.0.0.0/0'}
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_numeric_protocol(self):
+        args = ' --group-name foobar --protocol 200 --cidr 0.0.0.0/0'
+        args_list = (self.prefix + args).split()
+        result =  {'GroupName': 'foobar',
+                   'IpPermissions.1.IpProtocol': '200',
+                   'IpPermissions.1.IpRanges.1.CidrIp': '0.0.0.0/0'}
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_negative_one_protocol(self):
+        args = ' --group-name foobar --protocol -1 --cidr 0.0.0.0/0'
+        args_list = (self.prefix + args).split()
+        result =  {'GroupName': 'foobar',
+                   'IpPermissions.1.IpProtocol': '-1',
                    'IpPermissions.1.IpRanges.1.CidrIp': '0.0.0.0/0'}
         self.assert_params_for_cmd(args_list, result)
 

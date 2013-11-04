@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+NEXT RELEASE (TBD)
+==================
+
+* Fix an issue with the ``s3`` command when using GovCloud regions
+  (boto/botocore#170)
+
+
 1.2.3
 =====
 
@@ -14,7 +21,7 @@ CHANGELOG
   (issue 456)
 * The requests library is now vendored in botocore (at version 2.0.1)
 * Fix an issue where timestamps used for Signature Version 4 weren't being
-  refreshed (boto/botocore#162).
+  refreshed (boto/botocore#162)
 
 
 1.2.2

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 MULTI_THRESHOLD = 8 * (1024 ** 2)
 CHUNKSIZE = 7 * (1024 ** 2)
-NUM_THREADS = 12
+NUM_THREADS = 10
 QUEUE_TIMEOUT_GET = 1.0
 QUEUE_TIMEOUT_WAIT = 0.2
 MAX_PARTS = 950

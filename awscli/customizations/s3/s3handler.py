@@ -80,8 +80,10 @@ class S3Handler(object):
             self.result_queue.join()
 
         except Exception as e:
-            LOGGER.debug('Exception caught during task execution: %s',
-                         str(e), exc_info=True)
+            LOGGER.error('Exception caught during task execution: %s',
+                          str(e))
+            # Log the traceback at DEBUG level.
+            LOGGER.debug(str(e), exc_info=True)
         except KeyboardInterrupt:
             self.interrupt.set()
             self.result_queue.put({'message': "Cleaning up. Please wait...",

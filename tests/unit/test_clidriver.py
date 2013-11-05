@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 from tests.unit import BaseAWSCommandParamsTest
+import logging
 
 import mock
 import six
@@ -171,7 +172,7 @@ class TestCliDriver(unittest.TestCase):
     def test_error_logger(self):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --profile foo'.split())
-        expected = {'log_level': 'ERROR', 'logger_name': 'awscli'}
+        expected = {'log_level': logging.ERROR, 'logger_name': 'awscli'}
         self.assertEqual(driver.session.stream_logger_args[1], expected)
 
 

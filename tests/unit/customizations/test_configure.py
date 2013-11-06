@@ -347,6 +347,7 @@ class TestConfigFileWriter(unittest.TestCase):
         with open(self.config_filename, 'r') as f:
             new_contents = f.read()
         self.assertEqual(new_contents, '[default]\nfoo = value\n')
+        self.assertEqual(os.stat(self.config_filename).st_mode & 0xFFF, 0o600)
 
     def test_update_config_with_comments(self):
         original = (

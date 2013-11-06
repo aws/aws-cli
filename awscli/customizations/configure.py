@@ -90,7 +90,8 @@ class ConfigFileWriter(object):
         dirname, basename = os.path.split(config_filename)
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
-        with open(config_filename, 'w') as f:
+        with os.fdopen(os.open(config_filename,
+                               os.O_WRONLY|os.O_CREAT, 0o600), 'w') as f:
             pass
 
     def _write_new_section(self, section_name, new_values, config_filename):

@@ -139,7 +139,7 @@ for the default profile, you **must** prefix each config section of a profile
 group with ``profile``.  For example, if you have a profile named "testing" the
 section header would be ``[profile testing]``.
 
-If you wish to place the config file in a different directory than the one
+If you wish to place the config file in a different location than the one
 specified above, you need to tell aws-cli where to find it.  Do this by setting
 the appropriate environment variable::
 

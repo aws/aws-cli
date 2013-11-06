@@ -14,6 +14,7 @@ import os
 import random
 from tests import unittest
 
+import six
 from mock import patch
 
 
@@ -42,21 +43,22 @@ def make_loc_files():
     has the file text1.txt and the directory another_directory inside.  Inside
     of another_directory it creates the file text2.txt.
     """
-    directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
+    directory1 = six.text_type(
+        os.path.abspath('.') + os.sep + 'some_directory' + os.sep)
     if not os.path.exists(directory1):
         os.mkdir(directory1)
 
     string1 = b"This is a test."
-    filename1 = directory1 + "text1.txt"
+    filename1 = directory1 + u"text1.txt"
     with open(filename1, 'wb') as file1:
         file1.write(string1)
 
-    directory2 = directory1 + 'another_directory' + os.sep
+    directory2 = directory1 + u'another_directory' + os.sep
     if not os.path.exists(directory2):
         os.mkdir(directory2)
 
     string2 = b"This is another test."
-    filename2 = directory2 + "text2.txt"
+    filename2 = directory2 + u"text2.txt"
     with open(filename2, 'wb') as file2:
         file2.write(string2)
 

@@ -11,12 +11,37 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import sys
 
+from six import text_type
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
+
+
+# This class is provided primarily to provide a detailed error message.
+
+class FileDecodingError(Exception):
+    """Raised when there was an issue decoding the file."""
+
+    ADVICE = (
+        "Please check your locale settings.  The filename was decoded as: %s\n"
+        "On posix platforms, check the LC_CTYPE environment variable."
+            % (sys.getfilesystemencoding())
+    )
+
+    def __init__(self, directory, filename):
+        self.directory = directory
+        self.file_name = filename
+        self.error_message = (
+            'There was an error trying to decode the the file "%s" in '
+            'directory "%s". \n%s' % (self.file_name,
+                                      self.directory.encode('utf-8'),
+                                      self.ADVICE)
+        )
+        super(FileDecodingError, self).__init__(self.error_message)
 
 
 class FileGenerator(object):
@@ -89,6 +114,7 @@ class FileGenerator(object):
             # separator to any directories.  We can then sort the contents,
             # and ensure byte order.
             names = listdir(path)
+            self._check_paths_decoded(path, names)
             for i, name in enumerate(names):
                 file_path = join(path, name)
                 if isdir(file_path):
@@ -107,6 +133,17 @@ class FileGenerator(object):
                 else:
                     size, last_update = get_file_stat(file_path)
                     yield file_path, size, last_update
+
+    def _check_paths_decoded(self, path, names):
+        # We can get a UnicodeDecodeError if we try to listdir(<unicode>) and
+        # can't decode the contents with sys.getfilesystemencoding().  In this
+        # case listdir() returns the bytestring, which means that
+        # join(<unicode>, <str>) could raise a UnicodeDecodeError.  When this
+        # happens we raise a FileDecodingError that provides more information
+        # into what's going on.
+        for name in names:
+            if not isinstance(name, text_type):
+                raise FileDecodingError(path, name)
 
     def list_objects(self, s3_path, dir_op):
         """

@@ -10,7 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 from six import advance_iterator
+
+
+LOG = logging.getLogger(__name__)
 
 
 def total_seconds(td):
@@ -95,14 +99,20 @@ class Comparator(object):
                 compare_keys = self.compare_comp_key(src_file, dest_file)
 
                 if compare_keys == 'equal':
-                    compare_size = self.compare_size(src_file, dest_file)
-                    compare_time = self.compare_time(src_file, dest_file)
+                    same_size = self.compare_size(src_file, dest_file)
+                    same_last_modified_time = self.compare_time(src_file, dest_file)
 
-                    if (not compare_size) or (not compare_time):
+                    if (not same_size) or (not same_last_modified_time):
+                        LOG.debug("syncing: %s -> %s, size_changed: %s, "
+                                  "last_modified_time_changed: %s",
+                                  src_file.src, src_file.dest,
+                                  not same_size, not same_last_modified_time)
                         yield src_file
                 elif compare_keys == 'less_than':
                     src_take = True
                     dest_take = False
+                    LOG.debug("syncing: %s -> %s, file does not exist at destination",
+                            src_file.src, src_file.dest)
                     yield src_file
 
                 elif compare_keys == 'greater_than':
@@ -110,18 +120,27 @@ class Comparator(object):
                     dest_take = True
                     dest_file.operation_name = 'delete'
                     if self.delete:
+                        LOG.debug("syncing: (None) -> %s (remove), file does "
+                                  "not exist at source (%s) and delete "
+                                  "mode enabled",
+                                  dest_file.src, dest_file.dest)
                         yield dest_file
 
             elif (not src_done) and dest_done:
                 src_take = True
+                LOG.debug("syncing: %s -> %s, file does not exist "
+                          "at destination",
+                          src_file.src, src_file.dest)
                 yield src_file
 
             elif src_done and (not dest_done):
                 dest_take = True
                 dest_file.operation_name = 'delete'
                 if self.delete:
+                    LOG.debug("syncing: (None) -> %s (remove), file does not "
+                              "exist at source (%s) and delete mode enabled",
+                              dest_file.src, dest_file.dest)
                     yield dest_file
-
             else:
                 break
 
@@ -162,11 +181,17 @@ class Comparator(object):
         cmd = src_file.operation_name
         if cmd == "upload" or cmd == "copy":
             if total_seconds(delta) >= 0:
+                # Destination is newer than source.
                 return True
             else:
+                # Destination is older than source, so
+                # we have a more recently updated file
+                # at the source location.
                 return False
         elif cmd == "download":
             if total_seconds(delta) <= 0:
                 return True
             else:
+                # delta is positive, so the destination
+                # is newer than the source.
                 return False

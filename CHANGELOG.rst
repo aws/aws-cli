@@ -7,6 +7,13 @@ NEXT RELEASE (TBD)
 
 * Fix an issue with the ``s3`` command when using GovCloud regions
   (boto/botocore#170)
+* Fix an issue with the ``s3 ls`` command making an extra query at the
+  root level (issue 439)
+* Add detailed error message when unable to decode local filenames during
+  an ``s3 sync`` (issue 378)
+* Support ``-1`` and ``all`` as valid values to the ``--protocol`` argument
+  to ``ec2 authorize-security-group-ingress`` and
+  ``ec2 authorize-security-group-egress`` (issue 460)
 
 
 1.2.3

@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
-from tests import BaseAWSHelpOutputTest
+import sys
 import os
 import tempfile
 import shutil
+from tests import unittest
+from tests import BaseAWSHelpOutputTest
 
 import mock
 from botocore.exceptions import ProfileNotFound
@@ -347,6 +348,13 @@ class TestConfigFileWriter(unittest.TestCase):
         with open(self.config_filename, 'r') as f:
             new_contents = f.read()
         self.assertEqual(new_contents, '[default]\nfoo = value\n')
+
+    @unittest.skipIf(sys.platform.lower().startswith('win'),
+                     "Test not valid on windows.")
+    def test_permissions_on_new_file(self):
+        self.writer.update_config({'foo': 'value'}, self.config_filename)
+        with open(self.config_filename, 'r') as f:
+            new_contents = f.read()
         self.assertEqual(os.stat(self.config_filename).st_mode & 0xFFF, 0o600)
 
     def test_update_config_with_comments(self):

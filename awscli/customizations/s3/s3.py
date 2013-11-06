@@ -15,6 +15,9 @@ import os
 import six
 import sys
 
+from dateutil.parser import parse
+from dateutil.tz import tzlocal
+
 import awscli
 from awscli.arguments import BaseCLIArgument
 from awscli.argparser import ServiceArgParser, ArgTableArgParser
@@ -28,7 +31,8 @@ from awscli.customizations.s3.filters import Filter
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.description import add_command_descriptions, \
     add_param_descriptions
-from awscli.customizations.s3.utils import find_bucket_key, check_error
+from awscli.customizations.s3.utils import find_bucket_key, check_error, \
+        uni_print
 from awscli.customizations.s3.dochandler import S3DocumentEventHandler
 
 
@@ -53,85 +57,6 @@ class AppendFilter(argparse.Action):
         else:
             filter_list = [[option_string, values[0]]]
         setattr(namespace, self.dest, filter_list)
-
-
-# This is a dictionary useful for automatically adding the different commands,
-# the amount of arguments it takes, and the optional parameters that can appear
-# on the same line as the command.  It also contains descriptions and usage
-# keys for help command and doc generation.
-CMD_DICT = {'cp': {'options': {'nargs': 2},
-                   'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude', 'acl',
-                              'no-guess-mime-type',
-                              'sse', 'storage-class', 'grants',
-                              'website-redirect', 'content-type',
-                              'cache-control', 'content-disposition',
-                              'content-encoding', 'content-language',
-                              'expires']},
-            'mv': {'options': {'nargs': 2},
-                   'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude', 'acl',
-                              'sse', 'storage-class', 'grants',
-                              'website-redirect', 'content-type',
-                              'cache-control', 'content-disposition',
-                              'content-encoding', 'content-language',
-                              'expires']},
-            'rm': {'options': {'nargs': 1},
-                   'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude']},
-            'sync': {'options': {'nargs': 2},
-                     'params': ['dryrun', 'delete', 'exclude',
-                                'include', 'quiet', 'acl', 'grants',
-                                'no-guess-mime-type',
-                                'sse', 'storage-class', 'content-type',
-                                'cache-control', 'content-disposition',
-                                'content-encoding', 'content-language',
-                                'expires']},
-            'ls': {'options': {'nargs': '?', 'default': 's3://'},
-                   'params': [], 'default': 's3://'},
-            'mb': {'options': {'nargs': 1}, 'params': []},
-            'rb': {'options': {'nargs': 1}, 'params': ['force']}
-            }
-
-add_command_descriptions(CMD_DICT)
-
-
-# This is a dictionary useful for keeping track of the parameters passed to
-# add_argument when the parameter is added to the parser.  The documents
-# key is a description of what the parameter does and is used for the help
-# command and doc generation.
-PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
-               'delete': {'options': {'action': 'store_true'}},
-               'quiet': {'options': {'action': 'store_true'}},
-               'force': {'options': {'action': 'store_true'}},
-               'no-guess-mime-type': {'options': {'action': 'store_false',
-                                                  'dest': 'guess_mime_type',
-                                                  'default': True}},
-               'content-type': {'options': {'nargs': 1}},
-               'recursive': {'options': {'action': 'store_true',
-                                         'dest': 'dir_op'}},
-               'exclude': {'options': {'action': AppendFilter, 'nargs': 1,
-                           'dest': 'filters'}},
-               'include': {'options': {'action': AppendFilter, 'nargs': 1,
-                           'dest': 'filters'}},
-               'acl': {'options': {'nargs': 1,
-                                   'choices': ['private', 'public-read',
-                                               'public-read-write']}},
-               'grants': {'options': {'nargs': '+'}},
-               'sse': {'options': {'action': 'store_true'}},
-               'storage-class': {'options': {'nargs': 1,
-                                             'choices': [
-                                                 'STANDARD',
-                                                 'REDUCED_REDUNDANCY']}},
-               'website-redirect': {'options': {'nargs': 1}},
-               'cache-control': {'options': {'nargs': 1}},
-               'content-disposition': {'options': {'nargs': 1}},
-               'content-encoding': {'options': {'nargs': 1}},
-               'content-language': {'options': {'nargs': 1}},
-               'expires': {'options': {'nargs': 1}},
-               }
-
-add_param_descriptions(PARAMS_DICT)
 
 
 def awscli_initialize(cli):
@@ -254,9 +179,12 @@ class S3(object):
         """
         subcommand_table = {}
         for cmd in CMD_DICT.keys():
-            subcommand_table[cmd] = S3SubCommand(
-                cmd, self._session, CMD_DICT[cmd]['options'],
-                CMD_DICT[cmd]['description'], CMD_DICT[cmd]['usage'])
+            cmd_specification = CMD_DICT[cmd]
+            cmd_class = cmd_specification.get('command_class', S3SubCommand)
+
+            subcommand_table[cmd] = cmd_class(
+                cmd, self._session, cmd_specification['options'],
+                cmd_specification['description'], cmd_specification['usage'])
 
         self._session.emit('building-operation-table.%s' % self._name,
                            operation_table=subcommand_table,
@@ -285,8 +213,22 @@ class S3SubCommand(object):
 
     def __init__(self, name, session, options, documentation="", usage=""):
         """
-        It stores the name of the command, its current session, and how many
-        arguments the command requires.
+
+        :type name: str
+        :param name: The name of the subcommand (``ls``, ``cp``, etc.)
+
+        :type session: ``botocore.session.Session``
+        :param session: Session object.
+
+        :type options: dict
+        :param options: The options for the ``paths`` argument.
+
+        :type documentation: str
+        :param documentation: Documentation for the subcommand.
+
+        :type usage: str
+        :param usage: The usage string of the subcommand
+
         """
         self._name = name
         self._session = session
@@ -312,7 +254,7 @@ class S3SubCommand(object):
         operation_parser = self._create_operation_parser(param_table)
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if remaining:
-            raise Exception(
+            raise ValueError(
                 "Unknown options: %s" % ', '.join(remaining))
         if 'help' in parsed_args and parsed_args.help == 'help':
             help_object = S3HelpCommand(self._session, self,
@@ -320,24 +262,30 @@ class S3SubCommand(object):
                                         arg_table=param_table)
             help_object(remaining, parsed_globals)
         else:
-            if not isinstance(parsed_args.paths, list):
-                parsed_args.paths = [parsed_args.paths]
-            for i in range(len(parsed_args.paths)):
-                path = parsed_args.paths[i]
-                if isinstance(path, six.binary_type):
-                    dec_path = path.decode(sys.getfilesystemencoding())
-                    enc_path = dec_path.encode('utf-8')
-                    new_path = enc_path.decode('utf-8')
-                    parsed_args.paths[i] = new_path
-            params = self._build_call_parameters(parsed_args, {})
-            cmd_params = CommandParameters(self._session, self._name, params)
-            cmd_params.check_region(parsed_globals)
-            cmd_params.add_paths(parsed_args.paths)
-            cmd_params.check_force(args, parsed_globals)
-            cmd = CommandArchitecture(self._session, self._name,
-                                      cmd_params.parameters)
-            cmd.create_instructions()
-            return cmd.run()
+            self._convert_path_args(parsed_args)
+            return self._do_command(parsed_args, parsed_globals)
+
+    def _do_command(self, parsed_args, parsed_globals):
+        params = self._build_call_parameters(parsed_args, {})
+        cmd_params = CommandParameters(self._session, self._name, params)
+        cmd_params.check_region(parsed_globals)
+        cmd_params.add_paths(parsed_args.paths)
+        cmd_params.check_force(parsed_globals)
+        cmd = CommandArchitecture(self._session, self._name,
+                                    cmd_params.parameters)
+        cmd.create_instructions()
+        return cmd.run()
+
+    def _convert_path_args(self, parsed_args):
+        if not isinstance(parsed_args.paths, list):
+            parsed_args.paths = [parsed_args.paths]
+        for i in range(len(parsed_args.paths)):
+            path = parsed_args.paths[i]
+            if isinstance(path, six.binary_type):
+                dec_path = path.decode(sys.getfilesystemencoding())
+                enc_path = dec_path.encode('utf-8')
+                new_path = enc_path.decode('utf-8')
+                parsed_args.paths[i] = new_path
 
     def create_help_command(self):
         """
@@ -384,6 +332,74 @@ class S3SubCommand(object):
         return parser
 
 
+class ListCommand(S3SubCommand):
+    def _do_command(self, parsed_args, parsed_globals):
+        bucket, key = find_bucket_key(parsed_args.paths[0][5:])
+        self.service = self._session.get_service('s3')
+        self.endpoint = self.service.get_endpoint(parsed_globals.region)
+        if not bucket:
+            self._list_all_buckets()
+        else:
+            self._list_all_objects(bucket, key)
+        return 0
+
+    def _list_all_objects(self, bucket, key):
+        operation = self.service.get_operation('ListObjects')
+        iterator = operation.paginate(self.endpoint, bucket=bucket,
+                                      prefix=key, delimiter='/')
+        for _, response_data in iterator:
+            common_prefixes = response_data['CommonPrefixes']
+            contents = response_data['Contents']
+            for common_prefix in common_prefixes:
+                prefix_components = common_prefix['Prefix'].split('/')
+                prefix = prefix_components[-2]
+                pre_string = "PRE".rjust(30, " ")
+                print_str = pre_string + ' ' + prefix + '/\n'
+                uni_print(print_str)
+                sys.stdout.flush()
+            for content in contents:
+                last_mod_str = self._make_last_mod_str(content['LastModified'])
+                size_str = self._make_size_str(content['Size'])
+                filename_components = content['Key'].split('/')
+                filename = filename_components[-1]
+                print_str = last_mod_str + ' ' + size_str + ' ' + \
+                    filename + '\n'
+                uni_print(print_str)
+                sys.stdout.flush()
+
+    def _list_all_buckets(self):
+        operation = self.service.get_operation('ListBuckets')
+        response_data = operation.call(self.endpoint)[1]
+        buckets = response_data['Buckets']
+        for bucket in buckets:
+            last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
+            print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
+            uni_print(print_str)
+            sys.stdout.flush()
+
+    def _make_last_mod_str(self, last_mod):
+        """
+        This function creates the last modified time string whenever objects
+        or buckets are being listed
+        """
+        last_mod = parse(last_mod)
+        last_mod = last_mod.astimezone(tzlocal())
+        last_mod_tup = (str(last_mod.year), str(last_mod.month).zfill(2),
+                        str(last_mod.day).zfill(2), str(last_mod.hour).zfill(2),
+                        str(last_mod.minute).zfill(2),
+                        str(last_mod.second).zfill(2))
+        last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
+        return last_mod_str.ljust(19, ' ')
+
+    def _make_size_str(self, size):
+        """
+        This function creates the size string when objects are being listed.
+        """
+        size_str = str(size)
+        return size_str.rjust(10, ' ')
+
+
+
 class S3Parameter(BaseCLIArgument):
     """
     This is a class that is used to add a parameter to the the parser along
@@ -399,7 +415,7 @@ class S3Parameter(BaseCLIArgument):
         return self._documentation
 
     def add_to_parser(self, parser):
-        parser.add_argument('--'+self._name, **self.options)
+        parser.add_argument('--' + self._name, **self.options)
 
 
 class CommandArchitecture(object):
@@ -428,7 +444,7 @@ class CommandArchitecture(object):
         instruction list because it sends the request to S3 and does not
         yield anything.
         """
-        if self.cmd not in ['ls', 'mb', 'rb']:
+        if self.cmd not in ['mb', 'rb']:
             self.instructions.append('file_generator')
         if self.parameters.get('filters'):
             self.instructions.append('filters')
@@ -470,8 +486,11 @@ class CommandArchitecture(object):
         cmd_translation['s3s3'] = {'cp': 'copy', 'sync': 'copy', 'mv': 'move'}
         cmd_translation['s3local'] = {'cp': 'download', 'sync': 'download',
                                       'mv': 'move'}
-        cmd_translation['s3'] = {'rm': 'delete', 'ls': 'list_objects',
-                                 'mb': 'make_bucket', 'rb': 'remove_bucket'}
+        cmd_translation['s3'] = {
+            'rm': 'delete',
+            'mb': 'make_bucket',
+            'rb': 'remove_bucket'
+        }
         operation_name = cmd_translation[paths_type][self.cmd]
 
         file_generator = FileGenerator(self._service, self._endpoint,
@@ -508,9 +527,6 @@ class CommandArchitecture(object):
         command_dict['mv'] = {'setup': [files],
                               'file_generator': [file_generator],
                               'filters': [Filter(self.parameters)],
-                              's3_handler': [s3handler]}
-
-        command_dict['ls'] = {'setup': [taskinfo],
                               's3_handler': [s3handler]}
 
         command_dict['mb'] = {'setup': [taskinfo],
@@ -560,7 +576,7 @@ class CommandParameters(object):
         self.parameters = parameters
         if 'dir_op' not in parameters:
             self.parameters['dir_op'] = False
-        if self.cmd in ['sync', 'ls', 'mb', 'rb']:
+        if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
 
     def add_paths(self, paths):
@@ -582,7 +598,7 @@ class CommandParameters(object):
 
     def check_dest_path(self, destination):
         if destination.startswith('s3://') and \
-                self.cmd in ['ls', 'cp', 'sync', 'mv']:
+                self.cmd in ['cp', 'sync', 'mv']:
             bucket, key = find_bucket_key(destination[5:])
             # A bucket is not always provided (like 'aws s3 ls')
             # so only verify the bucket exists if we actually have
@@ -608,7 +624,7 @@ class CommandParameters(object):
         template_type = {'s3s3': ['cp', 'sync', 'mv'],
                          's3local': ['cp', 'sync', 'mv'],
                          'locals3': ['cp', 'sync', 'mv'],
-                         's3': ['ls', 'mb', 'rb', 'rm'],
+                         's3': ['mb', 'rb', 'rm'],
                          'local': [], 'locallocal': []}
         paths_type = ''
         usage = "usage: aws s3 %s %s" % (self.cmd,
@@ -641,7 +657,7 @@ class CommandParameters(object):
         src_path = paths[0]
         dir_op = self.parameters['dir_op']
         if src_path.startswith('s3://'):
-            if self.cmd in ['ls', 'mb', 'rb']:
+            if self.cmd in ['mb', 'rb']:
                 return
             session = self.session
             service = session.get_service('s3')
@@ -683,7 +699,7 @@ class CommandParameters(object):
             else:
                 raise Exception("Error: Local path does not exist")
 
-    def check_force(self, args, parsed_globals):
+    def check_force(self, parsed_globals):
         """
         This function recursive deletes objects in a bucket if the force
         parameters was thrown when using the remove bucket command.
@@ -723,3 +739,85 @@ class CommandParameters(object):
             self.parameters['region'] = parsed_region
         else:
             self.parameters['region'] = region
+
+
+# This is a dictionary useful for automatically adding the different commands,
+# the amount of arguments it takes, and the optional parameters that can appear
+# on the same line as the command.  It also contains descriptions and usage
+# keys for help command and doc generation.
+CMD_DICT = {'cp': {'options': {'nargs': 2},
+                   'params': ['dryrun', 'quiet', 'recursive',
+                              'include', 'exclude', 'acl',
+                              'no-guess-mime-type',
+                              'sse', 'storage-class', 'grants',
+                              'website-redirect', 'content-type',
+                              'cache-control', 'content-disposition',
+                              'content-encoding', 'content-language',
+                              'expires']},
+            'mv': {'options': {'nargs': 2},
+                   'params': ['dryrun', 'quiet', 'recursive',
+                              'include', 'exclude', 'acl',
+                              'sse', 'storage-class', 'grants',
+                              'website-redirect', 'content-type',
+                              'cache-control', 'content-disposition',
+                              'content-encoding', 'content-language',
+                              'expires']},
+            'rm': {'options': {'nargs': 1},
+                   'params': ['dryrun', 'quiet', 'recursive',
+                              'include', 'exclude']},
+            'sync': {'options': {'nargs': 2},
+                     'params': ['dryrun', 'delete', 'exclude',
+                                'include', 'quiet', 'acl', 'grants',
+                                'no-guess-mime-type',
+                                'sse', 'storage-class', 'content-type',
+                                'cache-control', 'content-disposition',
+                                'content-encoding', 'content-language',
+                                'expires']},
+            'ls': {'options': {'nargs': '?', 'default': 's3://'},
+                   'params': [], 'default': 's3://',
+                   'command_class': ListCommand},
+            'mb': {'options': {'nargs': 1}, 'params': []},
+            'rb': {'options': {'nargs': 1}, 'params': ['force']}
+            }
+
+add_command_descriptions(CMD_DICT)
+
+
+# This is a dictionary useful for keeping track of the parameters passed to
+# add_argument when the parameter is added to the parser.  The documents
+# key is a description of what the parameter does and is used for the help
+# command and doc generation.
+PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
+               'delete': {'options': {'action': 'store_true'}},
+               'quiet': {'options': {'action': 'store_true'}},
+               'force': {'options': {'action': 'store_true'}},
+               'no-guess-mime-type': {'options': {'action': 'store_false',
+                                                  'dest': 'guess_mime_type',
+                                                  'default': True}},
+               'content-type': {'options': {'nargs': 1}},
+               'recursive': {'options': {'action': 'store_true',
+                                         'dest': 'dir_op'}},
+               'exclude': {'options': {'action': AppendFilter, 'nargs': 1,
+                           'dest': 'filters'}},
+               'include': {'options': {'action': AppendFilter, 'nargs': 1,
+                           'dest': 'filters'}},
+               'acl': {'options': {'nargs': 1,
+                                   'choices': ['private', 'public-read',
+                                               'public-read-write']}},
+               'grants': {'options': {'nargs': '+'}},
+               'sse': {'options': {'action': 'store_true'}},
+               'storage-class': {'options': {'nargs': 1,
+                                             'choices': [
+                                                 'STANDARD',
+                                                 'REDUCED_REDUNDANCY']}},
+               'website-redirect': {'options': {'nargs': 1}},
+               'cache-control': {'options': {'nargs': 1}},
+               'content-disposition': {'options': {'nargs': 1}},
+               'content-encoding': {'options': {'nargs': 1}},
+               'content-language': {'options': {'nargs': 1}},
+               'expires': {'options': {'nargs': 1}},
+               }
+
+add_param_descriptions(PARAMS_DICT)
+
+

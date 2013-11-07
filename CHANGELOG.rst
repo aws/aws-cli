@@ -14,6 +14,9 @@ NEXT RELEASE (TBD)
 * Support ``-1`` and ``all`` as valid values to the ``--protocol`` argument
   to ``ec2 authorize-security-group-ingress`` and
   ``ec2 authorize-security-group-egress`` (issue 460)
+* Log the reason why a file is synced when using the ``s3 sync`` command
+* Fix an issue when uploading large files on low bandwidth networks
+  (issue 454)
 
 
 1.2.3

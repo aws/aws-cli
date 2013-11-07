@@ -17,11 +17,13 @@ import logging
 import mock
 import six
 from botocore.vendored.requests import models
+from botocore.exceptions import NoCredentialsError
 
 import awscli
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
+from awscli.clidriver import CLIOperationCaller
 from botocore.hooks import HierarchicalEmitter
 from botocore.base import get_search_path
 from botocore.provider import Provider
@@ -89,6 +91,7 @@ class FakeSession(object):
         self.provider = Provider(self, 'aws')
         self.profile = None
         self.stream_logger_args = None
+        self.credentials = 'fakecredentials'
 
     def register(self, event_name, handler):
         self.emitter.register(event_name, handler)
@@ -144,6 +147,9 @@ class FakeSession(object):
 
     def set_stream_logger(self, *args, **kwargs):
         self.stream_logger_args = (args, kwargs)
+
+    def get_credentials(self):
+        return self.credentials
 
 
 class TestCliDriver(unittest.TestCase):
@@ -373,6 +379,21 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                       "file does not exist: does/not/exist.json",
                       self.stderr.getvalue())
 
+    def test_aws_configure_in_error_message_no_credentials(self):
+        driver = create_clidriver()
+        def raise_exception(*args, **kwargs):
+            raise NoCredentialsError()
+        driver.session.register(
+            'building-command-table',
+            lambda command_table, **kwargs: \
+                command_table.__setitem__('ec2', raise_exception))
+        with mock.patch('sys.stderr') as f:
+            driver.main('ec2 describe-instances'.split())
+        self.assertEqual(
+            f.write.call_args_list[0][0][0],
+            'Unable to locate credentials. '
+            'You can configure credentials by running "aws configure".')
+
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
 
@@ -396,6 +417,19 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
                 'ec2 describe-instances --filters http://does/not/exist.json',
                 expected_rc=255, stderr_contains=error_msg)
 
+
+class TestCLIOperationCaller(BaseAWSCommandParamsTest):
+    def setUp(self):
+        super(TestCLIOperationCaller, self).setUp()
+        self.session = mock.Mock()
+
+    def test_invoke_with_no_credentials(self):
+        # This is what happens you have no credentials.
+        # get_credentials() return None.
+        self.session.get_credentials.return_value = None
+        caller = CLIOperationCaller(self.session)
+        with self.assertRaises(NoCredentialsError):
+            caller.invoke(None, None, None)
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@ NEXT RELEASE (TBD)
 * Log the reason why a file is synced when using the ``s3 sync`` command
 * Fix an issue when uploading large files on low bandwidth networks
   (issue 454)
+* Fix an issue with parsing shorthand boolean argument values (issue 477)
 
 
 1.2.3

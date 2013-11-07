@@ -362,6 +362,8 @@ def unpack_scalar_cli_arg(parameter, value):
             raise ValueError(msg)
         return open(file_path, 'rb')
     elif parameter.type == 'boolean':
+        if isinstance(value, str) and value.lower() == 'false':
+            return False
         return bool(value)
     else:
         return str(value)

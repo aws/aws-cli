@@ -750,7 +750,7 @@ class CommandParameters(object):
         else:
             self.parameters['region'] = None
 
-     def check_endpoint_url(self, parsed_globals):
+    def check_endpoint_url(self, parsed_globals):
         """
         Adds endpoint_url to the parameters.
         """

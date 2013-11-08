@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-NEXT RELEASE (TBD)
-==================
+1.2.4
+=====
 
 * Fix an issue with the ``s3`` command when using GovCloud regions
   (boto/botocore#170)
@@ -22,6 +22,12 @@ NEXT RELEASE (TBD)
   (boto/botocore#175)
 * Fix an issue with parsing XML response for
   ``ec2 describe-instance-attribute`` (boto/botocore#174)
+* Update ``cloudformation`` command to support new features for stacks and
+  templates
+* Update ``storagegateway`` command to support a new gateway configuration,
+  Gateway-Virtual Tape Library (Gateway-VTL)
+* Update ``elb`` command to support cross-zone load balancing, which
+  changes the way that Elastic Load Balancing (ELB) routes incoming requests
 
 
 1.2.3

@@ -269,6 +269,7 @@ class S3SubCommand(object):
         params = self._build_call_parameters(parsed_args, {})
         cmd_params = CommandParameters(self._session, self._name, params)
         cmd_params.check_region(parsed_globals)
+        cmd_params.check_endpoint_url(parsed_globals)
         cmd_params.add_paths(parsed_args.paths)
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self._name,
@@ -434,7 +435,8 @@ class CommandArchitecture(object):
         self.parameters = parameters
         self.instructions = []
         self._service = self.session.get_service('s3')
-        self._endpoint = self._service.get_endpoint(self.parameters['region'])
+        self._endpoint = self._service.get_endpoint(region_name=self.parameters['region'],
+                                                    endpoint_url=self.parameters['endpoint_url'])
 
     def create_instructions(self):
         """
@@ -731,15 +733,31 @@ class CommandParameters(object):
         parsed_region = None
         if 'region' in parsed_globals:
             parsed_region = getattr(parsed_globals, 'region')
-        if not region and not parsed_region:
+        if 'endpoint_url' in parsed_globals:
+            parsed_endpoint_url = getattr(parsed_globals, 'endpoint_url')
+        else:
+            parsed_endpoint_url = None
+        if not region and not parsed_region and parsed_endpoint_url is None:
             raise Exception("A region must be specified --region or "
                             "specifying the region\nin a configuration "
-                            "file or as an environment variable\n")
+                            "file or as an environment variable.\n"
+                            "Alternately, an endpoint can be specified "
+                            "with --endpoint-url")
         if parsed_region:
             self.parameters['region'] = parsed_region
-        else:
+        elif region:
             self.parameters['region'] = region
+        else:
+            self.parameters['region'] = None
 
+     def check_endpoint_url(self, parsed_globals):
+        """
+        Adds endpoint_url to the parameters.
+        """
+        if 'endpoint_url' in parsed_globals:
+            self.parameters['endpoint_url'] = getattr(parsed_globals, 'endpoint_url')
+        else:
+            self.parameters['endpoint_url'] = None
 
 # This is a dictionary useful for automatically adding the different commands,
 # the amount of arguments it takes, and the optional parameters that can appear

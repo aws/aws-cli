@@ -2,6 +2,34 @@
 CHANGELOG
 =========
 
+1.2.4
+=====
+
+* Fix an issue with the ``s3`` command when using GovCloud regions
+  (boto/botocore#170)
+* Fix an issue with the ``s3 ls`` command making an extra query at the
+  root level (issue 439)
+* Add detailed error message when unable to decode local filenames during
+  an ``s3 sync`` (issue 378)
+* Support ``-1`` and ``all`` as valid values to the ``--protocol`` argument
+  to ``ec2 authorize-security-group-ingress`` and
+  ``ec2 authorize-security-group-egress`` (issue 460)
+* Log the reason why a file is synced when using the ``s3 sync`` command
+* Fix an issue when uploading large files on low bandwidth networks
+  (issue 454)
+* Fix an issue with parsing shorthand boolean argument values (issue 477)
+* Fix an issue with the ``cloudsearch`` command missing a required attribute
+  (boto/botocore#175)
+* Fix an issue with parsing XML response for
+  ``ec2 describe-instance-attribute`` (boto/botocore#174)
+* Update ``cloudformation`` command to support new features for stacks and
+  templates
+* Update ``storagegateway`` command to support a new gateway configuration,
+  Gateway-Virtual Tape Library (Gateway-VTL)
+* Update ``elb`` command to support cross-zone load balancing, which
+  changes the way that Elastic Load Balancing (ELB) routes incoming requests
+
+
 1.2.3
 =====
 
@@ -14,7 +42,7 @@ CHANGELOG
   (issue 456)
 * The requests library is now vendored in botocore (at version 2.0.1)
 * Fix an issue where timestamps used for Signature Version 4 weren't being
-  refreshed (boto/botocore#162).
+  refreshed (boto/botocore#162)
 
 
 1.2.2

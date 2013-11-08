@@ -17,6 +17,8 @@ import botocore.session
 from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
+from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoRegionError
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -185,11 +187,26 @@ class CLIDriver(object):
         except UnknownArgumentError as e:
             sys.stderr.write(str(e) + '\n')
             return 255
+        except NoRegionError as e:
+            msg = ('%s You can also configure your region by running '
+                   '"aws configure".' % e)
+            self._show_error(msg)
+            return 255
+        except NoCredentialsError as e:
+            msg = ('%s. You can configure credentials by running '
+                   '"aws configure".' % e)
+            self._show_error(msg)
+            return 255
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
             sys.stderr.write("%s\n" % e)
             return 255
+
+    def _show_error(self, msg):
+        LOG.debug(msg, exc_info=True)
+        sys.stderr.write(msg)
+        sys.stderr.write('\n')
 
     def _handle_top_level_args(self, args):
         self.session.emit('top-level-args-parsed', parsed_args=args)
@@ -203,7 +220,8 @@ class CLIDriver(object):
             self.session.set_debug_logger(logger_name='botocore')
             self.session.set_debug_logger(logger_name='awscli')
         else:
-            self.session.set_stream_logger(logger_name='awscli', log_level='ERROR')
+            self.session.set_stream_logger(logger_name='awscli',
+                                           log_level=logging.ERROR)
 
 
 class CLICommand(object):
@@ -488,6 +506,11 @@ class CLIOperationCaller(object):
         self._session = session
 
     def invoke(self, operation_object, parameters, parsed_globals):
+        # We could get an error from get_endpoint() about not having
+        # a region configured.  Before this happens we want to check
+        # for credentials so we can give a good error message.
+        if not self._session.get_credentials():
+            raise NoCredentialsError()
         endpoint = operation_object.service.get_endpoint(
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url)
@@ -509,4 +532,3 @@ class CLIOperationCaller(object):
             output = self._session.get_variable('output')
         formatter = get_formatter(output, args)
         formatter(operation, response)
-

@@ -6,12 +6,13 @@ the local file is newer than the last modified time of the s3 object,
 or the local file does not exist under the specified bucket and prefix.
 In this example, the user syncs the bucket ``mybucket`` to the local
 current directory.  The local current directory contains the files
-``test.txt`` and ``test2.txt``.  The bucket ``mybucket`` contains no objects. 
+``test.txt`` and ``test2.txt``.  The bucket ``mybucket`` contains no objects.
 ::
-       
+
     aws s3 sync . s3://mybucket
 
 *Output:*
+
 ::
 
     upload: test.txt to s3://mybucket/test.txt
@@ -25,12 +26,14 @@ modified time of the destination, or the s3 object does not exist under the
 specified bucket and prefix destination.  In this example, the user syncs
 the bucket ``mybucket2`` to the bucket ``mybucket``.  The bucket
 ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``.  The
-bucket ``mybucket2`` contains no objects. 
+bucket ``mybucket2`` contains no objects.
+
 ::
-       
+
     aws s3 sync s3://mybucket s3://mybucket2
 
 *Output:*
+
 ::
 
     copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
@@ -46,9 +49,9 @@ last modified time of the local file is changed to the last modified time
 of the s3 object.  In this example, the user syncs the current local
 directory to the bucket ``mybucket``.  The bucket ``mybucket`` contains the
 objects ``test.txt`` and ``test2.txt``.  The current local directory has
-no files. 
+no files.
 ::
-       
+
     aws s3 sync s3://mybucket .
 
 *Output:*
@@ -64,9 +67,9 @@ under the specified prefix and bucket but not existing in the local
 directory will be deleted.  In this example, the user syncs the bucket
 ``mybucket`` to the local current directory.  The local current directory
 contains the files ``test.txt`` and ``test2.txt``.  The bucket
-``mybucket`` contains the object ``test3.txt``. 
+``mybucket`` contains the object ``test3.txt``.
 ::
-       
+
     aws s3 sync . s3://mybucket --delete
 
 *Output:*
@@ -84,9 +87,10 @@ sync.  In this example, the user syncs the bucket ``mybucket`` to the
 local current directory.  The local current directory contains the files
 ``test.jpg`` and ``test2.txt``.  The bucket ``mybucket`` contains the
 object ``test.jpg`` of a different size than the local ``test.jpg``.
+
 ::
-       
-    aws s3 sync . s3://mybucket --exclude *.jpg
+
+    aws s3 sync . s3://mybucket --exclude "*.jpg"
 
 *Output:*
 ::
@@ -103,9 +107,10 @@ and ``another/test2.txt``.  The bucket ``mybucket`` contains the object
 ``another/test5.txt``.
 ::
 
-    aws s3 sync s3://mybucket/ . --exclude *another/*
+    aws s3 sync s3://mybucket/ . --exclude "*another/*"
 
 *Output:*
+
 ::
-    
+
     download: s3://mybucket/test1.txt to test1.txt

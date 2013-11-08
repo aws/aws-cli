@@ -18,6 +18,10 @@ NEXT RELEASE (TBD)
 * Fix an issue when uploading large files on low bandwidth networks
   (issue 454)
 * Fix an issue with parsing shorthand boolean argument values (issue 477)
+* Fix an issue with the ``cloudsearch`` command missing a required attribute
+  (boto/botocore#175)
+* Fix an issue with parsing XML response for
+  ``ec2 describe-instance-attribute`` (boto/botocore#174)
 
 
 1.2.3

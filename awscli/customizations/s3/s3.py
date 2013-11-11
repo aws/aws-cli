@@ -612,9 +612,7 @@ class CommandParameters(object):
         endpoint = service.get_endpoint(self.parameters['region'])
         operation = service.get_operation('ListObjects')
         # This will raise an exception if the bucket does not exist.
-        html_response, response_data = operation.call(endpoint,
-                                                      bucket=bucket_name,
-                                                      max_keys=0)
+        operation.call(endpoint, bucket=bucket_name, max_keys=0)
 
     def check_path_type(self, paths):
         """
@@ -668,10 +666,8 @@ class CommandParameters(object):
                     src_path += '/'  # all prefixes must end with a /
             bucket, key = find_bucket_key(src_path)
             operation = service.get_operation('ListObjects')
-            html_response, response_data = operation.call(endpoint,
-                                                          bucket=bucket,
-                                                          prefix=key,
-                                                          delimiter='/')
+            response_data = operation.call(endpoint, bucket=bucket, prefix=key,
+                                           delimiter='/')[1]
             check_error(response_data)
             contents = response_data['Contents']
             common_prefixes = response_data['CommonPrefixes']
@@ -706,8 +702,8 @@ class CommandParameters(object):
         """
         if 'force' in self.parameters:
             if self.parameters['force']:
-                bucket, key = find_bucket_key(self.parameters['src'][5:])
-                path = 's3://'+bucket
+                bucket = find_bucket_key(self.parameters['src'][5:])[0]
+                path = 's3://' + bucket
                 try:
                     del_objects = S3SubCommand('rm', self.session, {'nargs': 1})
                     del_objects([path, '--recursive'], parsed_globals)

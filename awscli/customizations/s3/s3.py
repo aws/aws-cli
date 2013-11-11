@@ -181,10 +181,14 @@ class S3(object):
         for cmd in CMD_DICT.keys():
             cmd_specification = CMD_DICT[cmd]
             cmd_class = cmd_specification.get('command_class', S3SubCommand)
-
+            # If a cmd_class is provided, the we'll try to grab the
+            # description and usage off of that object, otherwise
+            # we'll look in the command dict.
+            description, usage = self._get_command_usage(cmd_class)
             subcommand_table[cmd] = cmd_class(
                 cmd, self._session, cmd_specification['options'],
-                cmd_specification['description'], cmd_specification['usage'])
+                cmd_specification.get('description', description),
+                cmd_specification.get('usage', usage))
 
         self._session.emit('building-operation-table.%s' % self._name,
                            operation_table=subcommand_table,
@@ -193,6 +197,10 @@ class S3(object):
                                                 command_table=subcommand_table,
                                                 arg_table=None)
         return subcommand_table
+
+    def _get_command_usage(self, cmd_class):
+        return (getattr(cmd_class, 'DESCRIPTION', None),
+                getattr(cmd_class, 'USAGE', None))
 
     def create_help_command(self):
         """
@@ -210,6 +218,8 @@ class S3SubCommand(object):
     """
     This is the object corresponding to a S3 subcommand.
     """
+    DESCRIPTION = None
+    USAGE = None
 
     def __init__(self, name, session, options, documentation="", usage=""):
         """
@@ -398,6 +408,41 @@ class ListCommand(S3SubCommand):
         size_str = str(size)
         return size_str.rjust(10, ' ')
 
+
+class WebsiteCommand(S3SubCommand):
+    DESCRIPTION = 'Set the website configuration for a bucket.'
+    USAGE = 's3://bucket [--index-document|--error-document] value'
+
+    def _do_command(self, parsed_args, parsed_globals):
+        service = self._session.get_service('s3')
+        endpoint = service.get_endpoint(parsed_globals.region)
+        operation = service.get_operation('PutBucketWebsite')
+        bucket = self._get_bucket_name(parsed_args.paths[0])
+        website_configuration = self._build_website_configuration(parsed_args)
+        operation.call(endpoint, bucket=bucket,
+                       website_configuration=website_configuration)
+        return 0
+
+    def _build_website_configuration(self, parsed_args):
+        website_config = {}
+        if parsed_args.index_document is not None:
+            website_config['IndexDocument'] = {'Suffix': parsed_args.index_document}
+        elif parsed_args.error_document is not None:
+            website_config['ErrorDocument'] = {'Key': parsed_args.error_document}
+        return website_config
+
+    def _get_bucket_name(self, path):
+        # We support either:
+        # s3://bucketname
+        # bucketname
+        #
+        # We also strip off the trailing slash if a user
+        # accidently appends a slash.
+        if path.startswith('s3://'):
+            path = path[5:]
+        if path.endswith('/'):
+            path = path[:-1]
+        return path
 
 
 class S3Parameter(BaseCLIArgument):
@@ -773,7 +818,10 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                    'params': [], 'default': 's3://',
                    'command_class': ListCommand},
             'mb': {'options': {'nargs': 1}, 'params': []},
-            'rb': {'options': {'nargs': 1}, 'params': ['force']}
+            'rb': {'options': {'nargs': 1}, 'params': ['force']},
+            'website': {'options': {'nargs': 1},
+                        'params': ['index-document', 'error-document'],
+                        'command_class': WebsiteCommand},
             }
 
 add_command_descriptions(CMD_DICT)
@@ -812,6 +860,16 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'content-encoding': {'options': {'nargs': 1}},
                'content-language': {'options': {'nargs': 1}},
                'expires': {'options': {'nargs': 1}},
-               }
+               'index-document': {'options': {}, 'documents':
+                   ('A suffix that is appended to a request that is for a '
+                    'directory on the website endpoint (e.g. if the suffix '
+                    'is index.html and you make a request to '
+                    'samplebucket/images/ the data that is returned will '
+                    'be for the object with the key name images/index.html) '
+                    'The suffix must not be empty and must not include a '
+                    'slash character.')},
+               'error-document': {'options': {}, 'documents':
+                   'The object key name to use when a 4XX class error occurs.'}
 
+               }
 add_param_descriptions(PARAMS_DICT)

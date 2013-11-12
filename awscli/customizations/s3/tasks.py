@@ -36,7 +36,7 @@ def print_operation(filename, failed, dryrun=False):
         print_str = print_str + "s3://" + filename.src
     else:
         print_str += relative_path(filename.src)
-    if filename.operation_name not in ["delete", "make_bucket", "remove_bucket"]:
+    if filename.operation_name not in ["delete", "make_bucket", "remove_bucket", "website_config"]:
         if filename.dest_type == "s3":
             print_str += " to s3://" + filename.dest
         else:

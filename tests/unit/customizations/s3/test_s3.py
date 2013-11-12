@@ -57,7 +57,7 @@ class AWSInitializeTest(unittest.TestCase):
         reference.append("building-command-table.main")
         reference.append("building-operation-table.s3")
         reference.append("doc-examples.S3.*")
-        cmds = ['mv', 'rm', 'ls', 'rb', 'mb', 'cp', 'sync']
+        cmds = ['mv', 'rm', 'ls', 'rb', 'mb', 'cp', 'sync', 'website']
         for cmd in cmds:
             reference.append("building-parameter-table.s3." + cmd)
         for arg in self.cli.register.call_args_list:
@@ -347,7 +347,7 @@ class CommandParametersTest(unittest.TestCase):
         cmds = {'cp': ['locals3', 's3s3', 's3local'],
                 'mv': ['locals3', 's3s3', 's3local'],
                 'rm': ['s3'], 'mb': ['s3'], 'rb': ['s3'],
-                'sync': ['locals3', 's3s3', 's3local']}
+                'website': ['s3'], 'sync': ['locals3', 's3s3', 's3local']}
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
 
@@ -375,7 +375,8 @@ class CommandParametersTest(unittest.TestCase):
                 'ls': ['local', 'locallocal', 's3s3', 'locals3', 's3local'],
                 'sync': ['local', 'locallocal', 's3'],
                 'mb': ['local', 'locallocal', 's3s3', 'locals3', 's3local'],
-                'rb': ['local', 'locallocal', 's3s3', 'locals3', 's3local']}
+                'rb': ['local', 'locallocal', 's3s3', 'locals3', 's3local'],
+                'website': ['local', 'locallocal', 's3s3', 'locals3', 's3local']}
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
 

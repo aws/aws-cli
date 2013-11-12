@@ -44,6 +44,10 @@ def add_command_descriptions(cmd_dict):
     cmd_dict['rb']['description'] = "Deletes an S3 bucket."
     cmd_dict['rb']['usage'] = "<S3Path>"
 
+    cmd_dict['website']['description'] = "Configures an S3 bucket " \
+                                         " as a website."
+    cmd_dict['website']['usage'] = "<S3Path>"
+
 
 def add_param_descriptions(params_dict):
     """
@@ -121,3 +125,10 @@ def add_param_descriptions(params_dict):
         "``permission=grantee`` where permission is one of: "
         "``read``, ``readacl``, ``writeacp``, ``full``")
 
+    params_dict['index-document']['documents'] = (
+        "The name of the object in the bucket that will act as "
+        "the index document of the website.")
+
+    params_dict['error-document']['documents'] = (
+        "The name of the object in the bucket that will act as "
+        "the generic error document of the website.")

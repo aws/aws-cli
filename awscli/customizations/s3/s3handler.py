@@ -44,7 +44,8 @@ class S3Handler(object):
                        'content_type': None, 'cache_control': None,
                        'content_disposition': None, 'content_encoding': None,
                        'content_language': None, 'expires': None,
-                       'grants': None}
+                       'grants': None, 'index_document': None,
+                       'error_document': None}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:

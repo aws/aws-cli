@@ -444,7 +444,7 @@ class CommandArchitecture(object):
         instruction list because it sends the request to S3 and does not
         yield anything.
         """
-        if self.cmd not in ['mb', 'rb']:
+        if self.cmd not in ['mb', 'rb', 'website']:
             self.instructions.append('file_generator')
         if self.parameters.get('filters'):
             self.instructions.append('filters')
@@ -489,7 +489,8 @@ class CommandArchitecture(object):
         cmd_translation['s3'] = {
             'rm': 'delete',
             'mb': 'make_bucket',
-            'rb': 'remove_bucket'
+            'rb': 'remove_bucket',
+            'website': 'website_config'
         }
         operation_name = cmd_translation[paths_type][self.cmd]
 
@@ -535,6 +536,10 @@ class CommandArchitecture(object):
         command_dict['rb'] = {'setup': [taskinfo],
                               's3_handler': [s3handler]}
 
+        command_dict['website'] = {'setup': [taskinfo],
+                                   's3_handler': [s3handler],
+                                   'params': self.parameters}
+
         files = command_dict[self.cmd]['setup']
 
         while self.instructions:
@@ -576,7 +581,7 @@ class CommandParameters(object):
         self.parameters = parameters
         if 'dir_op' not in parameters:
             self.parameters['dir_op'] = False
-        if self.cmd in ['sync', 'mb', 'rb']:
+        if self.cmd in ['sync', 'mb', 'rb', 'website']:
             self.parameters['dir_op'] = True
 
     def add_paths(self, paths):
@@ -624,7 +629,7 @@ class CommandParameters(object):
         template_type = {'s3s3': ['cp', 'sync', 'mv'],
                          's3local': ['cp', 'sync', 'mv'],
                          'locals3': ['cp', 'sync', 'mv'],
-                         's3': ['mb', 'rb', 'rm'],
+                         's3': ['mb', 'rb', 'rm', 'website'],
                          'local': [], 'locallocal': []}
         paths_type = ''
         usage = "usage: aws s3 %s %s" % (self.cmd,
@@ -657,7 +662,7 @@ class CommandParameters(object):
         src_path = paths[0]
         dir_op = self.parameters['dir_op']
         if src_path.startswith('s3://'):
-            if self.cmd in ['mb', 'rb']:
+            if self.cmd in ['mb', 'rb', 'website']:
                 return
             session = self.session
             service = session.get_service('s3')
@@ -777,7 +782,9 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                    'params': [], 'default': 's3://',
                    'command_class': ListCommand},
             'mb': {'options': {'nargs': 1}, 'params': []},
-            'rb': {'options': {'nargs': 1}, 'params': ['force']}
+            'rb': {'options': {'nargs': 1}, 'params': ['force']},
+            'website': {'options': {'nargs': 1},
+                        'params': ['index-document', 'error-document']}
             }
 
 add_command_descriptions(CMD_DICT)
@@ -816,6 +823,8 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'content-encoding': {'options': {'nargs': 1}},
                'content-language': {'options': {'nargs': 1}},
                'expires': {'options': {'nargs': 1}},
+               'index-document': {'options': {'nargs': 1}},
+               'error-document': {'options': {'nargs': 1}},
                }
 
 add_param_descriptions(PARAMS_DICT)

@@ -80,12 +80,26 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type, operation_name, service, endpoint):
+    def __init__(self, src, src_type, operation_name, service, endpoint,
+                 parameters=None):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
         self.service = service
         self.endpoint = endpoint
+        self.parameters = parameters
+
+    def _handle_config_params(self, params):
+        website_config = {}
+        if self.parameters['index_document']:
+            website_config['IndexDocument'] = {
+                'Suffix': self.parameters['index_document'][0]}
+        if self.parameters['error_document']:
+            website_config['ErrorDocument'] = {
+                'Key': self.parameters['error_document'][0]}
+        if website_config:
+            params['website_configuration'] = website_config
+        
 
     def make_bucket(self):
         """
@@ -105,6 +119,15 @@ class TaskInfo(object):
         bucket, key = find_bucket_key(self.src)
         params = {'endpoint': self.endpoint, 'bucket': bucket}
         response_data, http = operate(self.service, 'DeleteBucket', params)
+
+    def website_config(self):
+        """
+        This operation configures the website properties of a bucket
+        """
+        bucket, key = find_bucket_key(self.src)
+        params = {'endpoint': self.endpoint, 'bucket': bucket}
+        self._handle_config_params(params)
+        response_data, http = operate(self.service, 'PutBucketWebsite', params)
 
 
 class FileInfo(TaskInfo):

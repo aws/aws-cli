@@ -93,7 +93,6 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             cmdlist = cmd.split()
         else:
             cmdlist = cmd
-        rc = driver.main(cmdlist)
 
         captured_stderr = six.StringIO()
         captured_stdout = six.StringIO()

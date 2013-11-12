@@ -545,5 +545,19 @@ class TestMemoryUtilization(BaseS3CLICommand):
         self.assert_max_memory_used(p, self.max_mem_allowed, download_full_command)
 
 
+class TestWebsiteConfiguration(BaseS3CLICommand):
+    def test_create_website_configuration(self):
+        bucket_name = self.create_bucket()
+        full_command = 's3 website %s --index-document index.html' % (bucket_name)
+        p = aws(full_command)
+        self.assertEqual(p.rc, 0)
+        self.assert_no_errors(p)
+        # Verify we have a bucket website configured.
+        operation = self.service.get_operation('GetBucketWebsite')
+        parsed = operation.call(
+            self.endpoint, bucket=bucket_name)[1]
+        self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
+
+
 if __name__ == "__main__":
     unittest.main()

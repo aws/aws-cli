@@ -57,7 +57,9 @@ class AWSInitializeTest(unittest.TestCase):
         reference.append("building-command-table.main")
         reference.append("building-operation-table.s3")
         reference.append("doc-examples.S3.*")
-        cmds = ['mv', 'rm', 'ls', 'rb', 'mb', 'cp', 'sync']
+        # TODO: Change this test, it has to be updated everytime we
+        # add a new command.
+        cmds = ['mv', 'rm', 'ls', 'rb', 'mb', 'cp', 'sync', 'website']
         for cmd in cmds:
             reference.append("building-parameter-table.s3." + cmd)
         for arg in self.cli.register.call_args_list:

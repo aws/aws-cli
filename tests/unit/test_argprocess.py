@@ -13,6 +13,7 @@
 from tests import unittest
 
 import botocore.session
+import mock
 
 from awscli.clidriver import CLIArgument
 from awscli.help import OperationHelpCommand
@@ -106,6 +107,17 @@ class TestParamShorthand(BaseArgProcessTest):
         returned = self.simplify(p, value)
         json_version = unpack_cli_arg(p, json_value)
         self.assertEqual(returned, json_version)
+
+    def test_parse_boolean_shorthand(self):
+        bool_param = mock.Mock()
+        bool_param.type = 'boolean'
+        self.assertTrue(unpack_cli_arg(bool_param, True))
+        self.assertTrue(unpack_cli_arg(bool_param, 'True'))
+        self.assertTrue(unpack_cli_arg(bool_param, 'true'))
+
+        self.assertFalse(unpack_cli_arg(bool_param, False))
+        self.assertFalse(unpack_cli_arg(bool_param, 'False'))
+        self.assertFalse(unpack_cli_arg(bool_param, 'false'))
 
     def test_simplify_map_scalar(self):
         p = self.get_param_object('sqs.SetQueueAttributes.Attributes')

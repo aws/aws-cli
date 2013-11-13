@@ -11,13 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import unittest
+from tests import unittest
 import tempfile
 import shutil
 
 import six
+import mock
 
-from awscli.customizations.s3.filegenerator import FileGenerator
+from awscli.customizations.s3.filegenerator import FileGenerator, \
+    FileDecodingError
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import get_file_stat
 import botocore.session
@@ -28,10 +30,10 @@ from tests.unit.customizations.s3.fake_session import FakeSession
 
 class LocalFileGeneratorTest(unittest.TestCase):
     def setUp(self):
-        self.local_file = os.path.abspath('.') + os.sep + 'some_directory' \
-            + os.sep + 'text1.txt'
-        self.local_dir = os.path.abspath('.') + os.sep + 'some_directory' \
-            + os.sep
+        self.local_file = six.text_type(os.path.abspath('.') + os.sep + 'some_directory' \
+            + os.sep + 'text1.txt')
+        self.local_dir = six.text_type(os.path.abspath('.') + os.sep + 'some_directory' \
+            + os.sep)
         self.session = FakeSession()
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
@@ -111,6 +113,15 @@ class TestListFilesLocally(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.directory)
+
+    @mock.patch('os.listdir')
+    def test_error_raised_on_decoding_error(self, listdir_mock):
+        # On Python3, sys.getdefaultencoding
+        file_generator = FileGenerator(None, None, None, None)
+        # utf-8 encoding for U+2713.
+        listdir_mock.return_value = [b'\xe2\x9c\x93']
+        with self.assertRaises(FileDecodingError):
+            list(file_generator.list_files(self.directory, dir_op=True))
 
     def test_list_files_is_in_sorted_order(self):
         p = os.path.join

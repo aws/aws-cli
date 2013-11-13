@@ -15,13 +15,15 @@ import os
 from six import StringIO
 import sys
 from tests import unittest
+import mock
 
 import botocore.session
 from mock import Mock, MagicMock, patch
 
 from awscli.customizations.s3.s3 import AppendFilter, \
     awscli_initialize, add_s3, add_cmd_params, \
-    S3, S3SubCommand, S3Parameter, CommandArchitecture, CommandParameters
+    S3, S3SubCommand, S3Parameter, CommandArchitecture, CommandParameters, \
+    ListCommand
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
@@ -55,7 +57,9 @@ class AWSInitializeTest(unittest.TestCase):
         reference.append("building-command-table.main")
         reference.append("building-operation-table.s3")
         reference.append("doc-examples.S3.*")
-        cmds = ['mv', 'rm', 'ls', 'rb', 'mb', 'cp', 'sync']
+        # TODO: Change this test, it has to be updated everytime we
+        # add a new command.
+        cmds = ['mv', 'rm', 'ls', 'rb', 'mb', 'cp', 'sync', 'website']
         for cmd in cmds:
             reference.append("building-parameter-table.s3." + cmd)
         for arg in self.cli.register.call_args_list:
@@ -111,22 +115,14 @@ class S3SubCommandTest(unittest.TestCase):
     def tearDown(self):
         self.cmd_arc_patch.stop()
 
-    def test_call(self):
-        """
-        This just checks to make sure no exceptions get thrown for a
-        proper command.
-        """
-        s3_command = S3SubCommand('ls', self.session, {'nargs': 1})
-        s3_command(['s3://'], [])
-
     def test_call_error(self):
         """
         This checks to make sure an improper command throws an
         exception.
         """
-        s3_command = S3SubCommand('ls', self.session,  {'nargs': 1})
-        with self.assertRaises(Exception):
-            s3_command(['s3://', '--sfdf'], [])
+        s3_command = S3SubCommand('cp', self.session,  {'nargs': 2})
+        with self.assertRaisesRegexp(ValueError, 'Unknown options'):
+            s3_command(['foo', 's3://', '--sfdf'], [])
 
 
 class S3ParameterTest(unittest.TestCase):
@@ -166,13 +162,12 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         This tests to make sure the instructions for any command is generated
         properly.
         """
-        cmds = ['cp', 'mv', 'rm', 'sync', 'ls', 'mb', 'rb']
+        cmds = ['cp', 'mv', 'rm', 'sync', 'mb', 'rb']
 
         instructions = {'cp': ['file_generator', 's3_handler'],
                         'mv': ['file_generator', 's3_handler'],
                         'rm': ['file_generator', 's3_handler'],
                         'sync': ['file_generator', 'comparator', 's3_handler'],
-                        'ls': ['s3_handler'],
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
@@ -286,18 +281,6 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
 
-    def test_run_ls(self):
-        # This ensures that the architecture sets up correctly for a ``ls``
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
-        s3_prefix = 's3://' + self.bucket + '/'
-        params = {'dir_op': True, 'dryrun': True, 'quiet': False,
-                  'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1'}
-        cmd_arc = CommandArchitecture(self.session, 'ls', params)
-        cmd_arc.create_instructions()
-        cmd_arc.run()
-
     def test_run_mb(self):
         # This ensures that the architecture sets up correctly for a ``rb``
         # command.  It is just just a dry run, but all of the components need
@@ -365,7 +348,7 @@ class CommandParametersTest(unittest.TestCase):
         # possible combination that is correct for every command.
         cmds = {'cp': ['locals3', 's3s3', 's3local'],
                 'mv': ['locals3', 's3s3', 's3local'],
-                'rm': ['s3'], 'ls': ['s3'], 'mb': ['s3'], 'rb': ['s3'],
+                'rm': ['s3'], 'mb': ['s3'], 'rb': ['s3'],
                 'sync': ['locals3', 's3s3', 's3local']}
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         local_file = self.loc_files[0]
@@ -468,7 +451,7 @@ class CommandParametersTest(unittest.TestCase):
         # and be caught by the exception.
         cmd_params = CommandParameters(self.session, 'rb', {'force': True})
         cmd_params.parameters['src'] = 's3://mybucket'
-        cmd_params.check_force(None, None)
+        cmd_params.check_force(None)
 
     def test_region(self):
         # This tests the ability to specify the region and throw an error
@@ -535,6 +518,44 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         self.assert_contains("Synopsis")
 
 
+class TestLSCommand(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.session.get_service.return_value.get_operation.return_value\
+                .call.return_value = (None, {'Buckets': []})
+        self.session.get_service.return_value.get_operation.return_value\
+                .paginate.return_value = [
+                    (None, {'Contents': [], 'CommonPrefixes': []})]
+
+    def test_ls_command_with_no_args(self):
+        options = {'default': 's3://', 'nargs': '?'}
+        ls_command = ListCommand('ls', self.session, options)
+        ls_command([], mock.Mock())
+        # We should only be a single call.
+        self.session.get_service.return_value.get_operation.assert_called_with(
+            'ListBuckets')
+        call = self.session.get_service.return_value.get_operation\
+                .return_value.call
+        self.assertEqual(call.call_count, 1)
+        self.assertEqual(call.call_args[1], {})
+
+    def test_ls_command_for_bucket(self):
+        options = {'default': 's3://', 'nargs': '?'}
+        ls_command = ListCommand('ls', self.session, options)
+        ls_command(['s3://mybucket/'], mock.Mock())
+        call = self.session.get_service.return_value.get_operation\
+                .return_value.call
+        paginate = self.session.get_service.return_value.get_operation\
+                .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        # And only a single pagination call to ListObjects.
+        self.session.get_service.return_value.get_operation.assert_called_with(
+            'ListObjects')
+        self.assertEqual(
+            paginate.call_args[1], {'bucket': u'mybucket',
+                                    'delimiter': '/', 'prefix': u''})
+
+
 if __name__ == "__main__":
     unittest.main()
-

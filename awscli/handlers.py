@@ -37,6 +37,7 @@ from awscli.customizations.argrename import register_arg_renames
 from awscli.customizations.dryrundocs import register_dryrun_docs
 from awscli.customizations.route53resourceid import register_resource_id
 from awscli.customizations.configure import register_configure_cmd
+from awscli.customizations.cloudtrail import initialize as cloudtrail_init
 
 
 def awscli_initialize(event_handlers):
@@ -77,3 +78,4 @@ def awscli_initialize(event_handlers):
     register_dryrun_docs(event_handlers)
     register_resource_id(event_handlers)
     register_configure_cmd(event_handlers)
+    cloudtrail_init(event_handlers)

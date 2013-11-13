@@ -79,15 +79,21 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             self.assertDictEqual(params, last_params)
         return stdout, stderr, rc
 
+    def before_parameter_build(self, params, **kwargs):
+        self.last_kwargs = params
+
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
         self.patch_make_request()
         driver = create_clidriver()
         driver.session.register('before-call', self.before_call)
+        driver.session.register('before-parameter-build',
+                                self.before_parameter_build)
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
         else:
             cmdlist = cmd
+
         captured_stderr = six.StringIO()
         captured_stdout = six.StringIO()
         with mock.patch('sys.stderr', captured_stderr):

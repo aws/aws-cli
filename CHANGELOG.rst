@@ -2,11 +2,46 @@
 CHANGELOG
 =========
 
-NEXT RELEASE (TBD)
-==================
+1.2.5
+=====
+
+* Add support for AWS Cloudtrail
+* Add support for identity federation using SAML 2.0 in the ``aws iam`` command
+* Update the ``aws redshift`` command to include several new features related to
+  event notifications, encryption, audit logging, data load from external hosts,
+  WLM configuration, and database distribution styles and functions
+* Add a ``--associate-public-ip-address`` option to the ``ec2 run-instances``
+  command (`issue 479 <https://github.com/aws/aws-cli/issues/479>`__)
+* Add an ``s3 website`` command for configuring website configuration for an S3
+  bucket (`issue 482 <https://github.com/aws/aws-cli/pull/482>`__)
+
+
+1.2.4
+=====
 
 * Fix an issue with the ``s3`` command when using GovCloud regions
   (boto/botocore#170)
+* Fix an issue with the ``s3 ls`` command making an extra query at the
+  root level (issue 439)
+* Add detailed error message when unable to decode local filenames during
+  an ``s3 sync`` (issue 378)
+* Support ``-1`` and ``all`` as valid values to the ``--protocol`` argument
+  to ``ec2 authorize-security-group-ingress`` and
+  ``ec2 authorize-security-group-egress`` (issue 460)
+* Log the reason why a file is synced when using the ``s3 sync`` command
+* Fix an issue when uploading large files on low bandwidth networks
+  (issue 454)
+* Fix an issue with parsing shorthand boolean argument values (issue 477)
+* Fix an issue with the ``cloudsearch`` command missing a required attribute
+  (boto/botocore#175)
+* Fix an issue with parsing XML response for
+  ``ec2 describe-instance-attribute`` (boto/botocore#174)
+* Update ``cloudformation`` command to support new features for stacks and
+  templates
+* Update ``storagegateway`` command to support a new gateway configuration,
+  Gateway-Virtual Tape Library (Gateway-VTL)
+* Update ``elb`` command to support cross-zone load balancing, which
+  changes the way that Elastic Load Balancing (ELB) routes incoming requests
 
 
 1.2.3

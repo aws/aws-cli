@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -45,6 +46,8 @@ class FileCreator(object):
         Returns the full path to the file.
         """
         full_path = os.path.join(self.rootdir, filename)
+        if not os.path.isdir(os.path.dirname(full_path)):
+            os.makedirs(os.path.dirname(full_path))
         with open(full_path, 'w') as f:
             f.write(contents)
         return full_path
@@ -408,9 +411,30 @@ class TestLs(BaseS3CLICommand):
         p = aws('s3 ls')
         self.assert_no_errors(p)
 
+    def test_ls_bucket_with_s3_prefix(self):
+        p = aws('s3 ls s3://')
+        self.assert_no_errors(p)
+
     def test_ls_non_existent_bucket(self):
         p = aws('s3 ls s3://foobara99842u4wbts829381')
         self.assertEqual(p.rc, 255)
+        self.assertIn(
+            'A client error (NoSuchBucket) occurred: The specified bucket does not exist',
+            p.stderr)
+        # There should be no stdout if we can't find the bucket.
+        self.assertEqual(p.stdout, '')
+
+    def test_ls_with_prefix(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', 'contents')
+        self.put_object(bucket_name, 'foo', 'contents')
+        self.put_object(bucket_name, 'bar.txt', 'contents')
+        self.put_object(bucket_name, 'subdir/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s' % bucket_name)
+        self.assertIn('PRE subdir/', p.stdout)
+        self.assertIn('8 foo.txt', p.stdout)
+        self.assertIn('8 foo', p.stdout)
+        self.assertIn('8 bar.txt', p.stdout)
 
 
 class TestMbRb(BaseS3CLICommand):
@@ -519,6 +543,20 @@ class TestMemoryUtilization(BaseS3CLICommand):
         p = aws(download_full_command, collect_memory=True)
         self.assert_no_errors(p)
         self.assert_max_memory_used(p, self.max_mem_allowed, download_full_command)
+
+
+class TestWebsiteConfiguration(BaseS3CLICommand):
+    def test_create_website_configuration(self):
+        bucket_name = self.create_bucket()
+        full_command = 's3 website %s --index-document index.html' % (bucket_name)
+        p = aws(full_command)
+        self.assertEqual(p.rc, 0)
+        self.assert_no_errors(p)
+        # Verify we have a bucket website configured.
+        operation = self.service.get_operation('GetBucketWebsite')
+        parsed = operation.call(
+            self.endpoint, bucket=bucket_name)[1]
+        self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
 
 
 if __name__ == "__main__":

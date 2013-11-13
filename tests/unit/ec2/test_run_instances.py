@@ -110,3 +110,29 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(args_list, result)
 
+    def test_associate_public_ip_address(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--associate-public-ip-address'
+        args_list = (self.prefix + args).split()
+        result = {
+            'NetworkInterface.1.DeviceIndex': '0',
+            'NetworkInterface.1.AssociatePublicIpAddress': 'true',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_no_associate_public_ip_address(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--no-associate-public-ip-address'
+        args_list = (self.prefix + args).split()
+        result = {
+            'NetworkInterface.1.DeviceIndex': '0',
+            'NetworkInterface.1.AssociatePublicIpAddress': 'false',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+        

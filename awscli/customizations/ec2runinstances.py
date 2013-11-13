@@ -38,6 +38,12 @@ SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS = (
     '[EC2-VPC] The number of secondary IP addresses to assign to '
     'the network interface or instance.')
 
+# --associate-public-ip-address
+ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS = (
+    '[EC2-VPC] If specified a public IP address will be assigned '
+    'to the new instance in a VPC.')
+
+
 
 def _add_params(argument_table, operation, **kwargs):
     arg = SecondaryPrivateIpAddressesArgument(
@@ -48,6 +54,16 @@ def _add_params(argument_table, operation, **kwargs):
         name='secondary-private-ip-address-count',
         help_text=SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS)
     argument_table['secondary-private-ip-address-count'] = arg
+    arg = AssociatePublicIpAddressArgument(
+        name='associate-public-ip-address',
+        help_text=ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS,
+        action='store_true', group_name='associate_public_ip')
+    argument_table['associate-public-ip-address'] = arg
+    arg = NoAssociatePublicIpAddressArgument(
+        name='no-associate-public-ip-address',
+        help_text=ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS,
+        action='store_false', group_name='associate_public_ip')
+    argument_table['no-associate-public-ip-address'] = arg
 
 
 def _check_args(parsed_args, **kwargs):
@@ -57,7 +73,8 @@ def _check_args(parsed_args, **kwargs):
     arg_dict = vars(parsed_args)
     if arg_dict['network_interfaces']:
         for key in ('secondary_private_ip_addresses',
-                    'secondary_private_ip_address_count'):
+                    'secondary_private_ip_address_count',
+                    'associate_public_ip_address'):
             if arg_dict[key]:
                 msg = ('Mixing the --network-interfaces option '
                        'with the simple, scalar options is '
@@ -113,4 +130,22 @@ class SecondaryPrivateIpAddressCountArgument(CustomArgument):
         if value:
             _build_network_interfaces(parameters,
                                       'SecondaryPrivateIpAddressCount',
+                                      value)
+
+
+class AssociatePublicIpAddressArgument(CustomArgument):
+
+    def add_to_params(self, parameters, value):
+        if value is True:
+            _build_network_interfaces(parameters,
+                                      'AssociatePublicIpAddress',
+                                      value)
+
+
+class NoAssociatePublicIpAddressArgument(CustomArgument):
+
+    def add_to_params(self, parameters, value):
+        if value is False:
+            _build_network_interfaces(parameters,
+                                      'AssociatePublicIpAddress',
                                       value)

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.2.5
+=====
+
+* Add support for AWS Cloudtrail
+* Add support for identity federation using SAML 2.0 in the ``aws iam`` command
+* Update the ``aws redshift`` command to include several new features related to
+  event notifications, encryption, audit logging, data load from external hosts,
+  WLM configuration, and database distribution styles and functions
+* Add a ``--associate-public-ip-address`` option to the ``ec2 run-instances``
+  command (`issue 479 <https://github.com/aws/aws-cli/issues/479>`__)
+* Add an ``s3 website`` command for configuring website configuration for an S3
+  bucket (`issue 482 <https://github.com/aws/aws-cli/pull/482>`__)
+
+
 1.2.4
 =====
 

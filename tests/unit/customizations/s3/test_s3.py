@@ -171,9 +171,9 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
-        params = {'filters': True, 'region': 'us-east-1'}
+        params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None}
         for cmd in cmds:
-            cmd_arc = CommandArchitecture(self.session, cmd, {'region': 'us-east-1'})
+            cmd_arc = CommandArchitecture(self.session, cmd, {'region': 'us-east-1', 'endpoint_url': None})
             cmd_arc.create_instructions()
             self.assertEqual(cmd_arc.instructions, instructions[cmd])
 
@@ -193,7 +193,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
-                  'paths_type': 'locals3', 'region': 'us-east-1'}
+                  'paths_type': 'locals3', 'region': 'us-east-1',
+                  'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -210,7 +211,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': local_file, 'filters': filters,
-                  'paths_type': 's3local', 'region': 'us-east-1'}
+                  'paths_type': 's3local', 'region': 'us-east-1',
+                  'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -225,7 +227,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
-                  'paths_type': 's3s3', 'region': 'us-east-1'}
+                  'paths_type': 's3s3', 'region': 'us-east-1',
+                  'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -240,7 +243,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
-                  'paths_type': 's3s3', 'region': 'us-east-1'}
+                  'paths_type': 's3s3', 'region': 'us-east-1',
+                  'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'mv', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -255,7 +259,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
-                  'paths_type': 's3', 'region': 'us-east-1'}
+                  'paths_type': 's3', 'region': 'us-east-1',
+                  'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'rm', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -274,7 +279,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         filters = [['--include', '*']]
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': local_dir, 'dest': s3_prefix, 'filters': filters,
-                  'paths_type': 'locals3', 'region': 'us-east-1'}
+                  'paths_type': 'locals3', 'region': 'us-east-1',
+                  'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'sync', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -288,7 +294,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1'}
+                  'region': 'us-east-1', 'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'mb', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -302,7 +308,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1'}
+                  'region': 'us-east-1', 'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
@@ -317,7 +323,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': False, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1'}
+                  'region': 'us-east-1', 'endpoint_url': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()

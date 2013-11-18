@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* Allow ``--endpoint-url`` to work with the ``aws s3`` command
+  (`issue 469 <https://github.com/aws/aws-cli/pull/469>`__)
+
+
 1.2.5
 =====
 

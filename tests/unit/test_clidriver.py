@@ -335,7 +335,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             http_response = models.Response()
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
-                http_response, {})
+                http_response, {'CommonPrefixes': [], 'Contents': []})
             self.assert_params_for_cmd(
                 's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
                 expected_rc=0)

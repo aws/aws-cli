@@ -283,7 +283,7 @@ class S3SubCommand(object):
         cmd_params.add_paths(parsed_args.paths)
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self._name,
-                                    cmd_params.parameters)
+                                  cmd_params.parameters)
         cmd.create_instructions()
         return cmd.run()
 
@@ -342,12 +342,16 @@ class S3SubCommand(object):
         parser.add_argument("paths", **self.options)
         return parser
 
+    def _get_endpoint(self, service, parsed_globals):
+        return service.get_endpoint(region_name=parsed_globals.region,
+                                    endpoint_url=parsed_globals.endpoint_url)
+
 
 class ListCommand(S3SubCommand):
     def _do_command(self, parsed_args, parsed_globals):
         bucket, key = find_bucket_key(parsed_args.paths[0][5:])
         self.service = self._session.get_service('s3')
-        self.endpoint = self.service.get_endpoint(parsed_globals.region)
+        self.endpoint = self._get_endpoint(self.service, parsed_globals)
         if not bucket:
             self._list_all_buckets()
         else:
@@ -480,8 +484,9 @@ class CommandArchitecture(object):
         self.parameters = parameters
         self.instructions = []
         self._service = self.session.get_service('s3')
-        self._endpoint = self._service.get_endpoint(region_name=self.parameters['region'],
-                                                    endpoint_url=self.parameters['endpoint_url'])
+        self._endpoint = self._service.get_endpoint(
+            region_name=self.parameters['region'],
+            endpoint_url=self.parameters['endpoint_url'])
 
     def create_instructions(self):
         """

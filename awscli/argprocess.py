@@ -81,6 +81,7 @@ class ParamShorthand(object):
 
     SHORTHAND_SHAPES = {
         'structure(scalars)': '_key_value_parse',
+        'structure(scalar)': '_special_key_value_parse',
         'map-scalar': '_key_value_parse',
         'list-structure(scalar)': '_list_scalar_parse',
         'list-structure(scalars)': '_list_key_value_parse',
@@ -221,6 +222,20 @@ class ParamShorthand(object):
             single_struct_param = self._key_value_parse(struct_param, v)
             parsed.append(single_struct_param)
         return parsed
+
+    def _special_key_value_parse(self, param, value):
+        # This is a special key value parse that can do the normal
+        # key=value parsing, *but* supports a few additional conveniences
+        # when working with a structure with a single element.
+        # Precondition: param is a shape of structure(scalar)
+        if len(param.members) == 1 and param.members[0].name == 'Value' and \
+                '=' not in value:
+            # We have an even shorter shorthand syntax for structure
+            # of scalars of a single element with a member name of
+            # 'Value'.
+            return {'Value': value}
+        else:
+            return self._key_value_parse(param, value)
 
     def _key_value_parse(self, param, value):
         # The expected structure is:

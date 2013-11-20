@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import botocore.session
 import io
 
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
@@ -104,3 +105,25 @@ class TestCloudTrail(unittest.TestCase):
     def test_sns_create_already_exists(self):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_topic('test2')
+
+
+class TestCloudTrailSessions(unittest.TestCase):
+    def test_sessions(self):
+        """
+        Make sure that the session passed to our custom command
+        is the same session used when making service calls.
+        """
+        # Get a new session we will use to test
+        session = botocore.session.get_session()
+
+        # Create the custom command, override its internal method
+        # so only services are created (and not called)
+        subscribe = CloudTrailSubscribe(session)
+        subscribe._call = Mock()
+        subscribe._run_main([], [])
+
+        # Make sure every service uses the same session
+        self.assertEqual(session, subscribe.iam.session)
+        self.assertEqual(session, subscribe.s3.session)
+        self.assertEqual(session, subscribe.sns.session)
+        self.assertEqual(session, subscribe.cloudtrail.session)

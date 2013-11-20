@@ -403,7 +403,8 @@ class BooleanArgument(CLIArgument):
     """
 
     def __init__(self, name, argument_object, operation_object,
-                 action='store_true', dest=None, group_name=None):
+                 action='store_true', dest=None, group_name=None,
+                 default=None):
         super(BooleanArgument, self).__init__(name, argument_object,
                                               operation_object)
         self._mutex_group = None
@@ -416,6 +417,7 @@ class BooleanArgument(CLIArgument):
             self._group_name = self.name
         else:
             self._group_name = group_name
+        self._default = default
 
     def add_to_params(self, parameters, value):
         # If a value was explicitly specified (so value is True/False
@@ -445,7 +447,7 @@ class BooleanArgument(CLIArgument):
         parser.add_argument(self.cli_name,
                             help=self.documentation,
                             action=self._action,
-                            default=None,
+                            default=self._default,
                             dest=self._destination)
 
     @property

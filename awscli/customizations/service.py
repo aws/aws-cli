@@ -12,20 +12,6 @@
 # language governing permissions and limitations under the License.
 import botocore.session
 
-class OperationException(Exception):
-    """
-    An exception to be thrown when service operations fail. The exception
-    contains a link to the operation, the arguments that were used to
-    invoke the operation, the HTTP response object and response data.
-    """
-    def __init__(self, operation, args=None, res=None, data=None):
-        super(OperationException, self).__init__()
-
-        self.operation = operation
-        self.args = args
-        self.res = res
-        self.data = data
-
 
 class OperationProxy(object):
     """
@@ -48,9 +34,6 @@ class OperationProxy(object):
 
     def __call__(self, **kwargs):
         res, data = self._operation.call(self.endpoint, **kwargs)
-
-        if res.status_code < 200 or res.status_code > 300:
-            raise OperationException(self, kwargs, res, data)
 
         return data
 
@@ -76,7 +59,10 @@ class Service(object):
 
        >>> s3 = Service('s3', {'endpoint_url': 'http://...'})
 
-    A custom session can be used:
+    Note that by default, a new session is used. When creating instances
+    from a custom command you should reuse the default CLI session, which
+    has extra error handling and profile handling enabled.A custom session
+    can be used by passing it to the constructor:
 
         >>> s3 = Service('s3', session=mysession)
 

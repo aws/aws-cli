@@ -15,7 +15,7 @@ import logging
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.service import Service, OperationException
+from awscli.customizations.service import Service
 from botocore.vendored import requests
 
 
@@ -85,20 +85,18 @@ class CloudTrailSubscribe(BasicCommand):
 
         # Initialize services
         LOG.debug('Initializing S3, SNS and CloudTrail...')
-        self.iam = Service('iam')
-        self.s3 = Service('s3', endpoint_args['region_name'])
-        self.sns = Service('sns', endpoint_args['region_name'])
-        self.cloudtrail = Service('cloudtrail', endpoint_args=endpoint_args)
+        self.iam = Service('iam', session=self._session)
+        self.s3 = Service('s3', endpoint_args['region_name'],
+                          session=self._session)
+        self.sns = Service('sns', endpoint_args['region_name'],
+                           session=self._session)
+        self.cloudtrail = Service('cloudtrail', endpoint_args=endpoint_args,
+                                  session=self._session)
 
-        # Run the command, watch for errors and report success/fail
-        success = True
-        try:
-            self._call(args, parsed_globals)
-        except OperationException as err:
-            success = False
-            self.handle_error(err)
+        # Run the command and report success
+        self._call(args, parsed_globals)
 
-        return int(success)
+        return 1
 
     def _call(self, options, parsed_globals):
         """
@@ -176,39 +174,6 @@ class CloudTrailSubscribe(BasicCommand):
             sys.stdout.write(
                 'Logs will be delivered to {bucket}:{prefix}\n'.format(
                     bucket=bucket, prefix=options.s3_prefix))
-
-    def handle_error(self, err):
-        """
-        Handle service errors by printing out exception information. Parses
-        error codes and messages and attempts to display them in a nice
-        format.
-        """
-        sys.stderr.write('Error(s) encountered:\n')
-
-        if err.data and 'Errors' in err.data:
-            try:
-                sys.stderr.write('\t{code}: {msg}\n'.format(
-                    code=err.data['ErrorCode'],
-                    msg=err.data['Message']
-                ))
-            except Exception:
-                pass
-
-            for error in err.data['Errors']:
-                msg = error.get('Message', 'No details')
-
-                code = 'Unknown Error'
-                for name in ['ErrorCode', 'Code', 'Type']:
-                    if name in error:
-                        code = error[name]
-                        break
-
-                sys.stderr.write('\t{code}: {msg}\n'.format(code=code, msg=msg))
-        elif err.data and 'Body' in err.data and \
-             hasattr(err.data['Body'], 'read'):
-            sys.stderr.write('\t{err}\n'.format(err=err.data['Body'].read()))
-        else:
-            sys.stderr.write('\t{err}\n'.format(err=err.data))
 
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """

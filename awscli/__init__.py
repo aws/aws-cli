@@ -39,3 +39,9 @@ EnvironmentVariables = {
     'data_path': ('data_path', 'AWS_DATA_PATH', None),
     'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json'),
     }
+
+SCALAR_TYPES = set([
+    'string', 'float', 'integer', 'long', 'boolean', 'double',
+    'blob', 'timestamp'
+])
+COMPLEX_TYPES = set(['structure', 'map', 'list'])

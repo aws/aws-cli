@@ -17,13 +17,9 @@ import logging
 import six
 
 from awscli import utils
+from awscli import SCALAR_TYPES, COMPLEX_TYPES
 
 
-SCALAR_TYPES = set([
-    'string', 'float', 'integer', 'long', 'boolean', 'double',
-    'blob', 'timestamp'
-])
-COMPLEX_TYPES = set(['structure', 'map', 'list'])
 LOG = logging.getLogger('awscli.argprocess')
 
 

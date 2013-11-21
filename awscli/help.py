@@ -20,7 +20,7 @@ from subprocess import Popen, PIPE
 from docutils.core import publish_string
 from docutils.writers import manpage
 
-import bcdoc.clidocevents
+import bcdoc.docevents
 from bcdoc.restdoc import ReSTDocument
 from bcdoc.textwriter import TextWriter
 
@@ -229,7 +229,7 @@ class HelpCommand(object):
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
-        bcdoc.clidocevents.generate_events(self.session, self)
+        bcdoc.docevents.generate_events(self.session, self)
         self.renderer.render(self.doc.getvalue())
         instance.unregister()
 

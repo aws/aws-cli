@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-from bcdoc.clidocevents import DOC_EVENTS
+from bcdoc.docevents import DOC_EVENTS
 
 from awscli import SCALAR_TYPES
 

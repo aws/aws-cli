@@ -47,7 +47,7 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
         'operation-args-parsed.ec2.*',
         partial(validate_boolean_mutex_groups,
                 boolean_pairs=boolean_pairs))
-    for key, value in argument_table.items():
+    for key, value in list(argument_table.items()):
         if hasattr(value, 'argument_object'):
             arg_object = value.argument_object
             if detect_shape_structure(arg_object) == 'structure(scalar)' and \

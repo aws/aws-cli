@@ -1,8 +1,7 @@
 import os
 
-from bcdoc.clidocs import CLIDocumentEventHandler
-
 import awscli
+from awscli.clidocs import CLIDocumentEventHandler
 
 
 class S3DocumentEventHandler(CLIDocumentEventHandler):

@@ -1,6 +1,6 @@
-from bcdoc.clidocs import CLIDocumentEventHandler
 import bcdoc.clidocevents
 
+from awscli.clidocs import CLIDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
 from awscli.clidriver import CLICommand
 from awscli.arguments import CustomArgument

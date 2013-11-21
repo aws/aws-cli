@@ -1,4 +1,4 @@
-import bcdoc.clidocevents
+import bcdoc.docevents
 
 from awscli.clidocs import CLIDocumentEventHandler
 from awscli.argparser import ArgTableArgParser

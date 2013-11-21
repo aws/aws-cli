@@ -8,3 +8,4 @@ The following ``update-auto-scaling-group`` command changes the health check typ
 For more information, see `Add an Elastic Load Balancing Health Check to your Auto Scaling Group`_ in the *Auto Scaling Developer Guide*.
 
 .. _`Add an Elastic Load Balancing Health Check to your Auto Scaling Group`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/as-add-elb-healthcheck.html
+

@@ -19,6 +19,7 @@ from awscli.clidriver import create_clidriver
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service
 from mock import Mock, patch
+from tests.unit import BaseAWSCommandParamsTest
 from tests.unit.test_clidriver import FakeSession
 from tests import unittest
 
@@ -109,38 +110,27 @@ class TestCloudTrail(unittest.TestCase):
             self.subscribe.setup_new_topic('test2')
 
 
-class TestCloudTrailSessions(unittest.TestCase):
+class TestCloudTrailSessions(BaseAWSCommandParamsTest):
     def test_sessions(self):
         """
         Make sure that the session passed to our custom command
         is the same session used when making service calls.
         """
-        # awscli/__init__.py injects AWS_DATA_PATH at import time
-        # so that we can find cli.json.  This might be fixed in the
-        # future, but for now we just grab that value out of the real
-        # os.environ so the patched os.environ has this data and
-        # the CLI works.
-        self.environ = {
-            'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
-            'AWS_DEFAULT_REGION': 'us-east-1',
-            'AWS_ACCESS_KEY_ID': 'access_key',
-            'AWS_SECRET_ACCESS_KEY': 'secret_key',
-        }
-        self.environ_patch = patch('os.environ', self.environ)
-        self.environ_patch.start()
-
         # Get a new session we will use to test
         driver = create_clidriver()
 
-        def _mock_call(self, *args, **kwargs):
-            # Make sure every service uses the same session
-            assert driver.session == self.iam.session
-            assert driver.session == self.s3.session
-            assert driver.session == self.sns.session
-            assert driver.session == self.cloudtrail.session
+        def _mock_call(subscribe, *args, **kwargs):
+            # Store the subscribe command for assertions
+            # This works because the first argument to an
+            # instance method is always the instance itself.
+            self.subscribe = subscribe
 
         with patch.object(CloudTrailSubscribe, '_call', _mock_call):
-            rc = driver.main('cloudtrail create-subscription --name test --s3-use-bucket test'.split())
-            # If any assert above fails, then rc will be set to a
-            # non-zero value and this will cause the test to fail
-            self.assertEqual(rc, None)
+            driver.main('cloudtrail create-subscription --name test --s3-use-bucket test'.split())
+
+            # Test the session that is used in dependent services
+            subscribe = self.subscribe
+            self.assertEqual(driver.session, subscribe.iam.session)
+            self.assertEqual(driver.session, subscribe.s3.session)
+            self.assertEqual(driver.session, subscribe.sns.session)
+            self.assertEqual(driver.session, subscribe.cloudtrail.session)

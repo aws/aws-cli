@@ -122,7 +122,7 @@ class BasicHelp(HelpCommand):
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
-        bcdoc.clidocevents.generate_events(self.session, self)
+        bcdoc.docevents.generate_events(self.session, self)
         self.renderer.render(self.doc.getvalue())
         instance.unregister()
 

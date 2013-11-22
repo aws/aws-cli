@@ -10,6 +10,8 @@ Next Release (TBD)
 * Fix issue with ``aws cloudtrail [create|update]-subscription`` not
   honoring the ``--profile`` argument
   (issue 494 <https://github.com/aws/aws-cli/issues/494>`__)
+* Fix issue with ``--associate-public-ip-address`` when a ``--subnet-id``
+  is provided `(issue 501 <https://github.com/aws/aws-cli/issues/501>`__)
 
 
 1.2.5

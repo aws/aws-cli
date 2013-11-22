@@ -22,8 +22,11 @@ This functionality (and much more) is also available using the
 ``--network-interfaces`` complex argument.  This just makes two of
 the most commonly used features available more easily.
 """
+import logging
+
 from awscli.arguments import CustomArgument
 
+LOG = logging.getLogger(__name__)
 
 # --secondary-private-ip-address
 SECONDARY_PRIVATE_IP_ADDRESSES_DOCS = (
@@ -81,16 +84,31 @@ def _check_args(parsed_args, **kwargs):
                        'not supported.')
                 raise ValueError(msg)
 
+
+def _fix_subnet(operation, endpoint, params, **kwargs):
+    # If the user has supplied a --subnet-id option AND we also
+    # have inserted an AssociatePublicIpAddress into the network_interfaces
+    # structure, we need to move the subnetId value down into the
+    # network_interfaces structure or we will get a client error from EC2.
+    if 'network_interfaces' in params:
+        ni = params['network_interfaces']
+        if 'AssociatePublicIpAddress' in ni[0]:
+            if 'subnet_id' in params:
+                ni[0]['SubnetId'] = params['subnet_id']
+                del params['subnet_id']
+
+
 EVENTS = [
-    ('building-argument-table.ec2.run-instances', _add_params),
-    ('operation-args-parsed.ec2.run-instances', _check_args),
+    ('building-argument-table.ec2.run-instances', _add_params, None),
+    ('operation-args-parsed.ec2.run-instances', _check_args, None),
+    ('before-parameter-build.ec2.RunInstances', _fix_subnet, 'foobar'),
     ]
 
 
 def register_runinstances(event_handler):
     # Register all of the events for customizing BundleInstance
-    for event, handler in EVENTS:
-        event_handler.register(event, handler)
+    for event, handler, unique_id in EVENTS:
+        event_handler.register(event, handler, unique_id)
 
 
 def _build_network_interfaces(params, key, value):

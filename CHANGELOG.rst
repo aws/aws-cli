@@ -7,6 +7,9 @@ Next Release (TBD)
 
 * Allow ``--endpoint-url`` to work with the ``aws s3`` command
   (`issue 469 <https://github.com/aws/aws-cli/pull/469>`__)
+* Fix issue with ``aws cloudtrail [create|update]-subscription`` not
+  honoring the ``--profile`` argument
+  (issue 494 <https://github.com/aws/aws-cli/issues/494>`__)
 
 
 1.2.5

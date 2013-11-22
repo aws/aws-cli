@@ -152,3 +152,14 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(args_list, result)
         
+    def test_subnet_alone(self):
+        args = ' --image-id ami-foobar --count 1 --subnet-id subnet-12345678'
+        args_list = (self.prefix + args).split()
+        result = {
+            'SubnetId': 'subnet-12345678',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+

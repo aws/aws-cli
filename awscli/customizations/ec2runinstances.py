@@ -24,7 +24,6 @@ the most commonly used features available more easily.
 """
 from awscli.arguments import CustomArgument
 
-
 # --secondary-private-ip-address
 SECONDARY_PRIVATE_IP_ADDRESSES_DOCS = (
     '[EC2-VPC] A secondary private IP address for the network interface '
@@ -42,8 +41,6 @@ SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS = (
 ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS = (
     '[EC2-VPC] If specified a public IP address will be assigned '
     'to the new instance in a VPC.')
-
-
 
 def _add_params(argument_table, operation, **kwargs):
     arg = SecondaryPrivateIpAddressesArgument(
@@ -81,9 +78,23 @@ def _check_args(parsed_args, **kwargs):
                        'not supported.')
                 raise ValueError(msg)
 
+
+def _fix_subnet(operation, endpoint, params, **kwargs):
+    # If the user has supplied a --subnet-id option AND we also
+    # have inserted an AssociatePublicIpAddress into the network_interfaces
+    # structure, we need to move the subnetId value down into the
+    # network_interfaces structure or we will get a client error from EC2.
+    if 'network_interfaces' in params:
+        ni = params['network_interfaces']
+        if 'AssociatePublicIpAddress' in ni[0]:
+            if 'subnet_id' in params:
+                ni[0]['SubnetId'] = params['subnet_id']
+                del params['subnet_id']
+
 EVENTS = [
     ('building-argument-table.ec2.run-instances', _add_params),
     ('operation-args-parsed.ec2.run-instances', _check_args),
+    ('before-parameter-build.ec2.RunInstances', _fix_subnet),
     ]
 
 

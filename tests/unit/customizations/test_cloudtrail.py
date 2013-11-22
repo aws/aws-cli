@@ -11,12 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import botocore.session
 import io
+import os
 
+from awscli.clidriver import create_clidriver
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service
-from mock import Mock
-from tests.unit.customizations.test_configure import FakeSession
+from mock import Mock, patch
+from tests.unit import BaseAWSCommandParamsTest
+from tests.unit.test_clidriver import FakeSession
 from tests import unittest
 
 
@@ -104,3 +108,29 @@ class TestCloudTrail(unittest.TestCase):
     def test_sns_create_already_exists(self):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_topic('test2')
+
+
+class TestCloudTrailSessions(BaseAWSCommandParamsTest):
+    def test_sessions(self):
+        """
+        Make sure that the session passed to our custom command
+        is the same session used when making service calls.
+        """
+        # Get a new session we will use to test
+        driver = create_clidriver()
+
+        def _mock_call(subscribe, *args, **kwargs):
+            # Store the subscribe command for assertions
+            # This works because the first argument to an
+            # instance method is always the instance itself.
+            self.subscribe = subscribe
+
+        with patch.object(CloudTrailSubscribe, '_call', _mock_call):
+            driver.main('cloudtrail create-subscription --name test --s3-use-bucket test'.split())
+
+            # Test the session that is used in dependent services
+            subscribe = self.subscribe
+            self.assertEqual(driver.session, subscribe.iam.session)
+            self.assertEqual(driver.session, subscribe.s3.session)
+            self.assertEqual(driver.session, subscribe.sns.session)
+            self.assertEqual(driver.session, subscribe.cloudtrail.session)

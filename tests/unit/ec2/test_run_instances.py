@@ -124,7 +124,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(args_list, result)
 
-    def test_associate_public_ip_address_2(self):
+    def test_associate_public_ip_address_switch_order(self):
         args = ' --image-id ami-foobar --count 1 '
         args += '--associate-public-ip-address --subnet-id subnet-12345678'
         args_list = (self.prefix + args).split()

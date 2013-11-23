@@ -79,22 +79,33 @@ def _check_args(parsed_args, **kwargs):
                 raise ValueError(msg)
 
 
-def _fix_subnet(operation, endpoint, params, **kwargs):
-    # If the user has supplied a --subnet-id option AND we also
-    # have inserted an AssociatePublicIpAddress into the network_interfaces
-    # structure, we need to move the subnetId value down into the
-    # network_interfaces structure or we will get a client error from EC2.
+def _fix_args(operation, endpoint, params, **kwargs):
+    # The RunInstances request provides some parameters
+    # such as --subnet-id and --security-group-id that can be specified
+    # as separate options only if the request DOES NOT include a
+    # NetworkInterfaces structure.  In those cases, the values for
+    # these parameters must be specified inside the NetworkInterfaces
+    # structure.  This function checks for those parameters
+    # and fixes them if necessary.
+    # NOTE: If the user is a default VPC customer, RunInstances
+    # allows them to specify the security group by name or by id.
+    # However, in this scenario we can only support id because
+    # we can't place a group name in the NetworkInterfaces structure.
     if 'network_interfaces' in params:
         ni = params['network_interfaces']
         if 'AssociatePublicIpAddress' in ni[0]:
             if 'subnet_id' in params:
                 ni[0]['SubnetId'] = params['subnet_id']
                 del params['subnet_id']
+            if 'security_group_ids' in params:
+                ni[0]['Groups'] = params['security_group_ids']
+                del params['security_group_ids']
+
 
 EVENTS = [
     ('building-argument-table.ec2.run-instances', _add_params),
     ('operation-args-parsed.ec2.run-instances', _check_args),
-    ('before-parameter-build.ec2.RunInstances', _fix_subnet),
+    ('before-parameter-build.ec2.RunInstances', _fix_args),
     ]
 
 

@@ -23,7 +23,6 @@ from functools import partial
 from awscli.argprocess import detect_shape_structure
 from awscli import arguments
 from awscli.customizations.utils import validate_mutually_exclusive_handler
-from awscli.clidocs import OperationDocumentEventHandler
 
 
 LOG = logging.getLogger(__name__)
@@ -135,8 +134,3 @@ class NegativeBooleanParameter(arguments.BooleanArgument):
     def add_to_params(self, parameters, value):
         if value is not _NOT_SPECIFIED and value:
             parameters[self._positive_py_name] = {'Value': False}
-
-
-class NoExampleDocHandler(OperationDocumentEventHandler):
-    def doc_option_example(self, arg_name, help_command, **kwargs):
-        pass

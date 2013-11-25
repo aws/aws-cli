@@ -113,7 +113,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('DryRunOperation')
         self.assert_contains('UnauthorizedOperation')
-        
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):
@@ -209,6 +209,26 @@ class TestMergeBooleanGroupArgs(BaseAWSHelpOutputTest):
         # --foo | --no-foo foo docs
         self.driver.main(['ec2', 'run-instances', 'help'])
         self.assert_contains('``--dry-run`` | ``--no-dry-run``')
+
+    def test_top_level_bools(self):
+        # structure(scalar) of a single value of Value whose value is
+        # a boolean is pulled into a top level arg.
+        self.driver.main(['ec2', 'modify-instance-attribute', 'help'])
+        self.assert_contains('``--ebs-optimized`` | ``--no-ebs-optimized``')
+
+    def test_top_level_bool_has_no_example(self):
+        # Normally a structure(bool) param would have an example
+        # of {"Value": true|false}", but when we pull the arg up into
+        # a top level bool, we should not generate an example.
+        self.driver.main(['ec2', 'modify-instance-attribute', 'help'])
+        self.assert_not_contains('"Value": true|false')
+
+
+class TestStructureScalarHasNoExamples(BaseAWSHelpOutputTest):
+    def test_no_examples_for_structure_single_scalar(self):
+        self.driver.main(['ec2', 'modify-instance-attribute', 'help'])
+        self.assert_not_contains('"Value": "string"')
+        self.assert_not_contains('Value=string')
 
 
 class TestJSONListScalarDocs(BaseAWSHelpOutputTest):

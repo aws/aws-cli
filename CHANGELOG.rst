@@ -9,9 +9,11 @@ Next Release (TBD)
   (`issue 469 <https://github.com/aws/aws-cli/pull/469>`__)
 * Fix issue with ``aws cloudtrail [create|update]-subscription`` not
   honoring the ``--profile`` argument
-  (issue 494 <https://github.com/aws/aws-cli/issues/494>`__)
+  (`issue 494 <https://github.com/aws/aws-cli/issues/494>`__)
 * Fix issue with ``--associate-public-ip-address`` when a ``--subnet-id``
-  is provided `(issue 501 <https://github.com/aws/aws-cli/issues/501>`__)
+  is provided (`issue 501 <https://github.com/aws/aws-cli/issues/501>`__)
+* Don't require key names for structures of single scalar values
+  (`issue 484 <https://github.com/aws/aws-cli/issues/484>`__)
 
 
 1.2.5

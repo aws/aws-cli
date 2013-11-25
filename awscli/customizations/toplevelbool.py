@@ -23,6 +23,7 @@ from functools import partial
 from awscli.argprocess import detect_shape_structure
 from awscli import arguments
 from awscli.customizations.utils import validate_mutually_exclusive_handler
+from awscli.clidocs import OperationDocumentEventHandler
 
 
 LOG = logging.getLogger(__name__)
@@ -70,9 +71,9 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
                 argument_table[negative_name] = negative_arg
                 # If we've pulled up a structure(scalar) arg
                 # into a pair of top level boolean args, we need
-                # to validate that a user doesn't provide both forms,
-                # you either use the version with values or the
-                # version without.
+                # to validate that a user only provides the argument
+                # once.  They can't say --option/--no-option, nor
+                # can they say --option --option Value=false.
                 boolean_pairs.append((new_arg, negative_arg))
 
 
@@ -134,3 +135,8 @@ class NegativeBooleanParameter(arguments.BooleanArgument):
     def add_to_params(self, parameters, value):
         if value is not _NOT_SPECIFIED and value:
             parameters[self._positive_py_name] = {'Value': False}
+
+
+class NoExampleDocHandler(OperationDocumentEventHandler):
+    def doc_option_example(self, arg_name, help_command, **kwargs):
+        pass

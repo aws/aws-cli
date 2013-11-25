@@ -294,6 +294,15 @@ class ParamShorthand(object):
                        for sub_param in param.members.members])
         return s
 
+    def _docs_special_key_value_parse(self, param):
+        if len(param.members) == 1 and param.members[0].name == 'Value':
+            # Returning None will indicate that we don't have
+            # any examples to generate, and the entire examples section
+            # should be skipped for this arg.
+            return None
+        else:
+            self._docs_key_value_parse(param)
+
     def _docs_key_value_parse(self, param):
         s = '%s ' % param.cli_name
         if param.type == 'structure':

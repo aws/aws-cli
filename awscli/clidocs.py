@@ -355,15 +355,27 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
     def doc_option_example(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
         argument = help_command.arg_table[arg_name]
+        if argument.group_name in self._arg_groups:
+            if argument.group_name in self._documented_arg_groups:
+                # Args with group_names (boolean args) don't
+                # need to generate example syntax.
+                return
         param = argument.argument_object
         if param and param.example_fn:
             # TODO: bcdoc should not know about shorthand syntax. This
             # should be pulled out into a separate handler in the
             # awscli.customizations package.
+            example_syntax = param.example_fn(param)
+            if example_syntax is None:
+                # If the shorthand syntax returns a value of None,
+                # this indicates to us that there is no example
+                # needed for this param so we can immediately
+                # return.
+                return
             doc.style.new_paragraph()
             doc.write('Shorthand Syntax')
             doc.style.start_codeblock()
-            for example_line in param.example_fn(param).splitlines():
+            for example_line in example_syntax.splitlines():
                 doc.writeln(example_line)
             doc.style.end_codeblock()
         if param is not None and param.type == 'list' and \
@@ -423,4 +435,3 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             for member_name in output['members']:
                 member = output['members'][member_name]
                 self._doc_member(doc, member_name, member)
-    

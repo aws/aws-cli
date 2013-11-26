@@ -82,7 +82,7 @@ Output::
       ]
   }
 
-**To describe the tags for your volumes**
+**To describe the tags for a type of resource**
 
 This example describes the tags for your volumes.
 
@@ -135,4 +135,23 @@ Output::
           }
       ]
   }
+
+This example describes the tags for all your instances that have a tag with the key Purpose and no value.
+
+Command::
+
+    aws ec2 describe-tags --filters "Name=resource-type,Values=instance" "Name=key,Values=Purpose" "Name=value,Values="
+    
+Output::
+
+    {
+        "Tags": [
+            {
+                "ResourceType": "instance", 
+                "ResourceId": "i-1a2b3c4d", 
+                "Value": null, 
+                "Key": "Purpose"
+            }
+        ]
+    }
 

@@ -12,3 +12,22 @@ Output::
       "return": "true"
   }
 
+It's optional to specify the value for any tag with a value. If you specify a value for the key, the tag is deleted only if the tag's value matches the one you specified. If you specify the empty string as the value, the tag is deleted only if the tag's value is the empty string. The following example specifies the empty string as the value for the tag to delete.
+
+Command::
+
+  aws ec2 delete-tags --resources i-12345678 --tags Key=Name,Value=
+ 
+This example deletes the tag with the 'purpose' key from the specified instance, regardless of the tag's value.
+
+Command::
+
+  aws ec2 delete-tags --resources i-12345678 --tags Key=purpose
+  
+**To delete a tag from multiple resources**
+  
+This example deletes the ``Purpose=Test`` tag from a specified instance and AMI. The tag's value can be omitted from the command.
+
+Command::
+
+  aws ec2 delete-tags --resources i-12345678 ami-78a54011 --tags Key=Purpose

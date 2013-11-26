@@ -16,6 +16,31 @@ Command::
 
   aws ec2 describe-instances --filters "Name=tag-key,Values=Owner"
 
+**To describe all EC2  that have an instance type of m1.small or m1.medium that are also in the us-west-2c Availability Zone**
+
+Command::
+
+  aws ec2 describe-instances --filters "Name=instance-type,Values=m1.small,m1.medium" "Name=availability-zone,Values=us-west-2c"
+  
+The following JSON input performs the same filtering.
+
+Command::
+
+  aws ec2 describe-instances --filter file://filters.json
+
+filters.json::
+
+  [
+    {
+      "Name": "instance-type",
+      "Values": ["m1.small", "m1.medium"]
+    },
+    {
+      "Name": "availability-zone",
+      "Values": ["us-west-2c"]
+    }
+  ]
+
 For more information, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html

@@ -27,3 +27,16 @@ Output::
       "return": "true"
   }
 
+This example associates an Elastic IP address with a network interface.
+
+Command::
+
+  aws ec2 associate-address --allocation-id eipalloc-64d5890a --network-interface-id eni-1a2b3c4d
+
+This example associates an Elastic IP with a private IP address that's associated with a network interface.
+
+Command::
+
+  aws ec2 associate-address --allocation-id eipalloc-64d5890a --network-interface-id eni-1a2b3c4d --private-ip-address 10.0.0.85
+
+ 

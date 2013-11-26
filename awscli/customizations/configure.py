@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import re
+import sys
 import logging
 
 import six
@@ -27,6 +28,7 @@ except NameError:
 
 
 logger = logging.getLogger(__name__)
+NOT_SET = '<not set>'
 
 
 def register_configure_cmd(cli):
@@ -34,14 +36,33 @@ def register_configure_cmd(cli):
                  ConfigureCommand.add_command)
 
 
+class ConfigValue(object):
+    def __init__(self, value, config_type, config_variable):
+        self.value = value
+        self.config_type = config_type
+        self.config_variable = config_variable
+
+    def mask_value(self):
+        if self.value is NOT_SET:
+            return
+        self.value = _mask_value(self.value)
+
+
 class SectionNotFoundError(Exception):
     pass
+
+
+def _mask_value(current_value):
+    if current_value is None:
+        return 'None'
+    else:
+        return ('*' * 16) +  current_value[-4:]
 
 
 class InteractivePrompter(object):
     def get_value(self, current_value, config_name, prompt_text=''):
         if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
-            current_value = self._mask_value(current_value)
+            current_value = _mask_value(current_value)
         response = raw_input("%s [%s]: " % (prompt_text, current_value))
         if not response:
             # If the user hits enter, we return a value of None
@@ -49,12 +70,6 @@ class InteractivePrompter(object):
             # whether or not a value has changed.
             response = None
         return response
-
-    def _mask_value(self, current_value):
-        if current_value is None:
-            return 'None'
-        else:
-            return ('*' * 16) +  current_value[-4:]
 
 
 class ConfigFileWriter(object):
@@ -154,6 +169,84 @@ class ConfigFileWriter(object):
         return unquoted_match
 
 
+class ConfigureListCommand(BasicCommand):
+    NAME = 'list'
+
+    def __init__(self, session, stream=sys.stdout):
+        super(ConfigureListCommand, self).__init__(session)
+        self._stream = stream
+
+    def _run_main(self, args, parsed_globals):
+        self._display_config_value(ConfigValue('Value', 'Type', 'Location'),
+                                   'Name')
+        self._display_config_value(ConfigValue('-----', '----', '--------'),
+                                   '----')
+
+        if self._session.profile is not None:
+            profile = ConfigValue(self._session.profile, 'manual',
+                                  '--profile')
+        else:
+            profile = self._lookup_config('profile')
+        self._display_config_value(profile, 'profile')
+
+        access_key, secret_key = self._lookup_credentials()
+        self._display_config_value(access_key, 'access_key')
+        self._display_config_value(secret_key, 'secret_key')
+
+        region = self._lookup_config('region')
+        self._display_config_value(region, 'region')
+
+    def _display_config_value(self, config_value, config_name):
+        self._stream.write('%10s %24s %16s    %s\n' % (
+            config_name, config_value.value, config_value.config_type,
+            config_value.config_variable))
+
+    def _lookup_credentials(self):
+        # First try it with _lookup_config.  It's possible
+        # that we don't find credentials this way (for example,
+        # if we're using an IAM role).
+        access_key = self._lookup_config('access_key')
+        if access_key.value is not NOT_SET:
+            secret_key = self._lookup_config('secret_key')
+            access_key.mask_value()
+            secret_key.mask_value()
+            return access_key, secret_key
+        else:
+            # Otherwise we can try to use get_credentials().
+            # This includes a few more lookup locations
+            # (IAM roles, some of the legacy configs, etc.)
+            credentials = self._session.get_credentials()
+            if credentials is None:
+                no_config = ConfigValue(NOT_SET, None, None)
+                return no_config, no_config
+            else:
+                # For the ConfigValue, we don't track down the
+                # config_variable because that info is not
+                # visible from botocore.credentials.  I think
+                # the credentials.method is sufficient to show
+                # where the credentials are coming from.
+                access_key = ConfigValue(credentials.access_key,
+                                        credentials.method, '')
+                secret_key = ConfigValue(credentials.secret_key,
+                                        credentials.method, '')
+                access_key.mask_value()
+                secret_key.mask_value()
+                return access_key, secret_key
+
+    def _lookup_config(self, name):
+        # First try to look up the variable in the env.
+        value = self._session.get_variable(name, methods=('env',))
+        if value is not None:
+            return ConfigValue(value, 'env', self._session.env_vars[name][1])
+        # Then try to look up the variable in the config file.
+        value = self._session.get_variable(name, methods=('config',))
+        if value is not None:
+            return ConfigValue(value, 'config_file',
+                               self._session.get_variable('config_file'))
+        else:
+            return ConfigValue(NOT_SET, None, None)
+
+
 class ConfigureCommand(BasicCommand):
     NAME = 'configure'
     DESCRIPTION = (
@@ -189,6 +282,9 @@ class ConfigureCommand(BasicCommand):
         '    Default region name [us-west-1]: us-west-2\n'
         '    Default output format [None]:\n'
     )
+    SUBCOMMANDS = [
+        {'name': 'list', 'command_class': ConfigureListCommand}
+    ]
 
     # If you want to add new values to prompt, update this list here.
     VALUES_TO_PROMPT = [

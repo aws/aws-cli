@@ -1,5 +1,7 @@
 import bcdoc.docevents
 
+from botocore.compat import OrderedDict
+
 from awscli.clidocs import CLIDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
 from awscli.clidriver import CLICommand
@@ -43,6 +45,15 @@ class BasicCommand(CLICommand):
     #      'action': 'store', 'choices': ['a', 'b', 'c']},
     # ]
     ARG_TABLE = []
+    # If you want the command to have subcommands, you can provide a list of
+    # dicts.  We use a list here because we want to allow a user to provide
+    # the order they want to use for subcommands.
+    # SUBCOMMANDS = [
+    #     {'name': 'subcommand1', 'command_class': SubcommandClass},
+    #     {'name': 'subcommand2', 'command_class': SubcommandClass2},
+    # ]
+    # The command_class must subclass from ``BasicCommand``.
+    SUBCOMMANDS = []
 
     # At this point, the only other thing you have to implement is a _run_main
     # method (see the method for more information).
@@ -54,12 +65,17 @@ class BasicCommand(CLICommand):
         # args is the remaining unparsed args.
         # We might be able to parse these args so we need to create
         # an arg parser and parse them.
-        parser = ArgTableArgParser(self.arg_table)
-        parsed_args = parser.parse_args(args)
+        subcommand_table = self._build_subcommand_table()
+        parser = ArgTableArgParser(self.arg_table, subcommand_table)
+        parsed_args, remaining = parser.parse_known_args(args)
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)
-        else:
+        elif getattr(parsed_args, 'subcommand', None) is None:
+            # No subcommand was specified was call the main
+            # function for this top level command.
             self._run_main(parsed_args, parsed_globals)
+        else:
+            subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
 
     def _run_main(self, parsed_args, parsed_globals):
         # Subclasses should implement this method.
@@ -70,7 +86,18 @@ class BasicCommand(CLICommand):
         # provided as the 'dest' key.  Otherwise they default to the
         # 'name' key.  For example: ARG_TABLE[0] = {"name": "foo-arg", ...}
         # can be accessed by ``parsed_args.foo_arg``.
-        raise NotImlementedError("_run_main")
+        raise NotImplementedError("_run_main")
+
+    def _build_subcommand_table(self):
+        subcommand_table = OrderedDict()
+        for subcommand in self.SUBCOMMANDS:
+            subcommand_name = subcommand['name']
+            subcommand_class = subcommand['command_class']
+            subcommand_table[subcommand_name] = subcommand_class(self._session)
+        self._session.emit('building-command-table.%s' % self.NAME,
+                           command_table=subcommand_table,
+                           session=self._session)
+        return subcommand_table
 
     def _display_help(self, parsed_args, parsed_globals):
         help_command = self.create_help_command()

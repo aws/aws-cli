@@ -94,18 +94,26 @@ class ArgTableArgParser(CLIArgParser):
     """CLI arg parser based on an argument table."""
     Usage = ("aws [options] <command> <subcommand> [parameters]")
 
-    def __init__(self, argument_table):
+    def __init__(self, argument_table, command_table=None):
+        # command_table is an optional subcommand_table.  If it's passed
+        # in, then we'l update the argparse to parse a 'subcommand' argument
+        # and populate the choices field with the command table keys.
         super(ArgTableArgParser, self).__init__(
             formatter_class=self.Formatter,
             add_help=False,
             usage=self.Usage,
             conflict_handler='resolve')
-        self._build(argument_table)
+        if command_table is None:
+            command_table = {}
+        self._build(argument_table, command_table)
 
-    def _build(self, argument_table):
+    def _build(self, argument_table, command_table):
         for arg_name in argument_table:
             argument = argument_table[arg_name]
             argument.add_to_parser(self)
+        if command_table:
+            self.add_argument('subcommand', choices=list(command_table.keys()),
+                              nargs='?')
 
     def parse_known_args(self, args, namespace=None):
         if len(args) == 1 and args[0] == 'help':

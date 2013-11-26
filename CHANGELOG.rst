@@ -17,6 +17,9 @@ Next Release (TBD)
 * Fix issue with symlinks silently failing during ``s3 sync/cp``
   (`issue 425 <https://github.com/aws/aws-cli/issues/425>`__
    and `issue 487 <https://github.com/aws/aws-cli/issues/487>`__)
+* Add a ``aws configure list`` command to show where the configuration
+  values are sourced from
+  (`issue 513 <https://github.com/aws/aws-cli/pull/513>`__)
 
 
 1.2.5

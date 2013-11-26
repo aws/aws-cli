@@ -33,9 +33,6 @@ def register_configure_cmd(cli):
     cli.register('building-command-table.main',
                  ConfigureCommand.add_command)
 
-def add_configure_cmd(command_table, session, **kwargs):
-    command_table['configure'] = ConfigureCommand(session)
-
 
 class SectionNotFoundError(Exception):
     pass

@@ -171,6 +171,30 @@ class ConfigFileWriter(object):
 
 class ConfigureListCommand(BasicCommand):
     NAME = 'list'
+    DESCRIPTION = (
+        'List the AWS CLI configuration data.  This command will '
+        'show you the current configuration data.  For each configuration '
+        'item, it will show you the value, where the configuration value '
+        'was retrieved, and the configuration variable name.  For example, '
+        'if you provide the AWS region in an environment variable, this '
+        'command will show you the name of the region you\'ve configured, '
+        'it will tell you that this value came from an environment '
+        'variable, and it will tell you the name of the environment '
+        'variable.\n'
+    )
+    SYNOPSIS = ('aws configure list [--profile profile-name]')
+    EXAMPLES = (
+        'To show your current configuration values::\n'
+        '\n'
+        '  $ aws configure list\n'
+        '        Name                    Value             Type    Location\n'
+        '        ----                    -----             ----    --------\n'
+        '     profile                <not set>             None    None\n'
+        '  access_key     ****************ABCD      config_file    ~/.aws/config\n'
+        '  secret_key     ****************ABCD      config_file    ~/.aws/config\n'
+        '      region                us-west-2              env    AWS_DEFAULT_REGION\n'
+        '\n'
+    )
 
     def __init__(self, session, stream=sys.stdout):
         super(ConfigureListCommand, self).__init__(session)

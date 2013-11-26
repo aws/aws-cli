@@ -96,7 +96,7 @@ class ArgTableArgParser(CLIArgParser):
 
     def __init__(self, argument_table, command_table=None):
         # command_table is an optional subcommand_table.  If it's passed
-        # in, then we'l update the argparse to parse a 'subcommand' argument
+        # in, then we'll update the argparse to parse a 'subcommand' argument
         # and populate the choices field with the command table keys.
         super(ArgTableArgParser, self).__init__(
             formatter_class=self.Formatter,

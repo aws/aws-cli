@@ -71,7 +71,7 @@ class BasicCommand(CLICommand):
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)
         elif getattr(parsed_args, 'subcommand', None) is None:
-            # No subcommand was specified was call the main
+            # No subcommand was specified so call the main
             # function for this top level command.
             self._run_main(parsed_args, parsed_globals)
         else:

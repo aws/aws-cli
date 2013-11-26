@@ -111,12 +111,27 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_associate_public_ip_address(self):
-        args = ' --image-id ami-foobar --count 1 '
+        args = ' --image-id ami-foobar --count 1 --subnet-id subnet-12345678 '
         args += '--associate-public-ip-address'
         args_list = (self.prefix + args).split()
         result = {
             'NetworkInterface.1.DeviceIndex': '0',
             'NetworkInterface.1.AssociatePublicIpAddress': 'true',
+            'NetworkInterface.1.SubnetId': 'subnet-12345678',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_associate_public_ip_address_switch_order(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--associate-public-ip-address --subnet-id subnet-12345678'
+        args_list = (self.prefix + args).split()
+        result = {
+            'NetworkInterface.1.DeviceIndex': '0',
+            'NetworkInterface.1.AssociatePublicIpAddress': 'true',
+            'NetworkInterface.1.SubnetId': 'subnet-12345678',
             'ImageId': 'ami-foobar',
             'MaxCount': '1',
             'MinCount': '1'
@@ -124,15 +139,55 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_no_associate_public_ip_address(self):
-        args = ' --image-id ami-foobar --count 1 '
+        args = ' --image-id ami-foobar --count 1  --subnet-id subnet-12345678 '
         args += '--no-associate-public-ip-address'
         args_list = (self.prefix + args).split()
         result = {
             'NetworkInterface.1.DeviceIndex': '0',
             'NetworkInterface.1.AssociatePublicIpAddress': 'false',
+            'NetworkInterface.1.SubnetId': 'subnet-12345678',
             'ImageId': 'ami-foobar',
             'MaxCount': '1',
             'MinCount': '1'
         }
         self.assert_params_for_cmd(args_list, result)
         
+    def test_subnet_alone(self):
+        args = ' --image-id ami-foobar --count 1 --subnet-id subnet-12345678'
+        args_list = (self.prefix + args).split()
+        result = {
+            'SubnetId': 'subnet-12345678',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_associate_public_ip_address_and_group_id(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--security-group-id sg-12345678 '
+        args += '--associate-public-ip-address --subnet-id subnet-12345678'
+        args_list = (self.prefix + args).split()
+        result = {
+            'NetworkInterface.1.DeviceIndex': '0',
+            'NetworkInterface.1.AssociatePublicIpAddress': 'true',
+            'NetworkInterface.1.SubnetId': 'subnet-12345678',
+            'NetworkInterface.1.SecurityGroupId.1': 'sg-12345678',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_group_id_alone(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--security-group-id sg-12345678'
+        args_list = (self.prefix + args).split()
+        result = {
+            'SecurityGroupId.1': 'sg-12345678',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+

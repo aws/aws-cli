@@ -330,6 +330,17 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         endpoint.assert_called_with(region_name='us-east-1',
                                     endpoint_url=None)
 
+    def test_s3_with_region_and_endpoint_url(self):
+        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
+            http_response = models.Response()
+            http_response.status_code = 200
+            endpoint.return_value.make_request.return_value = (
+                http_response, {'CommonPrefixes': [], 'Contents': []})
+            self.assert_params_for_cmd(
+                's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
+                expected_rc=0)
+        endpoint.assert_called_with(region_name='us-east-1',
+                                    endpoint_url='https://foobar.com/')
 
     def inject_new_param(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', {})

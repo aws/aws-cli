@@ -18,6 +18,7 @@ from tests import unittest
 from tests import BaseAWSHelpOutputTest
 
 import mock
+from six import StringIO
 from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations import configure
@@ -46,10 +47,23 @@ class KeyValuePrompter(object):
 
 
 class FakeSession(object):
-    def __init__(self, variables, profile_does_not_exist=False):
-        self.variables = variables
+    def __init__(self, all_variables, profile_does_not_exist=False,
+                 config_file_vars=None, environment_vars=None,
+                 credentials=None):
+        self.variables = all_variables
         self.profile_does_not_exist = profile_does_not_exist
         self.config = {}
+        if config_file_vars is None:
+            config_file_vars = {}
+        self.config_file_vars = config_file_vars
+        if environment_vars is None:
+            environment_vars = {}
+        self.environment_vars = environment_vars
+        self._credentials = credentials
+        self.profile = None
+
+    def get_credentials(self):
+        return self._credentials
 
     def get_config(self):
         if self.profile_does_not_exist:
@@ -59,7 +73,16 @@ class FakeSession(object):
     def get_variable(self, name, methods=None):
         if self.profile_does_not_exist and not name == 'config_file':
             raise ProfileNotFound(profile='foo')
-        return self.variables.get(name)
+        if methods is not None:
+            if 'env' in methods:
+                return self.environment_vars.get(name)
+            elif 'config' in methods:
+                return self.config_file_vars.get(name)
+        else:
+            return self.variables.get(name)
+
+    def emit(self, event_name, **kwargs):
+        pass
 
 
 class TestConfigureCommand(unittest.TestCase):
@@ -422,3 +445,89 @@ class TestConfigFileWriter(unittest.TestCase):
             'foo = newvalue\n'
             'bar = 1\n'
         )
+
+
+class TestConfigureListCommand(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def test_configure_list_command_nothing_set(self):
+        # Test the case where the user only wants to change a single_value.
+        session = FakeSession(all_variables={'config_file': '/config/location'})
+        stream = StringIO()
+        self.configure_list = configure.ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegexpMatches(rendered, 'profile\s+<not set>')
+        self.assertRegexpMatches(rendered, 'access_key\s+<not set>')
+        self.assertRegexpMatches(rendered, 'secret_key\s+<not set>')
+        self.assertRegexpMatches(rendered, 'region\s+<not set>')
+
+    def test_configure_from_env(self):
+        env_vars = {
+            'profile': 'myprofilename'
+        }
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'},
+            environment_vars=env_vars)
+        session.env_vars = {'profile': (None, "PROFILE_ENV_VAR")}
+        stream = StringIO()
+        self.configure_list = configure.ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegexpMatches(
+            rendered, 'profile\s+myprofilename\s+env\s+PROFILE_ENV_VAR')
+
+    def test_configure_from_config_file(self):
+        config_file_vars = {
+            'region': 'us-west-2'
+        }
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'},
+            config_file_vars=config_file_vars)
+        session.env_vars = {'region': ('region', "AWS_REGION")}
+        stream = StringIO()
+        self.configure_list = configure.ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegexpMatches(
+            rendered, 'region\s+us-west-2\s+config_file\s+/config/location')
+
+    def test_configure_from_multiple_sources(self):
+        # Here the profile is from an env var, the
+        # region is from the config file, and the credentials
+        # are from an iam-role.
+        env_vars = {
+            'profile': 'myprofilename'
+        }
+        config_file_vars = {
+            'region': 'us-west-2'
+        }
+        credentials = mock.Mock()
+        credentials.access_key = 'access_key'
+        credentials.secret_key = 'secret_key'
+        credentials.method = 'iam-role'
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'},
+            environment_vars=env_vars,
+            config_file_vars=config_file_vars,
+            credentials=credentials)
+        session.env_vars = {'region': ('region', 'AWS_REGION'),
+                            'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
+        stream = StringIO()
+        self.configure_list = configure.ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        # The profile came from an env var.
+        self.assertRegexpMatches(
+            rendered, 'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
+        # The region came from the config file.
+        self.assertRegexpMatches(
+            rendered, 'region\s+us-west-2\s+config_file\s+/config/location')
+        # The credentials came from an IAM role.  Note how we're
+        # also checking that the access_key/secret_key are masked
+        # with '*' chars except for the last 4 chars.
+        self.assertRegexpMatches(
+            rendered, r'access_key\s+\*+_key\s+iam-role')
+        self.assertRegexpMatches(
+            rendered, r'secret_key\s+\*+_key\s+iam-role')

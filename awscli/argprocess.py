@@ -17,13 +17,9 @@ import logging
 import six
 
 from awscli import utils
+from awscli import SCALAR_TYPES, COMPLEX_TYPES
 
 
-SCALAR_TYPES = set([
-    'string', 'float', 'integer', 'long', 'boolean', 'double',
-    'blob', 'timestamp'
-])
-COMPLEX_TYPES = set(['structure', 'map', 'list'])
 LOG = logging.getLogger('awscli.argprocess')
 
 
@@ -85,6 +81,7 @@ class ParamShorthand(object):
 
     SHORTHAND_SHAPES = {
         'structure(scalars)': '_key_value_parse',
+        'structure(scalar)': '_special_key_value_parse',
         'map-scalar': '_key_value_parse',
         'list-structure(scalar)': '_list_scalar_parse',
         'list-structure(scalars)': '_list_key_value_parse',
@@ -226,6 +223,20 @@ class ParamShorthand(object):
             parsed.append(single_struct_param)
         return parsed
 
+    def _special_key_value_parse(self, param, value):
+        # This is a special key value parse that can do the normal
+        # key=value parsing, *but* supports a few additional conveniences
+        # when working with a structure with a single element.
+        # Precondition: param is a shape of structure(scalar)
+        if len(param.members) == 1 and param.members[0].name == 'Value' and \
+                '=' not in value:
+            # We have an even shorter shorthand syntax for structure
+            # of scalars of a single element with a member name of
+            # 'Value'.
+            return {'Value': value}
+        else:
+            return self._key_value_parse(param, value)
+
     def _key_value_parse(self, param, value):
         # The expected structure is:
         #  key=value,key2=value
@@ -282,6 +293,15 @@ class ParamShorthand(object):
         s += ','.join(['%s=%s' % (sub_param.name, sub_param.type)
                        for sub_param in param.members.members])
         return s
+
+    def _docs_special_key_value_parse(self, param):
+        if len(param.members) == 1 and param.members[0].name == 'Value':
+            # Returning None will indicate that we don't have
+            # any examples to generate, and the entire examples section
+            # should be skipped for this arg.
+            return None
+        else:
+            self._docs_key_value_parse(param)
 
     def _docs_key_value_parse(self, param):
         s = '%s ' % param.cli_name

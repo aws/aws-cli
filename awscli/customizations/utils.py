@@ -53,7 +53,7 @@ def validate_mutually_exclusive(parsed_args, *groups):
         elif not key_group == current_group:
             raise ValueError('The key "%s" cannot be specified when one '
                              'of the following keys are also specified: '
-                             '%s' % (key, current_group))
+                             '%s' % (key, ', '.join(current_group)))
 
 
 def _get_group_for_key(key, groups):

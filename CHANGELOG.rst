@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.2.6
+=====
 
 * Allow ``--endpoint-url`` to work with the ``aws s3`` command
   (`issue 469 <https://github.com/aws/aws-cli/pull/469>`__)
@@ -20,6 +20,11 @@ Next Release (TBD)
 * Add a ``aws configure list`` command to show where the configuration
   values are sourced from
   (`issue 513 <https://github.com/aws/aws-cli/pull/513>`__)
+* Update ``cloudwatch`` command to use Signature Version 4
+* Update ``ec2`` command to support enhanced network capabilities and
+  pagination controls for ``describe-instances`` and ``describe-tags``
+* Add support in ``rds`` command for copying DB snapshots from
+  one AWS region to another
 
 
 1.2.5

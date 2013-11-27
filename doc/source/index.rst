@@ -9,5 +9,4 @@ interface for interacting with all parts of AWS.
   :maxdepth: 2
   :titlesonly:
 
-  Getting Started <tutorial/getting_started>
   Command Reference <reference/index>

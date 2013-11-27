@@ -131,6 +131,13 @@ class TestSection(unittest.TestCase):
         # We should not call .write() at all for an empty list.
         self.assertFalse(fake_stream.write.called)
 
+    def test_list_of_strings_in_dict(self):
+        self.assert_text_renders_to(
+            {"KeyName": ['a', 'b', 'c']},
+            'KEYNAME\ta\n'
+            'KEYNAME\tb\n'
+            'KEYNAME\tc\n')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* Fix text output with a list of strings from a hash
+  (`issue 516 <https://github.com/aws/aws-cli/pull/516>`__)
+
+
 1.2.6
 =====
 

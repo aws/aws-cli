@@ -14,6 +14,7 @@ import sys
 import logging
 
 import botocore.session
+from botocore import __version__ as botocore_version
 from botocore.hooks import HierarchicalEmitter
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
@@ -219,6 +220,9 @@ class CLIDriver(object):
             # loading of plugins, etc.
             self.session.set_debug_logger(logger_name='botocore')
             self.session.set_debug_logger(logger_name='awscli')
+            LOG.debug("CLI version: %s, botocore version: %s",
+                      self.session.user_agent(),
+                      botocore_version)
         else:
             self.session.set_stream_logger(logger_name='awscli',
                                            log_level=logging.ERROR)

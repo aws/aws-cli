@@ -362,6 +362,23 @@ class TestSync(BaseS3CLICommand):
         self.assertEqual('', p.stdout)
 
 
+class TestBadSymlinks(BaseS3CLICommand):
+    def test_bad_symlink_stops_sync_process(self):
+        bucket_name = self.create_bucket()
+        nested_dir = os.path.join(self.files.rootdir, 'realfiles')
+        os.mkdir(nested_dir)
+        full_path = self.files.create_file(os.path.join(nested_dir, 'foo.txt'),
+                                           contents='foo.txt contents')
+        symlink_dir = os.path.join(self.files.rootdir, 'symlinkdir')
+        os.mkdir(symlink_dir)
+        os.symlink(full_path, os.path.join(symlink_dir, 'a-goodsymlink'))
+        os.symlink('non-existent-file', os.path.join(symlink_dir, 'b-badsymlink'))
+        os.symlink(full_path, os.path.join(symlink_dir, 'c-goodsymlink'))
+        p = aws('s3 sync %s s3://%s/' % (symlink_dir, bucket_name))
+        self.assertEqual(p.rc, 1, p.stdout)
+        self.assertIn('[Errno 2] No such file or directory', p.stdout)
+
+
 class TestUnicode(BaseS3CLICommand):
     """
     The purpose of these tests are to ensure that the commands can handle

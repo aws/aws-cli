@@ -144,6 +144,7 @@ class PrintThread(threading.Thread):
         self._num_parts = 0
         self._file_count = 0
         self._lock = threading.Lock()
+        self._needs_newline = False
 
         self._total_parts = 0
         self._total_files = '...'
@@ -179,6 +180,8 @@ class PrintThread(threading.Thread):
             except Queue.Empty:
                 pass
             if self._done.isSet():
+                if self._needs_newline:
+                    sys.stdout.write('\n')
                 break
 
     def _process_print_task(self, print_task):
@@ -226,4 +229,5 @@ class PrintThread(threading.Thread):
             final_str += prog_str
         if not self._quiet:
             uni_print(final_str)
+            self._needs_newline = not final_str.endswith('\n')
             sys.stdout.flush()

@@ -5,8 +5,33 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* Fix text output with a list of strings from a hash
+  (`issue 516 <https://github.com/aws/aws-cli/pull/516>`__)
+
+
+1.2.6
+=====
+
 * Allow ``--endpoint-url`` to work with the ``aws s3`` command
   (`issue 469 <https://github.com/aws/aws-cli/pull/469>`__)
+* Fix issue with ``aws cloudtrail [create|update]-subscription`` not
+  honoring the ``--profile`` argument
+  (`issue 494 <https://github.com/aws/aws-cli/issues/494>`__)
+* Fix issue with ``--associate-public-ip-address`` when a ``--subnet-id``
+  is provided (`issue 501 <https://github.com/aws/aws-cli/issues/501>`__)
+* Don't require key names for structures of single scalar values
+  (`issue 484 <https://github.com/aws/aws-cli/issues/484>`__)
+* Fix issue with symlinks silently failing during ``s3 sync/cp``
+  (`issue 425 <https://github.com/aws/aws-cli/issues/425>`__
+   and `issue 487 <https://github.com/aws/aws-cli/issues/487>`__)
+* Add a ``aws configure list`` command to show where the configuration
+  values are sourced from
+  (`issue 513 <https://github.com/aws/aws-cli/pull/513>`__)
+* Update ``cloudwatch`` command to use Signature Version 4
+* Update ``ec2`` command to support enhanced network capabilities and
+  pagination controls for ``describe-instances`` and ``describe-tags``
+* Add support in ``rds`` command for copying DB snapshots from
+  one AWS region to another
 
 
 1.2.5

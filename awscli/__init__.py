@@ -17,7 +17,7 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 import os
 
-__version__ = '1.2.5'
+__version__ = '1.2.6'
 
 #
 # Get our data path to be added to botocore's search path
@@ -39,3 +39,9 @@ EnvironmentVariables = {
     'data_path': ('data_path', 'AWS_DATA_PATH', None),
     'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json'),
     }
+
+SCALAR_TYPES = set([
+    'string', 'float', 'integer', 'long', 'boolean', 'double',
+    'blob', 'timestamp'
+])
+COMPLEX_TYPES = set(['structure', 'map', 'list'])

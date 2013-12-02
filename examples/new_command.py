@@ -17,8 +17,7 @@ the plugin.
 from awscli.clidriver import BuiltInCommand
 from awscli.help import HelpCommand
 from awscli.argparser import ServiceArgParser
-from bcdoc.clidocs import CLIDocumentEventHandler
-import bcdoc.clidocevents
+from awscli.clidocs import CLIDocumentEventHandler
 
 
 class ConfigDocumentEventHandler(CLIDocumentEventHandler):

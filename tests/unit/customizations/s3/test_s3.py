@@ -425,32 +425,6 @@ class CommandParametersTest(unittest.TestCase):
             cmd_parameter.check_region([])
             cmd_parameter.check_src_path(filename[0])
 
-    def test_check_src_path_fail(self):
-        # This tests to see if all of the checks on the source path works.  It
-        # does so by testing if s3 objects and and prefixes do not exist as well
-        # as local files and directories.  All of these should throw an
-        # exception.
-        local_file = self.loc_files[0]
-        local_dir = self.loc_files[3]
-        fake_s3_file = 's3://' + self.bucket + '/' + 'text1.tx'
-        fake_local_file = local_file[:-1]
-        fake_s3_prefix = 's3://' + self.bucket + '/' + 'fake/'
-
-        # :var files: a list of tuples where the first element is a single
-        #     element list of file paths. The second element is a boolean
-        #     representing if the operation is a directory operation.
-        files = [([fake_s3_file], False), ([fake_local_file], False),
-                 ([fake_s3_prefix], True), ([local_file], True),
-                 ([local_dir], False), ([fake_s3_file+'dag'], False)]
-
-        parameters = {}
-        for filename in files:
-            parameters['dir_op'] = filename[1]
-            cmd_parameter = CommandParameters(self.session, 'put', parameters)
-            cmd_parameter.check_region([])
-            with self.assertRaises(Exception):
-                cmd_parameter.check_src_path(filename[0])
-
     def test_check_force(self):
         # This checks to make sure that the force parameter is run. If
         # successful. The delete command will fail as the bucket is empty

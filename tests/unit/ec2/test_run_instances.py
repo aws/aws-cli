@@ -191,3 +191,32 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(args_list, result)
 
+    def test_associate_public_ip_address_and_private_ip_address(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--private-ip-address 10.0.0.200 '
+        args += '--associate-public-ip-address --subnet-id subnet-12345678'
+        args_list = (self.prefix + args).split()
+        result = {
+            'NetworkInterface.1.DeviceIndex': '0',
+            'NetworkInterface.1.AssociatePublicIpAddress': 'true',
+            'NetworkInterface.1.SubnetId': 'subnet-12345678',
+            'NetworkInterface.1.PrivateIpAddresses.1.PrivateIpAddress': '10.0.0.200',
+            'NetworkInterface.1.PrivateIpAddresses.1.Primary': 'true',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+
+    def test_private_ip_address_alone(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--private-ip-address 10.0.0.200'
+        args_list = (self.prefix + args).split()
+        result = {
+            'PrivateIpAddress': '10.0.0.200',
+            'ImageId': 'ami-foobar',
+            'MaxCount': '1',
+            'MinCount': '1'
+        }
+        self.assert_params_for_cmd(args_list, result)
+

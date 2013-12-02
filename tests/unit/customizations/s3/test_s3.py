@@ -201,6 +201,25 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
 
+    def test_error_on_same_line_as_status(self):
+        s3_file = 's3://' + 'bucket-does-not-exist' + '/' + 'text1.txt'
+        local_file = self.loc_files[0]
+        rel_local_file = os.path.relpath(local_file)
+        filters = [['--include', '*']]
+        params = {'dir_op': False, 'dryrun': False, 'quiet': False,
+                  'src': local_file, 'dest': s3_file, 'filters': filters,
+                  'paths_type': 'locals3', 'region': 'us-east-1',
+                  'endpoint_url': None}
+        cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc.create_instructions()
+        cmd_arc.run()
+        # Also, we need to verify that the error message is on the *same* line
+        # as the upload failed line, to make it easier to track.
+        output_str = (
+            "upload failed: %s to %s Error: Bucket does not exist\n" % (
+                rel_local_file, s3_file))
+        self.assertIn(output_str, self.output.getvalue())
+
     def test_run_cp_get(self):
         # This ensures that the architecture sets up correctly for a ``cp`` get
         # command.  It is just just a dry run, but all of the components need

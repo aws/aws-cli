@@ -99,7 +99,7 @@ class BasicTask(object):
                 message = print_operation(filename, failed,
                                           self.parameters['dryrun'])
                 if error_message is not None:
-                    message += '\n' + error_message
+                    message += ' ' + error_message
                 result = {'message': message, 'error': failed}
                 self.result_queue.put(result)
         except Exception as e:

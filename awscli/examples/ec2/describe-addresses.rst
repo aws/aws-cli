@@ -43,7 +43,7 @@ Output::
       ]
   }
 
-This example describes describes the Elastic IP address with the allocation ID eipalloc-282d9641, which is associated with an instance in EC2-VPC.
+This example describes the Elastic IP address with the allocation ID ``eipalloc-282d9641``, which is associated with an instance in EC2-VPC.
 
 Command::
 
@@ -66,7 +66,7 @@ Output::
         ]
     }
 
-This example command describes the Elastic IP address associated with a particular private IP address in EC2-VPC.
+This example describes the Elastic IP address associated with a particular private IP address in EC2-VPC.
 
 Command::
 

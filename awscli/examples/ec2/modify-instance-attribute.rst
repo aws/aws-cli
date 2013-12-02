@@ -4,7 +4,7 @@ This example modifies the instance type of the specified instance. The instance 
 
 Command::
 
-  aws ec2 modify-instance-attribute --instance-id i-5203422c --instance-type m1.small
+  aws ec2 modify-instance-attribute --instance-id i-5203422c --instance-type "{\"Value\": \"m1.small\"}"
 
 Output::
 
@@ -18,7 +18,7 @@ This example sets the ``sourceDestCheck`` attribute of the specified instance to
 
 Command::
 
-  aws ec2 modify-instance-attribute --instance-id i-5203422c --source-dest-check
+  aws ec2 modify-instance-attribute --instance-id i-5203422c --source-dest-check "{\"Value\": true}"
 
 Output::
 

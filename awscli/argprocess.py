@@ -12,9 +12,10 @@
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
 import os
-import json
 import logging
 import six
+
+from botocore.compat import OrderedDict, json
 
 from awscli import utils
 from awscli import SCALAR_TYPES, COMPLEX_TYPES
@@ -243,9 +244,10 @@ class ParamShorthand(object):
         # that is, csv key value pairs, where the key and values
         # are separated by '='.  All of this should be whitespace
         # insensitive.
-        parsed = {}
+        parsed = OrderedDict()
         parts = self._split_on_commas(value)
         valid_names = self._create_name_to_params(param)
+        LOG.debug('valid_names=%s', valid_names)
         for part in parts:
             try:
                 key, value = part.split('=', 1)
@@ -253,18 +255,20 @@ class ParamShorthand(object):
                 raise ParamSyntaxError(part)
             key = key.strip()
             value = value.strip()
-            if key not in valid_names:
+            if valid_names and key not in valid_names:
                 raise ParamUnknownKeyError(param, key, valid_names)
-            sub_param = valid_names[key]
-            if sub_param is not None:
-                value = unpack_scalar_cli_arg(sub_param, value)
+            if valid_names:
+                sub_param = valid_names[key]
+                if sub_param is not None:
+                    value = unpack_scalar_cli_arg(sub_param, value)
             parsed[key] = value
+            LOG.debug('parsed=%s', parsed)
         return parsed
 
     def _create_name_to_params(self, param):
         if param.type == 'structure':
             return dict([(p.name, p) for p in param.members])
-        elif param.type == 'map':
+        elif param.type == 'map' and hasattr(param.keys, 'enum'):
             return dict([(v, None) for v in param.keys.enum])
 
     def _docs_list_scalar_list_parse(self, param):
@@ -351,7 +355,7 @@ def unpack_cli_arg(parameter, value):
 def unpack_complex_cli_arg(parameter, value):
     if parameter.type == 'structure' or parameter.type == 'map':
         if value.lstrip()[0] == '{':
-            d = json.loads(value)
+            d = json.loads(value, object_pairs_hook=OrderedDict)
         else:
             msg = 'The value for parameter "%s" must be JSON or path to file.' % (
                 parameter.cli_name)
@@ -360,11 +364,11 @@ def unpack_complex_cli_arg(parameter, value):
     elif parameter.type == 'list':
         if isinstance(value, six.string_types):
             if value.lstrip()[0] == '[':
-                return json.loads(value)
+                return json.loads(value, object_pairs_hook=OrderedDict)
         elif isinstance(value, list) and len(value) == 1:
             single_value = value[0].strip()
             if single_value and single_value[0] == '[':
-                return json.loads(value[0])
+                return json.loads(value[0], object_pairs_hook=OrderedDict)
         return [unpack_cli_arg(parameter.members, v) for v in value]
 
 

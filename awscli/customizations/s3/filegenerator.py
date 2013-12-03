@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import sys
+import datetime
 
 from six import text_type
 from dateutil.parser import parse
@@ -152,27 +153,39 @@ class FileGenerator(object):
         common prefix.  It yields the file's source path, size, and last
         update.
         """
-        operation = self._service.get_operation('ListObjects')
+        # Short circuit path: if we are not recursing into the s3
+        # bucket and a specific path was given, we can just yield
+        # that path and not have to call any operation in s3.
         bucket, prefix = find_bucket_key(s3_path)
-        iterator = operation.paginate(self._endpoint, bucket=bucket,
-                                      prefix=prefix)
-        for html_response, response_data in iterator:
-            contents = response_data['Contents']
-            for content in contents:
-                src_path = bucket + '/' + content['Key']
-                size = content['Size']
-                last_update = parse(content['LastModified'])
-                last_update = last_update.astimezone(tzlocal())
-                if size == 0 and src_path.endswith('/'):
-                    if self.operation_name == 'delete':
-                        # This is to filter out manually created folders
-                        # in S3.  They have a size zero and would be
-                        # undesirably downloaded.  Local directories
-                        # are automatically created when they do not
-                        # exist locally.  But user should be able to
-                        # delete them.
+        if not dir_op and prefix:
+            # Then a specific path was specified so we yield that
+            # exact path.  The size doesn't matter, but the last_update
+            # is normally set to the last_modified time we get back
+            # from s3 for the specific object.  We lose that here, but
+            # on the plus side, we don't need to require ListObjects
+            # permission to download a single file.
+            yield s3_path, 1, datetime.datetime.now()
+        else:
+            operation = self._service.get_operation('ListObjects')
+            iterator = operation.paginate(self._endpoint, bucket=bucket,
+                                        prefix=prefix)
+            for html_response, response_data in iterator:
+                contents = response_data['Contents']
+                for content in contents:
+                    src_path = bucket + '/' + content['Key']
+                    size = content['Size']
+                    last_update = parse(content['LastModified'])
+                    last_update = last_update.astimezone(tzlocal())
+                    if size == 0 and src_path.endswith('/'):
+                        if self.operation_name == 'delete':
+                            # This is to filter out manually created folders
+                            # in S3.  They have a size zero and would be
+                            # undesirably downloaded.  Local directories
+                            # are automatically created when they do not
+                            # exist locally.  But user should be able to
+                            # delete them.
+                            yield src_path, size, last_update
+                    elif not dir_op and s3_path != src_path:
+                        pass
+                    else:
                         yield src_path, size, last_update
-                elif not dir_op and s3_path != src_path:
-                    pass
-                else:
-                    yield src_path, size, last_update

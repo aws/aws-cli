@@ -212,7 +212,7 @@ class TestMoveCommand(BaseS3CLICommand):
     def test_mv_to_nonexistent_bucket(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
         p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
-        self.assertEqual(p.rc, 255)
+        self.assertEqual(p.rc, 1)
 
 
 class TestCp(BaseS3CLICommand):
@@ -271,7 +271,7 @@ class TestCp(BaseS3CLICommand):
     def test_cp_to_nonexistent_bucket(self):
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
         p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
-        self.assertEqual(p.rc, 255)
+        self.assertEqual(p.rc, 1)
 
     def test_cp_empty_file(self):
         bucket_name = self.create_bucket()
@@ -314,7 +314,7 @@ class TestSync(BaseS3CLICommand):
 
         # Sync the directory and the bucket.
         p = aws('s3 sync %s s3://noexist-bkt-nme-1412' % (self.files.rootdir,))
-        self.assertEqual(p.rc, 255)
+        self.assertEqual(p.rc, 1)
 
     def test_sync_with_empty_files(self):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
@@ -436,7 +436,8 @@ class TestLs(BaseS3CLICommand):
         p = aws('s3 ls s3://foobara99842u4wbts829381')
         self.assertEqual(p.rc, 255)
         self.assertIn(
-            'A client error (NoSuchBucket) occurred: The specified bucket does not exist',
+            ('A client error (NoSuchBucket) occurred when calling the '
+             'ListObjects operation: The specified bucket does not exist'),
             p.stderr)
         # There should be no stdout if we can't find the bucket.
         self.assertEqual(p.stdout, '')

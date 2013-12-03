@@ -247,7 +247,6 @@ class ParamShorthand(object):
         parsed = OrderedDict()
         parts = self._split_on_commas(value)
         valid_names = self._create_name_to_params(param)
-        LOG.debug('valid_names=%s', valid_names)
         for part in parts:
             try:
                 key, value = part.split('=', 1)
@@ -262,7 +261,6 @@ class ParamShorthand(object):
                 if sub_param is not None:
                     value = unpack_scalar_cli_arg(sub_param, value)
             parsed[key] = value
-            LOG.debug('parsed=%s', parsed)
         return parsed
 
     def _create_name_to_params(self, param):

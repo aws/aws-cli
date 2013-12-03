@@ -27,37 +27,8 @@ import botocore.session
 
 from tests.integration import aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
+from tests.unit import FileCreator
 from awscli.customizations.s3 import constants
-
-
-class FileCreator(object):
-    def __init__(self):
-        self.rootdir = tempfile.mkdtemp()
-
-    def remove_all(self):
-        shutil.rmtree(self.rootdir)
-
-    def create_file(self, filename, contents):
-        """Creates a file in a tmpdir
-
-        ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
-        It will be translated into a full path in a tmp dir.
-
-        Returns the full path to the file.
-        """
-        full_path = os.path.join(self.rootdir, filename)
-        if not os.path.isdir(os.path.dirname(full_path)):
-            os.makedirs(os.path.dirname(full_path))
-        with open(full_path, 'w') as f:
-            f.write(contents)
-        return full_path
-
-    def full_path(self, filename):
-        """Translate relative path to full path in temp dir.
-
-        f.full_path('foo/bar.txt') -> /tmp/asdfasd/foo/bar.txt
-        """
-        return os.path.join(self.rootdir, filename)
 
 
 class BaseS3CLICommand(unittest.TestCase):

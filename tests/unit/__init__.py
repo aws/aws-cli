@@ -14,6 +14,8 @@ from tests import unittest
 import os
 import copy
 import logging
+import tempfile
+import shutil
 
 import mock
 import six
@@ -45,6 +47,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.parsed_response = {}
         self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
+        self.operations_called = []
 
     def tearDown(self):
         # This clears all the previous registrations.
@@ -79,8 +82,9 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             self.assertDictEqual(params, last_params)
         return stdout, stderr, rc
 
-    def before_parameter_build(self, params, **kwargs):
+    def before_parameter_build(self, params, operation, **kwargs):
         self.last_kwargs = params
+        self.operations_called.append((operation, params))
 
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
@@ -106,3 +110,33 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
                 expected_rc, rc, cmd))
         return stdout, stderr, rc
+
+
+class FileCreator(object):
+    def __init__(self):
+        self.rootdir = tempfile.mkdtemp()
+
+    def remove_all(self):
+        shutil.rmtree(self.rootdir)
+
+    def create_file(self, filename, contents):
+        """Creates a file in a tmpdir
+
+        ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
+        It will be translated into a full path in a tmp dir.
+
+        Returns the full path to the file.
+        """
+        full_path = os.path.join(self.rootdir, filename)
+        if not os.path.isdir(os.path.dirname(full_path)):
+            os.makedirs(os.path.dirname(full_path))
+        with open(full_path, 'w') as f:
+            f.write(contents)
+        return full_path
+
+    def full_path(self, filename):
+        """Translate relative path to full path in temp dir.
+
+        f.full_path('foo/bar.txt') -> /tmp/asdfasd/foo/bar.txt
+        """
+        return os.path.join(self.rootdir, filename)

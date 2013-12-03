@@ -70,6 +70,7 @@ class BasicTask(object):
             self._queue_print_message(self.filename, failed=True,
                                       dryrun=self.parameters['dryrun'],
                                       error_message=last_error)
+            return
         filename = self.filename
         try:
             if not self.parameters['dryrun']:

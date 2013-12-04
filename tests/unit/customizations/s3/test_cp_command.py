@@ -49,6 +49,19 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'GetObject')
 
+    def test_operations_used_in_recursive_download(self):
+        self.parsed_response = {'ETag': '"foo-1"',
+                                'Contents': [],
+                                'CommonPrefixes': []
+                                }
+        cmdline = '%s s3://bucket/key.txt %s --recursive' % (
+            self.prefix, self.files.rootdir)
+        self.run_cmd(cmdline, expected_rc=0)
+        # We called ListObjects but had no objects to download, so
+        # we only have a single ListObjects operation being called.
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')
+
 
 if __name__ == "__main__":
     unittest.main()

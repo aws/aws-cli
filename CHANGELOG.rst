@@ -5,8 +5,25 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
-* Fix text output with a list of strings from a hash
+* Allow tcp, udp, icmp, all for ``--protocol`` param of
+  the ``ec2 create-network-acl-entry`` command
+  (`issue 508 <https://github.com/aws/aws-cli/issues/508>`__)
+* Fix bug when filtering ``s3://`` locations with the
+  ``--include/--exclude`` params
+  (issue 531 <https://github.com/aws/aws-cli/pull/531>`__)
+* Fix an issue with map type parameters raising uncaught
+  exceptions in commands such as `sns create-platform-application`
+  (`issue 407 <https://github.com/aws/aws-cli/issues/407>`__)
+* Fix an issue when both ``--private-ip-address`` and
+  ``--associate-public-ip-address`` are specified in the
+  ``ec2 run-instances`` command
+  (`issue 520 <https://github.com/aws/aws-cli/issues/520>`__)
+* Fix an issue where ``--output text`` was not providing
+  a starting identifier for certain rows
   (`issue 516 <https://github.com/aws/aws-cli/pull/516>`__)
+* Update the ``support`` command to the latest version
+* Update the ``--query`` syntax to support flattening sublists
+  (`boto/jmespath#20 <https://github.com/boto/jmespath/pull/20>`__)
 
 
 1.2.6

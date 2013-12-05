@@ -32,10 +32,11 @@ class FiltersTest(unittest.TestCase):
 
     def file_info(self, filename, src_type='local'):
         if src_type == 'local':
+            filename = os.path.abspath(filename)
             dest_type = 's3'
         else:
             dest_type = 'local'
-        return FileInfo(src=os.path.abspath(filename), dest='',
+        return FileInfo(src=filename, dest='',
                         compare_key='', size=10,
                         last_update=0, src_type=src_type,
                         dest_type=dest_type, operation_name='',
@@ -83,6 +84,49 @@ class FiltersTest(unittest.TestCase):
 
         matched_files = list(exclude_all_filter.call(self.s3_files))
         self.assertEqual(matched_files, [])
+
+    def test_prefix_filtering_consistent(self):
+        # The same filter should work for both local and remote files.
+        # So if I have a directory with 2 files:
+        local_files = [
+            self.file_info('test1.txt'),
+            self.file_info('nottest1.txt'),
+        ]
+        # And the same 2 files remote (note that the way FileInfo objects
+        # are constructed, we'll have the bucket name but no leading '/'
+        # character):
+        remote_files = [
+            self.file_info('bucket/test1.txt', src_type='s3'),
+            self.file_info('bucket/nottest1.txt', src_type='s3'),
+        ]
+        # If I apply the filter to the local to the local files.
+        exclude_filter = Filter({'filters': [['--exclude', 't*']]})
+        filtered_files = list(exclude_filter.call(local_files))
+        self.assertEqual(len(filtered_files), 1)
+        self.assertEqual(os.path.basename(filtered_files[0].src),
+                         'nottest1.txt')
+
+        # I should get the same result if I apply the same filter to s3
+        # objects.
+        same_filtered_files = list(exclude_filter.call(remote_files))
+        self.assertEqual(len(same_filtered_files), 1)
+        self.assertEqual(os.path.basename(same_filtered_files[0].src),
+                         'nottest1.txt')
+
+    def test_bucket_exclude_with_prefix(self):
+        s3_files = [
+            self.file_info('bucket/dir1/key1.txt', src_type='s3'),
+            self.file_info('bucket/dir1/key2.txt', src_type='s3'),
+            self.file_info('bucket/dir1/notkey3.txt', src_type='s3'),
+        ]
+        filtered_files = list(
+            Filter({'filters': [['--exclude', 'dir1/*']]}).call(s3_files))
+        self.assertEqual(filtered_files, [])
+
+        key_files = list(
+            Filter({'filters': [['--exclude', 'dir1/key*']]}).call(s3_files))
+        self.assertEqual(len(key_files), 1)
+        self.assertEqual(key_files[0].src, 'bucket/dir1/notkey3.txt')
 
 
 if __name__ == "__main__":

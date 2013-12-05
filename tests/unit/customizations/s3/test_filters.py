@@ -19,136 +19,115 @@ from awscli.customizations.s3.filters import Filter
 
 class FiltersTest(unittest.TestCase):
     def setUp(self):
-        self.local_files = []
-        self.loc_file1 = FileInfo(src=os.path.abspath('test.txt'), dest='',
-                                  compare_key='', size=10,
-                                  last_update=0, src_type='local',
-                                  dest_type='s3', operation_name='',
-                                  service=None, endpoint=None)
-        self.loc_file2 = FileInfo(src=os.path.abspath('test.jpg'), dest='',
-                                  compare_key='', size=10,
-                                  last_update=0, src_type='local',
-                                  dest_type='s3', operation_name='',
-                                  service=None, endpoint=None)
-        path = 'directory' + os.sep + 'test.jpg'
-        self.loc_file3 = FileInfo(src=os.path.abspath(path), dest='',
-                                  compare_key='', size=10,
-                                  last_update=0, src_type='local',
-                                  dest_type='s3', operation_name='',
-                                  service=None, endpoint=None)
-        self.local_files.append(self.loc_file1)
-        self.local_files.append(self.loc_file2)
-        self.local_files.append(self.loc_file3)
+        self.local_files = [
+            self.file_info('test.txt'),
+            self.file_info('test.jpg'),
+            self.file_info(os.path.join('directory', 'test.jpg')),
+        ]
+        self.s3_files = [
+            self.file_info('bucket/test.txt'),
+            self.file_info('bucket/test.jpg'),
+            self.file_info('bucket/key/test.jpg'),
+        ]
 
-        self.s3_files = []
-        self.s3_file1 = FileInfo('bucket/test.txt', dest='',
-                                 compare_key='', size=10,
-                                 last_update=0, src_type='s3',
-                                 dest_type='s3', operation_name='',
-                                 service=None, endpoint=None)
-        self.s3_file2 = FileInfo('bucket/test.jpg', dest='',
-                                 compare_key='', size=10,
-                                 last_update=0, src_type='s3',
-                                 dest_type='s3', operation_name='',
-                                 service=None, endpoint=None)
-        self.s3_file3 = FileInfo('bucket/key/test.jpg', dest='',
-                                 compare_key='', size=10,
-                                 last_update=0, src_type='s3',
-                                 dest_type='s3', operation_name='',
-                                 service=None, endpoint=None)
-        self.s3_files.append(self.s3_file1)
-        self.s3_files.append(self.s3_file2)
-        self.s3_files.append(self.s3_file3)
+    def file_info(self, filename, src_type='local'):
+        if src_type == 'local':
+            filename = os.path.abspath(filename)
+            dest_type = 's3'
+        else:
+            dest_type = 'local'
+        return FileInfo(src=filename, dest='',
+                        compare_key='', size=10,
+                        last_update=0, src_type=src_type,
+                        dest_type=dest_type, operation_name='',
+                        service=None, endpoint=None)
 
     def test_no_filter(self):
-        """
-        No filters
-        """
-        patterns = []
         exc_inc_filter = Filter({})
-        files = exc_inc_filter.call(iter(self.local_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, self.local_files)
+        matched_files = list(exc_inc_filter.call(self.local_files))
+        self.assertEqual(matched_files, self.local_files)
 
-        files = exc_inc_filter.call(iter(self.s3_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, self.s3_files)
+        matched_files2 = list(exc_inc_filter.call(self.s3_files))
+        self.assertEqual(matched_files2, self.s3_files)
 
     def test_include(self):
-        """
-        Only an include file
-        """
         patterns = [['--include', '*.txt']]
-        exc_inc_filter = Filter({'filters': patterns})
-        files = exc_inc_filter.call(iter(self.local_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, self.local_files)
+        include_filter = Filter({'filters': [['--include', '*.txt']]})
+        matched_files = list(include_filter.call(self.local_files))
+        self.assertEqual(matched_files, self.local_files)
 
-        files = exc_inc_filter.call(iter(self.s3_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, self.s3_files)
+        matched_files2 = list(include_filter.call(self.s3_files))
+        self.assertEqual(matched_files2, self.s3_files)
 
     def test_exclude(self):
-        """
-        Only an exclude filter
-        """
-        patterns = [['--exclude', '*']]
-        exc_inc_filter = Filter({'filters': patterns})
-        files = exc_inc_filter.call(iter(self.local_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, [])
+        exclude_filter = Filter({'filters': [['--exclude', '*']]})
+        matched_files = list(exclude_filter.call(self.local_files))
+        self.assertEqual(matched_files, [])
 
-        files = exc_inc_filter.call(iter(self.s3_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, [])
+        matched_files = list(exclude_filter.call(self.s3_files))
+        self.assertEqual(matched_files, [])
 
     def test_exclude_include(self):
-        """
-        Exclude everything and then include all .txt files
-        """
         patterns = [['--exclude', '*'], ['--include', '*.txt']]
-        exc_inc_filter = Filter({'filters': patterns})
-        files = exc_inc_filter.call(iter(self.local_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, [self.loc_file1])
+        exclude_include_filter = Filter({'filters': patterns})
+        matched_files = list(exclude_include_filter.call(self.local_files))
+        self.assertEqual(matched_files, [self.local_files[0]])
 
-        files = exc_inc_filter.call(iter(self.s3_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, [self.s3_file1])
+        matched_files = list(exclude_include_filter.call(self.s3_files))
+        self.assertEqual(matched_files, [self.s3_files[0]])
 
     def test_include_exclude(self):
-        """
-        Include all .txt files then exclude everything
-        """
         patterns = [['--include', '*.txt'], ['--exclude', '*']]
-        exc_inc_filter = Filter({'filters': patterns})
-        files = exc_inc_filter.call(iter(self.local_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, [])
+        exclude_all_filter = Filter({'filters': patterns})
+        matched_files = list(exclude_all_filter.call(self.local_files))
+        self.assertEqual(matched_files, [])
 
-        files = exc_inc_filter.call(iter(self.s3_files))
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
-        self.assertEqual(result_list, [])
+        matched_files = list(exclude_all_filter.call(self.s3_files))
+        self.assertEqual(matched_files, [])
+
+    def test_prefix_filtering_consistent(self):
+        # The same filter should work for both local and remote files.
+        # So if I have a directory with 2 files:
+        local_files = [
+            self.file_info('test1.txt'),
+            self.file_info('nottest1.txt'),
+        ]
+        # And the same 2 files remote (note that the way FileInfo objects
+        # are constructed, we'll have the bucket name but no leading '/'
+        # character):
+        remote_files = [
+            self.file_info('bucket/test1.txt', src_type='s3'),
+            self.file_info('bucket/nottest1.txt', src_type='s3'),
+        ]
+        # If I apply the filter to the local to the local files.
+        exclude_filter = Filter({'filters': [['--exclude', 't*']]})
+        filtered_files = list(exclude_filter.call(local_files))
+        self.assertEqual(len(filtered_files), 1)
+        self.assertEqual(os.path.basename(filtered_files[0].src),
+                         'nottest1.txt')
+
+        # I should get the same result if I apply the same filter to s3
+        # objects.
+        same_filtered_files = list(exclude_filter.call(remote_files))
+        self.assertEqual(len(same_filtered_files), 1)
+        self.assertEqual(os.path.basename(same_filtered_files[0].src),
+                         'nottest1.txt')
+
+    def test_bucket_exclude_with_prefix(self):
+        s3_files = [
+            self.file_info('bucket/dir1/key1.txt', src_type='s3'),
+            self.file_info('bucket/dir1/key2.txt', src_type='s3'),
+            self.file_info('bucket/dir1/notkey3.txt', src_type='s3'),
+        ]
+        filtered_files = list(
+            Filter({'filters': [['--exclude', 'dir1/*']]}).call(s3_files))
+        self.assertEqual(filtered_files, [])
+
+        key_files = list(
+            Filter({'filters': [['--exclude', 'dir1/key*']]}).call(s3_files))
+        self.assertEqual(len(key_files), 1)
+        self.assertEqual(key_files[0].src, 'bucket/dir1/notkey3.txt')
+
 
 if __name__ == "__main__":
     unittest.main()

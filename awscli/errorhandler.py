@@ -22,7 +22,8 @@ class BaseOperationError(Exception):
                     "when calling the {operation_name} operation: "
                     "{error_message}")
 
-    def __init__(self, error_code, error_message, error_type, operation_name):
+    def __init__(self, error_code, error_message, error_type, operation_name,
+                 http_status_code):
         msg = self.MSG_TEMPLATE.format(
             error_code=error_code, error_message=error_message,
             error_type=error_type, operation_name=operation_name)
@@ -31,6 +32,7 @@ class BaseOperationError(Exception):
         self.error_message = error_message
         self.error_type = error_type
         self.operation_name = operation_name
+        self.http_status_code = http_status_code
 
 
 class ClientError(BaseOperationError):
@@ -69,7 +71,8 @@ class ErrorHandler(object):
             code, message = self._get_error_code_and_message(parsed)
             raise error_class(
                 error_code=code, error_message=message,
-                error_type=error_type, operation_name=operation.name)
+                error_type=error_type, operation_name=operation.name,
+                http_status_code=http_response.status_code)
 
     def _get_error_code_and_message(self, response):
         code = 'Unknown'

@@ -33,27 +33,31 @@ class TestCPCommand(BaseAWSCommandParamsTest):
     def test_operations_used_in_upload(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = '%s %s s3://bucket/key.txt' % (self.prefix, full_path)
-        self.parsed_response = {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+        self.parsed_responses = [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
         self.run_cmd(cmdline, expected_rc=0)
         # The only operation we should have called is PutObject.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
 
     def test_operations_used_in_download_file(self):
-        self.parsed_response = {'ETag': '"foo-1"',
-                                'Body': six.BytesIO(b'foo')}
+        return
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+        ]
         cmdline = '%s s3://bucket/key.txt %s' % (self.prefix,
                                                  self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)
-        # The only operation we should have called is GetObject.
-        self.assertEqual(len(self.operations_called), 1, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name, 'GetObject')
+        # The only operations we should have called are HeadObject/GetObject.
+        self.assertEqual(len(self.operations_called), 2, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_operations_used_in_recursive_download(self):
-        self.parsed_response = {'ETag': '"foo-1"',
-                                'Contents': [],
-                                'CommonPrefixes': []
-                                }
+        return
+        self.parsed_responses = [
+            {'ETag': '"foo-1"', 'Contents': [], 'CommonPrefixes': []},
+        ]
         cmdline = '%s s3://bucket/key.txt %s --recursive' % (
             self.prefix, self.files.rootdir)
         self.run_cmd(cmdline, expected_rc=0)

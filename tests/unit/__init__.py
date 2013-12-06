@@ -48,6 +48,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
         self.make_request_is_patched = False
         self.operations_called = []
+        self.parsed_responses = None
 
     def tearDown(self):
         # This clears all the previous registrations.
@@ -63,7 +64,11 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
 
     def patch_make_request(self):
         make_request_patch = self.make_request_patch.start()
-        make_request_patch.return_value = (self.http_response, self.parsed_response)
+        if self.parsed_responses is not None:
+            make_request_patch.side_effect = lambda *args, **kwargs: \
+                (self.http_response, self.parsed_responses.pop(0))
+        else:
+            make_request_patch.return_value = (self.http_response, self.parsed_response)
         self.make_request_is_patched = True
 
     def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,

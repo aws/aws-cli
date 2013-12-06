@@ -179,16 +179,6 @@ class S3FileGeneratorTest(unittest.TestCase):
     def tearDown(self):
         s3_cleanup(self.bucket, self.session)
 
-    def test_path_exact_yield(self):
-        input_s3_file = {'src': {'path': self.file1[:-1], 'type': 's3'},
-                         'dest': {'path': 'text1.txt', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': False}
-        params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service, self.endpoint, '', params).call(
-            input_s3_file)
-        # The path is yielded exactly.
-        self.assertEqual(list(files)[0].src, self.file1[:-1])
-
     def test_s3_file(self):
         """
         Generate a single s3 file

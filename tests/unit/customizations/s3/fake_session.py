@@ -115,6 +115,7 @@ class FakeOperation(object):
                    'CompleteMultipartUpload': self.complete_multi_upload,
                    'CopyObject': self.copy_object,
                    'GetObject': self.get_object,
+                   'HeadObject': self.head_object,
                    'AbortMultipartUpload': self.abort_multi_upload}
         return op_dict[self.name](kwargs)
 
@@ -337,6 +338,18 @@ class FakeOperation(object):
         response_data['Contents'] = sorted(response_data['Contents'],
                                            key=lambda k: k['Key'])
         response_data['ETag'] = '"%s"' % etag
+        return FakeHttp(), response_data
+
+    def head_object(self, kwargs):
+        bucket = kwargs['bucket']
+        key = kwargs['key']
+        response_data = {}
+        etag = ''
+        if bucket not in self.session.s3 or key not in self.session.s3[bucket]:
+            return FakeHttp(404), {}
+        key = self.session.s3[bucket][key]
+        response_data['ContentLength'] = str(key['Size'])
+        response_data['LastModified'] = key['LastModified']
         return FakeHttp(), response_data
 
     def create_multi_upload(self, kwargs):

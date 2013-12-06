@@ -143,7 +143,7 @@ class BaseCLIArgument(object):
 
         This base class has no default behavior for groups, code
         that consumes argument objects can use them for whatever
-        purposes they like (documentation, mututally exclusive group
+        purposes they like (documentation, mutually exclusive group
         validation, etc.).
 
         """

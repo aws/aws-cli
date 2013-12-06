@@ -639,24 +639,12 @@ class CommandParameters(object):
         the destination always have some value.
         """
         self.check_path_type(paths)
-        self.check_src_path(paths)
         src_path = paths[0]
         self.parameters['src'] = src_path
         if len(paths) == 2:
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
-        self.check_dest_path(self.parameters['dest'])
-
-    def check_dest_path(self, destination):
-        if destination.startswith('s3://') and \
-                self.cmd in ['cp', 'sync', 'mv']:
-            bucket, key = find_bucket_key(destination[5:])
-            # A bucket is not always provided (like 'aws s3 ls')
-            # so only verify the bucket exists if we actually have
-            # a bucket.
-            if bucket:
-                self._verify_bucket_exists(bucket)
 
     def _verify_bucket_exists(self, bucket_name):
         session = self.session
@@ -706,36 +694,7 @@ class CommandParameters(object):
         """
         src_path = paths[0]
         dir_op = self.parameters['dir_op']
-        if src_path.startswith('s3://'):
-            if self.cmd in ['mb', 'rb']:
-                return
-            session = self.session
-            service = session.get_service('s3')
-            endpoint = service.get_endpoint(self.parameters['region'])
-            src_path = src_path[5:]
-            if dir_op:
-                if not src_path.endswith('/'):
-                    src_path += '/'  # all prefixes must end with a /
-            bucket, key = find_bucket_key(src_path)
-            operation = service.get_operation('ListObjects')
-            response_data = operation.call(endpoint, bucket=bucket, prefix=key,
-                                           delimiter='/')[1]
-            check_error(response_data)
-            contents = response_data['Contents']
-            common_prefixes = response_data['CommonPrefixes']
-            if not dir_op:
-                if contents:
-                    if contents[0]['Key'] == key:
-                        pass
-                    else:
-                        raise Exception("Error: S3 Object does not exist")
-                else:
-                    raise Exception('Error: S3 Object does not exist')
-            else:
-                if not contents and not common_prefixes:
-                    raise Exception('Error: S3 Prefix does not exist')
-
-        else:
+        if not src_path.startswith('s3://'):
             src_path = os.path.abspath(src_path)
             if os.path.exists(src_path):
                 if os.path.isdir(src_path) and not dir_op:

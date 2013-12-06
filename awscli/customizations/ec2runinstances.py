@@ -100,6 +100,11 @@ def _fix_args(operation, endpoint, params, **kwargs):
             if 'security_group_ids' in params:
                 ni[0]['Groups'] = params['security_group_ids']
                 del params['security_group_ids']
+            if 'private_ip_address' in params:
+                ip_addr = {'PrivateIpAddress': params['private_ip_address'],
+                           'Primary': True}
+                ni[0]['PrivateIpAddresses'] = [ip_addr]
+                del params['private_ip_address']
 
 
 EVENTS = [

@@ -41,6 +41,10 @@ def _format_text(item, stream, identifier=None, scalar_keys=None):
                 for list_element in item:
                     _format_text(list_element, stream=stream,
                                  identifier=identifier)
+            elif identifier is not None:
+                for list_element in item:
+                    stream.write('%s\t%s\n' % (identifier.upper(),
+                                               list_element))
             else:
                 # For a bare list, just print the contents.
                 stream.write('\t'.join([six.text_type(el) for el in item]))

@@ -10,8 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import fnmatch
 import os
+
+
+LOG = logging.getLogger(__name__)
 
 
 class Filter(object):
@@ -55,13 +59,21 @@ class Filter(object):
 
                 else:
                     path_pattern = pattern[1].replace(os.sep, '/')
-                    full_path_pattern = path_pattern
-
+                    full_path_pattern = os.path.join(file_path.split('/')[0],
+                                                     path_pattern)
                 is_match = fnmatch.fnmatch(file_path, full_path_pattern)
                 if is_match and pattern_type == '--include':
                     file_status = (file_info, True)
+                    LOG.debug("%s matched include filter: %s",
+                              file_path, full_path_pattern)
                 elif is_match and pattern_type == '--exclude':
                     file_status = (file_info, False)
-
+                    LOG.debug("%s matched exclude filter: %s",
+                              file_path, full_path_pattern)
+                else:
+                    LOG.debug("%s did not match %s filter: %s",
+                              file_path, pattern_type[2:], full_path_pattern)
+            LOG.debug("=%s final filtered status, should_include: %s",
+                      file_path, file_status[1])
             if file_status[1]:
                 yield file_info

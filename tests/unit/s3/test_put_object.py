@@ -66,6 +66,20 @@ class TestGetObject(BaseAWSCommandParamsTest):
         payload = self.last_params['payload'].getvalue()
         self.assertEqual(payload.name, self.file_path)
 
+    def test_website_redirect(self):
+        cmdline = self.prefix
+        cmdline += ' --bucket mybucket'
+        cmdline += ' --key mykey'
+        cmdline += ' --acl public-read'
+        cmdline += ' --website-redirect-location http://www.example.com/'
+        result = {
+            'uri_params': {'Bucket': 'mybucket', 'Key': 'mykey'},
+            'headers': {
+                'x-amz-acl': 'public-read',
+                'x-amz-website-redirect-location': 'http://www.example.com/',
+            }}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+
 
 if __name__ == "__main__":
     unittest.main()

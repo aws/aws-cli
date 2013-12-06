@@ -17,11 +17,27 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
-class ClientError(Exception):
+class BaseOperationError(Exception):
+    MSG_TEMPLATE = ("A {error_type} error ({error_code}) occurred "
+                    "when calling the {operation_name} operation: "
+                    "{error_message}")
+
+    def __init__(self, error_code, error_message, error_type, operation_name):
+        msg = self.MSG_TEMPLATE.format(
+            error_code=error_code, error_message=error_message,
+            error_type=error_type, operation_name=operation_name)
+        super(BaseOperationError, self).__init__(msg)
+        self.error_code = error_code
+        self.error_message = error_message
+        self.error_type = error_type
+        self.operation_name = operation_name
+
+
+class ClientError(BaseOperationError):
     pass
 
 
-class ServerError(Exception):
+class ServerError(BaseOperationError):
     pass
 
 
@@ -38,17 +54,22 @@ class ErrorHandler(object):
 
     def __call__(self, http_response, parsed, operation, **kwargs):
         LOG.debug('HTTP Response Code: %d', http_response.status_code)
+        msg_template = ("A {error_type} error ({error_code}) occurred "
+                        "when calling the {operation_name} operation: "
+                        "{error_message}")
+        error_type = None
+        error_class = None
         if http_response.status_code >= 500:
-            code, message = self._get_error_code_and_message(parsed)
-            msg = "A server error ({error_code}) occurred: {error_message}"
-            msg = msg.format(error_code=code, error_message=message)
-            raise ServerError(msg)
+            error_type = 'server'
+            error_class = ServerError
         if http_response.status_code >= 400 or http_response.status_code == 301:
+            error_type = 'client'
+            error_class = ClientError
+        if error_class is not None:
             code, message = self._get_error_code_and_message(parsed)
-            msg = "A client error ({error_code}) occurred: {error_message}"
-            msg = msg.format(error_code=code, error_message=message)
-            raise ClientError(msg)
-        return 0
+            raise error_class(
+                error_code=code, error_message=message,
+                error_type=error_type, operation_name=operation.name)
 
     def _get_error_code_and_message(self, response):
         code = 'Unknown'

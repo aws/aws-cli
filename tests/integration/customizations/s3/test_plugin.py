@@ -252,6 +252,14 @@ class TestCp(BaseS3CLICommand):
         self.assertNotIn('failed', p.stderr)
         self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
 
+    def test_download_non_existent_key(self):
+        p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
+        self.assertEqual(p.rc, 1)
+        expected_err_msg = (
+            'A client error (NoSuchKey) occurred when calling the '
+            'HeadObject operation: Key "foo.txt" does not exist')
+        self.assertIn(expected_err_msg, p.stdout)
+
 
 class TestSync(BaseS3CLICommand):
     def test_sync_to_from_s3(self):

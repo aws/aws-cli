@@ -14,12 +14,13 @@ import os
 import sys
 import datetime
 
-from six import text_type
+import six
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
+from awscli.errorhandler import ClientError
 
 
 # This class is provided primarily to provide a detailed error message.
@@ -143,7 +144,7 @@ class FileGenerator(object):
         # happens we raise a FileDecodingError that provides more information
         # into what's going on.
         for name in names:
-            if not isinstance(name, text_type):
+            if not isinstance(name, six.text_type):
                 raise FileDecodingError(path, name)
 
     def list_objects(self, s3_path, dir_op):
@@ -158,17 +159,11 @@ class FileGenerator(object):
         # that path and not have to call any operation in s3.
         bucket, prefix = find_bucket_key(s3_path)
         if not dir_op and prefix:
-            # Then a specific path was specified so we yield that
-            # exact path.  The size doesn't matter, but the last_update
-            # is normally set to the last_modified time we get back
-            # from s3 for the specific object.  We lose that here, but
-            # on the plus side, we don't need to require ListObjects
-            # permission to download a single file.
-            yield s3_path, 1, datetime.datetime.now()
+            yield self._list_single_object(s3_path)
         else:
             operation = self._service.get_operation('ListObjects')
             iterator = operation.paginate(self._endpoint, bucket=bucket,
-                                        prefix=prefix)
+                                          prefix=prefix)
             for html_response, response_data in iterator:
                 contents = response_data['Contents']
                 for content in contents:
@@ -189,3 +184,36 @@ class FileGenerator(object):
                         pass
                     else:
                         yield src_path, size, last_update
+
+    def _list_single_object(self, s3_path):
+        # When we know we're dealing with a single object, we can avoid
+        # a ListObjects operation (which causes concern for anyone setting
+        # IAM policies with the smallest set of permissions needed) and
+        # instead use a HeadObject request.
+        bucket, key = find_bucket_key(s3_path)
+        operation = self._service.get_operation('HeadObject')
+        try:
+            response = operation.call(
+                self._endpoint, bucket=bucket, key=key)[1]
+        except ClientError as e:
+            # We want to try to give a more helpful error message.
+            # This is what the customer is going to see so we want to
+            # give as much detail as we have.
+            copy_fields = e.__dict__.copy()
+            if not e.error_message == 'Unknown':
+                raise
+            if e.http_status_code == 404:
+                # The key does not exist so we'll raise a more specific
+                # error message here.
+                copy_fields['error_code'] = 'NoSuchKey'
+                copy_fields['error_message'] = 'Key "%s" does not exist' % key
+            else:
+                reason = six.moves.http_client.responses[
+                    e.http_status_code]
+                copy_fields['error_code'] = reason
+                copy_fields['error_message'] = reason
+            raise ClientError(**copy_fields)
+        file_size = int(response['ContentLength'])
+        last_update = parse(response['LastModified'])
+        last_update = last_update.astimezone(tzlocal())
+        return s3_path, file_size, last_update

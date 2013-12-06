@@ -161,6 +161,42 @@ class TestMoveCommand(BaseS3CLICommand):
         # And verify that the object no longer exists in the from_bucket.
         self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
 
+    def test_mv_s3_to_s3_multipart(self):
+        from_bucket = self.create_bucket()
+        to_bucket = self.create_bucket()
+        file_contents = 'abcd' * (1024 * 1024 * 10)
+        self.put_object(from_bucket, 'foo.txt', file_contents)
+
+        aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        contents = self.get_key_contents(to_bucket, 'foo.txt')
+        self.assertEqual(contents, file_contents)
+        # And verify that the object no longer exists in the from_bucket.
+        self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
+
+    def test_mv_s3_to_s3_multipart_recursive(self):
+        from_bucket = self.create_bucket()
+        to_bucket = self.create_bucket()
+
+        large_file_contents = 'abcd' * (1024 * 1024 * 10)
+        small_file_contents = 'small file contents'
+        self.put_object(from_bucket, 'largefile', large_file_contents)
+        self.put_object(from_bucket, 'smallfile', small_file_contents)
+
+        aws('s3 mv s3://%s/ s3://%s/ --recursive' % (from_bucket, to_bucket))
+        # Nothing's in the from_bucket.
+        self.assertTrue(not self.key_exists(from_bucket, key_name='largefile'))
+        self.assertTrue(not self.key_exists(from_bucket, key_name='smallfile'))
+
+        # And both files are in the to_bucket.
+        self.assertTrue(self.key_exists(to_bucket, key_name='largefile'))
+        self.assertTrue(self.key_exists(to_bucket, key_name='smallfile'))
+
+        # And the contents are what we expect.
+        self.assertEqual(self.get_key_contents(to_bucket, 'smallfile'),
+                         small_file_contents)
+        self.assertEqual(self.get_key_contents(to_bucket, 'largefile'),
+                         large_file_contents)
+
     def test_mv_with_large_file(self):
         bucket_name = self.create_bucket()
         # 40MB will force a multipart upload.

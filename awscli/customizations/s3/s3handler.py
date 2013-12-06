@@ -197,9 +197,15 @@ class S3Handler(object):
             if filename.src_type == 'local' and filename.dest_type == 's3':
                 num_uploads = self._enqueue_multipart_upload_tasks(
                     filename, remove_local_file=True)
-            else:
+            elif filename.src_type == 's3' and filename.dest_type == 'local':
                 num_uploads = self._enqueue_range_download_tasks(
                     filename, remove_remote_file=True)
+            elif filename.src_type == 's3' and filename.dest_type == 's3':
+                num_uploads = self._enqueue_multipart_copy_tasks(
+                    filename, remove_remote_file=True)
+            else:
+                raise ValueError("Unknown transfer type of %s -> %s" %
+                                 (filename.src_type, filename.dest_type))
         elif filename.operation_name == 'download':
             num_uploads = self._enqueue_range_download_tasks(filename)
         return num_uploads
@@ -236,6 +242,33 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_uploads = int(math.ceil(filename.size /
                                     float(chunksize)))
+        upload_context = self._enqueue_upload_start_task(
+            chunksize, num_uploads, filename)
+        self._enqueue_upload_tasks(
+            num_uploads, chunksize, upload_context, filename, tasks.UploadPartTask)
+        self._enqueue_upload_end_task(filename, upload_context)
+        if remove_local_file:
+            remove_task = tasks.RemoveFileTask(local_filename=filename.src,
+                                               upload_context=upload_context)
+            self.executer.submit(remove_task)
+        return num_uploads
+
+    def _enqueue_multipart_copy_tasks(self, filename,
+                                      remove_remote_file=False):
+        chunksize = find_chunksize(filename.size, self.chunksize)
+        num_uploads = int(math.ceil(filename.size / float(chunksize)))
+        upload_context = self._enqueue_upload_start_task(
+            chunksize, num_uploads, filename)
+        self._enqueue_upload_tasks(
+            num_uploads, chunksize, upload_context, filename, tasks.CopyPartTask)
+        self._enqueue_upload_end_task(filename, upload_context)
+        if remove_remote_file:
+            remove_task = tasks.RemoveRemoteObjectTask(
+                filename=filename, context=upload_context)
+            self.executer.submit(remove_task)
+        return num_uploads
+
+    def _enqueue_upload_start_task(self, chunksize, num_uploads, filename):
         upload_context = tasks.MultipartUploadContext(
             expected_parts=num_uploads)
         create_multipart_upload_task = tasks.CreateMultipartUploadTask(
@@ -243,21 +276,21 @@ class S3Handler(object):
             parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executer.submit(create_multipart_upload_task)
+        return upload_context
 
+    def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context, filename,
+                              task_class):
         for i in range(1, (num_uploads + 1)):
-            task = tasks.UploadPartTask(
+            task = task_class(
                 part_number=i, chunk_size=chunksize,
                 result_queue=self.result_queue, upload_context=upload_context,
                 filename=filename)
             self.executer.submit(task)
 
+
+    def _enqueue_upload_end_task(self, filename, upload_context):
         complete_multipart_upload_task = tasks.CompleteMultipartUploadTask(
             session=self.session, filename=filename, parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executer.submit(complete_multipart_upload_task)
         self._multipart_uploads.append((upload_context, filename))
-        if remove_local_file:
-            remove_task = tasks.RemoveFileTask(local_filename=filename.src,
-                                               upload_context=upload_context)
-            self.executer.submit(remove_task)
-        return num_uploads

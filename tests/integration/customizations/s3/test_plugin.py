@@ -253,6 +253,17 @@ class TestCp(BaseS3CLICommand):
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
 
+    def test_cp_s3_s3_multipart(self):
+        from_bucket = self.create_bucket()
+        to_bucket = self.create_bucket()
+        file_contents = 'abcd' * (1024 * 1024 * 10)
+        self.put_object(from_bucket, 'foo.txt', file_contents)
+
+        aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        contents = self.get_key_contents(to_bucket, 'foo.txt')
+        self.assertEqual(contents, file_contents)
+        self.assertTrue(self.key_exists(from_bucket, key_name='foo.txt'))
+
     def test_guess_mime_type(self):
         bucket_name = self.create_bucket()
         bar_png = self.files.create_file('bar.jpeg', 'fake png image')

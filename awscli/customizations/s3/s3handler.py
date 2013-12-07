@@ -182,7 +182,8 @@ class S3Handler(object):
         if hasattr(filename, 'size'):
             above_multipart_threshold = filename.size > self.multi_threshold
             if above_multipart_threshold:
-                if filename.operation_name in ('upload', 'download', 'move'):
+                if filename.operation_name in ('upload', 'download',
+                                               'move', 'copy'):
                     return True
                 else:
                     return False
@@ -206,6 +207,9 @@ class S3Handler(object):
             else:
                 raise ValueError("Unknown transfer type of %s -> %s" %
                                  (filename.src_type, filename.dest_type))
+        elif filename.operation_name == 'copy':
+            num_uploads = self._enqueue_multipart_copy_tasks(
+                filename, remove_remote_file=False)
         elif filename.operation_name == 'download':
             num_uploads = self._enqueue_range_download_tasks(filename)
         return num_uploads
@@ -286,7 +290,6 @@ class S3Handler(object):
                 result_queue=self.result_queue, upload_context=upload_context,
                 filename=filename)
             self.executer.submit(task)
-
 
     def _enqueue_upload_end_task(self, filename, upload_context):
         complete_multipart_upload_task = tasks.CompleteMultipartUploadTask(

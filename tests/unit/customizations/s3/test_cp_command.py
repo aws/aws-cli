@@ -40,7 +40,6 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
 
     def test_operations_used_in_download_file(self):
-        return
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
             {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
@@ -54,7 +53,6 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
 
     def test_operations_used_in_recursive_download(self):
-        return
         self.parsed_responses = [
             {'ETag': '"foo-1"', 'Contents': [], 'CommonPrefixes': []},
         ]

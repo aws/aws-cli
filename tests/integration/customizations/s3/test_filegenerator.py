@@ -41,88 +41,82 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         s3_cleanup(self.bucket, self.session)
 
     def test_s3_file(self):
-        """
-        Generate a single s3 file
-        Note: Size and last update are not tested because s3 generates them.
-        """
+        #
+        # Generate a single s3 file
+        # Note: Size and last update are not tested because s3 generates them.
+        #
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service, self.endpoint, '', params).call(
-            input_s3_file)
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
+        expected_file_size = 15
+        result_list = list(
+            FileGenerator(self.service, self.endpoint, '', params).call(
+                input_s3_file))
         file_info = FileInfo(src=self.file1, dest='text1.txt',
                              compare_key='text1.txt',
-                             size=result_list[0].size,
+                             size=expected_file_size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='')
 
-        ref_list = [file_info]
-        self.assertEqual(len(result_list), len(ref_list))
-        for i in range(len(result_list)):
-            compare_files(self, result_list[i], ref_list[i])
+        expected_list = [file_info]
+        self.assertEqual(len(result_list), 1)
+        compare_files(self, result_list[0], expected_list[0])
 
     def test_s3_directory(self):
-        """
-        Generates s3 files under a common prefix. Also it ensures that
-        zero size files are ignored.
-        Note: Size and last update are not tested because s3 generates them.
-        """
+        #
+        # Generates s3 files under a common prefix. Also it ensures that
+        # zero size files are ignored.
+        # Note: Size and last update are not tested because s3 generates them.
+        #
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service, self.endpoint, '', params).call(
-            input_s3_file)
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
+        result_list = list(
+            FileGenerator(self.service, self.endpoint, '', params).call(
+                input_s3_file))
         file_info = FileInfo(src=self.file2,
                              dest='another_directory' + os.sep + 'text2.txt',
                              compare_key='another_directory/text2.txt',
-                             size=result_list[0].size,
+                             size=21,
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='')
         file_info2 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
-                              size=result_list[1].size,
+                              size=15,
                               last_update=result_list[1].last_update,
                               src_type='s3',
                               dest_type='local', operation_name='')
 
-        ref_list = [file_info, file_info2]
-        self.assertEqual(len(result_list), len(ref_list))
-        for i in range(len(result_list)):
-            compare_files(self, result_list[i], ref_list[i])
+        expected_result = [file_info, file_info2]
+        self.assertEqual(len(result_list), 2)
+        compare_files(self, result_list[0], expected_result[0])
+        compare_files(self, result_list[1], expected_result[1])
 
     def test_s3_delete_directory(self):
-        """
-        Generates s3 files under a common prefix. Also it ensures that
-        the directory itself is included because it is a delete command
-        Note: Size and last update are not tested because s3 generates them.
-        """
+        #
+        # Generates s3 files under a common prefix. Also it ensures that
+        # the directory itself is included because it is a delete command
+        # Note: Size and last update are not tested because s3 generates them.
+        #
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(
-            self.service, self.endpoint, 'delete', params).call(
-                input_s3_file)
-        result_list = []
-        for filename in files:
-            result_list.append(filename)
+        result_list = list(
+            FileGenerator(self.service, self.endpoint,
+                          'delete', params).call(
+                input_s3_file))
 
         file_info1 = FileInfo(
             src=self.bucket + '/another_directory/',
             dest='another_directory' + os.sep,
             compare_key='another_directory/',
-            size=result_list[0].size,
+            size=0,
             last_update=result_list[0].last_update,
             src_type='s3',
             dest_type='local', operation_name='delete',
@@ -131,7 +125,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src=self.file2,
             dest='another_directory' + os.sep + 'text2.txt',
             compare_key='another_directory/text2.txt',
-            size=result_list[1].size,
+            size=21,
             last_update=result_list[1].last_update,
             src_type='s3',
             dest_type='local', operation_name='delete',
@@ -141,17 +135,18 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src=self.file1,
             dest='text1.txt',
             compare_key='text1.txt',
-            size=result_list[2].size,
+            size=15,
             last_update=result_list[2].last_update,
             src_type='s3',
             dest_type='local', operation_name='delete',
             service=self.service,
             endpoint=self.endpoint)
 
-        ref_list = [file_info1, file_info2, file_info3]
-        self.assertEqual(len(result_list), len(ref_list))
-        for i in range(len(result_list)):
-            compare_files(self, result_list[i], ref_list[i])
+        expected_list = [file_info1, file_info2, file_info3]
+        self.assertEqual(len(result_list), 3)
+        compare_files(self, result_list[0], expected_list[0])
+        compare_files(self, result_list[1], expected_list[1])
+        compare_files(self, result_list[2], expected_list[2])
 
 
 if __name__ == "__main__":

@@ -107,6 +107,71 @@ class BasicTask(object):
             LOGGER.debug('%s' % str(e))
 
 
+class CopyPartTask(object):
+    def __init__(self, part_number, chunk_size,
+                 result_queue, upload_context, filename):
+        self._result_queue = result_queue
+        self._upload_context = upload_context
+        self._part_number = part_number
+        self._chunk_size = chunk_size
+        self._filename = filename
+
+    def _is_last_part(self, part_number):
+        return self._part_number  == (
+            int(math.ceil(self._filename.size / self._chunk_size)) + 1)
+
+    def __call__(self):
+        LOGGER.debug("Uploading part copy %s for filename: %s",
+                     self._part_number, self._filename.src)
+        total_file_size = self._filename.size
+        start_range = (self._part_number - 1) * self._chunk_size
+        if self._is_last_part(self._part_number):
+            end_range = total_file_size - 1
+        else:
+            end_range = start_range + self._chunk_size - 1
+        range_param = 'bytes=%s-%s' % (start_range, end_range)
+        try:
+            LOGGER.debug("Waiting for upload id.")
+            upload_id = self._upload_context.wait_for_upload_id()
+            bucket, key = find_bucket_key(self._filename.dest)
+            src_bucket, src_key = find_bucket_key(self._filename.src)
+            total = int(math.ceil(
+                self._filename.size/float(self._chunk_size)))
+            params = {'endpoint': self._filename.endpoint,
+                      'bucket': bucket, 'key': key,
+                      'part_number': str(self._part_number),
+                      'upload_id': upload_id,
+                      'copy_source': '%s/%s' % (src_bucket, src_key),
+                      'copy_source_range': range_param}
+            response_data, http = operate(
+                self._filename.service, 'UploadPartCopy', params)
+            etag = response_data['CopyPartResult']['ETag'][1:-1]
+            self._upload_context.announce_finished_part(
+                etag=etag, part_number=self._part_number)
+
+            message = print_operation(self._filename, 0)
+            result = {'message': message, 'total_parts': total,
+                      'error': False}
+            self._result_queue.put(result)
+        except UploadCancelledError as e:
+            # We don't need to do anything in this case.  The task
+            # has been cancelled, and the task that cancelled the
+            # task has already queued a message.
+            LOGGER.debug("Not uploading part copy, task has been cancelled.")
+        except Exception as e:
+            LOGGER.debug('Error during upload part copy: %s' , e,
+                         exc_info=True)
+            message = print_operation(self._filename, failed=True,
+                                      dryrun=False)
+            message += '\n' + str(e)
+            result = {'message': message, 'error': True}
+            self._result_queue.put(result)
+            self._upload_context.cancel_upload()
+        else:
+            LOGGER.debug("Copy part number %s completed for filename: %s",
+                         self._part_number, self._filename.src)
+
+
 class UploadPartTask(object):
     """
     This is a task used to upload a part of a multipart upload.

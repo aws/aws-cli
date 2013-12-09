@@ -117,8 +117,12 @@ class CopyPartTask(object):
         self._filename = filename
 
     def _is_last_part(self, part_number):
-        return self._part_number  == (
-            int(math.ceil(self._filename.size / self._chunk_size)) + 1)
+        return self._part_number  == int(
+            math.ceil(self._filename.size / float(self._chunk_size)))
+
+    def _total_parts(self):
+        return int(math.ceil(
+            self._filename.size / float(self._chunk_size)))
 
     def __call__(self):
         LOGGER.debug("Uploading part copy %s for filename: %s",
@@ -135,8 +139,6 @@ class CopyPartTask(object):
             upload_id = self._upload_context.wait_for_upload_id()
             bucket, key = find_bucket_key(self._filename.dest)
             src_bucket, src_key = find_bucket_key(self._filename.src)
-            total = int(math.ceil(
-                self._filename.size/float(self._chunk_size)))
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
                       'part_number': str(self._part_number),
@@ -150,7 +152,7 @@ class CopyPartTask(object):
                 etag=etag, part_number=self._part_number)
 
             message = print_operation(self._filename, 0)
-            result = {'message': message, 'total_parts': total,
+            result = {'message': message, 'total_parts': self._total_parts(),
                       'error': False}
             self._result_queue.put(result)
         except UploadCancelledError as e:

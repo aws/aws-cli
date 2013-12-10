@@ -16,8 +16,7 @@ import os
 import threading
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, QUEUE_TIMEOUT_GET, MAX_UPLOAD_SIZE, \
-    MAX_QUEUE_SIZE
+    NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
     operate, find_bucket_key, relative_path
 from awscli.customizations.s3.executer import Executer
@@ -52,8 +51,7 @@ class S3Handler(object):
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
         self.executer = Executer(
-            done=self.done, num_threads=NUM_THREADS,
-            timeout=QUEUE_TIMEOUT_GET, result_queue=self.result_queue,
+            done=self.done, num_threads=NUM_THREADS, result_queue=self.result_queue,
             quiet=self.params['quiet'], interrupt=self.interrupt,
             max_queue_size=MAX_QUEUE_SIZE,
         )

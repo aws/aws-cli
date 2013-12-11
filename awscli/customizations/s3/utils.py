@@ -223,6 +223,9 @@ class ReadFileChunk(object):
     def close(self):
         self._fileobj.close()
 
+    def tell(self):
+        return self._amount_read
+
     def __len__(self):
         # __len__ is defined because requests will try to determine the length
         # of the stream to set a content length.  In the normal case

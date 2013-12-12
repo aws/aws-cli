@@ -128,6 +128,18 @@ class TestReadFileChunk(unittest.TestCase):
         self.assertEqual(chunk.read(), b'')
         self.assertEqual(len(chunk), 3)
 
+    def test_tell_and_seek(self):
+        filename = os.path.join(self.tempdir, 'foo')
+        f = open(filename, 'wb')
+        f.write(b'onetwothreefourfivesixseveneightnineten')
+        f.flush()
+        chunk = ReadFileChunk(filename, start_byte=36, size=100000)
+        self.assertEqual(chunk.tell(), 0)
+        self.assertEqual(chunk.read(), b'ten')
+        self.assertEqual(chunk.tell(), 3)
+        chunk.seek(0)
+        self.assertEqual(chunk.tell(), 0)
+
 
 class TestRelativePath(unittest.TestCase):
     def test_relpath_normal(self):

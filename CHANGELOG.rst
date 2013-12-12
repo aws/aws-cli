@@ -5,6 +5,24 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* Add support for parallel multipart uploads when copying objects
+  between Amazon S3 locations when using the ``aws s3`` command (issue 538)
+* Fix issue 542 where the ``---stack-policy-url`` will parameter will not
+  interpret its value as a URL when using the
+  ``aws cloudformation create-stack`` command
+* Add support for global secondary indexes in the ``aws dynamodb`` command
+* Add support for the ``aws kinesis`` command
+* Add support for worker roles in the ``aws elasticbeanstalk`` command
+* Add support for resource tagging and other new operations in the
+  ``aws emr`` command
+* Add support for resource-based permissions in the
+  ``aws opsworks`` command
+* Update the ``aws elasticache`` command to signature version 4
+
+
+1.2.7
+=====
+
 * Allow tcp, udp, icmp, all for ``--protocol`` param of
   the ``ec2 create-network-acl-entry`` command
   (`issue 508 <https://github.com/aws/aws-cli/issues/508>`__)

@@ -69,6 +69,19 @@ def find_bucket_key(s3_path):
     return bucket, s3_key
 
 
+def split_s3_bucket_key(s3_path):
+    """Split s3 path into bucket and key prefix.
+
+    This will also handle the s3:// prefix.
+
+    :return: Tuple of ('bucketname', 'keyname')
+
+    """
+    if s3_path.startswith('s3://'):
+        s3_path = s3_path[5:]
+    return find_bucket_key(s3_path)
+
+
 def get_file_stat(path):
     """
     This is a helper function that given a local path return the size of

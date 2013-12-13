@@ -14,6 +14,8 @@ import logging
 import fnmatch
 import os
 
+from awscli.customizations.s3.utils import split_s3_bucket_key
+
 
 LOG = logging.getLogger(__name__)
 
@@ -28,10 +30,16 @@ def create_filter(parameters):
         for filter_type, filter_pattern in cli_filters:
             real_filters.append((filter_type.lstrip('-'),
                                  filter_pattern))
-        if parameters.get('dir_op'):
-            rootdir = os.path.abspath(parameters['src'])
+        source_location = parameters['src']
+        if source_location.startswith('s3://'):
+            # This gives us (bucket, keyname) and we want
+            # the bucket to be the root dir.
+            rootdir = split_s3_bucket_key(source_location)[0]
         else:
-            rootdir = os.path.abspath(os.path.dirname(parameters['src']))
+            if parameters.get('dir_op'):
+                rootdir = os.path.abspath(parameters['src'])
+            else:
+                rootdir = os.path.abspath(os.path.dirname(parameters['src']))
         return Filter(real_filters, rootdir)
     else:
         return Filter({}, None)

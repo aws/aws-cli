@@ -12,9 +12,18 @@
 # language governing permissions and limitations under the License.
 import os
 import unittest
+import platform
 
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.filters import Filter
+
+
+def platform_path(filepath):
+    # Convert posix platforms to windows platforms.
+    if platform.system().lower() == 'windows':
+        filepath = filepath.replace('/', os.sep)
+        filepath = 'C:' + filepath
+    return filepath
 
 
 class FiltersTest(unittest.TestCase):
@@ -139,16 +148,19 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(key_files[0].src, 'bucket/dir1/notkey3.txt')
 
     def test_root_dir(self):
-        local_files = [self.file_info('/foo/bar/baz.txt', src_type='local')]
-        local_filter = self.create_filter([['exclude', 'baz.txt']], root='/foo/bar/')
+        p = platform_path
+        local_files = [self.file_info(p('/foo/bar/baz.txt'), src_type='local')]
+        local_filter = self.create_filter([['exclude', 'baz.txt']],
+                                          root=p('/foo/bar/'))
         filtered = list(local_filter.call(local_files))
         self.assertEqual(filtered, [])
 
         # However, if we're at the root of /foo', then this filter won't match.
-        local_filter = self.create_filter([['exclude', 'baz.txt']], root='/foo/')
+        local_filter = self.create_filter([['exclude', 'baz.txt']],
+                                          root=p('/foo/'))
         filtered = list(local_filter.call(local_files))
         self.assertEqual(len(filtered), 1)
-        self.assertEqual(filtered[0].src, '/foo/bar/baz.txt')
+        self.assertEqual(filtered[0].src, p('/foo/bar/baz.txt'))
 
 
 if __name__ == "__main__":

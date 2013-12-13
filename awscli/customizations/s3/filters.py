@@ -18,20 +18,49 @@ import os
 LOG = logging.getLogger(__name__)
 
 
+def create_filter(parameters):
+    """Given the CLI parameters dict, create a Filter object."""
+    # We need to evaluate all the filters based on the source
+    # directory.
+    if parameters['filters']:
+        cli_filters = parameters['filters']
+        real_filters = []
+        for filter_type, filter_pattern in cli_filters:
+            real_filters.append((filter_type.lstrip('-'),
+                                 filter_pattern))
+        if parameters.get('dir_op'):
+            rootdir = os.path.abspath(parameters['src'])
+        else:
+            rootdir = os.path.abspath(os.path.dirname(parameters['src']))
+        return Filter(real_filters, rootdir)
+    else:
+        return Filter({}, None)
+
+
 class Filter(object):
     """
     This is a universal exclude/include filter.
     """
-    def __init__(self, parameters=None):
+    def __init__(self, patterns, rootdir):
         """
-        :var self.patterns: A list of patterns. A pattern consits of a list
-            whose first member is a string '--exclude' or '--include'.
+        :var patterns: A list of patterns. A pattern consits of a list
+            whose first member is a string 'exclude' or 'include'.
             The second member is the actual rule.
+        :var rootdir: The root directory where the patterns are evaluated.
+            This will generally be the directory of the source location.
+
         """
-        if 'filters' in parameters:
-            self.patterns = parameters['filters']
-        else:
-            self.patterns = []
+        self.patterns = self._full_path_patterns(patterns, rootdir)
+
+    def _full_path_patterns(self, original_patterns, rootdir):
+        # We need to transform the patterns into patterns that have
+        # the root dir prefixed, so things like ``--exclude "*"``
+        # will actually be ['exclude', '/path/to/root/*']
+        full_patterns = []
+        for pattern in original_patterns:
+            full_patterns.append(
+                (pattern[0], os.path.join(rootdir, pattern[1])))
+        return full_patterns
 
     def call(self, file_infos):
         """
@@ -50,29 +79,24 @@ class Filter(object):
         for file_info in file_infos:
             file_path = file_info.src
             file_status = (file_info, True)
-
             for pattern in self.patterns:
                 pattern_type = pattern[0]
                 if file_info.src_type == 'local':
                     path_pattern = pattern[1].replace('/', os.sep)
-                    full_path_pattern = os.path.abspath(path_pattern)
-
                 else:
                     path_pattern = pattern[1].replace(os.sep, '/')
-                    full_path_pattern = os.path.join(file_path.split('/')[0],
-                                                     path_pattern)
-                is_match = fnmatch.fnmatch(file_path, full_path_pattern)
-                if is_match and pattern_type == '--include':
+                is_match = fnmatch.fnmatch(file_path, path_pattern)
+                if is_match and pattern_type == 'include':
                     file_status = (file_info, True)
                     LOG.debug("%s matched include filter: %s",
-                              file_path, full_path_pattern)
-                elif is_match and pattern_type == '--exclude':
+                              file_path, path_pattern)
+                elif is_match and pattern_type == 'exclude':
                     file_status = (file_info, False)
                     LOG.debug("%s matched exclude filter: %s",
-                              file_path, full_path_pattern)
+                              file_path, path_pattern)
                 else:
                     LOG.debug("%s did not match %s filter: %s",
-                              file_path, pattern_type[2:], full_path_pattern)
+                              file_path, pattern_type[2:], path_pattern)
             LOG.debug("=%s final filtered status, should_include: %s",
                       file_path, file_status[1])
             if file_status[1]:

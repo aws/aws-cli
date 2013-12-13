@@ -42,8 +42,15 @@ class FiltersTest(unittest.TestCase):
                         dest_type=dest_type, operation_name='',
                         service=None, endpoint=None)
 
+    def create_filter(self, filters=None, root=None):
+        if root is None:
+            root = os.getcwd()
+        if filters is None:
+            filters = {}
+        return Filter(filters, root)
+
     def test_no_filter(self):
-        exc_inc_filter = Filter({})
+        exc_inc_filter = self.create_filter()
         matched_files = list(exc_inc_filter.call(self.local_files))
         self.assertEqual(matched_files, self.local_files)
 
@@ -51,8 +58,8 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(matched_files2, self.s3_files)
 
     def test_include(self):
-        patterns = [['--include', '*.txt']]
-        include_filter = Filter({'filters': [['--include', '*.txt']]})
+        patterns = [['include', '*.txt']]
+        include_filter = self.create_filter([['include', '*.txt']])
         matched_files = list(include_filter.call(self.local_files))
         self.assertEqual(matched_files, self.local_files)
 
@@ -60,7 +67,7 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(matched_files2, self.s3_files)
 
     def test_exclude(self):
-        exclude_filter = Filter({'filters': [['--exclude', '*']]})
+        exclude_filter = self.create_filter([['exclude', '*']])
         matched_files = list(exclude_filter.call(self.local_files))
         self.assertEqual(matched_files, [])
 
@@ -68,8 +75,8 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(matched_files, [])
 
     def test_exclude_include(self):
-        patterns = [['--exclude', '*'], ['--include', '*.txt']]
-        exclude_include_filter = Filter({'filters': patterns})
+        patterns = [['exclude', '*'], ['include', '*.txt']]
+        exclude_include_filter = self.create_filter(patterns)
         matched_files = list(exclude_include_filter.call(self.local_files))
         self.assertEqual(matched_files, [self.local_files[0]])
 
@@ -77,8 +84,8 @@ class FiltersTest(unittest.TestCase):
         self.assertEqual(matched_files, [self.s3_files[0]])
 
     def test_include_exclude(self):
-        patterns = [['--include', '*.txt'], ['--exclude', '*']]
-        exclude_all_filter = Filter({'filters': patterns})
+        patterns = [['include', '*.txt'], ['exclude', '*']]
+        exclude_all_filter = self.create_filter(patterns)
         matched_files = list(exclude_all_filter.call(self.local_files))
         self.assertEqual(matched_files, [])
 
@@ -100,7 +107,7 @@ class FiltersTest(unittest.TestCase):
             self.file_info('bucket/nottest1.txt', src_type='s3'),
         ]
         # If I apply the filter to the local to the local files.
-        exclude_filter = Filter({'filters': [['--exclude', 't*']]})
+        exclude_filter = self.create_filter([['exclude', 't*']])
         filtered_files = list(exclude_filter.call(local_files))
         self.assertEqual(len(filtered_files), 1)
         self.assertEqual(os.path.basename(filtered_files[0].src),
@@ -108,6 +115,7 @@ class FiltersTest(unittest.TestCase):
 
         # I should get the same result if I apply the same filter to s3
         # objects.
+        exclude_filter = self.create_filter([['exclude', 't*']], root='bucket')
         same_filtered_files = list(exclude_filter.call(remote_files))
         self.assertEqual(len(same_filtered_files), 1)
         self.assertEqual(os.path.basename(same_filtered_files[0].src),
@@ -120,13 +128,27 @@ class FiltersTest(unittest.TestCase):
             self.file_info('bucket/dir1/notkey3.txt', src_type='s3'),
         ]
         filtered_files = list(
-            Filter({'filters': [['--exclude', 'dir1/*']]}).call(s3_files))
+            self.create_filter([['exclude', 'dir1/*']],
+                               root='bucket').call(s3_files))
         self.assertEqual(filtered_files, [])
 
         key_files = list(
-            Filter({'filters': [['--exclude', 'dir1/key*']]}).call(s3_files))
+            self.create_filter([['exclude', 'dir1/key*']],
+                               root='bucket').call(s3_files))
         self.assertEqual(len(key_files), 1)
         self.assertEqual(key_files[0].src, 'bucket/dir1/notkey3.txt')
+
+    def test_root_dir(self):
+        local_files = [self.file_info('/foo/bar/baz.txt', src_type='local')]
+        local_filter = self.create_filter([['exclude', 'baz.txt']], root='/foo/bar/')
+        filtered = list(local_filter.call(local_files))
+        self.assertEqual(filtered, [])
+
+        # However, if we're at the root of /foo', then this filter won't match.
+        local_filter = self.create_filter([['exclude', 'baz.txt']], root='/foo/')
+        filtered = list(local_filter.call(local_files))
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0].src, '/foo/bar/baz.txt')
 
 
 if __name__ == "__main__":

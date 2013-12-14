@@ -253,6 +253,23 @@ class TestCp(BaseS3CLICommand):
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
 
+    def test_cp_without_trailing_slash(self):
+        # There's a unit test for this, but we still want to verify this
+        # with an integration test.
+        bucket_name = self.create_bucket()
+
+        # copy file into bucket.
+        foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
+        # Note that the destination has no trailing slash.
+        p = aws('s3 cp %s s3://%s' % (foo_txt, bucket_name))
+        self.assert_no_errors(p)
+
+        # Make sure object is in bucket.
+        self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
+        self.assertEqual(
+            self.get_key_contents(bucket_name, key_name='foo.txt'),
+            'this is foo.txt')
+
     def test_cp_s3_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()

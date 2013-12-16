@@ -8,6 +8,8 @@ Next Release (TBD)
 * Fix issue 548 where ``--include/--exclude`` arguments for various
   ``aws s3`` commands were prepending the CWD instead of the source
   directory for filter patterns
+* Fix issue 552 where a remote location without a trailing slash would
+  show a malformed XML error when using various  ``aws s3`` commands
 
 
 1.2.8

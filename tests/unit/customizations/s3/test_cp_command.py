@@ -54,7 +54,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         # Here we're saying s3://bucket instead of s3://bucket/
         # This should still work the same as if we added the trailing slash.
-        cmdline = '%s %s s3://bucket/' % (self.prefix, full_path)
+        cmdline = '%s %s s3://bucket' % (self.prefix, full_path)
         self.parsed_responses = [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
         self.run_cmd(cmdline, expected_rc=0)
         # The only operation we should have called is PutObject.

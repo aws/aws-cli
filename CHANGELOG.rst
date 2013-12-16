@@ -5,6 +5,14 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* Fix issue 548 where ``--include/--exclude`` arguments for various
+  ``aws s3`` commands were prepending the CWD instead of the source
+  directory for filter patterns
+
+
+1.2.8
+=====
+
 * Add support for parallel multipart uploads when copying objects
   between Amazon S3 locations when using the ``aws s3`` command (issue 538)
 * Fix issue 542 where the ``---stack-policy-url`` will parameter will not

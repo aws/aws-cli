@@ -86,11 +86,12 @@ a particular file or object.  The following pattern symbols are supported.
     * ``[sequence]``: Matches any character in ``sequence``
     * ``[!sequence]``: Matches any charater not in ``sequence``
 
-The real power of these parameters is that any number of these parameters
-can be passed to a command.  When there are multiple filters, the rule is
-the filters that appear later in the command take precedence over filters
-that appear earlier in the command.  For example, if the filter parameters
-passed to the command were
+Any number of these parameters can be passed to a command.  You can do this by
+providing an ``--exclude`` or ``--include`` argument multiple times, e.g.
+``--include "*.txt" --include "*.png"``.
+When there are multiple filters, the rule is the filters that appear later in
+the command take precedence over filters that appear earlier in the command.
+For example, if the filter parameters passed to the command were
 
 ::
 
@@ -104,3 +105,58 @@ All files will be excluded from the command except for files ending with
     --include "*.txt" --exclude "*"
 
 All files will be excluded from the command.
+
+Each filter is evaluated against the **source directory**.  If the source
+location is a file instead of a directory, the directory containing the file is
+used as the source directory.  For example, suppose you had the following
+directory structure::
+
+    /tmp/foo/
+      .git/
+      |---config
+      |---description
+      foo.txt
+      bar.txt
+      baz.jpg
+
+In the command ``aws s3 sync /tmp/foo s3://bucket/`` the source directory is
+``/tmp/foo``.  Any include/exclude filters will be evaluated with the source
+directory prepended.  Below are several examples to demonstrate this.
+
+Given the directory structure above and the command
+``aws s3 cp /tmp/foo s3://bucket/ --recursive --exclude ".git/*"``, the
+files ``.git/config`` and ``.git/description`` will be excluded from the
+files to upload because the exclude filter ``.git/*`` will have the source
+prepended to the filter.  This means that::
+
+    /tmp/foo/.git/* -> /tmp/foo/.git/config       (matches, should exclude)
+    /tmp/foo/.git/* -> /tmp/foo/.git/description  (matches, should exclude)
+    /tmp/foo/.git/* -> /tmp/foo/foo.txt  (does not match, should include)
+    /tmp/foo/.git/* -> /tmp/foo/bar.txt  (does not match, should include)
+    /tmp/foo/.git/* -> /tmp/foo/baz.jpg  (does not match, should include)
+
+The command ``aws s3 cp /tmp/foo/ s3://bucket/ --recursive --exclude "ba*"``
+will exclude ``/tmp/foo/bar.txt`` and ``/tmp/foo/baz.jpg``::
+
+    /tmp/foo/ba* -> /tmp/foo/.git/config      (does not match, should include)
+    /tmp/foo/ba* -> /tmp/foo/.git/description (does not match, should include)
+    /tmp/foo/ba* -> /tmp/foo/foo.txt          (does not match, should include)
+    /tmp/foo/ba* -> /tmp/foo/bar.txt  (matches, should exclude)
+    /tmp/foo/ba* -> /tmp/foo/baz.jpg  (matches, should exclude)
+
+
+Note that, by default, *all files are included*.  This means that
+providing **only** an ``--include`` filter will not change what
+files are transferred.  ``--include`` will only re-include files that
+have been excluded from an ``--exclude`` filter.  If you want only want
+to upload files with a particular extension, you need to first exclude
+all files, then re-include the files with the particular extension.
+This command will upload **only** files ending with ``.jpg``::
+
+    aws s3 cp /tmp/foo/ s3://bucket/ --recursive --exclude "*" --include "*.jpg"
+
+If you wanted to include both ``.jpg`` files as well as ``.txt`` files you
+can run::
+
+    aws s3 cp /tmp/foo/ s3://bucket/ --recursive \
+        --exclude "*" --include "*.jpg" --include "*.txt"

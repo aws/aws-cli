@@ -39,6 +39,30 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
 
+    def test_key_name_added_when_only_bucket_provided(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/' % (self.prefix, full_path)
+        self.parsed_responses = [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The only operation we should have called is PutObject.
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['key'], 'foo.txt')
+        self.assertEqual(self.operations_called[0][1]['bucket'], 'bucket')
+
+    def test_trailing_slash_appended(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        # Here we're saying s3://bucket instead of s3://bucket/
+        # This should still work the same as if we added the trailing slash.
+        cmdline = '%s %s s3://bucket' % (self.prefix, full_path)
+        self.parsed_responses = [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The only operation we should have called is PutObject.
+        self.assertEqual(len(self.operations_called), 1, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['key'], 'foo.txt')
+        self.assertEqual(self.operations_called[0][1]['bucket'], 'bucket')
+
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},

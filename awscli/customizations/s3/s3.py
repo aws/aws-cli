@@ -640,12 +640,24 @@ class CommandParameters(object):
         the destination always have some value.
         """
         self.check_path_type(paths)
+        self._normalize_s3_trailing_slash(paths)
         src_path = paths[0]
         self.parameters['src'] = src_path
         if len(paths) == 2:
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+
+    def _normalize_s3_trailing_slash(self, paths):
+        for i, path in enumerate(paths):
+            if path.startswith('s3://'):
+                bucket, key = find_bucket_key(path[5:])
+                if not key and not path.endswith('/'):
+                    # If only a bucket was specified, we need
+                    # to normalize the path and ensure it ends
+                    # with a '/', s3://bucket -> s3://bucket/
+                    path += '/'
+                    paths[i] = path
 
     def _verify_bucket_exists(self, bucket_name):
         session = self.session

@@ -64,10 +64,10 @@ def add_param_descriptions(params_dict):
         "destination but not in the source are deleted during sync."
 
     params_dict['exclude']['documents'] = "Exclude all files or objects" \
-        " from the command that follow the specified pattern."
+        " from the command that matches the specified pattern."
 
-    params_dict['include']['documents'] = "Include all files or objects in " \
-        "the command that follow the specified pattern."
+    params_dict['include']['documents'] = "Don't exclude files or objects in " \
+        "the command that match the specified pattern"
 
     params_dict['acl']['documents'] = "Sets the ACl for the object when the " \
         "command is performed.  Only accepts values of ``private``, \

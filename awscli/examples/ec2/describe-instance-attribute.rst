@@ -4,7 +4,7 @@ This example describes the instance type of the specified instance.
 
 Command::
 
-  aws ec2 describe-instance-attribute --instance-id i-5203422c --atribute instanceType
+  aws ec2 describe-instance-attribute --instance-id i-5203422c --attribute instanceType
 
 Output::
 
@@ -21,7 +21,7 @@ This example describes the ``disableApiTermination`` attribute of the specified 
 
 Command::
 
-  aws ec2 describe-instance-attribute --instance-id i-5203422c --atribute disableApiTermination
+  aws ec2 describe-instance-attribute --instance-id i-5203422c --attribute disableApiTermination
 
 Output::
 

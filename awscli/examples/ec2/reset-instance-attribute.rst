@@ -4,7 +4,7 @@ This example resets the ``sourceDestCheck`` attribute of the specified instance.
 
 Command::
 
-  aws ec2 reset-instance-attribute --instance-id i-5203422c --atribute sourceDestCheck
+  aws ec2 reset-instance-attribute --instance-id i-5203422c --attribute sourceDestCheck
 
 Output::
 
@@ -18,7 +18,7 @@ This example resets the ``kernel`` attribute of the specified instance. The inst
 
 Command::
 
-  aws ec2 reset-instance-attribute --instance-id i-5203422c --atribute kernel
+  aws ec2 reset-instance-attribute --instance-id i-5203422c --attribute kernel
 
 Output::
 
@@ -32,7 +32,7 @@ This example resets the ``ramdisk`` attribute of the specified instance. The ins
 
 Command::
 
-  aws ec2 reset-instance-attribute --instance-id i-5203422c --atribute ramdisk
+  aws ec2 reset-instance-attribute --instance-id i-5203422c --attribute ramdisk
 
 Output::
 

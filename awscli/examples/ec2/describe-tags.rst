@@ -111,7 +111,7 @@ Output::
 
 **To describe the tags for your resources based on a key and a value**
 
-This example describes the tags for your resources that have the key Stack and a value Test.
+This example describes the tags for your resources that have the key ``Stack`` and a value ``Test``.
 
 Command::
 
@@ -136,7 +136,7 @@ Output::
       ]
   }
 
-This example describes the tags for all your instances that have a tag with the key Purpose and no value.
+This example describes the tags for all your instances that have a tag with the key ``Purpose`` and no value.
 
 Command::
 

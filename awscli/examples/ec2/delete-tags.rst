@@ -18,7 +18,7 @@ Command::
 
   aws ec2 delete-tags --resources i-12345678 --tags Key=Name,Value=
  
-This example deletes the tag with the 'purpose' key from the specified instance, regardless of the tag's value.
+This example deletes the tag with the ``purpose`` key from the specified instance, regardless of the tag's value.
 
 Command::
 

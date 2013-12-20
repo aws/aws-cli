@@ -22,6 +22,7 @@ from tests import unittest
 import tempfile
 import shutil
 import platform
+import contextlib
 
 import botocore.session
 
@@ -29,6 +30,16 @@ from tests.integration import aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
 from tests.unit import FileCreator
 from awscli.customizations.s3 import constants
+
+
+@contextlib.contextmanager
+def cd(directory):
+    original = os.getcwd()
+    try:
+        os.chdir(directory)
+        yield
+    finally:
+        os.chdir(original)
 
 
 class BaseS3CLICommand(unittest.TestCase):
@@ -62,7 +73,7 @@ class BaseS3CLICommand(unittest.TestCase):
         self.addCleanup(self.delete_bucket, bucket_name)
         return bucket_name
 
-    def put_object(self, bucket_name, key_name, contents):
+    def put_object(self, bucket_name, key_name, contents=''):
         operation = self.service.get_operation('PutObject')
         http = operation.call(self.endpoint, bucket=bucket_name,
                               key=key_name, body=contents)[0]
@@ -252,6 +263,23 @@ class TestCp(BaseS3CLICommand):
 
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
+
+    def test_cp_without_trailing_slash(self):
+        # There's a unit test for this, but we still want to verify this
+        # with an integration test.
+        bucket_name = self.create_bucket()
+
+        # copy file into bucket.
+        foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
+        # Note that the destination has no trailing slash.
+        p = aws('s3 cp %s s3://%s' % (foo_txt, bucket_name))
+        self.assert_no_errors(p)
+
+        # Make sure object is in bucket.
+        self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
+        self.assertEqual(
+            self.get_key_contents(bucket_name, key_name='foo.txt'),
+            'this is foo.txt')
 
     def test_cp_s3_s3_multipart(self):
         from_bucket = self.create_bucket()
@@ -601,6 +629,83 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         parsed = operation.call(
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
+
+
+class TestIncludeExcludeFilters(BaseS3CLICommand):
+    def assert_no_files_would_be_uploaded(self, p):
+        self.assert_no_errors(p)
+        # There should be no output.
+        self.assertEqual(p.stdout, '')
+        self.assertEqual(p.stderr, '')
+
+    def test_basic_exclude_filter_for_single_file(self):
+        full_path = self.files.create_file('foo.txt', 'this is foo.txt')
+        # With no exclude we should upload the file.
+        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun' % full_path)
+        self.assert_no_errors(p)
+        self.assertIn('(dryrun) upload:', p.stdout)
+
+        p2 = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*"'
+                 % full_path)
+        self.assert_no_files_would_be_uploaded(p2)
+
+    def test_explicitly_exclude_single_file(self):
+        full_path = self.files.create_file('foo.txt', 'this is foo.txt')
+        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude foo.txt'
+                 % full_path)
+        self.assert_no_files_would_be_uploaded(p)
+
+    def test_cwd_doesnt_matter(self):
+        full_path = self.files.create_file('foo.txt', 'this is foo.txt')
+        with cd(os.path.expanduser('~')):
+            p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*"'
+                    % full_path)
+        self.assert_no_files_would_be_uploaded(p)
+
+    def test_recursive_exclude(self):
+        # create test/foo.txt
+        nested_dir = os.path.join(self.files.rootdir, 'test')
+        os.mkdir(nested_dir)
+        self.files.create_file(os.path.join(nested_dir, 'foo.txt'),
+                               contents='foo.txt contents')
+        # Then create test-123.txt, test-321.txt, test.txt.
+        self.files.create_file('test-123.txt', 'test-123.txt contents')
+        self.files.create_file('test-321.txt', 'test-321.txt contents')
+        self.files.create_file('test.txt', 'test.txt contents')
+        # An --exclude test* should exclude everything here.
+        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*" '
+                 '--recursive' % self.files.rootdir)
+        self.assert_no_files_would_be_uploaded(p)
+
+        # We can include the test directory though.
+        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun '
+                '--exclude "*" --include "test/*" --recursive'
+                % self.files.rootdir)
+        self.assert_no_errors(p)
+        self.assertRegexpMatches(p.stdout,
+                                 r'\(dryrun\) upload:.*test/foo.txt.*')
+
+    def test_s3_filtering(self):
+        # Should behave the same as local file filtering.
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, key_name='foo.txt')
+        self.put_object(bucket_name, key_name='bar.txt')
+        self.put_object(bucket_name, key_name='baz.jpg')
+        p = aws('s3 rm s3://%s/ --dryrun --exclude "*" --recursive'
+                % bucket_name)
+        self.assert_no_files_would_be_uploaded(p)
+
+        p = aws(
+            's3 rm s3://%s/ --dryrun --exclude "*.jpg" --exclude "*.txt" '
+            '--recursive' % bucket_name)
+        self.assert_no_files_would_be_uploaded(p)
+
+        p = aws('s3 rm s3://%s/ --dryrun --exclude "*.txt" --recursive'
+                % bucket_name)
+        self.assert_no_errors(p)
+        self.assertRegexpMatches(p.stdout, r'\(dryrun\) delete:.*baz.jpg.*')
+        self.assertNotIn(p.stdout, 'bar.txt')
+        self.assertNotIn(p.stdout, 'foo.txt')
 
 
 if __name__ == "__main__":

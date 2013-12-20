@@ -2,8 +2,29 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.2.9
+=====
+
+* Fix issue 548 where ``--include/--exclude`` arguments for various
+  ``aws s3`` commands were prepending the CWD instead of the source
+  directory for filter patterns
+* Fix issue 552 where a remote location without a trailing slash would
+  show a malformed XML error when using various  ``aws s3`` commands
+* Add support for tagging in ``aws emr`` command
+* Add support for georestrictions in ``aws cloudfront`` command
+* Add support for new audio compression codecs in the
+  ``aws elastictranscoder`` command
+* Update the ``aws cloudtrail`` command to the latest API
+* Add support for the new China (Beijing) Region. Note: Although the AWS CLI
+  now includes support for the newly announced China (Beijing)
+  Region, the service endpoints will not be accessible until the Region’s
+  limited preview is launched in early 2014. To find out more about the new
+  Region and request a limited preview account, please visit
+  http://www.amazonaws.cn/.
+
+
+1.2.8
+=====
 
 * Add support for parallel multipart uploads when copying objects
   between Amazon S3 locations when using the ``aws s3`` command (issue 538)

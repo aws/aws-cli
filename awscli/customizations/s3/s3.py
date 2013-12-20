@@ -27,7 +27,7 @@ from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo
-from awscli.customizations.s3.filters import Filter
+from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.description import add_command_descriptions, \
     add_param_descriptions
@@ -558,41 +558,42 @@ class CommandArchitecture(object):
         s3handler = S3Handler(self.session, self.parameters)
 
         command_dict = {}
-        command_dict['sync'] = {'setup': [files, rev_files],
-                                'file_generator': [file_generator,
-                                                   rev_generator],
-                                'filters': [Filter(self.parameters),
-                                            Filter(self.parameters)],
-                                'comparator': [Comparator(self.parameters)],
+        if self.cmd == 'sync':
+            command_dict = {'setup': [files, rev_files],
+                                    'file_generator': [file_generator,
+                                                    rev_generator],
+                                    'filters': [create_filter(self.parameters),
+                                                create_filter(self.parameters)],
+                                    'comparator': [Comparator(self.parameters)],
+                                    's3_handler': [s3handler]}
+        elif self.cmd == 'cp':
+            command_dict = {'setup': [files],
+                                'file_generator': [file_generator],
+                                'filters': [create_filter(self.parameters)],
+                                's3_handler': [s3handler]}
+        elif self.cmd == 'rm':
+            command_dict = {'setup': [files],
+                                'file_generator': [file_generator],
+                                'filters': [create_filter(self.parameters)],
+                                's3_handler': [s3handler]}
+        elif self.cmd == 'mv':
+            command_dict = {'setup': [files],
+                                'file_generator': [file_generator],
+                                'filters': [create_filter(self.parameters)],
+                                's3_handler': [s3handler]}
+        elif self.cmd == 'mb':
+            command_dict = {'setup': [taskinfo],
+                                's3_handler': [s3handler]}
+        elif self.cmd == 'rb':
+            command_dict = {'setup': [taskinfo],
                                 's3_handler': [s3handler]}
 
-        command_dict['cp'] = {'setup': [files],
-                              'file_generator': [file_generator],
-                              'filters': [Filter(self.parameters)],
-                              's3_handler': [s3handler]}
-
-        command_dict['rm'] = {'setup': [files],
-                              'file_generator': [file_generator],
-                              'filters': [Filter(self.parameters)],
-                              's3_handler': [s3handler]}
-
-        command_dict['mv'] = {'setup': [files],
-                              'file_generator': [file_generator],
-                              'filters': [Filter(self.parameters)],
-                              's3_handler': [s3handler]}
-
-        command_dict['mb'] = {'setup': [taskinfo],
-                              's3_handler': [s3handler]}
-
-        command_dict['rb'] = {'setup': [taskinfo],
-                              's3_handler': [s3handler]}
-
-        files = command_dict[self.cmd]['setup']
+        files = command_dict['setup']
 
         while self.instructions:
             instruction = self.instructions.pop(0)
             file_list = []
-            components = command_dict[self.cmd][instruction]
+            components = command_dict[instruction]
             for i in range(len(components)):
                 if len(files) > len(components):
                     file_list.append(components[i].call(*files))
@@ -639,12 +640,24 @@ class CommandParameters(object):
         the destination always have some value.
         """
         self.check_path_type(paths)
+        self._normalize_s3_trailing_slash(paths)
         src_path = paths[0]
         self.parameters['src'] = src_path
         if len(paths) == 2:
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+
+    def _normalize_s3_trailing_slash(self, paths):
+        for i, path in enumerate(paths):
+            if path.startswith('s3://'):
+                bucket, key = find_bucket_key(path[5:])
+                if not key and not path.endswith('/'):
+                    # If only a bucket was specified, we need
+                    # to normalize the path and ensure it ends
+                    # with a '/', s3://bucket -> s3://bucket/
+                    path += '/'
+                    paths[i] = path
 
     def _verify_bucket_exists(self, bucket_name):
         session = self.session

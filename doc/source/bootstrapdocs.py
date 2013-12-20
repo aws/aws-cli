@@ -9,5 +9,5 @@ script_path = os.path.join(os.path.dirname(__file__),
 os.environ['PATH'] += ':.'
 rc = subprocess.call("python "+ script_path, shell=True, env=os.environ)
 if rc != 0:
-    sys.stderr.write("Failed to generate documetation!\n")
+    sys.stderr.write("Failed to generate documentation!\n")
     sys.exit(2)

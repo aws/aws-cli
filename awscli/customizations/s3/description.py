@@ -107,6 +107,7 @@ def add_param_descriptions(params_dict):
 
     params_dict['storage-class']['documents'] = (
         "The type of storage to use for the object. "
+        "Valid choices are: STANDARD | REDUCED_REDUNDANCY. "
         "Defaults to 'STANDARD'")
 
     params_dict['website-redirect']['documents'] = (

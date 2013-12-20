@@ -109,6 +109,22 @@ class TestCloudTrail(unittest.TestCase):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_topic('test2')
 
+    def test_cloudtrail_new_call_format(self):
+        self.subscribe.cloudtrail = Mock()
+        self.subscribe.cloudtrail.CreateTrail = Mock(return_value={})
+        self.subscribe.cloudtrail.DescribeTrail = Mock(return_value={})
+
+        self.subscribe.upsert_cloudtrail_config('test', 'bucket', 'prefix',
+                                                'topic', True)
+
+        self.subscribe.cloudtrail.CreateTrail.assert_called_with(
+            name='test',
+            s3_bucket_name='bucket',
+            s3_key_prefix='prefix',
+            sns_topic_name='topic',
+            include_global_service_events=True
+        )
+
 
 class TestCloudTrailSessions(BaseAWSCommandParamsTest):
     def test_sessions(self):

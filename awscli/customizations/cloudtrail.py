@@ -293,25 +293,25 @@ class CloudTrailSubscribe(BasicCommand):
         """
         sys.stdout.write('Creating/updating CloudTrail configuration...\n')
         config = {
-            'Name': name
+            'name': name
         }
 
         if bucket is not None:
-            config['S3BucketName'] = bucket
+            config['s3_bucket_name'] = bucket
 
         if prefix is not None:
-            config['S3KeyPrefix'] = prefix
+            config['s3_key_prefix'] = prefix
 
         if topic is not None:
-            config['SnsTopicName'] = topic
+            config['sns_topic_name'] = topic
 
         if gse is not None:
-            config['IncludeGlobalServiceEvents'] = gse
+            config['include_global_service_events'] = gse
 
         if not self.UPDATE:
-            self.cloudtrail.CreateTrail(trail=config)
+            self.cloudtrail.CreateTrail(**config)
         else:
-            self.cloudtrail.UpdateTrail(trail=config)
+            self.cloudtrail.UpdateTrail(**config)
 
         return self.cloudtrail.DescribeTrails()
 

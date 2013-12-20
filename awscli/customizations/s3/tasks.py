@@ -141,7 +141,7 @@ class CopyPartTask(object):
             src_bucket, src_key = find_bucket_key(self._filename.src)
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
-                      'part_number': str(self._part_number),
+                      'part_number': self._part_number,
                       'upload_id': upload_id,
                       'copy_source': '%s/%s' % (src_bucket, src_key),
                       'copy_source_range': range_param}
@@ -209,7 +209,7 @@ class UploadPartTask(object):
             body = self._read_part()
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
-                      'part_number': str(self._part_number),
+                      'part_number': self._part_number,
                       'upload_id': upload_id,
                       'body': body}
             try:

@@ -19,7 +19,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
+from awscli.customizations.s3.utils import find_bucket_key, get_file_stat, get_file_md5
 from awscli.errorhandler import ClientError
 
 
@@ -73,7 +73,7 @@ class FileGenerator(object):
         sep_table = {'s3': '/', 'local': os.sep}
         source = src['path']
         file_list = function_table[src_type](source, files['dir_op'])
-        for src_path, size, last_update in file_list:
+        for src_path, size, last_update, etag in file_list:
             if files['dir_op']:
                 rel_path = src_path[len(src['path']):]
             else:
@@ -89,7 +89,7 @@ class FileGenerator(object):
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
                            service=self._service, endpoint=self._endpoint,
-                           dest_type=dest_type,
+                           dest_type=dest_type, etag=etag,
                            operation_name=self.operation_name)
 
     def list_files(self, path, dir_op):
@@ -98,14 +98,15 @@ class FileGenerator(object):
         under a directory depending on if the operation is on a directory.
         For directories a depth first search is implemented in order to
         follow the same sorted pattern as a s3 list objects operation
-        outputs.  It yields the file's source path, size, and last
-        update
+        outputs.  It yields the file's source path, size, last update,
+        and md5 hash.
         """
         join, isdir, isfile = os.path.join, os.path.isdir, os.path.isfile
         error, listdir = os.error, os.listdir
         if not dir_op:
             size, last_update = get_file_stat(path)
-            yield path, size, last_update
+            md5 = '"%s"' % get_file_md5(open(path))
+            yield path, size, last_update, md5
         else:
             # We need to list files in byte order based on the full
             # expanded path of the key: 'test/1/2/3.txt'  However, listdir()
@@ -134,7 +135,8 @@ class FileGenerator(object):
                         yield x
                 else:
                     size, last_update = get_file_stat(file_path)
-                    yield file_path, size, last_update
+                    md5 = '"%s"' % get_file_md5(open(file_path))
+                    yield file_path, size, last_update, md5
 
     def _check_paths_decoded(self, path, names):
         # We can get a UnicodeDecodeError if we try to listdir(<unicode>) and
@@ -169,6 +171,7 @@ class FileGenerator(object):
                 for content in contents:
                     src_path = bucket + '/' + content['Key']
                     size = content['Size']
+                    etag = content.get('ETag')
                     last_update = parse(content['LastModified'])
                     last_update = last_update.astimezone(tzlocal())
                     if size == 0 and src_path.endswith('/'):
@@ -179,11 +182,11 @@ class FileGenerator(object):
                             # are automatically created when they do not
                             # exist locally.  But user should be able to
                             # delete them.
-                            yield src_path, size, last_update
+                            yield src_path, size, last_update, etag
                     elif not dir_op and s3_path != src_path:
                         pass
                     else:
-                        yield src_path, size, last_update
+                        yield src_path, size, last_update, etag
 
     def _list_single_object(self, s3_path):
         # When we know we're dealing with a single object, we can avoid
@@ -216,4 +219,5 @@ class FileGenerator(object):
         file_size = int(response['ContentLength'])
         last_update = parse(response['LastModified'])
         last_update = last_update.astimezone(tzlocal())
-        return s3_path, file_size, last_update
+        etag = response.get('ETag')
+        return s3_path, file_size, last_update, etag

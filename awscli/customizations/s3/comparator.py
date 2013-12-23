@@ -33,6 +33,10 @@ class Comparator(object):
         self.delete = False
         if 'delete' in params:
             self.delete = params['delete']
+        
+        self.compare_on_etag = False
+        if 'compare_on_etag' in params:
+            self.compare_on_etag = params['compare_on_etag']
 
     def call(self, src_files, dest_files):
         """
@@ -101,8 +105,14 @@ class Comparator(object):
                 if compare_keys == 'equal':
                     same_size = self.compare_size(src_file, dest_file)
                     same_last_modified_time = self.compare_time(src_file, dest_file)
+                    same_etag = self.compare_etag(src_file, dest_file)
+                    
+                    if self.compare_on_etag:
+                        comparison_for_sync = not same_etag
+                    else:
+                        comparison_for_sync = (not same_size) or (not same_last_modified_time)
 
-                    if (not same_size) or (not same_last_modified_time):
+                    if comparison_for_sync:
                         LOG.debug("syncing: %s -> %s, size_changed: %s, "
                                   "last_modified_time_changed: %s",
                                   src_file.src, src_file.dest,
@@ -195,3 +205,14 @@ class Comparator(object):
                 # delta is positive, so the destination
                 # is newer than the source.
                 return False
+                
+    def compare_etag(self, src_file, dest_file):
+        """
+        :returns: True if the file does not need updating based on ETag.
+            False otherwise.
+        """
+        LOG.debug('src etag: %s' % src_file.etag)
+        LOG.debug('dst etag: %s' % dest_file.etag)
+        
+        return (src_file.etag == dest_file.etag)
+        

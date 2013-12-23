@@ -92,17 +92,24 @@ def get_file_stat(path):
     return stats.st_size, update_time
 
 
-def check_etag(etag, fileobj):
+def get_file_md5(fileobj):
     """
-    This fucntion checks the etag and the md5 checksum to ensure no
-    data was corrupted upon transfer.
+    This function computes the md5 hash of the specified fileobj.
     """
     get_chunk = partial(fileobj.read, 1024 * 1024)
     m = hashlib.md5()
     for chunk in iter(get_chunk, b''):
         m.update(chunk)
+    
+    return m.hexdigest()
+
+def check_etag(etag, fileobj):
+    """
+    This fucntion checks the etag and the md5 checksum to ensure no
+    data was corrupted upon transfer.
+    """
     if '-' not in etag:
-        if etag != m.hexdigest():
+        if etag != get_file_md5(fileobj):
             raise MD5Error
 
 

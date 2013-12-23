@@ -92,7 +92,7 @@ class CreateTablesTest(unittest.TestCase):
                        'sse', 'storage-class', 'website-redirect',
                        'content-type', 'cache-control', 'content-disposition',
                        'content-language', 'content-encoding', 'expires',
-                       'grants']
+                       'grants','compare-on-etag']
         for cmd in commands_list:
             self.parameters = {}
             add_cmd_params(self.parameters, cmd)

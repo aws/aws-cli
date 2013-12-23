@@ -133,7 +133,7 @@ class FileInfo(TaskInfo):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, service=None, endpoint=None,
-                 parameters=None):
+                 etag=None, parameters=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
                                        service=service,
@@ -143,6 +143,8 @@ class FileInfo(TaskInfo):
         self.compare_key = compare_key
         self.size = size
         self.last_update = last_update
+        self.etag = etag
+        
         # Usually inject ``parameters`` from ``BasicTask`` class.
         if parameters is not None:
             self.parameters = parameters

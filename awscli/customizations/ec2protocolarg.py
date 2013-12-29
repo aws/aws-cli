@@ -29,7 +29,8 @@ def _fix_args(operation, endpoint, params, **kwargs):
 
 
 def register_protocol_args(cli):
-    ('before-parameter-build.ec2.RunInstances', _fix_args),
     cli.register('before-parameter-build.ec2.CreateNetworkAclEntry',
+                 _fix_args)
+    cli.register('before-parameter-build.ec2.ReplaceNetworkAclEntry',
                  _fix_args)
     

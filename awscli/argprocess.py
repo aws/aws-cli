@@ -303,7 +303,7 @@ class ParamShorthand(object):
             # should be skipped for this arg.
             return None
         else:
-            self._docs_key_value_parse(param)
+            return self._docs_key_value_parse(param)
 
     def _docs_key_value_parse(self, param):
         s = '%s ' % param.cli_name

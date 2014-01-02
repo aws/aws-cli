@@ -230,6 +230,15 @@ class TestStructureScalarHasNoExamples(BaseAWSHelpOutputTest):
         self.assert_not_contains('"Value": "string"')
         self.assert_not_contains('Value=string')
 
+    def test_example_for_single_structure_not_named_value(self):
+        # Verify that if a structure does match our special case
+        # (single element named "Value"), then we still document
+        # the example syntax.
+        self.driver.main(['s3api', 'restore-object', 'help'])
+        self.assert_contains('Days=value')
+        # Also should see the JSON syntax in the help output.
+        self.assert_contains('"Days": integer')
+
 
 class TestJSONListScalarDocs(BaseAWSHelpOutputTest):
     def test_space_separated_list_docs(self):

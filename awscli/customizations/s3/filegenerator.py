@@ -105,7 +105,7 @@ class FileGenerator(object):
         error, listdir = os.error, os.listdir
         if not dir_op:
             size, last_update = get_file_stat(path)
-            md5 = '"%s"' % get_file_md5(open(path))
+            md5 = '"%s"' % get_file_md5(open(path,'rb'))
             yield path, size, last_update, md5
         else:
             # We need to list files in byte order based on the full
@@ -135,7 +135,7 @@ class FileGenerator(object):
                         yield x
                 else:
                     size, last_update = get_file_stat(file_path)
-                    md5 = '"%s"' % get_file_md5(open(file_path))
+                    md5 = '"%s"' % get_file_md5(open(file_path,'rb'))
                     yield file_path, size, last_update, md5
 
     def _check_paths_decoded(self, path, names):

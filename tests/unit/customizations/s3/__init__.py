@@ -25,15 +25,11 @@ class S3HandlerBaseTest(unittest.TestCase):
     shorter amount of time.
     """
     def setUp(self):
-        get = 'awscli.customizations.s3.constants.QUEUE_TIMEOUT_GET'
         wait = 'awscli.customizations.s3.constants.QUEUE_TIMEOUT_WAIT'
-        self.get_timeout_patch = patch(get, 0.01)
         self.wait_timeout_patch = patch(wait, 0.01)
-        self.mock_get = self.get_timeout_patch.start()
         self.mock_wait = self.wait_timeout_patch.start()
 
     def tearDown(self):
-        self.get_timeout_patch.stop()
         self.wait_timeout_patch.stop()
 
 

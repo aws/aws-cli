@@ -19,8 +19,8 @@ from awscli.customizations.s3.utils import NoBlockQueue, uni_print
 
 
 LOGGER = logging.getLogger(__name__)
+QUEUE_END_SENTINEL = object()
 
-QueueEndSentinel = object()
 
 class Executer(object):
     """
@@ -78,9 +78,9 @@ class Executer(object):
         """
         This is used to clean up the ``Executer``.
         """
-        self.result_queue.put(QueueEndSentinel)
+        self.result_queue.put(QUEUE_END_SENTINEL)
         for i in range(self.num_threads):
-            self.queue.put(QueueEndSentinel)
+            self.queue.put(QUEUE_END_SENTINEL)
 
         for thread in self.threads_list:
             thread.join()
@@ -101,7 +101,7 @@ class Worker(threading.Thread):
         while True:
             try:
                 function = self.queue.get(True)
-                if function is QueueEndSentinel:
+                if function is QUEUE_END_SENTINEL:
                     self.queue.task_done()
                     break
                 try:
@@ -168,7 +168,7 @@ class PrintThread(threading.Thread):
         while True:
             try:
                 print_task = self._result_queue.get(True)
-                if print_task is QueueEndSentinel:
+                if print_task is QUEUE_END_SENTINEL:
                     self._result_queue.task_done()
                     break
                 LOGGER.debug("Received print task: %s", print_task)

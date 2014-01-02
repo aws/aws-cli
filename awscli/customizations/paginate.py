@@ -36,7 +36,7 @@ STARTING_TOKEN_HELP = """
 MAX_ITEMS_HELP = """
 <p>The total number of items to return.  If the total number
 of items available is more than the value specified in
-max-items then a <code>NextMarker</code> will
+max-items then a <code>NextToken</code> will
 be provided in the output that you can use to resume pagination.
 """
 

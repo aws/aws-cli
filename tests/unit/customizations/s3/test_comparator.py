@@ -298,7 +298,66 @@ class ComparatorTest(unittest.TestCase):
         for filename in files:
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
-
+    
+        
+class ComparatorEtagTest(unittest.TestCase):
+    def setUp(self):
+        self.comparator = Comparator({'delete': True, 'compare_on_etag' : True})
+    
+    def test_compare_etag_match(self):
+        """
+        Confirm that we determine files are the same when ETag matches.
+        """
+        src_files = []
+        dest_files = []
+        ref_list = []
+        result_list = []
+        time = datetime.datetime.now()
+        src_file = FileInfo(src='', dest='',
+                            compare_key='comparator_test.py', size=10,
+                            last_update=time, src_type='local',
+                            dest_type='s3', operation_name='upload',
+                            service=None, endpoint=None, etag='a4df78cfcbb934300222157a0d565e77')
+        dest_file = FileInfo(src='', dest='',
+                             compare_key='comparator_test.py', size=10,
+                             last_update=time, src_type='s3',
+                             dest_type='local', operation_name='',
+                             service=None, endpoint=None, etag='a4df78cfcbb934300222157a0d565e77')
+        src_files.append(src_file)
+        dest_files.append(dest_file)
+        self.comparator.compare_on_etag = True
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+    
+    def test_compare_etag_differs(self):
+        """
+        Confirm that we determine files are different when ETag differs.
+        """
+        src_files = []
+        dest_files = []
+        ref_list = []
+        result_list = []
+        time = datetime.datetime.now()
+        src_file = FileInfo(src='', dest='',
+                            compare_key='comparator_test.py', size=10,
+                            last_update=time, src_type='local',
+                            dest_type='s3', operation_name='upload',
+                            service=None, endpoint=None, etag='a4df78cfcbb934300222157a0d565e77')
+        dest_file = FileInfo(src='', dest='',
+                             compare_key='comparator_test.py', size=10,
+                             last_update=time, src_type='s3',
+                             dest_type='local', operation_name='',
+                             service=None, endpoint=None, etag='d2a791addeec74d620a34305ab6f48c6')
+        src_files.append(src_file)
+        dest_files.append(dest_file)
+        self.comparator.compare_on_etag = True
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        ref_list.append(src_file)
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)    
 
 if __name__ == "__main__":
     unittest.main()

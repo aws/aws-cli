@@ -21,7 +21,7 @@ import botocore.session
 from mock import Mock, MagicMock, patch
 
 from awscli.customizations.s3.s3 import AppendFilter, \
-    awscli_initialize, add_s3, add_cmd_params, \
+    awscli_initialize, add_s3, \
     S3, S3SubCommand, S3Parameter, CommandArchitecture, CommandParameters, \
     ListCommand
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
@@ -80,24 +80,6 @@ class CreateTablesTest(unittest.TestCase):
         self.assertEqual(orig_service, s3_service)
         for service in self.services.keys():
             self.assertIn(service, ['s3'])
-
-    def test_parameters(self):
-        """
-        Ensures that all of the parameters generated for a specified
-        command are an elgible parameter.
-        """
-        commands_list = ['cp', 'mv', 'rm', 'sync', 'ls', 'mb', 'rb']
-        params_list = ['dryrun', 'delete', 'quiet', 'recursive', 'exclude',
-                       'include', 'acl', 'force', 'no-guess-mime-type',
-                       'sse', 'storage-class', 'website-redirect',
-                       'content-type', 'cache-control', 'content-disposition',
-                       'content-language', 'content-encoding', 'expires',
-                       'grants']
-        for cmd in commands_list:
-            self.parameters = {}
-            add_cmd_params(self.parameters, cmd)
-            for param in self.parameters.keys():
-                self.assertIn(param, params_list)
 
 
 class S3SubCommandTest(unittest.TestCase):

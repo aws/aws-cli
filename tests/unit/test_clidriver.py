@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 from tests import unittest
 from tests.unit import BaseAWSCommandParamsTest
 import logging
@@ -316,6 +317,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                 'ec2 describe-instances --endpoint-url https://foobar.com/',
                 expected_rc=0)
         endpoint.assert_called_with(region_name=None,
+                                    verify=None,
                                     endpoint_url='https://foobar.com/')
 
     def test_aws_with_region(self):
@@ -328,7 +330,52 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                 'ec2 describe-instances --region us-east-1',
                 expected_rc=0)
         endpoint.assert_called_with(region_name='us-east-1',
+                                    verify=None,
                                     endpoint_url=None)
+
+    def test_aws_with_verify_false(self):
+        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
+            http_response = models.Response()
+            http_response.status_code = 200
+            endpoint.return_value.make_request.return_value = (
+                http_response, {})
+            self.assert_params_for_cmd(
+                'ec2 describe-instances --region us-east-1 --no-verify-ssl',
+                expected_rc=0)
+        # Because we used --no-verify-ssl, get_endpoint should be
+        # called with verify=False
+        endpoint.assert_called_with(region_name='us-east-1',
+                                    verify=False,
+                                    endpoint_url=None)
+
+    def test_aws_with_cacert_env_var(self):
+        with mock.patch('botocore.endpoint.QueryEndpoint.__init__') as endpoint:
+            environ = {}
+            http_response = models.Response()
+            http_response.status_code = 200
+            endpoint.return_value = None
+            endpoint.make_request.return_value = (
+                http_response, {})
+            self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
+            self.assert_params_for_cmd(
+                'ec2 describe-instances --region us-east-1',
+                expected_rc=0)
+        call_args = endpoint.call_args
+        self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
+
+    def test_default_to_verifying_ssl(self):
+        with mock.patch('botocore.endpoint.QueryEndpoint.__init__') as endpoint:
+            environ = {}
+            http_response = models.Response()
+            http_response.status_code = 200
+            endpoint.return_value = None
+            endpoint.make_request.return_value = (
+                http_response, {})
+            self.assert_params_for_cmd(
+                'ec2 describe-instances --region us-east-1',
+                expected_rc=0)
+        call_args = endpoint.call_args
+        self.assertEqual(call_args[1]['verify'], True)
 
     def test_s3_with_region_and_endpoint_url(self):
         with mock.patch('botocore.service.Service.get_endpoint') as endpoint:

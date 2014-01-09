@@ -508,6 +508,18 @@ class TestLs(BaseS3CLICommand):
         self.assertIn('8 foo', p.stdout)
         self.assertIn('8 bar.txt', p.stdout)
 
+    def test_ls_recursive(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', 'contents')
+        self.put_object(bucket_name, 'foo', 'contents')
+        self.put_object(bucket_name, 'bar.txt', 'contents')
+        self.put_object(bucket_name, 'subdir/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s --recursive' % bucket_name)
+        self.assertIn('8 foo.txt', p.stdout)
+        self.assertIn('8 foo', p.stdout)
+        self.assertIn('8 bar.txt', p.stdout)
+        self.assertIn('8 subdir/foo.txt', p.stdout)
+
 
 class TestMbRb(BaseS3CLICommand):
     """

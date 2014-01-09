@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+1.2.10
+======
+
+* Add support for creating launch configuration or Auto Scaling groups
+  using an Amazon EC2 instance, for attaching Amazon EC2 isntances to an
+  existing Auto Scaling group, and for describing the limits on the Auto
+  Scaling resources in the ``aws autoscaling`` command
+* Update documentation in the ``aws support`` command
+* Allow the ``--protocol`` customization for ``CreateNetworkAclEntry`` to
+  also work for ``ReplaceNetworkAclEntry`` (`issue 559 <https://github.com/aws/aws-cli/issues/559>`__)
+* Remove one second delay when tasks are finished running for several
+  ``aws s3`` subcommands (`issue 551 <https://github.com/aws/aws-cli/pull/551>`__)
+* Fix bug in shorthand documentation generation that prevented certain
+  nested structure parameters from being fully documented (`issue 579 <https://github.com/aws/aws-cli/pull/579>`__)
+* Update default timeout from .1 second to 1 second (`botocore issue 202 <https://github.com/boto/botocore/pull/202>`__)
+* Removed filter parameter in RDS operations (`issue 515 <https://github.com/aws/aws-cli/issues/515>`__)
+* Fixed region endpoint for the ``aws kinesis`` command (`botocore issue 194 <https://github.com/boto/botocore/pull/194>`__)
+
+
 1.2.9
 =====
 

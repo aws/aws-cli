@@ -67,8 +67,6 @@ def awscli_initialize(cli):
     """
     cli.register("building-command-table.main", add_s3)
     cli.register("doc-examples.S3.*", add_s3_examples)
-    for cmd in CMD_DICT.keys():
-        cli.register("building-parameter-table.s3.%s" % cmd, add_cmd_params)
 
 
 def s3_plugin_initialize(event_handlers):
@@ -86,17 +84,6 @@ def add_s3(command_table, session, **kwargs):
     """
     utils.rename_command(command_table, 's3', 's3api')
     command_table['s3'] = S3('s3', session)
-
-
-def add_cmd_params(parameter_table, command, **kwargs):
-    """
-    This creates the ParameterArgument object for each possible parameter
-    in a specified command
-    """
-    for param in CMD_DICT[command]['params']:
-        parameter_table[param] = S3Parameter(param,
-                                             PARAMS_DICT[param]['options'],
-                                             PARAMS_DICT[param]['documents'])
 
 
 def add_s3_examples(help_command, **kwargs):
@@ -303,8 +290,7 @@ class S3SubCommand(object):
         table.  This command is necessary for generating html docs for
         the specified command.
         """
-        arg_table = {}
-        add_cmd_params(arg_table, self._name)
+        arg_table = self._populate_parameter_table()
         return S3HelpCommand(self._session, self,
                              command_table=None,
                              arg_table=arg_table)
@@ -315,11 +301,23 @@ class S3SubCommand(object):
         S3Parameter objects corresponding to the specified command when
         the event is emitted.
         """
-        parameter_table = {}
+        parameter_table = self._populate_parameter_table()
+        for param in CMD_DICT[self._name]['params']:
+            parameter_table[param] = S3Parameter(param,
+                                                PARAMS_DICT[param]['options'],
+                                                PARAMS_DICT[param]['documents'])
         self._session.emit('building-parameter-table.s3.%s' % self._name,
                            parameter_table=parameter_table,
                            command=self._name)
 
+        return parameter_table
+
+    def _populate_parameter_table(self):
+        parameter_table = {}
+        for param in CMD_DICT[self._name]['params']:
+            parameter_table[param] = S3Parameter(param,
+                                                PARAMS_DICT[param]['options'],
+                                                PARAMS_DICT[param]['documents'])
         return parameter_table
 
     def _build_call_parameters(self, args, service_params):

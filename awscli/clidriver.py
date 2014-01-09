@@ -515,10 +515,13 @@ class CLIOperationCaller(object):
         # for credentials so we can give a good error message.
         if not self._session.get_credentials():
             raise NoCredentialsError()
+        verify = None
+        if parsed_globals.no_verify_ssl:
+            verify = False
         endpoint = operation_object.service.get_endpoint(
             region_name=parsed_globals.region,
-            endpoint_url=parsed_globals.endpoint_url)
-        endpoint.verify = not parsed_globals.no_verify_ssl
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=verify)
         if operation_object.can_paginate and parsed_globals.paginate:
             pages = operation_object.paginate(endpoint, **parameters)
             self._display_response(operation_object, pages,

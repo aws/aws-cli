@@ -5,7 +5,7 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
-* Add support for the ``REQUESTS_CA_BUNDLE`` environment variable so that users
+* Add support for the ``AWS_CA_BUNDLE`` environment variable so that users
   can specify an alternate path to a cert bundle
   (`issue 586 <https://github.com/aws/aws-cli/pull/586>`__)
 

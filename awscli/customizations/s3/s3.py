@@ -302,10 +302,6 @@ class S3SubCommand(object):
         the event is emitted.
         """
         parameter_table = self._populate_parameter_table()
-        for param in CMD_DICT[self._name]['params']:
-            parameter_table[param] = S3Parameter(param,
-                                                PARAMS_DICT[param]['options'],
-                                                PARAMS_DICT[param]['documents'])
         self._session.emit('building-parameter-table.s3.%s' % self._name,
                            parameter_table=parameter_table,
                            command=self._name)
@@ -316,8 +312,8 @@ class S3SubCommand(object):
         parameter_table = {}
         for param in CMD_DICT[self._name]['params']:
             parameter_table[param] = S3Parameter(param,
-                                                PARAMS_DICT[param]['options'],
-                                                PARAMS_DICT[param]['documents'])
+                                                 PARAMS_DICT[param]['options'],
+                                                 PARAMS_DICT[param]['documents'])
         return parameter_table
 
     def _build_call_parameters(self, args, service_params):

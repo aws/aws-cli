@@ -19,6 +19,7 @@ from awscli.customizations.s3.utils import NoBlockQueue, uni_print
 
 
 LOGGER = logging.getLogger(__name__)
+QUEUE_END_SENTINEL = object()
 
 
 class Executer(object):
@@ -27,12 +28,11 @@ class Executer(object):
     and cleans up the threads when done.  The two type of threads the
     ``Executer``runs is a worker and a print thread.
     """
-    def __init__(self, done, num_threads, timeout,
-                 result_queue, quiet, interrupt, max_queue_size):
+    def __init__(self, done, num_threads, result_queue,
+                 quiet, interrupt, max_queue_size):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
-        self.timeout = timeout
         self.result_queue = result_queue
         self.quiet = quiet
         self.interrupt = interrupt
@@ -49,15 +49,13 @@ class Executer(object):
 
     def start(self):
         self.print_thread = PrintThread(self.result_queue, self.done,
-                                        self.quiet, self.interrupt,
-                                        self.timeout)
+                                        self.quiet, self.interrupt)
         self.print_thread.daemon = True
         self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
         self.threads_list.append(self.print_thread)
         self.print_thread.start()
         for i in range(self.num_threads):
-            worker = Worker(queue=self.queue, done=self.done,
-                            timeout=self.timeout)
+            worker = Worker(queue=self.queue, done=self.done)
             worker.setDaemon(True)
             self.threads_list.append(worker)
             worker.start()
@@ -80,6 +78,10 @@ class Executer(object):
         """
         This is used to clean up the ``Executer``.
         """
+        self.result_queue.put(QUEUE_END_SENTINEL)
+        for i in range(self.num_threads):
+            self.queue.put(QUEUE_END_SENTINEL)
+
         for thread in self.threads_list:
             thread.join()
 
@@ -89,17 +91,19 @@ class Worker(threading.Thread):
     This thread is in charge of performing the tasks provided via
     the main queue ``queue``.
     """
-    def __init__(self, queue, done, timeout):
+    def __init__(self, queue, done):
         threading.Thread.__init__(self)
         # This is the queue where work (tasks) are submitted.
         self.queue = queue
         self.done = done
-        self.timeout = timeout
 
     def run(self):
         while True:
             try:
-                function = self.queue.get(True, self.timeout)
+                function = self.queue.get(True)
+                if function is QUEUE_END_SENTINEL:
+                    self.queue.task_done()
+                    break
                 try:
                     function()
                 except Exception as e:
@@ -132,14 +136,13 @@ class PrintThread(threading.Thread):
             deprecated, will be removed in the future).
 
     """
-    def __init__(self, result_queue, done, quiet, interrupt, timeout):
+    def __init__(self, result_queue, done, quiet, interrupt):
         threading.Thread.__init__(self)
         self._progress_dict = {}
         self._interrupt = interrupt
         self._result_queue = result_queue
         self._done = done
         self._quiet = quiet
-        self._timeout = timeout
         self._progress_length = 0
         self._num_parts = 0
         self._file_count = 0
@@ -164,7 +167,10 @@ class PrintThread(threading.Thread):
     def run(self):
         while True:
             try:
-                print_task = self._result_queue.get(True, self._timeout)
+                print_task = self._result_queue.get(True)
+                if print_task is QUEUE_END_SENTINEL:
+                    self._result_queue.task_done()
+                    break
                 LOGGER.debug("Received print task: %s", print_task)
                 try:
                     self._process_print_task(print_task)

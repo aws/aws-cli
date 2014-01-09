@@ -27,4 +27,7 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(call_args['prefix'], '')
         self.assertEqual(call_args['bucket'], 'bucket')
         self.assertNotIn('delimiter', call_args)
-        self.assertEqual(stdout, '2014-01-09 12:45:49        100 foo/bar.txt\n')
+        # Using assertRegexpMatches because the actual time displayed
+        # is specific to your tzinfo.
+        self.assertRegexpMatches(
+            stdout, '2014-01-09 \d{2}:\d{2}:\d{2}        100 foo/bar.txt\n')

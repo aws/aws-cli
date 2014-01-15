@@ -69,11 +69,14 @@ you can run::
     $ pip install --upgrade awscli
 
 This will install the aws-cli package as well as all dependencies.  You can
-also just clone the git repo or download the tarball.  Once you have the
-awscli directory structure on your workstation, you can just::
+also just `download the tarball`_.  Once you have the
+awscli directory structure on your workstation, you can just run::
 
     $ cd <path_to_awscli>
     $ python setup.py install
+
+If you want to run the ``develop`` branch of the CLI, see the
+"CLI Dev Version" section below.
 
 
 ------------
@@ -304,5 +307,56 @@ There is also an ASCII table format available.  You can select this
 style with the ``--output`` option or you can make this style your default
 output style via environment variable or config file entry as described above.
 
+
+---------------
+CLI Dev Version
+---------------
+
+If you are just interested in using the latest released version of the AWS CLI,
+please see the "Installation" section above.  This section is for anyone that
+wants to install the development version of the CLI.  You normally would not
+need to do this unless:
+
+* You are developing a feature for the CLI and plan on submitting a Pull
+  Request.
+* You want to test the latest changes of the CLI before they make it into an
+  official release.
+
+The latest changes to the CLI are in the ``develop`` branch on github.  This is
+the default branch when you clone the git repository.
+
+Additionally, there are several other packages that are developed in tandem
+with the CLI.  This includes:
+
+* `botocore <https://github.com/boto/botocore>`__
+* `bcdoc <https://github.com/boto/bcdoc>`__
+* `jmespath <https://github.com/boto/jmespath>`__
+
+If you just want to install a snapshot of the latest development version of
+the CLI, you can use the ``requirements.txt`` file included in this repo.
+This file points to the development version of the above packages::
+
+    cd <path_to_awscli>
+    pip install -r requirements.txt
+    pip install -e .
+
+However, to keep up to date, you will continually have to run the
+``pip install -r requirements.txt`` file to pull in the latest changes
+from the develop branches of botocore, bcdoc, etc.
+
+You can optionally clone each of those repositories and run "pip install -e ."
+for each repository::
+
+    git clone <jmespath> && cd jmespath/
+    pip install -e . && cd ..
+    git clone <bcdoc> && cd bcdoc/
+    pip install -e . &&  cd ..
+    git clone <botocore> && cd botocore/
+    pip install -e . && cd ..
+    git clone <awscli> && cd aws-cli/
+    pip install -e .
+
+
 .. _`Amazon Web Services Security Bulletins website`: https://aws.amazon.com/security/security-bulletins
 .. _pip: http://www.pip-installer.org/en/latest/
+.. _`download the tarball`: https://pypi.python.org/pypi/awscli

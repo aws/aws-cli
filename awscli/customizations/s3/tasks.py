@@ -2,9 +2,11 @@ import logging
 import math
 import os
 import time
+import socket
 import threading
 
 from botocore.vendored import requests
+from botocore.exceptions import IncompleteReadError
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, ReadFileChunk, relative_path
@@ -18,6 +20,10 @@ class UploadCancelledError(Exception):
 
 
 class DownloadCancelledError(Exception):
+    pass
+
+
+class RetriesExeededError(Exception):
     pass
 
 
@@ -292,17 +298,30 @@ class DownloadPartTask(object):
 
     # Amount to read from response body at a time.
     ITERATE_CHUNK_SIZE = 1024 * 1024
+    READ_TIMEOUT = 60
+    TOTAL_ATTEMPTS = 5
 
     def __init__(self, part_number, chunk_size, result_queue, service,
-                 filename, context):
+                 filename, context, open=open):
         self._part_number = part_number
         self._chunk_size = chunk_size
         self._result_queue = result_queue
         self._filename = filename
         self._service = filename.service
         self._context = context
+        self._open = open
 
     def __call__(self):
+        try:
+            self._download_part()
+        except Exception as e:
+            LOGGER.debug(
+                'Exception caught downloading byte range: %s',
+                e, exc_info=True)
+            self._context.cancel()
+            raise e
+
+    def _download_part(self):
         total_file_size = self._filename.size
         start_range = self._part_number * self._chunk_size
         if self._part_number == int(total_file_size / self._chunk_size) - 1:
@@ -315,34 +334,42 @@ class DownloadPartTask(object):
         bucket, key = find_bucket_key(self._filename.src)
         params = {'endpoint': self._filename.endpoint, 'bucket': bucket,
                   'key': key, 'range': range_param}
-        try:
-            LOGGER.debug("Making GetObject requests with byte range: %s",
-                         range_param)
-            response_data, http = operate(self._service, 'GetObject',
-                                          params)
-            LOGGER.debug("Response received from GetObject")
-            body = response_data['Body']
-            self._write_to_file(body)
-            self._context.announce_completed_part(self._part_number)
+        for i in range(self.TOTAL_ATTEMPTS):
+            try:
+                LOGGER.debug("Making GetObject requests with byte range: %s",
+                            range_param)
+                response_data, http = operate(self._service, 'GetObject',
+                                            params)
+                LOGGER.debug("Response received from GetObject")
+                body = response_data['Body']
+                self._write_to_file(body)
+                self._context.announce_completed_part(self._part_number)
 
-            message = print_operation(self._filename, 0)
-            total_parts = int(self._filename.size / self._chunk_size)
-            result = {'message': message, 'error': False,
-                      'total_parts': total_parts}
-            self._result_queue.put(result)
-        except Exception as e:
-            LOGGER.debug(
-                'Exception caught downloading byte range: %s',
-                e, exc_info=True)
-            self._context.cancel()
-            raise e
+                message = print_operation(self._filename, 0)
+                total_parts = int(self._filename.size / self._chunk_size)
+                result = {'message': message, 'error': False,
+                          'total_parts': total_parts}
+                self._result_queue.put(result)
+                return
+            except (socket.timeout, socket.error) as e:
+                LOGGER.debug("Socket timeout caught, retrying request, "
+                             "(attempt %s / %s)", i, self.TOTAL_ATTEMPTS,
+                             exc_info=True)
+                continue
+            except IncompleteReadError as e:
+                LOGGER.debug("Incomplete read detected: %s, (attempt %s / %s)",
+                             e, i, self.TOTAL_ATTEMPTS)
+                continue
+        raise RetriesExeededError("Maximum number of attempts exceeded: %s" %
+                                  self.TOTAL_ATTEMPTS)
 
     def _write_to_file(self, body):
         self._context.wait_for_file_created()
         LOGGER.debug("Writing part number %s to file: %s",
                      self._part_number, self._filename.dest)
         iterate_chunk_size = self.ITERATE_CHUNK_SIZE
-        with open(self._filename.dest, 'rb+') as f:
+        body.set_socket_timeout(self.READ_TIMEOUT)
+        with self._open(self._filename.dest, 'rb+') as f:
             f.seek(self._part_number * self._chunk_size)
             current = body.read(iterate_chunk_size)
             while current:
@@ -350,7 +377,6 @@ class DownloadPartTask(object):
                 current = body.read(iterate_chunk_size)
         LOGGER.debug("Done writing part number %s to file: %s",
                      self._part_number, self._filename.dest)
-
 
 
 class CreateMultipartUploadTask(BasicTask):

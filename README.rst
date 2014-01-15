@@ -12,7 +12,7 @@ Amazon Web Services.
 The currently supported services include:
 
 * AWS CloudFormation
-* AWS Data Pipeline
+* AWS Data Pipeline (Preview)
 * AWS Direct Connect
 * AWS Elastic Beanstalk
 * AWS Identity and Access Management
@@ -20,16 +20,23 @@ The currently supported services include:
 * AWS OpsWorks
 * AWS Security Token Service
 * AWS Storage Gateway
+* AWS Support
+* Amazon CloudFront (Preview)
+* Amazon CloudSearch (Preview)
 * Amazon CloudWatch
+* Amazon DynamoDB
 * Amazon ElastiCache
 * Amazon Elastic Compute Cloud
-* Amazon Elastic MapReduce
+* Amazon Elastic MapReduce (Preview)
 * Amazon Elastic Transcoder
+* Amazon Kinesis
 * Amazon Redshift
 * Amazon Relational Database Service (Beta)
+* Amazon Route 53
 * Amazon Simple Email Service
 * Amazon Simple Notification Service
 * Amazon Simple Queue Service
+* Amazon Storage Gateway
 * Amazon Simple Storage Service
 * Amazon Simple Workflow Service
 * Auto Scaling

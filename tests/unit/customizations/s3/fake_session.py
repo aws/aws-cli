@@ -262,6 +262,7 @@ class FakeOperation(object):
                 else:
                     body = body[int(beginning):(int(end) + 1)]
             mock_response = BytesIO(body)
+            mock_response.set_socket_timeout = Mock()
             response_data['Body'] = mock_response
             etag = self.session.s3[bucket][key]['ETag']
             response_data['ETag'] = etag + '--'

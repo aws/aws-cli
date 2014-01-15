@@ -94,3 +94,14 @@ bucket and key while setting the ACL to ``public-read-write``.
 ::
 
     move: s3://mybucket/test.txt to s3://mybucket/test2.txt
+
+9) The following ``mv`` command illustrates the use of the ``--grants``
+option to grant read access to all users and full control to a specific user
+identified by their email address::
+
+  aws s3 mv file.txt s3://mybucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=emailaddress=user@example.com
+
+*Output*::
+
+    move: file.txt to s3://mybucket/file.txt
+    

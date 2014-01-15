@@ -93,3 +93,14 @@ bucket and key while setting the ACL to ``public-read-write``.
 ::
 
     copy: s3://mybucket/test.txt to s3://mybucket/test2.txt
+
+9) The following ``cp`` command illustrates the use of the ``--grants``
+option to grant read access to all users and full control to a specific user
+identified by their email address::
+
+  aws s3 cp file.txt s3://mybucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=emailaddress=user@example.com
+
+*Output*::
+
+    upload: file.txt to s3://mybucket/file.txt
+

@@ -118,7 +118,23 @@ def add_param_descriptions(params_dict):
 
     params_dict['grants']['documents'] = (
         "Grant specific permissions to individual users or groups.  "
-        "You can supply a list of grants of the form "
-        "``permission=grantee`` where permission is one of: "
-        "``read``, ``readacl``, ``writeacp``, ``full``")
+        "You can supply a list of grants of the form::<p/>"
+        "  --grants Permission=Grantee_Type=Grantee_ID "
+        "[Permission=Grantee_Type=Grantee_ID ...]<p/>"
+        "Each value contains the following elements:<p/>"
+        "<ul><li><code>Permission</code> - Specifies the granted"
+        "permissions, and can be set to read, readacl, writeacl, or full.</li>"
+        "<li><code>Grantee_Type</code> - Specifies how the grantee is to "
+        "be identified, and can be set to uri, emailaddress, or id.</li>"
+        "<li><code>Grantee_ID</code> - Specifies the grantee based on Grantee_Type."
+        "</li></ul>"
+        "The <code>Grantee_ID</code> value can be one of:"
+        "<ul><li><b>uri</b> - The group's URI. For more information, see "
+        '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/ACLOverview.html#SpecifyingGrantee">'
+        "Who Is a Grantee?</a></li>"
+        "<li><b>emailaddress</b> - The account's email address.</li>"
+        "<li><b>id</b> - The account's canonical ID</li></ul>"
+        "</li></ul>"
+        "For more information on Amazon S3 access control, see "
+        '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAuthAccess.html">Access Control</a>')
 

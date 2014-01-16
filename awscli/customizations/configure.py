@@ -273,21 +273,7 @@ class ConfigureListCommand(BasicCommand):
 
 class ConfigureCommand(BasicCommand):
     NAME = 'configure'
-    DESCRIPTION = (
-        'Configure AWS CLI configuration data.  If this command '
-        'is run with no arguments, you will be prompted for configuration '
-        'values such as your AWS Access Key Id and you AWS Secret Access '
-        'Key.  You can configure a specific profile using the ``--profile`` '
-        'argument.  If your config file does not exist (the default location '
-        'is ``~/.aws/config``), it will be automatically created for you. '
-        'To keep an existing value, hit enter when prompted for the value.\n\n'
-        'When you are prompted for information, the current value will be '
-        'displayed in ``[brackets]``.  If the config item has no value, it '
-        'be displayed as ``[None]``.\n\n'
-        'Note that the ``configure`` command only work with values from the '
-        'config file.  It does not use any configuration values from '
-        'environment variables or the IAM role.\n'
-    )
+    DESCRIPTION = BasicCommand.FROM_FILE
     SYNOPSIS = ('aws configure [--profile profile-name]')
     EXAMPLES = (
         'To create a new configuration::\n'

@@ -145,7 +145,7 @@ class BasicCommand(CLICommand):
 
     @property
     def arg_table(self):
-        arg_table = {}
+        arg_table = OrderedDict()
         for arg_data in self.ARG_TABLE:
             custom_argument = CustomArgument(**arg_data)
             arg_table[arg_data['name']] = custom_argument

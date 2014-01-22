@@ -116,6 +116,9 @@ class ConfigFileWriter(object):
         # contents is a list of file line contents.
         for i in range(len(contents)):
             line = contents[i]
+            if line.strip().startswith(('#', ';')):
+                # This is a comment, so we can safely ignore this line.
+                continue
             match = self.SECTION_REGEX.search(line)
             if match is not None and self._matches_section(match,
                                                            section_name):
@@ -268,6 +271,49 @@ class ConfigureListCommand(BasicCommand):
         else:
             return ConfigValue(NOT_SET, None, None)
 
+class ConfigureSetCommand(BasicCommand):
+    NAME = 'set'
+    DESCRIPTION = BasicCommand.FROM_FILE('configure', 'set',
+                                         '_description.rst')
+    SYNOPSIS = ('aws configure set varname value [--profile profile-name]')
+    EXAMPLES = BasicCommand.FROM_FILE('configure', 'set', '_examples.rst')
+    ARG_TABLE = [
+        {'name': 'varname',
+         'help_text': 'The name of the config value to set.',
+         'action': 'store',
+         'cli_type_name': 'string', 'positional_arg': True},
+        {'name': 'value',
+         'help_text': 'The value to set.',
+         'action': 'store',
+         'cli_type_name': 'string', 'positional_arg': True},
+    ]
+
+    def __init__(self, session, config_writer=None):
+        super(ConfigureSetCommand, self).__init__(session)
+        if config_writer is None:
+            config_writer = ConfigFileWriter()
+        self._config_writer = config_writer
+
+    def _run_main(self, args, parsed_globals):
+        varname = args.varname
+        value = args.value
+        section = 'default'
+        if '.' not in varname:
+            if self._session.profile is not None:
+                section = 'profile %s' % self._session.profile
+        else:
+            num_dots = varname.count('.')
+            if num_dots == 1:
+                section, varname = varname.split('.')
+            elif num_dots == 2 and varname.startswith('profile'):
+                dotted_section, varname = varname.rsplit('.', 1)
+                profile = dotted_section.split('.')[1]
+                section = 'profile %s' % profile
+        config_filename = os.path.expanduser(
+            self._session.get_config_variable('config_file'))
+        updated_config = {'__section__': section, varname: value}
+        self._config_writer.update_config(updated_config, config_filename)
+
 
 class ConfigureGetCommand(BasicCommand):
     NAME = 'get'
@@ -342,6 +388,7 @@ class ConfigureCommand(BasicCommand):
     SUBCOMMANDS = [
         {'name': 'list', 'command_class': ConfigureListCommand},
         {'name': 'get', 'command_class': ConfigureGetCommand},
+        {'name': 'set', 'command_class': ConfigureSetCommand},
     ]
 
     # If you want to add new values to prompt, update this list here.

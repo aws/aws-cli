@@ -573,3 +573,29 @@ class TestConfigureGetSetCommand(unittest.TestCase):
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'access_key')
         self.assertEqual(session.profile, 'testing')
+
+
+class TestConfigureSetCommand(unittest.TestCase):
+    def setUp(self):
+        self.session = FakeSession({'config_file': 'myconfigfile'})
+        self.session.profile = None
+        self.config_writer = mock.Mock()
+
+    def test_configure_set_command(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default', 'region': 'us-west-2'}, 'myconfigfile')
+
+    def test_configure_set_command_dotted(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['preview.emr', 'true'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'preview', 'emr': 'true'}, 'myconfigfile')
+
+    def test_configure_set_with_profile(self):
+        self.session.profile = 'testing'
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile testing', 'region': 'us-west-2'}, 'myconfigfile')

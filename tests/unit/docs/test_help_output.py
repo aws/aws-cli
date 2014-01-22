@@ -262,3 +262,14 @@ class TestParamRename(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'create-image', 'help'])
         self.assert_not_contains('no-no-reboot')
         self.assert_contains('--reboot')
+
+class TestCustomCommandDocsFromFile(BaseAWSHelpOutputTest):
+    def test_description_from_rst_file(self):
+        # The description for the configure command
+        # is in _description.rst.  We're verifying that we
+        # can read those contents properly.
+        self.driver.main(['configure', 'help'])
+        # These are a few options that are documented in the help output.
+        self.assert_contains('metadata_service_timeout')
+        self.assert_contains('metadata_service_num_attempts')
+        self.assert_contains('aws_access_key_id')

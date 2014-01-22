@@ -1,7 +1,9 @@
-import bcdoc.docevents
+import os
 
+import bcdoc.docevents
 from botocore.compat import OrderedDict
 
+import awscli
 from awscli.clidocs import CLIDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
 from awscli.clidriver import CLICommand
@@ -54,6 +56,22 @@ class BasicCommand(CLICommand):
     # ]
     # The command_class must subclass from ``BasicCommand``.
     SUBCOMMANDS = []
+
+    FROM_FILE = object()
+    # You can set the DESCRIPTION, SYNOPSIS, and EXAMPLES to FROM_FILE
+    # and we'll automatically read in that data from the file.
+    # This is useful if you have a lot of content and would prefer to keep
+    # the docs out of the class definition.  For example:
+    #
+    # DESCRIPTION = FROM_FILE
+    #
+    # will set the DESCRIPTION value to the contents of
+    # awscli/examples/<command name>/_description.rst
+    # The naming conventions for these attributes are:
+    #
+    # DESCRIPTION = awscli/examples/<command name>/_description.rst
+    # SYNOPSIS = awscli/examples/<command name>/_synopsis.rst
+    # EXAMPLES = awscli/examples/<command name>/_examples.rst
 
     # At this point, the only other thing you have to implement is a _run_main
     # method (see the method for more information).
@@ -135,13 +153,36 @@ class BasicHelp(HelpCommand):
 
         # These are public attributes that are mapped from the command
         # object.  These are used by the BasicDocHandler below.
-        self.description = command_object.DESCRIPTION
-        self.synopsis = command_object.SYNOPSIS
-        self.examples = command_object.EXAMPLES
+        self._description = command_object.DESCRIPTION
+        self._synopsis = command_object.SYNOPSIS
+        self._examples = command_object.EXAMPLES
 
     @property
     def name(self):
         return self.obj.NAME
+
+    @property
+    def description(self):
+        return self._get_doc_contents('_description')
+
+    @property
+    def synopsis(self):
+        return self._get_doc_contents('_synopsis')
+
+    @property
+    def examples(self):
+        return self._get_doc_contents('_examples')
+
+    def _get_doc_contents(self, attr_name):
+        value = getattr(self, attr_name)
+        if value is BasicCommand.FROM_FILE:
+            doc_path = os.path.join(
+                os.path.abspath(os.path.dirname(awscli.__file__)), 'examples',
+                self.name, attr_name + '.rst')
+            with open(doc_path) as f:
+                return f.read()
+        else:
+            return value
 
     def __call__(self, args, parsed_globals):
         # Create an event handler for a Provider Document

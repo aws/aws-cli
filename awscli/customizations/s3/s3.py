@@ -31,8 +31,7 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.description import add_command_descriptions, \
     add_param_descriptions
-from awscli.customizations.s3.utils import find_bucket_key, check_error, \
-        uni_print
+from awscli.customizations.s3.utils import find_bucket_key, uni_print
 from awscli.customizations.s3.dochandler import S3DocumentEventHandler
 
 
@@ -68,8 +67,6 @@ def awscli_initialize(cli):
     """
     cli.register("building-command-table.main", add_s3)
     cli.register("doc-examples.S3.*", add_s3_examples)
-    for cmd in CMD_DICT.keys():
-        cli.register("building-parameter-table.s3.%s" % cmd, add_cmd_params)
 
 
 def s3_plugin_initialize(event_handlers):
@@ -87,17 +84,6 @@ def add_s3(command_table, session, **kwargs):
     """
     utils.rename_command(command_table, 's3', 's3api')
     command_table['s3'] = S3('s3', session)
-
-
-def add_cmd_params(parameter_table, command, **kwargs):
-    """
-    This creates the ParameterArgument object for each possible parameter
-    in a specified command
-    """
-    for param in CMD_DICT[command]['params']:
-        parameter_table[param] = S3Parameter(param,
-                                             PARAMS_DICT[param]['options'],
-                                             PARAMS_DICT[param]['documents'])
 
 
 def add_s3_examples(help_command, **kwargs):
@@ -304,8 +290,7 @@ class S3SubCommand(object):
         table.  This command is necessary for generating html docs for
         the specified command.
         """
-        arg_table = {}
-        add_cmd_params(arg_table, self._name)
+        arg_table = self._populate_parameter_table()
         return S3HelpCommand(self._session, self,
                              command_table=None,
                              arg_table=arg_table)
@@ -316,11 +301,19 @@ class S3SubCommand(object):
         S3Parameter objects corresponding to the specified command when
         the event is emitted.
         """
-        parameter_table = {}
+        parameter_table = self._populate_parameter_table()
         self._session.emit('building-parameter-table.s3.%s' % self._name,
                            parameter_table=parameter_table,
                            command=self._name)
 
+        return parameter_table
+
+    def _populate_parameter_table(self):
+        parameter_table = {}
+        for param in CMD_DICT[self._name]['params']:
+            parameter_table[param] = S3Parameter(param,
+                                                 PARAMS_DICT[param]['options'],
+                                                 PARAMS_DICT[param]['documents'])
         return parameter_table
 
     def _build_call_parameters(self, args, service_params):
@@ -354,6 +347,9 @@ class ListCommand(S3SubCommand):
         self.endpoint = self._get_endpoint(self.service, parsed_globals)
         if not bucket:
             self._list_all_buckets()
+        elif parsed_args.dir_op:
+            # Then --recursive was specified.
+            self._list_all_objects_recursive(bucket, key)
         else:
             self._list_all_objects(bucket, key)
         return 0
@@ -363,24 +359,30 @@ class ListCommand(S3SubCommand):
         iterator = operation.paginate(self.endpoint, bucket=bucket,
                                       prefix=key, delimiter='/')
         for _, response_data in iterator:
-            common_prefixes = response_data['CommonPrefixes']
-            contents = response_data['Contents']
-            for common_prefix in common_prefixes:
-                prefix_components = common_prefix['Prefix'].split('/')
-                prefix = prefix_components[-2]
-                pre_string = "PRE".rjust(30, " ")
-                print_str = pre_string + ' ' + prefix + '/\n'
-                uni_print(print_str)
-                sys.stdout.flush()
-            for content in contents:
-                last_mod_str = self._make_last_mod_str(content['LastModified'])
-                size_str = self._make_size_str(content['Size'])
+            self._display_page(response_data)
+
+    def _display_page(self, response_data, use_basename=True):
+        common_prefixes = response_data['CommonPrefixes']
+        contents = response_data['Contents']
+        for common_prefix in common_prefixes:
+            prefix_components = common_prefix['Prefix'].split('/')
+            prefix = prefix_components[-2]
+            pre_string = "PRE".rjust(30, " ")
+            print_str = pre_string + ' ' + prefix + '/\n'
+            uni_print(print_str)
+            sys.stdout.flush()
+        for content in contents:
+            last_mod_str = self._make_last_mod_str(content['LastModified'])
+            size_str = self._make_size_str(content['Size'])
+            if use_basename:
                 filename_components = content['Key'].split('/')
                 filename = filename_components[-1]
-                print_str = last_mod_str + ' ' + size_str + ' ' + \
-                    filename + '\n'
-                uni_print(print_str)
-                sys.stdout.flush()
+            else:
+                filename = content['Key']
+            print_str = last_mod_str + ' ' + size_str + ' ' + \
+                filename + '\n'
+            uni_print(print_str)
+            sys.stdout.flush()
 
     def _list_all_buckets(self):
         operation = self.service.get_operation('ListBuckets')
@@ -391,6 +393,13 @@ class ListCommand(S3SubCommand):
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
             sys.stdout.flush()
+
+    def _list_all_objects_recursive(self, bucket, key):
+        operation = self.service.get_operation('ListObjects')
+        iterator = operation.paginate(self.endpoint, bucket=bucket,
+                                      prefix=key)
+        for _, response_data in iterator:
+            self._display_page(response_data, use_basename=False)
 
     def _make_last_mod_str(self, last_mod):
         """
@@ -810,7 +819,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                                 'content-encoding', 'content-language',
                                 'expires']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
-                   'params': [], 'default': 's3://',
+                   'params': ['recursive'], 'default': 's3://',
                    'command_class': ListCommand},
             'mb': {'options': {'nargs': 1}, 'params': []},
             'rb': {'options': {'nargs': 1}, 'params': ['force']},

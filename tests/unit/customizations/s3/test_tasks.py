@@ -14,10 +14,15 @@ from tests import unittest
 import random
 import threading
 import mock
+import socket
 
+from botocore.exceptions import IncompleteReadError
+
+from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.tasks import MultipartUploadContext
 from awscli.customizations.s3.tasks import UploadCancelledError
 from awscli.customizations.s3.tasks import print_operation
+from awscli.customizations.s3.tasks import RetriesExeededError
 
 
 class TestMultipartUploadContext(unittest.TestCase):
@@ -239,3 +244,56 @@ class TestPrintOperation(unittest.TestCase):
         filename.dest_type = 's3'
         message = print_operation(filename, failed=False)
         self.assertIn(r'e:\foo', message)
+
+
+class TestDownloadPartTask(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = mock.Mock()
+        self.service = mock.Mock()
+        self.filename = mock.Mock()
+        self.filename.size = 10 * 1024 * 1024
+        self.filename.src = 'bucket/key'
+        self.filename.dest = 'local/file'
+        self.filename.service = self.service
+        self.filename.operation_name = 'download'
+        self.context = mock.Mock()
+        self.open = mock.MagicMock()
+
+    def test_socket_timeout_is_retried(self):
+        self.service.get_operation.return_value.call.side_effect = socket.error
+        task = DownloadPartTask(1, 1024 * 1024, self.result_queue,
+                                self.service, self.filename, self.context)
+        # The mock is configured to keep raising a socket.error
+        # so we should cancel the download.
+        with self.assertRaises(RetriesExeededError):
+            task()
+        self.context.cancel.assert_called_with()
+        # And we retried the request multiple times.
+        self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
+                         self.service.get_operation.call_count)
+
+    def test_download_succeeds(self):
+        body = mock.Mock()
+        body.read.return_value = b''
+        self.service.get_operation.return_value.call.side_effect = [
+            socket.error, (mock.Mock(), {'Body': body})]
+        context = mock.Mock()
+        task = DownloadPartTask(1, 1024 * 1024, self.result_queue,
+                                self.service, self.filename, self.context,
+                                self.open)
+        task()
+        self.assertEqual(self.result_queue.put.call_count, 1)
+        # And we tried twice, the first one failed, the second one
+        # succeeded.
+        self.assertEqual(self.service.get_operation.call_count, 2)
+
+    def test_incomplete_read_is_retried(self):
+        self.service.get_operation.return_value.call.side_effect = \
+                IncompleteReadError(actual_bytes=1, expected_bytes=2)
+        task = DownloadPartTask(1, 1024 * 1024, self.result_queue,
+                                self.service, self.filename, self.context)
+        with self.assertRaises(RetriesExeededError):
+            task()
+        self.context.cancel.assert_called_with()
+        self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
+                         self.service.get_operation.call_count)

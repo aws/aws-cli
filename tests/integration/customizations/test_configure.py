@@ -28,12 +28,17 @@ class TestConfigureCommand(unittest.TestCase):
         self.env_vars['AWS_CONFIG_FILE'] = self.config_filename
 
     def tearDown(self):
-        os.remove(self.config_filename)
+        if os.path.isfile(self.config_filename):
+            os.remove(self.config_filename)
         os.rmdir(self.tempdir)
 
     def set_config_file_contents(self, contents):
         with open(self.config_filename, 'w') as f:
             f.write(contents)
+
+    def get_config_file_contents(self):
+        with open(self.config_filename, 'r') as f:
+            return f.read()
 
     def test_list_command(self):
         self.set_config_file_contents(
@@ -129,6 +134,62 @@ class TestConfigureCommand(unittest.TestCase):
         p = aws('configure get preview.emr --profile default',
                 env_vars=self.env_vars)
         self.assertEqual(p.stdout.strip(), 'true')
+
+    def test_set_with_config_file_no_exist(self):
+        aws('configure set region us-west-1', env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            'region = us-west-1\n', self.get_config_file_contents())
+
+    def test_set_with_empty_config_file(self):
+        with open(self.config_filename, 'w'):
+            pass
+
+        aws('configure set region us-west-1', env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            'region = us-west-1\n', self.get_config_file_contents())
+
+    def test_set_with_updating_value(self):
+        self.set_config_file_contents(
+            '[default]\n'
+            'region = us-west-2\n')
+
+        aws('configure set region us-west-1', env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            'region = us-west-1\n', self.get_config_file_contents())
+
+    def test_set_with_profile(self):
+        aws('configure set region us-west-1 --profile testing',
+            env_vars=self.env_vars)
+        self.assertEqual(
+            '[profile testing]\n'
+            'region = us-west-1\n', self.get_config_file_contents())
+
+    def test_set_with_fq_single_dot(self):
+        aws('configure set preview.cloudsearch true', env_vars=self.env_vars)
+        self.assertEqual(
+            '[preview]\n'
+            'cloudsearch = true\n', self.get_config_file_contents())
+
+    def test_set_with_fq_double_dot(self):
+        aws('configure set profile.testing.region us-west-2',
+            env_vars=self.env_vars)
+        self.assertEqual(
+            '[profile testing]\n'
+            'region = us-west-2\n', self.get_config_file_contents())
+
+    def test_set_with_commented_out_field(self):
+        self.set_config_file_contents(
+            '#[preview]\n'
+            '#cloudsearch = true\n')
+        aws('configure set preview.cloudsearch true', env_vars=self.env_vars)
+        self.assertEqual(
+            '#[preview]\n'
+            '#cloudsearch = true\n'
+            '[preview]\n'
+            'cloudsearch = true\n', self.get_config_file_contents())
 
 
 if __name__ == '__main__':

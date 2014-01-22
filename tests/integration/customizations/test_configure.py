@@ -183,11 +183,11 @@ class TestConfigureCommand(unittest.TestCase):
     def test_set_with_commented_out_field(self):
         self.set_config_file_contents(
             '#[preview]\n'
-            '#cloudsearch = true\n')
+            ';cloudsearch = true\n')
         aws('configure set preview.cloudsearch true', env_vars=self.env_vars)
         self.assertEqual(
             '#[preview]\n'
-            '#cloudsearch = true\n'
+            ';cloudsearch = true\n'
             '[preview]\n'
             'cloudsearch = true\n', self.get_config_file_contents())
 

@@ -12,7 +12,7 @@ will produce the following config file::
     [default]
     aws_access_key_id = default_access_key
     aws_secret_access_key = default_secret_key
-    region us-west-2
+    region = us-west-2
 
     [profile testing]
     region = us-west-1

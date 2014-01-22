@@ -183,7 +183,7 @@ class ConfigureListCommand(BasicCommand):
         'variable, and it will tell you the name of the environment '
         'variable.\n'
     )
-    SYNOPSIS = ('aws configure list [--profile profile-name]')
+    SYNOPSIS = 'aws configure list [--profile profile-name]'
     EXAMPLES = (
         'To show your current configuration values::\n'
         '\n'
@@ -275,7 +275,7 @@ class ConfigureSetCommand(BasicCommand):
     NAME = 'set'
     DESCRIPTION = BasicCommand.FROM_FILE('configure', 'set',
                                          '_description.rst')
-    SYNOPSIS = ('aws configure set varname value [--profile profile-name]')
+    SYNOPSIS = 'aws configure set varname value [--profile profile-name]'
     EXAMPLES = BasicCommand.FROM_FILE('configure', 'set', '_examples.rst')
     ARG_TABLE = [
         {'name': 'varname',
@@ -299,9 +299,15 @@ class ConfigureSetCommand(BasicCommand):
         value = args.value
         section = 'default'
         if '.' not in varname:
+            # unqualified name, scope it to the current
+            # profile (or leave it as the 'default' section if
+            # no profile is set).
             if self._session.profile is not None:
                 section = 'profile %s' % self._session.profile
         else:
+            # It's either section.config-name,
+            # of profile.profile-name.config-name (we
+            # don't support arbitrary.thing.config-name).
             num_dots = varname.count('.')
             if num_dots == 1:
                 section, varname = varname.split('.')

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.2.11
+======
 
 * Add support for the ``--recursive`` option in the ``aws s3 ls`` command
   (`issue https://github.com/aws/aws-cli/issues/465`)

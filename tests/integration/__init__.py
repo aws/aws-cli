@@ -55,7 +55,7 @@ def _escape_quotes(command):
     return command
 
 
-def aws(command, collect_memory=False):
+def aws(command, collect_memory=False, env_vars=None):
     """Run an aws command.
 
     This help function abstracts the differences of running the "aws"
@@ -64,6 +64,9 @@ def aws(command, collect_memory=False):
     If collect_memory is ``True`` the the Result object will have a list
     of memory usage taken at 2 second intervals.  The memory usage
     will be in bytes.
+
+    If env_vars is None, this will set the environment variables
+    to be used by the aws process.
 
     """
     if platform.system() == 'Windows':
@@ -76,6 +79,8 @@ def aws(command, collect_memory=False):
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
     env['AWS_DEFAULT_REGION'] = "us-east-1"
+    if env_vars is not None:
+        env = env_vars
     process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
                     env=env)
     memory = None

@@ -11,6 +11,13 @@ from awscli.arguments import CustomArgument
 from awscli.help import HelpCommand
 
 
+class _FromFile(object):
+    def __init__(self, *paths):
+        self.filename = None
+        if paths:
+            self.filename = os.path.join(*paths)
+
+
 class BasicCommand(CLICommand):
     """Basic top level command with no subcommands.
 
@@ -57,7 +64,7 @@ class BasicCommand(CLICommand):
     # The command_class must subclass from ``BasicCommand``.
     SUBCOMMANDS = []
 
-    FROM_FILE = object()
+    FROM_FILE = _FromFile
     # You can set the DESCRIPTION, SYNOPSIS, and EXAMPLES to FROM_FILE
     # and we'll automatically read in that data from the file.
     # This is useful if you have a lot of content and would prefer to keep
@@ -72,6 +79,17 @@ class BasicCommand(CLICommand):
     # DESCRIPTION = awscli/examples/<command name>/_description.rst
     # SYNOPSIS = awscli/examples/<command name>/_synopsis.rst
     # EXAMPLES = awscli/examples/<command name>/_examples.rst
+    #
+    # You can also provide a relative path and we'll load the file
+    # from the specified location:
+    #
+    # DESCRIPTION = awscli/examples/<filename>
+    #
+    # For example:
+    #
+    # DESCRIPTION = FROM_FILE('command, 'subcommand, '_description.rst')
+    # DESCRIPTION = 'awscli/examples/command/subcommand/_description.rst'
+    #
 
     # At this point, the only other thing you have to implement is a _run_main
     # method (see the method for more information).
@@ -91,9 +109,9 @@ class BasicCommand(CLICommand):
         elif getattr(parsed_args, 'subcommand', None) is None:
             # No subcommand was specified so call the main
             # function for this top level command.
-            self._run_main(parsed_args, parsed_globals)
+            return self._run_main(parsed_args, parsed_globals)
         else:
-            subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
+            return subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
 
     def _run_main(self, parsed_args, parsed_globals):
         # Subclasses should implement this method.
@@ -127,7 +145,7 @@ class BasicCommand(CLICommand):
 
     @property
     def arg_table(self):
-        arg_table = {}
+        arg_table = OrderedDict()
         for arg_data in self.ARG_TABLE:
             custom_argument = CustomArgument(**arg_data)
             arg_table[arg_data['name']] = custom_argument
@@ -175,10 +193,14 @@ class BasicHelp(HelpCommand):
 
     def _get_doc_contents(self, attr_name):
         value = getattr(self, attr_name)
-        if value is BasicCommand.FROM_FILE:
+        if isinstance(value, BasicCommand.FROM_FILE):
+            if value.filename is not None:
+                trailing_path = value.filename
+            else:
+                trailing_path = os.path.join(self.name, attr_name + '.rst')
             doc_path = os.path.join(
                 os.path.abspath(os.path.dirname(awscli.__file__)), 'examples',
-                self.name, attr_name + '.rst')
+                trailing_path)
             with open(doc_path) as f:
                 return f.read()
         else:
@@ -213,6 +235,15 @@ class BasicDocHandler(CLIDocumentEventHandler):
             self.doc.style.h2('Synopsis')
             self.doc.style.start_codeblock()
             self.doc.writeln(help_command.synopsis)
+
+    def doc_synopsis_option(self, arg_name, help_command, **kwargs):
+        if not help_command.synopsis:
+            super(BasicDocHandler, self).doc_synopsis_option(
+                help_command=help_command, **kwargs)
+        else:
+            # A synopsis has been provided so we don't need to write
+            # anything here.
+            pass
 
     def doc_synopsis_end(self, help_command, **kwargs):
         if not help_command.synopsis:

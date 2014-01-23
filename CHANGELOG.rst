@@ -2,12 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws configure``: Add support for ``configure get`` and ``configure
+  set`` command which allow you to set and get configuration values from the
+  AWS config file (`issue 602 <https://github.com/aws/aws-cli/issues/602`)
+
+
 1.2.11
 ======
 
-* Add support for ``configure get`` and ``configure set`` command which allow
-  you to set and get configuration values from the AWS config file
-  (`issue 602 <https://github.com/aws/aws-cli/issues/602`)
 * Add support for the ``--recursive`` option in the ``aws s3 ls`` command
   (`issue 465 <https://github.com/aws/aws-cli/issues/465`)
 * Add support for the ``AWS_CA_BUNDLE`` environment variable so that users

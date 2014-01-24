@@ -16,6 +16,7 @@ import hashlib
 import math
 import os
 import sys
+from collections import namedtuple
 from functools import partial
 
 from six import PY3
@@ -260,3 +261,9 @@ class ReadFileChunk(object):
         # already exhausted the stream so iterating over the file immediately
         # steps, which is what we're simulating here.
         return iter([])
+
+
+IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])
+# Used to signal that IO for the filename is finished, and that
+# any associated resources may be cleaned up.
+IOCloseRequest = namedtuple('IOCloseRequest', ['filename'])

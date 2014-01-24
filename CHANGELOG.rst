@@ -7,7 +7,9 @@ Next Release (TBD)
 
 * feature:``aws configure``: Add support for ``configure get`` and ``configure
   set`` command which allow you to set and get configuration values from the
-  AWS config file (`issue 602 <https://github.com/aws/aws-cli/issues/602`)
+  AWS config file (`issue 602 <https://github.com/aws/aws-cli/issues/602`__)
+* bugfix:``aws s3``: Fix issue with Amazon S3 downloads on certain OSes
+  (`issue 619 <https://github.com/aws/aws-cli/issues/619`__)
 
 
 1.2.11

@@ -7,6 +7,7 @@ import threading
 
 from botocore.vendored import requests
 from botocore.exceptions import IncompleteReadError
+from botocore.compat import quote
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, ReadFileChunk, relative_path
@@ -145,11 +146,13 @@ class CopyPartTask(object):
             upload_id = self._upload_context.wait_for_upload_id()
             bucket, key = find_bucket_key(self._filename.dest)
             src_bucket, src_key = find_bucket_key(self._filename.src)
+            copy_source = '%s/%s' % (src_bucket, src_key)
+            copy_source = quote(copy_source.encode('utf-8'), safe='/~')
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
                       'part_number': self._part_number,
                       'upload_id': upload_id,
-                      'copy_source': '%s/%s' % (src_bucket, src_key),
+                      'copy_source': copy_source,
                       'copy_source_range': range_param}
             response_data, http = operate(
                 self._filename.service, 'UploadPartCopy', params)

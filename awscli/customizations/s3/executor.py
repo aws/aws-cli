@@ -22,11 +22,11 @@ LOGGER = logging.getLogger(__name__)
 QUEUE_END_SENTINEL = object()
 
 
-class Executer(object):
+class Executor(object):
     """
     This class is in charge of all of the threads.  It starts up the threads
     and cleans up the threads when done.  The two type of threads the
-    ``Executer``runs is a worker and a print thread.
+    ``Executor``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, result_queue,
                  quiet, interrupt, max_queue_size):
@@ -62,7 +62,7 @@ class Executer(object):
 
     def submit(self, task):
         """
-        This is the function used to submit a task to the ``Executer``.
+        This is the function used to submit a task to the ``Executor``.
         """
         LOGGER.debug("Submitting task: %s", task)
         self.queue.put(task)
@@ -70,13 +70,13 @@ class Executer(object):
     def wait(self):
         """
         This is the function used to wait on all of the tasks to finish
-        in the ``Executer``.
+        in the ``Executor``.
         """
         self.queue.join()
 
     def join(self):
         """
-        This is used to clean up the ``Executer``.
+        This is used to clean up the ``Executor``.
         """
         self.result_queue.put(QUEUE_END_SENTINEL)
         for i in range(self.num_threads):

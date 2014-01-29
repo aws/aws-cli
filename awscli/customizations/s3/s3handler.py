@@ -31,12 +31,19 @@ class S3Handler(object):
     sources the ``self.executor`` from which threads inside the
     class pull tasks from to complete.
     """
+    MAX_IO_QUEUE_SIZE = 20
+
     def __init__(self, session, params, multi_threshold=MULTI_THRESHOLD,
                  chunksize=CHUNKSIZE):
         self.session = session
         self.done = threading.Event()
         self.interrupt = threading.Event()
         self.result_queue = NoBlockQueue()
+        # The write_queue has potential for optimizations, so the constant
+        # for maxsize is scoped to this class (as opposed to constants.py)
+        # so we have the ability to change this value later.
+        self.write_queue = NoBlockQueue(self.interrupt,
+                                        maxsize=self.MAX_IO_QUEUE_SIZE)
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
                        'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
@@ -53,7 +60,7 @@ class S3Handler(object):
         self.executor = Executor(
             done=self.done, num_threads=NUM_THREADS, result_queue=self.result_queue,
             quiet=self.params['quiet'], interrupt=self.interrupt,
-            max_queue_size=MAX_QUEUE_SIZE,
+            max_queue_size=MAX_QUEUE_SIZE, write_queue=self.write_queue
         )
         self._multipart_uploads = []
         self._multipart_downloads = []
@@ -223,11 +230,11 @@ class S3Handler(object):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
                 result_queue=self.result_queue, service=filename.service,
-                filename=filename, context=context)
+                filename=filename, context=context, io_queue=self.write_queue)
             self.executor.submit(task)
         complete_file_task = tasks.CompleteDownloadTask(
             context=context, filename=filename, result_queue=self.result_queue,
-            params=self.params)
+            params=self.params, io_queue=self.write_queue)
         self.executor.submit(complete_file_task)
         self._multipart_downloads.append((context, filename.dest))
         if remove_remote_file:

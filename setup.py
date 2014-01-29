@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore>=0.31.0,<0.32.0',
+requires = ['botocore>=0.32.0,<0.33.0',
             'bcdoc>=0.12.0,<0.13.0',
             'six>=1.1.0',
             'colorama==0.2.5',
@@ -31,7 +31,8 @@ setup_options = dict(
              'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
     packages=find_packages('.', exclude=['tests*']),
     package_dir={'awscli': 'awscli'},
-    package_data={'awscli': ['data/*.json', 'examples/*/*']},
+    package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
+                             'examples/*/*/*.rst']},
     install_requires=requires,
     license="Apache License 2.0",
     classifiers=(

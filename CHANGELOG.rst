@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.2.12
+======
 
 * feature:``aws configure``: Add support for ``configure get`` and ``configure
   set`` command which allow you to set and get configuration values from the

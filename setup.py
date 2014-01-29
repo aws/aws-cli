@@ -31,7 +31,8 @@ setup_options = dict(
              'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
     packages=find_packages('.', exclude=['tests*']),
     package_dir={'awscli': 'awscli'},
-    package_data={'awscli': ['data/*.json', 'examples/*/*']},
+    package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
+                             'examples/*/*/*.rst']},
     install_requires=requires,
     license="Apache License 2.0",
     classifiers=(

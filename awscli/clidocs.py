@@ -140,24 +140,6 @@ class CLIDocumentEventHandler(object):
         doc.style.dedent()
         doc.style.new_paragraph()
 
-    def doc_options_end(self, help_command, **kwargs):
-        doc = help_command.doc
-        operation = help_command.obj
-        if hasattr(operation, 'filters'):
-            doc.style.h2('Filters')
-            sorted_names = sorted(operation.filters)
-            for filter_name in sorted_names:
-                filter_data = operation.filters[filter_name]
-                doc.style.h3(filter_name)
-                if 'documentation' in filter_data:
-                    doc.include_doc_string(filter_data['documentation'])
-                if 'choices' in filter_data:
-                    doc.style.new_paragraph()
-                    doc.write('Valid Values: ')
-                    choices = '|'.join(filter_data['choices'])
-                    doc.write(choices)
-                doc.style.new_paragraph()
-
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 

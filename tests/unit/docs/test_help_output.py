@@ -65,8 +65,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         # Should see the title with the operation name
         self.assert_contains('*************\nrun-instances\n*************')
         # Should contain part of the help text from the model.
-        self.assert_contains('The run-instances operation launches a specified '
-                             'number of instances')
+        self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
 
     def test_arguments_with_example_json_syntax(self):

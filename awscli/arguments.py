@@ -162,7 +162,7 @@ class CustomArgument(BaseCLIArgument):
 
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
-                 cli_type_name=None, group_name=None):
+                 cli_type_name=None, group_name=None, positional_arg=False):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -172,6 +172,7 @@ class CustomArgument(BaseCLIArgument):
         self._nargs = nargs
         self._cli_type_name = cli_type_name
         self._group_name = group_name
+        self._positional_arg = positional_arg
         if choices is None:
             choices = []
         self._choices = choices
@@ -180,6 +181,13 @@ class CustomArgument(BaseCLIArgument):
         # as part of the interface.  Currently the argprocess
         # and docs code relies on this object.
         self.argument_object = None
+
+    @property
+    def cli_name(self):
+        if self._positional_arg:
+            return self._name
+        else:
+            return '--' + self._name
 
     def add_to_parser(self, parser):
         """

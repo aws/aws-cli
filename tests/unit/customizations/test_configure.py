@@ -15,7 +15,6 @@ import os
 import tempfile
 import shutil
 from tests import unittest
-from tests import BaseAWSHelpOutputTest
 
 import mock
 from six import StringIO
@@ -70,7 +69,7 @@ class FakeSession(object):
             raise ProfileNotFound(profile='foo')
         return self.config
 
-    def get_variable(self, name, methods=None):
+    def get_config_variable(self, name, methods=None):
         if self.profile_does_not_exist and not name == 'config_file':
             raise ProfileNotFound(profile='foo')
         if methods is not None:
@@ -131,7 +130,6 @@ class TestConfigureCommand(unittest.TestCase):
 
     def test_some_values_changed(self):
         # Test the case where the user only wants to change a single_value.
-        user_presses_enter = None
         responses = {
             "AWS Access Key ID": None,
             "AWS Secert Access Key": None,
@@ -210,7 +208,7 @@ class TestInteractivePrompter(unittest.TestCase):
     @mock.patch('awscli.customizations.configure.raw_input')
     def test_secret_key_is_masked(self, mock_raw_input):
         prompter = configure.InteractivePrompter()
-        response = prompter.get_value(
+        prompter.get_value(
             current_value='mysupersecretkey',
             config_name='aws_secret_access_key',
             prompt_text='Secret Key')
@@ -222,7 +220,7 @@ class TestInteractivePrompter(unittest.TestCase):
     @mock.patch('awscli.customizations.configure.raw_input')
     def test_non_secret_keys_are_not_masked(self, mock_raw_input):
         prompter = configure.InteractivePrompter()
-        response = prompter.get_value(
+        prompter.get_value(
             current_value='mycurrentvalue', config_name='not_a_secret_key',
             prompt_text='Enter value')
         # We should also not display the entire secret key.
@@ -377,7 +375,7 @@ class TestConfigFileWriter(unittest.TestCase):
     def test_permissions_on_new_file(self):
         self.writer.update_config({'foo': 'value'}, self.config_filename)
         with open(self.config_filename, 'r') as f:
-            new_contents = f.read()
+            f.read()
         self.assertEqual(os.stat(self.config_filename).st_mode & 0xFFF, 0o600)
 
     def test_update_config_with_comments(self):
@@ -448,8 +446,6 @@ class TestConfigFileWriter(unittest.TestCase):
 
 
 class TestConfigureListCommand(unittest.TestCase):
-    def setUp(self):
-        pass
 
     def test_configure_list_command_nothing_set(self):
         # Test the case where the user only wants to change a single_value.
@@ -470,7 +466,7 @@ class TestConfigureListCommand(unittest.TestCase):
         session = FakeSession(
             all_variables={'config_file': '/config/location'},
             environment_vars=env_vars)
-        session.env_vars = {'profile': (None, "PROFILE_ENV_VAR")}
+        session.session_var_map = {'profile': (None, "PROFILE_ENV_VAR")}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -485,7 +481,7 @@ class TestConfigureListCommand(unittest.TestCase):
         session = FakeSession(
             all_variables={'config_file': '/config/location'},
             config_file_vars=config_file_vars)
-        session.env_vars = {'region': ('region', "AWS_REGION")}
+        session.session_var_map = {'region': ('region', "AWS_REGION")}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -512,8 +508,9 @@ class TestConfigureListCommand(unittest.TestCase):
             environment_vars=env_vars,
             config_file_vars=config_file_vars,
             credentials=credentials)
-        session.env_vars = {'region': ('region', 'AWS_REGION'),
-                            'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
+        session.session_var_map = {
+            'region': ('region', 'AWS_REGION'),
+            'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -531,3 +528,74 @@ class TestConfigureListCommand(unittest.TestCase):
             rendered, r'access_key\s+\*+_key\s+iam-role')
         self.assertRegexpMatches(
             rendered, r'secret_key\s+\*+_key\s+iam-role')
+
+
+class TestConfigureGetSetCommand(unittest.TestCase):
+
+    def test_configure_get_command(self):
+        session = FakeSession({})
+        session.config['region'] = 'us-west-2'
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['region'], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'us-west-2')
+
+    def test_configure_get_command_no_exist(self):
+        no_vars_defined = {}
+        session = FakeSession(no_vars_defined)
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        rc = config_get(args=['region'], parsed_globals=None)
+        rendered = stream.getvalue()
+        # If a config value does not exist, we don't print any output.
+        self.assertEqual(rendered, '')
+        # And we exit with an rc of 1.
+        self.assertEqual(rc, 1)
+
+    def test_dotted_get(self):
+        session = FakeSession({})
+        session.full_config = {'preview': {'emr': 'true'}}
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['preview.emr'], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'true')
+
+    def test_get_from_profile(self):
+        session = FakeSession({})
+        session.config = {'aws_access_key_id': 'access_key'}
+        session.profile = None
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['profile.testing.aws_access_key_id'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'access_key')
+        self.assertEqual(session.profile, 'testing')
+
+
+class TestConfigureSetCommand(unittest.TestCase):
+    def setUp(self):
+        self.session = FakeSession({'config_file': 'myconfigfile'})
+        self.session.profile = None
+        self.config_writer = mock.Mock()
+
+    def test_configure_set_command(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default', 'region': 'us-west-2'}, 'myconfigfile')
+
+    def test_configure_set_command_dotted(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['preview.emr', 'true'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'preview', 'emr': 'true'}, 'myconfigfile')
+
+    def test_configure_set_with_profile(self):
+        self.session.profile = 'testing'
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['region', 'us-west-2'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile testing', 'region': 'us-west-2'}, 'myconfigfile')

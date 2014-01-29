@@ -15,7 +15,6 @@ import re
 import sys
 import logging
 
-import six
 from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations.commands import BasicCommand
@@ -103,7 +102,7 @@ class ConfigFileWriter(object):
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
         with os.fdopen(os.open(config_filename,
-                               os.O_WRONLY|os.O_CREAT, 0o600), 'w') as f:
+                               os.O_WRONLY|os.O_CREAT, 0o600), 'w'):
             pass
 
     def _write_new_section(self, section_name, new_values, config_filename):
@@ -115,9 +114,11 @@ class ConfigFileWriter(object):
     def _update_section_contents(self, contents, section_name, new_values):
         new_values = new_values.copy()
         # contents is a list of file line contents.
-        start_index = 0
         for i in range(len(contents)):
             line = contents[i]
+            if line.strip().startswith(('#', ';')):
+                # This is a comment, so we can safely ignore this line.
+                continue
             match = self.SECTION_REGEX.search(line)
             if match is not None and self._matches_section(match,
                                                            section_name):
@@ -182,7 +183,7 @@ class ConfigureListCommand(BasicCommand):
         'variable, and it will tell you the name of the environment '
         'variable.\n'
     )
-    SYNOPSIS = ('aws configure list [--profile profile-name]')
+    SYNOPSIS = 'aws configure list [--profile profile-name]'
     EXAMPLES = (
         'To show your current configuration values::\n'
         '\n'
@@ -259,21 +260,119 @@ class ConfigureListCommand(BasicCommand):
 
     def _lookup_config(self, name):
         # First try to look up the variable in the env.
-        value = self._session.get_variable(name, methods=('env',))
+        value = self._session.get_config_variable(name, methods=('env',))
         if value is not None:
-            return ConfigValue(value, 'env', self._session.env_vars[name][1])
+            return ConfigValue(value, 'env', self._session.session_var_map[name][1])
         # Then try to look up the variable in the config file.
-        value = self._session.get_variable(name, methods=('config',))
+        value = self._session.get_config_variable(name, methods=('config',))
         if value is not None:
             return ConfigValue(value, 'config_file',
-                               self._session.get_variable('config_file'))
+                               self._session.get_config_variable('config_file'))
         else:
             return ConfigValue(NOT_SET, None, None)
+
+class ConfigureSetCommand(BasicCommand):
+    NAME = 'set'
+    DESCRIPTION = BasicCommand.FROM_FILE('configure', 'set',
+                                         '_description.rst')
+    SYNOPSIS = 'aws configure set varname value [--profile profile-name]'
+    EXAMPLES = BasicCommand.FROM_FILE('configure', 'set', '_examples.rst')
+    ARG_TABLE = [
+        {'name': 'varname',
+         'help_text': 'The name of the config value to set.',
+         'action': 'store',
+         'cli_type_name': 'string', 'positional_arg': True},
+        {'name': 'value',
+         'help_text': 'The value to set.',
+         'action': 'store',
+         'cli_type_name': 'string', 'positional_arg': True},
+    ]
+
+    def __init__(self, session, config_writer=None):
+        super(ConfigureSetCommand, self).__init__(session)
+        if config_writer is None:
+            config_writer = ConfigFileWriter()
+        self._config_writer = config_writer
+
+    def _run_main(self, args, parsed_globals):
+        varname = args.varname
+        value = args.value
+        section = 'default'
+        if '.' not in varname:
+            # unqualified name, scope it to the current
+            # profile (or leave it as the 'default' section if
+            # no profile is set).
+            if self._session.profile is not None:
+                section = 'profile %s' % self._session.profile
+        else:
+            # It's either section.config-name,
+            # of profile.profile-name.config-name (we
+            # don't support arbitrary.thing.config-name).
+            num_dots = varname.count('.')
+            if num_dots == 1:
+                section, varname = varname.split('.')
+            elif num_dots == 2 and varname.startswith('profile'):
+                dotted_section, varname = varname.rsplit('.', 1)
+                profile = dotted_section.split('.')[1]
+                section = 'profile %s' % profile
+        config_filename = os.path.expanduser(
+            self._session.get_config_variable('config_file'))
+        updated_config = {'__section__': section, varname: value}
+        self._config_writer.update_config(updated_config, config_filename)
+
+
+class ConfigureGetCommand(BasicCommand):
+    NAME = 'get'
+    DESCRIPTION = BasicCommand.FROM_FILE('configure', 'get',
+                                         '_description.rst')
+    SYNOPSIS = ('aws configure get varname [--profile profile-name]')
+    EXAMPLES = BasicCommand.FROM_FILE('configure', 'get', '_examples.rst')
+    ARG_TABLE = [
+        {'name': 'varname',
+         'help_text': 'The name of the config value to retrieve.',
+         'action': 'store',
+         'cli_type_name': 'string', 'positional_arg': True},
+    ]
+
+    def __init__(self, session, stream=sys.stdout):
+        super(ConfigureGetCommand, self).__init__(session)
+        self._stream = stream
+
+    def _run_main(self, args, parsed_globals):
+        varname = args.varname
+        value = None
+        if '.' not in varname:
+            # get_config() returns the config variables in the config
+            # file (not the logical_var names), which is what we want.
+            config = self._session.get_config()
+            value = config.get(varname)
+        else:
+            num_dots = varname.count('.')
+            if num_dots == 1:
+                full_config = self._session.full_config
+                section, config_name = varname.split('.')
+                value = full_config.get(section, {}).get(config_name)
+            elif num_dots == 2 and varname.startswith('profile'):
+                # We're hard coding logic for profiles here.  Really
+                # we could support any generic format of [section subsection],
+                # but we'd need some botocore.session changes for that,
+                # and nothing would immediately use that feature.
+                dot_section, config_name = varname.rsplit('.', 1)
+                start, profile_name = dot_section.split('.')
+                self._session.profile = profile_name
+                config = self._session.get_config()
+                value = config.get(config_name)
+        if value is not None:
+            self._stream.write(value)
+            self._stream.write('\n')
+            return 0
+        else:
+            return 1
 
 
 class ConfigureCommand(BasicCommand):
     NAME = 'configure'
-    DESCRIPTION = BasicCommand.FROM_FILE
+    DESCRIPTION = BasicCommand.FROM_FILE()
     SYNOPSIS = ('aws configure [--profile profile-name]')
     EXAMPLES = (
         'To create a new configuration::\n'
@@ -293,7 +392,9 @@ class ConfigureCommand(BasicCommand):
         '    Default output format [None]:\n'
     )
     SUBCOMMANDS = [
-        {'name': 'list', 'command_class': ConfigureListCommand}
+        {'name': 'list', 'command_class': ConfigureListCommand},
+        {'name': 'get', 'command_class': ConfigureGetCommand},
+        {'name': 'set', 'command_class': ConfigureSetCommand},
     ]
 
     # If you want to add new values to prompt, update this list here.
@@ -318,7 +419,6 @@ class ConfigureCommand(BasicCommand):
         # Called when invoked with no args "aws configure"
         new_values = {}
         if parsed_globals.profile is not None:
-            profile = parsed_globals.profile
             self._session.profile = parsed_globals.profile
         # This is the config from the config file scoped to a specific
         # profile.
@@ -333,7 +433,7 @@ class ConfigureCommand(BasicCommand):
             if new_value is not None and new_value != current_value:
                 new_values[config_name] = new_value
         config_filename = os.path.expanduser(
-            self._session.get_variable('config_file'))
+            self._session.get_config_variable('config_file'))
         if new_values:
             if parsed_globals.profile is not None:
                 new_values['__section__'] = (

@@ -15,21 +15,22 @@ from six.moves import queue as Queue
 import sys
 import threading
 
-from awscli.customizations.s3.utils import NoBlockQueue, uni_print
+from awscli.customizations.s3.utils import NoBlockQueue, uni_print, \
+        IORequest, IOCloseRequest
 
 
 LOGGER = logging.getLogger(__name__)
 QUEUE_END_SENTINEL = object()
 
 
-class Executer(object):
+class Executor(object):
     """
     This class is in charge of all of the threads.  It starts up the threads
     and cleans up the threads when done.  The two type of threads the
-    ``Executer``runs is a worker and a print thread.
+    ``Executor``runs is a worker and a print thread.
     """
     def __init__(self, done, num_threads, result_queue,
-                 quiet, interrupt, max_queue_size):
+                 quiet, interrupt, max_queue_size, write_queue):
         self.queue = None
         self.done = done
         self.num_threads = num_threads
@@ -38,7 +39,9 @@ class Executer(object):
         self.interrupt = interrupt
         self.threads_list = []
         self._max_queue_size = max_queue_size
+        self.write_queue = write_queue
         self.print_thread = None
+        self.io_thread = None
 
     @property
     def num_tasks_failed(self):
@@ -51,6 +54,9 @@ class Executer(object):
         self.print_thread = PrintThread(self.result_queue, self.done,
                                         self.quiet, self.interrupt)
         self.print_thread.daemon = True
+        self.io_thread = IOWriterThread(self.write_queue, self.done)
+        self.io_thread.start()
+        self.threads_list.append(self.io_thread)
         self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
         self.threads_list.append(self.print_thread)
         self.print_thread.start()
@@ -62,7 +68,7 @@ class Executer(object):
 
     def submit(self, task):
         """
-        This is the function used to submit a task to the ``Executer``.
+        This is the function used to submit a task to the ``Executor``.
         """
         LOGGER.debug("Submitting task: %s", task)
         self.queue.put(task)
@@ -70,20 +76,60 @@ class Executer(object):
     def wait(self):
         """
         This is the function used to wait on all of the tasks to finish
-        in the ``Executer``.
+        in the ``Executor``.
         """
         self.queue.join()
 
     def join(self):
         """
-        This is used to clean up the ``Executer``.
+        This is used to clean up the ``Executor``.
         """
+        self.write_queue.put(QUEUE_END_SENTINEL)
         self.result_queue.put(QUEUE_END_SENTINEL)
         for i in range(self.num_threads):
             self.queue.put(QUEUE_END_SENTINEL)
 
         for thread in self.threads_list:
             thread.join()
+
+
+class IOWriterThread(threading.Thread):
+    def __init__(self, queue, done):
+        threading.Thread.__init__(self)
+        self.queue = queue
+        self.done = done
+        self.fd_descriptor_cache = {}
+
+    def run(self):
+        while True:
+            task = self.queue.get(True)
+            if task is QUEUE_END_SENTINEL:
+                LOGGER.debug("Sentinel received in IO thread, "
+                             "shutting down.")
+                self._cleanup()
+                return
+            elif isinstance(task, IORequest):
+                filename, offset, data = task
+                fileobj = self.fd_descriptor_cache.get(filename)
+                if fileobj is None:
+                    fileobj = open(filename, 'rb+')
+                    self.fd_descriptor_cache[filename] = fileobj
+                fileobj.seek(offset)
+                LOGGER.debug("Writing data to: %s, offset: %s",
+                             filename, offset)
+                fileobj.write(data)
+                fileobj.flush()
+            elif isinstance(task, IOCloseRequest):
+                LOGGER.debug("IOCloseRequest received for %s, closing file.",
+                             task.filename)
+                fileobj = self.fd_descriptor_cache.get(task.filename)
+                if fileobj is not None:
+                    fileobj.close()
+                    del self.fd_descriptor_cache[task.filename]
+
+    def _cleanup(self):
+        for fileobj in self.fd_descriptor_cache.values():
+            fileobj.close()
 
 
 class Worker(threading.Thread):
@@ -107,8 +153,7 @@ class Worker(threading.Thread):
                 try:
                     function()
                 except Exception as e:
-                    LOGGER.debug('Error calling task: %s', e,
-                                    exc_info=True)
+                    LOGGER.debug('Error calling task: %s', e, exc_info=True)
                 self.queue.task_done()
             except Queue.Empty:
                 pass

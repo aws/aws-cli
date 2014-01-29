@@ -2,11 +2,21 @@
 CHANGELOG
 =========
 
+1.2.12
+======
+
+* feature:``aws configure``: Add support for ``configure get`` and ``configure
+  set`` command which allow you to set and get configuration values from the
+  AWS config file (`issue 602 <https://github.com/aws/aws-cli/issues/602`__)
+* bugfix:``aws s3``: Fix issue with Amazon S3 downloads on certain OSes
+  (`issue 619 <https://github.com/aws/aws-cli/issues/619`__)
+
+
 1.2.11
 ======
 
 * Add support for the ``--recursive`` option in the ``aws s3 ls`` command
-  (`issue https://github.com/aws/aws-cli/issues/465`)
+  (`issue 465 <https://github.com/aws/aws-cli/issues/465`)
 * Add support for the ``AWS_CA_BUNDLE`` environment variable so that users
   can specify an alternate path to a cert bundle
   (`issue 586 <https://github.com/aws/aws-cli/pull/586>`__)

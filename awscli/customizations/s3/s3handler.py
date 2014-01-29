@@ -19,7 +19,7 @@ from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
     operate, find_bucket_key, relative_path
-from awscli.customizations.s3.executer import Executer
+from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 
 LOGGER = logging.getLogger(__name__)
@@ -28,15 +28,22 @@ LOGGER = logging.getLogger(__name__)
 class S3Handler(object):
     """
     This class sets up the process to perform the tasks sent to it.  It
-    sources the ``self.executer`` from which threads inside the
+    sources the ``self.executor`` from which threads inside the
     class pull tasks from to complete.
     """
+    MAX_IO_QUEUE_SIZE = 20
+
     def __init__(self, session, params, multi_threshold=MULTI_THRESHOLD,
                  chunksize=CHUNKSIZE):
         self.session = session
         self.done = threading.Event()
         self.interrupt = threading.Event()
         self.result_queue = NoBlockQueue()
+        # The write_queue has potential for optimizations, so the constant
+        # for maxsize is scoped to this class (as opposed to constants.py)
+        # so we have the ability to change this value later.
+        self.write_queue = NoBlockQueue(self.interrupt,
+                                        maxsize=self.MAX_IO_QUEUE_SIZE)
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
                        'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
@@ -50,10 +57,10 @@ class S3Handler(object):
                 self.params[key] = params[key]
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
-        self.executer = Executer(
+        self.executor = Executor(
             done=self.done, num_threads=NUM_THREADS, result_queue=self.result_queue,
             quiet=self.params['quiet'], interrupt=self.interrupt,
-            max_queue_size=MAX_QUEUE_SIZE,
+            max_queue_size=MAX_QUEUE_SIZE, write_queue=self.write_queue
         )
         self._multipart_uploads = []
         self._multipart_downloads = []
@@ -65,16 +72,16 @@ class S3Handler(object):
         multipart operation and add the necessary attributes if so.  Each
         object is then wrapped with a ``BasicTask`` object which is
         essentially a thread of execution for a thread to follow.  These
-        tasks are then submitted to the main executer.
+        tasks are then submitted to the main executor.
         """
         self.done.clear()
         self.interrupt.clear()
         try:
-            self.executer.start()
+            self.executor.start()
             total_files, total_parts = self._enqueue_tasks(files)
-            self.executer.print_thread.set_total_files(total_files)
-            self.executer.print_thread.set_total_parts(total_parts)
-            self.executer.wait()
+            self.executor.print_thread.set_total_files(total_files)
+            self.executor.print_thread.set_total_parts(total_parts)
+            self.executor.wait()
             self.result_queue.join()
 
         except Exception as e:
@@ -86,13 +93,13 @@ class S3Handler(object):
             self.result_queue.put({'message': "Cleaning up. Please wait...",
                                    'error': False})
         self._shutdown()
-        return self.executer.num_tasks_failed
+        return self.executor.num_tasks_failed
 
     def _shutdown(self):
         # self.done will tell threads to shutdown.
         self.done.set()
         # This waill wait until all the threads are joined.
-        self.executer.join()
+        self.executor.join()
         # And finally we need to make a pass through all the existing
         # multipart uploads and abort any pending multipart uploads.
         self._abort_pending_multipart_uploads()
@@ -169,7 +176,7 @@ class S3Handler(object):
                     session=self.session, filename=filename,
                     parameters=self.params,
                     result_queue=self.result_queue)
-                self.executer.submit(task)
+                self.executor.submit(task)
             total_files += 1
             total_parts += num_uploads
         return total_files, total_parts
@@ -218,22 +225,22 @@ class S3Handler(object):
         context = tasks.MultipartDownloadContext(num_downloads)
         create_file_task = tasks.CreateLocalFileTask(context=context,
                                                      filename=filename)
-        self.executer.submit(create_file_task)
+        self.executor.submit(create_file_task)
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
                 result_queue=self.result_queue, service=filename.service,
-                filename=filename, context=context)
-            self.executer.submit(task)
+                filename=filename, context=context, io_queue=self.write_queue)
+            self.executor.submit(task)
         complete_file_task = tasks.CompleteDownloadTask(
             context=context, filename=filename, result_queue=self.result_queue,
-            params=self.params)
-        self.executer.submit(complete_file_task)
+            params=self.params, io_queue=self.write_queue)
+        self.executor.submit(complete_file_task)
         self._multipart_downloads.append((context, filename.dest))
         if remove_remote_file:
             remove_task = tasks.RemoveRemoteObjectTask(
                 filename=filename, context=context)
-            self.executer.submit(remove_task)
+            self.executor.submit(remove_task)
         return num_downloads
 
     def _enqueue_multipart_upload_tasks(self, filename,
@@ -252,7 +259,7 @@ class S3Handler(object):
         if remove_local_file:
             remove_task = tasks.RemoveFileTask(local_filename=filename.src,
                                                upload_context=upload_context)
-            self.executer.submit(remove_task)
+            self.executor.submit(remove_task)
         return num_uploads
 
     def _enqueue_multipart_copy_tasks(self, filename,
@@ -267,7 +274,7 @@ class S3Handler(object):
         if remove_remote_file:
             remove_task = tasks.RemoveRemoteObjectTask(
                 filename=filename, context=upload_context)
-            self.executer.submit(remove_task)
+            self.executor.submit(remove_task)
         return num_uploads
 
     def _enqueue_upload_start_task(self, chunksize, num_uploads, filename):
@@ -277,7 +284,7 @@ class S3Handler(object):
             session=self.session, filename=filename,
             parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
-        self.executer.submit(create_multipart_upload_task)
+        self.executor.submit(create_multipart_upload_task)
         return upload_context
 
     def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context, filename,
@@ -287,11 +294,11 @@ class S3Handler(object):
                 part_number=i, chunk_size=chunksize,
                 result_queue=self.result_queue, upload_context=upload_context,
                 filename=filename)
-            self.executer.submit(task)
+            self.executor.submit(task)
 
     def _enqueue_upload_end_task(self, filename, upload_context):
         complete_multipart_upload_task = tasks.CompleteMultipartUploadTask(
             session=self.session, filename=filename, parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
-        self.executer.submit(complete_multipart_upload_task)
+        self.executor.submit(complete_multipart_upload_task)
         self._multipart_uploads.append((upload_context, filename))

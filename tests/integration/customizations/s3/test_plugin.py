@@ -298,7 +298,10 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
         self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
-        self.assertEqual(contents, file_contents)
+        # Don't use assertEqual() here, this will spit out a huge
+        # 20mb diff of 'abcd' chars.  Just let the user know we failed.
+        if contents != file_contents:
+            self.fail("Downlaoded contents of 10mb file are not the same.")
         self.assertTrue(self.key_exists(from_bucket, key_name='foo.txt'))
 
     def test_guess_mime_type(self):

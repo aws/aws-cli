@@ -141,8 +141,9 @@ class TestMoveCommand(BaseS3CLICommand):
     def test_mv_local_to_s3(self):
         bucket_name = self.create_bucket()
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        aws('s3 mv %s s3://%s/foo.txt' % (full_path,
-                                          bucket_name))
+        p = aws('s3 mv %s s3://%s/foo.txt' % (full_path,
+                                              bucket_name))
+        self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(full_path))
         # And now resides in s3.
@@ -154,7 +155,8 @@ class TestMoveCommand(BaseS3CLICommand):
         self.put_object(bucket_name, 'foo.txt', 'this is foo.txt')
         full_path = self.files.full_path('foo.txt')
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
-        aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, full_path))
+        p = aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, full_path))
+        self.assert_no_errors(p)
         self.assertTrue(os.path.exists(full_path))
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
@@ -166,7 +168,9 @@ class TestMoveCommand(BaseS3CLICommand):
         to_bucket = self.create_bucket()
         self.put_object(from_bucket, 'foo.txt', 'this is foo.txt')
 
-        aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
+                                                           to_bucket))
+        self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
         self.assertEqual(contents, 'this is foo.txt')
         # And verify that the object no longer exists in the from_bucket.
@@ -178,7 +182,9 @@ class TestMoveCommand(BaseS3CLICommand):
         file_contents = 'abcd' * (1024 * 1024 * 10)
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
-        aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
+                                                           to_bucket))
+        self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
         self.assertEqual(contents, file_contents)
         # And verify that the object no longer exists in the from_bucket.
@@ -193,7 +199,9 @@ class TestMoveCommand(BaseS3CLICommand):
         self.put_object(from_bucket, 'largefile', large_file_contents)
         self.put_object(from_bucket, 'smallfile', small_file_contents)
 
-        aws('s3 mv s3://%s/ s3://%s/ --recursive' % (from_bucket, to_bucket))
+        p = aws('s3 mv s3://%s/ s3://%s/ --recursive' % (from_bucket,
+                                                         to_bucket))
+        self.assert_no_errors(p)
         # Nothing's in the from_bucket.
         self.assertTrue(not self.key_exists(from_bucket, key_name='largefile'))
         self.assertTrue(not self.key_exists(from_bucket, key_name='smallfile'))
@@ -287,7 +295,8 @@ class TestCp(BaseS3CLICommand):
         file_contents = 'abcd' * (1024 * 1024 * 10)
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
-        aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
         self.assertEqual(contents, file_contents)
         self.assertTrue(self.key_exists(from_bucket, key_name='foo.txt'))

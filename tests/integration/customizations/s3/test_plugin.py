@@ -671,7 +671,7 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertIn('(dryrun) upload:', p.stdout)
 
-        p2 = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*"'
+        p2 = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
                  % full_path)
         self.assert_no_files_would_be_uploaded(p2)
 
@@ -684,7 +684,7 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
     def test_cwd_doesnt_matter(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
         with cd(os.path.expanduser('~')):
-            p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*"'
+            p = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
                     % full_path)
         self.assert_no_files_would_be_uploaded(p)
 
@@ -699,13 +699,13 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.files.create_file('test-321.txt', 'test-321.txt contents')
         self.files.create_file('test.txt', 'test.txt contents')
         # An --exclude test* should exclude everything here.
-        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*" '
-                 '--recursive' % self.files.rootdir)
+        p = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*' "
+                "--recursive" % self.files.rootdir)
         self.assert_no_files_would_be_uploaded(p)
 
         # We can include the test directory though.
-        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun '
-                '--exclude "*" --include "test/*" --recursive'
+        p = aws("s3 cp %s s3://random-bucket-name/ --dryrun "
+                "--exclude '*' --include 'test/*' --recursive"
                 % self.files.rootdir)
         self.assert_no_errors(p)
         self.assertRegexpMatches(p.stdout,
@@ -717,16 +717,16 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.put_object(bucket_name, key_name='foo.txt')
         self.put_object(bucket_name, key_name='bar.txt')
         self.put_object(bucket_name, key_name='baz.jpg')
-        p = aws('s3 rm s3://%s/ --dryrun --exclude "*" --recursive'
+        p = aws("s3 rm s3://%s/ --dryrun --exclude '*' --recursive"
                 % bucket_name)
         self.assert_no_files_would_be_uploaded(p)
 
         p = aws(
-            's3 rm s3://%s/ --dryrun --exclude "*.jpg" --exclude "*.txt" '
-            '--recursive' % bucket_name)
+            "s3 rm s3://%s/ --dryrun --exclude '*.jpg' --exclude '*.txt' "
+            "--recursive" % bucket_name)
         self.assert_no_files_would_be_uploaded(p)
 
-        p = aws('s3 rm s3://%s/ --dryrun --exclude "*.txt" --recursive'
+        p = aws("s3 rm s3://%s/ --dryrun --exclude '*.txt' --recursive"
                 % bucket_name)
         self.assert_no_errors(p)
         self.assertRegexpMatches(p.stdout, r'\(dryrun\) delete:.*baz.jpg.*')

@@ -428,6 +428,8 @@ class TestSync(BaseS3CLICommand):
         self.assertEqual('', p.stdout)
 
 
+@unittest.skipIf(not hasattr(os, 'symlink'),
+                 'OS does not support symlink()')
 class TestBadSymlinks(BaseS3CLICommand):
     def test_bad_symlink_stops_sync_process(self):
         bucket_name = self.create_bucket()

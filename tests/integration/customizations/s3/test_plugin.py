@@ -534,6 +534,15 @@ class TestLs(BaseS3CLICommand):
         self.assertIn('8 bar.txt', p.stdout)
         self.assertIn('8 subdir/foo.txt', p.stdout)
 
+    def test_ls_without_prefix(self):
+        # The ls command does not require an s3:// prefix,
+        # we're always listing s3 contents.
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', 'contents')
+        p = aws('s3 ls %s' % bucket_name)
+        self.assertEqual(p.rc, 0)
+        self.assertIn('foo.txt', p.stdout)
+
 
 class TestMbRb(BaseS3CLICommand):
     """

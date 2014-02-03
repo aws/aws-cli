@@ -16,13 +16,14 @@
 # The following tests are performed to ensure that the commands work.
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
+from tests import unittest
 import os
 import random
-from tests import unittest
 import tempfile
 import shutil
 import platform
 import contextlib
+import time
 
 import botocore.session
 
@@ -414,13 +415,16 @@ class TestSync(BaseS3CLICommand):
 
         # Now sync this content up to s3.
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
 
+        time.sleep(1)
         # Now here's the issue.  If we try to sync the contents down
         # with the --delete flag we should *not* see any output, the
         # sync operation should determine that nothing is different and
         # therefore do nothing.  We can just use --dryrun to show the issue.
-        p = aws('s3 sync s3://%s/ %s --dryrun' % (
+        p = aws('s3 sync s3://%s/ %s --dryrun --delete' % (
             bucket_name, self.files.rootdir))
+        self.assert_no_errors(p)
         # These assertion methods will give better error messages than just
         # checking if the output is empty.
         self.assertNotIn('download:', p.stdout)

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Don't require ``s3://`` prefix
+  (`issue 626 <https://github.com/aws/aws-cli/pull/626>`__)
+
+
 1.2.12
 ======
 

@@ -342,7 +342,10 @@ class S3SubCommand(object):
 
 class ListCommand(S3SubCommand):
     def _do_command(self, parsed_args, parsed_globals):
-        bucket, key = find_bucket_key(parsed_args.paths[0][5:])
+        path = parsed_args.paths[0]
+        if path.startswith('s3://'):
+            path = path[5:]
+        bucket, key = find_bucket_key(path)
         self.service = self._session.get_service('s3')
         self.endpoint = self._get_endpoint(self.service, parsed_globals)
         if not bucket:

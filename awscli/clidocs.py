@@ -268,9 +268,11 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Description')
         doc.include_doc_string(operation.documentation)
 
-    def _json_example_value_name(self, param):
+    def _json_example_value_name(self, param, include_enum_values=True):
+        # If include_enum_values is True, then the valid enum values
+        # are included as the sample JSON value.
         if param.type == 'string':
-            if hasattr(param, 'enum'):
+            if hasattr(param, 'enum') and include_enum_values:
                 choices = param.enum
                 return '|'.join(['"%s"' % c for c in choices])
             else:
@@ -370,8 +372,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.new_paragraph()
             doc.write('Syntax')
             doc.style.start_codeblock()
-            example_type = self._json_example_value_name(param.members)
+            example_type = self._json_example_value_name(
+                param.members, include_enum_values=False)
             doc.write('%s %s ...' % (example_type, example_type))
+            if hasattr(param.members, 'enum'):
+                # If we have enum values, we can tell the user
+                # exactly what valid values they can provide.
+                self._write_valid_enums(doc, param.members.enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
         elif argument.cli_type_name not in SCALAR_TYPES:
@@ -381,6 +388,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._json_example(doc, param)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
+
+    def _write_valid_enums(self, doc, enum_values):
+        doc.style.new_paragraph()
+        doc.write("Where valid values are:\n")
+        for value in enum_values:
+            doc.write("    %s\n" % value)
+        doc.write("\n")
 
     def _doc_member(self, doc, member_name, member):
         docs = member.get('documentation', '')

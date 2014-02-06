@@ -9,8 +9,6 @@ well.  ::
 *Output:*
 ::
 
-           CreationTime Bucket
-           ------------ ------
     2013-07-11 17:08:50 mybucket
     2013-07-24 14:55:44 mybucket2
 

@@ -272,3 +272,26 @@ class TestCustomCommandDocsFromFile(BaseAWSHelpOutputTest):
         self.assert_contains('metadata_service_timeout')
         self.assert_contains('metadata_service_num_attempts')
         self.assert_contains('aws_access_key_id')
+
+class TestEnumDocsArentDuplicated(BaseAWSHelpOutputTest):
+    def test_enum_docs_arent_duplicated(self):
+        # Test for: https://github.com/aws/aws-cli/issues/609
+        # What's happening is if you have a list param that has
+        # an enum, we document it as:
+        # a|b|c|d   a|b|c|d
+        # Except we show all of the possible enum params twice.
+        # Each enum param should only occur once.  The ideal documentation
+        # should be:
+        #
+        # string1 string2
+        #
+        # Where each value is one of:
+        #     value1
+        #     value2
+        self.driver.main(['cloudformation', 'list-stacks', 'help'])
+        # "CREATE_IN_PROGRESS" is a enum value, and should only
+        # appear once in the help output.
+        contents = self.renderer.rendered_contents
+        self.assertTrue(contents.count("CREATE_IN_PROGRESS") == 1,
+                        ("Enum param was only suppose to be appear once in "
+                         "rendered doc output."))

@@ -19,4 +19,9 @@ if __name__ == '__main__':
     # bash exports COMP_LINE and COMP_POINT, tcsh COMMAND_LINE only
     cline = os.environ.get('COMP_LINE') or os.environ.get('COMMAND_LINE') or ''
     cpoint = int(os.environ.get('COMP_POINT') or len(cline))
-    awscli.completer.complete(cline, cpoint)
+    try:
+        awscli.completer.complete(cline, cpoint)
+    except KeyboardInterrupt:
+        # If the user hits Ctrl+C, we don't want to print
+        # a traceback to the user.
+        pass

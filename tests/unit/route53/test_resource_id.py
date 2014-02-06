@@ -24,7 +24,7 @@ CHANGEBATCH_JSON = ('{"Comment":"string","Changes":['
                     ']}}]}')
 
 CHANGEBATCH_XML = ('<ChangeResourceRecordSetsRequest '
-                   'xmlns="https://route53.amazonaws.com/doc/2012-12-12/">'
+                   'xmlns="https://route53.amazonaws.com/doc/2013-04-01/">'
                    '<ChangeBatch><Comment>string</Comment>'
                    '<Changes><Change><Action>CREATE</Action>'
                    '<ResourceRecordSet>'

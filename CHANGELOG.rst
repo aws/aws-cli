@@ -5,6 +5,10 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Command Completion: Don't show tracebacks on SIGINT
+  (`issue 628 <https://github.com/aws/aws-cli/issues/628>`__)
+* bugfix:Docs: Don't duplicate enum values in reference docs
+  (`issue 632 <https://github.com/aws/aws-cli/pull/632>`__)
 * bugfix:``aws s3``: Don't require ``s3://`` prefix
   (`issue 626 <https://github.com/aws/aws-cli/pull/626>`__)
 

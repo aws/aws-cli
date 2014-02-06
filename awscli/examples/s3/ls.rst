@@ -48,7 +48,7 @@ prefixes under the specified bucket and prefix.
 
 ::
 
-    aws s3 ls s3://mybucket/
+    aws s3 ls s3://mybucket --recursive
 
 *Output*
 ::

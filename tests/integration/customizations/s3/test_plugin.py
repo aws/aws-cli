@@ -16,13 +16,14 @@
 # The following tests are performed to ensure that the commands work.
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
+from tests import unittest
 import os
 import random
-from tests import unittest
 import tempfile
 import shutil
 import platform
 import contextlib
+import time
 
 import botocore.session
 
@@ -141,8 +142,9 @@ class TestMoveCommand(BaseS3CLICommand):
     def test_mv_local_to_s3(self):
         bucket_name = self.create_bucket()
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        aws('s3 mv %s s3://%s/foo.txt' % (full_path,
-                                          bucket_name))
+        p = aws('s3 mv %s s3://%s/foo.txt' % (full_path,
+                                              bucket_name))
+        self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(full_path))
         # And now resides in s3.
@@ -154,7 +156,8 @@ class TestMoveCommand(BaseS3CLICommand):
         self.put_object(bucket_name, 'foo.txt', 'this is foo.txt')
         full_path = self.files.full_path('foo.txt')
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
-        aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, full_path))
+        p = aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, full_path))
+        self.assert_no_errors(p)
         self.assertTrue(os.path.exists(full_path))
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
@@ -166,7 +169,9 @@ class TestMoveCommand(BaseS3CLICommand):
         to_bucket = self.create_bucket()
         self.put_object(from_bucket, 'foo.txt', 'this is foo.txt')
 
-        aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
+                                                           to_bucket))
+        self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
         self.assertEqual(contents, 'this is foo.txt')
         # And verify that the object no longer exists in the from_bucket.
@@ -178,7 +183,9 @@ class TestMoveCommand(BaseS3CLICommand):
         file_contents = 'abcd' * (1024 * 1024 * 10)
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
-        aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
+                                                           to_bucket))
+        self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
         self.assertEqual(contents, file_contents)
         # And verify that the object no longer exists in the from_bucket.
@@ -193,7 +200,9 @@ class TestMoveCommand(BaseS3CLICommand):
         self.put_object(from_bucket, 'largefile', large_file_contents)
         self.put_object(from_bucket, 'smallfile', small_file_contents)
 
-        aws('s3 mv s3://%s/ s3://%s/ --recursive' % (from_bucket, to_bucket))
+        p = aws('s3 mv s3://%s/ s3://%s/ --recursive' % (from_bucket,
+                                                         to_bucket))
+        self.assert_no_errors(p)
         # Nothing's in the from_bucket.
         self.assertTrue(not self.key_exists(from_bucket, key_name='largefile'))
         self.assertTrue(not self.key_exists(from_bucket, key_name='smallfile'))
@@ -287,9 +296,13 @@ class TestCp(BaseS3CLICommand):
         file_contents = 'abcd' * (1024 * 1024 * 10)
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
-        aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        self.assert_no_errors(p)
         contents = self.get_key_contents(to_bucket, 'foo.txt')
-        self.assertEqual(contents, file_contents)
+        # Don't use assertEqual() here, this will spit out a huge
+        # 20mb diff of 'abcd' chars.  Just let the user know we failed.
+        if contents != file_contents:
+            self.fail("Downlaoded contents of 10mb file are not the same.")
         self.assertTrue(self.key_exists(from_bucket, key_name='foo.txt'))
 
     def test_guess_mime_type(self):
@@ -402,13 +415,16 @@ class TestSync(BaseS3CLICommand):
 
         # Now sync this content up to s3.
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
 
+        time.sleep(1)
         # Now here's the issue.  If we try to sync the contents down
         # with the --delete flag we should *not* see any output, the
         # sync operation should determine that nothing is different and
         # therefore do nothing.  We can just use --dryrun to show the issue.
-        p = aws('s3 sync s3://%s/ %s --dryrun' % (
+        p = aws('s3 sync s3://%s/ %s --dryrun --delete' % (
             bucket_name, self.files.rootdir))
+        self.assert_no_errors(p)
         # These assertion methods will give better error messages than just
         # checking if the output is empty.
         self.assertNotIn('download:', p.stdout)
@@ -416,6 +432,8 @@ class TestSync(BaseS3CLICommand):
         self.assertEqual('', p.stdout)
 
 
+@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                 'Symlink tests only supported on mac/linux')
 class TestBadSymlinks(BaseS3CLICommand):
     def test_bad_symlink_stops_sync_process(self):
         bucket_name = self.create_bucket()
@@ -519,6 +537,15 @@ class TestLs(BaseS3CLICommand):
         self.assertIn('8 foo', p.stdout)
         self.assertIn('8 bar.txt', p.stdout)
         self.assertIn('8 subdir/foo.txt', p.stdout)
+
+    def test_ls_without_prefix(self):
+        # The ls command does not require an s3:// prefix,
+        # we're always listing s3 contents.
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', 'contents')
+        p = aws('s3 ls %s' % bucket_name)
+        self.assertEqual(p.rc, 0)
+        self.assertIn('foo.txt', p.stdout)
 
 
 class TestMbRb(BaseS3CLICommand):
@@ -657,7 +684,7 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertIn('(dryrun) upload:', p.stdout)
 
-        p2 = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*"'
+        p2 = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
                  % full_path)
         self.assert_no_files_would_be_uploaded(p2)
 
@@ -670,7 +697,7 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
     def test_cwd_doesnt_matter(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
         with cd(os.path.expanduser('~')):
-            p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*"'
+            p = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
                     % full_path)
         self.assert_no_files_would_be_uploaded(p)
 
@@ -685,13 +712,13 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.files.create_file('test-321.txt', 'test-321.txt contents')
         self.files.create_file('test.txt', 'test.txt contents')
         # An --exclude test* should exclude everything here.
-        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude "*" '
-                 '--recursive' % self.files.rootdir)
+        p = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*' "
+                "--recursive" % self.files.rootdir)
         self.assert_no_files_would_be_uploaded(p)
 
         # We can include the test directory though.
-        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun '
-                '--exclude "*" --include "test/*" --recursive'
+        p = aws("s3 cp %s s3://random-bucket-name/ --dryrun "
+                "--exclude '*' --include 'test/*' --recursive"
                 % self.files.rootdir)
         self.assert_no_errors(p)
         self.assertRegexpMatches(p.stdout,
@@ -703,16 +730,16 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.put_object(bucket_name, key_name='foo.txt')
         self.put_object(bucket_name, key_name='bar.txt')
         self.put_object(bucket_name, key_name='baz.jpg')
-        p = aws('s3 rm s3://%s/ --dryrun --exclude "*" --recursive'
+        p = aws("s3 rm s3://%s/ --dryrun --exclude '*' --recursive"
                 % bucket_name)
         self.assert_no_files_would_be_uploaded(p)
 
         p = aws(
-            's3 rm s3://%s/ --dryrun --exclude "*.jpg" --exclude "*.txt" '
-            '--recursive' % bucket_name)
+            "s3 rm s3://%s/ --dryrun --exclude '*.jpg' --exclude '*.txt' "
+            "--recursive" % bucket_name)
         self.assert_no_files_would_be_uploaded(p)
 
-        p = aws('s3 rm s3://%s/ --dryrun --exclude "*.txt" --recursive'
+        p = aws("s3 rm s3://%s/ --dryrun --exclude '*.txt' --recursive"
                 % bucket_name)
         self.assert_no_errors(p)
         self.assertRegexpMatches(p.stdout, r'\(dryrun\) delete:.*baz.jpg.*')

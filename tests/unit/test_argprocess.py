@@ -26,18 +26,7 @@ from awscli.argprocess import ParamUnknownKeyError
 
 MAPHELP = """--attributes key_name=string,key_name2=string
 Where valid key names are:
-  Policy
-  VisibilityTimeout
-  MaximumMessageSize
-  MessageRetentionPeriod
-  ApproximateNumberOfMessages
-  ApproximateNumberOfMessagesNotVisible
-  CreatedTimestamp
-  LastModifiedTimestamp
-  QueueArn
-  ApproximateNumberOfMessagesDelayed
-  DelaySeconds
-  ReceiveMessageWaitTimeSeconds\n"""
+  Policy"""
 
 # These tests use real service types so that we can
 # verify the real shapes of services.
@@ -300,7 +289,7 @@ class TestDocGen(BaseArgProcessTest):
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
-        self.assertEqual(doc_string, MAPHELP)
+        self.assertIn(MAPHELP, doc_string)
 
     def test_gen_list_scalar_docs(self):
         p = self.get_param_object(

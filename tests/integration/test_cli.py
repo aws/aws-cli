@@ -70,7 +70,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # we eventually should update this test to check exactly for
         # 'The describe-instances operation'.
         self.assertRegexpMatches(p.stdout,
-                                 'The\s+describe-instances\s+operation')
+                                 '\s+Describes\s+one\s+or\s+more')
 
     def test_operation_help_with_required_arg(self):
         p = aws('s3api get-object help')

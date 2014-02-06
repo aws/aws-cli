@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.2.13
+======
+
+* feature:``aws route53``: Update ``aws route53`` command to
+  support string-match health checks and the UPSERT action for the
+  ``aws route53 change-resource-record-sets`` command
+* bugfix:Command Completion: Don't show tracebacks on SIGINT
+  (`issue 628 <https://github.com/aws/aws-cli/issues/628>`__)
+* bugfix:Docs: Don't duplicate enum values in reference docs
+  (`issue 632 <https://github.com/aws/aws-cli/pull/632>`__)
+* bugfix:``aws s3``: Don't require ``s3://`` prefix
+  (`issue 626 <https://github.com/aws/aws-cli/pull/626>`__)
+
+
 1.2.12
 ======
 

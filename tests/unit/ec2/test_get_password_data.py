@@ -13,10 +13,6 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import os
-import re
-
-from six.moves import cStringIO
-import mock
 
 
 PASSWORD_DATA = ("GWDnuoj/7pbMQkg125E8oGMUVCI+r98sGbFFl8SX+dEYxMZzz+byYwwjvyg8i"
@@ -38,7 +34,6 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
                                 'PasswordData': PASSWORD_DATA}
 
     def test_no_priv_launch_key(self):
-        captured = cStringIO()
         args = ' --instance-id i-12345678'
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
@@ -51,7 +46,6 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         args = ' --instance-id i-12345678 --priv-launch-key foo.pem'
         cmdline = self.prefix + args
         result = {}
-        captured = cStringIO()
         error_msg = self.assert_params_for_cmd(
             cmdline, result, expected_rc=255)[1]
         self.assertEqual(error_msg, ('priv-launch-key should be a path to '
@@ -59,7 +53,6 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
                                      'to launch the instance.\n'))
 
     def test_priv_launch_key(self):
-        captured = cStringIO()
         key_path = os.path.join(os.path.dirname(__file__),
                                 'testcli.pem')
         args = ' --instance-id i-12345678 --priv-launch-key %s' % key_path

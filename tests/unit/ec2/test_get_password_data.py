@@ -48,9 +48,9 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         result = {}
         error_msg = self.assert_params_for_cmd(
             cmdline, result, expected_rc=255)[1]
-        self.assertEqual(error_msg, ('priv-launch-key should be a path to '
-                                     'the local SSH private key file used '
-                                     'to launch the instance.\n'))
+        self.assertIn('priv-launch-key should be a path to '
+                      'the local SSH private key file used '
+                      'to launch the instance.\n', error_msg)
 
     def test_priv_launch_key(self):
         key_path = os.path.join(os.path.dirname(__file__),

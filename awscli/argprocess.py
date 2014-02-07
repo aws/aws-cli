@@ -58,6 +58,7 @@ def uri_param(param, value, **kwargs):
     else:
         return _check_for_uri_param(param, value)
 
+
 def _check_for_uri_param(param, value):
     if isinstance(value, list) and len(value) == 1:
         value = value[0]

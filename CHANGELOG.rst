@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Argument Parsing: Handle files containing JSON with
+  leading and trailing spaces
+  (`issue 640 <https://github.com/aws/aws-cli/pull/640>`__)
+
+
 1.2.13
 ======
 

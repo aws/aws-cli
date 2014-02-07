@@ -139,7 +139,7 @@ class ParamShorthand(object):
         if isinstance(value, list):
             check_val = value[0]
         else:
-            check_val = value
+            check_val = value.strip()
         if isinstance(check_val, str) and check_val.startswith(('[', '{')):
             LOG.debug("Param %s looks like JSON, not considered for "
                       "param shorthand.", param.py_name)

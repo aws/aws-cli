@@ -155,8 +155,11 @@ class CustomArgument(BaseCLIArgument):
     Represents a CLI argument that is configured from a dictionary.
 
     For example, the "top level" arguments used for the CLI
-    (--region, --output) can use a DictBasedArgument argument,
+    (--region, --output) can use a CustomArgument argument,
     as these are described in the cli.json file as dictionaries.
+
+    This class is also useful for plugins/customizations that want to
+    add additional args.
 
     """
 
@@ -211,10 +214,15 @@ class CustomArgument(BaseCLIArgument):
             kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
 
+    @property
     def required(self):
         if self._required is None:
             return False
         return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
 
     @property
     def documentation(self):

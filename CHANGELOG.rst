@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3api``: Properly handle null inputs
+  (`issue 637 <https://github.com/aws/aws-cli/issues/637>`__)
 * bugfix:Argument Parsing: Handle files containing JSON with
   leading and trailing spaces
   (`issue 640 <https://github.com/aws/aws-cli/pull/640>`__)

@@ -17,6 +17,26 @@ This includes how the CLI argument parser is created, how arguments
 are serialized, and how arguments are bound (if at all) to operation
 arguments.
 
+There are several types of arguments defined in this module.
+
+First, there's the BaseCLIArgument.  This is just the interface for
+all arguments.  This is the interface expected by objects that work
+with arguments.
+
+Arguments generally fall into one of several categories:
+
+* global argument.  These arguments may influence what the CLI does,
+  but aren't part of the input parameters needed to make an API call.  For
+  example, the ``--region`` argument specifies which region to send the request
+  to.  The ``--output`` argument specifies how to display the response to the
+  user.  The ``--query`` argument specifies how to select specific elements
+  from a response.
+* operation argument.  These are arguments that influence the parameters we
+  send to a service when making an API call.  Some of these arguments are
+  automatically created directly from introspecting the JSON service model.
+  Sometimes customizations may provide a pseudo-argument that takes the
+  user input and maps the input value to several API parameters.
+
 """
 import logging
 
@@ -28,10 +48,6 @@ from awscli.argprocess import unpack_cli_arg
 
 
 LOG = logging.getLogger('awscli.arguments')
-
-
-class BadArgumentError(Exception):
-    pass
 
 
 class UnknownArgumentError(Exception):
@@ -352,15 +368,20 @@ class CLIArgument(BaseCLIArgument):
             parameters[self.argument_object.py_name] = unpacked
 
     def _unpack_argument(self, value):
-        if not hasattr(self.argument_object, 'no_paramfile'):
-            value = self._handle_param_file(value)
         service_name = self.operation_object.service.endpoint_prefix
         operation_name = xform_name(self.operation_object.name, '-')
-        responses = self._emit('process-cli-arg.%s.%s' % (
+        # This is a two step process.  First we "load" the value.
+        value_override = self._emit_first_response(
+            'load-cli-arg.%s.%s' % (service_name, operation_name),
+            param=self.argument_object, value=value,
+            operation=self.operation_object)
+        if value_override is not None:
+            value = value_override
+        # Then we "process/parse" the argument.
+        override = self._emit_first_response('process-cli-arg.%s.%s' % (
             service_name, operation_name), param=self.argument_object,
             value=value,
             operation=self.operation_object)
-        override = first_non_none_response(responses)
         if override is not None:
             # A plugin supplied an alternate conversion,
             # use it instead.
@@ -369,26 +390,13 @@ class CLIArgument(BaseCLIArgument):
             # Fall back to the default arg processing.
             return unpack_cli_arg(self.argument_object, value)
 
-    def _handle_param_file(self, value):
-        session = self.operation_object.service.session
-        # If the arg is suppose to be a list type, just
-        # get the first element in the list, as it may
-        # refer to a file:// (or http/https) type.
-        potential_param_value = value
-        if isinstance(value, list) and len(value) == 1:
-            potential_param_value = value[0]
-        try:
-            actual_value = get_paramfile(session, potential_param_value)
-        except ResourceLoadingError as e:
-            raise BadArgumentError(
-                "Bad value for argument '%s': %s" % (self.cli_name, e))
-        if actual_value is not None:
-            value = actual_value
-        return value
-
     def _emit(self, name, **kwargs):
         session = self.operation_object.service.session
         return session.emit(name, **kwargs)
+
+    def _emit_first_response(self, name, **kwargs):
+        session = self.operation_object.service.session
+        return session.emit_first_non_none_response(name, **kwargs)
 
 
 class ListArgument(CLIArgument):

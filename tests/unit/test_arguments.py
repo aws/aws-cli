@@ -23,6 +23,3 @@ class TestArgumentClasses(unittest.TestCase):
         self.assertFalse(arg.required)
         arg.required = True
         self.assertTrue(arg.required)
-
-
-

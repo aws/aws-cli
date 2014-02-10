@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 from tests import unittest
 from tests.unit import BaseAWSCommandParamsTest
 import logging
@@ -99,6 +98,12 @@ class FakeSession(object):
 
     def emit(self, event_name, **kwargs):
         return self.emitter.emit(event_name, **kwargs)
+
+    def emit_first_non_none_response(self, event_name, **kwargs):
+        responses = self.emitter.emit(event_name, **kwargs)
+        for _, response in responses:
+            if response is not None:
+                return response
 
     def get_available_services(self):
         return ['s3']
@@ -222,6 +227,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
+            'load-cli-arg.s3.list-objects',
             'process-cli-arg.s3.list-objects',
         ])
 
@@ -350,7 +356,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_aws_with_cacert_env_var(self):
         with mock.patch('botocore.endpoint.QueryEndpoint.__init__') as endpoint:
-            environ = {}
             http_response = models.Response()
             http_response.status_code = 200
             endpoint.return_value = None
@@ -365,7 +370,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
     def test_default_to_verifying_ssl(self):
         with mock.patch('botocore.endpoint.QueryEndpoint.__init__') as endpoint:
-            environ = {}
             http_response = models.Response()
             http_response.status_code = 200
             endpoint.return_value = None
@@ -433,7 +437,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = driver.main('ec2 describe-instances '
                          '--filters file://does/not/exist.json'.split())
         self.assertEqual(rc, 255)
-        self.assertIn("Bad value for argument '--filters': "
+        self.assertIn("Error parsing parameter '--filters': "
                       "file does not exist: does/not/exist.json",
                       self.stderr.getvalue())
 
@@ -466,7 +470,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
         self.stderr_patch.stop()
 
     def test_http_file_param_does_not_exist(self):
-        error_msg = ("Bad value for argument '--filters': "
+        error_msg = ("Error parsing parameter '--filters': "
                      "Unable to retrieve http://does/not/exist.json: "
                      "received non 200 status code of 404")
         with mock.patch('botocore.vendored.requests.get') as get:

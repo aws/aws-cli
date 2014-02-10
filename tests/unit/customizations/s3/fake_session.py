@@ -67,6 +67,9 @@ class FakeSession(object):
     def emit(self, *args, **kwargs):
         pass
 
+    def emit_first_non_none_response(self, *args, **kwargs):
+        pass
+
 
 class FakeService(object):
     """

@@ -19,6 +19,7 @@ from botocore.compat import OrderedDict, json
 
 from awscli import utils
 from awscli import SCALAR_TYPES, COMPLEX_TYPES
+from awscli.paramfile import get_paramfile, ResourceLoadingError
 
 
 LOG = logging.getLogger('awscli.argprocess')
@@ -26,7 +27,7 @@ LOG = logging.getLogger('awscli.argprocess')
 
 class ParamError(Exception):
     def __init__(self, param, message):
-        full_message = ("Error parsing parameter %s: %s" %
+        full_message = ("Error parsing parameter '%s': %s" %
                         (param.cli_name, message))
         super(ParamError, self).__init__(full_message)
         self.param = param
@@ -44,6 +45,26 @@ class ParamUnknownKeyError(Exception):
             "Unknown key '%s' for parameter %s, valid choices "
             "are: %s" % (key, param.cli_name, valid_keys))
         super(ParamUnknownKeyError, self).__init__(full_message)
+
+
+def uri_param(param, value, operation, **kwargs):
+    """Handler that supports param values from URIs.
+    """
+    # Some params have a 'no_paramfile' attribute in their JSON
+    # models which means that we should not allow any uri based params
+    # for this argument.
+    if hasattr(param, 'no_paramfile'):
+        return
+    else:
+        return _check_for_uri_param(param, value, operation)
+
+def _check_for_uri_param(param, value, operation):
+    if isinstance(value, list) and len(value) == 1:
+        value = value[0]
+    try:
+        return get_paramfile(operation.service.session, value)
+    except ResourceLoadingError as e:
+        raise ParamError(param, str(e))
 
 
 def detect_shape_structure(param):

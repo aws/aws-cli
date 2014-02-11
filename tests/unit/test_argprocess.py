@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import tempfile
 from tests import unittest
 from tests import BaseCLIDriverTest
+from tests import temporary_file
 
 import mock
 
@@ -51,7 +51,7 @@ class TestURIParams(BaseArgProcessTest):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
         operation = self.session.get_service('ec2')\
                 .get_operation('DescribeInstances')
-        with tempfile.NamedTemporaryFile('r+') as f:
+        with temporary_file('r+') as f:
             json_argument = '[{"Name": "instance-id", "Values": ["i-1234"]}]'
             f.write(json_argument)
             f.flush()

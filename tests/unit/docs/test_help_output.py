@@ -113,6 +113,12 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('DryRunOperation')
         self.assert_contains('UnauthorizedOperation')
 
+    def test_elb_help_output(self):
+        self.driver.main(['elb', 'help'])
+        # We should *not* have any invalid links like
+        # .. _`:
+        self.assert_not_contains('.. _`:')
+
 
 class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
     def assert_command_does_not_exist(self, service, command):

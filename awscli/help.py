@@ -88,7 +88,7 @@ class PosixHelpRenderer(HelpRenderer):
             raise ExecutableNotFoundError('groff')
         cmdline = ['groff', '-man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
-        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE)
+        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         groff_output = p3.communicate(input=man_contents)[0]
         cmdline = self.get_pager_cmdline()
         LOG.debug("Running command: %s", cmdline)

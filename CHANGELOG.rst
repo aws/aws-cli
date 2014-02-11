@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws elb``: Fix issue with documentation errors
+  in ``aws elb help``
+  (`issue 622 <https://github.com/aws/aws-cli/issues/622>`__)
 * bugfix:JSON Parameters: Add a more clear error message
   when parsing invalid JSON parameters
   (`issue 639 <https://github.com/aws/aws-cli/pull/639>`__)

@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:JSON Parameters: Add a more clear error message
+  when parsing invalid JSON parameters
+  (`issue 639 <https://github.com/aws/aws-cli/pull/639>`__)
 * bugfix:``aws s3api``: Properly handle null inputs
   (`issue 637 <https://github.com/aws/aws-cli/issues/637>`__)
 * bugfix:Argument Parsing: Handle files containing JSON with

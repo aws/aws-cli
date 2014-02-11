@@ -50,13 +50,11 @@ class BaseArgProcessTest(BaseCLIDriverTest):
 class TestURIParams(BaseArgProcessTest):
     def test_uri_param(self):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
-        operation = self.session.get_service('ec2')\
-                .get_operation('DescribeInstances')
         with temporary_file('r+') as f:
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = uri_param(p, 'file://%s' % f.name, operation)
+            result = uri_param(p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
 
 

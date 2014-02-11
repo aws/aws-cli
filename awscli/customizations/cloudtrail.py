@@ -173,7 +173,7 @@ class CloudTrailSubscribe(BasicCommand):
 
             sys.stdout.write(
                 'Logs will be delivered to {bucket}:{prefix}\n'.format(
-                    bucket=bucket, prefix=options.s3_prefix))
+                    bucket=bucket, prefix=options.s3_prefix or ''))
 
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """

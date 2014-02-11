@@ -17,6 +17,7 @@ registered with the event system.
 
 """
 from awscli.argprocess import ParamShorthand
+from awscli.argprocess import uri_param
 from awscli.errorhandler import ErrorHandler
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
@@ -43,6 +44,7 @@ from awscli.customizations.ec2protocolarg import register_protocol_args
 
 
 def awscli_initialize(event_handlers):
+    event_handlers.register('load-cli-arg', uri_param)
     param_shorthand = ParamShorthand()
     event_handlers.register('process-cli-arg', param_shorthand)
     error_handler = ErrorHandler()

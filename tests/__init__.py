@@ -10,7 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sys
+import contextlib
+import shutil
+import tempfile
+import time
+import random
 
 import mock
 from botocore.hooks import HierarchicalEmitter
@@ -38,12 +44,24 @@ class BaseCLIDriverTest(unittest.TestCase):
     will simulate the behavior the user will see.
     """
     def setUp(self):
+        self.environ = {
+            'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
+            'AWS_DEFAULT_REGION': 'us-east-1',
+            'AWS_ACCESS_KEY_ID': 'access_key',
+            'AWS_SECRET_ACCESS_KEY': 'secret_key',
+            'AWS_CONFIG_FILE': '',
+        }
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
         emitter = HierarchicalEmitter()
         session = Session(EnvironmentVariables, emitter)
         load_plugins({}, event_hooks=emitter)
         driver = CLIDriver(session=session)
         self.session = session
         self.driver = driver
+
+    def tearDown(self):
+        self.environ_patch.stop()
 
 
 class BaseAWSHelpOutputTest(BaseCLIDriverTest):
@@ -97,3 +115,24 @@ class CapturedRenderer(object):
         self.rendered_contents = contents.decode('utf-8')
 
 
+@contextlib.contextmanager
+def temporary_file(mode):
+    """This is a cross platform temporary file creation.
+
+    tempfile.NamedTemporary file on windows creates a secure temp file
+    that can't be read by other processes and can't be opened a second time.
+
+    For tests, we generally *want* them to be read multiple times.
+    The test fixture writes the temp file contents, the test reads the
+    temp file.
+
+    """
+    temporary_directory = tempfile.mkdtemp()
+    basename = 'tmpfile-%s-%s' % (int(time.time()), random.randint(1, 1000))
+    full_filename = os.path.join(temporary_directory, basename)
+    open(full_filename, 'w').close()
+    try:
+        with open(full_filename, mode) as f:
+            yield f
+    finally:
+        shutil.rmtree(temporary_directory)

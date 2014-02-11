@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 from tests import unittest
 from tests import BaseCLIDriverTest
 from tests import temporary_file
@@ -52,7 +53,7 @@ class TestURIParams(BaseArgProcessTest):
         operation = self.session.get_service('ec2')\
                 .get_operation('DescribeInstances')
         with temporary_file('r+') as f:
-            json_argument = '[{"Name": "instance-id", "Values": ["i-1234"]}]'
+            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
             result = uri_param(p, 'file://%s' % f.name, operation)

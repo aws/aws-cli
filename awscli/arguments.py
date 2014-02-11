@@ -17,11 +17,9 @@ This includes how the CLI argument parser is created, how arguments
 are serialized, and how arguments are bound (if at all) to operation
 arguments.
 
-There are several types of arguments defined in this module.
-
-First, there's the BaseCLIArgument.  This is just the interface for
-all arguments.  This is the interface expected by objects that work
-with arguments.
+The BaseCLIArgument is the interface for all arguments.  This is the interface
+expected by objects that work with arguments.  If you want to implement your
+own argument subclass, make sure it implements everything in BaseCLIArgument.
 
 Arguments generally fall into one of several categories:
 
@@ -40,10 +38,8 @@ Arguments generally fall into one of several categories:
 """
 import logging
 
-from botocore.hooks import first_non_none_response
 from botocore import xform_name
 
-from awscli.paramfile import get_paramfile, ResourceLoadingError
 from awscli.argprocess import unpack_cli_arg
 
 

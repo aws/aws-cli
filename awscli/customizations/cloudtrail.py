@@ -260,6 +260,8 @@ class CloudTrailSubscribe(BasicCommand):
 
         region = self.sns.endpoint.region_name
 
+        # Get the SNS topic policy information to allow CloudTrail
+        # write-access.
         if policy_url:
             policy = requests.get(policy_url).text
         else:
@@ -271,11 +273,22 @@ class CloudTrailSubscribe(BasicCommand):
                        .replace('<SNSTopicOwnerAccountId>', account_id)\
                        .replace('<SNSTopicName>', topic)
 
-        LOG.debug('Bucket policy:\n{0}'.format(policy))
-
         topic_result = self.sns.CreateTopic(name=topic)
 
         try:
+            # Merge any existing topic policy with our new policy statements
+            topic_attr = self.sns.GetTopicAttributes(topic_arn=topic_result['TopicArn'])
+
+            policy_orig = json.loads(topic_attr['Attributes']['Policy'])
+            policy_new = json.loads(policy)
+
+            policy_orig['Statement'] += policy_new['Statement']
+
+            policy = json.dumps(policy_orig)
+
+            LOG.debug('Topic policy:\n{0}'.format(policy))
+
+            # Set the topic policy
             self.sns.SetTopicAttributes(topic_arn=topic_result['TopicArn'],
                                         attribute_name='Policy',
                                         attribute_value=policy)

@@ -10,9 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 from tests import unittest
+from tests import BaseCLIDriverTest
+from tests import temporary_file
 
-import botocore.session
 import mock
 
 from awscli.clidriver import CLIArgument
@@ -22,17 +24,17 @@ from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthand
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
+from awscli.argprocess import uri_param
 
 
 MAPHELP = """--attributes key_name=string,key_name2=string
 Where valid key names are:
   Policy"""
 
+
 # These tests use real service types so that we can
 # verify the real shapes of services.
-class BaseArgProcessTest(unittest.TestCase):
-    def setUp(self):
-        self.session = botocore.session.get_session()
+class BaseArgProcessTest(BaseCLIDriverTest):
 
     def get_param_object(self, dotted_name):
         service_name, operation_name, param_name = dotted_name.split('.')
@@ -43,6 +45,19 @@ class BaseArgProcessTest(unittest.TestCase):
                 return p
         else:
             raise ValueError("Unknown param: %s" % param_name)
+
+
+class TestURIParams(BaseArgProcessTest):
+    def test_uri_param(self):
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        operation = self.session.get_service('ec2')\
+                .get_operation('DescribeInstances')
+        with temporary_file('r+') as f:
+            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
+            f.write(json_argument)
+            f.flush()
+            result = uri_param(p, 'file://%s' % f.name, operation)
+        self.assertEqual(result, json_argument)
 
 
 class TestArgShapeDetection(BaseArgProcessTest):
@@ -201,7 +216,7 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName=bar'
-        error_msg = "Error parsing parameter --source-configuration.*should be"
+        error_msg = "Error parsing parameter '--source-configuration'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
 
@@ -219,13 +234,13 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName:bar'
-        error_msg = "Error parsing parameter --source-configuration.*should be"
+        error_msg = "Error parsing parameter '--source-configuration'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
 
     def test_improper_separator_for_filters_param(self):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
-        error_msg = "Error parsing parameter --filters.*should be"
+        error_msg = "Error parsing parameter '--filters'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, ["Name:tag:Name,Values:foo"])
 
@@ -261,7 +276,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_csv_syntax_errors(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
-        error_msg = "Error parsing parameter --parameters.*should be"
+        error_msg = "Error parsing parameter '--parameters'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar'])
         with self.assertRaisesRegexp(ParamError, error_msg):

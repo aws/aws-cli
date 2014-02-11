@@ -26,10 +26,11 @@ LOG = logging.getLogger('awscli.argprocess')
 
 class ParamError(Exception):
     def __init__(self, param, message):
-        full_message = ("Error parsing parameter %s, should be: %s" %
+        full_message = ("Error parsing parameter %s: %s" %
                         (param.cli_name, message))
         super(ParamError, self).__init__(full_message)
         self.param = param
+        self.message = message
 
 
 class ParamSyntaxError(Exception):
@@ -129,7 +130,7 @@ class ParamShorthand(object):
                 if doc_fn is None:
                     raise e
                 else:
-                    raise ParamError(param, doc_fn(param))
+                    raise ParamError(param, "should be: %s" % doc_fn(param))
             return parsed
 
     def get_parse_method_for_param(self, param, value=None):
@@ -353,12 +354,13 @@ def unpack_cli_arg(parameter, value):
 def unpack_complex_cli_arg(parameter, value):
     if parameter.type == 'structure' or parameter.type == 'map':
         if value.lstrip()[0] == '{':
-            d = json.loads(value, object_pairs_hook=OrderedDict)
-        else:
-            msg = 'The value for parameter "%s" must be JSON or path to file.' % (
-                parameter.cli_name)
-            raise ValueError(msg)
-        return d
+            try:
+                return json.loads(value, object_pairs_hook=OrderedDict)
+            except ValueError as e:
+                raise ParamError(
+                    parameter, "Invalid JSON: %s\nJSON received: %s"
+                    % (e, value))
+        raise ParamError(parameter, "Invalid JSON:\n%s" % value)
     elif parameter.type == 'list':
         if isinstance(value, six.string_types):
             if value.lstrip()[0] == '[':
@@ -367,7 +369,14 @@ def unpack_complex_cli_arg(parameter, value):
             single_value = value[0].strip()
             if single_value and single_value[0] == '[':
                 return json.loads(value[0], object_pairs_hook=OrderedDict)
-        return [unpack_cli_arg(parameter.members, v) for v in value]
+        try:
+            return [unpack_cli_arg(parameter.members, v) for v in value]
+        except ParamError as e:
+            # The list params don't have a name/cli_name attached to them
+            # so they will have bad error messages.  We're going to
+            # attach the parent parmeter to this error message to provide
+            # a more helpful error message.
+            raise ParamError(parameter, e.message)
 
 
 def unpack_scalar_cli_arg(parameter, value):
@@ -381,7 +390,7 @@ def unpack_scalar_cli_arg(parameter, value):
         file_path = os.path.expanduser(file_path)
         if not os.path.isfile(file_path):
             msg = 'Blob values must be a path to a file.'
-            raise ValueError(msg)
+            raise ParamError(parameter, msg)
         return open(file_path, 'rb')
     elif parameter.type == 'boolean':
         if isinstance(value, str) and value.lower() == 'false':

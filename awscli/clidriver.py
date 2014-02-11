@@ -202,6 +202,7 @@ class CLIDriver(object):
         except Exception as e:
             LOG.debug("Exception caught in main()", exc_info=True)
             LOG.debug("Exiting with rc 255")
+            sys.stderr.write("\n")
             sys.stderr.write("%s\n" % e)
             return 255
 

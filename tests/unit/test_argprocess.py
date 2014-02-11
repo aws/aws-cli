@@ -335,5 +335,35 @@ class TestDocGen(BaseArgProcessTest):
         self.assertEqual(doc_string, s)
 
 
+class TestUnpackJSONParams(BaseArgProcessTest):
+    def setUp(self):
+        super(TestUnpackJSONParams, self).setUp()
+        self.simplify = ParamShorthand()
+
+    def test_json_with_spaces(self):
+        p = self.get_param_object('ec2.RunInstances.BlockDeviceMappings')
+        # If a user specifies the json with spaces, it will show up as
+        # a multi element list.  For example:
+        # --block-device-mappings [{ "DeviceName":"/dev/sdf",
+        # "VirtualName":"ephemeral0"}, {"DeviceName":"/dev/sdg",
+        # "VirtualName":"ephemeral1" }]
+        #
+        # Will show up as:
+        block_device_mapping = [
+            '[{', 'DeviceName:/dev/sdf,', 'VirtualName:ephemeral0},',
+            '{DeviceName:/dev/sdg,', 'VirtualName:ephemeral1', '}]']
+        # The shell has removed the double quotes so this is invalid
+        # JSON, but we should still raise a better exception.
+        with self.assertRaises(ParamError) as e:
+            unpack_cli_arg(p, block_device_mapping)
+        # Parameter name should be in error message.
+        self.assertIn('--block-device-mappings', str(e.exception))
+        # The actual JSON itself should be in the error message.
+        # Becaues this is a list, only the first element in the JSON
+        # will show.  This will at least let customers know what
+        # we tried to parse.
+        self.assertIn('[{', str(e.exception))
+
+
 if __name__ == '__main__':
     unittest.main()

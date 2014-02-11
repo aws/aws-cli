@@ -47,7 +47,7 @@ class ParamUnknownKeyError(Exception):
         super(ParamUnknownKeyError, self).__init__(full_message)
 
 
-def uri_param(param, value, operation, **kwargs):
+def uri_param(param, value, **kwargs):
     """Handler that supports param values from URIs.
     """
     # Some params have a 'no_paramfile' attribute in their JSON
@@ -56,13 +56,13 @@ def uri_param(param, value, operation, **kwargs):
     if hasattr(param, 'no_paramfile'):
         return
     else:
-        return _check_for_uri_param(param, value, operation)
+        return _check_for_uri_param(param, value)
 
-def _check_for_uri_param(param, value, operation):
+def _check_for_uri_param(param, value):
     if isinstance(value, list) and len(value) == 1:
         value = value[0]
     try:
-        return get_paramfile(operation.service.session, value)
+        return get_paramfile(value)
     except ResourceLoadingError as e:
         raise ParamError(param, str(e))
 

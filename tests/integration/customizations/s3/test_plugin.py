@@ -414,10 +414,12 @@ class TestSync(BaseS3CLICommand):
         self.files.create_file('test.txt', 'test.txt contents')
 
         # Now sync this content up to s3.
+        # Allow settling time so that we have a different time between
+        # source and destination.
+        time.sleep(2)
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
 
-        time.sleep(1)
         # Now here's the issue.  If we try to sync the contents down
         # with the --delete flag we should *not* see any output, the
         # sync operation should determine that nothing is different and

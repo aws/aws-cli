@@ -277,14 +277,11 @@ class CloudTrailSubscribe(BasicCommand):
 
         try:
             # Merge any existing topic policy with our new policy statements
-            topic_attr = self.sns.GetTopicAttributes(topic_arn=topic_result['TopicArn'])
+            topic_attr = self.sns.GetTopicAttributes(
+                topic_arn=topic_result['TopicArn'])
 
-            policy_orig = json.loads(topic_attr['Attributes']['Policy'])
-            policy_new = json.loads(policy)
-
-            policy_orig['Statement'] += policy_new['Statement']
-
-            policy = json.dumps(policy_orig)
+            policy = self.merge_sns_policy(topic_attr['Attributes']['Policy'],
+                                           policy)
 
             LOG.debug('Topic policy:\n{0}'.format(policy))
 
@@ -298,6 +295,28 @@ class CloudTrailSubscribe(BasicCommand):
             raise
 
         return topic_result
+
+    def merge_sns_policy(self, left, right):
+        """
+        Merge two SNS topic policy documents. The id information from
+        ``left`` is used in the final document, and the statements
+        from ``right`` are merged into ``left``.
+
+        http://docs.aws.amazon.com/sns/latest/dg/BasicStructure.html
+
+        :type left: string
+        :param left: First policy JSON document
+        :type right: string
+        :param right: Second policy JSON document
+        :rtype: string
+        :return: Merged policy JSON
+        """
+        left_parsed = json.loads(left)
+        right_parsed = json.loads(right)
+
+        left_parsed['Statement'] += right_parsed['Statement']
+
+        return json.dumps(left_parsed)
 
     def upsert_cloudtrail_config(self, name, bucket, prefix, topic, gse):
         """

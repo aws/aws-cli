@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import botocore.session
+import json
 import io
 import os
 
@@ -36,7 +37,7 @@ class TestCloudTrail(unittest.TestCase):
         self.subscribe.s3 = Mock()
         self.subscribe.s3.endpoint = Mock()
         self.subscribe.s3.endpoint.region_name = 'us-east-1'
-        policy_template = io.StringIO(initial_value=u'')
+        policy_template = io.StringIO(initial_value=u'{"Statement": []}')
         self.subscribe.s3.GetObject = Mock(
             return_value={'Body': policy_template})
         self.subscribe.s3.ListBuckets = Mock(
@@ -49,6 +50,8 @@ class TestCloudTrail(unittest.TestCase):
             return_value={'Topics': [{'TopicArn': ':test2'}]})
         self.subscribe.sns.CreateTopic = Mock(
             return_value={'TopicArn': 'foo'})
+        self.subscribe.sns.GetTopicAttributes = Mock(
+            return_value={'Attributes': {'Policy': '{"Statement": []}'}})
 
     def test_s3_create(self):
         iam = self.subscribe.iam
@@ -124,6 +127,15 @@ class TestCloudTrail(unittest.TestCase):
             sns_topic_name='topic',
             include_global_service_events=True
         )
+
+    def test_sns_policy_merge(self):
+        left = '{"Version":"2008-10-17","Id":"us-east-1/698519295917/test__default_policy_ID","Statement" : [{"Effect":"Allow","Sid":"us-east-1/698519295917/test__default_statement_ID","Principal" : {"AWS": "*"},"Action":["SNS:GetTopicAttributes","SNS:SetTopicAttributes","SNS:AddPermission","SNS:RemovePermission","SNS:DeleteTopic","SNS:Subscribe","SNS:ListSubscriptionsByTopic","SNS:Publish","SNS:Receive"],"Resource":"arn:aws:sns:us-east-1:698519295917:test","Condition" : {"StringLike" : {"AWS:SourceArn": "arn:aws:*:*:698519295917:*"}}}]}'
+        right = '{"Version":"2008-10-17","Id":"us-east-1/698519295917/test_foo","Statement" : [{"Effect":"Allow","Sid":"us-east-1/698519295917/test_foo_ID","Principal" : {"AWS": "*"},"Action":["SNS:GetTopicAttributes","SNS:SetTopicAttributes","SNS:AddPermission","SNS:RemovePermission","SNS:DeleteTopic","SNS:Subscribe","SNS:ListSubscriptionsByTopic","SNS:Publish","SNS:Receive"],"Resource":"arn:aws:sns:us-east-1:698519295917:test","Condition" : {"StringLike" : {"AWS:SourceArn": "arn:aws:*:*:698519295917:*"}}}]}'
+        expected = '{"Version":"2008-10-17","Id":"us-east-1/698519295917/test__default_policy_ID","Statement" : [{"Effect":"Allow","Sid":"us-east-1/698519295917/test__default_statement_ID","Principal" : {"AWS": "*"},"Action":["SNS:GetTopicAttributes","SNS:SetTopicAttributes","SNS:AddPermission","SNS:RemovePermission","SNS:DeleteTopic","SNS:Subscribe","SNS:ListSubscriptionsByTopic","SNS:Publish","SNS:Receive"],"Resource":"arn:aws:sns:us-east-1:698519295917:test","Condition" : {"StringLike" : {"AWS:SourceArn": "arn:aws:*:*:698519295917:*"}}},{"Effect":"Allow","Sid":"us-east-1/698519295917/test_foo_ID","Principal" : {"AWS": "*"},"Action":["SNS:GetTopicAttributes","SNS:SetTopicAttributes","SNS:AddPermission","SNS:RemovePermission","SNS:DeleteTopic","SNS:Subscribe","SNS:ListSubscriptionsByTopic","SNS:Publish","SNS:Receive"],"Resource":"arn:aws:sns:us-east-1:698519295917:test","Condition" : {"StringLike" : {"AWS:SourceArn": "arn:aws:*:*:698519295917:*"}}}]}'
+
+        merged = self.subscribe.merge_sns_policy(left, right)
+
+        self.assertEqual(json.loads(expected), json.loads(merged))
 
 
 class TestCloudTrailSessions(BaseAWSCommandParamsTest):

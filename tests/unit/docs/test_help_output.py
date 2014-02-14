@@ -301,3 +301,16 @@ class TestEnumDocsArentDuplicated(BaseAWSHelpOutputTest):
         self.assertTrue(contents.count("CREATE_IN_PROGRESS") == 1,
                         ("Enum param was only suppose to be appear once in "
                          "rendered doc output."))
+
+
+class TestParametersCanBeHidden(BaseAWSHelpOutputTest):
+    def mark_as_undocumented(self, argument_table, **kwargs):
+        argument_table['device']._UNDOCUMENTED = True
+
+    def test_hidden_params_are_not_documented(self):
+        # We're going to demonstrate hiding a parameter.
+        # --device
+        self.driver.session.register('building-argument-table',
+                                     self.mark_as_undocumented)
+        self.driver.main(['ec2', 'attach-volume', 'help'])
+        self.assert_not_contains('--device')

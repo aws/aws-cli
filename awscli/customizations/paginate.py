@@ -14,13 +14,17 @@
 
 For any operation that can be paginated, we will:
 
-    * Remove the service specific pagination params.  This can vary across
+    * Hide the service specific pagination params.  This can vary across
     services and we're going to replace them with a consistent set of
-    arguments.
+    arguments.  The arguments will still work, but they are not
+    documented.  This allows us to add a pagination config after
+    the fact and still remain backwards compatible with users that
+    were manually doing pagination.
     * Add a ``--starting-token`` and a ``--max-items`` argument.
 
 """
 import logging
+from functools import partial
 
 from awscli.arguments import BaseCLIArgument
 from botocore.parameters import StringParameter
@@ -41,12 +45,23 @@ be provided in the output that you can use to resume pagination.
 """
 
 
-def unify_paging_params(argument_table, operation, **kwargs):
+def register_pagination(event_handlers):
+    event_handlers.register('building-argument-table',
+                            unify_paging_params)
+
+
+def unify_paging_params(argument_table, operation, event_name, **kwargs):
     if not operation.can_paginate:
         # We only apply these customizations to paginated responses.
         return
     logger.debug("Modifying paging parameters for operation: %s", operation)
     _remove_existing_paging_arguments(argument_table, operation)
+    parsed_args_event = event_name.replace('building-argument-table.',
+                                           'operation-args-parsed.')
+    operation.session.register(
+        parsed_args_event,
+        partial(check_should_enable_pagination,
+                list(_get_all_cli_input_tokens(operation))))
     argument_table['starting-token'] = PageArgument('starting-token',
                                                     STARTING_TOKEN_HELP,
                                                     operation,
@@ -55,16 +70,33 @@ def unify_paging_params(argument_table, operation, **kwargs):
                                                operation, parse_type='integer')
 
 
+def check_should_enable_pagination(input_tokens, parsed_args, parsed_globals, **kwargs):
+    for token in input_tokens:
+        py_name = token.replace('-', '_')
+        if getattr(parsed_args, py_name) is not None:
+            # The user has specified a manual (undocumented) pagination arg.
+            # We need to automatically turn pagination off.
+            logger.debug("User has specified a manual pagination arg. "
+                         "Automatically setting --no-paginate.")
+            parsed_globals.paginate = False
+
+
 def _remove_existing_paging_arguments(argument_table, operation):
+    for cli_name in _get_all_cli_input_tokens(operation):
+        argument_table[cli_name]._UNDOCUMENTED = True
+
+
+def _get_all_cli_input_tokens(operation):
+    # Get all input tokens including the limit_key
+    # if it exists.
     tokens = _get_input_tokens(operation)
     for token_name in tokens:
         cli_name = _get_cli_name(operation.params, token_name)
-        del argument_table[cli_name]
+        yield cli_name
     if 'limit_key' in operation.pagination:
         key_name = operation.pagination['limit_key']
         cli_name = _get_cli_name(operation.params, key_name)
-        del argument_table[cli_name]
-
+        yield cli_name
 
 def _get_input_tokens(operation):
     config = operation.pagination

@@ -23,7 +23,7 @@ from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
 from awscli.customizations.ec2addcount import ec2_add_count
-from awscli.customizations.paginate import unify_paging_params
+from awscli.customizations.paginate import register_pagination
 from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2secgroupsimplify import register_secgroup
 from awscli.customizations.preview import register_preview_commands
@@ -64,10 +64,9 @@ def awscli_initialize(event_handlers):
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.run-instances',
                             ec2_add_count)
-    event_handlers.register('building-argument-table',
-                            unify_paging_params)
     event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
+    register_pagination(event_handlers)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
     s3_plugin_initialize(event_handlers)

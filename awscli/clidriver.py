@@ -433,7 +433,8 @@ class ServiceOperation(object):
         operation_name = self._operation_object.name
         event = 'operation-args-parsed.%s.%s' % (self._parent_name,
                                                  self._name)
-        self._emit(event, parsed_args=parsed_args)
+        self._emit(event, parsed_args=parsed_args,
+                   parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(parsed_args,
                                                       self.arg_table)
         return self._operation_caller.invoke(

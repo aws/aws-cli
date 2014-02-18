@@ -145,7 +145,7 @@ class ConsoleCommand(BasicCommand):
         r = botocore.vendored.requests.get(signin_url, params=params)
         params = json.loads(r.text)
         params['Action'] = 'login'
-        params['Issuer'] = 'foo'
+        params['Issuer'] = issuer_url
         params['Destination'] = console_url
         url = signin_url + '?' + urlencode(params)
         webbrowser.open(url)

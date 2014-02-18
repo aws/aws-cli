@@ -118,6 +118,29 @@ class EndCommand(BasicCommand):
         self._session.delete_temporary_credentials()
 
 
+class ShowCommand(BasicCommand):
+
+    NAME = 'show'
+    DESCRIPTION = 'Show the current session, if any.'
+    SYNOPSIS = 'aws session show'
+    EXAMPLES = (
+        '\n'
+        'To display information about the current session, if any::\n'
+        '\n'
+        '    $ aws session show\n'
+    )
+
+    def _run_main(self, parsed_args, parsed_globals):
+        creds = self._session.get_credentials()
+        if creds.method == 'session-cache':
+            print('Your current session:')
+            print('\tCredential Operation: %s' % creds.credential_operation)
+            for param in creds.credential_params:
+                print('\t%s: %s' % (param, creds.credential_params[param]))
+        else:
+            print('No current session')
+
+
 class ConsoleCommand(BasicCommand):
 
     NAME = 'console'
@@ -159,5 +182,6 @@ class SessionCommand(BasicCommand):
     SUBCOMMANDS = [
         {'name': 'start', 'command_class': StartCommand},
         {'name': 'end', 'command_class': EndCommand},
-        {'name': 'console', 'command_class': ConsoleCommand}
+        {'name': 'console', 'command_class': ConsoleCommand},
+        {'name': 'show', 'command_class': ShowCommand}
     ]

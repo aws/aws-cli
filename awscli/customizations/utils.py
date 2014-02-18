@@ -14,6 +14,13 @@
 Utility functions to make it easier to work with customizations.
 
 """
+
+try:
+    raw_input = raw_input
+except NameError:
+    raw_input = input
+
+
 def rename_argument(argument_table, existing_name, new_name):
     current = argument_table[existing_name]
     argument_table[new_name] = current
@@ -60,3 +67,23 @@ def _get_group_for_key(key, groups):
     for group in groups:
         if key in group:
             return group
+
+
+def mask_value(current_value):
+    if current_value is None:
+        return 'None'
+    else:
+        return ('*' * 16) + current_value[-4:]
+
+
+class InteractivePrompter(object):
+    def get_value(self, current_value, config_name, prompt_text=''):
+        if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
+            current_value = mask_value(current_value)
+        response = raw_input("%s [%s]: " % (prompt_text, current_value))
+        if not response:
+            # If the user hits enter, we return a value of None
+            # instead of an empty string.  That way we can determine
+            # whether or not a value has changed.
+            response = None
+        return response

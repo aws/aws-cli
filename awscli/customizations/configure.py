@@ -18,12 +18,7 @@ import logging
 from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations.commands import BasicCommand
-
-
-try:
-    raw_input = raw_input
-except NameError:
-    raw_input = input
+from awscli.customizations.utils import mask_value, InteractivePrompter
 
 
 logger = logging.getLogger(__name__)
@@ -44,31 +39,11 @@ class ConfigValue(object):
     def mask_value(self):
         if self.value is NOT_SET:
             return
-        self.value = _mask_value(self.value)
+        self.value = mask_value(self.value)
 
 
 class SectionNotFoundError(Exception):
     pass
-
-
-def _mask_value(current_value):
-    if current_value is None:
-        return 'None'
-    else:
-        return ('*' * 16) +  current_value[-4:]
-
-
-class InteractivePrompter(object):
-    def get_value(self, current_value, config_name, prompt_text=''):
-        if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
-            current_value = _mask_value(current_value)
-        response = raw_input("%s [%s]: " % (prompt_text, current_value))
-        if not response:
-            # If the user hits enter, we return a value of None
-            # instead of an empty string.  That way we can determine
-            # whether or not a value has changed.
-            response = None
-        return response
 
 
 class ConfigFileWriter(object):

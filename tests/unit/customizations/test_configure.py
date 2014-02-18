@@ -20,6 +20,7 @@ import mock
 from six import StringIO
 from botocore.exceptions import ProfileNotFound
 
+import awscli.customizations.utils
 from awscli.customizations import configure
 
 
@@ -179,7 +180,7 @@ class TestConfigureCommand(unittest.TestCase):
 
 
 class TestInteractivePrompter(unittest.TestCase):
-    @mock.patch('awscli.customizations.configure.raw_input')
+    @mock.patch('awscli.customizations.utils.raw_input')
     def test_access_key_is_masked(self, mock_raw_input):
         mock_raw_input.return_value = 'foo'
         prompter = configure.InteractivePrompter()
@@ -193,7 +194,7 @@ class TestInteractivePrompter(unittest.TestCase):
         self.assertNotIn('myaccesskey', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
 
-    @mock.patch('awscli.customizations.configure.raw_input')
+    @mock.patch('awscli.customizations.utils.raw_input')
     def test_access_key_not_masked_when_none(self, mock_raw_input):
         mock_raw_input.return_value = 'foo'
         prompter = configure.InteractivePrompter()
@@ -205,7 +206,7 @@ class TestInteractivePrompter(unittest.TestCase):
         prompt_text = mock_raw_input.call_args[0][0]
         self.assertIn('[None]', prompt_text)
 
-    @mock.patch('awscli.customizations.configure.raw_input')
+    @mock.patch('awscli.customizations.utils.raw_input')
     def test_secret_key_is_masked(self, mock_raw_input):
         prompter = configure.InteractivePrompter()
         prompter.get_value(
@@ -217,7 +218,7 @@ class TestInteractivePrompter(unittest.TestCase):
         self.assertNotIn('mysupersecretkey', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
 
-    @mock.patch('awscli.customizations.configure.raw_input')
+    @mock.patch('awscli.customizations.utils.raw_input')
     def test_non_secret_keys_are_not_masked(self, mock_raw_input):
         prompter = configure.InteractivePrompter()
         prompter.get_value(

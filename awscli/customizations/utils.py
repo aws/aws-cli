@@ -15,7 +15,10 @@ Utility functions to make it easier to work with customizations.
 
 """
 
-from botocore.compat import raw_input
+try:
+    raw_input = raw_input
+except NameError:
+    raw_input = input
 
 
 def rename_argument(argument_table, existing_name, new_name):

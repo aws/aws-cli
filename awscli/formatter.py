@@ -15,6 +15,8 @@ import sys
 import json
 import jmespath
 
+from botocore.utils import set_value_from_jmespath
+
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
 
@@ -213,7 +215,11 @@ class TextFormatter(Formatter):
                 for _, page in response:
                     current = {}
                     for result_key in result_keys:
-                        current[result_key.expression] = page[result_key.expression]
+                        set_value_from_jmespath(
+                            current,
+                            result_key.expression,
+                            page[result_key.expression]
+                        )
                     self._format_response(current, stream)
                 if response.resume_token:
                     # Tell the user about the next token so they can continue

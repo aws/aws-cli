@@ -213,7 +213,7 @@ class TextFormatter(Formatter):
                 for _, page in response:
                     current = {}
                     for result_key in result_keys:
-                        current[result_key] = page[result_key]
+                        current[result_key.expression] = page[result_key.expression]
                     self._format_response(current, stream)
                 if response.resume_token:
                     # Tell the user about the next token so they can continue

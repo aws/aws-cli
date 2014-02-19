@@ -10,9 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import pprint
 import logging
 import difflib
+
+import mock
 
 from awscli.completer import Completer
 
@@ -100,11 +103,17 @@ def check_completer(cmdline, results, expected_results):
 
 
 def test_completions():
-    completer = Completer()
-    for cmdline, point, expected_results in COMPLETIONS:
-        if point == -1:
-            point = len(cmdline)
-        results = set(completer.complete(cmdline, point))
-        yield check_completer, cmdline, results, expected_results
-
-
+    environ = {
+        'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
+        'AWS_DEFAULT_REGION': 'us-east-1',
+        'AWS_ACCESS_KEY_ID': 'access_key',
+        'AWS_SECRET_ACCESS_KEY': 'secret_key',
+        'AWS_CONFIG_FILE': '',
+    }
+    with mock.patch('os.environ', environ):
+        completer = Completer()
+        for cmdline, point, expected_results in COMPLETIONS:
+            if point == -1:
+                point = len(cmdline)
+            results = set(completer.complete(cmdline, point))
+            yield check_completer, cmdline, results, expected_results

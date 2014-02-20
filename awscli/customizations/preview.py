@@ -20,6 +20,10 @@ service by enabling the service in their config file via:
     [preview]
     servicename=true
 
+or by running:
+
+    aws configure set preview.servicename true
+
 Also any service that is marked as being in preview will *not*
 be listed in the help docs, unless the service has been enabled
 in the config file as shown above.
@@ -63,6 +67,7 @@ PREVIEW_SERVICES = {
     'datapipeline': GENERAL_HELP,
     'cloudfront': GENERAL_HELP,
     'emr': EMR_HELP,
+    'sdb': GENERAL_HELP,
 }
 
 
@@ -111,6 +116,10 @@ class PreviewModeCommand(CLICommand):
 
         [preview]
         {service}=true
+
+    or by running:
+
+        aws configure set preview.{service} true
 
     """)
 

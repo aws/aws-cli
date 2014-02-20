@@ -5,6 +5,16 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws rds describe-engine-default-parameters``: Fix
+  pagination issue when calling
+  ``aws rds describe-engine-default-parameters``
+  (`issue 607 <https://github.com/aws/aws-cli/issues/607>`__)
+* bugfix:``aws cloudtrail``: Merge existing SNS topic policy
+  with the existing AWS CloudTrail policy instead of overwriting
+  the default topic policy
+* bugfix:``aws s3``: Fix issue where streams were not being
+  rewound when encountering 307 redirects with multipart uploads
+  (`issue 544 <https://github.com/aws/aws-cli/issues/544>`__)
 * bugfix:``aws elb``: Fix issue with documentation errors
   in ``aws elb help``
   (`issue 622 <https://github.com/aws/aws-cli/issues/622>`__)

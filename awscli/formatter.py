@@ -215,10 +215,11 @@ class TextFormatter(Formatter):
                 for _, page in response:
                     current = {}
                     for result_key in result_keys:
+                        data = result_key.search(page)
                         set_value_from_jmespath(
                             current,
                             result_key.expression,
-                            page[result_key.expression]
+                            data
                         )
                     self._format_response(current, stream)
                 if response.resume_token:

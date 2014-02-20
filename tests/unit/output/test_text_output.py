@@ -64,3 +64,12 @@ class TestListUsers(BaseAWSCommandParamsTest):
             output,
             ('USERS\tarn:aws:iam::12345:user/testuser1\t2013-02-12T19:08:52Z\t'
              '/\tEXAMPLEUSERID\ttestuser-50\n'))
+
+        # Test something with a jmespath expression.
+        output = self.run_cmd(
+            'rds describe-engine-default-parameters ' \
+            '--db-parameter-group-family mysql5.1 --output text',
+            expected_rc=0)[0]
+        self.assertEqual(
+            output,
+            'ENGINEDEFAULTS\tNone\n')

@@ -71,7 +71,9 @@ def add_param_descriptions(params_dict):
 
     params_dict['acl']['documents'] = "Sets the ACl for the object when the " \
         "command is performed.  Only accepts values of ``private``, \
-        ``public-read``, or ``public-read-write``."
+        ``public-read``, ``public-read-write``, ``authenticated-read``, \
+        ``bucket-owner-read``, ``bucket-owner-full-control`` and \
+        ``log-delivery-write``."
 
     params_dict['force']['documents'] = "Deletes all objects in the bucket " \
         "including the bucket itself."

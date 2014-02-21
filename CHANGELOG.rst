@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Support missing canned ACLs when using
+  the ``--acl`` parameter
+  (`issue 663 <https://github.com/aws/aws-cli/issues/663>`__)
 * bugfix:``aws rds describe-engine-default-parameters``: Fix
   pagination issue when calling
   ``aws rds describe-engine-default-parameters``

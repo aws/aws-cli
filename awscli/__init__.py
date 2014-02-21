@@ -38,6 +38,7 @@ EnvironmentVariables = {
     'region': ('region', 'AWS_DEFAULT_REGION', None),
     'data_path': ('data_path', 'AWS_DATA_PATH', None),
     'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json'),
+    'role_arn': ('role_arn', 'AWS_ASSUME_ROLE_ARN', None),
     }
 
 SCALAR_TYPES = set([

@@ -214,8 +214,15 @@ class CLIDriver(object):
     def _handle_top_level_args(self, args):
         self.session.emit('top-level-args-parsed', parsed_args=args)
         if args.profile:
+            default_creds = self.session.get_credentials()
             self.session.profile = args.profile
             if self.session.get_variable('role_arn'):
+                if not default_creds:
+                    msg = ('Insufficient default credentials provided. '
+                           'You can configure credentials by running '
+                           '"aws configure".')
+                    self._show_error(msg)
+                    sys.exit(255)
                 role_arn = self.session.get_variable('role_arn')
                 sts = self.session.get_service('sts')
                 operation = sts.get_operation('AssumeRole')

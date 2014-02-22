@@ -248,7 +248,7 @@ security group.  In this case, we will add ingress access to port 22
 for all IP addresses::
 
     $ aws ec2 authorize-security-group-ingress --group-name MySecurityGroup \
-      --ip-permissions '{"FromPort":22,"ToPort":22,"IpProtocol":"tcp","IpRanges":[{"cidr_ip": "0.0.0.0/0"}]}'
+      --ip-permissions '{"FromPort":22,"ToPort":22,"IpProtocol":"tcp","IpRanges":[{"CidrIp": "0.0.0.0/0"}]}'
 
 --------------------------
 File-based Parameter Input
@@ -266,7 +266,7 @@ the file ip_perms.json::
     {"FromPort":22,
      "ToPort":22,
      "IpProtocol":"tcp",
-     "IpRanges":[{"cidr_ip":"0.0.0.0/0"}]}
+     "IpRanges":[{"CidrIp":"0.0.0.0/0"}]}
 
 Then, we could make the same call as above like this::
 

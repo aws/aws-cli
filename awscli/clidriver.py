@@ -214,10 +214,12 @@ class CLIDriver(object):
     def _handle_top_level_args(self, args):
         self.session.emit('top-level-args-parsed', parsed_args=args)
         if args.profile:
+            # Get default credentials to use with STS if this is a role profile
             default_creds = self.session.get_credentials()
             self.session.profile = args.profile
             if self.session.get_variable('role_arn'):
                 if not default_creds:
+                # Can't get STS keys and token without credentials so error and exit
                     msg = ('Insufficient default credentials provided. '
                            'You can configure credentials by running '
                            '"aws configure".')
@@ -227,10 +229,12 @@ class CLIDriver(object):
                 sts = self.session.get_service('sts')
                 operation = sts.get_operation('AssumeRole')
                 endpoint = sts.get_endpoint('us-east-1')
+                # Generate a semi-random session name 
                 role_session_name = os.environ['LOGNAME'] + '-' + str(os.getpid())
                 try:
                     http_response, role_credentials = operation.call(endpoint, role_arn=role_arn, role_session_name=role_session_name)
                 except ClientError as e:
+                # Something went wrong with the STS connection. Error and exit
                     msg = ('%s. ' % e)
                     self._show_error(msg)
                     sys.exit(255)
@@ -238,6 +242,7 @@ class CLIDriver(object):
                 role_secret_key = role_credentials['Credentials']['SecretAccessKey']
                 role_token = role_credentials['Credentials']['SessionToken']
 
+                # Set the assumed role access key and token as the credentials for running the issues command
                 self.session.set_credentials(role_access_key, role_secret_key, role_token)
         if args.debug:
             # TODO:

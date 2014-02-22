@@ -215,6 +215,18 @@ class CLIDriver(object):
         self.session.emit('top-level-args-parsed', parsed_args=args)
         if args.profile:
             self.session.profile = args.profile
+            if self.session.get_variable('role_arn'):
+                role_arn = self.session.get_variable('role_arn')
+                sts = self.session.get_service('sts')
+                operation = sts.get_operation('AssumeRole')
+                endpoint = sts.get_endpoint('us-east-1')
+                role_session_name = os.environ['LOGNAME'] + '-' + str(os.getpid())
+                http_response, role_credentials = operation.call(endpoint, role_arn=role_arn, role_session_name=role_session_name)
+                role_access_key = role_credentials['Credentials']['AccessKeyId']
+                role_secret_key = role_credentials['Credentials']['SecretAccessKey']
+                role_token = role_credentials['Credentials']['SessionToken']
+
+                self.session.set_credentials(role_access_key, role_secret_key, role_token)
         if args.debug:
             # TODO:
             # Unfortunately, by setting debug mode here, we miss out

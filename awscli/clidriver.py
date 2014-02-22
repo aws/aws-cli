@@ -221,7 +221,12 @@ class CLIDriver(object):
                 operation = sts.get_operation('AssumeRole')
                 endpoint = sts.get_endpoint('us-east-1')
                 role_session_name = os.environ['LOGNAME'] + '-' + str(os.getpid())
-                http_response, role_credentials = operation.call(endpoint, role_arn=role_arn, role_session_name=role_session_name)
+                try:
+                    http_response, role_credentials = operation.call(endpoint, role_arn=role_arn, role_session_name=role_session_name)
+                except ClientError as e:
+                    msg = ('%s. ' % e)
+                    self._show_error(msg)
+                    sys.exit(255)
                 role_access_key = role_credentials['Credentials']['AccessKeyId']
                 role_secret_key = role_credentials['Credentials']['SecretAccessKey']
                 role_token = role_credentials['Credentials']['SessionToken']

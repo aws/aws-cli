@@ -55,7 +55,8 @@ def _escape_quotes(command):
     return command
 
 
-def aws(command, collect_memory=False, env_vars=None):
+def aws(command, collect_memory=False, env_vars=None,
+        wait_for_finish=True):
     """Run an aws command.
 
     This help function abstracts the differences of running the "aws"
@@ -67,6 +68,11 @@ def aws(command, collect_memory=False, env_vars=None):
 
     If env_vars is None, this will set the environment variables
     to be used by the aws process.
+
+    If wait_for_finish is False, then the Process object is returned
+    to the caller.  It is then the caller's responsibility to ensure
+    proper cleanup.  This can be useful if you want to test timeout's
+    or how the CLI responds to various signals.
 
     """
     if platform.system() == 'Windows':
@@ -83,6 +89,8 @@ def aws(command, collect_memory=False, env_vars=None):
         env = env_vars
     process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
                     env=env)
+    if not wait_for_finish:
+        return process
     memory = None
     if not collect_memory:
         stdout, stderr = process.communicate()

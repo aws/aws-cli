@@ -31,17 +31,19 @@ class Executor(object):
     """
     def __init__(self, done, num_threads, result_queue,
                  quiet, interrupt, max_queue_size, write_queue):
-        self.queue = None
+        self.interrupt = interrupt
+        self._max_queue_size = max_queue_size
+        self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
         self.done = done
         self.num_threads = num_threads
         self.result_queue = result_queue
         self.quiet = quiet
-        self.interrupt = interrupt
         self.threads_list = []
-        self._max_queue_size = max_queue_size
         self.write_queue = write_queue
-        self.print_thread = None
-        self.io_thread = None
+        self.print_thread = PrintThread(self.result_queue, self.done,
+                                        self.quiet, self.interrupt)
+        self.print_thread.daemon = True
+        self.io_thread = IOWriterThread(self.write_queue, self.done)
 
     @property
     def num_tasks_failed(self):
@@ -51,13 +53,11 @@ class Executor(object):
         return tasks_failed
 
     def start(self):
-        self.print_thread = PrintThread(self.result_queue, self.done,
-                                        self.quiet, self.interrupt)
-        self.print_thread.daemon = True
-        self.io_thread = IOWriterThread(self.write_queue, self.done)
         self.io_thread.start()
-        self.threads_list.append(self.io_thread)
-        self.queue = NoBlockQueue(self.interrupt, maxsize=self._max_queue_size)
+        # Note that we're *not* adding the IO thread to the threads_list.
+        # There's a specific shutdown order we need and we're going to be
+        # explicit about it rather than relying on the threads_list order.
+        # See .join() for more info.
         self.threads_list.append(self.print_thread)
         self.print_thread.start()
         for i in range(self.num_threads):
@@ -84,13 +84,22 @@ class Executor(object):
         """
         This is used to clean up the ``Executor``.
         """
-        self.write_queue.put(QUEUE_END_SENTINEL)
+        LOGGER.debug("Queueing end sentinel for result thread.")
         self.result_queue.put(QUEUE_END_SENTINEL)
         for i in range(self.num_threads):
+            LOGGER.debug("Queueing end sentinel for worker thread.")
             self.queue.put(QUEUE_END_SENTINEL)
 
         for thread in self.threads_list:
+            LOGGER.debug("Waiting for thread to shutdown: %s", thread)
             thread.join()
+            LOGGER.debug("Thread has been shutdown: %s", thread)
+
+        LOGGER.debug("Queueing end sentinel for IO thread.")
+        self.write_queue.put(QUEUE_END_SENTINEL)
+        LOGGER.debug("Waiting for IO thread to shutdown.")
+        self.io_thread.join()
+        LOGGER.debug("All threads have been shutdown.")
 
 
 class IOWriterThread(threading.Thread):
@@ -148,9 +157,12 @@ class Worker(threading.Thread):
             try:
                 function = self.queue.get(True)
                 if function is QUEUE_END_SENTINEL:
+                    LOGGER.debug("End sentinel received in worker thread, "
+                                 "shutting down worker thread.")
                     self.queue.task_done()
                     break
                 try:
+                    LOGGER.debug("Worker thread invoking task: %s", function)
                     function()
                 except Exception as e:
                     LOGGER.debug('Error calling task: %s', e, exc_info=True)

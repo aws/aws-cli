@@ -355,6 +355,7 @@ class DownloadPartTask(object):
                 result = {'message': message, 'error': False,
                           'total_parts': total_parts}
                 self._result_queue.put(result)
+                LOGGER.debug("Task complete: %s", self)
                 return
             except (socket.timeout, socket.error) as e:
                 LOGGER.debug("Socket timeout caught, retrying request, "
@@ -378,7 +379,9 @@ class DownloadPartTask(object):
         current = body.read(iterate_chunk_size)
         while current:
             offset = self._part_number * self._chunk_size + amount_read
+            LOGGER.debug("Submitting IORequest to write queue.")
             self._io_queue.put(IORequest(self._filename.dest, offset, current))
+            LOGGER.debug("Request successfully submitted.")
             amount_read += len(current)
             current = body.read(iterate_chunk_size)
         # Change log message.

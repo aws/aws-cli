@@ -91,7 +91,7 @@ class S3Handler(object):
         except KeyboardInterrupt:
             self.interrupt.set()
             self.result_queue.put({'message': "Cleaning up. Please wait...",
-                                   'error': False})
+                                   'error': True})
         self._shutdown()
         return self.executor.num_tasks_failed
 

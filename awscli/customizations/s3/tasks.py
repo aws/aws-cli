@@ -258,13 +258,24 @@ class CreateLocalFileTask(object):
 
     def __call__(self):
         dirname = os.path.dirname(self._filename.dest)
-        if not os.path.isdir(dirname):
-            os.makedirs(dirname)
-        # Always create the file.  Even if it exists, we need to
-        # wipe out the existing contents.
-        with open(self._filename.dest, 'wb'):
-            pass
-        self._context.announce_file_created()
+        try:
+            if not os.path.isdir(dirname):
+                try:
+                    os.makedirs(dirname)
+                except OSError:
+                    # It's possible that between the if check and the makedirs
+                    # check that another thread has come along and created the
+                    # directory.  In this case the directory already exists and we
+                    # can move on.
+                    pass
+            # Always create the file.  Even if it exists, we need to
+            # wipe out the existing contents.
+            with open(self._filename.dest, 'wb'):
+                pass
+        except Exception as e:
+            self._context.cancel()
+        else:
+            self._context.announce_file_created()
 
 
 class CompleteDownloadTask(object):

@@ -5,6 +5,10 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue where S3 downloads would hang
+  in certain cases and could not be interrupted
+  (`issue 650 <https://github.com/aws/aws-cli/issues/650>`__,
+   `issue 657 <https://github.com/aws/aws-cli/issues/657>`__)
 * bugfix:``aws s3``: Support missing canned ACLs when using
   the ``--acl`` parameter
   (`issue 663 <https://github.com/aws/aws-cli/issues/663>`__)

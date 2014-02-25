@@ -51,7 +51,17 @@ def print_operation(filename, failed, dryrun=False):
     return print_str
 
 
-class BasicTask(object):
+class OrderableTask(object):
+    PRIORITY = 10
+
+    def __lt__(self, other):
+        return self.PRIORITY < getattr(other, 'PRIORITY', 10)
+
+    def __eq__(self, other):
+        return self.PRIORITY == getattr(other, 'PRIORITY', 10)
+
+
+class BasicTask(OrderableTask):
     """
     This class is a wrapper for all ``TaskInfo`` and ``TaskInfo`` objects
     It is practically a thread of execution.  It also injects the necessary
@@ -114,7 +124,7 @@ class BasicTask(object):
             LOGGER.debug('%s' % str(e))
 
 
-class CopyPartTask(object):
+class CopyPartTask(OrderableTask):
     def __init__(self, part_number, chunk_size,
                  result_queue, upload_context, filename):
         self._result_queue = result_queue
@@ -181,7 +191,7 @@ class CopyPartTask(object):
                          self._part_number, self._filename.src)
 
 
-class UploadPartTask(object):
+class UploadPartTask(OrderableTask):
     """
     This is a task used to upload a part of a multipart upload.
     This task pulls from a ``part_queue`` which represents the
@@ -251,7 +261,7 @@ class UploadPartTask(object):
                          self._part_number, self._filename.src)
 
 
-class CreateLocalFileTask(object):
+class CreateLocalFileTask(OrderableTask):
     def __init__(self, context, filename):
         self._context = context
         self._filename = filename
@@ -278,7 +288,7 @@ class CreateLocalFileTask(object):
             self._context.announce_file_created()
 
 
-class CompleteDownloadTask(object):
+class CompleteDownloadTask(OrderableTask):
     def __init__(self, context, filename, result_queue, params, io_queue):
         self._context = context
         self._filename = filename
@@ -303,7 +313,7 @@ class CompleteDownloadTask(object):
         self._io_queue.put(IOCloseRequest(self._filename.dest))
 
 
-class DownloadPartTask(object):
+class DownloadPartTask(OrderableTask):
     """
     This task downloads and writes a part to a file.  This task pulls
     from a ``part_queue`` which represents the queue for a specific
@@ -426,7 +436,7 @@ class CreateMultipartUploadTask(BasicTask):
             raise e
 
 
-class RemoveRemoteObjectTask(object):
+class RemoveRemoteObjectTask(OrderableTask):
     def __init__(self, filename, context):
         self._context = context
         self._filename = filename

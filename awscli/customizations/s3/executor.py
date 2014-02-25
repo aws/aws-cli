@@ -17,10 +17,18 @@ import threading
 
 from awscli.customizations.s3.utils import uni_print, \
         IORequest, IOCloseRequest
+from awscli.customizations.s3.tasks import OrderableTask
 
 
 LOGGER = logging.getLogger(__name__)
-QUEUE_END_SENTINEL = object()
+
+
+class ShutdownThreadRequest(OrderableTask):
+    PRIORITY = 11
+
+    def __init__(self, priority_override=None):
+        if priority_override is not None:
+            self.PRIORITY = priority_override
 
 
 class Executor(object):
@@ -29,10 +37,13 @@ class Executor(object):
     and cleans up the threads when finished.  The two type of threads the
     ``Executor``runs is a worker and a print thread.
     """
+    STANDARD_PRIORITY = 11
+    IMMEDIATE_PRIORITY= 1
+
     def __init__(self, num_threads, result_queue,
                  quiet, max_queue_size, write_queue):
         self._max_queue_size = max_queue_size
-        self.queue = queue.Queue(maxsize=self._max_queue_size)
+        self.queue = queue.PriorityQueue(maxsize=self._max_queue_size)
         self.num_threads = num_threads
         self.result_queue = result_queue
         self.quiet = quiet
@@ -70,24 +81,48 @@ class Executor(object):
         LOGGER.debug("Submitting task: %s", task)
         self.queue.put(task)
 
-    def join(self):
-        """
-        This is used to clean up the ``Executor``.
-        """
-        for i in range(self.num_threads):
-            LOGGER.debug("Queueing end sentinel for worker thread.")
-            self.queue.put(QUEUE_END_SENTINEL)
+    def initiate_shutdown(self, priority=STANDARD_PRIORITY):
+        """Instruct all threads to shutdown.
 
+        This is a graceful shutdown.  It will wait until all
+        currently queued tasks have been completed before the threads
+        shutdown.  If the task queue is completely full, it may
+        take a while for the threads to shutdown.
+
+        This method does not block.  Once ``initiate_shutdown`` has
+        been called, you can all ``wait_until_shutdown`` to block
+        until the Executor has been shutdown.
+
+        """
+        # Implementation detail:  we only queue the worker threads
+        # to shutdown.  The print/io threads are shutdown in the
+        # ``wait_until_shutdown`` method.
+        for i in range(self.num_threads):
+            LOGGER.debug(
+                "Queueing end sentinel for worker thread (priority: %s)",
+                priority)
+            self.queue.put(ShutdownThreadRequest(priority))
+
+    def wait_until_shutdown(self):
+        """Block until the Executor is fully shutdown.
+
+        This will wait until all worker threads are shutdown, along
+        with any additional helper threads used by the executor.
+
+        """
         for thread in self.threads_list:
             LOGGER.debug("Waiting for thread to shutdown: %s", thread)
-            thread.join()
+            while True:
+                thread.join(timeout=1)
+                if not thread.is_alive():
+                    break
             LOGGER.debug("Thread has been shutdown: %s", thread)
 
         LOGGER.debug("Queueing end sentinel for result thread.")
-        self.result_queue.put(QUEUE_END_SENTINEL)
-
+        self.result_queue.put(ShutdownThreadRequest())
         LOGGER.debug("Queueing end sentinel for IO thread.")
-        self.write_queue.put(QUEUE_END_SENTINEL)
+        self.write_queue.put(ShutdownThreadRequest())
+
         LOGGER.debug("Waiting for result thread to shutdown.")
         self.print_thread.join()
         LOGGER.debug("Waiting for IO thread to shutdown.")
@@ -104,8 +139,8 @@ class IOWriterThread(threading.Thread):
     def run(self):
         while True:
             task = self.queue.get(True)
-            if task is QUEUE_END_SENTINEL:
-                LOGGER.debug("Sentinel received in IO thread, "
+            if isinstance(task, ShutdownThreadRequest):
+                LOGGER.debug("Shutdown request received in IO thread, "
                              "shutting down.")
                 self._cleanup()
                 return
@@ -147,8 +182,8 @@ class Worker(threading.Thread):
         while True:
             try:
                 function = self.queue.get(True)
-                if function is QUEUE_END_SENTINEL:
-                    LOGGER.debug("End sentinel received in worker thread, "
+                if isinstance(function, ShutdownThreadRequest):
+                    LOGGER.debug("Shutdown request received in worker thread, "
                                  "shutting down worker thread.")
                     break
                 try:
@@ -210,9 +245,11 @@ class PrintThread(threading.Thread):
         while True:
             try:
                 print_task = self._result_queue.get(True)
-                if print_task is QUEUE_END_SENTINEL:
+                if isinstance(print_task, ShutdownThreadRequest):
                     if self._needs_newline:
                         sys.stdout.write('\n')
+                    LOGGER.debug("Shutdown request received in print thread, "
+                                 "shutting down print thread.")
                     break
                 LOGGER.debug("Received print task: %s", print_task)
                 try:

@@ -76,19 +76,27 @@ class S3Handler(object):
             total_files, total_parts = self._enqueue_tasks(files)
             self.executor.print_thread.set_total_files(total_files)
             self.executor.print_thread.set_total_parts(total_parts)
+            self.executor.initiate_shutdown()
+            self.executor.wait_until_shutdown()
+            self._shutdown()
         except Exception as e:
             LOGGER.debug('Exception caught during task execution: %s',
                          str(e), exc_info=True)
             self.result_queue.put({'message': str(e), 'error': True})
+            self.executor.initiate_shutdown(
+                priority=self.executor.IMMEDIATE_PRIORITY)
+            self._shutdown()
+            self.executor.wait_until_shutdown()
         except KeyboardInterrupt:
             self.result_queue.put({'message': "Cleaning up. Please wait...",
                                    'error': True})
-        self._shutdown()
+            self.executor.initiate_shutdown(
+                priority=self.executor.IMMEDIATE_PRIORITY)
+            self._shutdown()
+            self.executor.wait_until_shutdown()
         return self.executor.num_tasks_failed
 
     def _shutdown(self):
-        # This will wait until all the threads are joined.
-        self.executor.join()
         # And finally we need to make a pass through all the existing
         # multipart uploads and abort any pending multipart uploads.
         self._abort_pending_multipart_uploads()
@@ -126,6 +134,7 @@ class S3Handler(object):
                 # better to leave the old version of the file rather than
                 # deleting the file entirely.
                 os.remove(local_filename)
+            context.cancel()
 
     def _cancel_upload(self, upload_id, filename):
         bucket, key = find_bucket_key(filename.dest)

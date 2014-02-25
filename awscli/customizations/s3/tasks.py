@@ -258,13 +258,24 @@ class CreateLocalFileTask(object):
 
     def __call__(self):
         dirname = os.path.dirname(self._filename.dest)
-        if not os.path.isdir(dirname):
-            os.makedirs(dirname)
-        # Always create the file.  Even if it exists, we need to
-        # wipe out the existing contents.
-        with open(self._filename.dest, 'wb'):
-            pass
-        self._context.announce_file_created()
+        try:
+            if not os.path.isdir(dirname):
+                try:
+                    os.makedirs(dirname)
+                except OSError:
+                    # It's possible that between the if check and the makedirs
+                    # check that another thread has come along and created the
+                    # directory.  In this case the directory already exists and we
+                    # can move on.
+                    pass
+            # Always create the file.  Even if it exists, we need to
+            # wipe out the existing contents.
+            with open(self._filename.dest, 'wb'):
+                pass
+        except Exception as e:
+            self._context.cancel()
+        else:
+            self._context.announce_file_created()
 
 
 class CompleteDownloadTask(object):
@@ -355,6 +366,7 @@ class DownloadPartTask(object):
                 result = {'message': message, 'error': False,
                           'total_parts': total_parts}
                 self._result_queue.put(result)
+                LOGGER.debug("Task complete: %s", self)
                 return
             except (socket.timeout, socket.error) as e:
                 LOGGER.debug("Socket timeout caught, retrying request, "
@@ -378,7 +390,9 @@ class DownloadPartTask(object):
         current = body.read(iterate_chunk_size)
         while current:
             offset = self._part_number * self._chunk_size + amount_read
+            LOGGER.debug("Submitting IORequest to write queue.")
             self._io_queue.put(IORequest(self._filename.dest, offset, current))
+            LOGGER.debug("Request successfully submitted.")
             amount_read += len(current)
             current = body.read(iterate_chunk_size)
         # Change log message.

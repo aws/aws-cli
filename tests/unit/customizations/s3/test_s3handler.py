@@ -578,8 +578,7 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
         self.session = FakeSession()
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1'}
-        self.s3_handler = S3Handler(self.session, params)
+        self.params = {'region': 'us-east-1'}
         self.bucket = None
 
     def tearDown(self):
@@ -598,7 +597,7 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
             size=0,
             service=self.service,
             endpoint=self.endpoint)
-        self.s3_handler.call([file_info])
+        S3Handler(self.session, self.params).call([file_info])
         number_buckets = len(list_buckets(self.session))
         self.assertEqual(orig_number_buckets + 1, number_buckets)
 
@@ -608,7 +607,7 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
             size=0,
             service=self.service,
             endpoint=self.endpoint)
-        self.s3_handler.call([file_info])
+        S3Handler(self.session, self.params).call([file_info])
         number_buckets = len(list_buckets(self.session))
         self.assertEqual(orig_number_buckets, number_buckets)
 

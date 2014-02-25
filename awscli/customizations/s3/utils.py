@@ -20,11 +20,10 @@ from collections import namedtuple
 from functools import partial
 
 from six import PY3
-from six.moves import queue as Queue
 from dateutil.tz import tzlocal
 
-from awscli.customizations.s3.constants import QUEUE_TIMEOUT_WAIT, \
-    MAX_PARTS, MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.constants import MAX_PARTS
+from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
 class MD5Error(Exception):
@@ -32,28 +31,6 @@ class MD5Error(Exception):
     Exception for md5's that do not match.
     """
     pass
-
-
-class NoBlockQueue(Queue.Queue):
-    """
-    This queue ensures that joining does not block interrupt signals.
-    It also contains a threading event ``interrupt`` that breaks the
-    while loop if signaled.  The ``interrupt`` signal is optional.
-    If left out, this should act like a normal queue.
-    """
-    def __init__(self, interrupt=None, maxsize=0):
-        Queue.Queue.__init__(self, maxsize=maxsize)
-        self.interrupt = interrupt
-
-    def join(self):
-        self.all_tasks_done.acquire()
-        try:
-            while self.unfinished_tasks:
-                if self.interrupt and self.interrupt.isSet():
-                    break
-                self.all_tasks_done.wait(QUEUE_TIMEOUT_WAIT)
-        finally:
-            self.all_tasks_done.release()
 
 
 def find_bucket_key(s3_path):

@@ -16,7 +16,7 @@ import sys
 import threading
 
 from awscli.customizations.s3.utils import uni_print, \
-        IORequest, IOCloseRequest
+        IORequest, IOCloseRequest, StablePriorityQueue
 from awscli.customizations.s3.tasks import OrderableTask
 
 
@@ -43,7 +43,8 @@ class Executor(object):
     def __init__(self, num_threads, result_queue,
                  quiet, max_queue_size, write_queue):
         self._max_queue_size = max_queue_size
-        self.queue = queue.PriorityQueue(maxsize=self._max_queue_size)
+        self.queue = StablePriorityQueue(maxsize=self._max_queue_size,
+                                         max_priority=20)
         self.num_threads = num_threads
         self.result_queue = result_queue
         self.quiet = quiet

@@ -54,12 +54,6 @@ def print_operation(filename, failed, dryrun=False):
 class OrderableTask(object):
     PRIORITY = 10
 
-    def __lt__(self, other):
-        return self.PRIORITY < getattr(other, 'PRIORITY', 10)
-
-    def __eq__(self, other):
-        return self.PRIORITY == getattr(other, 'PRIORITY', 10)
-
 
 class BasicTask(OrderableTask):
     """

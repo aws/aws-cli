@@ -22,7 +22,7 @@ class Completer(object):
     def __init__(self):
         self.driver = awscli.clidriver.create_clidriver()
         self.main_hc = self.driver.create_help_command()
-        self.main_options = [n for n in self.main_hc.arg_table]
+        self.main_options = self._documented(self.main_hc.arg_table)
         self.cmdline = None
         self.point = None
         self.command_hc = None
@@ -53,26 +53,37 @@ class Completer(object):
                  if n.startswith(cw)]
             retval = l
         elif self.current_word == 'aws':
-            retval = self.main_hc.command_table.keys()
+            retval = self._documented(self.main_hc.command_table)
         else:
             # Otherwise, see if they have entered a partial command name
-            retval = [n for n in self.main_hc.command_table
-                      if n.startswith(self.current_word)]
+            retval = self._documented(self.main_hc.command_table,
+                                      startswith=self.current_word)
         return retval
 
     def _complete_command(self):
         retval = []
         if self.current_word == self.command_name:
             if self.command_hc:
-                retval = self.command_hc.command_table.keys()
+                retval = self._documented(self.command_hc.command_table)
         elif self.current_word.startswith('-'):
             retval = self._find_possible_options()
         else:
             # See if they have entered a partial command name
             if self.command_hc:
-                retval = [n for n in self.command_hc.command_table
-                          if n.startswith(self.current_word)]
+                retval = self._documented(self.command_hc.command_table,
+                                          startswith=self.current_word)
         return retval
+
+    def _documented(self, table, startswith=None):
+        names = []
+        for key, command in table.items():
+            if getattr(command, '_UNDOCUMENTED', False):
+                # Don't tab complete undocumented commands/params
+                continue
+            if startswith is not None and not key.startswith(startswith):
+                continue
+            names.append(key)
+        return names
 
     def _complete_subcommand(self):
         retval = []
@@ -85,7 +96,7 @@ class Completer(object):
     def _find_possible_options(self):
         all_options = copy.copy(self.main_options)
         if self.subcommand_hc:
-            all_options = all_options + list(self.subcommand_hc.arg_table.keys())
+            all_options = all_options + self._documented(self.subcommand_hc.arg_table)
         for opt in self.options:
             # Look thru list of options on cmdline. If there are
             # options that have already been specified and they are

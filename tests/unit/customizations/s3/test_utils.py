@@ -10,6 +10,7 @@ import mock
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
 from awscli.customizations.s3.utils import ReadFileChunk
 from awscli.customizations.s3.utils import relative_path
+from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -132,6 +133,64 @@ class TestRelativePath(unittest.TestCase):
         # Just want to check we don't get an exception raised,
         # which is what was happening previously.
         self.assertIn(r'foo\bar', relative_path(r'c:\foo\bar'))
+
+
+class TestStablePriorityQueue(unittest.TestCase):
+    def test_fifo_order_of_same_priorities(self):
+        a = mock.Mock()
+        a.PRIORITY = 5
+        b = mock.Mock()
+        b.PRIORITY = 5
+        c = mock.Mock()
+        c.PRIORITY = 1
+
+        q = StablePriorityQueue(maxsize=10, max_priority=20)
+        q.put(a)
+        q.put(b)
+        q.put(c)
+
+        # First we should get c because it's the lowest priority.
+        # We're using assertIs because we want the *exact* object.
+        self.assertIs(q.get(), c)
+        # Then a and b are the same priority, but we should get
+        # a first because it was inserted first.
+        self.assertIs(q.get(), a)
+        self.assertIs(q.get(), b)
+
+    def test_queue_length(self):
+        a = mock.Mock()
+        a.PRIORITY = 5
+
+        q = StablePriorityQueue(maxsize=10, max_priority=20)
+        self.assertEqual(q.qsize(), 0)
+
+        q.put(a)
+        self.assertEqual(q.qsize(), 1)
+
+        q.get()
+        self.assertEqual(q.qsize(), 0)
+
+    def test_insert_max_priority_capped(self):
+        q = StablePriorityQueue(maxsize=10, max_priority=20)
+        a = mock.Mock()
+        a.PRIORITY = 100
+        q.put(a)
+
+        self.assertIs(q.get(), a)
+
+    def test_priority_attr_is_missing(self):
+        # If priority attr is missing, we should add it
+        # to the lowest priority.
+        q = StablePriorityQueue(maxsize=10, max_priority=20)
+        a = object()
+        b = mock.Mock()
+        b.PRIORITY = 5
+
+        q.put(a)
+        q.put(b)
+
+        self.assertIs(q.get(), b)
+        self.assertIs(q.get(), a)
 
 
 if __name__ == "__main__":

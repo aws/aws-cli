@@ -333,7 +333,7 @@ class TestCp(BaseS3CLICommand):
         local_foo_txt = self.files.full_path('foo.txt')
         process = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt), wait_for_finish=False)
         # Give it some time to start up and enter it's main task loop.
-        time.sleep(2)
+        time.sleep(1)
         # The process has 30 seconds to finish after being sent a Ctrl+C,
         # otherwise the test fails.
         process.send_signal(signal.SIGINT)
@@ -345,8 +345,10 @@ class TestCp(BaseS3CLICommand):
         else:
             process.kill()
             self.fail("CLI did not exist within 30 seconds of receiving a Ctrl+C")
-        # A Ctrl+C should have a non-zero RC.
-        self.assertEqual(process.returncode, 1)
+        # A Ctrl+C should have a non-zero RC.  We either caught the process in
+        # its main polling loop (rc=1), or it was successfully terminated by
+        # the SIGINT (rc=-2).
+        self.assertIn(process.returncode, [1, -2])
 
     def test_cp_to_nonexistent_bucket(self):
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')

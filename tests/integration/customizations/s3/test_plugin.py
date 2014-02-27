@@ -326,6 +326,8 @@ class TestCp(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertEqual(os.path.getsize(local_foo_txt), len(foo_contents))
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                    'SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = self.create_bucket()
         foo_contents = 'abcd' * (1024 * 1024 * 20)

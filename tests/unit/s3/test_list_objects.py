@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
-import re
 
 
 class TestListObjects(BaseAWSCommandParamsTest):
@@ -30,7 +29,7 @@ class TestListObjects(BaseAWSCommandParamsTest):
                   'headers': {},}
         self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
-    def test_maxkeys(self):
+    def test_max_items(self):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
         # The max-items is a customization and therefore won't
@@ -58,6 +57,15 @@ class TestListObjects(BaseAWSCommandParamsTest):
                   'headers': {},}
         self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_max_keys_can_be_specified(self):
+        cmdline = self.prefix
+        # --max-keys is a hidden argument and not documented,
+        # but for back-compat reasons if a user specifies this,
+        # we will automatically see this and turn auto-pagination off.
+        cmdline += ' --bucket mybucket --max-keys 1'
+        result = {'uri_params': {'Bucket': 'mybucket', 'MaxKeys': 1},
+                  'headers': {},}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjects')

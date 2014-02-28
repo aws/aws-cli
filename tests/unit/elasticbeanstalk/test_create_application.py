@@ -37,6 +37,9 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         app_name = u'\u2713'
         cmdline += u' --application-name %s' % app_name
-        cmdline = cmdline.encode(getattr(sys.stdin, 'encoding', 'utf-8'))
+        encoding = getattr(sys.stdin, 'encoding')
+        if encoding is None:
+            encoding = 'utf-8'
+        cmdline = cmdline.encode(encoding)
         result = {'ApplicationName': u'\u2713',}
         self.assert_params_for_cmd(cmdline, result)

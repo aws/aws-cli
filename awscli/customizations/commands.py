@@ -239,6 +239,7 @@ class BasicDocHandler(CLIDocumentEventHandler):
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
         if not help_command.synopsis:
             super(BasicDocHandler, self).doc_synopsis_option(
+                arg_name=arg_name,
                 help_command=help_command, **kwargs)
         else:
             # A synopsis has been provided so we don't need to write

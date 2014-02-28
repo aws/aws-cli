@@ -5,6 +5,14 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``CLI Arguments``: Fix issue where unicode command line
+  arguments were not being handled correctly
+  (`issue 679 <https://github.com/aws/aws-cli/pull/679>`__)
+
+
+1.3.0
+=====
+
 * bugfix:``aws s3``: Fix issue where S3 downloads would hang
   in certain cases and could not be interrupted
   (`issue 650 <https://github.com/aws/aws-cli/issues/650>`__,

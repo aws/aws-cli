@@ -10,9 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import pprint
 import logging
 import difflib
+
+import mock
 
 from awscli.completer import Completer
 
@@ -23,18 +26,18 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl',
               '--region', '--version', '--color', '--query']
 
 COMPLETIONS = [
-    ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudfront',
-                      'cloudsearch', 'cloudtrail', 'cloudwatch', 'configure',
-                      'datapipeline', 'directconnect', 'dynamodb', 'ec2',
+    ('aws ', -1, set(['autoscaling', 'cloudformation',
+                      'cloudtrail', 'cloudwatch', 'configure', 'datapipeline',
+                      'directconnect', 'dynamodb', 'ec2',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
-                      'elb', 'emr', 'iam', 'importexport', 'kinesis',
+                      'elb', 'iam', 'importexport', 'kinesis',
                       'opsworks', 'rds', 'redshift', 'route53', 's3', 's3api',
-                      'ses', 'sns', 'sqs', 'storagegateway', 'sts', 'support',
-                      'swf'])),
-    ('aws cloud', -1, set(['cloudformation', 'cloudfront',
-                           'cloudsearch', 'cloudtrail', 'cloudwatch'])),
-    ('aws cloudf', -1, set(['cloudformation', 'cloudfront'])),
-    ('aws cloudfr', -1, set(['cloudfront'])),
+                      'ses', 'sns', 'sqs', 'storagegateway', 'sts',
+                      'support', 'swf'])),
+    ('aws cloud', -1, set(['cloudformation',
+                           'cloudtrail', 'cloudwatch'])),
+    ('aws cloudf', -1, set(['cloudformation'])),
+    ('aws cloudfr', -1, set([])),
     ('aws foobar', -1, set([])),
     ('aws  --', -1, set(GLOBALOPTS)),
     ('aws  --re', -1, set(['--region'])),
@@ -100,11 +103,17 @@ def check_completer(cmdline, results, expected_results):
 
 
 def test_completions():
-    completer = Completer()
-    for cmdline, point, expected_results in COMPLETIONS:
-        if point == -1:
-            point = len(cmdline)
-        results = set(completer.complete(cmdline, point))
-        yield check_completer, cmdline, results, expected_results
-
-
+    environ = {
+        'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
+        'AWS_DEFAULT_REGION': 'us-east-1',
+        'AWS_ACCESS_KEY_ID': 'access_key',
+        'AWS_SECRET_ACCESS_KEY': 'secret_key',
+        'AWS_CONFIG_FILE': '',
+    }
+    with mock.patch('os.environ', environ):
+        completer = Completer()
+        for cmdline, point, expected_results in COMPLETIONS:
+            if point == -1:
+                point = len(cmdline)
+            results = set(completer.complete(cmdline, point))
+            yield check_completer, cmdline, results, expected_results

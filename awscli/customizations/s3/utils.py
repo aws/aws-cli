@@ -16,15 +16,15 @@ import hashlib
 import math
 import os
 import sys
-from collections import namedtuple
+from collections import namedtuple, deque
 from functools import partial
 
 from six import PY3
-from six.moves import queue as Queue
+from six.moves import queue
 from dateutil.tz import tzlocal
 
-from awscli.customizations.s3.constants import QUEUE_TIMEOUT_WAIT, \
-    MAX_PARTS, MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.constants import MAX_PARTS
+from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
 class MD5Error(Exception):
@@ -34,26 +34,48 @@ class MD5Error(Exception):
     pass
 
 
-class NoBlockQueue(Queue.Queue):
-    """
-    This queue ensures that joining does not block interrupt signals.
-    It also contains a threading event ``interrupt`` that breaks the
-    while loop if signaled.  The ``interrupt`` signal is optional.
-    If left out, this should act like a normal queue.
-    """
-    def __init__(self, interrupt=None, maxsize=0):
-        Queue.Queue.__init__(self, maxsize=maxsize)
-        self.interrupt = interrupt
+class StablePriorityQueue(queue.Queue):
+    """Priority queue that maintains FIFO order for same priority items.
 
-    def join(self):
-        self.all_tasks_done.acquire()
-        try:
-            while self.unfinished_tasks:
-                if self.interrupt and self.interrupt.isSet():
-                    break
-                self.all_tasks_done.wait(QUEUE_TIMEOUT_WAIT)
-        finally:
-            self.all_tasks_done.release()
+    This class was written to handle the tasks created in
+    awscli.customizations.s3.tasks, but it's possible to use this
+    class outside of that context.  In order for this to be the case,
+    the following conditions should be met:
+
+        * Objects that are queued should have a PRIORITY attribute.
+          This should be an integer value not to exceed the max_priority
+          value passed into the ``__init__``.  Objects with lower
+          priority numbers are retrieved before objects with higher
+          priority numbers.
+        * A relatively small max_priority should be chosen.  ``get()``
+          calls are O(max_priority).
+
+    Any object that does not have a ``PRIORITY`` attribute or whose
+    priority exceeds ``max_priority`` will be queued at the highest
+    (least important) priority available.
+
+    """
+    def __init__(self, maxsize=0, max_priority=20):
+        queue.Queue.__init__(self, maxsize=maxsize)
+        self.priorities = [deque([]) for i in range(max_priority + 1)]
+        self.default_priority = max_priority
+
+    def _qsize(self):
+        size = 0
+        for bucket in self.priorities:
+            size += len(bucket)
+        return size
+
+    def _put(self, item):
+        priority = min(getattr(item, 'PRIORITY', self.default_priority),
+                        self.default_priority)
+        self.priorities[priority].append(item)
+
+    def _get(self):
+        for bucket in self.priorities:
+            if not bucket:
+                continue
+            return bucket.popleft()
 
 
 def find_bucket_key(s3_path):

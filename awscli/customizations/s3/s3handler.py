@@ -13,11 +13,11 @@
 import logging
 import math
 import os
-import threading
+from six.moves import queue
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
-from awscli.customizations.s3.utils import NoBlockQueue, find_chunksize, \
+from awscli.customizations.s3.utils import find_chunksize, \
     operate, find_bucket_key, relative_path
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
@@ -36,14 +36,11 @@ class S3Handler(object):
     def __init__(self, session, params, multi_threshold=MULTI_THRESHOLD,
                  chunksize=CHUNKSIZE):
         self.session = session
-        self.done = threading.Event()
-        self.interrupt = threading.Event()
-        self.result_queue = NoBlockQueue()
+        self.result_queue = queue.Queue()
         # The write_queue has potential for optimizations, so the constant
         # for maxsize is scoped to this class (as opposed to constants.py)
         # so we have the ability to change this value later.
-        self.write_queue = NoBlockQueue(self.interrupt,
-                                        maxsize=self.MAX_IO_QUEUE_SIZE)
+        self.write_queue = queue.Queue(maxsize=self.MAX_IO_QUEUE_SIZE)
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
                        'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
@@ -58,9 +55,9 @@ class S3Handler(object):
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
         self.executor = Executor(
-            done=self.done, num_threads=NUM_THREADS, result_queue=self.result_queue,
-            quiet=self.params['quiet'], interrupt=self.interrupt,
-            max_queue_size=MAX_QUEUE_SIZE, write_queue=self.write_queue
+            num_threads=NUM_THREADS, result_queue=self.result_queue,
+            quiet=self.params['quiet'], max_queue_size=MAX_QUEUE_SIZE,
+            write_queue=self.write_queue
         )
         self._multipart_uploads = []
         self._multipart_downloads = []
@@ -74,32 +71,32 @@ class S3Handler(object):
         essentially a thread of execution for a thread to follow.  These
         tasks are then submitted to the main executor.
         """
-        self.done.clear()
-        self.interrupt.clear()
         try:
             self.executor.start()
             total_files, total_parts = self._enqueue_tasks(files)
             self.executor.print_thread.set_total_files(total_files)
             self.executor.print_thread.set_total_parts(total_parts)
-            self.executor.wait()
-            self.result_queue.join()
-
+            self.executor.initiate_shutdown()
+            self.executor.wait_until_shutdown()
+            self._shutdown()
         except Exception as e:
             LOGGER.debug('Exception caught during task execution: %s',
                          str(e), exc_info=True)
             self.result_queue.put({'message': str(e), 'error': True})
+            self.executor.initiate_shutdown(
+                priority=self.executor.IMMEDIATE_PRIORITY)
+            self._shutdown()
+            self.executor.wait_until_shutdown()
         except KeyboardInterrupt:
-            self.interrupt.set()
             self.result_queue.put({'message': "Cleaning up. Please wait...",
-                                   'error': False})
-        self._shutdown()
+                                   'error': True})
+            self.executor.initiate_shutdown(
+                priority=self.executor.IMMEDIATE_PRIORITY)
+            self._shutdown()
+            self.executor.wait_until_shutdown()
         return self.executor.num_tasks_failed
 
     def _shutdown(self):
-        # self.done will tell threads to shutdown.
-        self.done.set()
-        # This waill wait until all the threads are joined.
-        self.executor.join()
         # And finally we need to make a pass through all the existing
         # multipart uploads and abort any pending multipart uploads.
         self._abort_pending_multipart_uploads()
@@ -137,6 +134,7 @@ class S3Handler(object):
                 # better to leave the old version of the file rather than
                 # deleting the file entirely.
                 os.remove(local_filename)
+            context.cancel()
 
     def _cancel_upload(self, upload_id, filename):
         bucket, key = find_bucket_key(filename.dest)

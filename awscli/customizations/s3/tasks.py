@@ -51,7 +51,11 @@ def print_operation(filename, failed, dryrun=False):
     return print_str
 
 
-class BasicTask(object):
+class OrderableTask(object):
+    PRIORITY = 10
+
+
+class BasicTask(OrderableTask):
     """
     This class is a wrapper for all ``TaskInfo`` and ``TaskInfo`` objects
     It is practically a thread of execution.  It also injects the necessary
@@ -114,7 +118,7 @@ class BasicTask(object):
             LOGGER.debug('%s' % str(e))
 
 
-class CopyPartTask(object):
+class CopyPartTask(OrderableTask):
     def __init__(self, part_number, chunk_size,
                  result_queue, upload_context, filename):
         self._result_queue = result_queue
@@ -181,7 +185,7 @@ class CopyPartTask(object):
                          self._part_number, self._filename.src)
 
 
-class UploadPartTask(object):
+class UploadPartTask(OrderableTask):
     """
     This is a task used to upload a part of a multipart upload.
     This task pulls from a ``part_queue`` which represents the
@@ -251,23 +255,34 @@ class UploadPartTask(object):
                          self._part_number, self._filename.src)
 
 
-class CreateLocalFileTask(object):
+class CreateLocalFileTask(OrderableTask):
     def __init__(self, context, filename):
         self._context = context
         self._filename = filename
 
     def __call__(self):
         dirname = os.path.dirname(self._filename.dest)
-        if not os.path.isdir(dirname):
-            os.makedirs(dirname)
-        # Always create the file.  Even if it exists, we need to
-        # wipe out the existing contents.
-        with open(self._filename.dest, 'wb'):
-            pass
-        self._context.announce_file_created()
+        try:
+            if not os.path.isdir(dirname):
+                try:
+                    os.makedirs(dirname)
+                except OSError:
+                    # It's possible that between the if check and the makedirs
+                    # check that another thread has come along and created the
+                    # directory.  In this case the directory already exists and we
+                    # can move on.
+                    pass
+            # Always create the file.  Even if it exists, we need to
+            # wipe out the existing contents.
+            with open(self._filename.dest, 'wb'):
+                pass
+        except Exception as e:
+            self._context.cancel()
+        else:
+            self._context.announce_file_created()
 
 
-class CompleteDownloadTask(object):
+class CompleteDownloadTask(OrderableTask):
     def __init__(self, context, filename, result_queue, params, io_queue):
         self._context = context
         self._filename = filename
@@ -292,7 +307,7 @@ class CompleteDownloadTask(object):
         self._io_queue.put(IOCloseRequest(self._filename.dest))
 
 
-class DownloadPartTask(object):
+class DownloadPartTask(OrderableTask):
     """
     This task downloads and writes a part to a file.  This task pulls
     from a ``part_queue`` which represents the queue for a specific
@@ -355,6 +370,7 @@ class DownloadPartTask(object):
                 result = {'message': message, 'error': False,
                           'total_parts': total_parts}
                 self._result_queue.put(result)
+                LOGGER.debug("Task complete: %s", self)
                 return
             except (socket.timeout, socket.error) as e:
                 LOGGER.debug("Socket timeout caught, retrying request, "
@@ -378,7 +394,9 @@ class DownloadPartTask(object):
         current = body.read(iterate_chunk_size)
         while current:
             offset = self._part_number * self._chunk_size + amount_read
+            LOGGER.debug("Submitting IORequest to write queue.")
             self._io_queue.put(IORequest(self._filename.dest, offset, current))
+            LOGGER.debug("Request successfully submitted.")
             amount_read += len(current)
             current = body.read(iterate_chunk_size)
         # Change log message.
@@ -412,7 +430,7 @@ class CreateMultipartUploadTask(BasicTask):
             raise e
 
 
-class RemoveRemoteObjectTask(object):
+class RemoveRemoteObjectTask(OrderableTask):
     def __init__(self, filename, context):
         self._context = context
         self._filename = filename

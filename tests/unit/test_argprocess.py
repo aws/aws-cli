@@ -10,9 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 from tests import unittest
+from tests import BaseCLIDriverTest
+from tests import temporary_file
 
-import botocore.session
 import mock
 
 from awscli.clidriver import CLIArgument
@@ -22,17 +24,17 @@ from awscli.argprocess import unpack_cli_arg
 from awscli.argprocess import ParamShorthand
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
+from awscli.argprocess import uri_param
 
 
 MAPHELP = """--attributes key_name=string,key_name2=string
 Where valid key names are:
   Policy"""
 
+
 # These tests use real service types so that we can
 # verify the real shapes of services.
-class BaseArgProcessTest(unittest.TestCase):
-    def setUp(self):
-        self.session = botocore.session.get_session()
+class BaseArgProcessTest(BaseCLIDriverTest):
 
     def get_param_object(self, dotted_name):
         service_name, operation_name, param_name = dotted_name.split('.')
@@ -43,6 +45,17 @@ class BaseArgProcessTest(unittest.TestCase):
                 return p
         else:
             raise ValueError("Unknown param: %s" % param_name)
+
+
+class TestURIParams(BaseArgProcessTest):
+    def test_uri_param(self):
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        with temporary_file('r+') as f:
+            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
+            f.write(json_argument)
+            f.flush()
+            result = uri_param(p, 'file://%s' % f.name)
+        self.assertEqual(result, json_argument)
 
 
 class TestArgShapeDetection(BaseArgProcessTest):
@@ -201,7 +214,7 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName=bar'
-        error_msg = "Error parsing parameter --source-configuration.*should be"
+        error_msg = "Error parsing parameter '--source-configuration'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
 
@@ -219,13 +232,13 @@ class TestParamShorthand(BaseArgProcessTest):
         p = self.get_param_object(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
         value = 'ApplicationName:foo,TemplateName:bar'
-        error_msg = "Error parsing parameter --source-configuration.*should be"
+        error_msg = "Error parsing parameter '--source-configuration'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, value)
 
     def test_improper_separator_for_filters_param(self):
         p = self.get_param_object('ec2.DescribeInstances.Filters')
-        error_msg = "Error parsing parameter --filters.*should be"
+        error_msg = "Error parsing parameter '--filters'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, ["Name:tag:Name,Values:foo"])
 
@@ -261,7 +274,7 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_csv_syntax_errors(self):
         p = self.get_param_object('cloudformation.CreateStack.Parameters')
-        error_msg = "Error parsing parameter --parameters.*should be"
+        error_msg = "Error parsing parameter '--parameters'.*should be"
         with self.assertRaisesRegexp(ParamError, error_msg):
             self.simplify(p, ['ParameterKey=key,ParameterValue="foo,bar'])
         with self.assertRaisesRegexp(ParamError, error_msg):
@@ -333,6 +346,36 @@ class TestDocGen(BaseArgProcessTest):
         doc_string = p.example_fn(p)
         s = 'Key value pairs, where values are separated by commas.\n--playlists Name=string1,Format=string1,OutputKeys=string1,string2'
         self.assertEqual(doc_string, s)
+
+
+class TestUnpackJSONParams(BaseArgProcessTest):
+    def setUp(self):
+        super(TestUnpackJSONParams, self).setUp()
+        self.simplify = ParamShorthand()
+
+    def test_json_with_spaces(self):
+        p = self.get_param_object('ec2.RunInstances.BlockDeviceMappings')
+        # If a user specifies the json with spaces, it will show up as
+        # a multi element list.  For example:
+        # --block-device-mappings [{ "DeviceName":"/dev/sdf",
+        # "VirtualName":"ephemeral0"}, {"DeviceName":"/dev/sdg",
+        # "VirtualName":"ephemeral1" }]
+        #
+        # Will show up as:
+        block_device_mapping = [
+            '[{', 'DeviceName:/dev/sdf,', 'VirtualName:ephemeral0},',
+            '{DeviceName:/dev/sdg,', 'VirtualName:ephemeral1', '}]']
+        # The shell has removed the double quotes so this is invalid
+        # JSON, but we should still raise a better exception.
+        with self.assertRaises(ParamError) as e:
+            unpack_cli_arg(p, block_device_mapping)
+        # Parameter name should be in error message.
+        self.assertIn('--block-device-mappings', str(e.exception))
+        # The actual JSON itself should be in the error message.
+        # Becaues this is a list, only the first element in the JSON
+        # will show.  This will at least let customers know what
+        # we tried to parse.
+        self.assertIn('[{', str(e.exception))
 
 
 if __name__ == '__main__':

@@ -2,6 +2,39 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix issue where S3 downloads would hang
+  in certain cases and could not be interrupted
+  (`issue 650 <https://github.com/aws/aws-cli/issues/650>`__,
+   `issue 657 <https://github.com/aws/aws-cli/issues/657>`__)
+* bugfix:``aws s3``: Support missing canned ACLs when using
+  the ``--acl`` parameter
+  (`issue 663 <https://github.com/aws/aws-cli/issues/663>`__)
+* bugfix:``aws rds describe-engine-default-parameters``: Fix
+  pagination issue when calling
+  ``aws rds describe-engine-default-parameters``
+  (`issue 607 <https://github.com/aws/aws-cli/issues/607>`__)
+* bugfix:``aws cloudtrail``: Merge existing SNS topic policy
+  with the existing AWS CloudTrail policy instead of overwriting
+  the default topic policy
+* bugfix:``aws s3``: Fix issue where streams were not being
+  rewound when encountering 307 redirects with multipart uploads
+  (`issue 544 <https://github.com/aws/aws-cli/issues/544>`__)
+* bugfix:``aws elb``: Fix issue with documentation errors
+  in ``aws elb help``
+  (`issue 622 <https://github.com/aws/aws-cli/issues/622>`__)
+* bugfix:JSON Parameters: Add a more clear error message
+  when parsing invalid JSON parameters
+  (`issue 639 <https://github.com/aws/aws-cli/pull/639>`__)
+* bugfix:``aws s3api``: Properly handle null inputs
+  (`issue 637 <https://github.com/aws/aws-cli/issues/637>`__)
+* bugfix:Argument Parsing: Handle files containing JSON with
+  leading and trailing spaces
+  (`issue 640 <https://github.com/aws/aws-cli/pull/640>`__)
+
+
 1.2.13
 ======
 

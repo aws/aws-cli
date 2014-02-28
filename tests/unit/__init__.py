@@ -49,6 +49,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.make_request_is_patched = False
         self.operations_called = []
         self.parsed_responses = None
+        self.driver = create_clidriver()
 
     def tearDown(self):
         # This clears all the previous registrations.
@@ -94,9 +95,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)
         self.patch_make_request()
-        driver = create_clidriver()
-        driver.session.register('before-call', self.before_call)
-        driver.session.register('before-parameter-build',
+        self.driver.session.register('before-call', self.before_call)
+        self.driver.session.register('before-parameter-build',
                                 self.before_parameter_build)
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
@@ -107,7 +107,7 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         captured_stdout = six.StringIO()
         with mock.patch('sys.stderr', captured_stderr):
             with mock.patch('sys.stdout', captured_stdout):
-                rc = driver.main(cmdlist)
+                rc = self.driver.main(cmdlist)
         stderr = captured_stderr.getvalue()
         stdout = captured_stdout.getvalue()
         self.assertEqual(

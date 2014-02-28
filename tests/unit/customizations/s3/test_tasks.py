@@ -18,11 +18,15 @@ import socket
 
 from botocore.exceptions import IncompleteReadError
 
+from awscli.customizations.s3.tasks import CreateLocalFileTask
+from awscli.customizations.s3.tasks import CompleteDownloadTask
 from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.tasks import MultipartUploadContext
 from awscli.customizations.s3.tasks import UploadCancelledError
 from awscli.customizations.s3.tasks import print_operation
 from awscli.customizations.s3.tasks import RetriesExeededError
+from awscli.customizations.s3.executor import ShutdownThreadRequest
+from awscli.customizations.s3.utils import StablePriorityQueue
 
 
 class TestMultipartUploadContext(unittest.TestCase):
@@ -316,3 +320,76 @@ class TestDownloadPartTask(unittest.TestCase):
         self.context.cancel.assert_called_with()
         self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
                          self.service.get_operation.call_count)
+
+
+class TestTaskOrdering(unittest.TestCase):
+    def setUp(self):
+        self.q = StablePriorityQueue(maxsize=10, max_priority=20)
+
+    def create_task(self):
+        # We don't actually care about the arguments, we just want to test
+        # the ordering of the tasks.
+        return CreateLocalFileTask(None, None)
+
+    def complete_task(self):
+        return CompleteDownloadTask(None, None, None, None, None)
+
+    def download_task(self):
+        return DownloadPartTask(None, None, None, None, mock.Mock(), None, None)
+
+    def shutdown_task(self, priority=None):
+        return ShutdownThreadRequest(priority)
+
+    def test_order_unchanged_in_same_priority(self):
+        create = self.create_task()
+        download = self.download_task()
+        complete = self.complete_task()
+
+        self.q.put(create)
+        self.q.put(download)
+        self.q.put(complete)
+
+        self.assertIs(self.q.get(), create)
+        self.assertIs(self.q.get(), download)
+        self.assertIs(self.q.get(), complete)
+
+    def test_multiple_tasks(self):
+        create = self.create_task()
+        download = self.download_task()
+        complete = self.complete_task()
+
+        create2 = self.create_task()
+        download2 = self.download_task()
+        complete2 = self.complete_task()
+
+        self.q.put(create)
+        self.q.put(download)
+        self.q.put(complete)
+
+        self.q.put(create2)
+        self.q.put(download2)
+        self.q.put(complete2)
+
+        self.assertIs(self.q.get(), create)
+        self.assertIs(self.q.get(), download)
+        self.assertIs(self.q.get(), complete)
+
+        self.assertIs(self.q.get(), create2)
+        self.assertIs(self.q.get(), download2)
+        self.assertIs(self.q.get(), complete2)
+
+    def test_shutdown_tasks_are_last(self):
+        create = self.create_task()
+        download = self.download_task()
+        complete = self.complete_task()
+        shutdown = self.shutdown_task(priority=11)
+
+        self.q.put(create)
+        self.q.put(download)
+        self.q.put(complete)
+        self.q.put(shutdown)
+
+        self.assertIs(self.q.get(), create)
+        self.assertIs(self.q.get(), download)
+        self.assertIs(self.q.get(), complete)
+        self.assertIs(self.q.get(), shutdown)

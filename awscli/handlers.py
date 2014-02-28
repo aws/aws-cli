@@ -17,12 +17,13 @@ registered with the event system.
 
 """
 from awscli.argprocess import ParamShorthand
+from awscli.argprocess import uri_param
 from awscli.errorhandler import ErrorHandler
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.addexamples import add_examples
 from awscli.customizations.removals import register_removals
 from awscli.customizations.ec2addcount import ec2_add_count
-from awscli.customizations.paginate import unify_paging_params
+from awscli.customizations.paginate import register_pagination
 from awscli.customizations.ec2decryptpassword import ec2_add_priv_launch_key
 from awscli.customizations.ec2secgroupsimplify import register_secgroup
 from awscli.customizations.preview import register_preview_commands
@@ -40,9 +41,11 @@ from awscli.customizations.configure import register_configure_cmd
 from awscli.customizations.cloudtrail import initialize as cloudtrail_init
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.ec2protocolarg import register_protocol_args
+from awscli.customizations import datapipeline
 
 
 def awscli_initialize(event_handlers):
+    event_handlers.register('load-cli-arg', uri_param)
     param_shorthand = ParamShorthand()
     event_handlers.register('process-cli-arg', param_shorthand)
     error_handler = ErrorHandler()
@@ -62,10 +65,9 @@ def awscli_initialize(event_handlers):
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.run-instances',
                             ec2_add_count)
-    event_handlers.register('building-argument-table',
-                            unify_paging_params)
     event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
+    register_pagination(event_handlers)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)
     s3_plugin_initialize(event_handlers)
@@ -83,3 +85,4 @@ def awscli_initialize(event_handlers):
     cloudtrail_init(event_handlers)
     register_bool_params(event_handlers)
     register_protocol_args(event_handlers)
+    datapipeline.register_customizations(event_handlers)

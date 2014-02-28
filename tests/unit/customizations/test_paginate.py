@@ -37,14 +37,15 @@ class TestArgumentTableModifications(unittest.TestCase):
 
     def test_customize_arg_table(self):
         argument_table = {
-            'foo': 'FakeArgObject',
-            'bar': 'FakeArgObject',
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
         }
-        paginate.unify_paging_params(argument_table, self.operation)
-        # We should remove the built in input_token.
-        self.assertNotIn('foo', argument_table)
-        # Also need to remove the limit key.
-        self.assertNotIn('bar', argument_table)
+        paginate.unify_paging_params(argument_table, self.operation,
+                                     'building-argument-table.foo.bar')
+        # We should mark the built in input_token as 'hidden'.
+        self.assertTrue(argument_table['foo']._UNDOCUMENTED)
+        # Also need to hide the limit key.
+        self.assertTrue(argument_table['bar']._UNDOCUMENTED)
         # We also need to inject startin-token and max-items.
         self.assertIn('starting-token', argument_table)
         self.assertIn('max-items', argument_table)
@@ -62,5 +63,6 @@ class TestArgumentTableModifications(unittest.TestCase):
             'bar': 'FakeArgObject',
         }
         starting_table = argument_table.copy()
-        paginate.unify_paging_params(argument_table, self.operation)
+        paginate.unify_paging_params(argument_table, self.operation,
+                                     'building-argument-table.foo.bar')
         self.assertEqual(starting_table, argument_table)

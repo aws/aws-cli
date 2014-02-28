@@ -19,11 +19,10 @@
 from tests import unittest
 import os
 import random
-import tempfile
-import shutil
 import platform
 import contextlib
 import time
+import signal
 
 import botocore.session
 
@@ -327,6 +326,32 @@ class TestCp(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertEqual(os.path.getsize(local_foo_txt), len(foo_contents))
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                    'SIGINT not supported on Windows.')
+    def test_download_ctrl_c_does_not_hang(self):
+        bucket_name = self.create_bucket()
+        foo_contents = 'abcd' * (1024 * 1024 * 20)
+        self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
+        local_foo_txt = self.files.full_path('foo.txt')
+        process = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt), wait_for_finish=False)
+        # Give it some time to start up and enter it's main task loop.
+        time.sleep(1)
+        # The process has 30 seconds to finish after being sent a Ctrl+C,
+        # otherwise the test fails.
+        process.send_signal(signal.SIGINT)
+        deadline = time.time() + 30
+        while time.time() < deadline:
+            rc = process.poll()
+            if rc is not None:
+                break
+        else:
+            process.kill()
+            self.fail("CLI did not exist within 30 seconds of receiving a Ctrl+C")
+        # A Ctrl+C should have a non-zero RC.  We either caught the process in
+        # its main polling loop (rc=1), or it was successfully terminated by
+        # the SIGINT (rc=-2).
+        self.assertIn(process.returncode, [1, -2])
+
     def test_cp_to_nonexistent_bucket(self):
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
         p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
@@ -376,16 +401,16 @@ class TestSync(BaseS3CLICommand):
             self.assertEqual(f.read(), 'bar contents')
 
     def test_sync_to_nonexistent_bucket(self):
-        foo_txt = self.files.create_file('foo.txt', 'foo contents')
-        bar_txt = self.files.create_file('bar.txt', 'bar contents')
+        self.files.create_file('foo.txt', 'foo contents')
+        self.files.create_file('bar.txt', 'bar contents')
 
         # Sync the directory and the bucket.
         p = aws('s3 sync %s s3://noexist-bkt-nme-1412' % (self.files.rootdir,))
         self.assertEqual(p.rc, 1)
 
     def test_sync_with_empty_files(self):
-        foo_txt = self.files.create_file('foo.txt', 'foo contents')
-        empty_txt = self.files.create_file('bar.txt', contents='')
+        self.files.create_file('foo.txt', 'foo contents')
+        self.files.create_file('bar.txt', contents='')
         bucket_name = self.create_bucket()
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assertEqual(p.rc, 0)
@@ -414,10 +439,12 @@ class TestSync(BaseS3CLICommand):
         self.files.create_file('test.txt', 'test.txt contents')
 
         # Now sync this content up to s3.
+        # Allow settling time so that we have a different time between
+        # source and destination.
+        time.sleep(2)
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
 
-        time.sleep(1)
         # Now here's the issue.  If we try to sync the contents down
         # with the --delete flag we should *not* see any output, the
         # sync operation should determine that nothing is different and

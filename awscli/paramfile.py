@@ -26,7 +26,7 @@ class ResourceLoadingError(Exception):
     pass
 
 
-def get_paramfile(session, path):
+def get_paramfile(path):
     """
     It is possible to pass parameters to operations by referring
     to files or URI's.  If such a reference is detected, this
@@ -39,11 +39,11 @@ def get_paramfile(session, path):
     if isinstance(path, six.string_types):
         for prefix in PrefixMap:
             if path.startswith(prefix):
-                data = PrefixMap[prefix](session, prefix, path)
+                data = PrefixMap[prefix](prefix, path)
     return data
 
 
-def get_file(session, prefix, path):
+def get_file(prefix, path):
     file_path = path[len(prefix):]
     file_path = os.path.expanduser(file_path)
     file_path = os.path.expandvars(file_path)
@@ -57,7 +57,7 @@ def get_file(session, prefix, path):
             path, e))
 
 
-def get_uri(session, prefix, uri):
+def get_uri(prefix, uri):
     try:
         r = requests.get(uri)
         if r.status_code == 200:

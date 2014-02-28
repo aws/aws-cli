@@ -13,6 +13,7 @@
 
 import sys
 import logging
+import xml.etree.cElementTree
 
 LOG = logging.getLogger(__name__)
 
@@ -86,4 +87,17 @@ class ErrorHandler(object):
                     code = error['Type']
                 if 'Message' in error:
                     message = error['Message']
+        elif 'Body' in response and \
+             response.get('ContentType') == 'application/xml':
+            # XML formatted data
+            body = response['Body'].read()
+            parser = xml.etree.cElementTree.XMLParser(
+                         target=xml.etree.cElementTree.TreeBuilder(),
+                         encoding='UTF-8')
+            parser.feed(body)
+            tree = parser.close()
+            if tree.find('Code') is not None:
+                code = tree.findtext('Code')
+            if tree.find('Message') is not None:
+                message = tree.findtext('Message')
         return (code, message)

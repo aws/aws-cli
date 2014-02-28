@@ -14,7 +14,16 @@ from tests import unittest
 
 import mock
 from awscli import errorhandler
+import six
 
+XML_ERROR_BODY = '''\
+<?xml version="1.0" encoding="UTF-8"?>
+<Error>
+  <Code>InvalidObjectState</Code>
+  <Message>The operation is not valid for the object's storage class</Message>
+  <RequestId>C1E9DD0E4920D4E3</RequestId>
+  <HostId>GbkQnwteXf4S3FiZ240D6rAg4Z2PciBDqMiStW3y3LVRLX3HpVLfmlfi6msQzoKa</HostId>
+</Error>'''
 
 class TestErrorHandler(unittest.TestCase):
 
@@ -51,6 +60,39 @@ class TestErrorHandler(unittest.TestCase):
             # so clients can access this information programmatically.
             self.assertEqual(e.error_code, 'AccessDenied')
             self.assertEqual(e.error_message, 'Access Denied')
+            self.assertEqual(e.operation_name, 'OperationName')
+        except Exception as e:
+            self.fail("Unexpected error raised: %s" % e)
+        else:
+            self.fail("Expected errorhandler.ClientError to be raised "
+                      "but no exception was raised.")
+
+    def test_error_handler_client_side_xml(self):
+        response_body = six.StringIO(XML_ERROR_BODY)
+        response_body.seek(0)
+        response = {
+            u'Body': response_body,
+            u'ContentType': 'application/xml'
+            }
+    
+        handler = errorhandler.ErrorHandler()
+        http_response = self.create_http_response(status_code=403)
+        # We're manually using the try/except form because
+        # we want to catch the exception and assert that it has specific
+        # attributes on it.
+        operation = mock.Mock()
+        operation.name = 'OperationName'
+        try:
+            handler(http_response, response, operation)
+        except errorhandler.ClientError as e:
+            # First, the operation name should be in the error message.
+            self.assertIn('OperationName', str(e))
+            # We should state that this is a ClientError.
+            self.assertIn('client error', str(e))
+            # And these values should be available on the exception
+            # so clients can access this information programmatically.
+            self.assertEqual(e.error_code, 'InvalidObjectState')
+            self.assertEqual(e.error_message, 'The operation is not valid for the object\'s storage class')
             self.assertEqual(e.operation_name, 'OperationName')
         except Exception as e:
             self.fail("Unexpected error raised: %s" % e)

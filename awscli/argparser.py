@@ -48,6 +48,11 @@ class CLIArgParser(argparse.ArgumentParser):
     def parse_known_args(self, args, namespace=None):
         parsed, remaining = super(CLIArgParser, self).parse_known_args(args, namespace)
         terminal_encoding = getattr(sys.stdin, 'encoding', 'utf-8')
+        if terminal_encoding is None:
+            # In some cases, sys.stdin won't have an encoding set,
+            # (e.g if it's set to a StringIO).  In this case we just
+            # default to utf-8.
+            terminal_encoding = 'utf-8'
         for arg, value in vars(parsed).items():
             if isinstance(value, six.binary_type):
                 setattr(parsed, arg, value.decode(terminal_encoding))

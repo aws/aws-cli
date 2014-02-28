@@ -64,7 +64,6 @@ This service is only available as a preview service.
 
 PREVIEW_SERVICES = {
     'cloudsearch': CLOUDSEARCH_HELP,
-    'datapipeline': GENERAL_HELP,
     'cloudfront': GENERAL_HELP,
     'emr': EMR_HELP,
     'sdb': GENERAL_HELP,

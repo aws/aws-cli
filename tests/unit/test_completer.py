@@ -27,7 +27,7 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl',
 
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation',
-                      'cloudtrail', 'cloudwatch', 'configure',
+                      'cloudtrail', 'cloudwatch', 'configure', 'datapipeline',
                       'directconnect', 'dynamodb', 'ec2',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
                       'elb', 'iam', 'importexport', 'kinesis',

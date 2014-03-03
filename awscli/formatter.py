@@ -78,7 +78,7 @@ class JSONFormatter(FullyBufferedFormatter):
             stream.write('\n')
         else:
             json.dump(response, stream)
-            stream.write()
+            stream.write('')
 
 
 class TableFormatter(FullyBufferedFormatter):

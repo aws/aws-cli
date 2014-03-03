@@ -753,32 +753,7 @@ class CommandParameters(object):
         If the region is specified on the command line it takes priority
         over specification via a configuration file or environment variable.
         """
-        configuration = self.session.get_config()
-        env = os.environ.copy()
-        region = None
-        if 'region' in configuration.keys():
-            region = configuration['region']
-        if 'AWS_DEFAULT_REGION' in env.keys():
-            region = env['AWS_DEFAULT_REGION']
-        parsed_region = None
-        if 'region' in parsed_globals:
-            parsed_region = getattr(parsed_globals, 'region')
-        if 'endpoint_url' in parsed_globals:
-            parsed_endpoint_url = getattr(parsed_globals, 'endpoint_url')
-        else:
-            parsed_endpoint_url = None
-        if not region and not parsed_region and parsed_endpoint_url is None:
-            raise Exception("A region must be specified --region or "
-                            "specifying the region\nin a configuration "
-                            "file or as an environment variable.\n"
-                            "Alternately, an endpoint can be specified "
-                            "with --endpoint-url")
-        if parsed_region:
-            self.parameters['region'] = parsed_region
-        elif region:
-            self.parameters['region'] = region
-        else:
-            self.parameters['region'] = None
+        self.parameters['region'] = parsed_globals.region
 
     def check_endpoint_url(self, parsed_globals):
         """
@@ -788,6 +763,7 @@ class CommandParameters(object):
             self.parameters['endpoint_url'] = getattr(parsed_globals, 'endpoint_url')
         else:
             self.parameters['endpoint_url'] = None
+
 
 # This is a dictionary useful for automatically adding the different commands,
 # the amount of arguments it takes, and the optional parameters that can appear

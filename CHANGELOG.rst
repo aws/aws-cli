@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``ec2 create-snapshot``: Remove ``Tags`` key from
+  output response
+  (`issue 247 <https://github.com/boto/botocore/pull/247>`__)
 * bugfix:``aws s3``: ``aws s3`` commands should not be requiring regions
   (`issue 681 <https://github.com/aws/aws-cli/issues/681>`__)
 * bugfix:``CLI Arguments``: Fix issue where unicode command line

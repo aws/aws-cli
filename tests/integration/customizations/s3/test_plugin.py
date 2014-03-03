@@ -531,8 +531,11 @@ class TestLs(BaseS3CLICommand):
         # By default, the aws() function injects
         # an AWS_DEFAULT_REGION into the env var of the
         # process.  We're verifying that a region does *not*
-        # need to be set anywhere.
-        p = aws('s3 ls', env_vars={})
+        # need to be set anywhere.  If we provide our
+        # own environ dict, then the aws() function won't
+        # inject a region.
+        env = os.environ.copy()
+        p = aws('s3 ls', env_vars=env)
         self.assert_no_errors(p)
 
     def test_ls_bucket_with_s3_prefix(self):

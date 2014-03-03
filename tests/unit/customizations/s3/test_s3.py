@@ -369,7 +369,7 @@ class CommandParametersTest(unittest.TestCase):
 
         for cmd in cmds.keys():
             cmd_param = CommandParameters(self.session, cmd, {})
-            cmd_param.check_region([])
+            cmd_param.check_region(mock.Mock())
             correct_paths = cmds[cmd]
             for path_args in correct_paths:
                 cmd_param.check_path_type(combos[path_args])
@@ -397,7 +397,7 @@ class CommandParametersTest(unittest.TestCase):
 
         for cmd in cmds.keys():
             cmd_param = CommandParameters(self.session, cmd, {})
-            cmd_param.check_region([])
+            cmd_param.check_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
                 with self.assertRaises(TypeError):
@@ -423,7 +423,7 @@ class CommandParametersTest(unittest.TestCase):
         for filename in files:
             parameters['dir_op'] = filename[1]
             cmd_parameter = CommandParameters(self.session, 'put', parameters)
-            cmd_parameter.check_region([])
+            cmd_parameter.check_region(mock.Mock())
             cmd_parameter.check_src_path(filename[0])
 
     def test_check_force(self):
@@ -433,23 +433,6 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters(self.session, 'rb', {'force': True})
         cmd_params.parameters['src'] = 's3://mybucket'
         cmd_params.check_force(None)
-
-    def test_region(self):
-        # This tests the ability to specify the region and throw an error
-        # if a region is never specified whether if it is an environment
-        # variable, config file, or parsed global.
-        cmd_params = CommandParameters(self.session, 'mb', {})
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--region', nargs=1)
-        parser.add_argument('--test', action='store_true')
-        parsed_args = parser.parse_args(['--region', 'eu-west-1'])
-        cmd_params.check_region(parsed_args)
-        self.assertEqual(cmd_params.parameters['region'][0], 'eu-west-1')
-
-        cmd_params2 = CommandParameters(self.mock, 'mb', {})
-        parsed_args2 = parser.parse_args(['--test'])
-        with self.assertRaises(Exception):
-            cmd_params2.check_region(parsed_args2)
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

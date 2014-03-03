@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: ``aws s3`` commands should not be requiring regions
+  (`issue 681 <https://github.com/aws/aws-cli/issues/681>`__)
 * bugfix:``CLI Arguments``: Fix issue where unicode command line
   arguments were not being handled correctly
   (`issue 679 <https://github.com/aws/aws-cli/pull/679>`__)

@@ -13,6 +13,7 @@
 import hashlib
 from operator import itemgetter
 from botocore.vendored import requests
+from six import text_type
 from six import StringIO
 from io import BytesIO
 
@@ -223,7 +224,7 @@ class FakeOperation(object):
         key = kwargs['key']
         copy_source = kwargs['copy_source']
         src_bucket, src_key = find_bucket_key(copy_source)
-        if hasattr(src_key, 'decode'):
+        if not isinstance(src_key, text_type) and hasattr(src_key, 'decode'):
             src_key = src_key.decode('utf-8')
         response_data = {}
         etag = ''

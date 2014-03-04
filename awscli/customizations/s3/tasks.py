@@ -7,7 +7,6 @@ import threading
 
 from botocore.vendored import requests
 from botocore.exceptions import IncompleteReadError
-from botocore.compat import quote
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, ReadFileChunk, relative_path, IORequest, IOCloseRequest

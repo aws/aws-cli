@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue when copying objects using
+  ``aws s3 cp`` with key names containing ``+`` characters
+  (`issue #614 <https://github.com/aws/aws-cli/issues/614>`__)
 * bugfix:``ec2 create-snapshot``: Remove ``Tags`` key from
   output response
   (`issue 247 <https://github.com/boto/botocore/pull/247>`__)

@@ -57,9 +57,24 @@ class TestURIParams(BaseArgProcessTest):
             result = uri_param(p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
 
+    def test_uri_param_no_paramfile_false(self):
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        p.no_paramfile = False
+        with temporary_file('r+') as f:
+            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
+            f.write(json_argument)
+            f.flush()
+            result = uri_param(p, 'file://%s' % f.name)
+        self.assertEqual(result, json_argument)
+
     def test_uri_param_no_paramfile_true(self):
-        p = self.get_param_object('sqs.DeleteQueue.QueueUrl')
-        result = uri_param(p, 'https://queue.amazonaws.com/123456789012/testcli')
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        p.no_paramfile = True
+        with temporary_file('r+') as f:
+            json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
+            f.write(json_argument)
+            f.flush()
+            result = uri_param(p, 'file://%s' % f.name)
         self.assertEqual(result, None)
 
 class TestArgShapeDetection(BaseArgProcessTest):

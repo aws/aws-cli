@@ -66,8 +66,19 @@ def unify_paging_params(argument_table, operation, event_name, **kwargs):
                                                     STARTING_TOKEN_HELP,
                                                     operation,
                                                     parse_type='string')
+    # Try to get the pagination parameter type
+    type_ = 'integer'
+    if 'limit_key' in operation.pagination:
+        for param in operation.params:
+            if param.name == operation.pagination['limit_key']:
+                type_ = param.type
+                break
+
+    if type_ not in PageArgument.type_map:
+        raise TypeError('Unsupported pagination type {0}'.format(type_))
+
     argument_table['max-items'] = PageArgument('max-items', MAX_ITEMS_HELP,
-                                               operation, parse_type='integer')
+                                               operation, parse_type=type_)
 
 
 def check_should_enable_pagination(input_tokens, parsed_args, parsed_globals, **kwargs):

@@ -25,8 +25,10 @@ class TestArgumentTableModifications(unittest.TestCase):
         self.foo_param = mock.Mock()
         self.foo_param.cli_name = 'foo'
         self.foo_param.name = 'Foo'
+        self.foo_param.type = 'string'
         self.bar_param = mock.Mock()
         self.bar_param.cli_name = 'bar'
+        self.bar_param.type = 'string'
         self.bar_param.name = 'Bar'
         self.params = [self.foo_param, self.bar_param]
         self.operation.pagination = {
@@ -54,6 +56,8 @@ class TestArgumentTableModifications(unittest.TestCase):
                               paginate.PageArgument)
         self.assertIsInstance(argument_table['max-items'],
                               paginate.PageArgument)
+        # Max items should be the same type as bar, which may not be an int
+        self.assertEqual('string', argument_table['max-items']._parse_type)
 
     def test_operation_with_no_paginate(self):
         # Operations that don't paginate are left alone.

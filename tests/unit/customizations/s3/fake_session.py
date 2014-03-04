@@ -13,10 +13,10 @@
 import hashlib
 from operator import itemgetter
 from botocore.vendored import requests
+from six import text_type
 from six import StringIO
 from io import BytesIO
 
-from botocore.compat import unquote
 from mock import MagicMock, Mock
 
 from awscli.customizations.s3.filegenerator import find_bucket_key
@@ -224,8 +224,7 @@ class FakeOperation(object):
         key = kwargs['key']
         copy_source = kwargs['copy_source']
         src_bucket, src_key = find_bucket_key(copy_source)
-        src_key = unquote(src_key)
-        if hasattr(src_key, 'decode'):
+        if not isinstance(src_key, text_type) and hasattr(src_key, 'decode'):
             src_key = src_key.decode('utf-8')
         response_data = {}
         etag = ''

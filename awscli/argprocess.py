@@ -53,7 +53,7 @@ def uri_param(param, value, **kwargs):
     # Some params have a 'no_paramfile' attribute in their JSON
     # models which means that we should not allow any uri based params
     # for this argument.
-    if hasattr(param, 'no_paramfile'):
+    if getattr(param, 'no_paramfile', False):
         return
     else:
         return _check_for_uri_param(param, value)

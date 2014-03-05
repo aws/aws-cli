@@ -87,7 +87,7 @@ class TestStringLimitKey(TestPaginateBase):
         paginate.unify_paging_params(argument_table, self.operation,
                                      'building-argument-table.foo.bar')
         # Max items should be the same type as bar, which may not be an int
-        self.assertEqual('string', argument_table['max-items']._parse_type)
+        self.assertEqual('string', argument_table['max-items'].cli_type_name)
 
 
 class TestIntegerLimitKey(TestPaginateBase):
@@ -104,7 +104,7 @@ class TestIntegerLimitKey(TestPaginateBase):
         paginate.unify_paging_params(argument_table, self.operation,
                                      'building-argument-table.foo.bar')
         # Max items should be the same type as bar, which may not be an int
-        self.assertEqual('integer', argument_table['max-items']._parse_type)
+        self.assertEqual('integer', argument_table['max-items'].cli_type_name)
 
 
 class TestBadLimitKey(TestPaginateBase):

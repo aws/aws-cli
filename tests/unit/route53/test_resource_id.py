@@ -102,4 +102,20 @@ class TestGetChange(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result, expected_rc=0,
                                    ignore_params=['payload'])[0]
 
-        
+
+class TestMaxItems(BaseAWSCommandParamsTest):
+
+    prefix = 'route53 list-resource-record-sets'
+
+    def test_full_resource_id(self):
+        args = ' --hosted-zone-id /hostedzone/ABCD --max-items 1'
+        cmdline = self.prefix + args
+        result = {
+            'uri_params': {
+                'HostedZoneId': 'ABCD',
+                'MaxItems': '1'
+            },
+            'headers': {}
+        }
+        self.assert_params_for_cmd(cmdline, result, expected_rc=0,
+                                   ignore_params=['payload'])[0]

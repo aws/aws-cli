@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Bundled Installer: Allow creation of bundled
+  installer with ``pip 1.5``
+  (`issue 691 <https://github.com/aws/aws-cli/issues/691>`__)
 * bugfix:``ec2 create-snapshot``: Remove ``Tags`` key from
   output response
   (`issue 247 <https://github.com/boto/botocore/pull/247>`__)

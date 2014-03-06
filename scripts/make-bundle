@@ -35,6 +35,7 @@ PACKAGE_VERSION = {
     'simplejson': '3.3.0',
     'argparse': '1.2.1',
 }
+INSTALL_ARGS = '--allow-all-external --no-use-wheel'
 
 
 class BadRCError(Exception):
@@ -76,8 +77,8 @@ def create_scratch_dir():
 def download_package_tarballs(dirname, packages):
     with cd(dirname):
         for package in packages:
-            run('pip install -d . %s==%s' % (
-                package, PACKAGE_VERSION[package]))
+            run('pip install -d . %s==%s %s' % (
+                package, PACKAGE_VERSION[package], INSTALL_ARGS))
 
 
 def download_cli_deps(scratch_dir):
@@ -97,7 +98,7 @@ def download_cli_deps(scratch_dir):
     awscli_dir = os.path.dirname(
         os.path.dirname(os.path.abspath(__file__)))
     with cd(scratch_dir):
-        run('%s install -d . -e %s' % (pip, awscli_dir))
+        run('%s install %s -d . -e %s' % (pip, INSTALL_ARGS, awscli_dir))
     # Remove the awscli package, we'll create our own sdist.
     _remove_cli_zip(scratch_dir)
 
@@ -141,7 +142,30 @@ def zip_dir(scratch_dir):
     return os.path.join(dirname, basename)
 
 
+def verify_preconditions():
+    # The pip version looks like:
+    # 'pip 1.4.1 from ....'
+    pip_version = run('pip --version').strip().split()[1]
+    # Virtualenv version just has the version string: '1.14.5\n'
+    virtualenv_version = run('virtualenv --version').strip()
+    _min_version_required('1.5.0', pip_version, 'pip')
+    _min_version_required('1.11.4', virtualenv_version, 'virtualenv')
+
+
+def _min_version_required(min_version, actual_version, name):
+    # precondition: min_version is major.minor.patch
+    #               actual_version is major.minor.patch
+    min_split = min_version.split('.')
+    actual_split = actual_version.split('.')
+    for minimum, actual in zip(min_split, actual_split):
+        if int(actual) < int(minimum):
+            raise ValueError("%s requires at least version %s, but "
+                             "version %s was found." % (name, min_version,
+                                                        actual_version))
+
+
 def main():
+    verify_preconditions()
     scratch_dir = create_scratch_dir()
     package_dir = os.path.join(scratch_dir, 'packages')
     print("Bundle dir at: %s" % scratch_dir)

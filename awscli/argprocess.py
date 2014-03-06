@@ -53,7 +53,7 @@ def uri_param(param, value, **kwargs):
     # Some params have a 'no_paramfile' attribute in their JSON
     # models which means that we should not allow any uri based params
     # for this argument.
-    if hasattr(param, 'no_paramfile'):
+    if getattr(param, 'no_paramfile', False):
         return
     else:
         return _check_for_uri_param(param, value)
@@ -65,7 +65,7 @@ def _check_for_uri_param(param, value):
     try:
         return get_paramfile(value)
     except ResourceLoadingError as e:
-        raise ParamError(param, str(e))
+        raise ParamError(param, six.text_type(e))
 
 
 def detect_shape_structure(param):
@@ -162,8 +162,9 @@ class ParamShorthand(object):
         if isinstance(value, list):
             check_val = value[0]
         else:
-            check_val = value.strip()
-        if isinstance(check_val, str) and check_val.startswith(('[', '{')):
+            check_val = value
+        if isinstance(check_val, six.string_types) and check_val.strip().startswith(
+                ('[', '{')):
             LOG.debug("Param %s looks like JSON, not considered for "
                       "param shorthand.", param.py_name)
             return
@@ -345,7 +346,7 @@ class ParamShorthand(object):
         try:
             return utils.split_on_commas(value)
         except ValueError as e:
-            raise ParamSyntaxError(str(e))
+            raise ParamSyntaxError(six.text_type(e))
 
 
 def unpack_cli_arg(parameter, value):
@@ -370,7 +371,7 @@ def unpack_cli_arg(parameter, value):
     elif parameter.type in COMPLEX_TYPES:
         return unpack_complex_cli_arg(parameter, value)
     else:
-        return str(value)
+        return six.text_type(value)
 
 
 def unpack_complex_cli_arg(parameter, value):
@@ -415,8 +416,8 @@ def unpack_scalar_cli_arg(parameter, value):
             raise ParamError(parameter, msg)
         return open(file_path, 'rb')
     elif parameter.type == 'boolean':
-        if isinstance(value, str) and value.lower() == 'false':
+        if isinstance(value, six.string_types) and value.lower() == 'false':
             return False
         return bool(value)
     else:
-        return str(value)
+        return six.text_type(value)

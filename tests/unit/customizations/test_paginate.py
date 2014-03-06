@@ -17,7 +17,7 @@ import mock
 from awscli.customizations import paginate
 
 
-class TestArgumentTableModifications(unittest.TestCase):
+class TestPaginateBase(unittest.TestCase):
 
     def setUp(self):
         self.operation = mock.Mock()
@@ -25,8 +25,10 @@ class TestArgumentTableModifications(unittest.TestCase):
         self.foo_param = mock.Mock()
         self.foo_param.cli_name = 'foo'
         self.foo_param.name = 'Foo'
+        self.foo_param.type = 'string'
         self.bar_param = mock.Mock()
         self.bar_param.cli_name = 'bar'
+        self.bar_param.type = 'string'
         self.bar_param.name = 'Bar'
         self.params = [self.foo_param, self.bar_param]
         self.operation.pagination = {
@@ -34,6 +36,9 @@ class TestArgumentTableModifications(unittest.TestCase):
             'limit_key': 'Bar',
         }
         self.operation.params = self.params
+
+
+class TestArgumentTableModifications(TestPaginateBase):
 
     def test_customize_arg_table(self):
         argument_table = {
@@ -66,3 +71,53 @@ class TestArgumentTableModifications(unittest.TestCase):
         paginate.unify_paging_params(argument_table, self.operation,
                                      'building-argument-table.foo.bar')
         self.assertEqual(starting_table, argument_table)
+
+
+class TestStringLimitKey(TestPaginateBase):
+
+    def setUp(self):
+        super(TestStringLimitKey, self).setUp()
+        self.bar_param.type = 'string'
+
+    def test_integer_limit_key(self):
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+        paginate.unify_paging_params(argument_table, self.operation,
+                                     'building-argument-table.foo.bar')
+        # Max items should be the same type as bar, which may not be an int
+        self.assertEqual('string', argument_table['max-items'].cli_type_name)
+
+
+class TestIntegerLimitKey(TestPaginateBase):
+
+    def setUp(self):
+        super(TestIntegerLimitKey, self).setUp()
+        self.bar_param.type = 'integer'
+
+    def test_integer_limit_key(self):
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+        paginate.unify_paging_params(argument_table, self.operation,
+                                     'building-argument-table.foo.bar')
+        # Max items should be the same type as bar, which may not be an int
+        self.assertEqual('integer', argument_table['max-items'].cli_type_name)
+
+
+class TestBadLimitKey(TestPaginateBase):
+
+    def setUp(self):
+        super(TestBadLimitKey, self).setUp()
+        self.bar_param.type = 'bad'
+
+    def test_integer_limit_key(self):
+        argument_table = {
+            'foo': mock.Mock(),
+            'bar': mock.Mock(),
+        }
+        with self.assertRaises(TypeError):
+            paginate.unify_paging_params(argument_table, self.operation,
+                                         'building-argument-table.foo.bar')

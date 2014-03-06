@@ -5,6 +5,32 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Parameters: Fix issue parsing with CLI
+  parameters of type ``long``
+  (`issue 693 <https://github.com/aws/aws-cli/pull/693/files>`__)
+* bugfix:Pagination: Fix issue where ``--max-items``
+  in pagination was always assumed to be an integer
+  (`issue 689 <https://github.com/aws/aws-cli/pull/689>`__)
+* feature:``aws elb``: Add support for AccessLog
+* bugfix:Bundled Installer: Allow creation of bundled
+  installer with ``pip 1.5``
+  (`issue 691 <https://github.com/aws/aws-cli/issues/691>`__)
+* bugfix:``aws s3``: Fix issue when copying objects using
+  ``aws s3 cp`` with key names containing ``+`` characters
+  (`issue #614 <https://github.com/aws/aws-cli/issues/614>`__)
+* bugfix:``ec2 create-snapshot``: Remove ``Tags`` key from
+  output response
+  (`issue 247 <https://github.com/boto/botocore/pull/247>`__)
+* bugfix:``aws s3``: ``aws s3`` commands should not be requiring regions
+  (`issue 681 <https://github.com/aws/aws-cli/issues/681>`__)
+* bugfix:``CLI Arguments``: Fix issue where unicode command line
+  arguments were not being handled correctly
+  (`issue 679 <https://github.com/aws/aws-cli/pull/679>`__)
+
+
+1.3.0
+=====
+
 * bugfix:``aws s3``: Fix issue where S3 downloads would hang
   in certain cases and could not be interrupted
   (`issue 650 <https://github.com/aws/aws-cli/issues/650>`__,

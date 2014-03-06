@@ -11,6 +11,7 @@ Next Release (TBD)
 * bugfix:Pagination: Fix issue where ``--max-items``
   in pagination was always assumed to be an integer
   (`issue 689 <https://github.com/aws/aws-cli/pull/689>`__)
+* feature:``aws elb``: Add support for AccessLog
 * bugfix:Bundled Installer: Allow creation of bundled
   installer with ``pip 1.5``
   (`issue 691 <https://github.com/aws/aws-cli/issues/691>`__)

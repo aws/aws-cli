@@ -5,6 +5,12 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Parameters: Fix issue parsing with CLI
+  parameters of type ``long``
+  (`issue 693 <https://github.com/aws/aws-cli/pull/693/files>`__)
+* bugfix:Pagination: Fix issue where ``--max-items``
+  in pagination was always assumed to be an integer
+  (`issue 689 <https://github.com/aws/aws-cli/pull/689>`__)
 * bugfix:Bundled Installer: Allow creation of bundled
   installer with ``pip 1.5``
   (`issue 691 <https://github.com/aws/aws-cli/issues/691>`__)

@@ -6,7 +6,6 @@ from awscli.arguments import CustomArgument
 from awscli.argprocess import uri_param
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
-from awscli.customizations.utils import validate_mutually_exclusive_handler
 
 
 HELP_TEXT = """\
@@ -230,7 +229,7 @@ class ListRunsCommand(BasicCommand):
         self.endpoint = self.service.get_endpoint(
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.no_verify_ssl)
+            verify=parsed_globals.verify_ssl)
 
     def _parse_type_args(self, parsed_args):
         # TODO: give good error messages!

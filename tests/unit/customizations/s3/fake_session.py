@@ -80,7 +80,7 @@ class FakeService(object):
     def __init__(self, session):
         self.session = session
 
-    def get_endpoint(self, region_name, endpoint_url=None):
+    def get_endpoint(self, region_name, endpoint_url=None, verify=None):
         endpoint = Mock()
         endpoint.region_name = region_name
         return endpoint

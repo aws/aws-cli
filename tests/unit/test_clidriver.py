@@ -62,7 +62,8 @@ GET_DATA = {
                 "metavar": "endpoint_url"
             },
             "no-verify-ssl": {
-                "action": "store_true",
+                "action": "store_false",
+                "dest": "verify_ssl",
                 "help": "Override default behavior of verifying SSL certificates"
             },
             "no-paginate": {
@@ -391,7 +392,21 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                 's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
                 expected_rc=0)
         endpoint.assert_called_with(region_name='us-east-1',
-                                    endpoint_url='https://foobar.com/')
+                                    endpoint_url='https://foobar.com/',
+                                    verify=None)
+
+    def test_s3_with_no_verify_ssl(self):
+        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
+            http_response = models.Response()
+            http_response.status_code = 200
+            endpoint.return_value.make_request.return_value = (
+                http_response, {'CommonPrefixes': [], 'Contents': []})
+            self.assert_params_for_cmd(
+                's3 ls s3://test --no-verify-ssl',
+                expected_rc=0)
+        endpoint.assert_called_with(region_name=None,
+                                    endpoint_url=None,
+                                    verify=False)
 
     def inject_new_param(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', {})
@@ -492,6 +507,24 @@ class TestCLIOperationCaller(BaseAWSCommandParamsTest):
         caller = CLIOperationCaller(self.session)
         with self.assertRaises(NoCredentialsError):
             caller.invoke(None, None, None)
+
+
+class TestVerifyArgument(BaseAWSCommandParamsTest):
+    def setUp(self):
+        super(TestVerifyArgument, self).setUp()
+        self.driver.session.register('top-level-args-parsed', self.record_args)
+        self.recorded_args = None
+
+    def record_args(self, parsed_args, **kwargs):
+        self.recorded_args = parsed_args
+
+    def test_no_verify_argument(self):
+        self.assert_params_for_cmd('s3api list-buckets --no-verify-ssl'.split())
+        self.assertFalse(self.recorded_args.verify_ssl)
+
+    def test_verify_argument_is_none_by_default(self):
+        self.assert_params_for_cmd('s3api list-buckets'.split())
+        self.assertIsNone(self.recorded_args.verify_ssl)
 
 
 if __name__ == '__main__':

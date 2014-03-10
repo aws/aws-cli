@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import os
 import logging
 
 import botocore.session
@@ -212,7 +211,8 @@ class CLIDriver(object):
         sys.stderr.write('\n')
 
     def _handle_top_level_args(self, args):
-        self.session.emit('top-level-args-parsed', parsed_args=args)
+        self.session.emit(
+            'top-level-args-parsed', parsed_args=args, session=self.session)
         if args.profile:
             self.session.profile = args.profile
         if args.debug:
@@ -429,8 +429,6 @@ class ServiceOperation(object):
         if remaining:
             raise UnknownArgumentError(
                 "Unknown options: %s" % ', '.join(remaining))
-        service_name = self._service_object.endpoint_prefix
-        operation_name = self._operation_object.name
         event = 'operation-args-parsed.%s.%s' % (self._parent_name,
                                                  self._name)
         self._emit(event, parsed_args=parsed_args,
@@ -482,8 +480,6 @@ class ServiceOperation(object):
                                    self._operation_object)
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
-        service_name = self._service_object.endpoint_prefix
-        operation_name = self._operation_object.name
         self._emit('building-argument-table.%s.%s' % (self._parent_name,
                                                       self._name),
                    operation=self._operation_object,
@@ -518,11 +514,10 @@ class CLIOperationCaller(object):
         # for credentials so we can give a good error message.
         if not self._session.get_credentials():
             raise NoCredentialsError()
-        verify = self._resolve_verify_var(parsed_globals.no_verify_ssl)
         endpoint = operation_object.service.get_endpoint(
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=verify)
+            verify=parsed_globals.verify_ssl)
         if operation_object.can_paginate and parsed_globals.paginate:
             pages = operation_object.paginate(endpoint, **parameters)
             self._display_response(operation_object, pages,
@@ -533,14 +528,6 @@ class CLIOperationCaller(object):
             self._display_response(operation_object, response_data,
                                    parsed_globals)
         return 0
-
-    def _resolve_verify_var(self, no_verify_ssl):
-        verify = None
-        if no_verify_ssl:
-            verify = False
-        else:
-            verify = os.environ.get('AWS_CA_BUNDLE')
-        return verify
 
     def _display_response(self, operation, response, args):
         output = args.output

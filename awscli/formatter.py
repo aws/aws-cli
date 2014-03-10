@@ -57,8 +57,7 @@ class FullyBufferedFormatter(Formatter):
         try:
             self._remove_request_id(response_data)
             if self._args.query is not None:
-                expression = jmespath.compile(self._args.query)
-                response_data = expression.search(response_data)
+                response_data = self._args.query.search(response_data)
             self._format_response(operation, response_data, stream)
         finally:
             # flush is needed to avoid the "close failed in file object

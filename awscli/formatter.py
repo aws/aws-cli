@@ -237,7 +237,7 @@ class TextFormatter(Formatter):
 
     def _format_response(self, response, stream):
         if self._args.query is not None:
-            expression = jmespath.compile(self._args.query)
+            expression = self._args.query
             response = expression.search(response)
         text.format_text(response, stream)
 

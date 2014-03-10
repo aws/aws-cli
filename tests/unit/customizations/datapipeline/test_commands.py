@@ -11,7 +11,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import tempfile
 import copy
 import mock
 
@@ -183,7 +182,7 @@ class FakeParsedArgs(object):
     def __init__(self, **kwargs):
         self.endpoint_url = None
         self.region = None
-        self.no_verify_ssl = None
+        self.verify_ssl = None
         self.__dict__.update(kwargs)
 
 

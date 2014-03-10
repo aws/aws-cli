@@ -43,6 +43,10 @@ class AppendFilterTest(unittest.TestCase):
                                             ['--exclude', 'b']])
 
 
+class FakeArgs(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
 class AWSInitializeTest(unittest.TestCase):
     """
     This test ensures that all events are correctly registered such that
@@ -153,9 +157,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
-        params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None}
+        params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
+                  'verify_ssl': None}
         for cmd in cmds:
-            cmd_arc = CommandArchitecture(self.session, cmd, {'region': 'us-east-1', 'endpoint_url': None})
+            cmd_arc = CommandArchitecture(self.session, cmd,
+                                          {'region': 'us-east-1',
+                                           'endpoint_url': None,
+                                           'verify_ssl': None})
             cmd_arc.create_instructions()
             self.assertEqual(cmd_arc.instructions, instructions[cmd])
 
@@ -176,7 +184,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -191,7 +199,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': False, 'dryrun': False, 'quiet': False,
                   'src': local_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -213,7 +221,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': local_file, 'filters': filters,
                   'paths_type': 's3local', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -229,7 +237,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3s3', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -245,7 +253,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3s3', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'mv', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -261,7 +269,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'rm', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -281,7 +289,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': local_dir, 'dest': s3_prefix, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
-                  'endpoint_url': None}
+                  'endpoint_url': None, 'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'sync', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -295,7 +303,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None}
+                  'region': 'us-east-1', 'endpoint_url': None,
+                  'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'mb', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -309,7 +318,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None}
+                  'region': 'us-east-1', 'endpoint_url': None,
+                  'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
@@ -324,7 +334,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         s3_prefix = 's3://' + self.bucket + '/'
         params = {'dir_op': True, 'dryrun': False, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
-                  'region': 'us-east-1', 'endpoint_url': None}
+                  'region': 'us-east-1', 'endpoint_url': None,
+                  'verify_ssl': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
@@ -369,7 +380,7 @@ class CommandParametersTest(unittest.TestCase):
 
         for cmd in cmds.keys():
             cmd_param = CommandParameters(self.session, cmd, {})
-            cmd_param.check_region(mock.Mock())
+            cmd_param.add_region(mock.Mock())
             correct_paths = cmds[cmd]
             for path_args in correct_paths:
                 cmd_param.check_path_type(combos[path_args])
@@ -397,7 +408,7 @@ class CommandParametersTest(unittest.TestCase):
 
         for cmd in cmds.keys():
             cmd_param = CommandParameters(self.session, cmd, {})
-            cmd_param.check_region(mock.Mock())
+            cmd_param.add_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
                 with self.assertRaises(TypeError):
@@ -423,7 +434,7 @@ class CommandParametersTest(unittest.TestCase):
         for filename in files:
             parameters['dir_op'] = filename[1]
             cmd_parameter = CommandParameters(self.session, 'put', parameters)
-            cmd_parameter.check_region(mock.Mock())
+            cmd_parameter.add_region(mock.Mock())
             cmd_parameter.check_src_path(filename[0])
 
     def test_check_force(self):
@@ -494,7 +505,8 @@ class TestLSCommand(unittest.TestCase):
     def test_ls_command_with_no_args(self):
         options = {'default': 's3://', 'nargs': '?'}
         ls_command = ListCommand('ls', self.session, options)
-        ls_command([], mock.Mock())
+        parsed_args = FakeArgs(region=None, endpoint_url=None, verify_ssl=None)
+        ls_command([], parsed_args)
         # We should only be a single call.
         self.session.get_service.return_value.get_operation.assert_called_with(
             'ListBuckets')
@@ -502,6 +514,22 @@ class TestLSCommand(unittest.TestCase):
                 .return_value.call
         self.assertEqual(call.call_count, 1)
         self.assertEqual(call.call_args[1], {})
+        # Verify get_endpoint
+        get_endpoint = self.session.get_service.return_value.get_endpoint
+        args = get_endpoint.call_args
+        self.assertEqual(args, mock.call(region_name=None, endpoint_url=None,
+                                         verify=None))
+
+    def test_ls_with_verify_argument(self):
+        options = {'default': 's3://', 'nargs': '?'}
+        ls_command = ListCommand('ls', self.session, options)
+        parsed_args = FakeArgs(region='us-west-2', endpoint_url=None, verify_ssl=False)
+        ls_command([], parsed_args)
+        # Verify get_endpoint
+        get_endpoint = self.session.get_service.return_value.get_endpoint
+        args = get_endpoint.call_args
+        self.assertEqual(args, mock.call(region_name='us-west-2', endpoint_url=None,
+                                         verify=False))
 
     def test_ls_command_for_bucket(self):
         options = {'default': 's3://', 'nargs': '?'}

@@ -4,13 +4,13 @@ import tempfile
 import shutil
 import ntpath
 
-from six.moves import queue
 import mock
 
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
 from awscli.customizations.s3.utils import ReadFileChunk
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import StablePriorityQueue
+from awscli.customizations.s3.utils import BucketLister
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -191,6 +191,32 @@ class TestStablePriorityQueue(unittest.TestCase):
 
         self.assertIs(q.get(), b)
         self.assertIs(q.get(), a)
+
+
+class TestBucketList(unittest.TestCase):
+    def setUp(self):
+        self.operation = mock.Mock()
+        self.endpoint = mock.sentinel.endpoint
+        self.date_parser = mock.Mock()
+        self.date_parser.return_value = mock.sentinel.now
+
+    def test_list_objects(self):
+        now = mock.sentinel.now
+        self.operation.paginate.return_value = [
+            (None, {'Contents': [
+                {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'a', 'Size': 1},
+                {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'b', 'Size': 2},]}),
+            (None, {'Contents': [
+                {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'c', 'Size': 3},
+            ]}),
+        ]
+        lister = BucketLister(self.operation, self.endpoint, self.date_parser)
+        objects = list(lister.list_objects(bucket='foo'))
+        self.assertEqual(objects, [('foo/a', 1, now), ('foo/b', 2, now),
+                                   ('foo/c', 3, now)])
 
 
 if __name__ == "__main__":

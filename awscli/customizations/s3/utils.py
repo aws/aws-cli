@@ -23,6 +23,7 @@ from six import PY3
 from six.moves import queue
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
+from botocore.compat import unquote_str
 
 from awscli.customizations.s3.constants import MAX_PARTS
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
@@ -298,14 +299,14 @@ class BucketLister(object):
         self._date_parser = date_parser
 
     def list_objects(self, bucket, prefix=None):
-        kwargs = {'bucket': bucket}
+        kwargs = {'bucket': bucket, 'encoding_type': 'url'}
         if prefix is not None:
             kwargs['prefix'] = prefix
         pages = self._operation.paginate(self._endpoint, **kwargs)
         for response, page in pages:
             contents = page['Contents']
             for content in contents:
-                source_path = bucket + '/' + content['Key']
+                source_path = bucket + '/' + unquote_str(content['Key'])
                 size = content['Size']
                 last_update = self._date_parser(content['LastModified'])
                 yield source_path, size, last_update

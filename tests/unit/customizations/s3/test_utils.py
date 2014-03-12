@@ -218,6 +218,33 @@ class TestBucketList(unittest.TestCase):
         self.assertEqual(objects, [('foo/a', 1, now), ('foo/b', 2, now),
                                    ('foo/c', 3, now)])
 
+    def test_urlencoded_keys(self):
+        # In order to workaround control chars being in key names,
+        # we force the urlencoding of the key names and we decode
+        # them before yielding them.  For example, note the %0D
+        # in foo.txt:
+        now = mock.sentinel.now
+        self.operation.paginate.return_value = [
+            (None, {'Contents': [
+                {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': 'bar%0D.txt', 'Size': 1}]}),
+        ]
+        lister = BucketLister(self.operation, self.endpoint, self.date_parser)
+        objects = list(lister.list_objects(bucket='foo'))
+        # And note how it's been converted to '\r'.
+        self.assertEqual(objects, [('foo/bar\r.txt', 1, now)])
+
+    def test_urlencoded_with_unicode_keys(self):
+        now = mock.sentinel.now
+        self.operation.paginate.return_value = [
+            (None, {'Contents': [
+                {'LastModified': '2014-02-27T04:20:38.000Z',
+                 'Key': '%E2%9C%93', 'Size': 1}]}),
+        ]
+        lister = BucketLister(self.operation, self.endpoint, self.date_parser)
+        objects = list(lister.list_objects(bucket='foo'))
+        # And note how it's been converted to '\r'.
+        self.assertEqual(objects, [(u'foo/\u2713', 1, now)])
 
 if __name__ == "__main__":
     unittest.main()

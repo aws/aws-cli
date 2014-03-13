@@ -241,6 +241,25 @@ class TestMoveCommand(BaseS3CLICommand):
         self.assertEqual(p.rc, 1)
 
 
+class TestRm(BaseS3CLICommand):
+    def test_rm_with_newlines(self):
+        bucket_name = self.create_bucket()
+
+        # Note the carriage return in the key name.
+        foo_txt = self.files.create_file('foo\r.txt', 'this is foo.txt')
+        p = aws('s3 cp %s s3://%s/foo\r.txt' % (foo_txt, bucket_name))
+        self.assert_no_errors(p)
+
+        # Make sure object is in bucket.
+        self.assertTrue(self.key_exists(bucket_name, key_name='foo\r.txt'))
+
+        # Then delete the file.
+        p = aws('s3 rm s3://%s/ --recursive' % (bucket_name,))
+
+        # And verify it's gone.
+        self.assertFalse(self.key_exists(bucket_name, key_name='foo\r.txt'))
+
+
 class TestCp(BaseS3CLICommand):
 
     def test_cp_to_and_from_s3(self):

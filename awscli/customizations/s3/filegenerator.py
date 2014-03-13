@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import os
 import sys
-import datetime
 
 import six
 from dateutil.parser import parse
@@ -20,6 +19,7 @@ from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
+from awscli.customizations.s3.utils import BucketLister
 from awscli.errorhandler import ClientError
 
 
@@ -162,28 +162,22 @@ class FileGenerator(object):
             yield self._list_single_object(s3_path)
         else:
             operation = self._service.get_operation('ListObjects')
-            iterator = operation.paginate(self._endpoint, bucket=bucket,
-                                          prefix=prefix)
-            for html_response, response_data in iterator:
-                contents = response_data['Contents']
-                for content in contents:
-                    src_path = bucket + '/' + content['Key']
-                    size = content['Size']
-                    last_update = parse(content['LastModified'])
-                    last_update = last_update.astimezone(tzlocal())
-                    if size == 0 and src_path.endswith('/'):
-                        if self.operation_name == 'delete':
-                            # This is to filter out manually created folders
-                            # in S3.  They have a size zero and would be
-                            # undesirably downloaded.  Local directories
-                            # are automatically created when they do not
-                            # exist locally.  But user should be able to
-                            # delete them.
-                            yield src_path, size, last_update
-                    elif not dir_op and s3_path != src_path:
-                        pass
-                    else:
-                        yield src_path, size, last_update
+            lister = BucketLister(operation, self._endpoint)
+            for key in lister.list_objects(bucket=bucket, prefix=prefix):
+                source_path, size, last_update = key
+                if size == 0 and source_path.endswith('/'):
+                    if self.operation_name == 'delete':
+                        # This is to filter out manually created folders
+                        # in S3.  They have a size zero and would be
+                        # undesirably downloaded.  Local directories
+                        # are automatically created when they do not
+                        # exist locally.  But user should be able to
+                        # delete them.
+                        yield source_path, size, last_update
+                elif not dir_op and s3_path != source_path:
+                    pass
+                else:
+                    yield source_path, size, last_update
 
     def _list_single_object(self, s3_path):
         # When we know we're dealing with a single object, we can avoid

@@ -21,7 +21,9 @@ from functools import partial
 
 from six import PY3
 from six.moves import queue
+from dateutil.parser import parse
 from dateutil.tz import tzlocal
+from botocore.compat import unquote_str
 
 from awscli.customizations.s3.constants import MAX_PARTS
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
@@ -283,6 +285,31 @@ class ReadFileChunk(object):
         # already exhausted the stream so iterating over the file immediately
         # steps, which is what we're simulating here.
         return iter([])
+
+
+def _date_parser(date_string):
+    return parse(date_string).astimezone(tzlocal())
+
+
+class BucketLister(object):
+    """List keys in a bucket."""
+    def __init__(self, operation, endpoint, date_parser=_date_parser):
+        self._operation = operation
+        self._endpoint = endpoint
+        self._date_parser = date_parser
+
+    def list_objects(self, bucket, prefix=None):
+        kwargs = {'bucket': bucket, 'encoding_type': 'url'}
+        if prefix is not None:
+            kwargs['prefix'] = prefix
+        pages = self._operation.paginate(self._endpoint, **kwargs)
+        for response, page in pages:
+            contents = page['Contents']
+            for content in contents:
+                source_path = bucket + '/' + unquote_str(content['Key'])
+                size = content['Size']
+                last_update = self._date_parser(content['LastModified'])
+                yield source_path, size, last_update
 
 
 IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])

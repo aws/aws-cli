@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue when recursively removing keys
+  containing control characters
+  (`issue 675 <https://github.com/aws/aws-cli/issues/675>`__)
 * bugfix:``aws s3``: Honor ``--no-verify-ssl`` in high level
   ``aws s3`` commands
   (`issue 696 <https://github.com/aws/aws-cli/issues/696>`__)

@@ -25,7 +25,6 @@ from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLIOperationCaller
 from botocore.hooks import HierarchicalEmitter
-from botocore.base import get_search_path
 from botocore.provider import Provider
 
 
@@ -293,7 +292,7 @@ class TestSearchPath(unittest.TestCase):
         # we have to force a reimport of the module to test our changes.
         six.moves.reload_module(awscli)
         # Our two overrides should be the last two elements in the search path.
-        search_path = get_search_path(driver.session)[-2:]
+        search_path = driver.session.loader.get_search_paths()[:-2]
         self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])
 
 

@@ -242,6 +242,10 @@ class TestMoveCommand(BaseS3CLICommand):
 
 
 class TestRm(BaseS3CLICommand):
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                    'Newline in filename test not valid on windows.')
+    # Windows won't let you do this.  You'll get:
+    # [Errno 22] invalid mode ('w') or filename: # 'c:\\windows\\temp\\tmp0fv8uu\\foo\r.txt'
     def test_rm_with_newlines(self):
         bucket_name = self.create_bucket()
 

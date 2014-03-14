@@ -222,7 +222,7 @@ class TestBucketList(unittest.TestCase):
         # In order to workaround control chars being in key names,
         # we force the urlencoding of the key names and we decode
         # them before yielding them.  For example, note the %0D
-        # in foo.txt:
+        # in bar.txt:
         now = mock.sentinel.now
         self.operation.paginate.return_value = [
             (None, {'Contents': [

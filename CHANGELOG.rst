@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws datapipeline``: Fix issue when serializing
+  pipeline definitions containing list elements
+  (`issue 705 <https://github.com/aws/aws-cli/issues/705>`__)
 * bugfix:``aws s3``: Fix issue when recursively removing keys
   containing control characters
   (`issue 675 <https://github.com/aws/aws-cli/issues/675>`__)

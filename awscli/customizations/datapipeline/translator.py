@@ -44,15 +44,23 @@ def definition_to_api(definition):
         # with a 'key', 'stringValue'|'refValue'
         fields = []
         for key, value in sorted(element.items()):
-            field = {'key': key}
-            if isinstance(value, dict) and list(value.keys()) == ['ref']:
-                field['refValue'] = value['ref']
+            if isinstance(value, list):
+                for item in value:
+                    fields.append(_convert_single_field(key, item))
             else:
-                field['stringValue'] = value
-            fields.append(field)
+                fields.append(_convert_single_field(key, value))
         api_object['fields'] = fields
         api_elements.append(api_object)
     return api_elements
+
+
+def _convert_single_field(key, value):
+    field = {'key': key}
+    if isinstance(value, dict) and list(value.keys()) == ['ref']:
+        field['refValue'] = value['ref']
+    else:
+        field['stringValue'] = value
+    return field
 
 
 def api_to_definition(api_response):

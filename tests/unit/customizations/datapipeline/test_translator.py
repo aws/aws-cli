@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 
-import mock
 from botocore.compat import OrderedDict, json
 
 from awscli.customizations.datapipeline import translator
@@ -113,6 +112,44 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
             ]}""")
         with self.assertRaises(translator.PipelineDefinitionError):
             translator.definition_to_api(definition)
+
+    def test_list_value_with_strings(self):
+        definition = self.load_def("""{"objects": [
+            {
+              "id" : "emrActivity",
+              "type" : "EmrActivity",
+              "name" : "Foo",
+              "step" : ["s3://foo1", "s3://foo2", "s3://foo3"]
+            }
+        ]}""")
+        actual = translator.definition_to_api(definition)
+        api = [{"name": "Foo", "id": "emrActivity",
+                "fields": [
+                    {"key": "step", "stringValue": "s3://foo1"},
+                    {"key": "step", "stringValue": "s3://foo2"},
+                    {"key": "step", "stringValue": "s3://foo3"},
+                    {"key": "type", "stringValue": "EmrActivity"},
+        ]}]
+        self.assertEqual(actual, api)
+
+    def test_value_with_refs(self):
+        definition = self.load_def("""{"objects": [
+            {
+              "id" : "emrActivity",
+              "type" : "EmrActivity",
+              "name" : "Foo",
+              "step" : ["s3://foo1", {"ref": "otherValue"}, "s3://foo3"]
+            }
+        ]}""")
+        actual = translator.definition_to_api(definition)
+        api = [{"name": "Foo", "id": "emrActivity",
+                "fields": [
+                    {"key": "step", "stringValue": "s3://foo1"},
+                    {"key": "step", "refValue": "otherValue"},
+                    {"key": "step", "stringValue": "s3://foo3"},
+                    {"key": "type", "stringValue": "EmrActivity"},
+        ]}]
+        self.assertEqual(actual, api)
 
     # These tests check the API -> DF conversion.
     def test_api_to_df(self):

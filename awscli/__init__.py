@@ -17,19 +17,20 @@ A Universal Command Line Environment for Amazon Web Services.
 """
 import os
 
-__version__ = '1.3.1'
+__version__ = '1.3.2'
 
 #
 # Get our data path to be added to botocore's search path
 #
-_awscli_data_path = [
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
-]
+_awscli_data_path = []
 if 'AWS_DATA_PATH' in os.environ:
     for path in os.environ['AWS_DATA_PATH'].split(os.pathsep):
         path = os.path.expandvars(path)
         path = os.path.expanduser(path)
         _awscli_data_path.append(path)
+_awscli_data_path.append(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+)
 os.environ['AWS_DATA_PATH'] = os.pathsep.join(_awscli_data_path)
 
 

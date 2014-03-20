@@ -264,8 +264,9 @@ class S3SubCommand(object):
     def _do_command(self, parsed_args, parsed_globals):
         params = self._build_call_parameters(parsed_args, {})
         cmd_params = CommandParameters(self._session, self._name, params)
-        cmd_params.check_region(parsed_globals)
-        cmd_params.check_endpoint_url(parsed_globals)
+        cmd_params.add_region(parsed_globals)
+        cmd_params.add_endpoint_url(parsed_globals)
+        cmd_params.add_verify_ssl(parsed_globals)
         cmd_params.add_paths(parsed_args.paths)
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self._name,
@@ -337,7 +338,8 @@ class S3SubCommand(object):
 
     def _get_endpoint(self, service, parsed_globals):
         return service.get_endpoint(region_name=parsed_globals.region,
-                                    endpoint_url=parsed_globals.endpoint_url)
+                                    endpoint_url=parsed_globals.endpoint_url,
+                                    verify=parsed_globals.verify_ssl)
 
 
 class ListCommand(S3SubCommand):
@@ -432,7 +434,7 @@ class WebsiteCommand(S3SubCommand):
 
     def _do_command(self, parsed_args, parsed_globals):
         service = self._session.get_service('s3')
-        endpoint = service.get_endpoint(parsed_globals.region)
+        endpoint = self._get_endpoint(service, parsed_globals)
         operation = service.get_operation('PutBucketWebsite')
         bucket = self._get_bucket_name(parsed_args.paths[0])
         website_configuration = self._build_website_configuration(parsed_args)
@@ -498,7 +500,8 @@ class CommandArchitecture(object):
         self._service = self.session.get_service('s3')
         self._endpoint = self._service.get_endpoint(
             region_name=self.parameters['region'],
-            endpoint_url=self.parameters['endpoint_url'])
+            endpoint_url=self.parameters['endpoint_url'],
+            verify=self.parameters['verify_ssl'])
 
     def create_instructions(self):
         """
@@ -746,16 +749,10 @@ class CommandParameters(object):
                 except:
                     pass
 
-    def check_region(self, parsed_globals):
-        """
-        This ensures that a region has been specified whether it was using
-        a configuration file, environment variable, or using the command line.
-        If the region is specified on the command line it takes priority
-        over specification via a configuration file or environment variable.
-        """
+    def add_region(self, parsed_globals):
         self.parameters['region'] = parsed_globals.region
 
-    def check_endpoint_url(self, parsed_globals):
+    def add_endpoint_url(self, parsed_globals):
         """
         Adds endpoint_url to the parameters.
         """
@@ -763,6 +760,9 @@ class CommandParameters(object):
             self.parameters['endpoint_url'] = getattr(parsed_globals, 'endpoint_url')
         else:
             self.parameters['endpoint_url'] = None
+
+    def add_verify_ssl(self, parsed_globals):
+        self.parameters['verify_ssl'] = parsed_globals.verify_ssl
 
 
 # This is a dictionary useful for automatically adding the different commands,

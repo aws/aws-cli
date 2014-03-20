@@ -16,7 +16,7 @@ Add a docstring to all --dryrun parameters.
 
 DOCS = ('<p>Checks whether you have the required permissions for the '
         'action, without actually making the request.  '
-        'Using this option will result in one of two possible error'
+        'Using this option will result in one of two possible error '
         'responses.  If you have the required permissions, the error '
         'response will be <code>DryRunOperation</code>.  Otherwise '
         'it will be <code>UnauthorizedOperation</code>.</p>')

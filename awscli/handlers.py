@@ -42,6 +42,7 @@ from awscli.customizations.cloudtrail import initialize as cloudtrail_init
 from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.ec2protocolarg import register_protocol_args
 from awscli.customizations import datapipeline
+from awscli.customizations.globalargs import register_parse_global_args
 
 
 def awscli_initialize(event_handlers):
@@ -67,6 +68,7 @@ def awscli_initialize(event_handlers):
                             ec2_add_count)
     event_handlers.register('building-argument-table.ec2.get-password-data',
                             ec2_add_priv_launch_key)
+    register_parse_global_args(event_handlers)
     register_pagination(event_handlers)
     register_secgroup(event_handlers)
     register_bundleinstance(event_handlers)

@@ -5,6 +5,20 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws datapipeline``: Fix issue when serializing
+  pipeline definitions containing list elements
+  (`issue 705 <https://github.com/aws/aws-cli/issues/705>`__)
+* bugfix:``aws s3``: Fix issue when recursively removing keys
+  containing control characters
+  (`issue 675 <https://github.com/aws/aws-cli/issues/675>`__)
+* bugfix:``aws s3``: Honor ``--no-verify-ssl`` in high level
+  ``aws s3`` commands
+  (`issue 696 <https://github.com/aws/aws-cli/issues/696>`__)
+
+
+1.3.1
+=====
+
 * bugfix:Parameters: Fix issue parsing with CLI
   parameters of type ``long``
   (`issue 693 <https://github.com/aws/aws-cli/pull/693/files>`__)

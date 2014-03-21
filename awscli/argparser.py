@@ -56,6 +56,11 @@ class CLIArgParser(argparse.ArgumentParser):
         for arg, value in vars(parsed).items():
             if isinstance(value, six.binary_type):
                 setattr(parsed, arg, value.decode(terminal_encoding))
+            elif isinstance(value, list):
+                encoded = []
+                for v in value:
+                    encoded.append(v.decode(terminal_encoding))
+                setattr(parsed, arg, encoded)
         return parsed, remaining
 
 

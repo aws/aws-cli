@@ -34,7 +34,10 @@ class TestCreateTags(BaseAWSCommandParamsTest):
     def test_create_tag_unicode(self):
         cmdline = self.prefix
         cmdline += u' --resources i-12345678 --tags Key=Name,Value=\u6211'
-        cmdline = cmdline.encode(getattr(sys.stdin, 'encoding', 'utf-8'))
+        encoding = getattr(sys.stdin, 'encoding', 'utf-8')
+        if encoding is None:
+            encoding = 'utf-8'
+        cmdline = cmdline.encode(encoding)
         result = {'ResourceId.1': 'i-12345678', 'Tag.1.Key': 'Name',
                   'Tag.1.Value': u'\u6211'}
         self.assert_params_for_cmd(cmdline, result)

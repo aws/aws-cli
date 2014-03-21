@@ -720,6 +720,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
 class TestWebsiteConfiguration(BaseS3CLICommand):
     def test_create_website_configuration(self):
         bucket_name = self.create_bucket()
+        # Supply only --index-document argument.
         full_command = 's3 website %s --index-document index.html' % (bucket_name)
         p = aws(full_command)
         self.assertEqual(p.rc, 0)
@@ -729,6 +730,22 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         parsed = operation.call(
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
+        self.assertEqual(parsed['ErrorDocument'], {})
+        self.assertEqual(parsed['RoutingRules'], [])
+        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+
+        # Supply both --index-document and --error-document arguments.
+        p = aws('s3 website %s --index-document index.html '
+                '--error-document error.html' % bucket_name)
+        self.assertEqual(p.rc, 0)
+        self.assert_no_errors(p)
+        # Verify we have a bucket website configured.
+        parsed = operation.call(
+            self.endpoint, bucket=bucket_name)[1]
+        self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
+        self.assertEqual(parsed['ErrorDocument']['Key'], 'error.html')
+        self.assertEqual(parsed['RoutingRules'], [])
+        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
 
 
 class TestIncludeExcludeFilters(BaseS3CLICommand):

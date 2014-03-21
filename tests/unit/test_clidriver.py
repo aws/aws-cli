@@ -24,6 +24,7 @@ from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLIOperationCaller
+from awscli import formatter
 from botocore.hooks import HierarchicalEmitter
 from botocore.provider import Provider
 
@@ -524,6 +525,12 @@ class TestVerifyArgument(BaseAWSCommandParamsTest):
     def test_verify_argument_is_none_by_default(self):
         self.assert_params_for_cmd('s3api list-buckets'.split())
         self.assertIsNone(self.recorded_args.verify_ssl)
+
+
+class TestFormatter(BaseAWSCommandParamsTest):
+    def test_bad_output(self):
+        with self.assertRaises(ValueError):
+            formatter.get_formatter('bad-type', None)
 
 
 if __name__ == '__main__':

@@ -249,4 +249,4 @@ def get_formatter(format_type, args):
         return TextFormatter(args)
     elif format_type == 'table':
         return TableFormatter(args)
-    return None
+    raise ValueError("Unknown output type: %s" % format_type)

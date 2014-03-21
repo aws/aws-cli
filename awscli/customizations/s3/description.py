@@ -35,7 +35,9 @@ def add_command_descriptions(cmd_dict):
                                 "<LocalPath> or <S3Path> <S3Path>"
 
     cmd_dict['ls']['description'] = "List S3 objects and common prefixes " \
-                                    "under a prefix or all S3 buckets."
+                                    "under a prefix or all S3 buckets. " \
+                                    "Note that the --output argument " \
+                                    "is ignored for this command."
     cmd_dict['ls']['usage'] = "<S3Path> or NONE"
 
     cmd_dict['mb']['description'] = "Creates an S3 bucket."

@@ -5,6 +5,11 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws ec2``: Add support for Amazon VPC peering
+* feature:``aws redshift``: Add support for the latest Amazon Redshift API
+* feature:``aws cloudsearch``: Add support for the latest Amazon CloudSearch
+  API
+* bugfix:``aws cloudformation``: Documentation updates
 * bugfix:Argument Parsing: Fix issue when list arguments were
   not being decoded to unicode properly
   (`issue 711 <https://github.com/aws/aws-cli/issues/711>`__)

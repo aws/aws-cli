@@ -13,12 +13,6 @@
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
 import json
-import os
-import sys
-import re
-
-from six.moves import cStringIO
-import mock
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
@@ -26,7 +20,6 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
     prefix = 'iam add-user-to-group '
 
     def test_empty_response_prints_nothing(self):
-        captured = cStringIO()
         # This is the default response, but we want to be explicit
         # that we're returning an empty dict.
         self.parsed_response = {}
@@ -76,3 +69,10 @@ class TestListUsers(BaseAWSCommandParamsTest):
                               expected_rc=0)[0]
         parsed_output = json.loads(output)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
+
+    def test_unknown_output_type_from_env_var(self):
+        # argparse already handles the case with a bad --output
+        # specified on the CLI, we need to verify that a bad
+        # output format from the env var still gives an error.
+        self.environ['AWS_DEFAULT_OUTPUT'] = 'bad-output-type'
+        self.run_cmd('iam list-users', expected_rc=255)

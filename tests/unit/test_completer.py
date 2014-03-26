@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from tests import create_clidriver
 import os
 import pprint
 import logging
@@ -112,6 +113,7 @@ def test_completions():
     }
     with mock.patch('os.environ', environ):
         completer = Completer()
+        completer.clidriver = create_clidriver()
         for cmdline, point, expected_results in COMPLETIONS:
             if point == -1:
                 point = len(cmdline)

@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
+from tests import unittest, create_clidriver
 import os
 import copy
 import logging
@@ -20,8 +20,6 @@ import shutil
 import mock
 import six
 from botocore.vendored import requests
-
-from awscli.clidriver import create_clidriver
 
 
 class BaseAWSCommandParamsTest(unittest.TestCase):

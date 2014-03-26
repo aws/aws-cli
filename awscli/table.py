@@ -15,6 +15,7 @@ import sys
 import struct
 
 import colorama
+import six
 
 
 def determine_terminal_width(default_width=80):
@@ -397,7 +398,7 @@ class Section(object):
         self._update_max_widths(row)
 
     def _format_row(self, row):
-        return [str(r) for r in row]
+        return [six.text_type(r) for r in row]
 
     def _update_max_widths(self, row):
         if not self._max_widths:

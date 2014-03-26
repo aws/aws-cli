@@ -5,6 +5,17 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+
+1.3.4
+=====
+
+* bugfix:``aws ec2``: Fix issue with EC2 model resulting in
+  responses not being parsed.
+
+
+1.3.3
+=====
+
 * feature:``aws ec2``: Add support for Amazon VPC peering
 * feature:``aws redshift``: Add support for the latest Amazon Redshift API
 * feature:``aws cloudsearch``: Add support for the latest Amazon CloudSearch

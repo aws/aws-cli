@@ -16,7 +16,6 @@ import json
 import io
 import os
 
-from awscli.clidriver import create_clidriver
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service
 from mock import Mock, patch
@@ -259,7 +258,7 @@ class TestCloudTrailSessions(BaseAWSCommandParamsTest):
         is the same session used when making service calls.
         """
         # Get a new session we will use to test
-        driver = create_clidriver()
+        driver = self.driver
 
         def _mock_call(subscribe, *args, **kwargs):
             # Store the subscribe command for assertions

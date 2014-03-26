@@ -5,6 +5,10 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Table Output: Fix issue when displaying unicode
+  characters in table output
+  (`issue 721 <https://github.com/aws/aws-cli/pull/721>`__)
+
 
 1.3.4
 =====

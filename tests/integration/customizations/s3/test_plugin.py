@@ -808,13 +808,5 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.assertNotIn(p.stdout, 'foo.txt')
 
 
-class TestFileWithSpaces(BaseS3CLICommand):
-    def test_upload_download_file_with_spaces(self):
-        pass
-
-    def test_sync_file_with_spaces(self):
-        bucket_name = self.create_bucket()
-
-
 if __name__ == "__main__":
     unittest.main()

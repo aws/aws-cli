@@ -13,6 +13,7 @@
 import os
 import random
 from tests import unittest
+import string
 
 import six
 from mock import patch
@@ -110,7 +111,7 @@ def create_bucket(session):
     service = session.get_service('s3')
     region = 'us-east-1'
     endpoint = service.get_endpoint(region)
-    rand1 = random.randrange(5000)
+    rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits, 10))
     bucket_name = 'awscli-s3test-' + str(rand1)
     params = {'endpoint': endpoint, 'bucket': bucket_name}
     operation = service.get_operation('CreateBucket')

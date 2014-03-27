@@ -8,6 +8,10 @@ Next Release (TBD)
 * bugfix:Table Output: Fix issue when displaying unicode
   characters in table output
   (`issue 721 <https://github.com/aws/aws-cli/pull/721>`__)
+* bugfix:``aws s3``: Fix regression when syncing files with
+  whitespace
+  (`issue 706 <https://github.com/aws/aws-cli/issues/706>`__,
+   `issue 718 <https://github.com/aws/aws-cli/issues/718>`__)
 
 
 1.3.4

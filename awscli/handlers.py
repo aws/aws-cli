@@ -43,6 +43,7 @@ from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.ec2protocolarg import register_protocol_args
 from awscli.customizations import datapipeline
 from awscli.customizations.globalargs import register_parse_global_args
+from awscli.customizations.cloudsearch import initialize as cloudsearch_init
 
 
 def awscli_initialize(event_handlers):
@@ -88,3 +89,4 @@ def awscli_initialize(event_handlers):
     register_bool_params(event_handlers)
     register_protocol_args(event_handlers)
     datapipeline.register_customizations(event_handlers)
+    cloudsearch_init(event_handlers)

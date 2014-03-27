@@ -810,10 +810,32 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
 
 class TestFileWithSpaces(BaseS3CLICommand):
     def test_upload_download_file_with_spaces(self):
-        pass
+        bucket_name = self.create_bucket()
+        filename = self.files.create_file('with space.txt', 'contents')
+        p = aws('s3 cp %s s3://%s/ --recursive' % (self.files.rootdir,
+                                                   bucket_name))
+        self.assert_no_errors(p)
+        os.remove(filename)
+        # Now download the file back down locally.
+        p = aws('s3 cp s3://%s/ %s --recursive' % (bucket_name,
+                                                   self.files.rootdir))
+        self.assert_no_errors(p)
+        self.assertEqual(os.listdir(self.files.rootdir)[0], 'with space.txt')
 
     def test_sync_file_with_spaces(self):
         bucket_name = self.create_bucket()
+        bucket_name = self.create_bucket()
+        filename = self.files.create_file('with space.txt', 'contents')
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
+                                         bucket_name))
+        self.assert_no_errors(p)
+        # Now syncing again should *not* trigger any uploads (i.e we should
+        # get nothing on stdout).
+        p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
+                                          bucket_name))
+        self.assertEqual(p2.stdout, '')
+        self.assertEqual(p2.stderr, '')
+        self.assertEqual(p2.rc, 0)
 
 
 if __name__ == "__main__":

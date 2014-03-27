@@ -84,7 +84,7 @@ def aws(command, collect_memory=False, env_vars=None,
         aws_command = 'python %s' % AWS_CMD
     full_command = '%s %s' % (aws_command, command)
     stdout_encoding = _get_stdout_encoding()
-    if isinstance(full_command, six.text_type):
+    if isinstance(full_command, six.text_type) and not six.PY3:
         full_command = full_command.encode(stdout_encoding)
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()

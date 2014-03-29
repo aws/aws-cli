@@ -718,7 +718,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
 
 
 class TestWebsiteConfiguration(BaseS3CLICommand):
-    def test_create_website_configuration(self):
+    def test_create_website_index_configuration(self):
         bucket_name = self.create_bucket()
         # Supply only --index-document argument.
         full_command = 's3 website %s --index-document index.html' % (bucket_name)
@@ -734,12 +734,15 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         self.assertEqual(parsed['RoutingRules'], [])
         self.assertEqual(parsed['RedirectAllRequestsTo'], {})
 
+    def test_create_website_index_and_error_configuration(self):
+        bucket_name = self.create_bucket()
         # Supply both --index-document and --error-document arguments.
         p = aws('s3 website %s --index-document index.html '
                 '--error-document error.html' % bucket_name)
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
         # Verify we have a bucket website configured.
+        operation = self.service.get_operation('GetBucketWebsite')
         parsed = operation.call(
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')

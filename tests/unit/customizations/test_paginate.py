@@ -121,3 +121,53 @@ class TestBadLimitKey(TestPaginateBase):
         with self.assertRaises(TypeError):
             paginate.unify_paging_params(argument_table, self.operation,
                                          'building-argument-table.foo.bar')
+
+
+class TestShouldEnablePagination(TestPaginateBase):
+    def setUp(self):
+        super(TestShouldEnablePagination, self).setUp()
+        self.parsed_globals = mock.Mock()
+        self.parsed_args = mock.Mock()
+
+    def test_should_not_enable_pagination(self):
+        # Here the user has specified a manual pagination argument,
+        # so we should turn pagination off.
+        # From setUp(), the limit_key is 'Bar'
+        input_tokens = ['foo', 'bar']
+        self.parsed_globals.paginate = True
+        # Corresponds to --bar 10
+        self.parsed_args.foo = None
+        self.parsed_args.bar = 10
+        paginate.check_should_enable_pagination(
+            input_tokens, self.parsed_args, self.parsed_globals)
+        # We should have turned paginate off because the
+        # user specified --bar 10
+        self.assertFalse(self.parsed_globals.paginate)
+
+    def test_should_enable_pagination_with_no_args(self):
+        input_tokens = ['foo', 'bar']
+        self.parsed_globals.paginate = True
+        # Corresponds to not specifying --foo nor --bar
+        self.parsed_args.foo = None
+        self.parsed_args.bar = None
+        paginate.check_should_enable_pagination(
+            input_tokens, self.parsed_args, self.parsed_globals)
+        # We should have turned paginate off because the
+        # user specified --bar 10
+        self.assertTrue(self.parsed_globals.paginate)
+
+    def test_default_to_pagination_on_when_ambiguous(self):
+        input_tokens = ['foo', 'max-items']
+        self.parsed_globals.paginate = True
+        # Here the user specifies --max-items 10 This is ambiguous because the
+        # input_token also contains 'max-items'.  Should we assume they want
+        # pagination turned off or should we assume that this is the normalized
+        # --max-items?
+        # Will we default to assuming they meant the normalized
+        # --max-items.
+        self.parsed_args.foo = None
+        self.parsed_args.max_items = 10
+        paginate.check_should_enable_pagination(
+            input_tokens, self.parsed_args, self.parsed_globals)
+        self.assertTrue(self.parsed_globals.paginate,
+                        "Pagination was not enabled.")

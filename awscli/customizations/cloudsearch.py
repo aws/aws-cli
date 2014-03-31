@@ -13,10 +13,17 @@
 
 import logging
 
-from awscli.customizations.flatten import FlattenCommands
+from awscli.customizations.flatten import FlattenArguments, SEP
 from botocore.compat import OrderedDict
 
 LOG = logging.getLogger(__name__)
+
+DEFAULT_VALUE_TYPE_MAP = {
+    'Int': int,
+    'Double': float,
+    'IntArray': int,
+    'DoubleArray': float
+}
 
 
 def index_hydrate(params, container, cli_type, key, value):
@@ -42,21 +49,15 @@ def index_hydrate(params, container, cli_type, key, value):
     _type = params['index_field']['IndexFieldType']
     _type = ''.join([i.capitalize() for i in _type.split('-')])
 
-    # Transform string value to the correct type
-    parse_type_map = {
-        'Int': int,
-        'Double': float,
-        'IntArray': int,
-        'DoubleArray': float
-    }
-
-    value = parse_type_map.get(_type, lambda x: x)(value)
+    # Transform string value to the correct type?
+    if key.split(SEP)[-1] == 'DefaultValue':
+        value = DEFAULT_VALUE_TYPE_MAP.get(_type, lambda x: x)(value)
 
     # Set the proper options field
     if _type + 'Options' not in params['index_field']:
         params['index_field'][_type + 'Options'] = {}
 
-    params['index_field'][_type + 'Options'][key.split(':')[-1]] = value
+    params['index_field'][_type + 'Options'][key.split(SEP)[-1]] = value
 
 
 FLATTEN_CONFIG = {
@@ -85,31 +86,32 @@ FLATTEN_CONFIG = {
                 ("IndexFieldType", {
                     "name": "type"
                 }),
-                ("IntOptions:DefaultValue", {
+                ("IntOptions.DefaultValue", {
                     "name": "default-value",
+                    "type": "string",
                     "hydrate": index_hydrate
                 }),
-                ("IntOptions:FacetEnabled", {
+                ("IntOptions.FacetEnabled", {
                     "name": "facet-enabled",
                     "hydrate": index_hydrate
                 }),
-                ("IntOptions:SearchEnabled", {
+                ("IntOptions.SearchEnabled", {
                     "name": "search-enabled",
                     "hydrate": index_hydrate
                 }),
-                ("IntOptions:ReturnEnabled", {
+                ("IntOptions.ReturnEnabled", {
                     "name": "return-enabled",
                     "hydrate": index_hydrate
                 }),
-                ("IntOptions:SortEnabled", {
+                ("IntOptions.SortEnabled", {
                     "name": "sort-enabled",
                     "hydrate": index_hydrate
                 }),
-                ("TextOptions:HighlightEnabled", {
+                ("TextOptions.HighlightEnabled", {
                     "name": "highlight-enabled",
                     "hydrate": index_hydrate
                 }),
-                ("TextOptions:AnalysisScheme", {
+                ("TextOptions.AnalysisScheme", {
                     "name": "analysis-scheme",
                     "hydrate": index_hydrate
                 })
@@ -123,4 +125,5 @@ def initialize(cli):
     """
     The entry point for CloudSearch customizations.
     """
-    FlattenCommands(cli, 'cloudsearch', FLATTEN_CONFIG)
+    flattened = FlattenArguments('cloudsearch', FLATTEN_CONFIG)
+    flattened.register(cli)

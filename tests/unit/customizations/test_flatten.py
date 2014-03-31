@@ -14,9 +14,12 @@ from tests import unittest
 
 import mock
 
+from awscli.arguments import CLIArgument
 from awscli.customizations import utils
-from awscli.customizations.flatten import FlattenedArgument, FlattenCommands
+from awscli.customizations.flatten import FlattenedArgument, FlattenArguments
+
 from botocore.operation import Operation
+from botocore.parameters import Parameter
 
 
 def _hydrate(params, container, cli_type, key, value):
@@ -50,7 +53,7 @@ FLATTEN_CONFIG = {
         'another-original-argument': {
             "keep": True,
             "flatten": {
-                "ArgumentBaz:SomeValue": {
+                "ArgumentBaz.SomeValue": {
                     "name": "baz",
                     "hydrate": _hydrate
                 }
@@ -84,6 +87,7 @@ class TestFlattenedArgument(unittest.TestCase):
             'prop': 'ArgumentBar'
         }
         kwargs['container'].py_name = 'bag'
+        kwargs['container'].cli_type_name = 'list'
         kwargs.update(FLATTEN_CONFIG['command-name']['original-argument']
                                     ['flatten']['ArgumentBar'])
         arg = FlattenedArgument(**kwargs)
@@ -94,7 +98,7 @@ class TestFlattenedArgument(unittest.TestCase):
 
         params = {}
         arg.add_to_params(params, 'value')
-        self.assertEqual('VALUE', params['bag']['ArgumentBar'])
+        self.assertEqual('VALUE', params['bag'][0]['ArgumentBar'])
 
     def test_hydrate_function_argument(self):
         kwargs = {
@@ -104,7 +108,7 @@ class TestFlattenedArgument(unittest.TestCase):
         kwargs['container'].py_name = 'bag'
         kwargs.update(FLATTEN_CONFIG['command-name']
                                     ['another-original-argument']
-                                    ['flatten']['ArgumentBaz:SomeValue'])
+                                    ['flatten']['ArgumentBaz.SomeValue'])
         arg = FlattenedArgument(**kwargs)
 
         self.assertEqual('baz', arg.name)
@@ -120,18 +124,19 @@ class TestFlattenCommands(unittest.TestCase):
     def test_flatten_register(self):
         cli = mock.Mock()
 
-        flatten = FlattenCommands(cli, 'my-service', FLATTEN_CONFIG)
+        flatten = FlattenArguments('my-service', FLATTEN_CONFIG)
+        flatten.register(cli)
 
         cli.register.assert_called_with(\
             'building-argument-table.my-service.command-name',
-            flatten.modify_args)
+            flatten.flatten_args)
 
     def test_flatten_modify_args(self):
         # Mock operation, arguments, and members for a service
         operation = mock.Mock(spec=Operation)
         operation.cli_name = 'command-name'
 
-        argument_object1 = mock.Mock()
+        argument_object1 = mock.Mock(spec=Parameter)
 
         member_foo = mock.Mock()
         member_foo.name = 'ArgumentFoo'
@@ -145,7 +150,7 @@ class TestFlattenCommands(unittest.TestCase):
 
         argument_object1.members = [member_foo, member_bar]
 
-        argument_object2 = mock.Mock()
+        argument_object2 = mock.Mock(spec=Parameter)
 
         member_baz = mock.Mock()
         member_baz.name = 'ArgumentBaz'
@@ -161,10 +166,10 @@ class TestFlattenCommands(unittest.TestCase):
 
         argument_object2.members = [member_baz]
 
-        cli_argument1 = mock.Mock()
+        cli_argument1 = mock.Mock(spec=CLIArgument)
         cli_argument1.argument_object = argument_object1
 
-        cli_argument2 = mock.Mock()
+        cli_argument2 = mock.Mock(spec=CLIArgument)
         cli_argument2.argument_object = argument_object2
 
         argument_table = {
@@ -174,16 +179,15 @@ class TestFlattenCommands(unittest.TestCase):
 
         # Create the flattened argument table
         cli = mock.Mock()
-        flatten = FlattenCommands(cli, 'my-service', FLATTEN_CONFIG)
-
-        flatten.modify_args(operation, argument_table)
+        flatten = FlattenArguments('my-service', FLATTEN_CONFIG)
+        flatten.flatten_args(operation, argument_table)
 
         # Make sure new arguments and any with keep=True are there
-        self.assertTrue('foo' in argument_table)
-        self.assertTrue('bar' in argument_table)
-        self.assertTrue('original-argument' not in argument_table)
-        self.assertTrue('baz' in argument_table)
-        self.assertTrue('another-original-argument' in argument_table)
+        self.assertIn('foo', argument_table)
+        self.assertIn('bar', argument_table)
+        self.assertNotIn('original-argument', argument_table)
+        self.assertIn('baz', argument_table)
+        self.assertIn('another-original-argument', argument_table)
 
         # Make sure the new arguments are the class we expect
         self.assertIsInstance(argument_table['foo'], FlattenedArgument)

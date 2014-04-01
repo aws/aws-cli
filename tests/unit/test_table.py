@@ -83,6 +83,14 @@ class TestSection(unittest.TestCase):
         self.assertEqual(
             self.section.total_width(padding=2, outer_padding=3), 17)
 
+    def test_unicode_text_row(self):
+        self.section.add_row([1])
+        self.section.add_row(['check'])
+        self.section.add_row([u'\u2713'])
+        self.assertEqual(
+            self.section.rows,
+            [[u'1'], [u'check'], [u'\u2713']])
+
 
 class TestMultiTable(unittest.TestCase):
     def setUp(self):

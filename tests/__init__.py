@@ -26,6 +26,7 @@ import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
 from awscli import EnvironmentVariables
+import botocore.loaders
 
 
 # The unittest module got a significant overhaul
@@ -35,6 +36,15 @@ if sys.version_info[:2] == (2, 6):
     import unittest2 as unittest
 else:
     import unittest
+
+
+_LOADER = botocore.loaders.Loader()
+
+
+def create_clidriver():
+    driver = awscli.clidriver.create_clidriver()
+    driver.session._loader = _LOADER
+    return driver
 
 
 class BaseCLIDriverTest(unittest.TestCase):
@@ -54,7 +64,7 @@ class BaseCLIDriverTest(unittest.TestCase):
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
         emitter = HierarchicalEmitter()
-        session = Session(EnvironmentVariables, emitter)
+        session = Session(EnvironmentVariables, emitter, loader=_LOADER)
         load_plugins({}, event_hooks=emitter)
         driver = CLIDriver(session=session)
         self.session = session

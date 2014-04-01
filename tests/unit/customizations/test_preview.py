@@ -16,7 +16,6 @@ import mock
 import six
 
 from awscli.customizations import preview
-from awscli.clidriver import create_clidriver
 from tests import BaseCLIDriverTest
 from tests.unit import BaseAWSCommandParamsTest
 
@@ -28,7 +27,6 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         self.stderr = six.StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
-        self.driver = create_clidriver()
         self.full_config = {}
         # Implementation detail, but we want to patch out the
         # session config, as that's the only way to control

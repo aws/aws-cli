@@ -15,6 +15,7 @@ import logging
 import os
 import platform
 import sys
+import six
 from subprocess import Popen, PIPE
 
 AWS_CMD = os.path.join(
@@ -82,6 +83,9 @@ def aws(command, collect_memory=False, env_vars=None,
     else:
         aws_command = 'python %s' % AWS_CMD
     full_command = '%s %s' % (aws_command, command)
+    stdout_encoding = _get_stdout_encoding()
+    if isinstance(full_command, six.text_type) and not six.PY3:
+        full_command = full_command.encode(stdout_encoding)
     LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
     env['AWS_DEFAULT_REGION'] = "us-east-1"
@@ -96,13 +100,17 @@ def aws(command, collect_memory=False, env_vars=None,
         stdout, stderr = process.communicate()
     else:
         stdout, stderr, memory = _wait_and_collect_mem(process)
-    encoding = getattr(sys.__stdout__, 'encoding')
+    return Result(process.returncode,
+                  stdout.decode(stdout_encoding),
+                  stderr.decode(stdout_encoding),
+                  memory)
+
+
+def _get_stdout_encoding():
+    encoding = getattr(sys.__stdout__, 'encoding', None)
     if encoding is None:
         encoding = 'utf-8'
-    return Result(process.returncode,
-                  stdout.decode(encoding),
-                  stderr.decode(encoding),
-                  memory)
+    return encoding
 
 
 def _wait_and_collect_mem(process):

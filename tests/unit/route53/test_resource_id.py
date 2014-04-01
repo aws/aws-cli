@@ -113,7 +113,6 @@ class TestMaxItems(BaseAWSCommandParamsTest):
         result = {
             'uri_params': {
                 'HostedZoneId': 'ABCD',
-                'MaxItems': '1'
             },
             'headers': {}
         }

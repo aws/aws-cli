@@ -510,10 +510,10 @@ class TestUnicode(BaseS3CLICommand):
 
     def test_cp(self):
         bucket_name = self.create_bucket()
-        local_example1_txt = self.files.create_file('êxample.txt', 'example1 contents')
+        local_example1_txt = self.files.create_file(u'\u00e9xample.txt', 'example1 contents')
         s3_example1_txt = 's3://%s/%s' % (bucket_name,
                                           os.path.basename(local_example1_txt))
-        local_example2_txt = self.files.full_path('êxample2.txt')
+        local_example2_txt = self.files.full_path(u'\u00e9xample2.txt')
 
         p = aws('s3 cp %s %s' % (local_example1_txt, s3_example1_txt))
         self.assert_no_errors(p)
@@ -526,8 +526,8 @@ class TestUnicode(BaseS3CLICommand):
 
     def test_recursive_cp(self):
         bucket_name = self.create_bucket()
-        local_example1_txt = self.files.create_file('êxample1.txt', 'example1 contents')
-        local_example2_txt = self.files.create_file('êxample2.txt', 'example2 contents')
+        local_example1_txt = self.files.create_file(u'\u00e9xample.txt', 'example1 contents')
+        local_example2_txt = self.files.create_file(u'\u00e9xample2.txt', 'example2 contents')
         p = aws('s3 cp %s s3://%s --recursive --quiet' % (
             self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
@@ -806,6 +806,36 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.assertRegexpMatches(p.stdout, r'\(dryrun\) delete:.*baz.jpg.*')
         self.assertNotIn(p.stdout, 'bar.txt')
         self.assertNotIn(p.stdout, 'foo.txt')
+
+
+class TestFileWithSpaces(BaseS3CLICommand):
+    def test_upload_download_file_with_spaces(self):
+        bucket_name = self.create_bucket()
+        filename = self.files.create_file('with space.txt', 'contents')
+        p = aws('s3 cp %s s3://%s/ --recursive' % (self.files.rootdir,
+                                                   bucket_name))
+        self.assert_no_errors(p)
+        os.remove(filename)
+        # Now download the file back down locally.
+        p = aws('s3 cp s3://%s/ %s --recursive' % (bucket_name,
+                                                   self.files.rootdir))
+        self.assert_no_errors(p)
+        self.assertEqual(os.listdir(self.files.rootdir)[0], 'with space.txt')
+
+    def test_sync_file_with_spaces(self):
+        bucket_name = self.create_bucket()
+        bucket_name = self.create_bucket()
+        filename = self.files.create_file('with space.txt', 'contents')
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
+                                         bucket_name))
+        self.assert_no_errors(p)
+        # Now syncing again should *not* trigger any uploads (i.e we should
+        # get nothing on stdout).
+        p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
+                                          bucket_name))
+        self.assertEqual(p2.stdout, '')
+        self.assertEqual(p2.stderr, '')
+        self.assertEqual(p2.rc, 0)
 
 
 if __name__ == "__main__":

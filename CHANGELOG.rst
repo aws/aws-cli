@@ -2,8 +2,34 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.5
+=====
+
+* feature:``aws opsworks``: Update ``aws opsworks`` model to the
+  latest version
+* bugfix:Pagination: Fix issue with ``--max-items`` with ``aws route53``,
+  ``aws iam``, and ``aws ses``
+  (`issue 729 <https://github.com/aws/aws-cli/pull/729>`__)
+* bugfix:``aws s3``: Fix issue with fips-us-gov-west-1 endpoint
+  (`issue botocore 265 (https://github.com/boto/botocore/pull/265)`__)
+* bugfix:Table Output: Fix issue when displaying unicode
+  characters in table output
+  (`issue 721 <https://github.com/aws/aws-cli/pull/721>`__)
+* bugfix:``aws s3``: Fix regression when syncing files with
+  whitespace
+  (`issue 706 <https://github.com/aws/aws-cli/issues/706>`__,
+   `issue 718 <https://github.com/aws/aws-cli/issues/718>`__)
+
+
+1.3.4
+=====
+
+* bugfix:``aws ec2``: Fix issue with EC2 model resulting in
+  responses not being parsed.
+
+
+1.3.3
+=====
 
 * feature:``aws ec2``: Add support for Amazon VPC peering
 * feature:``aws redshift``: Add support for the latest Amazon Redshift API

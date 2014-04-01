@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.5
+=====
 
 * feature:``aws opsworks``: Update ``aws opsworks`` model to the
   latest version

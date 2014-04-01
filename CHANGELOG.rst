@@ -2,9 +2,14 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.5
+=====
 
+* feature:``aws opsworks``: Update ``aws opsworks`` model to the
+  latest version
+* bugfix:Pagination: Fix issue with ``--max-items`` with ``aws route53``,
+  ``aws iam``, and ``aws ses``
+  (`issue 729 <https://github.com/aws/aws-cli/pull/729>`__)
 * bugfix:``aws s3``: Fix issue with fips-us-gov-west-1 endpoint
   (`issue botocore 265 (https://github.com/boto/botocore/pull/265)`__)
 * bugfix:Table Output: Fix issue when displaying unicode

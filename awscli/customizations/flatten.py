@@ -169,7 +169,7 @@ class FlattenArguments(object):
     def flatten_args(self, operation, argument_table, **kwargs):
         # For each argument with a bag of parameters
         for name, argument in self.configs[operation.cli_name].items():
-            # Was the item overwritten?
+            argument_from_table = argument_table[name]
             overwritten = False
 
             LOG.debug('Flattening {0} argument {1} into {2}'.format(
@@ -180,12 +180,12 @@ class FlattenArguments(object):
             # For each parameter to flatten out
             for sub_argument, new_config in argument['flatten'].items():
                 config = new_config.copy()
-                config['container'] = argument_table[name]
+                config['container'] = argument_from_table
                 config['prop'] = sub_argument
 
                 # Handle nested arguments
                 _arg = self._find_nested_arg(
-                    argument_table[name].argument_object, sub_argument
+                    argument_from_table.argument_object, sub_argument
                 )
 
                 # Pull out docs and required attribute

@@ -2,11 +2,19 @@
 CHANGELOG
 =========
 
-1.3.5
-=====
+Next Release (TBD)
+==================
 
 * feature:``aws cloudsearch``: Amazon CloudSearch has moved out of preview
   (`issue 730 <https://github.com/aws/aws-cli/pull/730>`__)
+* bugfix:``aws s3 website``: Fix issue where ``--error-document`` was being
+  ignored in certain cases
+  (`issue 714 <https://github.com/aws/aws-cli/pull/714>`__)
+
+
+1.3.5
+=====
+
 * feature:``aws opsworks``: Update ``aws opsworks`` model to the
   latest version
 * bugfix:Pagination: Fix issue with ``--max-items`` with ``aws route53``,

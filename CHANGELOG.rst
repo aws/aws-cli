@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.6
+=====
 
 * bugfix:``aws cloudtrail``: Fix issue when using ``create-subscription``
   command

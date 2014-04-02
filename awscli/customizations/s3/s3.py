@@ -446,7 +446,7 @@ class WebsiteCommand(S3SubCommand):
         website_config = {}
         if parsed_args.index_document is not None:
             website_config['IndexDocument'] = {'Suffix': parsed_args.index_document}
-        elif parsed_args.error_document is not None:
+        if parsed_args.error_document is not None:
             website_config['ErrorDocument'] = {'Key': parsed_args.error_document}
         return website_config
 

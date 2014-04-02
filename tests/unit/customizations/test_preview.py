@@ -38,32 +38,32 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         self.stderr_patch.stop()
 
     def test_invoke_preview_mode_service(self):
-        # By default cloudsearch is a preview service.
+        # By default cloudfront is a preview service.
         # We check this to make sure we fail loudly if we
-        # ever mark cloudsearch as not being a preview service
+        # ever mark cloudfront as not being a preview service
         # by default.
-        self.assertIn('cloudsearch', preview.PREVIEW_SERVICES)
-        rc = self.driver.main('cloudsearch help'.split())
+        self.assertIn('cloudfront', preview.PREVIEW_SERVICES)
+        rc = self.driver.main('cloudfront help'.split())
         self.assertEqual(rc, 1)
-        self.assertIn(preview.PREVIEW_SERVICES['cloudsearch'],
+        self.assertIn(preview.PREVIEW_SERVICES['cloudfront'],
                       self.stderr.getvalue())
 
     @mock.patch('awscli.help.get_renderer')
     def test_preview_service_off(self, get_renderer):
-        self.full_config['preview'] = {'cloudsearch': 'true'}
+        self.full_config['preview'] = {'cloudfront': 'true'}
         renderer = mock.Mock()
         get_renderer.return_value = renderer
-        rc = self.driver.main('cloudsearch help'.split())
+        rc = self.driver.main('cloudfront help'.split())
         # In this case, the normal help processing should have occurred
         # and we check that we rendered the contents.
         self.assertTrue(renderer.render.called)
 
     def test_preview_service_not_true(self):
         # If it's not "true" then we still make it a preview service.
-        self.full_config['preview'] = {'cloudsearch': 'false'}
-        rc = self.driver.main('cloudsearch help'.split())
+        self.full_config['preview'] = {'cloudfront': 'false'}
+        rc = self.driver.main('cloudfront help'.split())
         self.assertEqual(rc, 1)
-        self.assertIn(preview.PREVIEW_SERVICES['cloudsearch'],
+        self.assertIn(preview.PREVIEW_SERVICES['cloudfront'],
                       self.stderr.getvalue())
 
     @mock.patch('awscli.help.get_renderer')

@@ -27,7 +27,7 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl',
               '--region', '--version', '--color', '--query']
 
 COMPLETIONS = [
-    ('aws ', -1, set(['autoscaling', 'cloudformation',
+    ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudsearch',
                       'cloudtrail', 'cloudwatch', 'configure', 'datapipeline',
                       'directconnect', 'dynamodb', 'ec2',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
@@ -35,7 +35,7 @@ COMPLETIONS = [
                       'opsworks', 'rds', 'redshift', 'route53', 's3', 's3api',
                       'ses', 'sns', 'sqs', 'storagegateway', 'sts',
                       'support', 'swf'])),
-    ('aws cloud', -1, set(['cloudformation',
+    ('aws cloud', -1, set(['cloudformation', 'cloudsearch',
                            'cloudtrail', 'cloudwatch'])),
     ('aws cloudf', -1, set(['cloudformation'])),
     ('aws cloudfr', -1, set([])),

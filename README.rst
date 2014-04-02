@@ -22,7 +22,7 @@ The currently supported services include:
 * AWS Storage Gateway
 * AWS Support
 * Amazon CloudFront (Preview)
-* Amazon CloudSearch (Preview)
+* Amazon CloudSearch
 * Amazon CloudWatch
 * Amazon DynamoDB
 * Amazon ElastiCache

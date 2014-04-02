@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws cloudtrail``: Fix issue when using ``create-subscription``
+  command
+  (`issue botocore 268 <https://github.com/boto/botocore/pull/268>`__)
 * feature:``aws cloudsearch``: Amazon CloudSearch has moved out of preview
   (`issue 730 <https://github.com/aws/aws-cli/pull/730>`__)
 * bugfix:``aws s3 website``: Fix issue where ``--error-document`` was being

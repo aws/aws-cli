@@ -16,14 +16,26 @@ Output::
             "SourceDestCheck": true,
             "VpcId": "vpc-a01106c2",
             "Description": "my network interface",
+            "Association": {
+                "PublicIp": "203.0.113.12",
+                "AssociationId": "eipassoc-0fbb766a",
+                "IpOwnerId": "123456789012"
+            },
             "NetworkInterfaceId": "eni-e5aa89a3",
             "PrivateIpAddresses": [
                 {
+                    "PrivateDnsName": "ip-10-0-1-17.ec2.internal",
+                    "Association": {
+                        "PublicIp": "203.0.113.12",
+                        "AssociationId": "eipassoc-0fbb766a",
+                        "IpOwnerId": "123456789012"
+                    },
                     "Primary": true,
                     "PrivateIpAddress": "10.0.1.17"
                 }
             ],
             "RequesterManaged": false,
+            "PrivateDnsName": "ip-10-0-1-17.ec2.internal",
             "AvailabilityZone": "us-east-1d",
             "Attachment": {
                 "Status": "attached",
@@ -88,5 +100,5 @@ Output::
             "TagSet": [],
             "PrivateIpAddress": "10.0.1.149"
         }
-    ]  
+    ]
   }

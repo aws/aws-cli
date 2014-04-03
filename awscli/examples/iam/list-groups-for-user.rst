@@ -1,6 +1,6 @@
 **To list the groups that an IAM user belongs to**
 
-The following ``list-groups-for-user`` command dislpays the groups that the IAM user named ``Bob`` belongs to::
+The following ``list-groups-for-user`` command displays the groups that the IAM user named ``Bob`` belongs to::
 
   aws iam list-groups-for-user --user-name Bob
 

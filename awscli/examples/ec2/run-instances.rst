@@ -61,7 +61,7 @@ Output::
                           "VolumeId": "vol-877166c8",
                           "AttachTime": "2013-07-19T02:42:39.000Z"
                       }
-                  }              
+                  }
               ],
               "Architecture": "x86_64",
               "StateReason": {
@@ -163,7 +163,7 @@ Output::
                       "SubnetId": "subnet-6e7f829e",
                       "OwnerId": "123456789012",
                       "PrivateIpAddress": "10.0.1.114"
-                  }              
+                  }
               ],
               "SourceDestCheck": true,
               "Placement": {
@@ -181,7 +181,7 @@ Output::
                           "VolumeId": "vol-877166c8",
                           "AttachTime": "2013-07-19T02:42:39.000Z"
                       }
-                  }              
+                  }
               ],
               "Architecture": "x86_64",
               "StateReason": {
@@ -202,7 +202,48 @@ Output::
       ]
   }
 
-For more information, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
+**To launch an instance using a block device mapping**
+
+Add the following parameter to your ``run-instances`` command to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100.
+
+Command::
+
+  --block-device-mappings "[{\"DeviceName\": \"/dev/sdh\",\"Ebs\":{\"VolumeSize\":100}}]"
+
+Add the following parameter to your ``run-instances`` command to add ``ephemeral1`` as an instance store volume with the device name ``/dev/sdc``.
+
+Command::
+
+  --block-device-mappings "[{\"DeviceName\": \"/dev/sdc\",\"VirtualName\":\"ephemeral1\"}]"
+
+Add the following parameter to your ``run-instances`` command to omit a device specified by the AMI used to launch the instance (for example, ``/dev/sdf``).
+
+Command::
+
+  --block-device-mappings "[{\"DeviceName\": \"/dev/sdf\",\"NoDevice\":\"\"}]"
+
+You can view only the Amazon EBS volumes in your block device mapping using the console or the ``describe-instances`` command. To view all volumes, including the instance store volumes, use the following command.
+
+Command::
+
+  GET http://169.254.169.254/latest/meta-data/block-device-mapping
+
+Output::
+
+  ami
+  ephemeral1
+
+Note that ``ami`` represents the root volume. To get details about the instance store volume ``ephemeral1``, use the following command.
+
+Command::
+
+  GET http://169.254.169.254/latest/meta-data/block-device-mapping/ephemeral1
+
+Output::
+
+  sdc
+
+For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
 

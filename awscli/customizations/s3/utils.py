@@ -116,7 +116,7 @@ def get_file_stat(path):
         stats = os.stat(path)
         update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
         return stats.st_size, update_time
-    except OSError, e:
+    except OSError as e:
         if e.errno == 13:
             # suppress "Permission denied" error
             pass

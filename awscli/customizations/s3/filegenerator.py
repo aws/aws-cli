@@ -133,8 +133,11 @@ class FileGenerator(object):
                     for x in self.list_files(file_path, dir_op):
                         yield x
                 else:
-                    size, last_update = get_file_stat(file_path)
-                    yield file_path, size, last_update
+                    try:
+                        size, last_update = get_file_stat(file_path)
+                        yield file_path, size, last_update
+                    except:
+                        pass
 
     def _check_paths_decoded(self, path, names):
         # We can get a UnicodeDecodeError if we try to listdir(<unicode>) and

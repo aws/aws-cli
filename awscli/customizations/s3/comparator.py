@@ -34,6 +34,10 @@ class Comparator(object):
         if 'delete' in params:
             self.delete = params['delete']
 
+        self.compare_on_size_only = False
+        if 'size_only' in params:
+            self.compare_on_size_only = params['size_only']
+
     def call(self, src_files, dest_files):
         """
         This function preforms the actual comparisons.  The parameters it takes
@@ -102,7 +106,12 @@ class Comparator(object):
                     same_size = self.compare_size(src_file, dest_file)
                     same_last_modified_time = self.compare_time(src_file, dest_file)
 
-                    if (not same_size) or (not same_last_modified_time):
+                    if self.compare_on_size_only:
+                        should_sync = not same_size
+                    else:
+                        should_sync = (not same_size) or (not same_last_modified_time)
+
+                    if should_sync:
                         LOG.debug("syncing: %s -> %s, size_changed: %s, "
                                   "last_modified_time_changed: %s",
                                   src_file.src, src_file.dest,

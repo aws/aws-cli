@@ -796,7 +796,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                                 'sse', 'storage-class', 'content-type',
                                 'cache-control', 'content-disposition',
                                 'content-encoding', 'content-language',
-                                'expires']},
+                                'expires', 'size-only']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
                    'params': ['recursive'], 'default': 's3://',
                    'command_class': ListCommand},
@@ -830,7 +830,7 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                            'dest': 'filters'}},
                'acl': {'options': {'nargs': 1,
                                    'choices': ['private', 'public-read',
-                                               'public-read-write', 
+                                               'public-read-write',
                                                'authenticated-read',
                                                'bucket-owner-read',
                                                'bucket-owner-full-control',
@@ -847,6 +847,9 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'content-encoding': {'options': {'nargs': 1}},
                'content-language': {'options': {'nargs': 1}},
                'expires': {'options': {'nargs': 1}},
+               'size-only': {'options': {'action': 'store_true'}, 'documents':
+                   ('Makes the size of each key the only criteria used to '
+                    'decide whether to sync from source to destination.')},
                'index-document': {'options': {}, 'documents':
                    ('A suffix that is appended to a request that is for a '
                     'directory on the website endpoint (e.g. if the suffix '

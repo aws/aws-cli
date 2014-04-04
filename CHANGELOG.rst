@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws s3 sync``: Add ``--size-only`` param to the
+  ``aws s3 sync`` command
+  (`issue 472 <https://github.com/aws/aws-cli/issues/473>`__,
+   `issue 719 <https://github.com/aws/aws-cli/pull/719>`__)
+
+
 1.3.6
 =====
 

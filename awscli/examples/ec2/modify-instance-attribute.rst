@@ -26,3 +26,16 @@ Output::
       "return": "true"
   }
 
+**To modify the deleteOnTermination attribute of the root volume**
+
+This example sets the ``deleteOnTermination`` attribute for the root volume of the specified Amazon EBS-backed instance to ``false``. By default, this attribute is ``true`` for the root volume.
+
+Command::
+
+  aws ec2 modify-instance-attribute --instance-id i-5203422c --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":false}}]"
+
+Output::
+
+  {
+      "return": "true"
+  }

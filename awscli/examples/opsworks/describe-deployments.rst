@@ -1,9 +1,10 @@
 **To describe deployments**
 
-The following ``describe-deployments`` commmand describes the deployments in a stack, whose ID is
-``38ee91e2-abdc-4208-a107-0b7168b3cc7a``::
+The following ``describe-deployments`` commmand describes the deployments in a specified stack::
 
-  aws opsworks describe-deployments --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+  aws opsworks --region us-east-1 describe-deployments --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+
+**Note**: OpsWorks CLI commands should set the region to us-east-1, regardless of the stack's location.
 
 Output::
 
@@ -29,7 +30,7 @@ Output::
             "StackId": "38ee91e2-abdc-4208-a107-0b7168b3cc7a",
             "Status": "successful",
             "CompletedAt": "2013-07-25T18:56:41+00:00",
-            "IamUserArn": "arn:aws:iam::803981987763:user/tw-guysmith",
+            "IamUserArn": "arn:aws:iam::123456789012:user/someuser",
             "DeploymentId": "19d3121e-d949-4ff2-9f9d-94eac087862a",
             "Command": {
                 "Args": {},

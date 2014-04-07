@@ -36,11 +36,12 @@ Arguments generally fall into one of several categories:
   user input and maps the input value to several API parameters.
 
 """
+import json
 import logging
 
 from botocore import xform_name
 
-from awscli.argprocess import unpack_cli_arg
+from awscli.argprocess import unpack_cli_arg, uri_param
 
 
 LOG = logging.getLogger('awscli.arguments')
@@ -103,6 +104,14 @@ class BaseCLIArgument(object):
 
         """
         pass
+
+    def add_to_params_preprocess(self, parameters, value):
+        """Preprocesses ``value`` before passing it along to ``add_to_params``.
+
+        By default, this method does not change ``value``. You can change the
+        default behavior by overriding this method in subclasses.
+        """
+        return self.add_to_params(parameters, value)
 
     @property
     def name(self):
@@ -177,7 +186,8 @@ class CustomArgument(BaseCLIArgument):
 
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
-                 cli_type_name=None, group_name=None, positional_arg=False):
+                 cli_type_name=None, group_name=None, positional_arg=False,
+                 no_paramfile=False):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -191,6 +201,7 @@ class CustomArgument(BaseCLIArgument):
         if choices is None:
             choices = []
         self._choices = choices
+        self.no_paramfile = no_paramfile
         # TODO: We should eliminate this altogether.
         # You should not have to depend on an argument_object
         # as part of the interface.  Currently the argprocess
@@ -225,6 +236,31 @@ class CustomArgument(BaseCLIArgument):
         if self._nargs is not None:
             kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
+
+    def add_to_params_preprocess(self, parameters, value):
+        """Preprocess values before ``add_to_params`` is called in subclasses.
+
+        This method provides custom argument handling for some of the built-in
+        niceties of the CLI, such as:
+
+        * Loading parameters via file:// or http:// URIs
+
+        If the filename or URL ends with ``.json``, then an attempt is made to
+        parse the file contents as JSON.
+        """
+        if value is not None:
+            new_value = uri_param(self, value)
+            if new_value is not None:
+                # Autoload JSON files
+                if value.endswith('.json'):
+                    try:
+                        new_value = json.loads(new_value)
+                    except ValueError as e:
+                        LOG.warning('Unable to parse JSON, skipping: {0}'.format(e))
+
+                value = new_value
+
+        return self.add_to_params(parameters, value)
 
     @property
     def required(self):

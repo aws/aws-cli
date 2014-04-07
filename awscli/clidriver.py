@@ -460,7 +460,8 @@ class ServiceOperation(object):
         for arg_name, arg_object in arg_table.items():
             py_name = arg_object.py_name
             if py_name in parsed_args:
-                arg_object.add_to_params(service_params, parsed_args[py_name])
+                arg_object.add_to_params_preprocess(service_params,
+                                                    parsed_args[py_name])
         return service_params
 
     def _create_argument_table(self):

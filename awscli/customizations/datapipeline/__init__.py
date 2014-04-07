@@ -1,5 +1,6 @@
 import sys
 import json
+import six
 from datetime import datetime, timedelta
 
 from awscli.arguments import CustomArgument
@@ -170,10 +171,10 @@ class PipelineDefinitionArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value is None:
             return
-        new_value = uri_param(self, value)
-        if new_value is not None:
-            value = new_value
-        parsed = json.loads(new_value)
+        if isinstance(value, six.string_types):
+            parsed = json.loads(value)
+        else:
+            parsed = value
         api_objects = translator.definition_to_api(parsed)
         parameters['pipeline_objects'] = api_objects
 

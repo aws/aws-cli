@@ -1,9 +1,12 @@
 **To describe apps**
 
-The following ``describe-apps`` command describes the apps in a specified stack, whose ID is ``38ee91e2-abdc-4208-a107-0b7168b3cc7a``.
+The following ``describe-apps`` command describes the apps in a specified stack.
+
 This particular stack has one app::
 
-  aws opsworks describe-apps --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+  aws opsworks --region us-east-1 describe-apps --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+
+**Note**: OpsWorks CLI commands should set the region to us-east-1, regardless of the stack's location.
 
 Output::
 

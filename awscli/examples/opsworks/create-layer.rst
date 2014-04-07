@@ -1,8 +1,8 @@
 **To create a layer**
 
-The following ``create-layer`` command creates a PHP App Server layer named MyPHPLayer.::
+The following ``create-layer`` command creates a PHP App Server layer named MyPHPLayer in a specified stack::
 
-  aws opsworks create-layer --stack-id f6673d70-32e6-4425-8999-265dd002fec7 --type php-app --name MyPHPLayer --shortname myphplayer
+  aws opsworks create-layer --region us-east-1 --stack-id f6673d70-32e6-4425-8999-265dd002fec7 --type php-app --name MyPHPLayer --shortname myphplayer
 
 **Note**: OpsWorks CLI commands should set the region to us-east-1, regardless of the stack's location.
 

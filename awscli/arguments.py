@@ -250,14 +250,8 @@ class CustomArgument(BaseCLIArgument):
         """
         if value is not None:
             new_value = uri_param(self, value)
-            if new_value is not None:
-                # Autoload JSON files
-                if value.endswith('.json'):
-                    try:
-                        new_value = json.loads(new_value)
-                    except ValueError as e:
-                        LOG.warning('Unable to parse JSON, skipping: {0}'.format(e))
 
+            if new_value:
                 value = new_value
 
         return self.add_to_params(parameters, value)

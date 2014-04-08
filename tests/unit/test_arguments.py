@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
+
 from tests import unittest
 from awscli import arguments
 
@@ -37,7 +39,9 @@ class TestArgumentClasses(unittest.TestCase):
             arg.add_to_params_preprocess(params, 'file:///tmp/foo.json')
 
         mock.assert_called_with('file:///tmp/foo.json')
-        self.assertEqual({'hello': 'world'}, params['test_arg'])
+
+        parsed = json.loads(params['test_arg'])
+        self.assertEqual({'hello': 'world'}, parsed)
 
     def test_no_paramfile(self):
         arg = DemoArgument('test-arg', no_paramfile=True)

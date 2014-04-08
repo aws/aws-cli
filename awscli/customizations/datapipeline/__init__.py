@@ -171,10 +171,7 @@ class PipelineDefinitionArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value is None:
             return
-        if isinstance(value, six.string_types):
-            parsed = json.loads(value)
-        else:
-            parsed = value
+        parsed = json.loads(value)
         api_objects = translator.definition_to_api(parsed)
         parameters['pipeline_objects'] = api_objects
 

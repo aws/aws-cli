@@ -38,6 +38,7 @@ def register_commands(command_table, session, **kwargs):
     must not collide with existing low-level API call names.
     """
     command_table['terminate-clusters'] = TerminateClusters(session)
+    command_table['describe-cluster'] = DescribeCluster(session)
 
 
 class TerminateClusters(BasicCommand):
@@ -45,7 +46,7 @@ class TerminateClusters(BasicCommand):
     DESCRIPTION = ('terminate-clusters shuts down a list of clusters.')
     ARG_TABLE = [
         {'name': 'cluster-ids', 'nargs': '+', 'required': True,
-            'help_text': 'A list of clusters to be shutdown\n'}
+         'help_text': 'A list of clusters to be shutdown\n'}
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -55,3 +56,40 @@ class TerminateClusters(BasicCommand):
         cliOperationCaller.invoke(emr.get_operation('TerminateJobFlows'),
                                   parameters, parsed_globals)
         return 0
+
+
+class DescribeCluster(BasicCommand):
+    NAME = 'describe-cluster'
+    DESCRIPTION = ('Displays information'
+                   ' about the specified cluster.')
+    ARG_TABLE = [
+        {'name': 'cluster-id', 'required': True,
+         'help_text': 'The cluster-id of the cluster whose'
+                      ' details are to be displayed.'}
+    ]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        emr = self._session.get_service('emr')
+        parameters = {}
+        cluster_id = parsed_args.cluster_id
+        parameters['ClusterId'] = cluster_id
+        cliOperationCaller = CLIOperationCaller(self._session)
+
+        LOG.debug("Calling DescribeCluster API with ClusterId: "+cluster_id)
+        describe_cluster_result = cliOperationCaller.invoke(
+            emr.get_operation('DescribeCluster'),
+            parameters, parsed_globals)
+        LOG.debug("Calling ListInstanceGroups with ClusterId: "+cluster_id)
+        list_instance_groups_result = cliOperationCaller.invoke(
+            emr.get_operation('ListInstanceGroups'),
+            parameters, parsed_globals)
+        LOG.debug("Calling ListBootstrapActions with ClusterId: "+cluster_id)
+        list_bootstrap_actions_result = cliOperationCaller.invoke(
+            emr.get_operation('ListBootstrapActions'),
+            parameters, parsed_globals)
+
+        if (describe_cluster_result == 0 and list_instance_groups_result == 0
+                and list_bootstrap_actions_result == 0):
+            return 0
+        else:
+            return 255

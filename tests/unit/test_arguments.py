@@ -13,7 +13,7 @@
 from tests import unittest
 from awscli import arguments
 
-from mock import Mock, patch, mock_open
+from mock import Mock, patch
 
 
 class DemoArgument(arguments.CustomArgument):
@@ -33,11 +33,10 @@ class TestArgumentClasses(unittest.TestCase):
         arg = DemoArgument('test-arg')
         params = {}
 
-        m = mock_open(read_data='{"hello": "world"}')
-        with patch('__builtin__.open', m, create=True) as open_mock:
+        with patch('awscli.argprocess.get_paramfile', return_value='{"hello": "world"}') as mock:
             arg.add_to_params_preprocess(params, 'file:///tmp/foo.json')
 
-        open_mock.assert_called_with('/tmp/foo.json')
+        mock.assert_called_with('file:///tmp/foo.json')
         self.assertEqual({'hello': 'world'}, params['test_arg'])
 
     def test_no_paramfile(self):

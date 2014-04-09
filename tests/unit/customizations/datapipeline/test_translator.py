@@ -169,3 +169,22 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
                 'output': {'ref': 'OutputData'}
             }]
         })
+
+    def test_api_to_df_with_dupe_keys(self):
+        # Duplicate keys should be aggregated into a list.
+        api = [{"name": "S3ToS3Copy", "id": "S3ToS3Copy",
+                "fields": [{"key": "type", "stringValue": "CopyActivity" },
+                           {"key": "schedule", "refValue": "CopyPeriod" },
+                           {"key": "script", "stringValue": "value1"},
+                           {"key": "script", "stringValue": "value2"}]}]
+        definition = translator.api_to_definition(api)
+        self.assertEqual(definition, {
+            'objects': [{
+                'id': 'S3ToS3Copy',
+                'name': 'S3ToS3Copy',
+                'type': 'CopyActivity',
+                'schedule': {'ref': 'CopyPeriod'},
+                'script': ['value1', 'value2'],
+            }]
+        })
+

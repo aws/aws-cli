@@ -80,6 +80,14 @@ def api_to_definition(api_response):
                 value = field['stringValue']
             else:
                 value = {'ref': field['refValue']}
-            current[key] = value
+            if key not in current:
+                current[key] = value
+            elif isinstance(current[key], list):
+                # Dupe keys result in values aggregating
+                # into a list.
+                current[key].append(value)
+            else:
+                converted_list = [current[key], value]
+                current[key] = converted_list
         pipeline_objs.append(current)
     return {'objects': pipeline_objs}

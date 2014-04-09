@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue when running out of disk
+  space during ``aws s3`` transfers
+  (`issue 739 <https://github.com/aws/aws-cli/issues/739>`__)
 * feature:``aws s3 sync``: Add ``--size-only`` param to the
   ``aws s3 sync`` command
   (`issue 472 <https://github.com/aws/aws-cli/issues/473>`__,

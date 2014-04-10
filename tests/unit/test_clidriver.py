@@ -24,6 +24,7 @@ from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from botocore.hooks import HierarchicalEmitter
 from botocore.provider import Provider
@@ -228,7 +229,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
-            'load-cli-arg.s3.list-objects',
+            'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
         ])
 
@@ -464,6 +465,36 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             # Make sure it was called with our passed-in URI
             self.assertEqual('file:///foo',
                              uri_param_mock.call_args_list[-1][1]['value'])
+
+    def _inject_command(self, command_table, session, **kwargs):
+        command = BasicCommand(session)
+        command.NAME = 'foo'
+        command.ARG_TABLE = [
+            {'name': 'bar', 'action': 'store'}
+        ]
+        # Return zero if everything else worked
+        command._run_main = lambda args, parsed_globals: 0
+        command_table['foo'] = command
+
+    def test_custom_command_paramfile(self):
+        def uri_param(param, value, **kwargs):
+            if value is not None and value.startswith('file://'):
+                return '{"hello": "world"}'
+            return
+
+        with mock.patch('awscli.handlers.uri_param', side_effect=uri_param)\
+                as uri_param_mock:
+            driver = create_clidriver()
+            driver.session.register(
+                'building-command-table', self._inject_command)
+
+            self.patch_make_request()
+            rc = driver.main(
+                'ec2 foo --bar file:///foo'.split())
+
+            self.assertEqual(rc, 0)
+
+            uri_param_mock.assert_called()
 
     def inject_new_param_no_paramfile(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', no_paramfile=True)

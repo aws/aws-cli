@@ -6,6 +6,7 @@ from botocore.compat import OrderedDict
 import awscli
 from awscli.clidocs import CLIDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
+from awscli.argprocess import unpack_argument
 from awscli.clidriver import CLICommand
 from awscli.arguments import CustomArgument
 from awscli.help import HelpCommand
@@ -102,8 +103,24 @@ class BasicCommand(CLICommand):
         # We might be able to parse these args so we need to create
         # an arg parser and parse them.
         subcommand_table = self._build_subcommand_table()
-        parser = ArgTableArgParser(self.arg_table, subcommand_table)
+        arg_table = self.arg_table
+        parser = ArgTableArgParser(arg_table, subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
+
+        # Unpack arguments
+        for key, value in vars(parsed_args).items():
+            param = None
+            if key in arg_table:
+                param = arg_table[key]
+
+            setattr(parsed_args, key, unpack_argument(
+                self._session,
+                'custom',
+                self,
+                param,
+                value
+            ))
+
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)
         elif getattr(parsed_args, 'subcommand', None) is None:
@@ -154,6 +171,10 @@ class BasicCommand(CLICommand):
     @classmethod
     def add_command(cls, command_table, session, **kwargs):
         command_table[cls.NAME] = cls(session)
+
+    @property
+    def name(self):
+        return self.NAME
 
 
 class BasicHelp(HelpCommand):

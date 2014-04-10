@@ -200,6 +200,7 @@ class TestCommandsRunProperly(BaseAWSCommandParamsTest):
 
     def test_list_runs(self):
         self.driver.session = mock.Mock()
+        self.driver.session.emit_first_non_none_response.return_value = None
         self.driver.session.get_service.return_value.get_endpoint.return_value = \
                 mock.sentinel.endpoint
         self.driver.session.get_service.return_value.get_operation = self.get_service

@@ -15,6 +15,7 @@ import os
 import logging
 import six
 
+from botocore import xform_name
 from botocore.compat import OrderedDict, json
 
 from awscli import utils
@@ -45,6 +46,32 @@ class ParamUnknownKeyError(Exception):
             "Unknown key '%s' for parameter %s, valid choices "
             "are: %s" % (key, param.cli_name, valid_keys))
         super(ParamUnknownKeyError, self).__init__(full_message)
+
+
+def unpack_argument(session, service_name, operation_object, param, value):
+    """
+    Unpack an argument's value from the commandline. This is part one of a two
+    step process in handling commandline arguments. Emits the load-cli-arg
+    event with service, operation, and parameter names. Example::
+
+        load-cli-arg.ec2.describe-instances.foo
+
+    """
+    operation_name = xform_name(operation_object.name, '-')
+
+    param_name = ''
+    if hasattr(param, 'name'):
+        param_name = param.name
+
+    value_override = session.emit_first_non_none_response(
+        'load-cli-arg.%s.%s.%s' % (service_name,
+                                   operation_name,
+                                   param_name),
+        param=param, value=value, operation=operation_object)
+    if value_override is not None:
+        value = value_override
+
+    return value
 
 
 def uri_param(param, value, **kwargs):

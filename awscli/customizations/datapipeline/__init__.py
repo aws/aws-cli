@@ -1,6 +1,5 @@
 import sys
 import json
-import six
 from datetime import datetime, timedelta
 
 from awscli.arguments import CustomArgument

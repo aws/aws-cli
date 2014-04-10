@@ -36,12 +36,11 @@ Arguments generally fall into one of several categories:
   user input and maps the input value to several API parameters.
 
 """
-import json
 import logging
 
 from botocore import xform_name
 
-from awscli.argprocess import unpack_cli_arg, uri_param
+from awscli.argprocess import unpack_cli_arg
 
 
 LOG = logging.getLogger('awscli.arguments')
@@ -104,14 +103,6 @@ class BaseCLIArgument(object):
 
         """
         pass
-
-    def add_to_params_preprocess(self, parameters, value):
-        """Preprocesses ``value`` before passing it along to ``add_to_params``.
-
-        By default, this method does not change ``value``. You can change the
-        default behavior by overriding this method in subclasses.
-        """
-        return self.add_to_params(parameters, value)
 
     @property
     def name(self):
@@ -236,25 +227,6 @@ class CustomArgument(BaseCLIArgument):
         if self._nargs is not None:
             kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
-
-    def add_to_params_preprocess(self, parameters, value):
-        """Preprocess values before ``add_to_params`` is called in subclasses.
-
-        This method provides custom argument handling for some of the built-in
-        niceties of the CLI, such as:
-
-        * Loading parameters via file:// or http:// URIs
-
-        If the filename or URL ends with ``.json``, then an attempt is made to
-        parse the file contents as JSON.
-        """
-        if value is not None:
-            new_value = uri_param(self, value)
-
-            if new_value:
-                value = new_value
-
-        return self.add_to_params(parameters, value)
 
     @property
     def required(self):
@@ -396,14 +368,6 @@ class CLIArgument(BaseCLIArgument):
     def _unpack_argument(self, value):
         service_name = self.operation_object.service.endpoint_prefix
         operation_name = xform_name(self.operation_object.name, '-')
-        # This is a two step process.  First we "load" the value.
-        value_override = self._emit_first_response(
-            'load-cli-arg.%s.%s' % (service_name, operation_name),
-            param=self.argument_object, value=value,
-            operation=self.operation_object)
-        if value_override is not None:
-            value = value_override
-        # Then we "process/parse" the argument.
         override = self._emit_first_response('process-cli-arg.%s.%s' % (
             service_name, operation_name), param=self.argument_object,
             value=value,

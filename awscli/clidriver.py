@@ -460,9 +460,27 @@ class ServiceOperation(object):
         for arg_name, arg_object in arg_table.items():
             py_name = arg_object.py_name
             if py_name in parsed_args:
-                arg_object.add_to_params_preprocess(service_params,
-                                                    parsed_args[py_name])
+                value = parsed_args[py_name]
+                value = self._unpack_arg(arg_object, value)
+                arg_object.add_to_params(service_params, value)
         return service_params
+
+    def _unpack_arg(self, arg_object, value):
+        # Unpacks a commandline argument into a Python value by firing the
+        # load-cli-arg.service-name.operation-name event.
+        session = self._service_object.session
+        param = arg_object
+        if hasattr(param, 'argument_object') and param.argument_object:
+            param = param.argument_object
+        operation_name = xform_name(self._operation_object.name, '-')
+        value_override = session.emit_first_non_none_response(
+            'load-cli-arg.%s.%s' % (self._service_object.endpoint_prefix,
+                                    operation_name),
+            param=param, value=value, operation=self._operation_object)
+        if value_override is not None:
+            value = value_override
+
+        return value
 
     def _create_argument_table(self):
         argument_table = OrderedDict()

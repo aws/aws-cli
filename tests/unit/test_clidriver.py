@@ -441,6 +441,45 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
+    def test_custom_arg_paramfile(self):
+        def uri_param(param, value, **kwargs):
+            if value is not None and value.startswith('file://'):
+                return '{"hello": "world"}'
+            return
+
+        with mock.patch('awscli.handlers.uri_param', side_effect=uri_param)\
+                as uri_param_mock:
+            driver = create_clidriver()
+            driver.session.register(
+                'building-argument-table', self.inject_new_param)
+
+            self.patch_make_request()
+            rc = driver.main(
+                'ec2 describe-instances --unknown-arg file:///foo'.split())
+
+            self.assertEqual(rc, 0)
+
+            # Make sure uri_param was called
+            uri_param_mock.assert_called()
+            # Make sure it was called with our passed-in URI
+            self.assertEqual('file:///foo',
+                             uri_param_mock.call_args_list[-1][1]['value'])
+
+    def inject_new_param_no_paramfile(self, argument_table, **kwargs):
+        argument = CustomArgument('unknown-arg', no_paramfile=True)
+        argument.add_to_arg_table(argument_table)
+
+    def test_custom_arg_no_paramfile(self):
+        driver = create_clidriver()
+        driver.session.register(
+            'building-argument-table', self.inject_new_param_no_paramfile)
+
+        self.patch_make_request()
+        rc = driver.main(
+            'ec2 describe-instances --unknown-arg file:///foo'.split())
+
+        self.assertEqual(rc, 0)
+
     def test_empty_params_gracefully_handled(self):
         # Simulates the equivalent in bash: --identifies ""
         cmd = 'ses get-identity-dkim-attributes --identities'.split()

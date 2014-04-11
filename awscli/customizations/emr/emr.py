@@ -38,6 +38,7 @@ def register_commands(command_table, session, **kwargs):
     must not collide with existing low-level API call names.
     """
     command_table['terminate-clusters'] = TerminateClusters(session)
+    command_table['add-tags'] = AddTags(session)
     command_table['describe-cluster'] = DescribeCluster(session)
 
 
@@ -55,6 +56,44 @@ class TerminateClusters(BasicCommand):
         cliOperationCaller = CLIOperationCaller(self._session)
         cliOperationCaller.invoke(emr.get_operation('TerminateJobFlows'),
                                   parameters, parsed_globals)
+        return 0
+
+
+class AddTags(BasicCommand):
+    NAME = 'add-tags'
+    DESCRIPTION = ('Add tags to the cluster')
+    ARG_TABLE = [
+        {'name': 'resource-id', 'required': True,
+            'help_text': 'The Amazon EMR resource identifier to which '
+            'tags will be added. This value must be a cluster identifier.'},
+        {'name': 'tags', 'required': True, 'nargs': '+',
+            'help_text': ' A  list  of tags to associate with a cluster and '
+            'propagate to Amazon EC2 instances. They are user-defined '
+            'key/value pairs that  consist of  a  required  key string with '
+            'a maximum of 128 characters, and an optional value string with '
+            'a maximum of 256 characters. You can specify tags in key1=val1 '
+            'format or to add a tag without value just write key name, key2.'
+            ' For example: aws emr add-tags --resource-id j-XXXXXXYY --tags '
+            'name="John Doe" age=29 male address="123 East NW, Seattle" '},
+    ]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        tags_list = parsed_args.tags
+
+        tags_dictionary_list = []
+        for tag in tags_list:
+            if tag.find('=') == -1:
+                key, value = tag, ''
+            else:
+                key, value = tag.split('=', 1)
+            tags_dictionary_list.append({'Key': key, 'Value': value})
+
+        emr = self._session.get_service('emr')
+        parameters = {'ResourceId': parsed_args.resource_id,
+                      'Tags': tags_dictionary_list}
+        cli_operation_caller = CLIOperationCaller(self._session)
+        cli_operation_caller.invoke(emr.get_operation('AddTags'), parameters,
+                                    parsed_globals)
         return 0
 
 

@@ -10,3 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+from awscli.customizations.emr.emrutils import which
+from nose.tools import assert_equal
+from nose.tools import assert_not_equal
+
+
+class TestEMRutils(object):
+
+    def test_which_with_existing_command(self):
+        pythonPath = which('python')
+        assert_not_equal(pythonPath, None)
+
+    def test_which_with_non_existing_command(self):
+        path = which('klajsflklj')
+        assert_equal(path, None)

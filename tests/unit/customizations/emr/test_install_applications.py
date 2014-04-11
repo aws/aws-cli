@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -11,73 +10,81 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+import copy
 from tests.unit import BaseAWSCommandParamsTest
-from nose.tools import raises
+
+
+INSTALL_HIVE_STEP = {
+    'HadoopJarStep': {
+        'Args': ['s3://elasticmapreduce/libs/hive/hive-script',
+                 '--install-hive', '--base-path',
+                 's3://elasticmapreduce/libs/hive',
+                 '--hive-versions', 'latest'],
+        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+    },
+    'Name': 'Install Hive',
+    'ActionOnFailure': 'TERMINATE_CLUSTER'
+}
+
+INSTALL_PIG_STEP = {
+    'HadoopJarStep': {
+        'Args': ['s3://elasticmapreduce/libs/pig/pig-script',
+                 '--install-pig', '--base-path',
+                 's3://elasticmapreduce/libs/pig',
+                 '--pig-versions', 'latest'],
+        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+    },
+    'Name': 'Install Pig',
+    'ActionOnFailure': 'TERMINATE_CLUSTER'
+}
 
 
 class TestInstallApplications(BaseAWSCommandParamsTest):
-    prefix = 'emr install-applications'
-    SCRIPT_RUNNER_JAR = 's3://elasticmapreduce/libs/script-runner/'\
-                        'script-runner.jar'
+    prefix = 'emr install-applications  --cluster-id j-ABC123456'
 
-    HIVE_BASE = 's3://elasticmapreduce/libs/hive'
-    HIVE_SCRIPT = 's3://elasticmapreduce/libs/hive/hive-script'
-    HIVE_STEP = {'ActionOnFailure': 'CANCEL_AND_WAIT', 'Name': 'Install Hive',
-                 'HadoopJarStep': {'Jar': SCRIPT_RUNNER_JAR, 'Args': [
-                     HIVE_SCRIPT, '--install-hive', '--base-path', HIVE_BASE,
-                     '--hive-versions', '999']}}
+    def test_intall_hive_with_version(self):
+        cmdline = self.prefix + ' --apps Name=Hive,Version=0.8.1.8'
 
-    PIG_BASE = 's3://elasticmapreduce/libs/pig'
-    PIG_SCRIPT = 's3://elasticmapreduce/libs/pig/pig-script'
-    PIG_STEP = {'ActionOnFailure': 'CANCEL_AND_WAIT', 'Name': 'Install Pig',
-                'HadoopJarStep': {'Jar': SCRIPT_RUNNER_JAR, 'Args': [
-                    PIG_SCRIPT, '--install-pig', '--base-path', PIG_BASE,
-                    '--pig-versions', '111']}}
+        step = copy.deepcopy(INSTALL_HIVE_STEP)
+        step['HadoopJarStep']['Args'][5] = '0.8.1.8'
 
-    @raises(Exception)
-    def test_no_step(self):
-        args = ' --cluster-id j-ABC123456'
-        cmdline = self.prefix + args
-        result = {'JobFlowId': 'j-ABC123456', 'Steps': []}
+        result = {'JobFlowId': 'j-ABC123456', 'Steps': [step]}
         self.assert_params_for_cmd(cmdline, result)
 
-    def test_intall_hive(self):
-        args = ' --cluster-id j-ABC123456 --hive Version=999'
-        cmdline = self.prefix + args
-        result = {'JobFlowId': 'j-ABC123456', 'Steps': [self.HIVE_STEP]}
+    def test_intall_pig_with_version(self):
+        cmdline = self.prefix + ' --apps Name=Pig,Version=0.9.2.1'
+
+        step = copy.deepcopy(INSTALL_PIG_STEP)
+        step['HadoopJarStep']['Args'][5] = '0.9.2.1'
+
+        result = {'JobFlowId': 'j-ABC123456', 'Steps': [step]}
         self.assert_params_for_cmd(cmdline, result)
 
-    def test_intall_pig(self):
-        args = ' --cluster-id j-ABC123456 --pig Version=111'
-        cmdline = self.prefix + args
-        result = {'JobFlowId': 'j-ABC123456', 'Steps': [self.PIG_STEP]}
+    def test_intall_hive_and_pig_without_version(self):
+        cmdline = self.prefix + ' --cluster-id j-ABC123456 --apps Name=Hive' +\
+            ' Name=Pig'
+        result = {'JobFlowId': 'j-ABC123456', 'Steps': [INSTALL_HIVE_STEP,
+                                                        INSTALL_PIG_STEP]}
         self.assert_params_for_cmd(cmdline, result)
 
-    def test_intall_hive_and_pig(self):
-        args = ' --cluster-id j-ABC123456 --hive Version=999'\
-               ' --pig Version=111'
-        cmdline = self.prefix + args
-        result = {'JobFlowId': 'j-ABC123456', 'Steps': [self.HIVE_STEP,
-                                                        self.PIG_STEP]}
-        self.assert_params_for_cmd(cmdline, result)
+    def test_install_impala_error(self):
+        cmdline = self.prefix + ' --cluster-id j-ABC123456 --apps Name=Impala'
 
-    @raises(Exception)
-    def test_hive_version_missing(self):
-        args = ' --cluster-id j-ABC123456 --hive v=1'
-        cmdline = self.prefix + args
-        self.run_cmd(cmdline)
+        expected_error_msg = "\naws: error: Impala cannot be installed on" +\
+            " a running cluster. 'Name' should be one of the following:" +\
+            " HIVE, PIG\n"
+        result = self.run_cmd(cmdline, 255)
+        self.assertEqual(result[1], expected_error_msg)
 
-    @raises(Exception)
-    def test_pig_version_missing(self):
-        args = ' --cluster-id j-ABC123456 --hive version=1 --pig v=1'
-        cmdline = self.prefix + args
-        self.run_cmd(cmdline)
+    def test_install_unknown_app_error(self):
+        cmdline = self.prefix + ' --cluster-id j-ABC123456 --apps Name=unknown'
 
-    @raises(Exception)
-    def test_invalid_format(self):
-        args = ' --cluster-id j-ABC123456 --hive version1'
-        cmdline = self.prefix + args
-        self.run_cmd(cmdline)
+        expected_error_msg = "\naws: error: Unknown application: unknown." +\
+            " 'Name' should be one of the following: HIVE, PIG, HBASE," +\
+            " GANGLIA, IMPALA, MAPR, MAPR_M3, MAPR_M5, MAPR_M7\n"
+        result = self.run_cmd(cmdline, 255)
+        self.assertEqual(result[1], expected_error_msg)
 
 
 if __name__ == "__main__":

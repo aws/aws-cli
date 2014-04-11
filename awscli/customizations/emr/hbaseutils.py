@@ -10,3 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+import constants
+
+
+def build_hbase_restore_from_backup_args(dir, backup_version=None):
+    args = [constants.HBASE_MAIN,
+            constants.HBASE_RESTORE,
+            constants.HBASE_BACKUP_DIR, dir]
+
+    if backup_version is not None:
+        args.append(constants.HBASE_BACKUP_VERSION_FOR_RESTORE)
+        args.append(backup_version)
+
+    return args

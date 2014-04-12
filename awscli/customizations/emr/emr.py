@@ -40,6 +40,7 @@ def register_commands(command_table, session, **kwargs):
     command_table['terminate-clusters'] = TerminateClusters(session)
     command_table['add-tags'] = AddTags(session)
     command_table['describe-cluster'] = DescribeCluster(session)
+    command_table['modify-cluster-attributes'] = ModifyClusterAttr(session)
 
 
 class TerminateClusters(BasicCommand):
@@ -132,3 +133,62 @@ class DescribeCluster(BasicCommand):
             return 0
         else:
             return 255
+
+
+class ModifyClusterAttr(BasicCommand):
+    NAME = 'modify-cluster-attributes'
+    DESCRIPTION = ('Modify various cluster attributes')
+    ARG_TABLE = [
+        {'name': 'cluster-id', 'required': True,
+            'help_text': 'Cluster Id of cluster to modify attributes'},
+        {'name': 'visible-to-all-users', 'required': False, 'action':
+            'store_true', 'group_name': 'visible',
+            'help_text': 'Change cluster visibility for IAM users'},
+        {'name': 'no-visible-to-all-users', 'required': False, 'action':
+            'store_true', 'group_name': 'visible',
+            'help_text': 'Change cluster visibility for IAM users'},
+        {'name': 'termination-protected', 'required': False, 'action':
+            'store_true', 'group_name': 'terminate',
+            'help_text': 'Set termination protected on or off'},
+        {'name': 'no-termination-protected', 'required': False, 'action':
+            'store_true', 'group_name': 'terminate',
+            'help_text': 'Set termination protected on or off'},
+    ]
+
+    def _run_main(self, args, parsed_globals):
+        emr = self._session.get_service('emr')
+
+        if (args.visible_to_all_users and args.no_visible_to_all_users):
+            raise ValueError(
+                'aws: error: Cannot use both options --visible-to-all-users '
+                'and --no-visible-to-all-users together.')
+        if (args.termination_protected and args.no_termination_protected):
+            raise ValueError(
+                'aws: error: Cannot use both options --termination-protected '
+                'and --no-termination-protected together.')
+        if not(args.termination_protected or args.no_termination_protected
+               or args.visible_to_all_users or args.no_visible_to_all_users):
+            raise ValueError('aws: error: You need to specify atleast one of '
+                             'the options.')
+
+        cli_operation_caller = CLIOperationCaller(self._session)
+
+        if (args.visible_to_all_users or args.no_visible_to_all_users):
+            visible = (args.visible_to_all_users and
+                       not args.no_visible_to_all_users)
+            parameters = {'JobFlowIds': [args.cluster_id],
+                          'VisibleToAllUsers': visible}
+            cli_operation_caller.invoke(
+                emr.get_operation('SetVisibleToAllUsers'),
+                parameters, parsed_globals)
+
+        if (args.termination_protected or args.no_termination_protected):
+            protected = (args.termination_protected and
+                         not args.no_termination_protected)
+            parameters = {'JobFlowIds': [args.cluster_id],
+                          'TerminationProtected': protected}
+            cli_operation_caller.invoke(
+                emr.get_operation('SetTerminationProtection'),
+                parameters, parsed_globals)
+
+        return 0

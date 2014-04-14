@@ -23,6 +23,15 @@ from awscli.clidriver import CLIOperationCaller
 
 LOG = logging.getLogger(__name__)
 
+HIVE_BASE_PATH = '/libs/hive'
+HIVE_SCRIPT_PATH = '/libs/hive/hive-script'
+
+PIG_BASE_PATH = '/libs/pig'
+PIG_SCRIPT_PATH = '/libs/pig/pig-script'
+
+SCRIPT_RUNNER_PATH = '/libs/script-runner/script-runner.jar'
+DEFAULT_FAILURE_ACTION = 'CANCEL_AND_WAIT'
+
 
 def emr_initialize(cli):
     """
@@ -41,6 +50,44 @@ def register_commands(command_table, session, **kwargs):
     command_table['add-tags'] = AddTags(session)
     command_table['describe-cluster'] = DescribeCluster(session)
     command_table['modify-cluster-attributes'] = ModifyClusterAttr(session)
+    command_table['install-applications'] = InstallApplications(session)
+    command_table['modify-cluster-attributes'] = ModifyClusterAttr(session)
+
+
+def _build_s3_link(relative_path='', region=None):
+    if region and region != 'us-east-1':
+        return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
+    else:
+        return 's3://elasticmapreduce{}'.format(relative_path)
+
+
+def _build_step(name, region, action_on_failure, jar, args):
+    step = {}
+    step['Name'] = name
+    step['ActionOnFailure'] = action_on_failure
+    step['HadoopJarStep'] = {'Jar': jar}
+    step['HadoopJarStep']['Args'] = args
+    return step
+
+
+def build_pig_install_step(region, version,
+                           action_on_failure=DEFAULT_FAILURE_ACTION):
+    step_args = [_build_s3_link(PIG_SCRIPT_PATH, region), '--install-pig',
+                 '--base-path', _build_s3_link(PIG_BASE_PATH, region),
+                 '--pig-versions', version]
+    step = _build_step('Install Pig', region, action_on_failure,
+                       _build_s3_link(SCRIPT_RUNNER_PATH, region), step_args)
+    return step
+
+
+def build_hive_install_step(region, version,
+                            action_on_failure=DEFAULT_FAILURE_ACTION):
+    step_args = [_build_s3_link(HIVE_SCRIPT_PATH, region), '--install-hive',
+                 '--base-path', _build_s3_link(HIVE_BASE_PATH),
+                 '--hive-versions', version]
+    step = _build_step('Install Hive', region, action_on_failure,
+                       _build_s3_link(SCRIPT_RUNNER_PATH, region), step_args)
+    return step
 
 
 class TerminateClusters(BasicCommand):
@@ -57,6 +104,48 @@ class TerminateClusters(BasicCommand):
         cliOperationCaller = CLIOperationCaller(self._session)
         cliOperationCaller.invoke(emr.get_operation('TerminateJobFlows'),
                                   parameters, parsed_globals)
+        return 0
+
+
+class InstallApplications(BasicCommand):
+    Name = 'install-applications'
+    DESCRIPTION = ('Install applications on a cluster.')
+    ARG_TABLE = [
+        {'name': 'cluster-id', 'required': True, 'help_text':
+            'Cluster id of the cluster to install applications on'},
+        {'name': 'hive', 'required': False, 'help_text': 'Install hive'},
+        {'name': 'pig', 'required': False,  'help_text': 'Install pig'},
+    ]
+
+    def _get_version(self, arg):
+        if arg.find('=') == -1:
+            raise ValueError('aws: error: Invalid format.')
+        key, value = arg.strip().split('=', 1)
+        if key.lower() != 'version':
+            raise ValueError('aws: error: Application version missing.')
+        return value
+
+    def _run_main(self, parsed_args, parsed_globals):
+        if not (parsed_args.hive or parsed_args.pig):
+            raise ValueError('aws: error: You need to specify atleast one '
+                             'application.')
+
+        emr = self._session.get_service('emr')
+        cli_operation_caller = CLIOperationCaller(self._session)
+        parameters = {'JobFlowId': parsed_args.cluster_id, 'Steps': []}
+
+        if parsed_args.hive:
+            version = self._get_version(parsed_args.hive)
+            parameters['Steps'].append(build_hive_install_step(
+                                       parsed_globals.region, version))
+
+        if parsed_args.pig:
+            version = self._get_version(parsed_args.pig)
+            parameters['Steps'].append(build_pig_install_step(
+                                       parsed_globals.region, version))
+
+        cli_operation_caller.invoke(emr.get_operation('AddJobFlowSteps'),
+                                    parameters, parsed_globals)
         return 0
 
 

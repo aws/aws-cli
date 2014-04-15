@@ -14,7 +14,7 @@
 import json
 import logging
 import sys
-
+import constants
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.service import Service
@@ -151,7 +151,7 @@ class InstallApplications(BasicCommand):
 
 class AddTags(BasicCommand):
     NAME = 'add-tags'
-    DESCRIPTION = ('Add tags to the cluster')
+    DESCRIPTION = ('Add tags to the cluster.')
     ARG_TABLE = [
         {'name': 'resource-id', 'required': True,
             'help_text': 'The Amazon EMR resource identifier to which '
@@ -164,7 +164,7 @@ class AddTags(BasicCommand):
             'a maximum of 256 characters. You can specify tags in key1=val1 '
             'format or to add a tag without value just write key name, key2.'
             ' For example: aws emr add-tags --resource-id j-XXXXXXYY --tags '
-            'name="John Doe" age=29 male address="123 East NW, Seattle" '},
+            'name="John Doe" age=29 male address="123 East NW Seattle" '},
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

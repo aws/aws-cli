@@ -112,9 +112,17 @@ def get_file_stat(path):
     This is a helper function that given a local path return the size of
     the file in bytes and time of last modification.
     """
-    stats = os.stat(path)
-    update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
-    return stats.st_size, update_time
+    try:
+        stats = os.stat(path)
+        update_time = datetime.fromtimestamp(stats.st_mtime, tzlocal())
+        return stats.st_size, update_time
+    except OSError as e:
+        if e.errno == 13:
+            # suppress "Permission denied" error
+            pass
+        else:
+            # reraise the exception, as it's an unexpected error
+            raise
 
 
 def check_etag(etag, fileobj):

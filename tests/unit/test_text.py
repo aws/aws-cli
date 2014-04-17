@@ -37,7 +37,6 @@ class TestSection(unittest.TestCase):
 
     def assert_text_renders_to(self, data, expected_rendering):
         rendered = self.format_text(data)
-        print(rendered)
         self.assertEqual(rendered, expected_rendering)
 
     def test_dict_format(self):

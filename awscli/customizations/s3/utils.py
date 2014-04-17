@@ -302,14 +302,39 @@ class BucketLister(object):
         kwargs = {'bucket': bucket, 'encoding_type': 'url'}
         if prefix is not None:
             kwargs['prefix'] = prefix
-        pages = self._operation.paginate(self._endpoint, **kwargs)
-        for response, page in pages:
-            contents = page['Contents']
-            for content in contents:
-                source_path = bucket + '/' + unquote_str(content['Key'])
-                size = content['Size']
-                last_update = self._date_parser(content['LastModified'])
-                yield source_path, size, last_update
+        # This event handler is needed because we use encoding_type url and
+        # we're paginating.  The pagination token is the last Key of the
+        # Contents list.  However, botocore does not know that the encoding
+        # type needs to be urldecoded.
+        with ScopedEventHandler(self._operation.session, 'after-call.s3.ListObjects',
+                                self._decode_keys):
+            pages = self._operation.paginate(self._endpoint, **kwargs)
+            for response, page in pages:
+                contents = page['Contents']
+                for content in contents:
+                    source_path = bucket + '/' + content['Key']
+                    size = content['Size']
+                    last_update = self._date_parser(content['LastModified'])
+                    yield source_path, size, last_update
+
+    def _decode_keys(self, parsed, **kwargs):
+        for content in parsed['Contents']:
+            content['Key'] = unquote_str(content['Key'])
+
+
+class ScopedEventHandler(object):
+    """Register an event callback for the duration of a scope."""
+
+    def __init__(self, session, event_name, handler):
+        self._session = session
+        self._event_name = event_name
+        self._handler = handler
+
+    def __enter__(self):
+        self._session.register(self._event_name, self._handler)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._session.unregister(self._event_name, self._handler)
 
 
 IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])

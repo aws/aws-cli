@@ -81,6 +81,17 @@ class TestSection(unittest.TestCase):
             'FOO\t8\t9\t\n'
         )
 
+    def test_different_keys_in_deeply_nested_sublists(self):
+        self.assert_text_renders_to({'bar':[
+            {'foo': [[[dict(a=1, b=2, c=3), dict(a=4, c=5)]]]},
+            {'foo': [[[dict(b=6, d=7), dict(b=8, c=9)]]]},
+        ]},
+            'FOO\t1\t2\t3\n'
+            'FOO\t4\t\t5\n'
+            'FOO\t6\t\t7\n'
+            'FOO\t8\t9\t\n'
+        )
+
     def test_scalars_and_complex_types(self):
         self.assert_text_renders_to(
             {'foo': [dict(a=1, b=dict(y='y', z='z'), c=3),
@@ -111,7 +122,7 @@ class TestSection(unittest.TestCase):
 
     def test_unicode_text(self):
         self.assert_text_renders_to([['1', '2', u'\u2713']],
-                                    u'1\t2\t\u2713\n')
+                                     u'1\t2\t\u2713\n')
 
     def test_single_scalar_value(self):
         self.assert_text_renders_to('foobarbaz', 'foobarbaz\n')
@@ -121,6 +132,12 @@ class TestSection(unittest.TestCase):
 
     def test_empty_inner_list(self):
         self.assert_text_renders_to([[]], '')
+
+    def test_deeploy_nested_empty_list(self):
+        self.assert_text_renders_to([[[[]]]], '')
+
+    def test_deeploy_nested_single_scalar(self):
+        self.assert_text_renders_to([[[['a']]]], 'a\n')
 
     def test_empty_list_mock_calls(self):
         # We also need this test as well as test_empty_list
@@ -133,10 +150,66 @@ class TestSection(unittest.TestCase):
 
     def test_list_of_strings_in_dict(self):
         self.assert_text_renders_to(
-            {"KeyName": ['a', 'b', 'c']},
-            'KEYNAME\ta\n'
-            'KEYNAME\tb\n'
-            'KEYNAME\tc\n')
+            {'KeyName': ['a', 'b', 'c']},
+             'KEYNAME\ta\n'
+             'KEYNAME\tb\n'
+             'KEYNAME\tc\n')
+
+    def test_inconsistent_sublists(self):
+        self.assert_text_renders_to(
+            [
+                [['1', '2'], ['3', '4', '5', '6']],
+                [['7', '8', '9'], ['0']]
+            ],
+            '1\t2\n'
+            '3\t4\t5\t6\n'
+            '7\t8\t9\n'
+            '0\n'
+        )
+
+    def test_lists_mixed_with_scalars(self):
+        self.assert_text_renders_to(
+            [
+                ['a', 'b', ['c', 'd']],
+                ['e', 'f', ['g', 'h']]
+            ],
+            'a\tb\n'
+            'c\td\n'
+            'e\tf\n'
+            'g\th\n'
+        )
+
+    def test_deeply_nested_with_scalars(self):
+        self.assert_text_renders_to(
+            [
+                ['a', 'b', ['c', 'd', ['e', 'f', ['g', 'h']]]],
+                ['i', 'j', ['k', 'l', ['m', 'n', ['o', 'p']]]],
+            ],
+            'a\tb\n'
+            'c\td\n'
+            'e\tf\n'
+            'g\th\n'
+            'i\tj\n'
+            'k\tl\n'
+            'm\tn\n'
+            'o\tp\n'
+        )
+
+    def test_deeply_nested_with_identifier(self):
+        self.assert_text_renders_to(
+            {'foo': [
+                ['a', 'b', ['c', 'd']],
+                ['e', 'f', ['g', 'h']]
+            ]},
+            'FOO\ta\n'
+            'FOO\tb\n'
+            'FOO\tc\n'
+            'FOO\td\n'
+            'FOO\te\n'
+            'FOO\tf\n'
+            'FOO\tg\n'
+            'FOO\th\n'
+        )
 
 
 if __name__ == '__main__':

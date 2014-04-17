@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Text Output: Fix issue with inconsistent text output
+  based on order
+  (`issue 751 <https://github.com/aws/aws-cli/issues/751>`__)
 * bugfix:``aws datapipeline``: Fix issue for aggregating keys into
   a list when calling ``aws datapipeline get-pipeline-definition``
   (`issue 750 <https://github.com/aws/aws-cli/pull/750>`__)

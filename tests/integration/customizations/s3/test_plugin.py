@@ -69,8 +69,8 @@ class BaseS3CLICommand(unittest.TestCase):
         pass
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
-        if isinstance(expected_contents, six.StringIO):
-            expected_contents = expected_contents.getvalue()
+        if isinstance(expected_contents, six.BytesIO):
+            expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)
         # The contents can be huge so we try to give helpful error messages
         # without necessarily printing the actual contents.
@@ -189,7 +189,7 @@ class TestMoveCommand(BaseS3CLICommand):
     def test_mv_s3_to_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
-        file_contents = six.StringIO('abcd' * (1024 * 1024 * 10))
+        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
@@ -203,7 +203,7 @@ class TestMoveCommand(BaseS3CLICommand):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
 
-        large_file_contents = six.StringIO('abcd' * (1024 * 1024 * 10))
+        large_file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         small_file_contents = 'small file contents'
         self.put_object(from_bucket, 'largefile', large_file_contents)
         self.put_object(from_bucket, 'smallfile', small_file_contents)
@@ -228,8 +228,9 @@ class TestMoveCommand(BaseS3CLICommand):
     def test_mv_with_large_file(self):
         bucket_name = self.create_bucket()
         # 40MB will force a multipart upload.
-        file_contents = six.StringIO('abcd' * (1024 * 1024 * 10))
-        foo_txt = self.files.create_file('foo.txt', file_contents.getvalue())
+        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        foo_txt = self.files.create_file(
+            'foo.txt', file_contents.getvalue().decode('utf-8'))
         p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
         self.assert_no_errors(p)
         # When we move an object, the local file is gone:
@@ -323,7 +324,7 @@ class TestCp(BaseS3CLICommand):
     def test_cp_s3_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
-        file_contents = six.StringIO('abcd' * (1024 * 1024 * 10))
+        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
@@ -346,7 +347,7 @@ class TestCp(BaseS3CLICommand):
     def test_download_large_file(self):
         # This will force a multipart download.
         bucket_name = self.create_bucket()
-        foo_contents = six.StringIO('abcd' * (1024 * 1024 * 10))
+        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
         p = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt))
@@ -358,7 +359,7 @@ class TestCp(BaseS3CLICommand):
                     'SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = self.create_bucket()
-        foo_contents = six.StringIO('abcd' * (1024 * 1024 * 20))
+        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 20))
         self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
         process = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt), wait_for_finish=False)

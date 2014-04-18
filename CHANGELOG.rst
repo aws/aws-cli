@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue with sync re-uploading certain
+  files
+  (`issue 749 <https://github.com/aws/aws-cli/issues/749>`__)
 * bugfix:Text Output: Fix issue with inconsistent text output
   based on order
   (`issue 751 <https://github.com/aws/aws-cli/issues/751>`__)

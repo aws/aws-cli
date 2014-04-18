@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Output Format: Fix issue with encoding errors when
+  using text and table output and redirecting to a pipe or file
+  (`issue 742 <https://github.com/aws/aws-cli/issues/742>`__)
 * bugfix:``aws s3``: Fix issue with sync re-uploading certain
   files
   (`issue 749 <https://github.com/aws/aws-cli/issues/749>`__)

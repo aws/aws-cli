@@ -177,7 +177,8 @@ class CustomArgument(BaseCLIArgument):
 
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
-                 cli_type_name=None, group_name=None, positional_arg=False):
+                 cli_type_name=None, group_name=None, positional_arg=False,
+                 no_paramfile=False):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -191,6 +192,7 @@ class CustomArgument(BaseCLIArgument):
         if choices is None:
             choices = []
         self._choices = choices
+        self.no_paramfile = no_paramfile
         # TODO: We should eliminate this altogether.
         # You should not have to depend on an argument_object
         # as part of the interface.  Currently the argprocess
@@ -366,14 +368,6 @@ class CLIArgument(BaseCLIArgument):
     def _unpack_argument(self, value):
         service_name = self.operation_object.service.endpoint_prefix
         operation_name = xform_name(self.operation_object.name, '-')
-        # This is a two step process.  First we "load" the value.
-        value_override = self._emit_first_response(
-            'load-cli-arg.%s.%s' % (service_name, operation_name),
-            param=self.argument_object, value=value,
-            operation=self.operation_object)
-        if value_override is not None:
-            value = value_override
-        # Then we "process/parse" the argument.
         override = self._emit_first_response('process-cli-arg.%s.%s' % (
             service_name, operation_name), param=self.argument_object,
             value=value,

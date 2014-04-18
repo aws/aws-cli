@@ -20,4 +20,14 @@ else:
     import codecs
     import locale
     def get_stdout_text_writer():
+        # In python3, all the sys.stdout/sys.stderr streams are in text
+        # mode.  This means they expect unicode, and will encode the
+        # unicode automatically before actually writing to stdout/stderr.
+        # In python2, that's not the case.  In order to provide a consistent
+        # interface, we can create a wrapper around sys.stdout that will take
+        # unicode, and automatically encode it to the preferred encoding.
+        # That way consumers can just call get_stdout_text_writer() and write
+        # unicode to the returned stream.  Note that get_stdout_text_writer
+        # just returns sys.stdout in the PY3 section above because python3
+        # handles this.
         return codecs.getwriter(locale.getpreferredencoding())(sys.stdout)

@@ -160,6 +160,15 @@ class FakeSession(object):
         return self.credentials
 
 
+class FakeCommand(BasicCommand):
+    def _run_main(self, args, parsed_globals):
+        # We just return success. If this code is reached, it means that
+        # all the logic in the __call__ method has sucessfully been run.
+        # We subclass it here because the default implementation raises
+        # an exception and we don't want that behavior.
+        return 0
+
+
 class TestCliDriver(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
@@ -315,6 +324,22 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.get_endpoint_args = (args, kwargs)
         self.real_get_endpoint(*args, **kwargs)
 
+    def inject_new_param(self, argument_table, **kwargs):
+        argument = CustomArgument('unknown-arg', {})
+        argument.add_to_arg_table(argument_table)
+
+    def inject_new_param_no_paramfile(self, argument_table, **kwargs):
+        argument = CustomArgument('unknown-arg', no_paramfile=True)
+        argument.add_to_arg_table(argument_table)
+
+    def inject_command(self, command_table, session, **kwargs):
+        command = FakeCommand(session)
+        command.NAME = 'foo'
+        command.ARG_TABLE = [
+            {'name': 'bar', 'action': 'store'}
+        ]
+        command_table['foo'] = command
+
     def test_aws_with_endpoint_url(self):
         with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
             http_response = models.Response()
@@ -409,10 +434,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                                     endpoint_url=None,
                                     verify=False)
 
-    def inject_new_param(self, argument_table, **kwargs):
-        argument = CustomArgument('unknown-arg', {})
-        argument.add_to_arg_table(argument_table)
-
     def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()
         # --unknown-foo is an known arg, so we expect a 255 rc.
@@ -443,13 +464,8 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
     def test_custom_arg_paramfile(self):
-        def uri_param(param, value, **kwargs):
-            if value is not None and value.startswith('file://'):
-                return '{"hello": "world"}'
-            return
-
-        with mock.patch('awscli.handlers.uri_param', side_effect=uri_param)\
-                as uri_param_mock:
+        with mock.patch('awscli.handlers.uri_param',
+                        return_value=None) as uri_param_mock:
             driver = create_clidriver()
             driver.session.register(
                 'building-argument-table', self.inject_new_param)
@@ -466,27 +482,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.assertEqual('file:///foo',
                              uri_param_mock.call_args_list[-1][1]['value'])
 
-    def _inject_command(self, command_table, session, **kwargs):
-        command = BasicCommand(session)
-        command.NAME = 'foo'
-        command.ARG_TABLE = [
-            {'name': 'bar', 'action': 'store'}
-        ]
-        # Return zero if everything else worked
-        command._run_main = lambda args, parsed_globals: 0
-        command_table['foo'] = command
-
     def test_custom_command_paramfile(self):
-        def uri_param(param, value, **kwargs):
-            if value is not None and value.startswith('file://'):
-                return '{"hello": "world"}'
-            return
-
-        with mock.patch('awscli.handlers.uri_param', side_effect=uri_param)\
-                as uri_param_mock:
+        with mock.patch('awscli.handlers.uri_param',
+                        return_value=None) as uri_param_mock:
             driver = create_clidriver()
             driver.session.register(
-                'building-command-table', self._inject_command)
+                'building-command-table', self.inject_command)
 
             self.patch_make_request()
             rc = driver.main(
@@ -495,10 +496,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.assertEqual(rc, 0)
 
             uri_param_mock.assert_called()
-
-    def inject_new_param_no_paramfile(self, argument_table, **kwargs):
-        argument = CustomArgument('unknown-arg', no_paramfile=True)
-        argument.add_to_arg_table(argument_table)
 
     def test_custom_arg_no_paramfile(self):
         driver = create_clidriver()

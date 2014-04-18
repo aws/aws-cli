@@ -116,7 +116,7 @@ class BasicCommand(CLICommand):
             setattr(parsed_args, key, unpack_argument(
                 self._session,
                 'custom',
-                self,
+                self.name,
                 param,
                 value
             ))

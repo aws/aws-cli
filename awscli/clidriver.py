@@ -471,12 +471,13 @@ class ServiceOperation(object):
         # load-cli-arg.service-name.operation-name event.
         session = self._service_object.session
         service_name = self._service_object.endpoint_prefix
+        operation_name = xform_name(self._operation_object.name, '-')
 
         param = arg_object
         if hasattr(param, 'argument_object') and param.argument_object:
             param = param.argument_object
 
-        return unpack_argument(session, service_name, self._operation_object,
+        return unpack_argument(session, service_name, operation_name,
                                param, value)
 
     def _create_argument_table(self):

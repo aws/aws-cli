@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.7
+=====
 
 * bugfix:Output Format: Fix issue with encoding errors when
   using text and table output and redirecting to a pipe or file

@@ -35,6 +35,7 @@ from awscli.arguments import ListArgument
 from awscli.arguments import BooleanArgument
 from awscli.arguments import CLIArgument
 from awscli.arguments import UnknownArgumentError
+from awscli.argprocess import unpack_argument
 
 
 LOG = logging.getLogger('awscli.clidriver')
@@ -460,8 +461,24 @@ class ServiceOperation(object):
         for arg_name, arg_object in arg_table.items():
             py_name = arg_object.py_name
             if py_name in parsed_args:
-                arg_object.add_to_params(service_params, parsed_args[py_name])
+                value = parsed_args[py_name]
+                value = self._unpack_arg(arg_object, value)
+                arg_object.add_to_params(service_params, value)
         return service_params
+
+    def _unpack_arg(self, arg_object, value):
+        # Unpacks a commandline argument into a Python value by firing the
+        # load-cli-arg.service-name.operation-name event.
+        session = self._service_object.session
+        service_name = self._service_object.endpoint_prefix
+        operation_name = xform_name(self._operation_object.name, '-')
+
+        param = arg_object
+        if hasattr(param, 'argument_object') and param.argument_object:
+            param = param.argument_object
+
+        return unpack_argument(session, service_name, operation_name,
+                               param, value)
 
     def _create_argument_table(self):
         argument_table = OrderedDict()

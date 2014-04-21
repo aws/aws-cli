@@ -2,6 +2,30 @@
 CHANGELOG
 =========
 
+1.3.7
+=====
+
+* bugfix:Output Format: Fix issue with encoding errors when
+  using text and table output and redirecting to a pipe or file
+  (`issue 742 <https://github.com/aws/aws-cli/issues/742>`__)
+* bugfix:``aws s3``: Fix issue with sync re-uploading certain
+  files
+  (`issue 749 <https://github.com/aws/aws-cli/issues/749>`__)
+* bugfix:Text Output: Fix issue with inconsistent text output
+  based on order
+  (`issue 751 <https://github.com/aws/aws-cli/issues/751>`__)
+* bugfix:``aws datapipeline``: Fix issue for aggregating keys into
+  a list when calling ``aws datapipeline get-pipeline-definition``
+  (`issue 750 <https://github.com/aws/aws-cli/pull/750>`__)
+* bugfix:``aws s3``: Fix issue when running out of disk
+  space during ``aws s3`` transfers
+  (`issue 739 <https://github.com/aws/aws-cli/issues/739>`__)
+* feature:``aws s3 sync``: Add ``--size-only`` param to the
+  ``aws s3 sync`` command
+  (`issue 472 <https://github.com/aws/aws-cli/issues/473>`__,
+   `issue 719 <https://github.com/aws/aws-cli/pull/719>`__)
+
+
 1.3.6
 =====
 

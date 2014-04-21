@@ -6,11 +6,13 @@ import ntpath
 
 import mock
 
+from botocore.hooks import HierarchicalEmitter
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
 from awscli.customizations.s3.utils import ReadFileChunk
 from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import BucketLister
+from awscli.customizations.s3.utils import ScopedEventHandler
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -196,13 +198,23 @@ class TestStablePriorityQueue(unittest.TestCase):
 class TestBucketList(unittest.TestCase):
     def setUp(self):
         self.operation = mock.Mock()
+        self.emitter = HierarchicalEmitter()
+        self.operation.session.register = self.emitter.register
+        self.operation.session.unregister = self.emitter.unregister
         self.endpoint = mock.sentinel.endpoint
         self.date_parser = mock.Mock()
         self.date_parser.return_value = mock.sentinel.now
+        self.responses = []
+
+    def fake_paginate(self, *args, **kwargs):
+        for response in self.responses:
+            self.emitter.emit('after-call.s3.ListObjects', parsed=response[1])
+        return self.responses
 
     def test_list_objects(self):
         now = mock.sentinel.now
-        self.operation.paginate.return_value = [
+        self.operation.paginate = self.fake_paginate
+        self.responses = [
             (None, {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
                  'Key': 'a', 'Size': 1},
@@ -224,7 +236,8 @@ class TestBucketList(unittest.TestCase):
         # them before yielding them.  For example, note the %0D
         # in bar.txt:
         now = mock.sentinel.now
-        self.operation.paginate.return_value = [
+        self.operation.paginate = self.fake_paginate
+        self.responses = [
             (None, {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
                  'Key': 'bar%0D.txt', 'Size': 1}]}),
@@ -236,7 +249,8 @@ class TestBucketList(unittest.TestCase):
 
     def test_urlencoded_with_unicode_keys(self):
         now = mock.sentinel.now
-        self.operation.paginate.return_value = [
+        self.operation.paginate = self.fake_paginate
+        self.responses = [
             (None, {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
                  'Key': '%E2%9C%93', 'Size': 1}]}),
@@ -245,6 +259,16 @@ class TestBucketList(unittest.TestCase):
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
         self.assertEqual(objects, [(u'foo/\u2713', 1, now)])
+
+
+class TestScopedEventHandler(unittest.TestCase):
+    def test_scoped_session_handler(self):
+        session = mock.Mock()
+        scoped = ScopedEventHandler(session, 'eventname', 'handler')
+        with scoped:
+            session.register.assert_called_with('eventname', 'handler')
+        session.unregister.assert_called_with('eventname', 'handler')
+
 
 if __name__ == "__main__":
     unittest.main()

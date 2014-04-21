@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -25,6 +24,7 @@ import time
 import signal
 
 import botocore.session
+import six
 
 from tests.integration import aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
@@ -67,6 +67,17 @@ class BaseS3CLICommand(unittest.TestCase):
     def extra_teardown(self):
         # Subclasses can use this to define extra teardown steps.
         pass
+
+    def assert_key_contents_equal(self, bucket, key, expected_contents):
+        if isinstance(expected_contents, six.BytesIO):
+            expected_contents = expected_contents.getvalue().decode('utf-8')
+        actual_contents = self.get_key_contents(bucket, key)
+        # The contents can be huge so we try to give helpful error messages
+        # without necessarily printing the actual contents.
+        self.assertEqual(len(actual_contents), len(expected_contents))
+        if actual_contents != expected_contents:
+            self.fail("Contents for %s/%s do not match (but they "
+                      "have the same length)" % (bucket, key))
 
     def create_bucket(self):
         bucket_name = _create_bucket(self.session)
@@ -147,8 +158,7 @@ class TestMoveCommand(BaseS3CLICommand):
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(full_path))
         # And now resides in s3.
-        contents = self.get_key_contents(bucket_name, 'foo.txt')
-        self.assertEqual(contents, 'this is foo.txt')
+        self.assert_key_contents_equal(bucket_name, 'foo.txt', 'this is foo.txt')
 
     def test_mv_s3_to_local(self):
         bucket_name = self.create_bucket()
@@ -179,14 +189,13 @@ class TestMoveCommand(BaseS3CLICommand):
     def test_mv_s3_to_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
-        file_contents = 'abcd' * (1024 * 1024 * 10)
+        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
                                                            to_bucket))
         self.assert_no_errors(p)
-        contents = self.get_key_contents(to_bucket, 'foo.txt')
-        self.assertEqual(contents, file_contents)
+        self.assert_key_contents_equal(to_bucket, 'foo.txt', file_contents)
         # And verify that the object no longer exists in the from_bucket.
         self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
 
@@ -194,7 +203,7 @@ class TestMoveCommand(BaseS3CLICommand):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
 
-        large_file_contents = 'abcd' * (1024 * 1024 * 10)
+        large_file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         small_file_contents = 'small file contents'
         self.put_object(from_bucket, 'largefile', large_file_contents)
         self.put_object(from_bucket, 'smallfile', small_file_contents)
@@ -211,29 +220,29 @@ class TestMoveCommand(BaseS3CLICommand):
         self.assertTrue(self.key_exists(to_bucket, key_name='smallfile'))
 
         # And the contents are what we expect.
-        self.assertEqual(self.get_key_contents(to_bucket, 'smallfile'),
-                         small_file_contents)
-        self.assertEqual(self.get_key_contents(to_bucket, 'largefile'),
-                         large_file_contents)
+        self.assert_key_contents_equal(to_bucket, 'smallfile',
+                                       small_file_contents)
+        self.assert_key_contents_equal(to_bucket, 'largefile',
+                                       large_file_contents)
 
     def test_mv_with_large_file(self):
         bucket_name = self.create_bucket()
         # 40MB will force a multipart upload.
-        file_contents = 'abcd' * (1024 * 1024 * 10)
-        foo_txt = self.files.create_file('foo.txt', file_contents)
+        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        foo_txt = self.files.create_file(
+            'foo.txt', file_contents.getvalue().decode('utf-8'))
         p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
         self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(foo_txt))
         # And now resides in s3.
-        contents = self.get_key_contents(bucket_name, 'foo.txt')
-        self.assertEqual(len(contents), len(file_contents))
+        self.assert_key_contents_equal(bucket_name, 'foo.txt', file_contents)
 
         # Now verify we can download this file.
         p = aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, foo_txt))
         self.assert_no_errors(p)
         self.assertTrue(os.path.exists(foo_txt))
-        self.assertEqual(os.path.getsize(foo_txt), len(file_contents))
+        self.assertEqual(os.path.getsize(foo_txt), len(file_contents.getvalue()))
 
     def test_mv_to_nonexistent_bucket(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
@@ -315,16 +324,12 @@ class TestCp(BaseS3CLICommand):
     def test_cp_s3_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
-        file_contents = 'abcd' * (1024 * 1024 * 10)
+        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
         self.assert_no_errors(p)
-        contents = self.get_key_contents(to_bucket, 'foo.txt')
-        # Don't use assertEqual() here, this will spit out a huge
-        # 20mb diff of 'abcd' chars.  Just let the user know we failed.
-        if contents != file_contents:
-            self.fail("Downlaoded contents of 10mb file are not the same.")
+        self.assert_key_contents_equal(to_bucket, 'foo.txt', file_contents)
         self.assertTrue(self.key_exists(from_bucket, key_name='foo.txt'))
 
     def test_guess_mime_type(self):
@@ -342,18 +347,19 @@ class TestCp(BaseS3CLICommand):
     def test_download_large_file(self):
         # This will force a multipart download.
         bucket_name = self.create_bucket()
-        foo_contents = 'abcd' * (1024 * 1024 * 10)
+        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
         p = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt))
         self.assert_no_errors(p)
-        self.assertEqual(os.path.getsize(local_foo_txt), len(foo_contents))
+        self.assertEqual(os.path.getsize(local_foo_txt),
+                         len(foo_contents.getvalue()))
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                     'SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = self.create_bucket()
-        foo_contents = 'abcd' * (1024 * 1024 * 20)
+        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 20))
         self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
         process = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt), wait_for_finish=False)
@@ -398,6 +404,23 @@ class TestCp(BaseS3CLICommand):
 
 
 class TestSync(BaseS3CLICommand):
+    def test_sync_with_plus_chars(self):
+        # 1. Create > 1000 files with '+' in the filename.
+        # 2. Sync up to s3.
+        # 3. Sync up to s3
+        # 4. Verify nothing was synced up down from s3 in step 3.
+        bucket_name = self.create_bucket()
+        filenames = []
+        for i in range(2000):
+            # Create a file with a space char and a '+' char in the filename.
+            filenames.append(self.files.create_file('foo +%06d' % i, contents=''))
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        time.sleep(1)
+        p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assertNotIn('upload:', p2.stdout)
+        self.assertEqual('', p2.stdout)
+
     def test_sync_to_from_s3(self):
         bucket_name = self.create_bucket()
         foo_txt = self.files.create_file('foo.txt', 'foo contents')

@@ -1,9 +1,10 @@
 **To describe instances**
 
-The following ``describe-instances`` commmand describes the instances in a stack, whose ID is
-``38ee91e2-abdc-4208-a107-0b7168b3cc7a``::
+The following ``describe-instances`` commmand describes the instances in a specified stack::
 
-  aws opsworks describe-instances --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+  aws opsworks --region us-east-1 describe-instances --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+
+**Note**: OpsWorks CLI commands should set the region to us-east-1, regardless of the stack's location.
 
 Output::
 

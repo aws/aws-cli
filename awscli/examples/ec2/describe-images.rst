@@ -46,4 +46,4 @@ This example describes Windows AMIs provided by Amazon that are backed by Amazon
 
 Command::
 
-  aws ec2 describe-images --filters "Name=is-public,Values=true,Name=owner-alias,Values=amazon,Name=platform,Values=Windows,Name=root-device-type,Values=ebs"
+  aws ec2 describe-images --filters "Name=is-public,Values=true" "Name=owner-alias,Values=amazon" "Name=platform,Values=Windows" "Name=root-device-type,Values=ebs"

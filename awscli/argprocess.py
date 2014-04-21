@@ -47,6 +47,30 @@ class ParamUnknownKeyError(Exception):
         super(ParamUnknownKeyError, self).__init__(full_message)
 
 
+def unpack_argument(session, service_name, operation_name, param, value):
+    """
+    Unpack an argument's value from the commandline. This is part one of a two
+    step process in handling commandline arguments. Emits the load-cli-arg
+    event with service, operation, and parameter names. Example::
+
+        load-cli-arg.ec2.describe-instances.foo
+
+    """
+    param_name = getattr(param, 'name', 'anonymous')
+
+    value_override = session.emit_first_non_none_response(
+        'load-cli-arg.%s.%s.%s' % (service_name,
+                                   operation_name,
+                                   param_name),
+        param=param, value=value, service_name=service_name,
+        operation_name=operation_name)
+
+    if value_override is not None:
+        value = value_override
+
+    return value
+
+
 def uri_param(param, value, **kwargs):
     """Handler that supports param values from URIs.
     """

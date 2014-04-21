@@ -12,13 +12,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from tests.unit import BaseAWSCommandParamsTest
+from tests import unittest
 import json
 import os
 import sys
 import re
+import locale
 
 from six.moves import cStringIO
+import six
 import mock
+
+from awscli.formatter import Formatter
 
 
 class TestListUsers(BaseAWSCommandParamsTest):
@@ -73,3 +78,22 @@ class TestListUsers(BaseAWSCommandParamsTest):
         self.assertEqual(
             output,
             'ENGINEDEFAULTS\tNone\n')
+
+
+class CustomFormatter(Formatter):
+    def __call__(self, operation, response, stream=None):
+        self.stream = self._get_default_stream()
+
+
+class TestDefaultStream(BaseAWSCommandParamsTest):
+    @unittest.skipIf(six.PY3, "Text writer only vaild on py3.")
+    def test_default_stream_with_table_output(self):
+        formatter = CustomFormatter(None)
+        stream = cStringIO()
+        with mock.patch('sys.stdout', stream):
+            formatter(None, None)
+            formatter.stream.write(u'\u00e9')
+        # Ensure the unicode data is written as UTF-8 by default.
+        self.assertEqual(
+            formatter.stream.getvalue(),
+            u'\u00e9'.encode(locale.getpreferredencoding()))

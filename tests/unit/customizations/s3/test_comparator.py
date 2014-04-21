@@ -300,5 +300,56 @@ class ComparatorTest(unittest.TestCase):
         self.assertEqual(result_list, ref_list)
 
 
+class ComparatorSizeOnlyTest(unittest.TestCase):
+    def setUp(self):
+        self.comparator = Comparator({'delete': True, 'size_only': True})
+
+    def test_compare_size_only_dest_older_than_src(self):
+        """
+        Confirm that files with the same size but different update times are not
+        synced when `size_only` is set.
+        """
+        time_src = datetime.datetime.now()
+        time_dst = time_src + datetime.timedelta(days=1)
+
+        src_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_src, src_type='local',
+                            dest_type='s3', operation_name='upload',
+                            service=None, endpoint=None)
+
+        dst_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_dst, src_type='s3',
+                            dest_type='local', operation_name='',
+                            service=None, endpoint=None)
+
+        files = self.comparator.call(iter([src_file]), iter([dst_file]))
+        self.assertEqual(sum(1 for _ in files), 0)
+
+    def test_compare_size_only_src_older_than_dest(self):
+        """
+        Confirm that files with the same size but different update times are not
+        synced when `size_only` is set.
+        """
+        time_dst = datetime.datetime.now()
+        time_src = time_dst + datetime.timedelta(days=1)
+
+        src_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_src, src_type='local',
+                            dest_type='s3', operation_name='upload',
+                            service=None, endpoint=None)
+
+        dst_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_dst, src_type='s3',
+                            dest_type='local', operation_name='',
+                            service=None, endpoint=None)
+
+        files = self.comparator.call(iter([src_file]), iter([dst_file]))
+        self.assertEqual(sum(1 for _ in files), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

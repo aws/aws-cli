@@ -65,11 +65,13 @@ Directory and S3 Prefix Operations
 Some commands only perform operations on the contents of a local directory
 or S3 prefix/bucket.  Adding or omitting a forward slash or back slash to
 the end of any path argument, depending on its type, does not affect the
-results of the operation.  The following features will always result in
-a directory or S3 prefix/bucket operation.
+results of the operation.  The following commands will always result in
+a directory or S3 prefix/bucket operation:
 
-    * commands: ``sync``, ``mb``, ``rb``, ``ls``
-    * parameters: ``--recursive``
+* ``sync``
+* ``mb``
+* ``rb``
+* ``ls``
 
 
 Use of Exclude and Include Filters

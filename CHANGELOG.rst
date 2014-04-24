@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.8
+=====
 
 * feature:``aws autoscaling``: Add support for launching Dedicated Instances
   in Amazon Virtual Private Cloud

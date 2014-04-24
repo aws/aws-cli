@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.3.8
+=====
+
+* feature:``aws autoscaling``: Add support for launching Dedicated Instances
+  in Amazon Virtual Private Cloud
+* feature:``aws elasticache``: Add support to backup and restore for Redis
+  clusters
+* feature:``aws dynamodb``: Update ``aws dynamodb`` command to the latest API
+
 1.3.7
 =====
 

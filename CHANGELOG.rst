@@ -9,6 +9,7 @@ Next Release (TBD)
   in Amazon Virtual Private Cloud
 * feature:``aws elasticache``: Add support to backup and restore for Redis
   clusters
+* feature:``aws dynamodb``: Update ``aws dynamodb`` command to the latest API
 
 1.3.7
 =====

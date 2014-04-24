@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws autoscaling``: Add support for launching Dedicated Instances
+  in Amazon Virtual Private Cloud
+* feature:``aws elasticache``: Add support to backup and restore for Redis
+  clusters
+
 1.3.7
 =====
 

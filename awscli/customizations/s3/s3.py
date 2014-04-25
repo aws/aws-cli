@@ -796,7 +796,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                                 'sse', 'storage-class', 'content-type',
                                 'cache-control', 'content-disposition',
                                 'content-encoding', 'content-language',
-                                'expires', 'size-only']},
+                                'expires', 'size-only', 'time-only']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
                    'params': ['recursive'], 'default': 's3://',
                    'command_class': ListCommand},
@@ -849,6 +849,9 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'expires': {'options': {'nargs': 1}},
                'size-only': {'options': {'action': 'store_true'}, 'documents':
                    ('Makes the size of each key the only criteria used to '
+                    'decide whether to sync from source to destination.')},
+               'time-only': {'options': {'action': 'store_true'}, 'documents':
+                   ('Makes the time of each key the only criteria used to '
                     'decide whether to sync from source to destination.')},
                'index-document': {'options': {}, 'documents':
                    ('A suffix that is appended to a request that is for a '

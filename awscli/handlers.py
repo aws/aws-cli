@@ -58,6 +58,7 @@ from awscli.customizations.configservice.getstatus import register_get_status
 from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
 from awscli.customizations.scalarparse import register_scalar_parser
+from awscli.customizations.opsworks import initialize as opsworks_init
 
 
 def awscli_initialize(event_handlers):
@@ -118,3 +119,4 @@ def awscli_initialize(event_handlers):
     register_get_status(event_handlers)
     register_rename_config(event_handlers)
     register_scalar_parser(event_handlers)
+    opsworks_init(event_handlers)

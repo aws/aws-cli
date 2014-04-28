@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3api``: Fix issue when setting metadata on an S3 object
+  (`issue 356 <https://github.com/aws/aws-cli/issues/356>`__)
+
 1.3.8
 =====
 

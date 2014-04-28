@@ -26,6 +26,11 @@ ARGUMENT_RENAMES = {
     'ec2.create-image.no-no-reboot': 'reboot',
     'ec2.*.no-egress': 'ingress',
     'ec2.*.no-disable-api-termination': 'enable-api-termination',
+    'opsworks.*.region': 'stack-region',
+    'elastictranscoder.*.output': 'job-output',
+    'swf.register-activity-type.version': 'activity-version',
+    'swf.register-workflow-type.version': 'workflow-version',
+    'datapipeline.*.query': 'objects-query',
 }
 
 

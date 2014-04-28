@@ -63,7 +63,7 @@ Next Release (TBD)
   ``aws iam``, and ``aws ses``
   (`issue 729 <https://github.com/aws/aws-cli/pull/729>`__)
 * bugfix:``aws s3``: Fix issue with fips-us-gov-west-1 endpoint
-  (`issue botocore 265 (https://github.com/boto/botocore/pull/265)`__)
+  (`issue botocore 265 <https://github.com/boto/botocore/pull/265>`__)
 * bugfix:Table Output: Fix issue when displaying unicode
   characters in table output
   (`issue 721 <https://github.com/aws/aws-cli/pull/721>`__)
@@ -279,7 +279,7 @@ Next Release (TBD)
   (`issue 508 <https://github.com/aws/aws-cli/issues/508>`__)
 * Fix bug when filtering ``s3://`` locations with the
   ``--include/--exclude`` params
-  (issue 531 <https://github.com/aws/aws-cli/pull/531>`__)
+  (`issue 531 <https://github.com/aws/aws-cli/pull/531>`__)
 * Fix an issue with map type parameters raising uncaught
   exceptions in commands such as `sns create-platform-application`
   (`issue 407 <https://github.com/aws/aws-cli/issues/407>`__)

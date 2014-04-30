@@ -128,7 +128,7 @@ class CLIDriver(object):
                     # Assume it's a reference like
                     # "{provider}/_regions", so first resolve
                     # the provider.
-                    provider = self.session.get_variable('provider')
+                    provider = self.session.get_config_variable('provider')
                     # The grab the var from the session
                     choices_path = choices.format(provider=provider)
                     choices = list(self.session.get_data(choices_path))
@@ -549,6 +549,6 @@ class CLIOperationCaller(object):
     def _display_response(self, operation, response, args):
         output = args.output
         if output is None:
-            output = self._session.get_variable('output')
+            output = self._session.get_config_variable('output')
         formatter = get_formatter(output, args)
         formatter(operation, response)

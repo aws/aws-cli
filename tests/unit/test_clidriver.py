@@ -113,7 +113,7 @@ class FakeSession(object):
     def get_data(self, name):
         return GET_DATA[name]
 
-    def get_variable(self, name):
+    def get_config_variable(self, name):
         return GET_VARIABLE[name]
 
     def get_service(self, name):

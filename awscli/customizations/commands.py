@@ -1,7 +1,9 @@
+import logging
 import os
 
 import bcdoc.docevents
 from botocore.compat import OrderedDict
+from botocore.parameters import ListParameter, StructParameter
 
 import awscli
 from awscli.clidocs import CLIDocumentEventHandler
@@ -10,6 +12,10 @@ from awscli.argprocess import unpack_argument
 from awscli.clidriver import CLICommand
 from awscli.arguments import CustomArgument
 from awscli.help import HelpCommand
+from awscli.schema import SchemaTransformer
+
+
+LOG = logging.getLogger(__name__)
 
 
 class _FromFile(object):
@@ -113,13 +119,42 @@ class BasicCommand(CLICommand):
             if key in arg_table:
                 param = arg_table[key]
 
-            setattr(parsed_args, key, unpack_argument(
+            value = unpack_argument(
                 self._session,
                 'custom',
                 self.name,
                 param,
                 value
-            ))
+            )
+
+            # If this parameter has a schema defined, then allow plugins
+            # a chance to process and override its value.
+            if param and param.schema is not None:
+                transformer = SchemaTransformer(param.schema)
+                transformed = transformer.transform()
+
+                # Set the parameter name from the parsed arg key name
+                transformed.update({'name': key})
+
+                LOG.debug('Custom parameter schema: {0}'.format(transformed))
+
+                # Select the correct top level type
+                if transformed['type'] == 'structure':
+                    param_object = StructParameter(None, **transformed)
+                elif transformed['type'] == 'list':
+                    param_object = ListParameter(None, **transformed)
+
+                # Allow a single event handler to process the value
+                override = self._session\
+                    .emit_first_non_none_response(
+                        'process-cli-arg.%s.%s' % ('custom', self.name),
+                        param=param_object, value=value, operation=None)
+
+                if override is not None:
+                    # A plugin supplied a conversion
+                    value = override
+
+            setattr(parsed_args, key, value)
 
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)

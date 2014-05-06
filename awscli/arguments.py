@@ -178,7 +178,7 @@ class CustomArgument(BaseCLIArgument):
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
                  cli_type_name=None, group_name=None, positional_arg=False,
-                 no_paramfile=False):
+                 no_paramfile=False, schema=None):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -193,6 +193,13 @@ class CustomArgument(BaseCLIArgument):
             choices = []
         self._choices = choices
         self.no_paramfile = no_paramfile
+        self.schema = schema
+
+        # If the top level element is a list then set nargs to
+        # accept multiple values seperated by a space.
+        if self.schema and self.schema.get('type', None) == 'array':
+            self._nargs = '+'
+
         # TODO: We should eliminate this altogether.
         # You should not have to depend on an argument_object
         # as part of the interface.  Currently the argprocess

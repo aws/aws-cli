@@ -4,7 +4,7 @@ This example command describes a snapshot with the snapshot ID of ``snap-1234abc
 
 Command::
 
-  aws ec2 describe-snapshot --snapshot-id snap-1234abcd
+  aws ec2 describe-snapshots --snapshot-id snap-1234abcd
 
 Output::
 

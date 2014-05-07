@@ -193,6 +193,7 @@ class ParamShorthand(object):
                       "param shorthand.", param.py_name)
             return
         structure = detect_shape_structure(param)
+        LOG.debug('Detected structure: {0}'.format(structure))
         parse_method = self.SHORTHAND_SHAPES.get(structure)
         return parse_method
 

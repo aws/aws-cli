@@ -116,8 +116,13 @@ class BasicCommand(CLICommand):
         # Unpack arguments
         for key, value in vars(parsed_args).items():
             param = None
-            if key in arg_table:
-                param = arg_table[key]
+
+            # Convert the name to use dashes instead of underscore
+            # as these are how the parameters are stored in the
+            # `arg_table`.
+            xformed = key.replace('_', '-')
+            if xformed in arg_table:
+                param = arg_table[xformed]
 
             value = unpack_argument(
                 self._session,

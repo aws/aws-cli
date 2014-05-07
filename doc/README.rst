@@ -4,6 +4,8 @@ Building The Documentation
 
 The process for building the documention is:
 
+* Ensure Sphinx is installed, ``pip install sphinx``.
+
 * Run ``make html`` which will build all of the HTML documentation
   into the ``build/html`` directory.
 

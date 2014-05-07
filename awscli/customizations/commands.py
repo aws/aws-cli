@@ -134,7 +134,7 @@ class BasicCommand(CLICommand):
 
             # If this parameter has a schema defined, then allow plugins
             # a chance to process and override its value.
-            if param and param.schema is not None:
+            if param and param.schema is not None and value is not None:
                 transformer = SchemaTransformer(param.schema)
                 transformed = transformer.transform()
 

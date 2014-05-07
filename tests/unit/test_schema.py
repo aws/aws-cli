@@ -14,6 +14,11 @@ import unittest
 
 from awscli.schema import ParameterRequiredError, SchemaTransformer
 
+"""
+Note: this schema is currently not supported by the ParamShorthand
+parser due to its complexity, but is tested here to ensure the
+robustness of the transformer.
+"""
 INPUT_SCHEMA = {
     "type": "array",
     "items": {
@@ -21,28 +26,48 @@ INPUT_SCHEMA = {
         "properties": {
             "Name": {
                 "type": "string",
-                "description": "Instance group name",
-                "required": True
+                "description": "The name of the step. ",
             },
-            "Market": {
+            "Jar": {
                 "type": "string",
-                "description": "On-demand or spot instance market",
-                "enum": ["ONDEMAND", "SPOT"],
-                "default": "ONDEMAND"
+                "description": "A path to a JAR file run during the step.",
             },
-            "InstanceRole": {
+            "Args": {
+                "type": "array",
+                "description":
+                    "A list of command line arguments to pass to the step.",
+                "items": {
+                        "type": "string"
+                    }
+            },
+            "MainClass": {
                 "type": "string",
-                "description": "Master, core or task role for instances",
-                "enum": ["MASTER", "CORE", "TASK"]
+                "description":
+                    "The name of the main class in the specified "
+                    "Java file. If not specified, the JAR file should "
+                    "specify a Main-Class in its manifest file."
             },
-            "BidPrice": {
-                "type": "string"
-            },
-            "InstanceType": {
-                "type": "string"
-            },
-            "InstanceCount": {
-                "type": "integer"
+            "Properties": {
+                "type": "array",
+                "description":
+                    "A list of Java properties that are set when the step "
+                    "runs. You can use these properties to pass key value "
+                    "pairs to your main function.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "Key":{
+                            "type": "string",
+                            "description":
+                                "The unique identifier of a key value pair."
+                        },
+                        "Value": {
+                            "type": "string",
+                            "description":
+                                "The value part of the identified key."
+                        }
+                    }
+                }
             }
         }
     }
@@ -55,27 +80,48 @@ EXPECTED_OUTPUT = {
         "members": {
             "Name": {
                 "type": "string",
-                "description": "Instance group name",
-                "required": True
+                "description": "The name of the step. ",
             },
-            "Market": {
+            "Jar": {
                 "type": "string",
-                "description": "On-demand or spot instance market",
-                "enum": ["ONDEMAND", "SPOT"]
+                "description": "A path to a JAR file run during the step.",
             },
-            "InstanceRole": {
+            "Args": {
+                "type": "list",
+                "description":
+                    "A list of command line arguments to pass to the step.",
+                "members": {
+                    "type": "string"
+                }
+            },
+            "MainClass": {
                 "type": "string",
-                "description": "Master, core or task role for instances",
-                "enum": ["MASTER", "CORE", "TASK"]
+                "description":
+                    "The name of the main class in the specified "
+                    "Java file. If not specified, the JAR file should "
+                    "specify a Main-Class in its manifest file."
             },
-            "BidPrice": {
-                "type": "string"
-            },
-            "InstanceType": {
-                "type": "string"
-            },
-            "InstanceCount": {
-                "type": "integer"
+            "Properties": {
+                "type": "list",
+                "description":
+                    "A list of Java properties that are set when the step "
+                    "runs. You can use these properties to pass key value "
+                    "pairs to your main function.",
+                "members": {
+                    "type": "structure",
+                    "members": {
+                        "Key":{
+                            "type": "string",
+                            "description":
+                                "The unique identifier of a key value pair."
+                        },
+                        "Value": {
+                            "type": "string",
+                            "description":
+                                "The value part of the identified key."
+                        }
+                    }
+                }
             }
         }
     }

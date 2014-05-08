@@ -555,11 +555,10 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 0)
 
         # Test missing require shorthand item
-        # TODO: currently does not work!
-        # rc = driver.main(
-        #     'ec2 foo --bar Count=4'.split())
+        rc = driver.main(
+            'ec2 foo --bar Count=4'.split())
 
-        # self.assertEqual(rc, 255)
+        self.assertEqual(rc, 255)
 
         # Test extra unknown shorthand item
         rc = driver.main(

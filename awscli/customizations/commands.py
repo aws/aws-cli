@@ -159,6 +159,9 @@ class BasicCommand(CLICommand):
                     # A plugin supplied a conversion
                     value = override
 
+                # Validate param types, required keys, etc
+                param_object.validate(value)
+
             setattr(parsed_args, key, value)
 
         if hasattr(parsed_args, 'help'):

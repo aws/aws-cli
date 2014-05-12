@@ -5,6 +5,11 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws cloudformation``: Add support for updated API
+
+1.3.9
+=====
+
 * feature:``aws sqs``: Add support for message attributes
 * bugfix:``aws s3api``: Fix issue when setting metadata on an S3 object
   (`issue 356 <https://github.com/aws/aws-cli/issues/356>`__)

@@ -30,7 +30,7 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
     def test_using_json(self):
         args = ('--namespace "Foo/Bar" '
                 '--metric-data [{"MetricName":"FreeMemoryBytes",'
-                '"Dimensions":[],"Unit":"Bytes",'
+                '"Unit":"Bytes",'
                 '"Timestamp":"2013-08-22T10:58:12.283Z",'
                 '"Value":9130160128}]')
         cmdline = self.prefix + args

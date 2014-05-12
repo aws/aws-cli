@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.10
+======
 
 * feature:``aws cloudformation``: Add support for updated API
 

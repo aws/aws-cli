@@ -14,6 +14,7 @@
 
 from awscli.customizations.commands import BasicCommand
 from awscli.clidriver import CLIOperationCaller
+from sets import Set
 
 import constants
 import emrutils
@@ -184,6 +185,9 @@ class CreateCluster(BasicCommand):
                 region=parsed_globals.region)
             self._update_cluster_dict(
                 cluster=params, key='Steps', value=steps_list)
+
+        self._validate_required_applications(parsed_args)
+
         cli_operation_caller = CLIOperationCaller(self._session)
         cli_operation_caller.invoke(
             emr.get_operation('RunJobFlow'), params, parsed_globals)
@@ -304,3 +308,40 @@ class CreateCluster(BasicCommand):
         elif value is not None and len(value) > 0:
             cluster[key] = value
         return cluster
+
+    # Checks if the applications required by steps are specified
+    # using the --applications option.
+    def _validate_required_applications(self, parsed_args):
+
+        specified_apps = Set([])
+        if parsed_args.applications is not None:
+            specified_apps = \
+                Set([app['Name'].lower() for app in parsed_args.applications])
+
+        missing_apps = self._get_missing_applications_for_steps(specified_apps,
+                                                                parsed_args)
+        # Check for HBase.
+        if parsed_args.restore_from_hbase_backup is not None:
+            if constants.HBASE not in specified_apps:
+                missing_apps.add(constants.HBASE.title())
+
+        if len(missing_apps) != 0:
+            raise exceptions.MissingApplicationsError(
+                applications=missing_apps)
+
+    def _get_missing_applications_for_steps(self, specified_apps, parsed_args):
+        allowed_app_steps = Set([constants.HIVE, constants.PIG,
+                                 constants.IMPALA])
+        missing_apps = Set([])
+        if parsed_args.steps is not None:
+            for step in parsed_args.steps:
+                if len(missing_apps) == len(allowed_app_steps):
+                    break
+                step_type = step.get('Type')
+
+                if step_type is not None:
+                    step_type = step_type.lower()
+                    if step_type in allowed_app_steps and \
+                            step_type not in specified_apps:
+                        missing_apps.add(step['Type'].title())
+        return missing_apps

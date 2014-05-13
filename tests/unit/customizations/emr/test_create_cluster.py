@@ -789,6 +789,46 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         ]
         self.assert_params_for_cmd(cmd, result)
 
+    def test_missing_applications_for_steps(self):
+        cmd = DEFAULT_CMD +\
+            '--steps Jar=s3://test/customJar.jar ' +\
+            'Type=HIVE,Args=-f,s3://test/hive ' +\
+            'Type=PIG,Version=latest,Args=-f,s3://test/pig ' +\
+            'Type=IMPALA,Args=--impala-script,s3://test/impala ' +\
+            'Type=Streaming,Args=-files,s3://test/mapper.py,-mapper,' +\
+            'mapper.py,-reducer,aggregator,-input,s3://test/input,-output,' +\
+            's3://test/output ' +\
+            'Type=PIG,Version=latest,Args=-f,s3://test/pig2 ' +\
+            'Type=IMPALA,Args=--impala-script,s3://test/impala2 ' +\
+            'Type=PIG,Version=latest,Args=-f,s3://test/pig3 ' +\
+            ' Jar=s3://test/customJar2.jar ' +\
+            ' --applications Name=Hive'
+
+        expected_error_msg = (
+            '\naws: error: Some of the steps require the following'
+            ' applications to be installed: Impala, Pig. '
+            'Please install the applications using --applications.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expected_error_msg, result[1])
+
+    def test_missing_applications_with_hbase(self):
+        cmd = DEFAULT_CMD +\
+            '--steps Jar=s3://test/customJar.jar ' +\
+            'Type=HIVE,Args=-f,s3://test/hive ' +\
+            'Type=PIG,Version=latest,Args=-f,s3://test/pig ' +\
+            'Type=IMPALA,Args=--impala-script,s3://test/impala ' +\
+            'Type=Streaming,Args=-files,s3://test/mapper.py,-mapper,' +\
+            'mapper.py,-reducer,aggregator,-input,s3://test/input,-output,' +\
+            's3://test/output' + ' --applications Name=Hive Name=Pig' +\
+            ' --restore-from-hbase-backup Dir=s3://myBucket/myDir'
+
+        expected_error_msg = (
+            '\naws: error: Some of the steps require the following'
+            ' applications to be installed: Hbase, Impala. '
+            'Please install the applications using --applications.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expected_error_msg, result[1])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -82,7 +82,6 @@ class UnkownIamEndpointError(EmrError):
     fmt = 'IAM endpoint not known for region: {region}.' +\
           ' Specify the iam-endpoint using the --iam-endpoint option.'
 
-
 class ResolveServicePrincipalError(EmrError):
     """
     The service principal could not be resolved from the region or the
@@ -150,3 +149,19 @@ class SubnetAndAzValidationError(EmrError):
     """
     fmt = ('aws: error: You may not specify both a SubnetId and an Availabili'
            'tyZone (placement) because ec2SubnetId implies a placement.')
+
+
+class MissingApplicationsError(EmrError):
+    """
+    The application required for a step is not installed when creating a
+    cluster.
+
+    :ivar applications
+    """
+
+    def __init__(self, **kwargs):
+        msg = ('aws: error: Some of the steps require the following'
+               ' applications to be installed: ' +
+               ', '.join(kwargs['applications']) + '. Please install the'
+               ' applications using --applications.')
+        Exception.__init__(self, msg)

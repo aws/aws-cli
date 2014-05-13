@@ -169,6 +169,16 @@ class FakeCommand(BasicCommand):
         return 0
 
 
+class FakeCommandVerify(FakeCommand):
+    def _run_main(self, args, parsed_globals):
+        # Verify passed arguments exist and then return success.
+        # This will fail if the expected structure is missing, e.g.
+        # if a string is passed in args instead of the expected
+        # structure from a custom schema.
+        assert args.bar[0]['Name'] == 'test'
+        return 0
+
+
 class TestCliDriver(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
@@ -341,7 +351,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         command_table['foo'] = command
 
     def inject_command_schema(self, command_table, session, **kwargs):
-        command = FakeCommand(session)
+        command = FakeCommandVerify(session)
         command.NAME = 'foo'
 
         # Build a schema using all the types we are interested in
@@ -562,7 +572,19 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
         # Test extra unknown shorthand item
         rc = driver.main(
-            'ec2 foo --bar Name=foo,Unknown='.split())
+            'ec2 foo --bar Name=test,Unknown='.split())
+
+        self.assertEqual(rc, 255)
+
+        # Test long form JSON
+        rc = driver.main(
+            'ec2 foo --bar {"Name":"test","Count":4}'.split())
+
+        self.assertEqual(rc, 0)
+
+        # Test malformed long form JSON
+        rc = driver.main(
+            'ec2 foo --bar {"Name":"test",Count:4}'.split())
 
         self.assertEqual(rc, 255)
 

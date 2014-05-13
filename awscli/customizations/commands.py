@@ -8,7 +8,7 @@ from botocore.parameters import ListParameter, StructParameter
 import awscli
 from awscli.clidocs import CLIDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
-from awscli.argprocess import unpack_argument
+from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.clidriver import CLICommand
 from awscli.arguments import CustomArgument
 from awscli.help import HelpCommand
@@ -158,6 +158,10 @@ class BasicCommand(CLICommand):
                 if override is not None:
                     # A plugin supplied a conversion
                     value = override
+                else:
+                    # Unpack the argument, which is a string, into the
+                    # correct Python type (dict, list, etc)
+                    value = unpack_cli_arg(param_object, value)
 
                 # Validate param types, required keys, etc
                 param_object.validate(value)

@@ -18,22 +18,22 @@ TERMINATE_CLUSTERS = (
     ' down, any step not yet completed is canceled and the EC2 instances in'
     ' the cluster are stopped. Any log files not already saved are uploaded to'
     ' Amazon S3 if a LogUri was specified when the cluster was created.'
-    ' \nThe command--terminate-clusters is asynchronous. Depending on the'
-    ' configuration of the cluster, it may take up to 5-20 minutes for the'
-    ' cluster to completely terminate and release allocated resources, such as'
+    " 'terminate-clusters' is asynchronous. Depending on the"
+    ' configuration of the cluster, it may take from 5 to 20 minutes for the'
+    ' cluster to completely terminate and release allocated resources such as'
     ' Amazon EC2 instances.')
 
 CLUSTER_ID = (
-    '<p>A string that uniquely identifies the cluster. This'
+    '<p>A unique string that identifies the cluster. This'
     ' identifier is returned by <code>create-cluster</code> and can also be'
     ' obtained from <code>list-clusters</code>.</p>')
 
 HBASE_BACKUP_DIR = (
-    '<p>S3 location of the backup.</p> Example:<p>'
+    '<p>Amazon S3 location of the Hbase backup.</p> Example:<p>'
     '<code>s3://mybucket/mybackup</code></p><p> where mybucket is the'
-    ' specified S3 bucket and mybackup is the specified backup location.'
+    ' specified Amazon S3 bucket and mybackup is the specified backup location.'
     ' The path argument must begin with s3:// in order to denote that the'
-    ' path argument refers to a S3 object.</p>')
+    ' path argument refers to an Amazon S3 object.</p>')
 
 HBASE_BACKUP_VERSION = (
     '<p>Backup version to restore from. If not specified the latest backup '
@@ -51,7 +51,7 @@ LOG_URI = (
 AMI_VERSION = (
     '<p>The version of the Amazon Machine Image (AMI) '
     'to use when launching Amazon EC2 instances in the cluster. '
-    '<p>The following values are valid: </p>'
+    '<p>The valid values are: </p>'
     '<li>"latest" (use the latest AMI) </li>'
     '<li>The version number of the AMI to use. For example, "3.0.4".</li></p>'
     '<p>For details about the AMI versions currently supported by Amazon'
@@ -60,12 +60,11 @@ AMI_VERSION = (
 
 INSTANCE_GROUPS = (
     '<p>A specification of the number and type'
-    'of Amazon EC2 instances on which to run the cluster.</p>'
+    ' of Amazon EC2 instances on which to run the cluster.</p>'
     '<p> Each instance group takes the following parameters: '
-    '<code>Name, InstanceGroupType, InstanceType, InstanceCount, '
-    'BidPrice</code></p><p>Shorthand Syntax:</p>'
-    '<p>A list of Key Value paires. Multiple instance groups '
-    'are separated by a space</p>'
+    '<code>Name, InstanceGroupType, InstanceType, InstanceCount,'
+    ' BidPrice</code></p><p>Shorthand Syntax:</p><p>A list of Key Value pairs.'
+    ' Multiple instance groups are separated by a space.</p>'
     '<p><code>--instance-groups Name=Master,InstanceGroupType=MASTER,'
     'InstanceType=m1.large,InstanceCount=1 '
     'Name=Core,InstanceGroupType=CORE,'
@@ -115,7 +114,7 @@ DEBUGGING = (
 TAGS = (
     '<p>A list of tags to associate with a cluster and propagate to'
     ' Amazon EC2 instances. They are user-defined key/value pairs that'
-    ' consist of a required  key string with a maximum of 128 characters'
+    ' consist of a required key string with a maximum of 128 characters'
     ' and an optional value string with a maximum of 256 characters.</p>'
     '<p>You can specify tags in <code>key=value</code> format or to add a'
     ' tag without value just write key name, <code>key2</code>.</p>'
@@ -166,7 +165,3 @@ INSTALL_APPLICATIONS = (
     ' Takes the following parameters: <code>Name</code>, <code>Version</code>'
     ' and <code>Args</code>. Example:</p><p><code>--apps Name=Hive,'
     'Version=0.11.0.1,Args="ar1,arg2,arg3" Name=Pig,Args=arg1,arg2</code></p>')
-
-INSTANCE_GROUPS = (
-    '<p>A specification of the number and type'
-    ' of Amazon EC2 instances on which to run the cluster.</p>')

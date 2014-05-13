@@ -36,26 +36,30 @@ def validate_scp_with_key_file(key_file):
 
 def check_scp_key_format(key_file):
     # If only pscp is present and the file format is incorrect
-    if (not check_command_key_format(key_file, ['ppk']) and
-            emrutils.which('pscp.exe') and
-            not (emrutils.which('scp') or emrutils.which('scp.exe'))):
-        raise exceptions.WrongPuttyKeyError
-    # Not checking for scp, as it has to be present if pscp is not
-    elif (not check_command_key_format(key_file, ['cer', 'pem'])):
-        raise exceptions.WrongSSHKeyError
+    if (emrutils.which('pscp.exe') is not None and
+            (emrutils.which('scp.exe') or emrutils.which('scp')) is None):
+        if check_command_key_format(key_file, ['ppk']) is False:
+            raise exceptions.WrongPuttyKeyError
+    # If only scp is present and the file format is incorrect
+    elif (emrutils.which('pscp.exe') is None and
+            (emrutils.which('scp.exe') or emrutils.which('scp')) is not None):
+        if check_command_key_format(key_file, ['cer', 'pem']) is False:
+            raise exceptions.WrongSSHKeyError
     else:
         pass
 
 
 def check_ssh_key_format(key_file):
     # If only putty is present and the file format is incorrect
-    if (not check_command_key_format(key_file, ['ppk']) and
-            emrutils.which('putty.exe') and
-            not (emrutils.which('ssh.exe') or emrutils.which('ssh'))):
-        raise exceptions.WrongPuttyKeyError
-    # Not checking for ssh, as it has to be present if putty is not
-    elif (not check_command_key_format(key_file, ['cer', 'pem'])):
-        raise exceptions.WrongSSHKeyError
+    if (emrutils.which('putty.exe') is not None and
+            (emrutils.which('ssh.exe') or emrutils.which('ssh')) is None):
+        if check_command_key_format(key_file, ['ppk']) is False:
+            raise exceptions.WrongPuttyKeyError
+    # If only ssh is present and the file format is incorrect
+    elif (emrutils.which('putty.exe') is None and
+            (emrutils.which('ssh.exe') or emrutils.which('ssh')) is not None):
+        if check_command_key_format(key_file, ['cer', 'pem']) is False:
+            raise exceptions.WrongSSHKeyError
     else:
         pass
 

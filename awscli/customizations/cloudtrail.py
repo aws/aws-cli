@@ -197,7 +197,7 @@ class CloudTrailSubscribe(BasicCommand):
         else:
             data = self.s3.GetObject(bucket='awscloudtrail',
                                      key=S3_POLICY_TEMPLATE)
-            policy = data['Body'].read()
+            policy = data['Body'].read().decode('utf-8')
 
         policy = policy.replace('<BucketName>', bucket)\
                        .replace('<CustomerAccountID>', account_id)
@@ -267,7 +267,7 @@ class CloudTrailSubscribe(BasicCommand):
         else:
             data = self.s3.GetObject(bucket='awscloudtrail',
                                      key=SNS_POLICY_TEMPLATE)
-            policy = data['Body'].read()
+            policy = data['Body'].read().decode('utf-8')
 
         policy = policy.replace('<Region>', region)\
                        .replace('<SNSTopicOwnerAccountId>', account_id)\

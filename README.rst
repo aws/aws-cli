@@ -43,7 +43,11 @@ The currently supported services include:
 * Elastic Load Balancing
 
 
-The aws-cli package should work on Python versions 2.6.x, 2.7.x, and 3.3.x.
+The aws-cli package works on Python versions:
+
+* 2.6.5 and greater
+* 2.7.x and greater
+* 3.3.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the

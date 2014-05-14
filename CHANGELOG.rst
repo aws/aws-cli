@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws cloudtrail``: Add support for eu-west-1, ap-southeast-2,
+  and eu-west-1 regions
+* bugfix:``aws ec2``:  Fix issue when specifying user data from a file
+  containing non-ascii characters
+  (`issue 765 <https://github.com/aws/aws-cli/issues/765>`__)
+* bugfix:``aws cloudtrail``: Fix a bug with python3 when creating a
+  subscription
+  (`issue 773 <https://github.com/aws/aws-cli/pull/773>`__)
+* bugfix:Shorthand: Fix issue where certain shorthand parameters were
+  not parsing to the correct types
+  (`issue 776 <https://github.com/aws/aws-cli/pull/776>`__)
+* bugfix:``aws cloudformation``: Fix issue with parameter casing for
+  the ``NotificationARNs`` parameter
+  (`botocore issue 283 <https://github.com/boto/botocore/pull/283>`__)
+
+
 1.3.10
 ======
 

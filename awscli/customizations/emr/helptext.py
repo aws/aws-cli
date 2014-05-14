@@ -31,9 +31,9 @@ CLUSTER_ID = (
 HBASE_BACKUP_DIR = (
     '<p>Amazon S3 location of the Hbase backup.</p> Example:<p>'
     '<code>s3://mybucket/mybackup</code></p><p> where mybucket is the'
-    ' specified Amazon S3 bucket and mybackup is the specified backup location.'
-    ' The path argument must begin with s3:// in order to denote that the'
-    ' path argument refers to an Amazon S3 object.</p>')
+    ' specified Amazon S3 bucket and mybackup is the specified backup'
+    ' location. The path argument must begin with s3:// in order to denote'
+    ' that the path argument refers to an Amazon S3 object.</p>')
 
 HBASE_BACKUP_VERSION = (
     '<p>Backup version to restore from. If not specified the latest backup '

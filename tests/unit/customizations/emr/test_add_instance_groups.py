@@ -35,24 +35,24 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceType=m1.small,' +\
             'InstanceCount=5'
-        expect_error_msg = "\naws: error: The following required parameters" +\
-            " are missing for IntanceGroupConfig: InstanceGroupType.\n"
+        expect_error_msg = "\nThe following required parameters are missing" +\
+            " for structure:: InstanceGroupType\n"
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expect_error_msg, result[1])
 
     def test_instance_groups_missing_instance_type_error(self):
-        cmd = self.prefix + ' Name=Task,InstanceGroupType=Task' +\
+        cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\
             'InstanceCount=5'
-        expect_error_msg = "\naws: error: The following required parameters" +\
-            " are missing for IntanceGroupConfig: InstanceType.\n"
+        expect_error_msg = "\nThe following required parameters are missing" +\
+            " for structure:: InstanceType\n"
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expect_error_msg, result[1])
 
     def test_instance_groups_missing_instance_count_error(self):
         cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\
             'InstanceType=m1.xlarge'
-        expect_error_msg = "\naws: error: The following required parameters" +\
-            " are missing for IntanceGroupConfig: InstanceCount.\n"
+        expect_error_msg = "\nThe following required parameters are missing" +\
+            " for structure:: InstanceCount\n"
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expect_error_msg, result[1])
 

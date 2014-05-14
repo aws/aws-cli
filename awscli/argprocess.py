@@ -421,7 +421,7 @@ def unpack_complex_cli_arg(parameter, value):
         except ParamError as e:
             # The list params don't have a name/cli_name attached to them
             # so they will have bad error messages.  We're going to
-            # attach the parent parmeter to this error message to provide
+            # attach the parent parameter to this error message to provide
             # a more helpful error message.
             raise ParamError(parameter, e.message)
 

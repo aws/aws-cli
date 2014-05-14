@@ -21,12 +21,12 @@ import random
 import mock
 from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
+import botocore.loaders
 
 import awscli.clidriver
 from awscli.plugin import load_plugins
 from awscli.clidriver import CLIDriver
 from awscli import EnvironmentVariables
-import botocore.loaders
 
 
 # The unittest module got a significant overhaul

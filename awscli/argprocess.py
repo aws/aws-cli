@@ -221,9 +221,10 @@ class ParamShorthand(object):
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
         # We're looking for key=val1,val2,val3,key2=val1,val2.
-        arg_types = {}
+        args = {}
         for arg in param.members.members:
-            arg_types[arg.name] = arg.type
+            # Arg name -> arg object lookup
+            args[arg.name] = arg
         parsed = []
         for v in value:
             parts = self._split_on_commas(v)
@@ -234,11 +235,12 @@ class ParamShorthand(object):
                 if len(current) == 2:
                     # This is a key/value pair.
                     current_key = current[0].strip()
-                    current_value = current[1].strip()
-                    if current_key not in arg_types:
+                    if current_key not in args:
                         raise ParamUnknownKeyError(param, current_key,
-                                                   arg_types.keys())
-                    elif arg_types[current_key] == 'list':
+                                                   args.keys())
+                    current_value = unpack_scalar_cli_arg(args[current_key],
+                                                          current[1].strip())
+                    if args[current_key].type == 'list':
                         current_parsed[current_key] = [current_value]
                     else:
                         current_parsed[current_key] = current_value
@@ -248,7 +250,9 @@ class ParamShorthand(object):
                     #               ^
                     #               |
                     #             val2 is associated with key1.
-                    current_parsed[current_key].append(current[0])
+                    current_value = unpack_scalar_cli_arg(args[current_key],
+                                                          current[0])
+                    current_parsed[current_key].append(current_value)
                 else:
                     raise ParamSyntaxError(part)
             parsed.append(current_parsed)
@@ -421,7 +425,7 @@ def unpack_complex_cli_arg(parameter, value):
         except ParamError as e:
             # The list params don't have a name/cli_name attached to them
             # so they will have bad error messages.  We're going to
-            # attach the parent parmeter to this error message to provide
+            # attach the parent parameter to this error message to provide
             # a more helpful error message.
             raise ParamError(parameter, e.message)
 
@@ -444,4 +448,4 @@ def unpack_scalar_cli_arg(parameter, value):
             return False
         return bool(value)
     else:
-        return six.text_type(value)
+        return value

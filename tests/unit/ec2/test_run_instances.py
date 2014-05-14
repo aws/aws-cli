@@ -11,6 +11,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.compat import compat_open
+
+from tests import temporary_file
 from tests.unit import BaseAWSCommandParamsTest
 
 
@@ -37,6 +40,22 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'MinCount': '2'
         }
         self.assert_params_for_cmd(args_list, result)
+
+    def test_user_data(self):
+        data = u'\u0039'
+        with temporary_file('r+') as tmp:
+            with compat_open(tmp.name, 'w') as f:
+                f.write(data)
+                f.flush()
+                args = (
+                    self.prefix +
+                    ' --image-id foo --user-data file://%s' % f.name)
+                result = {'ImageId': 'foo',
+                          'MaxCount': '1',
+                          'MinCount': '1',
+                          # base64 encoded content of utf-8 encoding of data.
+                          'UserData': 'OQ=='}
+            self.assert_params_for_cmd(args, result)
 
     def test_count_range(self):
         args = ' --image-id ami-foobar --count 5:10'

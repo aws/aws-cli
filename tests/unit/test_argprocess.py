@@ -178,6 +178,22 @@ class TestParamShorthand(BaseArgProcessTest):
                 "Name = architecture, Values = i386"])
         self.assertEqual(returned3, expected)
 
+    def test_list_structure_list_scalar_2(self):
+        p = self.get_param_object('emr.ModifyInstanceGroups.InstanceGroups')
+        expected = [
+            {"InstanceGroupId": "foo",
+             "InstanceCount": 4},
+            {"InstanceGroupId": "bar",
+             "InstanceCount": 1}
+        ]
+
+        simplified = self.simplify(p, [
+            "InstanceGroupId=foo,InstanceCount=4",
+            "InstanceGroupId=bar,InstanceCount=1"
+        ])
+
+        self.assertEqual(simplified, expected)
+
     def test_list_structure_list_multiple_scalar(self):
         p = self.get_param_object('elastictranscoder.CreateJob.Playlists')
         returned = self.simplify(

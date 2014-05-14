@@ -13,8 +13,8 @@
 
 import botocore.session
 import json
-import io
 import os
+import six
 
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service
@@ -36,7 +36,7 @@ class TestCloudTrail(unittest.TestCase):
         self.subscribe.s3 = Mock()
         self.subscribe.s3.endpoint = Mock()
         self.subscribe.s3.endpoint.region_name = 'us-east-1'
-        policy_template = io.StringIO(initial_value=u'{"Statement": []}')
+        policy_template = six.BytesIO(six.b(u'{"Statement": []}'))
         self.subscribe.s3.GetObject = Mock(
             return_value={'Body': policy_template})
         self.subscribe.s3.ListBuckets = Mock(

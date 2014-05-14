@@ -14,11 +14,31 @@ import sys
 import six
 
 if six.PY3:
+    import locale
+
     def get_stdout_text_writer():
         return sys.stdout
+
+    def compat_open(filename, mode='r', encoding=None):
+        """Back-port open() that accepts an encoding argument.
+
+        In python3 this uses the built in open() and in python2 this
+        uses the io.open() function.
+
+        If the file is not being opened in binary mode, then we'll
+        use locale.getpreferredencoding() to find the preferred
+        encoding.
+
+        """
+        if 'b' not in mode:
+            encoding = locale.getpreferredencoding()
+        return open(filename, mode, encoding=encoding)
+
 else:
     import codecs
     import locale
+    import io
+
     def get_stdout_text_writer():
         # In python3, all the sys.stdout/sys.stderr streams are in text
         # mode.  This means they expect unicode, and will encode the
@@ -31,3 +51,9 @@ else:
         # just returns sys.stdout in the PY3 section above because python3
         # handles this.
         return codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+
+    def compat_open(filename, mode='r', encoding=None):
+        # See docstring for compat_open in the PY3 section above.
+        if 'b' not in mode:
+            encoding = locale.getpreferredencoding()
+        return io.open(filename, mode, encoding=encoding)

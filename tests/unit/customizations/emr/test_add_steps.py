@@ -13,6 +13,8 @@
 
 from tests.unit import BaseAWSCommandParamsTest
 from nose.tools import raises
+import os
+import copy
 
 
 class TestAddSteps(BaseAWSCommandParamsTest):
@@ -68,40 +70,8 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              ]
          }
 
-    HIVE_STEP_COMPLICATED_ARGS = 'Args="-f,' + \
-        's3://elasticmapreduce/samples/hive-ads/libs/model-build.q,' + \
-        '-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,' + \
-        '-d,OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32,' + \
-        '-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs"'
-
-    HIVE_COMPLICATED_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
-         'Args':
-            ['s3://elasticmapreduce/libs/hive/hive-script',
-             '--run-hive-script',
-             '--hive-versions',
-             '0.11.0.1',
-             '--args',
-             '-f',
-             's3://elasticmapreduce/samples/'
-             'hive-ads/libs/model-build.q',
-             '-d',
-             'INPUT=s3://elasticmapreduce/samples/hive-ads/tables',
-             '-d',
-             'OUTPUT=s3://mybucket/hive-ads/'
-             'output/2014-04-18/11-07-32',
-             '-d',
-             'LIBS=s3://elasticmapreduce/samples/hive-ads/libs'
-             ]
-         }
-
     PIG_BASIC_ARGS = 'Args=-f,' + \
         's3://elasticmapreduce/samples/pig-apache/do-reports2.pig'
-
-    PIG_COMPLICATED_ARGS = 'Args=-f,' + \
-        's3://elasticmapreduce/samples/pig-apache/do-reports2.pig,' + \
-        '-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,' + \
-        '-p,OUTPUT=s3://mybucket/pig-apache/output/2014-04-21/20-09-28"'
 
     PIG_DEFAULT_HADOOP_JAR_STEP = \
         {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
@@ -122,30 +92,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             ['s3://elasticmapreduce/libs/pig/pig-script',
              '--run-pig-script',
              '--pig-versions',
-             '0.11.0.1',
+             '0.11.1.0',
              '--args',
              '-f',
              's3://elasticmapreduce/samples/'
              'pig-apache/do-reports2.pig',
-             ]}
-
-    PIG_COMPLICATED_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
-         'Args':
-            ['s3://elasticmapreduce/libs/pig/pig-script',
-             '--run-pig-script',
-             '--pig-versions',
-             '0.11.1.1',
-             '--args',
-             '-f',
-             's3://elasticmapreduce/samples/'
-             'pig-apache/do-reports2.pig',
-             '-p',
-             'INPUT=s3://elasticmapreduce/samples/'
-             'pig-apache/input',
-             '-p',
-             'OUTPUT=s3://mybucket/pig-apache/'
-             'output/2014-04-21/20-09-28',
              ]}
 
     IMPALA_BASIC_ARGS = 'Args=' + \
@@ -309,7 +260,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         test_step_config = \
             'Name=PigWithAllFields,' + \
             'Type=Pig,' + \
-            'Version=0.11.0.1,' + \
+            'Version=0.11.1.0,' + \
             self.PIG_BASIC_ARGS + ',' + \
             'ActionOnFailure=CANCEL_AND_WAIT'
         cmd = self.prefix + test_step_config
@@ -391,6 +342,54 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  },
                 {'Name': 'Impala program',
                  'ActionOnFailure': 'CONTINUE',
+                 'HadoopJarStep': self.IMPALA_BASIC_HADOOP_JAR_STEP
+                 }
+            ]
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_all_step_types_from_json(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_steps.json')
+        cmd = self.prefix + 'file://' + data_path
+        hive_hadoop_jar_step = copy.deepcopy(self.HIVE_BASIC_HADOOP_JAR_STEP)
+        hive_hadoop_jar_step['Args'] += \
+            ['-d',
+             'INPUT=s3://elasticmapreduce/samples/hive-ads/tables',
+             '-d',
+             'OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32',
+             '-d',
+             'LIBS=s3://elasticmapreduce/samples/hive-ads/libs'
+             ]
+        pig_hadoop_jar_step = copy.deepcopy(self.PIG_BASIC_HADOOP_JAR_STEP)
+        pig_hadoop_jar_step['Args'] += \
+            ['-p',
+             'INPUT=s3://elasticmapreduce/samples/pig-apache/input',
+             '-p',
+             'OUTPUT=s3://mybucket/pig-apache/output/2014-04-21/20-09-28'
+             ]
+
+        result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {'Name': 'Custom JAR step',
+                 'ActionOnFailure': 'CANCEL_AND_WAIT',
+                 'HadoopJarStep': {'Jar': 's3://mybucket/mytest.jar'}
+                 },
+                {'Name': 'Streaming step',
+                 'ActionOnFailure': 'CANCEL_AND_WAIT',
+                 'HadoopJarStep': self.STREAMING_HADOOP_JAR_STEP
+                 },
+                {'Name': 'Hive step',
+                 'ActionOnFailure': 'TERMINATE_CLUSTER',
+                 'HadoopJarStep': hive_hadoop_jar_step
+                 },
+                {'Name': 'Pig step',
+                 'ActionOnFailure': 'TERMINATE_CLUSTER',
+                 'HadoopJarStep': pig_hadoop_jar_step
+                 },
+                {'Name': 'Impala step',
+                 'ActionOnFailure': 'CANCEL_AND_WAIT',
                  'HadoopJarStep': self.IMPALA_BASIC_HADOOP_JAR_STEP
                  }
             ]

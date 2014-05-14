@@ -13,6 +13,7 @@
 
 from tests.unit import BaseAWSCommandParamsTest
 import copy
+import os
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'MASTER',
@@ -437,6 +438,36 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expect_error_msg, result[1])
 
+    def test_instance_groups_from_json_file(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_instance_groups.json')
+        cmd = ('emr create-cluster --auto-terminate '
+               '--instance-groups file://' + data_path)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['InstanceGroups'] = \
+            [
+                {'InstanceRole': 'MASTER',
+                 'InstanceCount': 1,
+                 'Name': 'Master Instance Group',
+                 'Market': 'ON_DEMAND',
+                 'InstanceType': 'm1.large'
+                 },
+                {'InstanceRole': 'CORE',
+                 'InstanceCount': 2,
+                 'Name': 'Core Instance Group',
+                 'Market': 'ON_DEMAND',
+                 'InstanceType': 'm1.xlarge'
+                 },
+                {'InstanceRole': 'TASK',
+                 'InstanceCount': 3,
+                 'Name': 'Task Instance Group',
+                 'Market': 'SPOT',
+                 'BidPrice': '3.45',
+                 'InstanceType': 'm1.xlarge'
+                 }
+            ]
+        self.assert_params_for_cmd(cmd, result)
+
     def test_ec2_attributes_no_az(self):
         cmd = DEFAULT_CMD + (
             '--ec2-attributes KeyName=testkey,SubnetId=subnet-123456,'
@@ -461,6 +492,26 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'ilityZone (placement) because ec2SubnetId implies a placement.\n')
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expect_error_msg, result[1])
+
+    def test_ec2_attributes_with_subnet_from_json_file(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_ec2_attributes_with_subnet.json')
+        cmd = DEFAULT_CMD + ' --ec2-attributes file://' + data_path
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['Ec2KeyName'] = 'testkey'
+        result['Instances']['Ec2SubnetId'] = 'subnet-123456'
+        result['JobFlowRole'] = 'elasticmapreduce_EC2_DefaultRole'
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_ec2_attributes_with_az_from_json_file(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_ec2_attributes_with_az.json')
+        cmd = DEFAULT_CMD + ' --ec2-attributes file://' + data_path
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Instances']['Ec2KeyName'] = 'testkey'
+        result['Instances']['Placement'] = {'AvailabilityZone': 'us-east-1a'}
+        result['JobFlowRole'] = 'elasticmapreduce_EC2_DefaultRole'
+        self.assert_params_for_cmd(cmd, result)
 
     # Bootstrap Actions test cases
     def test_bootstrap_actions_missing_path_error(self):
@@ -517,6 +568,26 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 {'Name': 'Bootstrap action',
                  'ScriptBootstrapAction':
                     {'Path': 's3://test/ba2'}
+                 }
+            ]
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_bootstrap_actions_from_json_file(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_bootstrap_actions.json')
+        cmd = DEFAULT_CMD + ' --bootstrap-actions file://' + data_path
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['BootstrapActions'] = \
+            [
+                {"Name": "Bootstrap Action 1",
+                 "ScriptBootstrapAction":
+                    {"Path": "s3://mybucket/test1",
+                     "Args": ["arg1", "arg2"]}
+                 },
+                {"Name": "Bootstrap Action 2",
+                 "ScriptBootstrapAction":
+                    {"Path": "s3://mybucket/test2",
+                     "Args": ["arg1", "arg2"]}
                  }
             ]
         self.assert_params_for_cmd(cmd, result)
@@ -608,7 +679,28 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = step_list
         result['BootstrapActions'] = ba_list
         result['NewSupportedProducts'] = [INSTALL_MAPR_PRODUCT]
+        self.assert_params_for_cmd(cmd, result)
 
+    def test_applications_all_types_from_json_file(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_applications.json')
+        cmd = DEFAULT_CMD + '--applications file://' + data_path
+        impala_ba = copy.deepcopy(INSTALL_IMPALA_BA)
+        impala_ba['ScriptBootstrapAction']['Args'][-1] = '1.2.1'
+        impala_ba['ScriptBootstrapAction']['Args'] += \
+            ['--impala-conf',
+             'IMPALA_BACKEND_PORT=22001', 'IMPALA_MEM_LIMIT=70%']
+        ba_list = [INSTALL_GANGLIA_BA, INSTALL_HBASE_BA,
+                   impala_ba]
+        hive_step = copy.deepcopy(INSTALL_HIVE_STEP)
+        hive_step['HadoopJarStep']['Args'][-1] = '0.11.0.1'
+        pig_step = copy.deepcopy(INSTALL_PIG_STEP)
+        pig_step['HadoopJarStep']['Args'][-1] = '0.11.1.1'
+        step_list = [hive_step, pig_step, INSTALL_HBASE_STEP]
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = step_list
+        result['BootstrapActions'] = ba_list
+        result['NewSupportedProducts'] = [INSTALL_MAPR_PRODUCT]
         self.assert_params_for_cmd(cmd, result)
 
     # Steps test cases
@@ -787,6 +879,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                     'Jar': '/home/hadoop/lib/hbase.jar'}
             }
         ]
+        self.assert_params_for_cmd(cmd, result)
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_hbase_restore_from_backup.json')
+        cmd = DEFAULT_CMD + (
+            '--applications Name=hbase --restore-from-hbase-backup '
+            'file://' + data_path)
         self.assert_params_for_cmd(cmd, result)
 
     def test_missing_applications_for_steps(self):

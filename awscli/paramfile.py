@@ -18,6 +18,8 @@ import os
 from botocore.vendored import requests
 import six
 
+from awscli.compat import compat_open
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +52,7 @@ def get_file(prefix, path):
     if not os.path.isfile(file_path):
         raise ResourceLoadingError("file does not exist: %s" % file_path)
     try:
-        with open(file_path) as f:
+        with compat_open(file_path, 'r') as f:
             return f.read()
     except (OSError, IOError) as e:
         raise ResourceLoadingError('Unable to load paramfile %s: %s' % (

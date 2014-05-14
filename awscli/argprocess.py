@@ -444,4 +444,4 @@ def unpack_scalar_cli_arg(parameter, value):
             return False
         return bool(value)
     else:
-        return six.text_type(value)
+        return value

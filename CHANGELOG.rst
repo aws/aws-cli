@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.11
+======
 
 * feature:``aws cloudtrail``: Add support for eu-west-1, ap-southeast-2,
   and eu-west-1 regions

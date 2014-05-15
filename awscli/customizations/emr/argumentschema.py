@@ -195,6 +195,13 @@ STEPS_SCHEMA = {
                     "The name of the main class in the specified "
                     "Java file. If not specified, the JAR file should "
                     "specify a Main-Class in its manifest file."
+            },
+            "Properties": {
+                "type": "string",
+                "description":
+                    "A list of Java properties that are set when the step "
+                    "runs. You can use these properties to pass key value "
+                    "pairs to your main function."
             }
         }
     }

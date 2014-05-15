@@ -60,7 +60,8 @@ def build_custom_jar_step(parsed_step):
         name=name,
         action_on_failure=action_on_failure,
         main_class=parsed_step.get('MainClass'),
-        properties=parsed_step.get('Properties'))
+        properties=emrutils.parse_key_value_string(
+            parsed_step.get('Properties')))
 
 
 def build_streaming_step(parsed_step):

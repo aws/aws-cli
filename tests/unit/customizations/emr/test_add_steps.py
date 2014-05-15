@@ -147,7 +147,8 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             'Name=Custom,Type=CustomJAR,'
             'Jar=s3://mybucket/mytest.jar,'
             'Args=arg1,arg2,MainClass=mymainclass,'
-            'ActionOnFailure=TERMINATE_CLUSTER')
+            'ActionOnFailure=TERMINATE_CLUSTER,'
+            'Properties=k1=v1\,k2=v2\,k3')
         result = {
             'JobFlowId': 'j-ABC',
             'Steps': [
@@ -156,7 +157,12 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  'HadoopJarStep':
                     {'Jar': 's3://mybucket/mytest.jar',
                      'Args': ['arg1', 'arg2'],
-                     'MainClass': 'mymainclass'
+                     'MainClass': 'mymainclass',
+                     'Properties':
+                        [{'Key': 'k1', 'Value': 'v1'},
+                         {'Key': 'k2', 'Value': 'v2'},
+                         {'Key': 'k3', 'Value': ''}
+                         ]
                      }
                  }
             ]

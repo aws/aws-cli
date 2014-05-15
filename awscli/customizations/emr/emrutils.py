@@ -16,7 +16,7 @@ import exceptions
 import logging
 import json
 import os
-
+import argparse
 from botocore.exceptions import NoCredentialsError
 
 
@@ -34,6 +34,23 @@ def parse_tags(raw_tags_list):
             tags_dict_list.append({'Key': key, 'Value': value})
 
     return tags_dict_list
+
+
+def parse_key_value_string(key_value_string):
+    # raw_key_value_string is a list of key value pairs separated by comma.
+    # Examples: "k1=v1,k2='v  2',k3,k4"
+    key_value_list = []
+    if key_value_string is not None:
+        raw_key_value_list = key_value_string.split(',')
+        for kv in raw_key_value_list:
+            if kv.find('=') == -1:
+                key, value = kv, ''
+            else:
+                key, value = kv.split('=', 1)
+            key_value_list.append({'Key': key, 'Value': value})
+        return key_value_list
+    else:
+        return None
 
 
 def apply_boolean_options(

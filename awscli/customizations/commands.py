@@ -58,6 +58,9 @@ class BasicCommand(CLICommand):
     #     {'name': 'argument-two', 'help_text': 'This argument does some other thing.',
     #      'action': 'store', 'choices': ['a', 'b', 'c']},
     # ]
+    #
+    # A `schema` parameter option is available to accept a custom JSON
+    # structure as input. See the file `awscli/schema.py` for more info.
     ARG_TABLE = []
     # If you want the command to have subcommands, you can provide a list of
     # dicts.  We use a list here because we want to allow a user to provide

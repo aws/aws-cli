@@ -19,7 +19,47 @@ class SchemaTransformer(object):
     Transforms a custom argument parameter schema into an internal
     model representation so that it can be treated like a normal
     service model. This includes shorthand JSON parsing and
-    automatic documentation generation.
+    automatic documentation generation. The format of the schema
+    follows JSON Schema, which can be found here:
+
+    http://json-schema.org/
+
+    Only a relevant subset of features is supported here:
+
+    * Types: `object`, `array`, `string`, `number`, `integer`,
+             `boolean`
+    * Properties: `type`, `description`, `required`, `enum`
+
+    For example::
+
+    {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "arg1": {
+                    "type": "string",
+                    "required": True,
+                    "enum": [
+                        "Value1",
+                        "Value2",
+                        "Value3"
+                    ]
+                },
+                "arg2": {
+                    "type": "integer",
+                    "description": "The number of calls"
+                }
+            }
+        }
+    }
+
+    Assuming the schema is applied to a service named `foo`, with an
+    operation named `bar` and that the parameter is called `baz`, you
+    could call it with the shorthand JSON like so::
+
+        $ aws foo bar --baz arg1=Value1,arg2=5 arg1=Value2
+
     """
     # Map schema types to internal representation types
     TYPE_MAP = {

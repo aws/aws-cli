@@ -39,8 +39,10 @@ Arguments generally fall into one of several categories:
 import logging
 
 from botocore import xform_name
+from botocore.parameters import ListParameter, StructParameter
 
 from awscli.argprocess import unpack_cli_arg
+from awscli.schema import SchemaTransformer
 
 
 LOG = logging.getLogger('awscli.arguments')
@@ -235,6 +237,30 @@ class CustomArgument(BaseCLIArgument):
             kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
 
+    def create_argument_object(self):
+        """
+        Create an argument object based on the JSON schema if one is set.
+        After calling this method, ``parameter.argument_object`` is available
+        e.g. for generating docs.
+        """
+        transformer = SchemaTransformer(self.schema)
+        transformed = transformer.transform()
+
+        # Set the parameter name from the parsed arg key name
+        transformed.update({'name': self.name})
+
+        LOG.debug('Custom parameter schema for {0}: {1}'.format(
+            self.name, transformed))
+
+        # Select the correct top level type
+        if transformed['type'] == 'structure':
+            self.argument_object = StructParameter(None, **transformed)
+        elif transformed['type'] == 'list':
+            self.argument_object = ListParameter(None, **transformed)
+        else:
+            raise ValueError('Invalid top level type {0}!'.format(
+                transformed['type']))
+
     @property
     def required(self):
         if self._required is None:
@@ -255,6 +281,8 @@ class CustomArgument(BaseCLIArgument):
             return self._cli_type_name
         elif self._action in ['store_true', 'store_false']:
             return 'boolean'
+        elif self.argument_object is not None:
+            return self.argument_object.type
         else:
             # Default to 'string' type if we don't have any
             # other info.

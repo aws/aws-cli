@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import json
+
 from tests.unit import BaseAWSCommandParamsTest
 from mock import patch
 from botocore.vendored import requests
@@ -110,93 +112,93 @@ list_bootstrap_actions_result_mock = {
     ]
 }
 
-constructed_result = '''{
+EXPECTED_RESULT = {
     "Cluster": {
         "Ec2InstanceAttributes": {
-            "IamInstanceProfile": "elasticmapreduce_EC2_DefaultRole", 
+            "IamInstanceProfile": "elasticmapreduce_EC2_DefaultRole",
             "Ec2AvailabilityZone": "us-east-1b"
-        }, 
-        "Name": "ABCD", 
-        "TerminationProtected": "false", 
-        "RunningAmiVersion": "2.4.2", 
+        },
+        "Name": "ABCD",
+        "TerminationProtected": "false",
+        "RunningAmiVersion": "2.4.2",
         "InstanceGroups": [
             {
-                "RequestedInstanceCount": 1, 
+                "RequestedInstanceCount": 1,
                 "Status": {
                     "Timeline": {
-                        "ReadyDateTime": 1398376083.0, 
-                        "CreationDateTime": 1398375871.0, 
+                        "ReadyDateTime": 1398376083.0,
+                        "CreationDateTime": 1398375871.0,
                         "EndDateTime": 1398376476.0
-                    }, 
-                    "State": "TERMINATED", 
+                    },
+                    "State": "TERMINATED",
                     "StateChangeReason": {
-                        "Message": "Job flow terminated", 
+                        "Message": "Job flow terminated",
                         "Code": "CLUSTER_TERMINATED"
                     }
-                }, 
-                "RunningInstanceCount": 0, 
-                "Name": "Master instance group", 
-                "InstanceGroupType": "MASTER", 
-                "InstanceType": "m1.large", 
-                "Market": "ON_DEMAND", 
+                },
+                "RunningInstanceCount": 0,
+                "Name": "Master instance group",
+                "InstanceGroupType": "MASTER",
+                "InstanceType": "m1.large",
+                "Market": "ON_DEMAND",
                 "Id": "ig-ABCD"
-            }, 
+            },
             {
-                "RequestedInstanceCount": 2, 
+                "RequestedInstanceCount": 2,
                 "Status": {
                     "Timeline": {
-                        "ReadyDateTime": 1398376089.0, 
-                        "CreationDateTime": 1398375871.0, 
+                        "ReadyDateTime": 1398376089.0,
+                        "CreationDateTime": 1398375871.0,
                         "EndDateTime": 1398376476.0
-                    }, 
-                    "State": "TERMINATED", 
+                    },
+                    "State": "TERMINATED",
                     "StateChangeReason": {
-                        "Message": "Job flow terminated", 
+                        "Message": "Job flow terminated",
                         "Code": "CLUSTER_TERMINATED"
                     }
-                }, 
-                "RunningInstanceCount": 0, 
-                "Name": "Core instance group", 
-                "InstanceGroupType": "CORE", 
-                "InstanceType": "m1.large", 
-                "Market": "ON_DEMAND", 
+                },
+                "RunningInstanceCount": 0,
+                "Name": "Core instance group",
+                "InstanceGroupType": "CORE",
+                "InstanceType": "m1.large",
+                "Market": "ON_DEMAND",
                 "Id": "ig-DEF"
             }
-        ], 
-        "RequestedAmiVersion": "2.4.2", 
-        "AutoTerminate": "false", 
-        "LogUri": "s3n://abc/logs/", 
+        ],
+        "RequestedAmiVersion": "2.4.2",
+        "AutoTerminate": "false",
+        "LogUri": "s3n://abc/logs/",
         "Status": {
             "Timeline": {
-                "ReadyDateTime": 1398376089.0, 
-                "CreationDateTime": 1398375871.0, 
+                "ReadyDateTime": 1398376089.0,
+                "CreationDateTime": 1398375871.0,
                 "EndDateTime": 1398376477.0
-            }, 
-            "State": "TERMINATED", 
+            },
+            "State": "TERMINATED",
             "StateChangeReason": {
-                "Message": "Terminated by user request", 
+                "Message": "Terminated by user request",
                 "Code": "USER_REQUEST"
             }
-        }, 
-        "Tags": [], 
+        },
+        "Tags": [],
         "Applications": [
             {
-                "Version": "1.0.3", 
+                "Version": "1.0.3",
                 "Name": "hadoop"
             }
-        ], 
-        "VisibleToAllUsers": "true", 
+        ],
+        "VisibleToAllUsers": "true",
         "BootstrapActions": [
             {
-                "Args": [], 
-                "Name": "Install HBase", 
-                "ScriptPath": "s3://elasticmapreduce/bootstrap-actions/setup-hbase"
+                "Args": [],
+                "Name": "Install HBase",
+                "ScriptPath": "s3://elasticmapreduce/bootstrap-actions/"
+                              "setup-hbase"
             }
-        ], 
+        ],
         "Id": "j-ABCD"
     }
 }
-'''
 
 
 class TestDescribeCluster(BaseAWSCommandParamsTest):
@@ -231,9 +233,9 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
         call_patch.side_effect = side_effect_of_call
         args = ' --cluster-id j-ABCD'
         cmdline = self.prefix + args
-
         result = self.run_cmd(cmdline, expected_rc=0)
-        self.assertEquals(result[0], constructed_result)
+        result_json = json.loads(result[0])
+        self.assertEquals(result_json, EXPECTED_RESULT)
 
 
 def side_effect_of_call(*args, **kwargs):

@@ -902,12 +902,21 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             ' Jar=s3://test/customJar2.jar ' +\
             ' --applications Name=Hive'
 
-        expected_error_msg = (
+        expected_error_msg1 = (
             '\naws: error: Some of the steps require the following'
             ' applications to be installed: Impala, Pig. '
             'Please install the applications using --applications.\n')
+        expected_error_msg2 = (
+            '\naws: error: Some of the steps require the following'
+            ' applications to be installed: Pig, Impala. '
+            'Please install the applications using --applications.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
+
+        if(result[1] == expected_error_msg1 or
+           result[1] == expected_error_msg2):
+            self.assertTrue(True)
+        else:
+            self.assertTrue(False)
 
     def test_missing_applications_with_hbase(self):
         cmd = DEFAULT_CMD +\
@@ -920,13 +929,21 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             's3://test/output' + ' --applications Name=Hive Name=Pig' +\
             ' --restore-from-hbase-backup Dir=s3://myBucket/myDir'
 
-        expected_error_msg = (
+        expected_error_msg1 = (
             '\naws: error: Some of the steps require the following'
             ' applications to be installed: Hbase, Impala. '
             'Please install the applications using --applications.\n')
+        expected_error_msg2 = (
+            '\naws: error: Some of the steps require the following'
+            ' applications to be installed: Impala, Hbase. '
+            'Please install the applications using --applications.\n')
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
 
+        if(result[1] == expected_error_msg1 or
+           result[1] == expected_error_msg2):
+            self.assertTrue(True)
+        else:
+            self.assertTrue(False)
 
 if __name__ == "__main__":
     unittest.main()

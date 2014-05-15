@@ -13,10 +13,9 @@
 
 from awscli.customizations.commands import BasicCommand
 from awscli.clidriver import CLIOperationCaller
-
-import argumentschema
-import helptext
-import instancegroupsutils
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import instancegroupsutils
 
 
 class AddInstanceGroups(BasicCommand):

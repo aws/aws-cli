@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
 import os
 import subprocess
-import logging
-import constants
-import emrutils
 import tempfile
-import exceptions
-import sshutils
 
+from awscli.customizations.emr import constants
+from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import sshutils
 from awscli.customizations.commands import BasicCommand
 
 
@@ -39,7 +39,7 @@ class Socks(BasicCommand):
                 self._session, parsed_globals,
                 parsed_args.cluster_id)['PublicDnsName']
             if not master_dns:
-                raise exceptions.MasterDNSNotAvailable
+                raise exceptions.MasterDNSNotAvailableError
 
             key_file = parsed_args.key_pair_file
             sshutils.validate_ssh_with_key_file(key_file)
@@ -79,7 +79,7 @@ class SSH(BasicCommand):
             self._session, parsed_globals,
             parsed_args.cluster_id)['PublicDnsName']
         if not master_dns:
-            raise exceptions.MasterDNSNotAvailable
+            raise exceptions.MasterDNSNotAvailableError
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_ssh_with_key_file(key_file)
@@ -126,7 +126,7 @@ class Put(BasicCommand):
             self._session, parsed_globals,
             parsed_args.cluster_id)['PublicDnsName']
         if not master_dns:
-            raise exceptions.MasterDNSNotAvailable
+            raise exceptions.MasterDNSNotAvailableError
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)
@@ -167,7 +167,7 @@ class Get(BasicCommand):
             self._session, parsed_globals,
             parsed_args.cluster_id)['PublicDnsName']
         if not master_dns:
-            raise excpetions.MasterDNSNotAvailable
+            raise exceptions.MasterDNSNotAvailableError
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)

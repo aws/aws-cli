@@ -13,11 +13,10 @@
 
 from awscli.customizations.commands import BasicCommand
 from awscli.clidriver import CLIOperationCaller
-
-import steputils
-import argumentschema
-import helptext
-import emrutils
+from awscli.customizations.emr import steputils
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import emrutils
 
 
 class AddSteps(BasicCommand):

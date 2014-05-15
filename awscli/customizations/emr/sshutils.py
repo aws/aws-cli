@@ -12,8 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import logging
-import exceptions
-import emrutils
+
+from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import emrutils
 
 LOG = logging.getLogger(__name__)
 

@@ -12,19 +12,17 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.commands import BasicCommand
 from awscli.clidriver import CLIOperationCaller
-from sets import Set
-
-import constants
-import emrutils
-import steputils
-import hbaseutils
-import argumentschema
-import helptext
-import exceptions
-import applicationutils
-import instancegroupsutils
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import constants
+from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import steputils
+from awscli.customizations.emr import hbaseutils
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import applicationutils
+from awscli.customizations.emr import instancegroupsutils
 
 
 class CreateCluster(BasicCommand):
@@ -313,10 +311,10 @@ class CreateCluster(BasicCommand):
     # using the --applications option.
     def _validate_required_applications(self, parsed_args):
 
-        specified_apps = Set([])
+        specified_apps = set([])
         if parsed_args.applications is not None:
             specified_apps = \
-                Set([app['Name'].lower() for app in parsed_args.applications])
+                set([app['Name'].lower() for app in parsed_args.applications])
 
         missing_apps = self._get_missing_applications_for_steps(specified_apps,
                                                                 parsed_args)
@@ -330,9 +328,9 @@ class CreateCluster(BasicCommand):
                 applications=missing_apps)
 
     def _get_missing_applications_for_steps(self, specified_apps, parsed_args):
-        allowed_app_steps = Set([constants.HIVE, constants.PIG,
+        allowed_app_steps = set([constants.HIVE, constants.PIG,
                                  constants.IMPALA])
-        missing_apps = Set([])
+        missing_apps = set([])
         if parsed_args.steps is not None:
             for step in parsed_args.steps:
                 if len(missing_apps) == len(allowed_app_steps):

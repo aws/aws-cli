@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import json
 
 EC2_ROLE_NAME = "elasticmapreduce_EC2_DefaultRole"
 EMR_ROLE_NAME = "elasticmapreduce_DefaultRole"

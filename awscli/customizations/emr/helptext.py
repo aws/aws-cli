@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import defaultroles
+from awscli.customizations.emr import defaultroles
 
 TERMINATE_CLUSTERS = (
     'Shuts down a list of clusters. When a cluster is shut'
@@ -40,8 +40,8 @@ HBASE_BACKUP_VERSION = (
     'in the specified location will be used.</p>')
 
 # create-cluster options help text
-CLUSTER_NAME = {
-    '<p>The name of the cluster. The default is "Development Cluster"</p>'}
+CLUSTER_NAME = (
+    '<p>The name of the cluster. The default is "Development Cluster"</p>')
 
 LOG_URI = (
     '<p>The location in Amazon S3 to write the log files '

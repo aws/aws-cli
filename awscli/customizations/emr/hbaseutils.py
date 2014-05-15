@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import constants
+from awscli.customizations.emr import constants
 
 
 def build_hbase_restore_from_backup_args(dir, backup_version=None):

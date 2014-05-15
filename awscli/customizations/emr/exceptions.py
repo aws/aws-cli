@@ -10,7 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import constants
+
+from awscli.customizations.emr import constants
 
 
 class EmrError(Exception):
@@ -82,6 +83,7 @@ class UnkownIamEndpointError(EmrError):
     fmt = 'IAM endpoint not known for region: {region}.' +\
           ' Specify the iam-endpoint using the --iam-endpoint option.'
 
+
 class ResolveServicePrincipalError(EmrError):
     """
     The service principal could not be resolved from the region or the
@@ -145,7 +147,7 @@ class SCPNotFoundError(EmrError):
 
 class SubnetAndAzValidationError(EmrError):
     """
-    SubnetId and AvailabilityZone are mutual exclusive in --ec2-attributes
+    SubnetId and AvailabilityZone are mutual exclusive in --ec2-attributes.
     """
     fmt = ('aws: error: You may not specify both a SubnetId and an Availabili'
            'tyZone (placement) because ec2SubnetId implies a placement.')
@@ -165,3 +167,10 @@ class MissingApplicationsError(EmrError):
                ', '.join(kwargs['applications']) + '. Please install the'
                ' applications using --applications.')
         Exception.__init__(self, msg)
+
+
+class ClusterTerminatedError(EmrError):
+    """
+    The cluster is terminating or has already terminated.
+    """
+    fmt = 'aws: error: Cluster terminating or already terminated.'

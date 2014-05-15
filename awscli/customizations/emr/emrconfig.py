@@ -13,7 +13,7 @@
 
 import re
 
-from exceptions import ResolveServicePrincipalError
+from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 
 PUBLIC_REGION = "aws"
 GOV_REGION = "aws-gov"

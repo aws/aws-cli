@@ -10,24 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
 import logging
-import constants
-import emrutils
-import defaultroles
-import exceptions
-import helptext
-import argumentschema
-import applicationutils
-import hbase
-import ssh
-from awscli.customizations.commands import BasicCommand
+
 from awscli.clidriver import CLIOperationCaller
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import constants
+from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import defaultroles
+from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import applicationutils
+from awscli.customizations.emr import hbase
+from awscli.customizations.emr import ssh
+from awscli.customizations.emr.emrconfig import REGION_MAP
 from awscli.customizations.emr.addsteps import AddSteps
 from awscli.customizations.emr.createcluster import CreateCluster
 from awscli.customizations.emr.emrconfig import get_service_principal
 from awscli.customizations.emr.defaultroles import assume_role_policy
 from awscli.customizations.emr.addinstancegroups import AddInstanceGroups
-from emrconfig import REGION_MAP
+
 
 LOG = logging.getLogger(__name__)
 

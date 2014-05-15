@@ -11,13 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import constants
-import exceptions
 import logging
 import json
 import os
-import argparse
+
+from awscli.customizations.emr import constants
+from awscli.customizations.emr import exceptions
 from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import WaiterError
 
 
 LOG = logging.getLogger(__name__)
@@ -131,7 +132,7 @@ def build_s3_link(relative_path='', region=None):
     if region and region != 'us-east-1':
         return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
     else:
-        return 's3://elasticmapreduce{}'.format(relative_path)
+        return 's3://elasticmapreduce{0}'.format(relative_path)
 
 
 def get_script_runner(region=None):
@@ -241,7 +242,7 @@ def find_master_instance(session, parsed_globals, cluster_id):
     endpoint = get_endpoint(emr, parsed_globals)
     cluster_state = get_cluster_state(session, parsed_globals, cluster_id)
     if any(cluster_state == i for i in constants.TERMINATED_STATES):
-        raise exceptions.ClusterTerminated
+        raise exceptions.ClusterTerminatedError
     else:
         try:
             cluster_running = emr.get_waiter('ClusterRunning')

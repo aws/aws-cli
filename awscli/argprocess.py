@@ -193,6 +193,9 @@ class ParamShorthand(object):
                       "param shorthand.", param.py_name)
             return
         structure = detect_shape_structure(param)
+        # If this looks like shorthand then we log the detected structure
+        # to help with debugging why the shorthand may not work, for
+        # example list-structure(list-structure(scalars))
         LOG.debug('Detected structure: {0}'.format(structure))
         parse_method = self.SHORTHAND_SHAPES.get(structure)
         return parse_method

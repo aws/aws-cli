@@ -34,9 +34,9 @@ class FiltersTest(unittest.TestCase):
             self.file_info(os.path.join('directory', 'test.jpg')),
         ]
         self.s3_files = [
-            self.file_info('bucket/test.txt'),
-            self.file_info('bucket/test.jpg'),
-            self.file_info('bucket/key/test.jpg'),
+            self.file_info('bucket/test.txt', src_type='s3'),
+            self.file_info('bucket/test.jpg', src_type='s3'),
+            self.file_info('bucket/key/test.jpg', src_type='s3'),
         ]
 
     def file_info(self, filename, src_type='local'):
@@ -51,12 +51,14 @@ class FiltersTest(unittest.TestCase):
                         dest_type=dest_type, operation_name='',
                         service=None, endpoint=None)
 
-    def create_filter(self, filters=None, root=None):
+    def create_filter(self, filters=None, root=None, dst_root=None):
         if root is None:
             root = os.getcwd()
         if filters is None:
             filters = {}
-        return Filter(filters, root)
+        if dst_root is None:
+            dst_root = 'bucket'
+        return Filter(filters, root, dst_root)
 
     def test_no_filter(self):
         exc_inc_filter = self.create_filter()
@@ -82,6 +84,16 @@ class FiltersTest(unittest.TestCase):
 
         matched_files = list(exclude_filter.call(self.s3_files))
         self.assertEqual(matched_files, [])
+
+    def test_exclude_with_dst_root(self):
+        exclude_filter = self.create_filter([['exclude', '*.txt']],
+                                            dst_root='bucket')
+        matched_files = list(exclude_filter.call(self.local_files))
+        b = os.path.basename
+        self.assertNotIn('test.txt', [b(f.src) for f in matched_files])
+        # Same filter should match the dst files.
+        matched_files = list(exclude_filter.call(self.s3_files))
+        self.assertNotIn('test.txt', [b(f.src) for f in matched_files])
 
     def test_exclude_include(self):
         patterns = [['exclude', '*'], ['include', '*.txt']]

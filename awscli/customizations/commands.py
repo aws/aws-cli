@@ -135,7 +135,8 @@ class BasicCommand(CLICommand):
 
             # If this parameter has a schema defined, then allow plugins
             # a chance to process and override its value.
-            if param and param.schema is not None and value is not None:
+            if param and getattr(param, 'argument_object', None) is not None \
+               and value is not None:
                 param_object = param.argument_object
 
                 # Allow a single event handler to process the value

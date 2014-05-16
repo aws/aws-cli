@@ -195,11 +195,11 @@ class CustomArgument(BaseCLIArgument):
             choices = []
         self._choices = choices
         self.no_paramfile = no_paramfile
-        self.schema = schema
+        self._schema = schema
 
         # If the top level element is a list then set nargs to
         # accept multiple values seperated by a space.
-        if self.schema and self.schema.get('type', None) == 'array':
+        if self._schema and self._schema.get('type', None) == 'array':
             self._nargs = '+'
 
         # TODO: We should eliminate this altogether.
@@ -243,7 +243,7 @@ class CustomArgument(BaseCLIArgument):
         After calling this method, ``parameter.argument_object`` is available
         e.g. for generating docs.
         """
-        transformer = SchemaTransformer(self.schema)
+        transformer = SchemaTransformer(self._schema)
         transformed = transformer.transform()
 
         # Set the parameter name from the parsed arg key name

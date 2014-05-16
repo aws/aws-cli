@@ -850,6 +850,32 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.assertNotIn(p.stdout, 'bar.txt')
         self.assertNotIn(p.stdout, 'foo.txt')
 
+    def test_exclude_filter_with_delete(self):
+        # Test for: https://github.com/aws/aws-cli/issues/778
+        bucket_name = self.create_bucket()
+        first = self.files.create_file('foo.txt', 'contents')
+        second = self.files.create_file('bar.py', 'contents')
+        p = aws("s3 sync %s s3://%s/" % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, key_name='bar.py'))
+        os.remove(second)
+        # We now have the same state as specified in the bug:
+        # local           remote
+        # -----           ------
+        #
+        # foo.txt         foo.txt
+        #                 bar.py
+        #
+        # If we now run --exclude '*.py' --delete, then we should *not*
+        # delete bar.py and the remote side.
+        p = aws("s3 sync %s s3://%s/ --exclude '*.py' --delete" % (
+            self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(
+            self.key_exists(bucket_name, key_name='bar.py'),
+            ("The --delete flag was not applied to the receiving "
+             "end, the 'bar.py' file was deleted even though it was excluded."))
+
 
 class TestFileWithSpaces(BaseS3CLICommand):
     def test_upload_download_file_with_spaces(self):

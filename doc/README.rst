@@ -2,6 +2,12 @@
 Building The Documentation
 ==========================
 
+Before building the documentation, make sure you have all the
+necessary dependencies installed.  You can do this by using
+the requirements.txt file at the root of this repo::
+
+    pip install -r requirements.txt
+
 The process for building the documention is:
 
 * Run ``make html`` which will build all of the HTML documentation

@@ -35,7 +35,7 @@ describe_cluster_result_mock = {
             }
         },
         "Ec2InstanceAttributes": {
-            "IamInstanceProfile": "elasticmapreduce_EC2_DefaultRole",
+            "IamInstanceProfile": "EMR_EC2_DefaultRole",
             "Ec2AvailabilityZone": "us-east-1b"
         },
         "Name": "ABCD",
@@ -115,7 +115,7 @@ list_bootstrap_actions_result_mock = {
 EXPECTED_RESULT = {
     "Cluster": {
         "Ec2InstanceAttributes": {
-            "IamInstanceProfile": "elasticmapreduce_EC2_DefaultRole",
+            "IamInstanceProfile": "EMR_EC2_DefaultRole",
             "Ec2AvailabilityZone": "us-east-1b"
         },
         "Name": "ABCD",

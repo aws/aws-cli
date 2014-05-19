@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import unittest
-from awscli.customizations.emr.emrconfig import get_service_principal
+from awscli.customizations.emr.createdefaultroles import get_service_principal
 from awscli.customizations.emr.exceptions import \
     ResolveServicePrincipalError
 
@@ -20,40 +20,24 @@ from awscli.customizations.emr.exceptions import \
 class TestEmrConfig(unittest.TestCase):
     ec2_service = "ec2"
     emr_service = "elasticmapreduce"
-    us_east1 = "us-east-1"
-    cn_north_1 = "cn-north-1"
-    eu_west_1 = "eu-west-1"
-    endpoint1 = "https://aws.elasticmapreduce.abc"
+    endpoint1 = "https://ap-southeast-1.elasticmapreduce.abc/"
     endpoint2 = "https://elasticmapreduce.abcd.def.ghi"
     endpoint3 = "https://grabage.nothing.com"
-    expected_result1 = "ec2.amazonaws.com"
-    expected_result2 = "ec2.amazonaws.com.cn"
-    expected_result3 = "elasticmapreduce.amazonaws.com"
-    expected_result4 = "elasticmapreduce.abc"
-    expected_result5 = "elasticmapreduce.def.ghi"
+    expected_result1 = "elasticmapreduce.abc"
+    expected_result2 = "elasticmapreduce.def.ghi"
 
     def test_get_service_principal(self):
         msg = "Generated Service Principal does not match the expected" + \
             "Service Principal"
 
-        result1 = get_service_principal(self.ec2_service, self.us_east1, None)
+        result1 = get_service_principal(self.emr_service, self.endpoint1)
         self.assertEqual(result1, self.expected_result1, msg)
 
-        result2 = get_service_principal(self.ec2_service, self.cn_north_1,
-                                        None)
+        result2 = get_service_principal(self.emr_service, self.endpoint2)
         self.assertEqual(result2, self.expected_result2, msg)
 
-        result3 = get_service_principal(self.emr_service, self.eu_west_1, None)
-        self.assertEqual(result3, self.expected_result3, msg)
-
-        result4 = get_service_principal(self.emr_service, None, self.endpoint1)
-        self.assertEqual(result4, self.expected_result4, msg)
-
-        result5 = get_service_principal(self.emr_service, None, self.endpoint2)
-        self.assertEqual(result5, self.expected_result5, msg)
-
         self.assertRaises(ResolveServicePrincipalError,
-                          get_service_principal, self.ec2_service, None,
+                          get_service_principal, self.ec2_service,
                           self.endpoint3)
 
 

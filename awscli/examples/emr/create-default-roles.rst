@@ -52,9 +52,9 @@
                 },
                 "RoleId": "AROAJDKUOAL65X57SBWFK",
                 "CreateDate": "2014-05-07T00:02:06.154Z",
-                "RoleName": "elasticmapreduce_EC2_DefaultRole",
+                "RoleName": "EMR_EC2_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/elasticmapreduce_EC2_DefaultRole"
+                "Arn": "arn:aws:iam::176430881729:role/EMR_EC2_DefaultRole"
             }
         },
         {
@@ -106,9 +106,9 @@
                 },
                 "RoleId": "AROAJ46UH7B2XLI3RQAS4",
                 "CreateDate": "2014-05-07T00:02:08.724Z",
-                "RoleName": "elasticmapreduce_DefaultRole",
+                "RoleName": "EMR_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/elasticmapreduce_DefaultRole"
+                "Arn": "arn:aws:iam::176430881729:role/EMR_DefaultRole"
             }
         }
     ]

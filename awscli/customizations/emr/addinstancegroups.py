@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+
+from awscli.customizations.emr import emrutils
 from awscli.customizations.commands import BasicCommand
-from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.emr import argumentschema
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr import instancegroupsutils
@@ -30,13 +31,11 @@ class AddInstanceGroups(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         parameters = {'JobFlowId': parsed_args.cluster_id}
         parameters['InstanceGroups'] = \
             instancegroupsutils.build_instance_groups(
             parsed_args.instance_groups)
-        cli_operation_caller = CLIOperationCaller(self._session)
-        cli_operation_caller.invoke(
-            emr.get_operation('AddInstanceGroups'),
-            parameters, parsed_globals)
+
+        emrutils.call_and_display_response(self._session, 'AddInstanceGroups',
+                                           parameters, parsed_globals)
         return 0

@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import unittest
-import json
-from awscli.customizations.emr.defaultroles import assume_role_policy
+from awscli.customizations.emr.createdefaultroles import assume_role_policy
 
 
 class TestDefaultRoles(unittest.TestCase):

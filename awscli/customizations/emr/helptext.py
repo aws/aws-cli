@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import defaultroles
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
 TERMINATE_CLUSTERS = (
     'Shuts down a list of clusters. When a cluster is shut'
@@ -76,7 +76,7 @@ EC2_ATTRIBUTES = (
     '<p>Specify the following EC2 attributes: KeyName,'
     ' AvailabilityZone, Subnet, and InstanceProfile. AvailabilityZone and '
     'Subnet cannot be specified together. To create the default '
-    'instance profile <code>' + defaultroles.EC2_ROLE_NAME + '</code>,'
+    'instance profile <code>' + EC2_ROLE_NAME + '</code>,'
     ' use <code>aws emr create-default-roles</code> command. </p>'
     '<p>Shorthand Syntax:</p><p><code>--ec2-attributes KeyName=myKey,'
     'SubnetId=subnet-xxxxx,InstanceProfile=myRole</code></p>'

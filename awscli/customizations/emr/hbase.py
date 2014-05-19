@@ -16,7 +16,6 @@ from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import hbaseutils
 from awscli.customizations.emr import helptext
 from awscli.customizations.commands import BasicCommand
-from awscli.clidriver import CLIOperationCaller
 
 
 class RestoreFromHBaseBackup(BasicCommand):
@@ -32,7 +31,6 @@ class RestoreFromHBaseBackup(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         steps = []
         args = hbaseutils.build_hbase_restore_from_backup_args(
             parsed_args.dir, parsed_args.backup_version)
@@ -46,9 +44,8 @@ class RestoreFromHBaseBackup(BasicCommand):
         steps.append(step_config)
         parameters = {'JobFlowId': parsed_args.cluster_id,
                       'Steps': steps}
-        cli_operation_caller = CLIOperationCaller(self._session)
-        cli_operation_caller.invoke(emr.get_operation('AddJobFlowSteps'),
-                                    parameters, parsed_globals)
+        emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
+                                           parameters, parsed_globals)
         return 0
 
 
@@ -78,10 +75,9 @@ class ScheduleHBaseBackup(BasicCommand):
                       ' during the backup process.</p>'}
     ]
 
-    EXAMPLES = emrutils.get_example_file(NAME).read()
+    EXAMPLES = BasicCommand.FROM_FILE('emr', 'schedule-hbase-backup.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         steps = []
         self._check_type(parsed_args.type)
         self._check_unit(parsed_args.unit)
@@ -96,9 +92,8 @@ class ScheduleHBaseBackup(BasicCommand):
         steps.append(step_config)
         parameters = {'JobFlowId': parsed_args.cluster_id,
                       'Steps': steps}
-        cli_operation_caller = CLIOperationCaller(self._session)
-        cli_operation_caller.invoke(emr.get_operation('AddJobFlowSteps'),
-                                    parameters, parsed_globals)
+        emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
+                                           parameters, parsed_globals)
         return 0
 
     def _check_type(self, type):
@@ -165,7 +160,6 @@ class CreateHBaseBackup(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         steps = []
         args = self._build_hbase_backup_args(parsed_args)
 
@@ -178,9 +172,8 @@ class CreateHBaseBackup(BasicCommand):
         steps.append(step_config)
         parameters = {'JobFlowId': parsed_args.cluster_id,
                       'Steps': steps}
-        cli_operation_caller = CLIOperationCaller(self._session)
-        cli_operation_caller.invoke(emr.get_operation('AddJobFlowSteps'),
-                                    parameters, parsed_globals)
+        emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
+                                           parameters, parsed_globals)
         return 0
 
     def _build_hbase_backup_args(self, parsed_args):
@@ -207,7 +200,6 @@ class DisableHBaseBackups(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         steps = []
 
         args = self._build_hbase_disable_backups_args(parsed_args)
@@ -221,9 +213,8 @@ class DisableHBaseBackups(BasicCommand):
         steps.append(step_config)
         parameters = {'JobFlowId': parsed_args.cluster_id,
                       'Steps': steps}
-        cliOperationCaller = CLIOperationCaller(self._session)
-        cliOperationCaller.invoke(emr.get_operation('AddJobFlowSteps'),
-                                  parameters, parsed_globals)
+        emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
+                                           parameters, parsed_globals)
         return 0
 
     def _build_hbase_disable_backups_args(self, parsed_args):

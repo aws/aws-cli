@@ -74,7 +74,7 @@ class UnknownApplicationError(EmrError):
            (', '.join(constants.APPLICATIONS))) + '.'
 
 
-class UnkownIamEndpointError(EmrError):
+class UnknownIamEndpointError(EmrError):
     """
     The IAM endpoint is not known for the specified region.
 

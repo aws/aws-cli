@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr import defaultroles
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 from awscli.customizations.emr import helptext
 
 INSTANCE_GROUPS_SCHEMA = {
@@ -84,7 +84,7 @@ EC2_ATTRIBUTES_SCHEMA = {
             "description":
                 "An IAM role for the cluster. The EC2 instances of the cluster"
                 " assume this role. The default role is " +
-                defaultroles.EC2_ROLE_NAME + ". In order to use the default"
+                EC2_ROLE_NAME + ". In order to use the default"
                 " role, you must have already created it using the "
                 "<code>create-default-roles</code> command. "
         }

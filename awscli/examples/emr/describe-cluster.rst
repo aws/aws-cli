@@ -17,7 +17,7 @@
                 }
             },
             "Ec2InstanceAttributes": {
-                "IamInstanceProfile": "elasticmapreduce_EC2_DefaultRole",
+                "IamInstanceProfile": "EMR_EC2_DefaultRole",
                 "Ec2AvailabilityZone": "us-east-1c"
             },
             "Name": "My Cluster",

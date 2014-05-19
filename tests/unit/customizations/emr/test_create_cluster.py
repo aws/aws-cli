@@ -500,7 +500,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['Ec2KeyName'] = 'testkey'
         result['Instances']['Ec2SubnetId'] = 'subnet-123456'
-        result['JobFlowRole'] = 'elasticmapreduce_EC2_DefaultRole'
+        result['JobFlowRole'] = 'EMR_EC2_DefaultRole'
         self.assert_params_for_cmd(cmd, result)
 
     def test_ec2_attributes_with_az_from_json_file(self):
@@ -510,7 +510,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['Ec2KeyName'] = 'testkey'
         result['Instances']['Placement'] = {'AvailabilityZone': 'us-east-1a'}
-        result['JobFlowRole'] = 'elasticmapreduce_EC2_DefaultRole'
+        result['JobFlowRole'] = 'EMR_EC2_DefaultRole'
         self.assert_params_for_cmd(cmd, result)
 
     # Bootstrap Actions test cases

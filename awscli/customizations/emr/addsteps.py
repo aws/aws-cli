@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.commands import BasicCommand
-from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.emr import steputils
 from awscli.customizations.emr import argumentschema
 from awscli.customizations.emr import helptext
@@ -21,7 +20,7 @@ from awscli.customizations.emr import emrutils
 
 class AddSteps(BasicCommand):
     NAME = 'add-steps'
-    DESCRIPTION = ('Add a list of steps to a cluster. ')
+    DESCRIPTION = ('Add a list of steps to a cluster.')
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID
@@ -33,10 +32,9 @@ class AddSteps(BasicCommand):
          'help_text': helptext.STEPS
          }
     ]
-    EXAMPLES = emrutils.get_example_file(NAME).read()
+    EXAMPLES = BasicCommand.FROM_FILE('emr', 'add-steps.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         parsed_steps = parsed_args.steps
         step_list = steputils.build_step_config_list(
             parsed_step_list=parsed_steps, region=parsed_globals.region)
@@ -45,8 +43,6 @@ class AddSteps(BasicCommand):
             'Steps': step_list
         }
 
-        cli_operation_caller = CLIOperationCaller(self._session)
-        cli_operation_caller.invoke(
-            emr.get_operation('AddJobFlowSteps'), parameters, parsed_globals)
-
+        emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
+                                           parameters, parsed_globals)
         return 0

@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
@@ -82,7 +81,6 @@ class CreateCluster(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         params = {}
         bootstrap_actions = []
         params['Name'] = parsed_args.name
@@ -186,10 +184,8 @@ class CreateCluster(BasicCommand):
 
         self._validate_required_applications(parsed_args)
 
-        cli_operation_caller = CLIOperationCaller(self._session)
-        cli_operation_caller.invoke(
-            emr.get_operation('RunJobFlow'), params, parsed_globals)
-
+        emrutils.call_and_display_response(self._session, 'RunJobFlow', params,
+                                           parsed_globals)
         return 0
 
     def _build_instance_groups(self, parsed_instance_groups):

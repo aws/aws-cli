@@ -47,7 +47,7 @@ def create_filter(parameters):
 
 
 def _get_s3_root(source_location):
-    return split_s3_bucket_key(source_location)[0]
+    return split_s3_bucket_key(os.path.abspath(source_location))[0]
 
 
 def _get_local_root(source_location, dir_op):

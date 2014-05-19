@@ -876,6 +876,29 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
             ("The --delete flag was not applied to the receiving "
              "end, the 'bar.py' file was deleted even though it was excluded."))
 
+    def test_exclude_filter_with_relative_path(self):
+        # Same test as test_exclude_filter_with_delete, except we don't
+        # use an absolute path on the source dir.
+        bucket_name = self.create_bucket()
+        first = self.files.create_file('foo.txt', 'contents')
+        second = self.files.create_file('bar.py', 'contents')
+        p = aws("s3 sync %s s3://%s/" % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, key_name='bar.py'))
+        os.remove(second)
+        cwd = os.getcwd()
+        try:
+            os.chdir(self.files.rootdir)
+            # Note how we're using "." for the source directory.
+            p = aws("s3 sync . s3://%s/ --exclude '*.py' --delete" % bucket_name)
+        finally:
+            os.chdir(cwd)
+        self.assert_no_errors(p)
+        self.assertTrue(
+            self.key_exists(bucket_name, key_name='bar.py'),
+            ("The --delete flag was not applied to the receiving "
+             "end, the 'bar.py' file was deleted even though it was excluded."))
+
 
 class TestFileWithSpaces(BaseS3CLICommand):
     def test_upload_download_file_with_spaces(self):

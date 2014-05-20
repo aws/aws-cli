@@ -1,15 +1,19 @@
+import logging
 import os
 
 import bcdoc.docevents
 from botocore.compat import OrderedDict
 
 import awscli
-from awscli.clidocs import CLIDocumentEventHandler
+from awscli.clidocs import OperationDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
-from awscli.argprocess import unpack_argument
+from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.clidriver import CLICommand
 from awscli.arguments import CustomArgument
 from awscli.help import HelpCommand
+
+
+LOG = logging.getLogger(__name__)
 
 
 class _FromFile(object):
@@ -54,6 +58,9 @@ class BasicCommand(CLICommand):
     #     {'name': 'argument-two', 'help_text': 'This argument does some other thing.',
     #      'action': 'store', 'choices': ['a', 'b', 'c']},
     # ]
+    #
+    # A `schema` parameter option is available to accept a custom JSON
+    # structure as input. See the file `awscli/schema.py` for more info.
     ARG_TABLE = []
     # If you want the command to have subcommands, you can provide a list of
     # dicts.  We use a list here because we want to allow a user to provide
@@ -110,16 +117,46 @@ class BasicCommand(CLICommand):
         # Unpack arguments
         for key, value in vars(parsed_args).items():
             param = None
-            if key in arg_table:
-                param = arg_table[key]
 
-            setattr(parsed_args, key, unpack_argument(
+            # Convert the name to use dashes instead of underscore
+            # as these are how the parameters are stored in the
+            # `arg_table`.
+            xformed = key.replace('_', '-')
+            if xformed in arg_table:
+                param = arg_table[xformed]
+
+            value = unpack_argument(
                 self._session,
                 'custom',
                 self.name,
                 param,
                 value
-            ))
+            )
+
+            # If this parameter has a schema defined, then allow plugins
+            # a chance to process and override its value.
+            if param and getattr(param, 'argument_object', None) is not None \
+               and value is not None:
+                param_object = param.argument_object
+
+                # Allow a single event handler to process the value
+                override = self._session\
+                    .emit_first_non_none_response(
+                        'process-cli-arg.%s.%s' % ('custom', self.name),
+                        param=param_object, value=value, operation=None)
+
+                if override is not None:
+                    # A plugin supplied a conversion
+                    value = override
+                else:
+                    # Unpack the argument, which is a string, into the
+                    # correct Python type (dict, list, etc)
+                    value = unpack_cli_arg(param_object, value)
+
+                # Validate param types, required keys, etc
+                param_object.validate(value)
+
+            setattr(parsed_args, key, value)
 
         if hasattr(parsed_args, 'help'):
             self._display_help(parsed_args, parsed_globals)
@@ -165,6 +202,12 @@ class BasicCommand(CLICommand):
         arg_table = OrderedDict()
         for arg_data in self.ARG_TABLE:
             custom_argument = CustomArgument(**arg_data)
+
+            # If a custom schema was passed in, create the argument object
+            # so that it can be validated and docs can be generated
+            if 'schema' in arg_data:
+                custom_argument.create_argument_object()
+
             arg_table[arg_data['name']] = custom_argument
         return arg_table
 
@@ -238,10 +281,13 @@ class BasicHelp(HelpCommand):
         instance.unregister()
 
 
-class BasicDocHandler(CLIDocumentEventHandler):
+class BasicDocHandler(OperationDocumentEventHandler):
     def __init__(self, help_command):
         super(BasicDocHandler, self).__init__(help_command)
         self.doc = help_command.doc
+
+    def build_translation_map(self):
+        return {}
 
     def doc_description(self, help_command, **kwargs):
         self.doc.style.h2('Description')
@@ -274,9 +320,6 @@ class BasicDocHandler(CLIDocumentEventHandler):
         else:
             self.doc.style.end_codeblock()
 
-    def doc_option_example(self, arg_name, help_command, **kwargs):
-        pass
-
     def doc_examples(self, help_command, **kwargs):
         if help_command.examples:
             self.doc.style.h2('Examples')
@@ -289,4 +332,7 @@ class BasicDocHandler(CLIDocumentEventHandler):
         pass
 
     def doc_subitems_end(self, help_command, **kwargs):
+        pass
+
+    def doc_output(self, help_command, event_name, **kwargs):
         pass

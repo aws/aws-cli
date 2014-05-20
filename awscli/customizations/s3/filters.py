@@ -34,31 +34,49 @@ def create_filter(parameters):
         if source_location.startswith('s3://'):
             # This gives us (bucket, keyname) and we want
             # the bucket to be the root dir.
-            rootdir = split_s3_bucket_key(source_location)[0]
+            src_rootdir = _get_s3_root(source_location)
+            dst_rootdir = _get_local_root(parameters['dest'],
+                                          parameters['dir_op'])
         else:
-            if parameters.get('dir_op'):
-                rootdir = os.path.abspath(parameters['src'])
-            else:
-                rootdir = os.path.abspath(os.path.dirname(parameters['src']))
-        return Filter(real_filters, rootdir)
+            src_rootdir = _get_local_root(parameters['src'], parameters['dir_op'])
+            dst_rootdir = _get_s3_root(parameters['dest'])
+
+        return Filter(real_filters, src_rootdir, dst_rootdir)
     else:
-        return Filter({}, None)
+        return Filter({}, None, None)
+
+
+def _get_s3_root(source_location):
+    return split_s3_bucket_key(source_location)[0]
+
+
+def _get_local_root(source_location, dir_op):
+    if dir_op:
+        rootdir = os.path.abspath(source_location)
+    else:
+        rootdir = os.path.abspath(os.path.dirname(source_location))
+    return rootdir
 
 
 class Filter(object):
     """
     This is a universal exclude/include filter.
     """
-    def __init__(self, patterns, rootdir):
+    def __init__(self, patterns, rootdir, dst_rootdir):
         """
         :var patterns: A list of patterns. A pattern consits of a list
             whose first member is a string 'exclude' or 'include'.
             The second member is the actual rule.
         :var rootdir: The root directory where the patterns are evaluated.
             This will generally be the directory of the source location.
+        :var dst_rootdir: The destination root directory where the patterns are
+            evaluated.  This is only useful when the --delete option is
+            also specified.
 
         """
+        self._original_patterns = patterns
         self.patterns = self._full_path_patterns(patterns, rootdir)
+        self.dst_patterns = self._full_path_patterns(patterns, dst_rootdir)
 
     def _full_path_patterns(self, original_patterns, rootdir):
         # We need to transform the patterns into patterns that have
@@ -72,40 +90,49 @@ class Filter(object):
 
     def call(self, file_infos):
         """
-        This function iterates over through the yielded file_info
-        objects.  It determines the type of the file and
-        applies pattern matching to determine if the rule applies.
-        While iterating though the patterns the file is assigned
-        a boolean flag to determine if a file should be yielded on
-        past the filer.  Anything identified by the exclude filter
-        has its flag set to false.  Anything identified by the include
-        filter has its flag set to True.  All files begin with
-        the flag set to true. Rules listed at the end will
-        overwrite flags thrown by rules listed
+        This function iterates over through the yielded file_info objects.  It
+        determines the type of the file and applies pattern matching to
+        determine if the rule applies.  While iterating though the patterns the
+        file is assigned a boolean flag to determine if a file should be
+        yielded on past the filer.  Anything identified by the exclude filter
+        has its flag set to false.  Anything identified by the include filter
+        has its flag set to True.  All files begin with the flag set to true.
+        Rules listed at the end will overwrite flags thrown by rules listed
         before it.
         """
         for file_info in file_infos:
             file_path = file_info.src
             file_status = (file_info, True)
-            for pattern in self.patterns:
-                pattern_type = pattern[0]
-                if file_info.src_type == 'local':
-                    path_pattern = pattern[1].replace('/', os.sep)
-                else:
-                    path_pattern = pattern[1].replace(os.sep, '/')
-                is_match = fnmatch.fnmatch(file_path, path_pattern)
-                if is_match and pattern_type == 'include':
-                    file_status = (file_info, True)
-                    LOG.debug("%s matched include filter: %s",
-                              file_path, path_pattern)
-                elif is_match and pattern_type == 'exclude':
-                    file_status = (file_info, False)
-                    LOG.debug("%s matched exclude filter: %s",
-                              file_path, path_pattern)
-                else:
-                    LOG.debug("%s did not match %s filter: %s",
-                              file_path, pattern_type[2:], path_pattern)
+            for pattern, dst_pattern in zip(self.patterns, self.dst_patterns):
+                current_file_status = self._match_pattern(pattern, file_info)
+                if current_file_status is not None:
+                    file_status = current_file_status
+                dst_current_file_status = self._match_pattern(dst_pattern, file_info)
+                if dst_current_file_status is not None:
+                    file_status = dst_current_file_status
             LOG.debug("=%s final filtered status, should_include: %s",
                       file_path, file_status[1])
             if file_status[1]:
                 yield file_info
+
+    def _match_pattern(self, pattern, file_info):
+        file_status = None
+        file_path = file_info.src
+        pattern_type = pattern[0]
+        if file_info.src_type == 'local':
+            path_pattern = pattern[1].replace('/', os.sep)
+        else:
+            path_pattern = pattern[1].replace(os.sep, '/')
+        is_match = fnmatch.fnmatch(file_path, path_pattern)
+        if is_match and pattern_type == 'include':
+            file_status = (file_info, True)
+            LOG.debug("%s matched include filter: %s",
+                        file_path, path_pattern)
+        elif is_match and pattern_type == 'exclude':
+            file_status = (file_info, False)
+            LOG.debug("%s matched exclude filter: %s",
+                        file_path, path_pattern)
+        else:
+            LOG.debug("%s did not match %s filter: %s",
+                        file_path, pattern_type[2:], path_pattern)
+        return file_status

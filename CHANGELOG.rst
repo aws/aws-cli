@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.3.12
+======
+
+* bugfix:``aws s3``: Fix issue when ``--delete`` and ``--exclude``
+  filters are used together
+  (`issue 778 <https://github.com/aws/aws-cli/issues/778>`__)
+* feature:``aws route53``: Update ``aws route53`` to the latest
+  model
+* bugfix:``aws emr``: Fix issue with ``aws emr`` retry logic not
+  being applied correctly
+  (`botocore issue 285 <https://github.com/boto/botocore/pull/285>`__)
+
+
 1.3.11
 ======
 

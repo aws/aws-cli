@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.12
+======
 
 * bugfix:``aws s3``: Fix issue when ``--delete`` and ``--exclude``
   filters are used together

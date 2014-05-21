@@ -15,7 +15,6 @@
 # The following tests are performed to ensure that the commands work.
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
-from tests import unittest
 import os
 import random
 import platform
@@ -26,9 +25,8 @@ import signal
 import botocore.session
 import six
 
-from tests.integration import aws
+from awscli.testutils import unittest, aws, FileCreator
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
-from tests.unit import FileCreator
 from awscli.customizations.s3 import constants
 
 

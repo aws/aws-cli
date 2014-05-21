@@ -19,9 +19,9 @@ import six
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service
 from mock import Mock, patch
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 from tests.unit.test_clidriver import FakeSession
-from tests import unittest
+from awscli.testutils import unittest
 
 
 class TestCloudTrail(unittest.TestCase):

@@ -16,7 +16,7 @@ import sys
 import re
 import copy
 
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 if sys.version_info[:2] == (2, 6):
     from StringIO import StringIO

@@ -22,7 +22,7 @@ import datetime
 import random
 from six import StringIO
 import sys
-from tests import unittest
+from awscli.testutils import unittest
 
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.s3handler import S3Handler

@@ -14,13 +14,26 @@ from awscli.help import HelpCommand
 
 
 LOG = logging.getLogger(__name__)
+_open = open
 
 
 class _FromFile(object):
-    def __init__(self, *paths):
+    def __init__(self, *paths, **kwargs):
+        """
+        ``**kwargs`` can contain a ``root_module`` argument
+        that contains the root module where the file contents
+        should be searched.  This is an optional argument, and if
+        no value is provided, will default to ``awscli``.  This means
+        that by default we look for examples in the ``awscli`` module.
+
+        """
         self.filename = None
         if paths:
             self.filename = os.path.join(*paths)
+        if 'root_module' in kwargs:
+            self.root_module = kwargs['root_module']
+        else:
+            self.root_module = awscli
 
 
 class BasicCommand(CLICommand):
@@ -262,10 +275,11 @@ class BasicHelp(HelpCommand):
                 trailing_path = value.filename
             else:
                 trailing_path = os.path.join(self.name, attr_name + '.rst')
+            root_module = value.root_module
             doc_path = os.path.join(
-                os.path.abspath(os.path.dirname(awscli.__file__)), 'examples',
+                os.path.abspath(os.path.dirname(root_module.__file__)), 'examples',
                 trailing_path)
-            with open(doc_path) as f:
+            with _open(doc_path) as f:
                 return f.read()
         else:
             return value

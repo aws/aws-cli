@@ -14,7 +14,7 @@
 import re
 import copy
 
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 import six
 
 

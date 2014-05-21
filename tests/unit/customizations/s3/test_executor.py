@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest, temporary_file
 import os
 import tempfile
 import shutil
 import mock
 from six.moves import queue
 
+from awscli.testutils import unittest, temporary_file
 from awscli.customizations.s3.executor import IOWriterThread
 from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.executor import Executor

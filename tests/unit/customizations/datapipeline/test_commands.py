@@ -15,8 +15,8 @@ import copy
 import mock
 
 import six
-from tests import BaseAWSHelpOutputTest
-from tests.unit import unittest, BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSHelpOutputTest, BaseAWSCommandParamsTest, \
+        unittest
 
 from awscli.customizations.datapipeline import convert_described_objects
 from awscli.customizations.datapipeline import ListRunsCommand

@@ -14,7 +14,7 @@ import argparse
 import os
 from six import StringIO
 import sys
-from tests import unittest
+from awscli.testutils import unittest
 import mock
 
 import botocore.session
@@ -27,7 +27,7 @@ from awscli.customizations.s3.s3 import AppendFilter, \
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
-from tests import BaseAWSHelpOutputTest
+from awscli.testutils import BaseAWSHelpOutputTest
 
 
 class AppendFilterTest(unittest.TestCase):

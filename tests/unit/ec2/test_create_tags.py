@@ -14,8 +14,8 @@
 import sys
 
 import six
-from tests import unittest
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import unittest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateTags(BaseAWSCommandParamsTest):

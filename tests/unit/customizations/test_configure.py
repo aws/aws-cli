@@ -14,7 +14,7 @@ import sys
 import os
 import tempfile
 import shutil
-from tests import unittest
+from awscli.testutils import unittest
 
 import mock
 from six import StringIO

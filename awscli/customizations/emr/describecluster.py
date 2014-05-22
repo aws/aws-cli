@@ -14,6 +14,7 @@
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import helptext
+from botocore.exceptions import NoCredentialsError
 
 
 class DescribeCluster(BasicCommand):
@@ -26,48 +27,80 @@ class DescribeCluster(BasicCommand):
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID}
     ]
-    EXAMPLES = emrutils.get_example_file(NAME).read()
+    EXAMPLES = BasicCommand.FROM_FILE('emr', 'describe-cluster.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
         emr = self._session.get_service('emr')
         describe_cluster = emr.get_operation('DescribeCluster')
         parameters = {'ClusterId': parsed_args.cluster_id}
 
-        describe_cluster_response = self._call(describe_cluster, parameters,
-                                               parsed_globals)
+        describe_cluster_result = self._call(describe_cluster, parameters,
+                                             parsed_globals)
 
-        list_instance_groups_response = self._call(
+        list_instance_groups_result = self._call(
             emr.get_operation('ListInstanceGroups'), parameters,
             parsed_globals)
 
-        list_bootstrap_actions_response = self._call(
+        list_bootstrap_actions_result = self._call(
             emr.get_operation('ListBootstrapActions'),
             parameters, parsed_globals)
 
-        index = 1
         constructed_result = self.construct_result(
-            describe_cluster_response[index],
-            list_instance_groups_response[index],
-            list_bootstrap_actions_response[index])
+            describe_cluster_result,
+            list_instance_groups_result,
+            list_bootstrap_actions_result)
 
         emrutils.display_response(self._session, describe_cluster,
                                   constructed_result, parsed_globals)
 
         return 0
 
-    def _call(self, operation, parameters, parsed_globals):
-        return emrutils.call(
-            self._session, operation, parameters, parsed_globals.region,
-            parsed_globals.endpoint_url, parsed_globals.verify_ssl)
+    def _call(self, operation_object, parameters, parsed_globals):
+        # We could get an error from get_endpoint() about not having
+        # a region configured.  Before this happens we want to check
+        # for credentials so we can give a good error message.
+        result = []
+        if not self._session.get_credentials():
+            raise NoCredentialsError()
+        endpoint = operation_object.service.get_endpoint(
+            region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=parsed_globals.verify_ssl)
+        if operation_object.can_paginate and parsed_globals.paginate:
+            pages = operation_object.paginate(endpoint, **parameters)
+            key = None
+            for page in pages:
+                http_response = page[0]
+                if http_response.status_code == 200:
+                    response_data = page[1]
+                    keys = response_data.keys()
+                    if keys is not None and len(keys) > 0:
+                        key = keys[0]
+                        result += response_data.get(key)
+            if key is not None:
+                return {key: result}
+            else:
+                return None
+        else:
+            http_response, response_data = operation_object.call(endpoint,
+                                                                 **parameters)
+            return response_data
 
     def construct_result(
             self, describe_cluster_result, list_instance_groups_result,
             list_bootstrap_actions_result):
         result = describe_cluster_result
+        result['Cluster']['InstanceGroups'] = []
+        result['Cluster']['BootstrapActions'] = []
 
-        result['Cluster']['InstanceGroups'] = \
-            list_instance_groups_result['InstanceGroups']
-        result['Cluster']['BootstrapActions'] = \
-            list_bootstrap_actions_result['BootstrapActions']
+        if (list_instance_groups_result is not None and
+                list_instance_groups_result.get('InstanceGroups') is not None):
+            result['Cluster']['InstanceGroups'] = \
+                list_instance_groups_result.get('InstanceGroups')
+        if (list_bootstrap_actions_result is not None and
+                list_bootstrap_actions_result.get('BootstrapActions')
+                is not None):
+            result['Cluster']['BootstrapActions'] = \
+                list_bootstrap_actions_result['BootstrapActions']
 
         return result

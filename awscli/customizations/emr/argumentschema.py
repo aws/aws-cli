@@ -160,7 +160,7 @@ STEPS_SCHEMA = {
                 "type": "string",
                 "description":
                     "The type of a step to be added to the cluster.",
-                "default": "customjar"
+                "default": "custom_jar"
             },
             "Name": {
                 "type": "string",

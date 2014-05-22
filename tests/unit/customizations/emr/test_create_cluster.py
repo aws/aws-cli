@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 import copy
 import os
 
@@ -726,7 +726,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_custom_jar_step_with_all_fields(self):
         cmd = DEFAULT_CMD + '--steps ' + (
-            'Name=Custom,Type=CustomJAR,'
+            'Name=Custom,Type=Custom_JAR,'
             'Jar=s3://mybucket/mytest.jar,'
             'Args=arg1,arg2,MainClass=mymainclass,'
             'ActionOnFailure=TERMINATE_CLUSTER')

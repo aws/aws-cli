@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 from nose.tools import raises
 
 

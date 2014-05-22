@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit import BaseAWSCommandParamsTest
-from nose.tools import raises
+from awscli.testutils import BaseAWSCommandParamsTest
 import os
 import copy
 
@@ -144,7 +143,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
 
     def test_custom_jar_step_with_all_fields(self):
         cmd = self.prefix + (
-            'Name=Custom,Type=CustomJAR,'
+            'Name=Custom,Type=Custom_jar,'
             'Jar=s3://mybucket/mytest.jar,'
             'Args=arg1,arg2,MainClass=mymainclass,'
             'ActionOnFailure=TERMINATE_CLUSTER,'

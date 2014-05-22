@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import copy
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 INSTALL_HIVE_STEP = {

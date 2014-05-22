@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import unittest
+from awscli.testutils import unittest
 from awscli.customizations.emr.createdefaultroles import get_service_principal
 from awscli.customizations.emr.exceptions import \
     ResolveServicePrincipalError

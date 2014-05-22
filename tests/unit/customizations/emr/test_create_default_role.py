@@ -15,7 +15,7 @@ import mock
 import awscli.customizations.emr.emrutils as emrutils
 import json
 from botocore.vendored import requests
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"

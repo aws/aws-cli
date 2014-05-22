@@ -13,12 +13,9 @@
 
 import json
 
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest
 from mock import patch
-from botocore.vendored import requests
 
-http_response = requests.models.Response()
-http_response.status_code = 200
 
 describe_cluster_result_mock = {
     "Cluster": {
@@ -240,11 +237,11 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
 
 def side_effect_of_call(*args, **kwargs):
     if args[0].name == 'DescribeCluster':
-        return (http_response, describe_cluster_result_mock)
+        return describe_cluster_result_mock
     elif args[0].name == 'ListInstanceGroups':
-        return (http_response, list_instance_groups_result_mock)
+        return list_instance_groups_result_mock
     elif args[0].name == 'ListBootstrapActions':
-        return (http_response, list_bootstrap_actions_result_mock)
+        return list_bootstrap_actions_result_mock
 
 
 if __name__ == "__main__":

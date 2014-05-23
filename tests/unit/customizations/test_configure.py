@@ -64,7 +64,7 @@ class FakeSession(object):
     def get_credentials(self):
         return self._credentials
 
-    def get_config(self):
+    def get_scoped_config(self):
         if self.profile_does_not_exist:
             raise ProfileNotFound(profile='foo')
         return self.config
@@ -490,7 +490,7 @@ class TestConfigureListCommand(unittest.TestCase):
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertRegexpMatches(
-            rendered, 'region\s+us-west-2\s+config_file\s+/config/location')
+            rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
 
     def test_configure_from_multiple_sources(self):
         # Here the profile is from an env var, the
@@ -523,7 +523,7 @@ class TestConfigureListCommand(unittest.TestCase):
             rendered, 'profile\s+myprofilename\s+env\s+AWS_DEFAULT_PROFILE')
         # The region came from the config file.
         self.assertRegexpMatches(
-            rendered, 'region\s+us-west-2\s+config_file\s+/config/location')
+            rendered, 'region\s+us-west-2\s+config-file\s+/config/location')
         # The credentials came from an IAM role.  Note how we're
         # also checking that the access_key/secret_key are masked
         # with '*' chars except for the last 4 chars.

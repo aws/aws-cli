@@ -16,10 +16,10 @@ import six
 
 
 def split_on_commas(value):
-    if '"' not in value and '\\' not in value and "'" not in value:
+    if not any(char in value for char in ['"', '\\', "'", ']', '[']):
         # No quotes or escaping, just use a simple split.
         return value.split(',')
-    elif '"' not in value and "'" not in value:
+    elif not any(char in value for char in ['"', "'", '[', ']']):
         # Simple escaping, let the csv module handle it.
         return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
     else:
@@ -36,8 +36,21 @@ def _split_with_quotes(value):
     iter_parts = iter(parts)
     new_parts = []
     for part in iter_parts:
+        # Find the first quote
         quote_char = _find_quote_char_in_part(part)
-        if quote_char is None:
+
+        # Find an opening list bracket
+        list_start = part.find('=[')
+
+        if list_start >= 0 and value.find(']') != -1 and \
+           (quote_char is None or part.find(quote_char) > list_start):
+            # This is a list, eat all the items until the end
+            new_chunk = _eat_items(value, iter_parts, part, ']')
+            list_items = _split_with_quotes(new_chunk[list_start + 2:-1])
+            new_chunk = new_chunk[:list_start + 1] + ','.join(list_items)
+            new_parts.append(new_chunk)
+            continue
+        elif quote_char is None:
             new_parts.append(part)
             continue
         elif part.count(quote_char) == 2:
@@ -49,19 +62,27 @@ def _split_with_quotes(value):
             continue
         # Now that we've found a starting quote char, we
         # need to combine the parts until we encounter an end quote.
-        current = part
-        chunks = [current.replace(quote_char, '')]
-        while True:
-            try:
-                current = six.advance_iterator(iter_parts)
-            except StopIteration:
-                raise ValueError(value)
-            chunks.append(current.replace(quote_char, ''))
-            if quote_char in current:
-                break
-        new_chunk = ','.join(chunks)
+        new_chunk = _eat_items(value, iter_parts, part, quote_char, quote_char)
         new_parts.append(new_chunk)
     return new_parts
+
+
+def _eat_items(value, iter_parts, part, end_char, replace_char=''):
+    """
+    Eat items from an iterator, optionally replacing characters with
+    a blank and stopping when the end_char has been reached.
+    """
+    current = part
+    chunks = [current.replace(replace_char, '')]
+    while True:
+        try:
+            current = six.advance_iterator(iter_parts)
+        except StopIteration:
+            raise ValueError(value)
+        chunks.append(current.replace(replace_char, ''))
+        if end_char in current:
+            break
+    return ','.join(chunks)
 
 
 def _find_quote_char_in_part(part):

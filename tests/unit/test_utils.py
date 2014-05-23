@@ -62,3 +62,23 @@ class TestCSVSplit(unittest.TestCase):
     def test_escape_backslash(self):
         self.assertEqual(split_on_commas('foo,bar\\\\,baz\\\\,qux'),
                          ['foo', 'bar\\', 'baz\\', 'qux'])
+
+    def test_square_brackets(self):
+        self.assertEqual(split_on_commas('foo,bar=["a=b",\'2\',c=d],baz'),
+                         ['foo', 'bar=a=b,2,c=d', 'baz'])
+
+    def test_quoted_square_brackets(self):
+        self.assertEqual(split_on_commas('foo,bar="[blah]",c=d],baz'),
+                         ['foo', 'bar=[blah]', 'c=d]', 'baz'])
+
+    def test_missing_bracket(self):
+        self.assertEqual(split_on_commas('foo,bar=[a,baz'),
+                         ['foo', 'bar=[a', 'baz'])
+
+    def test_missing_bracket2(self):
+        self.assertEqual(split_on_commas('foo,bar=a],baz'),
+                         ['foo', 'bar=a]', 'baz'])
+
+    def test_bracket_in_middle(self):
+        self.assertEqual(split_on_commas('foo,bar=a[b][c],baz'),
+                         ['foo', 'bar=a[b][c]', 'baz'])

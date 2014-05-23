@@ -245,7 +245,7 @@ class ParamShorthand(object):
                     current_value = unpack_scalar_cli_arg(args[current_key],
                                                           current[1].strip())
                     if args[current_key].type == 'list':
-                        current_parsed[current_key] = [current_value]
+                        current_parsed[current_key] = current_value.split(',')
                     else:
                         current_parsed[current_key] = current_value
                 elif current_key is not None:

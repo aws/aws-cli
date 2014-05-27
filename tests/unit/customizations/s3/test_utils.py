@@ -1,4 +1,4 @@
-from tests import unittest
+from awscli.testutils import unittest
 import os
 import tempfile
 import shutil

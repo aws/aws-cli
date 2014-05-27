@@ -13,8 +13,8 @@
 # language governing permissions and limitations under the License.
 from awscli.compat import compat_open
 
-from tests import temporary_file
-from tests.unit import BaseAWSCommandParamsTest
+from awscli.testutils import temporary_file
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeInstances(BaseAWSCommandParamsTest):

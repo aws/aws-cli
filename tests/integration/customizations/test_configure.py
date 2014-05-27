@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
 import os
 import tempfile
 import random
 
-from tests.integration import aws
+from awscli.testutils import unittest, aws
 
 
 class TestConfigureCommand(unittest.TestCase):
@@ -52,9 +51,9 @@ class TestConfigureCommand(unittest.TestCase):
         self.env_vars.pop('AWS_ACCESS_KEY_ID', None)
         self.env_vars.pop('AWS_SECRET_ACCESS_KEY', None)
         p = aws('configure list', env_vars=self.env_vars)
-        self.assertRegexpMatches(p.stdout, r'access_key.+config_file')
-        self.assertRegexpMatches(p.stdout, r'secret_key.+config_file')
-        self.assertRegexpMatches(p.stdout, r'region\s+us-west-2\s+config_file')
+        self.assertRegexpMatches(p.stdout, r'access_key.+config-file')
+        self.assertRegexpMatches(p.stdout, r'secret_key.+config-file')
+        self.assertRegexpMatches(p.stdout, r'region\s+us-west-2\s+config-file')
 
     def test_get_command(self):
         self.set_config_file_contents(

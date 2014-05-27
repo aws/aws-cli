@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-from tests import unittest
-from tests import BaseCLIDriverTest
-from tests import temporary_file
+from awscli.testutils import unittest
+from awscli.testutils import BaseCLIDriverTest
+from awscli.testutils import temporary_file
 
 import mock
 
@@ -25,6 +25,7 @@ from awscli.argprocess import ParamShorthand
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
 from awscli.argprocess import uri_param
+from awscli.arguments import CustomArgument
 
 
 MAPHELP = """--attributes key_name=string,key_name2=string
@@ -190,6 +191,41 @@ class TestParamShorthand(BaseArgProcessTest):
         simplified = self.simplify(p, [
             "InstanceGroupId=foo,InstanceCount=4",
             "InstanceGroupId=bar,InstanceCount=1"
+        ])
+
+        self.assertEqual(simplified, expected)
+
+    def test_list_structure_list_scalar_3(self):
+        arg = CustomArgument('foo', schema={
+            'type': 'array',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'Name': {
+                        'type': 'string'
+                    },
+                    'Args': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'string'
+                        }
+                    }
+                }
+            }
+        })
+        arg.create_argument_object()
+        p = arg.argument_object
+
+        expected = [
+            {"Name": "foo",
+             "Args": ["a", "k1=v1", "b"]},
+            {"Name": "bar",
+             "Args": ["baz"]}
+        ]
+
+        simplified = self.simplify(p, [
+            "Name=foo,Args=[a,k1=v1,b]",
+            "Name=bar,Args=baz"
         ])
 
         self.assertEqual(simplified, expected)

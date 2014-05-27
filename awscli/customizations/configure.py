@@ -266,7 +266,7 @@ class ConfigureListCommand(BasicCommand):
         # Then try to look up the variable in the config file.
         value = self._session.get_config_variable(name, methods=('config',))
         if value is not None:
-            return ConfigValue(value, 'config_file',
+            return ConfigValue(value, 'config-file',
                                self._session.get_config_variable('config_file'))
         else:
             return ConfigValue(NOT_SET, None, None)
@@ -342,9 +342,9 @@ class ConfigureGetCommand(BasicCommand):
         varname = args.varname
         value = None
         if '.' not in varname:
-            # get_config() returns the config variables in the config
+            # get_scoped_config() returns the config variables in the config
             # file (not the logical_var names), which is what we want.
-            config = self._session.get_config()
+            config = self._session.get_scoped_config()
             value = config.get(varname)
         else:
             num_dots = varname.count('.')
@@ -352,6 +352,10 @@ class ConfigureGetCommand(BasicCommand):
                 full_config = self._session.full_config
                 section, config_name = varname.split('.')
                 value = full_config.get(section, {}).get(config_name)
+                if value is None:
+                    # Try to retrieve it from the profile config.
+                    value = full_config['profiles'].get(
+                        section, {}).get(config_name)
             elif num_dots == 2 and varname.startswith('profile'):
                 # We're hard coding logic for profiles here.  Really
                 # we could support any generic format of [section subsection],
@@ -360,7 +364,7 @@ class ConfigureGetCommand(BasicCommand):
                 dot_section, config_name = varname.rsplit('.', 1)
                 start, profile_name = dot_section.split('.')
                 self._session.profile = profile_name
-                config = self._session.get_config()
+                config = self._session.get_scoped_config()
                 value = config.get(config_name)
         if value is not None:
             self._stream.write(value)
@@ -423,7 +427,7 @@ class ConfigureCommand(BasicCommand):
         # This is the config from the config file scoped to a specific
         # profile.
         try:
-            config = self._session.get_config()
+            config = self._session.get_scoped_config()
         except ProfileNotFound:
             config = {}
         for config_name, prompt_text in self.VALUES_TO_PROMPT:

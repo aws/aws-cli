@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
+from awscli.testutils import unittest
 
 from awscli.utils import split_on_commas
 
@@ -62,3 +62,23 @@ class TestCSVSplit(unittest.TestCase):
     def test_escape_backslash(self):
         self.assertEqual(split_on_commas('foo,bar\\\\,baz\\\\,qux'),
                          ['foo', 'bar\\', 'baz\\', 'qux'])
+
+    def test_square_brackets(self):
+        self.assertEqual(split_on_commas('foo,bar=["a=b",\'2\',c=d],baz'),
+                         ['foo', 'bar=a=b,2,c=d', 'baz'])
+
+    def test_quoted_square_brackets(self):
+        self.assertEqual(split_on_commas('foo,bar="[blah]",c=d],baz'),
+                         ['foo', 'bar=[blah]', 'c=d]', 'baz'])
+
+    def test_missing_bracket(self):
+        self.assertEqual(split_on_commas('foo,bar=[a,baz'),
+                         ['foo', 'bar=[a', 'baz'])
+
+    def test_missing_bracket2(self):
+        self.assertEqual(split_on_commas('foo,bar=a],baz'),
+                         ['foo', 'bar=a]', 'baz'])
+
+    def test_bracket_in_middle(self):
+        self.assertEqual(split_on_commas('foo,bar=a[b][c],baz'),
+                         ['foo', 'bar=a[b][c]', 'baz'])

@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import random
-from tests import unittest
+from awscli.testutils import unittest
 import string
 
 import six

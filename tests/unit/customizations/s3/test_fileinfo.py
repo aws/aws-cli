@@ -19,7 +19,7 @@ from hashlib import md5
 import six
 import mock
 
-from tests import unittest
+from awscli.testutils import unittest
 from awscli.customizations.s3 import fileinfo
 
 

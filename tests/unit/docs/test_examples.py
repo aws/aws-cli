@@ -21,7 +21,7 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
-from tests import BaseAWSHelpOutputTest
+from awscli.testutils import BaseAWSHelpOutputTest
 
 
 # Mapping of command names to subcommands that have examples in their help

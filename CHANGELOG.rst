@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.13
+======
 
 * feature:Shorthand: Add support for surrounding list parameters
   with ``[]`` chars in shorthand syntax

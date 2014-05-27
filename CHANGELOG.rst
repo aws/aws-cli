@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:Shorthand: Add support for surrounding list parameters
+  with ``[]`` chars in shorthand syntax
+  (`issue 788 <https://github.com/aws/aws-cli/pull/788>`__)
+* feature:Shared credential file: Add support for the
+  ``~/.aws/credentials`` file.
+
+
 1.3.12
 ======
 

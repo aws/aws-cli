@@ -9,7 +9,8 @@ Next Release (TBD)
   with ``[]`` chars in shorthand syntax
   (`issue 788 <https://github.com/aws/aws-cli/pull/788>`__)
 * feature:Shared credential file: Add support for the
-  ``~/.aws/credentials`` file.
+  ``~/.aws/credentials`` file
+* feature:``aws ec2``: Add support for Amazon EBS encryption
 
 
 1.3.12

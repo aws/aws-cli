@@ -40,7 +40,6 @@ class CreateCluster(BasicCommand):
          'required': True,
          'schema': argumentschema.INSTANCE_GROUPS_SCHEMA,
          'help_text': helptext.INSTANCE_GROUPS},
-        {'name': 'additional-info'},
         {'name': 'ec2-attributes',
          'help_text': helptext.EC2_ATTRIBUTES,
          'schema': argumentschema.EC2_ATTRIBUTES_SCHEMA},
@@ -65,7 +64,7 @@ class CreateCluster(BasicCommand):
         {'name': 'no-enable-debugging', 'action': 'store_true',
          'group_name': 'debug'},
         {'name': 'tags', 'nargs': '+',
-         'help_text': helptext.TAGS},
+         'help_text': helptext.TAGS_CREATE_CLUSTER},
         {'name': 'bootstrap-actions',
          'help_text': helptext.BOOTSTRAP_ACTIONS,
          'schema': argumentschema.BOOTSTRAP_ACTIONS_SCHEMA},
@@ -75,10 +74,13 @@ class CreateCluster(BasicCommand):
         {'name': 'steps',
          'schema': argumentschema.STEPS_SCHEMA,
          'help_text': helptext.STEPS},
+        {'name': 'additional-info',
+         'help_text': helptext.ADDITIONAL_INFO},
         {'name': 'restore-from-hbase-backup',
          'schema': argumentschema.HBASE_RESTORE_FROM_BACKUP_SCHEMA,
          'help_text': helptext.RESTORE_FROM_HBASE}
     ]
+    SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
         params = {}

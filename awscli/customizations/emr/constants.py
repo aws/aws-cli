@@ -72,7 +72,7 @@ IMPALA_INSTALL_PATH = '/libs/impala/setup-impala'
 # Step
 STREAMING_JAR_PATH = '/home/hadoop/contrib/streaming/hadoop-streaming.jar'
 
-CUSTOM_JAR = 'customjar'
+CUSTOM_JAR = 'custom_jar'
 HIVE = 'hive'
 PIG = 'pig'
 IMPALA = 'impala'

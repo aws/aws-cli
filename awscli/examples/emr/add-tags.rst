@@ -8,3 +8,33 @@
 - Output::
 
     None
+
+**2. To list tags of a cluster**
+
+--Command::
+  aws emr describe-cluster --cluster-id j-XXXXXXYY --query Cluster.Tags
+
+- Output::
+
+    [
+	    {
+	        "Value": "John Doe",
+	        "Key": "Name"
+	    },
+	    {
+	        "Value": "29",
+	        "Key": "age"
+	    },
+	    {
+	        "Value": "",
+	        "Key": "male"
+	    },
+	    {
+	        "Value": "",
+	        "Key": "male"
+	    },
+	    {
+	        "Value": "123 East NW Seattle",
+	        "Key": "address"
+	    }
+	]

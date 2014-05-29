@@ -43,6 +43,18 @@ class MissingParametersError(EmrError):
            '{object_name}: {missing}.')
 
 
+class InvalidAmiVersionError(EmrError):
+    """
+    The supplied ami-version is invalid.
+    :ivar ami_version: The provided ami-version.
+    """
+    fmt = ('aws: error: The supplied AMI version {ami_version} is invalid.'
+           ' Please see AMI Versions Supported in Amazon EMR in '
+           'Amazon Elastic MapReduce Developer Guide: '
+           'http://docs.aws.amazon.com/ElasticMapReduce/'
+           'latest/DeveloperGuide/ami-versions-supported.html')
+
+
 class MissingBooleanOptionsError(EmrError):
     """
     Required boolean options are not supplied.

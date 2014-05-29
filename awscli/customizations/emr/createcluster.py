@@ -22,32 +22,33 @@ from awscli.customizations.emr import helptext
 from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import applicationutils
 from awscli.customizations.emr import instancegroupsutils
+import re
 
 
 class CreateCluster(BasicCommand):
     NAME = 'create-cluster'
     DESCRIPTION = ('Creates and starts running an EMR cluster.')
     ARG_TABLE = [
-        {'name': 'name',
-         'default': 'Development Cluster',
-         'help_text': helptext.CLUSTER_NAME},
-        {'name': 'log-uri',
-         'help_text': helptext.LOG_URI},
         {'name': 'ami-version',
-         'default': 'latest',
+         'required': True,
          'help_text': helptext.AMI_VERSION},
         {'name': 'instance-groups',
          'required': True,
          'schema': argumentschema.INSTANCE_GROUPS_SCHEMA,
          'help_text': helptext.INSTANCE_GROUPS},
-        {'name': 'ec2-attributes',
-         'help_text': helptext.EC2_ATTRIBUTES,
-         'schema': argumentschema.EC2_ATTRIBUTES_SCHEMA},
         {'name': 'auto-terminate', 'action': 'store_true',
          'group_name': 'auto_terminate',
          'help_text': helptext.AUTO_TERMINATE},
         {'name': 'no-auto-terminate', 'action': 'store_true',
          'group_name': 'auto_terminate'},
+        {'name': 'name',
+         'default': 'Development Cluster',
+         'help_text': helptext.CLUSTER_NAME},
+        {'name': 'log-uri',
+         'help_text': helptext.LOG_URI},
+        {'name': 'ec2-attributes',
+         'help_text': helptext.EC2_ATTRIBUTES,
+         'schema': argumentschema.EC2_ATTRIBUTES_SCHEMA},
         {'name': 'termination-protected', 'action': 'store_true',
          'group_name': 'termination_protected',
          'help_text': helptext.TERMINATION_PROTECTED},
@@ -86,8 +87,12 @@ class CreateCluster(BasicCommand):
         params = {}
         bootstrap_actions = []
         params['Name'] = parsed_args.name
-        params['AmiVersion'] = parsed_args.ami_version
 
+        is_valid_ami = re.match('\d?\..*', parsed_args.ami_version)
+        if is_valid_ami is None:
+            raise exceptions.\
+                InvalidAmiVersionError(ami_version=parsed_args.ami_version)
+        params['AmiVersion'] = parsed_args.ami_version
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)

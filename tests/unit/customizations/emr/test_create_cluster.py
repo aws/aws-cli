@@ -43,7 +43,7 @@ DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=TASK,Name=TASK,'
     'InstanceCount=1,InstanceType=m1.large ')
 
-DEFAULT_CMD = 'emr create-cluster --auto-terminate --instance-groups ' + \
+DEFAULT_CMD = 'emr create-cluster --auto-terminate --ami-version 3.0.4 --instance-groups ' + \
     DEFAULT_INSTANCE_GROUPS_ARG
 
 DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': False,
@@ -55,7 +55,7 @@ DEFAULT_RESULT = \
     {
         'Name': DEFAULT_CLUSTER_NAME,
         'Instances': DEFAULT_INSTANCES,
-        'AmiVersion': 'latest',
+        'AmiVersion': '3.0.4',
         'VisibleToAllUsers': False,
         'Tags': []
     }
@@ -293,8 +293,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     def test_no_auto_terminte(self):
-        cmd = 'emr create-cluster --no-auto-terminate --instance-groups ' + \
-            DEFAULT_INSTANCE_GROUPS_ARG
+        cmd = ('emr create-cluster --ami-version 3.0.4 --no-auto-terminate' +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = copy.deepcopy(DEFAULT_RESULT)
         instances = copy.deepcopy(DEFAULT_INSTANCES)
         instances['KeepJobFlowAliveWhenNoSteps'] = True
@@ -302,7 +302,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     def test_auto_terminate_and_no_auto_terminate(self):
-        cmd = DEFAULT_CMD + '--auto-terminate --no-auto-terminate'
+        cmd = (DEFAULT_CMD + '--ami-version 3.0.4 ' +
+               '--auto-terminate --no-auto-terminate')
         expected_error_msg = (
             '\naws: error: cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n')
@@ -310,7 +311,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assertEquals(expected_error_msg, result[1])
 
     def test_missing_auto_terminate_or_no_auto_terminate(self):
-        cmd = self.prefix + '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
+        cmd = (self.prefix + '--ami-version 3.0.4 --instance-groups ' +
+               DEFAULT_INSTANCE_GROUPS_ARG)
         expected_error_msg = (
             '\naws: error: Must specify one of the following boolean options:'
             ' --auto-terminate|--no-auto-terminate.\n')
@@ -402,7 +404,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_default_name_market(self):
         cmd = (
-            'emr create-cluster --auto-terminate --instance-groups '
+            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            '--instance-groups '
             'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large '
             'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large '
             'InstanceGroupType=TASK,InstanceCount=1,InstanceType=m1.large ')
@@ -410,7 +413,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = (
-            'emr create-cluster --auto-terminate --instance-groups '
+            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            '--instance-groups '
             'Name=Master,InstanceCount=1,InstanceType=m1.small')
         expect_error_msg = (
             '\nThe following required parameters are missing'
@@ -420,7 +424,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_missing_instance_type_error(self):
         cmd = (
-            'emr create-cluster --auto-terminate --instance-groups '
+            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            '--instance-groups '
             'Name=Master,InstanceGroupType=MASTER,InstanceCount=1')
         expect_error_msg = (
             '\nThe following required parameters are missing'
@@ -430,7 +435,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_missing_instance_count_error(self):
         cmd = (
-            'emr create-cluster --auto-terminate --instance-groups '
+            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            '--instance-groups '
             'Name=Master,InstanceGroupType=MASTER,InstanceType=m1.xlarge')
         expect_error_msg = (
             '\nThe following required parameters are missing'
@@ -441,7 +447,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_instance_groups_from_json_file(self):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_instance_groups.json')
-        cmd = ('emr create-cluster --auto-terminate '
+        cmd = ('emr create-cluster --ami-version 3.0.4  --auto-terminate '
                '--instance-groups file://' + data_path)
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['InstanceGroups'] = \

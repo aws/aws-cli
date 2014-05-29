@@ -50,14 +50,13 @@ LOG_URI = (
     'logs are not created.</p>')
 
 AMI_VERSION = (
-    '<p>The version of the Amazon Machine Image (AMI) '
-    'to use for Amazon EC2 instances in the cluster. '
-    '<p>The valid values are: </p>'
-    '<li>"latest" (use the latest AMI) </li>'
-    '<li>The version number of the AMI to use. For example, "3.0.4".</li></p>'
+    '<p>The version number of the Amazon Machine Image (AMI) '
+    'to use for Amazon EC2 instances in the cluster.</p>'
+    '<p>Example:</p>'
+    '<p><code>--ami-version 3.1.0</code></p>'
     '<p>For details about the AMI versions currently supported by Amazon'
-    'Elastic MapReduce, go to AMI Versions Supported in Elastic MapReduce'
-    'in the Amazon Elastic MapReduce Developer\'s Guide.</p>')
+    'Elastic MapReduce, go to AMI Versions Supported in Amazon Elastic '
+    'MapReduce in the Amazon Elastic MapReduce Developer\'s Guide.</p>')
 
 INSTANCE_GROUPS = (
     '<p>A specification of the number and type'
@@ -77,7 +76,7 @@ ADDITIONAL_INFO = (
     '<p>Specifies additional information during cluster creation</p>')
 
 EC2_ATTRIBUTES = (
-    '<p>Specifies the following EC2 attributes: KeyName,'
+    '<p>Specifies the following Amazon EC2 attributes: KeyName,'
     ' AvailabilityZone, SubnetId, and InstanceProfile. AvailabilityZone and '
     'Subnet cannot be specified together. To create the default '
     'instance profile <code>' + EC2_ROLE_NAME + '</code>,'

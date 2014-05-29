@@ -411,6 +411,16 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'InstanceGroupType=TASK,InstanceCount=1,InstanceType=m1.large ')
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
+    def test_instance_groups_instance_group_type_mismatch_cases(self):
+        cmd = (
+            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            '--instance-groups '
+            'Name=MASTER,InstanceGroupType=MaSter,InstanceCount=1,'
+            'InstanceType=m1.large Name=CORE,InstanceGroupType=cORE,'
+            'InstanceCount=1,InstanceType=m1.large Name=TASK,'
+            'InstanceGroupType=tAsK,InstanceCount=1,InstanceType=m1.large')
+        self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
+
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = (
             'emr create-cluster --ami-version 3.0.4 --auto-terminate '

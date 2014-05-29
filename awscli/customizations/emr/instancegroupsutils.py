@@ -15,6 +15,11 @@ from awscli.customizations.emr import constants
 
 
 def build_instance_groups(parsed_instance_groups):
+    """
+    Helper method that converts --instance-groups option value in
+    create-cluster and add-instance-groups to
+    Amazon Elastic MapReduce InstanceGroupConfig data type.
+    """
     instance_groups = []
     for instance_group in parsed_instance_groups:
         ig_config = {}
@@ -25,7 +30,8 @@ def build_instance_groups(parsed_instance_groups):
             ig_config['Name'] = instance_group['InstanceGroupType']
         ig_config['InstanceType'] = instance_group['InstanceType']
         ig_config['InstanceCount'] = instance_group['InstanceCount']
-        ig_config['InstanceRole'] = instance_group['InstanceGroupType']
+        ig_config['InstanceRole'] = instance_group['InstanceGroupType'].upper()
+
         if 'BidPrice' in keys:
             ig_config['BidPrice'] = instance_group['BidPrice']
             ig_config['Market'] = constants.SPOT

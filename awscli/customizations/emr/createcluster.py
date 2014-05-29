@@ -195,40 +195,6 @@ class CreateCluster(BasicCommand):
                                            parsed_globals)
         return 0
 
-    def _build_instance_groups(self, parsed_instance_groups):
-        instance_groups = []
-        for instance_group in parsed_instance_groups:
-
-            emrutils.check_required_field(
-                structure='InstanceGroupConfig',
-                name='InstanceGroupType',
-                value=instance_group.get('InstanceGroupType'))
-            emrutils.check_required_field(
-                structure='InstanceGroupConfig',
-                name='InstanceType',
-                value=instance_group.get('InstanceType'))
-            emrutils.check_required_field(
-                structure='InstanceGroupConfig',
-                name='InstanceCount',
-                value=instance_group.get('InstanceCount'))
-            ig_config = {}
-            keys = instance_group.keys()
-            if 'Name' in keys:
-                ig_config['Name'] = instance_group['Name']
-            else:
-                ig_config['Name'] = instance_group['InstanceGroupType']
-            ig_config['InstanceType'] = instance_group['InstanceType']
-            ig_config['InstanceCount'] = instance_group['InstanceCount']
-            ig_config['InstanceRole'] = instance_group['InstanceGroupType']
-            if 'BidPrice' in keys:
-                ig_config['BidPrice'] = instance_group['BidPrice']
-                ig_config['Market'] = constants.SPOT
-            else:
-                ig_config['Market'] = constants.ON_DEMAND
-            instance_groups.append(ig_config)
-
-        return instance_groups
-
     def _build_ec2_attributes(self, cluster, parsed_attrs):
         keys = parsed_attrs.keys()
         instances = cluster['Instances']

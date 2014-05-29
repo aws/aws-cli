@@ -280,11 +280,11 @@ class TestGetFileStat(unittest.TestCase):
         now = datetime.datetime.now(tzlocal())
         epoch_now = time.mktime(now.timetuple())
         with temporary_file('w') as f:
-            f.write('foo\n')
+            f.write('foo')
             f.flush()
             os.utime(f.name, (epoch_now, epoch_now))
             size, update_time = get_file_stat(f.name)
-            self.assertEqual(size, 4)
+            self.assertEqual(size, 3)
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
     def test_get_file_stat_error_message(self):

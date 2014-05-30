@@ -78,7 +78,7 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
 def build_supported_product(name, args):
     if args is None:
         args = []
-    config = {'Name': name, 'Args': args}
+    config = {'Name': name.lower(), 'Args': args}
     return config
 
 

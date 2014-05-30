@@ -101,6 +101,7 @@ APPLICATIONS_SCHEMA = {
             "Name": {
                 "type": "string",
                 "description": "Application name.",
+                "enum": ["MapR", "HIVE", "PIG", "HBASE", "IMPALA", "GANGLIA"],
                 "required": True
             },
             "Version": {
@@ -160,7 +161,8 @@ STEPS_SCHEMA = {
                 "type": "string",
                 "description":
                     "The type of a step to be added to the cluster.",
-                "default": "custom_jar"
+                "default": "custom_jar",
+                "enum": ["CUSTOM_JAR", "STREAMING", "HIVE", "PIG", "IMPALA"],
             },
             "Name": {
                 "type": "string",

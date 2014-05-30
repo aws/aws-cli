@@ -1,5 +1,4 @@
-create-cluster
-
+  create-cluster
      --ami-version <value>
      --instance-groups <value>
      --auto-terminate | --no-auto-terminate

@@ -27,7 +27,13 @@ import re
 
 class CreateCluster(BasicCommand):
     NAME = 'create-cluster'
-    DESCRIPTION = ('Creates and starts running an EMR cluster.')
+    DESCRIPTION = (
+        'Creates and starts running an EMR cluster.\n'
+        '\nQuick start:\n'
+        '\naws emr create-cluster --ami-version 3.1.0 '
+        ' --instance-groups InstanceGroupType=MASTER,InstanceCount=1,'
+        'InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,'
+        'InstanceType=m3.xlarge --auto-terminate\n')
     ARG_TABLE = [
         {'name': 'ami-version',
          'required': True,
@@ -65,7 +71,7 @@ class CreateCluster(BasicCommand):
         {'name': 'no-enable-debugging', 'action': 'store_true',
          'group_name': 'debug'},
         {'name': 'tags', 'nargs': '+',
-         'help_text': helptext.TAGS_CREATE_CLUSTER},
+         'help_text': helptext.TAGS},
         {'name': 'bootstrap-actions',
          'help_text': helptext.BOOTSTRAP_ACTIONS,
          'schema': argumentschema.BOOTSTRAP_ACTIONS_SCHEMA},
@@ -82,6 +88,7 @@ class CreateCluster(BasicCommand):
          'help_text': helptext.RESTORE_FROM_HBASE}
     ]
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
+    EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
         params = {}

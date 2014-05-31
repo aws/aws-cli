@@ -5,10 +5,9 @@ This example generates a stickiness-policy that follows the sticky session lifet
 
 Command::
 
-aws elb create-app-cookie-stickiness-policy --load-balancer-name MyHTTPSLoadBalancer --policy-name MyAppStickyPolicy --cookie-name MyAppCookie
+    aws elb create-app-cookie-stickiness-policy --load-balancer-name MyHTTPSLoadBalancer --policy-name MyAppStickyPolicy --cookie-name MyAppCookie
 
 Output::
 
-{}
+    {}
 
-	

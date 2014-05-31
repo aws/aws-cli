@@ -5,16 +5,16 @@ This example specifies health check settings to use for evaluating the health of
 
 Command::
 
-aws elb configure-health-check --load-balancer-name MyLoadBalancer --health-check Target=HTTP:80/png,Interval=30,UnhealthyThreshold=2,HealthyThreshold=2,Timeout=3
+    aws elb configure-health-check --load-balancer-name MyLoadBalancer --health-check Target=HTTP:80/png,Interval=30,UnhealthyThreshold=2,HealthyThreshold=2,Timeout=3
 
 Output::
 
-{
-    "HealthCheck": {
+   {
+      "HealthCheck": {
         "HealthyThreshold": 2,
         "Interval": 30,
         "Target": "HTTP:80/png",
         "Timeout": 3,
         "UnhealthyThreshold": 2
     }
-	
+

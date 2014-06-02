@@ -1,15 +1,15 @@
 **To describe the load balancer policy types defined by Elastic Load Balancing**
 
-This example describes the load balancer policy types you can use to instantiate policy configurations for your load balancer. 
+This example describes the load balancer policy types you can use to instantiate policy configurations for your load balancer.
 
 Command::
 
-aws elb describe-load-balancer-policy-types
+     aws elb describe-load-balancer-policy-types
 
 Output::
 
-{
-    "PolicyTypeDescriptions": [
+     {
+         "PolicyTypeDescriptions": [
         {
             "PolicyAttributeTypeDescriptions": [
                 {
@@ -80,5 +80,6 @@ Output::
             "PolicyTypeName": "SSLNegotiationPolicyType",
             "Description": "Listener policy that defines the ciphers and protocols that will be accepted by the load balancer. This policy can be associated only with HTTPS/SSL listeners."
         }
-    ]
-}
+       ]
+      }
+

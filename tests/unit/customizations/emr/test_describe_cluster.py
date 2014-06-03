@@ -13,7 +13,8 @@
 
 import json
 
-from awscli.testutils import BaseAWSCommandParamsTest
+from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
+    BaseAWSCommandParamsTest
 from mock import patch
 
 

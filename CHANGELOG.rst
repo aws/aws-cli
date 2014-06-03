@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.14
+======
 
 * bugfix:``aws s3``: Add filename to error message when we're unable
   to stat local filename
@@ -17,6 +17,10 @@ Next Release (TBD)
 * bugfix:``aws s3``: Handle Amazon S3 error responses that have
   a 200 OK status code
   (`issue botocore 298 <https://github.com/boto/botocore/pull/298>`__)
+* feature:``aws sts``:  Update the ``aws sts`` command to the latest
+  version
+* feature:``aws cloudsearch``:  Update the ``aws cloudsearch`` command to the
+  latest version
 
 
 1.3.13

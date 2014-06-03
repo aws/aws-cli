@@ -1,10 +1,13 @@
-from awscli.testutils import unittest
+from awscli.testutils import unittest, temporary_file
 import os
 import tempfile
 import shutil
 import ntpath
+import time
+import datetime
 
 import mock
+from dateutil.tz import tzlocal
 
 from botocore.hooks import HierarchicalEmitter
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
@@ -13,6 +16,7 @@ from awscli.customizations.s3.utils import relative_path
 from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import BucketLister
 from awscli.customizations.s3.utils import ScopedEventHandler
+from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -268,6 +272,31 @@ class TestScopedEventHandler(unittest.TestCase):
         with scoped:
             session.register.assert_called_with('eventname', 'handler')
         session.unregister.assert_called_with('eventname', 'handler')
+
+
+class TestGetFileStat(unittest.TestCase):
+
+    def test_get_file_stat(self):
+        now = datetime.datetime.now(tzlocal())
+        epoch_now = time.mktime(now.timetuple())
+        with temporary_file('w') as f:
+            f.write('foo')
+            f.flush()
+            os.utime(f.name, (epoch_now, epoch_now))
+            size, update_time = get_file_stat(f.name)
+            self.assertEqual(size, 3)
+            self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
+
+    def test_get_file_stat_error_message(self):
+        patch_attribute = 'awscli.customizations.s3.utils.datetime'
+        with mock.patch(patch_attribute) as f:
+            with mock.patch('os.stat'):
+                f.fromtimestamp.side_effect = ValueError(
+                    "timestamp out of range for platform "
+                    "localtime()/gmtime() function")
+                with self.assertRaisesRegexp(
+                    ValueError, 'myfilename\.txt'):
+                    get_file_stat('myfilename.txt')
 
 
 if __name__ == "__main__":

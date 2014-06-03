@@ -1,4 +1,4 @@
-**To get a description of all the specified instances**
+**To get description of all the specified instances**
 
 The following ``describe-auto-scaling-instances`` command describes all the specified instances::
 
@@ -18,14 +18,6 @@ The output of this command is a JSON block that describes the specified instance
            }
        ]
     }
-
-To return a specific number of instances with this command, use the ``max-items`` parameter::
-
-	aws autoscaling describe-auto-scaling-instances --max-items 1
-	
-This command returns a JSON block that includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional Auto Scaling instances::
-
-    aws autoscaling describe-auto-scaling-instances --starting-token None___1
 
 For more information, see `Basic Auto Scaling Configuration`_ in the *Auto Scaling Developer Guide*.
 

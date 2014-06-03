@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.14
+======
 
 * bugfix:``aws s3``: Add filename to error message when we're unable
   to stat local filename

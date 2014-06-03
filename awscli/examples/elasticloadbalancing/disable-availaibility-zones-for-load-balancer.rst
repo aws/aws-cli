@@ -4,12 +4,14 @@ This example removes specified availability zone from  your load balancer. You m
 
 Command::
 
-    aws elb disable-availability-zones-for-load-balancer --load-balancer-name MyLoadBalancer  --availability-zones us-east-1a
+aws elb disable-availability-zones-for-load-balancer --load-balancer-name MyLoadBalancer  --availability-zones us-east-1a
 
 Output::
-    {
-      "AvailabilityZones": [
+{
+    "AvailabilityZones": [
         "us-east-1b"
-      ]
-    }
+    ]
+}
+
+
 

@@ -4,14 +4,13 @@ This example detaches your load balancer from the specified subnets in your Amaz
 
 Command::
 
-     aws elb detach-load-balancer-from-subnets --load-balancer-name MyVPCLoadBalancer --subnets subnet-0ecac448
+aws elb detach-load-balancer-from-subnets --load-balancer-name MyVPCLoadBalancer --subnets subnet-0ecac448 
 
 
 Output::
 
-   {
-      "Subnets": [
+{
+    "Subnets": [
         "subnet-15aaab61"
-      ]
-   }
-
+    ]
+}

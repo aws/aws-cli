@@ -3,12 +3,12 @@
 This example describes a specified load balancer.
 
 Command::
-
-    aws elb describe-load-balancers --load-balancer-name MyHTTPSLoadBalancer
+ 
+aws elb describe-load-balancers --load-balancer-name MyHTTPSLoadBalancer
 
 Output::
-    {
-        "LoadBalancerDescriptions": [
+{
+    "LoadBalancerDescriptions": [
         {
             "Subnets": [],
             "CanonicalHostedZoneNameID": "Z3DZXE0Q79N41H",
@@ -61,7 +61,7 @@ Output::
                     "AWSConsole-SSLNegotiationPolicy-MyHTTPSLoadBalancer-1395199443332",
                     "ELBSecurityPolicy-2014-01",
                     "AWSConsole-SSLNegotiationPolicy-MyHTTPSLoadBalancer-1401221052287",
-                    "EnableProxyProtocol",
+                    "EnableProxyProtocol",                   
                     "MySSLNegotiationPolicy"
                 ]
             },
@@ -76,6 +76,6 @@ Output::
                 "GroupName": "amazon-elb-sg"
             }
         }
-       ]
-    }
+    ]
+}
 

@@ -1,15 +1,15 @@
 **To describe all the policies associated with a load balancer**
 
-This example describes all the policies associated with a specified load balancer.
+This example describes all the policies associated with a specified load balancer. 
 
 Command::
-     aws elb describe-load-balancer-policies --load-balancer-name MyLoadBalancer
+aws elb describe-load-balancer-policies --load-balancer-name MyLoadBalancer
 
 
 Output::
-     {
-          "PolicyDescriptions": [
-          {
+{
+    "PolicyDescriptions": [
+        {
             "PolicyAttributeDescriptions": [
                 {
                     "AttributeName": "CookieExpirationPeriod",
@@ -18,8 +18,8 @@ Output::
             ],
             "PolicyName": "MyDurationStickyPolicy",
             "PolicyTypeName": "LBCookieStickinessPolicyType"
-          },
-          {
+        },
+        {
             "PolicyAttributeDescriptions": [
                 {
                     "AttributeName": "ProxyProtocol",
@@ -28,8 +28,8 @@ Output::
             ],
             "PolicyName": "EnableProxyProtocol",
             "PolicyTypeName": "ProxyProtocolPolicyType"
-          },
-          {
+        },
+        {
             "PolicyAttributeDescriptions": [
                 {
                     "AttributeName": "CookieName",
@@ -38,22 +38,22 @@ Output::
             ],
             "PolicyName": "MyAppStickyPolicy",
             "PolicyTypeName": "AppCookieStickinessPolicyType"
-          }
-         ]
-      }
+        }
+    ]
+}
 
 **To describe a specified policy associated with a load balancer**
 
 This example describes a specified policy associated with a specified load balancer.
 
 Command::
-       aws elb describe-load-balancer-policies --load-balancer-name MyLoadBalancer  --policy-name MyDurationStickyPolicy
+aws elb describe-load-balancer-policies --load-balancer-name MyLoadBalancer  --policy-name MyDurationStickyPolicy
 
 
 Output::
 
-     {
-        "PolicyDescriptions": [
+{
+    "PolicyDescriptions": [
         {
             "PolicyAttributeDescriptions": [
                 {
@@ -64,6 +64,6 @@ Output::
             "PolicyName": "MyDurationStickyPolicy",
             "PolicyTypeName": "LBCookieStickinessPolicyType"
         }
-       ]
-      }
+    ]
+}
 

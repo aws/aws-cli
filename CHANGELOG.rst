@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Add filename to error message when we're unable
+  to stat local filename
+  (`issue 795 <https://github.com/aws/aws-cli/pull/795>`__)
+* bugfix:``aws s3api get-bucket-policy``: Fix response parsing
+  for the ``aws s3api get-bucket-policy`` command
+  (`issue 678 <https://github.com/aws/aws-cli/issues/678>`__)
+* bugfix:Shared Credentials: Fix bug when specifying profiles
+  that don't exist in the CLI config file
+  (`issue botocore 294 <https://github.com/boto/botocore/pull/294>`__)
+* bugfix:``aws s3``: Handle Amazon S3 error responses that have
+  a 200 OK status code
+  (`issue botocore 298 <https://github.com/boto/botocore/pull/298>`__)
+
+
 1.3.13
 ======
 

@@ -411,7 +411,7 @@ class TestSync(BaseS3CLICommand):
         filenames = []
         for i in range(2000):
             # Create a file with a space char and a '+' char in the filename.
-            # We're interesting in testing the filename comparisons, not the
+            # We're interested in testing the filename comparisons, not the
             # mtime comparisons so we're setting the mtime to some time
             # in the past to avoid mtime comparisons interfering with
             # test results.

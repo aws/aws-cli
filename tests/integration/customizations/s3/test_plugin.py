@@ -411,10 +411,18 @@ class TestSync(BaseS3CLICommand):
         filenames = []
         for i in range(2000):
             # Create a file with a space char and a '+' char in the filename.
-            filenames.append(self.files.create_file('foo +%06d' % i, contents=''))
+            # We're interesting in testing the filename comparisons, not the
+            # mtime comparisons so we're setting the mtime to some time
+            # in the past to avoid mtime comparisons interfering with
+            # test results.
+            mtime = time.time() - 300
+            filenames.append(
+                self.files.create_file('foo +%06d' % i,
+                                       contents='',
+                                       mtime=mtime))
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
-        time.sleep(1)
+        time.sleep(5)
         p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assertNotIn('upload:', p2.stdout)
         self.assertEqual('', p2.stdout)
@@ -915,10 +923,12 @@ class TestFileWithSpaces(BaseS3CLICommand):
     def test_sync_file_with_spaces(self):
         bucket_name = self.create_bucket()
         bucket_name = self.create_bucket()
-        filename = self.files.create_file('with space.txt', 'contents')
+        filename = self.files.create_file(
+            'with space.txt', 'contents', mtime=time.time() - 300)
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
                                          bucket_name))
         self.assert_no_errors(p)
+        time.sleep(1)
         # Now syncing again should *not* trigger any uploads (i.e we should
         # get nothing on stdout).
         p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir,

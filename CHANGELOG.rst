@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Python 3.4.1:  Add support for python 3.4.1
+  (`issue 800 <https://github.com/aws/aws-cli/issues/800>`__)
+* feature:``aws emr``: Update preview commands for Amazon
+  Elastic MapReduce
+
+
 1.3.14
 ======
 

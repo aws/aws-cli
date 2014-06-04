@@ -13,6 +13,12 @@
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
+import json
+from mock import patch
+from botocore.vendored import requests
+
+http_response = requests.models.Response()
+http_response.status_code = 200
 
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
                             'InstanceCount': 10,
@@ -20,6 +26,20 @@ DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
                             'Market': 'ON_DEMAND',
                             'InstanceType': 'm2.large'
                             }]
+
+ADD_INSTANCE_GROUPS_RESULT = {
+    "InstanceGroupIds": [
+        "ig-XXXX"
+    ],
+    "JobFlowId": "j-YYYY"
+}
+
+CONSTRUCTED_RESULT = {
+    "InstanceGroupIds": [
+        "ig-XXXX"
+    ],
+    "ClusterId": "j-YYYY"
+}
 
 
 class TestAddInstanceGroups(BaseAWSCommandParamsTest):
@@ -90,6 +110,17 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
                   'InstanceGroups': expected_instance_groups}
 
         self.assert_params_for_cmd(cmd, result)
+
+    @patch('awscli.customizations.emr.emrutils.call')
+    def test_constructed_result(self, call_patch):
+        call_patch.return_value = (http_response, ADD_INSTANCE_GROUPS_RESULT)
+        cmd = self.prefix
+        cmd += ' InstanceGroupType=TASK,InstanceCount=10,InstanceType=m2.large'
+
+        result = self.run_cmd(cmd, expected_rc=0)
+        result_json = json.loads(result[0])
+
+        self.assertEquals(result_json, CONSTRUCTED_RESULT)
 
 if __name__ == "__main__":
     unittest.main()

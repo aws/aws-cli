@@ -91,6 +91,7 @@ class CreateCluster(BasicCommand):
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
+        emr = self._session.get_service('emr')
         params = {}
         bootstrap_actions = []
         params['Name'] = parsed_args.name
@@ -198,9 +199,27 @@ class CreateCluster(BasicCommand):
 
         self._validate_required_applications(parsed_args)
 
-        emrutils.call_and_display_response(self._session, 'RunJobFlow', params,
-                                           parsed_globals)
+        run_job_flow = emr.get_operation('RunJobFlow')
+        run_job_flow_response = emrutils.call(
+            self._session, run_job_flow, params,
+            parsed_globals.region, parsed_globals.endpoint_url,
+            parsed_globals.verify_ssl)
+
+        constructed_result = self._construct_result(run_job_flow_response[1])
+        emrutils.display_response(self._session, run_job_flow,
+                                  constructed_result, parsed_globals)
+
         return 0
+
+    def _construct_result(self, run_job_flow_result):
+        jobFlowId = None
+        if run_job_flow_result is not None:
+                jobFlowId = run_job_flow_result.get('JobFlowId')
+
+        if jobFlowId is not None:
+            return {'ClusterId': jobFlowId}
+        else:
+            return {}
 
     def _build_ec2_attributes(self, cluster, parsed_attrs):
         keys = parsed_attrs.keys()

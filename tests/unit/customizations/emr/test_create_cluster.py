@@ -15,6 +15,12 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 import copy
 import os
+import json
+from mock import patch
+from botocore.vendored import requests
+
+http_response = requests.models.Response()
+http_response.status_code = 200
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'MASTER',
@@ -252,6 +258,14 @@ IMPALA_DEFAULT_STEP = {
             's3://myimpala/input',
             '--console-output-path',
             's3://myimpala/output']}
+}
+
+CREATE_CLUSTER_RESULT = {
+    "JobFlowId": "j-XXXX"
+}
+
+CONSTRUCTED_RESULT = {
+    "ClusterId": "j-XXXX"
 }
 
 
@@ -961,6 +975,14 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             self.assertTrue(True)
         else:
             self.assertTrue(False)
+
+    @patch('awscli.customizations.emr.emrutils.call')
+    def test_constructed_result(self, call_patch):
+        call_patch.return_value = (http_response, CREATE_CLUSTER_RESULT)
+        cmd = DEFAULT_CMD
+        result = self.run_cmd(cmd, expected_rc=0)
+        result_json = json.loads(result[0])
+        self.assertEquals(result_json, CONSTRUCTED_RESULT)
 
 if __name__ == "__main__":
     unittest.main()

@@ -31,11 +31,35 @@ class AddInstanceGroups(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
+        emr = self._session.get_service('emr')
+        add_instance_groups = emr.get_operation('AddInstanceGroups')
         parameters = {'JobFlowId': parsed_args.cluster_id}
         parameters['InstanceGroups'] = \
             instancegroupsutils.build_instance_groups(
             parsed_args.instance_groups)
 
-        emrutils.call_and_display_response(self._session, 'AddInstanceGroups',
-                                           parameters, parsed_globals)
+        add_instance_groups_response = emrutils.call(
+            self._session, add_instance_groups, parameters,
+            parsed_globals.region, parsed_globals.endpoint_url,
+            parsed_globals.verify_ssl)
+
+        constructed_result = self._construct_result(
+            add_instance_groups_response[1])
+
+        emrutils.display_response(self._session, add_instance_groups,
+                                  constructed_result, parsed_globals)
         return 0
+
+    def _construct_result(self, add_instance_groups_result):
+        jobFlowId = None
+        instanceGroupIds = None
+        if add_instance_groups_result is not None:
+                jobFlowId = add_instance_groups_result.get('JobFlowId')
+                instanceGroupIds = add_instance_groups_result.get(
+                    'InstanceGroupIds')
+
+        if jobFlowId is not None and instanceGroupIds is not None:
+            return {'ClusterId': jobFlowId,
+                    'InstanceGroupIds': instanceGroupIds}
+        else:
+            return {}

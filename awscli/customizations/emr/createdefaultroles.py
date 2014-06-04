@@ -95,7 +95,7 @@ def _get_regex_match_from_endpoint_host(endpoint_host):
 
 class CreateDefaultRoles(BasicCommand):
     NAME = "create-default-roles"
-    DESCRIPTION = ('Creates the default IAM roles ' +
+    DESCRIPTION = ('Creates the default IAM role ' +
                    EC2_ROLE_NAME + ' which can be used when'
                    ' creating the cluster using the create-cluster command.')
     ARG_TABLE = [

@@ -74,9 +74,10 @@ class DescribeCluster(BasicCommand):
                 if http_response.status_code == 200:
                     response_data = page[1]
                     keys = response_data.keys()
-                    if keys is not None and len(keys) > 0:
-                        key = keys[0]
+                    key = self.get_key_of_result(keys)
+                    if key is not None:
                         result += response_data.get(key)
+
             if key is not None:
                 return {key: result}
             else:
@@ -85,6 +86,12 @@ class DescribeCluster(BasicCommand):
             http_response, response_data = operation_object.call(endpoint,
                                                                  **parameters)
             return response_data
+
+    def get_key_of_result(self, keys):
+        # Return the first key that is not "Marker"
+        for key in keys:
+            if key != "Marker":
+                return key
 
     def construct_result(
             self, describe_cluster_result, list_instance_groups_result,

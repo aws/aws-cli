@@ -19,7 +19,7 @@ from nose.tools import assert_not_equal
 class TestEMRutils(object):
 
     def test_which_with_existing_command(self):
-        pythonPath = which('python')
+        pythonPath = which('python') or which('python.exe')
         assert_not_equal(pythonPath, None)
 
     def test_which_with_non_existing_command(self):

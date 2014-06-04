@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.15
+======
 
 * bugfix:Python 3.4.1:  Add support for python 3.4.1
   (`issue 800 <https://github.com/aws/aws-cli/issues/800>`__)

@@ -34,6 +34,14 @@ def register_removals(event_handler):
                        remove_commands=['import-instance', 'import-volume'])
     cmd_remover.remove(on_event='building-command-table.cloudformation',
                        remove_commands=['estimate-template-cost'])
+    cmd_remover.remove(on_event='building-command-table.emr',
+                       remove_commands=['run-job-flow', 'describe-job-flows',
+                                        'add-job-flow-steps',
+                                        'terminate-job-flows',
+                                        'list-bootstrap-actions',
+                                        'list-instance-groups',
+                                        'set-termination-protection',
+                                        'set-visible-to-all-users'])
 
 
 class CommandRemover(object):

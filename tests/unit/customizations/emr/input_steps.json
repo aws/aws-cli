@@ -1,0 +1,63 @@
+[{
+    "Name": "Custom JAR step",
+    "ActionOnFailure": "CANCEL_AND_WAIT",
+    "Jar": "s3://mybucket/mytest.jar"
+ },
+ {
+    "Name": "Streaming step",
+    "Type": "Streaming",
+    "ActionOnFailure": "CANCEL_AND_WAIT",
+    "Args": [
+        "-files",
+        "s3://elasticmapreduce/samples/wordcount/wordSplitter.py",
+        "-mapper",
+        "wordSplitter.py",
+        "-reducer",
+        "aggregate",
+        "-input",
+        "s3://elasticmapreduce/samples/wordcount/input",
+        "-output",
+        "s3://mybucket/wordcount/output/2014-04-18/12-15-24"
+        ]
+ },
+ {
+    "Name": "Hive step",
+    "Type": "Hive",
+    "Version": "0.11.0.1",
+    "ActionOnFailure": "TERMINATE_CLUSTER",
+    "Args": [
+        "-f",
+        "s3://elasticmapreduce/samples/hive-ads/libs/model-build.q",
+        "-d",
+        "INPUT=s3://elasticmapreduce/samples/hive-ads/tables",
+        "-d",
+        "OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32",
+        "-d",
+        "LIBS=s3://elasticmapreduce/samples/hive-ads/libs"]
+ },
+ {
+    "Name": "Pig step",
+    "Type": "Pig",
+    "Version": "0.11.1.0",
+    "ActionOnFailure": "TERMINATE_CLUSTER",
+    "Args": [
+        "-f",
+        "s3://elasticmapreduce/samples/pig-apache/do-reports2.pig",
+        "-p",
+        "INPUT=s3://elasticmapreduce/samples/pig-apache/input",
+        "-p",
+        "OUTPUT=s3://mybucket/pig-apache/output/2014-04-21/20-09-28"]
+ },
+ {
+    "Name": "Impala step",
+    "ActionOnFailure": "CANCEL_AND_WAIT",
+    "Type": "Impala",
+    "Args": [
+        "--impala-script",
+        "s3://myimpala/input",
+        "--console-output-path",
+        "s3://myimpala/output"]
+ }
+
+]
+

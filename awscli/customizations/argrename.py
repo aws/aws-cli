@@ -31,6 +31,8 @@ ARGUMENT_RENAMES = {
     'swf.register-activity-type.version': 'activity-version',
     'swf.register-workflow-type.version': 'workflow-version',
     'datapipeline.*.query': 'objects-query',
+    'emr.*.job-flow-ids': 'cluster-ids',
+    'emr.*.job-flow-id': 'cluster-id',
 }
 
 

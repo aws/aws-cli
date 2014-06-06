@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix bug related to retrying requests
+  when 500 status codes are received
+  (`issue botocore 302 <https://github.com/boto/botocore/pull/302>`__)
+* bugfix:``aws s3``: Fix when when using S3 in the ``cn-north-1`` region
+  (`issue botocore 301 <https://github.com/boto/botocore/pull/301>`__)
+* bugfix:``aws kinesis``: Fix pagination bug when using the ``get-records``
+  operation
+  (`issue botocore 304 <https://github.com/boto/botocore/pull/304>`__)
+
+
 1.3.15
 ======
 

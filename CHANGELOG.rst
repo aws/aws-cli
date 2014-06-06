@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.16
+======
 
 * bugfix:``aws s3``: Fix bug related to retrying requests
   when 500 status codes are received

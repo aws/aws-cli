@@ -39,6 +39,9 @@ from awscli.argprocess import unpack_argument
 
 
 LOG = logging.getLogger('awscli.clidriver')
+LOG_FORMAT = (
+    '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
+
 
 
 def main():
@@ -221,8 +224,10 @@ class CLIDriver(object):
             # Unfortunately, by setting debug mode here, we miss out
             # on all of the debug events prior to this such as the
             # loading of plugins, etc.
-            self.session.set_debug_logger(logger_name='botocore')
-            self.session.set_debug_logger(logger_name='awscli')
+            self.session.set_stream_logger('botocore', logging.DEBUG,
+                                           format_string=LOG_FORMAT)
+            self.session.set_stream_logger('awscli', logging.DEBUG,
+                                           format_string=LOG_FORMAT)
             LOG.debug("CLI version: %s, botocore version: %s",
                       self.session.user_agent(),
                       botocore_version)

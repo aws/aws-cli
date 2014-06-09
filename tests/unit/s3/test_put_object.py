@@ -32,6 +32,7 @@ except NameError:
 
 class TestGetObject(BaseAWSCommandParamsTest):
 
+    maxDiff = None
     prefix = 's3api put-object'
 
     def setUp(self):
@@ -46,7 +47,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --body %s' % self.file_path
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
-                  'headers': {}}
+                  'headers': {'Expect': '100-continue'}}
         self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
         self.assertIsInstance(self.last_params['payload'].getvalue(), file_type)
 
@@ -61,7 +62,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         result = {'uri_params': {'Bucket': 'mybucket', 'Key': 'mykey'},
                   'headers': {'x-amz-acl': 'public-read',
                               'Content-Encoding': 'x-gzip',
-                              'Content-Type': 'text/plain'}}
+                              'Content-Type': 'text/plain',
+                              'Expect': '100-continue',
+                              }}
         self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
         payload = self.last_params['payload'].getvalue()
         self.assertEqual(payload.name, self.file_path)

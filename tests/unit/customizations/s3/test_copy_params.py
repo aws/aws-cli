@@ -43,6 +43,10 @@ class TestGetObject(BaseAWSCommandParamsTest):
         self.parsed_response = {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',}
 
     def assert_params(self, cmdline, result):
+        # Botocore injects the expect 100 continue header so we'll
+        # automatically add this here so each test doesn't need to specify
+        # this header.
+        result['headers']['Expect'] = '100-continue'
         self.assert_params_for_cmd(cmdline, result, expected_rc=0,
                                    ignore_params=['payload'])
         self.assertIsInstance(self.last_params['payload'].getvalue(),

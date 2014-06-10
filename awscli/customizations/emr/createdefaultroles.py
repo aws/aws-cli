@@ -14,6 +14,8 @@
 import logging
 import re
 
+import botocore.exceptions
+
 from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import constants
@@ -110,7 +112,6 @@ class CreateDefaultRoles(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         ec2_result = None
-        emr_result = None
         self.iam = self._session.get_service('iam')
         self.iam_endpoint_url = parsed_args.iam_endpoint
         region = self._get_region(parsed_globals)
@@ -159,7 +160,9 @@ class CreateDefaultRoles(BasicCommand):
         return 0
 
     def _check_for_iam_endpoint(self, region, iam_endpoint):
-        if region not in self._session.get_service('emr').region_names:
+        try:
+            self._session.get_service('emr').get_endpoint(region)
+        except botocore.exceptions.UnknownEndpointError:
             if iam_endpoint is None:
                 raise exceptions.UnknownIamEndpointError(region=region)
 

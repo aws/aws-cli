@@ -34,8 +34,6 @@ class Completer(object):
         self.non_options = None
 
     def _complete_option(self, option_name):
-        if option_name == '--region':
-            return self.driver.session.get_data('aws/_regions').keys()
         if option_name == '--endpoint-url':
             return []
         if option_name == '--output':

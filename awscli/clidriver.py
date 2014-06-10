@@ -129,7 +129,7 @@ class CLIDriver(object):
                 choices = option_params['choices']
                 if not isinstance(choices, list):
                     # Assume it's a reference like
-                    # "{provider}/_regions", so first resolve
+                    # "{provider}/_foo", so first resolve
                     # the provider.
                     provider = self.session.get_config_variable('provider')
                     # The grab the var from the session

@@ -148,6 +148,7 @@ class CreateDefaultRoles(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         ec2_result = None
+        emr_result = None
         self.iam = self._session.get_service('iam')
         self.iam_endpoint_url = parsed_args.iam_endpoint
         region = self._get_region(parsed_globals)

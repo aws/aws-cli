@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.3.17
+======
+
+* feature:``aws s3api``: Add support for server-side encryption with
+  a customer-supplied encryption key.
+* feature:``aws sns``: Support for message attributes.
+* feature:``aws redshift``: Support for renaming clusters.
+
 1.3.16
 ======
 

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
 from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 
 TERMINATE_CLUSTERS = (
@@ -49,6 +50,19 @@ LOG_URI = (
     'of the cluster. If a value is not provided, '
     'logs are not created.</p>')
 
+SERVICE_ROLE = (
+    '<p>Allows EMR to call other AWS Services such as EC2 on your behalf.</p>'
+    'To create the default Service Role <code>' + EMR_ROLE_NAME + '</code>,'
+    ' use <code>aws emr create-default-roles</code> command. </p>'
+    'This command will also create the default EC2 instance profile '
+    '<code>' + EC2_ROLE_NAME + '</code>.')
+
+USE_DEFAULT_ROLES = (
+    '<p>Uses --service-role=<code>' + EMR_ROLE_NAME + '</code>, and '
+    '--ec2-attributes </p> InstanceProfile=<code>' + EC2_ROLE_NAME + '</code>'
+    'To create the default service role and instance profile'
+    ' use <code>aws emr create-default-roles</code> command. </p>')
+
 AMI_VERSION = (
     '<p>The version number of the Amazon Machine Image (AMI) '
     'to use for Amazon EC2 instances in the cluster. '
@@ -75,12 +89,15 @@ EC2_ATTRIBUTES = (
     'Subnet cannot be specified together. To create the default '
     'instance profile <code>' + EC2_ROLE_NAME + '</code>,'
     ' use <code>aws emr create-default-roles</code> command. </p>'
+    'This command will also create the default EMR service role '
+    '<code>' + EMR_ROLE_NAME + '</code>.'
     '<li>KeyName - the name of the AWS EC2 key pair you are using '
     'to launch the cluster.</li>'
     '<li>AvailabilityZone - An isolated resource '
     'location within a region.</li>'
     '<li>SubnetId- Assign the EMR cluster to this Amazon VPC Subnet. </li>'
-    '<li>InstanceProfile - A container for the EC2 IAM Role. </li>'
+    '<li>InstanceProfile - Provides access to other AWS services such as S3,'
+    ' DynamoDB from EC2 instances that are launched by EMR.. </li>'
     )
 
 AUTO_TERMINATE = (

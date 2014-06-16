@@ -42,10 +42,10 @@ INSTALL_PIG_STEP = {
 
 
 class TestInstallApplications(BaseAWSCommandParamsTest):
-    prefix = 'emr install-applications  --cluster-id j-ABC123456'
+    prefix = 'emr install-applications --cluster-id j-ABC123456'
 
     def test_intall_hive_with_version(self):
-        cmdline = self.prefix + ' --apps Name=Hive,Version=0.8.1.8'
+        cmdline = self.prefix + ' --applications Name=Hive,Version=0.8.1.8'
 
         step = copy.deepcopy(INSTALL_HIVE_STEP)
         step['HadoopJarStep']['Args'][5] = '0.8.1.8'
@@ -54,7 +54,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_intall_pig_with_version(self):
-        cmdline = self.prefix + ' --apps Name=Pig,Version=0.9.2.1'
+        cmdline = self.prefix + ' --applications Name=Pig,Version=0.9.2.1'
 
         step = copy.deepcopy(INSTALL_PIG_STEP)
         step['HadoopJarStep']['Args'][5] = '0.9.2.1'
@@ -63,14 +63,15 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_intall_hive_and_pig_without_version(self):
-        cmdline = self.prefix + ' --cluster-id j-ABC123456 --apps Name=Hive' +\
+        cmdline = self.prefix + ' --cluster-id j-ABC123456 --applications Name=Hive' +\
             ' Name=Pig'
         result = {'JobFlowId': 'j-ABC123456', 'Steps': [INSTALL_HIVE_STEP,
                                                         INSTALL_PIG_STEP]}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_install_impala_error(self):
-        cmdline = self.prefix + ' --cluster-id j-ABC123456 --apps Name=Impala'
+        cmdline = self.prefix + \
+            ' --cluster-id j-ABC123456 --applications Name=Impala'
 
         expected_error_msg = "\naws: error: Impala cannot be installed on" +\
             " a running cluster. 'Name' should be one of the following:" +\
@@ -79,7 +80,8 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         self.assertEqual(result[1], expected_error_msg)
 
     def test_install_unknown_app_error(self):
-        cmdline = self.prefix + ' --cluster-id j-ABC123456 --apps Name=unknown'
+        cmdline = self.prefix + \
+            ' --cluster-id j-ABC123456 --applications Name=unknown'
 
         expected_error_msg = "\naws: error: Unknown application: unknown." +\
             " 'Name' should be one of the following: HIVE, PIG, HBASE," +\

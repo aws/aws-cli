@@ -27,7 +27,7 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
         if app_name in constants.MAPR_NAMES:
             app_list.append(
                 build_supported_product(
-                    app_config['Name'], app_config['Args']))
+                    app_config['Name'], app_config.get('Args')))
         elif app_name == constants.HIVE:
             hive_version = app_config.get('Version')
             if hive_version is None:

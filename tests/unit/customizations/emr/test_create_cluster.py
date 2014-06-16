@@ -698,6 +698,17 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['NewSupportedProducts'] = [INSTALL_MAPR_PRODUCT]
         self.assert_params_for_cmd(cmd, result)
 
+    def test_install_mapr_without_args(self):
+        cmd = DEFAULT_CMD + \
+            '--applications Name=mapr'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['NewSupportedProducts'] =  \
+            [
+                {'Name': 'mapr',
+                 'Args': []}
+            ]
+        self.assert_params_for_cmd(cmd, result)
+
     def test_applications_all_types(self):
         cmd = DEFAULT_CMD + (
             '--applications '

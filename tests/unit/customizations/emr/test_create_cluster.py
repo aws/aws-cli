@@ -146,6 +146,17 @@ INSTALL_MAPR_PRODUCT = {
     'Args': ['--edition', 'm5', '--version', '3.0.2']
 }
 
+INSTALL_SUPPORTED_PRODUCTS = [
+    {
+        'Name': 'hue',
+        'Args': ['--hue-config', 's3://elasticmapreduce/hue-config']
+    },
+    {
+        'Name': 'mapr',
+        'Args': ['--edition', 'm7']
+    }
+]
+
 CUSTOM_JAR_STEP = {
     'Name': 'Custom JAR',
     'ActionOnFailure': 'CONTINUE',
@@ -707,6 +718,15 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 {'Name': 'mapr',
                  'Args': []}
             ]
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_supported_products(self):
+        cmd = DEFAULT_CMD + (
+            '--applications '
+            'Name=hue,Args=--hue-config,s3://elasticmapreduce/hue-config '
+            'Name=mapr,Args=--edition,m7')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['NewSupportedProducts'] = INSTALL_SUPPORTED_PRODUCTS
         self.assert_params_for_cmd(cmd, result)
 
     def test_applications_all_types(self):

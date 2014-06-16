@@ -24,7 +24,7 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
     for app_config in parsed_applications:
         app_name = app_config['Name'].lower()
 
-        if app_name in constants.MAPR_NAMES:
+        if app_name in constants.SUPPORTED_PRODUCTS:
             app_list.append(
                 build_supported_product(
                     app_config['Name'], app_config.get('Args')))

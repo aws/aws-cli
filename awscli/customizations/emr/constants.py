@@ -27,7 +27,7 @@ ON_DEMAND = 'ON_DEMAND'
 SCRIPT_RUNNER_PATH = '/libs/script-runner/script-runner.jar'
 DEBUGGING_PATH = '/libs/state-pusher/0.1/fetch'
 DEBUGGING_NAME = 'Setup Hadoop Debugging'
-MAPR_NAMES = ['mapr', 'mapr-m3', 'mapr-m5', 'mapr-m7']
+SUPPORTED_PRODUCTS = ['mapr', 'mapr-m3', 'mapr-m5', 'mapr-m7', 'hue']
 
 MAX_BOOTSTRAP_ACTION_NUMBER = 16
 BOOTSTRAP_ACTION_NAME = 'Bootstrap action'

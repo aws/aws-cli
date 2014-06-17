@@ -190,6 +190,77 @@ class TestConfigureCommand(unittest.TestCase):
             '[preview]\n'
             'cloudsearch = true\n', self.get_config_file_contents())
 
+    def test_set_with_triple_nesting(self):
+        aws('configure set default.s3.signature_version s3v4',
+            env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = s3v4\n', self.get_config_file_contents())
+
+    def test_set_with_existing_config(self):
+        self.set_config_file_contents(
+            '[default]\n'
+            'region = us-west-2\n'
+            'ec2 =\n'
+            '    signature_version = v4\n'
+        )
+        aws('configure set default.s3.signature_version s3v4',
+            env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            'region = us-west-2\n'
+            'ec2 =\n'
+            '    signature_version = v4\n'
+            's3 =\n'
+            '    signature_version = s3v4\n', self.get_config_file_contents())
+
+    def test_set_with_new_profile(self):
+        self.set_config_file_contents(
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = s3v4\n'
+        )
+        aws('configure set profile.dev.s3.signature_version s3v4',
+            env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = s3v4\n'
+            '[profile dev]\n'
+            's3 =\n'
+            '    signature_version = s3v4\n',
+            self.get_config_file_contents()
+        )
+
+    def test_override_existing_value(self):
+        self.set_config_file_contents(
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = v4\n'
+        )
+        aws('configure set default.s3.signature_version NEWVALUE',
+            env_vars=self.env_vars)
+        self.assertEqual(
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = NEWVALUE\n',
+            self.get_config_file_contents())
+
+    def test_get_nested_attribute(self):
+        self.set_config_file_contents(
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = v4\n'
+        )
+        p = aws('configure get default.s3.signature_version',
+                 env_vars=self.env_vars)
+        self.assertEqual(p.stdout.strip(), 'v4')
+        p = aws('configure get default.bad.doesnotexist',
+                env_vars=self.env_vars)
+        self.assertEqual(p.rc, 1)
+        self.assertEqual(p.stdout, '')
+
 
 if __name__ == '__main__':
     unittest.main()

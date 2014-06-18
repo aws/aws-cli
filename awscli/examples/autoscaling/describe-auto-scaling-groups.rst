@@ -1,4 +1,4 @@
-**To get description of an Auto Scaling group**
+**To get a description of an Auto Scaling group**
 
 The following ``describe-auto-scaling-groups`` command describes the specified Auto Scaling group::
 
@@ -42,6 +42,14 @@ The output of this command is a JSON block that describes the Auto Scaling group
            }
         ]
     }
+
+To return a specific number of Auto Scaling groups with this command, use the ``max-items`` parameter::
+
+    aws autoscaling describe-auto-scaling-groups --max-items 1
+
+This command returns a JSON block that includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional Auto Scaling groups::
+
+    aws autoscaling describe-auto-scaling-groups --starting-token None___1
 
 For more information, see `Basic Auto Scaling Configuration`_ in the *Auto Scaling Developer Guide*.
 

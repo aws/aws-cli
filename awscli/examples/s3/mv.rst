@@ -1,107 +1,81 @@
-1) The following ``mv`` command moves a single file to a specified
-bucket and key.
-::
+The following ``mv`` command moves a single file to a specified bucket and key::
 
     aws s3 mv test.txt s3://mybucket/test2.txt
 
-*Output:*
-::
+Output::
 
     move: test.txt to s3://mybucket/test2.txt
 
-2) The following ``mv`` command moves a single s3 object to a specified
-bucket and key.
-::
+The following ``mv`` command moves a single s3 object to a specified bucket and key::
 
     aws s3 mv s3://mybucket/test.txt s3://mybucket/test2.txt
 
-*Output:*
-::
+Output::
 
     move: s3://mybucket/test.txt to s3://mybucket/test2.txt
 
-3) The following ``mv`` command moves a single object to a specified
-file locally.
-::
+The following ``mv`` command moves a single object to a specified file locally::
 
     aws s3 mv s3://mybucket/test.txt test2.txt
 
-*Output:*
-::
+Output::
 
     move: s3://mybucket/test.txt to test2.txt
 
-4) The following ``mv`` command moves a single object to a specified
-bucket while retaining its original name.
-::
+The following ``mv`` command moves a single object to a specified bucket while retaining its original name::
 
     aws s3 mv s3://mybucket/test.txt s3://mybucket2/
 
-*Output:*
-::
+Output::
 
     move: s3://mybucket/test.txt to s3://mybucket2/test.txt
 
-5) When passed with the parameter ``--recursive``, the following ``mv``
-command recursively moves all objects under a specified prefix and bucket
-to a specified directory.  In this example, the bucket ``mybucket`` has
-the objects ``test1.txt`` and ``test2.txt``.
-::
+When passed with the parameter ``--recursive``, the following ``mv`` command recursively moves all objects under a
+specified prefix and bucket to a specified directory.  In this example, the bucket ``mybucket`` has the objects
+``test1.txt`` and ``test2.txt``::
 
     aws s3 mv s3://mybucket . --recursive
 
-*Output:*
-::
+Output::
 
     move: s3://mybucket/test1.txt to test1.txt
     move: s3://mybucket/test2.txt to test2.txt
 
-6)  When passed with the parameter ``--recursive``, the following ``mv``
-command recursively moves all files under a specifed directory to a specified
-bucket and prefix while excluding some files by using an ``--exclude``
-parameter.  In this example, the directory ``myDir`` has the files
-``test1.txt`` and ``test2.jpg``.
-::
+When passed with the parameter ``--recursive``, the following ``mv`` command recursively moves all files under a
+specifed directory to a specified bucket and prefix while excluding some files by using an ``--exclude`` parameter. In
+this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jpg``::
 
     aws s3 mv myDir s3://mybucket/ --recursive --exclude "*.jpg"
 
-*Output:*
-::
+Output::
 
     move: myDir/test1.txt to s3://mybucket2/test1.txt
 
-7) When passed with the parameter ``--recursive``, the following ``mv``
-command recursively moves all objects under a specifed bucket to another
-bucket while excluding some objects by using an ``--exclude`` parameter.
-In this example, the bucket ``mybucket`` has the objects ``test1.txt``
-and ``another/test1.txt``.
-::
+When passed with the parameter ``--recursive``, the following ``mv`` command recursively moves all objects under a
+specifed bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
+the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``::
 
     aws s3 mv s3://mybucket/ s3://mybucket2/ --recursive --exclude "mybucket/another/*"
 
-*Output:*
-::
+Output::
 
     move: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
 
-8) The following ``mv`` command moves a single object to a specified
-bucket and key while setting the ACL to ``public-read-write``.
-::
+The following ``mv`` command moves a single object to a specified bucket and key while setting the ACL to
+``public-read-write``::
 
     aws s3 mv s3://mybucket/test.txt s3://mybucket/test2.txt --acl public-read-write
 
-*Output:*
-::
+Output::
 
     move: s3://mybucket/test.txt to s3://mybucket/test2.txt
 
-9) The following ``mv`` command illustrates the use of the ``--grants``
-option to grant read access to all users and full control to a specific user
-identified by their email address::
+The following ``mv`` command illustrates the use of the ``--grants`` option to grant read access to all users and full
+control to a specific user identified by their email address::
 
   aws s3 mv file.txt s3://mybucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=emailaddress=user@example.com
 
-*Output*::
+Output::
 
     move: file.txt to s3://mybucket/file.txt
-    
+

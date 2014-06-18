@@ -202,6 +202,12 @@ Output::
       ]
   }
 
+The following example requests a public IP address for an instance that you're launching into a nondefault subnet:
+
+Command::
+
+  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t1.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e --associate-public-ip-address
+
 **To launch an instance using a block device mapping**
 
 Add the following parameter to your ``run-instances`` command to add an Amazon EBS volume with the device name ``/dev/sdh`` and a volume size of 100.
@@ -242,6 +248,31 @@ Command::
 Output::
 
   sdc
+
+**To launch an instance with a modified block device mapping**
+
+You can change individual characteristics of existing AMI block device mappings to suit your needs. Perhaps you want to use an existing AMI, but you want a larger root volume than the usual 8 GiB. Or, you would like to use a General Purpose (SSD) volume for an AMI that currently uses a Magnetic volume.
+
+Use the ``describe-images`` command with the image ID of the AMI you want to use to find its existing block device mapping. You should see a block device mapping in the output.
+
+Output::
+
+  {
+    "DeviceName": "/dev/sda1",
+    "Ebs": {
+      "DeleteOnTermination": true,
+      "SnapshotId": "snap-b047276d",
+      "VolumeSize": 8,
+      "VolumeType": "standard",
+      "Encrypted": false
+    }
+  }
+
+You can modify the above mapping by changing the individual parameters. For example, to launch an instance with a modified block device mapping, add the following parameter to your ``run-instances`` command to change the above mapping's volume size and type.
+
+Command::
+
+  --block-device-mappings "[{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":true,\"SnapshotId\":\"snap-b047276d\",\"VolumeSize\":100,\"VolumeType\":\"gp2\"}}]"
 
 For more information about launching instances, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 

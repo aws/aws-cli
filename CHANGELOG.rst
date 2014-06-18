@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws configure``: Add support for setting nested attributes
+  (`issue 817 <https://github.com/aws/aws-cli/pull/817>`__)
+
+
 1.3.17
 ======
 
@@ -9,6 +16,7 @@ CHANGELOG
   a customer-supplied encryption key.
 * feature:``aws sns``: Support for message attributes.
 * feature:``aws redshift``: Support for renaming clusters.
+
 
 1.3.16
 ======

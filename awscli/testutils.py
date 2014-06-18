@@ -69,7 +69,10 @@ AWS_CMD = None
 
 def create_clidriver():
     driver = awscli.clidriver.create_clidriver()
-    driver.session._loader = _LOADER
+    session = driver.session
+    data_path = session.get_config_variable('data_path')
+    _LOADER.data_path = data_path or ''
+    session.register_component('data_loader', _LOADER)
     return driver
 
 
@@ -305,19 +308,26 @@ class FileCreator(object):
     def remove_all(self):
         shutil.rmtree(self.rootdir)
 
-    def create_file(self, filename, contents):
+    def create_file(self, filename, contents, mtime=None):
         """Creates a file in a tmpdir
 
         ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
         It will be translated into a full path in a tmp dir.
 
+        If the ``mtime`` argument is provided, then the file's
+        mtime will be set to the provided value (must be an epoch time).
+        Otherwise the mtime is left untouched.
+
         Returns the full path to the file.
+
         """
         full_path = os.path.join(self.rootdir, filename)
         if not os.path.isdir(os.path.dirname(full_path)):
             os.makedirs(os.path.dirname(full_path))
         with open(full_path, 'w') as f:
             f.write(contents)
+        if mtime is not None:
+            os.utime(full_path, (mtime, mtime))
         return full_path
 
     def append_file(self, filename, contents):

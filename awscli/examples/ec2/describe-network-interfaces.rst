@@ -19,7 +19,6 @@ Output::
             "Association": {
                 "PublicIp": "203.0.113.12",
                 "AssociationId": "eipassoc-0fbb766a",
-                "PublicDnsName": "ec2-203-0-113-12.compute-1.amazonaws.com",
                 "IpOwnerId": "123456789012"
             },
             "NetworkInterfaceId": "eni-e5aa89a3",
@@ -29,7 +28,6 @@ Output::
                     "Association": {
                         "PublicIp": "203.0.113.12",
                         "AssociationId": "eipassoc-0fbb766a",
-                        "PublicDnsName": "ec2-203-0-113-12.compute-1.amazonaws.com",
                         "IpOwnerId": "123456789012"
                     },
                     "Primary": true,

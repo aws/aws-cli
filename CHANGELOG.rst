@@ -2,6 +2,57 @@
 CHANGELOG
 =========
 
+1.3.17
+======
+
+* feature:``aws s3api``: Add support for server-side encryption with
+  a customer-supplied encryption key.
+* feature:``aws sns``: Support for message attributes.
+* feature:``aws redshift``: Support for renaming clusters.
+
+1.3.16
+======
+
+* bugfix:``aws s3``: Fix bug related to retrying requests
+  when 500 status codes are received
+  (`issue botocore 302 <https://github.com/boto/botocore/pull/302>`__)
+* bugfix:``aws s3``: Fix when when using S3 in the ``cn-north-1`` region
+  (`issue botocore 301 <https://github.com/boto/botocore/pull/301>`__)
+* bugfix:``aws kinesis``: Fix pagination bug when using the ``get-records``
+  operation
+  (`issue botocore 304 <https://github.com/boto/botocore/pull/304>`__)
+
+
+1.3.15
+======
+
+* bugfix:Python 3.4.1:  Add support for python 3.4.1
+  (`issue 800 <https://github.com/aws/aws-cli/issues/800>`__)
+* feature:``aws emr``: Update preview commands for Amazon
+  Elastic MapReduce
+
+
+1.3.14
+======
+
+* bugfix:``aws s3``: Add filename to error message when we're unable
+  to stat local filename
+  (`issue 795 <https://github.com/aws/aws-cli/pull/795>`__)
+* bugfix:``aws s3api get-bucket-policy``: Fix response parsing
+  for the ``aws s3api get-bucket-policy`` command
+  (`issue 678 <https://github.com/aws/aws-cli/issues/678>`__)
+* bugfix:Shared Credentials: Fix bug when specifying profiles
+  that don't exist in the CLI config file
+  (`issue botocore 294 <https://github.com/boto/botocore/pull/294>`__)
+* bugfix:``aws s3``: Handle Amazon S3 error responses that have
+  a 200 OK status code
+  (`issue botocore 298 <https://github.com/boto/botocore/pull/298>`__)
+* feature:``aws sts``:  Update the ``aws sts`` command to the latest
+  version
+* feature:``aws cloudsearch``:  Update the ``aws cloudsearch`` command to the
+  latest version
+
+
 1.3.13
 ======
 

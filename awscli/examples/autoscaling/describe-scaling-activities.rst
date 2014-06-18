@@ -1,4 +1,4 @@
-**To get a description of the scaling activities in an Auto Scaling group**
+**To get description of the scaling activities in an Auto Scaling group**
 
 The following ``describe-scaling-activities`` command describes the scaling activities for the specified Auto Scaling group::
 
@@ -21,18 +21,6 @@ The output of this command is a JSON block that describes the scaling activities
               }
          ]
       }
-
-To return information on a specific scaling activity, use the ``activity-ids`` parameter::
-
-	aws autoscaling describe-scaling-activities --activity-ids b55c7b67-c8aa-4d10-b240-730ff91d8895
-
-To return a specific number of activities with this command, use the ``max-items`` parameter::
-
-	aws autoscaling describe-scaling-activities --max-items 1
-
-This command returns a JSON block that includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional scaling activities::
-
-    aws autoscaling describe-scaling-activities --starting-token None___1
 
 For more information, see `Basic Auto Scaling Configuration`_ in the *Auto Scaling Developer Guide*.
 

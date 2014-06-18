@@ -39,6 +39,9 @@ from awscli.argprocess import unpack_argument
 
 
 LOG = logging.getLogger('awscli.clidriver')
+LOG_FORMAT = (
+    '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
+
 
 
 def main():
@@ -126,7 +129,7 @@ class CLIDriver(object):
                 choices = option_params['choices']
                 if not isinstance(choices, list):
                     # Assume it's a reference like
-                    # "{provider}/_regions", so first resolve
+                    # "{provider}/_foo", so first resolve
                     # the provider.
                     provider = self.session.get_config_variable('provider')
                     # The grab the var from the session
@@ -221,8 +224,10 @@ class CLIDriver(object):
             # Unfortunately, by setting debug mode here, we miss out
             # on all of the debug events prior to this such as the
             # loading of plugins, etc.
-            self.session.set_debug_logger(logger_name='botocore')
-            self.session.set_debug_logger(logger_name='awscli')
+            self.session.set_stream_logger('botocore', logging.DEBUG,
+                                           format_string=LOG_FORMAT)
+            self.session.set_stream_logger('awscli', logging.DEBUG,
+                                           format_string=LOG_FORMAT)
             LOG.debug("CLI version: %s, botocore version: %s",
                       self.session.user_agent(),
                       botocore_version)

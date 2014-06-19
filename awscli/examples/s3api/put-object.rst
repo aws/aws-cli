@@ -13,3 +13,4 @@ specified using Windows file system syntax.)::
 For more information about uploading objects, see `Uploading Objects`_ in the *Amazon S3 Developer Guide*.
 
 .. _`Uploading Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
+

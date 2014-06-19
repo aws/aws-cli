@@ -20,3 +20,5 @@ Output::
 If no password policy is defined for the account, the command returns a ``NoSuchEntity`` error.
 
 For more information, see `Managing an IAM Password Policy`_ in the *Using IAM* guide.
+
+.. _`Managing an IAM Password Policy`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingPasswordPolicies.html

@@ -32,7 +32,5 @@ To reduce the number of results returned, you can:
 See Also
 --------
 
--  `CountClosedWorkflowExecutions
-    <http://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountClosedWorkflowExecutions.html>`_ in the *Amazon
-    Simple Workflow Service API Reference*
+-  `CountClosedWorkflowExecutions <http://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountClosedWorkflowExecutions.html>`_ in the *Amazon Simple Workflow Service API Reference*
 

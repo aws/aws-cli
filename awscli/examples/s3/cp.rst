@@ -1,106 +1,103 @@
-1) The following ``cp`` command copies a single file to a specified
-bucket and key.
-::
+**Copying a local file to S3**
+
+The following ``cp`` command copies a single file to a specified
+bucket and key::
 
     aws s3 cp test.txt s3://mybucket/test2.txt
 
-*Output*::
+Output::
 
     upload: test.txt to s3://mybucket/test2.txt
 
-2) The following ``cp`` command copies a single s3 object to a specified
-bucket and key.
-::
+
+**Copying a file from S3 to S3**
+
+The following ``cp`` command copies a single s3 object to a specified bucket and key::
 
     aws s3 cp s3://mybucket/test.txt s3://mybucket/test2.txt
 
-*Output:*
-::
+Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket/test2.txt
 
-3) The following ``cp`` command copies a single object to a specified
-file locally.
-::
+
+**Copying an S3 object to a local file**
+
+The following ``cp`` command copies a single object to a specified file locally::
 
     aws s3 cp s3://mybucket/test.txt test2.txt
 
-*Output:*
-::
+Output::
 
     download: s3://mybucket/test.txt to test2.txt
 
-4) The following ``cp`` command copies a single object to a specified
-bucket while retaining its original name.
-::
+
+**Copying an S3 object from one bucket to another**
+
+The following ``cp`` command copies a single object to a specified bucket while retaining its original name::
 
     aws s3 cp s3://mybucket/test.txt s3://mybucket2/
 
-*Output:*
-::
+Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
 
-5) When passed with the parameter ``--recursive``, the following ``cp``
-command recursively copies all objects under a specified prefix and bucket
-to a specified directory.  In this example, the bucket ``mybucket`` has
-the objects ``test1.txt`` and ``test2.txt``.
-::
+**Recursively copying S3 objects to a local directory**
+
+When passed with the parameter ``--recursive``, the following ``cp`` command recursively copies all objects under a
+specified prefix and bucket to a specified directory.  In this example, the bucket ``mybucket`` has the objects
+``test1.txt`` and ``test2.txt``::
 
     aws s3 cp s3://mybucket . --recursive
 
-*Output:*
-::
+Output::
 
     download: s3://mybucket/test1.txt to test1.txt
     download: s3://mybucket/test2.txt to test2.txt
 
-6)  When passed with the parameter ``--recursive``, the following ``cp``
-command recursively copies all files under a specifed directory to a specified
-bucket and prefix while excluding some files by using an ``--exclude``
-parameter.  In this example, the directory ``myDir`` has the files
-``test1.txt`` and ``test2.jpg``.
-::
+**Recursively copying local files to S3**
+
+When passed with the parameter ``--recursive``, the following ``cp`` command recursively copies all files under a
+specifed directory to a specified bucket and prefix while excluding some files by using an ``--exclude`` parameter.  In
+this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jpg``::
 
     aws s3 cp myDir s3://mybucket/ --recursive --exclude "*.jpg"
 
-*Output:*
-::
+Output::
 
     upload: myDir/test1.txt to s3://mybucket2/test1.txt
 
-7) When passed with the parameter ``--recursive``, the following ``cp``
-command recursively copies all objects under a specifed bucket to another
-bucket while excluding some objects by using an ``--exclude`` parameter.
-In this example, the bucket ``mybucket`` has the objects ``test1.txt``
-and ``another/test1.txt``.
-::
+**Recursively copying S3 objects to another bucket**
+
+When passed with the parameter ``--recursive``, the following ``cp`` command recursively copies all objects under a
+specifed bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
+the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``::
 
     aws s3 cp s3://mybucket/ s3://mybucket2/ --recursive --exclude "mybucket/another/*"
 
-*Output:*
-::
+Output::
 
     copy: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
 
-8) The following ``cp`` command copies a single object to a specified
-bucket and key while setting the ACL to ``public-read-write``.
-::
+**Setting the Access Control List (ACL) while copying an S3 object**
+
+The following ``cp`` command copies a single object to a specified bucket and key while setting the ACL to
+``public-read-write``::
 
     aws s3 cp s3://mybucket/test.txt s3://mybucket/test2.txt --acl public-read-write
 
-*Output:*
-::
+Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket/test2.txt
 
-9) The following ``cp`` command illustrates the use of the ``--grants``
-option to grant read access to all users and full control to a specific user
-identified by their email address::
+**Granting permissions for an S3 object**
+
+The following ``cp`` command illustrates the use of the ``--grants`` option to grant read access to all users and full
+control to a specific user identified by their email address::
 
   aws s3 cp file.txt s3://mybucket/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers full=emailaddress=user@example.com
 
-*Output*::
+Output::
 
     upload: file.txt to s3://mybucket/file.txt
 

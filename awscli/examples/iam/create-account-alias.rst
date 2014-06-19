@@ -5,3 +5,5 @@ The following ``create-account-alias`` command creates the alias ``mycompany`` f
   aws iam create-account-alias --account-alias mycompany
 
 For more information, see `Using an Alias for Your AWS Account ID`_ in the *Using IAM* guide.
+
+.. _`Using an Alias for Your AWS Account ID`: http://docs.aws.amazon.com/IAM/latest/UserGuide/AccountAlias.html

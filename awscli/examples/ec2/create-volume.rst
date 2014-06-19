@@ -1,10 +1,10 @@
 **To create a new volume**
 
-This example command creates an 80 GiB standard volume in the Availability Zone ``us-east-1a``.
+This example command creates an 80 GiB General Purpose (SSD) volume in the Availability Zone ``us-east-1a``.
 
 Command::
 
-  aws ec2 create-volume --size 80 --region us-east-1 --availability-zone us-east-1a
+  aws ec2 create-volume --size 80 --region us-east-1 --availability-zone us-east-1a --volume-type gp2
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
        "AvailabilityZone": "us-east-1a",
        "Attachments": [],
        "Tags": [],
-       "VolumeType": "standard",
+       "VolumeType": "gp2",
        "VolumeId": "vol-1234abcd",
        "State": "creating",
        "SnapshotId": null,
@@ -20,9 +20,9 @@ Output::
        "Size": 80
    }
 
-**To create a new provisioned IOPS volume from a snapshot**
+**To create a new Provisioned IOPS (SSD) volume from a snapshot**
 
-This example command creates a new 1000 provisioned IOPS volume from a snapshot in the Availability Zone ``us-east-1a``.
+This example command creates a new Provisioned IOPS (SSD) volume with 1000 provisioned IOPS from a snapshot in the Availability Zone ``us-east-1a``.
 
 Command::
 

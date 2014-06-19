@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.18
+======
 
 * feature:``aws configure``: Add support for setting nested attributes
   (`issue 817 <https://github.com/aws/aws-cli/pull/817>`__)

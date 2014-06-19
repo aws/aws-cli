@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+1.3.18
+======
+
+* feature:``aws configure``: Add support for setting nested attributes
+  (`issue 817 <https://github.com/aws/aws-cli/pull/817>`__)
+* bugfix:``aws s3``: Fix issue when uploading large files to newly
+  created buckets in a non-standard region
+  (`issue 634 <https://github.com/aws/aws-cli/issues/634>`__)
+* feature:``aws dynamodb``: Add support for a ``local`` region for
+  dynamodb (``aws dynamodb --region local ...``)
+  (`issue 608 <https://github.com/aws/aws-cli/issues/608>`__)
+* feature:``aws elasticbeanstalk``: Update ``aws elasticbeanstalk``
+  model to the latest version
+* feature:Documentation Examples: Add more documentatoin examples for many
+  AWS CLI commands
+* feature:``aws emr``: Update model to the latest version
+* feature:``aws elastictranscoder:`` Update model to the latest version
+
+
 1.3.17
 ======
 
@@ -9,6 +28,7 @@ CHANGELOG
   a customer-supplied encryption key.
 * feature:``aws sns``: Support for message attributes.
 * feature:``aws redshift``: Support for renaming clusters.
+
 
 1.3.16
 ======

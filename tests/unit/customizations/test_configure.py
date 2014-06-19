@@ -447,6 +447,79 @@ class TestConfigFileWriter(unittest.TestCase):
             'bar = 1\n'
         )
 
+    def test_nested_attributes_new_file(self):
+        original = ''
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 's3v4'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = s3v4\n')
+
+    def test_add_to_end_of_nested(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '    other = foo\n'
+            'ec2 = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    other = foo\n'
+            '    signature_version = newval\n'
+            'ec2 = bar\n')
+
+    def test_update_nested_attribute(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = originalval\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    signature_version = newval\n')
+
+    def test_updated_nested_attribute_new_section(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '    other = foo\n'
+            '[profile foo]\n'
+            'foo = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    other = foo\n'
+            '    signature_version = newval\n'
+            '[profile foo]\n'
+            'foo = bar\n')
+
+    def test_update_nested_attr_no_prior_nesting(self):
+        original = (
+            '[default]\n'
+            'foo = bar\n'
+            '[profile foo]\n'
+            'foo = bar\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            'foo = bar\n'
+            's3 =\n'
+            '    signature_version = newval\n'
+            '[profile foo]\n'
+            'foo = bar\n')
+
 
 class TestConfigureListCommand(unittest.TestCase):
 
@@ -533,7 +606,7 @@ class TestConfigureListCommand(unittest.TestCase):
             rendered, r'secret_key\s+\*+_key\s+iam-role')
 
 
-class TestConfigureGetSetCommand(unittest.TestCase):
+class TestConfigureGetCommand(unittest.TestCase):
 
     def test_configure_get_command(self):
         session = FakeSession({})
@@ -577,6 +650,41 @@ class TestConfigureGetSetCommand(unittest.TestCase):
         self.assertEqual(rendered.strip(), 'access_key')
         self.assertEqual(session.profile, 'testing')
 
+    def test_get_nested_attribute(self):
+        session = FakeSession({})
+        session.config = {'s3': {'signature_version': 's3v4'}}
+        session.profile = None
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['profile.testing.s3.signature_version'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 's3v4')
+        self.assertEqual(session.profile, 'testing')
+
+    def test_get_nested_attribute_from_default(self):
+        session = FakeSession({})
+        session.config = {'s3': {'signature_version': 's3v4'}}
+        session.profile = None
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['default.s3.signature_version'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 's3v4')
+        self.assertEqual(session.profile, 'default')
+
+    def test_get_nested_attribute_from_default_does_not_exist(self):
+        session = FakeSession({})
+        session.config = {}
+        session.profile = None
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['default.s3.signature_version'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), '')
+
 
 class TestConfigureSetCommand(unittest.TestCase):
     def setUp(self):
@@ -602,3 +710,21 @@ class TestConfigureSetCommand(unittest.TestCase):
         set_command(args=['region', 'us-west-2'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'profile testing', 'region': 'us-west-2'}, 'myconfigfile')
+
+    def test_configure_set_triple_dotted(self):
+        # aws configure set default.s3.signature_version s3v4
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['default.s3.signature_version', 's3v4'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default', 's3': {'signature_version': 's3v4'}},
+             'myconfigfile')
+
+    def test_configure_set_with_profile(self):
+        # aws configure set default.s3.signature_version s3v4
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['profile.foo.s3.signature_version', 's3v4'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile foo',
+             's3': {'signature_version': 's3v4'}}, 'myconfigfile')

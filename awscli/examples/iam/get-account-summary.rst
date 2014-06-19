@@ -3,7 +3,7 @@
 The following ``get-account-summary`` command returns information about the current IAM entities and current IAM entity
 limitations in the account::
 
-    aws iam get-account-summary
+  aws iam get-account-summary
 
 Output::
 
@@ -33,3 +33,6 @@ Output::
   }
 
 For more information about entity limitations, see `Limitations on IAM Entities`_ in the *Using IAM* guide.
+
+.. _`Limitations on IAM Entities`: http://docs.aws.amazon.com/IAM/latest/UserGuide/LimitationsOnEntities.html
+

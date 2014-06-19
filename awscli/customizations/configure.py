@@ -74,7 +74,7 @@ class InteractivePrompter(object):
 class ConfigFileWriter(object):
     SECTION_REGEX = re.compile(r'\[(?P<header>[^]]+)\]')
     OPTION_REGEX = re.compile(
-        r'(?P<option>[^:=\s][^:=]*)'
+        r'(?P<option>[^:=][^:=]*)'
         r'\s*(?P<vi>[:=])\s*'
         r'(?P<value>.*)$'
     )
@@ -108,12 +108,13 @@ class ConfigFileWriter(object):
     def _write_new_section(self, section_name, new_values, config_filename):
         with open(config_filename, 'a') as f:
             f.write('[%s]\n' % section_name)
-            for key, value in new_values.items():
-                f.write('%s = %s\n' % (key, value))
+            contents = []
+            self._insert_new_values(line_number=0,
+                                    contents=contents,
+                                    new_values=new_values)
+            f.write(''.join(contents))
 
-    def _update_section_contents(self, contents, section_name, new_values):
-        new_values = new_values.copy()
-        # contents is a list of file line contents.
+    def _find_section_start(self, contents, section_name):
         for i in range(len(contents)):
             line = contents[i]
             if line.strip().startswith(('#', ';')):
@@ -122,23 +123,43 @@ class ConfigFileWriter(object):
             match = self.SECTION_REGEX.search(line)
             if match is not None and self._matches_section(match,
                                                            section_name):
-                break
+                return i
         else:
             raise SectionNotFoundError(section_name)
+
+    def _update_section_contents(self, contents, section_name, new_values):
+        # First, find the line where the section_name is defined.
+        # This will be the value of i.
+        new_values = new_values.copy()
+        # ``contents`` is a list of file line contents.
+        section_start_line_num = self._find_section_start(contents, section_name)
         # If we get here, then we've found the section.  We now need
         # to figure out if we're updating a value or adding a new value.
-        i += 1
-        last_matching_line = i
-        for j in range(i, len(contents)):
+        # There's 2 cases.  Either we're setting a normal scalar value
+        # of, we're setting a nested value.
+        section_start_line_num += 1
+        last_matching_line = section_start_line_num
+        j = section_start_line_num
+        while j < len(contents):
             line = contents[j]
             match = self.OPTION_REGEX.search(line)
             if match is not None:
                 last_matching_line = j
                 key_name = match.group(1).strip()
                 if key_name in new_values:
-                    new_line = '%s = %s\n' % (key_name, new_values[key_name])
-                    contents[j] = new_line
-                    del new_values[key_name]
+                    # We've found the line that defines the option name.
+                    # if the value is not a dict, then we can write the line
+                    # out now.
+                    if not isinstance(new_values[key_name], dict):
+                        option_value = new_values[key_name]
+                        new_line = '%s = %s\n' % (key_name, option_value)
+                        contents[j] = new_line
+                        del new_values[key_name]
+                    else:
+                        j = self._update_subattributes(
+                            j, contents, new_values[key_name],
+                            len(match.group(1)) - len(match.group(1).lstrip()))
+                        return
             elif self.SECTION_REGEX.search(line) is not None:
                 # We've hit a new section which means the config key is
                 # not in the section.  We need to add it here.
@@ -146,6 +167,7 @@ class ConfigFileWriter(object):
                                         contents=contents,
                                         new_values=new_values)
                 return
+            j += 1
 
         if new_values:
             if not contents[-1].endswith('\n'):
@@ -154,10 +176,39 @@ class ConfigFileWriter(object):
                                     contents=contents,
                                     new_values=new_values)
 
-    def _insert_new_values(self, line_number, contents, new_values):
+    def _update_subattributes(self, index, contents, values, starting_indent):
+        index += 1
+        for i in range(index, len(contents)):
+            line = contents[i]
+            match = self.OPTION_REGEX.search(line)
+            if match is not None:
+                current_indent = len(match.group(1)) - len(match.group(1).lstrip())
+                key_name = match.group(1).strip()
+                if key_name in values:
+                    option_value = values[key_name]
+                    new_line = '%s%s = %s\n' % (' ' * current_indent,
+                                                key_name, option_value)
+                    contents[i] = new_line
+                    del values[key_name]
+            if starting_indent == current_indent or \
+                    self.SECTION_REGEX.search(line) is not None:
+                # We've arrived at the starting indent level so we can just
+                # write out all the values now.
+                self._insert_new_values(i - 1, contents, values, '    ')
+                break
+        return i
+
+    def _insert_new_values(self, line_number, contents, new_values, indent=''):
         new_contents = []
-        for key, value in new_values.items():
-            new_contents.append('%s = %s\n' % (key, value))
+        for key, value in list(new_values.items()):
+            if isinstance(value, dict):
+                subindent = indent + '    '
+                new_contents.append('%s%s =\n' % (indent, key))
+                for subkey, subval in list(value.items()):
+                    new_contents.append('%s%s = %s\n' % (subindent, subkey, subval))
+            else:
+                new_contents.append('%s%s = %s\n' % (indent, key, value))
+            del new_values[key]
         contents.insert(line_number + 1, ''.join(new_contents))
 
     def _matches_section(self, match, section_name):
@@ -298,6 +349,11 @@ class ConfigureSetCommand(BasicCommand):
         varname = args.varname
         value = args.value
         section = 'default'
+        # Before handing things off to the config writer,
+        # we need to find out three things:
+        # 1. What section we're writing to (section).
+        # 2. The name of the config key (varname)
+        # 3. The actual value (value).
         if '.' not in varname:
             # unqualified name, scope it to the current
             # profile (or leave it as the 'default' section if
@@ -305,16 +361,25 @@ class ConfigureSetCommand(BasicCommand):
             if self._session.profile is not None:
                 section = 'profile %s' % self._session.profile
         else:
-            # It's either section.config-name,
-            # of profile.profile-name.config-name (we
-            # don't support arbitrary.thing.config-name).
-            num_dots = varname.count('.')
-            if num_dots == 1:
-                section, varname = varname.split('.')
-            elif num_dots == 2 and varname.startswith('profile'):
-                dotted_section, varname = varname.rsplit('.', 1)
-                profile = dotted_section.split('.')[1]
-                section = 'profile %s' % profile
+            # First figure out if it's been scoped to a profile.
+            # This will happen if 
+            parts = varname.split('.')
+            if parts[0] in ('default', 'profile'):
+                # Then we know we're scoped to a profile.
+                if parts[0] == 'default':
+                    section = 'default'
+                    remaining = parts[1:]
+                else:
+                    # [profile, profile_name, ...]
+                    section = "profile %s" % parts[1]
+                    remaining = parts[2:]
+                varname = remaining[0]
+                if len(remaining) == 2:
+                    value = {remaining[1]: value}
+            elif len(parts) == 2:
+                # Otherwise it's something like "set preview.service true"
+                # of something in the [plugin] section.
+                section, varname = parts
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         updated_config = {'__section__': section, varname: value}
@@ -347,31 +412,49 @@ class ConfigureGetCommand(BasicCommand):
             config = self._session.get_scoped_config()
             value = config.get(varname)
         else:
-            num_dots = varname.count('.')
-            if num_dots == 1:
-                full_config = self._session.full_config
-                section, config_name = varname.split('.')
-                value = full_config.get(section, {}).get(config_name)
-                if value is None:
-                    # Try to retrieve it from the profile config.
-                    value = full_config['profiles'].get(
-                        section, {}).get(config_name)
-            elif num_dots == 2 and varname.startswith('profile'):
-                # We're hard coding logic for profiles here.  Really
-                # we could support any generic format of [section subsection],
-                # but we'd need some botocore.session changes for that,
-                # and nothing would immediately use that feature.
-                dot_section, config_name = varname.rsplit('.', 1)
-                start, profile_name = dot_section.split('.')
-                self._session.profile = profile_name
-                config = self._session.get_scoped_config()
-                value = config.get(config_name)
+            value = self._get_dotted_config_value(varname)
         if value is not None:
             self._stream.write(value)
             self._stream.write('\n')
             return 0
         else:
             return 1
+
+    def _get_dotted_config_value(self, varname):
+        value = None
+        num_dots = varname.count('.')
+        if num_dots == 1:
+            full_config = self._session.full_config
+            section, config_name = varname.split('.')
+            value = full_config.get(section, {}).get(config_name)
+            if value is None:
+                # Try to retrieve it from the profile config.
+                value = full_config['profiles'].get(
+                    section, {}).get(config_name)
+        elif varname.startswith(('default', 'profile')):
+            # We're hard coding logic for profiles here.  Really
+            # we could support any generic format of [section subsection],
+            # but we'd need some botocore.session changes for that,
+            # and nothing would immediately use that feature.
+            parts = varname.split('.')
+            if parts[0] == 'default':
+                profile_name = 'default'
+                config_name = parts[1]
+                remaining = parts[2:]
+            else:
+                # ['profile', 'profname', 'foo', ...]
+                profile_name = parts[1]
+                config_name = parts[2]
+                remaining = parts[3:]
+            self._session.profile = profile_name
+            value = self._session.get_scoped_config().get(config_name)
+            if len(remaining) == 1:
+                try:
+                    value = value.get(remaining[-1])
+                except AttributeError:
+                    value = None
+        return value
+
 
 
 class ConfigureCommand(BasicCommand):

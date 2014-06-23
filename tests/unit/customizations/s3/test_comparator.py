@@ -351,5 +351,104 @@ class ComparatorSizeOnlyTest(unittest.TestCase):
         self.assertEqual(sum(1 for _ in files), 0)
 
 
+class ComparatorExactTimestampsTest(unittest.TestCase):
+    def setUp(self):
+        self.comparator = Comparator({'exact_timestamps': True})
+
+    def test_compare_exact_timestamps_dest_older(self):
+        """
+        Confirm that same-sized files are synced when
+        the destination is older than the source and
+        `exact_timestamps` is set.
+        """
+        time_src = datetime.datetime.now()
+        time_dst = time_src - datetime.timedelta(days=1)
+
+        src_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_src, src_type='s3',
+                            dest_type='local', operation_name='download',
+                            service=None, endpoint=None)
+
+        dst_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_dst, src_type='local',
+                            dest_type='s3', operation_name='',
+                            service=None, endpoint=None)
+
+        files = self.comparator.call(iter([src_file]), iter([dst_file]))
+        self.assertEqual(sum(1 for _ in files), 1)
+
+    def test_compare_exact_timestamps_src_older(self):
+        """
+        Confirm that same-sized files are synced when
+        the source is older than the destination and
+        `exact_timestamps` is set.
+        """
+        time_src = datetime.datetime.now() - datetime.timedelta(days=1)
+        time_dst = datetime.datetime.now()
+
+        src_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_src, src_type='s3',
+                            dest_type='local', operation_name='download',
+                            service=None, endpoint=None)
+
+        dst_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_dst, src_type='local',
+                            dest_type='s3', operation_name='',
+                            service=None, endpoint=None)
+
+        files = self.comparator.call(iter([src_file]), iter([dst_file]))
+        self.assertEqual(sum(1 for _ in files), 1)
+
+    def test_compare_exact_timestamps_same_age_same_size(self):
+        """
+        Confirm that same-sized files are not synced when
+        the source and destination are the same age and
+        `exact_timestamps` is set.
+        """
+        time_both = datetime.datetime.now()
+
+        src_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_both, src_type='s3',
+                            dest_type='local', operation_name='download',
+                            service=None, endpoint=None)
+
+        dst_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_both, src_type='local',
+                            dest_type='s3', operation_name='',
+                            service=None, endpoint=None)
+
+        files = self.comparator.call(iter([src_file]), iter([dst_file]))
+        self.assertEqual(sum(1 for _ in files), 0)
+
+    def test_compare_exact_timestamps_same_age_diff_size(self):
+        """
+        Confirm that files of differing sizes are synced when
+        the source and destination are the same age and
+        `exact_timestamps` is set.
+        """
+        time_both = datetime.datetime.now()
+
+        src_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=20,
+                            last_update=time_both, src_type='s3',
+                            dest_type='local', operation_name='download',
+                            service=None, endpoint=None)
+
+        dst_file = FileInfo(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_both, src_type='local',
+                            dest_type='s3', operation_name='',
+                            service=None, endpoint=None)
+
+        files = self.comparator.call(iter([src_file]), iter([dst_file]))
+        self.assertEqual(sum(1 for _ in files), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

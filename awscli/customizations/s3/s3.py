@@ -796,6 +796,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                                 'sse', 'storage-class', 'content-type',
                                 'cache-control', 'content-disposition',
                                 'content-encoding', 'content-language',
+                                'exact-timestamps',
                                 'expires', 'size-only']},
             'ls': {'options': {'nargs': '?', 'default': 's3://'},
                    'params': ['recursive'], 'default': 's3://',
@@ -850,6 +851,11 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'size-only': {'options': {'action': 'store_true'}, 'documents':
                    ('Makes the size of each key the only criteria used to '
                     'decide whether to sync from source to destination.')},
+               'exact-timestamps': {'options': {'action': 'store_true'}, 'documents':
+                   ('When syncing from S3 to local, same-sized items will be '
+                    'ignored only when the timestamps match exactly. The '
+                    'default behavior is to ignore same-sized items unless '
+                    'the local version is newer than the S3 version.')},
                'index-document': {'options': {}, 'documents':
                    ('A suffix that is appended to a request that is for a '
                     'directory on the website endpoint (e.g. if the suffix '

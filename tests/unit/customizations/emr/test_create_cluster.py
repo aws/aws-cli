@@ -101,6 +101,22 @@ INSTALL_HIVE_STEP = {
     'ActionOnFailure': 'TERMINATE_CLUSTER'
 }
 
+INSTALL_HIVE_SITE_STEP = {
+    'HadoopJarStep': {
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
+                 '--base-path',
+                 's3://us-east-1.elasticmapreduce/libs/hive',
+                 '--install-hive-site',
+                 '--hive-site=s3://test/hive-conf/hive-site.xml',
+                 '--hive-versions', 'latest'],
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
+    },
+    'Name': 'Install Hive Site Configuration',
+    'ActionOnFailure': 'CANCEL_AND_WAIT'
+}
+
 INSTALL_PIG_STEP = {
     'HadoopJarStep': {
         'Args': ['s3://elasticmapreduce/libs/pig/pig-script',
@@ -693,6 +709,16 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         steps['HadoopJarStep']['Args'][-1] = '0.11.0.1'
         result['Steps'] = [steps]
         self.assert_params_for_cmd(cmd, result)
+
+    def test_install_hive_site(self):
+        cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = [INSTALL_HIVE_STEP, INSTALL_HIVE_SITE_STEP]
+        self.assert_params_for_cmd(cmdline, result)
+        cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml,k1]')
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_install_pig_with_defaults(self):
         cmd = DEFAULT_CMD + '--applications Name=Pig'

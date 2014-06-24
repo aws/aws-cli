@@ -18,11 +18,13 @@ import copy
 
 INSTALL_HIVE_STEP = {
     'HadoopJarStep': {
-        'Args': ['s3://elasticmapreduce/libs/hive/hive-script',
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
                  '--install-hive', '--base-path',
-                 's3://elasticmapreduce/libs/hive',
+                 's3://us-east-1.elasticmapreduce/libs/hive',
                  '--hive-versions', 'latest'],
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
     },
     'Name': 'Install Hive',
     'ActionOnFailure': 'TERMINATE_CLUSTER'
@@ -46,11 +48,13 @@ INSTALL_HIVE_SITE_STEP = {
 
 INSTALL_PIG_STEP = {
     'HadoopJarStep': {
-        'Args': ['s3://elasticmapreduce/libs/pig/pig-script',
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/pig/pig-script',
                  '--install-pig', '--base-path',
-                 's3://elasticmapreduce/libs/pig',
+                 's3://us-east-1.elasticmapreduce/libs/pig',
                  '--pig-versions', 'latest'],
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
     },
     'Name': 'Install Pig',
     'ActionOnFailure': 'TERMINATE_CLUSTER'

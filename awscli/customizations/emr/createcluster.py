@@ -22,6 +22,8 @@ from awscli.customizations.emr import helptext
 from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import applicationutils
 from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 import re
 
 
@@ -52,6 +54,10 @@ class CreateCluster(BasicCommand):
          'help_text': helptext.CLUSTER_NAME},
         {'name': 'log-uri',
          'help_text': helptext.LOG_URI},
+        {'name': 'service-role',
+         'help_text': helptext.SERVICE_ROLE},
+        {'name': 'use-default-roles', 'action': 'store_true',
+         'help_text': helptext.USE_DEFAULT_ROLES},
         {'name': 'ec2-attributes',
          'help_text': helptext.EC2_ATTRIBUTES,
          'schema': argumentschema.EC2_ATTRIBUTES_SCHEMA},
@@ -104,6 +110,13 @@ class CreateCluster(BasicCommand):
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)
+        if parsed_args.use_default_roles is True:
+            parsed_args.service_role = EMR_ROLE_NAME
+            if parsed_args.ec2_attributes is None:
+                parsed_args.ec2_attributes = {}
+            parsed_args.ec2_attributes['InstanceProfile'] = EC2_ROLE_NAME
+
+        emrutils.apply_dict(params, 'ServiceRole', parsed_args.service_role)
         instances_config = {}
         instances_config['InstanceGroups'] = \
             instancegroupsutils.build_instance_groups(

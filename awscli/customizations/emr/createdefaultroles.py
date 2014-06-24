@@ -27,6 +27,7 @@ LOG = logging.getLogger(__name__)
 
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
+EMR_ROLE_NAME = "EMR_DefaultRole"
 
 EC2_ROLE_POLICY = {
     "Statement": [
@@ -44,6 +45,40 @@ EC2_ROLE_POLICY = {
             ],
             "Effect": "Allow",
             "Resource": ["*"]
+        }
+    ]
+}
+
+
+EMR_ROLE_POLICY = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CancelSpotInstanceRequests",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateTags",
+                "ec2:Describe*",
+                "ec2:DeleteTags",
+                "ec2:ModifyImageAttribute",
+                "ec2:ModifyInstanceAttribute",
+                "ec2:RequestSpotInstances",
+                "ec2:RunInstances",
+                "ec2:TerminateInstances",
+                "iam:PassRole",
+                "iam:ListRolePolicies",
+                "iam:GetRole",
+                "iam:GetRolePolicy",
+                "iam:ListInstanceProfiles",
+                "s3:Get*",
+                "s3:List*",
+                "s3:CreateBucket",
+                "sdb:BatchPutAttributes",
+                "sdb:Select"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
         }
     ]
 }
@@ -98,7 +133,8 @@ def _get_regex_match_from_endpoint_host(endpoint_host):
 class CreateDefaultRoles(BasicCommand):
     NAME = "create-default-roles"
     DESCRIPTION = ('Creates the default IAM role ' +
-                   EC2_ROLE_NAME + ' which can be used when'
+                   EC2_ROLE_NAME + ' and ' +
+                   EMR_ROLE_NAME + ' which can be used when'
                    ' creating the cluster using the create-cluster command.')
     ARG_TABLE = [
         {'name': 'iam-endpoint',
@@ -112,6 +148,7 @@ class CreateDefaultRoles(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         ec2_result = None
+        emr_result = None
         self.iam = self._session.get_service('iam')
         self.iam_endpoint_url = parsed_args.iam_endpoint
         region = self._get_region(parsed_globals)
@@ -132,7 +169,7 @@ class CreateDefaultRoles(BasicCommand):
             LOG.debug('Role ' + role_name + ' exists.')
         else:
             LOG.debug('Role ' + role_name + ' does not exist.'
-                      ' Creating default role ' + role_name)
+                      ' Creating default role for EC2: ' + role_name)
             ec2_result = self._create_role_with_role_policy(
                 role_name, role_name, constants.EC2,
                 emrutils.dict_to_string(EC2_ROLE_POLICY),
@@ -151,10 +188,22 @@ class CreateDefaultRoles(BasicCommand):
                                                     instance_profile_name,
                                                     parsed_globals)
 
+        # Check if the default EMR Role exists.
+        role_name = EMR_ROLE_NAME
+        if self._check_if_role_exists(role_name, parsed_globals):
+            LOG.debug('Role ' + role_name + ' exists.')
+        else:
+            LOG.debug('Role ' + role_name + ' does not exist.'
+                      ' Creating default role for EMR: ' + role_name)
+            emr_result = self._create_role_with_role_policy(
+                role_name, role_name, constants.EMR,
+                emrutils.dict_to_string(EMR_ROLE_POLICY),
+                parsed_globals)
+
         emrutils.display_response(
             self._session,
             self._session.get_service('iam').get_operation('CreateRole'),
-            self._construct_result(ec2_result),
+            self._construct_result(ec2_result, emr_result),
             parsed_globals)
 
         return 0
@@ -166,11 +215,12 @@ class CreateDefaultRoles(BasicCommand):
             if iam_endpoint is None:
                 raise exceptions.UnknownIamEndpointError(region=region)
 
-    def _construct_result(self, ec2_response):
+    def _construct_result(self, ec2_response, emr_response):
         result = []
         self._construct_role_and_role_policy_structure(
             result, ec2_response, EC2_ROLE_POLICY)
-
+        self._construct_role_and_role_policy_structure(
+            result, emr_response, EMR_ROLE_POLICY)
         return result
 
     def _construct_role_and_role_policy_structure(

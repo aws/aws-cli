@@ -53,7 +53,3 @@ This command outputs a JSON block that indicates that the DB instance was create
         }
     }
 
-For more information, see `Create an Amazon RDS DB Instance`_ in the *AWS Command Line Interface User Guide*.
-
-.. _`Create an Amazon RDS DB Instance`: http://docs.aws.amazon.com/cli/latest/userguide/cli-rds-create-instance.html
-

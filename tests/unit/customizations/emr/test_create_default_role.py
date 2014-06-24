@@ -20,6 +20,7 @@ from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
 
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
+EMR_ROLE_NAME = "EMR_DefaultRole"
 
 EC2_ROLE_POLICY = {
     "Statement": [
@@ -90,11 +91,23 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         ]
     }
 
+    emr_role_policy_document = {
+        "Version": "2008-10-17",
+        "Statement": [
+            {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {"Service": "elasticmapreduce.amazonaws.com.cn"},
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
+
     def test_default_roles_exist(self):
         cmdline = self.prefix
 
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(len(self.operations_called), 3)
 
         self.assertEqual(self.operations_called[0][0].name, 'GetRole')
         self.assertEqual(self.operations_called[0][1]['RoleName'],
@@ -104,6 +117,9 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                          'GetInstanceProfile')
         self.assertEqual(self.operations_called[1][1]['InstanceProfileName'],
                          EC2_ROLE_NAME)
+        self.assertEqual(self.operations_called[2][0].name, 'GetRole')
+        self.assertEqual(self.operations_called[2][1]['RoleName'],
+                         EMR_ROLE_NAME)
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._construct_result')
@@ -121,9 +137,9 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
         cmdline = self.prefix + ' --region cn-north-1'
         self.run_cmd(cmdline, expected_rc=0)
 
-        # Only 4 operations will be called as we are mocking
+        # Only 6 operations will be called as we are mocking
         # _check_if_role_exists and _check_if_instance_profile_exists methods.
-        self.assertEqual(len(self.operations_called), 4)
+        self.assertEqual(len(self.operations_called), 6)
 
         self.assertEqual(self.operations_called[0][0].name, 'CreateRole')
         self.assertEqual(self.operations_called[0][1]['RoleName'],
@@ -152,6 +168,19 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                          EC2_ROLE_NAME)
         self.assertEqual(self.operations_called[3][1]['RoleName'],
                          EC2_ROLE_NAME)
+
+        self.assertEqual(self.operations_called[4][0].name, 'CreateRole')
+        self.assertEqual(self.operations_called[4][1]['RoleName'],
+                         EMR_ROLE_NAME)
+        self.assertEqual(
+            self.operations_called[4][1]['AssumeRolePolicyDocument'],
+            emrutils.dict_to_string(self.emr_role_policy_document))
+
+        self.assertEqual(self.operations_called[5][0].name, 'PutRolePolicy')
+        self.assertEqual(self.operations_called[5][1]['PolicyName'],
+                         EMR_ROLE_NAME)
+        self.assertEqual(self.operations_called[5][1]['RoleName'],
+                         EMR_ROLE_NAME)
 
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._construct_result')

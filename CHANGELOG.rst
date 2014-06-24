@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.3.19
+======
+
+* feature:``aws ses``: Add support for delivery notifications
+* bugfix:Region Config: Fix issue for ``cn-north-1`` region
+  (`issue botocore 314 <https://github.com/boto/botocore/pull/314>`__)
+* bugfix:Amazon EC2 Credential File: Fix regression for parsing
+  EC2 credential file
+  (`issue botocore 315 <https://github.com/boto/botocore/pull/315>`__)
+* bugfix:Signature Version 2: Fix timestamp format when calculating
+  signature version 2 signatures
+  (`issue botocore 308 <https://github.com/boto/botocore/pull/308>`__)
+
+
 1.3.18
 ======
 

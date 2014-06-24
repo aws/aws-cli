@@ -50,7 +50,7 @@ DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=TASK,Name=TASK,'
     'InstanceCount=1,InstanceType=m1.large ')
 
-DEFAULT_CMD = 'emr create-cluster --auto-terminate --ami-version 3.0.4 --instance-groups ' + \
+DEFAULT_CMD = 'emr create-cluster --auto-terminate --ami-version 3.0.4 --use-default-roles --instance-groups ' + \
     DEFAULT_INSTANCE_GROUPS_ARG
 
 DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': False,
@@ -58,12 +58,17 @@ DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': False,
                      'InstanceGroups': DEFAULT_INSTANCE_GROUPS
                      }
 
+EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
+EMR_ROLE_NAME = "EMR_DefaultRole"
+
 DEFAULT_RESULT = \
     {
         'Name': DEFAULT_CLUSTER_NAME,
         'Instances': DEFAULT_INSTANCES,
         'AmiVersion': '3.0.4',
         'VisibleToAllUsers': False,
+        'JobFlowRole': EC2_ROLE_NAME,
+        'ServiceRole': EMR_ROLE_NAME,
         'Tags': []
     }
 
@@ -145,6 +150,17 @@ INSTALL_MAPR_PRODUCT = {
     'Name': 'mapr',
     'Args': ['--edition', 'm5', '--version', '3.0.2']
 }
+
+INSTALL_SUPPORTED_PRODUCTS = [
+    {
+        'Name': 'hue',
+        'Args': ['--hue-config', 's3://elasticmapreduce/hue-config']
+    },
+    {
+        'Name': 'mapr',
+        'Args': ['--edition', 'm7']
+    }
+]
 
 CUSTOM_JAR_STEP = {
     'Name': 'Custom JAR',
@@ -275,6 +291,29 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_default_cmd(self):
         self.assert_params_for_cmd(DEFAULT_CMD, DEFAULT_RESULT)
 
+    def test_cluster_with_out_service_role_and_instance_profile(self):
+        cmd = ('emr create-cluster --auto-terminate --ami-version 3.0.4'
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = copy.deepcopy(DEFAULT_RESULT)
+        del result['JobFlowRole']
+        del result['ServiceRole']
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_cluster_with_service_role_and_instance_profile(self):
+        cmd = ('emr create-cluster --auto-terminate --ami-version 3.0.4'
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +
+               ' --service-role ServiceRole --ec2-attributes '
+               'InstanceProfile=Ec2_InstanceProfile')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['JobFlowRole'] = 'Ec2_InstanceProfile'
+        result['ServiceRole'] = 'ServiceRole'
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_cluster_default_roles_overrides(self):
+        cmd = (DEFAULT_CMD + '--service-role ServiceRole '
+               '--ec2-attributes InstanceProfile=Ec2_InstanceProfile')
+        self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
+
     def test_cluster_name_no_space(self):
         cmd = DEFAULT_CMD + '--name MyCluster'
         result = copy.deepcopy(DEFAULT_RESULT)
@@ -308,7 +347,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     def test_no_auto_terminte(self):
-        cmd = ('emr create-cluster --ami-version 3.0.4 --no-auto-terminate' +
+        cmd = ('emr create-cluster --use-default-roles --ami-version 3.0.4 '
+               '--no-auto-terminate' +
                ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = copy.deepcopy(DEFAULT_RESULT)
         instances = copy.deepcopy(DEFAULT_INSTANCES)
@@ -326,7 +366,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assertEquals(expected_error_msg, result[1])
 
     def test_missing_auto_terminate_or_no_auto_terminate(self):
-        cmd = (self.prefix + '--ami-version 3.0.4 --instance-groups ' +
+        cmd = (self.prefix + '--use-default-roles --ami-version 3.0.4 '
+               '--instance-groups ' +
                DEFAULT_INSTANCE_GROUPS_ARG)
         expected_error_msg = (
             '\naws: error: Must specify one of the following boolean options:'
@@ -419,7 +460,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_default_name_market(self):
         cmd = (
-            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--auto-terminate '
             '--instance-groups '
             'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large '
             'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large '
@@ -428,7 +470,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_instance_group_type_mismatch_cases(self):
         cmd = (
-            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--auto-terminate '
             '--instance-groups '
             'Name=MASTER,InstanceGroupType=MaSter,InstanceCount=1,'
             'InstanceType=m1.large Name=CORE,InstanceGroupType=cORE,'
@@ -438,7 +481,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = (
-            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--auto-terminate '
             '--instance-groups '
             'Name=Master,InstanceCount=1,InstanceType=m1.small')
         expect_error_msg = (
@@ -449,7 +493,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_missing_instance_type_error(self):
         cmd = (
-            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--auto-terminate '
             '--instance-groups '
             'Name=Master,InstanceGroupType=MASTER,InstanceCount=1')
         expect_error_msg = (
@@ -460,7 +505,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_instance_groups_missing_instance_count_error(self):
         cmd = (
-            'emr create-cluster --ami-version 3.0.4 --auto-terminate '
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--auto-terminate '
             '--instance-groups '
             'Name=Master,InstanceGroupType=MASTER,InstanceType=m1.xlarge')
         expect_error_msg = (
@@ -472,7 +518,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_instance_groups_from_json_file(self):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_instance_groups.json')
-        cmd = ('emr create-cluster --ami-version 3.0.4  --auto-terminate '
+        cmd = ('emr create-cluster --use-default-roles --ami-version 3.0.4  '
+               '--auto-terminate '
                '--instance-groups file://' + data_path)
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['InstanceGroups'] = \
@@ -502,11 +549,11 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_ec2_attributes_no_az(self):
         cmd = DEFAULT_CMD + (
             '--ec2-attributes KeyName=testkey,SubnetId=subnet-123456,'
-            'InstanceProfile=aws-emr-ec2-role')
+            'InstanceProfile=EMR_EC2_DefaultRole')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['Ec2KeyName'] = 'testkey'
         result['Instances']['Ec2SubnetId'] = 'subnet-123456'
-        result['JobFlowRole'] = 'aws-emr-ec2-role'
+        result['JobFlowRole'] = 'EMR_EC2_DefaultRole'
         self.assert_params_for_cmd(cmd, result)
 
     def test_ec2_attributes_az(self):
@@ -696,6 +743,26 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--applications Name=mapr,Args=--edition,m5,--version,3.0.2'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['NewSupportedProducts'] = [INSTALL_MAPR_PRODUCT]
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_install_mapr_without_args(self):
+        cmd = DEFAULT_CMD + \
+            '--applications Name=mapr'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['NewSupportedProducts'] =  \
+            [
+                {'Name': 'mapr',
+                 'Args': []}
+            ]
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_supported_products(self):
+        cmd = DEFAULT_CMD + (
+            '--applications '
+            'Name=hue,Args=--hue-config,s3://elasticmapreduce/hue-config '
+            'Name=mapr,Args=--edition,m7')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['NewSupportedProducts'] = INSTALL_SUPPORTED_PRODUCTS
         self.assert_params_for_cmd(cmd, result)
 
     def test_applications_all_types(self):

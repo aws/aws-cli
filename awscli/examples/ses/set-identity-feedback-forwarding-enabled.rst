@@ -1,10 +1,12 @@
-**To enable or disable email feedback forwarding for an Amazon SES verified identity**
+**To enable or disable bounce and complaint email feedback forwarding for an Amazon SES verified identity**
 
-The following example uses the ``set-identity-feedback-forwarding-enabled`` command to enable a verified email address to receive feedback notifications by email::
+The following example uses the ``set-identity-feedback-forwarding-enabled`` command to enable a verified email address to receive bounce and complaint notifications by email::
 
     aws ses set-identity-feedback-forwarding-enabled --identity user@example.com --forwarding-enabled
 
-For more information about feedback notifications, see `Bounce and Complaint Notifications in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
+You are required to receive bounce and complaint notifications via either Amazon SNS or email feedback forwarding, so you can only disable email feedback forwarding if you select an Amazon SNS topic for both bounce and complaint notifications.
 
-.. _`Bounce and Complaint Notifications in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/bounce-complaint-notifications.html
+For more information about notifications, see `Using Notifications With Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
+
+.. _`Using Notifications With Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/notifications.html
 

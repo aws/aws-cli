@@ -27,7 +27,7 @@ class InstallApplications(BasicCommand):
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID},
-        {'name': 'apps', 'required': True,
+        {'name': 'applications', 'required': True,
          'help_text': helptext.INSTALL_APPLICATIONS,
          'schema': argumentschema.APPLICATIONS_SCHEMA},
     ]
@@ -38,9 +38,9 @@ class InstallApplications(BasicCommand):
 
         parameters = {'JobFlowId': parsed_args.cluster_id}
 
-        self._check_for_supported_apps(parsed_args.apps)
+        self._check_for_supported_apps(parsed_args.applications)
         parameters['Steps'] = applicationutils.build_applications(
-            parsed_args.apps, parsed_globals)[2]
+            parsed_args.applications, parsed_globals)[2]
 
         emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
                                            parameters, parsed_globals)

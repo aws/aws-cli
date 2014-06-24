@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.19
+======
 
 * feature:``aws ses``: Add support for delivery notifications
 * bugfix:Region Config: Fix issue for ``cn-north-1`` region

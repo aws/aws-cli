@@ -5,6 +5,7 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws ses``: Add support for delivery notifications
 * bugfix:Region Config: Fix issue for ``cn-north-1`` region
   (`issue botocore 314 <https://github.com/boto/botocore/pull/314>`__)
 * bugfix:Amazon EC2 Credential File: Fix regression for parsing

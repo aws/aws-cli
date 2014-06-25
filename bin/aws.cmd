@@ -1,7 +1,7 @@
 @echo OFF
 REM="""
 setlocal
-set PythonExe=
+set PythonExe=""
 set PythonExeFlags=
 
 for %%i in (cmd bat exe) do (
@@ -16,13 +16,13 @@ for /f "tokens=2 delims==" %%i in ('assoc .py') do (
         )
     )
 )
-"%PythonExe%" -x %PythonExeFlags% "%~f0" %*
+%PythonExe% -x %PythonExeFlags% "%~f0" %*
 goto :EOF
 
 :SetPythonExe
-if not [%1]==[""] (
-    if ["%PythonExe%"]==[""] (
-        set PythonExe=%~1
+if not ["%~1"]==[""] (
+    if [%PythonExe%]==[""] (
+        set PythonExe="%~1"
     )
 )
 goto :EOF

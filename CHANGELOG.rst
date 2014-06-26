@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws cloudsearchdomain``: Add support for the
+  Amazon CloudSearch Domain command.
+* feature:``aws cloudfront``: Update the Amazon CloudFront
+  command to the latest version
+
+
 1.3.19
 ======
 

@@ -291,7 +291,14 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         captured_stdout = six.StringIO()
         with mock.patch('sys.stderr', captured_stderr):
             with mock.patch('sys.stdout', captured_stdout):
-                rc = self.driver.main(cmdlist)
+                try:
+                    rc = self.driver.main(cmdlist)
+                except SystemExit as e:
+                    # We need to catch SystemExit so that we
+                    # can get a proper rc and still present the
+                    # stdout/stderr to the test runner so we can
+                    # figure out what went wrong.
+                    rc = e.code
         stderr = captured_stderr.getvalue()
         stdout = captured_stdout.getvalue()
         self.assertEqual(

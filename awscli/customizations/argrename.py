@@ -33,6 +33,7 @@ ARGUMENT_RENAMES = {
     'datapipeline.*.query': 'objects-query',
     'emr.*.job-flow-ids': 'cluster-ids',
     'emr.*.job-flow-id': 'cluster-id',
+    'cloudsearchdomain.search.query': 'search-query',
 }
 
 

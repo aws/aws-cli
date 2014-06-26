@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.20
+======
 
 * feature:``aws cloudsearchdomain``: Add support for the
   Amazon CloudSearch Domain command.

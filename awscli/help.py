@@ -114,7 +114,7 @@ class PosixHelpRenderer(HelpRenderer):
         # Since we're only dealing with POSIX systems, we can
         # ignore things like PATHEXT.
         return any([os.path.exists(os.path.join(p, name))
-                    for p in os.environ.get('PATH', []).split(os.pathsep)])
+                    for p in os.environ.get('PATH', '').split(os.pathsep)])
 
     def _popen(self, *args, **kwargs):
         return Popen(*args, **kwargs)

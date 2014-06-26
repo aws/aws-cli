@@ -186,8 +186,12 @@ class CLIDriver(object):
         parser = self._create_parser()
         command_table = self._get_command_table()
         parsed_args, remaining = parser.parse_known_args(args)
-        self._handle_top_level_args(parsed_args)
         try:
+            # Because _handle_top_level_args emits events, it's possible
+            # that exceptions can be raised, which should have the same
+            # general exception handling logic as calling into the
+            # command table.  This is why it's in the try/except clause.
+            self._handle_top_level_args(parsed_args)
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write(str(e) + '\n')

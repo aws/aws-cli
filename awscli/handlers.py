@@ -45,6 +45,7 @@ from awscli.customizations import datapipeline
 from awscli.customizations.globalargs import register_parse_global_args
 from awscli.customizations.cloudsearch import initialize as cloudsearch_init
 from awscli.customizations.emr.emr import emr_initialize
+from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
 
 
 def awscli_initialize(event_handlers):
@@ -92,3 +93,4 @@ def awscli_initialize(event_handlers):
     datapipeline.register_customizations(event_handlers)
     cloudsearch_init(event_handlers)
     emr_initialize(event_handlers)
+    register_cloudsearchdomain(event_handlers)

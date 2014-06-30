@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws opsworks``: Update the ``aws opsworks`` command
+  to the latest version
 * bugfix:Shorthand JSON: Fix bug where shorthand lists with
   a single item (e.g. ``--arg Param=[item]``) were not parsed
   correctly.

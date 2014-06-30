@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Text output: Fix bug when rendering only
+  scalars that are numbers in text output
+  (`issue 829 <https://github.com/aws/aws-cli/pull/829>`__)
 * bugfix:``aws cloudsearchdomain``: Fix bug where
   ``--endpoint-url`` is required even for ``help`` subcommands
   (`issue 828 <https://github.com/aws/aws-cli/pull/828>`__)

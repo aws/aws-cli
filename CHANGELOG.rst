@@ -5,6 +5,10 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Shorthand JSON: Fix bug where shorthand lists with
+  a single item (e.g. ``--arg Param=[item]``) were not parsed
+  correctly.
+  (`issue 830 <https://github.com/aws/aws-cli/pull/830>`__)
 * bugfix:``aws cloudsearchdomain``: Fix bug where
   ``--endpoint-url`` is required even for ``help`` subcommands
   (`issue 828 <https://github.com/aws/aws-cli/pull/828>`__)

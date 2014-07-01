@@ -61,6 +61,15 @@ class TestSection(unittest.TestCase):
             'ZOO\t0\t1\t2\n'
         )
 
+    def test_single_scalar_number(self):
+        self.assert_text_renders_to(10, '10\n')
+
+    def test_list_of_single_number(self):
+        self.assert_text_renders_to([10], '10\n')
+
+    def test_list_of_multiple_numbers(self):
+        self.assert_text_renders_to([10, 10, 10], '10\t10\t10\n')
+
     def test_different_keys_in_sublists(self):
         self.assert_text_renders_to(
             #                                missing "b"        adds "d"

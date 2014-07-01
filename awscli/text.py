@@ -25,7 +25,7 @@ def _format_text(item, stream, identifier=None, scalar_keys=None):
     else:
         # If it's not a list or a dict, we just write the scalar
         # value out directly.
-        stream.write(item)
+        stream.write(six.text_type(item))
         stream.write('\n')
 
 

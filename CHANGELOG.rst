@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.3.21
+======
+
+* feature:``aws opsworks``: Update the ``aws opsworks`` command
+  to the latest version
+* bugfix:Shorthand JSON: Fix bug where shorthand lists with
+  a single item (e.g. ``--arg Param=[item]``) were not parsed
+  correctly.
+  (`issue 830 <https://github.com/aws/aws-cli/pull/830>`__)
+* bugfix:Text output: Fix bug when rendering only
+  scalars that are numbers in text output
+  (`issue 829 <https://github.com/aws/aws-cli/pull/829>`__)
+* bugfix:``aws cloudsearchdomain``: Fix bug where
+  ``--endpoint-url`` is required even for ``help`` subcommands
+  (`issue 828 <https://github.com/aws/aws-cli/pull/828>`__)
+
+
 1.3.20
 ======
 

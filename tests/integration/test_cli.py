@@ -76,6 +76,23 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 1, p.stderr)
         self.assertIn('get-object', p.stdout)
 
+    def test_service_help_with_required_option(self):
+        # In cloudsearchdomain, the --endpoint-url is required.
+        # We want to make sure if you're just getting help tex
+        # that we don't trigger that validation.
+        p = aws('cloudsearchdomain help')
+        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertIn('cloudsearchdomain', p.stdout)
+        # And nothing on stderr about missing options.
+        self.assertEqual(p.stderr, '')
+
+    def test_operation_help_with_required_option(self):
+        p = aws('cloudsearchdomain search help')
+        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertIn('search', p.stdout)
+        # And nothing on stderr about missing options.
+        self.assertEqual(p.stderr, '')
+
     def test_help_with_warning_blocks(self):
         p = aws('elastictranscoder create-pipeline help')
         self.assertEqual(p.rc, 1, p.stderr)

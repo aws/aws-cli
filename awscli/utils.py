@@ -45,7 +45,11 @@ def _split_with_quotes(value):
         if list_start >= 0 and value.find(']') != -1 and \
            (quote_char is None or part.find(quote_char) > list_start):
             # This is a list, eat all the items until the end
-            new_chunk = _eat_items(value, iter_parts, part, ']')
+            if ']' in part:
+                # Short circuit for only one item
+                new_chunk = part
+            else:
+                new_chunk = _eat_items(value, iter_parts, part, ']')
             list_items = _split_with_quotes(new_chunk[list_start + 2:-1])
             new_chunk = new_chunk[:list_start + 1] + ','.join(list_items)
             new_parts.append(new_chunk)

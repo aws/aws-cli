@@ -19,11 +19,11 @@ This module customizes the cloudsearchdomain command:
 """
 
 def register_cloudsearchdomain(cli):
-    cli.register('top-level-args-parsed', validate_endpoint_url)
+    cli.register('operation-args-parsed.cloudsearchdomain',
+                 validate_endpoint_url)
 
 
-def validate_endpoint_url(parsed_args, **kwargs):
-    if parsed_args.command == 'cloudsearchdomain' and \
-            parsed_args.endpoint_url is None:
+def validate_endpoint_url(parsed_globals, **kwargs):
+    if parsed_globals.endpoint_url is None:
         raise ValueError(
             "--endpoint-url is required for cloudsearchdomain commands")

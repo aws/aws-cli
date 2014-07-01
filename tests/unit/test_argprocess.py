@@ -220,12 +220,18 @@ class TestParamShorthand(BaseArgProcessTest):
             {"Name": "foo",
              "Args": ["a", "k1=v1", "b"]},
             {"Name": "bar",
-             "Args": ["baz"]}
+             "Args": ["baz"]},
+            {"Name": "single_kv",
+             "Args": ["key=value"]},
+            {"Name": "single_v",
+             "Args": ["value"]}
         ]
 
         simplified = self.simplify(p, [
             "Name=foo,Args=[a,k1=v1,b]",
-            "Name=bar,Args=baz"
+            "Name=bar,Args=baz",
+            "Name=single_kv,Args=[key=value]",
+            "Name=single_v,Args=[value]"
         ])
 
         self.assertEqual(simplified, expected)

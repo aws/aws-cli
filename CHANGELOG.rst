@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.3.21
+======
 
 * feature:``aws opsworks``: Update the ``aws opsworks`` command
   to the latest version

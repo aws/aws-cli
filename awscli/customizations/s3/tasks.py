@@ -560,10 +560,10 @@ class MultipartUploadContext(object):
 
     def wait_for_upload_id(self):
         with self._upload_id_condition:
-            while self._upload_id is None:
-                if self._state == self._CANCELLED:
-                    raise UploadCancelledError("Upload has been cancelled.")
-                self._upload_id_condition.wait(timeout=1)
+            while self._upload_id is None and self._state != self._CANCELLED:
+               self._upload_id_condition.wait(timeout=1)
+            if self._state == self._CANCELLED:
+               raise UploadCancelledError("Upload has been cancelled.")
             return self._upload_id
 
     def wait_for_completion(self):

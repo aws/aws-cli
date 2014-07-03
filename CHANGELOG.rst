@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+
+* bugfix:``aws s3/s3api``: Fix issue where ``--endpoint-url``
+  wasn't being used for ``aws s3/s3api`` commands
+  (`issue 549 <https://github.com/aws/aws-cli/issues/549>`__)
+
+
 1.3.21
 ======
 

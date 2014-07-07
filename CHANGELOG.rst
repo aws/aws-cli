@@ -13,6 +13,9 @@ Next Release (TBD)
   command to move a large file onto itself results in the
   file being deleted
   (`issue 831 <https://github.com/aws/aws-cli/issues/831>`__)
+* bugfix:``aws s3``: Fix issue where parts in a multipart
+  upload are stil being uploaded when a part has failed
+  (`issue 834 <https://github.com/aws/aws-cli/issues/834>`__)
 
 
 1.3.21

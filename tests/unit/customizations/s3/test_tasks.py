@@ -223,6 +223,26 @@ class TestMultipartUploadContext(unittest.TestCase):
         with self.assertRaises(UploadCancelledError):
             self.context.wait_for_parts_to_finish()
 
+    def test_cancel_after_upload_id(self):
+        # We want have a thread waiting for the upload id.
+        upload_part_thread = threading.Thread(target=self.upload_part,
+                                              args=(1,))
+        self.start_thread(upload_part_thread)
+
+        # We announce the upload id.
+        self.create_upload('my_upload_id')
+        # The upload_part thread can now proceed,
+        # now, let's cancel this upload.
+        self.context.cancel_upload()
+
+        # The upload_part_thread should be finished.
+        self.join_threads()
+
+        # In a cancelled multipart upload task any subsequent
+        # call to wait_for_upload_id must raise an UploadCancelledError
+        with self.assertRaises(UploadCancelledError):
+            self.context.wait_for_upload_id()
+
     def test_cancel_threads_waiting_for_completion(self):
         # So we have a thread waiting for the entire upload to complete.
         arbitrary_waiting_thread = threading.Thread(target=self.wait_for_upload_complete)

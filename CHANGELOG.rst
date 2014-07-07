@@ -16,6 +16,9 @@ Next Release (TBD)
 * bugfix:``aws s3``: Fix issue where parts in a multipart
   upload are stil being uploaded when a part has failed
   (`issue 834 <https://github.com/aws/aws-cli/issues/834>`__)
+* bugfix:Windows: Fix issue where ``python.exe`` is on a path
+  that contains spaces
+  (`issue 825 <https://github.com/aws/aws-cli/pull/825>`__)
 
 
 1.3.21

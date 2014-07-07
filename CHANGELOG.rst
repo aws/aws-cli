@@ -12,6 +12,10 @@ Next Release (TBD)
 1.3.21
 ======
 
+* bugfix:``aws s3 mv``: Fix bug where using the ``aws s3 mv``
+  command to move a large file onto itself results in the
+  file being deleted
+  (`issue 831 <https://github.com/aws/aws-cli/issues/831>`__)
 * feature:``aws opsworks``: Update the ``aws opsworks`` command
   to the latest version
 * bugfix:Shorthand JSON: Fix bug where shorthand lists with

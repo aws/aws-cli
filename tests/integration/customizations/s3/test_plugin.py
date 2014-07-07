@@ -247,6 +247,27 @@ class TestMoveCommand(BaseS3CLICommand):
         p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
         self.assertEqual(p.rc, 1)
 
+    def test_cant_move_file_onto_itself_small_file(self):
+        # We don't even need a remote file in this case.  We can
+        # immediately validate that we can't move a file onto itself.
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, key_name='key.txt', contents='foo')
+        p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' % (bucket_name, bucket_name))
+        self.assertEqual(p.rc, 255)
+        self.assertIn('Cannot mv a file onto itself', p.stderr)
+
+    def test_cant_move_large_file_onto_itself(self):
+        # At the API level, you can multipart copy an object onto itself,
+        # but a mv command doesn't make sense because a mv is just a
+        # cp + an rm of the src file.  We should be consistent and
+        # not allow large files to be mv'd onto themselves.
+        file_contents = six.BytesIO(b'a' * (1024 * 1024 * 10))
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, key_name='key.txt', contents=file_contents)
+        p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' % (bucket_name, bucket_name))
+        self.assertEqual(p.rc, 255)
+        self.assertIn('Cannot mv a file onto itself', p.stderr)
+
 
 class TestRm(BaseS3CLICommand):
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],

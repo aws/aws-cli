@@ -3,9 +3,18 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.3.22
+======
 
+* feature:``aws cwlogs``: Add support for Amazon CloudWatch Logs
+* feature:``aws cognito-sync``: Add support for
+  Amazon Cognito Service
+* feature:``aws cognito-identity``: Add support for
+  Amazon Cognito Identity Service
+* feature:``aws route53``: Update ``aws route53`` command to the
+  latest version
+* feature:``aws ec2``: Update ``aws ec2`` command to the
+  latest version
 * bugfix:``aws s3/s3api``: Fix issue where ``--endpoint-url``
   wasn't being used for ``aws s3/s3api`` commands
   (`issue 549 <https://github.com/aws/aws-cli/issues/549>`__)

@@ -662,6 +662,23 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+        self._validate_path_args()
+
+    def _validate_path_args(self):
+        # If we're using a mv command, you can't copy the object onto itself.
+        params = self.parameters
+        if self.cmd == 'mv' and self._same_path(params['src'], params['dest']):
+            raise ValueError("Cannot mv a file onto itself: '%s' - '%s'" % (
+                params['src'], params['dest']))
+
+    def _same_path(self, src, dest):
+        if not self.parameters['paths_type'] == 's3s3':
+            return False
+        elif src == dest:
+            return True
+        elif dest.endswith('/'):
+            src_base = os.path.basename(src)
+            return src == os.path.join(dest, src_base)
 
     def _normalize_s3_trailing_slash(self, paths):
         for i, path in enumerate(paths):

@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.3.22
+======
 
 * feature:``aws cwlogs``: Add support for Amazon CloudWatch Logs
 * feature:``aws cognito-sync``: Add support for

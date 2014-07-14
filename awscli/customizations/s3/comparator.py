@@ -38,6 +38,10 @@ class Comparator(object):
         if 'size_only' in params:
             self.compare_on_size_only = params['size_only']
 
+        self.compare_on_time_only = False
+        if 'time_only' in params:
+            self.compare_on_time_only = params['time_only']
+
     def call(self, src_files, dest_files):
         """
         This function preforms the actual comparisons.  The parameters it takes
@@ -101,16 +105,20 @@ class Comparator(object):
                 dest_take = True
 
                 compare_keys = self.compare_comp_key(src_file, dest_file)
-
                 if compare_keys == 'equal':
                     same_size = self.compare_size(src_file, dest_file)
-                    same_last_modified_time = self.compare_time(src_file, dest_file)
+                    if self.compare_on_time_only:
+                        same_last_modified_time = self.compare_time_only(src_file, dest_file)
+                    else:
+                        same_last_modified_time = self.compare_time(src_file, dest_file)
+
 
                     if self.compare_on_size_only:
                         should_sync = not same_size
+                    elif self.compare_on_time_only:
+                        should_sync = same_last_modified_time
                     else:
                         should_sync = (not same_size) or (not same_last_modified_time)
-
                     if should_sync:
                         LOG.debug("syncing: %s -> %s, size_changed: %s, "
                                   "last_modified_time_changed: %s",
@@ -188,6 +196,7 @@ class Comparator(object):
         dest_time = dest_file.last_update
         delta = dest_time - src_time
         cmd = src_file.operation_name
+
         if cmd == "upload" or cmd == "copy":
             if total_seconds(delta) >= 0:
                 # Destination is newer than source.
@@ -199,6 +208,35 @@ class Comparator(object):
                 return False
         elif cmd == "download":
             if total_seconds(delta) <= 0:
+                return True
+            else:
+                # delta is positive, so the destination
+                # is newer than the source.
+                return False
+
+    def compare_time_only(self, src_file, dest_file):
+        """
+        :returns: True if the file does not need updating based on time of
+            last modification and type of operation.
+            False if the file does need updating based on the time of
+            last modification and type of operation.
+        """
+        src_time = src_file.last_update
+        dest_time = dest_file.last_update
+        delta = dest_time - src_time
+        cmd = src_file.operation_name
+
+        if cmd == "upload" or cmd == "copy":
+            if total_seconds(delta) >= 0:
+                # Destination is newer than source.
+                return True
+            else:
+                # Destination is older than source, so
+                # we have a more recently updated file
+                # at the source location.
+                return False
+        elif cmd == "download":
+            if total_seconds(delta) < 0:
                 return True
             else:
                 # delta is positive, so the destination

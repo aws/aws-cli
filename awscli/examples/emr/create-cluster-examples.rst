@@ -9,7 +9,7 @@
 - Command::
 
     aws emr create-cluster --ami-version 3.1.0 --service-role EMR_DefaultRole --ec2-attributes InstanceProfiles=EC2_EMR_DefaultRoles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
-    
+
 **3. Create an Amazon EMR cluster with default roles
 
 - Command::
@@ -20,31 +20,31 @@
 
 - Command::
 
-	aws emr create-cluster --ami-version 3.1.0 --auto-terminate --instance-groups Name=Master,InstanceGroupType=MASTER,InstanceType=m3.xlarge,InstanceCount=1 Name=Core,InstanceGroupType=CORE,InstanceType=m3.xlarge,InstanceCount=2 Name=Task,InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2
+    aws emr create-cluster --ami-version 3.1.0 --auto-terminate --instance-groups Name=Master,InstanceGroupType=MASTER,InstanceType=m3.xlarge,InstanceCount=1 Name=Core,InstanceGroupType=CORE,InstanceType=m3.xlarge,InstanceCount=2 Name=Task,InstanceGroupType=TASK,InstanceType=m3.xlarge,InstanceCount=2
 
 **5. Specify whether the cluster should terminate after completing all the steps**
 
 - Create an Amazon EMR cluster that will terminate after completing all the steps::
 
-	aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - Create an Amazon EMR cluster that will NOT terminate after completing all the steps::
 
-	aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --no-auto-terminate
+    aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --no-auto-terminate
 
 **6. Specify EC2 Attributes**
 
 - Create an Amazon EMR cluster with Amazon EC2 Key Pair "myKey" and instance profile "myProfile"::
 
-	aws emr create-cluster --ec2-attributes KeyName=myKey,InstanceProfile=myRole --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --ec2-attributes KeyName=myKey,InstanceProfile=myRole --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - Create an Amazon EMR cluster in an Amazon VPC subnet::
 
-	aws emr create-cluster --ec2-attributes SubnetId=subnet-xxxxx --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --ec2-attributes SubnetId=subnet-xxxxx --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - Create an Amazon EMR cluster in an AvailabilityZone. For example, us-west-1b::
 
-	aws emr create-cluster --ec2-attributes AvailabilityZone=us-west-1b --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --ec2-attributes AvailabilityZone=us-west-1b --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 **7. Enable debugging and specify a Log URI**
 
@@ -56,7 +56,7 @@
 
 - Add a list of tags::
 
-	aws emr create-cluster --tags name="John Doe" age=29 address="123 East NW Seattle" --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --tags name="John Doe" age=29 address="123 East NW Seattle" --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - List tags of an Amazon EMR cluster::
 
@@ -66,7 +66,7 @@
 
 - Command::
 
-	aws emr create-cluster --bootstrap-actions Path=s3://mybucket/myscript1,Name=BootstrapAction1,Args=[arg1,arg2] Path=s3://mybucket/myscript2,Name=BootstrapAction2,Args=[arg1,arg2] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --bootstrap-actions Path=s3://mybucket/myscript1,Name=BootstrapAction1,Args=[arg1,arg2] Path=s3://mybucket/myscript2,Name=BootstrapAction2,Args=[arg1,arg2] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - The following example changes the maximum number of map tasks and sets the NameNode heap size::
 
@@ -76,7 +76,7 @@
 
 - Create an Amazon EMR cluster with Hive, Pig, HBase, Ganglia, and Impala installed::
 
-	aws emr create-cluster --applications Name=Hive Name=Pig Name=HBase Name=Ganglia Name=Impala,Args=[IMPALA_BACKEND_PORT=22001,IMPALA_MEM_LIMIT=70%] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --applications Name=Hive Name=Pig Name=HBase Name=Ganglia Name=Impala,Args=[IMPALA_BACKEND_PORT=22001,IMPALA_MEM_LIMIT=70%] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - Create an Amazon EMR cluster with Hive and Pig installed::
 
@@ -109,7 +109,7 @@
 **13. To add Streaming steps when creating an Amazon EMR cluster**
 
 - Command::
- 
+
     aws emr create-cluster --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=-mapper,mymapper,-reducer,myreducer,-input,myinput,-output,myoutput Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=--files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - Streaming steps required parameters::

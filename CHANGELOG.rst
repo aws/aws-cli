@@ -3,6 +3,14 @@ CHANGELOG
 =========
 
 
+Next Release (TBD)
+==================
+
+* feature:``aws s3 sync``: Add an ``--exact-timestamps`` option
+  to the ``aws s3 sync`` command
+  (`issue 824 <https://github.com/aws/aws-cli/pull/824>`__)
+
+
 1.3.22
 ======
 

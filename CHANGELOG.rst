@@ -3,6 +3,23 @@ CHANGELOG
 =========
 
 
+1.3.23
+======
+
+* feature:``aws support``: Update ``aws support`` command to
+  the latest version
+* feature:``aws iam``: Update ``aws iam`` command to the latest
+  version
+* feature:``aws emr``: Add ``--hive-site`` option to
+  ``aws emr create-cluster`` and ``aws emr install-application`` commands
+* feature:``aws s3 sync``: Add an ``--exact-timestamps`` option
+  to the ``aws s3 sync`` command
+  (`issue 824 <https://github.com/aws/aws-cli/pull/824>`__)
+* bugfix:``aws ec2 copy-snapshot``: Fix bug when spaces in
+  the description caused the copy request to fail
+  (`issue botocore 321 <https://github.com/boto/botocore/pull/321>`__)
+
+
 1.3.22
 ======
 

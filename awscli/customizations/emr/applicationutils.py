@@ -33,9 +33,19 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
             if hive_version is None:
                 hive_version = constants.LATEST
             step_list.append(
-                emrutils.build_hive_install_step(
+                _build_install_hive_step(
                     region=parsed_globals.region,
                     version=hive_version))
+            args = app_config.get('Args')
+            if args is not None:
+                hive_site_path = _find_matching_arg(
+                    key=constants.HIVE_SITE_KEY, args_list=args)
+                if hive_site_path is not None:
+                    step_list.append(
+                        _build_install_hive_site_step(
+                            region=parsed_globals.region,
+                            version=hive_version,
+                            hive_site_path=hive_site_path))
         elif app_name == constants.PIG:
             pig_version = app_config.get('Version')
             if pig_version is None:
@@ -123,3 +133,46 @@ def build_impala_install_bootstrap_action(region, version, args=None):
             relative_path=constants.IMPALA_INSTALL_PATH,
             region=region),
         args=args_list)
+
+
+def _build_install_hive_step(region, version,
+                             action_on_failure=constants.TERMINATE_CLUSTER):
+    step_args = [
+        emrutils.build_s3_link(constants.HIVE_SCRIPT_PATH, region),
+        constants.INSTALL_HIVE_ARG,
+        constants.BASE_PATH_ARG,
+        emrutils.build_s3_link(constants.HIVE_BASE_PATH),
+        constants.HIVE_VERSIONS,
+        version]
+    step = emrutils.build_step(
+        name=constants.INSTALL_HIVE_NAME,
+        action_on_failure=action_on_failure,
+        jar=emrutils.build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
+        args=step_args)
+    return step
+
+
+def _build_install_hive_site_step(region, version, hive_site_path,
+                                  action_on_failure=constants.CANCEL_AND_WAIT):
+    step_args = [
+        emrutils.build_s3_link(constants.HIVE_SCRIPT_PATH, region),
+        constants.BASE_PATH_ARG,
+        emrutils.build_s3_link(constants.HIVE_BASE_PATH),
+        constants.INSTALL_HIVE_SITE_ARG,
+        hive_site_path,
+        constants.HIVE_VERSIONS,
+        version]
+    step = emrutils.build_step(
+        name=constants.INSTALL_HIVE_SITE_NAME,
+        action_on_failure=action_on_failure,
+        jar=emrutils.build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
+        args=step_args)
+    return step
+
+
+def _find_matching_arg(key, args_list):
+    for arg in args_list:
+        if key in arg:
+            return arg
+
+    return None

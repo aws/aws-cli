@@ -129,14 +129,15 @@ def build_bootstrap_action(
     return ba_config
 
 
-def build_s3_link(relative_path='', region=None):
-    if region and region != 'us-east-1':
-        return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
-    else:
-        return 's3://elasticmapreduce{0}'.format(relative_path)
+def build_s3_link(relative_path='', region='us-east-1'):
+    if region is None:
+        region = 'us-east-1'
+    return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
 
 
-def get_script_runner(region=None):
+def get_script_runner(region='us-east-1'):
+    if region is None:
+        region = 'us-east-1'
     return build_s3_link(
         relative_path=constants.SCRIPT_RUNNER_PATH, region=region)
 
@@ -158,23 +159,6 @@ def build_pig_install_step(region, version,
         version]
     step = build_step(
         name=constants.INSTALL_PIG_NAME,
-        action_on_failure=action_on_failure,
-        jar=build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
-        args=step_args)
-    return step
-
-
-def build_hive_install_step(region, version,
-                            action_on_failure=constants.TERMINATE_CLUSTER):
-    step_args = [
-        build_s3_link(constants.HIVE_SCRIPT_PATH, region),
-        constants.INSTALL_HIVE_ARG,
-        constants.BASE_PATH_ARG,
-        build_s3_link(constants.HIVE_BASE_PATH),
-        constants.HIVE_VERSIONS,
-        version]
-    step = build_step(
-        name=constants.INSTALL_HIVE_NAME,
         action_on_failure=action_on_failure,
         jar=build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
         args=step_args)

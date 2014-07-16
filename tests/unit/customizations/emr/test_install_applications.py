@@ -18,23 +18,43 @@ import copy
 
 INSTALL_HIVE_STEP = {
     'HadoopJarStep': {
-        'Args': ['s3://elasticmapreduce/libs/hive/hive-script',
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
                  '--install-hive', '--base-path',
-                 's3://elasticmapreduce/libs/hive',
+                 's3://us-east-1.elasticmapreduce/libs/hive',
                  '--hive-versions', 'latest'],
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
     },
     'Name': 'Install Hive',
     'ActionOnFailure': 'TERMINATE_CLUSTER'
 }
 
+INSTALL_HIVE_SITE_STEP = {
+    'HadoopJarStep': {
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
+                 '--base-path',
+                 's3://us-east-1.elasticmapreduce/libs/hive',
+                 '--install-hive-site',
+                 '--hive-site=s3://test/hive-conf/hive-site.xml',
+                 '--hive-versions', 'latest'],
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
+    },
+    'Name': 'Install Hive Site Configuration',
+    'ActionOnFailure': 'CANCEL_AND_WAIT'
+}
+
 INSTALL_PIG_STEP = {
     'HadoopJarStep': {
-        'Args': ['s3://elasticmapreduce/libs/pig/pig-script',
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/pig/pig-script',
                  '--install-pig', '--base-path',
-                 's3://elasticmapreduce/libs/pig',
+                 's3://us-east-1.elasticmapreduce/libs/pig',
                  '--pig-versions', 'latest'],
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
     },
     'Name': 'Install Pig',
     'ActionOnFailure': 'TERMINATE_CLUSTER'
@@ -42,10 +62,11 @@ INSTALL_PIG_STEP = {
 
 
 class TestInstallApplications(BaseAWSCommandParamsTest):
-    prefix = 'emr install-applications --cluster-id j-ABC123456'
+    prefix = ('emr install-applications --cluster-id '
+              'j-ABC123456 --applications ')
 
     def test_intall_hive_with_version(self):
-        cmdline = self.prefix + ' --applications Name=Hive,Version=0.8.1.8'
+        cmdline = self.prefix + 'Name=Hive,Version=0.8.1.8'
 
         step = copy.deepcopy(INSTALL_HIVE_STEP)
         step['HadoopJarStep']['Args'][5] = '0.8.1.8'
@@ -53,8 +74,19 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         result = {'JobFlowId': 'j-ABC123456', 'Steps': [step]}
         self.assert_params_for_cmd(cmdline, result)
 
+    def test_install_hive_site(self):
+        cmdline = (self.prefix + 'Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
+        result = {'JobFlowId': 'j-ABC123456',
+                  'Steps': [INSTALL_HIVE_STEP, INSTALL_HIVE_SITE_STEP]
+                  }
+        self.assert_params_for_cmd(cmdline, result)
+        cmdline = (self.prefix + 'Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml,k1]')
+        self.assert_params_for_cmd(cmdline, result)
+
     def test_intall_pig_with_version(self):
-        cmdline = self.prefix + ' --applications Name=Pig,Version=0.9.2.1'
+        cmdline = self.prefix + 'Name=Pig,Version=0.9.2.1'
 
         step = copy.deepcopy(INSTALL_PIG_STEP)
         step['HadoopJarStep']['Args'][5] = '0.9.2.1'
@@ -63,15 +95,13 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_intall_hive_and_pig_without_version(self):
-        cmdline = self.prefix + ' --cluster-id j-ABC123456 --applications Name=Hive' +\
-            ' Name=Pig'
+        cmdline = self.prefix + 'Name=Hive Name=Pig'
         result = {'JobFlowId': 'j-ABC123456', 'Steps': [INSTALL_HIVE_STEP,
                                                         INSTALL_PIG_STEP]}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_install_impala_error(self):
-        cmdline = self.prefix + \
-            ' --cluster-id j-ABC123456 --applications Name=Impala'
+        cmdline = self.prefix + ' Name=Impala'
 
         expected_error_msg = "\naws: error: Impala cannot be installed on" +\
             " a running cluster. 'Name' should be one of the following:" +\
@@ -80,8 +110,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         self.assertEqual(result[1], expected_error_msg)
 
     def test_install_unknown_app_error(self):
-        cmdline = self.prefix + \
-            ' --cluster-id j-ABC123456 --applications Name=unknown'
+        cmdline = self.prefix + 'Name=unknown'
 
         expected_error_msg = "\naws: error: Unknown application: unknown." +\
             " 'Name' should be one of the following: HIVE, PIG, HBASE," +\

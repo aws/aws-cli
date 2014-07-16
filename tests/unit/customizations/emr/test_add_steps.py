@@ -45,9 +45,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         's3://elasticmapreduce/samples/hive-ads/libs/model-build.q'
 
     HIVE_DEFAULT_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        {'Jar':
+            ('s3://us-east-1.elasticmapreduce/'
+             'libs/script-runner/script-runner.jar'),
          'Args':
-            ['s3://elasticmapreduce/libs/hive/hive-script',
+            ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
              '--run-hive-script',
              '--hive-versions',
              'latest',
@@ -58,9 +60,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
          }
 
     HIVE_BASIC_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        {'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
          'Args':
-            ['s3://elasticmapreduce/libs/hive/hive-script',
+            ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
              '--run-hive-script',
              '--hive-versions',
              '0.11.0.1',
@@ -74,9 +78,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         's3://elasticmapreduce/samples/pig-apache/do-reports2.pig'
 
     PIG_DEFAULT_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        {'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
          'Args':
-            ['s3://elasticmapreduce/libs/pig/pig-script',
+            ['s3://us-east-1.elasticmapreduce/libs/pig/pig-script',
              '--run-pig-script',
              '--pig-versions',
              'latest',
@@ -87,9 +93,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              ]}
 
     PIG_BASIC_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        {'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
          'Args':
-            ['s3://elasticmapreduce/libs/pig/pig-script',
+            ['s3://us-east-1.elasticmapreduce/libs/pig/pig-script',
              '--run-pig-script',
              '--pig-versions',
              '0.11.1.0',
@@ -104,9 +112,11 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         '--console-output-path,s3://myimpala/output'
 
     IMPALA_BASIC_HADOOP_JAR_STEP = \
-        {'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        {'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
          'Args':
-            ['s3://elasticmapreduce/libs/impala/setup-impala',
+            ['s3://us-east-1.elasticmapreduce/libs/impala/setup-impala',
              '--run-impala-script',
              '--impala-script',
              's3://myimpala/input',

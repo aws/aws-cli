@@ -38,6 +38,10 @@ class Comparator(object):
         if 'size_only' in params:
             self.compare_on_size_only = params['size_only']
 
+        self.match_exact_timestamps = False
+        if 'exact_timestamps' in params:
+            self.match_exact_timestamps = params['exact_timestamps']
+
     def call(self, src_files, dest_files):
         """
         This function preforms the actual comparisons.  The parameters it takes
@@ -198,6 +202,11 @@ class Comparator(object):
                 # at the source location.
                 return False
         elif cmd == "download":
+            if self.match_exact_timestamps:
+                # An update is needed unless the
+                # timestamps match exactly.
+                return total_seconds(delta) == 0
+
             if total_seconds(delta) <= 0:
                 return True
             else:

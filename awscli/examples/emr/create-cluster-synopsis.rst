@@ -3,7 +3,7 @@
      --instance-groups <value>
      --auto-terminate | --no-auto-terminate
      [--use-default-role]
-     [--service-role <value>]  
+     [--service-role <value>]
      [--name <value>]
      [--log-uri <value>]
      [--additional-info <value>]

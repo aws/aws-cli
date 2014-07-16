@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.3.23
+======
 
 * feature:``aws support``: Update ``aws support`` command to
   the latest version

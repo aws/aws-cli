@@ -91,23 +91,43 @@ TEST_BA = [
 
 INSTALL_HIVE_STEP = {
     'HadoopJarStep': {
-        'Args': ['s3://elasticmapreduce/libs/hive/hive-script',
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
                  '--install-hive', '--base-path',
-                 's3://elasticmapreduce/libs/hive',
+                 's3://us-east-1.elasticmapreduce/libs/hive',
                  '--hive-versions', 'latest'],
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
     },
     'Name': 'Install Hive',
     'ActionOnFailure': 'TERMINATE_CLUSTER'
 }
 
+INSTALL_HIVE_SITE_STEP = {
+    'HadoopJarStep': {
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
+                 '--base-path',
+                 's3://us-east-1.elasticmapreduce/libs/hive',
+                 '--install-hive-site',
+                 '--hive-site=s3://test/hive-conf/hive-site.xml',
+                 '--hive-versions', 'latest'],
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
+    },
+    'Name': 'Install Hive Site Configuration',
+    'ActionOnFailure': 'CANCEL_AND_WAIT'
+}
+
 INSTALL_PIG_STEP = {
     'HadoopJarStep': {
-        'Args': ['s3://elasticmapreduce/libs/pig/pig-script',
+        'Args': ['s3://us-east-1.elasticmapreduce/libs/pig/pig-script',
                  '--install-pig', '--base-path',
-                 's3://elasticmapreduce/libs/pig',
+                 's3://us-east-1.elasticmapreduce/libs/pig',
                  '--pig-versions', 'latest'],
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar'
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar')
     },
     'Name': 'Install Pig',
     'ActionOnFailure': 'TERMINATE_CLUSTER'
@@ -125,22 +145,24 @@ INSTALL_HBASE_STEP = {
 
 INSTALL_GANGLIA_BA = {
     'ScriptBootstrapAction': {
-        'Path': 's3://elasticmapreduce/bootstrap-actions/install-ganglia'
+        'Path':
+            ('s3://us-east-1.elasticmapreduce/'
+             'bootstrap-actions/install-ganglia')
     },
     'Name': 'Install Ganglia'
 }
 
 INSTALL_HBASE_BA = {
     'ScriptBootstrapAction': {
-        'Path': 's3://elasticmapreduce/bootstrap-actions/setup-hbase'
+        'Path': 's3://us-east-1.elasticmapreduce/bootstrap-actions/setup-hbase'
     },
     'Name': 'Install HBase'
 }
 
 INSTALL_IMPALA_BA = {
     'ScriptBootstrapAction': {
-        'Path': 's3://elasticmapreduce/libs/impala/setup-impala',
-        'Args': ['--base-path', 's3://elasticmapreduce',
+        'Path': 's3://us-east-1.elasticmapreduce/libs/impala/setup-impala',
+        'Args': ['--base-path', 's3://us-east-1.elasticmapreduce',
                  '--impala-version', 'latest']
     },
     'Name': 'Install Impala'
@@ -198,9 +220,11 @@ HIVE_DEFAULT_STEP = {
     'Name': 'Hive program',
     'ActionOnFailure': 'CONTINUE',
     'HadoopJarStep': {
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
         'Args': [
-            's3://elasticmapreduce/libs/hive/hive-script',
+            's3://us-east-1.elasticmapreduce/libs/hive/hive-script',
             '--run-hive-script',
             '--hive-versions',
             'latest',
@@ -213,9 +237,11 @@ HIVE_BASIC_STEP = {
     'Name': 'HiveBasicStep',
     'ActionOnFailure': 'CANCEL_AND_WAIT',
     'HadoopJarStep': {
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
         'Args': [
-            's3://elasticmapreduce/libs/hive/hive-script',
+            's3://us-east-1.elasticmapreduce/libs/hive/hive-script',
             '--run-hive-script',
             '--hive-versions',
             '0.11.0.1',
@@ -231,9 +257,11 @@ PIG_DEFAULT_STEP = {
     'Name': 'Pig program',
     'ActionOnFailure': 'CONTINUE',
     'HadoopJarStep': {
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
         'Args': [
-            's3://elasticmapreduce/libs/pig/pig-script',
+            's3://us-east-1.elasticmapreduce/libs/pig/pig-script',
             '--run-pig-script',
             '--pig-versions',
             'latest',
@@ -247,9 +275,11 @@ PIG_BASIC_STEP = {
     'Name': 'PigBasicStep',
     'ActionOnFailure': 'CANCEL_AND_WAIT',
     'HadoopJarStep': {
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
         'Args': [
-            's3://elasticmapreduce/libs/pig/pig-script',
+            's3://us-east-1.elasticmapreduce/libs/pig/pig-script',
             '--run-pig-script',
             '--pig-versions',
             '0.11.1.0',
@@ -266,9 +296,11 @@ IMPALA_DEFAULT_STEP = {
     'Name': 'Impala program',
     'ActionOnFailure': 'CONTINUE',
     'HadoopJarStep': {
-        'Jar': 's3://elasticmapreduce/libs/script-runner/script-runner.jar',
+        'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
         'Args': [
-            's3://elasticmapreduce/libs/impala/setup-impala',
+            's3://us-east-1.elasticmapreduce/libs/impala/setup-impala',
             '--run-impala-script',
             '--impala-script',
             's3://myimpala/input',
@@ -432,9 +464,11 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             [{'Name': 'Setup Hadoop Debugging',
               'ActionOnFailure': 'TERMINATE_CLUSTER',
               'HadoopJarStep':
-                {'Args': ['s3://elasticmapreduce/libs/state-pusher/0.1/fetch'],
+                {'Args':
+                    [('s3://us-east-1.elasticmapreduce/libs/'
+                      'state-pusher/0.1/fetch')],
                  'Jar':
-                    's3://elasticmapreduce/libs/' +
+                    's3://us-east-1.elasticmapreduce/libs/' +
                     'script-runner/script-runner.jar'
                  }
               }]
@@ -693,6 +727,16 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         steps['HadoopJarStep']['Args'][-1] = '0.11.0.1'
         result['Steps'] = [steps]
         self.assert_params_for_cmd(cmd, result)
+
+    def test_install_hive_site(self):
+        cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = [INSTALL_HIVE_STEP, INSTALL_HIVE_SITE_STEP]
+        self.assert_params_for_cmd(cmdline, result)
+        cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
+                   'Args=[--hive-site=s3://test/hive-conf/hive-site.xml,k1]')
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_install_pig_with_defaults(self):
         cmd = DEFAULT_CMD + '--applications Name=Pig'

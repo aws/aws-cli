@@ -3,6 +3,14 @@ CHANGELOG
 =========
 
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws swf poll-for-decision-task``: Fix issue where
+  the default paginated response is missing output response keys
+  (`issue botocore <https://github.com/boto/botocore/pull/324>`__)
+
+
 1.3.23
 ======
 

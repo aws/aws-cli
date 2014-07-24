@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.3.24
+======
 
 * feature:``aws elasticloadbalancing``: Update to the latest service model.
 * bugfix:``aws swf poll-for-decision-task``: Fix issue where

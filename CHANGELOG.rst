@@ -6,6 +6,7 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws elasticloadbalancing``: Update to the latest service model.
 * bugfix:``aws swf poll-for-decision-task``: Fix issue where
   the default paginated response is missing output response keys
   (`issue botocore 324 <https://github.com/boto/botocore/pull/324>`__)

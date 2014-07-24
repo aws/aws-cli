@@ -170,3 +170,32 @@ INSTALL_APPLICATIONS = (
     '<p>The applications to be installed.'
     ' Takes the following parameters: <code>Name</code>, <code>Version</code>'
     ' and <code>Args</code>.')
+
+LIST_CLUSTERS_CLUSTER_STATES = (
+    '<p>The cluster state filters to apply when listing clusters.</p>'
+    '<p>Syntax:'
+    '"string" "string" ...</p>'
+    '<p>Where valid values are:</p>'
+    '<li>STARTING</li>'
+    '<li>BOOTSTRAPPING</li>'
+    '<li>RUNNING</li>'
+    '<li>WAITING</li>'
+    '<li>TERMINATING</li>'
+    '<li>TERMINATED</li>'
+    '<li>TERMINATED_WITH_ERRORS</li></p>')
+
+LIST_CLUSTERS_STATE_FILTERS = (
+    '<p>Shortcut option for --cluster-states. </p>'
+    '<li>--active filters clusters in \'STARTING\','
+    '\'BOOTSTRAPPING\',\'RUNNING\','
+    '\'WAITING\', or \'TERMINATING\' states. </li>'
+    '<li>--terminated filters clusters in \'TERMINATED\' state. </li>'
+    '<li>--failed filters clusters in \'TERMINATED_WITH_ERRORS\' state. </li>')
+
+LIST_CLUSTERS_CREATED_AFTER = (
+    '<p>The creation date and time beginning value filter for '
+    'listing clusters. For example, 2014-07-15T00:01:30. </p>')
+
+LIST_CLUSTERS_CREATED_BEFORE = (
+    '<p>The creation date and time end value filter for '
+    'listing clusters. For example, 2014-07-15T00:01:30. </p>')

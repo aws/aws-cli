@@ -186,3 +186,14 @@ class ClusterTerminatedError(EmrError):
     The cluster is terminating or has already terminated.
     """
     fmt = 'aws: error: Cluster terminating or already terminated.'
+
+
+class ClusterStatesFilterValidationError(EmrError):
+    """
+    In the list-clusters command, customers can specify only one
+    of the following states filters:
+    --cluster-states, --active, --terminated, --failed
+
+    """
+    fmt = ('aws: error: You can specify only one of the cluster state '
+           'filters: --cluster-states, --active, --terminated, --failed.')

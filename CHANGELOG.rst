@@ -3,6 +3,21 @@ CHANGELOG
 =========
 
 
+1.3.24
+======
+
+* feature:``aws elasticloadbalancing``: Update to the latest service model.
+* bugfix:``aws swf poll-for-decision-task``: Fix issue where
+  the default paginated response is missing output response keys
+  (`issue botocore 324 <https://github.com/boto/botocore/pull/324>`__)
+* bugfix:Connections: Fix issue where connections were hanging
+  when network issues occurred
+  `issue botocore 325 <https://github.com/boto/botocore/pull/325>`__)
+* bugfix:``aws s3/s3api``: Fix issue where Deprecations were being
+  written to stderr in Python 3.4.1
+  `issue botocore 319 <https://github.com/boto/botocore/issues/319>`__)
+
+
 1.3.23
 ======
 

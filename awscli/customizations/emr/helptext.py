@@ -80,6 +80,19 @@ INSTANCE_GROUPS = (
     '<code>[Name], InstanceGroupType, InstanceType, InstanceCount,'
     ' [BidPrice]</code></p>')
 
+INSTANCE_TYPE = (
+    '<p>Shortcut option for --instance-groups. A specification of the '
+    'type of Amazon EC2 instances used together with --instance-count '
+    '(optional) to create instance groups in a cluster. '
+    'If --instance-count is not provided, a single node cluster '
+    'will be created by default. </p>')
+
+INSTANCE_COUNT = (
+    '<p>Shortcut option for --instance-groups. '
+    'A specification of the number of Amazon EC2 instances used '
+    'together with --instance-type to create instance groups in '
+    'a cluster. </p>')
+
 ADDITIONAL_INFO = (
     '<p>Specifies additional information during cluster creation</p>')
 

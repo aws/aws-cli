@@ -104,11 +104,6 @@ APPLICATIONS_SCHEMA = {
                 "enum": ["MapR", "HIVE", "PIG", "HBASE", "IMPALA", "GANGLIA"],
                 "required": True
             },
-            "Version": {
-                "type": "string",
-                "description":
-                    "Version number of the application to be installed."
-            },
             "Args": {
                 "type": "array",
                 "description":

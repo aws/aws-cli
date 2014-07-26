@@ -148,23 +148,6 @@ def check_required_field(structure, name, value):
             object_name=structure, missing=name)
 
 
-def build_pig_install_step(region, version,
-                           action_on_failure=constants.TERMINATE_CLUSTER):
-    step_args = [
-        build_s3_link(constants.PIG_SCRIPT_PATH, region),
-        constants.INSTALL_PIG_ARG,
-        constants.BASE_PATH_ARG,
-        build_s3_link(constants.PIG_BASE_PATH, region),
-        constants.PIG_VERSIONS,
-        version]
-    step = build_step(
-        name=constants.INSTALL_PIG_NAME,
-        action_on_failure=action_on_failure,
-        jar=build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
-        args=step_args)
-    return step
-
-
 def call(session, operation_object, parameters, region_name=None,
          endpoint_url=None, verify=None):
         # We could get an error from get_endpoint() about not having

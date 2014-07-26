@@ -29,13 +29,9 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
                 build_supported_product(
                     app_config['Name'], app_config.get('Args')))
         elif app_name == constants.HIVE:
-            hive_version = app_config.get('Version')
-            if hive_version is None:
-                hive_version = constants.LATEST
+            hive_version = constants.LATEST
             step_list.append(
-                _build_install_hive_step(
-                    region=parsed_globals.region,
-                    version=hive_version))
+                _build_install_hive_step(region=parsed_globals.region))
             args = app_config.get('Args')
             if args is not None:
                 hive_site_path = _find_matching_arg(
@@ -44,41 +40,36 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
                     step_list.append(
                         _build_install_hive_site_step(
                             region=parsed_globals.region,
-                            version=hive_version,
                             hive_site_path=hive_site_path))
         elif app_name == constants.PIG:
-            pig_version = app_config.get('Version')
-            if pig_version is None:
-                pig_version = constants.LATEST
+            pig_version = constants.LATEST
             step_list.append(
-                emrutils.build_pig_install_step(
-                    region=parsed_globals.region,
-                    version=pig_version))
+                _build_pig_install_step(
+                    region=parsed_globals.region))
         elif app_name == constants.GANGLIA:
             ba_list.append(
-                build_ganglia_install_bootstrap_action(
+                _build_ganglia_install_bootstrap_action(
                     region=parsed_globals.region))
         elif app_name == constants.HBASE:
             ba_list.append(
-                build_hbase_install_bootstrap_action(
+                _build_hbase_install_bootstrap_action(
                     region=parsed_globals.region))
             if ami_version >= '3.0':
                 step_list.append(
-                    build_hbase_install_step(
+                    _build_hbase_install_step(
                         constants.HBASE_PATH_HADOOP2_INSTALL_JAR))
             elif ami_version >= '2.1':
                 step_list.append(
-                    build_hbase_install_step(
+                    _build_hbase_install_step(
                         constants.HBASE_PATH_HADOOP1_INSTALL_JAR))
             else:
                 raise ValueError('aws: error: AMI version ' + ami_version +
                                  'is not compatible with HBase.')
         elif app_name == constants.IMPALA:
             ba_list.append(
-                build_impala_install_bootstrap_action(
+                _build_impala_install_bootstrap_action(
                     region=parsed_globals.region,
-                    args=app_config.get('Args'),
-                    version=app_config.get('Version')))
+                    args=app_config.get('Args')))
         else:
             raise exceptions.UnknownApplicationError(app_name=app_name)
 
@@ -92,7 +83,7 @@ def build_supported_product(name, args):
     return config
 
 
-def build_ganglia_install_bootstrap_action(region):
+def _build_ganglia_install_bootstrap_action(region):
     return emrutils.build_bootstrap_action(
         name=constants.INSTALL_GANGLIA_NAME,
         path=emrutils.build_s3_link(
@@ -100,7 +91,7 @@ def build_ganglia_install_bootstrap_action(region):
             region=region))
 
 
-def build_hbase_install_bootstrap_action(region):
+def _build_hbase_install_bootstrap_action(region):
     return emrutils.build_bootstrap_action(
         name=constants.INSTALL_HBASE_NAME,
         path=emrutils.build_s3_link(
@@ -108,7 +99,7 @@ def build_hbase_install_bootstrap_action(region):
             region=region))
 
 
-def build_hbase_install_step(jar):
+def _build_hbase_install_step(jar):
     return emrutils.build_step(
         jar=jar,
         name=constants.START_HBASE_NAME,
@@ -116,14 +107,12 @@ def build_hbase_install_step(jar):
         args=constants.HBASE_INSTALL_ARG)
 
 
-def build_impala_install_bootstrap_action(region, version, args=None):
-    if version is None:
-        version = 'latest'
+def _build_impala_install_bootstrap_action(region, args=None):
     args_list = [
         constants.BASE_PATH_ARG,
         emrutils.build_s3_link(region=region),
         constants.IMPALA_VERSION,
-        version]
+        constants.LATEST]
     if args is not None:
         args_list.append(constants.IMPALA_CONF)
         args_list += args
@@ -135,7 +124,7 @@ def build_impala_install_bootstrap_action(region, version, args=None):
         args=args_list)
 
 
-def _build_install_hive_step(region, version,
+def _build_install_hive_step(region,
                              action_on_failure=constants.TERMINATE_CLUSTER):
     step_args = [
         emrutils.build_s3_link(constants.HIVE_SCRIPT_PATH, region),
@@ -143,7 +132,7 @@ def _build_install_hive_step(region, version,
         constants.BASE_PATH_ARG,
         emrutils.build_s3_link(constants.HIVE_BASE_PATH),
         constants.HIVE_VERSIONS,
-        version]
+        constants.LATEST]
     step = emrutils.build_step(
         name=constants.INSTALL_HIVE_NAME,
         action_on_failure=action_on_failure,
@@ -152,7 +141,7 @@ def _build_install_hive_step(region, version,
     return step
 
 
-def _build_install_hive_site_step(region, version, hive_site_path,
+def _build_install_hive_site_step(region, hive_site_path,
                                   action_on_failure=constants.CANCEL_AND_WAIT):
     step_args = [
         emrutils.build_s3_link(constants.HIVE_SCRIPT_PATH, region),
@@ -161,9 +150,26 @@ def _build_install_hive_site_step(region, version, hive_site_path,
         constants.INSTALL_HIVE_SITE_ARG,
         hive_site_path,
         constants.HIVE_VERSIONS,
-        version]
+        constants.LATEST]
     step = emrutils.build_step(
         name=constants.INSTALL_HIVE_SITE_NAME,
+        action_on_failure=action_on_failure,
+        jar=emrutils.build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
+        args=step_args)
+    return step
+
+
+def _build_pig_install_step(region,
+                            action_on_failure=constants.TERMINATE_CLUSTER):
+    step_args = [
+        emrutils.build_s3_link(constants.PIG_SCRIPT_PATH, region),
+        constants.INSTALL_PIG_ARG,
+        constants.BASE_PATH_ARG,
+        emrutils.build_s3_link(constants.PIG_BASE_PATH, region),
+        constants.PIG_VERSIONS,
+        constants.LATEST]
+    step = emrutils.build_step(
+        name=constants.INSTALL_PIG_NAME,
         action_on_failure=action_on_failure,
         jar=emrutils.build_s3_link(constants.SCRIPT_RUNNER_PATH, region),
         args=step_args)

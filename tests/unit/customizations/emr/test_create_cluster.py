@@ -244,7 +244,7 @@ HIVE_BASIC_STEP = {
             's3://us-east-1.elasticmapreduce/libs/hive/hive-script',
             '--run-hive-script',
             '--hive-versions',
-            '0.11.0.1',
+            'latest',
             '--args',
             '-f',
             's3://elasticmapreduce/samples/hive-ads/libs/model-build.q']}
@@ -282,7 +282,7 @@ PIG_BASIC_STEP = {
             's3://us-east-1.elasticmapreduce/libs/pig/pig-script',
             '--run-pig-script',
             '--pig-versions',
-            '0.11.1.0',
+            'latest',
             '--args',
             '-f',
             's3://elasticmapreduce/samples/'
@@ -658,7 +658,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_bootstrap_actions_exceed_maximum_with_applications_error(self):
         cmd = DEFAULT_CMD + ' --applications Name=GANGLIA Name=HBASE' +\
-            ' Name=IMPALA,Version=1.2.1,Args=arg1,arg2 --bootstrap-actions'
+            ' Name=IMPALA,Args=arg1,arg2 --bootstrap-actions'
         ba_cmd = ' Path=s3://test/ba1,Name=ba1,Args=arg1,arg2,arg3'
         for i in range(1, 15):
             cmd += ba_cmd
@@ -720,14 +720,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [INSTALL_HIVE_STEP]
         self.assert_params_for_cmd(cmd, result)
 
-    def test_install_hive_with_version(self):
-        cmd = DEFAULT_CMD + '--applications Name=Hive,Version=0.11.0.1'
-        result = copy.deepcopy(DEFAULT_RESULT)
-        steps = copy.deepcopy(INSTALL_HIVE_STEP)
-        steps['HadoopJarStep']['Args'][-1] = '0.11.0.1'
-        result['Steps'] = [steps]
-        self.assert_params_for_cmd(cmd, result)
-
     def test_install_hive_site(self):
         cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
@@ -744,14 +736,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [INSTALL_PIG_STEP]
         self.assert_params_for_cmd(cmd, result)
 
-    def test_install_pig_with_version(self):
-        cmd = DEFAULT_CMD + '--applications Name=Hive,Version=0.11.1.1'
-        result = copy.deepcopy(DEFAULT_RESULT)
-        steps = copy.deepcopy(INSTALL_HIVE_STEP)
-        steps['HadoopJarStep']['Args'][-1] = '0.11.1.1'
-        result['Steps'] = [steps]
-        self.assert_params_for_cmd(cmd, result)
-
     def test_install_ganglia(self):
         cmd = DEFAULT_CMD + '--applications Name=Ganglia'
         result = copy.deepcopy(DEFAULT_RESULT)
@@ -766,10 +750,9 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_install_impala_with_all_fields(self):
         cmd = DEFAULT_CMD + \
-            '--applications Name=Impala,Version=1.2.1,Args=arg1,arg2'
+            '--applications Name=Impala,Args=arg1,arg2'
         result = copy.deepcopy(DEFAULT_RESULT)
         ba = copy.deepcopy(INSTALL_IMPALA_BA)
-        ba['ScriptBootstrapAction']['Args'][-1] = '1.2.1'
         ba['ScriptBootstrapAction']['Args'] += \
             ['--impala-conf', 'arg1', 'arg2']
         result['BootstrapActions'] = [ba]
@@ -828,17 +811,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             os.path.dirname(__file__), 'input_applications.json')
         cmd = DEFAULT_CMD + '--applications file://' + data_path
         impala_ba = copy.deepcopy(INSTALL_IMPALA_BA)
-        impala_ba['ScriptBootstrapAction']['Args'][-1] = '1.2.1'
         impala_ba['ScriptBootstrapAction']['Args'] += \
             ['--impala-conf',
              'IMPALA_BACKEND_PORT=22001', 'IMPALA_MEM_LIMIT=70%']
         ba_list = [INSTALL_GANGLIA_BA, INSTALL_HBASE_BA,
                    impala_ba]
-        hive_step = copy.deepcopy(INSTALL_HIVE_STEP)
-        hive_step['HadoopJarStep']['Args'][-1] = '0.11.0.1'
-        pig_step = copy.deepcopy(INSTALL_PIG_STEP)
-        pig_step['HadoopJarStep']['Args'][-1] = '0.11.1.1'
-        step_list = [hive_step, pig_step, INSTALL_HBASE_STEP]
+        step_list = [INSTALL_HIVE_STEP, INSTALL_PIG_STEP, INSTALL_HBASE_STEP]
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Steps'] = step_list
         result['BootstrapActions'] = ba_list
@@ -931,14 +909,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_hive_step_with_all_fields(self):
         test_step_config = (
-            'Type=Hive,Version=0.11.0.1,ActionOnFailure=CANCEL_AND_WAIT,'
+            'Type=Hive,ActionOnFailure=CANCEL_AND_WAIT,'
             'Name=HiveBasicStep,' + HIVE_BASIC_ARGS)
         cmd = DEFAULT_CMD + (
-            '--applications Name=Hive,Version=0.11.0.1 '
-            '--steps ' + test_step_config)
+            '--applications Name=Hive --steps ' + test_step_config)
         result = copy.deepcopy(DEFAULT_RESULT)
         install_step = copy.deepcopy(INSTALL_HIVE_STEP)
-        install_step['HadoopJarStep']['Args'][-1] = '0.11.0.1'
         result['Steps'] = [install_step, HIVE_BASIC_STEP]
         self.assert_params_for_cmd(cmd, result)
 
@@ -958,14 +934,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_pig_step_with_all_fields(self):
         test_step_config = (
-            'Name=PigBasicStep,Type=Pig,Version=0.11.1.0,' + PIG_BASIC_ARGS +
+            'Name=PigBasicStep,Type=Pig,' + PIG_BASIC_ARGS +
             ',ActionOnFailure=CANCEL_AND_WAIT')
         cmd = DEFAULT_CMD + (
-            '--applications Name=Pig,Version=0.11.1.0 --steps ' +
-            test_step_config)
+            '--applications Name=Pig --steps ' + test_step_config)
         result = copy.deepcopy(DEFAULT_RESULT)
         install_step = copy.deepcopy(INSTALL_PIG_STEP)
-        install_step['HadoopJarStep']['Args'][-1] = '0.11.1.0'
         result['Steps'] = [install_step, PIG_BASIC_STEP]
         self.assert_params_for_cmd(cmd, result)
 
@@ -1033,14 +1007,14 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD +\
             '--steps Jar=s3://test/customJar.jar ' +\
             'Type=HIVE,Args=-f,s3://test/hive ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig ' +\
+            'Type=PIG,Args=-f,s3://test/pig ' +\
             'Type=IMPALA,Args=--impala-script,s3://test/impala ' +\
             'Type=Streaming,Args=-files,s3://test/mapper.py,-mapper,' +\
             'mapper.py,-reducer,aggregator,-input,s3://test/input,-output,' +\
             's3://test/output ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig2 ' +\
+            'Type=PIG,Args=-f,s3://test/pig2 ' +\
             'Type=IMPALA,Args=--impala-script,s3://test/impala2 ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig3 ' +\
+            'Type=PIG,Args=-f,s3://test/pig3 ' +\
             ' Jar=s3://test/customJar2.jar ' +\
             ' --applications Name=Hive'
 
@@ -1064,7 +1038,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD +\
             '--steps Jar=s3://test/customJar.jar ' +\
             'Type=HIVE,Args=-f,s3://test/hive ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig ' +\
+            'Type=PIG,Args=-f,s3://test/pig ' +\
             'Type=IMPALA,Args=--impala-script,s3://test/impala ' +\
             'Type=Streaming,Args=-files,s3://test/mapper.py,-mapper,' +\
             'mapper.py,-reducer,aggregator,-input,s3://test/input,-output,' +\

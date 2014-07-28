@@ -15,8 +15,42 @@ import logging
 
 from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import constants
+from botocore.exceptions import WaiterError
 
 LOG = logging.getLogger(__name__)
+
+
+def validate_and_find_master_dns(session, parsed_globals, cluster_id):
+    """
+    Utility method for ssh, socks, put and get command.
+    Check if the cluster to be connected to is
+     terminated or being terminated.
+    Check if the cluster is running.
+    Find master instance public dns of a given cluster.
+    Return the latest created master instance public dns name.
+    Throw MasterDNSNotAvailableError or ClusterTerminatedError.
+    """
+    cluster_state = emrutils.get_cluster_state(
+        session, parsed_globals, cluster_id)
+
+    if cluster_state in constants.TERMINATED_STATES:
+        raise exceptions.ClusterTerminatedError
+
+    emr = session.get_service('emr')
+    endpoint = emrutils.get_endpoint(emr, parsed_globals)
+
+    try:
+        cluster_running_waiter = emr.get_waiter('ClusterRunning')
+        if cluster_state in constants.STARTING_STATES:
+            print("Waiting for the cluster to start.")
+        cluster_running_waiter.wait(endpoint, ClusterId=cluster_id)
+    except WaiterError:
+        raise exceptions.MasterDNSNotAvailableError
+
+    return emrutils.find_master_public_dns(
+        session=session, cluster_id=cluster_id,
+        parsed_globals=parsed_globals)
 
 
 def validate_ssh_with_key_file(key_file):

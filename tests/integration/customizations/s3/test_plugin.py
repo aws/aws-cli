@@ -156,7 +156,8 @@ class TestMoveCommand(BaseS3CLICommand):
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(full_path))
         # And now resides in s3.
-        self.assert_key_contents_equal(bucket_name, 'foo.txt', 'this is foo.txt')
+        self.assert_key_contents_equal(bucket_name, 'foo.txt',
+                                       'this is foo.txt')
 
     def test_mv_s3_to_local(self):
         bucket_name = self.create_bucket()
@@ -210,8 +211,10 @@ class TestMoveCommand(BaseS3CLICommand):
                                                          to_bucket))
         self.assert_no_errors(p)
         # Nothing's in the from_bucket.
-        self.assertTrue(not self.key_exists(from_bucket, key_name='largefile'))
-        self.assertTrue(not self.key_exists(from_bucket, key_name='smallfile'))
+        self.assertTrue(not self.key_exists(from_bucket,
+                                            key_name='largefile'))
+        self.assertTrue(not self.key_exists(from_bucket,
+                                            key_name='smallfile'))
 
         # And both files are in the to_bucket.
         self.assertTrue(self.key_exists(to_bucket, key_name='largefile'))
@@ -240,7 +243,8 @@ class TestMoveCommand(BaseS3CLICommand):
         p = aws('s3 mv s3://%s/foo.txt %s' % (bucket_name, foo_txt))
         self.assert_no_errors(p)
         self.assertTrue(os.path.exists(foo_txt))
-        self.assertEqual(os.path.getsize(foo_txt), len(file_contents.getvalue()))
+        self.assertEqual(os.path.getsize(foo_txt),
+                         len(file_contents.getvalue()))
 
     def test_mv_to_nonexistent_bucket(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
@@ -252,7 +256,8 @@ class TestMoveCommand(BaseS3CLICommand):
         # immediately validate that we can't move a file onto itself.
         bucket_name = self.create_bucket()
         self.put_object(bucket_name, key_name='key.txt', contents='foo')
-        p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' % (bucket_name, bucket_name))
+        p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' %
+                (bucket_name, bucket_name))
         self.assertEqual(p.rc, 255)
         self.assertIn('Cannot mv a file onto itself', p.stderr)
 
@@ -263,17 +268,20 @@ class TestMoveCommand(BaseS3CLICommand):
         # not allow large files to be mv'd onto themselves.
         file_contents = six.BytesIO(b'a' * (1024 * 1024 * 10))
         bucket_name = self.create_bucket()
-        self.put_object(bucket_name, key_name='key.txt', contents=file_contents)
-        p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' % (bucket_name, bucket_name))
+        self.put_object(bucket_name, key_name='key.txt',
+                        contents=file_contents)
+        p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' %
+                (bucket_name, bucket_name))
         self.assertEqual(p.rc, 255)
         self.assertIn('Cannot mv a file onto itself', p.stderr)
 
 
 class TestRm(BaseS3CLICommand):
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                    'Newline in filename test not valid on windows.')
+                     'Newline in filename test not valid on windows.')
     # Windows won't let you do this.  You'll get:
-    # [Errno 22] invalid mode ('w') or filename: # 'c:\\windows\\temp\\tmp0fv8uu\\foo\r.txt'
+    # [Errno 22] invalid mode ('w') or filename:
+    # 'c:\\windows\\temp\\tmp0fv8uu\\foo\r.txt'
     def test_rm_with_newlines(self):
         bucket_name = self.create_bucket()
 
@@ -346,7 +354,8 @@ class TestCp(BaseS3CLICommand):
         file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
-        p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket, to_bucket))
+        p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' %
+                (from_bucket, to_bucket))
         self.assert_no_errors(p)
         self.assert_key_contents_equal(to_bucket, 'foo.txt', file_contents)
         self.assertTrue(self.key_exists(from_bucket, key_name='foo.txt'))
@@ -367,7 +376,8 @@ class TestCp(BaseS3CLICommand):
         # This will force a multipart download.
         bucket_name = self.create_bucket()
         foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
-        self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
+        self.put_object(bucket_name, key_name='foo.txt',
+                        contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
         p = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt))
         self.assert_no_errors(p)
@@ -375,13 +385,15 @@ class TestCp(BaseS3CLICommand):
                          len(foo_contents.getvalue()))
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                    'SIGINT not supported on Windows.')
+                     'SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = self.create_bucket()
         foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 20))
-        self.put_object(bucket_name, key_name='foo.txt', contents=foo_contents)
+        self.put_object(bucket_name, key_name='foo.txt',
+                        contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
-        process = aws('s3 cp s3://%s/foo.txt %s' % (bucket_name, local_foo_txt), wait_for_finish=False)
+        process = aws('s3 cp s3://%s/foo.txt %s' %
+                      (bucket_name, local_foo_txt), wait_for_finish=False)
         # Give it some time to start up and enter it's main task loop.
         time.sleep(1)
         # The process has 30 seconds to finish after being sent a Ctrl+C,
@@ -394,8 +406,10 @@ class TestCp(BaseS3CLICommand):
                 break
         else:
             process.kill()
-            self.fail("CLI did not exist within 30 seconds of receiving a Ctrl+C")
-        # A Ctrl+C should have a non-zero RC.  We either caught the process in
+            self.fail("CLI did not exist within 30 seconds of "
+                      "receiving a Ctrl+C")
+        # A Ctrl+C should have a non-zero RC.
+        # We either caught the process in
         # its main polling loop (rc=1), or it was successfully terminated by
         # the SIGINT (rc=-2).
         self.assertIn(process.returncode, [1, -2])
@@ -534,21 +548,58 @@ class TestSync(BaseS3CLICommand):
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                  'Symlink tests only supported on mac/linux')
-class TestBadSymlinks(BaseS3CLICommand):
-    def test_bad_symlink_stops_sync_process(self):
-        bucket_name = self.create_bucket()
-        nested_dir = os.path.join(self.files.rootdir, 'realfiles')
-        os.mkdir(nested_dir)
-        full_path = self.files.create_file(os.path.join(nested_dir, 'foo.txt'),
-                                           contents='foo.txt contents')
-        symlink_dir = os.path.join(self.files.rootdir, 'symlinkdir')
-        os.mkdir(symlink_dir)
-        os.symlink(full_path, os.path.join(symlink_dir, 'a-goodsymlink'))
-        os.symlink('non-existent-file', os.path.join(symlink_dir, 'b-badsymlink'))
-        os.symlink(full_path, os.path.join(symlink_dir, 'c-goodsymlink'))
-        p = aws('s3 sync %s s3://%s/' % (symlink_dir, bucket_name))
-        self.assertEqual(p.rc, 1, p.stdout)
-        self.assertIn('[Errno 2] No such file or directory', p.stdout)
+class TestSymlinks(BaseS3CLICommand):
+    """
+    This class test the ability to follow or not follow symlinks.
+    Also tests the ability to ignore bad symlinks.
+    """
+    def extra_setup(self):
+        self.bucket_name = self.create_bucket()
+        self.nested_dir = os.path.join(self.files.rootdir, 'realfiles')
+        os.mkdir(self.nested_dir)
+        self.sample_file = \
+            self.files.create_file(os.path.join(self.nested_dir, 'foo.txt'),
+                                   contents='foo.txt contents')
+        # Create a symlink to foo.txt.
+        os.symlink(self.sample_file, os.path.join(self.files.rootdir,
+                                                  'a-goodsymlink'))
+        # Create a bad symlink.
+        os.symlink('non-existent-file', os.path.join(self.files.rootdir,
+                                                     'b-goodsymlink'))
+        # Create a symlink to directory where foo.txt is.
+        os.symlink(self.nested_dir, os.path.join(self.files.rootdir,
+                                                 'c-goodsymlink'))
+
+    def test_no_follow_symlinks(self):
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
+                                         self.bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(not self.key_exists(self.bucket_name,
+                        'a-goodsymlink'))
+        self.assertTrue(not self.key_exists(self.bucket_name,
+                        'b-badsymlink'))
+        self.assertTrue(not self.key_exists(self.bucket_name,
+                        'c-goodsymlink/foo.txt'))
+        self.assertEqual(self.get_key_contents(self.bucket_name,
+                                               key_name='realfiles/foo.txt'),
+                         'foo.txt contents')
+
+    def test_follow_symlinks(self):
+        p = aws('s3 sync %s s3://%s/ --follow-symlinks' %
+                (self.files.rootdir, self.bucket_name))
+        self.assert_no_errors(p)
+        self.assertEqual(self.get_key_contents(self.bucket_name,
+                                               key_name='a-goodsymlink'),
+                         'foo.txt contents')
+        self.assertTrue(not self.key_exists(self.bucket_name,
+                        'b-badsymlink'))
+        self.assertEqual(
+            self.get_key_contents(self.bucket_name,
+                                  key_name='c-goodsymlink/foo.txt'),
+            'foo.txt contents')
+        self.assertEqual(self.get_key_contents(self.bucket_name,
+                                               key_name='realfiles/foo.txt'),
+                         'foo.txt contents')
 
 
 class TestUnicode(BaseS3CLICommand):
@@ -560,7 +611,8 @@ class TestUnicode(BaseS3CLICommand):
 
     def test_cp(self):
         bucket_name = self.create_bucket()
-        local_example1_txt = self.files.create_file(u'\u00e9xample.txt', 'example1 contents')
+        local_example1_txt = \
+            self.files.create_file(u'\u00e9xample.txt', 'example1 contents')
         s3_example1_txt = 's3://%s/%s' % (bucket_name,
                                           os.path.basename(local_example1_txt))
         local_example2_txt = self.files.full_path(u'\u00e9xample2.txt')
@@ -576,8 +628,10 @@ class TestUnicode(BaseS3CLICommand):
 
     def test_recursive_cp(self):
         bucket_name = self.create_bucket()
-        local_example1_txt = self.files.create_file(u'\u00e9xample.txt', 'example1 contents')
-        local_example2_txt = self.files.create_file(u'\u00e9xample2.txt', 'example2 contents')
+        local_example1_txt = self.files.create_file(u'\u00e9xample.txt',
+                                                    'example1 contents')
+        local_example2_txt = self.files.create_file(u'\u00e9xample2.txt',
+                                                    'example2 contents')
         p = aws('s3 cp %s s3://%s --recursive --quiet' % (
             self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
@@ -745,8 +799,8 @@ class TestMemoryUtilization(BaseS3CLICommand):
             failure_message = (
                 'Exceeded max memory allowed (%s MB) for command '
                 '"%s": %s MB' % (self.max_mem_allowed / 1024.0 / 1024.0,
-                              full_command,
-                              peak_memory / 1024.0 / 1024.0))
+                                 full_command,
+                                 peak_memory / 1024.0 / 1024.0))
             self.fail(failure_message)
 
     def test_transfer_single_large_file(self):
@@ -764,14 +818,16 @@ class TestMemoryUtilization(BaseS3CLICommand):
             bucket_name, foo_txt)
         p = aws(download_full_command, collect_memory=True)
         self.assert_no_errors(p)
-        self.assert_max_memory_used(p, self.max_mem_allowed, download_full_command)
+        self.assert_max_memory_used(p, self.max_mem_allowed,
+                                    download_full_command)
 
 
 class TestWebsiteConfiguration(BaseS3CLICommand):
     def test_create_website_index_configuration(self):
         bucket_name = self.create_bucket()
         # Supply only --index-document argument.
-        full_command = 's3 website %s --index-document index.html' % (bucket_name)
+        full_command = 's3 website %s --index-document index.html' % \
+            (bucket_name)
         p = aws(full_command)
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
@@ -821,8 +877,9 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
 
     def test_explicitly_exclude_single_file(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://random-bucket-name/ --dryrun --exclude foo.txt'
-                 % full_path)
+        p = aws('s3 cp %s s3://random-bucket-name/'
+                ' --dryrun --exclude foo.txt'
+                % full_path)
         self.assert_no_files_would_be_uploaded(p)
 
     def test_cwd_doesnt_matter(self):
@@ -901,7 +958,8 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         self.assertTrue(
             self.key_exists(bucket_name, key_name='bar.py'),
             ("The --delete flag was not applied to the receiving "
-             "end, the 'bar.py' file was deleted even though it was excluded."))
+             "end, the 'bar.py' file was deleted even though it"
+             " was excluded."))
 
     def test_exclude_filter_with_relative_path(self):
         # Same test as test_exclude_filter_with_delete, except we don't
@@ -917,14 +975,16 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         try:
             os.chdir(self.files.rootdir)
             # Note how we're using "." for the source directory.
-            p = aws("s3 sync . s3://%s/ --exclude '*.py' --delete" % bucket_name)
+            p = aws("s3 sync . s3://%s/ --exclude '*.py' --delete"
+                    % bucket_name)
         finally:
             os.chdir(cwd)
         self.assert_no_errors(p)
         self.assertTrue(
             self.key_exists(bucket_name, key_name='bar.py'),
             ("The --delete flag was not applied to the receiving "
-             "end, the 'bar.py' file was deleted even though it was excluded."))
+             "end, the 'bar.py' file was deleted even though"
+             " it was excluded."))
 
 
 class TestFileWithSpaces(BaseS3CLICommand):

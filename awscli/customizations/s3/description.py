@@ -65,6 +65,11 @@ def add_param_descriptions(params_dict):
     params_dict['delete']['documents'] = "Files that exist in the " \
         "destination but not in the source are deleted during sync."
 
+    params_dict['follow-symlinks']['documents'] = "Symbolic links " \
+        "are followed only when uploading locally to S3.  Note that S3 " \
+        "does not support symbolic links so contents of linked files are " \
+        "uploaded under name of symbolic file."  
+
     params_dict['exclude']['documents'] = "Exclude all files or objects" \
         " from the command that matches the specified pattern."
 

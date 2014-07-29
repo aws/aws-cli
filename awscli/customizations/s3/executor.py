@@ -14,6 +14,7 @@ import logging
 from six.moves import queue
 import sys
 import threading
+from collections import defaultdict
 
 from awscli.customizations.s3.utils import uni_print, \
         IORequest, IOCloseRequest, StablePriorityQueue
@@ -41,7 +42,8 @@ class Executor(object):
     IMMEDIATE_PRIORITY= 1
 
     def __init__(self, num_threads, result_queue,
-                 quiet, max_queue_size, write_queue):
+                 quiet, max_queue_size, write_queue,
+                 stdout):
         self._max_queue_size = max_queue_size
         self.queue = StablePriorityQueue(maxsize=self._max_queue_size,
                                          max_priority=20)
@@ -50,10 +52,12 @@ class Executor(object):
         self.quiet = quiet
         self.threads_list = []
         self.write_queue = write_queue
+        output = sys.stderr if stdout else sys.stdout
         self.print_thread = PrintThread(self.result_queue,
-                                        self.quiet)
+                                        self.quiet,
+                                        target=output)
         self.print_thread.daemon = True
-        self.io_thread = IOWriterThread(self.write_queue)
+        self.io_thread = IOWriterThread(self.write_queue, stdout)
 
     @property
     def num_tasks_failed(self):
@@ -132,10 +136,13 @@ class Executor(object):
 
 
 class IOWriterThread(threading.Thread):
-    def __init__(self, queue):
+    def __init__(self, queue, stdout):
         threading.Thread.__init__(self)
         self.queue = queue
         self.fd_descriptor_cache = {}
+        self.stdout = stdout
+        self.stdout_offset = 0
+        self.stdout_buffer = defaultdict(dict)
 
     def run(self):
         while True:
@@ -147,14 +154,13 @@ class IOWriterThread(threading.Thread):
                 return
             elif isinstance(task, IORequest):
                 filename, offset, data = task
-                fileobj = self.fd_descriptor_cache.get(filename)
-                if fileobj is None:
-                    fileobj = open(filename, 'rb+')
-                    self.fd_descriptor_cache[filename] = fileobj
+                fileobj = self._get_file(filename)
                 fileobj.seek(offset)
                 LOGGER.debug("Writing data to: %s, offset: %s",
                              filename, offset)
                 fileobj.write(data)
+                if self.stdout:
+                    self._write_stdout(filename, offset, len(data))
                 fileobj.flush()
             elif isinstance(task, IOCloseRequest):
                 LOGGER.debug("IOCloseRequest received for %s, closing file.",
@@ -163,6 +169,28 @@ class IOWriterThread(threading.Thread):
                 if fileobj is not None:
                     fileobj.close()
                     del self.fd_descriptor_cache[task.filename]
+
+    def _get_file(self, filename):
+        fileobj = self.fd_descriptor_cache.get(filename)
+        if fileobj is None:
+            fileobj = open(filename, 'rb+')
+            self.fd_descriptor_cache[filename] = fileobj
+        return fileobj
+
+    def _write_stdout(self, filename, offset, length):
+        stdout_buffer = self.stdout_buffer[filename]
+        stdout_buffer[offset] = length
+
+        for next_offset in sorted(stdout_buffer.keys()):
+            if int(next_offset) != int(self.stdout_offset):
+                break
+
+            fileobj = self._get_file(filename)
+            fileobj.seek(next_offset)
+            next_length = stdout_buffer[next_offset]
+            sys.stdout.write(fileobj.read(next_length))
+            self.stdout_offset += int(next_length)
+            del stdout_buffer[next_offset]
 
     def _cleanup(self):
         for fileobj in self.fd_descriptor_cache.values():
@@ -216,7 +244,7 @@ class PrintThread(threading.Thread):
             deprecated, will be removed in the future).
 
     """
-    def __init__(self, result_queue, quiet):
+    def __init__(self, result_queue, quiet, target=sys.stdout):
         threading.Thread.__init__(self)
         self._progress_dict = {}
         self._result_queue = result_queue
@@ -226,6 +254,8 @@ class PrintThread(threading.Thread):
         self._file_count = 0
         self._lock = threading.Lock()
         self._needs_newline = False
+
+        self._target = target
 
         self._total_parts = 0
         self._total_files = '...'
@@ -248,7 +278,7 @@ class PrintThread(threading.Thread):
                 print_task = self._result_queue.get(True)
                 if isinstance(print_task, ShutdownThreadRequest):
                     if self._needs_newline:
-                        sys.stdout.write('\n')
+                        self._target.write('\n')
                     LOGGER.debug("Shutdown request received in print thread, "
                                  "shutting down print thread.")
                     break
@@ -305,6 +335,6 @@ class PrintThread(threading.Thread):
             self._progress_length = length_prog
             final_str += prog_str
         if not self._quiet:
-            uni_print(final_str)
+            uni_print(final_str, target=self._target)
             self._needs_newline = not final_str.endswith('\n')
-            sys.stdout.flush()
+            self._target.flush()

@@ -794,7 +794,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                               'website-redirect', 'content-type',
                               'cache-control', 'content-disposition',
                               'content-encoding', 'content-language',
-                              'expires']},
+                              'expires','stdout']},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
@@ -836,6 +836,8 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},
                'force': {'options': {'action': 'store_true'}},
+               'stdout': {'options': {'action': 'store_true'}, 'documents':
+                    ('Writes file download to stdout as well as to a file')},
                'no-guess-mime-type': {'options': {'action': 'store_false',
                                                   'dest': 'guess_mime_type',
                                                   'default': True}},
@@ -883,6 +885,5 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                     'slash character.')},
                'error-document': {'options': {}, 'documents':
                    'The object key name to use when a 4XX class error occurs.'}
-
                }
 add_param_descriptions(PARAMS_DICT)

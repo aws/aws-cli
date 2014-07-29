@@ -160,7 +160,7 @@ class FileGenerator(object):
         """
         if not os.path.exists(path):
             return True
-        follow_symlinks = self.parameters.get('follow_symlinks', False)
+        follow_symlinks = self.parameters.get('follow_symlinks', True)
         if not follow_symlinks:
             if os.path.isdir(path):
                 # Trailing slash must be removed to check if it is a symlink.

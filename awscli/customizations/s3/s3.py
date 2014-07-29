@@ -607,7 +607,6 @@ class CommandArchitecture(object):
                             's3_handler': [s3handler]}
 
         files = command_dict['setup']
-
         while self.instructions:
             instruction = self.instructions.pop(0)
             file_list = []
@@ -794,7 +793,7 @@ class CommandParameters(object):
 CMD_DICT = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl', 'follow-symlinks',
-                              'no-guess-mime-type',
+                              'no-follow-symlinks', 'no-guess-mime-type',
                               'sse', 'storage-class', 'grants',
                               'website-redirect', 'content-type',
                               'cache-control', 'content-disposition',
@@ -803,6 +802,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl', 'follow-symlinks',
+                              'no-follow-symlinks',
                               'sse', 'storage-class', 'grants',
                               'website-redirect', 'content-type',
                               'cache-control', 'content-disposition',
@@ -815,6 +815,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                      'params': ['dryrun', 'delete', 'exclude',
                                 'include', 'quiet', 'acl', 'grants',
                                 'no-guess-mime-type', 'follow-symlinks',
+                                'no-follow-symlinks',
                                 'sse', 'storage-class', 'content-type',
                                 'cache-control', 'content-disposition',
                                 'content-encoding', 'content-language',
@@ -841,7 +842,11 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},
                'force': {'options': {'action': 'store_true'}},
-               'follow-symlinks': {'options': {'action': 'store_true'}},
+               'follow-symlinks': {'options': {'action': 'store_true',
+                                               'default': True}},
+               'no-follow-symlinks': {'options': {'action': 'store_false',
+                                                  'dest': 'follow_symlinks',
+                                                  'default': True}},
                'no-guess-mime-type': {'options': {'action': 'store_false',
                                                   'dest': 'guess_mime_type',
                                                   'default': True}},

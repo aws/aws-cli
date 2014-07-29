@@ -571,8 +571,8 @@ class TestSymlinks(BaseS3CLICommand):
                                                  'c-goodsymlink'))
 
     def test_no_follow_symlinks(self):
-        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
-                                         self.bucket_name))
+        p = aws('s3 sync %s s3://%s/ --no-follow-symlinks' % (self.files.rootdir,
+                                                              self.bucket_name))
         self.assert_no_errors(p)
         self.assertTrue(not self.key_exists(self.bucket_name,
                         'a-goodsymlink'))
@@ -600,6 +600,24 @@ class TestSymlinks(BaseS3CLICommand):
         self.assertEqual(self.get_key_contents(self.bucket_name,
                                                key_name='realfiles/foo.txt'),
                          'foo.txt contents')
+
+    def test_follow_symlinks_default(self):
+        p = aws('s3 sync %s s3://%s/' %
+                (self.files.rootdir, self.bucket_name))
+        self.assert_no_errors(p)
+        self.assertEqual(self.get_key_contents(self.bucket_name,
+                                               key_name='a-goodsymlink'),
+                         'foo.txt contents')
+        self.assertTrue(not self.key_exists(self.bucket_name,
+                        'b-badsymlink'))
+        self.assertEqual(
+            self.get_key_contents(self.bucket_name,
+                                  key_name='c-goodsymlink/foo.txt'),
+            'foo.txt contents')
+        self.assertEqual(self.get_key_contents(self.bucket_name,
+                                               key_name='realfiles/foo.txt'),
+                         'foo.txt contents')
+
 
 
 class TestUnicode(BaseS3CLICommand):
@@ -723,7 +741,9 @@ class TestMbRb(BaseS3CLICommand):
     def test_mb_rb(self):
         p = aws('s3 mb s3://%s' % self.bucket_name)
         self.assert_no_errors(p)
-
+        
+        # Give the bucket time to form.
+        time.sleep(1)
         response = self.list_buckets()
         self.assertIn(self.bucket_name, [b['Name'] for b in response])
 

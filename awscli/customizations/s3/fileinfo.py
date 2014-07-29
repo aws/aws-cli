@@ -26,7 +26,7 @@ def read_file(filename):
         return in_file.read()
 
 
-def save_file(filename, response_data, last_update):
+def save_file(filename, response_data, last_update, stdout=False):
     """
     This writes to the file upon downloading.  It reads the data in the
     response.  Makes a new directory if needed and then writes the
@@ -50,9 +50,13 @@ def save_file(filename, response_data, last_update):
             for chunk in file_chunks:
                 md5.update(chunk)
                 out_file.write(chunk)
+                if stdout:
+                    sys.stdout.write(chunk)
         else:
             for chunk in file_chunks:
                 out_file.write(chunk)
+                if stdout:
+                    sys.stdout.write(chunk)
     if not _is_multipart_etag(etag):
         if etag != md5.hexdigest():
             os.remove(filename)
@@ -236,7 +240,7 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.src)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         response_data, http = operate(self.service, 'GetObject', params)
-        save_file(self.dest, response_data, self.last_update)
+        save_file(self.dest, response_data, self.last_update, self.parameters.get('stdout', False))
 
     def copy(self):
         """

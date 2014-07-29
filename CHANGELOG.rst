@@ -3,6 +3,15 @@ CHANGELOG
 =========
 
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws ec2 describe-network-interface-attribute``: Fix issue where
+  the model for the ``aws ec2 describe-network-interface-attribute`` was
+  incorrect
+  (`issue 558 <https://github.com/aws/aws-cli/issues/558>`__)
+
+
 1.3.24
 ======
 

@@ -27,7 +27,7 @@ class TestIOWriterThread(unittest.TestCase):
 
     def setUp(self):
         self.queue = queue.Queue()
-        self.io_thread = IOWriterThread(self.queue)
+        self.io_thread = IOWriterThread(self.queue, False)
         self.temp_dir = tempfile.mkdtemp()
         self.filename = os.path.join(self.temp_dir, 'foo')
         # Create the file, since IOWriterThread expects
@@ -73,7 +73,7 @@ class TestIOWriterThread(unittest.TestCase):
 class TestExecutor(unittest.TestCase):
     def test_shutdown_does_not_hang(self):
         executor = Executor(2, queue.Queue(), False,
-                            10, queue.Queue(maxsize=1))
+                            10, queue.Queue(maxsize=1), False)
         with temporary_file('rb+') as f:
             executor.start()
             class FloodIOQueueTask(object):

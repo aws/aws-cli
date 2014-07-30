@@ -72,7 +72,7 @@ COMPLETIONS = [
                              '--cache-control', '--content-type',
                              '--content-disposition',
                              '--content-encoding', '--content-language',
-                             '--expires', '--grants'] + GLOBALOPTS)),
+                             '--expires', '--grants', '--stdout'] + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
                                      '--content-disposition', '--cache-control',
@@ -80,7 +80,7 @@ COMPLETIONS = [
                                      '--expires', '--website-redirect', '--acl',
                                      '--storage-class', '--sse',
                                      '--exclude', '--include',
-                                     '--grants'] + GLOBALOPTS)),
+                                     '--grants', '--stdout'] + GLOBALOPTS)),
     ('aws emr ', -1, set([])),
     ]
 

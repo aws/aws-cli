@@ -189,10 +189,10 @@ class MultiCounter(object):
 
 def uni_print(statement, target=sys.stdout):
     """
-    This function is used to properly write unicode to stdout.  It
-    ensures that the proper encoding is used if the statement is
+    This function is used to properly write unicode to stdout or stderr.
+    It ensures that the proper encoding is used if the statement is
     not in a version type of string.  The initial check is to
-    allow if ``sys.stdout`` does not use an encoding
+    allow if ``target`` does not use an encoding
     """
     encoding = getattr(target, 'encoding', None)
     if encoding is not None and not PY3:

@@ -55,7 +55,7 @@ class Executor(object):
         output = sys.stderr if stdout else sys.stdout
         self.print_thread = PrintThread(self.result_queue,
                                         self.quiet,
-                                        target=output)
+                                        output)
         self.print_thread.daemon = True
         self.io_thread = IOWriterThread(self.write_queue, stdout)
 
@@ -335,6 +335,6 @@ class PrintThread(threading.Thread):
             self._progress_length = length_prog
             final_str += prog_str
         if not self._quiet:
-            uni_print(final_str, target=self._target)
+            uni_print(final_str, self._target)
             self._needs_newline = not final_str.endswith('\n')
             self._target.flush()

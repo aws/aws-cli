@@ -386,7 +386,7 @@ class ListCommand(S3SubCommand):
                 filename = content['Key']
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
-            uni_print(print_str)
+            uni_print(print_str, sys.stdout)
             sys.stdout.flush()
 
     def _list_all_buckets(self):

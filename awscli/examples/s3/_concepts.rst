@@ -1,3 +1,5 @@
+This provides higher level S3 commands for the AWS CLI.
+
 This section explains concepts and notations that are prominent in the set
 of commands provided.
 

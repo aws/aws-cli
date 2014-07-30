@@ -178,7 +178,8 @@ class BasicCommand(CLICommand):
             # function for this top level command.
             return self._run_main(parsed_args, parsed_globals)
         else:
-            return subcommand_table[parsed_args.subcommand](remaining, parsed_globals)
+            return subcommand_table[parsed_args.subcommand](remaining,
+                                                            parsed_globals)
 
     def _run_main(self, parsed_args, parsed_globals):
         # Subclasses should implement this method.
@@ -207,13 +208,27 @@ class BasicCommand(CLICommand):
         help_command(parsed_args, parsed_globals)
 
     def create_help_command(self):
-        return BasicHelp(self._session, self, command_table={},
+        command_help_table = {}
+        if self.SUBCOMMANDS:
+            command_help_table = self.create_help_command_table()
+        return BasicHelp(self._session, self, command_table=command_help_table,
                          arg_table=self.arg_table)
+
+    def create_help_command_table(self):
+        """
+        Create the command table into a form that can be handled by the
+        BasicDocHandler.
+        """
+        commands = {}
+        for command in self.SUBCOMMANDS:
+            commands[command['name']] = command['command_class'](self._session)
+        return commands
 
     @property
     def arg_table(self):
         arg_table = OrderedDict()
         for arg_data in self.ARG_TABLE:
+
             custom_argument = CustomArgument(**arg_data)
 
             # If a custom schema was passed in, create the argument object
@@ -243,7 +258,7 @@ class BasicHelp(HelpCommand):
         # This is defined in HelpCommand so we're matching the
         # casing here.
         if event_handler_class is None:
-            event_handler_class=BasicDocHandler
+            event_handler_class = BasicDocHandler
         self.EventHandlerClass = event_handler_class
 
         # These are public attributes that are mapped from the command
@@ -319,9 +334,28 @@ class BasicDocHandler(OperationDocumentEventHandler):
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
         if not help_command.synopsis:
-            super(BasicDocHandler, self).doc_synopsis_option(
-                arg_name=arg_name,
-                help_command=help_command, **kwargs)
+            doc = help_command.doc
+            argument = help_command.arg_table[arg_name]
+            if argument.synopsis:
+                option_str = argument.synopsis
+            elif argument.group_name in self._arg_groups:
+                if argument.group_name in self._documented_arg_groups:
+                    # This arg is already documented so we can move on.
+                    return
+                option_str = ' | '.join(
+                    [a.cli_name for a in
+                     self._arg_groups[argument.group_name]])
+                self._documented_arg_groups.append(argument.group_name)
+            elif argument.cli_type_name == 'boolean':
+                option_str = '%s' % argument.cli_name
+            elif argument.nargs == '+':
+                option_str = "%s <value> [<value>...]" % argument.cli_name
+            else:
+                option_str = '%s <value>' % argument.cli_name
+            if not (argument.required or argument.positional_arg):
+                option_str = '[%s]' % option_str
+            doc.writeln('%s' % option_str)
+
         else:
             # A synopsis has been provided so we don't need to write
             # anything here.
@@ -334,16 +368,22 @@ class BasicDocHandler(OperationDocumentEventHandler):
         else:
             self.doc.style.end_codeblock()
 
+
     def doc_examples(self, help_command, **kwargs):
         if help_command.examples:
             self.doc.style.h2('Examples')
             self.doc.write(help_command.examples)
 
     def doc_subitems_start(self, help_command, **kwargs):
-        pass
+        if help_command.command_table:
+            doc = help_command.doc
+            doc.style.h2('Available Commands')
+            doc.style.toctree()
 
     def doc_subitem(self, command_name, help_command, **kwargs):
-        pass
+        if help_command.command_table:
+            doc = help_command.doc
+            doc.style.tocitem(command_name)
 
     def doc_subitems_end(self, help_command, **kwargs):
         pass

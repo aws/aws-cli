@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import argparse
 from datetime import datetime
 import mimetypes
 import hashlib
@@ -27,6 +28,29 @@ from botocore.compat import unquote_str
 
 from awscli.customizations.s3.constants import MAX_PARTS
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
+
+
+class AppendFilter(argparse.Action):
+    """
+    This class is used as an action when parsing the parameters.
+    Specifically it is used for actions corresponding to exclude
+    and include filters.  What it does is that it appends a list
+    consisting of the name of the parameter and its value onto
+    a list containing these [parameter, value] lists.  In this
+    case, the name of the parameter will either be --include or
+    --exclude and the value will be the rule to apply.  This will
+    format all of the rules inputted into the command line
+    in a way compatible with the Filter class.  Note that rules that
+    appear later in the command line take preferance over rulers that
+    appear earlier.
+    """
+    def __call__(self, parser, namespace, values, option_string=None):
+        filter_list = getattr(namespace, self.dest)
+        if filter_list:
+            filter_list.append([option_string, values[0]])
+        else:
+            filter_list = [[option_string, values[0]]]
+        setattr(namespace, self.dest, filter_list)
 
 
 class MD5Error(Exception):

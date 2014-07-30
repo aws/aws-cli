@@ -33,3 +33,7 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
         self.assertEqual(
             stdout, '%s        100 foo/bar.txt\n'%time_local.strftime('%Y-%m-%d %H:%M:%S'))
+
+
+if __name__ == "__main__":
+    unittest.main()

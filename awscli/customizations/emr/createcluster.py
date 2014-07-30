@@ -147,6 +147,11 @@ class CreateCluster(BasicCommand):
                 parsed_args.no_termination_protected,
                 '--no-termination-protected')
 
+        if (
+                parsed_args.visible_to_all_users is False and
+                parsed_args.no_visible_to_all_users is False):
+            parsed_args.visible_to_all_users = True
+
         params['VisibleToAllUsers'] = \
             emrutils.apply_boolean_options(
                 parsed_args.visible_to_all_users,

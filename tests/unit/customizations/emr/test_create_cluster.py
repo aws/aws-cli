@@ -312,7 +312,7 @@ DEFAULT_RESULT = \
         'Name': DEFAULT_CLUSTER_NAME,
         'Instances': DEFAULT_INSTANCES,
         'AmiVersion': '3.0.4',
-        'VisibleToAllUsers': False,
+        'VisibleToAllUsers': True,
         'JobFlowRole': EC2_ROLE_NAME,
         'ServiceRole': EMR_ROLE_NAME,
         'Tags': [],
@@ -435,13 +435,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users'
-        result = copy.deepcopy(DEFAULT_RESULT)
-        result['VisibleToAllUsers'] = True
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
     def test_no_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--no-visible-to-all-users'
         result = copy.deepcopy(DEFAULT_RESULT)
+        result['VisibleToAllUsers'] = False
         self.assert_params_for_cmd(cmd, result)
 
     def test_visible_to_all_users_and_no_visible_to_all_users(self):

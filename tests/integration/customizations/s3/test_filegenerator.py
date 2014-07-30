@@ -48,10 +48,9 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
-        params = {'region': 'us-east-1'}
         expected_file_size = 15
         result_list = list(
-            FileGenerator(self.service, self.endpoint, '', params).call(
+            FileGenerator(self.service, self.endpoint, '').call(
                 input_s3_file))
         file_info = FileInfo(src=self.file1, dest='text1.txt',
                              compare_key='text1.txt',
@@ -73,9 +72,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        params = {'region': 'us-east-1'}
         result_list = list(
-            FileGenerator(self.service, self.endpoint, '', params).call(
+            FileGenerator(self.service, self.endpoint, '').call(
                 input_s3_file))
         file_info = FileInfo(src=self.file2,
                              dest='another_directory' + os.sep + 'text2.txt',
@@ -106,10 +104,9 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        params = {'region': 'us-east-1'}
         result_list = list(
             FileGenerator(self.service, self.endpoint,
-                          'delete', params).call(
+                          'delete').call(
                 input_s3_file))
 
         file_info1 = FileInfo(

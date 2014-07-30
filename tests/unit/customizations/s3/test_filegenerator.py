@@ -56,8 +56,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                             'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.service,
-                              self.endpoint, '',
-                              params).call(input_local_file)
+                              self.endpoint, '').call(input_local_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -82,8 +81,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service, self.endpoint,
-                              '', params).call(input_local_dir)
+        files = FileGenerator(self.service,
+                              self.endpoint,'').call(input_local_dir)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -114,7 +113,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
 class TestIgnoreFilesLocally(unittest.TestCase):
     """
     This class tests the ability to ignore particular files.  This includes
-    skipping symlink when desired and skipping broken symlinks.
+    skipping symlink when desired.
     """
     def setUp(self):
         self.session = FakeSession()
@@ -128,10 +127,9 @@ class TestIgnoreFilesLocally(unittest.TestCase):
     def test_bad_symlink(self):
         path = os.path.join(self.files.rootdir, 'badsymlink')
         os.symlink('non-existent-file', path)
-        params = {'region': 'us-east-1', 'follow_symlinks': True}
         filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', params)
-        self.assertTrue(filegenerator.check_ignore_file(path))
+                                      '', True)
+        self.assertFalse(filegenerator.should_ignore_file(path))
 
     def test_skip_symlink(self):
         filename = 'foo.txt'
@@ -140,10 +138,9 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                contents='foo.txt contents')
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(filename, sym_path)
-        params = {'region': 'us-east-1', 'follow_symlinks': False}
         filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', params)
-        self.assertTrue(filegenerator.check_ignore_file(sym_path))
+                                      '', False)
+        self.assertTrue(filegenerator.should_ignore_file(sym_path))
 
     def test_no_skip_symlink(self):
         filename = 'foo.txt'
@@ -152,11 +149,10 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                       contents='foo.txt contents')
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(path, sym_path)
-        params = {'region': 'us-east-1', 'follow_symlinks': True}
         filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', params)
-        self.assertFalse(filegenerator.check_ignore_file(sym_path))
-        self.assertFalse(filegenerator.check_ignore_file(path))
+                                      '', True)
+        self.assertFalse(filegenerator.should_ignore_file(sym_path))
+        self.assertFalse(filegenerator.should_ignore_file(path))
 
     def test_no_skip_symlink_dir(self):
         filename = 'dir'
@@ -164,11 +160,10 @@ class TestIgnoreFilesLocally(unittest.TestCase):
         os.mkdir(path)
         sym_path = os.path.join(self.files.rootdir, 'symlink')
         os.symlink(path, sym_path)
-        params = {'region': 'us-east-1', 'follow_symlinks': True}
         filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', params)
-        self.assertFalse(filegenerator.check_ignore_file(sym_path))
-        self.assertFalse(filegenerator.check_ignore_file(path))
+                                      '', True)
+        self.assertFalse(filegenerator.should_ignore_file(sym_path))
+        self.assertFalse(filegenerator.should_ignore_file(path))
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
@@ -176,8 +171,8 @@ class TestIgnoreFilesLocally(unittest.TestCase):
 class TestSymlinksIgnoreFiles(unittest.TestCase):
     """
     This class tests the ability to list out the correct local files
-    depending on if symlinks are being followed or the file is to be
-    ignored such as with broken symlinks.
+    depending on if symlinks are being followed.  Also tests to ensure
+    broken symlinks fail.
     """
     def setUp(self):
         self.session = FakeSession()
@@ -220,9 +215,6 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
         self.files.remove_all()
 
     def test_no_follow_symlink(self):
-        params = {'region': 'us-east-1', 'follow_symlinks': False}
-        filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', params)
         abs_root = six.text_type(os.path.abspath(self.root) + os.sep)
         input_local_dir = {'src': {'path': abs_root,
                                    'type': 'local'},
@@ -230,7 +222,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         file_infos = FileGenerator(self.service, self.endpoint,
-                                   '', params).call(input_local_dir)
+                                   '', False).call(input_local_dir)
         self.filenames.sort()
         result_list = []
         for file_info in file_infos:
@@ -241,10 +233,10 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
             filename = six.text_type(os.path.abspath(self.filenames[i]))
             self.assertEqual(result_list[i], filename)
 
-    def test_follow_symlink(self):
-        params = {'region': 'us-east-1', 'follow_symlinks': True}
-        filegenerator = FileGenerator(self.service, self.endpoint,
-                                      '', params)
+    def test_follow_bad_symlink(self):
+        """
+        This tests to make sure it fails when following bad symlinks.
+        """
         abs_root = six.text_type(os.path.abspath(self.root) + os.sep)
         input_local_dir = {'src': {'path': abs_root,
                                    'type': 'local'},
@@ -252,7 +244,32 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         file_infos = FileGenerator(self.service, self.endpoint,
-                                   '', params).call(input_local_dir)
+                                   '', True).call(input_local_dir)
+        result_list = []
+        rc = 0
+        try:
+            for file_info in file_infos:
+                result_list.append(getattr(file_info, 'src'))
+            rc = 1
+        except OSError as e:
+            pass
+        # Error shows up as ValueError in Python 3.
+        except ValueError as e:
+            pass
+        self.assertEquals(0, rc)
+
+
+    def test_follow_symlink(self):
+        # First remove the bad symlink.
+        os.remove(os.path.join(self.root, 'symlink_2'))
+        abs_root = six.text_type(os.path.abspath(self.root) + os.sep)
+        input_local_dir = {'src': {'path': abs_root,
+                                   'type': 'local'},
+                           'dest': {'path': self.bucket,
+                                    'type': 's3'},
+                           'dir_op': True, 'use_src_name': True}
+        file_infos = FileGenerator(self.service, self.endpoint,
+                                   '', True).call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
         result_list = []
@@ -277,7 +294,7 @@ class TestListFilesLocally(unittest.TestCase):
     @mock.patch('os.listdir')
     def test_error_raised_on_decoding_error(self, listdir_mock):
         # On Python3, sys.getdefaultencoding
-        file_generator = FileGenerator(None, None, None, {})
+        file_generator = FileGenerator(None, None, None)
         # utf-8 encoding for U+2713.
         listdir_mock.return_value = [b'\xe2\x9c\x93']
         with self.assertRaises(FileDecodingError):
@@ -292,7 +309,7 @@ class TestListFilesLocally(unittest.TestCase):
         os.mkdir(p(self.directory, 'test'))
         open(p(self.directory, 'test', 'foo.txt'), 'w').close()
 
-        file_generator = FileGenerator(None, None, None, {})
+        file_generator = FileGenerator(None, None, None)
         values = list(el[0] for el in file_generator.list_files(
             self.directory, dir_op=True))
         self.assertEqual(values, list(sorted(values)))
@@ -310,7 +327,7 @@ class TestListFilesLocally(unittest.TestCase):
         open(p(self.directory, u'a\u0300a', u'z'), 'w').close()
         open(p(self.directory, u'a\u0300a', u'\u00e6'), 'w').close()
 
-        file_generator = FileGenerator(None, None, None, {})
+        file_generator = FileGenerator(None, None, None)
         values = list(el[0] for el in file_generator.list_files(
             self.directory, dir_op=True))
         expected_order = [os.path.join(self.directory, el) for el in [
@@ -349,7 +366,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.service, self.endpoint,
-                              '', params).call(input_s3_file)
+                              '').call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -377,7 +394,7 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.service, self.endpoint,
-                              '', params).call(input_s3_file)
+                              '').call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -413,9 +430,8 @@ class S3FileGeneratorTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        params = {'region': 'us-east-1'}
         files = FileGenerator(self.service, self.endpoint,
-                              'delete', params).call(input_s3_file)
+                              'delete').call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)

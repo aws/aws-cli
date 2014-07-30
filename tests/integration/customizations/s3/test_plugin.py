@@ -551,7 +551,6 @@ class TestSync(BaseS3CLICommand):
 class TestSymlinks(BaseS3CLICommand):
     """
     This class test the ability to follow or not follow symlinks.
-    Also tests the ability to ignore bad symlinks.
     """
     def extra_setup(self):
         self.bucket_name = self.create_bucket()
@@ -565,7 +564,7 @@ class TestSymlinks(BaseS3CLICommand):
                                                   'a-goodsymlink'))
         # Create a bad symlink.
         os.symlink('non-existent-file', os.path.join(self.files.rootdir,
-                                                     'b-goodsymlink'))
+                                                     'b-badsymlink'))
         # Create a symlink to directory where foo.txt is.
         os.symlink(self.nested_dir, os.path.join(self.files.rootdir,
                                                  'c-goodsymlink'))
@@ -585,6 +584,8 @@ class TestSymlinks(BaseS3CLICommand):
                          'foo.txt contents')
 
     def test_follow_symlinks(self):
+        # Get rid of the bad symlink first.
+        os.remove(os.path.join(self.files.rootdir, 'b-badsymlink'))
         p = aws('s3 sync %s s3://%s/ --follow-symlinks' %
                 (self.files.rootdir, self.bucket_name))
         self.assert_no_errors(p)
@@ -602,6 +603,8 @@ class TestSymlinks(BaseS3CLICommand):
                          'foo.txt contents')
 
     def test_follow_symlinks_default(self):
+        # Get rid of the bad symlink first.
+        os.remove(os.path.join(self.files.rootdir, 'b-badsymlink'))
         p = aws('s3 sync %s s3://%s/' %
                 (self.files.rootdir, self.bucket_name))
         self.assert_no_errors(p)
@@ -617,7 +620,11 @@ class TestSymlinks(BaseS3CLICommand):
         self.assertEqual(self.get_key_contents(self.bucket_name,
                                                key_name='realfiles/foo.txt'),
                          'foo.txt contents')
-
+    
+    def test_bad_symlink(self):
+        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
+        self.assertEqual(p.rc, 1, p.stdout)
+        self.assertIn('[Errno 2] No such file or directory', p.stdout)
 
 
 class TestUnicode(BaseS3CLICommand):

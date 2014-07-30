@@ -54,11 +54,11 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, service, endpoint, operation_name, parameters):
+    def __init__(self, service, endpoint, operation_name, follow_symlinks=True):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
-        self.parameters = parameters
+        self.follow_symlinks = follow_symlinks
 
     def call(self, files):
         """
@@ -104,7 +104,7 @@ class FileGenerator(object):
         """
         join, isdir, isfile = os.path.join, os.path.isdir, os.path.isfile
         error, listdir = os.error, os.listdir
-        if not self.check_ignore_file(path):
+        if not self.should_ignore_file(path):
             if not dir_op:
                 size, last_update = get_file_stat(path)
                 yield path, size, last_update
@@ -127,7 +127,7 @@ class FileGenerator(object):
                 names.sort()
                 for name in names:
                     file_path = join(path, name)
-                    if not self.check_ignore_file(file_path):
+                    if not self.should_ignore_file(file_path):
                         if isdir(file_path):
                             # Anything in a directory will have a prefix of
                             # this current directory and will come before the
@@ -152,17 +152,14 @@ class FileGenerator(object):
             if not isinstance(name, six.text_type):
                 raise FileDecodingError(path, name)
 
-    def check_ignore_file(self, path):
+    def should_ignore_file(self, path):
         """
         This function checks whether a file should be ignored in the
-        file generation process.  This include files that do not exists
-        (i.e. broken symlinks) and symlinks that are not to be followed.
+        file generation process.  This includes symlinks that are not to be
+        followed.
         """
-        if not os.path.exists(path):
-            return True
-        follow_symlinks = self.parameters.get('follow_symlinks', True)
-        if not follow_symlinks:
-            if os.path.isdir(path):
+        if not self.follow_symlinks:
+            if os.path.isdir(path) and path.endswith(os.sep):
                 # Trailing slash must be removed to check if it is a symlink.
                 path = path[:-1]
             if os.path.islink(path):

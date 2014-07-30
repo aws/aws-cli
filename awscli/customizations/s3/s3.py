@@ -562,12 +562,11 @@ class CommandArchitecture(object):
             'rb': 'remove_bucket'
         }
         operation_name = cmd_translation[paths_type][self.cmd]
-
         file_generator = FileGenerator(self._service, self._endpoint,
                                        operation_name,
-                                       self.parameters)
+                                       self.parameters['follow_symlinks'])
         rev_generator = FileGenerator(self._service, self._endpoint, '',
-                                      self.parameters)
+                                      self.parameters['follow_symlinks'])
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -646,6 +645,8 @@ class CommandParameters(object):
         self.parameters = parameters
         if 'dir_op' not in parameters:
             self.parameters['dir_op'] = False
+        if 'follow_symlinks' not in parameters:
+            self.parameters['follow_symlinks'] = True 
         if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
 

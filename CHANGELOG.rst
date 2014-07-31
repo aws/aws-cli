@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.3.25
+======
 
 * bugfix:``aws ec2 describe-network-interface-attribute``: Fix issue where
   the model for the ``aws ec2 describe-network-interface-attribute`` was
@@ -19,6 +19,13 @@ Next Release (TBD)
 * bugfix:``aws route53 change-tags-for-resource``: Fix serialization issue
   for ``aws route53 change-tags-for-resource``
   (`botocore issue 328 <https://github.com/boto/botocore/pull/328>`__)
+* bugfix:``aws ec2 describe-network-interface-attribute``: Update parameters
+  to add the ``--attribute`` argument
+  (`botocore issue 327 <https://github.com/boto/botocore/pull/327>`__)
+* feature:``aws autoscaling``: Update command to the latest version
+* feature:``aws elasticache``: Update command to the latest version
+* feature:``aws route53``: Update command to the latest version
+* feature:``aws route53domains``: Add support for Amazon Route53 Domains
 
 
 1.3.24

@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.3.25
+======
 
 * bugfix:``aws ec2 describe-network-interface-attribute``: Fix issue where
   the model for the ``aws ec2 describe-network-interface-attribute`` was

@@ -179,9 +179,9 @@ class S3(object):
         self._session.emit('building-operation-table.%s' % self._name,
                            operation_table=subcommand_table,
                            session=self._session)
-        subcommand_table['help'] = S3HelpCommand(self._session, self,
-                                                command_table=subcommand_table,
-                                                arg_table=None)
+        subcommand_table['help'] = \
+            S3HelpCommand(self._session, self,
+                          command_table=subcommand_table, arg_table=None)
         return subcommand_table
 
     def _get_command_usage(self, cmd_class):
@@ -312,9 +312,9 @@ class S3SubCommand(object):
     def _populate_parameter_table(self):
         parameter_table = {}
         for param in CMD_DICT[self._name]['params']:
-            parameter_table[param] = S3Parameter(param,
-                                                 PARAMS_DICT[param]['options'],
-                                                 PARAMS_DICT[param]['documents'])
+            parameter_table[param] = \
+                S3Parameter(param, PARAMS_DICT[param]['options'],
+                            PARAMS_DICT[param]['documents'])
         return parameter_table
 
     def _build_call_parameters(self, args, service_params):
@@ -414,7 +414,8 @@ class ListCommand(S3SubCommand):
         last_mod = parse(last_mod)
         last_mod = last_mod.astimezone(tzlocal())
         last_mod_tup = (str(last_mod.year), str(last_mod.month).zfill(2),
-                        str(last_mod.day).zfill(2), str(last_mod.hour).zfill(2),
+                        str(last_mod.day).zfill(2),
+                        str(last_mod.hour).zfill(2),
                         str(last_mod.minute).zfill(2),
                         str(last_mod.second).zfill(2))
         last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
@@ -445,9 +446,11 @@ class WebsiteCommand(S3SubCommand):
     def _build_website_configuration(self, parsed_args):
         website_config = {}
         if parsed_args.index_document is not None:
-            website_config['IndexDocument'] = {'Suffix': parsed_args.index_document}
+            website_config['IndexDocument'] = \
+                {'Suffix': parsed_args.index_document}
         if parsed_args.error_document is not None:
-            website_config['ErrorDocument'] = {'Key': parsed_args.error_document}
+            website_config['ErrorDocument'] = \
+                {'Key': parsed_args.error_document}
         return website_config
 
     def _get_bucket_name(self, path):
@@ -559,12 +562,11 @@ class CommandArchitecture(object):
             'rb': 'remove_bucket'
         }
         operation_name = cmd_translation[paths_type][self.cmd]
-
         file_generator = FileGenerator(self._service, self._endpoint,
                                        operation_name,
-                                       self.parameters)
+                                       self.parameters['follow_symlinks'])
         rev_generator = FileGenerator(self._service, self._endpoint, '',
-                                      self.parameters)
+                                      self.parameters['follow_symlinks'])
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -575,36 +577,35 @@ class CommandArchitecture(object):
         command_dict = {}
         if self.cmd == 'sync':
             command_dict = {'setup': [files, rev_files],
-                                    'file_generator': [file_generator,
-                                                    rev_generator],
-                                    'filters': [create_filter(self.parameters),
-                                                create_filter(self.parameters)],
-                                    'comparator': [Comparator(self.parameters)],
-                                    's3_handler': [s3handler]}
+                            'file_generator': [file_generator,
+                                               rev_generator],
+                            'filters': [create_filter(self.parameters),
+                                        create_filter(self.parameters)],
+                            'comparator': [Comparator(self.parameters)],
+                            's3_handler': [s3handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
-                                'file_generator': [file_generator],
-                                'filters': [create_filter(self.parameters)],
-                                's3_handler': [s3handler]}
+                            'file_generator': [file_generator],
+                            'filters': [create_filter(self.parameters)],
+                            's3_handler': [s3handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
-                                'file_generator': [file_generator],
-                                'filters': [create_filter(self.parameters)],
-                                's3_handler': [s3handler]}
+                            'file_generator': [file_generator],
+                            'filters': [create_filter(self.parameters)],
+                            's3_handler': [s3handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
-                                'file_generator': [file_generator],
-                                'filters': [create_filter(self.parameters)],
-                                's3_handler': [s3handler]}
+                            'file_generator': [file_generator],
+                            'filters': [create_filter(self.parameters)],
+                            's3_handler': [s3handler]}
         elif self.cmd == 'mb':
             command_dict = {'setup': [taskinfo],
-                                's3_handler': [s3handler]}
+                            's3_handler': [s3handler]}
         elif self.cmd == 'rb':
             command_dict = {'setup': [taskinfo],
-                                's3_handler': [s3handler]}
+                            's3_handler': [s3handler]}
 
         files = command_dict['setup']
-
         while self.instructions:
             instruction = self.instructions.pop(0)
             file_list = []
@@ -644,6 +645,8 @@ class CommandParameters(object):
         self.parameters = parameters
         if 'dir_op' not in parameters:
             self.parameters['dir_op'] = False
+        if 'follow_symlinks' not in parameters:
+            self.parameters['follow_symlinks'] = True 
         if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
 
@@ -761,7 +764,8 @@ class CommandParameters(object):
                 bucket = find_bucket_key(self.parameters['src'][5:])[0]
                 path = 's3://' + bucket
                 try:
-                    del_objects = S3SubCommand('rm', self.session, {'nargs': 1})
+                    del_objects = S3SubCommand('rm', self.session,
+                                               {'nargs': 1})
                     del_objects([path, '--recursive'], parsed_globals)
                 except:
                     pass
@@ -774,7 +778,8 @@ class CommandParameters(object):
         Adds endpoint_url to the parameters.
         """
         if 'endpoint_url' in parsed_globals:
-            self.parameters['endpoint_url'] = getattr(parsed_globals, 'endpoint_url')
+            self.parameters['endpoint_url'] = getattr(parsed_globals,
+                                                      'endpoint_url')
         else:
             self.parameters['endpoint_url'] = None
 
@@ -788,8 +793,8 @@ class CommandParameters(object):
 # keys for help command and doc generation.
 CMD_DICT = {'cp': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude', 'acl',
-                              'no-guess-mime-type',
+                              'include', 'exclude', 'acl', 'follow-symlinks',
+                              'no-follow-symlinks', 'no-guess-mime-type',
                               'sse', 'storage-class', 'grants',
                               'website-redirect', 'content-type',
                               'cache-control', 'content-disposition',
@@ -797,7 +802,8 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                               'expires']},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
-                              'include', 'exclude', 'acl',
+                              'include', 'exclude', 'acl', 'follow-symlinks',
+                              'no-follow-symlinks',
                               'sse', 'storage-class', 'grants',
                               'website-redirect', 'content-type',
                               'cache-control', 'content-disposition',
@@ -809,7 +815,8 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
             'sync': {'options': {'nargs': 2},
                      'params': ['dryrun', 'delete', 'exclude',
                                 'include', 'quiet', 'acl', 'grants',
-                                'no-guess-mime-type',
+                                'no-guess-mime-type', 'follow-symlinks',
+                                'no-follow-symlinks',
                                 'sse', 'storage-class', 'content-type',
                                 'cache-control', 'content-disposition',
                                 'content-encoding', 'content-language',
@@ -836,6 +843,11 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},
                'force': {'options': {'action': 'store_true'}},
+               'follow-symlinks': {'options': {'action': 'store_true',
+                                               'default': True}},
+               'no-follow-symlinks': {'options': {'action': 'store_false',
+                                                  'dest': 'follow_symlinks',
+                                                  'default': True}},
                'no-guess-mime-type': {'options': {'action': 'store_false',
                                                   'dest': 'guess_mime_type',
                                                   'default': True}},

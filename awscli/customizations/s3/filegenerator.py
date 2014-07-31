@@ -31,7 +31,7 @@ class FileDecodingError(Exception):
     ADVICE = (
         "Please check your locale settings.  The filename was decoded as: %s\n"
         "On posix platforms, check the LC_CTYPE environment variable."
-            % (sys.getfilesystemencoding())
+        % (sys.getfilesystemencoding())
     )
 
     def __init__(self, directory, filename):
@@ -54,10 +54,11 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, service, endpoint, operation_name, parameters):
+    def __init__(self, service, endpoint, operation_name, follow_symlinks=True):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
+        self.follow_symlinks = follow_symlinks
 
     def call(self, files):
         """
@@ -103,38 +104,42 @@ class FileGenerator(object):
         """
         join, isdir, isfile = os.path.join, os.path.isdir, os.path.isfile
         error, listdir = os.error, os.listdir
-        if not dir_op:
-            size, last_update = get_file_stat(path)
-            yield path, size, last_update
-        else:
-            # We need to list files in byte order based on the full
-            # expanded path of the key: 'test/1/2/3.txt'  However, listdir()
-            # will only give us contents a single directory at a time, so we'll
-            # get 'test'.  At the same time we don't want to load the entire
-            # list of files into memory.  This is handled by first going
-            # through the current directory contents and adding the directory
-            # separator to any directories.  We can then sort the contents,
-            # and ensure byte order.
-            names = listdir(path)
-            self._check_paths_decoded(path, names)
-            for i, name in enumerate(names):
-                file_path = join(path, name)
-                if isdir(file_path):
-                    names[i] = name + os.path.sep
-            names.sort()
-            for name in names:
-                file_path = join(path, name)
-                if isdir(file_path):
-                    # Anything in a directory will have a prefix of this
-                    # current directory and will come before the
-                    # remaining contents in this directory.  This means we need
-                    # to recurse into this sub directory before yielding the
-                    # rest of this directory's contents.
-                    for x in self.list_files(file_path, dir_op):
-                        yield x
-                else:
-                    size, last_update = get_file_stat(file_path)
-                    yield file_path, size, last_update
+        if not self.should_ignore_file(path):
+            if not dir_op:
+                size, last_update = get_file_stat(path)
+                yield path, size, last_update
+            else:
+                # We need to list files in byte order based on the full
+                # expanded path of the key: 'test/1/2/3.txt'  However,
+                # listdir() will only give us contents a single directory
+                # at a time, so we'll get 'test'.  At the same time we don't
+                # want to load the entire list of files into memory.  This
+                # is handled by first going through the current directory
+                # contents and adding the directory separator to any
+                # directories.  We can then sort the contents,
+                # and ensure byte order.
+                names = listdir(path)
+                self._check_paths_decoded(path, names)
+                for i, name in enumerate(names):
+                    file_path = join(path, name)
+                    if isdir(file_path):
+                        names[i] = name + os.path.sep
+                names.sort()
+                for name in names:
+                    file_path = join(path, name)
+                    if not self.should_ignore_file(file_path):
+                        if isdir(file_path):
+                            # Anything in a directory will have a prefix of
+                            # this current directory and will come before the
+                            # remaining contents in this directory.  This
+                            # means we need to recurse into this sub directory
+                            # before yielding the rest of this directory's
+                            # contents.
+                            for x in self.list_files(file_path, dir_op):
+                                yield x
+                        else:
+                            size, last_update = get_file_stat(file_path)
+                            yield file_path, size, last_update
 
     def _check_paths_decoded(self, path, names):
         # We can get a UnicodeDecodeError if we try to listdir(<unicode>) and
@@ -146,6 +151,20 @@ class FileGenerator(object):
         for name in names:
             if not isinstance(name, six.text_type):
                 raise FileDecodingError(path, name)
+
+    def should_ignore_file(self, path):
+        """
+        This function checks whether a file should be ignored in the
+        file generation process.  This includes symlinks that are not to be
+        followed.
+        """
+        if not self.follow_symlinks:
+            if os.path.isdir(path) and path.endswith(os.sep):
+                # Trailing slash must be removed to check if it is a symlink.
+                path = path[:-1]
+            if os.path.islink(path):
+                return True
+        return False
 
     def list_objects(self, s3_path, dir_op):
         """

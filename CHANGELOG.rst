@@ -10,6 +10,15 @@ Next Release (TBD)
   the model for the ``aws ec2 describe-network-interface-attribute`` was
   incorrect
   (`issue 558 <https://github.com/aws/aws-cli/issues/558>`__)
+* bugfix:``aws s3``: Add option to not follow symlinks via
+  ``--[no]-follow-symlinks``.  Note that the default behavior of following
+  symlinks is left unchanged.
+  (`issue 854 <https://github.com/aws/aws-cli/pull/854>`__,
+   `issue 453 <https://github.com/aws/aws-cli/issues/453>`__,
+   `issue 781 <https://github.com/aws/aws-cli/issues/781>`__)
+* bugfix:``aws route53 change-tags-for-resource``: Fix serialization issue
+  for ``aws route53 change-tags-for-resource``
+  (`botocore issue 328 <https://github.com/boto/botocore/pull/328>`__)
 
 
 1.3.24

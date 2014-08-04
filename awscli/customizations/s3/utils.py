@@ -310,8 +310,10 @@ class BucketLister(object):
         # we're paginating.  The pagination token is the last Key of the
         # Contents list.  However, botocore does not know that the encoding
         # type needs to be urldecoded.
-        with ScopedEventHandler(self._operation.session, 'after-call.s3.ListObjects',
-                                self._decode_keys):
+        with ScopedEventHandler(self._operation.session,
+                                'after-call.s3.ListObjects',
+                                self._decode_keys,
+                                'BucketListerDecodeKeys'):
             pages = self._operation.paginate(self._endpoint, **kwargs)
             for response, page in pages:
                 contents = page['Contents']
@@ -329,14 +331,14 @@ class BucketLister(object):
 class ScopedEventHandler(object):
     """Register an event callback for the duration of a scope."""
 
-    def __init__(self, session, event_name, handler):
+    def __init__(self, session, event_name, handler, unique_id=None):
         self._session = session
         self._event_name = event_name
         self._handler = handler
+        self._unique_id = unique_id
 
     def __enter__(self):
-        self._session.register(self._event_name, self._handler,
-                               unique_id="BucketListerDecodeKeys")
+        self._session.register(self._event_name, self._handler, self._unique_id)
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._session.unregister(self._event_name, self._handler)

@@ -269,10 +269,8 @@ class TestScopedEventHandler(unittest.TestCase):
     def test_scoped_session_handler(self):
         session = mock.Mock()
         scoped = ScopedEventHandler(session, 'eventname', 'handler')
-        unique_name = "BucketListerDecodeKeys"
         with scoped:
-            session.register.assert_called_with('eventname', 'handler',
-                                                unique_id=unique_name)
+            session.register.assert_called_with('eventname', 'handler', None)
         session.unregister.assert_called_with('eventname', 'handler')
 
 

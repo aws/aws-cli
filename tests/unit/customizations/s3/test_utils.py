@@ -271,7 +271,14 @@ class TestScopedEventHandler(unittest.TestCase):
         scoped = ScopedEventHandler(session, 'eventname', 'handler')
         with scoped:
             session.register.assert_called_with('eventname', 'handler', None)
-        session.unregister.assert_called_with('eventname', 'handler')
+        session.unregister.assert_called_with('eventname', 'handler', None)
+
+    def test_scoped_session_unique(self):
+        session = mock.Mock()
+        scoped = ScopedEventHandler(session, 'eventname', 'handler', 'unique')
+        with scoped:
+            session.register.assert_called_with('eventname', 'handler', 'unique')
+        session.unregister.assert_called_with('eventname', 'handler', 'unique')
 
 
 class TestGetFileStat(unittest.TestCase):

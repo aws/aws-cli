@@ -437,7 +437,7 @@ class TestCp(BaseS3CLICommand):
 
 
 class TestSync(BaseS3CLICommand):
-    def test_sync_with_plus_chars(self):
+    def test_sync_with_plus_chars_paginate(self):
         # 1. Create > 1000 files with '+' in the filename.
         # 2. Sync up to s3.
         # 3. Sync up to s3
@@ -460,6 +460,23 @@ class TestSync(BaseS3CLICommand):
         time.sleep(5)
         p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assertNotIn('upload:', p2.stdout)
+        self.assertEqual('', p2.stdout)
+
+    def test_s3_to_s3_sync_with_plus_char(self):
+        self.files.create_file('foo+.txt', contents="foo")
+        bucket_name = self.create_bucket()
+        bucket_name_2 = self.create_bucket()
+
+        p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'foo+.txt'))
+
+        p = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name_2, 'foo+.txt'))
+
+        p2 = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        self.assertNotIn('copy:', p2.stdout)
         self.assertEqual('', p2.stdout)
 
     def test_sync_to_from_s3(self):

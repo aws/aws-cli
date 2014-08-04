@@ -335,7 +335,8 @@ class ScopedEventHandler(object):
         self._handler = handler
 
     def __enter__(self):
-        self._session.register(self._event_name, self._handler)
+        self._session.register(self._event_name, self._handler,
+                               unique_id="BucketListerDecodeKeys")
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._session.unregister(self._event_name, self._handler)

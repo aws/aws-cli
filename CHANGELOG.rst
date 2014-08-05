@@ -3,6 +3,14 @@ CHANGELOG
 =========
 
 
+Next Release (TBD)
+==================
+
+* bugfix: ``aws s3 sync``: Fix issue where keys were being decoded twice
+  when syncing between buckets.
+  (`issue 862 <https://github.com/aws/aws-cli/pull/862>`__)
+
+
 1.3.25
 ======
 

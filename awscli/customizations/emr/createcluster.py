@@ -34,7 +34,7 @@ class CreateCluster(BasicCommand):
         'Creates and starts running an EMR cluster.\n'
         '\nQuick start:\n'
         '\naws emr create-cluster --ami-version <ami-version> '
-        '--instance-type <instance-type> --instance-count <instance-count>\n')
+        '--instance-type <instance-type> [--instance-count <instance-count>]\n')
     ARG_TABLE = [
         {'name': 'ami-version',
          'help_text': helptext.AMI_VERSION,

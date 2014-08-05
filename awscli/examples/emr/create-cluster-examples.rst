@@ -10,7 +10,7 @@
 
 - Command::
 
-    aws emr create-cluster --ami-version 3.1.0 --service-role EMR_DefaultRole --ec2-attributes InstanceProfiles=EC2_EMR_DefaultRoles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --ami-version 3.1.0 --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
 
 **3. Create an Amazon EMR cluster with default roles**
 
@@ -44,9 +44,9 @@
 
     aws emr create-cluster --ec2-attributes SubnetId=subnet-xxxxx --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
 
-- Create an Amazon EMR cluster in an AvailabilityZone. For example, us-west-1b::
+- Create an Amazon EMR cluster in an AvailabilityZone. For example, us-east-1b::
 
-    aws emr create-cluster --ec2-attributes AvailabilityZone=us-west-1b --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --ec2-attributes AvailabilityZone=us-east-1b --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
 
 **7. Enable debugging and specify a Log URI**
 
@@ -72,7 +72,7 @@
 
 - The following example changes the maximum number of map tasks and sets the NameNode heap size::
 
-    aws emr create-cluster --bootstrap-actions Path=s3://elasticmapreduce/bootstrap-actions/configure-hadoop,Name="Change the maximum number of map tasks",Args=[-M,s3://myawsbucket/config.xml,-m,mapred.tasktracker.map.tasks.maximum=2] Path=s3://elasticmapreduce/bootstrap-actions/configure-daemons,Name="Set the NameNode heap size",Args=[--namenode-heap-size=2048,--namenode-opts=-XX:GCTimeRatio=19] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --bootstrap-actions Path=s3://elasticmapreduce/bootstrap-actions/configure-hadoop,Name="Change the maximum number of map tasks",Args=[--yarn-key-value,mapred.tasktracker.map.tasks.maximum=2] Path=s3://elasticmapreduce/bootstrap-actions/configure-daemons,Name="Set the NameNode heap size",Args=[--namenode-heap-size=2048,--namenode-opts=-XX:GCTimeRatio=19] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
 
 **10. Create an Amazon EMR cluster with applications**
 
@@ -122,7 +122,7 @@
 
 - Command::
 
-    aws emr create-cluster --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,Args=[-f,s3://mybuckey/myhivescript.q,-d,INPUT=s3://mybucket/myhiveinput,-d,OUTPUT=s3://mybucket/myhiveoutput,arg1,arg2] Type=HIVE,Name='Hive steps',ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] --applications Name=Hive --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] --applications Name=Hive --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
 
 - Hive steps required parameters::
 
@@ -136,7 +136,7 @@
 
 - Command::
 
-    aws emr create-cluster --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://mybuckey/mypigscript.pig,-p,INPUT=s3://mybucket/mypiginput,-p,OUTPUT=s3://mybucket/mypigoutput,arg1,arg2] Type=PIG,Name='Pig program',Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://mybucket/pig-apache/output,arg1,arg2] --applications Name=Pig --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://mybucket/pig-apache/output] --applications Name=Pig --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
 
 - Pig steps required parameters::
 
@@ -150,7 +150,7 @@
 
 - Command::
 
-    aws emr create-cluster --steps Type=IMPALA,Name='Impala program',ActionOnFailure=CONTINUE,Args=-f,--impala-script,s3://myimpala/input,--console-output-path,s3://myimpala/output Type=IMPALA,Name='Impala program',ActionOnFailure=CONTINUE,Args=-f,--impala-script,s3://myimpala/input,--console-output-path,s3://myimpala/output --applications Name=Impala --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --steps Type=CUSTOM_JAR,Name='Wikipedia Impala program',ActionOnFailure=CONTINUE,Jar=s3://elasticmapreduce/libs/script-runner/script-runner.jar,Args="/home/hadoop/impala/examples/wikipedia/wikipedia-with-s3distcp.sh" Type=IMPALA,Name='Impala program',ActionOnFailure=CONTINUE,Args=-f,--impala-script,s3://myimpala/input,--console-output-path,s3://myimpala/output --applications Name=Impala --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
 
 - Impala steps required parameters::
 

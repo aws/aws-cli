@@ -84,14 +84,15 @@ INSTANCE_TYPE = (
     '<p>Shortcut option for --instance-groups. A specification of the '
     'type of Amazon EC2 instances used together with --instance-count '
     '(optional) to create instance groups in a cluster. '
-    'If --instance-count is not provided, a single node cluster '
-    'will be created by default. </p>')
+    'Specifying the --instance-type argument without '
+    'also specifying --instance-count launches a single-node cluster.</p>')
 
 INSTANCE_COUNT = (
     '<p>Shortcut option for --instance-groups. '
     'A specification of the number of Amazon EC2 instances used '
     'together with --instance-type to create instance groups in '
-    'a cluster. </p>')
+    'a cluster. Specifying the --instance-type argument without '
+    'also specifying --instance-count launches a single-node cluster.</p>')
 
 ADDITIONAL_INFO = (
     '<p>Specifies additional information during cluster creation</p>')

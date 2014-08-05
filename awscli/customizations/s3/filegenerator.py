@@ -125,7 +125,7 @@ class FileGenerator(object):
                     file_path = join(path, name)
                     if isdir(file_path):
                         names[i] = name + os.path.sep
-                names = normalize_sort(names, os.sep, '/')
+                normalize_sort(names, os.sep, '/')
                 for name in names:
                     file_path = join(path, name)
                     if not self.should_ignore_file(file_path):

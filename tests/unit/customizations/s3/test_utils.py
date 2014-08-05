@@ -17,7 +17,6 @@ from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import BucketLister
 from awscli.customizations.s3.utils import ScopedEventHandler
 from awscli.customizations.s3.utils import get_file_stat
-from awscli.customizations.s3.utils import replace_all
 from awscli.customizations.s3.utils import normalize_sort
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
@@ -267,25 +266,24 @@ class TestBucketList(unittest.TestCase):
         self.assertEqual(objects, [(u'foo/\u2713', 1, now)])
 
 
-class TestReplaceAll(unittest.TestCase):
-    def test_replace_all(self):
-        names = [os.path.sep + 'foo' + os.path.sep,
-                 'foo', 'foo/bar' + os.path.sep]
-        ref_names = ['/foo/', 'foo', 'foo/bar/']
-        result_names = replace_all(names, os.path.sep, '/')
-        for i in range(len(ref_names)):
-            self.assertEqual(ref_names[i], result_names[i])
-
-
 class TestNormalizeSort(unittest.TestCase):
     def test_normalize_sort(self):
         names = ['xyz123456789',
                  'xyz1' + os.path.sep + 'test',
                  'xyz' + os.path.sep + 'test']
         ref_names = [names[2], names[1], names[0]]
-        result_names = normalize_sort(names, os.path.sep, '/')
+        normalize_sort(names, os.path.sep, '/')
         for i in range(len(ref_names)):
-            self.assertEqual(ref_names[i], result_names[i])
+            self.assertEqual(ref_names[i], names[i])
+    
+    def test_normalize_sort_backslash(self):
+        names = ['xyz123456789',
+                 'xyz1\\test',
+                 'xyz\\test']
+        ref_names = [names[2], names[1], names[0]]
+        normalize_sort(names, '\\', '/')
+        for i in range(len(ref_names)):
+            self.assertEqual(ref_names[i], names[i])
 
         
 class TestScopedEventHandler(unittest.TestCase):

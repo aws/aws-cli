@@ -20,6 +20,7 @@ from dateutil.tz import tzlocal
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister
+from awscli.customizations.s3.utils import normalize_sort
 from awscli.errorhandler import ClientError
 
 
@@ -124,7 +125,7 @@ class FileGenerator(object):
                     file_path = join(path, name)
                     if isdir(file_path):
                         names[i] = name + os.path.sep
-                names.sort()
+                names = normalize_sort(names, os.sep, '/')
                 for name in names:
                     file_path = join(path, name)
                     if not self.should_ignore_file(file_path):

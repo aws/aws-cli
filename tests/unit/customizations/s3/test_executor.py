@@ -14,7 +14,9 @@ import os
 import tempfile
 import shutil
 import mock
+from six import BytesIO
 from six.moves import queue
+import sys
 
 from awscli.testutils import unittest, temporary_file
 from awscli.customizations.s3.executor import IOWriterThread
@@ -23,11 +25,11 @@ from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3.utils import IORequest, IOCloseRequest
 
 
-class TestIOWriterThread(unittest.TestCase):
+class TestIOWriterThreadFile(unittest.TestCase):
 
     def setUp(self):
         self.queue = queue.Queue()
-        self.io_thread = IOWriterThread(self.queue)
+        self.io_thread = IOWriterThread(self.queue, False)
         self.temp_dir = tempfile.mkdtemp()
         self.filename = os.path.join(self.temp_dir, 'foo')
         # Create the file, since IOWriterThread expects
@@ -69,11 +71,37 @@ class TestIOWriterThread(unittest.TestCase):
         with open(second_file, 'rb') as f:
             self.assertEqual(f.read(), b'otherstuff')
 
+class TestIOWriterThreadStdOut(unittest.TestCase):
+    def setUp(self):
+        self.queue = queue.Queue()
+        self.io_thread = IOWriterThread(self.queue, True)
+        self.output = BytesIO()
+        self.saved_stdout = sys.stdout
+        sys.stdout = self.output
+
+    def tearDown(self):
+        self.output.close()
+        sys.stdout = self.saved_stdout
+
+    def test_handles_io_request(self):
+        self.queue.put(IORequest("", 0, b'foobar'))
+        self.queue.put(IOCloseRequest(""))
+        self.queue.put(ShutdownThreadRequest())
+        self.io_thread.run()
+        self.assertEqual(self.output.getvalue(), b'foobar')
+
+    def test_out_of_order_io_requests(self):
+        self.queue.put(IORequest("", 6, b'morestuff'))
+        self.queue.put(IORequest("", 0, b'foobar'))
+        self.queue.put(IOCloseRequest(""))
+        self.queue.put(ShutdownThreadRequest())
+        self.io_thread.run()
+        self.assertEqual(self.output.getvalue(), b'foobarmorestuff')
 
 class TestExecutor(unittest.TestCase):
     def test_shutdown_does_not_hang(self):
         executor = Executor(2, queue.Queue(), False,
-                            10, queue.Queue(maxsize=1))
+                            10, queue.Queue(maxsize=1), False)
         with temporary_file('rb+') as f:
             executor.start()
             class FloodIOQueueTask(object):

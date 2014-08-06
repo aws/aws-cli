@@ -103,6 +103,23 @@ class FileFormatTest(unittest.TestCase):
                      'dir_op': False, 'use_src_name': False}
         self.assertEqual(files, ref_files)
 
+    def test_local_stdout(self):
+        """
+        No directory operation. S3 source name given. Local
+        destination filename given.
+        """
+        src = 's3://kyknapp/golfVid/hello.txt'
+        dest = '-'
+        parameters = {'dir_op': False}
+        files = self.file_format.format(src, dest, parameters)
+
+        ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
+                             'type': 's3'},
+                     'dest': {'path': '-',
+                              'type': 'stream'},
+                     'dir_op': False, 'use_src_name': False}
+        self.assertEqual(files, ref_files)
+
     def test_s3_use_src_name(self):
         """
         No directory operation. Local source name given. S3

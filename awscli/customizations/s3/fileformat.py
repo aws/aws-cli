@@ -42,7 +42,7 @@ class FileFormat(object):
         """
         src_type, src_path = self.identify_type(src)
         dest_type, dest_path = self.identify_type(dest)
-        format_table = {'s3': self.s3_format, 'local': self.local_format}
+        format_table = {'s3': self.s3_format, 'local': self.local_format, 'stream': self.identity_format}
         # :var dir_op: True when the operation being performed is on a
         #     directory/objects under a common prefix or false when it
         #     is a single file
@@ -120,6 +120,9 @@ class FileFormat(object):
             else:
                 return path, True
 
+    def identity_format(self, path, dir_op):
+        return path, False
+
     def identify_type(self, path):
         """
         It identifies whether the path is from local or s3.  Returns the
@@ -129,5 +132,7 @@ class FileFormat(object):
         """
         if path.startswith('s3://'):
             return 's3', path[5:]
+        elif path == '-':
+            return 'stream', path
         else:
             return 'local', path

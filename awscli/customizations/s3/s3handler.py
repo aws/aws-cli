@@ -47,17 +47,18 @@ class S3Handler(object):
                        'content_type': None, 'cache_control': None,
                        'content_disposition': None, 'content_encoding': None,
                        'content_language': None, 'expires': None,
-                       'grants': None}
+                       'grants': None, 'stdout': False}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
                 self.params[key] = params[key]
+
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
         self.executor = Executor(
             num_threads=NUM_THREADS, result_queue=self.result_queue,
             quiet=self.params['quiet'], max_queue_size=MAX_QUEUE_SIZE,
-            write_queue=self.write_queue
+            write_queue=self.write_queue, stdout=self.params['stdout']
         )
         self._multipart_uploads = []
         self._multipart_downloads = []
@@ -151,6 +152,7 @@ class S3Handler(object):
     def _enqueue_tasks(self, files):
         total_files = 0
         total_parts = 0
+
         for filename in files:
             num_uploads = 1
             is_multipart_task = self._is_multipart_task(filename)
@@ -221,9 +223,14 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
-        create_file_task = tasks.CreateLocalFileTask(context=context,
-                                                     filename=filename)
-        self.executor.submit(create_file_task)
+
+        if self.params['stdout']:
+            context.announce_file_created()
+        else:
+            create_file_task = tasks.CreateLocalFileTask(context=context,
+                                                         filename=filename)
+            self.executor.submit(create_file_task)
+
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,

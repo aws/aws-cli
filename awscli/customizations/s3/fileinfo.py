@@ -25,6 +25,26 @@ def read_file(filename):
     with open(filename, 'rb') as in_file:
         return in_file.read()
 
+def save_to_stdout(response_data):
+    """
+    This writes to the file upon downloading to stdout.  It
+    reads the data in the response.
+    """
+    body = response_data['Body']
+    etag = response_data['ETag'][1:-1]
+    md5 = hashlib.md5()
+    file_chunks = iter(partial(body.read, 1024 * 1024), b'')
+
+    if not _is_multipart_etag(etag):
+        for chunk in file_chunks:
+            md5.update(chunk)
+            sys.stdout.write(chunk)
+    else:
+        for chunk in file_chunks:
+            sys.stdout.write(chunk)
+    if not _is_multipart_etag(etag):
+        if etag != md5.hexdigest():
+            raise MD5Error("stdout")
 
 def save_file(filename, response_data, last_update):
     """
@@ -236,7 +256,10 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.src)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         response_data, http = operate(self.service, 'GetObject', params)
-        save_file(self.dest, response_data, self.last_update)
+        if (self.parameters.get('stdout', False)):
+            save_to_stdout(response_data)
+        else:
+            save_file(self.dest, response_data, self.last_update)
 
     def copy(self):
         """
@@ -272,7 +295,7 @@ class FileInfo(TaskInfo):
             self.upload()
         elif src == 's3' and dest == 's3':
             self.copy()
-        elif src == 's3' and dest == 'local':
+        elif src == 's3' and (dest == 'local' or dest == 'stream'):
             self.download()
         else:
             raise Exception("Invalid path arguments for mv")

@@ -386,7 +386,7 @@ class ListCommand(S3SubCommand):
                 filename = content['Key']
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
-            uni_print(print_str)
+            uni_print(print_str, sys.stdout)
             sys.stdout.flush()
 
     def _list_all_buckets(self):
@@ -549,6 +549,9 @@ class CommandArchitecture(object):
         paths_type = self.parameters['paths_type']
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
+
+        if files['dest']['type'] == 'stream':
+            self.parameters['stdout'] = True
 
         cmd_translation = {}
         cmd_translation['locals3'] = {'cp': 'upload', 'sync': 'upload',
@@ -895,6 +898,5 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                     'slash character.')},
                'error-document': {'options': {}, 'documents':
                    'The object key name to use when a 4XX class error occurs.'}
-
                }
 add_param_descriptions(PARAMS_DICT)

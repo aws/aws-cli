@@ -59,21 +59,6 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              ]
          }
 
-    HIVE_BASIC_HADOOP_JAR_STEP = \
-        {'Jar':
-            ('s3://us-east-1.elasticmapreduce/libs/'
-             'script-runner/script-runner.jar'),
-         'Args':
-            ['s3://us-east-1.elasticmapreduce/libs/hive/hive-script',
-             '--run-hive-script',
-             '--hive-versions',
-             '0.11.0.1',
-             '--args',
-             '-f',
-             's3://elasticmapreduce/samples/hive-ads/libs/model-build.q'
-             ]
-         }
-
     PIG_BASIC_ARGS = 'Args=-f,' + \
         's3://elasticmapreduce/samples/pig-apache/do-reports2.pig'
 
@@ -86,21 +71,6 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              '--run-pig-script',
              '--pig-versions',
              'latest',
-             '--args',
-             '-f',
-             's3://elasticmapreduce/samples/'
-             'pig-apache/do-reports2.pig',
-             ]}
-
-    PIG_BASIC_HADOOP_JAR_STEP = \
-        {'Jar':
-            ('s3://us-east-1.elasticmapreduce/libs/'
-             'script-runner/script-runner.jar'),
-         'Args':
-            ['s3://us-east-1.elasticmapreduce/libs/pig/pig-script',
-             '--run-pig-script',
-             '--pig-versions',
-             '0.11.1.0',
              '--args',
              '-f',
              's3://elasticmapreduce/samples/'
@@ -238,7 +208,6 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_hive_step_with_all_fields(self):
         test_step_config = \
             'Type=Hive,' + \
-            'Version=0.11.0.1,' + \
             'ActionOnFailure=CANCEL_AND_WAIT,' + \
             'Name=HiveWithAllFields,' + \
             self.HIVE_BASIC_ARGS
@@ -248,7 +217,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             'Steps': [
                 {'Name': 'HiveWithAllFields',
                  'ActionOnFailure': 'CANCEL_AND_WAIT',
-                 'HadoopJarStep': self.HIVE_BASIC_HADOOP_JAR_STEP
+                 'HadoopJarStep': self.HIVE_DEFAULT_HADOOP_JAR_STEP
                  }]
         }
         self.assert_params_for_cmd(cmd, result)
@@ -276,7 +245,6 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         test_step_config = \
             'Name=PigWithAllFields,' + \
             'Type=Pig,' + \
-            'Version=0.11.1.0,' + \
             self.PIG_BASIC_ARGS + ',' + \
             'ActionOnFailure=CANCEL_AND_WAIT'
         cmd = self.prefix + test_step_config
@@ -285,7 +253,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             'Steps': [
                 {'Name': 'PigWithAllFields',
                  'ActionOnFailure': 'CANCEL_AND_WAIT',
-                 'HadoopJarStep': self.PIG_BASIC_HADOOP_JAR_STEP
+                 'HadoopJarStep': self.PIG_DEFAULT_HADOOP_JAR_STEP
                  }
             ]
         }
@@ -368,7 +336,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_steps.json')
         cmd = self.prefix + 'file://' + data_path
-        hive_hadoop_jar_step = copy.deepcopy(self.HIVE_BASIC_HADOOP_JAR_STEP)
+        hive_hadoop_jar_step = copy.deepcopy(self.HIVE_DEFAULT_HADOOP_JAR_STEP)
         hive_hadoop_jar_step['Args'] += \
             ['-d',
              'INPUT=s3://elasticmapreduce/samples/hive-ads/tables',
@@ -377,7 +345,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              '-d',
              'LIBS=s3://elasticmapreduce/samples/hive-ads/libs'
              ]
-        pig_hadoop_jar_step = copy.deepcopy(self.PIG_BASIC_HADOOP_JAR_STEP)
+        pig_hadoop_jar_step = copy.deepcopy(self.PIG_DEFAULT_HADOOP_JAR_STEP)
         pig_hadoop_jar_step['Args'] += \
             ['-p',
              'INPUT=s3://elasticmapreduce/samples/pig-apache/input',

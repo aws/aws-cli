@@ -85,7 +85,6 @@ def build_streaming_step(parsed_step):
 
 
 def build_hive_step(parsed_step, region=None):
-    version = parsed_step.get('Version')
     args = parsed_step.get('Args')
     emrutils.check_required_field(
         structure=constants.HIVE_STEP_CONFIG, name='Args', value=args)
@@ -101,10 +100,7 @@ def build_hive_step(parsed_step, region=None):
             relative_path=constants.HIVE_SCRIPT_PATH, region=region),
         constants.RUN_HIVE_SCRIPT]
     args_list.append(constants.HIVE_VERSIONS)
-    if version is not None:
-        args_list.append(version)
-    else:
-        args_list.append(constants.LATEST)
+    args_list.append(constants.LATEST)
     args_list.append(constants.ARGS)
     args_list += args
 
@@ -116,7 +112,6 @@ def build_hive_step(parsed_step, region=None):
 
 
 def build_pig_step(parsed_step, region=None):
-    version = parsed_step.get('Version')
     args = parsed_step.get('Args')
     emrutils.check_required_field(
         structure=constants.PIG_STEP_CONFIG, name='Args', value=args)
@@ -133,10 +128,7 @@ def build_pig_step(parsed_step, region=None):
             relative_path=constants.PIG_SCRIPT_PATH, region=region),
         constants.RUN_PIG_SCRIPT]
     args_list.append(constants.PIG_VERSIONS)
-    if version is not None:
-        args_list.append(version)
-    else:
-        args_list.append(constants.LATEST)
+    args_list.append(constants.LATEST)
     args_list.append(constants.ARGS)
     args_list += args
 

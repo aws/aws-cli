@@ -231,16 +231,6 @@ def relative_path(filename, start=os.path.curdir):
         return os.path.abspath(filename)
 
 
-def normalize_sort(names, os_sep, character):
-    """
-    The purpose of this function is to ensure that the same path seperator
-    is used when sorting.  In windows, the path operator is a backslash as
-    opposed to a forward slash which can lead to differences in sorting
-    between s3 and a windows machine.
-    """
-    names.sort(key=lambda item: item.replace(os_sep, character))
-
-
 class ReadFileChunk(object):
     def __init__(self, filename, start_byte, size):
         self._filename = filename

@@ -20,7 +20,6 @@ from dateutil.tz import tzlocal
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister
-from awscli.customizations.s3.utils import normalize_sort
 from awscli.errorhandler import ClientError
 
 
@@ -125,7 +124,7 @@ class FileGenerator(object):
                     file_path = join(path, name)
                     if isdir(file_path):
                         names[i] = name + os.path.sep
-                normalize_sort(names, os.sep, '/')
+                self.normalize_sort(names, os.sep, '/')
                 for name in names:
                     file_path = join(path, name)
                     if not self.should_ignore_file(file_path):
@@ -141,6 +140,15 @@ class FileGenerator(object):
                         else:
                             size, last_update = get_file_stat(file_path)
                             yield file_path, size, last_update
+
+    def normalize_sort(self, names, os_sep, character):
+        """
+        The purpose of this function is to ensure that the same path seperator
+        is used when sorting.  In windows, the path operator is a backslash as
+        opposed to a forward slash which can lead to differences in sorting
+        between s3 and a windows machine.
+        """
+        names.sort(key=lambda item: item.replace(os_sep, character))
 
     def _check_paths_decoded(self, path, names):
         # We can get a UnicodeDecodeError if we try to listdir(<unicode>) and

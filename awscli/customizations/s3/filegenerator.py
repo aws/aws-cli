@@ -70,7 +70,7 @@ class FileGenerator(object):
         src_type = src['type']
         dest_type = dest['type']
         function_table = {'s3': self.list_objects, 'local': self.list_files}
-        sep_table = {'s3': '/', 'local': os.sep}
+        sep_table = {'s3': '/', 'local': os.sep, 'stream': ''}
         source = src['path']
         file_list = function_table[src_type](source, files['dir_op'])
         for src_path, size, last_update in file_list:

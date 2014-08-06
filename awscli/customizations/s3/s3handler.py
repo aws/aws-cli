@@ -152,6 +152,7 @@ class S3Handler(object):
     def _enqueue_tasks(self, files):
         total_files = 0
         total_parts = 0
+
         for filename in files:
             num_uploads = 1
             is_multipart_task = self._is_multipart_task(filename)
@@ -222,9 +223,10 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
-        create_file_task = tasks.CreateLocalFileTask(context=context,
-                                                     filename=filename)
-        self.executor.submit(create_file_task)
+        if not self.params['stdout']:
+            create_file_task = tasks.CreateLocalFileTask(context=context,
+                                                         filename=filename)
+            self.executor.submit(create_file_task)
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,

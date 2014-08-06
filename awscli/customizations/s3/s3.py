@@ -547,6 +547,9 @@ class CommandArchitecture(object):
         files = FileFormat().format(src, dest, self.parameters)
         rev_files = FileFormat().format(dest, src, self.parameters)
 
+        if files['dest']['type'] == 'stream':
+            self.parameters['stdout'] = True
+
         cmd_translation = {}
         cmd_translation['locals3'] = {'cp': 'upload', 'sync': 'upload',
                                       'mv': 'move'}
@@ -794,7 +797,7 @@ CMD_DICT = {'cp': {'options': {'nargs': 2},
                               'website-redirect', 'content-type',
                               'cache-control', 'content-disposition',
                               'content-encoding', 'content-language',
-                              'expires','stdout']},
+                              'expires']},
             'mv': {'options': {'nargs': 2},
                    'params': ['dryrun', 'quiet', 'recursive',
                               'include', 'exclude', 'acl',
@@ -836,8 +839,6 @@ PARAMS_DICT = {'dryrun': {'options': {'action': 'store_true'}},
                'delete': {'options': {'action': 'store_true'}},
                'quiet': {'options': {'action': 'store_true'}},
                'force': {'options': {'action': 'store_true'}},
-               'stdout': {'options': {'action': 'store_true'}, 'documents':
-                    ('Writes file download to stdout as well as to a file')},
                'no-guess-mime-type': {'options': {'action': 'store_false',
                                                   'dest': 'guess_mime_type',
                                                   'default': True}},

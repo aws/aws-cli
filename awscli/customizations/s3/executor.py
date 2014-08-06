@@ -140,9 +140,13 @@ class IOWriterThread(threading.Thread):
         threading.Thread.__init__(self)
         self.queue = queue
         self.fd_descriptor_cache = {}
-        self.stdout = stdout
         self.stdout_offset = 0
-        self.stdout_buffer = defaultdict(dict)
+        self.stdout_buffer = dict()
+
+        if stdout:
+            self.write = self._write_stdout
+        else:
+            self.write = self._write_file
 
     def run(self):
         while True:
@@ -154,14 +158,7 @@ class IOWriterThread(threading.Thread):
                 return
             elif isinstance(task, IORequest):
                 filename, offset, data = task
-                fileobj = self._get_file(filename)
-                fileobj.seek(offset)
-                LOGGER.debug("Writing data to: %s, offset: %s",
-                             filename, offset)
-                fileobj.write(data)
-                if self.stdout:
-                    self._write_stdout(filename, offset, len(data))
-                fileobj.flush()
+                self.write(filename, offset, data)
             elif isinstance(task, IOCloseRequest):
                 LOGGER.debug("IOCloseRequest received for %s, closing file.",
                              task.filename)
@@ -177,20 +174,26 @@ class IOWriterThread(threading.Thread):
             self.fd_descriptor_cache[filename] = fileobj
         return fileobj
 
-    def _write_stdout(self, filename, offset, length):
-        stdout_buffer = self.stdout_buffer[filename]
-        stdout_buffer[offset] = length
+    def _write_file(self, filename, offset, data):
+        fileobj = self._get_file(filename)
+        fileobj.seek(offset)
+        LOGGER.debug("Writing data to: %s, offset: %s",
+                     filename, offset)
+        fileobj.write(data)
+        fileobj.flush()
 
-        for next_offset in sorted(stdout_buffer.keys()):
+    def _write_stdout(self, filename, offset, data):
+        LOGGER.debug("Writing data to: stdout buffer, offset: %s", offset)
+        self.stdout_buffer[offset] = data
+
+        for next_offset in sorted(self.stdout_buffer.keys()):
             if int(next_offset) != int(self.stdout_offset):
                 break
 
-            fileobj = self._get_file(filename)
-            fileobj.seek(next_offset)
-            next_length = stdout_buffer[next_offset]
-            sys.stdout.write(fileobj.read(next_length))
-            self.stdout_offset += int(next_length)
-            del stdout_buffer[next_offset]
+            LOGGER.debug("Writing data to: stdout, offset: %s", next_offset)
+            sys.stdout.write(self.stdout_buffer[next_offset])
+            self.stdout_offset += len(self.stdout_buffer[next_offset])
+            del self.stdout_buffer[next_offset]
 
     def _cleanup(self):
         for fileobj in self.fd_descriptor_cache.values():

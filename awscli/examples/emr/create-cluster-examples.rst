@@ -28,11 +28,7 @@
 
 - Create an Amazon EMR cluster that will terminate after completing all the steps::
 
-    aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
-
-- Create an Amazon EMR cluster that will NOT terminate after completing all the steps::
-
-    aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --no-auto-terminate
+    aws emr create-cluster --ami-version 3.1.0  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge  InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 **6. Specify EC2 Attributes**
 

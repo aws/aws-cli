@@ -163,11 +163,6 @@ STEPS_SCHEMA = {
                 "type": "string",
                 "description": "The name of the step. ",
             },
-            "Version": {
-                "type": "string",
-                "default": "latest",
-                "description": "The application version. "
-            },
             "ActionOnFailure": {
                 "type": "string",
                 "description": "The action to take if the cluster step fails.",

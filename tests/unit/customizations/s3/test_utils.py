@@ -264,7 +264,7 @@ class TestBucketList(unittest.TestCase):
         # And note how it's been converted to '\r'.
         self.assertEqual(objects, [(u'foo/\u2713', 1, now)])
 
-        
+
 class TestScopedEventHandler(unittest.TestCase):
     def test_scoped_session_handler(self):
         session = mock.Mock()

@@ -344,6 +344,28 @@ class TestListFilesLocally(unittest.TestCase):
         self.assertEqual(values, expected_order)
 
 
+class TestNormalizeSort(unittest.TestCase):
+    def test_normalize_sort(self):
+        names = ['xyz123456789',
+                 'xyz1' + os.path.sep + 'test',
+                 'xyz' + os.path.sep + 'test']
+        ref_names = [names[2], names[1], names[0]]
+        filegenerator = FileGenerator(None, None, None)
+        filegenerator.normalize_sort(names, os.path.sep, '/')
+        for i in range(len(ref_names)):
+            self.assertEqual(ref_names[i], names[i])
+    
+    def test_normalize_sort_backslash(self):
+        names = ['xyz123456789',
+                 'xyz1\\test',
+                 'xyz\\test']
+        ref_names = [names[2], names[1], names[0]]
+        filegenerator = FileGenerator(None, None, None)
+        filegenerator.normalize_sort(names, '\\', '/')
+        for i in range(len(ref_names)):
+            self.assertEqual(ref_names[i], names[i])
+
+
 class S3FileGeneratorTest(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()

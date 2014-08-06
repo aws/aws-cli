@@ -6,6 +6,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix: ``aws s3 sync``: Fix issue for unnecessarily resyncing files
+  on windows machines.
+  (`issue 843 <https://github.com/aws/aws-cli/issues/843>`__)
 * bugfix: ``aws s3 sync``: Fix issue where keys were being decoded twice
   when syncing between buckets.
   (`issue 862 <https://github.com/aws/aws-cli/pull/862>`__)

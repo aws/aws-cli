@@ -223,10 +223,14 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
-        if not self.params['stdout']:
+
+        if self.params['stdout']:
+            context.announce_file_created()
+        else:
             create_file_task = tasks.CreateLocalFileTask(context=context,
                                                          filename=filename)
             self.executor.submit(create_file_task)
+
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,

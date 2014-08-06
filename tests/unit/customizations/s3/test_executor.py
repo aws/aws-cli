@@ -14,7 +14,7 @@ import os
 import tempfile
 import shutil
 import mock
-from six import StringIO
+from six import BytesIO
 from six.moves import queue
 import sys
 
@@ -75,7 +75,7 @@ class TestIOWriterThreadStdOut(unittest.TestCase):
     def setUp(self):
         self.queue = queue.Queue()
         self.io_thread = IOWriterThread(self.queue, True)
-        self.output = StringIO()
+        self.output = BytesIO()
         self.saved_stdout = sys.stdout
         sys.stdout = self.output
 

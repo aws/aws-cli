@@ -14,7 +14,9 @@ import os
 import tempfile
 import shutil
 import mock
+from six import StringIO
 from six.moves import queue
+import sys
 
 from awscli.testutils import unittest, temporary_file
 from awscli.customizations.s3.executor import IOWriterThread
@@ -23,7 +25,7 @@ from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3.utils import IORequest, IOCloseRequest
 
 
-class TestIOWriterThread(unittest.TestCase):
+class TestIOWriterThreadFile(unittest.TestCase):
 
     def setUp(self):
         self.queue = queue.Queue()
@@ -69,6 +71,32 @@ class TestIOWriterThread(unittest.TestCase):
         with open(second_file, 'rb') as f:
             self.assertEqual(f.read(), b'otherstuff')
 
+class TestIOWriterThreadStdOut(unittest.TestCase):
+    def setUp(self):
+        self.queue = queue.Queue()
+        self.io_thread = IOWriterThread(self.queue, True)
+        self.output = StringIO()
+        self.saved_stdout = sys.stdout
+        sys.stdout = self.output
+
+    def tearDown(self):
+        self.output.close()
+        sys.stdout = self.saved_stdout
+
+    def test_handles_io_request(self):
+        self.queue.put(IORequest("", 0, b'foobar'))
+        self.queue.put(IOCloseRequest(""))
+        self.queue.put(ShutdownThreadRequest())
+        self.io_thread.run()
+        self.assertEqual(self.output.getvalue(), b'foobar')
+
+    def test_out_of_order_io_requests(self):
+        self.queue.put(IORequest("", 6, b'morestuff'))
+        self.queue.put(IORequest("", 0, b'foobar'))
+        self.queue.put(IOCloseRequest(""))
+        self.queue.put(ShutdownThreadRequest())
+        self.io_thread.run()
+        self.assertEqual(self.output.getvalue(), b'foobarmorestuff')
 
 class TestExecutor(unittest.TestCase):
     def test_shutdown_does_not_hang(self):

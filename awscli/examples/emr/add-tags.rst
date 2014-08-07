@@ -2,8 +2,7 @@
 
 - Command::
 
-    aws emr add-tags --resource-id j-XXXXXXYY --tags name="John Doe" age=29
-    male address="123 East NW Seattle"
+    aws emr add-tags --resource-id j-xxxxxxx --tags name="John Doe" age=29 sex=male address="123 East NW Seattle"
 
 - Output::
 
@@ -19,23 +18,19 @@
 
     [
         {
-            "Value": "John Doe",
-            "Key": "Name"
-        },
+            "Value": "male", 
+            "Key": "sex"
+        }, 
         {
-            "Value": "29",
-            "Key": "age"
-        },
-        {
-            "Value": "",
-            "Key": "male"
-        },
-        {
-            "Value": "",
-            "Key": "male"
-        },
-        {
-            "Value": "123 East NW Seattle",
+            "Value": "123 East NW Seattle", 
             "Key": "address"
+        }, 
+        {
+            "Value": "John Doe", 
+            "Key": "name"
+        }, 
+        {
+            "Value": "29", 
+            "Key": "age"
         }
     ]

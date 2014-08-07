@@ -59,7 +59,7 @@ SERVICE_ROLE = (
 
 USE_DEFAULT_ROLES = (
     '<p>Uses --service-role=<code>' + EMR_ROLE_NAME + '</code>, and '
-    '--ec2-attributes </p> InstanceProfile=<code>' + EC2_ROLE_NAME + '</code>'
+    '--ec2-attributes InstanceProfile=<code>' + EC2_ROLE_NAME + '</code>'
     'To create the default service role and instance profile'
     ' use <code>aws emr create-default-roles</code> command. </p>')
 
@@ -79,6 +79,20 @@ INSTANCE_GROUPS = (
     '<p> Each instance group takes the following parameters: '
     '<code>[Name], InstanceGroupType, InstanceType, InstanceCount,'
     ' [BidPrice]</code></p>')
+
+INSTANCE_TYPE = (
+    '<p>Shortcut option for --instance-groups. A specification of the '
+    'type of Amazon EC2 instances used together with --instance-count '
+    '(optional) to create instance groups in a cluster. '
+    'Specifying the --instance-type argument without '
+    'also specifying --instance-count launches a single-node cluster.</p>')
+
+INSTANCE_COUNT = (
+    '<p>Shortcut option for --instance-groups. '
+    'A specification of the number of Amazon EC2 instances used '
+    'together with --instance-type to create instance groups in '
+    'a cluster. Specifying the --instance-type argument without '
+    'also specifying --instance-count launches a single-node cluster.</p>')
 
 ADDITIONAL_INFO = (
     '<p>Specifies additional information during cluster creation</p>')
@@ -102,12 +116,13 @@ EC2_ATTRIBUTES = (
 
 AUTO_TERMINATE = (
     '<p>Specifies whether the cluster should terminate after'
-    ' completing all the steps.</p>')
+    ' completing all the steps. Auto termination is off by default.</p>')
 
 TERMINATION_PROTECTED = (
     '<p>Specifies whether to lock the cluster to prevent the'
     ' Amazon EC2 instances from being terminated by API call, '
-    'user intervention, or in the event of an error.</p>')
+    'user intervention, or in the event of an error. Termination protection '
+    'is off by default.</p>')
 
 VISIBILITY = (
     '<p>Specifies whether the cluster is visible to all IAM users of'
@@ -115,7 +130,8 @@ VISIBILITY = (
     '<code>--visible-to-all-users</code>, all IAM users of that AWS account'
     ' can view and (if they have the proper policy permisions set) manage'
     ' the cluster. If it is set to <code>--no-visible-to-all-users</code>,'
-    ' only the IAM user that created the cluster can view and manage it.</p>')
+    ' only the IAM user that created the cluster can view and manage it. '
+    ' Clusters are visible by default. </p>')
 
 DEBUGGING = (
     '<p>Enables debugging for the cluster. The debugging tool is a'
@@ -146,14 +162,19 @@ BOOTSTRAP_ACTIONS = (
     ' Amazon EMR launches the cluster. They run before Hadoop starts and'
     ' before the node begins processing data.</p>'
     '<p>Each bootstrap action takes the following parameters: '
-    '<code>Path</code>, <code>[Name]</code> and <code>[Args]</code>.</p>')
+    '<code>Path</code>, <code>[Name]</code> and <code>[Args]</code>. '
+    'Note: Args should either be a comma-separated list of values  '
+    '(e.g. Args=arg1,arg2,arg3) or a bracket-enclosed list of values '
+    'and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 APPLICATIONS = (
     '<p>Installs applications such as Hive, Pig, HBase, Ganglia and'
     ' Impala  or the MapR distribution when creating a cluster. '
     'Each application takes the following'
-    ' parameters: <code>Name</code>, <code>[Version]</code> and <code>[Args]'
-    '</code>. </p>')
+    ' parameters: <code>Name</code> and <code>[Args]'
+    '</code>. Note: Args should either be a comma-separated list of values  '
+    '(e.g. Args=arg1,arg2,arg3) or a bracket-enclosed list of values '
+    ' and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 RESTORE_FROM_HBASE = (
     '<p>Launches a new HBase cluster and populates it with'
@@ -164,9 +185,40 @@ RESTORE_FROM_HBASE = (
 STEPS = (
     '<p>A list of steps to be executed by the cluster. A step can be'
     ' specified either using the shorthand syntax, JSON file or as a JSON'
-    ' string. </p>')
+    ' string. Note: [Args] supplied with steps should either be a' 
+    ' comma-separated list of values (e.g. Args=arg1,arg2,arg3) or'
+    ' a bracket-enclosed list of values and/or key-value pairs'
+    ' (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 INSTALL_APPLICATIONS = (
     '<p>The applications to be installed.'
-    ' Takes the following parameters: <code>Name</code>, <code>Version</code>'
-    ' and <code>Args</code>.')
+    ' Takes the following parameters: <code>Name</code> and <code>Args</code>.')
+
+LIST_CLUSTERS_CLUSTER_STATES = (
+    '<p>The cluster state filters to apply when listing clusters.</p>'
+    '<p>Syntax:'
+    '"string" "string" ...</p>'
+    '<p>Where valid values are:</p>'
+    '<li>STARTING</li>'
+    '<li>BOOTSTRAPPING</li>'
+    '<li>RUNNING</li>'
+    '<li>WAITING</li>'
+    '<li>TERMINATING</li>'
+    '<li>TERMINATED</li>'
+    '<li>TERMINATED_WITH_ERRORS</li></p>')
+
+LIST_CLUSTERS_STATE_FILTERS = (
+    '<p>Shortcut option for --cluster-states. </p>'
+    '<li>--active filters clusters in \'STARTING\','
+    '\'BOOTSTRAPPING\',\'RUNNING\','
+    '\'WAITING\', or \'TERMINATING\' states. </li>'
+    '<li>--terminated filters clusters in \'TERMINATED\' state. </li>'
+    '<li>--failed filters clusters in \'TERMINATED_WITH_ERRORS\' state. </li>')
+
+LIST_CLUSTERS_CREATED_AFTER = (
+    '<p>The creation date and time beginning value filter for '
+    'listing clusters. For example, 2014-07-15T00:01:30. </p>')
+
+LIST_CLUSTERS_CREATED_BEFORE = (
+    '<p>The creation date and time end value filter for '
+    'listing clusters. For example, 2014-07-15T00:01:30. </p>')

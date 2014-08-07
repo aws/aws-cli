@@ -65,15 +65,6 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
     prefix = ('emr install-applications --cluster-id '
               'j-ABC123456 --applications ')
 
-    def test_intall_hive_with_version(self):
-        cmdline = self.prefix + 'Name=Hive,Version=0.8.1.8'
-
-        step = copy.deepcopy(INSTALL_HIVE_STEP)
-        step['HadoopJarStep']['Args'][5] = '0.8.1.8'
-
-        result = {'JobFlowId': 'j-ABC123456', 'Steps': [step]}
-        self.assert_params_for_cmd(cmdline, result)
-
     def test_install_hive_site(self):
         cmdline = (self.prefix + 'Name=Hive,'
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
@@ -85,16 +76,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml,k1]')
         self.assert_params_for_cmd(cmdline, result)
 
-    def test_intall_pig_with_version(self):
-        cmdline = self.prefix + 'Name=Pig,Version=0.9.2.1'
-
-        step = copy.deepcopy(INSTALL_PIG_STEP)
-        step['HadoopJarStep']['Args'][5] = '0.9.2.1'
-
-        result = {'JobFlowId': 'j-ABC123456', 'Steps': [step]}
-        self.assert_params_for_cmd(cmdline, result)
-
-    def test_intall_hive_and_pig_without_version(self):
+    def test_intall_hive_and_pig(self):
         cmdline = self.prefix + 'Name=Hive Name=Pig'
         result = {'JobFlowId': 'j-ABC123456', 'Steps': [INSTALL_HIVE_STEP,
                                                         INSTALL_PIG_STEP]}

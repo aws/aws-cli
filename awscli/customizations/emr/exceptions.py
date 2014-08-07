@@ -43,12 +43,34 @@ class MissingParametersError(EmrError):
            '{object_name}: {missing}.')
 
 
+class MissingRequiredInstanceGroupsError(EmrError):
+    """
+    In create-cluster command, none of --instance-group,
+    --instance-count nor --instance-type were not supplied.
+    """
+    fmt = ('aws: error: Must specify either --instance-groups or '
+           '--instance-type with --instance-count(optional) to '
+           'configure instance groups.')
+
+
+class InstanceGroupsValidationError(EmrError):
+    """
+    --instance-type and --instance-count are shortcut option
+    for --instance-groups and they cannot be specified
+    together with --instance-groups
+    """
+    fmt = ('aws: error: You may not specify --instance-type '
+           'or --instance-count with --instance-groups, '
+           'because --instance-type and --instance-count are '
+           'shortcut options for --instance-groups.')
+
+
 class InvalidAmiVersionError(EmrError):
     """
     The supplied ami-version is invalid.
-    :ivar ami_version: The provided ami-version.
+    :ivar ami_version: The provided ami_version.
     """
-    fmt = ('aws: error: The supplied AMI version {ami_version} is invalid.'
+    fmt = ('aws: error: The supplied AMI version "{ami_version}" is invalid.'
            ' Please see AMI Versions Supported in Amazon EMR in '
            'Amazon Elastic MapReduce Developer Guide: '
            'http://docs.aws.amazon.com/ElasticMapReduce/'
@@ -186,3 +208,14 @@ class ClusterTerminatedError(EmrError):
     The cluster is terminating or has already terminated.
     """
     fmt = 'aws: error: Cluster terminating or already terminated.'
+
+
+class ClusterStatesFilterValidationError(EmrError):
+    """
+    In the list-clusters command, customers can specify only one
+    of the following states filters:
+    --cluster-states, --active, --terminated, --failed
+
+    """
+    fmt = ('aws: error: You can specify only one of the cluster state '
+           'filters: --cluster-states, --active, --terminated, --failed.')

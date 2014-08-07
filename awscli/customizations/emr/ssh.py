@@ -35,11 +35,10 @@ class Socks(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         try:
-            master_dns = emrutils.find_master_instance(
-                self._session, parsed_globals,
-                parsed_args.cluster_id)['PublicDnsName']
-            if not master_dns:
-                raise exceptions.MasterDNSNotAvailableError
+            master_dns = sshutils.validate_and_find_master_dns(
+                session=self._session,
+                parsed_globals=parsed_globals,
+                cluster_id=parsed_args.cluster_id)
 
             key_file = parsed_args.key_pair_file
             sshutils.validate_ssh_with_key_file(key_file)
@@ -75,11 +74,11 @@ class SSH(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        master_dns = emrutils.find_master_instance(
-            self._session, parsed_globals,
-            parsed_args.cluster_id)['PublicDnsName']
-        if not master_dns:
-            raise exceptions.MasterDNSNotAvailableError
+
+        master_dns = sshutils.validate_and_find_master_dns(
+            session=self._session,
+            parsed_globals=parsed_globals,
+            cluster_id=parsed_args.cluster_id)
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_ssh_with_key_file(key_file)
@@ -122,11 +121,10 @@ class Put(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        master_dns = emrutils.find_master_instance(
-            self._session, parsed_globals,
-            parsed_args.cluster_id)['PublicDnsName']
-        if not master_dns:
-            raise exceptions.MasterDNSNotAvailableError
+        master_dns = sshutils.validate_and_find_master_dns(
+            session=self._session,
+            parsed_globals=parsed_globals,
+            cluster_id=parsed_args.cluster_id)
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)
@@ -163,11 +161,10 @@ class Get(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        master_dns = emrutils.find_master_instance(
-            self._session, parsed_globals,
-            parsed_args.cluster_id)['PublicDnsName']
-        if not master_dns:
-            raise exceptions.MasterDNSNotAvailableError
+        master_dns = sshutils.validate_and_find_master_dns(
+            session=self._session,
+            parsed_globals=parsed_globals,
+            cluster_id=parsed_args.cluster_id)
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)

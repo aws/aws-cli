@@ -23,24 +23,6 @@ http_response = requests.models.Response()
 http_response.status_code = 200
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
-DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'MASTER',
-                            'InstanceCount': 1,
-                            'Name': 'MASTER',
-                            'Market': 'ON_DEMAND',
-                            'InstanceType': 'm1.large'
-                            },
-                           {'InstanceRole': 'CORE',
-                            'InstanceCount': 1,
-                            'Name': 'CORE',
-                            'Market': 'ON_DEMAND',
-                            'InstanceType': 'm1.large'
-                            },
-                           {'InstanceRole': 'TASK',
-                            'InstanceCount': 1,
-                            'Name': 'TASK',
-                            'Market': 'ON_DEMAND',
-                            'InstanceType': 'm1.large'
-                            }]
 
 DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=MASTER,Name=MASTER,'
@@ -50,27 +32,36 @@ DEFAULT_INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=TASK,Name=TASK,'
     'InstanceCount=1,InstanceType=m1.large ')
 
-DEFAULT_CMD = 'emr create-cluster --auto-terminate --ami-version 3.0.4 --use-default-roles --instance-groups ' + \
-    DEFAULT_INSTANCE_GROUPS_ARG
+DEFAULT_INSTANCE_GROUPS = \
+    [{'InstanceRole': 'MASTER',
+      'InstanceCount': 1,
+      'Name': 'MASTER',
+      'Market': 'ON_DEMAND',
+      'InstanceType': 'm1.large'
+      },
+     {'InstanceRole': 'CORE',
+      'InstanceCount': 1,
+      'Name': 'CORE',
+      'Market': 'ON_DEMAND',
+      'InstanceType': 'm1.large'
+      },
+     {'InstanceRole': 'TASK',
+      'InstanceCount': 1,
+      'Name': 'TASK',
+      'Market': 'ON_DEMAND',
+      'InstanceType': 'm1.large'
+      }]
 
-DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': False,
+DEFAULT_CMD = ('emr create-cluster --ami-version 3.0.4 --use-default-roles'
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG + ' ')
+
+DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
                      'TerminationProtected': False,
                      'InstanceGroups': DEFAULT_INSTANCE_GROUPS
                      }
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
-
-DEFAULT_RESULT = \
-    {
-        'Name': DEFAULT_CLUSTER_NAME,
-        'Instances': DEFAULT_INSTANCES,
-        'AmiVersion': '3.0.4',
-        'VisibleToAllUsers': False,
-        'JobFlowRole': EC2_ROLE_NAME,
-        'ServiceRole': EMR_ROLE_NAME,
-        'Tags': []
-    }
 
 TEST_BA = [
     {
@@ -244,7 +235,7 @@ HIVE_BASIC_STEP = {
             's3://us-east-1.elasticmapreduce/libs/hive/hive-script',
             '--run-hive-script',
             '--hive-versions',
-            '0.11.0.1',
+            'latest',
             '--args',
             '-f',
             's3://elasticmapreduce/samples/hive-ads/libs/model-build.q']}
@@ -282,7 +273,7 @@ PIG_BASIC_STEP = {
             's3://us-east-1.elasticmapreduce/libs/pig/pig-script',
             '--run-pig-script',
             '--pig-versions',
-            '0.11.1.0',
+            'latest',
             '--args',
             '-f',
             's3://elasticmapreduce/samples/'
@@ -316,26 +307,50 @@ CONSTRUCTED_RESULT = {
     "ClusterId": "j-XXXX"
 }
 
+DEFAULT_RESULT = \
+    {
+        'Name': DEFAULT_CLUSTER_NAME,
+        'Instances': DEFAULT_INSTANCES,
+        'AmiVersion': '3.0.4',
+        'VisibleToAllUsers': True,
+        'JobFlowRole': EC2_ROLE_NAME,
+        'ServiceRole': EMR_ROLE_NAME,
+        'Tags': [],
+        'Steps': [INSTALL_HIVE_STEP, INSTALL_PIG_STEP]
+    }
+
 
 class TestCreateCluster(BaseAWSCommandParamsTest):
     prefix = 'emr create-cluster '
 
+    def test_quick_start(self):
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'AmiVersion': '3.1.0',
+                'VisibleToAllUsers': False,
+                'Tags': [],
+                'Steps': [INSTALL_HIVE_STEP, INSTALL_PIG_STEP]
+
+            }
+
     def test_default_cmd(self):
         self.assert_params_for_cmd(DEFAULT_CMD, DEFAULT_RESULT)
 
-    def test_cluster_with_out_service_role_and_instance_profile(self):
-        cmd = ('emr create-cluster --auto-terminate --ami-version 3.0.4'
-               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+    def test_cluster_without_service_role_and_instance_profile(self):
+        cmd = ('emr create-cluster --ami-version 3.0.4 '
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = copy.deepcopy(DEFAULT_RESULT)
         del result['JobFlowRole']
         del result['ServiceRole']
         self.assert_params_for_cmd(cmd, result)
 
     def test_cluster_with_service_role_and_instance_profile(self):
-        cmd = ('emr create-cluster --auto-terminate --ami-version 3.0.4'
-               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +
+        cmd = ('emr create-cluster --ami-version 3.0.4'
                ' --service-role ServiceRole --ec2-attributes '
-               'InstanceProfile=Ec2_InstanceProfile')
+               'InstanceProfile=Ec2_InstanceProfile '
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = copy.deepcopy(DEFAULT_RESULT)
         result['JobFlowRole'] = 'Ec2_InstanceProfile'
         result['ServiceRole'] = 'ServiceRole'
@@ -378,13 +393,13 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['AdditionalInfo'] = test_info
         self.assert_params_for_cmd(cmd, result)
 
-    def test_no_auto_terminte(self):
+    def test_auto_terminte(self):
         cmd = ('emr create-cluster --use-default-roles --ami-version 3.0.4 '
-               '--no-auto-terminate' +
-               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+               '--auto-terminate --instance-groups ' +
+               DEFAULT_INSTANCE_GROUPS_ARG)
         result = copy.deepcopy(DEFAULT_RESULT)
         instances = copy.deepcopy(DEFAULT_INSTANCES)
-        instances['KeepJobFlowAliveWhenNoSteps'] = True
+        instances['KeepJobFlowAliveWhenNoSteps'] = False
         result['Instances'] = instances
         self.assert_params_for_cmd(cmd, result)
 
@@ -394,16 +409,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
-
-    def test_missing_auto_terminate_or_no_auto_terminate(self):
-        cmd = (self.prefix + '--use-default-roles --ami-version 3.0.4 '
-               '--instance-groups ' +
-               DEFAULT_INSTANCE_GROUPS_ARG)
-        expected_error_msg = (
-            '\naws: error: Must specify one of the following boolean options:'
-            ' --auto-terminate|--no-auto-terminate.\n')
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expected_error_msg, result[1])
 
@@ -430,13 +435,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users'
-        result = copy.deepcopy(DEFAULT_RESULT)
-        result['VisibleToAllUsers'] = True
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
 
     def test_no_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--no-visible-to-all-users'
         result = copy.deepcopy(DEFAULT_RESULT)
+        result['VisibleToAllUsers'] = False
         self.assert_params_for_cmd(cmd, result)
 
     def test_visible_to_all_users_and_no_visible_to_all_users(self):
@@ -472,7 +476,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                     'script-runner/script-runner.jar'
                  }
               }]
-        result['Steps'] = debugging_config
+        result['Steps'] = debugging_config + result['Steps']
         self.assert_params_for_cmd(cmd, result)
 
     def test_enable_debugging_no_log_uri(self):
@@ -495,7 +499,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_instance_groups_default_name_market(self):
         cmd = (
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
-            '--auto-terminate '
             '--instance-groups '
             'InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m1.large '
             'InstanceGroupType=CORE,InstanceCount=1,InstanceType=m1.large '
@@ -505,13 +508,96 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_instance_groups_instance_group_type_mismatch_cases(self):
         cmd = (
             'emr create-cluster --use-default-roles --ami-version 3.0.4 '
-            '--auto-terminate '
             '--instance-groups '
             'Name=MASTER,InstanceGroupType=MaSter,InstanceCount=1,'
             'InstanceType=m1.large Name=CORE,InstanceGroupType=cORE,'
             'InstanceCount=1,InstanceType=m1.large Name=TASK,'
             'InstanceGroupType=tAsK,InstanceCount=1,InstanceType=m1.large')
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
+
+    def test_instance_groups_instance_type_and_count(self):
+        cmd = (
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--instance-type m1.large')
+        expected_result = copy.deepcopy(DEFAULT_RESULT)
+        expected_result['Instances'] = \
+            {'KeepJobFlowAliveWhenNoSteps': True,
+             'TerminationProtected': False,
+             'InstanceGroups':
+                [{'InstanceRole': 'MASTER',
+                  'InstanceCount': 1,
+                  'Name': 'MASTER',
+                  'Market': 'ON_DEMAND',
+                  'InstanceType': 'm1.large'}]
+             }
+        self.assert_params_for_cmd(cmd, expected_result)
+        cmd = (
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--instance-type m1.large --instance-count 3')
+        expected_result = copy.deepcopy(DEFAULT_RESULT)
+        expected_result['Instances'] = \
+            {'KeepJobFlowAliveWhenNoSteps': True,
+             'TerminationProtected': False,
+             'InstanceGroups':
+                [{'InstanceRole': 'MASTER',
+                  'InstanceCount': 1,
+                  'Name': 'MASTER',
+                  'Market': 'ON_DEMAND',
+                  'InstanceType': 'm1.large'
+                  },
+                 {'InstanceRole': 'CORE',
+                  'InstanceCount': 2,
+                  'Name': 'CORE',
+                  'Market': 'ON_DEMAND',
+                  'InstanceType': 'm1.large'
+                  }]
+             }
+        self.assert_params_for_cmd(cmd, expected_result)
+
+    def test_instance_groups_missing_required_parameter_error(self):
+        cmd = (
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 ')
+        expect_error_msg = (
+            '\naws: error: Must specify either --instance-groups or '
+            '--instance-type with --instance-count(optional) to '
+            'configure instance groups.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = (
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--instance-count 2')
+        expect_error_msg = (
+            '\naws: error: Must specify either --instance-groups or '
+            '--instance-type with --instance-count(optional) to '
+            'configure instance groups.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+    def test_instance_groups_exclusive_parameter_validation_error(self):
+        cmd = (
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--instance-type m1.large --instance-groups ' +
+            DEFAULT_INSTANCE_GROUPS_ARG)
+        expect_error_msg = (
+            '\naws: error: You may not specify --instance-type '
+            'or --instance-count with --instance-groups, '
+            'because --instance-type and --instance-count are '
+            'shortcut options for --instance-groups.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = (
+            'emr create-cluster --use-default-roles --ami-version 3.0.4 '
+            '--instance-type m1.large --instance-count 2 '
+            '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        expect_error_msg = (
+            '\naws: error: You may not specify --instance-type '
+            'or --instance-count with --instance-groups, '
+            'because --instance-type and --instance-count are '
+            'shortcut options for --instance-groups.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = (
@@ -553,7 +639,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_instance_groups.json')
         cmd = ('emr create-cluster --use-default-roles --ami-version 3.0.4  '
-               '--auto-terminate '
                '--instance-groups file://' + data_path)
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['InstanceGroups'] = \
@@ -658,7 +743,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_bootstrap_actions_exceed_maximum_with_applications_error(self):
         cmd = DEFAULT_CMD + ' --applications Name=GANGLIA Name=HBASE' +\
-            ' Name=IMPALA,Version=1.2.1,Args=arg1,arg2 --bootstrap-actions'
+            ' Name=IMPALA,Args=arg1,arg2 --bootstrap-actions'
         ba_cmd = ' Path=s3://test/ba1,Name=ba1,Args=arg1,arg2,arg3'
         for i in range(1, 15):
             cmd += ba_cmd
@@ -720,14 +805,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [INSTALL_HIVE_STEP]
         self.assert_params_for_cmd(cmd, result)
 
-    def test_install_hive_with_version(self):
-        cmd = DEFAULT_CMD + '--applications Name=Hive,Version=0.11.0.1'
-        result = copy.deepcopy(DEFAULT_RESULT)
-        steps = copy.deepcopy(INSTALL_HIVE_STEP)
-        steps['HadoopJarStep']['Args'][-1] = '0.11.0.1'
-        result['Steps'] = [steps]
-        self.assert_params_for_cmd(cmd, result)
-
     def test_install_hive_site(self):
         cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
@@ -744,35 +821,29 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [INSTALL_PIG_STEP]
         self.assert_params_for_cmd(cmd, result)
 
-    def test_install_pig_with_version(self):
-        cmd = DEFAULT_CMD + '--applications Name=Hive,Version=0.11.1.1'
-        result = copy.deepcopy(DEFAULT_RESULT)
-        steps = copy.deepcopy(INSTALL_HIVE_STEP)
-        steps['HadoopJarStep']['Args'][-1] = '0.11.1.1'
-        result['Steps'] = [steps]
-        self.assert_params_for_cmd(cmd, result)
-
     def test_install_ganglia(self):
         cmd = DEFAULT_CMD + '--applications Name=Ganglia'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['BootstrapActions'] = [INSTALL_GANGLIA_BA]
+        result.pop('Steps')
         self.assert_params_for_cmd(cmd, result)
 
     def test_install_impala_with_defaults(self):
         cmd = DEFAULT_CMD + '--applications Name=Impala'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['BootstrapActions'] = [INSTALL_IMPALA_BA]
+        result.pop('Steps')
         self.assert_params_for_cmd(cmd, result)
 
     def test_install_impala_with_all_fields(self):
         cmd = DEFAULT_CMD + \
-            '--applications Name=Impala,Version=1.2.1,Args=arg1,arg2'
+            '--applications Name=Impala,Args=arg1,arg2'
         result = copy.deepcopy(DEFAULT_RESULT)
         ba = copy.deepcopy(INSTALL_IMPALA_BA)
-        ba['ScriptBootstrapAction']['Args'][-1] = '1.2.1'
         ba['ScriptBootstrapAction']['Args'] += \
             ['--impala-conf', 'arg1', 'arg2']
         result['BootstrapActions'] = [ba]
+        result.pop('Steps')
         self.assert_params_for_cmd(cmd, result)
 
     def test_install_hbase(self):
@@ -787,6 +858,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--applications Name=mapr,Args=--edition,m5,--version,3.0.2'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['NewSupportedProducts'] = [INSTALL_MAPR_PRODUCT]
+        result.pop('Steps')
         self.assert_params_for_cmd(cmd, result)
 
     def test_install_mapr_without_args(self):
@@ -798,6 +870,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 {'Name': 'mapr',
                  'Args': []}
             ]
+        result.pop('Steps')
         self.assert_params_for_cmd(cmd, result)
 
     def test_supported_products(self):
@@ -807,6 +880,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'Name=mapr,Args=--edition,m7')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['NewSupportedProducts'] = INSTALL_SUPPORTED_PRODUCTS
+        result.pop('Steps')
         self.assert_params_for_cmd(cmd, result)
 
     def test_applications_all_types(self):
@@ -828,17 +902,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             os.path.dirname(__file__), 'input_applications.json')
         cmd = DEFAULT_CMD + '--applications file://' + data_path
         impala_ba = copy.deepcopy(INSTALL_IMPALA_BA)
-        impala_ba['ScriptBootstrapAction']['Args'][-1] = '1.2.1'
         impala_ba['ScriptBootstrapAction']['Args'] += \
             ['--impala-conf',
              'IMPALA_BACKEND_PORT=22001', 'IMPALA_MEM_LIMIT=70%']
         ba_list = [INSTALL_GANGLIA_BA, INSTALL_HBASE_BA,
                    impala_ba]
-        hive_step = copy.deepcopy(INSTALL_HIVE_STEP)
-        hive_step['HadoopJarStep']['Args'][-1] = '0.11.0.1'
-        pig_step = copy.deepcopy(INSTALL_PIG_STEP)
-        pig_step['HadoopJarStep']['Args'][-1] = '0.11.1.1'
-        step_list = [hive_step, pig_step, INSTALL_HBASE_STEP]
+        step_list = [INSTALL_HIVE_STEP, INSTALL_PIG_STEP, INSTALL_HBASE_STEP]
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Steps'] = step_list
         result['BootstrapActions'] = ba_list
@@ -856,7 +925,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_default_step_type_name_action_on_failure(self):
         cmd = DEFAULT_CMD + '--steps Jar=s3://mybucket/mytest.jar'
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] = [CUSTOM_JAR_STEP]
+        result['Steps'] += [CUSTOM_JAR_STEP]
         self.assert_params_for_cmd(cmd, result)
 
     def test_custom_jar_step_missing_jar(self):
@@ -882,13 +951,13 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
              }
         ]
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] = expected_steps
+        result['Steps'] += expected_steps
         self.assert_params_for_cmd(cmd, result)
 
     def test_streaming_step_with_default_fields(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming,' + STREAMING_ARGS
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] = [
+        result['Steps'] += [
             {'Name': 'Streaming program',
              'ActionOnFailure': 'CONTINUE',
              'HadoopJarStep': STREAMING_HADOOP_JAR_STEP}
@@ -908,7 +977,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'ActionOnFailure=CANCEL_AND_WAIT,' + STREAMING_ARGS)
         cmd = DEFAULT_CMD + test_step_config
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] = [
+        result['Steps'] += [
             {'Name': 'StreamingStepAllFields',
              'ActionOnFailure': 'CANCEL_AND_WAIT',
              'HadoopJarStep': STREAMING_HADOOP_JAR_STEP}
@@ -931,14 +1000,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_hive_step_with_all_fields(self):
         test_step_config = (
-            'Type=Hive,Version=0.11.0.1,ActionOnFailure=CANCEL_AND_WAIT,'
+            'Type=Hive,ActionOnFailure=CANCEL_AND_WAIT,'
             'Name=HiveBasicStep,' + HIVE_BASIC_ARGS)
         cmd = DEFAULT_CMD + (
-            '--applications Name=Hive,Version=0.11.0.1 '
-            '--steps ' + test_step_config)
+            '--applications Name=Hive --steps ' + test_step_config)
         result = copy.deepcopy(DEFAULT_RESULT)
         install_step = copy.deepcopy(INSTALL_HIVE_STEP)
-        install_step['HadoopJarStep']['Args'][-1] = '0.11.0.1'
         result['Steps'] = [install_step, HIVE_BASIC_STEP]
         self.assert_params_for_cmd(cmd, result)
 
@@ -958,14 +1025,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
     def test_pig_step_with_all_fields(self):
         test_step_config = (
-            'Name=PigBasicStep,Type=Pig,Version=0.11.1.0,' + PIG_BASIC_ARGS +
+            'Name=PigBasicStep,Type=Pig,' + PIG_BASIC_ARGS +
             ',ActionOnFailure=CANCEL_AND_WAIT')
         cmd = DEFAULT_CMD + (
-            '--applications Name=Pig,Version=0.11.1.0 --steps ' +
-            test_step_config)
+            '--applications Name=Pig --steps ' + test_step_config)
         result = copy.deepcopy(DEFAULT_RESULT)
         install_step = copy.deepcopy(INSTALL_PIG_STEP)
-        install_step['HadoopJarStep']['Args'][-1] = '0.11.1.0'
         result['Steps'] = [install_step, PIG_BASIC_STEP]
         self.assert_params_for_cmd(cmd, result)
 
@@ -1033,14 +1098,14 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD +\
             '--steps Jar=s3://test/customJar.jar ' +\
             'Type=HIVE,Args=-f,s3://test/hive ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig ' +\
+            'Type=PIG,Args=-f,s3://test/pig ' +\
             'Type=IMPALA,Args=--impala-script,s3://test/impala ' +\
             'Type=Streaming,Args=-files,s3://test/mapper.py,-mapper,' +\
             'mapper.py,-reducer,aggregator,-input,s3://test/input,-output,' +\
             's3://test/output ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig2 ' +\
+            'Type=PIG,Args=-f,s3://test/pig2 ' +\
             'Type=IMPALA,Args=--impala-script,s3://test/impala2 ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig3 ' +\
+            'Type=PIG,Args=-f,s3://test/pig3 ' +\
             ' Jar=s3://test/customJar2.jar ' +\
             ' --applications Name=Hive'
 
@@ -1064,7 +1129,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD +\
             '--steps Jar=s3://test/customJar.jar ' +\
             'Type=HIVE,Args=-f,s3://test/hive ' +\
-            'Type=PIG,Version=latest,Args=-f,s3://test/pig ' +\
+            'Type=PIG,Args=-f,s3://test/pig ' +\
             'Type=IMPALA,Args=--impala-script,s3://test/impala ' +\
             'Type=Streaming,Args=-files,s3://test/mapper.py,-mapper,' +\
             'mapper.py,-reducer,aggregator,-input,s3://test/input,-output,' +\
@@ -1094,6 +1159,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, expected_rc=0)
         result_json = json.loads(result[0])
         self.assertEquals(result_json, CONSTRUCTED_RESULT)
+
 
 if __name__ == "__main__":
     unittest.main()

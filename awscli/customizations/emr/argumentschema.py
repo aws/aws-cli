@@ -104,11 +104,6 @@ APPLICATIONS_SCHEMA = {
                 "enum": ["MapR", "HIVE", "PIG", "HBASE", "IMPALA", "GANGLIA"],
                 "required": True
             },
-            "Version": {
-                "type": "string",
-                "description":
-                    "Version number of the application to be installed."
-            },
             "Args": {
                 "type": "array",
                 "description":
@@ -167,11 +162,6 @@ STEPS_SCHEMA = {
             "Name": {
                 "type": "string",
                 "description": "The name of the step. ",
-            },
-            "Version": {
-                "type": "string",
-                "default": "latest",
-                "description": "The application version. "
             },
             "ActionOnFailure": {
                 "type": "string",

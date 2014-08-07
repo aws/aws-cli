@@ -48,14 +48,6 @@ are added to the AWS CLI, you may have a more complete
 experience using the CloudSearch CLI.
 """
 
-EMR_HELP = """
-EMR has a specialized command line tool available at
-http://aws.amazon.com/tools#cli. The AWS CLI does not yet
-support all of the features of the EMR CLI. Until these features
-are added to the AWS CLI, you may have a more complete
-experience using the EMR CLI.
-"""
-
 
 GENERAL_HELP = """
 This service is only available as a preview service.
@@ -64,7 +56,6 @@ This service is only available as a preview service.
 
 PREVIEW_SERVICES = {
     'cloudfront': GENERAL_HELP,
-    'emr': EMR_HELP,
     'sdb': GENERAL_HELP,
 }
 

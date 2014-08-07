@@ -22,6 +22,8 @@ from awscli.customizations.emr.installapplications import InstallApplications
 from awscli.customizations.emr.describecluster import DescribeCluster
 from awscli.customizations.emr.terminateclusters import TerminateClusters
 from awscli.customizations.emr.addtags import modify_tags_argument
+from awscli.customizations.emr.listclusters \
+    import modify_list_clusters_argument
 
 
 def emr_initialize(cli):
@@ -30,6 +32,9 @@ def emr_initialize(cli):
     """
     cli.register('building-command-table.emr', register_commands)
     cli.register('building-argument-table.emr.add-tags', modify_tags_argument)
+    cli.register(
+        'building-argument-table.emr.list-clusters',
+        modify_list_clusters_argument)
 
 
 def register_commands(command_table, session, **kwargs):

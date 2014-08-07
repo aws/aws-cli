@@ -3,9 +3,12 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.4.0
+=====
 
+* feature: ``aws emr``: Move emr out of preview mode.
+* bugfix: ``aws s3api``: Fix serialization of several s3 api commands.
+  (`issue botocore 193 <https://github.com/boto/botocore/pull/196>`__)
 * bugfix: ``aws s3 sync``: Fix issue for unnecessarily resyncing files
   on windows machines.
   (`issue 843 <https://github.com/aws/aws-cli/issues/843>`__)

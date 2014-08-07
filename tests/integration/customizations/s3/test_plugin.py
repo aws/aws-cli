@@ -437,7 +437,7 @@ class TestCp(BaseS3CLICommand):
 
 
 class TestSync(BaseS3CLICommand):
-    def test_sync_with_plus_chars(self):
+    def test_sync_with_plus_chars_paginate(self):
         # 1. Create > 1000 files with '+' in the filename.
         # 2. Sync up to s3.
         # 3. Sync up to s3
@@ -458,6 +458,39 @@ class TestSync(BaseS3CLICommand):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
         time.sleep(5)
+        p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        self.assertNotIn('upload:', p2.stdout)
+        self.assertEqual('', p2.stdout)
+
+    def test_s3_to_s3_sync_with_plus_char(self):
+        self.files.create_file('foo+.txt', contents="foo")
+        bucket_name = self.create_bucket()
+        bucket_name_2 = self.create_bucket()
+
+        p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'foo+.txt'))
+
+        p = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name_2, 'foo+.txt'))
+
+        p2 = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        self.assertNotIn('copy:', p2.stdout)
+        self.assertEqual('', p2.stdout)
+    
+    def test_sync_no_resync(self):
+        self.files.create_file('xyz123456789', contents='test1')
+        self.files.create_file(os.path.join('xyz1', 'test'), contents='test2')
+        self.files.create_file(os.path.join('xyz', 'test'), contents='test3')
+        bucket_name = self.create_bucket()
+        
+        p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'xyz123456789'))
+        self.assertTrue(self.key_exists(bucket_name, 'xyz1/test'))
+        self.assertTrue(self.key_exists(bucket_name, 'xyz/test'))
+
         p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
         self.assertNotIn('upload:', p2.stdout)
         self.assertEqual('', p2.stdout)

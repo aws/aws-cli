@@ -312,7 +312,9 @@ class TestListFilesLocally(unittest.TestCase):
         file_generator = FileGenerator(None, None, None)
         values = list(el[0] for el in file_generator.list_files(
             self.directory, dir_op=True))
-        self.assertEqual(values, list(sorted(values)))
+        ref_vals = list(sorted(values,
+                               key=lambda items: items.replace(os.sep, '/')))
+        self.assertEqual(values, ref_vals)
 
     def test_list_local_files_with_unicode_chars(self):
         p = os.path.join
@@ -342,6 +344,28 @@ class TestListFilesLocally(unittest.TestCase):
             u"\u00e6"
         ]]
         self.assertEqual(values, expected_order)
+
+
+class TestNormalizeSort(unittest.TestCase):
+    def test_normalize_sort(self):
+        names = ['xyz123456789',
+                 'xyz1' + os.path.sep + 'test',
+                 'xyz' + os.path.sep + 'test']
+        ref_names = [names[2], names[1], names[0]]
+        filegenerator = FileGenerator(None, None, None)
+        filegenerator.normalize_sort(names, os.path.sep, '/')
+        for i in range(len(ref_names)):
+            self.assertEqual(ref_names[i], names[i])
+    
+    def test_normalize_sort_backslash(self):
+        names = ['xyz123456789',
+                 'xyz1\\test',
+                 'xyz\\test']
+        ref_names = [names[2], names[1], names[0]]
+        filegenerator = FileGenerator(None, None, None)
+        filegenerator.normalize_sort(names, '\\', '/')
+        for i in range(len(ref_names)):
+            self.assertEqual(ref_names[i], names[i])
 
 
 class S3FileGeneratorTest(unittest.TestCase):

@@ -14,6 +14,7 @@
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import constants
+from awscli.customizations.emr import defaultconfig
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import steputils
 from awscli.customizations.emr import hbaseutils
@@ -32,18 +33,19 @@ class CreateCluster(BasicCommand):
     DESCRIPTION = (
         'Creates and starts running an EMR cluster.\n'
         '\nQuick start:\n'
-        '\naws emr create-cluster --ami-version 3.1.0 '
-        ' --instance-groups InstanceGroupType=MASTER,InstanceCount=1,'
-        'InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,'
-        'InstanceType=m3.xlarge --auto-terminate\n')
+        '\naws emr create-cluster --ami-version <ami-version> '
+        '--instance-type <instance-type> [--instance-count <instance-count>]\n')
     ARG_TABLE = [
         {'name': 'ami-version',
-         'required': True,
-         'help_text': helptext.AMI_VERSION},
+         'help_text': helptext.AMI_VERSION,
+         'required': True},
         {'name': 'instance-groups',
-         'required': True,
          'schema': argumentschema.INSTANCE_GROUPS_SCHEMA,
          'help_text': helptext.INSTANCE_GROUPS},
+        {'name': 'instance-type',
+         'help_text': helptext.INSTANCE_TYPE},
+        {'name': 'instance-count',
+         'help_text': helptext.INSTANCE_COUNT},
         {'name': 'auto-terminate', 'action': 'store_true',
          'group_name': 'auto_terminate',
          'help_text': helptext.AUTO_TERMINATE},
@@ -83,7 +85,8 @@ class CreateCluster(BasicCommand):
          'schema': argumentschema.BOOTSTRAP_ACTIONS_SCHEMA},
         {'name': 'applications',
          'help_text': helptext.APPLICATIONS,
-         'schema': argumentschema.APPLICATIONS_SCHEMA},
+         'schema': argumentschema.APPLICATIONS_SCHEMA,
+         'default': defaultconfig.APPLICATIONS},
         {'name': 'steps',
          'schema': argumentschema.STEPS_SCHEMA,
          'help_text': helptext.STEPS},
@@ -102,10 +105,17 @@ class CreateCluster(BasicCommand):
         bootstrap_actions = []
         params['Name'] = parsed_args.name
 
-        is_valid_ami = re.match('\d?\..*', parsed_args.ami_version)
-        if is_valid_ami is None:
-            raise exceptions.\
-                InvalidAmiVersionError(ami_version=parsed_args.ami_version)
+        instances_config = {}
+        instances_config['InstanceGroups'] = \
+            instancegroupsutils.validate_and_build_instance_groups(
+                instance_groups=parsed_args.instance_groups,
+                instance_type=parsed_args.instance_type,
+                instance_count=parsed_args.instance_count)
+
+        is_valid_ami_version = re.match('\d?\..*', parsed_args.ami_version)
+        if is_valid_ami_version is None:
+            raise exceptions.InvalidAmiVersionError(
+                ami_version=parsed_args.ami_version)
         params['AmiVersion'] = parsed_args.ami_version
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
@@ -117,18 +127,11 @@ class CreateCluster(BasicCommand):
             parsed_args.ec2_attributes['InstanceProfile'] = EC2_ROLE_NAME
 
         emrutils.apply_dict(params, 'ServiceRole', parsed_args.service_role)
-        instances_config = {}
-        instances_config['InstanceGroups'] = \
-            instancegroupsutils.build_instance_groups(
-                parsed_args.instance_groups)
 
         if (
                 parsed_args.no_auto_terminate is False and
                 parsed_args.auto_terminate is False):
-            raise exceptions.\
-                MissingBooleanOptionsError(
-                    true_option='--auto-terminate',
-                    false_option='--no-auto-terminate')
+            parsed_args.no_auto_terminate = True
 
         instances_config['KeepJobFlowAliveWhenNoSteps'] = \
             emrutils.apply_boolean_options(
@@ -143,6 +146,11 @@ class CreateCluster(BasicCommand):
                 '--termination-protected',
                 parsed_args.no_termination_protected,
                 '--no-termination-protected')
+
+        if (
+                parsed_args.visible_to_all_users is False and
+                parsed_args.no_visible_to_all_users is False):
+            parsed_args.visible_to_all_users = True
 
         params['VisibleToAllUsers'] = \
             emrutils.apply_boolean_options(

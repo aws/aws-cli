@@ -32,7 +32,7 @@ COMPLETIONS = [
                       'cognito-identity', 'cognito-sync', 'configure',
                       'datapipeline', 'directconnect', 'dynamodb', 'ec2',
                       'elasticache', 'elasticbeanstalk', 'elastictranscoder',
-                      'elb', 'iam', 'importexport', 'kinesis', 'logs',
+                      'elb', 'emr', 'iam', 'importexport', 'kinesis', 'logs',
                       'opsworks', 'rds', 'redshift', 'route53',
                       'route53domains', 's3', 's3api', 'ses', 'sns', 'sqs',
                       'storagegateway', 'sts', 'support', 'swf'])),
@@ -83,7 +83,16 @@ COMPLETIONS = [
                                      '--storage-class', '--sse',
                                      '--exclude', '--include',
                                      '--grants'] + GLOBALOPTS)),
-    ('aws emr ', -1, set([])),
+    ('aws emr ', -1, set(['add-instance-groups', 'add-steps', 'add-tags',
+                          'create-cluster', 'create-default-roles',
+                          'create-hbase-backup', 'describe-cluster',
+                          'describe-step', 'disable-hbase-backups', 'get',
+                          'install-applications', 'list-clusters',
+                          'list-instances', 'list-steps',
+                          'modify-cluster-attributes', 'modify-instance-groups',
+                          'put', 'remove-tags', 'restore-from-hbase-backup',
+                          'schedule-hbase-backup', 'socks', 'ssh',
+                          'terminate-clusters']))
     ]
 
 

@@ -3,8 +3,8 @@ CHANGELOG
 =========
 
 
-Next Release (TBD)
-==================
+1.4.0
+=====
 
 * feature: ``aws emr``: Move emr out of preview mode.
 * bugfix: ``aws s3api``: Fix serialization of several s3 api commands.

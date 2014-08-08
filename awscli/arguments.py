@@ -146,11 +146,11 @@ class BaseCLIArgument(object):
 
     @property
     def synopsis(self):
-        return None
+        return ''
 
     @property
     def positional_arg(self):
-        return None
+        return False
 
     @property
     def nargs(self):
@@ -192,7 +192,7 @@ class CustomArgument(BaseCLIArgument):
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
                  cli_type_name=None, group_name=None, positional_arg=False,
-                 no_paramfile=False, schema=None, synopsis=None):
+                 no_paramfile=False, schema=None, synopsis=''):
         self._name = name
         self._help = help_text
         self._dest = dest

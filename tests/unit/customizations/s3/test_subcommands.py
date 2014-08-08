@@ -11,12 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
-import mock
-from mock import patch, MagicMock
 import os
 from six import StringIO
 import sys
 
+import mock
+from mock import patch, MagicMock
 
 import botocore.session
 from awscli.customizations.s3.s3 import S3
@@ -439,7 +439,7 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         parsed_global = parser.parse_args(['--paginate'])
         help_command = s3.create_help_command()
         help_command([], parsed_global)
-        self.assert_contains("This provides higher level S3 commands")
+        self.assert_contains("This provides high level S3 commands")
         self.assert_contains("Every command takes one or two positional")
         self.assert_contains("* rb")
     

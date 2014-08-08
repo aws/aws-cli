@@ -368,7 +368,6 @@ class BasicDocHandler(OperationDocumentEventHandler):
         else:
             self.doc.style.end_codeblock()
 
-
     def doc_examples(self, help_command, **kwargs):
         if help_command.examples:
             self.doc.style.h2('Examples')

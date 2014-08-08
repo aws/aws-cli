@@ -144,6 +144,18 @@ class BaseCLIArgument(object):
         """
         return None
 
+    @property
+    def synopsis(self):
+        return None
+
+    @property
+    def positional_arg(self):
+        return None
+
+    @property
+    def nargs(self):
+        return None
+
     @name.setter
     def name(self, value):
         self._name = value

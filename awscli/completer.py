@@ -80,6 +80,8 @@ class Completer(object):
                 continue
             if startswith is not None and not key.startswith(startswith):
                 continue
+            if getattr(command, 'positional_arg', False):
+                continue
             names.append(key)
         return names
 

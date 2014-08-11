@@ -1,4 +1,5 @@
 from awscli.testutils import unittest, temporary_file
+import argparse
 import os
 import tempfile
 import shutil
@@ -17,7 +18,21 @@ from awscli.customizations.s3.utils import StablePriorityQueue
 from awscli.customizations.s3.utils import BucketLister
 from awscli.customizations.s3.utils import ScopedEventHandler
 from awscli.customizations.s3.utils import get_file_stat
+from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
+
+
+class AppendFilterTest(unittest.TestCase):
+    def test_call(self):
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('--include', action=AppendFilter, nargs=1,
+                            dest='path')
+        parser.add_argument('--exclude', action=AppendFilter, nargs=1,
+                            dest='path')
+        parsed_args = parser.parse_args(['--include', 'a', '--exclude', 'b'])
+        self.assertEqual(parsed_args.path, [['--include', 'a'],
+                                            ['--exclude', 'b']])
 
 
 class FindBucketKey(unittest.TestCase):

@@ -208,7 +208,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_version(self):
         p = aws('--version')
         self.assertEqual(p.rc, 0)
-        self.assertTrue(p.stderr.startswith('aws-cli'), p.stderr)
+        # The version is wrote to standard out for Python 3.4 and
+        # standard error for other Python versions.
+        version_output = p.stderr.startswith('aws-cli') or \
+            p.stdout.startswith('aws-cli')
+        self.assertTrue(version_output, p.stderr)
 
     def test_traceback_printed_when_debug_on(self):
         p = aws('ec2 describe-instances --filters BADKEY=foo --debug')

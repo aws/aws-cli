@@ -144,6 +144,18 @@ class BaseCLIArgument(object):
         """
         return None
 
+    @property
+    def synopsis(self):
+        return ''
+
+    @property
+    def positional_arg(self):
+        return False
+
+    @property
+    def nargs(self):
+        return None
+
     @name.setter
     def name(self, value):
         self._name = value
@@ -180,7 +192,7 @@ class CustomArgument(BaseCLIArgument):
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
                  cli_type_name=None, group_name=None, positional_arg=False,
-                 no_paramfile=False, schema=None):
+                 no_paramfile=False, schema=None, synopsis=''):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -196,6 +208,7 @@ class CustomArgument(BaseCLIArgument):
         self._choices = choices
         self.no_paramfile = no_paramfile
         self._schema = schema
+        self._synopsis = synopsis
 
         # If the top level element is a list then set nargs to
         # accept multiple values seperated by a space.
@@ -302,6 +315,18 @@ class CustomArgument(BaseCLIArgument):
     @property
     def group_name(self):
         return self._group_name
+
+    @property
+    def synopsis(self):
+        return self._synopsis
+
+    @property
+    def positional_arg(self):
+        return self._positional_arg
+
+    @property
+    def nargs(self):
+        return self._nargs
 
 
 class CLIArgument(BaseCLIArgument):

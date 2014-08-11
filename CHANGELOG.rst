@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+1.4.1
+=====
+
+* feature:``aws elb``: Add support for AWS Elastic Load Balancing tagging
+
 
 1.4.0
 =====

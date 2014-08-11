@@ -20,6 +20,7 @@ import random
 import platform
 import contextlib
 import time
+import stat
 import signal
 import string
 
@@ -673,6 +674,29 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertFalse(
             self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
+class TestWarnings(BaseS3CLICommand):
+    def extra_setup(self):
+        self.bucket_name = self.create_bucket()
+    
+    def test_no_exist(self):
+        filename = os.path.join(self.files.rootdir, "no-exists-file")
+        p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('WARNING: Skipping file %s. File does not exist.' % 
+                      filename, p.stdout)
+
+    def test_no_read_access(self):
+        self.files.create_file('foo.txt', 'foo')
+        filename = os.path.join(self.files.rootdir, 'foo.txt')
+        permissions = stat.S_IMODE(os.stat(filename).st_mode)
+        # Remove read permissions
+        permissions = permissions ^ stat.S_IRUSR
+        os.chmod(filename, permissions)
+        p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('WARNING: Skipping file %s. File read access'
+                      ' is denied.' % filename, p.stdout)        
+
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                  'Symlink tests only supported on mac/linux')
@@ -751,8 +775,10 @@ class TestSymlinks(BaseS3CLICommand):
     
     def test_bad_symlink(self):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
-        self.assertEqual(p.rc, 1, p.stdout)
-        self.assertIn('[Errno 2] No such file or directory', p.stdout)
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('WARNING: Skipping file %s. File does not exist.' % 
+                      os.path.join(self.files.rootdir, 'b-badsymlink'),
+                      p.stdout)
 
 
 class TestUnicode(BaseS3CLICommand):

@@ -14,6 +14,7 @@ import os
 import sys
 
 import six
+from six.moves import queue
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -59,6 +60,16 @@ class FileStat(object):
         self.operation_name = operation_name
 
 
+def create_warning(path, error_message):
+    print_string = "WARNING: "
+    print_string = print_string + "Skipping file " + path + ". "
+    print_string = print_string + error_message
+    warning_message = {'message': print_string,
+                       'error': False,
+                       'warning': True}
+    return warning_message
+
+
 class FileGenerator(object):
     """
     This is a class the creates a generator to yield files based on information
@@ -68,11 +79,14 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True):
+                 follow_symlinks=True, result_queue=None):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
+        self.result_queue = result_queue
+        if not result_queue:
+            self.result_queue = queue.Queue()
 
     def call(self, files):
         """
@@ -186,6 +200,19 @@ class FileGenerator(object):
                 path = path[:-1]
             if os.path.islink(path):
                 return True
+        if self.throws_warning(path):
+            return True
+        return False
+
+    def throws_warning(self, path):
+        if not os.path.exists(path):
+            warning = create_warning(path, "File does not exist.")
+            self.result_queue.put(warning)
+            return True
+        if not os.access(path, os.R_OK):
+            warning = create_warning(path, "File read access is denied.")
+            self.result_queue.put(warning)
+            return True
         return False
 
     def list_objects(self, s3_path, dir_op):

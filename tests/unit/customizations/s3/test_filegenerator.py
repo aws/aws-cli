@@ -13,6 +13,7 @@
 import os
 import platform
 from awscli.testutils import unittest, FileCreator
+import stat
 import tempfile
 import shutil
 
@@ -20,12 +21,23 @@ import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat
+    FileDecodingError, FileStat,  create_warning
 from awscli.customizations.s3.utils import get_file_stat
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, compare_files
 from tests.unit.customizations.s3.fake_session import FakeSession
+
+
+class TestCreateWarning(unittest.TestCase):
+    def test_create_warning(self):
+        path = '/foo/'
+        error_message = 'There was an error'
+        warning_message = create_warning(path, error_message)
+        self.assertEqual(warning_message['message'],
+                         'WARNING: Skipping file /foo/. There was an error')
+        self.assertFalse(warning_message['error'])
+        self.assertTrue(warning_message['warning'])
 
 
 class LocalFileGeneratorTest(unittest.TestCase):
@@ -120,12 +132,12 @@ class TestIgnoreFilesLocally(unittest.TestCase):
     def tearDown(self):
         self.files.remove_all()
 
-    def test_bad_symlink(self):
+    def test_warning(self):
         path = os.path.join(self.files.rootdir, 'badsymlink')
         os.symlink('non-existent-file', path)
         filegenerator = FileGenerator(self.service, self.endpoint,
                                       '', True)
-        self.assertFalse(filegenerator.should_ignore_file(path))
+        self.assertTrue(filegenerator.should_ignore_file(path))
 
     def test_skip_symlink(self):
         filename = 'foo.txt'
@@ -160,6 +172,52 @@ class TestIgnoreFilesLocally(unittest.TestCase):
                                       '', True)
         self.assertFalse(filegenerator.should_ignore_file(sym_path))
         self.assertFalse(filegenerator.should_ignore_file(path))
+
+
+class TestThrowsWarning(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.root = self.files.rootdir
+        self.session = FakeSession()
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    def test_no_warning(self):
+        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        self.files.create_file("foo.txt", contents="foo")
+        full_path = os.path.join(self.root, "foo.txt")
+        return_val = file_gen.throws_warning(full_path)
+        self.assertFalse(return_val)
+        self.assertTrue(file_gen.result_queue.empty())
+
+    def test_no_exists(self):
+        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        symlink = os.path.join(self.root, 'symlink')
+        os.symlink('non-existent-file', symlink)
+        return_val = file_gen.throws_warning(symlink)
+        self.assertTrue(return_val)
+        warning_message = file_gen.result_queue.get()
+        self.assertEqual(warning_message['message'],
+                         ("WARNING: Skipping file %s. File does not exist." %
+                          symlink))
+
+    def test_no_read_access(self):
+        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        self.files.create_file("foo.txt", contents="foo")
+        full_path = os.path.join(self.root, "foo.txt")
+        permissions = stat.S_IMODE(os.stat(full_path).st_mode)
+        # Remove read permissions
+        permissions = permissions ^ stat.S_IRUSR
+        os.chmod(full_path, permissions)
+        return_val = file_gen.throws_warning(full_path)
+        self.assertTrue(return_val)
+        warning_message = file_gen.result_queue.get()
+        self.assertEqual(warning_message['message'],
+                         ("WARNING: Skipping file %s. File read access is "
+                          "denied." % full_path))
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
@@ -229,7 +287,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
             filename = six.text_type(os.path.abspath(self.filenames[i]))
             self.assertEqual(result_list[i], filename)
 
-    def test_follow_bad_symlink(self):
+    def test_warn_bad_symlink(self):
         """
         This tests to make sure it fails when following bad symlinks.
         """
@@ -241,19 +299,19 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dir_op': True, 'use_src_name': True}
         file_stats = FileGenerator(self.service, self.endpoint,
                                    '', True).call(input_local_dir)
+        file_gen = FileGenerator(self.service, self.endpoint, '', True)
+        file_stats = file_gen.call(input_local_dir)
+        all_filenames = self.filenames + self.symlink_files
+        all_filenames.sort()
         result_list = []
-        rc = 0
-        try:
-            for file_stat in file_stats:
-                result_list.append(getattr(file_stat, 'src'))
-            rc = 1
-        except OSError as e:
-            pass
-        # Error shows up as ValueError in Python 3.
-        except ValueError as e:
-            pass
-        self.assertEquals(0, rc)
-
+        for file_stat in file_stats:
+            result_list.append(getattr(file_stat, 'src'))
+        self.assertEqual(len(result_list), len(all_filenames))
+        # Just check to make sure the right local files are generated.
+        for i in range(len(result_list)):
+            filename = six.text_type(os.path.abspath(all_filenames[i]))
+            self.assertEqual(result_list[i], filename)
+        self.assertFalse(file_gen.result_queue.empty())
 
     def test_follow_symlink(self):
         # First remove the bad symlink.

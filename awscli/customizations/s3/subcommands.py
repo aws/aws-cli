@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import six
+from six.moves import queue
 import sys
 
 from dateutil.parser import parse
@@ -554,13 +555,16 @@ class CommandArchitecture(object):
             'mb': 'make_bucket',
             'rb': 'remove_bucket'
         }
+        result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._service,
                                        self._source_endpoint,
                                        operation_name,
-                                       self.parameters['follow_symlinks'])
+                                       self.parameters['follow_symlinks'],
+                                       result_queue=result_queue)
         rev_generator = FileGenerator(self._service, self._endpoint, '',
-                                      self.parameters['follow_symlinks'])
+                                      self.parameters['follow_symlinks'],
+                                      result_queue=result_queue)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -568,7 +572,8 @@ class CommandArchitecture(object):
                              endpoint=self._endpoint)]
         file_info_builder = FileInfoBuilder(self._service, self._endpoint,
                                  self._source_endpoint, self.parameters) 
-        s3handler = S3Handler(self.session, self.parameters)
+        s3handler = S3Handler(self.session, self.parameters,
+                              result_queue=result_queue)
 
         command_dict = {}
         if self.cmd == 'sync':
@@ -625,8 +630,10 @@ class CommandArchitecture(object):
         # keeping it simple and saying that > 0 failed tasks
         # will give a 1 RC.
         rc = 0
-        if files[0] > 0:
+        if files[0][0] > 0:
             rc = 1
+        if files[0][1] > 0:
+            rc = 2
         return rc
 
 

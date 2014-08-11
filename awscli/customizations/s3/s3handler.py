@@ -33,14 +33,16 @@ class S3Handler(object):
     """
     MAX_IO_QUEUE_SIZE = 20
 
-    def __init__(self, session, params, multi_threshold=MULTI_THRESHOLD,
-                 chunksize=CHUNKSIZE):
+    def __init__(self, session, params, result_queue=None,
+                 multi_threshold=MULTI_THRESHOLD, chunksize=CHUNKSIZE):
         self.session = session
-        self.result_queue = queue.Queue()
         # The write_queue has potential for optimizations, so the constant
         # for maxsize is scoped to this class (as opposed to constants.py)
         # so we have the ability to change this value later.
         self.write_queue = queue.Queue(maxsize=self.MAX_IO_QUEUE_SIZE)
+        self.result_queue = result_queue
+        if not self.result_queue:
+            self.result_queue = queue.Queue()
         self.params = {'dryrun': False, 'quiet': False, 'acl': None,
                        'guess_mime_type': True, 'sse': False,
                        'storage_class': None, 'website_redirect': None,
@@ -94,7 +96,7 @@ class S3Handler(object):
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
-        return self.executor.num_tasks_failed
+        return [self.executor.num_tasks_failed, self.executor.num_tasks_warned]
 
     def _shutdown(self):
         # And finally we need to make a pass through all the existing

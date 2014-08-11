@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Credentials: Raise an error if an incomplete profile is found
+  (`issue 690 <https://github.com/aws/aws-cli/issues/690>`__)
+
+
 1.4.1
 =====
 

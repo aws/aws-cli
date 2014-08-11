@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.4.1
+=====
 
 * feature:``aws elb``: Add support for AWS Elastic Load Balancing tagging
 

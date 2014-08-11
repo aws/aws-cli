@@ -57,7 +57,9 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                              size=expected_file_size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation_name='')
+                             dest_type='local', operation_name='',
+                             endpoint=self.endpoint,
+                             source_endpoint=self.endpoint)
 
         expected_list = [file_info]
         self.assertEqual(len(result_list), 1)
@@ -81,14 +83,18 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                              size=21,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation_name='')
+                             dest_type='local', operation_name='',
+                             endpoint=self.endpoint,
+                             source_endpoint=self.endpoint)
         file_info2 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=15,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation_name='')
+                              dest_type='local', operation_name='',
+                              endpoint=self.endpoint,
+                              source_endpoint=self.endpoint)
 
         expected_result = [file_info, file_info2]
         self.assertEqual(len(result_list), 2)
@@ -117,7 +123,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             last_update=result_list[0].last_update,
             src_type='s3',
             dest_type='local', operation_name='delete',
-            service=self.service, endpoint=self.endpoint)
+            service=self.service, endpoint=self.endpoint,                       
+            source_endpoint=self.endpoint)
         file_info2 = FileInfo(
             src=self.file2,
             dest='another_directory' + os.sep + 'text2.txt',
@@ -127,7 +134,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src_type='s3',
             dest_type='local', operation_name='delete',
             service=self.service,
-            endpoint=self.endpoint)
+            endpoint=self.endpoint,
+            source_endpoint=self.endpoint)
         file_info3 = FileInfo(
             src=self.file1,
             dest='text1.txt',
@@ -137,7 +145,8 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src_type='s3',
             dest_type='local', operation_name='delete',
             service=self.service,
-            endpoint=self.endpoint)
+            endpoint=self.endpoint,
+            source_endpoint=self.endpoint)
 
         expected_list = [file_info1, file_info2, file_info3]
         self.assertEqual(len(result_list), 3)

@@ -54,9 +54,13 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, service, endpoint, operation_name, follow_symlinks=True):
+    def __init__(self, service, endpoint, operation_name,
+                 follow_symlinks=True, source_endpoint=None):
         self._service = service
         self._endpoint = endpoint
+        self._source_endpoint = endpoint
+        if source_endpoint:
+            self._source_endpoint = source_endpoint
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
 
@@ -91,7 +95,8 @@ class FileGenerator(object):
                            last_update=last_update, src_type=src_type,
                            service=self._service, endpoint=self._endpoint,
                            dest_type=dest_type,
-                           operation_name=self.operation_name)
+                           operation_name=self.operation_name,
+                           source_endpoint=self._source_endpoint)
 
     def list_files(self, path, dir_op):
         """
@@ -190,7 +195,7 @@ class FileGenerator(object):
             yield self._list_single_object(s3_path)
         else:
             operation = self._service.get_operation('ListObjects')
-            lister = BucketLister(operation, self._endpoint)
+            lister = BucketLister(operation, self._source_endpoint)
             for key in lister.list_objects(bucket=bucket, prefix=prefix):
                 source_path, size, last_update = key
                 if size == 0 and source_path.endswith('/'):
@@ -216,7 +221,7 @@ class FileGenerator(object):
         operation = self._service.get_operation('HeadObject')
         try:
             response = operation.call(
-                self._endpoint, bucket=bucket, key=key)[1]
+                self._source_endpoint, bucket=bucket, key=key)[1]
         except ClientError as e:
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to

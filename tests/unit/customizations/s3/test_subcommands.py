@@ -21,7 +21,7 @@ from mock import patch, MagicMock
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
-    CommandArchitecture, CpCommand, SyncCommand, ListCommand
+    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -31,6 +31,18 @@ from tests.unit.customizations.s3.fake_session import FakeSession
 class FakeArgs(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+
+
+class TestGetEndpoint(unittest.TestCase):
+    def test_endpoint(self):
+        session = FakeSession()
+        endpoint = get_endpoint(session.service,
+                                region='us-west-1',
+                                endpoint_url='URL',
+                                verify=True)
+        self.assertEqual(endpoint.region_name, 'us-west-1')
+        self.assertEqual(endpoint.endpoint_url, 'URL')
+        self.assertTrue(endpoint.verify)
 
 
 class TestLSCommand(unittest.TestCase):
@@ -106,9 +118,34 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.output.close()
         sys.stdout = self.saved_stdout
 
-        super(CommandArchitectureTest, self).setUp()
+        super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
+    
+    def test_set_endpoint_no_source(self):
+        cmd_arc = CommandArchitecture(self.session, 'sync',
+                                      {'region': 'us-west-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None,
+                                       'source_region': None})
+        cmd_arc.set_endpoints()
+        endpoint = cmd_arc._endpoint
+        source_endpoint = cmd_arc._source_endpoint
+        self.assertEqual(endpoint.region_name, 'us-west-1')
+        self.assertEqual(source_endpoint, None)
+
+    def test_set_endpoint_with_source(self):
+        cmd_arc = CommandArchitecture(self.session, 'sync',
+                                      {'region': 'us-west-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None,
+                                       'paths_type': 's3s3',
+                                       'source_region': ['us-west-2']})
+        cmd_arc.set_endpoints()
+        endpoint = cmd_arc._endpoint
+        source_endpoint = cmd_arc._source_endpoint
+        self.assertEqual(endpoint.region_name, 'us-west-1')
+        self.assertEqual(source_endpoint.region_name, 'us-west-2')
 
     def test_create_instructions(self):
         """

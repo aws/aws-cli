@@ -21,6 +21,7 @@ import platform
 import contextlib
 import time
 import signal
+import string
 
 import botocore.session
 import six
@@ -51,7 +52,9 @@ class BaseS3CLICommand(unittest.TestCase):
         self.files = FileCreator()
         self.session = botocore.session.get_session()
         self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.regions = {}
+        self.region = 'us-east-1'
+        self.endpoint = self.service.get_endpoint(self.region)
         self.extra_setup()
 
     def extra_setup(self):
@@ -77,14 +80,18 @@ class BaseS3CLICommand(unittest.TestCase):
             self.fail("Contents for %s/%s do not match (but they "
                       "have the same length)" % (bucket, key))
 
-    def create_bucket(self):
-        bucket_name = _create_bucket(self.session)
+    def create_bucket(self, name=None, region=None):
+        if not region:
+            region = self.region
+        bucket_name = _create_bucket(self.session, name, region)
+        self.regions[bucket_name] = region
         self.addCleanup(self.delete_bucket, bucket_name)
         return bucket_name
 
     def put_object(self, bucket_name, key_name, contents=''):
         operation = self.service.get_operation('PutObject')
-        http = operation.call(self.endpoint, bucket=bucket_name,
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
+        http = operation.call(endpoint, bucket=bucket_name,
                               key=key_name, body=contents)[0]
         self.assertEqual(http.status_code, 200)
         self.addCleanup(self.delete_key, bucket_name, key_name)
@@ -92,12 +99,15 @@ class BaseS3CLICommand(unittest.TestCase):
     def delete_bucket(self, bucket_name):
         self.remove_all_objects(bucket_name)
         operation = self.service.get_operation('DeleteBucket')
-        response = operation.call(self.endpoint, bucket=bucket_name)[0]
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
+        response = operation.call(endpoint, bucket=bucket_name)[0]
+        del self.regions[bucket_name]
         self.assertEqual(response.status_code, 204, response.content)
 
     def remove_all_objects(self, bucket_name):
         operation = self.service.get_operation('ListObjects')
-        pages = operation.paginate(self.endpoint, bucket=bucket_name)
+        endpoint = self.service.get_endpoint(self.regions[bucket_name]) 
+        pages = operation.paginate(endpoint, bucket=bucket_name)
         parsed = pages.build_full_result()
         key_names = [obj['Key'] for obj in parsed['Contents']]
         for key_name in key_names:
@@ -105,21 +115,24 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def delete_key(self, bucket_name, key_name):
         operation = self.service.get_operation('DeleteObject')
-        response = operation.call(self.endpoint, bucket=bucket_name,
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
+        response = operation.call(endpoint, bucket=bucket_name,
                                   key=key_name)[0]
         self.assertEqual(response.status_code, 204)
 
     def get_key_contents(self, bucket_name, key_name):
         operation = self.service.get_operation('GetObject')
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
         http, parsed = operation.call(
-            self.endpoint, bucket=bucket_name, key=key_name)
+            endpoint, bucket=bucket_name, key=key_name)
         self.assertEqual(http.status_code, 200)
         return parsed['Body'].read().decode('utf-8')
 
     def key_exists(self, bucket_name, key_name):
         operation = self.service.get_operation('HeadObject')
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
         http, parsed = operation.call(
-            self.endpoint, bucket=bucket_name, key=key_name)
+            endpoint, bucket=bucket_name, key=key_name)
         return http.status_code == 200
 
     def list_buckets(self):
@@ -130,8 +143,9 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def content_type_for_key(self, bucket_name, key_name):
         operation = self.service.get_operation('HeadObject')
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
         http, parsed = operation.call(
-            self.endpoint, bucket=bucket_name, key=key_name)
+            endpoint, bucket=bucket_name, key=key_name)
         self.assertEqual(http.status_code, 200)
         return parsed['ContentType']
 
@@ -487,6 +501,7 @@ class TestSync(BaseS3CLICommand):
         
         p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
+        time.sleep(2)
         self.assertTrue(self.key_exists(bucket_name, 'xyz123456789'))
         self.assertTrue(self.key_exists(bucket_name, 'xyz1/test'))
         self.assertTrue(self.key_exists(bucket_name, 'xyz/test'))
@@ -577,6 +592,74 @@ class TestSync(BaseS3CLICommand):
         self.assertNotIn('download:', p.stdout)
         self.assertNotIn('delete:', p.stdout)
         self.assertEqual('', p.stdout)
+
+
+class TestSourceRegion(BaseS3CLICommand):
+    def extra_setup(self):
+        name_comp = []
+        for i in range(2):
+            name_comp.append(''.join(random.sample(string.ascii_lowercase + 
+                                                   string.digits,10)))
+        self.src_name = '.'.join(name_comp + ['com'])
+        name_comp = []
+        for i in range(2):
+            name_comp.append(''.join(random.sample(string.ascii_lowercase + 
+                                                   string.digits,10)))
+        self.dest_name = '.'.join(name_comp + ['com'])
+        self.src_region = 'us-west-1'
+        self.dest_region = 'us-west-2'
+        self.src_bucket = self.create_bucket(self.src_name, self.src_region)
+        self.dest_bucket = self.create_bucket(self.dest_name, self.dest_region)
+
+    def testFailWithoutRegion(self):
+        self.files.create_file('foo.txt', 'foo')
+        p = aws('s3 sync %s s3://%s/ --region %s' % 
+                (self.files.rootdir, self.src_bucket, self.src_region))
+        self.assert_no_errors(p)
+        p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s' % 
+                 (self.src_bucket, self.dest_bucket, self.src_region))
+        self.assertEqual(p2.rc, 1, p2.stdout)
+        self.assertIn('PermanentRedirect', p2.stdout)
+
+    def testCpRegion(self):
+        self.files.create_file('foo.txt', 'foo')
+        p = aws('s3 sync %s s3://%s/ --region %s' % 
+                (self.files.rootdir, self.src_bucket, self.src_region))
+        self.assert_no_errors(p)
+        p2 = aws('s3 cp s3://%s/ s3://%s/ --region %s --source-region %s '
+                 '--recursive' % 
+                 (self.src_bucket, self.dest_bucket, self.dest_region,
+                  self.src_region))
+        self.assertEqual(p2.rc, 0, p2.stdout)
+        self.assertTrue(
+            self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
+
+    def testSyncRegion(self):
+        self.files.create_file('foo.txt', 'foo')
+        p = aws('s3 sync %s s3://%s/ --region %s' % 
+                (self.files.rootdir, self.src_bucket, self.src_region))
+        self.assert_no_errors(p)
+        p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s --source-region %s ' %
+                 (self.src_bucket, self.dest_bucket, self.dest_region,
+                  self.src_region))
+        self.assertEqual(p2.rc, 0, p2.stdout)
+        self.assertTrue(
+            self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
+
+    def testMvRegion(self):
+        self.files.create_file('foo.txt', 'foo')
+        p = aws('s3 sync %s s3://%s/ --region %s' % 
+                (self.files.rootdir, self.src_bucket, self.src_region))
+        self.assert_no_errors(p)
+        p2 = aws('s3 mv s3://%s/ s3://%s/ --region %s --source-region %s '
+                 '--recursive' % 
+                 (self.src_bucket, self.dest_bucket, self.dest_region,
+                  self.src_region))
+        self.assertEqual(p2.rc, 0, p2.stdout)
+        self.assertTrue(
+            self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
+        self.assertFalse(
+            self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],

@@ -163,6 +163,16 @@ CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
 CONTENT_LANGUAGE = {'name': 'content-language', 'nargs': 1,
                     'help_text': ("The language the content is in.")}
 
+SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
+                 'help_text': (
+                     "When transferring objects from an s3 bucket to an s3 "
+                     "bucket, this specifies the region of the source bucket."
+                     " Note the region specified by ``--region`` or through "
+                     "configuration of the CLI refers to the region of the "
+                     "destination bucket.  If ``--source-region`` is not "
+                     "specified the region of the source will be the same "
+                     "as the region of the destination bucket.")}
+
 EXPIRES = {'name': 'expires', 'nargs': 1, 'help_text': ("The date and time at "
            "which the object is no longer cacheable.")}
 
@@ -198,20 +208,22 @@ TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES]
+                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION]
 
 SYNC_ARGS = [DELETE, EXACT_TIMESTAMPS, SIZE_ONLY] + TRANSFER_ARGS
+
+
+def get_endpoint(service, region, endpoint_url, verify):
+    return service.get_endpoint(region_name=region, endpoint_url=endpoint_url,
+                                verify=verify)
 
 
 class S3Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         self.service = self._session.get_service('s3')
-        self.endpoint = self._get_endpoint(self.service, parsed_globals)
-
-    def _get_endpoint(self, service, parsed_globals):
-        return service.get_endpoint(region_name=parsed_globals.region,
-                                    endpoint_url=parsed_globals.endpoint_url,
-                                    verify=parsed_globals.verify_ssl)
+        self.endpoint = get_endpoint(self.service, parsed_globals.region,
+                                     parsed_globals.endpoint_url,
+                                     parsed_globals.verify_ssl)
 
 
 class ListCommand(S3Command):
@@ -363,6 +375,7 @@ class S3TransferCommand(S3Command):
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self.NAME,
                                   cmd_params.parameters)
+        cmd.set_endpoints()
         cmd.create_instructions()
         return cmd.run()
 
@@ -463,10 +476,24 @@ class CommandArchitecture(object):
         self.parameters = parameters
         self.instructions = []
         self._service = self.session.get_service('s3')
-        self._endpoint = self._service.get_endpoint(
-            region_name=self.parameters['region'],
+        self._endpoint = None
+        self._source_endpoint = None
+
+    def set_endpoints(self):
+        self._endpoint = get_endpoint(
+            self._service,
+            region=self.parameters['region'],
             endpoint_url=self.parameters['endpoint_url'],
-            verify=self.parameters['verify_ssl'])
+            verify=self.parameters['verify_ssl']
+        )
+        if self.parameters['source_region']:
+            if self.parameters['paths_type'] == 's3s3':
+                self._source_endpoint = get_endpoint(
+                    self._service,
+                    region=self.parameters['source_region'][0],
+                    endpoint_url=None,
+                    verify=self.parameters['verify_ssl']
+                )
 
     def create_instructions(self):
         """
@@ -526,7 +553,8 @@ class CommandArchitecture(object):
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._service, self._endpoint,
                                        operation_name,
-                                       self.parameters['follow_symlinks'])
+                                       self.parameters['follow_symlinks'],
+                                       self._source_endpoint)
         rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters['follow_symlinks'])
         taskinfo = [TaskInfo(src=files['src']['path'],
@@ -610,6 +638,8 @@ class CommandParameters(object):
             self.parameters['dir_op'] = False
         if 'follow_symlinks' not in parameters:
             self.parameters['follow_symlinks'] = True
+        if 'source_region' not in parameters:
+            self.parameters['source_region'] = None
         if self.cmd in ['sync', 'mb', 'rb']:
             self.parameters['dir_op'] = True
 

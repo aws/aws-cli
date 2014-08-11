@@ -89,6 +89,8 @@ class FakeService(object):
     def get_endpoint(self, region_name, endpoint_url=None, verify=None):
         endpoint = Mock()
         endpoint.region_name = region_name
+        endpoint.endpoint_url = endpoint_url
+        endpoint.verify = verify
         return endpoint
 
     def get_operation(self, name):

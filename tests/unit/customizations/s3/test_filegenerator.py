@@ -65,7 +65,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
                              dest_type='s3', operation_name='',
-                             service=None, endpoint=None)
+                             service=self.service, endpoint=self.endpoint,
+                             source_endpoint=self.endpoint)
         ref_list = [file_info]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -91,7 +92,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
                              dest_type='s3', operation_name='',
-                             service=None, endpoint=None)
+                             service=self.service, endpoint=self.endpoint,
+                             source_endpoint=self.endpoint)
         path = self.local_dir + 'another_directory' + os.sep \
             + 'text2.txt'
         size, last_update = get_file_stat(path)
@@ -101,7 +103,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                               size=size, last_update=last_update,
                               src_type='local',
                               dest_type='s3', operation_name='',
-                              service=None, endpoint=None)
+                              service=self.service, endpoint=self.endpoint,
+                              source_endpoint=self.endpoint)
         ref_list = [file_info2, file_info]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
@@ -376,6 +379,7 @@ class S3FileGeneratorTest(unittest.TestCase):
         self.file2 = self.bucket + '/' + 'another_directory/text2.txt'
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
+        self.source_endpoint = self.service.get_endpoint('us-west-1')
 
     def tearDown(self):
         s3_cleanup(self.bucket, self.session)
@@ -389,8 +393,9 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.service, self.endpoint,
-                              '').call(input_s3_file)
+        file_gen = FileGenerator(self.service, self.endpoint,
+                                 '', source_endpoint=self.source_endpoint)
+        files = file_gen.call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -400,7 +405,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             service=self.service, endpoint=self.endpoint,
+                             source_endpoint=self.source_endpoint)
 
         ref_list = [file_info]
         self.assertEqual(len(result_list), len(ref_list))
@@ -430,7 +436,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             service=self.service, endpoint=self.endpoint,
+                             source_endpoint=self.endpoint)
         file_info2 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
@@ -438,7 +445,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                               last_update=result_list[1].last_update,
                               src_type='s3',
                               dest_type='local', operation_name='',
-                              service=None, endpoint=None)
+                              service=self.service, endpoint=self.endpoint,
+                              source_endpoint=self.endpoint)
 
         ref_list = [file_info, file_info2]
         self.assertEqual(len(result_list), len(ref_list))
@@ -467,7 +475,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                               last_update=result_list[0].last_update,
                               src_type='s3',
                               dest_type='local', operation_name='delete',
-                              service=None, endpoint=None)
+                              service=self.service, endpoint=self.endpoint,
+                              source_endpoint=self.endpoint)
         file_info2 = FileInfo(src=self.file2,
                               dest='another_directory' + os.sep + 'text2.txt',
                               compare_key='another_directory/text2.txt',
@@ -475,7 +484,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                               last_update=result_list[1].last_update,
                               src_type='s3',
                               dest_type='local', operation_name='delete',
-                              service=None, endpoint=None)
+                              service=self.service, endpoint=self.endpoint,
+                              source_endpoint=self.endpoint)
         file_info3 = FileInfo(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
@@ -483,7 +493,8 @@ class S3FileGeneratorTest(unittest.TestCase):
                               last_update=result_list[2].last_update,
                               src_type='s3',
                               dest_type='local', operation_name='delete',
-                              service=None, endpoint=None)
+                              service=self.service, endpoint=self.endpoint,
+                              source_endpoint=self.endpoint)
 
         ref_list = [file_info1, file_info2, file_info3]
         self.assertEqual(len(result_list), len(ref_list))

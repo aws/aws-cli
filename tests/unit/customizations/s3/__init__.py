@@ -103,17 +103,24 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
     return bucket
 
 
-def create_bucket(session):
+def create_bucket(session, name=None, region=None):
     """
     Creates a bucket
     :returns: the name of the bucket created
     """
     service = session.get_service('s3')
-    region = 'us-east-1'
+    if not region:
+        region = 'us-east-1'
     endpoint = service.get_endpoint(region)
-    rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits, 10))
-    bucket_name = 'awscli-s3test-' + str(rand1)
+    if name:
+        bucket_name = name
+    else:
+        rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits,
+                                      10))
+        bucket_name = 'awscli-s3test-' + str(rand1)
     params = {'endpoint': endpoint, 'bucket': bucket_name}
+    if region != 'us-east-1':
+        params['create_bucket_configuration'] = {'LocationConstraint': region}
     operation = service.get_operation('CreateBucket')
     http_response, response_data = operation.call(**params)
     return bucket_name
@@ -154,6 +161,16 @@ def compare_files(self, result_file, ref_file):
     self.assertEqual(result_file.src_type, ref_file.src_type)
     self.assertEqual(result_file.dest_type, ref_file.dest_type)
     self.assertEqual(result_file.operation_name, ref_file.operation_name)
+    compare_endpoints(self, result_file.endpoint, ref_file.endpoint)
+    compare_endpoints(self, result_file.source_endpoint,
+                      ref_file.source_endpoint)
+
+
+def compare_endpoints(self, endpoint, ref_endpoint):
+    self.assertEqual(endpoint.region_name, ref_endpoint.region_name)
+    if getattr(endpoint, 'endpoint_url', None):
+        self.assertEqual(endpoint.endpoint_url, ref_endpoint.endpoint_url)
+    self.assertEqual(endpoint.verify, ref_endpoint.verify)
 
 
 def list_contents(bucket, session):

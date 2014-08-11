@@ -333,6 +333,9 @@ class FileCreator(object):
             os.makedirs(os.path.dirname(full_path))
         with open(full_path, 'w') as f:
             f.write(contents)
+        current_time = os.path.getmtime(full_path)
+        # Subtract a few years off the last modification date.
+        os.utime(full_path, (current_time, current_time - 100000000))
         if mtime is not None:
             os.utime(full_path, (mtime, mtime))
         return full_path

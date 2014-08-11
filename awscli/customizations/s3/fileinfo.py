@@ -140,7 +140,7 @@ class FileInfo(TaskInfo):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, service=None, endpoint=None,
-                 parameters=None):
+                 parameters=None, source_endpoint=None):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
                                        service=service,
@@ -156,6 +156,7 @@ class FileInfo(TaskInfo):
         else:
             self.parameters = {'acl': None,
                                'sse': None}
+        self.source_endpoint = source_endpoint
 
     def _permission_to_param(self, permission):
         if permission == 'read':
@@ -256,7 +257,8 @@ class FileInfo(TaskInfo):
         """
         if (self.src_type == 's3'):
             bucket, key = find_bucket_key(self.src)
-            params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+            params = {'endpoint': self.source_endpoint, 'bucket': bucket,
+                      'key': key}
             response_data, http = operate(self.service, 'DeleteObject',
                                           params)
         else:

@@ -1,7 +1,9 @@
   create-cluster
      --ami-version <value>
      --instance-groups <value>
-     --auto-terminate | --no-auto-terminate
+     --instance-type <value>
+     --instance-count <value>
+     [--auto-terminate | --no-auto-terminate]
      [--use-default-role]
      [--service-role <value>]
      [--name <value>]

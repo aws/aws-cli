@@ -4,7 +4,9 @@ python:
   - "2.7"
   - "3.3"
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install --use-mirrors unittest2; fi
-  - pip install --use-mirrors -r requirements.txt
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi
+  - pip install -r requirements.txt
   - python setup.py develop
-script: nosetests tests/unit
+  - pip install coverage python-coveralls
+script: nosetests tests/unit --cover-erase --with-coverage --cover-package awscli
+after_success: coveralls

@@ -1,7 +1,5 @@
-This provides high level S3 commands for the AWS CLI.
-
 This section explains concepts and notations that are prominent in the set
-of commands provided.
+of high-level S3 commands provided.
 
 Path Argument Type
 ++++++++++++++++++

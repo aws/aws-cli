@@ -8,17 +8,13 @@ grants ``put`` and ``delete`` permission to the root user of the AWS account ``1
       "Statement": [
          {
             "Effect": "Allow",
-            "Principal": {
-               "AWS": "*"
-            },
+            "Principal": "*",
             "Action": "s3:GetObject",
             "Resource": "arn:aws:s3:::MyBucket/*"
          },
          {
             "Effect": "Deny",
-            "Principal": {
-               "AWS": "*"
-            },
+            "Principal": "*",
             "Action": "s3:GetObject",
             "Resource": "arn:aws:s3:::MyBucket/MySecretFolder/*"
          },

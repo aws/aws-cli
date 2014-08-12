@@ -37,7 +37,7 @@ This example filters the response to include only one-year, t1.micro Linux/UNIX 
 
 Command::
 
-  aws ec2 describe-reserved-instances --filters Name=duration,Values=31536000, Name=instance-type,Values=t1.micro, Name=product-description,Values=Linux/UNIX, Name=availability-zone,Values=us-west-1c
+  aws ec2 describe-reserved-instances --filters Name=duration,Values=31536000 Name=instance-type,Values=t1.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-west-1c
 
 Output::
 

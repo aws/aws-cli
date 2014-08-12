@@ -132,7 +132,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         endpoint = cmd_arc._endpoint
         source_endpoint = cmd_arc._source_endpoint
         self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(source_endpoint, None)
+        self.assertEqual(source_endpoint.region_name, 'us-west-1')
 
     def test_set_endpoint_with_source(self):
         cmd_arc = CommandArchitecture(self.session, 'sync',
@@ -154,10 +154,11 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         """
         cmds = ['cp', 'mv', 'rm', 'sync', 'mb', 'rb']
 
-        instructions = {'cp': ['file_generator', 's3_handler'],
-                        'mv': ['file_generator', 's3_handler'],
-                        'rm': ['file_generator', 's3_handler'],
-                        'sync': ['file_generator', 'comparator', 's3_handler'],
+        instructions = {'cp': ['file_generator', 'info_setter', 's3_handler'],
+                        'mv': ['file_generator', 'info_setter', 's3_handler'],
+                        'rm': ['file_generator', 'info_setter', 's3_handler'],
+                        'sync': ['file_generator', 'comparator',
+                                 'info_setter', 's3_handler'],
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
@@ -175,7 +176,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         self.assertEqual(cmd_arc.instructions, ['file_generator', 'filters',
-                                                's3_handler'])
+                                                'info_setter', 's3_handler'])
 
     def test_run_cp_put(self):
         # This ensures that the architecture sets up correctly for a ``cp`` put

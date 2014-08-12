@@ -17,7 +17,6 @@ import six
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
-from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister
 from awscli.errorhandler import ClientError
@@ -46,6 +45,20 @@ class FileDecodingError(Exception):
         super(FileDecodingError, self).__init__(self.error_message)
 
 
+class FileBase(object):
+    def __init__(self, src, dest=None, compare_key=None, size=None,
+                 last_update=None, src_type=None, dest_type=None,
+                 operation_name=None):
+        self.src = src
+        self.dest = dest
+        self.compare_key = compare_key
+        self.size = size
+        self.last_update = last_update
+        self.src_type = src_type
+        self.dest_type = dest_type
+        self.operation_name = operation_name
+
+
 class FileGenerator(object):
     """
     This is a class the creates a generator to yield files based on information
@@ -55,12 +68,9 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True, source_endpoint=None):
+                 follow_symlinks=True):
         self._service = service
         self._endpoint = endpoint
-        self._source_endpoint = endpoint
-        if source_endpoint:
-            self._source_endpoint = source_endpoint
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
 
@@ -90,13 +100,11 @@ class FileGenerator(object):
                                               sep_table[dest_type])
             else:
                 dest_path = dest['path']
-            yield FileInfo(src=src_path, dest=dest_path,
+            yield FileBase(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
-                           service=self._service, endpoint=self._endpoint,
                            dest_type=dest_type,
-                           operation_name=self.operation_name,
-                           source_endpoint=self._source_endpoint)
+                           operation_name=self.operation_name)
 
     def list_files(self, path, dir_op):
         """
@@ -195,7 +203,7 @@ class FileGenerator(object):
             yield self._list_single_object(s3_path)
         else:
             operation = self._service.get_operation('ListObjects')
-            lister = BucketLister(operation, self._source_endpoint)
+            lister = BucketLister(operation, self._endpoint)
             for key in lister.list_objects(bucket=bucket, prefix=prefix):
                 source_path, size, last_update = key
                 if size == 0 and source_path.endswith('/'):
@@ -221,7 +229,7 @@ class FileGenerator(object):
         operation = self._service.get_operation('HeadObject')
         try:
             response = operation.call(
-                self._source_endpoint, bucket=bucket, key=key)[1]
+                self._endpoint, bucket=bucket, key=key)[1]
         except ClientError as e:
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to

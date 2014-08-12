@@ -19,6 +19,7 @@ from dateutil.tz import tzlocal
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.comparator import Comparator
+from awscli.customizations.s3.infosetter import InfoSetter
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo
@@ -486,6 +487,7 @@ class CommandArchitecture(object):
             endpoint_url=self.parameters['endpoint_url'],
             verify=self.parameters['verify_ssl']
         )
+        self._source_endpoint = self._endpoint
         if self.parameters['source_region']:
             if self.parameters['paths_type'] == 's3s3':
                 self._source_endpoint = get_endpoint(
@@ -509,6 +511,8 @@ class CommandArchitecture(object):
             self.instructions.append('filters')
         if self.cmd == 'sync':
             self.instructions.append('comparator')
+        if self.cmd not in ['mb', 'rb']:
+            self.instructions.append('info_setter')
         self.instructions.append('s3_handler')
 
     def run(self):
@@ -551,10 +555,10 @@ class CommandArchitecture(object):
             'rb': 'remove_bucket'
         }
         operation_name = cmd_translation[paths_type][self.cmd]
-        file_generator = FileGenerator(self._service, self._endpoint,
+        file_generator = FileGenerator(self._service,
+                                       self._source_endpoint,
                                        operation_name,
-                                       self.parameters['follow_symlinks'],
-                                       self._source_endpoint)
+                                       self.parameters['follow_symlinks'])
         rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters['follow_symlinks'])
         taskinfo = [TaskInfo(src=files['src']['path'],
@@ -562,6 +566,8 @@ class CommandArchitecture(object):
                              operation_name=operation_name,
                              service=self._service,
                              endpoint=self._endpoint)]
+        info_setter = InfoSetter(self._service, self._endpoint,
+                                 self._source_endpoint, self.parameters) 
         s3handler = S3Handler(self.session, self.parameters)
 
         command_dict = {}
@@ -572,21 +578,25 @@ class CommandArchitecture(object):
                             'filters': [create_filter(self.parameters),
                                         create_filter(self.parameters)],
                             'comparator': [Comparator(self.parameters)],
+                            'info_setter': [info_setter],
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
+                            'info_setter': [info_setter],
                             's3_handler': [s3handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
+                            'info_setter': [info_setter],
                             's3_handler': [s3handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
+                            'info_setter': [info_setter],
                             's3_handler': [s3handler]}
         elif self.cmd == 'mb':
             command_dict = {'setup': [taskinfo],

@@ -150,7 +150,7 @@ def s3_cleanup(bucket, session, key1='text1.txt', key2='text2.txt'):
 
 def compare_files(self, result_file, ref_file):
     """
-    Ensures that the FileInfo's properties are what they
+    Ensures that the FileBase's properties are what they
     are suppose to be.
     """
     self.assertEqual(result_file.src, ref_file.src)
@@ -161,16 +161,6 @@ def compare_files(self, result_file, ref_file):
     self.assertEqual(result_file.src_type, ref_file.src_type)
     self.assertEqual(result_file.dest_type, ref_file.dest_type)
     self.assertEqual(result_file.operation_name, ref_file.operation_name)
-    compare_endpoints(self, result_file.endpoint, ref_file.endpoint)
-    compare_endpoints(self, result_file.source_endpoint,
-                      ref_file.source_endpoint)
-
-
-def compare_endpoints(self, endpoint, ref_endpoint):
-    self.assertEqual(endpoint.region_name, ref_endpoint.region_name)
-    if getattr(endpoint, 'endpoint_url', None):
-        self.assertEqual(endpoint.endpoint_url, ref_endpoint.endpoint_url)
-    self.assertEqual(endpoint.verify, ref_endpoint.verify)
 
 
 def list_contents(bucket, session):

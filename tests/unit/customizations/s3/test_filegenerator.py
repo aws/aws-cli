@@ -20,8 +20,7 @@ import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError
-from awscli.customizations.s3.fileinfo import FileInfo
+    FileDecodingError, FileBase
 from awscli.customizations.s3.utils import get_file_stat
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
@@ -61,13 +60,11 @@ class LocalFileGeneratorTest(unittest.TestCase):
         for filename in files:
             result_list.append(filename)
         size, last_update = get_file_stat(self.local_file)
-        file_info = FileInfo(src=self.local_file, dest='bucket/text1.txt',
+        file_base = FileBase(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation_name='',
-                             service=self.service, endpoint=self.endpoint,
-                             source_endpoint=self.endpoint)
-        ref_list = [file_info]
+                             dest_type='s3', operation_name='')
+        ref_list = [file_base]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])
@@ -88,24 +85,20 @@ class LocalFileGeneratorTest(unittest.TestCase):
         for filename in files:
             result_list.append(filename)
         size, last_update = get_file_stat(self.local_file)
-        file_info = FileInfo(src=self.local_file, dest='bucket/text1.txt',
+        file_base = FileBase(src=self.local_file, dest='bucket/text1.txt',
                              compare_key='text1.txt', size=size,
                              last_update=last_update, src_type='local',
-                             dest_type='s3', operation_name='',
-                             service=self.service, endpoint=self.endpoint,
-                             source_endpoint=self.endpoint)
+                             dest_type='s3', operation_name='')
         path = self.local_dir + 'another_directory' + os.sep \
             + 'text2.txt'
         size, last_update = get_file_stat(path)
-        file_info2 = FileInfo(src=path,
+        file_base2 = FileBase(src=path,
                               dest='bucket/another_directory/text2.txt',
                               compare_key='another_directory/text2.txt',
                               size=size, last_update=last_update,
                               src_type='local',
-                              dest_type='s3', operation_name='',
-                              service=self.service, endpoint=self.endpoint,
-                              source_endpoint=self.endpoint)
-        ref_list = [file_info2, file_info]
+                              dest_type='s3', operation_name='')
+        ref_list = [file_base2, file_base]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])
@@ -224,12 +217,12 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_infos = FileGenerator(self.service, self.endpoint,
+        file_bases = FileGenerator(self.service, self.endpoint,
                                    '', False).call(input_local_dir)
         self.filenames.sort()
         result_list = []
-        for file_info in file_infos:
-            result_list.append(getattr(file_info, 'src'))
+        for file_base in file_bases:
+            result_list.append(getattr(file_base, 'src'))
         self.assertEqual(len(result_list), len(self.filenames))
         # Just check to make sure the right local files are generated.
         for i in range(len(result_list)):
@@ -246,13 +239,13 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_infos = FileGenerator(self.service, self.endpoint,
+        file_bases = FileGenerator(self.service, self.endpoint,
                                    '', True).call(input_local_dir)
         result_list = []
         rc = 0
         try:
-            for file_info in file_infos:
-                result_list.append(getattr(file_info, 'src'))
+            for file_base in file_bases:
+                result_list.append(getattr(file_base, 'src'))
             rc = 1
         except OSError as e:
             pass
@@ -271,13 +264,13 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
-        file_infos = FileGenerator(self.service, self.endpoint,
+        file_bases = FileGenerator(self.service, self.endpoint,
                                    '', True).call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
         result_list = []
-        for file_info in file_infos:
-            result_list.append(getattr(file_info, 'src'))
+        for file_base in file_bases:
+            result_list.append(getattr(file_base, 'src'))
         self.assertEqual(len(result_list), len(all_filenames))
         # Just check to make sure the right local files are generated.
         for i in range(len(result_list)):
@@ -379,7 +372,6 @@ class S3FileGeneratorTest(unittest.TestCase):
         self.file2 = self.bucket + '/' + 'another_directory/text2.txt'
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
-        self.source_endpoint = self.service.get_endpoint('us-west-1')
 
     def tearDown(self):
         s3_cleanup(self.bucket, self.session)
@@ -393,22 +385,19 @@ class S3FileGeneratorTest(unittest.TestCase):
                          'dest': {'path': 'text1.txt', 'type': 'local'},
                          'dir_op': False, 'use_src_name': False}
         params = {'region': 'us-east-1'}
-        file_gen = FileGenerator(self.service, self.endpoint,
-                                 '', source_endpoint=self.source_endpoint)
+        file_gen = FileGenerator(self.service, self.endpoint, '')
         files = file_gen.call(input_s3_file)
         result_list = []
         for filename in files:
             result_list.append(filename)
-        file_info = FileInfo(src=self.file1, dest='text1.txt',
+        file_base = FileBase(src=self.file1, dest='text1.txt',
                              compare_key='text1.txt',
                              size=result_list[0].size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=self.service, endpoint=self.endpoint,
-                             source_endpoint=self.source_endpoint)
+                             dest_type='local', operation_name='')
 
-        ref_list = [file_info]
+        ref_list = [file_base]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])
@@ -428,27 +417,23 @@ class S3FileGeneratorTest(unittest.TestCase):
         result_list = []
         for filename in files:
             result_list.append(filename)
-        file_info = FileInfo(src=self.file2,
+        file_base = FileBase(src=self.file2,
                              dest='another_directory' + os.sep +
                              'text2.txt',
                              compare_key='another_directory/text2.txt',
                              size=result_list[0].size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=self.service, endpoint=self.endpoint,
-                             source_endpoint=self.endpoint)
-        file_info2 = FileInfo(src=self.file1,
+                             dest_type='local', operation_name='')
+        file_base2 = FileBase(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=result_list[1].size,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation_name='',
-                              service=self.service, endpoint=self.endpoint,
-                              source_endpoint=self.endpoint)
+                              dest_type='local', operation_name='')
 
-        ref_list = [file_info, file_info2]
+        ref_list = [file_base, file_base2]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])
@@ -468,35 +453,29 @@ class S3FileGeneratorTest(unittest.TestCase):
         for filename in files:
             result_list.append(filename)
 
-        file_info1 = FileInfo(src=self.bucket + '/another_directory/',
+        file_base1 = FileBase(src=self.bucket + '/another_directory/',
                               dest='another_directory' + os.sep,
                               compare_key='another_directory/',
                               size=result_list[0].size,
                               last_update=result_list[0].last_update,
                               src_type='s3',
-                              dest_type='local', operation_name='delete',
-                              service=self.service, endpoint=self.endpoint,
-                              source_endpoint=self.endpoint)
-        file_info2 = FileInfo(src=self.file2,
+                              dest_type='local', operation_name='delete')
+        file_base2 = FileBase(src=self.file2,
                               dest='another_directory' + os.sep + 'text2.txt',
                               compare_key='another_directory/text2.txt',
                               size=result_list[1].size,
                               last_update=result_list[1].last_update,
                               src_type='s3',
-                              dest_type='local', operation_name='delete',
-                              service=self.service, endpoint=self.endpoint,
-                              source_endpoint=self.endpoint)
-        file_info3 = FileInfo(src=self.file1,
+                              dest_type='local', operation_name='delete')
+        file_base3 = FileBase(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=result_list[2].size,
                               last_update=result_list[2].last_update,
                               src_type='s3',
-                              dest_type='local', operation_name='delete',
-                              service=self.service, endpoint=self.endpoint,
-                              source_endpoint=self.endpoint)
+                              dest_type='local', operation_name='delete')
 
-        ref_list = [file_info1, file_info2, file_info3]
+        ref_list = [file_base1, file_base2, file_base3]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
             compare_files(self, result_list[i], ref_list[i])

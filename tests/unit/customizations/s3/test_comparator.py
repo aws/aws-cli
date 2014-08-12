@@ -14,7 +14,7 @@ import datetime
 import unittest
 
 from awscli.customizations.s3.comparator import Comparator
-from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.filegenerator import FileBase
 
 
 class ComparatorTest(unittest.TestCase):
@@ -30,16 +30,14 @@ class ComparatorTest(unittest.TestCase):
         ref_list = []
         result_list = []
         time = datetime.datetime.now()
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='comparator_test.py', size=10,
                             last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='s3', operation_name='upload')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
@@ -56,16 +54,14 @@ class ComparatorTest(unittest.TestCase):
         ref_list = []
         result_list = []
         time = datetime.datetime.now()
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='comparator_test.py', size=11,
                             last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='s3', operation_name='upload')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
@@ -84,16 +80,14 @@ class ComparatorTest(unittest.TestCase):
         result_list = []
         time = datetime.datetime.now()
         future_time = time + datetime.timedelta(0, 3)
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='comparator_test.py', size=10,
                             last_update=future_time, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='s3', operation_name='upload')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
@@ -112,16 +106,14 @@ class ComparatorTest(unittest.TestCase):
         result_list = []
         time = datetime.datetime.now()
         future_time = time + datetime.timedelta(0, 3)
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='comparator_test.py', size=10,
                             last_update=future_time, src_type='s3',
-                            dest_type='s3', operation_name='copy',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='s3', operation_name='copy')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='s3', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='s3', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
@@ -140,16 +132,14 @@ class ComparatorTest(unittest.TestCase):
         result_list = []
         time = datetime.datetime.now()
         future_time = time + datetime.timedelta(0, 3)
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='comparator_test.py', size=10,
                             last_update=time, src_type='s3',
-                            dest_type='local', operation_name='download',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='local', operation_name='download')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=future_time, src_type='local',
-                             dest_type='s3', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='s3', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
@@ -159,16 +149,14 @@ class ComparatorTest(unittest.TestCase):
         self.assertEqual(result_list, ref_list)
 
         # If the source is newer than the destination do not download.
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='comparator_test.py', size=10,
                             last_update=future_time, src_type='s3',
-                            dest_type='local', operation_name='download',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='local', operation_name='download')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='local',
-                             dest_type='s3', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='s3', operation_name='')
         src_files = []
         dest_files = []
         src_files.append(src_file)
@@ -189,16 +177,14 @@ class ComparatorTest(unittest.TestCase):
         ref_list = []
         result_list = []
         time = datetime.datetime.now()
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='bomparator_test.py', size=10,
                             last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='s3', operation_name='upload')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         dest_file.operation = 'delete'
@@ -219,16 +205,14 @@ class ComparatorTest(unittest.TestCase):
         ref_list = []
         result_list = []
         time = datetime.datetime.now()
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='domparator_test.py', size=10,
                             last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
-        dest_file = FileInfo(src='', dest='',
+                            dest_type='s3', operation_name='upload')
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
         src_file.operation = 'upload'
@@ -250,11 +234,10 @@ class ComparatorTest(unittest.TestCase):
         ref_list = []
         result_list = []
         time = datetime.datetime.now()
-        dest_file = FileInfo(src='', dest='',
+        dest_file = FileBase(src='', dest='',
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
-                             dest_type='local', operation_name='',
-                             service=None, endpoint=None)
+                             dest_type='local', operation_name='')
         dest_files.append(dest_file)
         dest_file.operation = 'delete'
         ref_list.append(dest_file)
@@ -273,11 +256,10 @@ class ComparatorTest(unittest.TestCase):
         ref_list = []
         result_list = []
         time = datetime.datetime.now()
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='domparator_test.py', size=10,
                             last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='upload')
         src_files.append(src_file)
         ref_list.append(src_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
@@ -312,17 +294,15 @@ class ComparatorSizeOnlyTest(unittest.TestCase):
         time_src = datetime.datetime.now()
         time_dst = time_src + datetime.timedelta(days=1)
 
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_src, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='upload')
 
-        dst_file = FileInfo(src='', dest='',
+        dst_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_dst, src_type='s3',
-                            dest_type='local', operation_name='',
-                            service=None, endpoint=None)
+                            dest_type='local', operation_name='')
 
         files = self.comparator.call(iter([src_file]), iter([dst_file]))
         self.assertEqual(sum(1 for _ in files), 0)
@@ -335,17 +315,15 @@ class ComparatorSizeOnlyTest(unittest.TestCase):
         time_dst = datetime.datetime.now()
         time_src = time_dst + datetime.timedelta(days=1)
 
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_src, src_type='local',
-                            dest_type='s3', operation_name='upload',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='upload')
 
-        dst_file = FileInfo(src='', dest='',
+        dst_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_dst, src_type='s3',
-                            dest_type='local', operation_name='',
-                            service=None, endpoint=None)
+                            dest_type='local', operation_name='')
 
         files = self.comparator.call(iter([src_file]), iter([dst_file]))
         self.assertEqual(sum(1 for _ in files), 0)
@@ -364,17 +342,15 @@ class ComparatorExactTimestampsTest(unittest.TestCase):
         time_src = datetime.datetime.now()
         time_dst = time_src - datetime.timedelta(days=1)
 
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_src, src_type='s3',
-                            dest_type='local', operation_name='download',
-                            service=None, endpoint=None)
+                            dest_type='local', operation_name='download')
 
-        dst_file = FileInfo(src='', dest='',
+        dst_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_dst, src_type='local',
-                            dest_type='s3', operation_name='',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='')
 
         files = self.comparator.call(iter([src_file]), iter([dst_file]))
         self.assertEqual(sum(1 for _ in files), 1)
@@ -388,17 +364,15 @@ class ComparatorExactTimestampsTest(unittest.TestCase):
         time_src = datetime.datetime.now() - datetime.timedelta(days=1)
         time_dst = datetime.datetime.now()
 
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_src, src_type='s3',
-                            dest_type='local', operation_name='download',
-                            service=None, endpoint=None)
+                            dest_type='local', operation_name='download')
 
-        dst_file = FileInfo(src='', dest='',
+        dst_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_dst, src_type='local',
-                            dest_type='s3', operation_name='',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='')
 
         files = self.comparator.call(iter([src_file]), iter([dst_file]))
         self.assertEqual(sum(1 for _ in files), 1)
@@ -411,17 +385,15 @@ class ComparatorExactTimestampsTest(unittest.TestCase):
         """
         time_both = datetime.datetime.now()
 
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_both, src_type='s3',
-                            dest_type='local', operation_name='download',
-                            service=None, endpoint=None)
+                            dest_type='local', operation_name='download')
 
-        dst_file = FileInfo(src='', dest='',
+        dst_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_both, src_type='local',
-                            dest_type='s3', operation_name='',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='')
 
         files = self.comparator.call(iter([src_file]), iter([dst_file]))
         self.assertEqual(sum(1 for _ in files), 0)
@@ -434,17 +406,15 @@ class ComparatorExactTimestampsTest(unittest.TestCase):
         """
         time_both = datetime.datetime.now()
 
-        src_file = FileInfo(src='', dest='',
+        src_file = FileBase(src='', dest='',
                             compare_key='test.py', size=20,
                             last_update=time_both, src_type='s3',
-                            dest_type='local', operation_name='download',
-                            service=None, endpoint=None)
+                            dest_type='local', operation_name='download')
 
-        dst_file = FileInfo(src='', dest='',
+        dst_file = FileBase(src='', dest='',
                             compare_key='test.py', size=10,
                             last_update=time_both, src_type='local',
-                            dest_type='s3', operation_name='',
-                            service=None, endpoint=None)
+                            dest_type='s3', operation_name='')
 
         files = self.comparator.call(iter([src_file]), iter([dst_file]))
         self.assertEqual(sum(1 for _ in files), 1)

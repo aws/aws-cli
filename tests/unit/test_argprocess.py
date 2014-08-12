@@ -421,7 +421,10 @@ class TestDocGen(BaseArgProcessTest):
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
         self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
-        s = 'Key value pairs, where values are separated by commas.\n--playlists Name=string1,Format=string1,OutputKeys=string1,string2'
+        s = ('Key value pairs, where values are separated by commas, '
+             'and multiple pairs are separated by spaces.\n'
+             '--playlists Name=string1,Format=string1,OutputKeys=string1,string2 '
+             'Name=string1,Format=string1,OutputKeys=string1,string2')
         self.assertEqual(doc_string, s)
 
 

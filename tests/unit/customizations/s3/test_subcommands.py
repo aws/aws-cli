@@ -439,10 +439,10 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         parsed_global = parser.parse_args(['--paginate'])
         help_command = s3.create_help_command()
         help_command([], parsed_global)
-        self.assert_contains("This provides high level S3 commands")
+        self.assert_contains("This section explains prominent concepts and notations in the set of high-level S3 commands provided.")
         self.assert_contains("Every command takes one or two positional")
         self.assert_contains("* rb")
-    
+
     def test_s3command_help(self):
         # This tests the help command for an s3 command. This
         # checks to make sure the command prints appropriate

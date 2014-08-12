@@ -54,3 +54,14 @@ Output::
     "DNSName": "internal-MyInternalLoadBalancer-012345678.us-east-1.elb.amazonaws.com"
   }
 
+This example creates a TCP load balancer in EC2-Classic and assigns a tag.
+
+Command::
+
+  aws elb create-load-balancer --load-balancer-name MyTCPLoadBalancer --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80 --tag Key=department,Value=digital-media --availability-zones us-east-1a
+
+Output::
+
+  {
+    "DNSName": "MyTCPLoadBalancer-012345678.us-east-1.elb.amazonaws.com"
+  }

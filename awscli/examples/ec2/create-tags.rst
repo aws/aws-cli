@@ -22,17 +22,17 @@ Command::
 
 **To add tags with special characters**
 
-This example adds the tag ``[Group]=test`` for an instance. The square brackets ([ and ]) are special characters, and must be escaped. If you are using Windows, break out the characters with a backslash (\\), and surround them with double quotes ("):
+This example adds the tag ``[Group]=test`` for an instance. The square brackets ([ and ]) are special characters, and must be escaped. If you are using Windows, surround the value with (\"):
 
 Command::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags Key=\"["Group\"]",Value=test
+  aws ec2 create-tags --resources i-1a2b3c4d --tags Key=\"[Group]\",Value=test
 
 If you are using Windows PowerShell, break out the characters with a backslash (\\), surround them with double quotes ("), and then surround the entire key and value structure with single quotes ('):
 
 Command::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags 'Key=\"["Group\"]",Value=test'
+  aws ec2 create-tags --resources i-1a2b3c4d --tags 'Key=\"[Group]\",Value=test'
 
 If you are using Linux or OS X, enclose the entire key and value structure with single quotes ('), and then enclose the element with the special character with double quotes ("):
 

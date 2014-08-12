@@ -45,7 +45,7 @@ class FileDecodingError(Exception):
         super(FileDecodingError, self).__init__(self.error_message)
 
 
-class FileBase(object):
+class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None):
@@ -100,7 +100,7 @@ class FileGenerator(object):
                                               sep_table[dest_type])
             else:
                 dest_path = dest['path']
-            yield FileBase(src=src_path, dest=dest_path,
+            yield FileStat(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
                            dest_type=dest_type,

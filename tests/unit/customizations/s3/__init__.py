@@ -110,7 +110,7 @@ def create_bucket(session, name=None, region=None):
     """
     service = session.get_service('s3')
     if not region:
-        region = 'us-east-1'
+        region = 'us-west-2'
     endpoint = service.get_endpoint(region)
     if name:
         bucket_name = name
@@ -150,7 +150,7 @@ def s3_cleanup(bucket, session, key1='text1.txt', key2='text2.txt'):
 
 def compare_files(self, result_file, ref_file):
     """
-    Ensures that the FileBase's properties are what they
+    Ensures that the FileStat's properties are what they
     are suppose to be.
     """
     self.assertEqual(result_file.src, ref_file.src)

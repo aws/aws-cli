@@ -13,17 +13,17 @@
 import mock
 
 from awscli.testutils import unittest
-from awscli.customizations.s3.filegenerator import FileBase
+from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.infosetter import InfoSetter
+from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 
 
-class TestInfoSetter(unittest.TestCase):
+class TestFileInfoBuilder(unittest.TestCase):
     def test_info_setter(self):
-        info_setter = InfoSetter(service='service', endpoint='endpoint',
-                                 source_endpoint='source_endpoint',
-                                 parameters='parameters')
-        files = [FileBase(src='src', dest='dest', compare_key='compare_key',
+        info_setter = FileInfoBuilder(service='service', endpoint='endpoint',
+                                      source_endpoint='source_endpoint',
+                                      parameters='parameters')
+        files = [FileStat(src='src', dest='dest', compare_key='compare_key',
                           size='size', last_update='last_update',
                           src_type='src_type', dest_type='dest_type',
                           operation_name='operation_name')]

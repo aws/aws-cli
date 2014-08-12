@@ -22,7 +22,7 @@ import os
 
 import botocore.session
 from awscli import EnvironmentVariables
-from awscli.customizations.s3.filegenerator import FileGenerator, FileBase
+from awscli.customizations.s3.filegenerator import FileGenerator, FileStat
 from tests.unit.customizations.s3 import make_s3_files, s3_cleanup, \
     compare_files
 
@@ -51,14 +51,14 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         result_list = list(
             FileGenerator(self.service, self.endpoint, '').call(
                 input_s3_file))
-        file_base = FileBase(src=self.file1, dest='text1.txt',
+        file_stat = FileStat(src=self.file1, dest='text1.txt',
                              compare_key='text1.txt',
                              size=expected_file_size,
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='')
 
-        expected_list = [file_base]
+        expected_list = [file_stat]
         self.assertEqual(len(result_list), 1)
         compare_files(self, result_list[0], expected_list[0])
 
@@ -74,14 +74,14 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         result_list = list(
             FileGenerator(self.service, self.endpoint, '').call(
                 input_s3_file))
-        file_base = FileBase(src=self.file2,
+        file_stat = FileStat(src=self.file2,
                              dest='another_directory' + os.sep + 'text2.txt',
                              compare_key='another_directory/text2.txt',
                              size=21,
                              last_update=result_list[0].last_update,
                              src_type='s3',
                              dest_type='local', operation_name='')
-        file_base2 = FileBase(src=self.file1,
+        file_stat2 = FileStat(src=self.file1,
                               dest='text1.txt',
                               compare_key='text1.txt',
                               size=15,
@@ -89,7 +89,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                               src_type='s3',
                               dest_type='local', operation_name='')
 
-        expected_result = [file_base, file_base2]
+        expected_result = [file_stat, file_stat2]
         self.assertEqual(len(result_list), 2)
         compare_files(self, result_list[0], expected_result[0])
         compare_files(self, result_list[1], expected_result[1])
@@ -108,7 +108,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                           'delete').call(
                 input_s3_file))
 
-        file_base1 = FileBase(
+        file_stat1 = FileStat(
             src=self.bucket + '/another_directory/',
             dest='another_directory' + os.sep,
             compare_key='another_directory/',
@@ -116,7 +116,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             last_update=result_list[0].last_update,
             src_type='s3',
             dest_type='local', operation_name='delete')
-        file_base2 = FileBase(
+        file_stat2 = FileStat(
             src=self.file2,
             dest='another_directory' + os.sep + 'text2.txt',
             compare_key='another_directory/text2.txt',
@@ -124,7 +124,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             last_update=result_list[1].last_update,
             src_type='s3',
             dest_type='local', operation_name='delete')
-        file_base3 = FileBase(
+        file_stat3 = FileStat(
             src=self.file1,
             dest='text1.txt',
             compare_key='text1.txt',
@@ -133,7 +133,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
             src_type='s3',
             dest_type='local', operation_name='delete')
 
-        expected_list = [file_base1, file_base2, file_base3]
+        expected_list = [file_stat1, file_stat2, file_stat3]
         self.assertEqual(len(result_list), 3)
         compare_files(self, result_list[0], expected_list[0])
         compare_files(self, result_list[1], expected_list[1])

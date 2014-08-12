@@ -14,7 +14,7 @@ import os
 from awscli.testutils import unittest
 import platform
 
-from awscli.customizations.s3.filegenerator import FileBase
+from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.filters import Filter
 
 
@@ -29,23 +29,23 @@ def platform_path(filepath):
 class FiltersTest(unittest.TestCase):
     def setUp(self):
         self.local_files = [
-            self.file_base('test.txt'),
-            self.file_base('test.jpg'),
-            self.file_base(os.path.join('directory', 'test.jpg')),
+            self.file_stat('test.txt'),
+            self.file_stat('test.jpg'),
+            self.file_stat(os.path.join('directory', 'test.jpg')),
         ]
         self.s3_files = [
-            self.file_base('bucket/test.txt', src_type='s3'),
-            self.file_base('bucket/test.jpg', src_type='s3'),
-            self.file_base('bucket/key/test.jpg', src_type='s3'),
+            self.file_stat('bucket/test.txt', src_type='s3'),
+            self.file_stat('bucket/test.jpg', src_type='s3'),
+            self.file_stat('bucket/key/test.jpg', src_type='s3'),
         ]
 
-    def file_base(self, filename, src_type='local'):
+    def file_stat(self, filename, src_type='local'):
         if src_type == 'local':
             filename = os.path.abspath(filename)
             dest_type = 's3'
         else:
             dest_type = 'local'
-        return FileBase(src=filename, dest='',
+        return FileStat(src=filename, dest='',
                         compare_key='', size=10,
                         last_update=0, src_type=src_type,
                         dest_type=dest_type, operation_name='')
@@ -116,15 +116,15 @@ class FiltersTest(unittest.TestCase):
         # The same filter should work for both local and remote files.
         # So if I have a directory with 2 files:
         local_files = [
-            self.file_base('test1.txt'),
-            self.file_base('nottest1.txt'),
+            self.file_stat('test1.txt'),
+            self.file_stat('nottest1.txt'),
         ]
-        # And the same 2 files remote (note that the way FileBase objects
+        # And the same 2 files remote (note that the way FileStat objects
         # are constructed, we'll have the bucket name but no leading '/'
         # character):
         remote_files = [
-            self.file_base('bucket/test1.txt', src_type='s3'),
-            self.file_base('bucket/nottest1.txt', src_type='s3'),
+            self.file_stat('bucket/test1.txt', src_type='s3'),
+            self.file_stat('bucket/nottest1.txt', src_type='s3'),
         ]
         # If I apply the filter to the local to the local files.
         exclude_filter = self.create_filter([['exclude', 't*']])
@@ -143,9 +143,9 @@ class FiltersTest(unittest.TestCase):
 
     def test_bucket_exclude_with_prefix(self):
         s3_files = [
-            self.file_base('bucket/dir1/key1.txt', src_type='s3'),
-            self.file_base('bucket/dir1/key2.txt', src_type='s3'),
-            self.file_base('bucket/dir1/notkey3.txt', src_type='s3'),
+            self.file_stat('bucket/dir1/key1.txt', src_type='s3'),
+            self.file_stat('bucket/dir1/key2.txt', src_type='s3'),
+            self.file_stat('bucket/dir1/notkey3.txt', src_type='s3'),
         ]
         filtered_files = list(
             self.create_filter([['exclude', 'dir1/*']],
@@ -160,7 +160,7 @@ class FiltersTest(unittest.TestCase):
 
     def test_root_dir(self):
         p = platform_path
-        local_files = [self.file_base(p('/foo/bar/baz.txt'), src_type='local')]
+        local_files = [self.file_stat(p('/foo/bar/baz.txt'), src_type='local')]
         local_filter = self.create_filter([['exclude', 'baz.txt']],
                                           root=p('/foo/bar/'))
         filtered = list(local_filter.call(local_files))

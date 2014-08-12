@@ -19,7 +19,7 @@ from dateutil.tz import tzlocal
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.comparator import Comparator
-from awscli.customizations.s3.infosetter import InfoSetter
+from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo
@@ -512,7 +512,7 @@ class CommandArchitecture(object):
         if self.cmd == 'sync':
             self.instructions.append('comparator')
         if self.cmd not in ['mb', 'rb']:
-            self.instructions.append('info_setter')
+            self.instructions.append('file_info_builder')
         self.instructions.append('s3_handler')
 
     def run(self):
@@ -566,7 +566,7 @@ class CommandArchitecture(object):
                              operation_name=operation_name,
                              service=self._service,
                              endpoint=self._endpoint)]
-        info_setter = InfoSetter(self._service, self._endpoint,
+        file_info_builder = FileInfoBuilder(self._service, self._endpoint,
                                  self._source_endpoint, self.parameters) 
         s3handler = S3Handler(self.session, self.parameters)
 
@@ -578,25 +578,25 @@ class CommandArchitecture(object):
                             'filters': [create_filter(self.parameters),
                                         create_filter(self.parameters)],
                             'comparator': [Comparator(self.parameters)],
-                            'info_setter': [info_setter],
+                            'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
-                            'info_setter': [info_setter],
+                            'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
-                            'info_setter': [info_setter],
+                            'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
                             'filters': [create_filter(self.parameters)],
-                            'info_setter': [info_setter],
+                            'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'mb':
             command_dict = {'setup': [taskinfo],

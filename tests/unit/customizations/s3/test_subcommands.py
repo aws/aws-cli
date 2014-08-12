@@ -154,11 +154,14 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         """
         cmds = ['cp', 'mv', 'rm', 'sync', 'mb', 'rb']
 
-        instructions = {'cp': ['file_generator', 'info_setter', 's3_handler'],
-                        'mv': ['file_generator', 'info_setter', 's3_handler'],
-                        'rm': ['file_generator', 'info_setter', 's3_handler'],
+        instructions = {'cp': ['file_generator', 'file_info_builder',
+                               's3_handler'],
+                        'mv': ['file_generator', 'file_info_builder',
+                               's3_handler'],
+                        'rm': ['file_generator', 'file_info_builder',
+                               's3_handler'],
                         'sync': ['file_generator', 'comparator',
-                                 'info_setter', 's3_handler'],
+                                 'file_info_builder', 's3_handler'],
                         'mb': ['s3_handler'],
                         'rb': ['s3_handler']}
 
@@ -176,7 +179,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         self.assertEqual(cmd_arc.instructions, ['file_generator', 'filters',
-                                                'info_setter', 's3_handler'])
+                                                'file_info_builder',
+                                                's3_handler'])
 
     def test_run_cp_put(self):
         # This ensures that the architecture sets up correctly for a ``cp`` put

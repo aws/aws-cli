@@ -26,7 +26,8 @@ import string
 import botocore.session
 import six
 
-from awscli.testutils import unittest, aws, FileCreator
+from awscli.testutils import unittest, FileCreator
+from awscli.testutils import aws as _aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3 import constants
 
@@ -41,6 +42,14 @@ def cd(directory):
         os.chdir(original)
 
 
+def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True):
+    if not env_vars:
+        env_vars = os.environ.copy()
+        env_vars['AWS_DEFAULT_REGION'] = "us-west-2"
+    return _aws(command, collect_memory=collect_memory, env_vars=env_vars,
+                wait_for_finish=wait_for_finish)
+
+
 class BaseS3CLICommand(unittest.TestCase):
     """Base class for aws s3 command.
 
@@ -53,7 +62,7 @@ class BaseS3CLICommand(unittest.TestCase):
         self.session = botocore.session.get_session()
         self.service = self.session.get_service('s3')
         self.regions = {}
-        self.region = 'us-east-1'
+        self.region = 'us-west-2'
         self.endpoint = self.service.get_endpoint(self.region)
         self.extra_setup()
 
@@ -597,6 +606,9 @@ class TestSync(BaseS3CLICommand):
 class TestSourceRegion(BaseS3CLICommand):
     def extra_setup(self):
         name_comp = []
+        # This creates a non DNS compatible bucket name by making two random
+        # sequences of characters and joining them with a period and
+        # adding a .com at the end.
         for i in range(2):
             name_comp.append(''.join(random.sample(string.ascii_lowercase + 
                                                    string.digits,10)))
@@ -607,7 +619,7 @@ class TestSourceRegion(BaseS3CLICommand):
                                                    string.digits,10)))
         self.dest_name = '.'.join(name_comp + ['com'])
         self.src_region = 'us-west-1'
-        self.dest_region = 'us-west-2'
+        self.dest_region = 'us-east-1'
         self.src_bucket = self.create_bucket(self.src_name, self.src_region)
         self.dest_bucket = self.create_bucket(self.dest_name, self.dest_region)
 

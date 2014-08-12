@@ -13,7 +13,7 @@
 from awscli.customizations.s3.fileinfo import FileInfo
 
 
-class InfoSetter(object):
+class FileInfoBuilder(object):
     """
     This class takes a ``FileBase`` object's attributes and generates
     a ``FileInfo`` object so that the operation can be performed.
@@ -29,10 +29,10 @@ class InfoSetter(object):
 
     def call(self, files):
         for file_base in files:
-            file_info = self.inject_info(file_base)
+            file_info = self._inject_info(file_base)
             yield file_info            
 
-    def inject_info(self, file_base):
+    def _inject_info(self, file_base):
         file_info_attr = {}
         file_info_attr['src'] = file_base.src
         file_info_attr['dest'] = file_base.dest

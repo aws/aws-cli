@@ -419,13 +419,26 @@ class TestDocGen(BaseArgProcessTest):
             self.session, p.operation, None, {p.cli_name: argument},
             name='create-job', event_class='elastictranscoder')
         help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
-        self.assertTrue(p.example_fn)
         doc_string = p.example_fn(p)
         s = ('Key value pairs, where values are separated by commas, '
              'and multiple pairs are separated by spaces.\n'
              '--playlists Name=string1,Format=string1,OutputKeys=string1,string2 '
              'Name=string1,Format=string1,OutputKeys=string1,string2')
         self.assertEqual(doc_string, s)
+
+    def test_gen_list_structure_list_scalar_scalar_docs(self):
+        # Verify that we have *two* top level list items displayed,
+        # so we make it clear that multiple values are separated by spaces.
+        p = self.get_param_object('ec2.DescribeInstances.Filters')
+        argument = CLIArgument(p.cli_name, p, p.operation)
+        help_command = OperationHelpCommand(
+            self.session, p.operation, None, {p.cli_name: argument},
+            name='describe-instances', event_class='ec2')
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+        doc_string = p.example_fn(p)
+        self.assertIn('multiple pairs are separated by spaces', doc_string)
+        self.assertIn('Name=string1,Values=string1,string2 '
+                      'Name=string1,Values=string1,string2', doc_string)
 
 
 class TestUnpackJSONParams(BaseArgProcessTest):

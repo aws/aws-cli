@@ -9,6 +9,9 @@ Next Release (TBD)
   (`issue 690 <https://github.com/aws/aws-cli/issues/690>`__)
 * feature:Signing Requests: Add a ``--no-sign-request`` option that,
   when specified, will not sign any requests.
+* bugfix:``aws s3``: Added ``-source-region`` argument to allow transfer
+  between non DNS compatible buckets that were located in different regions.
+  (`issue 872 <https://github.com/aws/aws-cli/pull/872>`__)
 
 
 1.4.1

@@ -26,7 +26,7 @@ The following JSON input performs the same filtering.
 
 Command::
 
-  aws ec2 describe-instances --filter file://filters.json
+  aws ec2 describe-instances --filters file://filters.json
 
 filters.json::
 

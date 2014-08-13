@@ -39,7 +39,7 @@ This example describes the subnets for the specified VPC.
 
 Command::
 
-  aws ec2 describe-subnets --filter "Name=vpc-id,Values=vpc-a01106c2"
+  aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-a01106c2"
 
 Output::
 

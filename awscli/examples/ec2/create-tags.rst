@@ -30,9 +30,9 @@ surround the entire tag with quotes.
 
 * On Linux, OS X, or in Windows Powershell, use single quotes to surround the tag::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags Key='[Group]',Value=test
+    aws ec2 create-tags --resources i-1a2b3c4d --tags Key='[Group]',Value=test
 
 * On the basic (non-Powershell) Windows command-prompt, use double quotes instead::
 
-  aws ec2 create-tags --resources i-1a2b3c4d --tags Key="[Group]",Value=test
+    aws ec2 create-tags --resources i-1a2b3c4d --tags Key="[Group]",Value=test
 

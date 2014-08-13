@@ -326,19 +326,23 @@ class ParamShorthand(object):
             return dict([(v, None) for v in param.keys.enum])
 
     def _docs_list_scalar_list_parse(self, param):
-        s = 'Key value pairs, where values are separated by commas.\n'
+        s = ('Key value pairs, where values are separated by commas, '
+             'and multiple pairs are separated by spaces.\n')
         s += '%s ' % param.cli_name
         inner_params = param.members.members
         scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
         list_params = [p for p in inner_params if p.type == 'list']
+        pair = ''
         for param in scalar_params:
-            s += '%s=%s1,' % (param.name, param.type)
+            pair += '%s=%s1,' % (param.name, param.type)
         for param in list_params[:-1]:
             param_type = param.members.type
-            s += '%s=%s1,%s2,' % (param.name, param_type, param_type)
+            pair += '%s=%s1,%s2,' % (param.name, param_type, param_type)
         last_param = list_params[-1]
         param_type = last_param.members.type
-        s += '%s=%s1,%s2' % (last_param.name, param_type, param_type)
+        pair += '%s=%s1,%s2' % (last_param.name, param_type, param_type)
+        pair += ' %s' % pair
+        s += pair
         return s
 
     def _docs_list_scalar_parse(self, param):
@@ -348,8 +352,10 @@ class ParamShorthand(object):
     def _docs_list_key_value_parse(self, param):
         s = "Key value pairs, with multiple values separated by a space.\n"
         s += '%s ' % param.cli_name
-        s += ','.join(['%s=%s' % (sub_param.name, sub_param.type)
-                       for sub_param in param.members.members])
+        pair = ','.join(['%s=%s' % (sub_param.name, sub_param.type)
+                         for sub_param in param.members.members])
+        pair += ' %s' % pair
+        s += pair
         return s
 
     def _docs_special_key_value_parse(self, param):

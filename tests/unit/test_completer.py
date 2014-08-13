@@ -24,7 +24,7 @@ LOG = logging.getLogger(__name__)
 
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl',
               '--no-paginate', '--output', '--profile',
-              '--region', '--version', '--color', '--query']
+              '--region', '--version', '--color', '--query', '--no-sign-request']
 
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudsearch',
@@ -60,8 +60,8 @@ COMPLETIONS = [
      set([])),
     ('aws ec2 --debug describe-instances --instance-ids i-12345678 - ', -1,
      set(['--filters', '--dry-run', '--no-dry-run', '--endpoint-url',
-          '--no-verify-ssl', '--no-paginate', '--output', '--profile',
-          '--starting-token', '--max-items',
+          '--no-verify-ssl', '--no-paginate', '--no-sign-request',
+          '--output', '--profile', '--starting-token', '--max-items',
           '--region', '--version', '--color', '--query'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),

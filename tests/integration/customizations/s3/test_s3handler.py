@@ -84,6 +84,7 @@ class S3HandlerTestDeleteList(unittest.TestCase):
                 size=0,
                 service=self.service,
                 endpoint=self.endpoint,
+                source_endpoint=self.endpoint
             ))
         self.assertEqual(len(list_contents(self.bucket, self.session)), 3)
         self.s3_handler.call(tasks)
@@ -136,6 +137,7 @@ class S3HandlerTestDeleteList(unittest.TestCase):
             src=key, src_type='s3',
             dest_type='local', operation_name='delete', size=0,
             service=self.service, endpoint=self.endpoint,
+            source_endpoint=self.endpoint
         )]
         self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
         self.s3_handler.call(tasks)
@@ -274,7 +276,8 @@ class S3HandlerTestMove(unittest.TestCase):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.s3_files2[i], dest_type='s3',
                 operation_name='move', size=0,
-                service=self.service, endpoint=self.endpoint
+                service=self.service, endpoint=self.endpoint,
+                source_endpoint = self.endpoint
             ))
         # Perform the move.
         self.s3_handler.call(tasks)

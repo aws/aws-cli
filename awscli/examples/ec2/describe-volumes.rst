@@ -49,7 +49,7 @@ This example command describes all volumes that are both attached to the instanc
 
 Command::
 
-  aws ec2 describe-volumes --region us-east-1 --filter Name=attachment.instance-id,Values=i-abe041d4 Name=attachment.delete-on-termination,Values=true
+  aws ec2 describe-volumes --region us-east-1 --filters Name=attachment.instance-id,Values=i-abe041d4 Name=attachment.delete-on-termination,Values=true
 
 Output::
 

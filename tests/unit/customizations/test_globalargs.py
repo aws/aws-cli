@@ -54,7 +54,6 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             globalargs.resolve_types(parsed_args)
             self.assertFalse(parsed_args.verify_ssl)
 
-
     def test_os_environ_overrides_cert_bundle(self):
         environ = {
             'AWS_CA_BUNDLE': '/path/to/bundle.pem',
@@ -63,3 +62,23 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             parsed_args = FakeParsedArgs(verify_ssl=True)
             globalargs.resolve_types(parsed_args)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/bundle.pem')
+
+    def test_no_sign_request_if_option_specified(self):
+        args = FakeParsedArgs(sign_request=False)
+        session = mock.Mock()
+
+        globalargs.no_sign_request(args, session)
+        session.register.assert_called_with('service-created', mock.ANY)
+
+    def test_request_signed_by_default(self):
+        args = FakeParsedArgs(sign_request=True)
+        session = mock.Mock()
+
+        globalargs.no_sign_request(args, session)
+        self.assertFalse(session.register.called)
+
+    def test_disable_signing(self):
+        service = mock.Mock()
+        service.signature_version = 'v4'
+        globalargs.disable_signing(service)
+        service.signature_version = None

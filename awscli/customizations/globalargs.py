@@ -18,6 +18,7 @@ import jmespath
 
 def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_types)
+    cli.register('top-level-args-parsed', no_sign_request)
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -48,3 +49,16 @@ def _resolve_verify_ssl(value):
     else:
         verify = os.environ.get('AWS_CA_BUNDLE')
     return verify
+
+
+def no_sign_request(parsed_args, session, **kwargs):
+    if not parsed_args.sign_request:
+        # In order to make signing disabled for all requests
+        # we need to set the signature_version to None for
+        # any service created.  This ensures that get_endpoint()
+        # will not look for auth.
+        session.register('service-created', disable_signing)
+
+
+def disable_signing(service, **kwargs):
+    service.signature_version = None

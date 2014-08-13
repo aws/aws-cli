@@ -7,6 +7,8 @@ Next Release (TBD)
 
 * bugfix:Credentials: Raise an error if an incomplete profile is found
   (`issue 690 <https://github.com/aws/aws-cli/issues/690>`__)
+* feature:Signing Requests: Add a ``--no-sign-request`` option that,
+  when specified, will not sign any requests.
 
 
 1.4.1

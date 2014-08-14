@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.4.2
+=====
 
 * feature:``aws cloudsearchdomain``: Added sigv4 support.
 * bugfix:Credentials: Raise an error if an incomplete profile is found

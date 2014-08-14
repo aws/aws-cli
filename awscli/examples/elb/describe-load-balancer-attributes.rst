@@ -10,6 +10,9 @@ Output::
 
   {
     "LoadBalancerAttributes": {
+	"ConnectionSettings": {
+               "IdleTimeout": 30
+      },
       "ConnectionDraining": {
         "Enabled": false,
         "Timeout": 300

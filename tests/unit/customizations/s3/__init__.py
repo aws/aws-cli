@@ -103,17 +103,24 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
     return bucket
 
 
-def create_bucket(session):
+def create_bucket(session, name=None, region=None):
     """
     Creates a bucket
     :returns: the name of the bucket created
     """
     service = session.get_service('s3')
-    region = 'us-east-1'
+    if not region:
+        region = 'us-west-2'
     endpoint = service.get_endpoint(region)
-    rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits, 10))
-    bucket_name = 'awscli-s3test-' + str(rand1)
+    if name:
+        bucket_name = name
+    else:
+        rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits,
+                                      10))
+        bucket_name = 'awscli-s3test-' + str(rand1)
     params = {'endpoint': endpoint, 'bucket': bucket_name}
+    if region != 'us-east-1':
+        params['create_bucket_configuration'] = {'LocationConstraint': region}
     operation = service.get_operation('CreateBucket')
     http_response, response_data = operation.call(**params)
     return bucket_name
@@ -143,7 +150,7 @@ def s3_cleanup(bucket, session, key1='text1.txt', key2='text2.txt'):
 
 def compare_files(self, result_file, ref_file):
     """
-    Ensures that the FileInfo's properties are what they
+    Ensures that the FileStat's properties are what they
     are suppose to be.
     """
     self.assertEqual(result_file.src, ref_file.src)

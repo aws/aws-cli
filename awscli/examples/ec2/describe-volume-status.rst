@@ -38,7 +38,7 @@ This example command describes the status for all volumes that are impaired. In 
 
 Command::
 
-  aws ec2 describe-volume-status --filter Name=volume-status.status,Values=impaired
+  aws ec2 describe-volume-status --filters Name=volume-status.status,Values=impaired
 
 Output::
 

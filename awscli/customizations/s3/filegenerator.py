@@ -17,7 +17,6 @@ import six
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
-from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister
 from awscli.errorhandler import ClientError
@@ -46,6 +45,20 @@ class FileDecodingError(Exception):
         super(FileDecodingError, self).__init__(self.error_message)
 
 
+class FileStat(object):
+    def __init__(self, src, dest=None, compare_key=None, size=None,
+                 last_update=None, src_type=None, dest_type=None,
+                 operation_name=None):
+        self.src = src
+        self.dest = dest
+        self.compare_key = compare_key
+        self.size = size
+        self.last_update = last_update
+        self.src_type = src_type
+        self.dest_type = dest_type
+        self.operation_name = operation_name
+
+
 class FileGenerator(object):
     """
     This is a class the creates a generator to yield files based on information
@@ -54,7 +67,8 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, service, endpoint, operation_name, follow_symlinks=True):
+    def __init__(self, service, endpoint, operation_name,
+                 follow_symlinks=True):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
@@ -86,10 +100,9 @@ class FileGenerator(object):
                                               sep_table[dest_type])
             else:
                 dest_path = dest['path']
-            yield FileInfo(src=src_path, dest=dest_path,
+            yield FileStat(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
-                           service=self._service, endpoint=self._endpoint,
                            dest_type=dest_type,
                            operation_name=self.operation_name)
 

@@ -18,19 +18,19 @@
 
     [
         {
-            "Value": "male", 
+            "Value": "male",
             "Key": "sex"
-        }, 
+        },
         {
-            "Value": "123 East NW Seattle", 
+            "Value": "123 East NW Seattle",
             "Key": "address"
-        }, 
+        },
         {
-            "Value": "John Doe", 
+            "Value": "John Doe",
             "Key": "name"
-        }, 
+        },
         {
-            "Value": "29", 
+            "Value": "29",
             "Key": "age"
         }
     ]

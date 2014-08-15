@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from collections import namedtuple
 import logging
 import math
 import os
@@ -18,11 +19,14 @@ from six.moves import queue
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
     NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import find_chunksize, \
-    operate, find_bucket_key, relative_path
+    operate, find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 
 LOGGER = logging.getLogger(__name__)
+
+CommandResult = namedtuple('CommandResult',
+                           ['num_tasks_failed', 'num_tasks_warned']) 
 
 
 class S3Handler(object):
@@ -84,19 +88,22 @@ class S3Handler(object):
         except Exception as e:
             LOGGER.debug('Exception caught during task execution: %s',
                          str(e), exc_info=True)
-            self.result_queue.put({'message': str(e), 'error': True})
+            self.result_queue.put(PrintTask(message=str(e), error=True))
             self.executor.initiate_shutdown(
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
         except KeyboardInterrupt:
-            self.result_queue.put({'message': "Cleaning up. Please wait...",
-                                   'error': True})
+            self.result_queue.put(PrintTask(message=("Cleaning up. "
+                                                     "Please wait..."),
+                                            error=True))
             self.executor.initiate_shutdown(
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
-        return [self.executor.num_tasks_failed, self.executor.num_tasks_warned]
+        
+        return CommandResult(self.executor.num_tasks_failed,
+                             self.executor.num_tasks_warned)
 
     def _shutdown(self):
         # And finally we need to make a pass through all the existing
@@ -160,9 +167,10 @@ class S3Handler(object):
             if hasattr(filename, 'size'):
                 too_large = filename.size > MAX_UPLOAD_SIZE
             if too_large and filename.operation_name == 'upload':
-                warning = "Warning %s exceeds 5 TB and upload is " \
-                            "being skipped" % relative_path(filename.src)
-                self.result_queue.put({'message': warning, 'error': True})
+                warning_message = "File exceeds s3 upload limit of 5 TB."
+                warning = create_warning(relative_path(filename.src),
+                                         message=warning_message)
+                self.result_queue.put(warning)
             elif is_multipart_task and not self.params['dryrun']:
                 # If we're in dryrun mode, then we don't need the
                 # real multipart tasks.  We can just use a BasicTask
@@ -302,3 +310,4 @@ class S3Handler(object):
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(complete_multipart_upload_task)
         self._multipart_uploads.append((upload_context, filename))
+

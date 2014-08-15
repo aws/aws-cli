@@ -19,9 +19,9 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister
+from awscli.customizations.s3.utils import BucketLister, create_warning
 from awscli.errorhandler import ClientError
-
+from awscli.compat import is_special_file
 
 # This class is provided primarily to provide a detailed error message.
 
@@ -58,16 +58,6 @@ class FileStat(object):
         self.src_type = src_type
         self.dest_type = dest_type
         self.operation_name = operation_name
-
-
-def create_warning(path, error_message):
-    print_string = "WARNING: "
-    print_string = print_string + "Skipping file " + path + ". "
-    print_string = print_string + error_message
-    warning_message = {'message': print_string,
-                       'error': False,
-                       'warning': True}
-    return warning_message
 
 
 class FileGenerator(object):
@@ -192,7 +182,7 @@ class FileGenerator(object):
         """
         This function checks whether a file should be ignored in the
         file generation process.  This includes symlinks that are not to be
-        followed.
+        followed and files that generate warnings.
         """
         if not self.follow_symlinks:
             if os.path.isdir(path) and path.endswith(os.sep):
@@ -200,17 +190,34 @@ class FileGenerator(object):
                 path = path[:-1]
             if os.path.islink(path):
                 return True
-        if self.throws_warning(path):
+        warning_triggered = self.triggers_warning(path)
+        if warning_triggered:
             return True
         return False
 
-    def throws_warning(self, path):
+    def triggers_warning(self, path):
+        """
+        This function checks the specific types and properties of a file.
+        If the file would cause trouble, the function adds a
+        warning to the result queue to be printed out and returns a boolean
+        value notify whether the file caused a warning to be generated.
+        Files that generate warnings are skipped.  Currently, this function
+        checks for files that do not exist and files that the user does
+        not have read access.
+        """
         if not os.path.exists(path):
             warning = create_warning(path, "File does not exist.")
             self.result_queue.put(warning)
             return True
         if not os.access(path, os.R_OK):
-            warning = create_warning(path, "File read access is denied.")
+            warning = create_warning(path, "Read access is denied.")
+            self.result_queue.put(warning)
+            return True
+        if is_special_file(path):
+            warning = create_warning(path,
+                                     ("File is character special device, "
+                                      "block special device, FIFO, or "
+                                      "socket."))
             self.result_queue.put(warning)
             return True
         return False

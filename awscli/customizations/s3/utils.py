@@ -171,6 +171,18 @@ def check_error(response_data):
                 raise Exception("Error: %s\n" % error['Message'])
 
 
+def create_warning(path, error_message):
+    """
+    This creates a ``PrintTask`` for whenever a warning is to be thrown.
+    """
+    print_string = "warning: "
+    print_string = print_string + "Skipping file " + path + ". "
+    print_string = print_string + error_message
+    warning_message = PrintTask(message=print_string, error=False,
+                                warning=True)
+    return warning_message
+
+
 def operate(service, cmd, kwargs):
     """
     A helper function that universally calls any command by taking in the
@@ -367,6 +379,20 @@ class ScopedEventHandler(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self._session.unregister(self._event_name, self._handler,
                                  self._unique_id)
+
+
+class PrintTask(namedtuple('PrintTask',
+                          ['message', 'error', 'total_parts', 'warning'])):
+    def __new__(cls, message, error=False, total_parts=None, warning=None):
+        """
+        :var message: An arbitrary string associated with the entry.   This
+            can be used to communicate the result of the task.
+        :var error: Boolean indicating a failure.
+        :var total_parts: The total number of parts for multipart transfers.
+        :var warning: Boolean indicating a warning
+        """
+        return super(PrintTask, cls).__new__(cls, message, error, total_parts,
+                                             warning)
 
 
 IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])

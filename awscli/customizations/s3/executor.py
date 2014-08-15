@@ -213,7 +213,8 @@ class PrintThread(threading.Thread):
     Result Queue
     ------------
 
-    Result queue items are dictionaries that have the following keys:
+    Result queue items are PrintTask objects that have the following
+    attributes:
 
         * message: An arbitrary string associated with the entry.   This
             can be used to communicate the result of the task.
@@ -221,6 +222,8 @@ class PrintThread(threading.Thread):
             successfully.
         * total_parts: The total number of parts for multipart transfers (
             deprecated, will be removed in the future).
+        * warning: Boolean indicating whether or not a file generated a
+            warning.
 
     """
     def __init__(self, result_queue, quiet):
@@ -270,24 +273,24 @@ class PrintThread(threading.Thread):
                 pass
 
     def _process_print_task(self, print_task):
-        print_str = print_task['message']
-        if print_task['error']:
+        print_str = print_task.message
+        if print_task.error:
             self.num_errors_seen += 1
         warning = False
-        if 'warning' in print_task:
-            if print_task['warning']:
+        if print_task.warning:
+            if print_task.warning:
                 warning = True
                 self.num_warnings_seen += 1
         final_str = ''
         if warning:
             final_str += print_str.ljust(self._progress_length, ' ')
             final_str += '\n'
-        elif 'total_parts' in print_task:
+        elif print_task.total_parts:
             # Normalize keys so failures and sucess
             # look the same.
             op_list = print_str.split(':')
             print_str = ':'.join(op_list[1:])
-            total_part = print_task['total_parts']
+            total_part = print_task.total_parts
             self._num_parts += 1
             if print_str in self._progress_dict:
                 self._progress_dict[print_str]['parts'] += 1

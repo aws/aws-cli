@@ -13,14 +13,17 @@
 import os
 import tempfile
 import shutil
-import mock
+import six
 from six.moves import queue
+
+import mock
 
 from awscli.testutils import unittest, temporary_file
 from awscli.customizations.s3.executor import IOWriterThread
 from awscli.customizations.s3.executor import ShutdownThreadRequest
-from awscli.customizations.s3.executor import Executor
-from awscli.customizations.s3.utils import IORequest, IOCloseRequest
+from awscli.customizations.s3.executor import Executor, PrintThread
+from awscli.customizations.s3.utils import IORequest, IOCloseRequest, \
+    PrintTask
 
 
 class TestIOWriterThread(unittest.TestCase):
@@ -86,3 +89,13 @@ class TestExecutor(unittest.TestCase):
             executor.initiate_shutdown()
             executor.wait_until_shutdown()
             self.assertEqual(open(f.name, 'rb').read(), b'foobar')
+
+class TestPrintThread(unittest.TestCase):
+    def test_print_warning(self):
+        result_queue = queue.Queue()
+        print_task = PrintTask(message="Bad File.", warning=True)
+        thread = PrintThread(result_queue, False)
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            thread._process_print_task(print_task)
+            self.assertIn("Bad File.", mock_stdout.getvalue())
+

@@ -625,14 +625,16 @@ class CommandArchitecture(object):
         # will replaces the files attr with the return value of the
         # file_list.  The very last call is a single list of
         # [s3_handler], and the s3_handler returns the number of
-        # tasks failed.  This means that files[0] now contains
-        # the number of failed tasks.  In terms of the RC, we're
-        # keeping it simple and saying that > 0 failed tasks
-        # will give a 1 RC.
+        # tasks failed and the number of tasks warned.
+        # This means that files[0] now contains a namedtuple with
+        # the number of failed tasks and the number of warned tasks.
+        # In terms of the RC, we're keeping it simple and saying 
+        # that > 0 failed tasks will give a 1 RC and > 0 warned
+        # tasks will give a 2 RC.  Otherwise a RC of zero is returned.
         rc = 0
-        if files[0][0] > 0:
+        if files[0].num_tasks_failed > 0:
             rc = 1
-        if files[0][1] > 0:
+        if files[0].num_tasks_warned > 0:
             rc = 2
         return rc
 

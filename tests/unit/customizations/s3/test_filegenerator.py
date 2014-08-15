@@ -16,28 +16,18 @@ from awscli.testutils import unittest, FileCreator
 import stat
 import tempfile
 import shutil
+import socket
 
 import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat,  create_warning
+    FileDecodingError, FileStat
 from awscli.customizations.s3.utils import get_file_stat
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, compare_files
 from tests.unit.customizations.s3.fake_session import FakeSession
-
-
-class TestCreateWarning(unittest.TestCase):
-    def test_create_warning(self):
-        path = '/foo/'
-        error_message = 'There was an error'
-        warning_message = create_warning(path, error_message)
-        self.assertEqual(warning_message['message'],
-                         'WARNING: Skipping file /foo/. There was an error')
-        self.assertFalse(warning_message['error'])
-        self.assertTrue(warning_message['warning'])
 
 
 class LocalFileGeneratorTest(unittest.TestCase):
@@ -189,7 +179,7 @@ class TestThrowsWarning(unittest.TestCase):
         file_gen = FileGenerator(self.service, self.endpoint, '', False)
         self.files.create_file("foo.txt", contents="foo")
         full_path = os.path.join(self.root, "foo.txt")
-        return_val = file_gen.throws_warning(full_path)
+        return_val = file_gen.triggers_warning(full_path)
         self.assertFalse(return_val)
         self.assertTrue(file_gen.result_queue.empty())
 
@@ -197,11 +187,11 @@ class TestThrowsWarning(unittest.TestCase):
         file_gen = FileGenerator(self.service, self.endpoint, '', False)
         symlink = os.path.join(self.root, 'symlink')
         os.symlink('non-existent-file', symlink)
-        return_val = file_gen.throws_warning(symlink)
+        return_val = file_gen.triggers_warning(symlink)
         self.assertTrue(return_val)
         warning_message = file_gen.result_queue.get()
-        self.assertEqual(warning_message['message'],
-                         ("WARNING: Skipping file %s. File does not exist." %
+        self.assertEqual(warning_message.message,
+                         ("warning: Skipping file %s. File does not exist." %
                           symlink))
 
     def test_no_read_access(self):
@@ -210,14 +200,29 @@ class TestThrowsWarning(unittest.TestCase):
         full_path = os.path.join(self.root, "foo.txt")
         permissions = stat.S_IMODE(os.stat(full_path).st_mode)
         # Remove read permissions
-        permissions = permissions ^ stat.S_IRUSR
+        permissions = permissions ^ stat.S_IREAD
         os.chmod(full_path, permissions)
-        return_val = file_gen.throws_warning(full_path)
+        return_val = file_gen.triggers_warning(full_path)
         self.assertTrue(return_val)
         warning_message = file_gen.result_queue.get()
-        self.assertEqual(warning_message['message'],
-                         ("WARNING: Skipping file %s. File read access is "
+        self.assertEqual(warning_message.message,
+                         ("warning: Skipping file %s. Read access is "
                           "denied." % full_path))
+
+    def test_is_special_file_warning(self):
+        file_gen = FileGenerator(self.service, self.endpoint, '', False)
+        file_path = os.path.join(self.files.rootdir, 'foo')
+        # Use socket for special file.
+        sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+        sock.bind(file_path)
+        return_val = file_gen.triggers_warning(file_path)
+        self.assertTrue(return_val)
+        warning_message = file_gen.result_queue.get()
+        self.assertEqual(warning_message.message,
+                         ("warning: Skipping file %s. File is character "
+                          "special device, block special device, FIFO, or "
+                          "socket." % file_path))
+
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],

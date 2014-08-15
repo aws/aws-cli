@@ -22,12 +22,81 @@ import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat
+    FileDecodingError, FileStat, is_special_file, is_readable
 from awscli.customizations.s3.utils import get_file_stat
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, compare_files
 from tests.unit.customizations.s3.fake_session import FakeSession
+
+
+@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                 'Special files only supported on mac/linux')
+class TestIsSpecialFile(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.filename = 'foo'
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    def test_is_character_device(self):
+        file_path = os.path.join(self.files.rootdir, self.filename)
+        self.files.create_file(self.filename, contents='')
+        with mock.patch('stat.S_ISCHR') as mock_class:
+            mock_class.return_value = True
+            self.assertTrue(is_special_file(file_path))
+
+    def test_is_block_device(self):
+        file_path = os.path.join(self.files.rootdir, self.filename)
+        self.files.create_file(self.filename, contents='')
+        with mock.patch('stat.S_ISBLK') as mock_class:
+            mock_class.return_value = True
+            self.assertTrue(is_special_file(file_path))
+
+    def test_is_fifo(self):
+        file_path = os.path.join(self.files.rootdir, self.filename)
+        mode = 0o600 | stat.S_IFIFO
+        os.mknod(file_path, mode)
+        self.assertTrue(is_special_file(file_path))
+
+    def test_is_socket(self):
+        file_path = os.path.join(self.files.rootdir, self.filename)
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.bind(file_path)
+        self.assertTrue(is_special_file(file_path))
+
+
+@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                 'Read permissions tests only supported on mac/linux')
+class TestIsReadable(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+        self.filename = 'foo'
+        self.full_path = os.path.join(self.files.rootdir, self.filename)
+
+    def tearDown(self):
+        permissions = stat.S_IMODE(os.stat(self.full_path).st_mode)
+        # Reinstate read permissions
+        permissions = permissions | stat.S_IREAD
+        os.chmod(self.full_path, permissions)
+        self.files.remove_all()
+
+    def test_unreadable_file(self):
+        self.files.create_file(self.filename, contents="foo")
+        permissions = stat.S_IMODE(os.stat(self.full_path).st_mode)
+        # Remove read permissions
+        permissions = permissions ^ stat.S_IREAD
+        os.chmod(self.full_path, permissions)
+        self.assertFalse(is_readable(self.full_path))
+
+    def test_unreadable_directory(self):
+        os.mkdir(self.full_path)
+        permissions = stat.S_IMODE(os.stat(self.full_path).st_mode)
+        # Remove read permissions
+        permissions = permissions ^ stat.S_IREAD
+        os.chmod(self.full_path, permissions)
+        self.assertFalse(is_readable(self.full_path))
 
 
 class LocalFileGeneratorTest(unittest.TestCase):
@@ -185,15 +254,16 @@ class TestThrowsWarning(unittest.TestCase):
 
     def test_no_exists(self):
         file_gen = FileGenerator(self.service, self.endpoint, '', False)
-        symlink = os.path.join(self.root, 'symlink')
-        os.symlink('non-existent-file', symlink)
-        return_val = file_gen.triggers_warning(symlink)
+        filename = os.path.join(self.root, 'file')
+        return_val = file_gen.triggers_warning(filename)
         self.assertTrue(return_val)
         warning_message = file_gen.result_queue.get()
         self.assertEqual(warning_message.message,
                          ("warning: Skipping file %s. File does not exist." %
-                          symlink))
+                          filename))
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Read permissions tests only supported on mac/linux')
     def test_no_read_access(self):
         file_gen = FileGenerator(self.service, self.endpoint, '', False)
         self.files.create_file("foo.txt", contents="foo")
@@ -206,14 +276,16 @@ class TestThrowsWarning(unittest.TestCase):
         self.assertTrue(return_val)
         warning_message = file_gen.result_queue.get()
         self.assertEqual(warning_message.message,
-                         ("warning: Skipping file %s. Read access is "
-                          "denied." % full_path))
+                         ("warning: Skipping file %s. File/Directory is "
+                          "not readable." % full_path))
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Special files only supported on mac/linux')
     def test_is_special_file_warning(self):
         file_gen = FileGenerator(self.service, self.endpoint, '', False)
         file_path = os.path.join(self.files.rootdir, 'foo')
         # Use socket for special file.
-        sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.bind(file_path)
         return_val = file_gen.triggers_warning(file_path)
         self.assertTrue(return_val)
@@ -222,7 +294,6 @@ class TestThrowsWarning(unittest.TestCase):
                          ("warning: Skipping file %s. File is character "
                           "special device, block special device, FIFO, or "
                           "socket." % file_path))
-
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],

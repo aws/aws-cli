@@ -385,11 +385,11 @@ class PrintTask(namedtuple('PrintTask',
                           ['message', 'error', 'total_parts', 'warning'])):
     def __new__(cls, message, error=False, total_parts=None, warning=None):
         """
-        :var message: An arbitrary string associated with the entry.   This
+        :param message: An arbitrary string associated with the entry.   This
             can be used to communicate the result of the task.
-        :var error: Boolean indicating a failure.
-        :var total_parts: The total number of parts for multipart transfers.
-        :var warning: Boolean indicating a warning
+        :param error: Boolean indicating a failure.
+        :param total_parts: The total number of parts for multipart transfers.
+        :param warning: Boolean indicating a warning
         """
         return super(PrintTask, cls).__new__(cls, message, error, total_parts,
                                              warning)

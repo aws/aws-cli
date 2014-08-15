@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import sys
+import stat
 
 import six
 from six.moves import queue
@@ -21,7 +22,49 @@ from dateutil.tz import tzlocal
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning
 from awscli.errorhandler import ClientError
-from awscli.compat import is_special_file
+
+
+def is_special_file(path):
+    """
+    This function checks to see if a special file.  It checks if the
+    file is a character special device, block special device, FIFO, or
+    socket. 
+    """
+    mode = os.stat(path).st_mode
+    # Character special device.
+    if stat.S_ISCHR(mode):
+        return True
+    # Block special device
+    if stat.S_ISBLK(mode):
+        return True
+    # FIFO.
+    if stat.S_ISFIFO(mode):
+        return True
+    # Socket.
+    if stat.S_ISSOCK(mode):
+        return True
+    return False
+
+
+def is_readable(path):
+    """
+    This function checks to see if a file or a directory can be read.
+    This is tested by performing an operation that requires read access
+    on the file or the directory.
+    """
+    if os.path.isdir(path):
+        try:
+            os.listdir(path)
+        except (OSError, IOError):
+            return False
+    else:
+        try:
+            with open(path, 'r') as fd:
+                pass
+        except (OSError, IOError):
+            return False
+    return True
+
 
 # This class is provided primarily to provide a detailed error message.
 
@@ -209,15 +252,15 @@ class FileGenerator(object):
             warning = create_warning(path, "File does not exist.")
             self.result_queue.put(warning)
             return True
-        if not os.access(path, os.R_OK):
-            warning = create_warning(path, "Read access is denied.")
-            self.result_queue.put(warning)
-            return True
         if is_special_file(path):
             warning = create_warning(path,
                                      ("File is character special device, "
                                       "block special device, FIFO, or "
                                       "socket."))
+            self.result_queue.put(warning)
+            return True
+        if not is_readable(path):
+            warning = create_warning(path, "File/Directory is not readable.")
             self.result_queue.put(warning)
             return True
         return False

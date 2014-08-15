@@ -675,6 +675,7 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertFalse(
             self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
+
 class TestWarnings(BaseS3CLICommand):
     def extra_setup(self):
         self.bucket_name = self.create_bucket()
@@ -686,6 +687,8 @@ class TestWarnings(BaseS3CLICommand):
         self.assertIn('warning: Skipping file %s. File does not exist.' % 
                       filename, p.stdout)
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Read permissions tests only supported on mac/linux')
     def test_no_read_access(self):
         self.files.create_file('foo.txt', 'foo')
         filename = os.path.join(self.files.rootdir, 'foo.txt')
@@ -695,13 +698,15 @@ class TestWarnings(BaseS3CLICommand):
         os.chmod(filename, permissions)
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
         self.assertEqual(p.rc, 2, p.stdout)
-        self.assertIn('warning: Skipping file %s. Read access'
-                      ' is denied.' % filename, p.stdout)
+        self.assertIn('warning: Skipping file %s. File/Directory is '
+                      'not readable.' % filename, p.stdout)
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Special files only supported on mac/linux')
     def test_is_special_file(self):
         file_path = os.path.join(self.files.rootdir, 'foo')
         # Use socket for special file.
-        sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.bind(file_path)
         p = aws('s3 cp %s s3://%s/' % (file_path, self.bucket_name))
         self.assertEqual(p.rc, 2, p.stdout)

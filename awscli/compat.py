@@ -10,33 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import sys
 import six
-import stat
-
-
-def is_special_file(path):
-    """
-    This function checks to see if a special file.  It checks if the
-    file is a character special device, block special device, FIFO, or
-    socket. 
-    """
-    mode = os.stat(path).st_mode
-    # Character special device.
-    if stat.S_ISCHR(mode):
-        return True
-    # Block special device
-    if stat.S_ISBLK(mode):
-        return True
-    # FIFO.
-    if stat.S_ISFIFO(mode):
-        return True
-    # Socket.
-    if stat.S_ISSOCK(mode):
-        return True
-    return False
-
 
 if six.PY3:
     import locale

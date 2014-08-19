@@ -5,6 +5,11 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Added support for ignoring and warning
+  about files that do not exist, user does not have read
+  permissions, or are special files (i.e. sockets, FIFOs,
+  character special devices, and block special devices) 
+  (`issue 881 <https://github.com/aws/aws-cli/pull/881>`__)
 * feature:Parameter Shorthand: Added support for
   ``structure(list-scalar, scalar)`` parameter shorthand.
   (`issue 882 <https://github.com/aws/aws-cli/pull/882>`__)

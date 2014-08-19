@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import six
+from six.moves import queue
 import sys
 
 from dateutil.parser import parse
@@ -554,13 +555,16 @@ class CommandArchitecture(object):
             'mb': 'make_bucket',
             'rb': 'remove_bucket'
         }
+        result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._service,
                                        self._source_endpoint,
                                        operation_name,
-                                       self.parameters['follow_symlinks'])
+                                       self.parameters['follow_symlinks'],
+                                       result_queue=result_queue)
         rev_generator = FileGenerator(self._service, self._endpoint, '',
-                                      self.parameters['follow_symlinks'])
+                                      self.parameters['follow_symlinks'],
+                                      result_queue=result_queue)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -568,7 +572,8 @@ class CommandArchitecture(object):
                              endpoint=self._endpoint)]
         file_info_builder = FileInfoBuilder(self._service, self._endpoint,
                                  self._source_endpoint, self.parameters) 
-        s3handler = S3Handler(self.session, self.parameters)
+        s3handler = S3Handler(self.session, self.parameters,
+                              result_queue=result_queue)
 
         command_dict = {}
         if self.cmd == 'sync':
@@ -620,13 +625,17 @@ class CommandArchitecture(object):
         # will replaces the files attr with the return value of the
         # file_list.  The very last call is a single list of
         # [s3_handler], and the s3_handler returns the number of
-        # tasks failed.  This means that files[0] now contains
-        # the number of failed tasks.  In terms of the RC, we're
-        # keeping it simple and saying that > 0 failed tasks
-        # will give a 1 RC.
+        # tasks failed and the number of tasks warned.
+        # This means that files[0] now contains a namedtuple with
+        # the number of failed tasks and the number of warned tasks.
+        # In terms of the RC, we're keeping it simple and saying 
+        # that > 0 failed tasks will give a 1 RC and > 0 warned
+        # tasks will give a 2 RC.  Otherwise a RC of zero is returned.
         rc = 0
-        if files[0] > 0:
+        if files[0].num_tasks_failed > 0:
             rc = 1
+        if files[0].num_tasks_warned > 0:
+            rc = 2
         return rc
 
 

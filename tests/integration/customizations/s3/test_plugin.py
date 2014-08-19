@@ -20,8 +20,10 @@ import random
 import platform
 import contextlib
 import time
+import stat
 import signal
 import string
+import socket
 
 import botocore.session
 import six
@@ -674,6 +676,45 @@ class TestSourceRegion(BaseS3CLICommand):
             self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
 
+class TestWarnings(BaseS3CLICommand):
+    def extra_setup(self):
+        self.bucket_name = self.create_bucket()
+    
+    def test_no_exist(self):
+        filename = os.path.join(self.files.rootdir, "no-exists-file")
+        p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('warning: Skipping file %s. File does not exist.' % 
+                      filename, p.stdout)
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Read permissions tests only supported on mac/linux')
+    def test_no_read_access(self):
+        self.files.create_file('foo.txt', 'foo')
+        filename = os.path.join(self.files.rootdir, 'foo.txt')
+        permissions = stat.S_IMODE(os.stat(filename).st_mode)
+        # Remove read permissions 
+        permissions = permissions ^ stat.S_IREAD
+        os.chmod(filename, permissions)
+        p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('warning: Skipping file %s. File/Directory is '
+                      'not readable.' % filename, p.stdout)
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Special files only supported on mac/linux')
+    def test_is_special_file(self):
+        file_path = os.path.join(self.files.rootdir, 'foo')
+        # Use socket for special file.
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.bind(file_path)
+        p = aws('s3 cp %s s3://%s/' % (file_path, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn(("warning: Skipping file %s. File is character "
+                       "special device, block special device, FIFO, or "
+                       "socket." % file_path), p.stdout)
+
+
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                  'Symlink tests only supported on mac/linux')
 class TestSymlinks(BaseS3CLICommand):
@@ -751,8 +792,10 @@ class TestSymlinks(BaseS3CLICommand):
     
     def test_bad_symlink(self):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
-        self.assertEqual(p.rc, 1, p.stdout)
-        self.assertIn('[Errno 2] No such file or directory', p.stdout)
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('warning: Skipping file %s. File does not exist.' % 
+                      os.path.join(self.files.rootdir, 'b-badsymlink'),
+                      p.stdout)
 
 
 class TestUnicode(BaseS3CLICommand):

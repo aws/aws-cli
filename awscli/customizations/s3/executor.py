@@ -62,6 +62,13 @@ class Executor(object):
             tasks_failed = self.print_thread.num_errors_seen
         return tasks_failed
 
+    @property
+    def num_tasks_warned(self):
+        tasks_warned = 0
+        if self.print_thread is not None:
+            tasks_warned = self.print_thread.num_warnings_seen
+        return tasks_warned
+
     def start(self):
         self.io_thread.start()
         # Note that we're *not* adding the IO thread to the threads_list.
@@ -206,7 +213,8 @@ class PrintThread(threading.Thread):
     Result Queue
     ------------
 
-    Result queue items are dictionaries that have the following keys:
+    Result queue items are PrintTask objects that have the following
+    attributes:
 
         * message: An arbitrary string associated with the entry.   This
             can be used to communicate the result of the task.
@@ -214,6 +222,8 @@ class PrintThread(threading.Thread):
             successfully.
         * total_parts: The total number of parts for multipart transfers (
             deprecated, will be removed in the future).
+        * warning: Boolean indicating whether or not a file generated a
+            warning.
 
     """
     def __init__(self, result_queue, quiet):
@@ -233,6 +243,7 @@ class PrintThread(threading.Thread):
         # This is a public attribute that clients can inspect to determine
         # whether or not we saw any results indicating that an error occurred.
         self.num_errors_seen = 0
+        self.num_warnings_seen = 0
 
     def set_total_parts(self, total_parts):
         with self._lock:
@@ -262,16 +273,24 @@ class PrintThread(threading.Thread):
                 pass
 
     def _process_print_task(self, print_task):
-        print_str = print_task['message']
-        if print_task['error']:
+        print_str = print_task.message
+        if print_task.error:
             self.num_errors_seen += 1
+        warning = False
+        if print_task.warning:
+            if print_task.warning:
+                warning = True
+                self.num_warnings_seen += 1
         final_str = ''
-        if 'total_parts' in print_task:
+        if warning:
+            final_str += print_str.ljust(self._progress_length, ' ')
+            final_str += '\n'
+        elif print_task.total_parts:
             # Normalize keys so failures and sucess
             # look the same.
             op_list = print_str.split(':')
             print_str = ':'.join(op_list[1:])
-            total_part = print_task['total_parts']
+            total_part = print_task.total_parts
             self._num_parts += 1
             if print_str in self._progress_dict:
                 self._progress_dict[print_str]['parts'] += 1

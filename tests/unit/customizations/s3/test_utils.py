@@ -19,6 +19,7 @@ from awscli.customizations.s3.utils import BucketLister
 from awscli.customizations.s3.utils import ScopedEventHandler
 from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.utils import AppendFilter
+from awscli.customizations.s3.utils import create_warning 
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -45,6 +46,17 @@ class FindBucketKey(unittest.TestCase):
         bucket, key = find_bucket_key(s3_path)
         self.assertEqual(bucket, '\u1234')
         self.assertEqual(key, '\u5678')
+
+
+class TestCreateWarning(unittest.TestCase):
+    def test_create_warning(self):
+        path = '/foo/'
+        error_message = 'There was an error'
+        warning_message = create_warning(path, error_message)
+        self.assertEqual(warning_message.message,
+                         'warning: Skipping file /foo/. There was an error')
+        self.assertFalse(warning_message.error)
+        self.assertTrue(warning_message.warning)
 
 
 class FindChunksizeTest(unittest.TestCase):

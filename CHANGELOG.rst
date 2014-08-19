@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:Parameter Shorthand: Added support for
+  ``structure(list-scalar, scalar)`` parameter shorthand.
+  (`issue 882 <https://github.com/aws/aws-cli/pull/882>`__)
+
 1.4.2
 =====
 

@@ -212,3 +212,37 @@ HBASE_RESTORE_FROM_BACKUP_SCHEMA = {
         }
     }
 }
+
+EMR_FS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "Consistent": {
+            "type": "boolean",
+            "description": "Enable EMRFS consistent view."
+        },
+        "SSE": {
+            "type": "boolean",
+            "description": "Enable Amazon S3 server-side encryption on files "
+                           "written to S3 by EMRFS."
+        },
+        "RetryCount": {
+            "type": "integer",
+            "description":
+                "The maximum number of times to retry upon S3 inconsistency."
+        },
+        "RetryPeriod": {
+            "type": "integer",
+            "description": "The amount of time (in seconds) until the first "
+                           "retry. Subsequent retries use an exponential "
+                           "back-off."
+        },
+        "Args": {
+            "type": "array",
+            "description": "A list of arguments to pass for additional "
+                           "EMRFS configuration.",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

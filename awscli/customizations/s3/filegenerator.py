@@ -24,6 +24,9 @@ from awscli.customizations.s3.utils import BucketLister, create_warning
 from awscli.errorhandler import ClientError
 
 
+_open = open
+
+
 def is_special_file(path):
     """
     This function checks to see if a special file.  It checks if the
@@ -59,7 +62,7 @@ def is_readable(path):
             return False
     else:
         try:
-            with open(path, 'r') as fd:
+            with _open(path, 'r') as fd:
                 pass
         except (OSError, IOError):
             return False

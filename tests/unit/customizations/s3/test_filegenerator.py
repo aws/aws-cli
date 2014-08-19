@@ -67,8 +67,6 @@ class TestIsSpecialFile(unittest.TestCase):
         self.assertTrue(is_special_file(file_path))
 
 
-@unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                 'Read permissions tests only supported on mac/linux')
 class TestIsReadable(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
@@ -76,27 +74,20 @@ class TestIsReadable(unittest.TestCase):
         self.full_path = os.path.join(self.files.rootdir, self.filename)
 
     def tearDown(self):
-        permissions = stat.S_IMODE(os.stat(self.full_path).st_mode)
-        # Reinstate read permissions
-        permissions = permissions | stat.S_IREAD
-        os.chmod(self.full_path, permissions)
         self.files.remove_all()
 
     def test_unreadable_file(self):
         self.files.create_file(self.filename, contents="foo")
-        permissions = stat.S_IMODE(os.stat(self.full_path).st_mode)
-        # Remove read permissions
-        permissions = permissions ^ stat.S_IREAD
-        os.chmod(self.full_path, permissions)
-        self.assertFalse(is_readable(self.full_path))
+        open_function = 'awscli.customizations.s3.filegenerator._open'
+        with mock.patch(open_function) as mock_class:
+            mock_class.side_effect = OSError()
+            self.assertFalse(is_readable(self.full_path))
 
     def test_unreadable_directory(self):
         os.mkdir(self.full_path)
-        permissions = stat.S_IMODE(os.stat(self.full_path).st_mode)
-        # Remove read permissions
-        permissions = permissions ^ stat.S_IREAD
-        os.chmod(self.full_path, permissions)
-        self.assertFalse(is_readable(self.full_path))
+        with mock.patch('os.listdir') as mock_class:
+            mock_class.side_effect = OSError()
+            self.assertFalse(is_readable(self.full_path))
 
 
 class LocalFileGeneratorTest(unittest.TestCase):
@@ -262,18 +253,15 @@ class TestThrowsWarning(unittest.TestCase):
                          ("warning: Skipping file %s. File does not exist." %
                           filename))
 
-    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
-                     'Read permissions tests only supported on mac/linux')
     def test_no_read_access(self):
         file_gen = FileGenerator(self.service, self.endpoint, '', False)
         self.files.create_file("foo.txt", contents="foo")
         full_path = os.path.join(self.root, "foo.txt")
-        permissions = stat.S_IMODE(os.stat(full_path).st_mode)
-        # Remove read permissions
-        permissions = permissions ^ stat.S_IREAD
-        os.chmod(full_path, permissions)
-        return_val = file_gen.triggers_warning(full_path)
-        self.assertTrue(return_val)
+        open_function = 'awscli.customizations.s3.filegenerator._open'
+        with mock.patch(open_function) as mock_class:
+            mock_class.side_effect = OSError()
+            return_val = file_gen.triggers_warning(full_path)
+            self.assertTrue(return_val)
         warning_message = file_gen.result_queue.get()
         self.assertEqual(warning_message.message,
                          ("warning: Skipping file %s. File/Directory is "

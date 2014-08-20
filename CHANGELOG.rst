@@ -13,6 +13,10 @@ Next Release (TBD)
 * feature:Parameter Shorthand: Added support for
   ``structure(list-scalar, scalar)`` parameter shorthand.
   (`issue 882 <https://github.com/aws/aws-cli/pull/882>`__)
+* bugfix:``aws s3``: Fix bug when unknown options were
+  passed to ``aws s3`` commands
+  (`issue 886 <https://github.com/aws/aws-cli/pull/886>`__)
+
 
 1.4.2
 =====

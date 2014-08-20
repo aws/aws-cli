@@ -176,6 +176,8 @@ class BasicCommand(CLICommand):
         elif getattr(parsed_args, 'subcommand', None) is None:
             # No subcommand was specified so call the main
             # function for this top level command.
+            if remaining:
+                raise ValueError("Unknown options: %s" % ','.join(remaining))
             return self._run_main(parsed_args, parsed_globals)
         else:
             return subcommand_table[parsed_args.subcommand](remaining,

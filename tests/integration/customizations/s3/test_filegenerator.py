@@ -19,6 +19,7 @@
 
 import unittest
 import os
+import itertools
 
 import botocore.session
 from awscli import EnvironmentVariables
@@ -138,6 +139,25 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         compare_files(self, result_list[0], expected_list[0])
         compare_files(self, result_list[1], expected_list[1])
         compare_files(self, result_list[2], expected_list[2])
+
+    def test_page_size(self):
+        input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
+                         'dest': {'path': '', 'type': 'local'},
+                         'dir_op': True, 'use_src_name': True}
+        file_gen = FileGenerator(self.service, self.endpoint, '',
+                                 page_size=1).call(input_s3_file)
+        limited_file_gen = itertools.islice(file_gen, 1)
+        result_list = list(limited_file_gen)
+        file_stat = FileStat(src=self.file2,
+                             dest='another_directory' + os.sep + 'text2.txt',
+                             compare_key='another_directory/text2.txt',
+                             size=21,
+                             last_update=result_list[0].last_update,
+                             src_type='s3',
+                             dest_type='local', operation_name='')
+        # Ensure only one item is returned from ``ListObjects``
+        self.assertEqual(len(result_list), 1)
+        compare_files(self, result_list[0], file_stat)
 
 
 if __name__ == "__main__":

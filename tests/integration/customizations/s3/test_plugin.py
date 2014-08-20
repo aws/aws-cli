@@ -689,9 +689,9 @@ class TestWarnings(BaseS3CLICommand):
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                      'Read permissions tests only supported on mac/linux')
-    @unittest.skipIf(os.geteuid() == 0,
-                     'Cannot completely remove read access as root user.')
     def test_no_read_access(self):
+        if os.geteuid() == 0:
+            self.skipTest('Cannot completely remove read access as root user.')
         self.files.create_file('foo.txt', 'foo')
         filename = os.path.join(self.files.rootdir, 'foo.txt')
         permissions = stat.S_IMODE(os.stat(filename).st_mode)

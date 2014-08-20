@@ -194,6 +194,7 @@ class CLIDriver(object):
             self._handle_top_level_args(parsed_args)
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
+            sys.stderr.write("\n")
             sys.stderr.write(str(e) + '\n')
             return 255
         except NoRegionError as e:

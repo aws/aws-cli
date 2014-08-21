@@ -238,29 +238,40 @@ class ListCommand(S3Command):
     EXAMPLES = BasicCommand.FROM_FILE('s3/ls.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
+
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
         path = parsed_args.paths
         if path.startswith('s3://'):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         if not bucket:
-            self._list_all_buckets()
+            ret_val = self._list_all_buckets()
         elif parsed_args.dir_op:
             # Then --recursive was specified.
-            self._list_all_objects_recursive(bucket, key)
+            ret_val = self._list_all_objects_recursive(bucket, key)
         else:
-            self._list_all_objects(bucket, key)
-        return 0
+            ret_val = self._list_all_objects(bucket, key)
+
+        if ret_val is 1:
+            print_str = ('aws s3 ls s3://' + bucket + '/' + key +
+                         ': No such file or directory\n')
+            uni_print(print_str)
+            sys.stdout.flush()
+        return ret_val
 
     def _list_all_objects(self, bucket, key):
-
+        ret_value = 1
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
                                       prefix=key, delimiter='/')
+
         for _, response_data in iterator:
-            self._display_page(response_data)
+            if self._display_page(response_data) is 0:
+                ret_value = 0
+        return ret_value
 
     def _display_page(self, response_data, use_basename=True):
+        ret_value = 1
         common_prefixes = response_data['CommonPrefixes']
         contents = response_data['Contents']
         for common_prefix in common_prefixes:
@@ -270,6 +281,7 @@ class ListCommand(S3Command):
             print_str = pre_string + ' ' + prefix + '/\n'
             uni_print(print_str)
             sys.stdout.flush()
+            ret_value = 0
         for content in contents:
             last_mod_str = self._make_last_mod_str(content['LastModified'])
             size_str = self._make_size_str(content['Size'])
@@ -282,8 +294,11 @@ class ListCommand(S3Command):
                 filename + '\n'
             uni_print(print_str)
             sys.stdout.flush()
+            ret_value = 0
+        return ret_value
 
     def _list_all_buckets(self):
+        ret_value = 1
         operation = self.service.get_operation('ListBuckets')
         response_data = operation.call(self.endpoint)[1]
         buckets = response_data['Buckets']
@@ -292,13 +307,19 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
             sys.stdout.flush()
+            ret_value = 0
+        return ret_value
 
     def _list_all_objects_recursive(self, bucket, key):
+        ret_value = 1
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
                                       prefix=key)
+
         for _, response_data in iterator:
-            self._display_page(response_data, use_basename=False)
+            if self._display_page(response_data, use_basename=False) is True:
+                ret_value = 0
+        return ret_value
 
     def _make_last_mod_str(self, last_mod):
         """

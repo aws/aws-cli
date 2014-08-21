@@ -13,6 +13,7 @@
 # language governing permissions and limitations under the License.
 
 import logging
+import mimetypes
 import os
 
 from botocore.vendored import requests
@@ -45,14 +46,28 @@ def get_paramfile(path):
     return data
 
 
+def guess_mode_from_file(file_path, mode='r'):
+    """
+    Guess file mode by mime type of the filepath.
+
+    returns mode + 'b' for encoded files, else mode
+    """
+
+    ctype, encoding = mimetypes.guess_type(file_path)
+    if encoding is not None:
+        return mode + 'b'
+    return mode
+
+
 def get_file(prefix, path):
     file_path = path[len(prefix):]
     file_path = os.path.expanduser(file_path)
     file_path = os.path.expandvars(file_path)
     if not os.path.isfile(file_path):
         raise ResourceLoadingError("file does not exist: %s" % file_path)
+    mode = guess_mode_from_file(file_path, mode='r')
     try:
-        with compat_open(file_path, 'r') as f:
+        with compat_open(file_path, mode) as f:
             return f.read()
     except (OSError, IOError) as e:
         raise ResourceLoadingError('Unable to load paramfile %s: %s' % (

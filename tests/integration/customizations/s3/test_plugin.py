@@ -463,13 +463,14 @@ class TestCp(BaseS3CLICommand):
 
 class TestSync(BaseS3CLICommand):
     def test_sync_with_plus_chars_paginate(self):
-        # 1. Create > 1000 files with '+' in the filename.
-        # 2. Sync up to s3.
-        # 3. Sync up to s3
+        # This test ensures pagination tokens are url decoded.
+        # 1. Create > 2 files with '+' in the filename.
+        # 2. Sync up to s3 while the page size is 2.
+        # 3. Sync up to s3 while the page size is 2.
         # 4. Verify nothing was synced up down from s3 in step 3.
         bucket_name = self.create_bucket()
         filenames = []
-        for i in range(2000):
+        for i in range(4):
             # Create a file with a space char and a '+' char in the filename.
             # We're interested in testing the filename comparisons, not the
             # mtime comparisons so we're setting the mtime to some time
@@ -480,10 +481,12 @@ class TestSync(BaseS3CLICommand):
                 self.files.create_file('foo +%06d' % i,
                                        contents='',
                                        mtime=mtime))
-        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        p = aws('s3 sync %s s3://%s/ --page-size 2' % 
+                (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
-        time.sleep(5)
-        p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        time.sleep(1)
+        p2 = aws('s3 sync %s s3://%s/ --page-size 2' 
+                 % (self.files.rootdir, bucket_name))
         self.assertNotIn('upload:', p2.stdout)
         self.assertEqual('', p2.stdout)
 

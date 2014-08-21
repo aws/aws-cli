@@ -115,11 +115,12 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True, result_queue=None):
+                 follow_symlinks=True, page_size=None, result_queue=None):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
+        self.page_size = page_size
         self.result_queue = result_queue
         if not result_queue:
             self.result_queue = queue.Queue()
@@ -284,7 +285,8 @@ class FileGenerator(object):
         else:
             operation = self._service.get_operation('ListObjects')
             lister = BucketLister(operation, self._endpoint)
-            for key in lister.list_objects(bucket=bucket, prefix=prefix):
+            for key in lister.list_objects(bucket=bucket, prefix=prefix,
+                                           page_size=self.page_size):
                 source_path, size, last_update = key
                 if size == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':

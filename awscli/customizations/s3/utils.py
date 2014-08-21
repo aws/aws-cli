@@ -338,8 +338,9 @@ class BucketLister(object):
         self._endpoint = endpoint
         self._date_parser = date_parser
 
-    def list_objects(self, bucket, prefix=None):
-        kwargs = {'bucket': bucket, 'encoding_type': 'url'}
+    def list_objects(self, bucket, prefix=None, page_size=None):
+        kwargs = {'bucket': bucket, 'encoding_type': 'url',
+                  'page_size': page_size}
         if prefix is not None:
             kwargs['prefix'] = prefix
         # This event handler is needed because we use encoding_type url and

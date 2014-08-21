@@ -248,16 +248,18 @@ class ListCommand(S3Command):
             self._list_all_buckets()
         elif parsed_args.dir_op:
             # Then --recursive was specified.
-            self._list_all_objects_recursive(bucket, key)
+            self._list_all_objects_recursive(bucket, key,
+                                             parsed_globals.page_size)
         else:
-            self._list_all_objects(bucket, key)
+            self._list_all_objects(bucket, key, parsed_globals.page_size)
         return 0
 
-    def _list_all_objects(self, bucket, key):
+    def _list_all_objects(self, bucket, key, page_size=None):
 
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                      prefix=key, delimiter='/')
+                                      prefix=key, delimiter='/',
+                                      page_size=page_size)
         for _, response_data in iterator:
             self._display_page(response_data)
 
@@ -294,10 +296,10 @@ class ListCommand(S3Command):
             uni_print(print_str)
             sys.stdout.flush()
 
-    def _list_all_objects_recursive(self, bucket, key):
+    def _list_all_objects_recursive(self, bucket, key, page_size=None):
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                      prefix=key)
+                                      prefix=key, page_size=page_size)
         for _, response_data in iterator:
             self._display_page(response_data, use_basename=False)
 
@@ -373,6 +375,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_region(parsed_globals)
         cmd_params.add_endpoint_url(parsed_globals)
         cmd_params.add_verify_ssl(parsed_globals)
+        cmd_params.add_page_size(parsed_globals)
         cmd_params.add_paths(parsed_args.paths)
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self.NAME,
@@ -561,9 +564,11 @@ class CommandArchitecture(object):
                                        self._source_endpoint,
                                        operation_name,
                                        self.parameters['follow_symlinks'],
+                                       self.parameters['page_size'],
                                        result_queue=result_queue)
         rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters['follow_symlinks'],
+                                      self.parameters['page_size'],
                                       result_queue=result_queue)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
@@ -796,3 +801,6 @@ class CommandParameters(object):
 
     def add_verify_ssl(self, parsed_globals):
         self.parameters['verify_ssl'] = parsed_globals.verify_ssl
+
+    def add_page_size(self, parsed_globals):
+        self.parameters['page_size'] = parsed_globals.page_size

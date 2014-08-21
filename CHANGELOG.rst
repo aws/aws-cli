@@ -5,6 +5,10 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:Page Size: Add a ``--page-size`` option, that 
+  controls page size when perfoming an operation that
+  uses pagination.
+  (`issue 889 <https://github.com/aws/aws-cli/pull/889>`__)
 * bugfix:``aws s3``: Added support for ignoring and warning
   about files that do not exist, user does not have read
   permissions, or are special files (i.e. sockets, FIFOs,

@@ -327,8 +327,9 @@ class ListCommand(S3Command):
 
 
 class WebsiteCommand(S3Command):
+    NAME = 'website'
     DESCRIPTION = 'Set the website configuration for a bucket.'
-    USAGE = 's3://bucket [--index-document|--error-document] value'
+    USAGE = '<S3Path>'
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, INDEX_DOCUMENT, ERROR_DOCUMENT]
 

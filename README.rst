@@ -149,7 +149,7 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<testing secret key>
     region=us-west-2
 
-and place it in ``~/.aws/config`` (or in ``%UserProfile%\.aws\config`` on Windows).
+and place it in ``~/.aws/credentials`` (or in ``%UserProfile%\.aws\config`` on Windows).
 
 As you can see, you can have multiple ``profiles`` defined in this
 configuration file and specify which profile to use by using the ``--profile``

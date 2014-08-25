@@ -42,6 +42,7 @@ class FileInfoBuilder(object):
         file_info_attr['src_type'] = file_base.src_type
         file_info_attr['dest_type'] = file_base.dest_type
         file_info_attr['operation_name'] = file_base.operation_name
+        file_info_attr['is_stream'] = file_base.is_stream
         file_info_attr['service'] = self._service
         file_info_attr['endpoint'] = self._endpoint
         file_info_attr['source_endpoint'] = self._source_endpoint

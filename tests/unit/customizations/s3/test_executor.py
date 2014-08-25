@@ -15,6 +15,7 @@ import tempfile
 import shutil
 import six
 from six.moves import queue
+import sys
 
 import mock
 
@@ -41,17 +42,17 @@ class TestIOWriterThread(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_handles_io_request(self):
-        self.queue.put(IORequest(self.filename, 0, b'foobar'))
-        self.queue.put(IOCloseRequest(self.filename))
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
+        self.queue.put(IOCloseRequest(self.filename, False))
         self.queue.put(ShutdownThreadRequest())
         self.io_thread.run()
         with open(self.filename, 'rb') as f:
             self.assertEqual(f.read(), b'foobar')
 
     def test_out_of_order_io_requests(self):
-        self.queue.put(IORequest(self.filename, 6, b'morestuff'))
-        self.queue.put(IORequest(self.filename, 0, b'foobar'))
-        self.queue.put(IOCloseRequest(self.filename))
+        self.queue.put(IORequest(self.filename, 6, b'morestuff', False))
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
+        self.queue.put(IOCloseRequest(self.filename, False))
         self.queue.put(ShutdownThreadRequest())
         self.io_thread.run()
         with open(self.filename, 'rb') as f:
@@ -60,10 +61,10 @@ class TestIOWriterThread(unittest.TestCase):
     def test_multiple_files_in_queue(self):
         second_file = os.path.join(self.temp_dir, 'bar')
         open(second_file, 'w').close()
-        self.queue.put(IORequest(self.filename, 0, b'foobar'))
-        self.queue.put(IORequest(second_file, 0, b'otherstuff'))
-        self.queue.put(IOCloseRequest(second_file))
-        self.queue.put(IOCloseRequest(self.filename))
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
+        self.queue.put(IORequest(second_file, 0, b'otherstuff', False))
+        self.queue.put(IOCloseRequest(second_file, False))
+        self.queue.put(IOCloseRequest(self.filename, False))
         self.queue.put(ShutdownThreadRequest())
 
         self.io_thread.run()
@@ -71,6 +72,21 @@ class TestIOWriterThread(unittest.TestCase):
             self.assertEqual(f.read(), b'foobar')
         with open(second_file, 'rb') as f:
             self.assertEqual(f.read(), b'otherstuff')
+
+    def test_stream_requests(self):
+        # Test that offset has no affect on the order in which requests
+        # are written to stdout. The order of requests for a stream are
+        # first in first out.
+        self.queue.put(IORequest('nonexistant-file', 10, b'foobar', True))
+        self.queue.put(IORequest('nonexistant-file', 6, b'otherstuff', True))
+        # The thread should not try to close the file name because it is
+        # writing to stdout.  If it does, the thread will fail because
+        # the file does not exist.
+        self.queue.put(IOCloseRequest('nonexistant-file', True))
+        self.queue.put(ShutdownThreadRequest())
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            self.io_thread.run()
+            self.assertEqual(mock_stdout.getvalue(), 'foobarotherstuff')
 
 
 class TestExecutor(unittest.TestCase):
@@ -84,7 +100,8 @@ class TestExecutor(unittest.TestCase):
 
                 def __call__(self):
                     for i in range(50):
-                        executor.write_queue.put(IORequest(f.name, 0, b'foobar'))
+                        executor.write_queue.put(IORequest(f.name, 0,
+                                                           b'foobar', False))
             executor.submit(FloodIOQueueTask())
             executor.initiate_shutdown()
             executor.wait_until_shutdown()

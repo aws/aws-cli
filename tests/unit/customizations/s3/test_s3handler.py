@@ -14,15 +14,19 @@ import datetime
 import os
 import random
 import sys
-from awscli.testutils import unittest
 
+import mock
+
+from awscli.testutils import unittest
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
+    UploadPartTask, CreateLocalFileTask
 from tests.unit.customizations.s3.fake_session import FakeSession
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets, \
-    S3HandlerBaseTest
+    S3HandlerBaseTest, MockStdIn
 
 
 class S3HandlerTestDeleteList(S3HandlerBaseTest):
@@ -610,6 +614,165 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
         S3Handler(self.session, self.params).call([file_info])
         number_buckets = len(list_buckets(self.session))
         self.assertEqual(orig_number_buckets, number_buckets)
+
+
+class TestStreams(S3HandlerBaseTest):
+    def setUp(self):
+        super(TestStreams, self).setUp()
+        self.session = FakeSession()
+        self.service = self.session.get_service('s3')
+        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.params = {'is_stream': True, 'region': 'us-east-1'}
+        stream_timeout = 'awscli.customizations.s3.constants.STREAM_INPUT_TIMEOUT'
+        self.stream_timeout_patch = mock.patch(stream_timeout, 0.001)
+        self.stream_timeout_patch.start()
+
+    def tearDown(self):
+        super(TestStreams, self).tearDown()
+        self.stream_timeout_patch.stop()
+
+    def test_pull_from_stream(self):
+        s3handler = S3Handler(self.session, self.params, chunksize=2)
+        input_to_stdin = b'This is a test'
+        size = len(input_to_stdin)
+        # Retrieve the entire string.
+        with MockStdIn(input_to_stdin):
+            payload, is_amount_requested = s3handler._pull_from_stream(size)
+            data = payload.read()
+            self.assertTrue(is_amount_requested)
+            self.assertEqual(data, input_to_stdin)
+        # Ensure the function exits when there is nothing to read.
+        with MockStdIn():
+            payload, is_amount_requested = s3handler._pull_from_stream(size)
+            data = payload.read()
+            self.assertFalse(is_amount_requested)
+            self.assertEqual(data, b'')
+        # Ensure the function does not grab too much out of stdin.
+        with MockStdIn(input_to_stdin):
+            payload, is_amount_requested = s3handler._pull_from_stream(size-2)
+            data = payload.read()
+            self.assertTrue(is_amount_requested)
+            self.assertEqual(data, input_to_stdin[:-2])
+            # Retrieve the rest of standard in.
+            payload, is_amount_requested = s3handler._pull_from_stream(size)
+            data = payload.read()
+            self.assertFalse(is_amount_requested)
+            self.assertEqual(data, input_to_stdin[-2:])
+
+    def test_upload_stream_not_multipart_task(self):
+        s3handler = S3Handler(self.session, self.params)
+        s3handler.executor = mock.Mock()
+        fileinfos = [FileInfo('filename', operation_name='upload',
+                              is_stream=True, size=0)]
+        with MockStdIn(b'bar'):
+            s3handler._enqueue_tasks(fileinfos)
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # No multipart upload should have been submitted.
+        self.assertEqual(len(submitted_tasks), 1)
+        self.assertEqual(submitted_tasks[0][0][0].payload.read(),
+                         b'bar')
+
+    def test_upload_stream_is_multipart_task(self):
+        s3handler = S3Handler(self.session, self.params,
+                              multi_threshold=1)
+        s3handler.executor = mock.Mock()
+        fileinfos = [FileInfo('filename', operation_name='upload',
+                              is_stream=True, size=0)]
+        with MockStdIn(b'bar'):
+            s3handler._enqueue_tasks(fileinfos)
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # This should be a multipart upload so multiple tasks
+        # should have been submitted.
+        self.assertEqual(len(submitted_tasks), 4)
+        self.assertEqual(submitted_tasks[1][0][0]._payload.read(),
+                         b'b')
+        self.assertEqual(submitted_tasks[2][0][0]._payload.read(),
+                         b'ar')
+
+    def test_upload_stream_with_expected_size(self):
+        self.params['expected_size'] = 100000
+        # With this large of expected size, the chunksize of 2 will have
+        # to change.
+        s3handler = S3Handler(self.session, self.params, chunksize=2)
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='upload',
+                            is_stream=True)
+        with MockStdIn(b'bar'):
+            s3handler._enqueue_multipart_upload_tasks(fileinfo, False, b'')
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # Determine what the chunksize was changed to from one of the
+        # UploadPartTasks.
+        changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
+        # New chunksize should have a total parts under 1000.
+        self.assertTrue(100000/changed_chunk_size < 1000)
+
+    def test_upload_stream_enqueue_upload_start_task(self):
+        s3handler = S3Handler(self.session, self.params)
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='upload',
+                            is_stream=True)
+        s3handler._enqueue_upload_start_task(None, None, fileinfo, b'foo')
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        self.assertEqual(len(submitted_tasks), 2)
+        self.assertEqual(type(submitted_tasks[0][0][0]),
+                         CreateMultipartUploadTask)
+        # Check that the initially pulled part of the stream gets submitted
+        # after the instantiating the CreateMultipartTask.
+        self.assertEqual(type(submitted_tasks[1][0][0]),
+                         UploadPartTask)
+        # Check that the payload is correct
+        self.assertEqual(submitted_tasks[1][0][0]._payload, b'foo')
+
+    def test_upload_stream_enqueue_upload_task(self):
+        s3handler = S3Handler(self.session, self.params)
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='upload',
+                            is_stream=True)
+        stdin_input = b'This is a test'
+        with MockStdIn(stdin_input):
+            num_parts = s3handler._enqueue_upload_tasks(None, 2, mock.Mock(),
+                                                        fileinfo,
+                                                        UploadPartTask)
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        # Ensure the returned number of parts is correct.
+        self.assertEqual(num_parts, len(submitted_tasks) + 1)
+        # Ensure the number of tasks uploaded are as expected
+        self.assertEqual(len(submitted_tasks), 8)
+        index = 0
+        for i in range(len(submitted_tasks)-1):
+            self.assertEqual(submitted_tasks[i][0][0]._payload.read(),
+                             stdin_input[index:index+2])
+            index += 2
+        # Ensure that the last part is an empty string as expected.
+        self.assertEqual(submitted_tasks[7][0][0]._payload.read(), b'')
+
+    def test_enqueue_upload_single_part_task_stream(self):
+        """
+        This test ensures that a payload gets attached to a task when
+        it is submitted to the executor.
+        """
+        s3handler = S3Handler(self.session, self.params)
+        s3handler.executor = mock.Mock()
+        mock_task_class = mock.Mock()
+        s3handler._enqueue_upload_single_part_task(
+            part_number=1, chunk_size=2, upload_context=None,
+            filename=None, task_class=mock_task_class,
+            payload=b'This is a test'
+        )
+        args, kwargs = mock_task_class.call_args
+        self.assertIn('payload', kwargs.keys())
+        self.assertEqual(kwargs['payload'], b'This is a test')
+
+    def test_enqueue_range_download_tasks_stream(self):
+        s3handler = S3Handler(self.session, self.params)
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='download',
+                            is_stream=True, size=100)
+        s3handler._enqueue_range_download_tasks(fileinfo)
+        # Ensure that no request was sent to make a file locally.
+        submitted_tasks = s3handler.executor.submit.call_args_list
+        self.assertNotEqual(type(submitted_tasks[0][0][0]),
+                            CreateLocalFileTask)
 
 
 if __name__ == "__main__":

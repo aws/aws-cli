@@ -246,6 +246,21 @@ def uni_print(statement, out_file=None):
     out_file.flush()
 
 
+def bytes_print(statement):
+    """
+    This function is used to properly write bytes to standard out.
+    """
+    if PY3:
+        if getattr(sys.stdout, 'buffer', None):
+            sys.stdout.buffer.write(statement)
+        else:
+            # If it is not possible to write to the standard out buffer.
+            # The next best option is to decode and write to standard out.
+            sys.stdout.write(statement.decode('utf-8'))
+    else:
+        sys.stdout.write(statement)
+
+
 def guess_content_type(filename):
     """Given a filename, guess it's content type.
 
@@ -404,7 +419,8 @@ class PrintTask(namedtuple('PrintTask',
                                              warning)
 
 
-IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])
+IORequest = namedtuple('IORequest',
+                       ['filename', 'offset', 'data', 'is_stream'])
 # Used to signal that IO for the filename is finished, and that
 # any associated resources may be cleaned up.
-IOCloseRequest = namedtuple('IOCloseRequest', ['filename'])
+IOCloseRequest = namedtuple('IOCloseRequest', ['filename', 'is_stream'])

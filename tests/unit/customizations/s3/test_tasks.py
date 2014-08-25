@@ -22,6 +22,7 @@ from awscli.customizations.s3.tasks import CreateLocalFileTask
 from awscli.customizations.s3.tasks import CompleteDownloadTask
 from awscli.customizations.s3.tasks import DownloadPartTask
 from awscli.customizations.s3.tasks import MultipartUploadContext
+from awscli.customizations.s3.tasks import MultipartDownloadContext
 from awscli.customizations.s3.tasks import UploadCancelledError
 from awscli.customizations.s3.tasks import print_operation
 from awscli.customizations.s3.tasks import RetriesExeededError
@@ -163,6 +164,58 @@ class TestMultipartUploadContext(unittest.TestCase):
             self.calls[2][1:],
             ('my_upload_id', [{'ETag': 'etag1', 'PartNumber': 1}]))
 
+    def test_streaming_threaded_parts(self):
+        # This is similar to the basic threaded parts test but instead
+        # the thread has to wait to know exactly how many parts are 
+        # expected from the stream.  This is indicated when the expected
+        # parts of the context changes from ... to an integer.
+
+        self.context = MultipartUploadContext(expected_parts='...')
+        upload_part_thread = threading.Thread(target=self.upload_part,
+                                              args=(1,))
+        # Once this thread starts it will immediately block.
+        self.start_thread(upload_part_thread)
+
+        # Also, let's start the thread that will do the complete
+        # multipart upload.  It will also block because it needs all
+        # the parts so it's blocked up the upload_part_thread.  It also
+        # needs the upload_id so it's blocked on that as well.
+        complete_upload_thread = threading.Thread(target=self.complete_upload)
+        self.start_thread(complete_upload_thread)
+
+        # Then finally the CreateMultipartUpload completes and we
+        # announce the upload id.
+        self.create_upload('my_upload_id')
+        # The complete upload thread should still be waiting for an expect
+        # parts number.
+        with self.call_lock:
+            was_completed = (len(self.calls) > 2)
+
+        # The upload_part thread can now proceed as well as the complete
+        # multipart upload thread.
+        self.context.announce_total_parts(1)
+        self.join_threads()
+
+        self.assertIsNone(self.caught_exception)
+
+        # Make sure that the completed task was never called since it was
+        # waiting to announce the parts.
+        self.assertFalse(was_completed)        
+
+        # We can verify that the invariants still hold.
+        self.assertEqual(len(self.calls), 3)
+        # First there should be three calls, create, upload, complete.
+        self.assertEqual(self.calls[0][0], 'create_multipart_upload')
+        self.assertEqual(self.calls[1][0], 'upload_part')
+        self.assertEqual(self.calls[2][0], 'complete_upload')
+
+        # Verify the correct args were used.
+        self.assertEqual(self.calls[0][1], 'my_upload_id')
+        self.assertEqual(self.calls[1][1:], (1, 'my_upload_id'))
+        self.assertEqual(
+            self.calls[2][1:],
+            ('my_upload_id', [{'ETag': 'etag1', 'PartNumber': 1}]))
+
     def test_randomized_stress_test(self):
         # Now given that we've verified the functionality from
         # the two tests above, we randomize the threading to ensure
@@ -279,6 +332,7 @@ class TestDownloadPartTask(unittest.TestCase):
         self.filename.size = 10 * 1024 * 1024
         self.filename.src = 'bucket/key'
         self.filename.dest = 'local/file'
+        self.filename.is_stream = False
         self.filename.service = self.service
         self.filename.operation_name = 'download'
         self.context = mock.Mock()
@@ -325,9 +379,9 @@ class TestDownloadPartTask(unittest.TestCase):
         call_args_list = self.io_queue.put.call_args_list
         self.assertEqual(len(call_args_list), 2)
         self.assertEqual(call_args_list[0],
-                         mock.call(('local/file', 0, b'foobar')))
+                         mock.call(('local/file', 0, b'foobar', False)))
         self.assertEqual(call_args_list[1],
-                         mock.call(('local/file', 6, b'morefoobar')))
+                         mock.call(('local/file', 6, b'morefoobar', False)))
 
     def test_incomplete_read_is_retried(self):
         self.service.get_operation.return_value.call.side_effect = \
@@ -340,6 +394,61 @@ class TestDownloadPartTask(unittest.TestCase):
         self.context.cancel.assert_called_with()
         self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
                          self.service.get_operation.call_count)
+
+
+class TestMultipartDownloadContext(unittest.TestCase):
+    def setUp(self):
+        self.context = MultipartDownloadContext(num_parts=2)
+        self.calls = []
+        self.threads = []
+        self.call_lock = threading.Lock()
+        self.caught_exception = None
+
+    def tearDown(self):
+        self.join_threads()
+
+    def join_threads(self):
+        for thread in self.threads:
+            thread.join()
+
+    def download_stream_part(self, part_number):
+        try:
+            self.context.wait_for_turn(part_number)
+            with self.call_lock:
+                self.calls.append(('download_part', str(part_number)))
+            self.context.done_with_turn()
+        except Exception as e:
+            self.caught_exception = e
+            return
+
+    def start_thread(self, thread):
+        thread.start()
+        self.threads.append(thread)
+
+    def test_stream_context(self):
+        part_thread = threading.Thread(target=self.download_stream_part,
+                                       args=(1,))
+        # Once this thread starts it will immediately block becasue it is
+        # waiting for part zero to finish submitting its task.
+        self.start_thread(part_thread)
+
+        # Now create the thread that should submit its task first.
+        part_thread2 = threading.Thread(target=self.download_stream_part,
+                                        args=(0,))
+        self.start_thread(part_thread2)
+        self.join_threads()
+
+        self.assertIsNone(self.caught_exception)
+
+        # We can verify that the invariants still hold.
+        self.assertEqual(len(self.calls), 2)
+        # First there should be three calls, create, upload, complete.
+        self.assertEqual(self.calls[0][0], 'download_part')
+        self.assertEqual(self.calls[1][0], 'download_part')
+
+        # Verify the correct order were used.
+        self.assertEqual(self.calls[0][1], '0')
+        self.assertEqual(self.calls[1][1], '1')
 
 
 class TestTaskOrdering(unittest.TestCase):

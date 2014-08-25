@@ -21,6 +21,7 @@ import mock
 
 from awscli.testutils import unittest
 from awscli.customizations.s3 import fileinfo
+from awscli.customizations.s3.utils import MD5Error
 
 
 class TestSaveFile(unittest.TestCase):
@@ -58,3 +59,16 @@ class TestSaveFile(unittest.TestCase):
             fileinfo.save_file(self.filename, self.response_data,
                                self.last_update)
         self.assertFalse(os.path.isfile(self.filename))
+
+    def test_stream_file(self):
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            fileinfo.save_file(None, self.response_data, None, True)
+            self.assertEqual(mock_stdout.getvalue(), "foobar")
+
+    def test_stream_file_md5_error(self):
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            self.response_data['ETag'] = '"0"'
+            with self.assertRaises(MD5Error):
+                fileinfo.save_file(None, self.response_data, None, True)
+            # Make sure nothing is written to stdout.
+            self.assertEqual(mock_stdout.getvalue(), "")

@@ -14,10 +14,13 @@ from collections import namedtuple
 import logging
 import math
 import os
+import six
 from six.moves import queue
+import sys
+import time
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
+    NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE, STREAM_INPUT_TIMEOUT
 from awscli.customizations.s3.utils import find_chunksize, \
     operate, find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
@@ -53,13 +56,21 @@ class S3Handler(object):
                        'content_type': None, 'cache_control': None,
                        'content_disposition': None, 'content_encoding': None,
                        'content_language': None, 'expires': None,
-                       'grants': None, 'only_show_errors': False}
+                       'grants': None, 'only_show_errors': False,
+                       'is_stream': False, 'paths_type': None,
+                       'expected_size': None}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
                 self.params[key] = params[key]
         self.multi_threshold = multi_threshold
         self.chunksize = chunksize
+        self._max_executer_queue_size = MAX_QUEUE_SIZE
+        if self.params['is_stream']:
+            # This ensures that at most the number of multipart chunks
+            # waiting in the executor queue from a stream read in from stdin
+            # is the same as the number of threads needed to upload it.
+            self._max_executer_queue_size = NUM_THREADS
         self.executor = Executor(
             num_threads=NUM_THREADS, result_queue=self.result_queue,
             quiet=self.params['quiet'],
@@ -163,7 +174,15 @@ class S3Handler(object):
         total_parts = 0
         for filename in files:
             num_uploads = 1
-            is_multipart_task = self._is_multipart_task(filename)
+            # If uploading stream, it is required to read from the stream
+            # to determine if the stream needs to be multipart uploaded.
+            payload = None
+            if getattr(filename, 'is_stream', False) and \
+                    filename.operation_name == 'upload':
+                payload, is_multipart_task = \
+                    self._pull_from_stream(self.multi_threshold)
+            else:
+                is_multipart_task = self._is_multipart_task(filename)
             too_large = False
             if hasattr(filename, 'size'):
                 too_large = filename.size > MAX_UPLOAD_SIZE
@@ -179,16 +198,41 @@ class S3Handler(object):
                 # fact that it's transferring a file rather than
                 # the specific part tasks required to perform the
                 # transfer.
-                num_uploads = self._enqueue_multipart_tasks(filename)
+                num_uploads = self._enqueue_multipart_tasks(filename, payload)
             else:
                 task = tasks.BasicTask(
                     session=self.session, filename=filename,
                     parameters=self.params,
-                    result_queue=self.result_queue)
+                    result_queue=self.result_queue,
+                    payload=payload)
                 self.executor.submit(task)
             total_files += 1
             total_parts += num_uploads
         return total_files, total_parts
+
+    def _pull_from_stream(self, initial_amount_requested):
+        size = 0
+        amount_requested = initial_amount_requested
+        total_retries = 0
+        payload = b''
+        stream_filein = sys.stdin
+        if six.PY3:
+            stream_filein = sys.stdin.buffer
+        while True:
+            payload_chunk = stream_filein.read(amount_requested)
+            payload_chunk_size = len(payload_chunk)
+            payload += payload_chunk
+            size += payload_chunk_size
+            amount_requested -= payload_chunk_size
+            if payload_chunk_size == 0:
+                time.sleep(STREAM_INPUT_TIMEOUT)
+                total_retries += 1
+            else:
+                total_retries = 0
+            if amount_requested == 0 or total_retries == 5:
+                break
+        payload_file = six.BytesIO(payload)
+        return payload_file, size == initial_amount_requested
 
     def _is_multipart_task(self, filename):
         # First we need to determine if it's an operation that even
@@ -204,10 +248,11 @@ class S3Handler(object):
         else:
             return False
 
-    def _enqueue_multipart_tasks(self, filename):
+    def _enqueue_multipart_tasks(self, filename, payload=None):
         num_uploads = 1
         if filename.operation_name == 'upload':
-            num_uploads = self._enqueue_multipart_upload_tasks(filename)
+            num_uploads = self._enqueue_multipart_upload_tasks(filename,
+                                                               payload=payload)
         elif filename.operation_name == 'move':
             if filename.src_type == 'local' and filename.dest_type == 's3':
                 num_uploads = self._enqueue_multipart_upload_tasks(
@@ -232,9 +277,12 @@ class S3Handler(object):
         chunksize = find_chunksize(filename.size, self.chunksize)
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
-        create_file_task = tasks.CreateLocalFileTask(context=context,
-                                                     filename=filename)
-        self.executor.submit(create_file_task)
+        if not filename.is_stream:
+            create_file_task = tasks.CreateLocalFileTask(context=context,
+                                                         filename=filename)
+            self.executor.submit(create_file_task)
+        else:
+            context.announce_file_created()
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
@@ -253,17 +301,27 @@ class S3Handler(object):
         return num_downloads
 
     def _enqueue_multipart_upload_tasks(self, filename,
-                                        remove_local_file=False):
+                                        remove_local_file=False,
+                                        payload=None):
         # First we need to create a CreateMultipartUpload task,
         # then create UploadTask objects for each of the parts.
         # And finally enqueue a CompleteMultipartUploadTask.
-        chunksize = find_chunksize(filename.size, self.chunksize)
-        num_uploads = int(math.ceil(filename.size /
-                                    float(chunksize)))
+        chunksize = self.chunksize
+        if not filename.is_stream:
+            chunksize = find_chunksize(filename.size, self.chunksize)
+            num_uploads = int(math.ceil(filename.size /
+                                        float(chunksize)))
+        else:
+            if self.params['expected_size']:
+                chunksize = find_chunksize(int(self.params['expected_size']),
+                                           self.chunksize)
+            num_uploads = '...'
         upload_context = self._enqueue_upload_start_task(
-            chunksize, num_uploads, filename)
-        self._enqueue_upload_tasks(
-            num_uploads, chunksize, upload_context, filename, tasks.UploadPartTask)
+            chunksize, num_uploads, filename, payload)
+        num_uploads = self._enqueue_upload_tasks(
+            num_uploads, chunksize, upload_context,
+            filename, tasks.UploadPartTask
+        )
         self._enqueue_upload_end_task(filename, upload_context)
         if remove_local_file:
             remove_task = tasks.RemoveFileTask(local_filename=filename.src,
@@ -277,8 +335,7 @@ class S3Handler(object):
         num_uploads = int(math.ceil(filename.size / float(chunksize)))
         upload_context = self._enqueue_upload_start_task(
             chunksize, num_uploads, filename)
-        self._enqueue_upload_tasks(
-            num_uploads, chunksize, upload_context, filename, tasks.CopyPartTask)
+        self._enqueue_upload_tasks(num_uploads, chunksize, upload_context, filename, tasks.CopyPartTask)
         self._enqueue_upload_end_task(filename, upload_context)
         if remove_remote_file:
             remove_task = tasks.RemoveRemoteObjectTask(
@@ -286,7 +343,8 @@ class S3Handler(object):
             self.executor.submit(remove_task)
         return num_uploads
 
-    def _enqueue_upload_start_task(self, chunksize, num_uploads, filename):
+    def _enqueue_upload_start_task(self, chunksize, num_uploads, filename,
+                                   payload=None):
         upload_context = tasks.MultipartUploadContext(
             expected_parts=num_uploads)
         create_multipart_upload_task = tasks.CreateMultipartUploadTask(
@@ -294,16 +352,56 @@ class S3Handler(object):
             parameters=self.params,
             result_queue=self.result_queue, upload_context=upload_context)
         self.executor.submit(create_multipart_upload_task)
+        if filename.is_stream and filename.operation_name == 'upload':
+            # Upload the part that was intially pulled from the stream.
+            self._enqueue_upload_single_part_task(
+                part_number=1, chunk_size=chunksize,
+                upload_context=upload_context, filename=filename,
+                task_class=tasks.UploadPartTask, payload=payload
+            )
         return upload_context
 
-    def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context, filename,
-                              task_class):
-        for i in range(1, (num_uploads + 1)):
-            task = task_class(
-                part_number=i, chunk_size=chunksize,
-                result_queue=self.result_queue, upload_context=upload_context,
-                filename=filename)
-            self.executor.submit(task)
+    def _enqueue_upload_tasks(self, num_uploads, chunksize, upload_context,
+                              filename, task_class):
+        if filename.is_stream and filename.operation_name == 'upload':
+            # The previous upload occured right after the multipart
+            # upload started for a stream.
+            num_uploads = 1
+            while True:
+                payload, is_remaining = self._pull_from_stream(chunksize)
+                self._enqueue_upload_single_part_task(
+                    part_number=num_uploads+1,
+                    chunk_size=chunksize,
+                    upload_context=upload_context,
+                    filename=filename,
+                    task_class=task_class,
+                    payload=payload
+                )
+                num_uploads += 1
+                if not is_remaining:
+                    break
+            upload_context.announce_total_parts(num_uploads)
+        else:
+            for i in range(1, (num_uploads + 1)):
+                self._enqueue_upload_single_part_task(
+                    part_number=i,
+                    chunk_size=chunksize,
+                    upload_context=upload_context,
+                    filename=filename,
+                    task_class=task_class
+                )
+        return num_uploads
+
+    def _enqueue_upload_single_part_task(self, part_number, chunk_size,
+                                         upload_context, filename, task_class,
+                                         payload=None):
+        kwargs = {'part_number': part_number, 'chunk_size': chunk_size,
+                  'result_queue': self.result_queue,
+                  'upload_context': upload_context, 'filename': filename}
+        if payload:
+            kwargs['payload'] = payload
+        task = task_class(**kwargs)
+        self.executor.submit(task)
 
     def _enqueue_upload_end_task(self, filename, upload_context):
         complete_multipart_upload_task = tasks.CompleteMultipartUploadTask(

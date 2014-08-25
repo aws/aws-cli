@@ -11,7 +11,7 @@ from dateutil.tz import tzlocal
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
         check_etag, check_error, operate, uni_print, \
-        guess_content_type, MD5Error
+        guess_content_type, MD5Error, bytes_print
 
 
 class CreateDirectoryError(Exception):
@@ -26,7 +26,7 @@ def read_file(filename):
         return in_file.read()
 
 
-def save_file(filename, response_data, last_update):
+def save_file(filename, response_data, last_update, is_stream=False):
     """
     This writes to the file upon downloading.  It reads the data in the
     response.  Makes a new directory if needed and then writes the
@@ -35,31 +35,57 @@ def save_file(filename, response_data, last_update):
     """
     body = response_data['Body']
     etag = response_data['ETag'][1:-1]
-    d = os.path.dirname(filename)
-    try:
-        if not os.path.exists(d):
-            os.makedirs(d)
-    except OSError as e:
-        if not e.errno == errno.EEXIST:
-            raise CreateDirectoryError(
-                "Could not create directory %s: %s" % (d, e))
+    if not is_stream:
+        d = os.path.dirname(filename)
+        try:
+            if not os.path.exists(d):
+                os.makedirs(d)
+        except OSError as e:
+            if not e.errno == errno.EEXIST:
+                raise CreateDirectoryError(
+                    "Could not create directory %s: %s" % (d, e))
     md5 = hashlib.md5()
     file_chunks = iter(partial(body.read, 1024 * 1024), b'')
-    with open(filename, 'wb') as out_file:
-        if not _is_multipart_etag(etag):
-            for chunk in file_chunks:
-                md5.update(chunk)
-                out_file.write(chunk)
-        else:
-            for chunk in file_chunks:
-                out_file.write(chunk)
+    if is_stream:
+        # Need to save the data to be able to check the etag for a stream
+        # becuase once the data is written to the stream there is no
+        # undoing it.
+        payload = write_to_file(None, etag, md5, file_chunks, True)
+    else:
+        with open(filename, 'wb') as out_file:
+            write_to_file(out_file, etag, md5, file_chunks)
+
     if not _is_multipart_etag(etag):
         if etag != md5.hexdigest():
-            os.remove(filename)
+            if not is_stream:
+                os.remove(filename)
             raise MD5Error(filename)
-    last_update_tuple = last_update.timetuple()
-    mod_timestamp = time.mktime(last_update_tuple)
-    os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+
+    if not is_stream:
+        last_update_tuple = last_update.timetuple()
+        mod_timestamp = time.mktime(last_update_tuple)
+        os.utime(filename, (int(mod_timestamp), int(mod_timestamp)))
+    else:
+        # Now write the output to stdout since the md5 is correct.
+        bytes_print(payload)
+        sys.stdout.flush()
+
+
+def write_to_file(out_file, etag, md5, file_chunks, is_stream=False):
+    """
+    Updates the etag for each file chunk.  It will write to the file if it a
+    file but if it is a stream it will return a byte string to be later
+    written to a stream.
+    """
+    body = b''
+    for chunk in file_chunks:
+        if not _is_multipart_etag(etag):
+            md5.update(chunk)
+        if is_stream:
+            body += chunk
+        else:
+            out_file.write(chunk)
+    return body
 
 
 def _is_multipart_etag(etag):
@@ -140,7 +166,7 @@ class FileInfo(TaskInfo):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, service=None, endpoint=None,
-                 parameters=None, source_endpoint=None):
+                 parameters=None, source_endpoint=None, is_stream=False):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
                                        service=service,
@@ -157,6 +183,7 @@ class FileInfo(TaskInfo):
             self.parameters = {'acl': None,
                                'sse': None}
         self.source_endpoint = source_endpoint
+        self.is_stream = is_stream
 
     def _permission_to_param(self, permission):
         if permission == 'read':
@@ -204,24 +231,30 @@ class FileInfo(TaskInfo):
         if self.parameters['expires']:
             params['expires'] = self.parameters['expires'][0]
 
-    def upload(self):
+    def upload(self, payload=None):
         """
         Redirects the file to the multipart upload function if the file is
         large.  If it is small enough, it puts the file as an object in s3.
         """
-        with open(self.src, 'rb') as body:
-            bucket, key = find_bucket_key(self.dest)
-            params = {
-                'endpoint': self.endpoint,
-                'bucket': bucket,
-                'key': key,
-                'body': body,
-            }
-            self._handle_object_params(params)
-            response_data, http = operate(self.service, 'PutObject', params)
-            etag = response_data['ETag'][1:-1]
-            body.seek(0)
-            check_etag(etag, body)
+        if payload:
+            self._handle_upload(payload)
+        else:
+            with open(self.src, 'rb') as body:
+                self._handle_upload(body)
+
+    def _handle_upload(self, body):
+        bucket, key = find_bucket_key(self.dest)
+        params = {
+            'endpoint': self.endpoint,
+            'bucket': bucket,
+            'key': key,
+            'body': body,
+        }
+        self._handle_object_params(params)
+        response_data, http = operate(self.service, 'PutObject', params)
+        etag = response_data['ETag'][1:-1]
+        body.seek(0)
+        check_etag(etag, body)
 
     def _inject_content_type(self, params, filename):
         # Add a content type param if we can guess the type.
@@ -237,7 +270,8 @@ class FileInfo(TaskInfo):
         bucket, key = find_bucket_key(self.src)
         params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
         response_data, http = operate(self.service, 'GetObject', params)
-        save_file(self.dest, response_data, self.last_update)
+        save_file(self.dest, response_data, self.last_update,
+                  self.is_stream)
 
     def copy(self):
         """

@@ -211,6 +211,15 @@ ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
                         'Only errors and warnings are displayed. All other '
                         'output is suppressed.')}
 
+EXPECTED_SIZE = {'name': 'expected-size',
+                 'help_text': (
+                     'This argument specifies the expected size of a stream '
+                     'in terms of bytes. Note that this argument is needed '
+                     'only when a stream is being uploaded to s3 and the size '
+                     'is larger than 5GB.  Failure to include this argument '
+                     'under these conditions may result in a failed upload. '
+                     'due to too many parts in upload.')}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
@@ -415,7 +424,7 @@ class CpCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [EXPECTED_SIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/cp.rst')
 
 
@@ -568,7 +577,8 @@ class CommandArchitecture(object):
                                        operation_name,
                                        self.parameters['follow_symlinks'],
                                        self.parameters['page_size'],
-                                       result_queue=result_queue)
+                                       result_queue=result_queue,
+                                       is_stream=self.parameters['is_stream'])
         rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters['follow_symlinks'],
                                       self.parameters['page_size'],
@@ -685,7 +695,18 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+        self._validate_streaming_paths()
         self._validate_path_args()
+
+    def _validate_streaming_paths(self):
+        self.parameters['is_stream'] = False
+        if self.parameters['src'] == '-' or self.parameters['dest'] == '-':
+            self.parameters['is_stream'] = True
+            self.parameters['dir_op'] = False
+            self.parameters['quiet'] = True
+        if self.parameters['is_stream'] and self.cmd != 'cp':
+            raise ValueError("Streaming currently is only compatible with "
+                             "single file cp commands")
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.

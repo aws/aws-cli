@@ -395,7 +395,7 @@ def _escape_quotes(command):
 
 
 def aws(command, collect_memory=False, env_vars=None,
-        wait_for_finish=True):
+        wait_for_finish=True, input_data=None):
     """Run an aws command.
 
     This help function abstracts the differences of running the "aws"
@@ -421,7 +421,7 @@ def aws(command, collect_memory=False, env_vars=None,
     else:
         aws_command = 'python %s' % get_aws_cmd()
     full_command = '%s %s' % (aws_command, command)
-    stdout_encoding = _get_stdout_encoding()
+    stdout_encoding = get_stdout_encoding()
     if isinstance(full_command, six.text_type) and not six.PY3:
         full_command = full_command.encode(stdout_encoding)
     INTEG_LOG.debug("Running command: %s", full_command)
@@ -429,13 +429,16 @@ def aws(command, collect_memory=False, env_vars=None,
     env['AWS_DEFAULT_REGION'] = "us-east-1"
     if env_vars is not None:
         env = env_vars
-    process = Popen(full_command, stdout=PIPE, stderr=PIPE, shell=True,
-                    env=env)
+    process = Popen(full_command, stdout=PIPE, stderr=PIPE, stdin=PIPE,
+                    shell=True, env=env)
     if not wait_for_finish:
         return process
     memory = None
     if not collect_memory:
-        stdout, stderr = process.communicate()
+        kwargs = {}
+        if input_data:  
+            kwargs = {'input': input_data}
+        stdout, stderr = process.communicate(**kwargs)
     else:
         stdout, stderr, memory = _wait_and_collect_mem(process)
     return Result(process.returncode,
@@ -444,7 +447,7 @@ def aws(command, collect_memory=False, env_vars=None,
                   memory)
 
 
-def _get_stdout_encoding():
+def get_stdout_encoding():
     encoding = getattr(sys.__stdout__, 'encoding', None)
     if encoding is None:
         encoding = 'utf-8'

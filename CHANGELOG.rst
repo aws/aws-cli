@@ -14,6 +14,9 @@ Next Release (TBD)
   (`issue 919 <https://github.com/aws/aws-cli/pull/919>`__)
 * feature:``aws s3``: Add ``--only-show-errors`` option that displays
   errors and warnings but suppresses all other output.
+* feature:``aws s3 cp``: Added ability to upload local
+  file streams from standard input to s3 and download s3
+  objects as local file streams to standard output. 
 
 
 1.4.4

@@ -70,10 +70,12 @@ class FakeSession(object):
     def emit_first_non_none_response(self, *args, **kwargs):
         pass
 
-    def register(self, name, handler, unique_id=None):
+    def register(self, name, handler, unique_id=None,
+                 unique_id_uses_call=False):
         pass
 
-    def unregister(self, name, handler, unique_id=None):
+    def unregister(self, name, handler, unique_id=None,
+                   unique_id_uses_call=False):
         pass
 
 

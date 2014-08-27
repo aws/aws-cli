@@ -15,6 +15,7 @@ import six
 
 if six.PY3:
     import locale
+    import urllib.parse as urlparse
 
     def get_stdout_text_writer():
         return sys.stdout
@@ -38,6 +39,7 @@ else:
     import codecs
     import locale
     import io
+    import urlparse
 
     def get_stdout_text_writer():
         # In python3, all the sys.stdout/sys.stderr streams are in text

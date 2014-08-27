@@ -5,14 +5,14 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
-* feature:Page Size: Add a ``--page-size`` option, that 
+* feature:Page Size: Add a ``--page-size`` option, that
   controls page size when perfoming an operation that
   uses pagination.
   (`issue 889 <https://github.com/aws/aws-cli/pull/889>`__)
 * bugfix:``aws s3``: Added support for ignoring and warning
   about files that do not exist, user does not have read
   permissions, or are special files (i.e. sockets, FIFOs,
-  character special devices, and block special devices) 
+  character special devices, and block special devices)
   (`issue 881 <https://github.com/aws/aws-cli/pull/881>`__)
 * feature:Parameter Shorthand: Added support for
   ``structure(list-scalar, scalar)`` parameter shorthand.
@@ -20,6 +20,9 @@ Next Release (TBD)
 * bugfix:``aws s3``: Fix bug when unknown options were
   passed to ``aws s3`` commands
   (`issue 886 <https://github.com/aws/aws-cli/pull/886>`__)
+* bugfix:Endpoint URL: Provide a better error message when
+  an invalid ``--endpoint-url`` is provided
+  (`issue 899 <https://github.com/aws/aws-cli/issues/899>`__)
 
 
 1.4.2

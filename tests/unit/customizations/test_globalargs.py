@@ -82,3 +82,15 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         service.signature_version = 'v4'
         globalargs.disable_signing(service)
         service.signature_version = None
+
+    def test_invalid_endpoint_url(self):
+        # Invalid jmespath expression.
+        parsed_args = FakeParsedArgs(endpoint_url='missing-scheme.com')
+        with self.assertRaises(ValueError):
+            globalargs.resolve_types(parsed_args)
+
+    def test_valid_endpoint_url(self):
+        parsed_args = FakeParsedArgs(endpoint_url='http://custom-endpoint.com')
+        globalargs.resolve_types(parsed_args)
+        self.assertEqual(parsed_args.endpoint_url,
+                         'http://custom-endpoint.com')

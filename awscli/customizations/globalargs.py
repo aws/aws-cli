@@ -15,6 +15,8 @@ import os
 
 import jmespath
 
+from awscli.compat import urlparse
+
 
 def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_types)
@@ -26,6 +28,7 @@ def resolve_types(parsed_args, **kwargs):
     # that plugins can also hook into this process.
     _resolve_arg(parsed_args, 'query')
     _resolve_arg(parsed_args, 'verify_ssl')
+    _resolve_arg(parsed_args, 'endpoint_url')
 
 
 def _resolve_arg(parsed_args, name):
@@ -49,6 +52,17 @@ def _resolve_verify_ssl(value):
     else:
         verify = os.environ.get('AWS_CA_BUNDLE')
     return verify
+
+
+def _resolve_endpoint_url(value):
+    parsed = urlparse.urlparse(value)
+    # Our http library requires you specify an endpoint url
+    # that contains a scheme, so we'll verify that up front.
+    if not parsed.scheme:
+        raise ValueError('Bad value for --endpoint-url "%s": scheme is '
+                         'missing.  Must be of the form '
+                         'http://<hostname>/ or https://<hostname>/' % value)
+    return value
 
 
 def no_sign_request(parsed_args, session, **kwargs):

@@ -350,7 +350,8 @@ class BucketLister(object):
         with ScopedEventHandler(self._operation.session,
                                 'after-call.s3.ListObjects',
                                 self._decode_keys,
-                                'BucketListerDecodeKeys'):
+                                'BucketListerDecodeKeys',
+                                True):
             pages = self._operation.paginate(self._endpoint, **kwargs)
             for response, page in pages:
                 contents = page['Contents']
@@ -368,18 +369,22 @@ class BucketLister(object):
 class ScopedEventHandler(object):
     """Register an event callback for the duration of a scope."""
 
-    def __init__(self, session, event_name, handler, unique_id=None):
+    def __init__(self, session, event_name, handler, unique_id=None,
+                 unique_id_uses_count=False):
         self._session = session
         self._event_name = event_name
         self._handler = handler
         self._unique_id = unique_id
+        self._unique_id_uses_count = unique_id_uses_count
 
     def __enter__(self):
-        self._session.register(self._event_name, self._handler, self._unique_id)
+        self._session.register(self._event_name, self._handler, self._unique_id,
+                               self._unique_id_uses_count)
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._session.unregister(self._event_name, self._handler,
-                                 self._unique_id)
+                                 self._unique_id,
+                                 self._unique_id_uses_count)
 
 
 class PrintTask(namedtuple('PrintTask',

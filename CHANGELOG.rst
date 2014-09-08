@@ -23,6 +23,10 @@ Next Release (TBD)
 * bugfix:Endpoint URL: Provide a better error message when
   an invalid ``--endpoint-url`` is provided
   (`issue 899 <https://github.com/aws/aws-cli/issues/899>`__)
+* bugfix:``aws s3``: Fix issue when keys do not get properly
+  url decoded when syncing from a bucket that requires pagination
+  to a bucket that requires less pagination
+  (`issue 909 <https://github.com/aws/aws-cli/pull/909>`__)
 
 
 1.4.2

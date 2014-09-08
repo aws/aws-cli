@@ -490,20 +490,29 @@ class TestSync(BaseS3CLICommand):
         self.assertNotIn('upload:', p2.stdout)
         self.assertEqual('', p2.stdout)
 
-    def test_s3_to_s3_sync_with_plus_char(self):
-        self.files.create_file('foo+.txt', contents="foo")
+    def test_s3_to_s3_sync_with_plus_char_paginate(self):
+        keynames = []
+        for i in range(4):
+            keyname = 'foo+%d' % i
+            keynames.append(keyname)
+            self.files.create_file(keyname, contents='')
+
         bucket_name = self.create_bucket()
         bucket_name_2 = self.create_bucket()
 
         p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
-        self.assertTrue(self.key_exists(bucket_name, 'foo+.txt'))
+        for key in keynames:
+            self.assertTrue(self.key_exists(bucket_name, key))
 
-        p = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        p = aws('s3 sync s3://%s/ s3://%s/ --page-size 2' % 
+                (bucket_name, bucket_name_2))
         self.assert_no_errors(p)
-        self.assertTrue(self.key_exists(bucket_name_2, 'foo+.txt'))
+        for key in keynames:
+            self.assertTrue(self.key_exists(bucket_name_2, key))
 
-        p2 = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        p2 = aws('s3 sync s3://%s/ s3://%s/ --page-size 2' %
+                 (bucket_name, bucket_name_2))
         self.assertNotIn('copy:', p2.stdout)
         self.assertEqual('', p2.stdout)
     

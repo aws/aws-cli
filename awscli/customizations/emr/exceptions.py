@@ -187,6 +187,17 @@ class SubnetAndAzValidationError(EmrError):
            'tyZone (placement) because ec2SubnetId implies a placement.')
 
 
+class MutualExclusiveOptionError(EmrError):
+    """
+    The provided option1 and option2 are mutually exclusive. 
+    
+    :ivar option1
+    :ivar option2
+    """
+    fmt = ('aws: error: You cannot specify both {option1} and {option2} '
+           'options together.')
+
+
 class MissingApplicationsError(EmrError):
     """
     The application required for a step is not installed when creating a
@@ -219,3 +230,15 @@ class ClusterStatesFilterValidationError(EmrError):
     """
     fmt = ('aws: error: You can specify only one of the cluster state '
            'filters: --cluster-states, --active, --terminated, --failed.')
+
+
+class MissingClusterAttributesError(EmrError):
+    """
+    In the modify-cluster-attributes command, customers need to provide
+    at least one of the following cluster attributes: --visible-to-all-users,
+    --no-visible-to-all-users, --termination-protected
+    and --no-termination-protected
+    """
+    fmt = ('aws: error: Must specify one of the following boolean options: '
+           '--visible-to-all-users|--no-visible-to-all-users, '
+           '--termination-protected|--no-termination-protected.')

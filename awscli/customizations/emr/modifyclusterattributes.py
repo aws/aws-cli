@@ -14,6 +14,7 @@
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import exceptions
 
 
 class ModifyClusterAttr(BasicCommand):
@@ -31,26 +32,25 @@ class ModifyClusterAttr(BasicCommand):
             'help_text': 'Change cluster visibility for IAM users'},
         {'name': 'termination-protected', 'required': False, 'action':
             'store_true', 'group_name': 'terminate',
-            'help_text': 'Set termination protected on or off'},
+            'help_text': 'Set termination protection on or off'},
         {'name': 'no-termination-protected', 'required': False, 'action':
             'store_true', 'group_name': 'terminate',
-            'help_text': 'Set termination protected on or off'},
+            'help_text': 'Set termination protection on or off'},
     ]
 
     def _run_main(self, args, parsed_globals):
 
         if (args.visible_to_all_users and args.no_visible_to_all_users):
-            raise ValueError(
-                'aws: error: Cannot use both options --visible-to-all-users '
-                'and --no-visible-to-all-users together.')
+            raise exceptions.MutualExclusiveOptionError(
+                option1='--visible-to-all-users',
+                option2='--no-visible-to-all-users')
         if (args.termination_protected and args.no_termination_protected):
-            raise ValueError(
-                'aws: error: Cannot use both options --termination-protected '
-                'and --no-termination-protected together.')
+            raise exceptions.MutualExclusiveOptionError(
+                option1='--termination-protected',
+                option2='--no-termination-protected')
         if not(args.termination_protected or args.no_termination_protected
                or args.visible_to_all_users or args.no_visible_to_all_users):
-            raise ValueError('aws: error: You need to specify atleast one of '
-                             'the options.')
+            raise exceptions.MissingClusterAttributesError()
 
         if (args.visible_to_all_users or args.no_visible_to_all_users):
             visible = (args.visible_to_all_users and

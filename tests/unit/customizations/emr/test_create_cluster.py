@@ -172,6 +172,10 @@ INSTALL_SUPPORTED_PRODUCTS = [
     {
         'Name': 'mapr',
         'Args': ['--edition', 'm7']
+    },
+    {
+        'Name': 'unknown',
+        'Args': ['arg1', 'k1=v1']
     }
 ]
 
@@ -790,15 +794,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     # Applications test cases
-    def test_wrong_application_type_error(self):
-        cmd = DEFAULT_CMD + '--applications Name=unknown'
-        expected_error_msg = (
-            '\naws: error: The application name unknown is not supported. '
-            '"Name" should be one of the following: HIVE, PIG, HBASE, '
-            'GANGLIA, IMPALA, MAPR, MAPR_M3, MAPR_M5, MAPR_M7.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(expected_error_msg, result[1])
-
     def test_install_hive_with_defaults(self):
         cmd = DEFAULT_CMD + '--applications Name=Hive'
         result = copy.deepcopy(DEFAULT_RESULT)
@@ -877,7 +872,8 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD + (
             '--applications '
             'Name=hue,Args=--hue-config,s3://elasticmapreduce/hue-config '
-            'Name=mapr,Args=--edition,m7')
+            'Name=mapr,Args=--edition,m7 '
+            'Name=unknown,Args=[arg1,k1=v1]')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['NewSupportedProducts'] = INSTALL_SUPPORTED_PRODUCTS
         result.pop('Steps')

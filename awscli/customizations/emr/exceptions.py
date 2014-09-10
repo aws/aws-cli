@@ -97,17 +97,6 @@ class UnknownStepTypeError(EmrError):
     fmt = ('aws: error: The step type {step_type} is not supported.')
 
 
-class UnknownApplicationError(EmrError):
-    """
-    The provided application name is unknown.
-
-    :ivar application_name: the application name provided.
-    """
-    fmt = ('aws: error: The application name {app_name} is not supported. '
-           '"Name" should be one of the following: ' +
-           (', '.join(constants.APPLICATIONS))) + '.'
-
-
 class UnknownIamEndpointError(EmrError):
     """
     The IAM endpoint is not known for the specified region.
@@ -189,8 +178,8 @@ class SubnetAndAzValidationError(EmrError):
 
 class MutualExclusiveOptionError(EmrError):
     """
-    The provided option1 and option2 are mutually exclusive. 
-    
+    The provided option1 and option2 are mutually exclusive.
+
     :ivar option1
     :ivar option2
     """

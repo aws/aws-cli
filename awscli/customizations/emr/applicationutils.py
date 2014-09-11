@@ -24,11 +24,7 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
     for app_config in parsed_applications:
         app_name = app_config['Name'].lower()
 
-        if app_name in constants.SUPPORTED_PRODUCTS:
-            app_list.append(
-                build_supported_product(
-                    app_config['Name'], app_config.get('Args')))
-        elif app_name == constants.HIVE:
+        if app_name == constants.HIVE:
             hive_version = constants.LATEST
             step_list.append(
                 _build_install_hive_step(region=parsed_globals.region))
@@ -71,12 +67,14 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
                     region=parsed_globals.region,
                     args=app_config.get('Args')))
         else:
-            raise exceptions.UnknownApplicationError(app_name=app_name)
+            app_list.append(
+                _build_supported_product(
+                    app_config['Name'], app_config.get('Args')))
 
     return app_list, ba_list, step_list
 
 
-def build_supported_product(name, args):
+def _build_supported_product(name, args):
     if args is None:
         args = []
     config = {'Name': name.lower(), 'Args': args}

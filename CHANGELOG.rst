@@ -2,9 +2,16 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.4.3
+=====
 
+* feature:``aws iam``: Update ``aws iam`` command to latest version.
+* feature:``aws cognito-sync``: Update ``aws cognito-sync`` command 
+  to latest version.
+* feature:``aws opsworks``: Update ``aws opsworks`` command to latest
+  version.
+* feature:``aws elasticbeanstalk``: Add support for bundling logs.
+* feature:``aws kinesis``: Add suport for tagging.
 * feature:Page Size: Add a ``--page-size`` option, that
   controls page size when perfoming an operation that
   uses pagination.

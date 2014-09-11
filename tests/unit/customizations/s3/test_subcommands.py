@@ -57,7 +57,9 @@ class TestLSCommand(unittest.TestCase):
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
         parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False)
-        ls_command._run_main(parsed_args, mock.Mock())
+        parsed_globals = mock.Mock()
+        parsed_globals.page_size = '5'
+        ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.get_service.return_value.get_operation\
                 .return_value.call
         paginate = self.session.get_service.return_value.get_operation\
@@ -69,7 +71,8 @@ class TestLSCommand(unittest.TestCase):
             'ListObjects')
         self.assertEqual(
             paginate.call_args[1], {'bucket': u'mybucket',
-                                    'delimiter': '/', 'prefix': u''})
+                                    'delimiter': '/', 'prefix': u'',
+                                    'page_size': u'5'})
 
     def test_ls_command_with_no_args(self):
         ls_command = ListCommand(self.session)
@@ -194,7 +197,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': local_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -210,7 +213,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': local_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -233,7 +236,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': local_file, 'filters': filters,
                   'paths_type': 's3local', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -250,7 +253,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -267,7 +270,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'mv', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -284,7 +287,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'rm', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -305,7 +308,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': local_dir, 'dest': s3_prefix, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True}
+                  'follow_symlinks': True, 'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'sync', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -320,7 +323,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True}
+                  'verify_ssl': None, 'follow_symlinks': True,
+                  'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'mb', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -335,7 +339,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': True, 'dryrun': True, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True}
+                  'verify_ssl': None, 'follow_symlinks': True,
+                  'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
@@ -351,7 +356,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         params = {'dir_op': True, 'dryrun': False, 'quiet': False,
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None, 'follow_symlinks': True}
+                  'verify_ssl': None, 'follow_symlinks': True,
+                  'page_size': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()

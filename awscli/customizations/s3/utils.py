@@ -171,6 +171,18 @@ def check_error(response_data):
                 raise Exception("Error: %s\n" % error['Message'])
 
 
+def create_warning(path, error_message):
+    """
+    This creates a ``PrintTask`` for whenever a warning is to be thrown.
+    """
+    print_string = "warning: "
+    print_string = print_string + "Skipping file " + path + ". "
+    print_string = print_string + error_message
+    warning_message = PrintTask(message=print_string, error=False,
+                                warning=True)
+    return warning_message
+
+
 def operate(service, cmd, kwargs):
     """
     A helper function that universally calls any command by taking in the
@@ -326,8 +338,9 @@ class BucketLister(object):
         self._endpoint = endpoint
         self._date_parser = date_parser
 
-    def list_objects(self, bucket, prefix=None):
-        kwargs = {'bucket': bucket, 'encoding_type': 'url'}
+    def list_objects(self, bucket, prefix=None, page_size=None):
+        kwargs = {'bucket': bucket, 'encoding_type': 'url',
+                  'page_size': page_size}
         if prefix is not None:
             kwargs['prefix'] = prefix
         # This event handler is needed because we use encoding_type url and
@@ -337,7 +350,8 @@ class BucketLister(object):
         with ScopedEventHandler(self._operation.session,
                                 'after-call.s3.ListObjects',
                                 self._decode_keys,
-                                'BucketListerDecodeKeys'):
+                                'BucketListerDecodeKeys',
+                                True):
             pages = self._operation.paginate(self._endpoint, **kwargs)
             for response, page in pages:
                 contents = page['Contents']
@@ -355,18 +369,36 @@ class BucketLister(object):
 class ScopedEventHandler(object):
     """Register an event callback for the duration of a scope."""
 
-    def __init__(self, session, event_name, handler, unique_id=None):
+    def __init__(self, session, event_name, handler, unique_id=None,
+                 unique_id_uses_count=False):
         self._session = session
         self._event_name = event_name
         self._handler = handler
         self._unique_id = unique_id
+        self._unique_id_uses_count = unique_id_uses_count
 
     def __enter__(self):
-        self._session.register(self._event_name, self._handler, self._unique_id)
+        self._session.register(self._event_name, self._handler, self._unique_id,
+                               self._unique_id_uses_count)
 
     def __exit__(self, exc_type, exc_value, traceback):
         self._session.unregister(self._event_name, self._handler,
-                                 self._unique_id)
+                                 self._unique_id,
+                                 self._unique_id_uses_count)
+
+
+class PrintTask(namedtuple('PrintTask',
+                          ['message', 'error', 'total_parts', 'warning'])):
+    def __new__(cls, message, error=False, total_parts=None, warning=None):
+        """
+        :param message: An arbitrary string associated with the entry.   This
+            can be used to communicate the result of the task.
+        :param error: Boolean indicating a failure.
+        :param total_parts: The total number of parts for multipart transfers.
+        :param warning: Boolean indicating a warning
+        """
+        return super(PrintTask, cls).__new__(cls, message, error, total_parts,
+                                             warning)
 
 
 IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])

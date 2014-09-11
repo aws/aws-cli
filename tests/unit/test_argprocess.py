@@ -85,6 +85,12 @@ class TestArgShapeDetection(BaseArgProcessTest):
         actual_structure = detect_shape_structure(p)
         self.assertEqual(actual_structure, expected_type)
 
+    def assert_custom_shape_type(self, schema, expected_type):
+        argument = CustomArgument('test', schema=schema)
+        argument.create_argument_object()
+        actual_structure = detect_shape_structure(argument.argument_object)
+        self.assertEqual(actual_structure, expected_type)
+
     def test_detect_scalar(self):
         self.assert_shape_type('iam.AddRoleToInstanceProfile.RoleName',
                                'scalar')
@@ -114,6 +120,22 @@ class TestArgShapeDetection(BaseArgProcessTest):
     def test_map_scalar(self):
         self.assert_shape_type(
             'sqs.SetQueueAttributes.Attributes', 'map-scalar')
+
+    def test_struct_list_scalar(self):
+        self.assert_custom_shape_type({
+            "type": "object",
+            "properties": {
+                "Consistent": {
+                    "type": "boolean",
+                },
+                "Args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }, 'structure(list-scalar, scalar)')
 
 
 class TestParamShorthand(BaseArgProcessTest):
@@ -279,6 +301,30 @@ class TestParamShorthand(BaseArgProcessTest):
         ])
         self.assertEqual(simplified, expected)
 
+    def test_struct_list_scalars(self):
+        schema = {
+            "type": "object",
+            "properties": {
+                "Consistent": {
+                    "type": "boolean",
+                },
+                "Args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+
+        argument = CustomArgument('test', schema=schema)
+        argument.create_argument_object()
+        p = argument.argument_object
+
+        returned = self.simplify(p, 'Consistent=true,Args=foo1,foo2')
+        self.assertEqual(returned, {'Consistent': True,
+                                    'Args': ['foo1', 'foo2']})
+
     def test_keyval_with_long_values(self):
         p = self.get_param_object(
             'dynamodb.UpdateTable.ProvisionedThroughput')
@@ -440,6 +486,35 @@ class TestDocGen(BaseArgProcessTest):
         self.assertIn('Name=string1,Values=string1,string2 '
                       'Name=string1,Values=string1,string2', doc_string)
 
+    def test_gen_structure_list_scalar_docs(self):
+        schema = {
+            "type": "object",
+            "properties": {
+                "Consistent": {
+                    "type": "boolean",
+                },
+                "Args": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+
+        argument = CustomArgument('test', schema=schema)
+        argument.create_argument_object()
+
+        p = argument.argument_object
+        help_command = OperationHelpCommand(
+            self.session, p.operation, None, {p.cli_name: argument},
+            name='foo', event_class='bar')
+        help_command.param_shorthand.add_example_fn(p.cli_name, help_command)
+
+        doc_string = p.example_fn(p)
+
+        self.assertIn('Key value pairs', doc_string)
+        self.assertIn('Consistent=boolean1,Args=string1,string2', doc_string)
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):

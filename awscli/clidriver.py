@@ -194,6 +194,7 @@ class CLIDriver(object):
             self._handle_top_level_args(parsed_args)
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
+            sys.stderr.write("\n")
             sys.stderr.write(str(e) + '\n')
             return 255
         except NoRegionError as e:
@@ -545,6 +546,8 @@ class CLIOperationCaller(object):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
         if operation_object.can_paginate and parsed_globals.paginate:
+            if parsed_globals.page_size:
+                parameters['page_size'] = parsed_globals.page_size
             pages = operation_object.paginate(endpoint, **parameters)
             self._display_response(operation_object, pages,
                                    parsed_globals)

@@ -130,6 +130,7 @@ class ParamShorthand(object):
     SHORTHAND_SHAPES = {
         'structure(scalars)': '_key_value_parse',
         'structure(scalar)': '_special_key_value_parse',
+        'structure(list-scalar, scalar)': '_struct_scalar_list_parse',
         'map-scalar': '_key_value_parse',
         'list-structure(scalar)': '_list_scalar_parse',
         'list-structure(scalars)': '_list_key_value_parse',
@@ -225,42 +226,51 @@ class ParamShorthand(object):
     def _list_scalar_list_parse(self, param, value):
         # Think something like ec2.DescribeInstances.Filters.
         # We're looking for key=val1,val2,val3,key2=val1,val2.
+        parsed = []
+
+        for v in value:
+            struct = self._struct_scalar_list_parse(param.members, v)
+            parsed.append(struct)
+
+        return parsed
+
+    def _struct_scalar_list_parse(self, param, value):
+        # Create a mapping of argument name -> argument object
         args = {}
-        for arg in param.members.members:
+        for arg in param.members:
             # Arg name -> arg object lookup
             args[arg.name] = arg
-        parsed = []
-        for v in value:
-            parts = self._split_on_commas(v)
-            current_parsed = {}
-            current_key = None
-            for part in parts:
-                current = part.split('=', 1)
-                if len(current) == 2:
-                    # This is a key/value pair.
-                    current_key = current[0].strip()
-                    if current_key not in args:
-                        raise ParamUnknownKeyError(param, current_key,
-                                                   args.keys())
-                    current_value = unpack_scalar_cli_arg(args[current_key],
-                                                          current[1].strip())
-                    if args[current_key].type == 'list':
-                        current_parsed[current_key] = current_value.split(',')
-                    else:
-                        current_parsed[current_key] = current_value
-                elif current_key is not None:
-                    # This is a value which we associate with the current_key,
-                    # so key1=val1,val2
-                    #               ^
-                    #               |
-                    #             val2 is associated with key1.
-                    current_value = unpack_scalar_cli_arg(args[current_key],
-                                                          current[0])
-                    current_parsed[current_key].append(current_value)
+
+        parts = self._split_on_commas(value)
+        current_parsed = {}
+        current_key = None
+        for part in parts:
+            current = part.split('=', 1)
+            if len(current) == 2:
+                # This is a key/value pair.
+                current_key = current[0].strip()
+                if current_key not in args:
+                    raise ParamUnknownKeyError(param, current_key,
+                                               args.keys())
+                current_value = unpack_scalar_cli_arg(args[current_key],
+                                                      current[1].strip())
+                if args[current_key].type == 'list':
+                    current_parsed[current_key] = current_value.split(',')
                 else:
-                    raise ParamSyntaxError(part)
-            parsed.append(current_parsed)
-        return parsed
+                    current_parsed[current_key] = current_value
+            elif current_key is not None:
+                # This is a value which we associate with the current_key,
+                # so key1=val1,val2
+                #               ^
+                #               |
+                #             val2 is associated with key1.
+                current_value = unpack_scalar_cli_arg(args[current_key],
+                                                      current[0])
+                current_parsed[current_key].append(current_value)
+            else:
+                raise ParamSyntaxError(part)
+
+        return current_parsed
 
     def _list_scalar_parse(self, param, value):
         single_param = param.members.members[0]
@@ -325,11 +335,7 @@ class ParamShorthand(object):
         elif param.type == 'map' and hasattr(param.keys, 'enum'):
             return dict([(v, None) for v in param.keys.enum])
 
-    def _docs_list_scalar_list_parse(self, param):
-        s = ('Key value pairs, where values are separated by commas, '
-             'and multiple pairs are separated by spaces.\n')
-        s += '%s ' % param.cli_name
-        inner_params = param.members.members
+    def _struct_list_scalar_doc_helper(self, param, inner_params):
         scalar_params = [p for p in inner_params if p.type in SCALAR_TYPES]
         list_params = [p for p in inner_params if p.type == 'list']
         pair = ''
@@ -341,8 +347,21 @@ class ParamShorthand(object):
         last_param = list_params[-1]
         param_type = last_param.members.type
         pair += '%s=%s1,%s2' % (last_param.name, param_type, param_type)
+        return pair
+
+    def _docs_list_scalar_list_parse(self, param):
+        s = ('Key value pairs, where values are separated by commas, '
+             'and multiple pairs are separated by spaces.\n')
+        s += '%s ' % param.cli_name
+        pair = self._struct_list_scalar_doc_helper(param, param.members.members)
         pair += ' %s' % pair
         s += pair
+        return s
+
+    def _docs_struct_scalar_list_parse(self, param):
+        s = ('Key value pairs, where values are separated by commas.\n')
+        s += '%s ' % param.cli_name
+        s += self._struct_list_scalar_doc_helper(param, param.members)
         return s
 
     def _docs_list_scalar_parse(self, param):

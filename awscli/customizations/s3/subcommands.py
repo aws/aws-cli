@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import six
+from six.moves import queue
 import sys
 
 from dateutil.parser import parse
@@ -247,16 +248,18 @@ class ListCommand(S3Command):
             self._list_all_buckets()
         elif parsed_args.dir_op:
             # Then --recursive was specified.
-            self._list_all_objects_recursive(bucket, key)
+            self._list_all_objects_recursive(bucket, key,
+                                             parsed_globals.page_size)
         else:
-            self._list_all_objects(bucket, key)
+            self._list_all_objects(bucket, key, parsed_globals.page_size)
         return 0
 
-    def _list_all_objects(self, bucket, key):
+    def _list_all_objects(self, bucket, key, page_size=None):
 
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                      prefix=key, delimiter='/')
+                                      prefix=key, delimiter='/',
+                                      page_size=page_size)
         for _, response_data in iterator:
             self._display_page(response_data)
 
@@ -293,10 +296,10 @@ class ListCommand(S3Command):
             uni_print(print_str)
             sys.stdout.flush()
 
-    def _list_all_objects_recursive(self, bucket, key):
+    def _list_all_objects_recursive(self, bucket, key, page_size=None):
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                      prefix=key)
+                                      prefix=key, page_size=page_size)
         for _, response_data in iterator:
             self._display_page(response_data, use_basename=False)
 
@@ -324,8 +327,9 @@ class ListCommand(S3Command):
 
 
 class WebsiteCommand(S3Command):
+    NAME = 'website'
     DESCRIPTION = 'Set the website configuration for a bucket.'
-    USAGE = 's3://bucket [--index-document|--error-document] value'
+    USAGE = '<S3Path>'
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, INDEX_DOCUMENT, ERROR_DOCUMENT]
 
@@ -372,6 +376,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_region(parsed_globals)
         cmd_params.add_endpoint_url(parsed_globals)
         cmd_params.add_verify_ssl(parsed_globals)
+        cmd_params.add_page_size(parsed_globals)
         cmd_params.add_paths(parsed_args.paths)
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self.NAME,
@@ -554,13 +559,18 @@ class CommandArchitecture(object):
             'mb': 'make_bucket',
             'rb': 'remove_bucket'
         }
+        result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
         file_generator = FileGenerator(self._service,
                                        self._source_endpoint,
                                        operation_name,
-                                       self.parameters['follow_symlinks'])
+                                       self.parameters['follow_symlinks'],
+                                       self.parameters['page_size'],
+                                       result_queue=result_queue)
         rev_generator = FileGenerator(self._service, self._endpoint, '',
-                                      self.parameters['follow_symlinks'])
+                                      self.parameters['follow_symlinks'],
+                                      self.parameters['page_size'],
+                                      result_queue=result_queue)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
@@ -568,7 +578,8 @@ class CommandArchitecture(object):
                              endpoint=self._endpoint)]
         file_info_builder = FileInfoBuilder(self._service, self._endpoint,
                                  self._source_endpoint, self.parameters) 
-        s3handler = S3Handler(self.session, self.parameters)
+        s3handler = S3Handler(self.session, self.parameters,
+                              result_queue=result_queue)
 
         command_dict = {}
         if self.cmd == 'sync':
@@ -620,13 +631,17 @@ class CommandArchitecture(object):
         # will replaces the files attr with the return value of the
         # file_list.  The very last call is a single list of
         # [s3_handler], and the s3_handler returns the number of
-        # tasks failed.  This means that files[0] now contains
-        # the number of failed tasks.  In terms of the RC, we're
-        # keeping it simple and saying that > 0 failed tasks
-        # will give a 1 RC.
+        # tasks failed and the number of tasks warned.
+        # This means that files[0] now contains a namedtuple with
+        # the number of failed tasks and the number of warned tasks.
+        # In terms of the RC, we're keeping it simple and saying 
+        # that > 0 failed tasks will give a 1 RC and > 0 warned
+        # tasks will give a 2 RC.  Otherwise a RC of zero is returned.
         rc = 0
-        if files[0] > 0:
+        if files[0].num_tasks_failed > 0:
             rc = 1
+        if files[0].num_tasks_warned > 0:
+            rc = 2
         return rc
 
 
@@ -787,3 +802,6 @@ class CommandParameters(object):
 
     def add_verify_ssl(self, parsed_globals):
         self.parameters['verify_ssl'] = parsed_globals.verify_ssl
+
+    def add_page_size(self, parsed_globals):
+        self.parameters['page_size'] = parsed_globals.page_size

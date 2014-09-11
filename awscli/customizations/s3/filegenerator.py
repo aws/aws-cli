@@ -12,14 +12,61 @@
 # language governing permissions and limitations under the License.
 import os
 import sys
+import stat
 
 import six
+from six.moves import queue
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister
+from awscli.customizations.s3.utils import BucketLister, create_warning
 from awscli.errorhandler import ClientError
+
+
+_open = open
+
+
+def is_special_file(path):
+    """
+    This function checks to see if a special file.  It checks if the
+    file is a character special device, block special device, FIFO, or
+    socket. 
+    """
+    mode = os.stat(path).st_mode
+    # Character special device.
+    if stat.S_ISCHR(mode):
+        return True
+    # Block special device
+    if stat.S_ISBLK(mode):
+        return True
+    # FIFO.
+    if stat.S_ISFIFO(mode):
+        return True
+    # Socket.
+    if stat.S_ISSOCK(mode):
+        return True
+    return False
+
+
+def is_readable(path):
+    """
+    This function checks to see if a file or a directory can be read.
+    This is tested by performing an operation that requires read access
+    on the file or the directory.
+    """
+    if os.path.isdir(path):
+        try:
+            os.listdir(path)
+        except (OSError, IOError):
+            return False
+    else:
+        try:
+            with _open(path, 'r') as fd:
+                pass
+        except (OSError, IOError):
+            return False
+    return True
 
 
 # This class is provided primarily to provide a detailed error message.
@@ -68,11 +115,15 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True):
+                 follow_symlinks=True, page_size=None, result_queue=None):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
+        self.page_size = page_size
+        self.result_queue = result_queue
+        if not result_queue:
+            self.result_queue = queue.Queue()
 
     def call(self, files):
         """
@@ -178,7 +229,7 @@ class FileGenerator(object):
         """
         This function checks whether a file should be ignored in the
         file generation process.  This includes symlinks that are not to be
-        followed.
+        followed and files that generate warnings.
         """
         if not self.follow_symlinks:
             if os.path.isdir(path) and path.endswith(os.sep):
@@ -186,6 +237,36 @@ class FileGenerator(object):
                 path = path[:-1]
             if os.path.islink(path):
                 return True
+        warning_triggered = self.triggers_warning(path)
+        if warning_triggered:
+            return True
+        return False
+
+    def triggers_warning(self, path):
+        """
+        This function checks the specific types and properties of a file.
+        If the file would cause trouble, the function adds a
+        warning to the result queue to be printed out and returns a boolean
+        value notify whether the file caused a warning to be generated.
+        Files that generate warnings are skipped.  Currently, this function
+        checks for files that do not exist and files that the user does
+        not have read access.
+        """
+        if not os.path.exists(path):
+            warning = create_warning(path, "File does not exist.")
+            self.result_queue.put(warning)
+            return True
+        if is_special_file(path):
+            warning = create_warning(path,
+                                     ("File is character special device, "
+                                      "block special device, FIFO, or "
+                                      "socket."))
+            self.result_queue.put(warning)
+            return True
+        if not is_readable(path):
+            warning = create_warning(path, "File/Directory is not readable.")
+            self.result_queue.put(warning)
+            return True
         return False
 
     def list_objects(self, s3_path, dir_op):
@@ -204,7 +285,8 @@ class FileGenerator(object):
         else:
             operation = self._service.get_operation('ListObjects')
             lister = BucketLister(operation, self._endpoint)
-            for key in lister.list_objects(bucket=bucket, prefix=prefix):
+            for key in lister.list_objects(bucket=bucket, prefix=prefix,
+                                           page_size=self.page_size):
                 source_path, size, last_update = key
                 if size == 0 and source_path.endswith('/'):
                     if self.operation_name == 'delete':

@@ -20,8 +20,10 @@ import random
 import platform
 import contextlib
 import time
+import stat
 import signal
 import string
+import socket
 
 import botocore.session
 import six
@@ -461,13 +463,14 @@ class TestCp(BaseS3CLICommand):
 
 class TestSync(BaseS3CLICommand):
     def test_sync_with_plus_chars_paginate(self):
-        # 1. Create > 1000 files with '+' in the filename.
-        # 2. Sync up to s3.
-        # 3. Sync up to s3
+        # This test ensures pagination tokens are url decoded.
+        # 1. Create > 2 files with '+' in the filename.
+        # 2. Sync up to s3 while the page size is 2.
+        # 3. Sync up to s3 while the page size is 2.
         # 4. Verify nothing was synced up down from s3 in step 3.
         bucket_name = self.create_bucket()
         filenames = []
-        for i in range(2000):
+        for i in range(4):
             # Create a file with a space char and a '+' char in the filename.
             # We're interested in testing the filename comparisons, not the
             # mtime comparisons so we're setting the mtime to some time
@@ -478,27 +481,38 @@ class TestSync(BaseS3CLICommand):
                 self.files.create_file('foo +%06d' % i,
                                        contents='',
                                        mtime=mtime))
-        p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        p = aws('s3 sync %s s3://%s/ --page-size 2' % 
+                (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
-        time.sleep(5)
-        p2 = aws('s3 sync %s s3://%s/' % (self.files.rootdir, bucket_name))
+        time.sleep(1)
+        p2 = aws('s3 sync %s s3://%s/ --page-size 2' 
+                 % (self.files.rootdir, bucket_name))
         self.assertNotIn('upload:', p2.stdout)
         self.assertEqual('', p2.stdout)
 
-    def test_s3_to_s3_sync_with_plus_char(self):
-        self.files.create_file('foo+.txt', contents="foo")
+    def test_s3_to_s3_sync_with_plus_char_paginate(self):
+        keynames = []
+        for i in range(4):
+            keyname = 'foo+%d' % i
+            keynames.append(keyname)
+            self.files.create_file(keyname, contents='')
+
         bucket_name = self.create_bucket()
         bucket_name_2 = self.create_bucket()
 
         p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
-        self.assertTrue(self.key_exists(bucket_name, 'foo+.txt'))
+        for key in keynames:
+            self.assertTrue(self.key_exists(bucket_name, key))
 
-        p = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        p = aws('s3 sync s3://%s/ s3://%s/ --page-size 2' % 
+                (bucket_name, bucket_name_2))
         self.assert_no_errors(p)
-        self.assertTrue(self.key_exists(bucket_name_2, 'foo+.txt'))
+        for key in keynames:
+            self.assertTrue(self.key_exists(bucket_name_2, key))
 
-        p2 = aws('s3 sync s3://%s/ s3://%s/' % (bucket_name, bucket_name_2))
+        p2 = aws('s3 sync s3://%s/ s3://%s/ --page-size 2' %
+                 (bucket_name, bucket_name_2))
         self.assertNotIn('copy:', p2.stdout)
         self.assertEqual('', p2.stdout)
     
@@ -674,6 +688,47 @@ class TestSourceRegion(BaseS3CLICommand):
             self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
 
+class TestWarnings(BaseS3CLICommand):
+    def extra_setup(self):
+        self.bucket_name = self.create_bucket()
+    
+    def test_no_exist(self):
+        filename = os.path.join(self.files.rootdir, "no-exists-file")
+        p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('warning: Skipping file %s. File does not exist.' % 
+                      filename, p.stdout)
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Read permissions tests only supported on mac/linux')
+    def test_no_read_access(self):
+        if os.geteuid() == 0:
+            self.skipTest('Cannot completely remove read access as root user.')
+        self.files.create_file('foo.txt', 'foo')
+        filename = os.path.join(self.files.rootdir, 'foo.txt')
+        permissions = stat.S_IMODE(os.stat(filename).st_mode)
+        # Remove read permissions 
+        permissions = permissions ^ stat.S_IREAD
+        os.chmod(filename, permissions)
+        p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('warning: Skipping file %s. File/Directory is '
+                      'not readable.' % filename, p.stdout)
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Special files only supported on mac/linux')
+    def test_is_special_file(self):
+        file_path = os.path.join(self.files.rootdir, 'foo')
+        # Use socket for special file.
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.bind(file_path)
+        p = aws('s3 cp %s s3://%s/' % (file_path, self.bucket_name))
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn(("warning: Skipping file %s. File is character "
+                       "special device, block special device, FIFO, or "
+                       "socket." % file_path), p.stdout)
+
+
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                  'Symlink tests only supported on mac/linux')
 class TestSymlinks(BaseS3CLICommand):
@@ -751,8 +806,10 @@ class TestSymlinks(BaseS3CLICommand):
     
     def test_bad_symlink(self):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
-        self.assertEqual(p.rc, 1, p.stdout)
-        self.assertIn('[Errno 2] No such file or directory', p.stdout)
+        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertIn('warning: Skipping file %s. File does not exist.' % 
+                      os.path.join(self.files.rootdir, 'b-badsymlink'),
+                      p.stdout)
 
 
 class TestUnicode(BaseS3CLICommand):

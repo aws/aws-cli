@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from mock import Mock
 
-from awscli.testutils import unittest
+from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli.customizations.s3.s3 import awscli_initialize, add_s3
 
 
@@ -46,6 +46,14 @@ class CreateTablesTest(unittest.TestCase):
         self.assertEqual(orig_service, s3_service)
         for service in self.services.keys():
             self.assertIn(service, ['s3'])
+
+
+class TestS3(BaseAWSCommandParamsTest):
+    def test_too_few_args(self):
+        stderr = self.run_cmd('s3', expected_rc=255)[1]
+        self.assertIn(("usage: aws [options] <command> "
+                       "<subcommand> [parameters]"), stderr)
+        self.assertIn('too few arguments', stderr)
 
 
 if __name__ == "__main__":

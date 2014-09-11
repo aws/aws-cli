@@ -39,3 +39,4 @@ If you are using Linux or OS X, enclose the entire key and value structure with 
 Command::
 
   aws ec2 create-tags --resources i-1a2b3c4d --tags 'Key="[Group]",Value=test'
+

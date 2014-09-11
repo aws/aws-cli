@@ -2,6 +2,40 @@
 CHANGELOG
 =========
 
+1.4.3
+=====
+
+* feature:``aws iam``: Update ``aws iam`` command to latest version.
+* feature:``aws cognito-sync``: Update ``aws cognito-sync`` command 
+  to latest version.
+* feature:``aws opsworks``: Update ``aws opsworks`` command to latest
+  version.
+* feature:``aws elasticbeanstalk``: Add support for bundling logs.
+* feature:``aws kinesis``: Add suport for tagging.
+* feature:Page Size: Add a ``--page-size`` option, that
+  controls page size when perfoming an operation that
+  uses pagination.
+  (`issue 889 <https://github.com/aws/aws-cli/pull/889>`__)
+* bugfix:``aws s3``: Added support for ignoring and warning
+  about files that do not exist, user does not have read
+  permissions, or are special files (i.e. sockets, FIFOs,
+  character special devices, and block special devices)
+  (`issue 881 <https://github.com/aws/aws-cli/pull/881>`__)
+* feature:Parameter Shorthand: Added support for
+  ``structure(list-scalar, scalar)`` parameter shorthand.
+  (`issue 882 <https://github.com/aws/aws-cli/pull/882>`__)
+* bugfix:``aws s3``: Fix bug when unknown options were
+  passed to ``aws s3`` commands
+  (`issue 886 <https://github.com/aws/aws-cli/pull/886>`__)
+* bugfix:Endpoint URL: Provide a better error message when
+  an invalid ``--endpoint-url`` is provided
+  (`issue 899 <https://github.com/aws/aws-cli/issues/899>`__)
+* bugfix:``aws s3``: Fix issue when keys do not get properly
+  url decoded when syncing from a bucket that requires pagination
+  to a bucket that requires less pagination
+  (`issue 909 <https://github.com/aws/aws-cli/pull/909>`__)
+
+
 1.4.2
 =====
 

@@ -39,6 +39,16 @@ class TestListObjects(BaseAWSCommandParamsTest):
                   'headers': {},}
         self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
 
+    def test_page_size(self):
+        cmdline = self.prefix
+        cmdline += ' --bucket mybucket'
+        # The max-items is a customization and therefore won't
+        # show up in the result params.
+        cmdline += ' --page-size 100'
+        result = {'uri_params': {'Bucket': 'mybucket', 'MaxKeys': 100},
+                  'headers': {},}
+        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+
     def test_starting_token(self):
         # We don't need to test this in depth because botocore
         # tests this.  We just want to make sure this is hooked up

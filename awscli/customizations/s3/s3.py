@@ -57,3 +57,8 @@ class S3(BasicCommand):
         {'name': 'mb', 'command_class': MbCommand},
         {'name': 'rb', 'command_class': RbCommand}
     ]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        if parsed_args.subcommand is None:
+            raise ValueError("usage: aws [options] <command> <subcommand> "
+                             "[parameters]\naws: error: too few arguments")

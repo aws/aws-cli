@@ -9,7 +9,8 @@ from botocore.vendored import requests
 from botocore.exceptions import IncompleteReadError
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
-    operate, ReadFileChunk, relative_path, IORequest, IOCloseRequest
+    operate, ReadFileChunk, relative_path, IORequest, IOCloseRequest, \
+    PrintTask
 
 
 LOGGER = logging.getLogger(__name__)
@@ -113,7 +114,7 @@ class BasicTask(OrderableTask):
                 if error_message is not None:
                     message += ' ' + error_message
                 result = {'message': message, 'error': failed}
-                self.result_queue.put(result)
+                self.result_queue.put(PrintTask(**result))
         except Exception as e:
             LOGGER.debug('%s' % str(e))
 
@@ -165,7 +166,7 @@ class CopyPartTask(OrderableTask):
             message = print_operation(self._filename, 0)
             result = {'message': message, 'total_parts': self._total_parts(),
                       'error': False}
-            self._result_queue.put(result)
+            self._result_queue.put(PrintTask(**result))
         except UploadCancelledError as e:
             # We don't need to do anything in this case.  The task
             # has been cancelled, and the task that cancelled the
@@ -178,7 +179,7 @@ class CopyPartTask(OrderableTask):
                                       dryrun=False)
             message += '\n' + str(e)
             result = {'message': message, 'error': True}
-            self._result_queue.put(result)
+            self._result_queue.put(PrintTask(**result))
             self._upload_context.cancel_upload()
         else:
             LOGGER.debug("Copy part number %s completed for filename: %s",
@@ -235,7 +236,7 @@ class UploadPartTask(OrderableTask):
             message = print_operation(self._filename, 0)
             result = {'message': message, 'total_parts': total,
                       'error': False}
-            self._result_queue.put(result)
+            self._result_queue.put(PrintTask(**result))
         except UploadCancelledError as e:
             # We don't need to do anything in this case.  The task
             # has been cancelled, and the task that cancelled the
@@ -248,7 +249,7 @@ class UploadPartTask(OrderableTask):
                                       dryrun=False)
             message += '\n' + str(e)
             result = {'message': message, 'error': True}
-            self._result_queue.put(result)
+            self._result_queue.put(PrintTask(**result))
             self._upload_context.cancel_upload()
         else:
             LOGGER.debug("Part number %s completed for filename: %s",
@@ -303,7 +304,7 @@ class CompleteDownloadTask(OrderableTask):
         message = print_operation(self._filename, False,
                                   self._parameters['dryrun'])
         print_task = {'message': message, 'error': False}
-        self._result_queue.put(print_task)
+        self._result_queue.put(PrintTask(**print_task))
         self._io_queue.put(IOCloseRequest(self._filename.dest))
 
 
@@ -369,7 +370,7 @@ class DownloadPartTask(OrderableTask):
                 total_parts = int(self._filename.size / self._chunk_size)
                 result = {'message': message, 'error': False,
                           'total_parts': total_parts}
-                self._result_queue.put(result)
+                self._result_queue.put(PrintTask(**result))
                 LOGGER.debug("Task complete: %s", self)
                 return
             except (socket.timeout, socket.error) as e:
@@ -426,7 +427,7 @@ class CreateMultipartUploadTask(BasicTask):
                                       self.parameters['dryrun'])
             message += '\n' + str(e)
             result = {'message': message, 'error': True}
-            self.result_queue.put(result)
+            self.result_queue.put(PrintTask(**result))
             raise e
 
 
@@ -485,7 +486,7 @@ class CompleteMultipartUploadTask(BasicTask):
                                       self.parameters['dryrun'])
             result = {'message': message, 'error': False}
             self._upload_context.announce_completed()
-        self.result_queue.put(result)
+        self.result_queue.put(PrintTask(**result))
 
 
 class RemoveFileTask(BasicTask):

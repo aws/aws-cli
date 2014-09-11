@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.4.3
+=====
 
 * feature:``aws iam``: Update ``aws iam`` command to latest version.
 * feature:``aws cognito-sync``: Update ``aws cognito-sync`` command 

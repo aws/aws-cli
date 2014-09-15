@@ -171,11 +171,10 @@ class IOWriterThread(threading.Thread):
             elif isinstance(task, IOCloseRequest):
                 LOGGER.debug("IOCloseRequest received for %s, closing file.",
                              task.filename)
-                if not task.is_stream:
-                    fileobj = self.fd_descriptor_cache.get(task.filename)
-                    if fileobj is not None:
-                        fileobj.close()
-                        del self.fd_descriptor_cache[task.filename]
+                fileobj = self.fd_descriptor_cache.get(task.filename)
+                if fileobj is not None:
+                    fileobj.close()
+                    del self.fd_descriptor_cache[task.filename]
 
     def _cleanup(self):
         for fileobj in self.fd_descriptor_cache.values():

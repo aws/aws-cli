@@ -174,12 +174,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                         'rb': ['s3_handler']}
 
         params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None}
+                  'verify_ssl': None, 'is_stream': False}
         for cmd in cmds:
             cmd_arc = CommandArchitecture(self.session, cmd,
                                           {'region': 'us-east-1',
                                            'endpoint_url': None,
-                                           'verify_ssl': None})
+                                           'verify_ssl': None,
+                                           'is_stream': False})
             cmd_arc.create_instructions()
             self.assertEqual(cmd_arc.instructions, instructions[cmd])
 

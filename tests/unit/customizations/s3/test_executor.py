@@ -43,7 +43,7 @@ class TestIOWriterThread(unittest.TestCase):
 
     def test_handles_io_request(self):
         self.queue.put(IORequest(self.filename, 0, b'foobar', False))
-        self.queue.put(IOCloseRequest(self.filename, False))
+        self.queue.put(IOCloseRequest(self.filename))
         self.queue.put(ShutdownThreadRequest())
         self.io_thread.run()
         with open(self.filename, 'rb') as f:
@@ -52,7 +52,7 @@ class TestIOWriterThread(unittest.TestCase):
     def test_out_of_order_io_requests(self):
         self.queue.put(IORequest(self.filename, 6, b'morestuff', False))
         self.queue.put(IORequest(self.filename, 0, b'foobar', False))
-        self.queue.put(IOCloseRequest(self.filename, False))
+        self.queue.put(IOCloseRequest(self.filename))
         self.queue.put(ShutdownThreadRequest())
         self.io_thread.run()
         with open(self.filename, 'rb') as f:
@@ -63,8 +63,8 @@ class TestIOWriterThread(unittest.TestCase):
         open(second_file, 'w').close()
         self.queue.put(IORequest(self.filename, 0, b'foobar', False))
         self.queue.put(IORequest(second_file, 0, b'otherstuff', False))
-        self.queue.put(IOCloseRequest(second_file, False))
-        self.queue.put(IOCloseRequest(self.filename, False))
+        self.queue.put(IOCloseRequest(second_file))
+        self.queue.put(IOCloseRequest(self.filename))
         self.queue.put(ShutdownThreadRequest())
 
         self.io_thread.run()
@@ -82,7 +82,6 @@ class TestIOWriterThread(unittest.TestCase):
         # The thread should not try to close the file name because it is
         # writing to stdout.  If it does, the thread will fail because
         # the file does not exist.
-        self.queue.put(IOCloseRequest('nonexistant-file', True))
         self.queue.put(ShutdownThreadRequest())
         with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
             self.io_thread.run()

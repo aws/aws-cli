@@ -185,6 +185,17 @@ class FileInfo(TaskInfo):
         self.source_endpoint = source_endpoint
         self.is_stream = is_stream
 
+    def set_size_from_s3(self):
+        """
+        This runs a ``HeadObject`` on the s3 object and sets the size.
+        """
+        bucket, key = find_bucket_key(self.src)
+        params = {'endpoint': self.endpoint,
+                  'bucket': bucket,
+                  'key': key}
+        response_data, http = operate(self.service, 'HeadObject', params)
+        self.size = int(response_data['ContentLength'])
+
     def _permission_to_param(self, permission):
         if permission == 'read':
             return 'grant_read'

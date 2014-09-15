@@ -19,13 +19,14 @@ class FileInfoBuilder(object):
     a ``FileInfo`` object so that the operation can be performed.
     """
     def __init__(self, service, endpoint, source_endpoint=None,
-                 parameters = None):
+                 parameters = None, is_stream=False):
         self._service = service
         self._endpoint = endpoint
         self._source_endpoint = endpoint
         if source_endpoint:
             self._source_endpoint = source_endpoint
-        self._parameters = parameters 
+        self._parameters = parameters
+        self._is_stream = is_stream 
 
     def call(self, files):
         for file_base in files:
@@ -42,9 +43,9 @@ class FileInfoBuilder(object):
         file_info_attr['src_type'] = file_base.src_type
         file_info_attr['dest_type'] = file_base.dest_type
         file_info_attr['operation_name'] = file_base.operation_name
-        file_info_attr['is_stream'] = file_base.is_stream
         file_info_attr['service'] = self._service
         file_info_attr['endpoint'] = self._endpoint
         file_info_attr['source_endpoint'] = self._source_endpoint
         file_info_attr['parameters'] = self._parameters
+        file_info_attr['is_stream'] = self._is_stream
         return FileInfo(**file_info_attr)

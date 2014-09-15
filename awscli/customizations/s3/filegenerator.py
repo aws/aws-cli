@@ -20,7 +20,8 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister, create_warning
+from awscli.customizations.s3.utils import BucketLister, create_warning, \
+    find_dest_path_comp_key
 from awscli.errorhandler import ClientError
 
 
@@ -95,7 +96,7 @@ class FileDecodingError(Exception):
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, is_stream=False):
+                 operation_name=None):
         self.src = src
         self.dest = dest
         self.compare_key = compare_key
@@ -104,7 +105,6 @@ class FileStat(object):
         self.src_type = src_type
         self.dest_type = dest_type
         self.operation_name = operation_name
-        self.is_stream = is_stream
 
 
 class FileGenerator(object):
@@ -116,8 +116,7 @@ class FileGenerator(object):
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
     def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True, page_size=None, result_queue=None,
-                 is_stream=False):
+                 follow_symlinks=True, page_size=None, result_queue=None):
         self._service = service
         self._endpoint = endpoint
         self.operation_name = operation_name
@@ -126,7 +125,6 @@ class FileGenerator(object):
         self.result_queue = result_queue
         if not result_queue:
             self.result_queue = queue.Queue()
-        self.is_stream = is_stream
 
     def call(self, files):
         """
@@ -134,43 +132,18 @@ class FileGenerator(object):
         ``dir_op`` and ``use_src_name`` flags affect which files are used and
         ensure the proper destination paths and compare keys are formed.
         """
-        src = files['src']
-        dest = files['dest']
-        src_type = src['type']
-        dest_type = dest['type']
-        function_table = {'s3': self.list_objects}
-        if self.is_stream:
-            function_table['local'] = self.list_local_file_stream
-        else:
-            function_table['local'] = self.list_files
-        sep_table = {'s3': '/', 'local': os.sep}
-        source = src['path']
+        function_table = {'s3': self.list_objects, 'local': self.list_files}
+        source = files['src']['path']
+        src_type = files['src']['type']
+        dest_type = files['dest']['type']
         file_list = function_table[src_type](source, files['dir_op'])
         for src_path, size, last_update in file_list:
-            if files['dir_op']:
-                rel_path = src_path[len(src['path']):]
-            else:
-                rel_path = src_path.split(sep_table[src_type])[-1]
-            compare_key = rel_path.replace(sep_table[src_type], '/')
-            if files['use_src_name']:
-                dest_path = dest['path']
-                dest_path += rel_path.replace(sep_table[src_type],
-                                              sep_table[dest_type])
-            else:
-                dest_path = dest['path']
+            dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             yield FileStat(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,
                            dest_type=dest_type,
-                           operation_name=self.operation_name,
-                           is_stream=self.is_stream)
-
-    def list_local_file_stream(self, path, dir_op):
-        """
-        Yield some dummy values for a local file stream since it does not
-        actually have a file.
-        """
-        yield '-', 0, None
+                           operation_name=self.operation_name)
 
     def list_files(self, path, dir_op):
         """

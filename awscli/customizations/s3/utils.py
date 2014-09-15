@@ -145,6 +145,34 @@ def get_file_stat(path):
     return stats.st_size, update_time
 
 
+def find_dest_path_comp_key(files, src_path=None):
+    """
+    This is a helper function that determines the destination path and compare
+    key given parameters received from the ``FileFormat`` class.
+    """
+    src = files['src']
+    dest = files['dest']
+    src_type = src['type']
+    dest_type = dest['type']
+    if src_path is None:
+        src_path = src['path']
+
+    sep_table = {'s3': '/', 'local': os.sep}
+
+    if files['dir_op']:
+        rel_path = src_path[len(src['path']):]
+    else:
+        rel_path = src_path.split(sep_table[src_type])[-1]
+    compare_key = rel_path.replace(sep_table[src_type], '/')
+    if files['use_src_name']:
+        dest_path = dest['path']
+        dest_path += rel_path.replace(sep_table[src_type],
+                                      sep_table[dest_type])
+    else:
+        dest_path = dest['path']
+    return dest_path, compare_key
+
+
 def check_etag(etag, fileobj):
     """
     This fucntion checks the etag and the md5 checksum to ensure no
@@ -423,4 +451,4 @@ IORequest = namedtuple('IORequest',
                        ['filename', 'offset', 'data', 'is_stream'])
 # Used to signal that IO for the filename is finished, and that
 # any associated resources may be cleaned up.
-IOCloseRequest = namedtuple('IOCloseRequest', ['filename', 'is_stream'])
+IOCloseRequest = namedtuple('IOCloseRequest', ['filename'])

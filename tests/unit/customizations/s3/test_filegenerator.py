@@ -486,24 +486,6 @@ class TestNormalizeSort(unittest.TestCase):
             self.assertEqual(ref_names[i], names[i])
 
 
-class TestLocalStreams(unittest.TestCase):
-    def test_local_stream(self):
-        file_input = {'src': {'path': '-', 'type': 'local'},
-                      'dest': {'path': 'mybucket/', 'type': 's3'},
-                      'dir_op': False, 'use_src_name': True}
-        file_generator = FileGenerator(None, None, None, is_stream=True)
-        files = file_generator.call(file_input)
-        result_list = []
-        for file_stat in files:
-            result_list.append(file_stat)
-        ref_list = [FileStat(src='-', dest='mybucket/-', compare_key='-',
-                             size=0, last_update=None, src_type='local',
-                             dest_type='s3', operation_name=None,
-                             is_stream=True)]
-        for i in range(len(result_list)):
-            compare_files(self, result_list[i], ref_list[i])
-
-
 class S3FileGeneratorTest(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()

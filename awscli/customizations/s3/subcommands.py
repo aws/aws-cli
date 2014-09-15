@@ -23,11 +23,11 @@ from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
-from awscli.customizations.s3.fileinfo import TaskInfo
+from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
-from awscli.customizations.s3.s3handler import S3Handler
+from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
-    AppendFilter
+    AppendFilter, find_dest_path_comp_key
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -521,15 +521,20 @@ class CommandArchitecture(object):
         instruction list because it sends the request to S3 and does not
         yield anything.
         """
-        if self.cmd not in ['mb', 'rb']:
+        if self.needs_filegenerator():
             self.instructions.append('file_generator')
-        if self.parameters.get('filters'):
-            self.instructions.append('filters')
-        if self.cmd == 'sync':
-            self.instructions.append('comparator')
-        if self.cmd not in ['mb', 'rb']:
+            if self.parameters.get('filters'):
+                self.instructions.append('filters')
+            if self.cmd == 'sync':
+                self.instructions.append('comparator')
             self.instructions.append('file_info_builder')
         self.instructions.append('s3_handler')
+
+    def needs_filegenerator(self):
+        if self.cmd in ['mb', 'rb'] or self.parameters['is_stream']:
+            return False
+        else:
+            return True
 
     def run(self):
         """
@@ -577,8 +582,7 @@ class CommandArchitecture(object):
                                        operation_name,
                                        self.parameters['follow_symlinks'],
                                        self.parameters['page_size'],
-                                       result_queue=result_queue,
-                                       is_stream=self.parameters['is_stream'])
+                                       result_queue=result_queue)
         rev_generator = FileGenerator(self._service, self._endpoint, '',
                                       self.parameters['follow_symlinks'],
                                       self.parameters['page_size'],
@@ -588,10 +592,22 @@ class CommandArchitecture(object):
                              operation_name=operation_name,
                              service=self._service,
                              endpoint=self._endpoint)]
+        stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
+        stream_file_info = [FileInfo(src=files['src']['path'],
+                                     dest=stream_dest_path,
+                                     compare_key=stream_compare_key,
+                                     src_type=files['src']['type'],
+                                     dest_type=files['dest']['type'],
+                                     operation_name=operation_name,
+                                     service=self._service,
+                                     endpoint=self._endpoint,
+                                     is_stream=True)]
         file_info_builder = FileInfoBuilder(self._service, self._endpoint,
                                  self._source_endpoint, self.parameters) 
         s3handler = S3Handler(self.session, self.parameters,
                               result_queue=result_queue)
+        s3_stream_handler = S3StreamHandler(self.session, self.parameters,
+                                            result_queue=result_queue)
 
         command_dict = {}
         if self.cmd == 'sync':
@@ -603,6 +619,9 @@ class CommandArchitecture(object):
                             'comparator': [Comparator(self.parameters)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
+        elif self.cmd == 'cp' and self.parameters['is_stream']:
+            command_dict = {'setup': [stream_file_info],
+                             's3_handler': [s3_stream_handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],

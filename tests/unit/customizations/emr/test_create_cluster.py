@@ -800,6 +800,15 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [INSTALL_HIVE_STEP]
         self.assert_params_for_cmd(cmd, result)
 
+    def test_install_hive_with_profile_region(self):
+        self.driver.session.set_config_variable('region', 'cn-north-1')
+        cmd = DEFAULT_CMD + '--applications Name=Hive'
+        HIVE_STEP = json.dumps(INSTALL_HIVE_STEP).\
+            replace('us-east-1', 'cn-north-1')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = [json.loads(HIVE_STEP)]
+        self.assert_params_for_cmd(cmd, result)
+
     def test_install_hive_site(self):
         cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')

@@ -16,10 +16,13 @@ from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
 
 
-def build_applications(parsed_applications, parsed_globals, ami_version=None):
+def build_applications(session,
+                       parsed_applications, parsed_globals, ami_version=None):
     app_list = []
     step_list = []
     ba_list = []
+    region = parsed_globals.region if parsed_globals.region \
+                 else session.get_config_variable('region')
 
     for app_config in parsed_applications:
         app_name = app_config['Name'].lower()
@@ -27,7 +30,7 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
         if app_name == constants.HIVE:
             hive_version = constants.LATEST
             step_list.append(
-                _build_install_hive_step(region=parsed_globals.region))
+                _build_install_hive_step(region=region))
             args = app_config.get('Args')
             if args is not None:
                 hive_site_path = _find_matching_arg(
@@ -35,21 +38,21 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
                 if hive_site_path is not None:
                     step_list.append(
                         _build_install_hive_site_step(
-                            region=parsed_globals.region,
+                            region=region,
                             hive_site_path=hive_site_path))
         elif app_name == constants.PIG:
             pig_version = constants.LATEST
             step_list.append(
                 _build_pig_install_step(
-                    region=parsed_globals.region))
+                    region=region))
         elif app_name == constants.GANGLIA:
             ba_list.append(
                 _build_ganglia_install_bootstrap_action(
-                    region=parsed_globals.region))
+                    region=region))
         elif app_name == constants.HBASE:
             ba_list.append(
                 _build_hbase_install_bootstrap_action(
-                    region=parsed_globals.region))
+                    region=region))
             if ami_version >= '3.0':
                 step_list.append(
                     _build_hbase_install_step(
@@ -64,7 +67,7 @@ def build_applications(parsed_applications, parsed_globals, ami_version=None):
         elif app_name == constants.IMPALA:
             ba_list.append(
                 _build_impala_install_bootstrap_action(
-                    region=parsed_globals.region,
+                    region=region,
                     args=app_config.get('Args')))
         else:
             app_list.append(
@@ -128,7 +131,7 @@ def _build_install_hive_step(region,
         emrutils.build_s3_link(constants.HIVE_SCRIPT_PATH, region),
         constants.INSTALL_HIVE_ARG,
         constants.BASE_PATH_ARG,
-        emrutils.build_s3_link(constants.HIVE_BASE_PATH),
+        emrutils.build_s3_link(constants.HIVE_BASE_PATH, region),
         constants.HIVE_VERSIONS,
         constants.LATEST]
     step = emrutils.build_step(

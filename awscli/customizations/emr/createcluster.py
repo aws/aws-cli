@@ -186,6 +186,7 @@ class CreateCluster(BasicCommand):
 
         if parsed_args.applications is not None:
             app_list, ba_list, step_list = applicationutils.build_applications(
+                session=self._session,
                 parsed_applications=parsed_args.applications,
                 parsed_globals=parsed_globals,
                 ami_version=params['AmiVersion'])

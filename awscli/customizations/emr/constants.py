@@ -28,6 +28,15 @@ SCRIPT_RUNNER_PATH = '/libs/script-runner/script-runner.jar'
 DEBUGGING_PATH = '/libs/state-pusher/0.1/fetch'
 DEBUGGING_NAME = 'Setup Hadoop Debugging'
 
+CONFIG_HADOOP_PATH = '/bootstrap-actions/configure-hadoop'
+
+EMR_FS_BA_NAME = 'Enable Consistent View in EMR-FS'
+EMR_FS_BA_ARG_KEY = '-e'
+EMR_FS_CONSISTENT_KEY = 'fs.s3.consistent'
+EMR_FS_SSE_KEY = 'fs.s3.enableServerSideEncryption'
+EMR_FS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
+EMR_FS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
+
 MAX_BOOTSTRAP_ACTION_NUMBER = 16
 BOOTSTRAP_ACTION_NAME = 'Bootstrap action'
 

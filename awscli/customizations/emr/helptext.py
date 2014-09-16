@@ -176,6 +176,10 @@ APPLICATIONS = (
     '(e.g. Args=arg1,arg2,arg3) or a bracket-enclosed list of values '
     ' and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
+EMR_FS = (
+    '<p>Configures certain features in EMRFS like consistent '
+    'view and server-side encryption.</p>')
+
 RESTORE_FROM_HBASE = (
     '<p>Launches a new HBase cluster and populates it with'
     ' data from a previous backup of an HBase cluster. You must install HBase'
@@ -185,14 +189,15 @@ RESTORE_FROM_HBASE = (
 STEPS = (
     '<p>A list of steps to be executed by the cluster. A step can be'
     ' specified either using the shorthand syntax, JSON file or as a JSON'
-    ' string. Note: [Args] supplied with steps should either be a' 
+    ' string. Note: [Args] supplied with steps should either be a'
     ' comma-separated list of values (e.g. Args=arg1,arg2,arg3) or'
     ' a bracket-enclosed list of values and/or key-value pairs'
     ' (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 INSTALL_APPLICATIONS = (
     '<p>The applications to be installed.'
-    ' Takes the following parameters: <code>Name</code> and <code>Args</code>.')
+    ' Takes the following parameters: '
+    '<code>Name</code> and <code>Args</code>.')
 
 LIST_CLUSTERS_CLUSTER_STATES = (
     '<p>The cluster state filters to apply when listing clusters.</p>'

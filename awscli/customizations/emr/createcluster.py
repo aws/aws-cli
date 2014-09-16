@@ -33,8 +33,8 @@ class CreateCluster(BasicCommand):
     DESCRIPTION = (
         'Creates and starts running an EMR cluster.\n'
         '\nQuick start:\n'
-        '\naws emr create-cluster --ami-version <ami-version> '
-        '--instance-type <instance-type> [--instance-count <instance-count>]\n')
+        '\naws emr create-cluster --ami-version <ami-version> --instance-type'
+        ' <instance-type> [--instance-count <instance-count>]\n')
     ARG_TABLE = [
         {'name': 'ami-version',
          'help_text': helptext.AMI_VERSION,
@@ -87,6 +87,9 @@ class CreateCluster(BasicCommand):
          'help_text': helptext.APPLICATIONS,
          'schema': argumentschema.APPLICATIONS_SCHEMA,
          'default': defaultconfig.APPLICATIONS},
+        {'name': 'emrfs',
+         'help_text': helptext.EMR_FS,
+         'schema': argumentschema.EMR_FS_SCHEMA},
         {'name': 'steps',
          'schema': argumentschema.STEPS_SCHEMA,
          'help_text': helptext.STEPS},
@@ -183,6 +186,7 @@ class CreateCluster(BasicCommand):
 
         if parsed_args.applications is not None:
             app_list, ba_list, step_list = applicationutils.build_applications(
+                session=self._session,
                 parsed_applications=parsed_args.applications,
                 parsed_globals=parsed_globals,
                 ami_version=params['AmiVersion'])
@@ -210,6 +214,19 @@ class CreateCluster(BasicCommand):
             self._build_bootstrap_actions(
                 cluster=params,
                 parsed_boostrap_actions=parsed_args.bootstrap_actions)
+
+        if parsed_args.emrfs is not None:
+            emr_fs_ba_args = self._build_emr_fs_args(parsed_args.emrfs)
+            emr_fs_ba_config = \
+                emrutils.build_bootstrap_action(
+                    path=emrutils.build_s3_link(
+                        relative_path=constants.CONFIG_HADOOP_PATH,
+                        region=parsed_globals.region),
+                    name=constants.EMR_FS_BA_NAME,
+                    args=emr_fs_ba_args)
+            self._update_cluster_dict(
+                cluster=params, key='BootstrapActions',
+                value=[emr_fs_ba_config])
 
         if parsed_args.steps is not None:
             steps_list = steputils.build_step_config_list(
@@ -359,3 +376,36 @@ class CreateCluster(BasicCommand):
                             step_type not in specified_apps:
                         missing_apps.add(step['Type'].title())
         return missing_apps
+
+    def _build_emr_fs_args(self, parsed_emr_fs):
+        args = []
+        if parsed_emr_fs.get('Consistent') is not None:
+            args.append(constants.EMR_FS_BA_ARG_KEY)
+            args.append(
+                constants.EMR_FS_CONSISTENT_KEY +
+                '=' + str(parsed_emr_fs.get('Consistent')).lower())
+
+        if parsed_emr_fs.get('SSE') is not None:
+            args.append(constants.EMR_FS_BA_ARG_KEY)
+            args.append(
+                constants.EMR_FS_SSE_KEY + '=' +
+                str(parsed_emr_fs.get('SSE')).lower())
+
+        if parsed_emr_fs.get('RetryCount') is not None:
+            args.append(constants.EMR_FS_BA_ARG_KEY)
+            args.append(
+                constants.EMR_FS_RETRY_COUNT_KEY + '=' +
+                str(parsed_emr_fs.get('RetryCount')))
+
+        if parsed_emr_fs.get('RetryPeriod') is not None:
+            args.append(constants.EMR_FS_BA_ARG_KEY)
+            args.append(
+                constants.EMR_FS_RETRY_PERIOD_KEY + '=' +
+                str(parsed_emr_fs.get('RetryPeriod')))
+
+        if parsed_emr_fs.get('Args') is not None:
+            for arg in parsed_emr_fs.get('Args'):
+                args.append(constants.EMR_FS_BA_ARG_KEY)
+                args.append(arg)
+
+        return args

@@ -33,6 +33,7 @@ class S3HandlerBaseTest(unittest.TestCase):
     def tearDown(self):
         self.wait_timeout_patch.stop()
 
+
 def make_loc_files():
     """
     This sets up the test by making a directory named some_directory.  It

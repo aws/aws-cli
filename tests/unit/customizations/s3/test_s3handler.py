@@ -623,13 +623,6 @@ class TestStreams(S3HandlerBaseTest):
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
         self.params = {'is_stream': True, 'region': 'us-east-1'}
-        stream_timeout = 'awscli.customizations.s3.constants.STREAM_INPUT_TIMEOUT'
-        self.stream_timeout_patch = mock.patch(stream_timeout, 0.001)
-        self.stream_timeout_patch.start()
-
-    def tearDown(self):
-        super(TestStreams, self).tearDown()
-        self.stream_timeout_patch.stop()
 
     def test_pull_from_stream(self):
         s3handler = S3StreamHandler(self.session, self.params, chunksize=2)
@@ -674,7 +667,7 @@ class TestStreams(S3HandlerBaseTest):
 
     def test_upload_stream_is_multipart_task(self):
         s3handler = S3StreamHandler(self.session, self.params,
-                              multi_threshold=1)
+                                    multi_threshold=1)
         s3handler.executor = mock.Mock()
         fileinfos = [FileInfo('filename', operation_name='upload',
                               is_stream=True, size=0)]
@@ -745,6 +738,33 @@ class TestStreams(S3HandlerBaseTest):
         args, kwargs = mock_task_class.call_args
         self.assertIn('payload', kwargs.keys())
         self.assertEqual(kwargs['payload'], b'This is a test')
+
+    def test_enqueue_multipart_download_stream(self):
+        """
+        This test ensures the right calls are made in ``_enqueue_tasks()``
+        if the file should be a multipart download.
+        """
+        s3handler = S3StreamHandler(self.session, self.params,
+                                    multi_threshold=5)
+        s3handler.executor = mock.Mock()
+        fileinfo = FileInfo('filename', operation_name='download',
+                            is_stream=True)
+        with mock.patch('awscli.customizations.s3.s3handler'
+                        '.S3StreamHandler._enqueue_range_download_tasks') as \
+                mock_enqueue_range_tasks:
+            with mock.patch('awscli.customizations.s3.fileinfo.FileInfo'
+                            '.set_size_from_s3') as mock_set_size_from_s3:
+                # Set the file size to something larger than the multipart
+                # threshold.
+                fileinfo.size = 100
+                # Run the main enqueue function.
+                s3handler._enqueue_tasks([fileinfo])
+                # Assert that the size of the ``FileInfo`` object was set
+                # if we are downloading a stream.
+                self.assertTrue(mock_set_size_from_s3.called)
+                # Ensure that this download would have been a multipart
+                # download.
+                self.assertTrue(mock_enqueue_range_tasks.called)
 
     def test_enqueue_range_download_tasks_stream(self):
         s3handler = S3StreamHandler(self.session, self.params, chunksize=100)

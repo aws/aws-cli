@@ -22,6 +22,7 @@ import mock
 from awscli.testutils import unittest
 from awscli.customizations.s3 import fileinfo
 from awscli.customizations.s3.utils import MD5Error
+from awscli.customizations.s3.fileinfo import FileInfo
 
 
 class TestSaveFile(unittest.TestCase):
@@ -72,3 +73,12 @@ class TestSaveFile(unittest.TestCase):
                 fileinfo.save_file(None, self.response_data, None, True)
             # Make sure nothing is written to stdout.
             self.assertEqual(mock_stdout.getvalue(), "")
+
+
+class TestSetSizeFromS3(unittest.TestCase):
+    def test_set_size_from_s3(self):
+        file_info = FileInfo(src="bucket/key", endpoint=None)
+        with mock.patch('awscli.customizations.s3.fileinfo.operate') as op_mock:
+            op_mock.return_value = ({'ContentLength': 5}, None)
+            file_info.set_size_from_s3()
+        self.assertEqual(file_info.size, 5)

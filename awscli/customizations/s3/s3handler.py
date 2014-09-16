@@ -17,10 +17,9 @@ import os
 import six
 from six.moves import queue
 import sys
-import time
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE, STREAM_INPUT_TIMEOUT
+    NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import find_chunksize, \
     operate, find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
@@ -350,8 +349,8 @@ class S3StreamHandler(S3Handler):
     downloading streams.
     """
 
-    # This ensures that at most the number of multipart chunks
-    # waiting in the executor queue and in the threads is limited.
+    # This ensures that the number of multipart chunks waiting in the
+    # executor queue and in the threads is limited.
     MAX_EXECUTOR_QUEUE_SIZE = 2
     EXECUTOR_NUM_THREADS = 6
 
@@ -367,7 +366,9 @@ class S3StreamHandler(S3Handler):
                 payload, is_multipart_task = \
                     self._pull_from_stream(self.multi_threshold)
             else:
-                # Set the file size for the file object
+                # Set the file size for the ``FileInfo`` object since
+                # streams do not use a ``FileGenerator`` that usually
+                # determines the size.
                 filename.set_size_from_s3()
                 is_multipart_task = self._is_multipart_task(filename)
             if is_multipart_task and not self.params['dryrun']:
@@ -389,36 +390,20 @@ class S3StreamHandler(S3Handler):
             total_parts += num_uploads
         return total_files, total_parts
 
-    def _pull_from_stream(self, initial_amount_requested):
+    def _pull_from_stream(self, amount_requested):
         """
-        This function keeps pulling data from stdin until it hits the amount
-        requested or there is no more left ot pull in from stdin.  The
+        This function pulls data from stdin until it hits the amount
+        requested or there is no more left to pull in from stdin.  The
         function wraps the data into a ``BytesIO`` object that is returned
         along with a boolean telling whether the amount requested is
         the amount returned.
         """
-        size = 0
-        amount_requested = initial_amount_requested
-        total_retries = 0
-        payload = b''
         stream_filein = sys.stdin
         if six.PY3:
             stream_filein = sys.stdin.buffer
-        while True:
-            payload_chunk = stream_filein.read(amount_requested)
-            payload_chunk_size = len(payload_chunk)
-            payload += payload_chunk
-            size += payload_chunk_size
-            amount_requested -= payload_chunk_size
-            if payload_chunk_size == 0:
-                time.sleep(STREAM_INPUT_TIMEOUT)
-                total_retries += 1
-            else:
-                total_retries = 0
-            if amount_requested == 0 or total_retries == 5:
-                break
+        payload = stream_filein.read(amount_requested)
         payload_file = six.BytesIO(payload)
-        return payload_file, size == initial_amount_requested
+        return payload_file, len(payload) == amount_requested
 
     def _enqueue_multipart_tasks(self, filename, payload=None):
         num_uploads = 1
@@ -436,7 +421,9 @@ class S3StreamHandler(S3Handler):
         num_downloads = int(filename.size / chunksize)
         context = tasks.MultipartDownloadContext(num_downloads)
 
-        # No file is needed for downloading a stream.
+        # No file is needed for downloading a stream.  So just announce
+        # that it has been made since it is required for the context to
+        # begin downloading.
         context.announce_file_created()
 
         # Submit download part tasks to the executor.
@@ -479,7 +466,7 @@ class S3StreamHandler(S3Handler):
             filename, tasks.UploadPartTask
         )
 
-        # Submit a task to notify the
+        # Submit a task to notify the multipart upload is complete.
         self._enqueue_upload_end_task(filename, upload_context)
 
         return num_uploads

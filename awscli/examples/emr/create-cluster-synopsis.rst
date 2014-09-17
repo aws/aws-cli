@@ -15,6 +15,7 @@
      [--enable-debugging | --no-enable-debugging]
      [--tags <value>]
      [--applications <value>]
+     [--emrfs <value>]
      [--bootstrap-actions <value>]
      [--steps <value>]
      [--restore-from-hbase-backup <value>]

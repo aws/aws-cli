@@ -158,3 +158,9 @@
 
     Name, ActionOnFailure
 
+**17. To enable consistent view and server-side encryption in EMRFS when creating an Amazon EMR cluster and changing RetryCount, RetryPeriod, and encryption algorithm from default values**
+
+- Command::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.2.1 --emrfs SSE=true,Consistent=true,RetryCount=5,RetryPeriod=30,Args=[fs.s3.serverSideEncryptionAlgorithm=AES256]
+

@@ -14,6 +14,7 @@
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
 import copy
+import json
 
 
 INSTALL_HIVE_STEP = {
@@ -76,10 +77,19 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml,k1]')
         self.assert_params_for_cmd(cmdline, result)
 
-    def test_intall_hive_and_pig(self):
+    def test_install_hive_and_pig(self):
         cmdline = self.prefix + 'Name=Hive Name=Pig'
         result = {'JobFlowId': 'j-ABC123456', 'Steps': [INSTALL_HIVE_STEP,
                                                         INSTALL_PIG_STEP]}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_install_pig_with_profile_region(self):
+        self.driver.session.set_config_variable('region', 'cn-north-1')
+        cmdline = self.prefix + 'Name=Pig'
+        PIG_STEP = json.dumps(INSTALL_PIG_STEP).\
+            replace('us-east-1', 'cn-north-1')
+        result = {'JobFlowId': 'j-ABC123456',
+                  'Steps': [json.loads(PIG_STEP)]}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_install_impala_error(self):

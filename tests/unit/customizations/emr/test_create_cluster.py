@@ -800,6 +800,15 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = [INSTALL_HIVE_STEP]
         self.assert_params_for_cmd(cmd, result)
 
+    def test_install_hive_with_profile_region(self):
+        self.driver.session.set_config_variable('region', 'cn-north-1')
+        cmd = DEFAULT_CMD + '--applications Name=Hive'
+        HIVE_STEP = json.dumps(INSTALL_HIVE_STEP).\
+            replace('us-east-1', 'cn-north-1')
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = [json.loads(HIVE_STEP)]
+        self.assert_params_for_cmd(cmd, result)
+
     def test_install_hive_site(self):
         cmdline = (DEFAULT_CMD + '--applications Name=Hive,'
                    'Args=[--hive-site=s3://test/hive-conf/hive-site.xml]')
@@ -1156,6 +1165,38 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result_json = json.loads(result[0])
         self.assertEquals(result_json, CONSTRUCTED_RESULT)
 
+    def test_emr_fs_config(self):
+        cmd = DEFAULT_CMD + \
+            '--emrfs Consistent=true,SSE=false,RetryCount=10,' +\
+            'RetryPeriod=3,Args=[fs.s3.serverSideEncryptionAlgorithm=' +\
+            'AES256,fs.s3.sleepTimeSeconds=30]'
+        emf_fs_ba_config = \
+            {'Name': 'Enable Consistent View in EMR-FS',
+             'ScriptBootstrapAction':
+                {'Path': ('s3://us-east-1.elasticmapreduce/'
+                          'bootstrap-actions/configure-hadoop'),
+                 'Args': ['-e',
+                          'fs.s3.consistent=true',
+                          '-e',
+                          'fs.s3.enableServerSideEncryption=false',
+                          '-e',
+                          'fs.s3.consistent.retryCount=10',
+                          '-e',
+                          'fs.s3.consistent.retryPeriodSeconds=3',
+                          '-e',
+                          'fs.s3.serverSideEncryptionAlgorithm=AES256',
+                          '-e',
+                          'fs.s3.sleepTimeSeconds=30']
+                 }
+             }
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['BootstrapActions'] = [emf_fs_ba_config]
+        self.assert_params_for_cmd(cmd, result)
+
+        data_path = os.path.join(
+            os.path.dirname(__file__), 'input_emr_fs.json')
+        cmd = DEFAULT_CMD + '--emrfs file://' + data_path
+        self.assert_params_for_cmd(cmd, result)
 
 if __name__ == "__main__":
     unittest.main()

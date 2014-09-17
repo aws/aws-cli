@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.4.4
+=====
+
+* feature:``aws emr create-cluster``:  Add support for ``--emrfs``.
+
+
 1.4.3
 =====
 

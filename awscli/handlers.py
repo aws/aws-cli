@@ -55,15 +55,15 @@ def awscli_initialize(event_handlers):
     event_handlers.register('process-cli-arg', param_shorthand)
     error_handler = ErrorHandler()
     event_handlers.register('after-call.*.*', error_handler)
-    # The following will get fired for every option we are
-    # documenting.  It will attempt to add an example_fn on to
-    # the parameter object if the parameter supports shorthand
-    # syntax.  The documentation event handlers will then use
-    # the examplefn to generate the sample shorthand syntax
-    # in the docs.  Registering here should ensure that this
-    # handler gets called first but it still feels a bit brittle.
-    event_handlers.register('doc-option-example.*.*.*',
-                            param_shorthand.add_example_fn)
+#    # The following will get fired for every option we are
+#    # documenting.  It will attempt to add an example_fn on to
+#    # the parameter object if the parameter supports shorthand
+#    # syntax.  The documentation event handlers will then use
+#    # the examplefn to generate the sample shorthand syntax
+#    # in the docs.  Registering here should ensure that this
+#    # handler gets called first but it still feels a bit brittle.
+#    event_handlers.register('doc-option-example.*.*.*',
+#                            param_shorthand.add_example_fn)
     event_handlers.register('doc-examples.*.*',
                             add_examples)
     event_handlers.register('building-argument-table.s3api.*',

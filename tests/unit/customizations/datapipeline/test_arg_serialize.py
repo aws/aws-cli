@@ -69,7 +69,7 @@ class TestPutPipelineDefinition(BaseAWSCommandParamsTest):
                        },
                      ]}]
             }
-            self.assert_params_for_cmd(cmdline, result)
+            self.assert_params_for_cmd2(cmdline, result)
 
 
 class TestErrorMessages(BaseAWSCommandParamsTest):

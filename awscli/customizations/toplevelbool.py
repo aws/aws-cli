@@ -38,6 +38,16 @@ def register_bool_params(event_handler):
                                    event_handler=event_handler))
 
 
+def _qualifies_for_simplification(arg_model):
+    if detect_shape_structure(arg_model) == 'structure(scalar)':
+        members = arg_model.members
+        if (len(members) == 1 and
+            list(members.keys())[0] == 'Value' and
+            list(members.values())[0].type_name == 'boolean'):
+            return True
+    return False
+
+
 def pull_up_bool(argument_table, event_handler, **kwargs):
     # List of tuples of (positive_bool, negative_bool)
     # This is used to validate that we don't specify
@@ -48,23 +58,20 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
         partial(validate_boolean_mutex_groups,
                 boolean_pairs=boolean_pairs))
     for key, value in list(argument_table.items()):
-        if hasattr(value, 'argument_object'):
-            arg_object = value.argument_object
-            if detect_shape_structure(arg_object) == 'structure(scalar)' and \
-                    len(arg_object.members) == 1 and \
-                    arg_object.members[0].name == 'Value' and \
-                    arg_object.members[0].type == 'boolean':
+        if hasattr(value, 'argument_model'):
+            arg_model = value.argument_model
+            if _qualifies_for_simplification(arg_model):
                 # Swap out the existing CLIArgument for two args:
                 # one that supports --option and --option <some value>
                 # and another arg of --no-option.
                 new_arg = PositiveBooleanArgument(
-                    value.name, arg_object, value.operation_object,
+                    value.name, arg_model, value.operation_object,
                     value.name)
                 argument_table[value.name] = new_arg
                 negative_name = 'no-%s' % value.name
                 negative_arg = NegativeBooleanParameter(
                     negative_name, new_arg.py_name,
-                    arg_object, value.operation_object,
+                    arg_model, value.operation_object,
                     action='store_true', dest='no_%s' % new_arg.py_name,
                     group_name=value.name)
                 argument_table[negative_name] = negative_arg
@@ -87,9 +94,9 @@ def validate_boolean_mutex_groups(boolean_pairs, parsed_args, **kwargs):
 
 
 class PositiveBooleanArgument(arguments.CLIArgument):
-    def __init__(self, name, argument_object, operation_object, group_name):
+    def __init__(self, name, argument_model, operation_object, group_name):
         super(PositiveBooleanArgument, self).__init__(
-            name, argument_object, operation_object)
+            name, argument_model, operation_object)
         self._group_name = group_name
 
     @property
@@ -115,19 +122,19 @@ class PositiveBooleanArgument(arguments.CLIArgument):
             # e.g. --boolean-parameter
             # which means we should add a true value
             # to the parameters dict.
-            parameters[self.argument_object.py_name] = {'Value': True}
+            parameters[self.py_name] = {'Value': True}
         else:
             # Otherwise the arg was specified with a value.
-            parameters[self.argument_object.py_name] = self._unpack_argument(
+            parameters[self.py_name] = self._unpack_argument(
                 value)
 
 
 class NegativeBooleanParameter(arguments.BooleanArgument):
     def __init__(self, name, positive_py_name,
-                 argument_object, operation_object,
+                 argument_model, operation_object,
                  action='store_true', dest=None, group_name=None):
         super(NegativeBooleanParameter, self).__init__(
-            name, argument_object, operation_object, default=_NOT_SPECIFIED)
+            name, argument_model, operation_object, default=_NOT_SPECIFIED)
         self._group_name = group_name
         self._positive_py_name = positive_py_name
 

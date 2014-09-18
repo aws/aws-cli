@@ -39,10 +39,11 @@ Arguments generally fall into one of several categories:
 import logging
 
 from botocore import xform_name
-from botocore.parameters import ListParameter, StructParameter
+#from botocore.parameters import ListParameter, StructParameter
 
 from awscli.argprocess import unpack_cli_arg
 from awscli.schema import SchemaTransformer
+from botocore import model
 
 
 LOG = logging.getLogger('awscli.arguments')
@@ -50,6 +51,19 @@ LOG = logging.getLogger('awscli.arguments')
 
 class UnknownArgumentError(Exception):
     pass
+
+
+def create_argument_model_from_schema(schema):
+    # Given a JSON schems (described in schema.py), convert it
+    # to a shape object from `botocore.model.Shape` that can be
+    # used as the argument_model for the Argument classes below.
+    transformer = SchemaTransformer()
+    shapes_map = transformer.transform(schema)
+    shape_resolver = model.ShapeResolver(shapes_map)
+    # The SchemaTransformer guarantees that the top level shape
+    # will always be named 'InputShape'.
+    arg_shape = shape_resolver.get_shape_by_name('InputShape')
+    return arg_shape
 
 
 class BaseCLIArgument(object):
@@ -192,7 +206,7 @@ class CustomArgument(BaseCLIArgument):
     def __init__(self, name, help_text='', dest=None, default=None,
                  action=None, required=None, choices=None, nargs=None,
                  cli_type_name=None, group_name=None, positional_arg=False,
-                 no_paramfile=False, schema=None, synopsis=''):
+                 no_paramfile=False, argument_model=None, synopsis=''):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -206,20 +220,33 @@ class CustomArgument(BaseCLIArgument):
         if choices is None:
             choices = []
         self._choices = choices
-        self.no_paramfile = no_paramfile
-        self._schema = schema
         self._synopsis = synopsis
+
+        # These are public attributes that are ok to access from external
+        # objects.
+        self.no_paramfile = no_paramfile
+        self.argument_model = None
+
+        if argument_model is None:
+            argument_model = self._create_scalar_argument_model()
+        self.argument_model = argument_model
 
         # If the top level element is a list then set nargs to
         # accept multiple values seperated by a space.
-        if self._schema and self._schema.get('type', None) == 'array':
+        if self.argument_model is not None and \
+                self.argument_model.type_name == 'list':
             self._nargs = '+'
 
-        # TODO: We should eliminate this altogether.
-        # You should not have to depend on an argument_object
-        # as part of the interface.  Currently the argprocess
-        # and docs code relies on this object.
-        self.argument_object = None
+    def _create_scalar_argument_model(self):
+        if self._nargs is not None:
+            # If nargs is not None then argparse will parse the value
+            # as a list, so we don't create an argument_object so we don't
+            # go through param validation.
+            return None
+        # If no argument model is provided, we create a basic
+        # shape argument.
+        type_name = self.cli_type_name
+        return create_argument_model_from_schema({'type': type_name})
 
     @property
     def cli_name(self):
@@ -250,30 +277,6 @@ class CustomArgument(BaseCLIArgument):
             kwargs['nargs'] = self._nargs
         parser.add_argument(cli_name, **kwargs)
 
-    def create_argument_object(self):
-        """
-        Create an argument object based on the JSON schema if one is set.
-        After calling this method, ``parameter.argument_object`` is available
-        e.g. for generating docs.
-        """
-        transformer = SchemaTransformer(self._schema)
-        transformed = transformer.transform()
-
-        # Set the parameter name from the parsed arg key name
-        transformed.update({'name': self.name})
-
-        LOG.debug('Custom parameter schema for {0}: {1}'.format(
-            self.name, transformed))
-
-        # Select the correct top level type
-        if transformed['type'] == 'structure':
-            self.argument_object = StructParameter(None, **transformed)
-        elif transformed['type'] == 'list':
-            self.argument_object = ListParameter(None, **transformed)
-        else:
-            raise ValueError('Invalid top level type {0}!'.format(
-                transformed['type']))
-
     @property
     def required(self):
         if self._required is None:
@@ -294,8 +297,8 @@ class CustomArgument(BaseCLIArgument):
             return self._cli_type_name
         elif self._action in ['store_true', 'store_false']:
             return 'boolean'
-        elif self.argument_object is not None:
-            return self.argument_object.type
+        elif self.argument_model is not None:
+            return self.argument_model.type_name
         else:
             # Default to 'string' type if we don't have any
             # other info.
@@ -348,25 +351,36 @@ class CLIArgument(BaseCLIArgument):
         'blob': str
     }
 
-    def __init__(self, name, argument_object, operation_object):
+    def __init__(self, name, argument_model, operation_object,
+                 is_required=False, serialized_name=None):
         """
 
         :type name: str
         :param name: The name of the argument in "cli" form
             (e.g.  ``min-instances``).
 
-        :type argument_object: ``botocore.parameter.Parameter``
-        :param argument_object: The parameter object to associate with
-            this object.
+        :type argument_model: ``botocore.model.Shape``
+        :param argument_model: The shape object that models the argument.
 
         :type operation_object: ``botocore.operation.Operation``
         :param operation_object: The operation object associated with
             this object.
 
+        :type is_required: boolean
+        :param is_required: Indicates if this parameter is required or not.
+
         """
         self._name = name
-        self.argument_object = argument_object
+        # This is the name we need to use when constructing the parameters
+        # dict we send to botocore.  While we can change the .name attribute
+        # which is the name exposed in the CLI, the serialized name we use
+        # for botocore is invariant and should not be changed.
+        if serialized_name is None:
+            serialized_name = name
+        self._serialized_name = serialized_name
+        self.argument_model = argument_model
         self.operation_object = operation_object
+        self._required = is_required
 
     @property
     def py_name(self):
@@ -374,23 +388,23 @@ class CLIArgument(BaseCLIArgument):
 
     @property
     def required(self):
-        return self.argument_object.required
+        return self._required
 
     @required.setter
     def required(self, value):
-        self.argument_object.required = value
+        self._required = value
 
     @property
     def documentation(self):
-        return self.argument_object.documentation
+        return self.argument_model.documentation
 
     @property
     def cli_type_name(self):
-        return self.argument_object.type
+        return self.argument_model.type_name
 
     @property
     def cli_type(self):
-        return self.TYPE_MAP.get(self.argument_object.type, str)
+        return self.TYPE_MAP.get(self.argument_model.type_name, str)
 
     def add_to_parser(self, parser):
         """
@@ -422,23 +436,22 @@ class CLIArgument(BaseCLIArgument):
             # can customize as they need.
             unpacked = self._unpack_argument(value)
             LOG.debug('Unpacked value of "%s" for parameter "%s": %s', value,
-                      self.argument_object.py_name, unpacked)
-            parameters[self.argument_object.py_name] = unpacked
+                      self.py_name, unpacked)
+            parameters[self._serialized_name] = unpacked
 
     def _unpack_argument(self, value):
         service_name = self.operation_object.service.endpoint_prefix
         operation_name = xform_name(self.operation_object.name, '-')
         override = self._emit_first_response('process-cli-arg.%s.%s' % (
-            service_name, operation_name), param=self.argument_object,
-            value=value,
-            operation=self.operation_object)
+            service_name, operation_name), param=self.argument_model,
+            cli_argument=self, value=value, operation=self.operation_object)
         if override is not None:
             # A plugin supplied an alternate conversion,
             # use it instead.
             return override
         else:
             # Fall back to the default arg processing.
-            return unpack_cli_arg(self.argument_object, value)
+            return unpack_cli_arg(self, value)
 
     def _emit(self, name, **kwargs):
         session = self.operation_object.service.session
@@ -476,11 +489,15 @@ class BooleanArgument(CLIArgument):
 
     """
 
-    def __init__(self, name, argument_object, operation_object,
-                 action='store_true', dest=None, group_name=None,
-                 default=None):
-        super(BooleanArgument, self).__init__(name, argument_object,
-                                              operation_object)
+    def __init__(self, name, argument_model, operation_object,
+                 is_required=False, action='store_true', dest=None,
+                 group_name=None, default=None,
+                 serialized_name=None):
+        super(BooleanArgument, self).__init__(name,
+                                              argument_model,
+                                              operation_object,
+                                              is_required,
+                                              serialized_name=serialized_name)
         self._mutex_group = None
         self._action = action
         if dest is None:
@@ -499,7 +516,7 @@ class BooleanArgument(CLIArgument):
         # If the value was not explicitly set (value is None)
         # we don't add it to the params dict.
         if value is not None:
-            parameters[self.py_name] = value
+            parameters[self._serialized_name] = value
 
     def add_to_arg_table(self, argument_table):
         # Boolean parameters are a bit tricky.  For a single boolean parameter
@@ -510,11 +527,10 @@ class BooleanArgument(CLIArgument):
         # arg table.
         argument_table[self.name] = self
         negative_name = 'no-%s' % self.name
-        negative_version = self.__class__(negative_name, self.argument_object,
-                                          self.operation_object,
-                                          action='store_false',
-                                          dest=self._destination,
-                                          group_name=self.group_name)
+        negative_version = self.__class__(
+            negative_name, self.argument_model, self.operation_object,
+            action='store_false', dest=self._destination,
+            group_name=self.group_name, serialized_name=self._serialized_name)
         argument_table[negative_name] = negative_version
 
     def add_to_parser(self, parser):

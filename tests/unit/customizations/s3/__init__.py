@@ -173,7 +173,7 @@ def list_contents(bucket, session):
     endpoint = service.get_endpoint(region)
     operation = service.get_operation('ListObjects')
     http_response, r_data = operation.call(endpoint, bucket=bucket)
-    return r_data['Contents']
+    return r_data.get('Contents', [])
 
 
 def list_buckets(session):

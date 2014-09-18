@@ -24,7 +24,7 @@ class TestAddTags(BaseAWSCommandParamsTest):
         result = {'ResourceId': 'j-ABC123456',
                   'Tags': [{'Key': 'k1', 'Value': 'v1'},
                            {'Key': 'k2', 'Value': 'v2'}]}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_add_tags_key_with_empty_value(self):
         args = ' --resource-id j-ABC123456 --tags k1=v1 k2 k3=v3'
@@ -33,7 +33,7 @@ class TestAddTags(BaseAWSCommandParamsTest):
                   'Tags': [{'Key': 'k1', 'Value': 'v1'},
                            {'Key': 'k2', 'Value': ''},
                            {'Key': 'k3', 'Value': 'v3'}]}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_add_tags_key_value_space(self):
         cmdline = ['emr', 'add-tags', '--resource-id', 'j-ABC123456', '--tags',
@@ -42,7 +42,7 @@ class TestAddTags(BaseAWSCommandParamsTest):
                   'Tags': [{'Key': 'k1', 'Value': 'v1'},
                            {'Key': 'k2', 'Value': ''},
                            {'Key': 'k3', 'Value': 'v3 v4'}]}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 if __name__ == "__main__":
     unittest.main()

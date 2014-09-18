@@ -12,8 +12,10 @@
 # language governing permissions and limitations under the License.
 import logging
 
+from botocore import model
+
 from awscli.arguments import BaseCLIArgument
-from botocore.parameters import StringParameter
+
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +37,7 @@ def ec2_add_count(argument_table, operation, **kwargs):
 class CountArgument(BaseCLIArgument):
 
     def __init__(self, operation, name):
-        param = StringParameter(operation, name='count', type='string')
-        self.argument_object = param
+        self.argument_model = model.Shape('CountArgument', {'type': 'string'})
         self._operation = operation
         self._name = name
 

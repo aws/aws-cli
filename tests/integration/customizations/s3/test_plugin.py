@@ -1189,9 +1189,9 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         parsed = operation.call(
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
-        self.assertEqual(parsed['ErrorDocument'], {})
-        self.assertEqual(parsed['RoutingRules'], [])
-        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+        self.assertNotIn('ErrorDocument', parsed)
+        self.assertNotIn('RoutingRules', parsed)
+        self.assertNotIn('RedirectAllRequestsTo', parsed)
 
     def test_create_website_index_and_error_configuration(self):
         bucket_name = self.create_bucket()
@@ -1206,8 +1206,8 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
         self.assertEqual(parsed['ErrorDocument']['Key'], 'error.html')
-        self.assertEqual(parsed['RoutingRules'], [])
-        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+        self.assertNotIn('RoutingRules', parsed)
+        self.assertNotIn('RedirectAllRequestsTo', parsed)
 
 
 class TestIncludeExcludeFilters(BaseS3CLICommand):

@@ -181,7 +181,7 @@ class FakeOperation(object):
             else:
                 self.session.s3[bucket][key] = content
         else:
-            response_data['Errors'] = [{'Message': 'Bucket does not exist'}]
+            response_data['Error'] = {'Message': 'Bucket does not exist'}
         if self.session.md5_error:
             etag = "dsffsdg"  # This etag should always raise an exception
             self.session.md5_error = False
@@ -297,9 +297,9 @@ class FakeOperation(object):
             if not self.session.s3[bucket]:
                 self.session.s3.pop(bucket)
             else:
-                response_data['Errors'] = [{'Message': 'Bucket not empty'}]
+                response_data['Error'] = {'Message': 'Bucket not empty'}
         else:
-            response_data['Errors'] = [{'Message': 'Bucket does not exist'}]
+            response_data['Error'] = {'Message': 'Bucket does not exist'}
         response_data['ETag'] = '"%s"' % etag
         return FakeHttp(), response_data
 
@@ -314,8 +314,9 @@ class FakeOperation(object):
             bucket_dict = {}
             bucket_dict['Name'] = bucket
             response_data['Buckets'].append(bucket_dict)
-        response_data['Contents'] = sorted(response_data['Buckets'],
-                                           key=lambda k: k['Name'])
+        if self.session.s3.keys():
+            response_data['Contents'] = sorted(response_data['Buckets'],
+                                               key=lambda k: k['Name'])
         response_data['ETag'] = '"%s"' % etag
         return FakeHttp(), response_data
 
@@ -350,6 +351,12 @@ class FakeOperation(object):
                 response_data['Contents'].append(key_dict)
         response_data['Contents'] = sorted(response_data['Contents'],
                                            key=lambda k: k['Key'])
+        contents = response_data.get('Contents', None)
+        if not contents and contents is not None:
+            response_data.pop('Contents')
+        common_prefixes = response_data.get('CommonPrefixes', None)
+        if not common_prefixes and common_prefixes is not None:
+            response_data.pop('CommonPrefixes')
         response_data['ETag'] = '"%s"' % etag
         return FakeHttp(), response_data
 

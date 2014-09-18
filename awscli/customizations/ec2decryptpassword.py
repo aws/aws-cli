@@ -16,10 +16,13 @@ import base64
 import rsa
 import six
 
+from botocore import model
+
 from awscli.arguments import BaseCLIArgument
-from botocore.parameters import StringParameter
+
 
 logger = logging.getLogger(__name__)
+
 
 HELP = """<p>The file that contains the private key used to launch
 the instance (e.g. windows-keypair.pem).  If this is supplied, the
@@ -38,11 +41,7 @@ def ec2_add_priv_launch_key(argument_table, operation, **kwargs):
 class LaunchKeyArgument(BaseCLIArgument):
 
     def __init__(self, operation, name):
-        param = StringParameter(operation,
-                                name=name,
-                                type='string')
-        self._name = name
-        self.argument_object = param
+        self.argument_model = model.Shape('LaunchKeyArgument', {'type': 'string'})
         self._operation = operation
         self._name = name
         self._key_path = None

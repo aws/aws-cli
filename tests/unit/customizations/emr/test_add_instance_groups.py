@@ -45,37 +45,35 @@ CONSTRUCTED_RESULT = {
 class TestAddInstanceGroups(BaseAWSCommandParamsTest):
     prefix = 'emr add-instance-groups --cluster-id J-ABCD --instance-groups'
 
+    def assert_error_message_has_field_name(self, error_msg, field_name):
+        self.assertIn('Missing required parameter', error_msg)
+        self.assertIn(field_name, error_msg)
+
     def test_instance_groups_default_name_market(self):
         cmd = self.prefix
         cmd += ' InstanceGroupType=TASK,InstanceCount=10,InstanceType=m2.large'
         result = {'JobFlowId': 'J-ABCD',
                   'InstanceGroups': DEFAULT_INSTANCE_GROUPS}
 
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceType=m1.small,' +\
             'InstanceCount=5'
-        expect_error_msg = "\nThe following required parameters are missing" +\
-            " for structure:: InstanceGroupType\n"
         result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        self.assert_error_message_has_field_name(result[1], 'InstanceGroupType')
 
     def test_instance_groups_missing_instance_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\
             'InstanceCount=5'
-        expect_error_msg = "\nThe following required parameters are missing" +\
-            " for structure:: InstanceType\n"
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'InstanceType')
 
     def test_instance_groups_missing_instance_count_error(self):
         cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\
             'InstanceType=m1.xlarge'
-        expect_error_msg = "\nThe following required parameters are missing" +\
-            " for structure:: InstanceCount\n"
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(expect_error_msg, result[1])
+        stderr = self.run_cmd(cmd, 255)[1]
+        self.assert_error_message_has_field_name(stderr, 'InstanceCount')
 
     def test_instance_groups_all_fields(self):
         cmd = self.prefix + ' InstanceGroupType=MASTER,Name="MasterGroup",' +\
@@ -109,7 +107,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
         result = {'JobFlowId': 'J-ABCD',
                   'InstanceGroups': expected_instance_groups}
 
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     @patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):

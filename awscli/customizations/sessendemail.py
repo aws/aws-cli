@@ -16,7 +16,7 @@ command.  This simplified form is based on the legacy CLI.  The simple format
 will be::
 
 aws ses send-email --subject SUBJECT --from FROM_EMAIL
-    --to-addresses addr ... --cc-addresses addr ... 
+    --to-addresses addr ... --cc-addresses addr ...
     --bcc-addresses addr ... --reply-to-addresses addr ...
     --return-path addr --text TEXTBODY --html HTMLBODY
 
@@ -25,6 +25,7 @@ aws ses send-email --subject SUBJECT --from FROM_EMAIL
 from awscli.customizations import utils
 from awscli.arguments import CustomArgument
 from awscli.customizations.utils import validate_mutually_exclusive_handler
+
 
 TO_HELP = ('The email addresses of the primary recipients.  '
            'You can specify multiple recipients as space-separated values')
@@ -93,7 +94,7 @@ class AddressesArgument(CustomArgument):
         super(AddressesArgument, self).__init__(name=name, help_text=help_text,
                                                 required=required, nargs='+')
         self._json_key = json_key
-    
+
     def add_to_params(self, parameters, value):
         if value:
             _build_destination(parameters, self._json_key, value)
@@ -105,8 +106,8 @@ class BodyArgument(CustomArgument):
         super(BodyArgument, self).__init__(name=name, help_text=help_text,
                                            required=required)
         self._json_key = json_key
-    
+
     def add_to_params(self, parameters, value):
         if value:
             _build_message(parameters, self._json_key, value)
-            
+

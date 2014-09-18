@@ -31,7 +31,7 @@ class TestCreateStack(BaseAWSCommandParamsTest):
                   'Region': 'us-west-2',
                   'DefaultInstanceProfileArn': 'arn-foofoofoo'
                   }
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

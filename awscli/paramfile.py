@@ -23,6 +23,42 @@ from awscli.compat import compat_open
 
 logger = logging.getLogger(__name__)
 
+# These are special cased arguments that do _not_ get the
+# special param file processing.  This is typically because it
+# refers to an actual URI of some sort and we don't want to actually
+# download the content (i.e TemplateURL in cloudformation).
+PARAMFILE_DISABLED = set([
+    'cloudformation.create-stack.template-url',
+    'cloudformation.update-stack.template-url',
+    'cloudformation.validate-template.template-url',
+    'cloudformation.estimate-template-cost.template-url',
+
+    'cloudformation.create-stack.stack-policy-url',
+    'cloudformation.update-stack.stack-policy-url',
+    'cloudformation.set-stack-policy.stack-policy-url',
+
+    'sqs.add-permission.queue-url',
+    'sqs.change-message-visibility.queue-url',
+    'sqs.change-message-visibility-batch.queue-url',
+    'sqs.delete-message.queue-url',
+    'sqs.delete-message-batch.queue-url',
+    'sqs.delete-queue.queue-url',
+    'sqs.get-queue-attributes.queue-url',
+    'sqs.list-dead-letter-source-queues.queue-url',
+    'sqs.receive-message.queue-url',
+    'sqs.remove-permission.queue-url',
+    'sqs.send-message.queue-url',
+    'sqs.send-message-batch.queue-url',
+    'sqs.set-queue-attributes.queue-url',
+
+    's3.copy-object.website-redirect-location',
+    's3.create-multipart-upload.website-redirect-location',
+    's3.put-object.website-redirect-location',
+
+    # Double check that this has been renamed!
+    'sns.subscribe.notification-endpoint',
+])
+
 
 class ResourceLoadingError(Exception):
     pass

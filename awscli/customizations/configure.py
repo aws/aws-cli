@@ -18,12 +18,7 @@ import logging
 from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations.commands import BasicCommand
-
-
-try:
-    raw_input = raw_input
-except NameError:
-    raw_input = input
+from awscli.compat import raw_input
 
 
 logger = logging.getLogger(__name__)
@@ -55,7 +50,7 @@ def _mask_value(current_value):
     if current_value is None:
         return 'None'
     else:
-        return ('*' * 16) +  current_value[-4:]
+        return ('*' * 16) + current_value[-4:]
 
 
 class InteractivePrompter(object):
@@ -98,11 +93,11 @@ class ConfigFileWriter(object):
 
     def _create_file(self, config_filename):
         # Create the file as well as the parent dir if needed.
-        dirname, basename = os.path.split(config_filename)
+        dirname = os.path.split(config_filename)[0]
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
         with os.fdopen(os.open(config_filename,
-                               os.O_WRONLY|os.O_CREAT, 0o600), 'w'):
+                               os.O_WRONLY | os.O_CREAT, 0o600), 'w'):
             pass
 
     def _write_new_section(self, section_name, new_values, config_filename):
@@ -124,15 +119,15 @@ class ConfigFileWriter(object):
             if match is not None and self._matches_section(match,
                                                            section_name):
                 return i
-        else:
-            raise SectionNotFoundError(section_name)
+        raise SectionNotFoundError(section_name)
 
     def _update_section_contents(self, contents, section_name, new_values):
         # First, find the line where the section_name is defined.
         # This will be the value of i.
         new_values = new_values.copy()
         # ``contents`` is a list of file line contents.
-        section_start_line_num = self._find_section_start(contents, section_name)
+        section_start_line_num = self._find_section_start(contents,
+                                                          section_name)
         # If we get here, then we've found the section.  We now need
         # to figure out if we're updating a value or adding a new value.
         # There's 2 cases.  Either we're setting a normal scalar value
@@ -182,7 +177,8 @@ class ConfigFileWriter(object):
             line = contents[i]
             match = self.OPTION_REGEX.search(line)
             if match is not None:
-                current_indent = len(match.group(1)) - len(match.group(1).lstrip())
+                current_indent = len(
+                    match.group(1)) - len(match.group(1).lstrip())
                 key_name = match.group(1).strip()
                 if key_name in values:
                     option_value = values[key_name]
@@ -205,7 +201,8 @@ class ConfigFileWriter(object):
                 subindent = indent + '    '
                 new_contents.append('%s%s =\n' % (indent, key))
                 for subkey, subval in list(value.items()):
-                    new_contents.append('%s%s = %s\n' % (subindent, subkey, subval))
+                    new_contents.append('%s%s = %s\n' % (subindent, subkey,
+                                                         subval))
             else:
                 new_contents.append('%s%s = %s\n' % (indent, key, value))
             del new_values[key]
@@ -302,9 +299,9 @@ class ConfigureListCommand(BasicCommand):
                 # the credentials.method is sufficient to show
                 # where the credentials are coming from.
                 access_key = ConfigValue(credentials.access_key,
-                                        credentials.method, '')
+                                         credentials.method, '')
                 secret_key = ConfigValue(credentials.secret_key,
-                                        credentials.method, '')
+                                         credentials.method, '')
                 access_key.mask_value()
                 secret_key.mask_value()
                 return access_key, secret_key
@@ -321,6 +318,7 @@ class ConfigureListCommand(BasicCommand):
                                self._session.get_config_variable('config_file'))
         else:
             return ConfigValue(NOT_SET, None, None)
+
 
 class ConfigureSetCommand(BasicCommand):
     NAME = 'set'
@@ -362,7 +360,6 @@ class ConfigureSetCommand(BasicCommand):
                 section = 'profile %s' % self._session.profile
         else:
             # First figure out if it's been scoped to a profile.
-            # This will happen if 
             parts = varname.split('.')
             if parts[0] in ('default', 'profile'):
                 # Then we know we're scoped to a profile.
@@ -454,7 +451,6 @@ class ConfigureGetCommand(BasicCommand):
                 except AttributeError:
                     value = None
         return value
-
 
 
 class ConfigureCommand(BasicCommand):

@@ -10,6 +10,11 @@ When you are prompted for information, the current value will be displayed in
 config file.  It does not use any configuration values from environment
 variables or the IAM role.
 
+Note: the values you provide for the AWS Access Key ID and the AWS Secret
+Access Key will be written to the shared credentials file
+(``~/.aws/credentials``).
+
+
 =======================
 Configuration Variables
 =======================

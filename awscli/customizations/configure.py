@@ -75,6 +75,32 @@ class ConfigFileWriter(object):
     )
 
     def update_config(self, new_values, config_filename):
+        """Update config file with new values.
+
+        This method will update a section in a config file with
+        new key value pairs.
+
+        This method provides a few conveniences:
+
+        * If the ``config_filename`` does not exist, it will
+          be created.  Any parent directories will also be created
+          if necessary.
+        * If the section to update does not exist, it will be created.
+        * Any existing lines that specified by ``new_values``
+          **will not be touched**.  This ensures that commented out
+          values are left unaltered.
+
+        :type new_values: dict
+        :param new_values: The values to update.  There is a special
+            key ``__section__``, that specifies what section in the INI
+            file to update.  If this key is not present, then the
+            ``default`` section will be updated with the new values.
+
+        :type config_filename: str
+        :param config_filename: The config filename where values will be
+            written.
+
+        """
         section_name = new_values.pop('__section__', 'default')
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
@@ -336,6 +362,8 @@ class ConfigureSetCommand(BasicCommand):
          'action': 'store',
          'cli_type_name': 'string', 'positional_arg': True},
     ]
+    _WRITE_TO_CREDS_FILE = ['aws_access_key_id', 'aws_secret_access_key',
+                            'aws_session_token']
 
     def __init__(self, session, config_writer=None):
         super(ConfigureSetCommand, self).__init__(session)
@@ -380,6 +408,12 @@ class ConfigureSetCommand(BasicCommand):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         updated_config = {'__section__': section, varname: value}
+        if varname in self._WRITE_TO_CREDS_FILE:
+            config_filename = os.path.expanduser(
+                self._session.get_config_variable('credentials_file'))
+            section_name = updated_config['__section__']
+            if section_name.startswith('profile '):
+                updated_config['__section__'] = section_name[8:]
         self._config_writer.update_config(updated_config, config_filename)
 
 
@@ -518,7 +552,30 @@ class ConfigureCommand(BasicCommand):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         if new_values:
+            self._write_out_creds_file_values(new_values,
+                                              parsed_globals.profile)
             if parsed_globals.profile is not None:
                 new_values['__section__'] = (
                     'profile %s' % parsed_globals.profile)
             self._config_writer.update_config(new_values, config_filename)
+
+    def _write_out_creds_file_values(self, new_values, profile_name):
+        # The access_key/secret_key are now *always* written to the shared
+        # credentials file (~/.aws/credentials), see aws/aws-cli#847.
+        # post-conditions: ~/.aws/credentials will have the updated credential
+        # file values and new_values will have the cred vars removed.
+        credential_file_values = {}
+        if 'aws_access_key_id' in new_values:
+            credential_file_values['aws_access_key_id'] = new_values.pop(
+                'aws_access_key_id')
+        if 'aws_secret_access_key' in new_values:
+            credential_file_values['aws_secret_access_key'] = new_values.pop(
+                'aws_secret_access_key')
+        if credential_file_values:
+            if profile_name is not None:
+                credential_file_values['__section__'] = profile_name
+            shared_credentials_filename = self._session.get_config_variable(
+                'credentials_file')
+            self._config_writer.update_config(
+                credential_file_values,
+                shared_credentials_filename)

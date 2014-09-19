@@ -70,6 +70,10 @@ class FakeSession(object):
         return self.config
 
     def get_config_variable(self, name, methods=None):
+        if name == 'credentials_file':
+            # The credentials_file var doesn't require a
+            # profile to exist.
+            return 'fake_credentials_file'
         if self.profile_does_not_exist and not name == 'config_file':
             raise ProfileNotFound(profile='foo')
         if methods is not None:
@@ -98,12 +102,22 @@ class TestConfigureCommand(unittest.TestCase):
                                                     prompter=self.precanned,
                                                     config_writer=self.writer)
 
+    def assert_credentials_file_updated_with(self, new_values):
+        called_args = self.writer.update_config.call_args_list
+        credentials_file_call = called_args[0]
+        self.assertEqual(credentials_file_call,
+                         mock.call(new_values, 'fake_credentials_file'))
+
     def test_configure_command_sends_values_to_writer(self):
         self.configure(args=[], parsed_globals=self.global_args)
-        self.writer.update_config.assert_called_with(
+        # Credentials are always written to the shared credentials file.
+        self.assert_credentials_file_updated_with(
             {'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
-             'region': 'new_value',
+             'aws_secret_access_key': 'new_value'})
+
+        # Non-credentials config is written to the config file.
+        self.writer.update_config.assert_called_with(
+            {'region': 'new_value',
              'output': 'new_value'}, 'myconfigfile')
 
     def test_same_values_are_not_changed(self):
@@ -154,10 +168,12 @@ class TestConfigureCommand(unittest.TestCase):
         self.global_args.profile = 'myname'
         self.configure(args=[], parsed_globals=self.global_args)
         # Note the __section__ key name.
+        self.assert_credentials_file_updated_with(
+            {'aws_access_key_id': 'new_value',
+             'aws_secret_access_key': 'new_value',
+             '__section__': 'myname'})
         self.writer.update_config.assert_called_with(
             {'__section__': 'profile myname',
-             'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
              'region': 'new_value',
              'output': 'new_value'}, 'myconfigfile')
 
@@ -173,10 +189,12 @@ class TestConfigureCommand(unittest.TestCase):
                                                     config_writer=self.writer)
         self.global_args.profile = 'profile-does-not-exist'
         self.configure(args=[], parsed_globals=self.global_args)
+        self.assert_credentials_file_updated_with(
+            {'aws_access_key_id': 'new_value',
+             'aws_secret_access_key': 'new_value',
+             '__section__': 'profile-does-not-exist'})
         self.writer.update_config.assert_called_with(
             {'__section__': 'profile profile-does-not-exist',
-             'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
              'region': 'new_value',
              'output': 'new_value'}, 'myconfigfile')
 
@@ -760,6 +778,37 @@ class TestConfigureSetCommand(unittest.TestCase):
             {'__section__': 'profile foo',
              's3': {'signature_version': 's3v4'}}, 'myconfigfile')
 
+    def test_access_key_written_to_shared_credentials_file(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_access_key_id', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_access_key_id': 'foo'}, 'fake_credentials_file')
+
+    def test_secret_key_written_to_shared_credentials_file(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_secret_access_key', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_secret_access_key': 'foo'}, 'fake_credentials_file')
+
+    def test_session_token_written_to_shared_credentials_file(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_session_token', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_session_token': 'foo'}, 'fake_credentials_file')
+
+    def test_access_key_written_to_shared_credentials_file_profile(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['profile.foo.aws_access_key_id', 'bar'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'foo',
+             'aws_access_key_id': 'bar'}, 'fake_credentials_file')
 
 class TestConfigValueMasking(unittest.TestCase):
     def test_config_value_is_masked(self):

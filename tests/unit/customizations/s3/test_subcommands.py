@@ -16,12 +16,13 @@ from six import StringIO
 import sys
 
 import mock
-from mock import patch, MagicMock
+from mock import patch, Mock, MagicMock
 
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
+from awscli.customizations.s3.syncstrategy import DefaultSyncStrategy
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -190,6 +191,25 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertEqual(cmd_arc.instructions, ['file_generator', 'filters',
                                                 'file_info_builder',
                                                 's3_handler'])
+
+    def test_choose_sync_strategy(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
+                                      {'region': 'us-east-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None})
+        # Check if no plugins return their sync strategy.  Should
+        # result in a ``DefaultSyncStrategy`` object.
+        session.emit_first_non_none_response.return_value = None
+        sync_strategy = cmd_arc._choose_sync_strategy()
+        self.assertEqual(sync_strategy.__class__, DefaultSyncStrategy)
+
+        # Check that the default sync strategy is overwritted if a plugin
+        # returns its sync strategy.
+        mock_strategy = Mock()
+        session.emit_first_non_none_response.return_value = mock_strategy
+        sync_strategy = cmd_arc._choose_sync_strategy()
+        self.assertEqual(sync_strategy, mock_strategy)
 
     def test_run_cp_put(self):
         # This ensures that the architecture sets up correctly for a ``cp`` put
@@ -538,6 +558,7 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         # parts.  Note the examples are not included because
         # the event was not registered.
         s3command = CpCommand(self.session)
+        s3command._arg_table = s3command._build_arg_table()
         parser = argparse.ArgumentParser()
         parser.add_argument('--paginate', action='store_true')
         parsed_global = parser.parse_args(['--paginate'])

@@ -14,6 +14,7 @@ from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.subcommands import ListCommand, WebsiteCommand, \
     CpCommand, MvCommand, RmCommand, SyncCommand, MbCommand, RbCommand
+from awscli.customizations.s3.syncstrategy import register_sync_strategies
 
 
 def awscli_initialize(cli):
@@ -24,6 +25,7 @@ def awscli_initialize(cli):
     file
     """
     cli.register("building-command-table.main", add_s3)
+    cli.register('building-command-table.sync', register_sync_strategies)
 
 
 def s3_plugin_initialize(event_handlers):

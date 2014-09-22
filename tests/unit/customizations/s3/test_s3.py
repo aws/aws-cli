@@ -28,6 +28,7 @@ class AWSInitializeTest(unittest.TestCase):
         awscli_initialize(self.cli)
         reference = []
         reference.append("building-command-table.main")
+        reference.append("building-command-table.sync")
         for arg in self.cli.register.call_args_list:
             self.assertIn(arg[0][0], reference)
 

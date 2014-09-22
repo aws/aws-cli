@@ -26,6 +26,7 @@ from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
+from awscli.customizations.s3.syncstrategy import DefaultSyncStrategy
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key
 
@@ -178,19 +179,6 @@ SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
 EXPIRES = {'name': 'expires', 'nargs': 1, 'help_text': ("The date and time at "
            "which the object is no longer cacheable.")}
 
-SIZE_ONLY = {'name': 'size-only', 'action': 'store_true',
-             'help_text': (
-                 'Makes the size of each key the only criteria used to '
-                 'decide whether to sync from source to destination.')}
-
-EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
-                    'help_text': (
-                        'When syncing from S3 to local, same-sized '
-                        'items will be ignored only when the timestamps '
-                        'match exactly. The default behavior is to ignore '
-                        'same-sized items unless the local version is newer '
-                        'than the S3 version.')}
-
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
                       'A suffix that is appended to a request that is for '
@@ -226,7 +214,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
                  CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS]
 
-SYNC_ARGS = [DELETE, EXACT_TIMESTAMPS, SIZE_ONLY] + TRANSFER_ARGS
+SYNC_ARGS = [DELETE] + TRANSFER_ARGS
 
 
 def get_endpoint(service, region, endpoint_url, verify):
@@ -535,6 +523,20 @@ class CommandArchitecture(object):
             return False
         else:
             return True
+    
+    def _choose_sync_strategy(self):
+        """Determines the sync strategy for the command.
+
+        It defaults to ``DefaultSyncStrategy`` but a customizable sync
+        strategy can overide the default strategy if it returns the instance
+        of its self when the event is emitted.
+        """
+        sync_strategy = DefaultSyncStrategy()
+        override_sync_strategy = self.session.emit_first_non_none_response(
+            'choosing-s3-sync-strategy', params=self.parameters)
+        if override_sync_strategy is not None:
+            sync_strategy = override_sync_strategy
+        return sync_strategy
 
     def run(self):
         """
@@ -609,6 +611,8 @@ class CommandArchitecture(object):
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
                                             result_queue=result_queue)
 
+        sync_strategy = self._choose_sync_strategy()
+
         command_dict = {}
         if self.cmd == 'sync':
             command_dict = {'setup': [files, rev_files],
@@ -616,7 +620,8 @@ class CommandArchitecture(object):
                                                rev_generator],
                             'filters': [create_filter(self.parameters),
                                         create_filter(self.parameters)],
-                            'comparator': [Comparator(self.parameters)],
+                            'comparator': [Comparator(sync_strategy,
+                                                      self.parameters)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:

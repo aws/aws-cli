@@ -120,14 +120,16 @@ class BasicCommand(CLICommand):
 
     def __init__(self, session):
         self._session = session
+        self._arg_table = None
+        self._subcommand_table = None
 
     def __call__(self, args, parsed_globals):
         # args is the remaining unparsed args.
         # We might be able to parse these args so we need to create
         # an arg parser and parse them.
-        subcommand_table = self._build_subcommand_table()
-        arg_table = self.arg_table
-        parser = ArgTableArgParser(arg_table, subcommand_table)
+        self._subcommand_table = self._build_subcommand_table()
+        self._arg_table = self._build_arg_table()
+        parser = ArgTableArgParser(self.arg_table, self._subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
         # Unpack arguments
@@ -138,8 +140,8 @@ class BasicCommand(CLICommand):
             # as these are how the parameters are stored in the
             # `arg_table`.
             xformed = key.replace('_', '-')
-            if xformed in arg_table:
-                cli_argument = arg_table[xformed]
+            if xformed in self.arg_table:
+                param = self.arg_table[xformed]
 
             value = unpack_argument(
                 self._session,
@@ -178,8 +180,8 @@ class BasicCommand(CLICommand):
                 raise ValueError("Unknown options: %s" % ','.join(remaining))
             return self._run_main(parsed_args, parsed_globals)
         else:
-            return subcommand_table[parsed_args.subcommand](remaining,
-                                                            parsed_globals)
+            return self.subcommand_table[parsed_args.subcommand](remaining,
+                                                                 parsed_globals)
 
     def _validate_value_against_schema(self, model, value):
         validate_parameters(value, model)
@@ -220,8 +222,11 @@ class BasicCommand(CLICommand):
         command_help_table = {}
         if self.SUBCOMMANDS:
             command_help_table = self.create_help_command_table()
+        arg_help_table = self.arg_table
+        if arg_help_table is None:
+            arg_help_table = self._build_arg_table()
         return BasicHelp(self._session, self, command_table=command_help_table,
-                         arg_table=self.arg_table)
+                         arg_table=arg_help_table)
 
     def create_help_command_table(self):
         """
@@ -233,9 +238,11 @@ class BasicCommand(CLICommand):
             commands[command['name']] = command['command_class'](self._session)
         return commands
 
-    @property
-    def arg_table(self):
+    def _build_arg_table(self):
         arg_table = OrderedDict()
+        self._session.emit('initiate-building-arg-table.%s' % self.NAME,
+                           arg_table=self.ARG_TABLE,
+                           session=self._session)
         for arg_data in self.ARG_TABLE:
 
             # If a custom schema was passed in, create the argument_model
@@ -247,7 +254,18 @@ class BasicCommand(CLICommand):
             custom_argument = CustomArgument(**arg_data)
 
             arg_table[arg_data['name']] = custom_argument
+        self._session.emit('building-arg-table.%s' % self.NAME,
+                           arg_table=arg_table,
+                           session=self._session)
         return arg_table
+
+    @property
+    def arg_table(self):
+        return self._arg_table
+
+    @property
+    def subcommand_table(self):
+        return self._subcommand_table
 
     @classmethod
     def add_command(cls, command_table, session, **kwargs):

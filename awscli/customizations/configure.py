@@ -86,7 +86,7 @@ class ConfigFileWriter(object):
           be created.  Any parent directories will also be created
           if necessary.
         * If the section to update does not exist, it will be created.
-        * Any existing lines that specified by ``new_values``
+        * Any existing lines that are specified by ``new_values``
           **will not be touched**.  This ensures that commented out
           values are left unaltered.
 
@@ -362,6 +362,8 @@ class ConfigureSetCommand(BasicCommand):
          'action': 'store',
          'cli_type_name': 'string', 'positional_arg': True},
     ]
+    # Any variables specified in this list will be written to
+    # the ~/.aws/credentials file instead of ~/.aws/config.
     _WRITE_TO_CREDS_FILE = ['aws_access_key_id', 'aws_secret_access_key',
                             'aws_session_token']
 

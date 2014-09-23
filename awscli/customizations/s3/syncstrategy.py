@@ -29,12 +29,20 @@ EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
                         'same-sized items unless the local version is newer '
                         'than the S3 version.')}
 
+DELETE = {'name': 'delete', 'action': 'store_true',
+          'help_text': (
+              "Files that exist in the destination but not in the source are "
+              "deleted during sync.")}
+
+VALID_SYNC_TYPES = ['file_at_src_and_dest', 'file_not_at_dest',
+                    'file_not_at_src']
+
 
 def register_sync_strategies(command_table, session, **kwargs):
     """Registers the different sync strategies.
 
     To register a sync strategy add
-    ``register_sync_strategy(session, YourSyncStrategyClass)``
+    ``register_sync_strategy(session, YourSyncStrategyClass, sync_type)``
     to the list of registered strategies in this function.
     """
 
@@ -44,16 +52,23 @@ def register_sync_strategies(command_table, session, **kwargs):
     # Register the exact timestamps sync strategy.
     register_sync_strategy(session, ExactTimestampsSyncStrategy)
 
+    # Register the delete sync strategy.
+    register_sync_strategy(session, DeleteSyncStrategy,
+                           'file_not_at_src')
+
     # Register additional sync strategies here...
 
 
-def register_sync_strategy(session, strategy_cls):
+def register_sync_strategy(session, strategy_cls,
+                           sync_type='file_at_src_and_dest'):
     """Registers a single sync strategy
 
     :param session: The session that the sync strategy is being registered to.
-    :param strategy_cls: the class of the sync strategy to be registered.
+    :param strategy_cls: The class of the sync strategy to be registered.
+    :param sync_type: A string representing when to perform the sync strategy.
+        See ``__init__`` method of ``BaseSyncStrategy`` for possible options.
     """
-    strategy = strategy_cls()
+    strategy = strategy_cls(sync_type)
     strategy.register_strategy(session)
 
 
@@ -89,10 +104,36 @@ class BaseSyncStrategy(object):
     ARGUMENT = None
 
     # At this point all that need to be done is implement
-    # ``compare_same_name_files`` method (see method for more information).
+    # ``determine_should_sync`` method (see method for more information).
 
-    def __init__(self):
-        pass
+    def __init__(self, sync_type='file_at_src_and_dest'):
+        """
+        :type sync_type: string
+        :param sync_type: This determines where the sync strategy will be
+            used. There are three strings to choose from:
+
+            'file_at_src_and_dest': apply sync strategy on a file that
+            exists both at the source and the destination.
+
+            'file_not_at_dest': apply sync strategy on a file that
+            exists at the source but not the destination.
+
+            'file_not_at_src': apply sync strategy on a file that
+            exists at the destination but not the source.
+        """
+        self._sync_type = None
+        self._set_sync_type(sync_type)
+
+    def _set_sync_type(self, sync_type):
+        if sync_type not in VALID_SYNC_TYPES:
+            raise ValueError("Unknown sync_type: %s.\n"
+                             "Valid options are %s." %
+                             (sync_type, VALID_SYNC_TYPES))
+        self._sync_type = sync_type
+
+    @property
+    def sync_type(self):
+        return self._sync_type
 
     def register_strategy(self, session):
         """Registers the sync strategy class to the given session."""
@@ -100,32 +141,43 @@ class BaseSyncStrategy(object):
         session.register('initiate-building-arg-table', self._add_sync_argument)
         session.register('choosing-s3-sync-strategy', self._use_sync_strategy)
 
-    def compare_same_name_files(self, src_file, dest_file):
+    def determine_should_sync(self, src_file, dest_file):
         """Subclasses should implement this method.
 
-        This function takes two files (one in the source and one in the
-        destination) that share the same name and relative location.  Then
-        compares the two files to decide if the file at the source needs to
-        replace the file at the destination.
+        This function takes two ``FileStat`` objects (one from the source and
+        one from the destination).  Then makes a decision on whether a given
+        operation (e.g. a upload, copy, download) should be allowed
+        to take place.
 
         The function currently raises a ``NotImplementedError``.  So this
         method must be overwritten when this class is subclassed.  Note
         that this method must return a Boolean as documented below.
 
         :type src_file: ``FileStat`` object
-        :param src_file: A representation of the file existing in the source.
+        :param src_file: A representation of the opertaion that is to be
+            performed on a specfic file existing in the source.  Note if
+            the file does not exist at the source, ``src_file`` is None.
 
         :type dest_file: ``FileStat`` object
-        :param dest_file: A representation of the file existing in the
-            destination.
+        :param dest_file: A representation of the operation that is to be
+            performed on a specific file existing in the destination. Note if
+            the file does not exist at the destination, ``dest_file`` is None.
 
         :rtype: Boolean
-        :return: True if the file at the source needs to be transfered to the
-            destination. False if the file at the source does not need to
-            be transfered to the destination.
-        """
+        :return: True if an operation based on the ``FileStat`` should be
+            allowed to occur.
+            False if if an operation based on the ``FileStat`` should not be
+            allowed to occur. Note the operation being referred to depends on
+            the ``sync_type`` of the sync strategy:
 
-        raise NotImplementedError("compare_same_name_files")
+            'file_at_src_and_dest': refers to ``src_file``
+
+            'file_not_at_dest': refers to ``src_file``
+
+            'file_not_at_src': refers to ``dest_file``
+         """
+
+        raise NotImplementedError("determine_should_sync")
 
     @property
     def arg_name(self):
@@ -179,7 +231,7 @@ class BaseSyncStrategy(object):
             # ``name`` has all ``-`` replaced with ``_`` in ``params``.
             name_in_params = self.arg_name.replace('-', '_')
         if name_in_params is not None:
-            if params.get(name_in_params]:
+            if params.get(name_in_params):
                 # Return the sync strategy object to be used for syncing.
                 return self
         return None
@@ -223,9 +275,7 @@ class BaseSyncStrategy(object):
 
 class DefaultSyncStrategy(BaseSyncStrategy):
 
-    NAME = 'default'
-
-    def compare_same_name_files(self, src_file, dest_file):
+    def determine_should_sync(self, src_file, dest_file):
         same_size = self.compare_size(src_file, dest_file)
         same_last_modified_time = self.compare_time(src_file, dest_file)
         should_sync = (not same_size) or (not same_last_modified_time)
@@ -240,13 +290,35 @@ class DefaultSyncStrategy(BaseSyncStrategy):
         pass
 
 
-class SizeOnlySyncStrategy(BaseSyncStrategy):
+class DefaultNotAtSrcSyncStrategy(BaseSyncStrategy):
+    def __init__(self, sync_type='file_not_at_src'):
+        super(DefaultNotAtSrcSyncStrategy, self).__init__(sync_type)
 
-    NAME = 'size_only'
+    def determine_should_sync(self, src_file, dest_file):
+        return False
+
+    def _use_sync_strategy(self, params):
+        pass
+
+
+class DefaultNotAtDestSyncStrategy(BaseSyncStrategy):
+    def __init__(self, sync_type='file_not_at_dest'):
+        super(DefaultNotAtDestSyncStrategy, self).__init__(sync_type)
+
+    def determine_should_sync(self, src_file, dest_file):
+        LOG.debug("syncing: %s -> %s, file does not exist at destination",
+                  src_file.src, src_file.dest)
+        return True
+
+    def _use_sync_strategy(self, params):
+        pass
+
+
+class SizeOnlySyncStrategy(BaseSyncStrategy):
 
     ARGUMENT = SIZE_ONLY
 
-    def compare_same_name_files(self, src_file, dest_file):
+    def determine_should_sync(self, src_file, dest_file):
         same_size = self.compare_size(src_file, dest_file)
         should_sync = not same_size
         if should_sync:
@@ -257,11 +329,9 @@ class SizeOnlySyncStrategy(BaseSyncStrategy):
 
 class ExactTimestampsSyncStrategy(BaseSyncStrategy):
 
-    NAME = 'exact-timestamps'
-
     ARGUMENT = EXACT_TIMESTAMPS
 
-    def compare_same_name_files(self, src_file, dest_file):
+    def determine_should_sync(self, src_file, dest_file):
         same_size = self.compare_size(src_file, dest_file)
         same_last_modified_time = self.compare_time(src_file, dest_file)
         should_sync = (not same_size) or (not same_last_modified_time)
@@ -282,3 +352,15 @@ class ExactTimestampsSyncStrategy(BaseSyncStrategy):
         else:
             return super(SizeOnlySyncStrategy, self).compare_time(src_file,
                                                                   dest_file)
+
+
+class DeleteSyncStrategy(BaseSyncStrategy):
+
+    ARGUMENT = DELETE
+
+    def determine_should_sync(self, src_file, dest_file):
+        dest_file.operation_name = 'delete'
+        LOG.debug("syncing: (None) -> %s (remove), file does not "
+                  "exist at source (%s) and delete mode enabled",
+                  dest_file.src, dest_file.dest)
+        return True

@@ -17,7 +17,9 @@ from mock import Mock, patch
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy import BaseSyncStrategy, \
     DefaultSyncStrategy, SizeOnlySyncStrategy, ExactTimestampsSyncStrategy, \
-    register_sync_strategy, register_sync_strategies
+    DeleteSyncStrategy, DefaultNotAtSrcSyncStrategy, \
+    DefaultNotAtDestSyncStrategy, register_sync_strategy, \
+    register_sync_strategies
 from awscli.testutils import unittest
 
 
@@ -32,7 +34,7 @@ class TestRegisterSyncStrategies(unittest.TestCase):
         strategy_cls.return_value = strategy_object
         register_sync_strategy(session, strategy_cls)
         # Ensure sync strategy class is instantiated
-        strategy_cls.assert_called_with()
+        strategy_cls.assert_called_with('file_at_src_and_dest')
         # Ensure the sync strategy's ``register_strategy`` method is
         # called correctly.
         strategy_object.register_strategy.assert_called_with(session)
@@ -57,10 +59,29 @@ class TestRegisterSyncStrategies(unittest.TestCase):
             self.assertEqual(mock_register.call_args_list[1][0][1],
                              ExactTimestampsSyncStrategy)
 
+            # Ensure the ``DeleteSyncStrategy`` was registered.
+            self.assertEqual(mock_register.call_args_list[2][0][0],
+                             session)
+            self.assertEqual(mock_register.call_args_list[2][0][1],
+                             DeleteSyncStrategy)
+            self.assertEqual(mock_register.call_args_list[2][0][2],
+                             'file_not_at_src')
+
 
 class TestBaseSyncStrategy(unittest.TestCase):
     def setUp(self):
         self.sync_strategy = BaseSyncStrategy()
+
+    def test_set_sync_type(self):
+        valid_sync_types = ['file_at_src_and_dest', 'file_not_at_dest',
+                            'file_not_at_src']
+        for sync_type in valid_sync_types:
+            self.sync_strategy._set_sync_type(sync_type)
+            self.assertEqual(self.sync_strategy.sync_type, sync_type)
+
+        # Check for invalid ``sync_type`` options.
+        with self.assertRaises(ValueError):
+            self.sync_strategy._set_sync_type('wrong_sync_type')
 
     def test_register_strategy(self):
         """
@@ -76,12 +97,12 @@ class TestBaseSyncStrategy(unittest.TestCase):
         self.assertEqual(register_args[1][0][1],
                          self.sync_strategy._use_sync_strategy)
 
-    def test_compare_same_name_files(self):
+    def test_determine_should_sync(self):
         """
         Ensure that this class cannot be directly used as the sync strategy.
         """
         with self.assertRaises(NotImplementedError):
-            self.sync_strategy.compare_same_name_files(None, None)
+            self.sync_strategy.determine_should_sync(None, None)
 
     def test_arg_name(self):
         """
@@ -169,7 +190,7 @@ class TestDefaultSyncStrategy(unittest.TestCase):
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
                              dest_type='local', operation_name='')
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dest_file)
         self.assertTrue(should_sync)
 
@@ -187,7 +208,7 @@ class TestDefaultSyncStrategy(unittest.TestCase):
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
                              dest_type='local', operation_name='')
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dest_file)
         self.assertTrue(should_sync)
 
@@ -205,7 +226,7 @@ class TestDefaultSyncStrategy(unittest.TestCase):
                              compare_key='comparator_test.py', size=10,
                              last_update=time, src_type='s3',
                              dest_type='s3', operation_name='')
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dest_file)
         self.assertTrue(should_sync)
 
@@ -224,7 +245,7 @@ class TestDefaultSyncStrategy(unittest.TestCase):
                              last_update=future_time, src_type='local',
                              dest_type='s3', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dest_file)
         self.assertTrue(should_sync)
 
@@ -238,9 +259,49 @@ class TestDefaultSyncStrategy(unittest.TestCase):
                              last_update=time, src_type='local',
                              dest_type='s3', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dest_file)
         self.assertFalse(should_sync)
+
+
+class TestDefaultNotAtSrcSyncStrategy(unittest.TestCase):
+    def setUp(self):
+        self.sync_strategy = DefaultNotAtSrcSyncStrategy()
+
+    def test_constructor(self):
+        self.assertEqual(self.sync_strategy.sync_type, 'file_not_at_src')
+
+    def test_determine_should_sync(self):
+        time_dst = datetime.datetime.now()
+
+        dst_file = FileStat(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_dst, src_type='s3',
+                            dest_type='local', operation_name='')
+
+        should_sync = self.sync_strategy.determine_should_sync(
+            None, dst_file)
+        self.assertFalse(should_sync)
+
+
+class TestDefaultNotAtDestSyncStrategy(unittest.TestCase):
+    def setUp(self):
+        self.sync_strategy = DefaultNotAtDestSyncStrategy()
+
+    def test_constructor(self):
+        self.assertEqual(self.sync_strategy.sync_type, 'file_not_at_dest')
+
+    def test_determine_should_sync(self):
+        time_src = datetime.datetime.now()
+
+        src_file = FileStat(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_src, src_type='s3',
+                            dest_type='local', operation_name='')
+
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, None)
+        self.assertTrue(should_sync)
 
 
 class TestSizeOnlySyncStrategy(unittest.TestCase):
@@ -264,7 +325,7 @@ class TestSizeOnlySyncStrategy(unittest.TestCase):
                             last_update=time_dst, src_type='s3',
                             dest_type='local', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dst_file)
         self.assertTrue(should_sync)
 
@@ -286,7 +347,7 @@ class TestSizeOnlySyncStrategy(unittest.TestCase):
                             last_update=time_dst, src_type='s3',
                             dest_type='local', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dst_file)
         self.assertFalse(should_sync)
 
@@ -314,7 +375,7 @@ class TestExactTimestampsSyncStrategy(unittest.TestCase):
                             last_update=time_dst, src_type='local',
                             dest_type='s3', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dst_file)
         self.assertTrue(should_sync)
 
@@ -337,7 +398,7 @@ class TestExactTimestampsSyncStrategy(unittest.TestCase):
                             last_update=time_dst, src_type='local',
                             dest_type='s3', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dst_file)
         self.assertTrue(should_sync)
 
@@ -359,7 +420,7 @@ class TestExactTimestampsSyncStrategy(unittest.TestCase):
                             last_update=time_both, src_type='local',
                             dest_type='s3', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dst_file)
         self.assertFalse(should_sync)
 
@@ -381,9 +442,27 @@ class TestExactTimestampsSyncStrategy(unittest.TestCase):
                             last_update=time_both, src_type='local',
                             dest_type='s3', operation_name='')
 
-        should_sync = self.sync_strategy.compare_same_name_files(
+        should_sync = self.sync_strategy.determine_should_sync(
             src_file, dst_file)
         self.assertTrue(should_sync)
+
+
+class TestDeleteSyncStrategy(unittest.TestCase):
+    def setUp(self):
+        self.sync_strategy = DeleteSyncStrategy()
+
+    def test_determine_should_sync(self):
+        timenow = datetime.datetime.now()
+
+        dst_file = FileStat(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=timenow, src_type='local',
+                            dest_type='s3', operation_name='')
+
+        should_sync = self.sync_strategy.determine_should_sync(
+            None, dst_file)
+        self.assertTrue(should_sync)
+        self.assertEqual(dst_file.operation_name, 'delete')
 
 
 if __name__ == "__main__":

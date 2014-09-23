@@ -22,15 +22,19 @@ from awscli.customizations.s3.filegenerator import FileStat
 class ComparatorTest(unittest.TestCase):
     def setUp(self):
         self.sync_strategy = Mock()
+        self.not_at_src_sync_strategy = Mock()
+        self.not_at_dest_sync_strategy = Mock()
         self.comparator = Comparator(self.sync_strategy,
-                                     {'delete': True})
+                                     self.not_at_dest_sync_strategy,
+                                     self.not_at_src_sync_strategy)
 
     def test_compare_key_equal_should_not_sync(self):
         """
-        Confirms checking compare key works when the sync strategy
-        says the files should not be synced.
+        Confirm the appropriate action is taken when the soruce compare key
+        is equal to the destination compare key.
         """
-        self.sync_strategy.compare_same_name_files.return_value = False
+        # Try when the sync strategy says not to sync the file.
+        self.sync_strategy.determine_should_sync.return_value = False
 
         src_files = []
         dest_files = []
@@ -52,28 +56,11 @@ class ComparatorTest(unittest.TestCase):
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
 
-    def test_compare_key_equal_should_sync(self):
-        """
-        Confirms checking compare key works when the sync strategy
-        says the files should be synced.
-        """
-        self.sync_strategy.compare_same_name_files.return_value = True
+        # Try when the sync strategy says to sync the file.
+        self.sync_strategy.determine_should_sync.return_value = True
 
-        src_files = []
-        dest_files = []
         ref_list = []
         result_list = []
-        time = datetime.datetime.now()
-        src_file = FileStat(src='', dest='',
-                            compare_key='comparator_test.py', size=10,
-                            last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload')
-        dest_file = FileStat(src='', dest='',
-                             compare_key='comparator_test.py', size=10,
-                             last_update=time, src_type='s3',
-                             dest_type='local', operation_name='')
-        src_files.append(src_file)
-        dest_files.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
         ref_list.append(src_file)
         for filename in files:
@@ -85,6 +72,11 @@ class ComparatorTest(unittest.TestCase):
         Confirm the appropriate action is taken when the soruce compare key
         is less than the destination compare key.
         """
+        self.not_at_src_sync_strategy.determine_should_sync.return_value = False
+
+        # Try when the sync strategy says to sync the file.
+        self.not_at_dest_sync_strategy.determine_should_sync.return_value = True
+
         src_files = []
         dest_files = []
         ref_list = []
@@ -100,19 +92,32 @@ class ComparatorTest(unittest.TestCase):
                              dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
-        dest_file.operation = 'delete'
         ref_list.append(src_file)
-        ref_list.append(dest_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
         for filename in files:
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
+
+        # Now try when the sync strategy says not to sync the file.
+        self.not_at_dest_sync_strategy.determine_should_sync.return_value = False
+        result_list = []
+        ref_list = []
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+
 
     def test_compare_key_greater(self):
         """
         Confirm the appropriate action is taken when the soruce compare key
         is greater than the destination compare key.
         """
+        self.not_at_dest_sync_strategy.determine_should_sync.return_value = False
+
+        # Try when the sync strategy says to sync the file.
+        self.not_at_src_sync_strategy.determine_should_sync.return_value = True
+        
         src_files = []
         dest_files = []
         ref_list = []
@@ -128,20 +133,30 @@ class ComparatorTest(unittest.TestCase):
                              dest_type='local', operation_name='')
         src_files.append(src_file)
         dest_files.append(dest_file)
-        src_file.operation = 'upload'
-        dest_file.operation = 'delete'
         ref_list.append(dest_file)
-        ref_list.append(src_file)
         files = self.comparator.call(iter(src_files), iter(dest_files))
         for filename in files:
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
+
+        # Now try when the sync strategy says not to sync the file.
+        self.not_at_src_sync_strategy.determine_should_sync.return_value = False
+        result_list = []
+        ref_list = []
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+
 
     def test_empty_src(self):
         """
         Confirm the appropriate action is taken when there are no more source
         files to take.
         """
+        # Try when the sync strategy says to sync the file.
+        self.not_at_src_sync_strategy.determine_should_sync.return_value = True
+
         src_files = []
         dest_files = []
         ref_list = []
@@ -152,8 +167,16 @@ class ComparatorTest(unittest.TestCase):
                              last_update=time, src_type='s3',
                              dest_type='local', operation_name='')
         dest_files.append(dest_file)
-        dest_file.operation = 'delete'
         ref_list.append(dest_file)
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+
+        # Now try when the sync strategy says not to sync the file.
+        self.not_at_src_sync_strategy.determine_should_sync.return_value = False
+        result_list = []
+        ref_list = []
         files = self.comparator.call(iter(src_files), iter(dest_files))
         for filename in files:
             result_list.append(filename)
@@ -164,6 +187,9 @@ class ComparatorTest(unittest.TestCase):
         Confirm the appropriate action is taken when there are no more dest
         files to take.
         """
+        # Try when the sync strategy says to sync the file.
+        self.not_at_dest_sync_strategy.determine_should_sync.return_value = True
+
         src_files = []
         dest_files = []
         ref_list = []
@@ -179,6 +205,16 @@ class ComparatorTest(unittest.TestCase):
         for filename in files:
             result_list.append(filename)
         self.assertEqual(result_list, ref_list)
+
+        # Now try when the sync strategy says not to sync the file.
+        self.not_at_dest_sync_strategy.determine_should_sync.return_value = False
+        result_list = []
+        ref_list = []
+        files = self.comparator.call(iter(src_files), iter(dest_files))
+        for filename in files:
+            result_list.append(filename)
+        self.assertEqual(result_list, ref_list)
+
 
     def test_empty_src_dest(self):
         """

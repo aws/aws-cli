@@ -21,11 +21,13 @@ class Comparator(object):
     """
     This class performs all of the comparisons behind the sync operation
     """
-    def __init__(self, sync_strategy, params=None):
-        self._sync_strategy = sync_strategy
-        self.delete = False
-        if 'delete' in params:
-            self.delete = params['delete']
+    def __init__(self, file_at_src_and_dest_sync_strategy,
+                 file_not_at_dest_sync_strategy,
+                 file_not_at_src_sync_strategy):
+        
+        self._sync_strategy = file_at_src_and_dest_sync_strategy
+        self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
+        self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
 
     def call(self, src_files, dest_files):
         """
@@ -92,7 +94,7 @@ class Comparator(object):
                 compare_keys = self.compare_comp_key(src_file, dest_file)
 
                 if compare_keys == 'equal':
-                    should_sync = self._sync_strategy.compare_same_name_files(
+                    should_sync = self._sync_strategy.determine_should_sync(
                         src_file, dest_file
                     )
                     if should_sync:
@@ -100,35 +102,27 @@ class Comparator(object):
                 elif compare_keys == 'less_than':
                     src_take = True
                     dest_take = False
-                    LOG.debug("syncing: %s -> %s, file does not exist at destination",
-                            src_file.src, src_file.dest)
-                    yield src_file
+                    should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                    if should_sync:
+                        yield src_file
 
                 elif compare_keys == 'greater_than':
                     src_take = False
                     dest_take = True
-                    dest_file.operation_name = 'delete'
-                    if self.delete:
-                        LOG.debug("syncing: (None) -> %s (remove), file does "
-                                  "not exist at source (%s) and delete "
-                                  "mode enabled",
-                                  dest_file.src, dest_file.dest)
+                    should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
+                    if should_sync:                        
                         yield dest_file
 
             elif (not src_done) and dest_done:
                 src_take = True
-                LOG.debug("syncing: %s -> %s, file does not exist "
-                          "at destination",
-                          src_file.src, src_file.dest)
-                yield src_file
+                should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                if should_sync:
+                    yield src_file
 
             elif src_done and (not dest_done):
                 dest_take = True
-                dest_file.operation_name = 'delete'
-                if self.delete:
-                    LOG.debug("syncing: (None) -> %s (remove), file does not "
-                              "exist at source (%s) and delete mode enabled",
-                              dest_file.src, dest_file.dest)
+                should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
+                if should_sync:                        
                     yield dest_file
             else:
                 break

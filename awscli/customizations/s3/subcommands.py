@@ -26,7 +26,8 @@ from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
-from awscli.customizations.s3.syncstrategy import DefaultSyncStrategy
+from awscli.customizations.s3.syncstrategy import DefaultSyncStrategy, \
+    DefaultNotAtDestSyncStrategy, DefaultNotAtSrcSyncStrategy
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key
 
@@ -40,11 +41,6 @@ DRYRUN = {'name': 'dryrun', 'action': 'store_true',
           'help_text': (
               "Displays the operations that would be performed using the "
               "specified command without actually running them.")}
-
-DELETE = {'name': 'delete', 'action': 'store_true',
-          'help_text': (
-              "Files that exist in the destination but not in the source are "
-              "deleted during sync.")}
 
 QUIET = {'name': 'quiet', 'action': 'store_true',
          'help_text': (
@@ -213,8 +209,6 @@ TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
                  CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS]
-
-SYNC_ARGS = [DELETE] + TRANSFER_ARGS
 
 
 def get_endpoint(service, region, endpoint_url, verify):
@@ -443,7 +437,7 @@ class SyncCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> " \
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + SYNC_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS
     EXAMPLES = BasicCommand.FROM_FILE('s3/sync.rst')
 
 
@@ -524,19 +518,34 @@ class CommandArchitecture(object):
         else:
             return True
     
-    def _choose_sync_strategy(self):
+    def _choose_sync_strategies(self):
         """Determines the sync strategy for the command.
 
-        It defaults to ``DefaultSyncStrategy`` but a customizable sync
+        It defaults to the default sync strategies but a customizable sync
         strategy can overide the default strategy if it returns the instance
         of its self when the event is emitted.
         """
-        sync_strategy = DefaultSyncStrategy()
-        override_sync_strategy = self.session.emit_first_non_none_response(
+        sync_strategies = {}
+        # Set the default strategies.
+        sync_strategies['file_at_src_and_dest_sync_strategy'] = \
+            DefaultSyncStrategy()
+        sync_strategies['file_not_at_dest_sync_strategy'] = \
+            DefaultNotAtDestSyncStrategy()
+        sync_strategies['file_not_at_src_sync_strategy'] = \
+            DefaultNotAtSrcSyncStrategy()
+
+        # Determine what strategies to overide if any.
+        responses = self.session.emit(
             'choosing-s3-sync-strategy', params=self.parameters)
-        if override_sync_strategy is not None:
-            sync_strategy = override_sync_strategy
-        return sync_strategy
+        if responses is not None:
+            for response in responses:
+                override_sync_strategy = response[1]
+                if override_sync_strategy is not None:
+                    sync_type = override_sync_strategy.sync_type
+                    sync_type += '_sync_strategy'
+                    sync_strategies[sync_type] = override_sync_strategy
+
+        return sync_strategies
 
     def run(self):
         """
@@ -611,7 +620,7 @@ class CommandArchitecture(object):
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
                                             result_queue=result_queue)
 
-        sync_strategy = self._choose_sync_strategy()
+        sync_strategies = self._choose_sync_strategies()
 
         command_dict = {}
         if self.cmd == 'sync':
@@ -620,8 +629,7 @@ class CommandArchitecture(object):
                                                rev_generator],
                             'filters': [create_filter(self.parameters),
                                         create_filter(self.parameters)],
-                            'comparator': [Comparator(sync_strategy,
-                                                      self.parameters)],
+                            'comparator': [Comparator(**sync_strategies)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:

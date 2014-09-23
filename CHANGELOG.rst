@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:Shared Credentials File: The ``aws configure`` and
+  ``aws configure set`` command now write out all credential
+  variables to the shared credentials file ``~/.aws/credentials``
+  (`issue 847 <https://github.com/aws/aws-cli/issues/847>`__)
+
+
 1.4.4
 =====
 

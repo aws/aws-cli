@@ -40,18 +40,19 @@ class Executor(object):
     STANDARD_PRIORITY = 11
     IMMEDIATE_PRIORITY= 1
 
-    def __init__(self, num_threads, result_queue,
-                 quiet, max_queue_size, write_queue):
+    def __init__(self, num_threads, result_queue, quiet,
+                 only_show_errors, max_queue_size, write_queue):
         self._max_queue_size = max_queue_size
         self.queue = StablePriorityQueue(maxsize=self._max_queue_size,
                                          max_priority=20)
         self.num_threads = num_threads
         self.result_queue = result_queue
         self.quiet = quiet
+        self.only_show_errors = only_show_errors
         self.threads_list = []
         self.write_queue = write_queue
-        self.print_thread = PrintThread(self.result_queue,
-                                        self.quiet)
+        self.print_thread = PrintThread(self.result_queue, self.quiet,
+                                        self.only_show_errors)
         self.print_thread.daemon = True
         self.io_thread = IOWriterThread(self.write_queue)
 
@@ -226,11 +227,12 @@ class PrintThread(threading.Thread):
             warning.
 
     """
-    def __init__(self, result_queue, quiet):
+    def __init__(self, result_queue, quiet, only_show_errors):
         threading.Thread.__init__(self)
         self._progress_dict = {}
         self._result_queue = result_queue
         self._quiet = quiet
+        self._only_show_errors = only_show_errors
         self._progress_length = 0
         self._num_parts = 0
         self._file_count = 0
@@ -317,7 +319,7 @@ class PrintThread(threading.Thread):
         is_done = self._total_files == self._file_count
         if not is_done:
             final_str += self._make_progress_bar()
-        if not self._quiet:
+        if not (self._quiet or self._only_show_errors):
             uni_print(final_str)
             self._needs_newline = not final_str.endswith('\n')
 

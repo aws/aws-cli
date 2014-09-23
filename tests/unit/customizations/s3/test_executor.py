@@ -75,7 +75,7 @@ class TestIOWriterThread(unittest.TestCase):
 
 class TestExecutor(unittest.TestCase):
     def test_shutdown_does_not_hang(self):
-        executor = Executor(2, queue.Queue(), False,
+        executor = Executor(2, queue.Queue(), False, False,
                             10, queue.Queue(maxsize=1))
         with temporary_file('rb+') as f:
             executor.start()
@@ -94,20 +94,102 @@ class TestExecutor(unittest.TestCase):
 class TestPrintThread(unittest.TestCase):
     def setUp(self):
         self.result_queue = queue.Queue()
-        self.thread = PrintThread(result_queue=self.result_queue, quiet=False)
+
+    def test_print(self):
+        print_task = PrintTask(message="Success", error=False)
+
+        # Ensure a successful task is printed to stdout when
+        # ``quiet`` and ``only_show_errors`` is False.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertIn('Success', mock_stdout.getvalue())
+
+        # Ensure a succesful task is not printed to stdout when
+        # ``quiet`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=True, only_show_errors=False)
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertEqual('', mock_stdout.getvalue())
+
+        # Ensure a succesful task is not printed to stdout when
+        # ``only_show_errors`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=True)
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertEqual('', mock_stdout.getvalue())
 
     def test_print_error(self):
         print_task = PrintTask(message="Fail File.", error=True)
+
+        # Ensure a failed task is printed to stderr when
+        # ``quiet`` and ``only_show_errors`` is False.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
         with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
             self.result_queue.put(print_task)
             self.result_queue.put(ShutdownThreadRequest())
-            self.thread.run()
+            thread.run()
             self.assertIn("Fail File.", mock_stderr.getvalue())
+
+        # Ensure a failed task is not printed to stderr when
+        # ``quiet`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=True, only_show_errors=False)
+        with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertEqual('', mock_stderr.getvalue())
+
+        # Ensure a failed task is printed to stderr when
+        # ``only_show_errors`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=True)
+        with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertIn('Fail File', mock_stderr.getvalue())
 
     def test_print_warning(self):
         print_task = PrintTask(message="Bad File.", warning=True)
+
+        # Ensure a warned task is printed to stderr when
+        # ``quiet`` and ``only_show_errors`` is False.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
         with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
             self.result_queue.put(print_task)
             self.result_queue.put(ShutdownThreadRequest())
-            self.thread.run()
+            thread.run()
             self.assertIn("Bad File.", mock_stderr.getvalue())
+
+        # Ensure a warned task is not printed to stderr when
+        # ``quiet`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=True, only_show_errors=False)
+        with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertEqual('', mock_stderr.getvalue())
+
+        # Ensure a warned task is printed to stderr when
+        # ``only_show_errors`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=True)
+        with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertIn('Bad File', mock_stderr.getvalue())

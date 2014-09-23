@@ -140,7 +140,7 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         self.session = FakeSession()
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
                                           chunksize=2,
@@ -275,7 +275,7 @@ class S3HandlerExceptionMultiTaskTest(S3HandlerBaseTest):
         self.session = FakeSession(True, True)
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1'}
+        params = {'region': 'us-east-1', 'quiet': True}
         self.s3_handler_multi = S3Handler(self.session, params,
                                           multi_threshold=10, chunksize=2)
         self.bucket = create_bucket(self.session)

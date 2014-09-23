@@ -223,24 +223,26 @@ class MultiCounter(object):
         self.count = 0
 
 
-def uni_print(statement):
+def uni_print(statement, out_file=None):
     """
-    This function is used to properly write unicode to stdout.  It
-    ensures that the proper encoding is used if the statement is
-    not in a version type of string.  The initial check is to
-    allow if ``sys.stdout`` does not use an encoding
+    This function is used to properly write unicode to a file, usually
+    stdout or stdderr.  It ensures that the proper encoding is used if the
+    statement is not a string type.  The initial check is to allow if
+    ``out_file`` does not use an encoding.
     """
-    encoding = getattr(sys.stdout, 'encoding', None)
+    if out_file is None:
+        out_file = sys.stdout
+    encoding = getattr(out_file, 'encoding', None)
     if encoding is not None and not PY3:
-        sys.stdout.write(statement.encode(sys.stdout.encoding))
+        out_file.write(statement.encode(out_file.encoding))
     else:
         try:
-            sys.stdout.write(statement)
+            out_file.write(statement)
         except UnicodeEncodeError:
             # Some file like objects like cStringIO will
             # try to decode as ascii.  Interestingly enough
             # this works with a normal StringIO.
-            sys.stdout.write(statement.encode('utf-8'))
+            out_file.write(statement.encode('utf-8'))
 
 
 def guess_content_type(filename):

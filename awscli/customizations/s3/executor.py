@@ -274,13 +274,15 @@ class PrintThread(threading.Thread):
 
     def _process_print_task(self, print_task):
         print_str = print_task.message
+        print_to_stderr = False
         if print_task.error:
             self.num_errors_seen += 1
+            print_to_stderr = True
         warning = False
         if print_task.warning:
-            if print_task.warning:
-                warning = True
-                self.num_warnings_seen += 1
+            warning = True
+            self.num_warnings_seen += 1
+            print_to_stderr = True
         final_str = ''
         if warning:
             final_str += print_str.ljust(self._progress_length, ' ')
@@ -308,6 +310,12 @@ class PrintThread(threading.Thread):
             else:
                 self._num_parts += 1
             self._file_count += 1
+
+        # If the message is an error or warning, print it to standard error.
+        if print_to_stderr == True and not self._quiet:
+            uni_print(final_str, sys.stderr)
+            sys.stderr.flush()
+            final_str = ''
 
         is_done = self._total_files == self._file_count
         if not is_done:

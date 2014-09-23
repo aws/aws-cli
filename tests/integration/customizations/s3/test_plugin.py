@@ -164,10 +164,10 @@ class BaseS3CLICommand(unittest.TestCase):
         self.assertEqual(
             p.rc, 0,
             "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr))
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
+        self.assertNotIn("Error:", p.stderr)
+        self.assertNotIn("failed:", p.stderr)
+        self.assertNotIn("client error", p.stderr)
+        self.assertNotIn("server error", p.stderr)
 
 
 class TestMoveCommand(BaseS3CLICommand):
@@ -458,7 +458,7 @@ class TestCp(BaseS3CLICommand):
         expected_err_msg = (
             'A client error (NoSuchKey) occurred when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
-        self.assertIn(expected_err_msg, p.stdout)
+        self.assertIn(expected_err_msg, p.stderr)
 
 
 class TestSync(BaseS3CLICommand):
@@ -645,7 +645,7 @@ class TestSourceRegion(BaseS3CLICommand):
         p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s' % 
                  (self.src_bucket, self.dest_bucket, self.src_region))
         self.assertEqual(p2.rc, 1, p2.stdout)
-        self.assertIn('PermanentRedirect', p2.stdout)
+        self.assertIn('PermanentRedirect', p2.stderr)
 
     def testCpRegion(self):
         self.files.create_file('foo.txt', 'foo')
@@ -695,9 +695,9 @@ class TestWarnings(BaseS3CLICommand):
     def test_no_exist(self):
         filename = os.path.join(self.files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn('warning: Skipping file %s. File does not exist.' % 
-                      filename, p.stdout)
+                      filename, p.stderr)
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                      'Read permissions tests only supported on mac/linux')
@@ -711,9 +711,9 @@ class TestWarnings(BaseS3CLICommand):
         permissions = permissions ^ stat.S_IREAD
         os.chmod(filename, permissions)
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn('warning: Skipping file %s. File/Directory is '
-                      'not readable.' % filename, p.stdout)
+                      'not readable.' % filename, p.stderr)
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                      'Special files only supported on mac/linux')
@@ -723,10 +723,10 @@ class TestWarnings(BaseS3CLICommand):
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.bind(file_path)
         p = aws('s3 cp %s s3://%s/' % (file_path, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn(("warning: Skipping file %s. File is character "
                        "special device, block special device, FIFO, or "
-                       "socket." % file_path), p.stdout)
+                       "socket." % file_path), p.stderr)
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
@@ -806,10 +806,10 @@ class TestSymlinks(BaseS3CLICommand):
     
     def test_bad_symlink(self):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn('warning: Skipping file %s. File does not exist.' % 
                       os.path.join(self.files.rootdir, 'b-badsymlink'),
-                      p.stdout)
+                      p.stderr)
 
 
 class TestUnicode(BaseS3CLICommand):
@@ -945,7 +945,7 @@ class TestMbRb(BaseS3CLICommand):
     def test_fail_mb_rb(self):
         # Choose a bucket name that already exists.
         p = aws('s3 mb s3://mybucket')
-        self.assertIn("BucketAlreadyExists", p.stdout)
+        self.assertIn("BucketAlreadyExists", p.stderr)
         self.assertEqual(p.rc, 1)
 
 

@@ -272,7 +272,6 @@ class ListCommand(S3Command):
             pre_string = "PRE".rjust(30, " ")
             print_str = pre_string + ' ' + prefix + '/\n'
             uni_print(print_str)
-            sys.stdout.flush()
         for content in contents:
             last_mod_str = self._make_last_mod_str(content['LastModified'])
             size_str = self._make_size_str(content['Size'])
@@ -284,7 +283,6 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
-            sys.stdout.flush()
 
     def _list_all_buckets(self):
         operation = self.service.get_operation('ListBuckets')
@@ -294,7 +292,6 @@ class ListCommand(S3Command):
             last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
-            sys.stdout.flush()
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None):
         operation = self.service.get_operation('ListObjects')

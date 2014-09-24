@@ -227,11 +227,11 @@ def uni_print(statement, out_file=None):
     """
     This function is used to properly write unicode to a file, usually
     stdout or stdderr.  It ensures that the proper encoding is used if the
-    statement is not a string type.  The initial check is to allow if
-    ``out_file`` does not use an encoding.
+    statement is not a string type.
     """
     if out_file is None:
         out_file = sys.stdout
+    # Check for an encoding on the file.
     encoding = getattr(out_file, 'encoding', None)
     if encoding is not None and not PY3:
         out_file.write(statement.encode(out_file.encoding))
@@ -243,6 +243,7 @@ def uni_print(statement, out_file=None):
             # try to decode as ascii.  Interestingly enough
             # this works with a normal StringIO.
             out_file.write(statement.encode('utf-8'))
+    out_file.flush()
 
 
 def guess_content_type(filename):

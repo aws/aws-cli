@@ -90,12 +90,24 @@ class TestExecutor(unittest.TestCase):
             executor.wait_until_shutdown()
             self.assertEqual(open(f.name, 'rb').read(), b'foobar')
 
-class TestPrintThread(unittest.TestCase):
-    def test_print_warning(self):
-        result_queue = queue.Queue()
-        print_task = PrintTask(message="Bad File.", warning=True)
-        thread = PrintThread(result_queue, False)
-        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
-            thread._process_print_task(print_task)
-            self.assertIn("Bad File.", mock_stdout.getvalue())
 
+class TestPrintThread(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = queue.Queue()
+        self.thread = PrintThread(result_queue=self.result_queue, quiet=False)
+
+    def test_print_error(self):
+        print_task = PrintTask(message="Fail File.", error=True)
+        with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            self.thread.run()
+            self.assertIn("Fail File.", mock_stderr.getvalue())
+
+    def test_print_warning(self):
+        print_task = PrintTask(message="Bad File.", warning=True)
+        with mock.patch('sys.stderr', new=six.StringIO()) as mock_stderr:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            self.thread.run()
+            self.assertIn("Bad File.", mock_stderr.getvalue())

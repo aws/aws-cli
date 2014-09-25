@@ -9,6 +9,9 @@ Next Release (TBD)
   ``aws configure set`` command now write out all credential
   variables to the shared credentials file ``~/.aws/credentials``
   (`issue 847 <https://github.com/aws/aws-cli/issues/847>`__)
+* bugfix:``aws s3``: Write warnings and errors to standard error as
+  opposed to standard output.
+  (`issue 919 <https://github.com/aws/aws-cli/pull/919>`__)
 
 
 1.4.4

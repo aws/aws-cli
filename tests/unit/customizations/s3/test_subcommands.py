@@ -114,12 +114,17 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.bucket = make_s3_files(self.session)
         self.loc_files = make_loc_files()
         self.output = StringIO()
+        self.err_output = StringIO()
         self.saved_stdout = sys.stdout
+        self.saved_stderr = sys.stderr
         sys.stdout = self.output
+        sys.stderr = self.err_output
 
     def tearDown(self):
         self.output.close()
+        self.err_output.close()
         sys.stdout = self.saved_stdout
+        sys.stderr = self.saved_stderr
 
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.loc_files)
@@ -222,7 +227,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         output_str = (
             "upload failed: %s to %s Error: Bucket does not exist\n" % (
                 rel_local_file, s3_file))
-        self.assertIn(output_str, self.output.getvalue())
+        self.assertIn(output_str, self.err_output.getvalue())
 
     def test_run_cp_get(self):
         # This ensures that the architecture sets up correctly for a ``cp`` get
@@ -362,7 +367,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
         output_str = "remove_bucket failed: %s" % s3_prefix
-        self.assertIn(output_str, self.output.getvalue())
+        self.assertIn(output_str, self.err_output.getvalue())
         self.assertEqual(rc, 1)
 
 

@@ -163,12 +163,12 @@ class S3HandlerTestUpload(unittest.TestCase):
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
         self.output = StringIO()
-        self.saved_stdout = sys.stdout
-        sys.stdout = self.output
+        self.saved_stderr = sys.stderr
+        sys.stderr = self.output
 
     def tearDown(self):
         self.output.close()
-        sys.stdout = self.saved_stdout
+        sys.stderr = self.saved_stderr
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
 
@@ -215,7 +215,7 @@ class S3HandlerTestUnicodeMove(unittest.TestCase):
         self.session = botocore.session.get_session(EnvironmentVariables)
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session, key1=u'\u2713')
         self.bucket2 = create_bucket(self.session)

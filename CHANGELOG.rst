@@ -12,6 +12,8 @@ Next Release (TBD)
 * bugfix:``aws s3``: Write warnings and errors to standard error as
   opposed to standard output.
   (`issue 919 <https://github.com/aws/aws-cli/pull/919>`__)
+* feature:``aws s3``: Add ``--only-show-errors`` option that displays
+  errors and warnings but suppresses all other output.
 
 
 1.4.4

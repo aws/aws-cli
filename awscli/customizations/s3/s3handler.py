@@ -53,7 +53,7 @@ class S3Handler(object):
                        'content_type': None, 'cache_control': None,
                        'content_disposition': None, 'content_encoding': None,
                        'content_language': None, 'expires': None,
-                       'grants': None}
+                       'grants': None, 'only_show_errors': False}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
@@ -62,8 +62,9 @@ class S3Handler(object):
         self.chunksize = chunksize
         self.executor = Executor(
             num_threads=NUM_THREADS, result_queue=self.result_queue,
-            quiet=self.params['quiet'], max_queue_size=MAX_QUEUE_SIZE,
-            write_queue=self.write_queue
+            quiet=self.params['quiet'],
+            only_show_errors=self.params['only_show_errors'],
+            max_queue_size=MAX_QUEUE_SIZE, write_queue=self.write_queue
         )
         self._multipart_uploads = []
         self._multipart_downloads = []

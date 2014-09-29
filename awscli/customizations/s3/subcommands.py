@@ -206,11 +206,16 @@ ERROR_DOCUMENT = {'name': 'error-document',
                       'The object key name to use when '
                       'a 4XX class error occurs.')}
 
+ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
+                    'help_text': (
+                        'Only errors and warnings are displayed. All other '
+                        'output is suppressed.')}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION]
+                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS]
 
 SYNC_ARGS = [DELETE, EXACT_TIMESTAMPS, SIZE_ONLY] + TRANSFER_ARGS
 
@@ -431,7 +436,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
-                 EXCLUDE]
+                 EXCLUDE, ONLY_SHOW_ERRORS]
     EXAMPLES = BasicCommand.FROM_FILE('s3/rm.rst')
 
 

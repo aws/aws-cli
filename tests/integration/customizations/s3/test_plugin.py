@@ -949,6 +949,106 @@ class TestMbRb(BaseS3CLICommand):
         self.assertEqual(p.rc, 1)
 
 
+class TestOutput(BaseS3CLICommand):
+    """
+    This ensures that arguments that affect output i.e. ``--quiet`` and
+    ``--only-show-errors`` behave as expected.
+    """
+    def test_normal_output(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Check that there were no errors and that parts of the expected
+        # progress message are written to stdout.
+        self.assert_no_errors(p)
+        self.assertIn('upload', p.stdout)
+        self.assertIn('s3://%s/foo.txt' % bucket_name, p.stdout)
+
+    def test_normal_output_quiet(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/ --quiet' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Check that nothing was printed to stdout.
+        self.assertEqual('', p.stdout)
+
+    def test_normal_output_only_show_errors(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/ --only-show-errors' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Check that nothing was printed to stdout.
+        self.assertEqual('', p.stdout)
+
+    def test_error_output(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://non-existant-bucket/' % foo_txt)
+        # Check that there were errors and that the error was print to stderr.
+        self.assertEqual(p.rc, 1)
+        self.assertIn('upload failed', p.stderr)
+
+    def test_error_ouput_quiet(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://non-existant-bucket/ --quiet' % foo_txt)
+        # Check that there were errors and that the error was not
+        # print to stderr.
+        self.assertEqual(p.rc, 1)
+        self.assertEqual('', p.stderr)
+
+    def test_error_ouput_only_show_errors(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://non-existant-bucket/ --only-show-errors'
+                % foo_txt)
+        # Check that there were errors and that the error was print to stderr.
+        self.assertEqual(p.rc, 1)
+        self.assertIn('upload failed', p.stderr)
+
+    def test_error_and_success_output_only_show_errors(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+
+        # Create one file.
+        self.files.create_file('f', 'foo contents')
+
+        # Create another file that has a slightly longer name than the first.
+        self.files.create_file('bar.txt', 'bar contents')
+
+        # Create a prefix that will cause the second created file to have a key
+        # longer than 1024 bytes which is not allowed in s3.
+        long_prefix = 'd' * 1022
+
+        p = aws('s3 cp %s s3://%s/%s/ --only-show-errors --recursive'
+                % (self.files.rootdir, bucket_name, long_prefix))
+
+        # Check that there was at least one error.
+        self.assertEqual(p.rc, 1)
+
+        # Check that there was nothing written to stdout for successful upload.
+        self.assertEqual('', p.stdout)
+
+        # Check that the failed message showed up in stderr.
+        self.assertIn('upload failed', p.stderr)
+
+        # Ensure the expected successful key exists in the bucket.
+        self.assertTrue(self.key_exists(bucket_name, long_prefix + '/f'))
+
+
 class TestDryrun(BaseS3CLICommand):
     """
     This ensures that dryrun works.

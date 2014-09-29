@@ -15,8 +15,8 @@ from six.moves import queue
 import sys
 import threading
 
-from awscli.customizations.s3.utils import uni_print, \
-        IORequest, IOCloseRequest, StablePriorityQueue
+from awscli.customizations.s3.utils import uni_print, bytes_print, \
+    IORequest, IOCloseRequest, StablePriorityQueue
 from awscli.customizations.s3.tasks import OrderableTask
 
 
@@ -154,15 +154,19 @@ class IOWriterThread(threading.Thread):
                 self._cleanup()
                 return
             elif isinstance(task, IORequest):
-                filename, offset, data = task
-                fileobj = self.fd_descriptor_cache.get(filename)
-                if fileobj is None:
-                    fileobj = open(filename, 'rb+')
-                    self.fd_descriptor_cache[filename] = fileobj
-                fileobj.seek(offset)
+                filename, offset, data, is_stream = task
+                if is_stream:
+                    fileobj = sys.stdout
+                    bytes_print(data)
+                else:
+                    fileobj = self.fd_descriptor_cache.get(filename)
+                    if fileobj is None:
+                        fileobj = open(filename, 'rb+')
+                        self.fd_descriptor_cache[filename] = fileobj
+                    fileobj.seek(offset)
+                    fileobj.write(data)
                 LOGGER.debug("Writing data to: %s, offset: %s",
                              filename, offset)
-                fileobj.write(data)
                 fileobj.flush()
             elif isinstance(task, IOCloseRequest):
                 LOGGER.debug("IOCloseRequest received for %s, closing file.",
@@ -239,7 +243,7 @@ class PrintThread(threading.Thread):
         self._lock = threading.Lock()
         self._needs_newline = False
 
-        self._total_parts = 0
+        self._total_parts = '...'
         self._total_files = '...'
 
         # This is a public attribute that clients can inspect to determine

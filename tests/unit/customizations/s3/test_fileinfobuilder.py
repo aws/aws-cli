@@ -22,7 +22,8 @@ class TestFileInfoBuilder(unittest.TestCase):
     def test_info_setter(self):
         info_setter = FileInfoBuilder(service='service', endpoint='endpoint',
                                       source_endpoint='source_endpoint',
-                                      parameters='parameters')
+                                      parameters='parameters',
+                                      is_stream='is_stream')
         files = [FileStat(src='src', dest='dest', compare_key='compare_key',
                           size='size', last_update='last_update',
                           src_type='src_type', dest_type='dest_type',

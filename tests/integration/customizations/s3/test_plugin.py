@@ -28,7 +28,7 @@ import socket
 import botocore.session
 import six
 
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3 import constants
@@ -44,12 +44,13 @@ def cd(directory):
         os.chdir(original)
 
 
-def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True):
+def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True,
+        input_data=None):
     if not env_vars:
         env_vars = os.environ.copy()
         env_vars['AWS_DEFAULT_REGION'] = "us-west-2"
     return _aws(command, collect_memory=collect_memory, env_vars=env_vars,
-                wait_for_finish=wait_for_finish)
+                wait_for_finish=wait_for_finish, input_data=input_data)
 
 
 class BaseS3CLICommand(unittest.TestCase):
@@ -1329,6 +1330,100 @@ class TestFileWithSpaces(BaseS3CLICommand):
         self.assertEqual(p2.stdout, '')
         self.assertEqual(p2.stderr, '')
         self.assertEqual(p2.rc, 0)
+
+
+class TestStreams(BaseS3CLICommand):
+    def test_upload(self):
+        """
+        This tests uploading a small stream from stdin.
+        """
+        bucket_name = self.create_bucket()
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=b'This is a test')
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'stream'))
+        self.assertEqual(self.get_key_contents(bucket_name, 'stream'),
+                         'This is a test')
+
+    def test_unicode_upload(self):
+        """
+        This tests being able to upload unicode from stdin.
+        """
+        unicode_str = u'\u00e9 This is a test'
+        byte_str = unicode_str.encode('utf-8')
+        bucket_name = self.create_bucket()
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=byte_str)
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'stream'))
+        self.assertEqual(self.get_key_contents(bucket_name, 'stream'),
+                         unicode_str)
+
+    def test_multipart_upload(self):
+        """
+        This tests the ability to multipart upload streams from stdin.
+        The data has some unicode in it to avoid having to do a seperate
+        multipart upload test just for unicode.
+        """
+
+        bucket_name = self.create_bucket()
+        data = u'\u00e9bcd' * (1024 * 1024 * 10)
+        data_encoded = data.encode('utf-8')
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=data_encoded)
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'stream'))
+        self.assert_key_contents_equal(bucket_name, 'stream', data)
+
+    def test_download(self):
+        """
+        This tests downloading a small stream from stdout.
+        """
+        bucket_name = self.create_bucket()
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=b'This is a test')
+        self.assert_no_errors(p)
+
+        p = aws('s3 cp s3://%s/stream -' % bucket_name)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, 'This is a test')
+
+    def test_unicode_download(self):
+        """
+        This tests downloading a small unicode stream from stdout.
+        """
+        bucket_name = self.create_bucket()
+
+        data = u'\u00e9 This is a test'
+        data_encoded = data.encode('utf-8')
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=data_encoded)
+        self.assert_no_errors(p)
+
+        # Downloading the unicode stream to standard out.
+        p = aws('s3 cp s3://%s/stream -' % bucket_name)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
+
+    def test_multipart_download(self):
+        """
+        This tests the ability to multipart download streams to stdout.
+        The data has some unicode in it to avoid having to do a seperate
+        multipart download test just for unicode.
+        """
+        bucket_name = self.create_bucket()
+
+        # First lets upload some data via streaming since
+        # its faster and we do not have to write to a file!
+        data = u'\u00e9bcd' * (1024 * 1024 * 10)
+        data_encoded = data.encode('utf-8')
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=data_encoded)
+
+        # Download the unicode stream to standard out.
+        p = aws('s3 cp s3://%s/stream -' % bucket_name)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
 
 
 if __name__ == "__main__":

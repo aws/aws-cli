@@ -20,7 +20,8 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister, create_warning
+from awscli.customizations.s3.utils import BucketLister, create_warning, \
+    find_dest_path_comp_key
 from awscli.errorhandler import ClientError
 
 
@@ -131,26 +132,13 @@ class FileGenerator(object):
         ``dir_op`` and ``use_src_name`` flags affect which files are used and
         ensure the proper destination paths and compare keys are formed.
         """
-        src = files['src']
-        dest = files['dest']
-        src_type = src['type']
-        dest_type = dest['type']
         function_table = {'s3': self.list_objects, 'local': self.list_files}
-        sep_table = {'s3': '/', 'local': os.sep}
-        source = src['path']
+        source = files['src']['path']
+        src_type = files['src']['type']
+        dest_type = files['dest']['type']
         file_list = function_table[src_type](source, files['dir_op'])
         for src_path, size, last_update in file_list:
-            if files['dir_op']:
-                rel_path = src_path[len(src['path']):]
-            else:
-                rel_path = src_path.split(sep_table[src_type])[-1]
-            compare_key = rel_path.replace(sep_table[src_type], '/')
-            if files['use_src_name']:
-                dest_path = dest['path']
-                dest_path += rel_path.replace(sep_table[src_type],
-                                              sep_table[dest_type])
-            else:
-                dest_path = dest['path']
+            dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             yield FileStat(src=src_path, dest=dest_path,
                            compare_key=compare_key, size=size,
                            last_update=last_update, src_type=src_type,

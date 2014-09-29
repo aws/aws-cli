@@ -63,7 +63,8 @@ class BasicTask(OrderableTask):
     attributes like ``session`` object in order for the filename to
     perform its designated operation.
     """
-    def __init__(self, session, filename, parameters, result_queue):
+    def __init__(self, session, filename, parameters,
+                 result_queue, payload=None):
         self.session = session
         self.service = self.session.get_service('s3')
 
@@ -72,6 +73,7 @@ class BasicTask(OrderableTask):
 
         self.parameters = parameters
         self.result_queue = result_queue
+        self.payload = payload
 
     def __call__(self):
         self._execute_task(attempts=3)
@@ -84,9 +86,12 @@ class BasicTask(OrderableTask):
                                       error_message=last_error)
             return
         filename = self.filename
+        kwargs = {}
+        if self.payload:
+            kwargs['payload'] = self.payload
         try:
             if not self.parameters['dryrun']:
-                getattr(filename, filename.operation_name)()
+                getattr(filename, filename.operation_name)(**kwargs)
         except requests.ConnectionError as e:
             connect_error = str(e)
             LOGGER.debug("%s %s failure: %s",
@@ -195,13 +200,14 @@ class UploadPartTask(OrderableTask):
     complete the multipart upload initiated by the ``FileInfo``
     object.
     """
-    def __init__(self, part_number, chunk_size,
-                 result_queue, upload_context, filename):
+    def __init__(self, part_number, chunk_size, result_queue, upload_context,
+                 filename, payload=None):
         self._result_queue = result_queue
         self._upload_context = upload_context
         self._part_number = part_number
         self._chunk_size = chunk_size
         self._filename = filename
+        self._payload = payload
 
     def _read_part(self):
         actual_filename = self._filename.src
@@ -216,9 +222,13 @@ class UploadPartTask(OrderableTask):
             LOGGER.debug("Waiting for upload id.")
             upload_id = self._upload_context.wait_for_upload_id()
             bucket, key = find_bucket_key(self._filename.dest)
-            total = int(math.ceil(
-                self._filename.size/float(self._chunk_size)))
-            body = self._read_part()
+            if self._filename.is_stream:
+                body = self._payload
+                total = self._upload_context.expected_parts
+            else:
+                total = int(math.ceil(
+                    self._filename.size/float(self._chunk_size)))
+                body = self._read_part()
             params = {'endpoint': self._filename.endpoint,
                       'bucket': bucket, 'key': key,
                       'part_number': self._part_number,
@@ -393,16 +403,23 @@ class DownloadPartTask(OrderableTask):
         body.set_socket_timeout(self.READ_TIMEOUT)
         amount_read = 0
         current = body.read(iterate_chunk_size)
+        if self._filename.is_stream:
+            self._context.wait_for_turn(self._part_number)
         while current:
             offset = self._part_number * self._chunk_size + amount_read
             LOGGER.debug("Submitting IORequest to write queue.")
-            self._io_queue.put(IORequest(self._filename.dest, offset, current))
+            self._io_queue.put(
+                IORequest(self._filename.dest, offset, current,
+                          self._filename.is_stream)
+            )
             LOGGER.debug("Request successfully submitted.")
             amount_read += len(current)
             current = body.read(iterate_chunk_size)
         # Change log message.
         LOGGER.debug("Done queueing writes for part number %s to file: %s",
                      self._part_number, self._filename.dest)
+        if self._filename.is_stream:
+            self._context.done_with_turn()
 
 
 class CreateMultipartUploadTask(BasicTask):
@@ -530,7 +547,7 @@ class MultipartUploadContext(object):
     _CANCELLED = '_CANCELLED'
     _COMPLETED = '_COMPLETED'
 
-    def __init__(self, expected_parts):
+    def __init__(self, expected_parts='...'):
         self._upload_id = None
         self._expected_parts = expected_parts
         self._parts = []
@@ -539,6 +556,10 @@ class MultipartUploadContext(object):
         self._parts_condition = threading.Condition(self._lock)
         self._upload_complete_condition = threading.Condition(self._lock)
         self._state = self._UNSTARTED
+
+    @property
+    def expected_parts(self):
+        return self._expected_parts
 
     def announce_upload_id(self, upload_id):
         with self._upload_id_condition:
@@ -551,9 +572,15 @@ class MultipartUploadContext(object):
             self._parts.append({'ETag': etag, 'PartNumber': part_number})
             self._parts_condition.notifyAll()
 
+    def announce_total_parts(self, total_parts):
+        with self._parts_condition:
+            self._expected_parts = total_parts
+            self._parts_condition.notifyAll()
+
     def wait_for_parts_to_finish(self):
         with self._parts_condition:
-            while len(self._parts) < self._expected_parts:
+            while self._expected_parts == '...' or \
+                    len(self._parts) < self._expected_parts:
                 if self._state == self._CANCELLED:
                     raise UploadCancelledError("Upload has been cancelled.")
                 self._parts_condition.wait(timeout=1)
@@ -653,9 +680,11 @@ class MultipartDownloadContext(object):
             lock = threading.Lock()
         self._lock = lock
         self._created_condition = threading.Condition(self._lock)
+        self._submit_write_condition = threading.Condition(self._lock)
         self._completed_condition = threading.Condition(self._lock)
         self._state = self._STATES['UNSTARTED']
         self._finished_parts = set()
+        self._current_stream_part_number = 0
 
     def announce_completed_part(self, part_number):
         with self._completed_condition:
@@ -684,6 +713,19 @@ class MultipartDownloadContext(object):
                     raise DownloadCancelledError(
                         "Download has been cancelled.")
                 self._completed_condition.wait(timeout=1)
+
+    def wait_for_turn(self, part_number):
+        with self._submit_write_condition:
+            while self._current_stream_part_number != part_number:
+                if self._state == self._STATES['CANCELLED']:
+                    raise DownloadCancelledError(
+                        "Download has been cancelled.")
+                self._submit_write_condition.wait(timeout=0.2)
+
+    def done_with_turn(self):
+        with self._submit_write_condition:
+            self._current_stream_part_number += 1
+            self._submit_write_condition.notifyAll()
 
     def cancel(self):
         with self._lock:

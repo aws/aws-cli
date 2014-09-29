@@ -1019,6 +1019,35 @@ class TestOutput(BaseS3CLICommand):
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)
 
+    def test_error_and_success_output_only_show_errors(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+
+        # Create one file.
+        self.files.create_file('f', 'foo contents')
+
+        # Create another file that has a slightly longer name than the first.
+        self.files.create_file('bar.txt', 'bar contents')
+
+        # Create a prefix that will cause the second created file to have a key
+        # longer than 1024 bytes which is not allowed in s3.
+        long_prefix = 'd' * 1022
+
+        p = aws('s3 cp %s s3://%s/%s/ --only-show-errors --recursive'
+                % (self.files.rootdir, bucket_name, long_prefix))
+
+        # Check that there was at least one error.
+        self.assertEqual(p.rc, 1)
+
+        # Check that there was nothing written to stdout for successful upload.
+        self.assertEqual('', p.stdout)
+
+        # Check that the failed message showed up in stderr.
+        self.assertIn('upload failed', p.stderr)
+
+        # Ensure the expected successful key exists in the bucket.
+        self.assertTrue(self.key_exists(bucket_name, long_prefix + '/f'))
+
 
 class TestDryrun(BaseS3CLICommand):
     """

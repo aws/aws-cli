@@ -16,7 +16,8 @@ Next Release (TBD)
   errors and warnings but suppresses all other output.
 * feature:``aws s3 cp``: Added ability to upload local
   file streams from standard input to s3 and download s3
-  objects as local file streams to standard output. 
+  objects as local file streams to standard output.
+  (`issue 903 <https://github.com/aws/aws-cli/pull/903>`__)
 
 
 1.4.4

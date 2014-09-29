@@ -722,7 +722,7 @@ class CommandParameters(object):
         if self.parameters['src'] == '-' or self.parameters['dest'] == '-':
             self.parameters['is_stream'] = True
             self.parameters['dir_op'] = False
-            self.parameters['quiet'] = True
+            self.parameters['only_show_errors'] = True
         if self.parameters['is_stream'] and self.cmd != 'cp':
             raise ValueError("Streaming currently is only compatible with "
                              "single file cp commands")

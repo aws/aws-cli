@@ -486,7 +486,7 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters(self.session, 'cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertTrue(cmd_params.parameters['is_stream'])
-        self.assertTrue(cmd_params.parameters['quiet'])
+        self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_streaming_paths_download(self):
@@ -494,7 +494,7 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters(self.session, 'cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertTrue(cmd_params.parameters['is_stream'])
-        self.assertTrue(cmd_params.parameters['quiet'])
+        self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
     def test_validate_no_streaming_paths(self):

@@ -71,7 +71,8 @@ class S3Handler(object):
             result_queue=self.result_queue,
             quiet=self.params['quiet'],
             only_show_errors=self.params['only_show_errors'],
-            max_queue_size=MAX_QUEUE_SIZE, write_queue=self.write_queue
+            max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
+            write_queue=self.write_queue
         )
         self._multipart_uploads = []
         self._multipart_downloads = []

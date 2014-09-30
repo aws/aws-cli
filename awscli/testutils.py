@@ -395,7 +395,7 @@ def _escape_quotes(command):
 
 
 def aws(command, collect_memory=False, env_vars=None,
-        wait_for_finish=True, input_data=None):
+        wait_for_finish=True, input_data=None, input_file=None):
     """Run an aws command.
 
     This help function abstracts the differences of running the "aws"
@@ -429,7 +429,9 @@ def aws(command, collect_memory=False, env_vars=None,
     env['AWS_DEFAULT_REGION'] = "us-east-1"
     if env_vars is not None:
         env = env_vars
-    process = Popen(full_command, stdout=PIPE, stderr=PIPE, stdin=PIPE,
+    if input_file is None:
+        input_file = PIPE
+    process = Popen(full_command, stdout=PIPE, stderr=PIPE, stdin=input_file,
                     shell=True, env=env)
     if not wait_for_finish:
         return process

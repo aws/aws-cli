@@ -1146,15 +1146,15 @@ class TestMemoryUtilization(BaseS3CLICommand):
 
         # Create a 200 MB file that will be streamed
         file_size = 1024 * 1024 * 200
-        file_contents = 'a' * file_size
-        foo_txt = self.files.create_file('foo.txt', file_contents)
+        foo_txt = self.files.create_file('foo.txt', 'a' * file_size)
 
-        # Set the maximum memory to about 2/3 of the size of the file.
-        # This test is to ensure that the whole file is not put into memory.
         # The current memory threshold is set at about the peak amount for
         # performing a streaming upload of a file larger than 100 MB. So
-        # this maximum needs to be bumped up.
-        max_mem_allowed = file_size * 2/3
+        # this maximum needs to be bumped up.  The maximum memory allowance
+        # is increased by two chunksizes because that is the maximum
+        # amount of chunks that will be queued while not being operated on
+        # by a thread when performing a streaming multipart upload.
+        max_mem_allowed = self.max_mem_allowed + 2 * constants.CHUNKSIZE
 
         full_command = 's3 cp - s3://%s/foo.txt' % bucket_name
         with open(foo_txt, 'rb') as f:

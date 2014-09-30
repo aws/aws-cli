@@ -413,6 +413,19 @@ def aws(command, collect_memory=False, env_vars=None,
     proper cleanup.  This can be useful if you want to test timeout's
     or how the CLI responds to various signals.
 
+    :type input_data: string
+    :param input_data: This string will be communicated to the process through
+        the stdin of the process.  It essentially allows the user to
+        avoid having to use a file handle to pass information to the process.
+        Note that this string is not passed on creation of the process, but
+        rather communicated to the process.
+
+    :type input_file: a file handle
+    :param input_file: This is a file handle that will act as the
+        the stdin of the process immediately on creation.  Essentially
+        any data written to the file will be read from stdin of the
+        process. This is needed if you plan to stream data into stdin while
+        collecting memory.
     """
     if platform.system() == 'Windows':
         command = _escape_quotes(command)

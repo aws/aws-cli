@@ -22,8 +22,9 @@ import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
-from awscli.customizations.s3.syncstrategy import DefaultSyncStrategy, \
-    DefaultNotAtDestSyncStrategy, DefaultNotAtSrcSyncStrategy    
+from awscli.customizations.s3.syncstrategy.syncstrategy import \
+    DefaultSyncStrategy, DefaultNotAtDestSyncStrategy, \
+    DefaultNotAtSrcSyncStrategy    
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -193,7 +194,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                                                 'file_info_builder',
                                                 's3_handler'])
 
-    def test_choose_sync_strategy(self):
+    def test_choose_sync_strategy_default(self):
         session = Mock()
         cmd_arc = CommandArchitecture(session, 'sync',
                                       {'region': 'us-east-1',
@@ -202,7 +203,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         # Check if no plugins return their sync strategy.  Should
         # result in the default strategies
         session.emit.return_value = None
-        sync_strategies = cmd_arc._choose_sync_strategies()
+        sync_strategies = cmd_arc.choose_sync_strategies()
         self.assertEqual(
             sync_strategies['file_at_src_and_dest_sync_strategy'].__class__,
             DefaultSyncStrategy
@@ -216,6 +217,12 @@ class CommandArchitectureTest(S3HandlerBaseTest):
             DefaultNotAtSrcSyncStrategy
         )
 
+    def test_choose_sync_strategy_overwrite(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
+                                      {'region': 'us-east-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None})
         # Check that the default sync strategy is overwritted if a plugin
         # returns its sync strategy.
         mock_strategy = Mock()
@@ -232,7 +239,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                      (None, mock_not_at_src_sync_strategy)]
 
         session.emit.return_value = responses
-        sync_strategies = cmd_arc._choose_sync_strategies()
+        sync_strategies = cmd_arc.choose_sync_strategies()
         self.assertEqual(
             sync_strategies['file_at_src_and_dest_sync_strategy'],
             mock_strategy

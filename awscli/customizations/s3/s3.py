@@ -14,7 +14,8 @@ from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.subcommands import ListCommand, WebsiteCommand, \
     CpCommand, MvCommand, RmCommand, SyncCommand, MbCommand, RbCommand
-from awscli.customizations.s3.syncstrategy import register_sync_strategies
+from awscli.customizations.s3.syncstrategy.registerstrategy import \
+    register_sync_strategies
 
 
 def awscli_initialize(cli):

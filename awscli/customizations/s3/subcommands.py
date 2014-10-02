@@ -26,10 +26,11 @@ from awscli.customizations.s3.filegenerator import FileGenerator
 from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
-from awscli.customizations.s3.syncstrategy import DefaultSyncStrategy, \
-    DefaultNotAtDestSyncStrategy, DefaultNotAtSrcSyncStrategy
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key
+from awscli.customizations.s3.syncstrategy.syncstrategy import \
+    DefaultSyncStrategy, DefaultNotAtDestSyncStrategy, \
+    DefaultNotAtSrcSyncStrategy
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -518,7 +519,7 @@ class CommandArchitecture(object):
         else:
             return True
     
-    def _choose_sync_strategies(self):
+    def choose_sync_strategies(self):
         """Determines the sync strategy for the command.
 
         It defaults to the default sync strategies but a customizable sync
@@ -620,7 +621,7 @@ class CommandArchitecture(object):
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
                                             result_queue=result_queue)
 
-        sync_strategies = self._choose_sync_strategies()
+        sync_strategies = self.choose_sync_strategies()
 
         command_dict = {}
         if self.cmd == 'sync':

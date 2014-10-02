@@ -15,69 +15,8 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
-
-SIZE_ONLY = {'name': 'size-only', 'action': 'store_true',
-             'help_text': (
-                 'Makes the size of each key the only criteria used to '
-                 'decide whether to sync from source to destination.')}
-
-EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
-                    'help_text': (
-                        'When syncing from S3 to local, same-sized '
-                        'items will be ignored only when the timestamps '
-                        'match exactly. The default behavior is to ignore '
-                        'same-sized items unless the local version is newer '
-                        'than the S3 version.')}
-
-DELETE = {'name': 'delete', 'action': 'store_true',
-          'help_text': (
-              "Files that exist in the destination but not in the source are "
-              "deleted during sync.")}
-
 VALID_SYNC_TYPES = ['file_at_src_and_dest', 'file_not_at_dest',
                     'file_not_at_src']
-
-
-def register_sync_strategies(command_table, session, **kwargs):
-    """Registers the different sync strategies.
-
-    To register a sync strategy add
-    ``register_sync_strategy(session, YourSyncStrategyClass, sync_type)``
-    to the list of registered strategies in this function.
-    """
-
-    # Register the size only sync strategy.
-    register_sync_strategy(session, SizeOnlySyncStrategy)
-
-    # Register the exact timestamps sync strategy.
-    register_sync_strategy(session, ExactTimestampsSyncStrategy)
-
-    # Register the delete sync strategy.
-    register_sync_strategy(session, DeleteSyncStrategy,
-                           'file_not_at_src')
-
-    # Register additional sync strategies here...
-
-
-def register_sync_strategy(session, strategy_cls,
-                           sync_type='file_at_src_and_dest'):
-    """Registers a single sync strategy
-
-    :param session: The session that the sync strategy is being registered to.
-    :param strategy_cls: The class of the sync strategy to be registered.
-    :param sync_type: A string representing when to perform the sync strategy.
-        See ``__init__`` method of ``BaseSyncStrategy`` for possible options.
-    """
-    strategy = strategy_cls(sync_type)
-    strategy.register_strategy(session)
-
-
-def total_seconds(td):
-    """
-    timedelta's time_seconds() function for python 2.6 users
-    """
-    return (td.microseconds + (td.seconds + td.days * 24 *
-                               3600) * 10**6) / 10**6
 
 
 class BaseSyncStrategy(object):
@@ -121,15 +60,14 @@ class BaseSyncStrategy(object):
             'file_not_at_src': apply sync strategy on a file that
             exists at the destination but not the source.
         """
-        self._sync_type = None
-        self._set_sync_type(sync_type)
+        self._check_sync_type(sync_type)
+        self._sync_type = sync_type
 
-    def _set_sync_type(self, sync_type):
+    def _check_sync_type(self, sync_type):
         if sync_type not in VALID_SYNC_TYPES:
             raise ValueError("Unknown sync_type: %s.\n"
                              "Valid options are %s." %
                              (sync_type, VALID_SYNC_TYPES))
-        self._sync_type = sync_type
 
     @property
     def sync_type(self):
@@ -138,8 +76,8 @@ class BaseSyncStrategy(object):
     def register_strategy(self, session):
         """Registers the sync strategy class to the given session."""
 
-        session.register('initiate-building-arg-table', self._add_sync_argument)
-        session.register('choosing-s3-sync-strategy', self._use_sync_strategy)
+        session.register('initiate-building-arg-table', self.add_sync_argument)
+        session.register('choosing-s3-sync-strategy', self.use_sync_strategy)
 
     def determine_should_sync(self, src_file, dest_file):
         """Subclasses should implement this method.
@@ -195,13 +133,13 @@ class BaseSyncStrategy(object):
             dest = self.ARGUMENT.get('dest', None)
         return dest
 
-    def _add_sync_argument(self, arg_table, session, **kwargs):
+    def add_sync_argument(self, arg_table, session, **kwargs):
         # This function adds sync strategy's argument to the ``SyncCommand``
         # argument table.
         if self.ARGUMENT is not None:
             arg_table.append(self.ARGUMENT)
 
-    def _use_sync_strategy(self, params, **kwargs):
+    def use_sync_strategy(self, params, **kwargs):
         # This function determines which sync strategy the ``SyncCommand`` will
         # use. The sync strategy object must be returned by this method
         # if it is to be chosen as the sync strategy to use.
@@ -226,7 +164,8 @@ class BaseSyncStrategy(object):
         if self.arg_dest is not None:
             name_in_params = self.arg_dest
         # Then check ``name`` of ``ARGUMENT``, the boolean value will be
-        # located at the argument's ``name`` value in the ``params`` dictionary.
+        # located at the argument's ``name`` value in the ``params``
+        # dictionary.
         elif self.arg_name is not None:
             # ``name`` has all ``-`` replaced with ``_`` in ``params``.
             name_in_params = self.arg_name.replace('-', '_')
@@ -235,6 +174,15 @@ class BaseSyncStrategy(object):
                 # Return the sync strategy object to be used for syncing.
                 return self
         return None
+
+    def total_seconds(self, td):
+        """
+        timedelta's time_seconds() function for python 2.6 users
+
+        :param td: The difference between two datetime objects.
+        """
+        return (td.microseconds + (td.seconds + td.days * 24 *
+                                   3600) * 10**6) / 10**6
 
     def compare_size(self, src_file, dest_file):
         """
@@ -255,7 +203,7 @@ class BaseSyncStrategy(object):
         delta = dest_time - src_time
         cmd = src_file.operation_name
         if cmd == "upload" or cmd == "copy":
-            if total_seconds(delta) >= 0:
+            if self.total_seconds(delta) >= 0:
                 # Destination is newer than source.
                 return True
             else:
@@ -265,7 +213,7 @@ class BaseSyncStrategy(object):
                 return False
         elif cmd == "download":
 
-            if total_seconds(delta) <= 0:
+            if self.total_seconds(delta) <= 0:
                 return True
             else:
                 # delta is positive, so the destination
@@ -312,55 +260,3 @@ class DefaultNotAtDestSyncStrategy(BaseSyncStrategy):
 
     def _use_sync_strategy(self, params):
         pass
-
-
-class SizeOnlySyncStrategy(BaseSyncStrategy):
-
-    ARGUMENT = SIZE_ONLY
-
-    def determine_should_sync(self, src_file, dest_file):
-        same_size = self.compare_size(src_file, dest_file)
-        should_sync = not same_size
-        if should_sync:
-            LOG.debug("syncing: %s -> %s, size_changed: %s",
-                      src_file.src, src_file.dest, not same_size)
-        return should_sync
-
-
-class ExactTimestampsSyncStrategy(BaseSyncStrategy):
-
-    ARGUMENT = EXACT_TIMESTAMPS
-
-    def determine_should_sync(self, src_file, dest_file):
-        same_size = self.compare_size(src_file, dest_file)
-        same_last_modified_time = self.compare_time(src_file, dest_file)
-        should_sync = (not same_size) or (not same_last_modified_time)
-        if should_sync:
-            LOG.debug("syncing: %s -> %s, size_changed: %s, "
-                      "last_modified_time_changed: %s",
-                      src_file.src, src_file.dest,
-                      not same_size, not same_last_modified_time)
-        return should_sync
-
-    def compare_time(self, src_file, dest_file):
-        src_time = src_file.last_update
-        dest_time = dest_file.last_update
-        delta = dest_time - src_time
-        cmd = src_file.operation_name
-        if cmd == 'download':
-            return total_seconds(delta) == 0
-        else:
-            return super(SizeOnlySyncStrategy, self).compare_time(src_file,
-                                                                  dest_file)
-
-
-class DeleteSyncStrategy(BaseSyncStrategy):
-
-    ARGUMENT = DELETE
-
-    def determine_should_sync(self, src_file, dest_file):
-        dest_file.operation_name = 'delete'
-        LOG.debug("syncing: (None) -> %s (remove), file does not "
-                  "exist at source (%s) and delete mode enabled",
-                  dest_file.src, dest_file.dest)
-        return True

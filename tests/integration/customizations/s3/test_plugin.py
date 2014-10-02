@@ -1145,8 +1145,11 @@ class TestMemoryUtilization(BaseS3CLICommand):
         bucket_name = self.create_bucket()
 
         # Create a 200 MB file that will be streamed
-        file_size = 1024 * 1024 * 200
-        foo_txt = self.files.create_file('foo.txt', 'a' * file_size)
+        num_mb = 200
+        foo_txt = self.files.create_file('foo.txt', '')
+        with open(foo_txt, 'wb') as f:
+            for i in range(num_mb):
+                f.write(b'a' * 1024 * 1024)
 
         # The current memory threshold is set at about the peak amount for
         # performing a streaming upload of a file larger than 100 MB. So

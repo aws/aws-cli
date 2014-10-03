@@ -20,6 +20,7 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
+from botocore import parsers
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -42,6 +43,17 @@ LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
 
+# NOTE: this is temporary.
+# Botocore now parsers timestamps to datetime.datetime objects.
+# The AWS CLI has historically not parsed timestamp objects and treated
+# them as strings.
+# We will eventually want to allow for users to specify how to parse
+# the timestamp formats, but for now, we set the default timestamp parser
+# to be a noop.
+# The eventual plan is to add a client option for providing a timestamp parser,
+# and once the CLI has switched over to client objects we can remove this
+# and set the timestamp parsing on a per client basis.
+parsers.DEFAULT_TIMESTAMP_PARSER = lambda x: x
 
 
 def main():
@@ -136,16 +148,15 @@ class CLIDriver(object):
                     choices_path = choices.format(provider=provider)
                     choices = list(self.session.get_data(choices_path))
                 option_params['choices'] = choices
-            argument_object = self._create_argument_object(option,
-                                                           option_params)
-            argument_object.add_to_arg_table(argument_table)
+            cli_argument = self._create_cli_argument(option, option_params)
+            cli_argument.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
         self.session.emit('building-top-level-params',
                           argument_table=argument_table)
         return argument_table
 
-    def _create_argument_object(self, option_name, option_params):
+    def _create_cli_argument(self, option_name, option_params):
         return CustomArgument(
             option_name, help_text=option_params.get('help', ''),
             dest=option_params.get('dest'),default=option_params.get('default'),
@@ -476,35 +487,32 @@ class ServiceOperation(object):
                 arg_object.add_to_params(service_params, value)
         return service_params
 
-    def _unpack_arg(self, arg_object, value):
+    def _unpack_arg(self, cli_argument, value):
         # Unpacks a commandline argument into a Python value by firing the
         # load-cli-arg.service-name.operation-name event.
         session = self._service_object.session
         service_name = self._service_object.endpoint_prefix
         operation_name = xform_name(self._operation_object.name, '-')
 
-        param = arg_object
-        if hasattr(param, 'argument_object') and param.argument_object:
-            param = param.argument_object
-
         return unpack_argument(session, service_name, operation_name,
-                               param, value)
+                               cli_argument, value)
 
     def _create_argument_table(self):
         argument_table = OrderedDict()
-        # Arguments are treated a differently than service and
-        # operations.  Instead of doing a get_parameter() we just
-        # load all the parameter objects up front for the operation.
-        # We could potentially do the same thing as service/operations
-        # but botocore already builds all the parameter objects
-        # when calling an operation so we'd have to optimize that first
-        # before using get_parameter() in the cli would be advantageous
-        for argument in self._operation_object.params:
-            cli_arg_name = argument.cli_name[2:]
-            arg_class = self.ARG_TYPES.get(argument.type,
+        input_shape = self._operation_object.model.input_shape
+        required_arguments = []
+        arg_dict = {}
+        if input_shape is not None:
+            required_arguments = input_shape.required_members
+            arg_dict = self._operation_object.model.input_shape.members
+        for arg_name, arg_shape in arg_dict.items():
+            cli_arg_name = xform_name(arg_name, '-')
+            arg_class = self.ARG_TYPES.get(arg_shape.type_name,
                                            self.DEFAULT_ARG_CLASS)
-            arg_object = arg_class(cli_arg_name, argument,
-                                   self._operation_object)
+            is_required = arg_name in required_arguments
+            arg_object = arg_class(cli_arg_name, arg_shape,
+                                   self._operation_object, is_required,
+                                   serialized_name=arg_name)
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
         self._emit('building-argument-table.%s.%s' % (self._parent_name,

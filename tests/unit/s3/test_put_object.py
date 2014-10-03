@@ -48,8 +48,12 @@ class TestGetObject(BaseAWSCommandParamsTest):
         result = {'uri_params': {'Bucket': 'mybucket',
                                  'Key': 'mykey'},
                   'headers': {'Expect': '100-continue'}}
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
-        self.assertIsInstance(self.last_params['payload'].getvalue(), file_type)
+        expected = {
+            'Bucket': 'mybucket',
+            'Key': 'mykey'
+        }
+        self.assert_params_for_cmd2(cmdline, expected, ignore_params=['Body'])
+        self.assertEqual(self.last_kwargs['Body'].name, self.file_path)
 
     def test_headers(self):
         cmdline = self.prefix
@@ -59,15 +63,15 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --acl public-read'
         cmdline += ' --content-encoding x-gzip'
         cmdline += ' --content-type text/plain'
-        result = {'uri_params': {'Bucket': 'mybucket', 'Key': 'mykey'},
-                  'headers': {'x-amz-acl': 'public-read',
-                              'Content-Encoding': 'x-gzip',
-                              'Content-Type': 'text/plain',
-                              'Expect': '100-continue',
-                              }}
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
-        payload = self.last_params['payload'].getvalue()
-        self.assertEqual(payload.name, self.file_path)
+        expected = {
+            'ACL': 'public-read',
+            'Bucket': 'mybucket',
+            'ContentEncoding': 'x-gzip',
+            'ContentType': 'text/plain',
+            'Key': 'mykey'
+        }
+        self.assert_params_for_cmd2(cmdline, expected, ignore_params=['Body'])
+        self.assertEqual(self.last_kwargs['Body'].name, self.file_path)
 
     def test_website_redirect(self):
         cmdline = self.prefix
@@ -75,13 +79,13 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --key mykey'
         cmdline += ' --acl public-read'
         cmdline += ' --website-redirect-location http://www.example.com/'
-        result = {
-            'uri_params': {'Bucket': 'mybucket', 'Key': 'mykey'},
-            'headers': {
-                'x-amz-acl': 'public-read',
-                'x-amz-website-redirect-location': 'http://www.example.com/',
-            }}
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        expected = {
+            'ACL': 'public-read',
+            'Bucket': 'mybucket',
+            'Key': 'mykey',
+            'WebsiteRedirectLocation': 'http://www.example.com/'
+        }
+        self.assert_params_for_cmd2(cmdline, expected)
 
 
 if __name__ == "__main__":

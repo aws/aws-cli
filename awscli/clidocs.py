@@ -14,6 +14,7 @@ import logging
 from bcdoc.docevents import DOC_EVENTS
 
 from awscli import SCALAR_TYPES
+from awscli.argprocess import ParamShorthandDocGen
 
 LOG = logging.getLogger(__name__)
 
@@ -237,11 +238,11 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     def build_translation_map(self):
-        LOG.debug('build_translation_map')
         operation = self.help_command.obj
         d = {}
-        for param in operation.params:
-            d[param.name] = param.cli_name
+        for cli_name, cli_argument in self.help_command.arg_table.items():
+            if cli_argument.argument_model is not None:
+                d[cli_argument.argument_model.name] = cli_name
         for operation in operation.service.operations:
             d[operation.name] = operation.cli_name
         return d
@@ -268,89 +269,97 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.h2('Description')
         doc.include_doc_string(operation.documentation)
 
-    def _json_example_value_name(self, param, include_enum_values=True):
+    def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
         # are included as the sample JSON value.
-        if param.type == 'string':
-            if hasattr(param, 'enum') and include_enum_values:
-                choices = param.enum
+        if argument_model.type_name == 'string':
+            if 'enum' in argument_model.metadata and include_enum_values:
+                choices = argument_model.metadata['enum']
                 return '|'.join(['"%s"' % c for c in choices])
             else:
                 return '"string"'
-        elif param.type == 'boolean':
+        elif argument_model.type_name == 'boolean':
             return 'true|false'
         else:
-            return '%s' % param.type
+            return '%s' % argument_model.type_name
 
-    def _json_example(self, doc, param):
-        if param.type == 'list':
+    def _json_example(self, doc, argument_model):
+        if argument_model.type_name == 'list':
             doc.write('[')
-            if param.members.type in SCALAR_TYPES:
-                doc.write('%s, ...' % self._json_example_value_name(param.members))
+            if argument_model.member.type_name in SCALAR_TYPES:
+                doc.write('%s, ...' % self._json_example_value_name(argument_model.member))
             else:
                 doc.style.indent()
                 doc.style.new_line()
-                self._json_example(doc, param.members)
+                self._json_example(doc, argument_model.member)
                 doc.style.new_line()
                 doc.write('...')
                 doc.style.dedent()
                 doc.style.new_line()
             doc.write(']')
-        elif param.type == 'map':
+        elif argument_model.type_name == 'map':
             doc.write('{')
             doc.style.indent()
-            key_string = self._json_example_value_name(param.keys)
+            key_string = self._json_example_value_name(argument_model.key)
             doc.write('%s: ' % key_string)
-            if param.members.type in SCALAR_TYPES:
-                doc.write(self._json_example_value_name(param.members))
+            if argument_model.value.type_name in SCALAR_TYPES:
+                doc.write(self._json_example_value_name(argument_model.value))
             else:
                 doc.style.indent()
-                self._json_example(doc, param.members)
+                self._json_example(doc, argument_model.value)
                 doc.style.dedent()
             doc.style.new_line()
             doc.write('...')
             doc.style.dedent()
             doc.write('}')
-        elif param.type == 'structure':
+        elif argument_model.type_name == 'structure':
             doc.write('{')
             doc.style.indent()
             doc.style.new_line()
-            for i, member in enumerate(param.members):
-                if member.type in SCALAR_TYPES:
-                    doc.write('"%s": %s' % (member.name,
-                        self._json_example_value_name(member)))
-                elif member.type == 'structure':
-                    doc.write('"%s": ' % member.name)
-                    self._json_example(doc, member)
-                elif member.type == 'map':
-                    doc.write('"%s": ' % member.name)
-                    self._json_example(doc, member)
-                elif member.type == 'list':
-                    doc.write('"%s": ' % member.name)
-                    self._json_example(doc, member)
-                if i < len(param.members) - 1:
-                    doc.write(',')
-                    doc.style.new_line()
-                else:
-                    doc.style.dedent()
-                    doc.style.new_line()
-            doc.write('}')
+            self._doc_input_structure_members(doc, argument_model)
+
+    def _doc_input_structure_members(self, doc, argument_model):
+        members = argument_model.members
+        for i, member_name in enumerate(members):
+            member_model = members[member_name]
+            member_type_name = member_model.type_name
+            if member_type_name in SCALAR_TYPES:
+                doc.write('"%s": %s' % (member_name,
+                    self._json_example_value_name(member_model)))
+            elif member_type_name == 'structure':
+                doc.write('"%s": ' % member_name)
+                self._json_example(doc, member_model)
+            elif member_type_name == 'map':
+                doc.write('"%s": ' % member_name)
+                self._json_example(doc, member_model)
+            elif member_type_name == 'list':
+                doc.write('"%s": ' % member_name)
+                self._json_example(doc, member_model)
+            if i < len(members) - 1:
+                doc.write(',')
+                doc.style.new_line()
+            else:
+                doc.style.dedent()
+                doc.style.new_line()
+        doc.write('}')
 
     def doc_option_example(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
-        argument = help_command.arg_table[arg_name]
-        if argument.group_name in self._arg_groups:
-            if argument.group_name in self._documented_arg_groups:
+        cli_argument = help_command.arg_table[arg_name]
+        if cli_argument.group_name in self._arg_groups:
+            if cli_argument.group_name in self._documented_arg_groups:
                 # Args with group_names (boolean args) don't
                 # need to generate example syntax.
                 return
-        param = argument.argument_object
-        if param and param.example_fn:
+        argument_model = cli_argument.argument_model
+        docgen = ParamShorthandDocGen()
+        if docgen.supports_shorthand(cli_argument):
             # TODO: bcdoc should not know about shorthand syntax. This
             # should be pulled out into a separate handler in the
             # awscli.customizations package.
-            example_syntax = param.example_fn(param)
-            if example_syntax is None:
+            example_shorthand_syntax = docgen.generate_shorthand_example(
+                cli_argument)
+            if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example
                 # needed for this param so we can immediately
@@ -359,11 +368,11 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.new_paragraph()
             doc.write('Shorthand Syntax')
             doc.style.start_codeblock()
-            for example_line in example_syntax.splitlines():
+            for example_line in example_shorthand_syntax.splitlines():
                 doc.writeln(example_line)
             doc.style.end_codeblock()
-        if param is not None and param.type == 'list' and \
-                param.members.type in SCALAR_TYPES:
+        if argument_model is not None and argument_model.type_name == 'list' and \
+                argument_model.member.type_name in SCALAR_TYPES:
             # A list of scalars is special.  While you *can* use
             # JSON ( ["foo", "bar", "baz"] ), you can also just
             # use the argparse behavior of space separated lists.
@@ -373,19 +382,20 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('Syntax')
             doc.style.start_codeblock()
             example_type = self._json_example_value_name(
-                param.members, include_enum_values=False)
+                argument_model.member, include_enum_values=False)
             doc.write('%s %s ...' % (example_type, example_type))
-            if hasattr(param.members, 'enum'):
+            if 'enum' in argument_model.member.metadata:
                 # If we have enum values, we can tell the user
                 # exactly what valid values they can provide.
-                self._write_valid_enums(doc, param.members.enum)
+                enum = argument_model.member.metadata['enum']
+                self._write_valid_enums(doc, enum)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
-        elif argument.cli_type_name not in SCALAR_TYPES:
+        elif cli_argument.cli_type_name not in SCALAR_TYPES:
             doc.style.new_paragraph()
             doc.write('JSON Syntax')
             doc.style.start_codeblock()
-            self._json_example(doc, param)
+            self._json_example(doc, argument_model)
             doc.style.end_codeblock()
             doc.style.new_paragraph()
 
@@ -396,38 +406,39 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write("    %s\n" % value)
         doc.write("\n")
 
-    def _doc_member(self, doc, member_name, member):
-        docs = member.get('documentation', '')
-        if member_name:
-            doc.write('%s -> (%s)' % (member_name, member['type']))
-        else:
-            doc.write('(%s)' % member['type'])
-        doc.style.indent()
-        doc.style.new_paragraph()
-        doc.include_doc_string(docs)
-        doc.style.new_paragraph()
-        if member['type'] == 'structure':
-            for sub_name in member['members']:
-                sub_member = member['members'][sub_name]
-                self._doc_member(doc, sub_name, sub_member)
-        elif member['type'] == 'map':
-            keys = member['keys']
-            self._doc_member(doc, keys.get('xmlname', 'key'), keys)
-            members = member['members']
-            self._doc_member(doc, members.get('xmlname', 'value'), members)
-        elif member['type'] == 'list':
-            self._doc_member(doc, '', member['members'])
-        doc.style.dedent()
-        doc.style.new_paragraph()
-
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc
         doc.style.h2('Output')
         operation = help_command.obj
-        output = operation.output
-        if output is None:
+        output_shape = operation.model.output_shape
+        if output_shape is None:
             doc.write('None')
         else:
-            for member_name in output['members']:
-                member = output['members'][member_name]
-                self._doc_member(doc, member_name, member)
+            for member_name, member_shape in output_shape.members.items():
+                self._doc_member_for_output(doc, member_name, member_shape)
+
+    def _doc_member_for_output(self, doc, member_name, member_shape):
+        docs = member_shape.documentation
+        if member_name:
+            doc.write('%s -> (%s)' % (member_name, member_shape.type_name))
+        else:
+            doc.write('(%s)' % member_shape.type_name)
+        doc.style.indent()
+        doc.style.new_paragraph()
+        doc.include_doc_string(docs)
+        doc.style.new_paragraph()
+        member_type_name = member_shape.type_name
+        if member_type_name == 'structure':
+            for sub_name, sub_shape in member_shape.members.items():
+                self._doc_member_for_output(doc, sub_name, sub_shape)
+        elif member_type_name == 'map':
+            key_shape = member_shape.key
+            key_name = key_shape.serialization.get('name', 'key')
+            self._doc_member_for_output(doc, key_name, key_shape)
+            value_shape = member_shape.value
+            value_name = value_shape.serialization.get('name', 'value')
+            self._doc_member_for_output(doc, value_name, value_shape)
+        elif member_type_name == 'list':
+            self._doc_member_for_output(doc, '', member_shape.member)
+        doc.style.dedent()
+        doc.style.new_paragraph()

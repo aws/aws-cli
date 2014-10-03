@@ -193,10 +193,9 @@ def check_error(response_data):
     response_data and raises an error when there is an error.
     """
     if response_data:
-        if 'Errors' in response_data:
-            errors = response_data['Errors']
-            for error in errors:
-                raise Exception("Error: %s\n" % error['Message'])
+        if 'Error' in response_data:
+            error = response_data['Error']
+            raise Exception("Error: %s\n" % error['Message'])
 
 
 def create_warning(path, error_message):
@@ -400,7 +399,7 @@ class BucketLister(object):
                                 True):
             pages = self._operation.paginate(self._endpoint, **kwargs)
             for response, page in pages:
-                contents = page['Contents']
+                contents = page.get('Contents', [])
                 for content in contents:
                     source_path = bucket + '/' + content['Key']
                     size = content['Size']
@@ -408,8 +407,9 @@ class BucketLister(object):
                     yield source_path, size, last_update
 
     def _decode_keys(self, parsed, **kwargs):
-        for content in parsed['Contents']:
-            content['Key'] = unquote_str(content['Key'])
+        if 'Contents' in parsed:
+            for content in parsed['Contents']:
+                content['Key'] = unquote_str(content['Key'])
 
 
 class ScopedEventHandler(object):

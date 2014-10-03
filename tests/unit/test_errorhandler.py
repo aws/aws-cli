@@ -26,12 +26,10 @@ class TestErrorHandler(unittest.TestCase):
 
     def test_error_handler_client_side(self):
         response = {
-            'CommonPrefixes': [],
-            'Contents': [],
-            'Errors': [{'Code': 'AccessDenied',
-                        'HostId': 'foohost',
-                        'Message': 'Access Denied',
-                        'RequestId': 'requestid'}],
+            'Error': {'Code': 'AccessDenied',
+                      'HostId': 'foohost',
+                      'Message': 'Access Denied',
+                      'RequestId': 'requestid'},
             'ResponseMetadata': {}}
         handler = errorhandler.ErrorHandler()
         http_response = self.create_http_response(status_code=403)

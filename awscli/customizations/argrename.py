@@ -34,6 +34,7 @@ ARGUMENT_RENAMES = {
     'emr.*.job-flow-ids': 'cluster-ids',
     'emr.*.job-flow-id': 'cluster-id',
     'cloudsearchdomain.search.query': 'search-query',
+    'sns.subscribe.endpoint': 'notification-endpoint',
 }
 
 

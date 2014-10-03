@@ -90,7 +90,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
     def test_page_size(self):
         args = ' --page-size 10'
         cmdline = self.prefix + args
-        result = {'MaxResults': '10'}
+        result = {'MaxResults': 10}
         self.assert_params_for_cmd(cmdline, result)
 
 

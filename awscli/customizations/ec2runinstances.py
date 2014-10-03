@@ -91,20 +91,20 @@ def _fix_args(operation, endpoint, params, **kwargs):
     # allows them to specify the security group by name or by id.
     # However, in this scenario we can only support id because
     # we can't place a group name in the NetworkInterfaces structure.
-    if 'network_interfaces' in params:
-        ni = params['network_interfaces']
+    if 'NetworkInterfaces' in params:
+        ni = params['NetworkInterfaces']
         if 'AssociatePublicIpAddress' in ni[0]:
-            if 'subnet_id' in params:
-                ni[0]['SubnetId'] = params['subnet_id']
-                del params['subnet_id']
-            if 'security_group_ids' in params:
-                ni[0]['Groups'] = params['security_group_ids']
-                del params['security_group_ids']
-            if 'private_ip_address' in params:
-                ip_addr = {'PrivateIpAddress': params['private_ip_address'],
+            if 'SubnetId' in params:
+                ni[0]['SubnetId'] = params['SubnetId']
+                del params['SubnetId']
+            if 'SecurityGroupIds' in params:
+                ni[0]['Groups'] = params['SecurityGroupIds']
+                del params['SecurityGroupIds']
+            if 'PrivateIpAddress' in params:
+                ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
                            'Primary': True}
                 ni[0]['PrivateIpAddresses'] = [ip_addr]
-                del params['private_ip_address']
+                del params['PrivateIpAddress']
 
 
 EVENTS = [
@@ -122,14 +122,14 @@ def register_runinstances(event_handler):
 
 def _build_network_interfaces(params, key, value):
     # Build up the NetworkInterfaces data structure
-    if 'network_interfaces' not in params:
-        params['network_interfaces'] = [{'DeviceIndex': 0}]
+    if 'NetworkInterfaces' not in params:
+        params['NetworkInterfaces'] = [{'DeviceIndex': 0}]
 
     if key == 'PrivateIpAddresses':
-        if 'PrivateIpAddresses' not in params['network_interfaces'][0]:
-            params['network_interfaces'][0]['PrivateIpAddresses'] = value
+        if 'PrivateIpAddresses' not in params['NetworkInterfaces'][0]:
+            params['NetworkInterfaces'][0]['PrivateIpAddresses'] = value
     else:
-        params['network_interfaces'][0][key] = value
+        params['NetworkInterfaces'][0][key] = value
 
 
 class SecondaryPrivateIpAddressesArgument(CustomArgument):

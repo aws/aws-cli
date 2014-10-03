@@ -37,7 +37,7 @@ class TestRestoreFromHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'JobFlowId': 'j-ABCD', 'Steps': self.steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_restore_from_hbase_backup_version(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/ --backup-version DEF'
@@ -48,7 +48,7 @@ class TestRestoreFromHBaseBackup(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'].append('DEF')
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

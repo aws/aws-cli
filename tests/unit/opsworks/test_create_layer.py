@@ -36,27 +36,15 @@ class TestCreateLayer(BaseAWSCommandParamsTest):
                   'Name': 'Rails_App_Server',
                   'EnableAutoHealing': True,
                   'Shortname': 'foo',
-                  'Attributes': {"MysqlRootPasswordUbiquitous": None,
-                                 "RubygemsVersion": "1.8.24",
+                  'Attributes': {"RubygemsVersion": "1.8.24",
                                  "RailsStack": "apache_passenger",
-                                 "HaproxyHealthCheckMethod": None,
                                  "RubyVersion": "1.9.3",
                                  "BundlerVersion": "1.2.3",
-                                 "HaproxyStatsPassword": None,
                                  "PassengerVersion": "3.0.17",
-                                 "MemcachedMemory": None,
-                                 "EnableHaproxyStats": None,
                                  "ManageBundler": "true",
-                                 "NodejsVersion": None,
-                                 "HaproxyHealthCheckUrl": None,
-                                 "MysqlRootPassword": None,
-                                 "GangliaPassword": None,
-                                 "GangliaUser": None,
-                                 "HaproxyStatsUrl": None,
-                                 "GangliaUrl": None,
-                                 "HaproxyStatsUser": None}
+                                 }
                   }
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

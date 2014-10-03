@@ -246,3 +246,10 @@ EMR_FS_SCHEMA = {
         }
     }
 }
+
+TAGS_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "string"
+    }
+}

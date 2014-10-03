@@ -305,7 +305,7 @@ class FileGenerator(object):
             # This is what the customer is going to see so we want to
             # give as much detail as we have.
             copy_fields = e.__dict__.copy()
-            if not e.error_message == 'Unknown':
+            if not e.error_message == 'Not Found':
                 raise
             if e.http_status_code == 404:
                 # The key does not exist so we'll raise a more specific

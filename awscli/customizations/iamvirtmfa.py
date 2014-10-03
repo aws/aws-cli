@@ -27,6 +27,7 @@ import os
 
 from awscli.arguments import CustomArgument
 
+
 CHOICES = ('QRCodePNG', 'Base32StringSeed')
 OUTPUT_HELP = ('The output path and file name where the bootstrap '
                'information will be stored.')
@@ -58,7 +59,6 @@ class FileArgument(StatefulArgument):
         if not os.access(os.path.dirname(outfile), os.W_OK):
             raise ValueError('Unable to write to file: %s' % outfile)
         self._value = outfile
-        
 
 
 class IAMVMFAWrapper(object):

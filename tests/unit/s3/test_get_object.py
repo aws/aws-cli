@@ -41,7 +41,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {},}
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        self.assert_params_for_cmd2(cmdline, {'Bucket': 'mybucket',
+                                              'Key': 'mykey'})
 
     def test_range(self):
         cmdline = self.prefix
@@ -53,7 +54,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'Key': 'mykey'},
                   'headers': {'Range': 'bytes=0-499'},}
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        self.assert_params_for_cmd2(cmdline, {'Bucket': 'mybucket',
+                                              'Key': 'mykey',
+                                              'Range': 'bytes=0-499'})
 
     def test_response_headers(self):
         cmdline = self.prefix
@@ -68,7 +71,13 @@ class TestGetObject(BaseAWSCommandParamsTest):
                                  'ResponseContentEncoding': 'x-gzip'},
                   'headers': {},}
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        self.assert_params_for_cmd2(
+            cmdline, {
+                'Bucket': 'mybucket', 'Key': 'mykey',
+                'ResponseCacheControl': 'No-cache',
+                'ResponseContentEncoding': 'x-gzip'
+            }
+        )
 
 
 if __name__ == "__main__":

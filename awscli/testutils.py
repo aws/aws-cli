@@ -30,6 +30,7 @@ import logging
 import tempfile
 import platform
 import contextlib
+from pprint import pformat
 from subprocess import Popen, PIPE
 
 try:
@@ -245,7 +246,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self._store_params(params)
 
     def _store_params(self, params):
-        self.last_params = params
+        self.last_request_dict = params
+        self.last_params = params['body']
 
     def patch_make_request(self):
         make_request_patch = self.make_request_patch.start()
@@ -262,14 +264,54 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         if stderr_contains is not None:
             self.assertIn(stderr_contains, stderr)
         if params is not None:
-            last_params = copy.copy(self.last_params)
-            if ignore_params is not None:
+            last_params = self.last_params
+            if isinstance(last_params, dict):
+                last_params = copy.copy(self.last_params)
+                extra_params_to_ignore = ['Action', 'Version']
+                if ignore_params is None:
+                    ignore_params = extra_params_to_ignore
+                else:
+                    ignore_params.extend(extra_params_to_ignore)
                 for key in ignore_params:
                     try:
                         del last_params[key]
                     except KeyError:
                         pass
-            self.assertDictEqual(params, last_params)
+            if params != last_params:
+                self.fail("Actual params did not match expected params.\n"
+                          "Expected:\n\n"
+                          "%s\n"
+                          "Actual:\n\n%s\n" % (
+                              pformat(params), pformat(last_params)))
+        return stdout, stderr, rc
+
+    def assert_params_for_cmd2(self, cmd, params=None, expected_rc=0,
+                               stderr_contains=None, ignore_params=None):
+        # XXX: This has a terrible name because it's intended to be
+        # temporary.  I want to switch everything off of
+        # assert_params_for_cmd and then I'll rename this to
+        # assert_params_for_cmd2.  The difference between this command
+        # and the other one is that we verify the kwargs that are sent
+        # to botocore's Operation.call(), *not* the serialized parameters
+        # onto the HTTP request.  We're one level up from that.
+        stdout, stderr, rc = self.run_cmd(cmd, expected_rc)
+        if stderr_contains is not None:
+            self.assertIn(stderr_contains, stderr)
+        if params is not None:
+            # The last kwargs of Operation.call() in botocore.
+            last_kwargs = copy.copy(self.last_kwargs)
+            if ignore_params is not None:
+                for key in ignore_params:
+                    try:
+                        del last_kwargs[key]
+                    except KeyError:
+                        pass
+            if params != last_kwargs:
+                self.fail("Actual params did not match expected params.\n"
+                          "Expected:\n\n"
+                          "%s\n"
+                          "Actual:\n\n%s\n" % (
+                              pformat(params), pformat(last_kwargs)))
         return stdout, stderr, rc
 
     def before_parameter_build(self, params, operation, **kwargs):
@@ -395,7 +437,7 @@ def _escape_quotes(command):
 
 
 def aws(command, collect_memory=False, env_vars=None,
-        wait_for_finish=True, input_data=None):
+        wait_for_finish=True, input_data=None, input_file=None):
     """Run an aws command.
 
     This help function abstracts the differences of running the "aws"
@@ -413,6 +455,19 @@ def aws(command, collect_memory=False, env_vars=None,
     proper cleanup.  This can be useful if you want to test timeout's
     or how the CLI responds to various signals.
 
+    :type input_data: string
+    :param input_data: This string will be communicated to the process through
+        the stdin of the process.  It essentially allows the user to
+        avoid having to use a file handle to pass information to the process.
+        Note that this string is not passed on creation of the process, but
+        rather communicated to the process.
+
+    :type input_file: a file handle
+    :param input_file: This is a file handle that will act as the
+        the stdin of the process immediately on creation.  Essentially
+        any data written to the file will be read from stdin of the
+        process. This is needed if you plan to stream data into stdin while
+        collecting memory.
     """
     if platform.system() == 'Windows':
         command = _escape_quotes(command)
@@ -429,7 +484,9 @@ def aws(command, collect_memory=False, env_vars=None,
     env['AWS_DEFAULT_REGION'] = "us-east-1"
     if env_vars is not None:
         env = env_vars
-    process = Popen(full_command, stdout=PIPE, stderr=PIPE, stdin=PIPE,
+    if input_file is None:
+        input_file = PIPE
+    process = Popen(full_command, stdout=PIPE, stderr=PIPE, stdin=input_file,
                     shell=True, env=env)
     if not wait_for_finish:
         return process

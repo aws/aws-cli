@@ -22,6 +22,7 @@ cloudwatch put-metric-data operation:
 * --unit
 
 """
+import decimal
 
 from awscli.arguments import CustomArgument
 from awscli.utils import split_on_commas
@@ -111,7 +112,8 @@ class PutMetricArgument(CustomArgument):
 
     @insert_first_element('metric_data')
     def _add_param_value(self, first_element, value):
-        first_element['Value'] = value
+        # Use a Decimal to avoid loss in precision.
+        first_element['Value'] = decimal.Decimal(value)
 
     @insert_first_element('metric_data')
     def _add_param_dimensions(self, first_element, value):

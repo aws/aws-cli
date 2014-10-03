@@ -19,7 +19,6 @@ from awscli.customizations import utils
 from awscli.customizations.flatten import FlattenedArgument, FlattenArguments
 
 from botocore.operation import Operation
-from botocore.parameters import Parameter
 
 
 def _hydrate(params, container, cli_type, key, value):
@@ -136,41 +135,50 @@ class TestFlattenCommands(unittest.TestCase):
         operation = mock.Mock(spec=Operation)
         operation.cli_name = 'command-name'
 
-        argument_object1 = mock.Mock(spec=Parameter)
+        argument_model1 = mock.Mock()
+        argument_model1.required_members = []
 
         member_foo = mock.Mock()
         member_foo.name = 'ArgumentFoo'
         member_foo.documentation = 'Original docs'
-        member_foo.required = False
+        member_foo.required_members = []
 
         member_bar = mock.Mock()
         member_bar.name = 'ArgumentBar'
         member_bar.documentation = 'More docs'
-        member_bar.required = False
+        member_bar.required_members = []
 
-        argument_object1.members = [member_foo, member_bar]
+        argument_model1.members = {
+            'ArgumentFoo': member_foo,
+            'ArgumentBar': member_bar
+        }
 
-        argument_object2 = mock.Mock(spec=Parameter)
+        argument_model2 = mock.Mock()
+        argument_model2.required_members = []
 
         member_baz = mock.Mock()
         member_baz.name = 'ArgumentBaz'
         member_baz.documentation = ''
-        member_baz.required = False
+        member_baz.required_members = []
 
         member_some_value = mock.Mock()
         member_some_value.name = 'SomeValue'
         member_some_value.documenation = ''
-        member_some_value.require = False
+        member_some_value.required_members = []
 
-        member_baz.members = [member_some_value]
+        member_baz.members = {
+            'SomeValue': member_some_value
+        }
 
-        argument_object2.members = [member_baz]
+        argument_model2.members = {
+            'ArgumentBaz': member_baz
+        }
 
         cli_argument1 = mock.Mock(spec=CLIArgument)
-        cli_argument1.argument_object = argument_object1
+        cli_argument1.argument_model = argument_model1
 
         cli_argument2 = mock.Mock(spec=CLIArgument)
-        cli_argument2.argument_object = argument_object2
+        cli_argument2.argument_model = argument_model2
 
         argument_table = {
             'original-argument': cli_argument1,

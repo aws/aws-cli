@@ -31,13 +31,13 @@ class FlattenedArgument(CustomArgument):
     """
     def __init__(self, name, container, prop, help_text='', required=None,
                  type=None, hydrate=None, hydrate_value=None):
-        super(FlattenedArgument, self).__init__(name=name, help_text=help_text,
-                                                required=required)
         self.type = type
         self._container = container
         self._property = prop
         self._hydrate = hydrate
         self._hydrate_value = hydrate_value
+        super(FlattenedArgument, self).__init__(name=name, help_text=help_text,
+                                                required=required)
 
     @property
     def cli_type_name(self):
@@ -185,7 +185,7 @@ class FlattenArguments(object):
 
                 # Handle nested arguments
                 _arg = self._find_nested_arg(
-                    argument_from_table.argument_object, sub_argument
+                    argument_from_table.argument_model, sub_argument
                 )
 
                 # Pull out docs and required attribute
@@ -213,8 +213,8 @@ class FlattenArguments(object):
             # Find the actual nested argument to pull out
             LOG.debug('Finding nested argument in {0}'.format(name))
             for piece in name.split(SEP)[:-1]:
-                for member in argument.members:
-                    if member.name == piece:
+                for member_name, member in argument.members.items():
+                    if member_name == piece:
                         argument = member
                         break
                 else:
@@ -230,15 +230,15 @@ class FlattenArguments(object):
         overridden in the configuration dict. Modifies the config in-place.
         """
         # Pull out docs and required attribute
-        for member in argument.members:
-            if member.name == name.split(SEP)[-1]:
+        for member_name, member in argument.members.items():
+            if member_name == name.split(SEP)[-1]:
                 if 'help_text' not in config:
                     config['help_text'] = member.documentation
 
                 if 'required' not in config:
-                    config['required'] = member.required
+                    config['required'] = member_name in argument.required_members
 
                 if 'type' not in config:
-                    config['type'] = member.type
+                    config['type'] = member.type_name
 
                 break

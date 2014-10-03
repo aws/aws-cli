@@ -77,13 +77,7 @@ class ErrorHandler(object):
     def _get_error_code_and_message(self, response):
         code = 'Unknown'
         message = 'Unknown'
-        if 'Errors' in response:
-            if isinstance(response['Errors'], list):
-                error = response['Errors'][-1]
-                if 'Code' in error:
-                    code = error['Code']
-                elif 'Type' in error:
-                    code = error['Type']
-                if 'Message' in error:
-                    message = error['Message']
+        if 'Error' in response:
+            error = response['Error']
+            return error.get('Code', code), error.get('Message', message)
         return (code, message)

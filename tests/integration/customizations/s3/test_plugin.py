@@ -45,12 +45,13 @@ def cd(directory):
 
 
 def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True,
-        input_data=None):
+        input_data=None, input_file=None):
     if not env_vars:
         env_vars = os.environ.copy()
         env_vars['AWS_DEFAULT_REGION'] = "us-west-2"
     return _aws(command, collect_memory=collect_memory, env_vars=env_vars,
-                wait_for_finish=wait_for_finish, input_data=input_data)
+                wait_for_finish=wait_for_finish, input_data=input_data,
+                input_file=input_file)
 
 
 class BaseS3CLICommand(unittest.TestCase):
@@ -1108,7 +1109,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
 
     def assert_max_memory_used(self, process, max_mem_allowed, full_command):
         peak_memory = max(process.memory_usage)
-        if peak_memory > self.max_mem_allowed:
+        if peak_memory > max_mem_allowed:
             failure_message = (
                 'Exceeded max memory allowed (%s MB) for command '
                 '"%s": %s MB' % (self.max_mem_allowed / 1024.0 / 1024.0,
@@ -1134,6 +1135,45 @@ class TestMemoryUtilization(BaseS3CLICommand):
         self.assert_max_memory_used(p, self.max_mem_allowed,
                                     download_full_command)
 
+    def test_stream_large_file(self):
+        """
+        This tests to ensure that streaming files for both uploads and
+        downloads do not use too much memory.  Note that streaming uploads
+        will use slightly more memory than usual but should not put the
+        entire file into memory.
+        """
+        bucket_name = self.create_bucket()
+
+        # Create a 200 MB file that will be streamed
+        num_mb = 200
+        foo_txt = self.files.create_file('foo.txt', '')
+        with open(foo_txt, 'wb') as f:
+            for i in range(num_mb):
+                f.write(b'a' * 1024 * 1024)
+
+        # The current memory threshold is set at about the peak amount for
+        # performing a streaming upload of a file larger than 100 MB. So
+        # this maximum needs to be bumped up.  The maximum memory allowance
+        # is increased by two chunksizes because that is the maximum
+        # amount of chunks that will be queued while not being operated on
+        # by a thread when performing a streaming multipart upload.
+        max_mem_allowed = self.max_mem_allowed + 2 * constants.CHUNKSIZE
+
+        full_command = 's3 cp - s3://%s/foo.txt' % bucket_name
+        with open(foo_txt, 'rb') as f:
+            p = aws(full_command, input_file=f, collect_memory=True)
+            self.assert_no_errors(p)
+            self.assert_max_memory_used(p, max_mem_allowed, full_command)
+
+        # Now perform a streaming download of the file.
+        full_command = 's3 cp s3://%s/foo.txt - > %s' % (bucket_name, foo_txt)
+        p = aws(full_command, collect_memory=True)
+        self.assert_no_errors(p)
+        # Use the ususal bar for maximum memory usage since a streaming
+        # download's memory usage should be comparable to non-streaming
+        # transfers.
+        self.assert_max_memory_used(p, self.max_mem_allowed, full_command)
+
 
 class TestWebsiteConfiguration(BaseS3CLICommand):
     def test_create_website_index_configuration(self):
@@ -1149,9 +1189,9 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         parsed = operation.call(
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
-        self.assertEqual(parsed['ErrorDocument'], {})
-        self.assertEqual(parsed['RoutingRules'], [])
-        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+        self.assertNotIn('ErrorDocument', parsed)
+        self.assertNotIn('RoutingRules', parsed)
+        self.assertNotIn('RedirectAllRequestsTo', parsed)
 
     def test_create_website_index_and_error_configuration(self):
         bucket_name = self.create_bucket()
@@ -1166,8 +1206,8 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
         self.assertEqual(parsed['ErrorDocument']['Key'], 'error.html')
-        self.assertEqual(parsed['RoutingRules'], [])
-        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+        self.assertNotIn('RoutingRules', parsed)
+        self.assertNotIn('RedirectAllRequestsTo', parsed)
 
 
 class TestIncludeExcludeFilters(BaseS3CLICommand):

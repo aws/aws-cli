@@ -43,9 +43,16 @@ class TestPutBucketTagging(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
         cmdline += ' --tagging %s' % TAGSET
-        result = {'uri_params': {'Bucket': 'mybucket'},
-                  'headers': {'Content-MD5': '5s++BGwLE2moBAK9duxpFw=='}}
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
+        expected = {
+            'Bucket': 'mybucket',
+            'Tagging': {
+                'TagSet': [
+                    {'Key': 'key1', 'Value': 'value1'},
+                    {'Key': 'key2', 'Value': 'value2'},
+                ]
+            }
+        }
+        self.assert_params_for_cmd2(cmdline, expected)
 
 
 if __name__ == "__main__":

@@ -10,17 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore import model
+
 from awscli.arguments import BaseCLIArgument
 
 
 def add_streaming_output_arg(argument_table, operation, **kwargs):
     # Implementation detail:  hooked up to 'building-argument-table'
     # event.
-    stream_param = operation.is_streaming()
-    if stream_param:
+    model = operation.model
+    if _has_streaming_output(model):
+        streaming_argument_name = _get_streaming_argument_name(model)
         argument_table['outfile'] = StreamingOutputArgument(
-            response_key=stream_param, operation=operation,
+            response_key=streaming_argument_name, operation=operation,
             name='outfile')
+
+
+def _has_streaming_output(model):
+    return model.has_streaming_output
+
+
+def _get_streaming_argument_name(model):
+    return model.output_shape.serialization['payload']
 
 
 class StreamingOutputArgument(BaseCLIArgument):
@@ -30,7 +41,8 @@ class StreamingOutputArgument(BaseCLIArgument):
 
     def __init__(self, response_key, operation, name, buffer_size=None):
         self._name = name
-        self.argument_object = operation
+        self.argument_model = model.Shape('StreamingOutputArgument',
+                                          {'type': 'string'})
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size

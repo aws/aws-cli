@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import csv
+import datetime
 
 import six
 
@@ -104,3 +105,13 @@ def _find_quote_char_in_part(part):
     elif single_quote < double_quote:
         quote_char = "'"
     return quote_char
+
+
+def json_encoder(obj):
+    """JSON encoder that formats datetimes as ISO8601 format."""
+    if isinstance(obj, datetime.datetime):
+        return obj.isoformat()
+    else:
+        return obj
+
+

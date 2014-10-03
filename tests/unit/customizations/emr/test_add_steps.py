@@ -113,7 +113,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_custom_jar_step_missing_jar(self):
         cmd = self.prefix + 'Name=CustomJarMissingJar'
@@ -147,7 +147,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_streaming_step_with_default_fields(self):
         cmd = self.prefix + 'Type=Streaming,' + self.STREAMING_ARGS
@@ -160,7 +160,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_streaming_step_missing_args(self):
         cmd = self.prefix + 'Type=Streaming'
@@ -184,7 +184,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_hive_step_with_default_fields(self):
         cmd = self.prefix + 'Type=Hive,' + self.HIVE_BASIC_ARGS
@@ -196,7 +196,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  'HadoopJarStep': self.HIVE_DEFAULT_HADOOP_JAR_STEP
                  }]
             }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_hive_step_missing_args(self):
         cmd = self.prefix + 'Type=Hive'
@@ -220,7 +220,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  'HadoopJarStep': self.HIVE_DEFAULT_HADOOP_JAR_STEP
                  }]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_pig_step_with_default_fields(self):
         cmd = self.prefix + 'Type=Pig,' + self.PIG_BASIC_ARGS
@@ -232,7 +232,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  'HadoopJarStep': self.PIG_DEFAULT_HADOOP_JAR_STEP
                  }]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_pig_missing_args(self):
         cmd = self.prefix + 'Type=Pig'
@@ -257,7 +257,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_impala_step_with_default_fields(self):
         test_step_config = 'Type=Impala,' + \
@@ -271,7 +271,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  'HadoopJarStep': self.IMPALA_BASIC_HADOOP_JAR_STEP
                  }]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_impala_missing_args(self):
         cmd = self.prefix + 'Type=Impala'
@@ -296,7 +296,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_all_step_types(self):
         test_step_config = 'Jar=s3://mybucket/mytest.jar ' + \
@@ -330,7 +330,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
     def test_all_step_types_from_json(self):
         data_path = os.path.join(
@@ -378,7 +378,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }
             ]
         }
-        self.assert_params_for_cmd(cmd, result)
+        self.assert_params_for_cmd2(cmd, result)
 
 if __name__ == "__main__":
     unittest.main()

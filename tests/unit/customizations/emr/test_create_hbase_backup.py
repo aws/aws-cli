@@ -37,7 +37,7 @@ class TestCreateHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'JobFlowId': 'j-ABCD', 'Steps': self.steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_create_hbase_backup_consitent(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/ --consistent'
@@ -47,7 +47,7 @@ class TestCreateHBaseBackup(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'].append('--consistent')
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

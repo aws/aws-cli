@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import decimal
+
 from awscli.testutils import unittest
 
 import mock
@@ -40,7 +42,7 @@ class TestPutMetricArgument(unittest.TestCase):
         parameters = {}
         arg.add_to_params(parameters, '123.1')
         self.assertEqual(parameters['metric_data'][0]['Value'],
-                         '123.1')
+                         decimal.Decimal('123.1'))
 
     def test_timestamp_arg(self):
         arg = putmetricdata.PutMetricArgument('timestamp',

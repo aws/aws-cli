@@ -278,8 +278,8 @@ class ListCommand(S3Command):
             self._display_page(response_data)
 
     def _display_page(self, response_data, use_basename=True):
-        common_prefixes = response_data['CommonPrefixes']
-        contents = response_data['Contents']
+        common_prefixes = response_data.get('CommonPrefixes', [])
+        contents = response_data.get('Contents', [])
         for common_prefix in common_prefixes:
             prefix_components = common_prefix['Prefix'].split('/')
             prefix = prefix_components[-2]

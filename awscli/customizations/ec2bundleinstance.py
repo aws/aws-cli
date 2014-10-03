@@ -65,9 +65,8 @@ def _add_params(argument_table, operation, **kwargs):
     # Add the scalar parameters and also change the complex storage
     # param to not be required so the user doesn't get an error from
     # argparse if they only supply scalar params.
-    storage_arg = argument_table.get('storage')
-    storage_param = storage_arg.argument_object
-    storage_param.required = False
+    storage_arg = argument_table['storage']
+    storage_arg.required = False
     arg = BundleArgument(storage_param='Bucket',
                          name='bucket',
                          help_text=BUCKET_DOCS)

@@ -43,7 +43,8 @@ class TestBaseSyncStrategy(unittest.TestCase):
         session = Mock()
         self.sync_strategy.register_strategy(session)
         register_args = session.register.call_args_list
-        self.assertEqual(register_args[0][0][0], 'initiate-building-arg-table')
+        self.assertEqual(register_args[0][0][0],
+                         'building-arg-table.sync')
         self.assertEqual(register_args[0][0][1],
                          self.sync_strategy.add_sync_argument)
         self.assertEqual(register_args[1][0][0], 'choosing-s3-sync-strategy')
@@ -80,7 +81,7 @@ class TestBaseSyncStrategy(unittest.TestCase):
         """
         arg_table = [{'name': 'original_argument'}]
         self.sync_strategy.ARGUMENT = {'name': 'sync_argument'}
-        self.sync_strategy.add_sync_argument(arg_table, None)
+        self.sync_strategy.add_sync_argument(arg_table)
         self.assertEqual(arg_table,
                          [{'name': 'original_argument'},
                           {'name': 'sync_argument'}])
@@ -91,7 +92,7 @@ class TestBaseSyncStrategy(unittest.TestCase):
         ``ARGUMENT`` table is specified.
         """
         arg_table = [{'name': 'original_argument'}]
-        self.sync_strategy.add_sync_argument(arg_table, None)
+        self.sync_strategy.add_sync_argument(arg_table)
         self.assertEqual(arg_table, [{'name': 'original_argument'}])
 
     def test_no_use_sync_strategy_for_no_argument_specified(self):

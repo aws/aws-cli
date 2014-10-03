@@ -20,19 +20,19 @@ VALID_SYNC_TYPES = ['file_at_src_and_dest', 'file_not_at_dest',
 
 
 class BaseSyncStrategy(object):
-    """Basic sync strategy
+    """Base sync strategy
 
     To create a new sync strategy, subclass from this class.
     """
 
     # This is the argument that will be added to the ``SyncCommand`` arg table.
     # This argument will represent the sync strategy when the arguments for
-    # the sync command are parsed.  ARGUMENT follows the same format as
-    # a member of ARG_TABLE in ``BasicCommand`` class as specified in
+    # the sync command are parsed.  ``ARGUMENT`` follows the same format as
+    # a member of ``ARG_TABLE`` in ``BasicCommand`` class as specified in
     # ``awscli/customizations/commands.py``.
     #
     # For example, if I wanted to perform the sync strategy whenever I type
-    # ``--my-sync-strategy, I would say:
+    # ``--my-sync-strategy``, I would say:
     #
     # ARGUMENT =
     #     {'name': 'my-sync-strategy', 'action': 'store-true',
@@ -76,7 +76,8 @@ class BaseSyncStrategy(object):
     def register_strategy(self, session):
         """Registers the sync strategy class to the given session."""
 
-        session.register('initiate-building-arg-table', self.add_sync_argument)
+        session.register('building-arg-table.sync',
+                         self.add_sync_argument)
         session.register('choosing-s3-sync-strategy', self.use_sync_strategy)
 
     def determine_should_sync(self, src_file, dest_file):
@@ -133,7 +134,7 @@ class BaseSyncStrategy(object):
             dest = self.ARGUMENT.get('dest', None)
         return dest
 
-    def add_sync_argument(self, arg_table, session, **kwargs):
+    def add_sync_argument(self, arg_table, **kwargs):
         # This function adds sync strategy's argument to the ``SyncCommand``
         # argument table.
         if self.ARGUMENT is not None:
@@ -144,7 +145,7 @@ class BaseSyncStrategy(object):
         # use. The sync strategy object must be returned by this method
         # if it is to be chosen as the sync strategy to use.
         #
-        # ``params`` is a dictionary that specifies the all of the arguments
+        # ``params`` is a dictionary that specifies all of the arguments
         # the sync command is able to process as well as their values.
         #
         # Since ``ARGUMENT`` was added to the ``SyncCommand`` arg table,
@@ -152,7 +153,8 @@ class BaseSyncStrategy(object):
         #
         # If the argument was included in the actual ``aws s3 sync`` command
         # its value will show up as ``True`` in ``params`` otherwise its value
-        # will be ``False`` in ``params``.
+        # will be ``False`` in ``params`` assuming the argument's ``action``
+        # is ``store_true``.
         #
         # Note: If the ``action`` of ``ARGUMENT`` was not set to
         # ``store_true``, this method will need to be overwritten.
@@ -234,9 +236,6 @@ class DefaultSyncStrategy(BaseSyncStrategy):
                       not same_size, not same_last_modified_time)
         return should_sync
 
-    def _use_sync_strategy(self, params):
-        pass
-
 
 class DefaultNotAtSrcSyncStrategy(BaseSyncStrategy):
     def __init__(self, sync_type='file_not_at_src'):
@@ -244,9 +243,6 @@ class DefaultNotAtSrcSyncStrategy(BaseSyncStrategy):
 
     def determine_should_sync(self, src_file, dest_file):
         return False
-
-    def _use_sync_strategy(self, params):
-        pass
 
 
 class DefaultNotAtDestSyncStrategy(BaseSyncStrategy):
@@ -257,6 +253,3 @@ class DefaultNotAtDestSyncStrategy(BaseSyncStrategy):
         LOG.debug("syncing: %s -> %s, file does not exist at destination",
                   src_file.src, src_file.dest)
         return True
-
-    def _use_sync_strategy(self, params):
-        pass

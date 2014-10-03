@@ -129,7 +129,7 @@ class BasicCommand(CLICommand):
         # an arg parser and parse them.
         self._subcommand_table = self._build_subcommand_table()
         self._arg_table = self._build_arg_table()
-        parser = ArgTableArgParser(self.arg_table, self._subcommand_table)
+        parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
         # Unpack arguments
@@ -141,7 +141,7 @@ class BasicCommand(CLICommand):
             # `arg_table`.
             xformed = key.replace('_', '-')
             if xformed in self.arg_table:
-                param = self.arg_table[xformed]
+                cli_argument = self.arg_table[xformed]
 
             value = unpack_argument(
                 self._session,
@@ -240,9 +240,8 @@ class BasicCommand(CLICommand):
 
     def _build_arg_table(self):
         arg_table = OrderedDict()
-        self._session.emit('initiate-building-arg-table.%s' % self.NAME,
-                           arg_table=self.ARG_TABLE,
-                           session=self._session)
+        self._session.emit('building-arg-table.%s' % self.NAME,
+                           arg_table=self.ARG_TABLE)
         for arg_data in self.ARG_TABLE:
 
             # If a custom schema was passed in, create the argument_model
@@ -254,9 +253,6 @@ class BasicCommand(CLICommand):
             custom_argument = CustomArgument(**arg_data)
 
             arg_table[arg_data['name']] = custom_argument
-        self._session.emit('building-arg-table.%s' % self.NAME,
-                           arg_table=arg_table,
-                           session=self._session)
         return arg_table
 
     @property

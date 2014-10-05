@@ -298,6 +298,27 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd2(cmd, result)
 
+    def test_empty_step_args(self):
+        cmd = self.prefix + 'Type=Streaming,Args='
+        expect_error_msg = ('\naws: error: The prameter Args cannot '
+                            'be an empty list.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = self.prefix + 'Type=Pig,Args='
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = self.prefix + 'Type=Hive,Args='
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = self.prefix + 'Args='
+        expect_error_msg = ('\naws: error: The following required parameters '
+                            'are missing for CustomJARStepConfig: Jar.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
     def test_all_step_types(self):
         test_step_config = 'Jar=s3://mybucket/mytest.jar ' + \
             ' Type=Streaming,' + self.STREAMING_ARGS + \

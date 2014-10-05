@@ -143,9 +143,14 @@ def get_script_runner(region='us-east-1'):
 
 
 def check_required_field(structure, name, value):
-    if value is None:
+    if not value:
         raise exceptions.MissingParametersError(
             object_name=structure, missing=name)
+
+
+def check_empty_string_list(name, value):
+    if not value or (len(value) == 1 and value[0].strip() == ""):
+        raise exceptions.EmptyListError(param=name)
 
 
 def call(session, operation_object, parameters, region_name=None,

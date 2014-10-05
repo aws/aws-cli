@@ -72,14 +72,15 @@ def build_streaming_step(parsed_step):
         arg=parsed_step.get('ActionOnFailure'),
         value=constants.DEFAULT_FAILURE_ACTION)
 
-    args_list = parsed_step.get('Args')
+    args = parsed_step.get('Args')
     emrutils.check_required_field(
         structure=constants.STREAMING_STEP_CONFIG,
         name='Args',
-        value=args_list)
+        value=args)
+    emrutils.check_empty_string_list(name='Args', value=args)
     return emrutils.build_step(
         jar=constants.STREAMING_JAR_PATH,
-        args=args_list,
+        args=args,
         name=name,
         action_on_failure=action_on_failure)
 
@@ -88,6 +89,7 @@ def build_hive_step(parsed_step, region=None):
     args = parsed_step.get('Args')
     emrutils.check_required_field(
         structure=constants.HIVE_STEP_CONFIG, name='Args', value=args)
+    emrutils.check_empty_string_list(name='Args', value=args)
     name = _apply_default_value(
         arg=parsed_step.get('Name'),
         value=constants.DEFAULT_HIVE_STEP_NAME)
@@ -115,7 +117,7 @@ def build_pig_step(parsed_step, region=None):
     args = parsed_step.get('Args')
     emrutils.check_required_field(
         structure=constants.PIG_STEP_CONFIG, name='Args', value=args)
-
+    emrutils.check_empty_string_list(name='Args', value=args)
     name = _apply_default_value(
         arg=parsed_step.get('Name'),
         value=constants.DEFAULT_PIG_STEP_NAME)

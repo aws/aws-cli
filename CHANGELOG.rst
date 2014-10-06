@@ -2,9 +2,11 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.0
+=====
 
+* bugfix:Response Parsing: Fix response parsing so that leading
+  and trailing spaces are preserved
 * feature:Shared Credentials File: The ``aws configure`` and
   ``aws configure set`` command now write out all credential
   variables to the shared credentials file ``~/.aws/credentials``
@@ -30,7 +32,7 @@ Next Release (TBD)
 =====
 
 * feature:``aws iam``: Update ``aws iam`` command to latest version.
-* feature:``aws cognito-sync``: Update ``aws cognito-sync`` command 
+* feature:``aws cognito-sync``: Update ``aws cognito-sync`` command
   to latest version.
 * feature:``aws opsworks``: Update ``aws opsworks`` command to latest
   version.

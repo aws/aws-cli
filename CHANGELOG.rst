@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.0
+=====
 
 * bugfix:Response Parsing: Fix response parsing so that leading
   and trailing spaces are preserved

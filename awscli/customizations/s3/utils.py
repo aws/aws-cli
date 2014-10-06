@@ -145,6 +145,34 @@ def get_file_stat(path):
     return stats.st_size, update_time
 
 
+def find_dest_path_comp_key(files, src_path=None):
+    """
+    This is a helper function that determines the destination path and compare
+    key given parameters received from the ``FileFormat`` class.
+    """
+    src = files['src']
+    dest = files['dest']
+    src_type = src['type']
+    dest_type = dest['type']
+    if src_path is None:
+        src_path = src['path']
+
+    sep_table = {'s3': '/', 'local': os.sep}
+
+    if files['dir_op']:
+        rel_path = src_path[len(src['path']):]
+    else:
+        rel_path = src_path.split(sep_table[src_type])[-1]
+    compare_key = rel_path.replace(sep_table[src_type], '/')
+    if files['use_src_name']:
+        dest_path = dest['path']
+        dest_path += rel_path.replace(sep_table[src_type],
+                                      sep_table[dest_type])
+    else:
+        dest_path = dest['path']
+    return dest_path, compare_key
+
+
 def check_etag(etag, fileobj):
     """
     This fucntion checks the etag and the md5 checksum to ensure no
@@ -165,10 +193,9 @@ def check_error(response_data):
     response_data and raises an error when there is an error.
     """
     if response_data:
-        if 'Errors' in response_data:
-            errors = response_data['Errors']
-            for error in errors:
-                raise Exception("Error: %s\n" % error['Message'])
+        if 'Error' in response_data:
+            error = response_data['Error']
+            raise Exception("Error: %s\n" % error['Message'])
 
 
 def create_warning(path, error_message):
@@ -223,24 +250,42 @@ class MultiCounter(object):
         self.count = 0
 
 
-def uni_print(statement):
+def uni_print(statement, out_file=None):
     """
-    This function is used to properly write unicode to stdout.  It
-    ensures that the proper encoding is used if the statement is
-    not in a version type of string.  The initial check is to
-    allow if ``sys.stdout`` does not use an encoding
+    This function is used to properly write unicode to a file, usually
+    stdout or stdderr.  It ensures that the proper encoding is used if the
+    statement is not a string type.
     """
-    encoding = getattr(sys.stdout, 'encoding', None)
+    if out_file is None:
+        out_file = sys.stdout
+    # Check for an encoding on the file.
+    encoding = getattr(out_file, 'encoding', None)
     if encoding is not None and not PY3:
-        sys.stdout.write(statement.encode(sys.stdout.encoding))
+        out_file.write(statement.encode(out_file.encoding))
     else:
         try:
-            sys.stdout.write(statement)
+            out_file.write(statement)
         except UnicodeEncodeError:
             # Some file like objects like cStringIO will
             # try to decode as ascii.  Interestingly enough
             # this works with a normal StringIO.
-            sys.stdout.write(statement.encode('utf-8'))
+            out_file.write(statement.encode('utf-8'))
+    out_file.flush()
+
+
+def bytes_print(statement):
+    """
+    This function is used to properly write bytes to standard out.
+    """
+    if PY3:
+        if getattr(sys.stdout, 'buffer', None):
+            sys.stdout.buffer.write(statement)
+        else:
+            # If it is not possible to write to the standard out buffer.
+            # The next best option is to decode and write to standard out.
+            sys.stdout.write(statement.decode('utf-8'))
+    else:
+        sys.stdout.write(statement)
 
 
 def guess_content_type(filename):
@@ -354,7 +399,7 @@ class BucketLister(object):
                                 True):
             pages = self._operation.paginate(self._endpoint, **kwargs)
             for response, page in pages:
-                contents = page['Contents']
+                contents = page.get('Contents', [])
                 for content in contents:
                     source_path = bucket + '/' + content['Key']
                     size = content['Size']
@@ -362,8 +407,9 @@ class BucketLister(object):
                     yield source_path, size, last_update
 
     def _decode_keys(self, parsed, **kwargs):
-        for content in parsed['Contents']:
-            content['Key'] = unquote_str(content['Key'])
+        if 'Contents' in parsed:
+            for content in parsed['Contents']:
+                content['Key'] = unquote_str(content['Key'])
 
 
 class ScopedEventHandler(object):
@@ -401,7 +447,8 @@ class PrintTask(namedtuple('PrintTask',
                                              warning)
 
 
-IORequest = namedtuple('IORequest', ['filename', 'offset', 'data'])
+IORequest = namedtuple('IORequest',
+                       ['filename', 'offset', 'data', 'is_stream'])
 # Used to signal that IO for the filename is finished, and that
 # any associated resources may be cleaned up.
 IOCloseRequest = namedtuple('IOCloseRequest', ['filename'])

@@ -101,3 +101,15 @@ Output::
 
     upload: file.txt to s3://mybucket/file.txt
 
+**Uploading a local file stream to S3**
+
+The following ``cp`` command uploads a local file stream from standard input to a specified bucket and key::
+
+    aws s3 cp - s3://mybucket/stream.txt
+
+
+**Downloading a S3 object as a local file stream**
+
+The following ``cp`` command downloads a S3 object locally as a stream to standard output::
+
+    aws s3 cp s3://mybucket/stream.txt -

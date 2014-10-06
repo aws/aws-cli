@@ -18,12 +18,7 @@ import logging
 from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations.commands import BasicCommand
-
-
-try:
-    raw_input = raw_input
-except NameError:
-    raw_input = input
+from awscli.compat import raw_input
 
 
 logger = logging.getLogger(__name__)
@@ -55,7 +50,7 @@ def _mask_value(current_value):
     if current_value is None:
         return 'None'
     else:
-        return ('*' * 16) +  current_value[-4:]
+        return ('*' * 16) + current_value[-4:]
 
 
 class InteractivePrompter(object):
@@ -80,6 +75,32 @@ class ConfigFileWriter(object):
     )
 
     def update_config(self, new_values, config_filename):
+        """Update config file with new values.
+
+        This method will update a section in a config file with
+        new key value pairs.
+
+        This method provides a few conveniences:
+
+        * If the ``config_filename`` does not exist, it will
+          be created.  Any parent directories will also be created
+          if necessary.
+        * If the section to update does not exist, it will be created.
+        * Any existing lines that are specified by ``new_values``
+          **will not be touched**.  This ensures that commented out
+          values are left unaltered.
+
+        :type new_values: dict
+        :param new_values: The values to update.  There is a special
+            key ``__section__``, that specifies what section in the INI
+            file to update.  If this key is not present, then the
+            ``default`` section will be updated with the new values.
+
+        :type config_filename: str
+        :param config_filename: The config filename where values will be
+            written.
+
+        """
         section_name = new_values.pop('__section__', 'default')
         if not os.path.isfile(config_filename):
             self._create_file(config_filename)
@@ -98,11 +119,11 @@ class ConfigFileWriter(object):
 
     def _create_file(self, config_filename):
         # Create the file as well as the parent dir if needed.
-        dirname, basename = os.path.split(config_filename)
+        dirname = os.path.split(config_filename)[0]
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
         with os.fdopen(os.open(config_filename,
-                               os.O_WRONLY|os.O_CREAT, 0o600), 'w'):
+                               os.O_WRONLY | os.O_CREAT, 0o600), 'w'):
             pass
 
     def _write_new_section(self, section_name, new_values, config_filename):
@@ -124,15 +145,15 @@ class ConfigFileWriter(object):
             if match is not None and self._matches_section(match,
                                                            section_name):
                 return i
-        else:
-            raise SectionNotFoundError(section_name)
+        raise SectionNotFoundError(section_name)
 
     def _update_section_contents(self, contents, section_name, new_values):
         # First, find the line where the section_name is defined.
         # This will be the value of i.
         new_values = new_values.copy()
         # ``contents`` is a list of file line contents.
-        section_start_line_num = self._find_section_start(contents, section_name)
+        section_start_line_num = self._find_section_start(contents,
+                                                          section_name)
         # If we get here, then we've found the section.  We now need
         # to figure out if we're updating a value or adding a new value.
         # There's 2 cases.  Either we're setting a normal scalar value
@@ -182,7 +203,8 @@ class ConfigFileWriter(object):
             line = contents[i]
             match = self.OPTION_REGEX.search(line)
             if match is not None:
-                current_indent = len(match.group(1)) - len(match.group(1).lstrip())
+                current_indent = len(
+                    match.group(1)) - len(match.group(1).lstrip())
                 key_name = match.group(1).strip()
                 if key_name in values:
                     option_value = values[key_name]
@@ -205,7 +227,8 @@ class ConfigFileWriter(object):
                 subindent = indent + '    '
                 new_contents.append('%s%s =\n' % (indent, key))
                 for subkey, subval in list(value.items()):
-                    new_contents.append('%s%s = %s\n' % (subindent, subkey, subval))
+                    new_contents.append('%s%s = %s\n' % (subindent, subkey,
+                                                         subval))
             else:
                 new_contents.append('%s%s = %s\n' % (indent, key, value))
             del new_values[key]
@@ -302,9 +325,9 @@ class ConfigureListCommand(BasicCommand):
                 # the credentials.method is sufficient to show
                 # where the credentials are coming from.
                 access_key = ConfigValue(credentials.access_key,
-                                        credentials.method, '')
+                                         credentials.method, '')
                 secret_key = ConfigValue(credentials.secret_key,
-                                        credentials.method, '')
+                                         credentials.method, '')
                 access_key.mask_value()
                 secret_key.mask_value()
                 return access_key, secret_key
@@ -322,6 +345,7 @@ class ConfigureListCommand(BasicCommand):
         else:
             return ConfigValue(NOT_SET, None, None)
 
+
 class ConfigureSetCommand(BasicCommand):
     NAME = 'set'
     DESCRIPTION = BasicCommand.FROM_FILE('configure', 'set',
@@ -338,6 +362,10 @@ class ConfigureSetCommand(BasicCommand):
          'action': 'store',
          'cli_type_name': 'string', 'positional_arg': True},
     ]
+    # Any variables specified in this list will be written to
+    # the ~/.aws/credentials file instead of ~/.aws/config.
+    _WRITE_TO_CREDS_FILE = ['aws_access_key_id', 'aws_secret_access_key',
+                            'aws_session_token']
 
     def __init__(self, session, config_writer=None):
         super(ConfigureSetCommand, self).__init__(session)
@@ -362,7 +390,6 @@ class ConfigureSetCommand(BasicCommand):
                 section = 'profile %s' % self._session.profile
         else:
             # First figure out if it's been scoped to a profile.
-            # This will happen if 
             parts = varname.split('.')
             if parts[0] in ('default', 'profile'):
                 # Then we know we're scoped to a profile.
@@ -383,6 +410,12 @@ class ConfigureSetCommand(BasicCommand):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         updated_config = {'__section__': section, varname: value}
+        if varname in self._WRITE_TO_CREDS_FILE:
+            config_filename = os.path.expanduser(
+                self._session.get_config_variable('credentials_file'))
+            section_name = updated_config['__section__']
+            if section_name.startswith('profile '):
+                updated_config['__section__'] = section_name[8:]
         self._config_writer.update_config(updated_config, config_filename)
 
 
@@ -456,7 +489,6 @@ class ConfigureGetCommand(BasicCommand):
         return value
 
 
-
 class ConfigureCommand(BasicCommand):
     NAME = 'configure'
     DESCRIPTION = BasicCommand.FROM_FILE()
@@ -522,7 +554,30 @@ class ConfigureCommand(BasicCommand):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file'))
         if new_values:
+            self._write_out_creds_file_values(new_values,
+                                              parsed_globals.profile)
             if parsed_globals.profile is not None:
                 new_values['__section__'] = (
                     'profile %s' % parsed_globals.profile)
             self._config_writer.update_config(new_values, config_filename)
+
+    def _write_out_creds_file_values(self, new_values, profile_name):
+        # The access_key/secret_key are now *always* written to the shared
+        # credentials file (~/.aws/credentials), see aws/aws-cli#847.
+        # post-conditions: ~/.aws/credentials will have the updated credential
+        # file values and new_values will have the cred vars removed.
+        credential_file_values = {}
+        if 'aws_access_key_id' in new_values:
+            credential_file_values['aws_access_key_id'] = new_values.pop(
+                'aws_access_key_id')
+        if 'aws_secret_access_key' in new_values:
+            credential_file_values['aws_secret_access_key'] = new_values.pop(
+                'aws_secret_access_key')
+        if credential_file_values:
+            if profile_name is not None:
+                credential_file_values['__section__'] = profile_name
+            shared_credentials_filename = self._session.get_config_variable(
+                'credentials_file')
+            self._config_writer.update_config(
+                credential_file_values,
+                shared_credentials_filename)

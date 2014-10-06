@@ -16,7 +16,7 @@ from awscli.testutils import unittest
 import string
 
 import six
-from mock import patch
+from mock import patch, Mock
 
 
 class S3HandlerBaseTest(unittest.TestCase):
@@ -173,7 +173,7 @@ def list_contents(bucket, session):
     endpoint = service.get_endpoint(region)
     operation = service.get_operation('ListObjects')
     http_response, r_data = operation.call(endpoint, bucket=bucket)
-    return r_data['Contents']
+    return r_data.get('Contents', [])
 
 
 def list_buckets(session):
@@ -188,3 +188,24 @@ def list_buckets(session):
     html_response, response_data = operation.call(endpoint)
     contents = response_data['Buckets']
     return contents
+
+
+class MockStdIn(object):
+    """
+    This class patches stdin in order to write a stream of bytes into
+    stdin.
+    """
+    def __init__(self, input_bytes=b''):
+        input_data = six.BytesIO(input_bytes)
+        if six.PY3:
+            mock_object = Mock()
+            mock_object.buffer = input_data
+        else:
+            mock_object = input_data
+        self._patch = patch('sys.stdin', mock_object)
+
+    def __enter__(self):
+        self._patch.__enter__()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._patch.__exit__()

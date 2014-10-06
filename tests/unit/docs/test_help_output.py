@@ -300,7 +300,8 @@ class TestEnumDocsArentDuplicated(BaseAWSHelpOutputTest):
         contents = self.renderer.rendered_contents
         self.assertTrue(contents.count("CREATE_IN_PROGRESS") == 1,
                         ("Enum param was only suppose to be appear once in "
-                         "rendered doc output."))
+                         "rendered doc output, appeared: %s" %
+                         contents.count("CREATE_IN_PROGRESS")))
 
 
 class TestParametersCanBeHidden(BaseAWSHelpOutputTest):

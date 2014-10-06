@@ -19,6 +19,7 @@ from botocore.utils import set_value_from_jmespath
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
 from awscli import compat
+from awscli.utils import json_encoder
 
 
 LOG = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ class JSONFormatter(FullyBufferedFormatter):
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
         if response:
-            json.dump(response, stream, indent=4)
+            json.dump(response, stream, indent=4, default=json_encoder)
             stream.write('\n')
 
 

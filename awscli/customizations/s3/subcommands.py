@@ -23,11 +23,11 @@ from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.fileformat import FileFormat
 from awscli.customizations.s3.filegenerator import FileGenerator
-from awscli.customizations.s3.fileinfo import TaskInfo
+from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
-from awscli.customizations.s3.s3handler import S3Handler
+from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
-    AppendFilter
+    AppendFilter, find_dest_path_comp_key
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -206,11 +206,25 @@ ERROR_DOCUMENT = {'name': 'error-document',
                       'The object key name to use when '
                       'a 4XX class error occurs.')}
 
+ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
+                    'help_text': (
+                        'Only errors and warnings are displayed. All other '
+                        'output is suppressed.')}
+
+EXPECTED_SIZE = {'name': 'expected-size',
+                 'help_text': (
+                     'This argument specifies the expected size of a stream '
+                     'in terms of bytes. Note that this argument is needed '
+                     'only when a stream is being uploaded to s3 and the size '
+                     'is larger than 5GB.  Failure to include this argument '
+                     'under these conditions may result in a failed upload. '
+                     'due to too many parts in upload.')}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION]
+                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS]
 
 SYNC_ARGS = [DELETE, EXACT_TIMESTAMPS, SIZE_ONLY] + TRANSFER_ARGS
 
@@ -264,15 +278,14 @@ class ListCommand(S3Command):
             self._display_page(response_data)
 
     def _display_page(self, response_data, use_basename=True):
-        common_prefixes = response_data['CommonPrefixes']
-        contents = response_data['Contents']
+        common_prefixes = response_data.get('CommonPrefixes', [])
+        contents = response_data.get('Contents', [])
         for common_prefix in common_prefixes:
             prefix_components = common_prefix['Prefix'].split('/')
             prefix = prefix_components[-2]
             pre_string = "PRE".rjust(30, " ")
             print_str = pre_string + ' ' + prefix + '/\n'
             uni_print(print_str)
-            sys.stdout.flush()
         for content in contents:
             last_mod_str = self._make_last_mod_str(content['LastModified'])
             size_str = self._make_size_str(content['Size'])
@@ -284,7 +297,6 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
-            sys.stdout.flush()
 
     def _list_all_buckets(self):
         operation = self.service.get_operation('ListBuckets')
@@ -294,7 +306,6 @@ class ListCommand(S3Command):
             last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
             print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
             uni_print(print_str)
-            sys.stdout.flush()
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None):
         operation = self.service.get_operation('ListObjects')
@@ -413,7 +424,7 @@ class CpCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [EXPECTED_SIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/cp.rst')
 
 
@@ -434,7 +445,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
-                 EXCLUDE]
+                 EXCLUDE, ONLY_SHOW_ERRORS]
     EXAMPLES = BasicCommand.FROM_FILE('s3/rm.rst')
 
 
@@ -510,15 +521,20 @@ class CommandArchitecture(object):
         instruction list because it sends the request to S3 and does not
         yield anything.
         """
-        if self.cmd not in ['mb', 'rb']:
+        if self.needs_filegenerator():
             self.instructions.append('file_generator')
-        if self.parameters.get('filters'):
-            self.instructions.append('filters')
-        if self.cmd == 'sync':
-            self.instructions.append('comparator')
-        if self.cmd not in ['mb', 'rb']:
+            if self.parameters.get('filters'):
+                self.instructions.append('filters')
+            if self.cmd == 'sync':
+                self.instructions.append('comparator')
             self.instructions.append('file_info_builder')
         self.instructions.append('s3_handler')
+
+    def needs_filegenerator(self):
+        if self.cmd in ['mb', 'rb'] or self.parameters['is_stream']:
+            return False
+        else:
+            return True
 
     def run(self):
         """
@@ -576,10 +592,22 @@ class CommandArchitecture(object):
                              operation_name=operation_name,
                              service=self._service,
                              endpoint=self._endpoint)]
+        stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
+        stream_file_info = [FileInfo(src=files['src']['path'],
+                                     dest=stream_dest_path,
+                                     compare_key=stream_compare_key,
+                                     src_type=files['src']['type'],
+                                     dest_type=files['dest']['type'],
+                                     operation_name=operation_name,
+                                     service=self._service,
+                                     endpoint=self._endpoint,
+                                     is_stream=True)]
         file_info_builder = FileInfoBuilder(self._service, self._endpoint,
                                  self._source_endpoint, self.parameters) 
         s3handler = S3Handler(self.session, self.parameters,
                               result_queue=result_queue)
+        s3_stream_handler = S3StreamHandler(self.session, self.parameters,
+                                            result_queue=result_queue)
 
         command_dict = {}
         if self.cmd == 'sync':
@@ -591,6 +619,9 @@ class CommandArchitecture(object):
                             'comparator': [Comparator(self.parameters)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
+        elif self.cmd == 'cp' and self.parameters['is_stream']:
+            command_dict = {'setup': [stream_file_info],
+                             's3_handler': [s3_stream_handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
@@ -683,7 +714,18 @@ class CommandParameters(object):
             self.parameters['dest'] = paths[1]
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
+        self._validate_streaming_paths()
         self._validate_path_args()
+
+    def _validate_streaming_paths(self):
+        self.parameters['is_stream'] = False
+        if self.parameters['src'] == '-' or self.parameters['dest'] == '-':
+            self.parameters['is_stream'] = True
+            self.parameters['dir_op'] = False
+            self.parameters['only_show_errors'] = True
+        if self.parameters['is_stream'] and self.cmd != 'cp':
+            raise ValueError("Streaming currently is only compatible with "
+                             "single file cp commands")
 
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.

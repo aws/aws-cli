@@ -114,12 +114,17 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.bucket = make_s3_files(self.session)
         self.loc_files = make_loc_files()
         self.output = StringIO()
+        self.err_output = StringIO()
         self.saved_stdout = sys.stdout
+        self.saved_stderr = sys.stderr
         sys.stdout = self.output
+        sys.stderr = self.err_output
 
     def tearDown(self):
         self.output.close()
+        self.err_output.close()
         sys.stdout = self.saved_stdout
+        sys.stderr = self.saved_stderr
 
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.loc_files)
@@ -169,12 +174,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                         'rb': ['s3_handler']}
 
         params = {'filters': True, 'region': 'us-east-1', 'endpoint_url': None,
-                  'verify_ssl': None}
+                  'verify_ssl': None, 'is_stream': False}
         for cmd in cmds:
             cmd_arc = CommandArchitecture(self.session, cmd,
                                           {'region': 'us-east-1',
                                            'endpoint_url': None,
-                                           'verify_ssl': None})
+                                           'verify_ssl': None,
+                                           'is_stream': False})
             cmd_arc.create_instructions()
             self.assertEqual(cmd_arc.instructions, instructions[cmd])
 
@@ -197,7 +203,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': local_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -213,7 +220,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': local_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -222,7 +230,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         output_str = (
             "upload failed: %s to %s Error: Bucket does not exist\n" % (
                 rel_local_file, s3_file))
-        self.assertIn(output_str, self.output.getvalue())
+        self.assertIn(output_str, self.err_output.getvalue())
 
     def test_run_cp_get(self):
         # This ensures that the architecture sets up correctly for a ``cp`` get
@@ -236,7 +244,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': local_file, 'filters': filters,
                   'paths_type': 's3local', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -253,7 +262,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -270,7 +280,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'mv', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -287,7 +298,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_file, 'dest': s3_file, 'filters': filters,
                   'paths_type': 's3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'rm', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -308,7 +320,8 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': local_dir, 'dest': s3_prefix, 'filters': filters,
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
-                  'follow_symlinks': True, 'page_size': None}
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'sync', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -324,7 +337,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None}
+                  'page_size': None, 'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'mb', params)
         cmd_arc.create_instructions()
         cmd_arc.run()
@@ -340,7 +353,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None}
+                  'page_size': None, 'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
@@ -357,12 +370,12 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None}
+                  'page_size': None, 'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
         rc = cmd_arc.run()
         output_str = "remove_bucket failed: %s" % s3_prefix
-        self.assertIn(output_str, self.output.getvalue())
+        self.assertIn(output_str, self.err_output.getvalue())
         self.assertEqual(rc, 1)
 
 
@@ -467,6 +480,34 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters(self.session, 'rb', {'force': True},'')
         cmd_params.parameters['src'] = 's3://mybucket'
         cmd_params.check_force(None)
+
+    def test_validate_streaming_paths_upload(self):
+        parameters = {'src': '-', 'dest': 's3://bucket'}
+        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params._validate_streaming_paths()
+        self.assertTrue(cmd_params.parameters['is_stream'])
+        self.assertTrue(cmd_params.parameters['only_show_errors'])
+        self.assertFalse(cmd_params.parameters['dir_op'])
+
+    def test_validate_streaming_paths_download(self):
+        parameters = {'src': 'localfile', 'dest': '-'}
+        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params._validate_streaming_paths()
+        self.assertTrue(cmd_params.parameters['is_stream'])
+        self.assertTrue(cmd_params.parameters['only_show_errors'])
+        self.assertFalse(cmd_params.parameters['dir_op'])
+
+    def test_validate_no_streaming_paths(self):
+        parameters = {'src': 'localfile', 'dest': 's3://bucket'}
+        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params._validate_streaming_paths()
+        self.assertFalse(cmd_params.parameters['is_stream'])
+
+    def test_validate_streaming_paths_error(self):
+        parameters = {'src': '-', 'dest': 's3://bucket'}
+        cmd_params = CommandParameters(self.session, 'sync', parameters, '')
+        with self.assertRaises(ValueError):
+            cmd_params._validate_streaming_paths()
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

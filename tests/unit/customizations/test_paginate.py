@@ -23,19 +23,18 @@ class TestPaginateBase(unittest.TestCase):
         self.operation = mock.Mock()
         self.operation.can_paginate = True
         self.foo_param = mock.Mock()
-        self.foo_param.cli_name = 'foo'
         self.foo_param.name = 'Foo'
-        self.foo_param.type = 'string'
+        self.foo_param.type_name = 'string'
         self.bar_param = mock.Mock()
-        self.bar_param.cli_name = 'bar'
-        self.bar_param.type = 'string'
+        self.bar_param.type_name = 'string'
         self.bar_param.name = 'Bar'
         self.params = [self.foo_param, self.bar_param]
         self.operation.pagination = {
             'input_token': 'Foo',
             'limit_key': 'Bar',
         }
-        self.operation.params = self.params
+        self.operation.model.input_shape.members = {"Foo": self.foo_param,
+                                                    "Bar": self.bar_param}
 
 
 class TestArgumentTableModifications(TestPaginateBase):
@@ -77,7 +76,7 @@ class TestStringLimitKey(TestPaginateBase):
 
     def setUp(self):
         super(TestStringLimitKey, self).setUp()
-        self.bar_param.type = 'string'
+        self.bar_param.type_name = 'string'
 
     def test_integer_limit_key(self):
         argument_table = {
@@ -94,7 +93,7 @@ class TestIntegerLimitKey(TestPaginateBase):
 
     def setUp(self):
         super(TestIntegerLimitKey, self).setUp()
-        self.bar_param.type = 'integer'
+        self.bar_param.type_name = 'integer'
 
     def test_integer_limit_key(self):
         argument_table = {
@@ -111,7 +110,7 @@ class TestBadLimitKey(TestPaginateBase):
 
     def setUp(self):
         super(TestBadLimitKey, self).setUp()
-        self.bar_param.type = 'bad'
+        self.bar_param.type_name = 'bad'
 
     def test_integer_limit_key(self):
         argument_table = {

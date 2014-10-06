@@ -29,7 +29,7 @@ class TestCreateInstance(BaseAWSCommandParamsTest):
                   'Hostname': 'aws-client-instance',
                   'LayerIds': ['cb27894d-35f3-4435-b422-6641a785fa4a'],
                   'InstanceType': 'c1.medium'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

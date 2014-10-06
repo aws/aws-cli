@@ -37,7 +37,7 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'CacheSecurityGroupNames.member.2': 'group2',
                   'Engine': 'memcached',
                   'EngineVersion': '1.4.5',
-                  'NumCacheNodes': '1',
+                  'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
         self.assert_params_for_cmd(cmdline, result)
@@ -60,7 +60,7 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'CacheSecurityGroupNames.member.2': 'group2',
                   'Engine': 'memcached',
                   'EngineVersion': '1.4.5',
-                  'NumCacheNodes': '1',
+                  'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
         self.assert_params_for_cmd(cmdline, result)
@@ -84,7 +84,7 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'CacheSecurityGroupNames.member.2': 'group2',
                   'Engine': 'memcached',
                   'EngineVersion': '1.4.5',
-                  'NumCacheNodes': '1',
+                  'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
         self.assert_params_for_cmd(cmdline, result)

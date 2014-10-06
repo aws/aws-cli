@@ -15,6 +15,7 @@ import tempfile
 import shutil
 import six
 from six.moves import queue
+import sys
 
 import mock
 
@@ -41,7 +42,7 @@ class TestIOWriterThread(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_handles_io_request(self):
-        self.queue.put(IORequest(self.filename, 0, b'foobar'))
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
         self.queue.put(IOCloseRequest(self.filename))
         self.queue.put(ShutdownThreadRequest())
         self.io_thread.run()
@@ -49,8 +50,8 @@ class TestIOWriterThread(unittest.TestCase):
             self.assertEqual(f.read(), b'foobar')
 
     def test_out_of_order_io_requests(self):
-        self.queue.put(IORequest(self.filename, 6, b'morestuff'))
-        self.queue.put(IORequest(self.filename, 0, b'foobar'))
+        self.queue.put(IORequest(self.filename, 6, b'morestuff', False))
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
         self.queue.put(IOCloseRequest(self.filename))
         self.queue.put(ShutdownThreadRequest())
         self.io_thread.run()
@@ -60,8 +61,8 @@ class TestIOWriterThread(unittest.TestCase):
     def test_multiple_files_in_queue(self):
         second_file = os.path.join(self.temp_dir, 'bar')
         open(second_file, 'w').close()
-        self.queue.put(IORequest(self.filename, 0, b'foobar'))
-        self.queue.put(IORequest(second_file, 0, b'otherstuff'))
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
+        self.queue.put(IORequest(second_file, 0, b'otherstuff', False))
         self.queue.put(IOCloseRequest(second_file))
         self.queue.put(IOCloseRequest(self.filename))
         self.queue.put(ShutdownThreadRequest())
@@ -72,10 +73,24 @@ class TestIOWriterThread(unittest.TestCase):
         with open(second_file, 'rb') as f:
             self.assertEqual(f.read(), b'otherstuff')
 
+    def test_stream_requests(self):
+        # Test that offset has no affect on the order in which requests
+        # are written to stdout. The order of requests for a stream are
+        # first in first out.
+        self.queue.put(IORequest('nonexistant-file', 10, b'foobar', True))
+        self.queue.put(IORequest('nonexistant-file', 6, b'otherstuff', True))
+        # The thread should not try to close the file name because it is
+        # writing to stdout.  If it does, the thread will fail because
+        # the file does not exist.
+        self.queue.put(ShutdownThreadRequest())
+        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
+            self.io_thread.run()
+            self.assertEqual(mock_stdout.getvalue(), 'foobarotherstuff')
+
 
 class TestExecutor(unittest.TestCase):
     def test_shutdown_does_not_hang(self):
-        executor = Executor(2, queue.Queue(), False,
+        executor = Executor(2, queue.Queue(), False, False,
                             10, queue.Queue(maxsize=1))
         with temporary_file('rb+') as f:
             executor.start()
@@ -84,18 +99,108 @@ class TestExecutor(unittest.TestCase):
 
                 def __call__(self):
                     for i in range(50):
-                        executor.write_queue.put(IORequest(f.name, 0, b'foobar'))
+                        executor.write_queue.put(IORequest(f.name, 0,
+                                                           b'foobar', False))
             executor.submit(FloodIOQueueTask())
             executor.initiate_shutdown()
             executor.wait_until_shutdown()
             self.assertEqual(open(f.name, 'rb').read(), b'foobar')
 
-class TestPrintThread(unittest.TestCase):
-    def test_print_warning(self):
-        result_queue = queue.Queue()
-        print_task = PrintTask(message="Bad File.", warning=True)
-        thread = PrintThread(result_queue, False)
-        with mock.patch('sys.stdout', new=six.StringIO()) as mock_stdout:
-            thread._process_print_task(print_task)
-            self.assertIn("Bad File.", mock_stdout.getvalue())
 
+class TestPrintThread(unittest.TestCase):
+    def setUp(self):
+        self.result_queue = queue.Queue()
+
+    def assert_expected_output(self, print_task, expected_output, thread,
+                               out_file):
+        with mock.patch(out_file, new=six.StringIO()) as mock_out:
+            self.result_queue.put(print_task)
+            self.result_queue.put(ShutdownThreadRequest())
+            thread.run()
+            self.assertIn(expected_output, mock_out.getvalue())
+
+    def test_print(self):
+        print_task = PrintTask(message="Success", error=False)
+
+        # Ensure a successful task is printed to stdout when
+        # ``quiet`` and ``only_show_errors`` is False.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
+        self.assert_expected_output(print_task, 'Success', thread,
+                                    'sys.stdout')
+
+    def test_print_quiet(self):
+        print_task = PrintTask(message="Success", error=False)
+
+        # Ensure a succesful task is not printed to stdout when
+        # ``quiet`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=True, only_show_errors=False)
+        self.assert_expected_output(print_task, '', thread, 'sys.stdout')
+
+    def test_print_only_show_errors(self):
+        print_task = PrintTask(message="Success", error=False)
+
+        # Ensure a succesful task is not printed to stdout when
+        # ``only_show_errors`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=True)
+        self.assert_expected_output(print_task, '', thread, 'sys.stdout')
+
+    def test_print_error(self):
+        print_task = PrintTask(message="Fail File.", error=True)
+
+        # Ensure a failed task is printed to stderr when
+        # ``quiet`` and ``only_show_errors`` is False.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
+        self.assert_expected_output(print_task, 'Fail File.', thread,
+                                    'sys.stderr')
+
+    def test_print_error_quiet(self):
+        print_task = PrintTask(message="Fail File.", error=True)
+
+        # Ensure a failed task is not printed to stderr when
+        # ``quiet`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=True, only_show_errors=False)
+        self.assert_expected_output(print_task, '', thread, 'sys.stderr')
+
+    def test_print_error_only_show_errors(self):
+        print_task = PrintTask(message="Fail File.", error=True)
+
+        # Ensure a failed task is printed to stderr when
+        # ``only_show_errors`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=True)
+        self.assert_expected_output(print_task, 'Fail File.', thread,
+                                    'sys.stderr')
+
+    def test_print_warning(self):
+        print_task = PrintTask(message="Bad File.", warning=True)
+
+        # Ensure a warned task is printed to stderr when
+        # ``quiet`` and ``only_show_errors`` is False.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
+        self.assert_expected_output(print_task, 'Bad File.', thread,
+                                    'sys.stderr')
+
+    def test_print_warning_quiet(self):
+        print_task = PrintTask(message="Bad File.", warning=True)
+
+        # Ensure a warned task is not printed to stderr when
+        # ``quiet`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=True, only_show_errors=False)
+        self.assert_expected_output(print_task, '', thread, 'sys.stderr')
+
+    def test_print_warning_only_show_errors(self):
+        print_task = PrintTask(message="Bad File.", warning=True)
+
+        # Ensure a warned task is printed to stderr when
+        # ``only_show_errors`` is True.
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=True)
+        self.assert_expected_output(print_task, 'Bad File.', thread,
+                                    'sys.stderr')

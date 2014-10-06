@@ -15,8 +15,8 @@ from six.moves import queue
 import sys
 import threading
 
-from awscli.customizations.s3.utils import uni_print, \
-        IORequest, IOCloseRequest, StablePriorityQueue
+from awscli.customizations.s3.utils import uni_print, bytes_print, \
+    IORequest, IOCloseRequest, StablePriorityQueue
 from awscli.customizations.s3.tasks import OrderableTask
 
 
@@ -40,18 +40,19 @@ class Executor(object):
     STANDARD_PRIORITY = 11
     IMMEDIATE_PRIORITY= 1
 
-    def __init__(self, num_threads, result_queue,
-                 quiet, max_queue_size, write_queue):
+    def __init__(self, num_threads, result_queue, quiet,
+                 only_show_errors, max_queue_size, write_queue):
         self._max_queue_size = max_queue_size
         self.queue = StablePriorityQueue(maxsize=self._max_queue_size,
                                          max_priority=20)
         self.num_threads = num_threads
         self.result_queue = result_queue
         self.quiet = quiet
+        self.only_show_errors = only_show_errors
         self.threads_list = []
         self.write_queue = write_queue
-        self.print_thread = PrintThread(self.result_queue,
-                                        self.quiet)
+        self.print_thread = PrintThread(self.result_queue, self.quiet,
+                                        self.only_show_errors)
         self.print_thread.daemon = True
         self.io_thread = IOWriterThread(self.write_queue)
 
@@ -153,15 +154,19 @@ class IOWriterThread(threading.Thread):
                 self._cleanup()
                 return
             elif isinstance(task, IORequest):
-                filename, offset, data = task
-                fileobj = self.fd_descriptor_cache.get(filename)
-                if fileobj is None:
-                    fileobj = open(filename, 'rb+')
-                    self.fd_descriptor_cache[filename] = fileobj
-                fileobj.seek(offset)
+                filename, offset, data, is_stream = task
+                if is_stream:
+                    fileobj = sys.stdout
+                    bytes_print(data)
+                else:
+                    fileobj = self.fd_descriptor_cache.get(filename)
+                    if fileobj is None:
+                        fileobj = open(filename, 'rb+')
+                        self.fd_descriptor_cache[filename] = fileobj
+                    fileobj.seek(offset)
+                    fileobj.write(data)
                 LOGGER.debug("Writing data to: %s, offset: %s",
                              filename, offset)
-                fileobj.write(data)
                 fileobj.flush()
             elif isinstance(task, IOCloseRequest):
                 LOGGER.debug("IOCloseRequest received for %s, closing file.",
@@ -226,18 +231,19 @@ class PrintThread(threading.Thread):
             warning.
 
     """
-    def __init__(self, result_queue, quiet):
+    def __init__(self, result_queue, quiet, only_show_errors):
         threading.Thread.__init__(self)
         self._progress_dict = {}
         self._result_queue = result_queue
         self._quiet = quiet
+        self._only_show_errors = only_show_errors
         self._progress_length = 0
         self._num_parts = 0
         self._file_count = 0
         self._lock = threading.Lock()
         self._needs_newline = False
 
-        self._total_parts = 0
+        self._total_parts = '...'
         self._total_files = '...'
 
         # This is a public attribute that clients can inspect to determine
@@ -274,15 +280,15 @@ class PrintThread(threading.Thread):
 
     def _process_print_task(self, print_task):
         print_str = print_task.message
+        print_to_stderr = False
         if print_task.error:
             self.num_errors_seen += 1
-        warning = False
-        if print_task.warning:
-            if print_task.warning:
-                warning = True
-                self.num_warnings_seen += 1
+            print_to_stderr = True
+
         final_str = ''
-        if warning:
+        if print_task.warning:
+            self.num_warnings_seen += 1
+            print_to_stderr = True
             final_str += print_str.ljust(self._progress_length, ' ')
             final_str += '\n'
         elif print_task.total_parts:
@@ -309,21 +315,30 @@ class PrintThread(threading.Thread):
                 self._num_parts += 1
             self._file_count += 1
 
+        # If the message is an error or warning, print it to standard error.
+        if print_to_stderr and not self._quiet:
+            uni_print(final_str, sys.stderr)
+            final_str = ''
+
         is_done = self._total_files == self._file_count
         if not is_done:
-            prog_str = "Completed %s " % self._num_parts
-            num_files = self._total_files
-            if self._total_files != '...':
-                prog_str += "of %s " % self._total_parts
-                num_files = self._total_files - self._file_count
-            prog_str += "part(s) with %s file(s) remaining" % \
-                num_files
-            length_prog = len(prog_str)
-            prog_str += '\r'
-            prog_str = prog_str.ljust(self._progress_length, ' ')
-            self._progress_length = length_prog
-            final_str += prog_str
-        if not self._quiet:
+            final_str += self._make_progress_bar()
+        if not (self._quiet or self._only_show_errors):
             uni_print(final_str)
             self._needs_newline = not final_str.endswith('\n')
-            sys.stdout.flush()
+
+    def _make_progress_bar(self):
+        """Creates the progress bar string to print out."""
+
+        prog_str = "Completed %s " % self._num_parts
+        num_files = self._total_files
+        if self._total_files != '...':
+            prog_str += "of %s " % self._total_parts
+            num_files = self._total_files - self._file_count
+        prog_str += "part(s) with %s file(s) remaining" % \
+            num_files
+        length_prog = len(prog_str)
+        prog_str += '\r'
+        prog_str = prog_str.ljust(self._progress_length, ' ')
+        self._progress_length = length_prog
+        return prog_str

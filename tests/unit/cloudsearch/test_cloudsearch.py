@@ -46,7 +46,7 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
             'DomainName': 'abc123',
             'IndexField.IndexFieldName': 'foo',
             'IndexField.IndexFieldType': 'int',
-            'IndexField.IntOptions.DefaultValue': '10',
+            'IndexField.IntOptions.DefaultValue': 10,
             'IndexField.IntOptions.SearchEnabled': 'false'
         }
         self.assert_params_for_cmd(cmdline, result)

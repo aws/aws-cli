@@ -73,7 +73,9 @@ COMPLETIONS = [
                              '--cache-control', '--content-type',
                              '--content-disposition', '--source-region',
                              '--content-encoding', '--content-language',
-                             '--expires', '--grants'] + GLOBALOPTS)),
+                             '--expires', '--grants', '--only-show-errors',
+                             '--expected-size']
+                            + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
                                      '--follow-symlinks', '--no-follow-symlinks',
@@ -83,7 +85,9 @@ COMPLETIONS = [
                                      '--storage-class', '--sse',
                                      '--exclude', '--include',
                                      '--source-region',
-                                     '--grants'] + GLOBALOPTS)),
+                                     '--grants', '--only-show-errors',
+                                     '--expected-size']
+                                    + GLOBALOPTS)),
     ('aws emr ', -1, set(['add-instance-groups', 'add-steps', 'add-tags',
                           'create-cluster', 'create-default-roles',
                           'create-hbase-backup', 'describe-cluster',

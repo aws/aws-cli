@@ -21,23 +21,18 @@ class TestWebsiteCommand(BaseAWSCommandParamsTest):
 
     def test_index_document(self):
         cmdline = self.prefix + 's3://mybucket --index-document index.html'
-        result = {'uri_params': {'Bucket': 'mybucket'},
-                  'headers': {},}
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
-        self.assertEqual(
-            self.last_kwargs,
-            {'website_configuration': {'IndexDocument': {'Suffix': 'index.html'}},
-             'bucket': u'mybucket'})
+        result = {
+            'website_configuration':
+                {'IndexDocument': {'Suffix': 'index.html'}}, 'bucket': u'mybucket'}
+
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_error_document(self):
         cmdline = self.prefix + 's3://mybucket --error-document mykey'
-        result = {'uri_params': {'Bucket': 'mybucket'},
-                  'headers': {},}
-        self.assert_params_for_cmd(cmdline, result, ignore_params=['payload'])
-        self.assertEqual(
-            self.last_kwargs,
-            {'website_configuration': {'ErrorDocument': {'Key': 'mykey'}},
-             'bucket': u'mybucket'})
+        result = {
+            'website_configuration': {
+                'ErrorDocument': {'Key': 'mykey'}}, 'bucket': u'mybucket'}
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

@@ -172,7 +172,7 @@ class PipelineDefinitionArgument(CustomArgument):
             return
         parsed = json.loads(value)
         api_objects = translator.definition_to_api(parsed)
-        parameters['pipeline_objects'] = api_objects
+        parameters['pipelineObjects'] = api_objects
 
 
 class ListRunsCommand(BasicCommand):

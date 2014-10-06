@@ -70,6 +70,10 @@ class FakeSession(object):
         return self.config
 
     def get_config_variable(self, name, methods=None):
+        if name == 'credentials_file':
+            # The credentials_file var doesn't require a
+            # profile to exist.
+            return 'fake_credentials_file'
         if self.profile_does_not_exist and not name == 'config_file':
             raise ProfileNotFound(profile='foo')
         if methods is not None:
@@ -98,12 +102,22 @@ class TestConfigureCommand(unittest.TestCase):
                                                     prompter=self.precanned,
                                                     config_writer=self.writer)
 
+    def assert_credentials_file_updated_with(self, new_values):
+        called_args = self.writer.update_config.call_args_list
+        credentials_file_call = called_args[0]
+        self.assertEqual(credentials_file_call,
+                         mock.call(new_values, 'fake_credentials_file'))
+
     def test_configure_command_sends_values_to_writer(self):
         self.configure(args=[], parsed_globals=self.global_args)
-        self.writer.update_config.assert_called_with(
+        # Credentials are always written to the shared credentials file.
+        self.assert_credentials_file_updated_with(
             {'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
-             'region': 'new_value',
+             'aws_secret_access_key': 'new_value'})
+
+        # Non-credentials config is written to the config file.
+        self.writer.update_config.assert_called_with(
+            {'region': 'new_value',
              'output': 'new_value'}, 'myconfigfile')
 
     def test_same_values_are_not_changed(self):
@@ -154,10 +168,12 @@ class TestConfigureCommand(unittest.TestCase):
         self.global_args.profile = 'myname'
         self.configure(args=[], parsed_globals=self.global_args)
         # Note the __section__ key name.
+        self.assert_credentials_file_updated_with(
+            {'aws_access_key_id': 'new_value',
+             'aws_secret_access_key': 'new_value',
+             '__section__': 'myname'})
         self.writer.update_config.assert_called_with(
             {'__section__': 'profile myname',
-             'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
              'region': 'new_value',
              'output': 'new_value'}, 'myconfigfile')
 
@@ -173,18 +189,26 @@ class TestConfigureCommand(unittest.TestCase):
                                                     config_writer=self.writer)
         self.global_args.profile = 'profile-does-not-exist'
         self.configure(args=[], parsed_globals=self.global_args)
+        self.assert_credentials_file_updated_with(
+            {'aws_access_key_id': 'new_value',
+             'aws_secret_access_key': 'new_value',
+             '__section__': 'profile-does-not-exist'})
         self.writer.update_config.assert_called_with(
             {'__section__': 'profile profile-does-not-exist',
-             'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
              'region': 'new_value',
              'output': 'new_value'}, 'myconfigfile')
 
 
 class TestInteractivePrompter(unittest.TestCase):
-    @mock.patch('awscli.customizations.configure.raw_input')
-    def test_access_key_is_masked(self, mock_raw_input):
-        mock_raw_input.return_value = 'foo'
+    def setUp(self):
+        self.patch = mock.patch('awscli.customizations.configure.raw_input')
+        self.mock_raw_input = self.patch.start()
+
+    def tearDown(self):
+        self.patch.stop()
+
+    def test_access_key_is_masked(self):
+        self.mock_raw_input.return_value = 'foo'
         prompter = configure.InteractivePrompter()
         response = prompter.get_value(
             current_value='myaccesskey', config_name='aws_access_key_id',
@@ -192,44 +216,53 @@ class TestInteractivePrompter(unittest.TestCase):
         # First we should return the value from raw_input.
         self.assertEqual(response, 'foo')
         # We should also not display the entire access key.
-        prompt_text = mock_raw_input.call_args[0][0]
+        prompt_text = self.mock_raw_input.call_args[0][0]
         self.assertNotIn('myaccesskey', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
 
-    @mock.patch('awscli.customizations.configure.raw_input')
-    def test_access_key_not_masked_when_none(self, mock_raw_input):
-        mock_raw_input.return_value = 'foo'
+    def test_access_key_not_masked_when_none(self):
+        self.mock_raw_input.return_value = 'foo'
         prompter = configure.InteractivePrompter()
         response = prompter.get_value(
             current_value=None, config_name='aws_access_key_id',
             prompt_text='Access key')
         # First we should return the value from raw_input.
         self.assertEqual(response, 'foo')
-        prompt_text = mock_raw_input.call_args[0][0]
+        prompt_text = self.mock_raw_input.call_args[0][0]
         self.assertIn('[None]', prompt_text)
 
-    @mock.patch('awscli.customizations.configure.raw_input')
-    def test_secret_key_is_masked(self, mock_raw_input):
+    def test_secret_key_is_masked(self):
         prompter = configure.InteractivePrompter()
         prompter.get_value(
             current_value='mysupersecretkey',
             config_name='aws_secret_access_key',
             prompt_text='Secret Key')
         # We should also not display the entire secret key.
-        prompt_text = mock_raw_input.call_args[0][0]
+        prompt_text = self.mock_raw_input.call_args[0][0]
         self.assertNotIn('mysupersecretkey', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[\*\*\*\*.*\]')
 
-    @mock.patch('awscli.customizations.configure.raw_input')
-    def test_non_secret_keys_are_not_masked(self, mock_raw_input):
+    def test_non_secret_keys_are_not_masked(self):
         prompter = configure.InteractivePrompter()
         prompter.get_value(
             current_value='mycurrentvalue', config_name='not_a_secret_key',
             prompt_text='Enter value')
         # We should also not display the entire secret key.
-        prompt_text = mock_raw_input.call_args[0][0]
+        prompt_text = self.mock_raw_input.call_args[0][0]
         self.assertIn('mycurrentvalue', prompt_text)
         self.assertRegexpMatches(prompt_text, r'\[mycurrentvalue\]')
+
+    def test_user_hits_enter_returns_none(self):
+        # If a user hits enter, then raw_input returns the empty string.
+        self.mock_raw_input.return_value = ''
+
+        prompter = configure.InteractivePrompter()
+        response = prompter.get_value(
+            current_value=None, config_name='aws_access_key_id',
+            prompt_text='Access key')
+        # We convert the empty string to None to indicate that there
+        # was no input.
+        self.assertIsNone(response)
 
 
 class TestConfigFileWriter(unittest.TestCase):
@@ -389,6 +422,22 @@ class TestConfigFileWriter(unittest.TestCase):
         )
         self.assert_update_config(
             original, {'foo': 'newvalue'},
+            '[default]\n'
+            '#foo = 1\n'
+            'bar = 1\n'
+            'foo = newvalue\n'
+        )
+
+    def test_update_config_with_commented_section(self):
+        original = (
+            '#[default]\n'
+            '[default]\n'
+            '#foo = 1\n'
+            'bar = 1\n'
+        )
+        self.assert_update_config(
+            original, {'foo': 'newvalue'},
+            '#[default]\n'
             '[default]\n'
             '#foo = 1\n'
             'bar = 1\n'
@@ -720,7 +769,7 @@ class TestConfigureSetCommand(unittest.TestCase):
             {'__section__': 'default', 's3': {'signature_version': 's3v4'}},
              'myconfigfile')
 
-    def test_configure_set_with_profile(self):
+    def test_configure_set_with_profile_nested(self):
         # aws configure set default.s3.signature_version s3v4
         set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['profile.foo.s3.signature_version', 's3v4'],
@@ -728,3 +777,49 @@ class TestConfigureSetCommand(unittest.TestCase):
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'profile foo',
              's3': {'signature_version': 's3v4'}}, 'myconfigfile')
+
+    def test_access_key_written_to_shared_credentials_file(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_access_key_id', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_access_key_id': 'foo'}, 'fake_credentials_file')
+
+    def test_secret_key_written_to_shared_credentials_file(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_secret_access_key', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_secret_access_key': 'foo'}, 'fake_credentials_file')
+
+    def test_session_token_written_to_shared_credentials_file(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['aws_session_token', 'foo'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'aws_session_token': 'foo'}, 'fake_credentials_file')
+
+    def test_access_key_written_to_shared_credentials_file_profile(self):
+        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command(args=['profile.foo.aws_access_key_id', 'bar'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'foo',
+             'aws_access_key_id': 'bar'}, 'fake_credentials_file')
+
+class TestConfigValueMasking(unittest.TestCase):
+    def test_config_value_is_masked(self):
+        config_value = configure.ConfigValue(
+            'fake_access_key', 'config_file', 'aws_access_key_id')
+        self.assertEqual(config_value.value, 'fake_access_key')
+        config_value.mask_value()
+        self.assertEqual(config_value.value, '****************_key')
+
+    def test_dont_mask_unset_value(self):
+        no_config = configure.ConfigValue(configure.NOT_SET, None, None)
+        self.assertEqual(no_config.value, configure.NOT_SET)
+        no_config.mask_value()
+        self.assertEqual(no_config.value, configure.NOT_SET)

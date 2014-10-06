@@ -28,7 +28,7 @@ import socket
 import botocore.session
 import six
 
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3 import constants
@@ -44,12 +44,14 @@ def cd(directory):
         os.chdir(original)
 
 
-def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True):
+def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True,
+        input_data=None, input_file=None):
     if not env_vars:
         env_vars = os.environ.copy()
         env_vars['AWS_DEFAULT_REGION'] = "us-west-2"
     return _aws(command, collect_memory=collect_memory, env_vars=env_vars,
-                wait_for_finish=wait_for_finish)
+                wait_for_finish=wait_for_finish, input_data=input_data,
+                input_file=input_file)
 
 
 class BaseS3CLICommand(unittest.TestCase):
@@ -164,10 +166,10 @@ class BaseS3CLICommand(unittest.TestCase):
         self.assertEqual(
             p.rc, 0,
             "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr))
-        self.assertNotIn("Error:", p.stdout)
-        self.assertNotIn("failed:", p.stdout)
-        self.assertNotIn("client error", p.stdout)
-        self.assertNotIn("server error", p.stdout)
+        self.assertNotIn("Error:", p.stderr)
+        self.assertNotIn("failed:", p.stderr)
+        self.assertNotIn("client error", p.stderr)
+        self.assertNotIn("server error", p.stderr)
 
 
 class TestMoveCommand(BaseS3CLICommand):
@@ -458,7 +460,7 @@ class TestCp(BaseS3CLICommand):
         expected_err_msg = (
             'A client error (NoSuchKey) occurred when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
-        self.assertIn(expected_err_msg, p.stdout)
+        self.assertIn(expected_err_msg, p.stderr)
 
 
 class TestSync(BaseS3CLICommand):
@@ -645,7 +647,7 @@ class TestSourceRegion(BaseS3CLICommand):
         p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s' % 
                  (self.src_bucket, self.dest_bucket, self.src_region))
         self.assertEqual(p2.rc, 1, p2.stdout)
-        self.assertIn('PermanentRedirect', p2.stdout)
+        self.assertIn('PermanentRedirect', p2.stderr)
 
     def testCpRegion(self):
         self.files.create_file('foo.txt', 'foo')
@@ -695,9 +697,9 @@ class TestWarnings(BaseS3CLICommand):
     def test_no_exist(self):
         filename = os.path.join(self.files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn('warning: Skipping file %s. File does not exist.' % 
-                      filename, p.stdout)
+                      filename, p.stderr)
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                      'Read permissions tests only supported on mac/linux')
@@ -711,9 +713,9 @@ class TestWarnings(BaseS3CLICommand):
         permissions = permissions ^ stat.S_IREAD
         os.chmod(filename, permissions)
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn('warning: Skipping file %s. File/Directory is '
-                      'not readable.' % filename, p.stdout)
+                      'not readable.' % filename, p.stderr)
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                      'Special files only supported on mac/linux')
@@ -723,10 +725,10 @@ class TestWarnings(BaseS3CLICommand):
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.bind(file_path)
         p = aws('s3 cp %s s3://%s/' % (file_path, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn(("warning: Skipping file %s. File is character "
                        "special device, block special device, FIFO, or "
-                       "socket." % file_path), p.stdout)
+                       "socket." % file_path), p.stderr)
 
 
 @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
@@ -806,10 +808,10 @@ class TestSymlinks(BaseS3CLICommand):
     
     def test_bad_symlink(self):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
-        self.assertEqual(p.rc, 2, p.stdout)
+        self.assertEqual(p.rc, 2, p.stderr)
         self.assertIn('warning: Skipping file %s. File does not exist.' % 
                       os.path.join(self.files.rootdir, 'b-badsymlink'),
-                      p.stdout)
+                      p.stderr)
 
 
 class TestUnicode(BaseS3CLICommand):
@@ -945,8 +947,108 @@ class TestMbRb(BaseS3CLICommand):
     def test_fail_mb_rb(self):
         # Choose a bucket name that already exists.
         p = aws('s3 mb s3://mybucket')
-        self.assertIn("BucketAlreadyExists", p.stdout)
+        self.assertIn("BucketAlreadyExists", p.stderr)
         self.assertEqual(p.rc, 1)
+
+
+class TestOutput(BaseS3CLICommand):
+    """
+    This ensures that arguments that affect output i.e. ``--quiet`` and
+    ``--only-show-errors`` behave as expected.
+    """
+    def test_normal_output(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Check that there were no errors and that parts of the expected
+        # progress message are written to stdout.
+        self.assert_no_errors(p)
+        self.assertIn('upload', p.stdout)
+        self.assertIn('s3://%s/foo.txt' % bucket_name, p.stdout)
+
+    def test_normal_output_quiet(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/ --quiet' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Check that nothing was printed to stdout.
+        self.assertEqual('', p.stdout)
+
+    def test_normal_output_only_show_errors(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://%s/ --only-show-errors' % (foo_txt, bucket_name))
+        self.assertEqual(p.rc, 0)
+        # Check that nothing was printed to stdout.
+        self.assertEqual('', p.stdout)
+
+    def test_error_output(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://non-existant-bucket/' % foo_txt)
+        # Check that there were errors and that the error was print to stderr.
+        self.assertEqual(p.rc, 1)
+        self.assertIn('upload failed', p.stderr)
+
+    def test_error_ouput_quiet(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://non-existant-bucket/ --quiet' % foo_txt)
+        # Check that there were errors and that the error was not
+        # print to stderr.
+        self.assertEqual(p.rc, 1)
+        self.assertEqual('', p.stderr)
+
+    def test_error_ouput_only_show_errors(self):
+        foo_txt = self.files.create_file('foo.txt', 'foo contents')
+
+        # Copy file into bucket.
+        p = aws('s3 cp %s s3://non-existant-bucket/ --only-show-errors'
+                % foo_txt)
+        # Check that there were errors and that the error was print to stderr.
+        self.assertEqual(p.rc, 1)
+        self.assertIn('upload failed', p.stderr)
+
+    def test_error_and_success_output_only_show_errors(self):
+        # Make a bucket.
+        bucket_name = self.create_bucket()
+
+        # Create one file.
+        self.files.create_file('f', 'foo contents')
+
+        # Create another file that has a slightly longer name than the first.
+        self.files.create_file('bar.txt', 'bar contents')
+
+        # Create a prefix that will cause the second created file to have a key
+        # longer than 1024 bytes which is not allowed in s3.
+        long_prefix = 'd' * 1022
+
+        p = aws('s3 cp %s s3://%s/%s/ --only-show-errors --recursive'
+                % (self.files.rootdir, bucket_name, long_prefix))
+
+        # Check that there was at least one error.
+        self.assertEqual(p.rc, 1)
+
+        # Check that there was nothing written to stdout for successful upload.
+        self.assertEqual('', p.stdout)
+
+        # Check that the failed message showed up in stderr.
+        self.assertIn('upload failed', p.stderr)
+
+        # Ensure the expected successful key exists in the bucket.
+        self.assertTrue(self.key_exists(bucket_name, long_prefix + '/f'))
 
 
 class TestDryrun(BaseS3CLICommand):
@@ -1007,7 +1109,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
 
     def assert_max_memory_used(self, process, max_mem_allowed, full_command):
         peak_memory = max(process.memory_usage)
-        if peak_memory > self.max_mem_allowed:
+        if peak_memory > max_mem_allowed:
             failure_message = (
                 'Exceeded max memory allowed (%s MB) for command '
                 '"%s": %s MB' % (self.max_mem_allowed / 1024.0 / 1024.0,
@@ -1033,6 +1135,45 @@ class TestMemoryUtilization(BaseS3CLICommand):
         self.assert_max_memory_used(p, self.max_mem_allowed,
                                     download_full_command)
 
+    def test_stream_large_file(self):
+        """
+        This tests to ensure that streaming files for both uploads and
+        downloads do not use too much memory.  Note that streaming uploads
+        will use slightly more memory than usual but should not put the
+        entire file into memory.
+        """
+        bucket_name = self.create_bucket()
+
+        # Create a 200 MB file that will be streamed
+        num_mb = 200
+        foo_txt = self.files.create_file('foo.txt', '')
+        with open(foo_txt, 'wb') as f:
+            for i in range(num_mb):
+                f.write(b'a' * 1024 * 1024)
+
+        # The current memory threshold is set at about the peak amount for
+        # performing a streaming upload of a file larger than 100 MB. So
+        # this maximum needs to be bumped up.  The maximum memory allowance
+        # is increased by two chunksizes because that is the maximum
+        # amount of chunks that will be queued while not being operated on
+        # by a thread when performing a streaming multipart upload.
+        max_mem_allowed = self.max_mem_allowed + 2 * constants.CHUNKSIZE
+
+        full_command = 's3 cp - s3://%s/foo.txt' % bucket_name
+        with open(foo_txt, 'rb') as f:
+            p = aws(full_command, input_file=f, collect_memory=True)
+            self.assert_no_errors(p)
+            self.assert_max_memory_used(p, max_mem_allowed, full_command)
+
+        # Now perform a streaming download of the file.
+        full_command = 's3 cp s3://%s/foo.txt - > %s' % (bucket_name, foo_txt)
+        p = aws(full_command, collect_memory=True)
+        self.assert_no_errors(p)
+        # Use the ususal bar for maximum memory usage since a streaming
+        # download's memory usage should be comparable to non-streaming
+        # transfers.
+        self.assert_max_memory_used(p, self.max_mem_allowed, full_command)
+
 
 class TestWebsiteConfiguration(BaseS3CLICommand):
     def test_create_website_index_configuration(self):
@@ -1048,9 +1189,9 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         parsed = operation.call(
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
-        self.assertEqual(parsed['ErrorDocument'], {})
-        self.assertEqual(parsed['RoutingRules'], [])
-        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+        self.assertNotIn('ErrorDocument', parsed)
+        self.assertNotIn('RoutingRules', parsed)
+        self.assertNotIn('RedirectAllRequestsTo', parsed)
 
     def test_create_website_index_and_error_configuration(self):
         bucket_name = self.create_bucket()
@@ -1065,8 +1206,8 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
             self.endpoint, bucket=bucket_name)[1]
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
         self.assertEqual(parsed['ErrorDocument']['Key'], 'error.html')
-        self.assertEqual(parsed['RoutingRules'], [])
-        self.assertEqual(parsed['RedirectAllRequestsTo'], {})
+        self.assertNotIn('RoutingRules', parsed)
+        self.assertNotIn('RedirectAllRequestsTo', parsed)
 
 
 class TestIncludeExcludeFilters(BaseS3CLICommand):
@@ -1229,6 +1370,100 @@ class TestFileWithSpaces(BaseS3CLICommand):
         self.assertEqual(p2.stdout, '')
         self.assertEqual(p2.stderr, '')
         self.assertEqual(p2.rc, 0)
+
+
+class TestStreams(BaseS3CLICommand):
+    def test_upload(self):
+        """
+        This tests uploading a small stream from stdin.
+        """
+        bucket_name = self.create_bucket()
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=b'This is a test')
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'stream'))
+        self.assertEqual(self.get_key_contents(bucket_name, 'stream'),
+                         'This is a test')
+
+    def test_unicode_upload(self):
+        """
+        This tests being able to upload unicode from stdin.
+        """
+        unicode_str = u'\u00e9 This is a test'
+        byte_str = unicode_str.encode('utf-8')
+        bucket_name = self.create_bucket()
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=byte_str)
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'stream'))
+        self.assertEqual(self.get_key_contents(bucket_name, 'stream'),
+                         unicode_str)
+
+    def test_multipart_upload(self):
+        """
+        This tests the ability to multipart upload streams from stdin.
+        The data has some unicode in it to avoid having to do a seperate
+        multipart upload test just for unicode.
+        """
+
+        bucket_name = self.create_bucket()
+        data = u'\u00e9bcd' * (1024 * 1024 * 10)
+        data_encoded = data.encode('utf-8')
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=data_encoded)
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, 'stream'))
+        self.assert_key_contents_equal(bucket_name, 'stream', data)
+
+    def test_download(self):
+        """
+        This tests downloading a small stream from stdout.
+        """
+        bucket_name = self.create_bucket()
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=b'This is a test')
+        self.assert_no_errors(p)
+
+        p = aws('s3 cp s3://%s/stream -' % bucket_name)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, 'This is a test')
+
+    def test_unicode_download(self):
+        """
+        This tests downloading a small unicode stream from stdout.
+        """
+        bucket_name = self.create_bucket()
+
+        data = u'\u00e9 This is a test'
+        data_encoded = data.encode('utf-8')
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=data_encoded)
+        self.assert_no_errors(p)
+
+        # Downloading the unicode stream to standard out.
+        p = aws('s3 cp s3://%s/stream -' % bucket_name)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
+
+    def test_multipart_download(self):
+        """
+        This tests the ability to multipart download streams to stdout.
+        The data has some unicode in it to avoid having to do a seperate
+        multipart download test just for unicode.
+        """
+        bucket_name = self.create_bucket()
+
+        # First lets upload some data via streaming since
+        # its faster and we do not have to write to a file!
+        data = u'\u00e9bcd' * (1024 * 1024 * 10)
+        data_encoded = data.encode('utf-8')
+        p = aws('s3 cp - s3://%s/stream' % bucket_name,
+                input_data=data_encoded)
+
+        # Download the unicode stream to standard out.
+        p = aws('s3 cp s3://%s/stream -' % bucket_name)
+        self.assert_no_errors(p)
+        self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
 
 
 if __name__ == "__main__":

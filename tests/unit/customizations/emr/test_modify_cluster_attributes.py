@@ -23,25 +23,25 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         args = ' --cluster-id j-ABC123456 --visible-to-all-users'
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456'], 'VisibleToAllUsers': True}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_no_visible_to_all(self):
         args = ' --cluster-id j-ABC123456 --no-visible-to-all-users'
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456'], 'VisibleToAllUsers': False}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_termination_protected(self):
         args = ' --cluster-id j-ABC123456 --termination-protected'
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456'], 'TerminationProtected': True}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_no_termination_protected(self):
         args = ' --cluster-id j-ABC123456 --no-termination-protected'
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456'], 'TerminationProtected': False}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_visible_to_all_and_no_visible_to_all(self):
         args = ' --cluster-id j-ABC123456 --no-visible-to-all-users'\

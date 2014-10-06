@@ -46,7 +46,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'JobFlowId': 'j-ABCD', 'Steps': self.default_steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_schedule_hbase_backup_full_upper_case(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/ --type FULL' +\
@@ -54,7 +54,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'JobFlowId': 'j-ABCD', 'Steps': self.default_steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_schedule_hbase_backup_incremental_upper_case(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/  --type INCREMENTAL' +\
@@ -83,7 +83,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
 
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
 
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_schedule_hbase_backup_wrong_type(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/  --type wrong_type' +\
@@ -115,7 +115,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'].insert(5, '--consistent')
 
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_schedule_hbase_backup_start_time(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/ --type full --interval' +\
@@ -126,7 +126,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'][10] = '2014-04-18T10:43:24-07:00'
 
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

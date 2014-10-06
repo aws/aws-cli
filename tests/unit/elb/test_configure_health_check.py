@@ -25,11 +25,11 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
         cmdline += (' --health-check Target=HTTP:80/weather/us/wa/seattle,'
                     'Interval=300,Timeout=60,UnhealthyThreshold=5,'
                     'HealthyThreshold=9')
-        result = {'HealthCheck.HealthyThreshold': '9',
-                  'HealthCheck.Interval': '300',
+        result = {'HealthCheck.HealthyThreshold': 9,
+                  'HealthCheck.Interval': 300,
                   'HealthCheck.Target': 'HTTP:80/weather/us/wa/seattle',
-                  'HealthCheck.Timeout': '60',
-                  'HealthCheck.UnhealthyThreshold': '5',
+                  'HealthCheck.Timeout': 60,
+                  'HealthCheck.UnhealthyThreshold': 5,
                   'LoadBalancerName': 'my-lb'}
         self.assert_params_for_cmd(cmdline, result)
 
@@ -39,11 +39,11 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
         cmdline += ('--health-check {"Target":"HTTP:80/weather/us/wa/seattle'
                     '?a=b","Interval":300,"Timeout":60,'
                     '"UnhealthyThreshold":5,"HealthyThreshold":9}')
-        result = {'HealthCheck.HealthyThreshold': '9',
-                  'HealthCheck.Interval': '300',
+        result = {'HealthCheck.HealthyThreshold': 9,
+                  'HealthCheck.Interval': 300,
                   'HealthCheck.Target': 'HTTP:80/weather/us/wa/seattle?a=b',
-                  'HealthCheck.Timeout': '60',
-                  'HealthCheck.UnhealthyThreshold': '5',
+                  'HealthCheck.Timeout': 60,
+                  'HealthCheck.UnhealthyThreshold': 5,
                   'LoadBalancerName': 'my-lb'}
         self.assert_params_for_cmd(cmdline, result)
 
@@ -53,11 +53,11 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
         cmdline += (' --health-check Target="HTTP:80/weather/us/wa/seattle?a=b"'
                     ',Interval=300,Timeout=60,UnhealthyThreshold=5,'
                     'HealthyThreshold=9')
-        result = {'HealthCheck.HealthyThreshold': '9',
-                  'HealthCheck.Interval': '300',
+        result = {'HealthCheck.HealthyThreshold': 9,
+                  'HealthCheck.Interval': 300,
                   'HealthCheck.Target': 'HTTP:80/weather/us/wa/seattle?a=b',
-                  'HealthCheck.Timeout': '60',
-                  'HealthCheck.UnhealthyThreshold': '5',
+                  'HealthCheck.Timeout': 60,
+                  'HealthCheck.UnhealthyThreshold': 5,
                   'LoadBalancerName': 'my-lb'}
         self.assert_params_for_cmd(cmdline, result)
 

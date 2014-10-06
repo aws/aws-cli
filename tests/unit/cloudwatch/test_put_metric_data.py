@@ -21,9 +21,9 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
 
     expected_output = {
         'MetricData.member.1.MetricName': 'FreeMemoryBytes',
-        'MetricData.member.1.Timestamp': '2013-08-22T10:58:12.283000+00:00',
+        'MetricData.member.1.Timestamp': '2013-08-22T10:58:12.283000Z',
         'MetricData.member.1.Unit': 'Bytes',
-        'MetricData.member.1.Value': '9130160128',
+        'MetricData.member.1.Value': 9130160128,
         'Namespace': '"Foo/Bar"'
     }
 

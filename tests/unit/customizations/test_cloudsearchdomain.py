@@ -31,17 +31,11 @@ class TestSearchCommand(BaseAWSCommandParamsTest):
             '--query-options',
             '{"defaultOperator":"and","fields":["directors^10"]}']
 
-        result = {
-            'headers': {},
-            'uri_params': {
-                'query': 'George Lucas',
-                'queryOptions':
-                    '{"defaultOperator":"and","fields":["directors^10"]}'}}
-
-        self.assert_params_for_cmd(cmd, result, ignore_params=['payload'])
-        # We ignore'd the paylod, but we can verify that there should be
-        # no payload for this request.
-        self.assertIsNone(self.last_params['payload'].getvalue())
+        expected = {
+            'query': u'George Lucas',
+            'queryOptions': u'{"defaultOperator":"and","fields":["directors^10"]}'
+        }
+        self.assert_params_for_cmd2(cmd, expected)
 
     def test_endpoint_is_required(self):
         cmd = self.prefix.split()

@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.5.0
+=====
+
+* bugfix:Response Parsing: Fix response parsing so that leading
+  and trailing spaces are preserved
+* feature:Shared Credentials File: The ``aws configure`` and
+  ``aws configure set`` command now write out all credential
+  variables to the shared credentials file ``~/.aws/credentials``
+  (`issue 847 <https://github.com/aws/aws-cli/issues/847>`__)
+* bugfix:``aws s3``: Write warnings and errors to standard error as
+  opposed to standard output.
+  (`issue 919 <https://github.com/aws/aws-cli/pull/919>`__)
+* feature:``aws s3``: Add ``--only-show-errors`` option that displays
+  errors and warnings but suppresses all other output.
+* feature:``aws s3 cp``: Added ability to upload local
+  file streams from standard input to s3 and download s3
+  objects as local file streams to standard output.
+  (`issue 903 <https://github.com/aws/aws-cli/pull/903>`__)
+
+
 1.4.4
 =====
 
@@ -12,7 +32,7 @@ CHANGELOG
 =====
 
 * feature:``aws iam``: Update ``aws iam`` command to latest version.
-* feature:``aws cognito-sync``: Update ``aws cognito-sync`` command 
+* feature:``aws cognito-sync``: Update ``aws cognito-sync`` command
   to latest version.
 * feature:``aws opsworks``: Update ``aws opsworks`` command to latest
   version.

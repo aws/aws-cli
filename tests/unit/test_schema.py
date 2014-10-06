@@ -10,122 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import pprint
+
+from botocore.compat import OrderedDict
+
 from awscli.testutils import unittest
-
 from awscli.schema import ParameterRequiredError, SchemaTransformer
+from awscli.schema import ShapeNameGenerator
 
-"""
-Note: this schema is currently not supported by the ParamShorthand
-parser due to its complexity, but is tested here to ensure the
-robustness of the transformer.
-"""
-INPUT_SCHEMA = {
-    "type": "array",
-    "items": {
-        "type": "object",
-        "properties": {
-            "Name": {
-                "type": "string",
-                "description": "The name of the step. ",
-            },
-            "Jar": {
-                "type": "string",
-                "description": "A path to a JAR file run during the step.",
-            },
-            "Args": {
-                "type": "array",
-                "description":
-                    "A list of command line arguments to pass to the step.",
-                "items": {
-                        "type": "string"
-                    }
-            },
-            "MainClass": {
-                "type": "string",
-                "description":
-                    "The name of the main class in the specified "
-                    "Java file. If not specified, the JAR file should "
-                    "specify a Main-Class in its manifest file."
-            },
-            "Properties": {
-                "type": "array",
-                "description":
-                    "A list of Java properties that are set when the step "
-                    "runs. You can use these properties to pass key value "
-                    "pairs to your main function.",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "Key":{
-                            "type": "string",
-                            "description":
-                                "The unique identifier of a key value pair."
-                        },
-                        "Value": {
-                            "type": "string",
-                            "description":
-                                "The value part of the identified key."
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-EXPECTED_OUTPUT = {
-    "type": "list",
-    "members": {
-        "type": "structure",
-        "members": {
-            "Name": {
-                "type": "string",
-                "description": "The name of the step. ",
-            },
-            "Jar": {
-                "type": "string",
-                "description": "A path to a JAR file run during the step.",
-            },
-            "Args": {
-                "type": "list",
-                "description":
-                    "A list of command line arguments to pass to the step.",
-                "members": {
-                    "type": "string"
-                }
-            },
-            "MainClass": {
-                "type": "string",
-                "description":
-                    "The name of the main class in the specified "
-                    "Java file. If not specified, the JAR file should "
-                    "specify a Main-Class in its manifest file."
-            },
-            "Properties": {
-                "type": "list",
-                "description":
-                    "A list of Java properties that are set when the step "
-                    "runs. You can use these properties to pass key value "
-                    "pairs to your main function.",
-                "members": {
-                    "type": "structure",
-                    "members": {
-                        "Key":{
-                            "type": "string",
-                            "description":
-                                "The unique identifier of a key value pair."
-                        },
-                        "Value": {
-                            "type": "string",
-                            "description":
-                                "The value part of the identified key."
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 MISSING_TYPE = {
     "type": "object",
@@ -136,15 +28,277 @@ MISSING_TYPE = {
     }
 }
 
+
 class TestSchemaTransformer(unittest.TestCase):
-    def test_schema(self):
-        transformer = SchemaTransformer(INPUT_SCHEMA)
-        output = transformer.transform()
 
-        self.assertEqual(output, EXPECTED_OUTPUT)
+    maxDiff = None
 
-    def test_missing_type(self):
-        transformer = SchemaTransformer(MISSING_TYPE)
+    def test_missing_top_level_type_raises_exception(self):
+        transformer = SchemaTransformer()
+        with self.assertRaises(ParameterRequiredError):
+            transformer.transform({})
+
+    def test_missing_type_raises_exception(self):
+        transformer = SchemaTransformer()
 
         with self.assertRaises(ParameterRequiredError):
-            transformer.transform()
+            transformer.transform({
+                'type': 'object',
+                'properties': {
+                    'Foo': {
+                        'description': 'foo',
+                    }
+                }
+            })
+
+    def assert_schema_transforms_to(self, schema, transforms_to):
+        transformer = SchemaTransformer()
+        actual = transformer.transform(schema)
+        if actual != transforms_to:
+            self.fail("Transform failed.\n\nExpected:\n%s\n\nActual:\n%s\n" % (
+                pprint.pformat(transforms_to), pprint.pformat(actual)))
+
+    def test_transforms_list_of_single_string(self):
+        schema = {
+            'type': 'array',
+            'items': {
+                'type': 'string'
+            }
+        }
+        transforms_to = {
+            'InputShape': {
+                'type': 'list',
+                'member': {'shape': 'StringType1'}
+            },
+            'StringType1': {'type': 'string'}
+        }
+        self.assert_schema_transforms_to(schema, transforms_to)
+
+    def test_transform_list_of_structures(self):
+        schema = {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "arg1": {
+                        "type": "string",
+                    },
+                    "arg2": {
+                        "type": "integer",
+                    }
+                }
+            }
+        }
+        transforms_to = {
+            'InputShape': {
+                'type': 'list',
+                'member': {
+                    'shape': 'StructureType1'
+                }
+            },
+            'StructureType1': {
+                'type': 'structure',
+                'members': {
+                    'arg1': {
+                        'shape': 'StringType1',
+                    },
+                    'arg2': {
+                        'shape': 'IntegerType1',
+                    },
+                }
+            },
+            'StringType1': {'type': 'string'},
+            'IntegerType1': {'type': 'integer'},
+        }
+        self.assert_schema_transforms_to(schema, transforms_to)
+
+    def test_transform_required_members_on_structure(self):
+        pass
+
+    def test_transforms_string(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'string'
+            },
+            transforms_to={
+                'InputShape': {'type': 'string'}
+            }
+        )
+
+    def test_transforms_boolean(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'boolean'
+            },
+            transforms_to={
+                'InputShape': {'type': 'boolean'}
+            }
+        )
+
+    def test_transforms_integer(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'integer'
+            },
+            transforms_to={
+                'InputShape': {'type': 'integer'}
+            }
+        )
+
+    def test_transforms_structure(self):
+        self.assert_schema_transforms_to(
+            schema={
+                "type": "object",
+                "properties": OrderedDict([
+                    ("A", {"type": "string"}),
+                    ("B", {"type": "string"}),
+                ]),
+            },
+            transforms_to={
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'A': {'shape': 'StringType1'},
+                        'B': {'shape': 'StringType2'},
+                    }
+                },
+                'StringType1': {'type': 'string'},
+                'StringType2': {'type': 'string'},
+            }
+        )
+
+    def test_description_on_shape_type(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'string',
+                'description': 'a description'
+            },
+            transforms_to={
+                'InputShape': {
+                    'type': 'string',
+                    'documentation': 'a description'
+                }
+            }
+        )
+
+    def test_enum_on_shape_type(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'string',
+                'enum': ['a', 'b'],
+            },
+            transforms_to={
+                'InputShape': {
+                    'type': 'string',
+                    'enum': ['a', 'b']
+                }
+            }
+        )
+
+    def test_description_on_shape_ref(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'object',
+                'description': 'object description',
+                'properties': {
+                    'A': {
+                        'type': 'string',
+                        'description': 'string description',
+                    },
+                }
+            },
+            transforms_to={
+                'InputShape': {
+                    'type': 'structure',
+                    'documentation': 'object description',
+                    'members': {
+                        'A': {'shape': 'StringType1'},
+                    }
+                },
+                'StringType1': {
+                    'documentation': 'string description',
+                    'type': 'string'
+                }
+            }
+        )
+
+    def test_required_members_on_structure(self):
+        # This case is interesting because we actually
+        # don't support a 'required' key on a member shape ref.
+        # Now, all the required members are added as a key on the
+        # parent structure shape.
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'object',
+                'properties': {
+                    'A': {'type': 'string', 'required': True},
+                }
+            },
+            transforms_to={
+                'InputShape': {
+                    'type': 'structure',
+                    # This 'required' key is the change here.
+                    'required': ['A'],
+                    'members': {
+                        'A': {'shape': 'StringType1'},
+                    }
+                },
+                'StringType1': {'type': 'string'},
+            }
+        )
+
+    def test_nested_structure(self):
+        self.assert_schema_transforms_to(
+            schema={
+                'type': 'object',
+                'properties': {
+                    'A': {
+                        'type': 'object',
+                        'properties': {
+                            'B': {
+                                'type': 'object',
+                                'properties': {
+                                    'C': {'type': 'string'}
+                                }
+                            }
+                        }
+                    },
+                }
+            },
+            transforms_to={
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'A': {'shape': 'StructureType1'},
+                    }
+                },
+                'StructureType1': {
+                    'type': 'structure',
+                    'members': {
+                        'B': {'shape': 'StructureType2'}
+                    }
+                },
+                'StructureType2': {
+                    'type': 'structure',
+                    'members': {
+                        'C': {'shape': 'StringType1'}
+                    }
+                },
+                'StringType1': {
+                    'type': 'string',
+                }
+            }
+        )
+
+
+class TestShapeNameGenerator(unittest.TestCase):
+    def test_generate_name_types(self):
+        namer = ShapeNameGenerator()
+        self.assertEqual(namer.new_shape_name('string'), 'StringType1')
+        self.assertEqual(namer.new_shape_name('list'), 'ListType1')
+        self.assertEqual(namer.new_shape_name('structure'), 'StructureType1')
+
+    def test_generate_type_multiple_times(self):
+        namer = ShapeNameGenerator()
+        self.assertEqual(namer.new_shape_name('string'), 'StringType1')
+        self.assertEqual(namer.new_shape_name('string'), 'StringType2')

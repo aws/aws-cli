@@ -22,13 +22,13 @@ class TestTerminateClusters(BaseAWSCommandParamsTest):
         args = ' --cluster-ids j-ABC123456'
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456']}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_cluster_ids(self):
         args = ' --cluster-ids j-ABC123456 j-AAAAAAA'
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456', 'j-AAAAAAA']}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 if __name__ == "__main__":
     unittest.main()

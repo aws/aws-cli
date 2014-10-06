@@ -23,5 +23,5 @@ class TestDescribeDBLogFiles(BaseAWSCommandParamsTest):
                 '--db-instance-identifier foo')
         cmdline = self.prefix + args
         result = {'DBInstanceIdentifier': 'foo',
-                  'FileLastWritten': '10'}
+                  'FileLastWritten': 10}
         self.assert_params_for_cmd(cmdline, result)

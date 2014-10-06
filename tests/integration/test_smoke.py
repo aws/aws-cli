@@ -55,8 +55,15 @@ COMMANDS = [
     'swf list-domains --registration-status REGISTERED',
 ]
 
-# A list of commands that generate error messages.  This verifies
-# that service errors are properly displayed to the user.
+
+# A list of commands that generate error messages.  The idea is to try to have
+# at least one command for each service.
+#
+# This verifies that service errors are properly displayed to the user, as
+# opposed to either silently failing or inproperly handling the error responses
+# and not displaying something useful.  Each command tries to call an operation
+# with an identifier that does not exist, and part of the identifier is also
+# randomly generated to help ensure that is the case.
 ERROR_COMMANDS = [
     'autoscaling attach-instances --auto-scaling-group-name %s',
     'cloudformation cancel-update-stack --stack-name %s',

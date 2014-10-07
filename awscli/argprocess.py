@@ -289,7 +289,7 @@ class ParamShorthand(object):
                 # so any ParamError won't have this value.  To accomodate
                 # this, ParamErrors are caught and reraised with the cli_name
                 # injected.
-                raise ParamError(cli_argument.cli_name, e.message)
+                raise ParamError(cli_argument.cli_name, str(e))
             return parsed
 
     def get_parse_method_for_param(self, cli_argument, value=None):

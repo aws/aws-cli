@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:S3 Response Parsing: Fix regression for parsing S3 responses
+  containing a status code of 200 with an error response body
+  (`botocore issue 342 <https://github.com/boto/botocore/pull/342>`__)
+
+
 1.5.0
 =====
 

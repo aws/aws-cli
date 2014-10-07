@@ -14,6 +14,7 @@ import json
 
 import mock
 from botocore import xform_name
+from botocore import model
 
 from awscli.testutils import unittest
 from awscli.testutils import BaseCLIDriverTest
@@ -144,6 +145,31 @@ class TestArgShapeDetection(BaseArgProcessTest):
                 }
             }
         }, 'structure(list-scalar, scalar)')
+
+    def test_recursive_shape(self):
+        shapes = {
+            'InputStructure': {
+                'type': 'structure',
+                'members': {
+                    'A': {'shape': 'RecursiveShape'}
+                }
+            },
+            'RecursiveShape': {
+                'type': 'structure',
+                'members': {
+                    'B': {'shape': 'StringType'},
+                    'C': {'shape': 'RecursiveShape'},
+                }
+            },
+            'StringType': {
+                'type': 'string'
+            }
+        }
+        shape = model.StructureShape(shape_name='InputStructure',
+                                     shape_model=shapes['InputStructure'],
+                                     shape_resolver=model.ShapeResolver(
+                                         shape_map=shapes))
+        self.assertIn('recursive', detect_shape_structure(shape))
 
 
 class TestParamShorthand(BaseArgProcessTest):

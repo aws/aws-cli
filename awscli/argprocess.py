@@ -106,28 +106,40 @@ def _check_for_uri_param(param, value):
 
 
 def detect_shape_structure(param):
-    if param.type_name in SCALAR_TYPES:
-        return 'scalar'
-    elif param.type_name == 'structure':
-        sub_types = [detect_shape_structure(p)
-                     for p in param.members.values()]
-        # We're distinguishing between structure(scalar)
-        # and structure(scalars), because for the case of
-        # a single scalar in a structure we can simplify
-        # more than a structure(scalars).
-        if len(sub_types) == 1 and all(p == 'scalar' for p in sub_types):
-            return 'structure(scalar)'
-        elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
-            return 'structure(scalars)'
-        else:
-            return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
-    elif param.type_name == 'list':
-        return 'list-%s' % detect_shape_structure(param.member)
-    elif param.type_name == 'map':
-        if param.value.type_name in SCALAR_TYPES:
-            return 'map-scalar'
-        else:
-            return 'map-%s' % detect_shape_structure(param.value)
+    stack = []
+    return _detect_shape_structure(param, stack)
+
+
+def _detect_shape_structure(param, stack):
+    if param.name in stack:
+        return 'recursive'
+    else:
+        stack.append(param.name)
+    try:
+        if param.type_name in SCALAR_TYPES:
+            return 'scalar'
+        elif param.type_name == 'structure':
+            sub_types = [_detect_shape_structure(p, stack)
+                        for p in param.members.values()]
+            # We're distinguishing between structure(scalar)
+            # and structure(scalars), because for the case of
+            # a single scalar in a structure we can simplify
+            # more than a structure(scalars).
+            if len(sub_types) == 1 and all(p == 'scalar' for p in sub_types):
+                return 'structure(scalar)'
+            elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
+                return 'structure(scalars)'
+            else:
+                return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
+        elif param.type_name == 'list':
+            return 'list-%s' % _detect_shape_structure(param.member, stack)
+        elif param.type_name == 'map':
+            if param.value.type_name in SCALAR_TYPES:
+                return 'map-scalar'
+            else:
+                return 'map-%s' % _detect_shape_structure(param.value, stack)
+    finally:
+        stack.pop()
 
 
 def unpack_cli_arg(cli_argument, value):

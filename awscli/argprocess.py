@@ -52,11 +52,11 @@ class ParamSyntaxError(Exception):
 
 
 class ParamUnknownKeyError(Exception):
-    def __init__(self, param, key, valid_keys):
+    def __init__(self, key, valid_keys):
         valid_keys = ', '.join(valid_keys)
         full_message = (
-            "Unknown key '%s' for parameter %s, valid choices "
-            "are: %s" % (key, '--%s' % xform_name(param.name), valid_keys))
+            "Unknown key '%s', valid choices "
+            "are: %s" % (key, valid_keys))
         super(ParamUnknownKeyError, self).__init__(full_message)
 
 
@@ -284,7 +284,7 @@ class ParamShorthand(object):
                 docgen = ParamShorthandDocGen()
                 example_usage = docgen.generate_shorthand_example(cli_argument)
                 raise ParamError(cli_argument.cli_name, "should be: %s" % example_usage)
-            except ParamError as e:
+            except (ParamError, ParamUnknownKeyError) as e:
                 # The shorthand parse methods don't have the cli_name,
                 # so any ParamError won't have this value.  To accomodate
                 # this, ParamErrors are caught and reraised with the cli_name
@@ -362,7 +362,7 @@ class ParamShorthand(object):
                 # This is a key/value pair.
                 current_key = current[0].strip()
                 if current_key not in args:
-                    raise ParamUnknownKeyError(param, current_key,
+                    raise ParamUnknownKeyError(current_key,
                                                args.keys())
                 current_value = unpack_scalar_cli_arg(args[current_key],
                                                       current[1].strip())
@@ -440,7 +440,7 @@ class ParamShorthand(object):
             key = key.strip()
             value = value.strip()
             if valid_names and key not in valid_names:
-                raise ParamUnknownKeyError(param, key, valid_names)
+                raise ParamUnknownKeyError(key, valid_names)
             if valid_names:
                 sub_param = valid_names[key]
                 if sub_param is not None:

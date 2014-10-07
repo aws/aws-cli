@@ -289,8 +289,15 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_mispelled_param_name(self):
         p = self.get_param_model(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        error_msg = 'valid choices.*ApplicationName'
-        with self.assertRaisesRegexp(ParamUnknownKeyError, error_msg):
+        # We're checking three things.
+        # 1) The CLI parameter is in the error message
+        # 2) The parameter name that failed validation is in the error message
+        # 3) The correct parameter name is in the error message.
+        error_msg = (
+            '--source-configuration.*'
+            'ApplicationNames.*valid choices.*'
+            'ApplicationName')
+        with self.assertRaisesRegexp(ParamError, error_msg):
             # Typo in 'ApplicationName'
             self.simplify(p, 'ApplicationNames=foo, TemplateName=bar')
 
@@ -312,8 +319,8 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_unknown_key_for_filters_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
-        with self.assertRaisesRegexp(ParamUnknownKeyError,
-                                     'valid choices.*Name'):
+        with self.assertRaisesRegexp(ParamError,
+                                     '--filters.*Names.*valid choices.*Name'):
             self.simplify(p, ["Names=instance-id,Values=foo,bar"])
 
     def test_csv_syntax_escaped(self):

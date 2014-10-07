@@ -8,6 +8,9 @@ Next Release (TBD)
 * bugfix:S3 Response Parsing: Fix regression for parsing S3 responses
   containing a status code of 200 with an error response body
   (`botocore issue 342 <https://github.com/boto/botocore/pull/342>`__)
+* bugfix:Shorthand Error Message: Ensure the error message for
+  shorthand parsing always contains the CLI argument name
+  (`issue 935 <https://github.com/aws/aws-cli/pull/935>`__)
 
 
 1.5.0

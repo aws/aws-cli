@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.1
+=====
 
 * feature:``aws dynamodb``: Update ``aws dynamodb`` command to support
   storing and retrieving documents with full support for document

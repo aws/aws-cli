@@ -5,6 +5,10 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws dynamodb``: Update ``aws dynamodb`` command to support
+  storing and retrieving documents with full support for document
+  models.  New data types are fully compatible with the JSON standard
+  and allow you to nest document elements within one another.
 * bugfix:``aws configure``: Fix bug where ``aws configure`` was not
   properly writing out to the shared credentials file
 * bugfix:S3 Response Parsing: Fix regression for parsing S3 responses

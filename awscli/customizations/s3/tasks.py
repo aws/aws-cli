@@ -457,7 +457,7 @@ class RemoveRemoteObjectTask(OrderableTask):
         LOGGER.debug("Waiting for download to finish.")
         self._context.wait_for_completion()
         bucket, key = find_bucket_key(self._filename.src)
-        params = {'endpoint': self._filename.endpoint,
+        params = {'endpoint': self._filename.source_endpoint,
                   'bucket': bucket, 'key': key}
         response_data, http = operate(
             self._filename.service, 'DeleteObject', params)

@@ -52,11 +52,11 @@ class ParamSyntaxError(Exception):
 
 
 class ParamUnknownKeyError(Exception):
-    def __init__(self, param, key, valid_keys):
+    def __init__(self, key, valid_keys):
         valid_keys = ', '.join(valid_keys)
         full_message = (
-            "Unknown key '%s' for parameter %s, valid choices "
-            "are: %s" % (key, '--%s' % xform_name(param.name), valid_keys))
+            "Unknown key '%s', valid choices "
+            "are: %s" % (key, valid_keys))
         super(ParamUnknownKeyError, self).__init__(full_message)
 
 
@@ -106,28 +106,40 @@ def _check_for_uri_param(param, value):
 
 
 def detect_shape_structure(param):
-    if param.type_name in SCALAR_TYPES:
-        return 'scalar'
-    elif param.type_name == 'structure':
-        sub_types = [detect_shape_structure(p)
-                     for p in param.members.values()]
-        # We're distinguishing between structure(scalar)
-        # and structure(scalars), because for the case of
-        # a single scalar in a structure we can simplify
-        # more than a structure(scalars).
-        if len(sub_types) == 1 and all(p == 'scalar' for p in sub_types):
-            return 'structure(scalar)'
-        elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
-            return 'structure(scalars)'
-        else:
-            return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
-    elif param.type_name == 'list':
-        return 'list-%s' % detect_shape_structure(param.member)
-    elif param.type_name == 'map':
-        if param.value.type_name in SCALAR_TYPES:
-            return 'map-scalar'
-        else:
-            return 'map-%s' % detect_shape_structure(param.value)
+    stack = []
+    return _detect_shape_structure(param, stack)
+
+
+def _detect_shape_structure(param, stack):
+    if param.name in stack:
+        return 'recursive'
+    else:
+        stack.append(param.name)
+    try:
+        if param.type_name in SCALAR_TYPES:
+            return 'scalar'
+        elif param.type_name == 'structure':
+            sub_types = [_detect_shape_structure(p, stack)
+                        for p in param.members.values()]
+            # We're distinguishing between structure(scalar)
+            # and structure(scalars), because for the case of
+            # a single scalar in a structure we can simplify
+            # more than a structure(scalars).
+            if len(sub_types) == 1 and all(p == 'scalar' for p in sub_types):
+                return 'structure(scalar)'
+            elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
+                return 'structure(scalars)'
+            else:
+                return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
+        elif param.type_name == 'list':
+            return 'list-%s' % _detect_shape_structure(param.member, stack)
+        elif param.type_name == 'map':
+            if param.value.type_name in SCALAR_TYPES:
+                return 'map-scalar'
+            else:
+                return 'map-%s' % _detect_shape_structure(param.value, stack)
+    finally:
+        stack.pop()
 
 
 def unpack_cli_arg(cli_argument, value):
@@ -284,12 +296,12 @@ class ParamShorthand(object):
                 docgen = ParamShorthandDocGen()
                 example_usage = docgen.generate_shorthand_example(cli_argument)
                 raise ParamError(cli_argument.cli_name, "should be: %s" % example_usage)
-            except ParamError as e:
+            except (ParamError, ParamUnknownKeyError) as e:
                 # The shorthand parse methods don't have the cli_name,
                 # so any ParamError won't have this value.  To accomodate
                 # this, ParamErrors are caught and reraised with the cli_name
                 # injected.
-                raise ParamError(cli_argument.cli_name, e.message)
+                raise ParamError(cli_argument.cli_name, str(e))
             return parsed
 
     def get_parse_method_for_param(self, cli_argument, value=None):
@@ -362,7 +374,7 @@ class ParamShorthand(object):
                 # This is a key/value pair.
                 current_key = current[0].strip()
                 if current_key not in args:
-                    raise ParamUnknownKeyError(param, current_key,
+                    raise ParamUnknownKeyError(current_key,
                                                args.keys())
                 current_value = unpack_scalar_cli_arg(args[current_key],
                                                       current[1].strip())
@@ -440,7 +452,7 @@ class ParamShorthand(object):
             key = key.strip()
             value = value.strip()
             if valid_names and key not in valid_names:
-                raise ParamUnknownKeyError(param, key, valid_names)
+                raise ParamUnknownKeyError(key, valid_names)
             if valid_names:
                 sub_param = valid_names[key]
                 if sub_param is not None:

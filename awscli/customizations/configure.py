@@ -576,8 +576,8 @@ class ConfigureCommand(BasicCommand):
         if credential_file_values:
             if profile_name is not None:
                 credential_file_values['__section__'] = profile_name
-            shared_credentials_filename = self._session.get_config_variable(
-                'credentials_file')
+            shared_credentials_filename = os.path.expanduser(
+                self._session.get_config_variable('credentials_file'))
             self._config_writer.update_config(
                 credential_file_values,
                 shared_credentials_filename)

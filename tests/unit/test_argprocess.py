@@ -14,6 +14,7 @@ import json
 
 import mock
 from botocore import xform_name
+from botocore import model
 
 from awscli.testutils import unittest
 from awscli.testutils import BaseCLIDriverTest
@@ -144,6 +145,31 @@ class TestArgShapeDetection(BaseArgProcessTest):
                 }
             }
         }, 'structure(list-scalar, scalar)')
+
+    def test_recursive_shape(self):
+        shapes = {
+            'InputStructure': {
+                'type': 'structure',
+                'members': {
+                    'A': {'shape': 'RecursiveShape'}
+                }
+            },
+            'RecursiveShape': {
+                'type': 'structure',
+                'members': {
+                    'B': {'shape': 'StringType'},
+                    'C': {'shape': 'RecursiveShape'},
+                }
+            },
+            'StringType': {
+                'type': 'string'
+            }
+        }
+        shape = model.StructureShape(shape_name='InputStructure',
+                                     shape_model=shapes['InputStructure'],
+                                     shape_resolver=model.ShapeResolver(
+                                         shape_map=shapes))
+        self.assertIn('recursive', detect_shape_structure(shape))
 
 
 class TestParamShorthand(BaseArgProcessTest):
@@ -289,8 +315,15 @@ class TestParamShorthand(BaseArgProcessTest):
     def test_mispelled_param_name(self):
         p = self.get_param_model(
             'elasticbeanstalk.CreateConfigurationTemplate.SourceConfiguration')
-        error_msg = 'valid choices.*ApplicationName'
-        with self.assertRaisesRegexp(ParamUnknownKeyError, error_msg):
+        # We're checking three things.
+        # 1) The CLI parameter is in the error message
+        # 2) The parameter name that failed validation is in the error message
+        # 3) The correct parameter name is in the error message.
+        error_msg = (
+            '--source-configuration.*'
+            'ApplicationNames.*valid choices.*'
+            'ApplicationName')
+        with self.assertRaisesRegexp(ParamError, error_msg):
             # Typo in 'ApplicationName'
             self.simplify(p, 'ApplicationNames=foo, TemplateName=bar')
 
@@ -312,8 +345,8 @@ class TestParamShorthand(BaseArgProcessTest):
 
     def test_unknown_key_for_filters_param(self):
         p = self.get_param_model('ec2.DescribeInstances.Filters')
-        with self.assertRaisesRegexp(ParamUnknownKeyError,
-                                     'valid choices.*Name'):
+        with self.assertRaisesRegexp(ParamError,
+                                     '--filters.*Names.*valid choices.*Name'):
             self.simplify(p, ["Names=instance-id,Values=foo,bar"])
 
     def test_csv_syntax_escaped(self):

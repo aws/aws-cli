@@ -283,7 +283,21 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         else:
             return '%s' % argument_model.type_name
 
-    def _json_example(self, doc, argument_model):
+    def _json_example(self, doc, argument_model, stack):
+        if argument_model.name in stack:
+            # Document the recursion once, otherwise just
+            # note the fact that it's recursive and return.
+            if stack.count(argument_model.name) > 1:
+                if argument_model.type_name == 'structure':
+                    doc.write('{ ... recursive ... }')
+                return
+        stack.append(argument_model.name)
+        try:
+            self._do_json_example(doc, argument_model, stack)
+        finally:
+            stack.pop()
+
+    def _do_json_example(self, doc, argument_model, stack):
         if argument_model.type_name == 'list':
             doc.write('[')
             if argument_model.member.type_name in SCALAR_TYPES:
@@ -291,7 +305,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             else:
                 doc.style.indent()
                 doc.style.new_line()
-                self._json_example(doc, argument_model.member)
+                self._json_example(doc, argument_model.member, stack)
                 doc.style.new_line()
                 doc.write('...')
                 doc.style.dedent()
@@ -306,7 +320,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 doc.write(self._json_example_value_name(argument_model.value))
             else:
                 doc.style.indent()
-                self._json_example(doc, argument_model.value)
+                self._json_example(doc, argument_model.value, stack)
                 doc.style.dedent()
             doc.style.new_line()
             doc.write('...')
@@ -316,9 +330,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('{')
             doc.style.indent()
             doc.style.new_line()
-            self._doc_input_structure_members(doc, argument_model)
+            self._doc_input_structure_members(doc, argument_model, stack)
 
-    def _doc_input_structure_members(self, doc, argument_model):
+    def _doc_input_structure_members(self, doc, argument_model, stack):
         members = argument_model.members
         for i, member_name in enumerate(members):
             member_model = members[member_name]
@@ -328,13 +342,13 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                     self._json_example_value_name(member_model)))
             elif member_type_name == 'structure':
                 doc.write('"%s": ' % member_name)
-                self._json_example(doc, member_model)
+                self._json_example(doc, member_model, stack)
             elif member_type_name == 'map':
                 doc.write('"%s": ' % member_name)
-                self._json_example(doc, member_model)
+                self._json_example(doc, member_model, stack)
             elif member_type_name == 'list':
                 doc.write('"%s": ' % member_name)
-                self._json_example(doc, member_model)
+                self._json_example(doc, member_model, stack)
             if i < len(members) - 1:
                 doc.write(',')
                 doc.style.new_line()
@@ -395,7 +409,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.new_paragraph()
             doc.write('JSON Syntax')
             doc.style.start_codeblock()
-            self._json_example(doc, argument_model)
+            self._json_example(doc, argument_model, stack=[])
             doc.style.end_codeblock()
             doc.style.new_paragraph()
 
@@ -415,9 +429,24 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('None')
         else:
             for member_name, member_shape in output_shape.members.items():
-                self._doc_member_for_output(doc, member_name, member_shape)
+                self._doc_member_for_output(doc, member_name, member_shape, stack=[])
 
-    def _doc_member_for_output(self, doc, member_name, member_shape):
+    def _doc_member_for_output(self, doc, member_name, member_shape, stack):
+        if member_shape.name in stack:
+            # Document the recursion once, otherwise just
+            # note the fact that it's recursive and return.
+            if stack.count(member_shape.name) > 1:
+                if member_shape.type_name == 'structure':
+                    doc.write('( ... recursive ... )')
+                return
+        stack.append(member_shape.name)
+        try:
+            self._do_doc_member_for_output(doc, member_name,
+                                           member_shape, stack)
+        finally:
+            stack.pop()
+
+    def _do_doc_member_for_output(self, doc, member_name, member_shape, stack):
         docs = member_shape.documentation
         if member_name:
             doc.write('%s -> (%s)' % (member_name, member_shape.type_name))
@@ -430,15 +459,15 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         member_type_name = member_shape.type_name
         if member_type_name == 'structure':
             for sub_name, sub_shape in member_shape.members.items():
-                self._doc_member_for_output(doc, sub_name, sub_shape)
+                self._doc_member_for_output(doc, sub_name, sub_shape, stack)
         elif member_type_name == 'map':
             key_shape = member_shape.key
             key_name = key_shape.serialization.get('name', 'key')
-            self._doc_member_for_output(doc, key_name, key_shape)
+            self._doc_member_for_output(doc, key_name, key_shape, stack)
             value_shape = member_shape.value
             value_name = value_shape.serialization.get('name', 'value')
-            self._doc_member_for_output(doc, value_name, value_shape)
+            self._doc_member_for_output(doc, value_name, value_shape, stack)
         elif member_type_name == 'list':
-            self._doc_member_for_output(doc, '', member_shape.member)
+            self._doc_member_for_output(doc, '', member_shape.member, stack)
         doc.style.dedent()
         doc.style.new_paragraph()

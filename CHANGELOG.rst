@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3 mv``: Delete multi-part objects when transferring objects
+  across regions using ``--source-region``
+  (`issue 938 <https://github.com/aws/aws-cli/pull/938>`__)
+
+
 1.5.1
 =====
 

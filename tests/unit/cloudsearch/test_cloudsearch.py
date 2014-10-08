@@ -50,3 +50,18 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
             'IndexField.IntOptions.SearchEnabled': 'false'
         }
         self.assert_params_for_cmd(cmdline, result)
+
+    def test_latlon(self):
+        cmdline = self.prefix
+        cmdline += ' --domain-name abc123'
+        cmdline += ' --name foo'
+        cmdline += ' --type latlon'
+        cmdline += ' --default-value 10'
+        cmdline += ' --search-enabled false'
+        result = {
+            'DomainName': 'abc123',
+            'IndexField.IndexFieldName': 'foo',
+            'IndexField.IndexFieldType': 'int',
+            'IndexField.LatLonOptions.DefaultValue': 10,
+            'IndexField.LatLonOptions.SearchEnabled': 'false'
+        }

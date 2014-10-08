@@ -8,6 +8,9 @@ Next Release (TBD)
 * bugfix:``aws s3 mv``: Delete multi-part objects when transferring objects
   across regions using ``--source-region``
   (`issue 938 <https://github.com/aws/aws-cli/pull/938>`__)
+* bugfix:``aws emr ssh``: Fix issue with waiter configuration not
+  being found
+  (`issue 937 <https://github.com/aws/aws-cli/issues/937>`__)
 
 
 1.5.1

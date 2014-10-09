@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore import model
+from botocore.model import Shape
 
 from awscli.arguments import BaseCLIArgument
 
@@ -41,8 +41,8 @@ class StreamingOutputArgument(BaseCLIArgument):
 
     def __init__(self, response_key, operation, name, buffer_size=None):
         self._name = name
-        self.argument_model = model.Shape('StreamingOutputArgument',
-                                          {'type': 'string'})
+        self.argument_model = Shape('StreamingOutputArgument',
+                                    {'type': 'string'})
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size

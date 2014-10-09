@@ -3,7 +3,6 @@ import json
 from datetime import datetime, timedelta
 
 from awscli.arguments import CustomArgument
-from awscli.argprocess import uri_param
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
 

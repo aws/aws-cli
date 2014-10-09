@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
-import sys
 import logging
 
 LOG = logging.getLogger(__name__)
@@ -56,9 +54,6 @@ class ErrorHandler(object):
 
     def __call__(self, http_response, parsed, model, **kwargs):
         LOG.debug('HTTP Response Code: %d', http_response.status_code)
-        msg_template = ("A {error_type} error ({error_code}) occurred "
-                        "when calling the {operation_name} operation: "
-                        "{error_message}")
         error_type = None
         error_class = None
         if http_response.status_code >= 500:

@@ -83,7 +83,7 @@ class StreamingOutputArgument(BaseCLIArgument):
         self._operation.session.register('after-call.%s.%s' % (
             service_name, operation_name), self.save_file)
 
-    def save_file(self, http_response, parsed, **kwargs):
+    def save_file(self, parsed, **kwargs):
         body = parsed[self._response_key]
         buffer_size = self._buffer_size
         with open(self._output_file, 'wb') as fp:

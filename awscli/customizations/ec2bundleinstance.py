@@ -138,11 +138,10 @@ def _generate_signature(params):
         del params['_SAK']
 
 
-def _check_params(**kwargs):
+def _check_params(params, **kwargs):
     # Called just before call but prior to building the params.
     # Adds information not supplied by the user.
-    logger.debug(kwargs)
-    storage = kwargs['params']['storage']['S3']
+    storage = params['storage']['S3']
     if 'UploadPolicy' not in storage:
         _generate_policy(storage)
     if 'UploadPolicySignature' not in storage:

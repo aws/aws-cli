@@ -72,7 +72,7 @@ def add_pipeline_definition(argument_table, **kwargs):
     del argument_table['pipeline-objects']
 
 
-def translate_definition(operation, http_response, parsed, **kwargs):
+def translate_definition(parsed, **kwargs):
     api_objects = parsed.pop('pipelineObjects', None)
     if api_objects is None:
         return

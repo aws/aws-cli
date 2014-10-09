@@ -54,7 +54,7 @@ class ErrorHandler(object):
     with an appropriate error code.
     """
 
-    def __call__(self, http_response, parsed, operation, **kwargs):
+    def __call__(self, http_response, parsed, model, **kwargs):
         LOG.debug('HTTP Response Code: %d', http_response.status_code)
         msg_template = ("A {error_type} error ({error_code}) occurred "
                         "when calling the {operation_name} operation: "
@@ -71,7 +71,7 @@ class ErrorHandler(object):
             code, message = self._get_error_code_and_message(parsed)
             raise error_class(
                 error_code=code, error_message=message,
-                error_type=error_type, operation_name=operation.name,
+                error_type=error_type, operation_name=model.name,
                 http_status_code=http_response.status_code)
 
     def _get_error_code_and_message(self, response):

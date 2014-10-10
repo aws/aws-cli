@@ -76,26 +76,9 @@ class DescribeCluster(BasicCommand):
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        if operation_object.can_paginate and parsed_globals.paginate:
-            pages = operation_object.paginate(endpoint, **parameters)
-            key = None
-            for page in pages:
-                http_response = page[0]
-                if http_response.status_code == 200:
-                    response_data = page[1]
-                    keys = response_data.keys()
-                    key = self._get_key_of_result(keys)
-                    if key is not None:
-                        result += response_data.get(key)
-
-            if key is not None:
-                return {key: result}
-            else:
-                return None
-        else:
-            http_response, response_data = operation_object.call(endpoint,
+        http_response, response_data = operation_object.call(endpoint,
                                                                  **parameters)
-            return response_data
+        return response_data
 
     def _get_key_of_result(self, keys):
         # Return the first key that is not "Marker"

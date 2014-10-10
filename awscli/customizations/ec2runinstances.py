@@ -79,7 +79,7 @@ def _check_args(parsed_args, **kwargs):
                 raise ValueError(msg)
 
 
-def _fix_args(operation, endpoint, params, **kwargs):
+def _fix_args(params, **kwargs):
     # The RunInstances request provides some parameters
     # such as --subnet-id and --security-group-id that can be specified
     # as separate options only if the request DOES NOT include a

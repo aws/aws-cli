@@ -314,9 +314,9 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
                               pformat(params), pformat(last_kwargs)))
         return stdout, stderr, rc
 
-    def before_parameter_build(self, params, operation, **kwargs):
+    def before_parameter_build(self, params, model, **kwargs):
         self.last_kwargs = params
-        self.operations_called.append((operation, params))
+        self.operations_called.append((model, params))
 
     def run_cmd(self, cmd, expected_rc=0):
         logging.debug("Calling cmd: %s", cmd)

@@ -82,7 +82,7 @@ class IAMVMFAWrapper(object):
         argument_table['outfile'] = self._outfile
         argument_table['bootstrap-method'] = self._method
 
-    def _save_file(self, http_response, parsed, **kwargs):
+    def _save_file(self, parsed, **kwargs):
         method = self._method.value
         outfile = self._outfile.value
         if method in parsed['VirtualMFADevice']:

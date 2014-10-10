@@ -3,7 +3,6 @@ import json
 from datetime import datetime, timedelta
 
 from awscli.arguments import CustomArgument
-from awscli.argprocess import uri_param
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
 
@@ -72,7 +71,7 @@ def add_pipeline_definition(argument_table, **kwargs):
     del argument_table['pipeline-objects']
 
 
-def translate_definition(operation, http_response, parsed, **kwargs):
+def translate_definition(parsed, **kwargs):
     api_objects = parsed.pop('pipelineObjects', None)
     if api_objects is None:
         return

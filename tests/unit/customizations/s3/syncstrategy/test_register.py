@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from mock import Mock
 
-from awscli.customizations.s3.syncstrategy.registerstrategy import \
+from awscli.customizations.s3.syncstrategy.register import \
     register_sync_strategy
 from awscli.testutils import unittest
 

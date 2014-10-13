@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.customizations.s3.syncstrategy.syncstrategy import \
-    BaseSyncStrategy
+from awscli.customizations.s3.syncstrategy.base import BaseSync
 
 
 LOG = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
                         'than the S3 version.')}
 
 
-class ExactTimestampsSyncStrategy(BaseSyncStrategy):
+class ExactTimestampsSync(BaseSync):
 
     ARGUMENT = EXACT_TIMESTAMPS
 

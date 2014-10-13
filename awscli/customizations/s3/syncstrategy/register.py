@@ -10,12 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.s3.syncstrategy.sizeonlystrategy import \
-    SizeOnlySyncStrategy
-from awscli.customizations.s3.syncstrategy.exacttimestampsstrategy import \
-    ExactTimestampsSyncStrategy
-from awscli.customizations.s3.syncstrategy.deletestrategy import \
-    DeleteSyncStrategy
+from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
+from awscli.customizations.s3.syncstrategy.exacttimestamps import \
+    ExactTimestampsSync
+from awscli.customizations.s3.syncstrategy.delete import DeleteSync
 
 
 def register_sync_strategy(session, strategy_cls,
@@ -40,13 +38,12 @@ def register_sync_strategies(command_table, session, **kwargs):
     """
 
     # Register the size only sync strategy.
-    register_sync_strategy(session, SizeOnlySyncStrategy)
+    register_sync_strategy(session, SizeOnlySync)
 
     # Register the exact timestamps sync strategy.
-    register_sync_strategy(session, ExactTimestampsSyncStrategy)
+    register_sync_strategy(session, ExactTimestampsSync)
 
     # Register the delete sync strategy.
-    register_sync_strategy(session, DeleteSyncStrategy,
-                           'file_not_at_src')
+    register_sync_strategy(session, DeleteSync, 'file_not_at_src')
 
     # Register additional sync strategies here...

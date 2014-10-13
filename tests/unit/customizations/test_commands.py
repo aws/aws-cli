@@ -29,3 +29,38 @@ class TestCommandLoader(unittest.TestCase):
             mock_open.return_value.__enter__.return_value.read.return_value = \
                     'fake description'
             self.assertEqual(help_command.description, 'fake description')
+
+
+class TestBasicCommand(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.command = BasicCommand(self.session)
+
+    def test_load_arg_table_property(self):
+        with mock.patch('awscli.customizations.commands.BasicCommand.'
+                        '_build_arg_table') as mock_build_arg_table:
+            mock_build_arg_table.return_value = mock.Mock()
+            # Ensure ``_build_arg_table()`` is called if it has not been
+            # built via the ``arg_table`` property.
+            self.command.arg_table
+            self.assertEqual(len(mock_build_arg_table.call_args_list), 1)
+            # Ensure the ``arg_table`` is not built again if ``arg_table``
+            # property is called again.
+            self.command.arg_table
+            self.assertEqual(len(mock_build_arg_table.call_args_list), 1)
+
+    def test_load_subcommand_table_property(self):
+        with mock.patch('awscli.customizations.commands.BasicCommand.'
+                        '_build_subcommand_table') as \
+                mock_build_subcommand_table:
+            mock_build_subcommand_table.return_value = mock.Mock()
+            # Ensure ``_build_subcommand_table()`` is called if it has not
+            # been built via the ``subcommand_table`` property.
+            self.command.subcommand_table
+            self.assertEqual(
+                len(mock_build_subcommand_table.call_args_list), 1)
+            # Ensure the ``subcommand_table`` is not built again if 
+            # ``subcommand_table`` property is called again.
+            self.command.subcommand_table
+            self.assertEqual(
+                len(mock_build_subcommand_table.call_args_list), 1)

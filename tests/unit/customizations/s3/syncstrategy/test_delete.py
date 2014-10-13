@@ -13,15 +13,14 @@
 import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.deletestrategy import \
-    DeleteSyncStrategy
+from awscli.customizations.s3.syncstrategy.delete import DeleteSync
 
 from awscli.testutils import unittest
 
 
-class TestDeleteSyncStrategy(unittest.TestCase):
+class TestDeleteSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = DeleteSyncStrategy()
+        self.sync_strategy = DeleteSync()
 
     def test_determine_should_sync(self):
         timenow = datetime.datetime.now()

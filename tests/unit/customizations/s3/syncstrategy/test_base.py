@@ -15,26 +15,25 @@ import datetime
 from mock import Mock, patch
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.syncstrategy import \
-    BaseSyncStrategy, DefaultSyncStrategy, DefaultNotAtSrcSyncStrategy, \
-    DefaultNotAtDestSyncStrategy
+from awscli.customizations.s3.syncstrategy.base import BaseSync, \
+    SizeAndLastModifiedSync, MissingFileSync, NeverSync
 from awscli.testutils import unittest
 
 
-class TestBaseSyncStrategy(unittest.TestCase):
+class TestBaseSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = BaseSyncStrategy()
+        self.sync_strategy = BaseSync()
 
     def test_init(self):
         valid_sync_types = ['file_at_src_and_dest', 'file_not_at_dest',
                             'file_not_at_src']
         for sync_type in valid_sync_types:
-            strategy = BaseSyncStrategy(sync_type)
+            strategy = BaseSync(sync_type)
             self.assertEqual(strategy.sync_type, sync_type)
 
         # Check for invalid ``sync_type`` options.
         with self.assertRaises(ValueError):
-            BaseSyncStrategy('wrong_sync_type')
+            BaseSync('wrong_sync_type')
 
     def test_register_strategy(self):
         """
@@ -162,9 +161,9 @@ class TestBaseSyncStrategy(unittest.TestCase):
         self.assertEqual(self.sync_strategy.use_sync_strategy(params), None)
 
 
-class TestDefaultSyncStrategy(unittest.TestCase):
+class TestSizeAndLastModifiedSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = DefaultSyncStrategy()
+        self.sync_strategy = SizeAndLastModifiedSync()
 
     def test_compare_size(self):
         """
@@ -253,9 +252,9 @@ class TestDefaultSyncStrategy(unittest.TestCase):
         self.assertFalse(should_sync)
 
 
-class TestDefaultNotAtSrcSyncStrategy(unittest.TestCase):
+class TestNeverSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = DefaultNotAtSrcSyncStrategy()
+        self.sync_strategy = NeverSync()
 
     def test_constructor(self):
         self.assertEqual(self.sync_strategy.sync_type, 'file_not_at_src')
@@ -273,9 +272,9 @@ class TestDefaultNotAtSrcSyncStrategy(unittest.TestCase):
         self.assertFalse(should_sync)
 
 
-class TestDefaultNotAtDestSyncStrategy(unittest.TestCase):
+class TestMissingFileSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = DefaultNotAtDestSyncStrategy()
+        self.sync_strategy = MissingFileSync()
 
     def test_constructor(self):
         self.assertEqual(self.sync_strategy.sync_type, 'file_not_at_dest')

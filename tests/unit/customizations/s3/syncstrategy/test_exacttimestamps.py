@@ -13,15 +13,15 @@
 import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.exacttimestampsstrategy import \
-    ExactTimestampsSyncStrategy
+from awscli.customizations.s3.syncstrategy.exacttimestamps import \
+    ExactTimestampsSync
 
 from awscli.testutils import unittest
 
 
-class TestExactTimestampsSyncStrategy(unittest.TestCase):
+class TestExactTimestampsSync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = ExactTimestampsSyncStrategy()
+        self.sync_strategy = ExactTimestampsSync()
 
     def test_compare_exact_timestamps_dest_older(self):
         """

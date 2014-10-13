@@ -222,11 +222,8 @@ class BasicCommand(CLICommand):
         command_help_table = {}
         if self.SUBCOMMANDS:
             command_help_table = self.create_help_command_table()
-        arg_help_table = self.arg_table
-        if arg_help_table is None:
-            arg_help_table = self._build_arg_table()
         return BasicHelp(self._session, self, command_table=command_help_table,
-                         arg_table=arg_help_table)
+                         arg_table=self.arg_table)
 
     def create_help_command_table(self):
         """
@@ -257,10 +254,14 @@ class BasicCommand(CLICommand):
 
     @property
     def arg_table(self):
+        if self._arg_table is None:
+            self._arg_table = self._build_arg_table()
         return self._arg_table
 
     @property
     def subcommand_table(self):
+        if self._subcommand_table is None:
+            self._subcommand_table = self._build_subcommand_table()
         return self._subcommand_table
 
     @classmethod

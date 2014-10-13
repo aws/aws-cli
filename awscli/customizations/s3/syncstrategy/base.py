@@ -19,7 +19,7 @@ VALID_SYNC_TYPES = ['file_at_src_and_dest', 'file_not_at_dest',
                     'file_not_at_src']
 
 
-class BaseSyncStrategy(object):
+class BaseSync(object):
     """Base sync strategy
 
     To create a new sync strategy, subclass from this class.
@@ -223,7 +223,7 @@ class BaseSyncStrategy(object):
                 return False
 
 
-class DefaultSyncStrategy(BaseSyncStrategy):
+class SizeAndLastModifiedSync(BaseSync):
 
     def determine_should_sync(self, src_file, dest_file):
         same_size = self.compare_size(src_file, dest_file)
@@ -237,17 +237,17 @@ class DefaultSyncStrategy(BaseSyncStrategy):
         return should_sync
 
 
-class DefaultNotAtSrcSyncStrategy(BaseSyncStrategy):
+class NeverSync(BaseSync):
     def __init__(self, sync_type='file_not_at_src'):
-        super(DefaultNotAtSrcSyncStrategy, self).__init__(sync_type)
+        super(NeverSync, self).__init__(sync_type)
 
     def determine_should_sync(self, src_file, dest_file):
         return False
 
 
-class DefaultNotAtDestSyncStrategy(BaseSyncStrategy):
+class MissingFileSync(BaseSync):
     def __init__(self, sync_type='file_not_at_dest'):
-        super(DefaultNotAtDestSyncStrategy, self).__init__(sync_type)
+        super(MissingFileSync, self).__init__(sync_type)
 
     def determine_should_sync(self, src_file, dest_file):
         LOG.debug("syncing: %s -> %s, file does not exist at destination",

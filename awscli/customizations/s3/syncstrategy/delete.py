@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.customizations.s3.syncstrategy.syncstrategy import \
-    BaseSyncStrategy
+from awscli.customizations.s3.syncstrategy.base import BaseSync
 
 
 LOG = logging.getLogger(__name__)
@@ -25,7 +24,7 @@ DELETE = {'name': 'delete', 'action': 'store_true',
               "deleted during sync.")}
 
 
-class DeleteSyncStrategy(BaseSyncStrategy):
+class DeleteSync(BaseSync):
 
     ARGUMENT = DELETE
 

@@ -13,15 +13,14 @@
 import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.sizeonlystrategy import \
-    SizeOnlySyncStrategy
+from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
 
 from awscli.testutils import unittest
 
 
-class TestSizeOnlySyncStrategy(unittest.TestCase):
+class TestSizeOnlySync(unittest.TestCase):
     def setUp(self):
-        self.sync_strategy = SizeOnlySyncStrategy()
+        self.sync_strategy = SizeOnlySync()
 
     def test_compare_size_only(self):
         """

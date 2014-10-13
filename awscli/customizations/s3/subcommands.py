@@ -28,9 +28,9 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key
-from awscli.customizations.s3.syncstrategy.syncstrategy import \
-    DefaultSyncStrategy, DefaultNotAtDestSyncStrategy, \
-    DefaultNotAtSrcSyncStrategy
+from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
+    SizeAndLastModifiedSync, NeverSync
+
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -529,11 +529,9 @@ class CommandArchitecture(object):
         sync_strategies = {}
         # Set the default strategies.
         sync_strategies['file_at_src_and_dest_sync_strategy'] = \
-            DefaultSyncStrategy()
-        sync_strategies['file_not_at_dest_sync_strategy'] = \
-            DefaultNotAtDestSyncStrategy()
-        sync_strategies['file_not_at_src_sync_strategy'] = \
-            DefaultNotAtSrcSyncStrategy()
+            SizeAndLastModifiedSync()
+        sync_strategies['file_not_at_dest_sync_strategy'] = MissingFileSync()
+        sync_strategies['file_not_at_src_sync_strategy'] = NeverSync()
 
         # Determine what strategies to overide if any.
         responses = self.session.emit(

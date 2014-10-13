@@ -22,9 +22,8 @@ import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
-from awscli.customizations.s3.syncstrategy.syncstrategy import \
-    DefaultSyncStrategy, DefaultNotAtDestSyncStrategy, \
-    DefaultNotAtSrcSyncStrategy    
+from awscli.customizations.s3.syncstrategy.base import \
+    SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -206,15 +205,15 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         sync_strategies = cmd_arc.choose_sync_strategies()
         self.assertEqual(
             sync_strategies['file_at_src_and_dest_sync_strategy'].__class__,
-            DefaultSyncStrategy
+            SizeAndLastModifiedSync
         )
         self.assertEqual(
             sync_strategies['file_not_at_dest_sync_strategy'].__class__,
-            DefaultNotAtDestSyncStrategy
+            MissingFileSync
         )
         self.assertEqual(
             sync_strategies['file_not_at_src_sync_strategy'].__class__,
-            DefaultNotAtSrcSyncStrategy
+            NeverSync
         )
 
     def test_choose_sync_strategy_overwrite(self):

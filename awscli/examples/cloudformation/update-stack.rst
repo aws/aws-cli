@@ -11,7 +11,7 @@ don't specify a parameter value, the default value that is specified in the temp
 
 The following ``update-stack`` command adds two stack notification topics to the ``mystack`` stack::
 
-  aws cloudformation update-stack --stack-name mystack --use-previous-template --notification-ar-ns "arn:aws:sns:use-east-1:123456789012:mytopic1" "arn:aws:sns:us-east-1:123456789012:mytopic2"
+  aws cloudformation update-stack --stack-name mystack --use-previous-template --notification-arns "arn:aws:sns:use-east-1:123456789012:mytopic1" "arn:aws:sns:us-east-1:123456789012:mytopic2"
 
 For more information, see `Updating a Stack`_ in the *AWS CloudFormation User Guide*.
 

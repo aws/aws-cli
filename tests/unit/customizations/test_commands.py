@@ -37,30 +37,21 @@ class TestBasicCommand(unittest.TestCase):
         self.command = BasicCommand(self.session)
 
     def test_load_arg_table_property(self):
-        with mock.patch('awscli.customizations.commands.BasicCommand.'
-                        '_build_arg_table') as mock_build_arg_table:
-            mock_build_arg_table.return_value = mock.Mock()
-            # Ensure ``_build_arg_table()`` is called if it has not been
-            # built via the ``arg_table`` property.
-            self.command.arg_table
-            self.assertEqual(len(mock_build_arg_table.call_args_list), 1)
-            # Ensure the ``arg_table`` is not built again if ``arg_table``
-            # property is called again.
-            self.command.arg_table
-            self.assertEqual(len(mock_build_arg_table.call_args_list), 1)
+        # Ensure ``_build_arg_table()`` is called if it has not been
+        # built via the ``arg_table`` property.  It should be an empty
+        # dictionary.
+        orig_arg_table = self.command.arg_table
+        self.assertEqual(orig_arg_table, {})
+        # Ensure the ``arg_table`` is not built again if
+        # ``arg_table`` property is called again.
+        self.assertIs(orig_arg_table, self.command.arg_table)
 
     def test_load_subcommand_table_property(self):
-        with mock.patch('awscli.customizations.commands.BasicCommand.'
-                        '_build_subcommand_table') as \
-                mock_build_subcommand_table:
-            mock_build_subcommand_table.return_value = mock.Mock()
-            # Ensure ``_build_subcommand_table()`` is called if it has not
-            # been built via the ``subcommand_table`` property.
-            self.command.subcommand_table
-            self.assertEqual(
-                len(mock_build_subcommand_table.call_args_list), 1)
-            # Ensure the ``subcommand_table`` is not built again if 
-            # ``subcommand_table`` property is called again.
-            self.command.subcommand_table
-            self.assertEqual(
-                len(mock_build_subcommand_table.call_args_list), 1)
+        # Ensure ``_build_subcommand_table()`` is called if it has not
+        # been built via the ``subcommand_table`` property. It should be
+        # an empty dictionary.
+        orig_subcommand_table = self.command.subcommand_table
+        self.assertEqual(orig_subcommand_table, {})
+        # Ensure the ``subcommand_table`` is not built again if
+        # ``subcommand_table`` property is called again.
+        self.assertIs(orig_subcommand_table, self.command.subcommand_table)

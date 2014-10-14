@@ -16,12 +16,14 @@ from six import StringIO
 import sys
 
 import mock
-from mock import patch, MagicMock
+from mock import patch, Mock, MagicMock
 
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
+from awscli.customizations.s3.syncstrategy.base import \
+    SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
@@ -190,6 +192,65 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertEqual(cmd_arc.instructions, ['file_generator', 'filters',
                                                 'file_info_builder',
                                                 's3_handler'])
+
+    def test_choose_sync_strategy_default(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
+                                      {'region': 'us-east-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None})
+        # Check if no plugins return their sync strategy.  Should
+        # result in the default strategies
+        session.emit.return_value = None
+        sync_strategies = cmd_arc.choose_sync_strategies()
+        self.assertEqual(
+            sync_strategies['file_at_src_and_dest_sync_strategy'].__class__,
+            SizeAndLastModifiedSync
+        )
+        self.assertEqual(
+            sync_strategies['file_not_at_dest_sync_strategy'].__class__,
+            MissingFileSync
+        )
+        self.assertEqual(
+            sync_strategies['file_not_at_src_sync_strategy'].__class__,
+            NeverSync
+        )
+
+    def test_choose_sync_strategy_overwrite(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
+                                      {'region': 'us-east-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None})
+        # Check that the default sync strategy is overwritted if a plugin
+        # returns its sync strategy.
+        mock_strategy = Mock()
+        mock_strategy.sync_type = 'file_at_src_and_dest'
+
+        mock_not_at_dest_sync_strategy = Mock()
+        mock_not_at_dest_sync_strategy.sync_type = 'file_not_at_dest'
+
+        mock_not_at_src_sync_strategy = Mock()
+        mock_not_at_src_sync_strategy.sync_type = 'file_not_at_src'
+
+        responses = [(None, mock_strategy),
+                     (None, mock_not_at_dest_sync_strategy),
+                     (None, mock_not_at_src_sync_strategy)]
+
+        session.emit.return_value = responses
+        sync_strategies = cmd_arc.choose_sync_strategies()
+        self.assertEqual(
+            sync_strategies['file_at_src_and_dest_sync_strategy'],
+            mock_strategy
+        )
+        self.assertEqual(
+            sync_strategies['file_not_at_dest_sync_strategy'],
+            mock_not_at_dest_sync_strategy
+        )
+        self.assertEqual(
+            sync_strategies['file_not_at_src_sync_strategy'],
+            mock_not_at_src_sync_strategy
+        )
 
     def test_run_cp_put(self):
         # This ensures that the architecture sets up correctly for a ``cp`` put
@@ -538,6 +599,7 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         # parts.  Note the examples are not included because
         # the event was not registered.
         s3command = CpCommand(self.session)
+        s3command._arg_table = s3command._build_arg_table()
         parser = argparse.ArgumentParser()
         parser.add_argument('--paginate', action='store_true')
         parsed_global = parser.parse_args(['--paginate'])

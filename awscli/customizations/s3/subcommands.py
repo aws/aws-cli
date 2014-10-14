@@ -28,6 +28,9 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key
+from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
+    SizeAndLastModifiedSync, NeverSync
+
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -39,11 +42,6 @@ DRYRUN = {'name': 'dryrun', 'action': 'store_true',
           'help_text': (
               "Displays the operations that would be performed using the "
               "specified command without actually running them.")}
-
-DELETE = {'name': 'delete', 'action': 'store_true',
-          'help_text': (
-              "Files that exist in the destination but not in the source are "
-              "deleted during sync.")}
 
 QUIET = {'name': 'quiet', 'action': 'store_true',
          'help_text': (
@@ -178,19 +176,6 @@ SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
 EXPIRES = {'name': 'expires', 'nargs': 1, 'help_text': ("The date and time at "
            "which the object is no longer cacheable.")}
 
-SIZE_ONLY = {'name': 'size-only', 'action': 'store_true',
-             'help_text': (
-                 'Makes the size of each key the only criteria used to '
-                 'decide whether to sync from source to destination.')}
-
-EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
-                    'help_text': (
-                        'When syncing from S3 to local, same-sized '
-                        'items will be ignored only when the timestamps '
-                        'match exactly. The default behavior is to ignore '
-                        'same-sized items unless the local version is newer '
-                        'than the S3 version.')}
-
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
                       'A suffix that is appended to a request that is for '
@@ -225,8 +210,6 @@ TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
                  CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS]
-
-SYNC_ARGS = [DELETE, EXACT_TIMESTAMPS, SIZE_ONLY] + TRANSFER_ARGS
 
 
 def get_endpoint(service, region, endpoint_url, verify):
@@ -455,7 +438,7 @@ class SyncCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> " \
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + SYNC_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS
     EXAMPLES = BasicCommand.FROM_FILE('s3/sync.rst')
 
 
@@ -535,6 +518,33 @@ class CommandArchitecture(object):
             return False
         else:
             return True
+    
+    def choose_sync_strategies(self):
+        """Determines the sync strategy for the command.
+
+        It defaults to the default sync strategies but a customizable sync
+        strategy can overide the default strategy if it returns the instance
+        of its self when the event is emitted.
+        """
+        sync_strategies = {}
+        # Set the default strategies.
+        sync_strategies['file_at_src_and_dest_sync_strategy'] = \
+            SizeAndLastModifiedSync()
+        sync_strategies['file_not_at_dest_sync_strategy'] = MissingFileSync()
+        sync_strategies['file_not_at_src_sync_strategy'] = NeverSync()
+
+        # Determine what strategies to overide if any.
+        responses = self.session.emit(
+            'choosing-s3-sync-strategy', params=self.parameters)
+        if responses is not None:
+            for response in responses:
+                override_sync_strategy = response[1]
+                if override_sync_strategy is not None:
+                    sync_type = override_sync_strategy.sync_type
+                    sync_type += '_sync_strategy'
+                    sync_strategies[sync_type] = override_sync_strategy
+
+        return sync_strategies
 
     def run(self):
         """
@@ -609,6 +619,8 @@ class CommandArchitecture(object):
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
                                             result_queue=result_queue)
 
+        sync_strategies = self.choose_sync_strategies()
+
         command_dict = {}
         if self.cmd == 'sync':
             command_dict = {'setup': [files, rev_files],
@@ -616,7 +628,7 @@ class CommandArchitecture(object):
                                                rev_generator],
                             'filters': [create_filter(self.parameters),
                                         create_filter(self.parameters)],
-                            'comparator': [Comparator(self.parameters)],
+                            'comparator': [Comparator(**sync_strategies)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:

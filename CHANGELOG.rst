@@ -2,9 +2,13 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.2
+=====
 
+* feature:``aws cloudsearch``: Add support for advance Japanese language
+  processing.
+* feature:``aws rds``: Add support for gp2 which provides faster
+  access than disk-based storage.
 * bugfix:``aws s3 mv``: Delete multi-part objects when transferring objects
   across regions using ``--source-region``
   (`issue 938 <https://github.com/aws/aws-cli/pull/938>`__)

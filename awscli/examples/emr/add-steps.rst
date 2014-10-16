@@ -58,7 +58,7 @@
 
 - Optional parameters::
 
-    Name, ActionOnFailure, Version
+    Name, ActionOnFailure
 
 - Output::
 
@@ -83,7 +83,7 @@
 
 - Optional parameters::
 
-    Name, ActionOnFailure, Version
+    Name, ActionOnFailure
 
 - Output::
 

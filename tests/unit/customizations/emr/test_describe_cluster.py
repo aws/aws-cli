@@ -54,6 +54,9 @@ describe_cluster_result_mock = {
         }
     }
 list_instance_groups_result_mock = {
+    "ResponseMetadata": {
+        "RequestId": '12ec323c-50b1-11e4-b653-afa4228d882f'
+    },
     "InstanceGroups": [
         {
             "RequestedInstanceCount": 1,
@@ -101,6 +104,9 @@ list_instance_groups_result_mock = {
 }
 
 list_bootstrap_actions_result_mock = {
+    "ResponseMetadata": {
+        "RequestId": '12ec323c-50b1-11e4-b653-afa4228d882f'
+    },
     "BootstrapActions": [
         {
             "Args": [],
@@ -111,6 +117,9 @@ list_bootstrap_actions_result_mock = {
 }
 
 list_instances_result_mock = {
+    "ResponseMetadata": {
+        "RequestId": '12ec323c-50b1-11e4-b653-afa4228d882f'
+    },
     "Instances": [
         {
             "Status": {

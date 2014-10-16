@@ -339,7 +339,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
 
             }
 
-
     def assert_error_message_has_field_name(self, error_msg, field_name):
         self.assertIn('Missing required parameter', error_msg)
         self.assertIn(field_name, error_msg)
@@ -1094,6 +1093,27 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--applications Name=hbase --restore-from-hbase-backup '
             'file://' + data_path)
         self.assert_params_for_cmd2(cmd, result)
+
+    def test_empty_step_args(self):
+        cmd = DEFAULT_CMD + '--steps Type=Streaming,Args= '
+        expect_error_msg = ('\naws: error: The prameter Args cannot '
+                            'be an empty list.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = DEFAULT_CMD + '--steps Type=Pig,Args= '
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = DEFAULT_CMD + '--steps Type=Hive,Args= '
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
+
+        cmd = DEFAULT_CMD + '--steps Args= '
+        expect_error_msg = ('\naws: error: The following required parameters '
+                            'are missing for CustomJARStepConfig: Jar.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expect_error_msg, result[1])
 
     def test_missing_applications_for_steps(self):
         cmd = DEFAULT_CMD +\

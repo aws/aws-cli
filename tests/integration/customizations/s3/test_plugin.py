@@ -689,6 +689,23 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertFalse(
             self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
+    def testMvLargeFileRegion(self):
+        foo_txt = self.files.create_file('foo.txt', 'a' * 1024 * 1024 * 10)
+        p = aws('s3 cp %s s3://%s/foo.txt --region %s' %
+                (foo_txt, self.src_bucket, self.src_region))
+        self.assert_no_errors(p)
+
+        p2 = aws(
+            's3 mv s3://%s/foo.txt s3://%s/ --region %s --source-region %s ' %
+            (self.src_bucket, self.dest_bucket, self.dest_region,
+             self.src_region)
+        )
+        self.assert_no_errors(p2)
+        self.assertTrue(
+            self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
+        self.assertFalse(
+            self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
+
 
 class TestWarnings(BaseS3CLICommand):
     def extra_setup(self):

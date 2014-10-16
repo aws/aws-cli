@@ -49,6 +49,12 @@ def index_hydrate(params, container, cli_type, key, value):
     _type = params['index_field']['IndexFieldType']
     _type = ''.join([i.capitalize() for i in _type.split('-')])
 
+    # ``index_field`` of type ``latlon`` is mapped to ``Latlon``.
+    # However, it is defined as ``LatLon`` in the model so it needs to
+    # be changed.
+    if _type == 'Latlon':
+        _type = 'LatLon'
+
     # Transform string value to the correct type?
     if key.split(SEP)[-1] == 'DefaultValue':
         value = DEFAULT_VALUE_TYPE_MAP.get(_type, lambda x: x)(value)

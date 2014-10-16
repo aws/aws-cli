@@ -17,30 +17,17 @@ from six import advance_iterator
 LOG = logging.getLogger(__name__)
 
 
-def total_seconds(td):
-    """
-    timedelta's time_seconds() function for python 2.6 users
-    """
-    return (td.microseconds + (td.seconds + td.days * 24 *
-                               3600) * 10**6) / 10**6
-
-
 class Comparator(object):
     """
     This class performs all of the comparisons behind the sync operation
     """
-    def __init__(self, params=None):
-        self.delete = False
-        if 'delete' in params:
-            self.delete = params['delete']
-
-        self.compare_on_size_only = False
-        if 'size_only' in params:
-            self.compare_on_size_only = params['size_only']
-
-        self.match_exact_timestamps = False
-        if 'exact_timestamps' in params:
-            self.match_exact_timestamps = params['exact_timestamps']
+    def __init__(self, file_at_src_and_dest_sync_strategy,
+                 file_not_at_dest_sync_strategy,
+                 file_not_at_src_sync_strategy):
+        
+        self._sync_strategy = file_at_src_and_dest_sync_strategy
+        self._not_at_dest_sync_strategy = file_not_at_dest_sync_strategy
+        self._not_at_src_sync_strategy = file_not_at_src_sync_strategy
 
     def call(self, src_files, dest_files):
         """
@@ -107,62 +94,38 @@ class Comparator(object):
                 compare_keys = self.compare_comp_key(src_file, dest_file)
 
                 if compare_keys == 'equal':
-                    same_size = self.compare_size(src_file, dest_file)
-                    same_last_modified_time = self.compare_time(src_file, dest_file)
-
-                    if self.compare_on_size_only:
-                        should_sync = not same_size
-                    else:
-                        should_sync = (not same_size) or (not same_last_modified_time)
-
+                    should_sync = self._sync_strategy.determine_should_sync(
+                        src_file, dest_file
+                    )
                     if should_sync:
-                        LOG.debug("syncing: %s -> %s, size_changed: %s, "
-                                  "last_modified_time_changed: %s",
-                                  src_file.src, src_file.dest,
-                                  not same_size, not same_last_modified_time)
                         yield src_file
                 elif compare_keys == 'less_than':
                     src_take = True
                     dest_take = False
-                    LOG.debug("syncing: %s -> %s, file does not exist at destination",
-                            src_file.src, src_file.dest)
-                    yield src_file
+                    should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                    if should_sync:
+                        yield src_file
 
                 elif compare_keys == 'greater_than':
                     src_take = False
                     dest_take = True
-                    dest_file.operation_name = 'delete'
-                    if self.delete:
-                        LOG.debug("syncing: (None) -> %s (remove), file does "
-                                  "not exist at source (%s) and delete "
-                                  "mode enabled",
-                                  dest_file.src, dest_file.dest)
+                    should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
+                    if should_sync:                        
                         yield dest_file
 
             elif (not src_done) and dest_done:
                 src_take = True
-                LOG.debug("syncing: %s -> %s, file does not exist "
-                          "at destination",
-                          src_file.src, src_file.dest)
-                yield src_file
+                should_sync = self._not_at_dest_sync_strategy.determine_should_sync(src_file, None)
+                if should_sync:
+                    yield src_file
 
             elif src_done and (not dest_done):
                 dest_take = True
-                dest_file.operation_name = 'delete'
-                if self.delete:
-                    LOG.debug("syncing: (None) -> %s (remove), file does not "
-                              "exist at source (%s) and delete mode enabled",
-                              dest_file.src, dest_file.dest)
+                should_sync = self._not_at_src_sync_strategy.determine_should_sync(None, dest_file)
+                if should_sync:                        
                     yield dest_file
             else:
                 break
-
-    def compare_size(self, src_file, dest_file):
-        """
-        :returns: True if the sizes are the same.
-            False otherwise.
-        """
-        return src_file.size == dest_file.size
 
     def compare_comp_key(self, src_file, dest_file):
         """
@@ -180,36 +143,3 @@ class Comparator(object):
 
         else:
             return 'greater_than'
-
-    def compare_time(self, src_file, dest_file):
-        """
-        :returns: True if the file does not need updating based on time of
-            last modification and type of operation.
-            False if the file does need updating based on the time of
-            last modification and type of operation.
-        """
-        src_time = src_file.last_update
-        dest_time = dest_file.last_update
-        delta = dest_time - src_time
-        cmd = src_file.operation_name
-        if cmd == "upload" or cmd == "copy":
-            if total_seconds(delta) >= 0:
-                # Destination is newer than source.
-                return True
-            else:
-                # Destination is older than source, so
-                # we have a more recently updated file
-                # at the source location.
-                return False
-        elif cmd == "download":
-            if self.match_exact_timestamps:
-                # An update is needed unless the
-                # timestamps match exactly.
-                return total_seconds(delta) == 0
-
-            if total_seconds(delta) <= 0:
-                return True
-            else:
-                # delta is positive, so the destination
-                # is newer than the source.
-                return False

@@ -43,6 +43,15 @@ class MissingParametersError(EmrError):
            '{object_name}: {missing}.')
 
 
+class EmptyListError(EmrError):
+    """
+    The provided list is empty.
+
+    :ivar param: The provided list parameter
+    """
+    fmt = ('aws: error: The prameter {param} cannot be an empty list.')
+
+
 class MissingRequiredInstanceGroupsError(EmrError):
     """
     In create-cluster command, none of --instance-group,

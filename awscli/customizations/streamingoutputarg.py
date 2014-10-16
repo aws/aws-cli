@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore import model
+from botocore.model import Shape
 
 from awscli.arguments import BaseCLIArgument
 
@@ -41,8 +41,8 @@ class StreamingOutputArgument(BaseCLIArgument):
 
     def __init__(self, response_key, operation, name, buffer_size=None):
         self._name = name
-        self.argument_model = model.Shape('StreamingOutputArgument',
-                                          {'type': 'string'})
+        self.argument_model = Shape('StreamingOutputArgument',
+                                    {'type': 'string'})
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size
@@ -83,7 +83,7 @@ class StreamingOutputArgument(BaseCLIArgument):
         self._operation.session.register('after-call.%s.%s' % (
             service_name, operation_name), self.save_file)
 
-    def save_file(self, http_response, parsed, **kwargs):
+    def save_file(self, parsed, **kwargs):
         body = parsed[self._response_key]
         buffer_size = self._buffer_size
         with open(self._output_file, 'wb') as fp:

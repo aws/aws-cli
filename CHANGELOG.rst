@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.2
+=====
 
 * feature:``aws cloudsearch``: Add support for advance Japanese language
   processing.

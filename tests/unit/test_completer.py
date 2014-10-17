@@ -22,9 +22,9 @@ from awscli.completer import Completer
 
 LOG = logging.getLogger(__name__)
 
-GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl',
-              '--no-paginate', '--output', '--page-size', '--profile',
-              '--region', '--version', '--color', '--query', '--no-sign-request']
+GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
+              '--output', '--profile', '--region', '--version', '--color',
+              '--query', '--no-sign-request']
 
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudsearch',
@@ -62,7 +62,7 @@ COMPLETIONS = [
      set(['--filters', '--dry-run', '--no-dry-run', '--endpoint-url',
           '--no-verify-ssl', '--no-paginate', '--no-sign-request',
           '--output', '--profile', '--starting-token', '--max-items',
-          '--region', '--version', '--color', '--query', '--page-size'])),
+          '--page-size', '--region', '--version', '--color', '--query'])),
     ('aws s3', -1, set(['cp', 'mv', 'rm', 'mb', 'rb', 'ls', 'sync', 'website'])),
     ('aws s3 m', -1, set(['mv', 'mb'])),
     ('aws s3 cp -', -1, set(['--no-guess-mime-type', '--dryrun',
@@ -74,7 +74,7 @@ COMPLETIONS = [
                              '--content-disposition', '--source-region',
                              '--content-encoding', '--content-language',
                              '--expires', '--grants', '--only-show-errors',
-                             '--expected-size']
+                             '--expected-size', '--page-size']
                             + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
@@ -86,7 +86,7 @@ COMPLETIONS = [
                                      '--exclude', '--include',
                                      '--source-region',
                                      '--grants', '--only-show-errors',
-                                     '--expected-size']
+                                     '--expected-size', '--page-size']
                                     + GLOBALOPTS)),
     ('aws emr ', -1, set(['add-instance-groups', 'add-steps', 'add-tags',
                           'create-cluster', 'create-default-roles',

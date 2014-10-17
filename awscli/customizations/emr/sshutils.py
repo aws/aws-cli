@@ -41,10 +41,11 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     endpoint = emrutils.get_endpoint(emr, parsed_globals)
 
     try:
-        cluster_running_waiter = emr.get_waiter('ClusterRunning')
+        cluster_running_waiter = emr.get_waiter('ClusterRunning',
+                                                endpoint)
         if cluster_state in constants.STARTING_STATES:
             print("Waiting for the cluster to start.")
-        cluster_running_waiter.wait(endpoint, ClusterId=cluster_id)
+        cluster_running_waiter.wait(ClusterId=cluster_id)
     except WaiterError:
         raise exceptions.MasterDNSNotAvailableError
 

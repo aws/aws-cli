@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws emr ssh``: Fix issue when using waiter interface to
+  wait on the cluster state
+  (`issue 954 <https://github.com/aws/aws-cli/pull/954>`__)
+
+
 1.5.2
 =====
 

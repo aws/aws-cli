@@ -53,10 +53,13 @@ class TestArgumentTableModifications(TestPaginateBase):
         # We also need to inject startin-token and max-items.
         self.assertIn('starting-token', argument_table)
         self.assertIn('max-items', argument_table)
+        self.assertIn('page-size', argument_table)
         # And these should be PageArguments.
         self.assertIsInstance(argument_table['starting-token'],
                               paginate.PageArgument)
         self.assertIsInstance(argument_table['max-items'],
+                              paginate.PageArgument)
+        self.assertIsInstance(argument_table['page-size'],
                               paginate.PageArgument)
 
     def test_operation_with_no_paginate(self):

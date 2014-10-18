@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Retry: Fix issue where certain error codes were not being retried
+  (`botocore issue 361 <https://github.com/boto/botocore/pull/361>`__)
 * bugfix:``aws emr ssh``: Fix issue when using waiter interface to
   wait on the cluster state
   (`issue 954 <https://github.com/aws/aws-cli/pull/954>`__)

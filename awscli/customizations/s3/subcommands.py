@@ -435,7 +435,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
-                 EXCLUDE, ONLY_SHOW_ERRORS]
+                 EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/rm.rst')
 
 

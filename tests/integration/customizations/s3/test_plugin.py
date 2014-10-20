@@ -326,6 +326,16 @@ class TestRm(BaseS3CLICommand):
         # And verify it's gone.
         self.assertFalse(self.key_exists(bucket_name, key_name='foo\r.txt'))
 
+    def test_rm_with_page_size(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents='hello world')
+        self.put_object(bucket_name, 'bar.txt', contents='hello world2')
+        p = aws('s3 rm s3://%s/ --recursive --page-size 1' % bucket_name)
+        self.assert_no_errors(p)
+
+        self.assertFalse(self.key_exists(bucket_name, key_name='foo.txt'))
+        self.assertFalse(self.key_exists(bucket_name, key_name='bar.txt'))
+
 
 class TestCp(BaseS3CLICommand):
 

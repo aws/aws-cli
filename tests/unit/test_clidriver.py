@@ -245,10 +245,12 @@ class TestCliDriverHooks(unittest.TestCase):
             'top-level-args-parsed',
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
+            'building-argument-table-parser.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
             'load-cli-arg.s3.list-objects.key',
+            'calling-service-operation.s3.list-objects'
         ])
 
     def test_create_help_command(self):
@@ -376,6 +378,14 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         ]
 
         command_table['foo'] = command
+
+    def force_no_call_operation(self, service_operation, call_parameters,
+                                parsed_args, parsed_globals, **kwargs):
+        service_operation.disable_call_operation()
+
+    def force_call_operation(self, service_operation, call_parameters,
+                             parsed_args, parsed_globals, **kwargs):
+        service_operation.enable_call_operation()
 
     def test_aws_with_endpoint_url(self):
         with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
@@ -618,6 +628,30 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             f.write.call_args_list[0][0][0],
             'Unable to locate credentials. '
             'You can configure credentials by running "aws configure".')
+
+    def test_disable_call_operation(self):
+        self.driver = create_clidriver()
+        # Disable the call made to the operation.
+        self.driver.session.register(
+            'calling-service-operation', self.force_no_call_operation)
+
+        stdout, stderr, rc = self.run_cmd('ec2 describe-instances')
+        self.assertEqual(rc, 0)
+        # Check that command did not run. If it ran, we would expect to see
+        # an output listing the reservations.
+        self.assertEqual('', stdout)
+
+    def test_enable_call_operation(self):
+        self.driver = create_clidriver()
+        # Enable the call made to the operation.
+        self.driver.session.register(
+            'calling-service-operation', self.force_call_operation)
+
+        stdout, stderr, rc = self.run_cmd('ec2 describe-instances')
+        self.assertEqual(rc, 0)
+        # Check that command did run. If it ran, we would expect to see
+        # an output listing the reservations.
+        self.assertIn('Reservations', stdout)
 
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):

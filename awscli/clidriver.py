@@ -430,6 +430,13 @@ class ServiceOperation(object):
         self._operation_object = operation_object
         self._operation_caller = operation_caller
         self._service_object = service_object
+        self._run_operation = True
+
+    def disable_call_operation(self):
+        self._run_operation = False
+
+    def enable_call_operation(self):
+        self._run_operation = True
 
     @property
     def arg_table(self):
@@ -440,6 +447,9 @@ class ServiceOperation(object):
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
+        event = 'building-argument-table-parser.%s.%s' % (self._parent_name,
+                                                          self._name)
+        self._emit(event, argument_table=self.arg_table, args=args)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
@@ -457,8 +467,16 @@ class ServiceOperation(object):
                    parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(parsed_args,
                                                       self.arg_table)
-        return self._operation_caller.invoke(
-            self._operation_object, call_parameters, parsed_globals)
+        event = 'calling-service-operation.%s.%s' % (self._parent_name,
+                                                     self._name)
+        self._emit(event, service_operation=self,
+                   call_parameters=call_parameters,
+                   parsed_args=parsed_args, parsed_globals=parsed_globals)
+        if self._run_operation:
+            return self._operation_caller.invoke(
+                self._operation_object, call_parameters, parsed_globals)
+        else:
+            return 0
 
     def create_help_command(self):
         return OperationHelpCommand(
@@ -485,6 +503,7 @@ class ServiceOperation(object):
                 value = parsed_args[py_name]
                 value = self._unpack_arg(arg_object, value)
                 arg_object.add_to_params(service_params, value)
+
         return service_params
 
     def _unpack_arg(self, cli_argument, value):

@@ -113,6 +113,29 @@ class TestExactTimestampsSync(unittest.TestCase):
             src_file, dst_file)
         self.assertTrue(should_sync)
 
+    def test_compare_exact_timestamps_diff_age_not_download(self):
+        """
+        Confirm that same sized files are synced when the timestamps differ,
+        the type of operation is not a download, and ``exact_timestamps``
+        is set.
+        """
+        time_src = datetime.datetime.now()
+        time_dst = time_src - datetime.timedelta(days=1)
+
+        src_file = FileStat(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_src, src_type='s3',
+                            dest_type='local', operation_name='upload')
+
+        dst_file = FileStat(src='', dest='',
+                            compare_key='test.py', size=10,
+                            last_update=time_dst, src_type='local',
+                            dest_type='s3', operation_name='')
+
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, dst_file)
+        self.assertTrue(should_sync)
+
 
 if __name__ == "__main__":
     unittest.main()

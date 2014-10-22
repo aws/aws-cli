@@ -1,20 +1,14 @@
 **To create a route**
 
-This example creates a route for the specified route table. The route matches all traffic (``0.0.0.0/0``) and routes it to the specified Internet gateway.
+This example creates a route for the specified route table. The route matches all traffic (``0.0.0.0/0``) and routes it to the specified Internet gateway. If the command succeeds, no output is returned.
 
 Command::
 
   aws ec2 create-route --route-table-id rtb-22574640 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-c0a643a9
 
-Output::
-
-  {
-      "return": "true"
-  }
-
 This example command creates a route in route table rtb-g8ff4ea2. The route matches traffic for the CIDR block
 10.0.0.0/16 and routes it to VPC peering connection, pcx-111aaa22. This route enables traffic to be directed to the peer
-VPC in the VPC peering connection.
+VPC in the VPC peering connection. If the command succeeds, no output is returned.
 
 Command::
 

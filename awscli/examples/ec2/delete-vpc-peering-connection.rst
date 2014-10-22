@@ -9,5 +9,5 @@ Command::
 Output::
 
   {
-      "return": "true"
+      "Return": true
   }

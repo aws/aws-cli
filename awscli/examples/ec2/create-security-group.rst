@@ -9,7 +9,6 @@ Command::
 Output::
 
   {
-      "return": "true"
       "GroupId": "sg-903004f8"
   }
 
@@ -24,7 +23,6 @@ Command::
 Output::
 
   {
-      "return": "true"
       "GroupId": "sg-903004f8"
   }
 

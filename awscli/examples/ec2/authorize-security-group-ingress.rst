@@ -1,32 +1,35 @@
-**[EC2-Classic] To add a rule to a security group that allows inbound SSH traffic**
+**[EC2-Classic] To add a rule that allows inbound SSH traffic**
 
-This example enables inbound traffic on TCP port 22 (SSH).
+This example enables inbound traffic on TCP port 22 (SSH). If the command succeeds, no output is returned.
 
 Command::
 
   aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 22 --cidr 203.0.113.0/24
 
-Output::
+**[EC2-Classic] To add a rule that allows inbound HTTP traffic from a security group in another account**
 
-  {
-      "return": "true"
-  }
+This example enables inbound traffic on TCP port 80 from a source security group (otheraccountgroup) in a different AWS account (123456789012). If the command succeeds, no output is returned.
 
-**[EC2-VPC] To add a rule to a security group that allows inbound SSH traffic**
+Command::
 
-This example enables inbound traffic on TCP port 22 (SSH). Note that you can't reference a security group for EC2-VPC by name.
+  aws ec2 authorize-security-group-ingress --group-name MySecurityGroup --protocol tcp --port 80 --source-group otheraccountgroup --group-owner 123456789012
+
+**[EC2-VPC] To add a rule that allows inbound SSH traffic**
+
+This example enables inbound traffic on TCP port 22 (SSH). Note that you can't reference a security group for EC2-VPC by name. If the command succeeds, no output is returned.
 
 Command::
 
   aws ec2 authorize-security-group-ingress --group-id sg-903004f8 --protocol tcp --port 22 --cidr 203.0.113.0/24
 
-Output::
+**[EC2-VPC] To add a rule that allows inbound HTTP traffic from another security group**
 
-  {
-      "return": "true"
-  }
+This example enables inbound access on TCP port 80 from the source security group sg-1a2b3c4d. Note that for EC2-VPC, the source group must be in the same VPC. If the command succeeds, no output is returned.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-111aaa22 --protocol tcp --port 80 --source-group sg-1a2b3c4d
 
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Security Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html
-

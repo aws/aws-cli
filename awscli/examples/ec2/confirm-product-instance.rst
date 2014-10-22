@@ -9,6 +9,5 @@ Command::
 Output::
 
   {
-      "return": "true"
+    "OwnerId": "123456789012"
   }
-

@@ -61,7 +61,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 parsed_args=parsed_args, parsed_globals=None
             )
             # Ensure the service operation's ``disable_call_operation`` was
-            # called to prevent the botocore operation is not called.
+            # called to ensure the botocore operation is not called.
             self.assertTrue(
                 self.service_operation.disable_call_operation.called)
             # Ensure the contents printed to standard output are correct.

@@ -433,9 +433,19 @@ class ServiceOperation(object):
         self._run_operation = True
 
     def disable_call_operation(self):
+        """
+        If called, the service operation will not run the botocore
+        operation at the end of the ``__call__`` method. By default, the
+        botocore operation runs if this method is not called.
+        """
         self._run_operation = False
 
     def enable_call_operation(self):
+        """
+        If called, the service operation will run the botocore
+        operation at the end of the ``__call__`` method. By default, the
+        botocore operation runs even if this method is not called.
+        """
         self._run_operation = True
 
     @property
@@ -503,7 +513,6 @@ class ServiceOperation(object):
                 value = parsed_args[py_name]
                 value = self._unpack_arg(arg_object, value)
                 arg_object.add_to_params(service_params, value)
-
         return service_params
 
     def _unpack_arg(self, cli_argument, value):

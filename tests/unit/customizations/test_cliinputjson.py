@@ -27,8 +27,7 @@ class TestCliInputJSONArgument(unittest.TestCase):
 
         # Create the various forms the data could come in. The two main forms
         # are as a string and or as a path to a file.
-        self.input_json = \
-            '{\n    "A": "foo",\n    "B": "bar"\n}\n'
+        self.input_json = '{"A": "foo", "B": "bar"}'
 
         # Make a temporary file
         self.temp_dir = tempfile.mkdtemp()

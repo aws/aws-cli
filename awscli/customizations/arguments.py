@@ -17,9 +17,10 @@ class OverrideRequiredArgsArgument(CustomArgument):
     """An argument that if specified makes all other arguments not required
 
     By not required, it refers to not having an error thrown when the
-    parser parses the arguments. To obtain this argument's property of
-    ignoring required arguments, subclass from this class and fill out
-    the ``ARG_DATA`` parameter as described below.
+    parser does not find an argument that is required on the command line.
+    To obtain this argument's property of ignoring required arguments,
+    subclass from this class and fill out the ``ARG_DATA`` parameter as
+    described below. Note this class is really only useful for subclassing.
     """
 
     # ``ARG_DATA`` follows the same format as a member of ``ARG_TABLE`` in
@@ -32,7 +33,7 @@ class OverrideRequiredArgsArgument(CustomArgument):
     # {'name': 'my-argument',
     #  'help_text': 'This is argument ensures the argument is specified'
     #               'no other arguments are required'}
-    ARG_DATA = {}
+    ARG_DATA = {'name': 'no-required-args'}
 
     def __init__(self, session):
         self._session = session
@@ -45,6 +46,8 @@ class OverrideRequiredArgsArgument(CustomArgument):
 
     def override_required_args(self, argument_table, args, **kwargs):
         name_in_cmdline = '--' + self.name
+        # Set all ``Argument`` objects in ``argumnet_table`` to not required
+        # if this argument's name is present in the command line.
         if name_in_cmdline in args:
             for arg_name in argument_table.keys():
                 argument_table[arg_name].required = False

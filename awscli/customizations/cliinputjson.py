@@ -60,6 +60,8 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
         if input_json is not None:
             # Retrieve the JSON from the file if needed.
             retrieved_json = get_paramfile(input_json)
+            # Nothing was retrieved from the file. So assume the argument
+            # is already a JSON string.
             if retrieved_json is None:
                 retrieved_json = input_json
             try:

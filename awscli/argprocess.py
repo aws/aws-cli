@@ -70,6 +70,7 @@ def unpack_argument(session, service_name, operation_name, cli_argument, value):
 
     """
     param_name = getattr(cli_argument, 'name', 'anonymous')
+
     value_override = session.emit_first_non_none_response(
         'load-cli-arg.%s.%s.%s' % (service_name,
                                    operation_name,
@@ -79,6 +80,7 @@ def unpack_argument(session, service_name, operation_name, cli_argument, value):
 
     if value_override is not None:
         value = value_override
+
     return value
 
 

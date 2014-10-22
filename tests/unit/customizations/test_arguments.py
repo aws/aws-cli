@@ -19,7 +19,6 @@ from awscli.customizations.arguments import OverrideRequiredArgsArgument
 class TestOverrideRequiredArgsArgument(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
-        OverrideRequiredArgsArgument.ARG_DATA = {'name': 'my-argument'}
         self.argument = OverrideRequiredArgsArgument(self.session)
 
         # Set up a sample argument_table
@@ -28,9 +27,6 @@ class TestOverrideRequiredArgsArgument(unittest.TestCase):
         self.mock_arg.required = True
         self.argument_table['mock-arg'] = self.mock_arg
 
-    def tearDown(self):
-        OverrideRequiredArgsArgument.ARG_DATA = {}
-
     def test_register_argument_action(self):
         register_args = self.session.register.call_args
         self.assertEqual(register_args[0][0], 'building-argument-table-parser')
@@ -38,7 +34,7 @@ class TestOverrideRequiredArgsArgument(unittest.TestCase):
                          self.argument.override_required_args)
 
     def test_override_required_args_if_in_cmdline(self):
-        args = ['--my-argument']
+        args = ['--no-required-args']
         self.argument.override_required_args(self.argument_table, args)
         self.assertFalse(self.mock_arg.required)
 

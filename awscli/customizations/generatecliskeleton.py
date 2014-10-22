@@ -27,7 +27,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
     ARG_DATA = {
         'name': 'generate-cli-skeleton',
         'help_text': 'Prints a sample input JSON to standard output. Note the '
-                     'specified operation is not run if this argument is'
+                     'specified operation is not run if this argument is '
                      'specified. The sample input can be used as an argument '
                      'for ``--cli-input-json``.',
         'action': 'store_true',

@@ -22,7 +22,7 @@ from awscli.testutils import unittest, aws
 
 
 class TestIntegCliInputJson(unittest.TestCase):
-    """This tests various services to if it properly uses generated input JSON.
+    """This tests to see if a service properly uses the generated input JSON.
 
     The s3 service was chosen becuase its operations do not take a lot of time.
     These tests are essentially smoke tests. They are testing that the
@@ -68,29 +68,30 @@ class TestIntegCliInputJson(unittest.TestCase):
 
     def test_cli_input_json_no_exta_args(self):
         # Run a head command using the input json
-        p = aws('s3api head-object --cli-input-json file://%s'
-                % self.temp_file)
+        p = aws('s3api head-object --cli-input-json file://%s --region %s'
+                % (self.temp_file, self.region))
         # The head object command should find the object specified by the
         # input json file.
         self.assertEqual(p.rc, 0)
 
     def test_cli_input_json_exta_args(self):
         # Check that the object can be found.
-        p = aws('s3api head-object --cli-input-json file://%s'
-                % self.temp_file)
+        p = aws('s3api head-object --cli-input-json file://%s --region %s'
+                % (self.temp_file, self.region))
         self.assertEqual(p.rc, 0)
 
         # Override the ``key`` argument. Should produce a failure because
         # the key ``bar`` does not exist.
-        p = aws('s3api head-object --key bar --cli-input-json file://%s'
-                % self.temp_file)
+        p = aws('s3api head-object --key bar --cli-input-json file://%s '
+                '--region %s'
+                % (self.temp_file, self.region))
         self.assertEqual(p.rc, 255)
         self.assertIn('Not Found', p.stderr)
 
     def test_cli_input_json_not_from_file(self):
         # Check that the input json can be used without having to use a file.
         p = aws(
-            's3api head-object --cli-input-json '
+            's3api head-object --region %s --cli-input-json '
             '\'{"Bucket": "%s", "Key": "%s"}\'' %
-            (self.bucket_name, self.obj_name))
+            (self.region, self.bucket_name, self.obj_name))
         self.assertEqual(p.rc, 0)

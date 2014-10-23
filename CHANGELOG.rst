@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.5.3
+=====
+
+* feature:``aws ec2 describe-volumes``: Add support for optional pagination.
+* feature:``aws route53domains``: Add support for auto-renew domains.
+* feature:``aws cognito-identity``: Add for Open-ID Connect.
+* feature:``aws sts``: Add support for Open-ID Connect
+* feature:``aws iam``: Add support for Open-ID Connect
+* bugfix:``aws s3 sync``: Fix issue when uploading with ``--exact-timestamps``
+  (`issue 964 <https://github.com/aws/aws-cli/pull/964>`__)
+* bugfix:Retry: Fix issue where certain error codes were not being retried
+  (`botocore issue 361 <https://github.com/boto/botocore/pull/361>`__)
+* bugfix:``aws emr ssh``: Fix issue when using waiter interface to
+  wait on the cluster state
+  (`issue 954 <https://github.com/aws/aws-cli/pull/954>`__)
+
+
 1.5.2
 =====
 

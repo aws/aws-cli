@@ -14,7 +14,10 @@ import os
 import tempfile
 import random
 
+import mock
+
 from awscli.testutils import unittest, aws
+from awscli.customizations import configure
 
 
 class TestConfigureCommand(unittest.TestCase):
@@ -260,6 +263,13 @@ class TestConfigureCommand(unittest.TestCase):
                 env_vars=self.env_vars)
         self.assertEqual(p.rc, 1)
         self.assertEqual(p.stdout, '')
+
+
+class TestConfigureHasArgTable(unittest.TestCase):
+    def test_configure_command_has_arg_table(self):
+        m = mock.Mock()
+        command = configure.ConfigureCommand(m)
+        self.assertEqual(command.arg_table, {})
 
 
 if __name__ == '__main__':

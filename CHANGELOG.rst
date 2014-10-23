@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.3
+=====
 
 * feature:``aws ec2 describe-volumes``: Add support for optional pagination.
 * feature:``aws route53domains``: Add support for auto-renew domains.

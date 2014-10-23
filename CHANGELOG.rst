@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3 sync``: Fix issue when uploading with ``--exact-timestamps``
+  (`issue 964 <https://github.com/aws/aws-cli/pull/964>`__)
 * bugfix:Retry: Fix issue where certain error codes were not being retried
   (`botocore issue 361 <https://github.com/boto/botocore/pull/361>`__)
 * bugfix:``aws emr ssh``: Fix issue when using waiter interface to

@@ -47,14 +47,18 @@ from awscli.customizations.cloudsearch import initialize as cloudsearch_init
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
 from awscli.customizations.s3endpoint import register_s3_endpoint
+from awscli.customizations.s3errormsg import register_s3_error_msg
 
 
 def awscli_initialize(event_handlers):
     event_handlers.register('load-cli-arg', uri_param)
     param_shorthand = ParamShorthand()
     event_handlers.register('process-cli-arg', param_shorthand)
+    # The s3 error mesage needs to registered before the
+    # generic error handler.
+    register_s3_error_msg(event_handlers)
     error_handler = ErrorHandler()
-    event_handlers.register('after-call.*.*', error_handler)
+    event_handlers.register('after-call', error_handler)
 #    # The following will get fired for every option we are
 #    # documenting.  It will attempt to add an example_fn on to
 #    # the parameter object if the parameter supports shorthand

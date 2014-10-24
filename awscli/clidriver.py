@@ -486,6 +486,9 @@ class ServiceOperation(object):
             return self._operation_caller.invoke(
                 self._operation_object, call_parameters, parsed_globals)
         else:
+            # This is the value usually returned by the ``invoke()`` method
+            # of the operation caller. It represents the return code of the
+            # operation.
             return 0
 
     def create_help_command(self):

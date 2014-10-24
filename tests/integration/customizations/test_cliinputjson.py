@@ -95,3 +95,24 @@ class TestIntegCliInputJson(unittest.TestCase):
             '\'{"Bucket": "%s", "Key": "%s"}\'' %
             (self.region, self.bucket_name, self.obj_name))
         self.assertEqual(p.rc, 0)
+
+    def test_cli_input_json_missing_required(self):
+        # Check that the operation properly throws an error if the json is
+        # missing any required arguments and the argument is not on the
+        # command line.
+        p = aws(
+            's3api head-object --region %s --cli-input-json '
+            '\'{"Key": "%s"}\'' %
+            (self.region, self.obj_name))
+        self.assertEqual(p.rc, 255)
+        self.assertIn('Missing', p.stderr)
+
+    def test_cli_input_json_has_extra_unknown_args(self):
+        # Check that the operation properly throws an error if the json
+        # has an extra argument that is not defined by the model.
+        p = aws(
+            's3api head-object --region %s --cli-input-json '
+            '\'{"Bucket": "%s", "Key": "%s", "Foo": "bar"}\'' %
+            (self.region, self.bucket_name, self.obj_name))
+        self.assertEqual(p.rc, 255)
+        self.assertIn('Unknown', p.stderr)

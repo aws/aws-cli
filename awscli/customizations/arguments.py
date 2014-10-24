@@ -46,7 +46,7 @@ class OverrideRequiredArgsArgument(CustomArgument):
 
     def override_required_args(self, argument_table, args, **kwargs):
         name_in_cmdline = '--' + self.name
-        # Set all ``Argument`` objects in ``argumnet_table`` to not required
+        # Set all ``Argument`` objects in ``argument_table`` to not required
         # if this argument's name is present in the command line.
         if name_in_cmdline in args:
             for arg_name in argument_table.keys():

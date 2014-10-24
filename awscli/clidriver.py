@@ -366,7 +366,8 @@ class ServiceCommand(CLICommand):
                 service_object=service_object)
         self.session.emit('building-command-table.%s' % self._name,
                           command_table=command_table,
-                          session=self.session)
+                          session=self.session,
+                          service_object=service_object)
         return command_table
 
     def create_help_command(self):

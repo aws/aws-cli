@@ -58,9 +58,8 @@ class TestLSCommand(unittest.TestCase):
 
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False)
+        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False, page_size='5')
         parsed_globals = mock.Mock()
-        parsed_globals.page_size = '5'
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.get_service.return_value.get_operation\
                 .return_value.call
@@ -79,7 +78,7 @@ class TestLSCommand(unittest.TestCase):
     def test_ls_command_with_no_args(self):
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region=None, endpoint_url=None, verify_ssl=None)
-        parsed_args = FakeArgs(dir_op=False, paths='s3://') 
+        parsed_args = FakeArgs(dir_op=False, paths='s3://')
         ls_command._run_main(parsed_args, parsed_global)
         # We should only be a single call.
         self.session.get_service.return_value.get_operation.assert_called_with(
@@ -93,7 +92,7 @@ class TestLSCommand(unittest.TestCase):
         args = get_endpoint.call_args
         self.assertEqual(args, mock.call(region_name=None, endpoint_url=None,
                                          verify=None))
-    
+
     def test_ls_with_verify_argument(self):
         options = {'default': 's3://', 'nargs': '?'}
         ls_command = ListCommand(self.session)
@@ -107,7 +106,7 @@ class TestLSCommand(unittest.TestCase):
         self.assertEqual(args, mock.call(region_name='us-west-2',
                                          endpoint_url=None,
                                          verify=False))
-    
+
 
 class CommandArchitectureTest(S3HandlerBaseTest):
     def setUp(self):
@@ -131,7 +130,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.loc_files)
         s3_cleanup(self.bucket, self.session)
-    
+
     def test_set_endpoint_no_source(self):
         cmd_arc = CommandArchitecture(self.session, 'sync',
                                       {'region': 'us-west-1',

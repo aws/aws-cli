@@ -10,7 +10,37 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
+
+from nose.tools import assert_equal
+
+from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest, aws
+
+
+def test_can_generate_skeletons_for_all_service_comands():
+    driver = create_clidriver()
+    help_command = driver.create_help_command()
+    for command_name, command_obj in help_command.command_table.items():
+        sub_help = command_obj.create_help_command()
+        for sub_name, sub_command in sub_help.command_table.items():
+            op_help = sub_command.create_help_command()
+            arg_table = op_help.arg_table
+            if 'generate-cli-skeleton' in arg_table:
+                yield _test_gen_skeleton, command_name, sub_name
+
+
+def _test_gen_skeleton(command_name, operation_name):
+    p = aws('%s %s --generate-cli-skeleton' % (command_name, operation_name))
+    assert_equal(p.rc, 0, 'Received non zero RC (%s) for command: %s %s'
+                 % (p.rc, command_name, operation_name))
+    try:
+        parsed = json.loads(p.stdout)
+    except ValueError as e:
+        raise AssertionError(
+            "Could not generate CLI skeleton for command: %s %s\n"
+            "stdout:\n%s\n"
+            "stderr:\n%s\n" % (command_name, operation_name))
 
 
 class TestIntegGenerateCliSkeleton(unittest.TestCase):

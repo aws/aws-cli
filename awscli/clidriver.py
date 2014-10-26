@@ -457,8 +457,8 @@ class ServiceOperation(object):
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        event = 'building-argument-table-parser.%s.%s' % (self._parent_name,
-                                                          self._name)
+        event = 'before-building-argument-table-parser.%s.%s' % \
+            (self._parent_name, self._name)
         self._emit(event, argument_table=self.arg_table, args=args)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)

@@ -41,7 +41,7 @@ class OverrideRequiredArgsArgument(CustomArgument):
         super(OverrideRequiredArgsArgument, self).__init__(**self.ARG_DATA)
 
     def _register_argument_action(self):
-        self._session.register('building-argument-table-parser',
+        self._session.register('before-building-argument-table-parser',
                                self.override_required_args)
 
     def override_required_args(self, argument_table, args, **kwargs):

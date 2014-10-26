@@ -245,7 +245,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'top-level-args-parsed',
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
-            'building-argument-table-parser.s3.list-objects',
+            'before-building-argument-table-parser.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',

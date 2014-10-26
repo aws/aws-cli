@@ -23,11 +23,15 @@ def test_can_generate_skeletons_for_all_service_comands():
     help_command = driver.create_help_command()
     for command_name, command_obj in help_command.command_table.items():
         sub_help = command_obj.create_help_command()
-        for sub_name, sub_command in sub_help.command_table.items():
-            op_help = sub_command.create_help_command()
-            arg_table = op_help.arg_table
-            if 'generate-cli-skeleton' in arg_table:
-                yield _test_gen_skeleton, command_name, sub_name
+        # This avoids command objects like ``PreviewModeCommand`` that
+        # do not exhibit any visible functionality (i.e. provides a command
+        # for the CLI).
+        if hasattr(sub_help, 'command_table'):
+            for sub_name, sub_command in sub_help.command_table.items():
+                op_help = sub_command.create_help_command()
+                arg_table = op_help.arg_table
+                if 'generate-cli-skeleton' in arg_table:
+                    yield _test_gen_skeleton, command_name, sub_name
 
 
 def _test_gen_skeleton(command_name, operation_name):

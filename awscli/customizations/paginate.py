@@ -140,6 +140,7 @@ class PageArgument(BaseCLIArgument):
         self._name = name
         self._documentation = documentation
         self._parse_type = parse_type
+        self._required = False
 
     @property
     def cli_name(self):
@@ -151,7 +152,11 @@ class PageArgument(BaseCLIArgument):
 
     @property
     def required(self):
-        return False
+        return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
 
     @property
     def documentation(self):

@@ -60,8 +60,13 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             # Generate the skeleton based on the ``input_shape``.
             argument_generator = ArgumentGenerator()
             operation_input_shape = operation_model.input_shape
-            skeleton = argument_generator.generate_skeleton(
-                operation_input_shape)
+            # If the ``input_shape`` is ``None``, generate an empty
+            # dictionary.
+            if operation_input_shape is None:
+                skeleton = {}
+            else:
+                skeleton = argument_generator.generate_skeleton(
+                    operation_input_shape)
 
             # Write the generated skeleton to standard output.
             sys.stdout.write(json.dumps(skeleton, indent=4))

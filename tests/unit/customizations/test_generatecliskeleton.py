@@ -81,3 +81,17 @@ class TestGenerateCliSkeleton(unittest.TestCase):
                 self.service_operation.disable_call_operation.called)
             # Ensure nothing is printed to standard output
             self.assertEqual('', mock_stdout.getvalue())
+
+    def test_generate_json_skeleton_no_input_shape(self):
+        parsed_args = mock.Mock()
+        parsed_args.generate_cli_skeleton = True
+        # Set the input shape to ``None``.
+        self.operation_object.model.input_shape = None
+        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+            self.argument.generate_json_skeleton(
+                service_operation=self.service_operation, call_parameters=None,
+                parsed_args=parsed_args, parsed_globals=None
+            )
+            # Ensure the contents printed to standard output are correct,
+            # which should be an empty dictionary.
+            self.assertEqual('{}\n', mock_stdout.getvalue())

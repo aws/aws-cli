@@ -29,7 +29,8 @@ class TestOverrideRequiredArgsArgument(unittest.TestCase):
 
     def test_register_argument_action(self):
         register_args = self.session.register.call_args
-        self.assertEqual(register_args[0][0], 'building-argument-table-parser')
+        self.assertEqual(register_args[0][0],
+                         'before-building-argument-table-parser')
         self.assertEqual(register_args[0][1],
                          self.argument.override_required_args)
 

@@ -58,9 +58,11 @@ class TestSearchCommand(BaseAWSCommandParamsTest):
 class TestCloudsearchDomainHandler(unittest.TestCase):
     def test_validate_endpoint_url_is_none(self):
         parsed_globals = mock.Mock()
+        parsed_args = mock.Mock()
         parsed_globals.endpoint_url = None
+        parsed_args.generate_cli_skeleton = False
         with self.assertRaises(ValueError):
-            validate_endpoint_url(parsed_globals)
+            validate_endpoint_url(parsed_args, parsed_globals)
 
 
 if __name__ == "__main__":

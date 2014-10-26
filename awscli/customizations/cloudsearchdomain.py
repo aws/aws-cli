@@ -23,7 +23,8 @@ def register_cloudsearchdomain(cli):
                  validate_endpoint_url)
 
 
-def validate_endpoint_url(parsed_globals, **kwargs):
-    if parsed_globals.endpoint_url is None:
+def validate_endpoint_url(parsed_args, parsed_globals, **kwargs):
+    if parsed_globals.endpoint_url is None and \
+            not getattr(parsed_args, 'generate_cli_skeleton', False):
         raise ValueError(
             "--endpoint-url is required for cloudsearchdomain commands")

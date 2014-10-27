@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.4
+=====
 
 * feature:``aws s3/s3api``: Show hint about using the correct region when
   the corresponding error occurs

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.5.4
+=====
+
+* feature:``aws s3/s3api``: Show hint about using the correct region when
+  the corresponding error occurs
+  (`issue 968 <https://github.com/aws/aws-cli/pull/968>`__)
+
 1.5.3
 =====
 

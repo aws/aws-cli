@@ -78,12 +78,8 @@ class StreamingOutputArgument(BaseCLIArgument):
         return self.HELP
 
     def add_to_parser(self, parser):
-        if self.required:
-            # Positional arguments cannot be made optional. So if this argument
-            # is ever not required we do not add it to the arg parser. Note
-            # that by default the argument is required.
-            parser.add_argument(self._name, metavar=self.py_name,
-                                help=self.HELP)
+        parser.add_argument(self._name, metavar=self.py_name,
+                            help=self.HELP)
 
     def add_to_params(self, parameters, value):
         self._output_file = value

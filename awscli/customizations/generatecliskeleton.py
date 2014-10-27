@@ -1,3 +1,15 @@
+# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 import json
 import sys
 
@@ -11,8 +23,11 @@ def register_generate_cli_skeleton(cli):
 
 
 def add_generate_skeleton(operation, argument_table, **kwargs):
-    generate_cli_skeleton_argument = GenerateCliSkeletonArgument(operation)
-    generate_cli_skeleton_argument.add_to_arg_table(argument_table)
+    # This argument cannot support operations with streaming output which
+    # is designated by the argument name `outfile`.
+    if 'outfile' not in argument_table:
+        generate_cli_skeleton_argument = GenerateCliSkeletonArgument(operation)
+        generate_cli_skeleton_argument.add_to_arg_table(argument_table)
 
 
 class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
@@ -41,18 +56,15 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
 
     def _register_argument_action(self):
         self._operation_object.session.register(
-            'calling-service-operation', self.generate_json_skeleton)
+            'calling-command.*', self.generate_json_skeleton)
         super(GenerateCliSkeletonArgument, self)._register_argument_action()
 
-    def generate_json_skeleton(self, service_operation, call_parameters,
-                               parsed_args, parsed_globals, **kwargs):
+    def generate_json_skeleton(self, call_parameters, parsed_args,
+                               parsed_globals, **kwargs):
 
         # Only perform the method if the ``--generate-cli-skeleton`` was
         # included in the command line.
         if getattr(parsed_args, 'generate_cli_skeleton', False):
-
-            # Ensure the operation will not be called from botocore.
-            service_operation.disable_call_operation()
 
             # Obtain the model of the operation
             operation_model = self._operation_object.model
@@ -71,3 +83,5 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             # Write the generated skeleton to standard output.
             sys.stdout.write(json.dumps(skeleton, indent=4))
             sys.stdout.write('\n')
+            # This is the return code
+            return 0

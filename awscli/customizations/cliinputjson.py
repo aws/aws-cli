@@ -22,8 +22,11 @@ def register_cli_input_json(cli):
 
 
 def add_cli_input_json(operation, argument_table, **kwargs):
-    cli_input_json_argument = CliInputJSONArgument(operation)
-    cli_input_json_argument.add_to_arg_table(argument_table)
+    # This argument cannot support operations with streaming output which
+    # is designated by the argument name `outfile`.
+    if 'outfile' not in argument_table:
+        cli_input_json_argument = CliInputJSONArgument(operation)
+        cli_input_json_argument.add_to_arg_table(argument_table)
 
 
 class CliInputJSONArgument(OverrideRequiredArgsArgument):
@@ -49,11 +52,11 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
 
     def _register_argument_action(self):
         self._operation_object.session.register(
-            'calling-service-operation', self.add_to_call_parameters)
+            'calling-command', self.add_to_call_parameters)
         super(CliInputJSONArgument, self)._register_argument_action()
 
-    def add_to_call_parameters(self, service_operation, call_parameters,
-                               parsed_args, parsed_globals, **kwargs):
+    def add_to_call_parameters(self, call_parameters, parsed_args,
+                               parsed_globals, **kwargs):
 
         # Check if ``--cli-input-json`` was specified in the command line.
         input_json = getattr(parsed_args, 'cli_input_json', None)

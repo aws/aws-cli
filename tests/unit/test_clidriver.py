@@ -250,7 +250,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
             'load-cli-arg.s3.list-objects.key',
-            'calling-service-operation.s3.list-objects'
+            'calling-command.s3.list-objects'
         ])
 
     def test_create_help_command(self):
@@ -378,14 +378,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         ]
 
         command_table['foo'] = command
-
-    def force_no_call_operation(self, service_operation, call_parameters,
-                                parsed_args, parsed_globals, **kwargs):
-        service_operation.disable_call_operation()
-
-    def force_call_operation(self, service_operation, call_parameters,
-                             parsed_args, parsed_globals, **kwargs):
-        service_operation.enable_call_operation()
 
     def test_aws_with_endpoint_url(self):
         with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
@@ -629,29 +621,33 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             'Unable to locate credentials. '
             'You can configure credentials by running "aws configure".')
 
-    def test_disable_call_operation(self):
+    def test_override_calling_command(self):
         self.driver = create_clidriver()
-        # Disable the call made to the operation.
-        self.driver.session.register(
-            'calling-service-operation', self.force_no_call_operation)
 
-        stdout, stderr, rc = self.run_cmd('ec2 describe-instances')
-        self.assertEqual(rc, 0)
-        # Check that command did not run. If it ran, we would expect to see
-        # an output listing the reservations.
-        self.assertEqual('', stdout)
+        # Make a function that will return an override such that its value
+        # is used over whatever is returned by the invoker which is usually
+        # zero.
+        def override_with_rc(**kwargs):
+            return 20
 
-    def test_enable_call_operation(self):
+        self.driver.session.register('calling-command', override_with_rc)
+        rc = self.driver.main('ec2 describe-instances'.split())
+        # Check that the overriden rc is as expected.
+        self.assertEqual(rc, 20)
+
+    def test_override_calling_command_error(self):
         self.driver = create_clidriver()
-        # Enable the call made to the operation.
-        self.driver.session.register(
-            'calling-service-operation', self.force_call_operation)
 
-        stdout, stderr, rc = self.run_cmd('ec2 describe-instances')
-        self.assertEqual(rc, 0)
-        # Check that command did run. If it ran, we would expect to see
-        # an output listing the reservations.
-        self.assertIn('Reservations', stdout)
+        # Make a function that will return an error. The handler will cause
+        # an error to be returned and later raised.
+        def override_with_error(**kwargs):
+            return ValueError()
+
+        self.driver.session.register('calling-command', override_with_error)
+        # An exception should be thrown as a result of the handler, which
+        # will result in 255 rc.
+        rc = self.driver.main('ec2 describe-instances'.split())
+        self.assertEqual(rc, 255)
 
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):

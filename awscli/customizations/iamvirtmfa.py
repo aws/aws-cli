@@ -54,12 +54,11 @@ class FileArgument(StatefulArgument):
     def add_to_params(self, parameters, value):
         # Validate the file here so we can raise an error prior
         # calling the service.
-        if value is not None:
-            outfile = os.path.expandvars(value)
-            outfile = os.path.expanduser(outfile)
-            if not os.access(os.path.dirname(outfile), os.W_OK):
-                raise ValueError('Unable to write to file: %s' % outfile)
-            self._value = outfile
+        outfile = os.path.expandvars(value)
+        outfile = os.path.expanduser(outfile)
+        if not os.access(os.path.dirname(outfile), os.W_OK):
+            raise ValueError('Unable to write to file: %s' % outfile)
+        self._value = outfile
 
 
 class IAMVMFAWrapper(object):

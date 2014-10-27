@@ -73,6 +73,7 @@ def awscli_initialize(event_handlers):
 #                            param_shorthand.add_example_fn)
     event_handlers.register('doc-examples.*.*',
                             add_examples)
+    register_cli_input_json(event_handlers)
     event_handlers.register('building-argument-table.s3api.*',
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.run-instances',
@@ -104,4 +105,3 @@ def awscli_initialize(event_handlers):
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
-    register_cli_input_json(event_handlers)

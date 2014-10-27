@@ -48,7 +48,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
 
     def test_register_argument_action(self):
         register_args = self.operation_object.session.register.call_args_list
-        self.assertEqual(register_args[0][0][0], 'calling-service-operation')
+        self.assertEqual(register_args[0][0][0], 'calling-command.*')
         self.assertEqual(register_args[0][0][1],
                          self.argument.generate_json_skeleton)
 
@@ -56,31 +56,28 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         parsed_args = mock.Mock()
         parsed_args.generate_cli_skeleton = True
         with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
-            self.argument.generate_json_skeleton(
+            rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
                 parsed_args=parsed_args, parsed_globals=None
             )
-            # Ensure the service operation's ``disable_call_operation`` was
-            # called to ensure the botocore operation is not called.
-            self.assertTrue(
-                self.service_operation.disable_call_operation.called)
             # Ensure the contents printed to standard output are correct.
             self.assertEqual(self.ref_json_output, mock_stdout.getvalue())
+            # Ensure it is the correct return code of zero.
+            self.assertEqual(rc, 0)
 
     def test_no_generate_json_skeleton(self):
         parsed_args = mock.Mock()
         parsed_args.generate_cli_skeleton = False
         with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
-            self.argument.generate_json_skeleton(
+            rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
                 parsed_args=parsed_args, parsed_globals=None
             )
-            # Ensure that the service operation ``disable_call_operation`` was
-            # not called so that the botocore operation is called.
-            self.assertFalse(
-                self.service_operation.disable_call_operation.called)
             # Ensure nothing is printed to standard output
             self.assertEqual('', mock_stdout.getvalue())
+            # Ensure nothing is returned because it was never called.
+            self.assertEqual(rc, None)
+
 
     def test_generate_json_skeleton_no_input_shape(self):
         parsed_args = mock.Mock()
@@ -88,10 +85,12 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         # Set the input shape to ``None``.
         self.operation_object.model.input_shape = None
         with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
-            self.argument.generate_json_skeleton(
+            rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
                 parsed_args=parsed_args, parsed_globals=None
             )
             # Ensure the contents printed to standard output are correct,
             # which should be an empty dictionary.
             self.assertEqual('{}\n', mock_stdout.getvalue())
+            # Ensure it is the correct return code of zero.
+            self.assertEqual(rc, 0)

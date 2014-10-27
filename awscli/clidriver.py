@@ -430,23 +430,6 @@ class ServiceOperation(object):
         self._operation_object = operation_object
         self._operation_caller = operation_caller
         self._service_object = service_object
-        self._run_operation = True
-
-    def disable_call_operation(self):
-        """
-        If called, the service operation will not run the botocore
-        operation at the end of the ``__call__`` method. By default, the
-        botocore operation runs if this method is not called.
-        """
-        self._run_operation = False
-
-    def enable_call_operation(self):
-        """
-        If called, the service operation will run the botocore
-        operation at the end of the ``__call__`` method. By default, the
-        botocore operation runs even if this method is not called.
-        """
-        self._run_operation = True
 
     @property
     def arg_table(self):
@@ -477,19 +460,32 @@ class ServiceOperation(object):
                    parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(parsed_args,
                                                       self.arg_table)
-        event = 'calling-service-operation.%s.%s' % (self._parent_name,
-                                                     self._name)
-        self._emit(event, service_operation=self,
-                   call_parameters=call_parameters,
-                   parsed_args=parsed_args, parsed_globals=parsed_globals)
-        if self._run_operation:
+        event = 'calling-command.%s.%s' % (self._parent_name,
+                                           self._name)
+        override = self._emit_first_non_none_response(
+            event,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=parsed_globals
+        )
+        # There are two possible values for override. It can be some type
+        # of exception that will be raised if detected or it can represent
+        # the desired return code. Note that a return code of 0 represents
+        # a success.
+        if override is not None:
+            if isinstance(override, Exception):
+                # If the override value provided back is an exception then
+                # raise the exception
+                raise override
+            else:
+                # This is the value usually returned by the ``invoke()``
+                # method of the operation caller. It represents the return
+                # code of the operation.
+                return override
+        else:
+            # No override value was supplied.
             return self._operation_caller.invoke(
                 self._operation_object, call_parameters, parsed_globals)
-        else:
-            # This is the value usually returned by the ``invoke()`` method
-            # of the operation caller. It represents the return code of the
-            # operation.
-            return 0
 
     def create_help_command(self):
         return OperationHelpCommand(
@@ -555,6 +551,10 @@ class ServiceOperation(object):
     def _emit(self, name, **kwargs):
         session = self._service_object.session
         return session.emit(name, **kwargs)
+
+    def _emit_first_non_none_response(self, name, **kwargs):
+        session = self._service_object.session
+        return session.emit_first_non_none_response(name, **kwargs)
 
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)

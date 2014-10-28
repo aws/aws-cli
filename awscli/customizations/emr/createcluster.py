@@ -14,7 +14,6 @@
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import constants
-from awscli.customizations.emr import defaultconfig
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import steputils
 from awscli.customizations.emr import hbaseutils
@@ -86,8 +85,7 @@ class CreateCluster(BasicCommand):
          'schema': argumentschema.BOOTSTRAP_ACTIONS_SCHEMA},
         {'name': 'applications',
          'help_text': helptext.APPLICATIONS,
-         'schema': argumentschema.APPLICATIONS_SCHEMA,
-         'default': defaultconfig.APPLICATIONS},
+         'schema': argumentschema.APPLICATIONS_SCHEMA},
         {'name': 'emrfs',
          'help_text': helptext.EMR_FS,
          'schema': argumentschema.EMR_FS_SCHEMA},

@@ -319,8 +319,7 @@ DEFAULT_RESULT = \
         'VisibleToAllUsers': True,
         'JobFlowRole': EC2_ROLE_NAME,
         'ServiceRole': EMR_ROLE_NAME,
-        'Tags': [],
-        'Steps': [INSTALL_HIVE_STEP, INSTALL_PIG_STEP]
+        'Tags': []
     }
 
 
@@ -328,16 +327,17 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     prefix = 'emr create-cluster '
 
     def test_quick_start(self):
+        cmd = (self.prefix + '--ami-version 3.1.0 --instance-groups ' +
+               DEFAULT_INSTANCE_GROUPS_ARG)
         result = \
             {
                 'Name': DEFAULT_CLUSTER_NAME,
                 'Instances': DEFAULT_INSTANCES,
                 'AmiVersion': '3.1.0',
-                'VisibleToAllUsers': False,
-                'Tags': [],
-                'Steps': [INSTALL_HIVE_STEP, INSTALL_PIG_STEP]
-
+                'VisibleToAllUsers': True,
+                'Tags': []
             }
+        self.assert_params_for_cmd2(cmd, result)
 
     def assert_error_message_has_field_name(self, error_msg, field_name):
         self.assertIn('Missing required parameter', error_msg)
@@ -484,7 +484,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                     'script-runner/script-runner.jar'
                  }
               }]
-        result['Steps'] = debugging_config + result['Steps']
+        result['Steps'] = debugging_config
         self.assert_params_for_cmd2(cmd, result)
 
     def test_enable_debugging_no_log_uri(self):
@@ -824,14 +824,12 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         cmd = DEFAULT_CMD + '--applications Name=Ganglia'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['BootstrapActions'] = [INSTALL_GANGLIA_BA]
-        result.pop('Steps')
         self.assert_params_for_cmd2(cmd, result)
 
     def test_install_impala_with_defaults(self):
         cmd = DEFAULT_CMD + '--applications Name=Impala'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['BootstrapActions'] = [INSTALL_IMPALA_BA]
-        result.pop('Steps')
         self.assert_params_for_cmd2(cmd, result)
 
     def test_install_impala_with_all_fields(self):
@@ -842,7 +840,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         ba['ScriptBootstrapAction']['Args'] += \
             ['--impala-conf', 'arg1', 'arg2']
         result['BootstrapActions'] = [ba]
-        result.pop('Steps')
         self.assert_params_for_cmd2(cmd, result)
 
     def test_install_hbase(self):
@@ -857,7 +854,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--applications Name=mapr,Args=--edition,m5,--version,3.0.2'
         result = copy.deepcopy(DEFAULT_RESULT)
         result['NewSupportedProducts'] = [INSTALL_MAPR_PRODUCT]
-        result.pop('Steps')
         self.assert_params_for_cmd2(cmd, result)
 
     def test_install_mapr_without_args(self):
@@ -869,7 +865,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                 {'Name': 'mapr',
                  'Args': []}
             ]
-        result.pop('Steps')
         self.assert_params_for_cmd2(cmd, result)
 
     def test_supported_products(self):
@@ -880,7 +875,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'Name=unknown,Args=[arg1,k1=v1]')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['NewSupportedProducts'] = INSTALL_SUPPORTED_PRODUCTS
-        result.pop('Steps')
         self.assert_params_for_cmd2(cmd, result)
 
     def test_applications_all_types(self):
@@ -925,7 +919,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_default_step_type_name_action_on_failure(self):
         cmd = DEFAULT_CMD + '--steps Jar=s3://mybucket/mytest.jar'
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] += [CUSTOM_JAR_STEP]
+        result['Steps'] = [CUSTOM_JAR_STEP]
         self.assert_params_for_cmd2(cmd, result)
 
     def test_custom_jar_step_missing_jar(self):
@@ -951,13 +945,13 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
              }
         ]
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] += expected_steps
+        result['Steps'] = expected_steps
         self.assert_params_for_cmd2(cmd, result)
 
     def test_streaming_step_with_default_fields(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming,' + STREAMING_ARGS
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] += [
+        result['Steps'] = [
             {'Name': 'Streaming program',
              'ActionOnFailure': 'CONTINUE',
              'HadoopJarStep': STREAMING_HADOOP_JAR_STEP}
@@ -977,7 +971,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'ActionOnFailure=CANCEL_AND_WAIT,' + STREAMING_ARGS)
         cmd = DEFAULT_CMD + test_step_config
         result = copy.deepcopy(DEFAULT_RESULT)
-        result['Steps'] += [
+        result['Steps'] = [
             {'Name': 'StreamingStepAllFields',
              'ActionOnFailure': 'CANCEL_AND_WAIT',
              'HadoopJarStep': STREAMING_HADOOP_JAR_STEP}

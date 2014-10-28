@@ -7,10 +7,24 @@ from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
 
 
-HELP_TEXT = """\
+DEFINITION_HELP_TEXT = """\
 The JSON pipeline definition.  If the pipeline definition
 is in a file you can use the file://<filename> syntax to
 specify a filename.
+"""
+PARAMETER_OBJECTS_HELP_TEXT = """\
+The JSON parameter objects.  If the parameter objects are
+in a file you can use the file://<filename> syntax to
+specify a filename. You can optionally provide these in
+pipeline definition as well. Parameter objects provided
+on command line would replace the one in definition.
+"""
+PARAMETER_VALUES_HELP_TEXT = """\
+The JSON parameter values.  If the parameter values are
+in a file you can use the file://<filename> syntax to
+specify a filename. You can optionally provide these in
+pipeline definition as well. Parameter values provided
+on command line would replace the one in definition.
 """
 
 
@@ -22,6 +36,9 @@ def register_customizations(cli):
     cli.register(
         'building-argument-table.datapipeline.put-pipeline-definition',
         add_pipeline_definition)
+    cli.register(
+        'building-argument-table.datapipeline.activate-pipeline',
+        activate_pipeline_definition)
     cli.register(
         'after-call.datapipeline.GetPipelineDefinition',
         translate_definition)
@@ -63,7 +80,15 @@ def document_translation(help_command, **kwargs):
 
 def add_pipeline_definition(argument_table, **kwargs):
     argument_table['pipeline-definition'] = PipelineDefinitionArgument(
-        'pipeline-definition', required=True, help_text=HELP_TEXT)
+        'pipeline-definition', required=True,
+        help_text=DEFINITION_HELP_TEXT)
+    argument_table['parameter-objects'] = ParameterObjectsArgument(
+        'parameter-objects', required=False,
+        help_text=PARAMETER_OBJECTS_HELP_TEXT)
+    argument_table['parameter-values'] = ParameterValuesArgument(
+        'parameter-values', required=False,
+        help_text=PARAMETER_VALUES_HELP_TEXT)
+
     # The pipeline-objects is no longer needed required because
     # a user can provide a pipeline-definition instead.
     # get-pipeline-definition also displays the output in the
@@ -71,13 +96,14 @@ def add_pipeline_definition(argument_table, **kwargs):
     del argument_table['pipeline-objects']
 
 
+def activate_pipeline_definition(argument_table, **kwargs):
+    argument_table['parameter-values'] = ParameterValuesArgument(
+        'parameter-values', required=False,
+        help_text=PARAMETER_VALUES_HELP_TEXT)
+
+
 def translate_definition(parsed, **kwargs):
-    api_objects = parsed.pop('pipelineObjects', None)
-    if api_objects is None:
-        return
-    else:
-        definition = translator.api_to_definition(api_objects)
-        parsed['objects'] = definition['objects']
+    translator.api_to_definition(parsed)
 
 
 def convert_described_objects(api_describe_objects, sort_key_func=None):
@@ -122,10 +148,10 @@ class QueryArgBuilder(object):
             end_time_str = end_datetime.strftime('%Y-%m-%dT%H:%M:%S')
             selectors.append({
                 'fieldName': '@actualStartTime',
-                    'operator': {
-                        'type': 'BETWEEN',
-                        'values': [start_time_str, end_time_str]
-                    }
+                'operator': {
+                    'type': 'BETWEEN',
+                    'values': [start_time_str, end_time_str]
+                }
             })
         else:
             self._build_schedule_times(selectors, parsed_args)
@@ -140,20 +166,20 @@ class QueryArgBuilder(object):
             end_time_str = parsed_args.start_interval[1]
             selectors.append({
                 'fieldName': '@actualStartTime',
-                    'operator': {
-                        'type': 'BETWEEN',
-                        'values': [start_time_str, end_time_str]
-                    }
+                'operator': {
+                    'type': 'BETWEEN',
+                    'values': [start_time_str, end_time_str]
+                }
             })
         if parsed_args.schedule_interval is not None:
             start_time_str = parsed_args.schedule_interval[0]
             end_time_str = parsed_args.schedule_interval[1]
             selectors.append({
                 'fieldName': '@scheduleStartTime',
-                    'operator': {
-                        'type': 'BETWEEN',
-                        'values': [start_time_str, end_time_str]
-                    }
+                'operator': {
+                    'type': 'BETWEEN',
+                    'values': [start_time_str, end_time_str]
+                }
             })
 
     def _build_status(self, selectors, parsed_args):
@@ -165,13 +191,39 @@ class QueryArgBuilder(object):
             }
         })
 
+
 class PipelineDefinitionArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value is None:
             return
         parsed = json.loads(value)
-        api_objects = translator.definition_to_api(parsed)
+        api_objects = translator.definition_to_api_objects(parsed)
+        parameter_objects = translator.definition_to_api_parameters(parsed)
+        parameter_values = translator.definition_to_parameter_values(parsed)
         parameters['pipelineObjects'] = api_objects
+        # Use Parameter objects and values from def if not already provided
+        if 'parameterObjects' not in parameters:
+            parameters['parameterObjects'] = parameter_objects
+        if 'parameterValues' not in parameters:
+            parameters['parameterValues'] = parameter_values
+
+
+class ParameterObjectsArgument(CustomArgument):
+    def add_to_params(self, parameters, value):
+        if value is None:
+            return
+        parsed = json.loads(value)
+        parameter_objects = translator.definition_to_api_parameters(parsed)
+        parameters['parameterObjects'] = parameter_objects
+
+
+class ParameterValuesArgument(CustomArgument):
+    def add_to_params(self, parameters, value):
+        if value is None:
+            return
+        parsed = json.loads(value)
+        parameter_values = translator.definition_to_parameter_values(parsed)
+        parameters['parameterValues'] = parameter_values
 
 
 class ListRunsCommand(BasicCommand):
@@ -182,7 +234,7 @@ class ListRunsCommand(BasicCommand):
         'results to include only the runs you are interested in.')
     ARG_TABLE = [
         {'name': 'pipeline-id', 'help_text': 'The identifier of the pipeline.',
-         'action': 'store', 'required': True, 'cli_type_name': 'string',},
+         'action': 'store', 'required': True, 'cli_type_name': 'string', },
         {'name': 'status',
          'help_text': (
              'Filters the list to include only runs in the specified statuses. '
@@ -196,12 +248,12 @@ class ListRunsCommand(BasicCommand):
          'help_text': (
              'Filters the list to include only runs that started '
              'within the specified interval.'),
-         'action': 'store', 'required': False, 'cli_type_name': 'string',},
+         'action': 'store', 'required': False, 'cli_type_name': 'string', },
         {'name': 'schedule-interval',
          'help_text': (
              'Filters the list to include only runs that are scheduled to '
              'start within the specified interval.'),
-         'action': 'store', 'required': False, 'cli_type_name': 'string',},
+         'action': 'store', 'required': False, 'cli_type_name': 'string', },
     ]
     VALID_STATUS = ['waiting', 'pending', 'cancelled', 'running',
                     'finished', 'failed', 'waiting_for_runner',

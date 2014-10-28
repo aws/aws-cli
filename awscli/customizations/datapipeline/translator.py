@@ -22,7 +22,24 @@ class PipelineDefinitionError(Exception):
         self.definition = definition
 
 
-def definition_to_api(definition):
+def api_to_definition(definition):
+    # When we're translating from api_response -> definition
+    # we have to be careful *not* to mutate the existing
+    # response as other code might need to the original
+    # api_response.
+    if 'pipelineObjects' in definition:
+        definition['objects'] = _api_to_objects_definition(
+            definition.pop('pipelineObjects'))
+    if 'parameterObjects' in definition:
+        definition['parameters'] = _api_to_parameters_definition(
+            definition.pop('parameterObjects'))
+    if 'parameterValues' in definition:
+        definition['values'] = _api_to_values_definition(
+            definition.pop('parameterValues'))
+    return definition
+
+
+def definition_to_api_objects(definition):
     if 'objects' not in definition:
         raise PipelineDefinitionError('Missing "objects" key', definition)
     api_elements = []
@@ -44,14 +61,59 @@ def definition_to_api(definition):
         # with a 'key', 'stringValue'|'refValue'
         fields = []
         for key, value in sorted(element.items()):
-            if isinstance(value, list):
-                for item in value:
-                    fields.append(_convert_single_field(key, item))
-            else:
-                fields.append(_convert_single_field(key, value))
+            fields.extend(_parse_each_field(key, value))
         api_object['fields'] = fields
         api_elements.append(api_object)
     return api_elements
+
+
+def definition_to_api_parameters(definition):
+    if 'parameters' not in definition:
+        return None
+    parameter_objects = []
+    for element in definition['parameters']:
+        try:
+            parameter_id = element.pop('id')
+        except KeyError:
+            raise PipelineDefinitionError('Missing "id" key of parameter: %s' %
+                                          json.dumps(element), definition)
+        parameter_object = {'id': parameter_id}
+        # Now we need the attribute list.  Each element in the attribute list
+        # is a dict with a 'key', 'stringValue'
+        attributes = []
+        for key, value in sorted(element.items()):
+            attributes.extend(_parse_each_field(key, value))
+        parameter_object['attributes'] = attributes
+        parameter_objects.append(parameter_object)
+    return parameter_objects
+
+
+def definition_to_parameter_values(definition):
+    if 'values' not in definition or definition['values'][0] is None:
+        return None
+    if definition['values'].__len__() is not 1:
+        error_message = ("All parameter values should be defined in one"
+                         " section. Found {} sections."
+                         .format(definition['values'].__len__()))
+        raise PipelineDefinitionError(error_message, definition)
+    parameter_values = []
+    for parameter_id, value in definition['values'][0].items():
+        parameter_object = {'id': parameter_id}
+        # Now we need the attribute list.  Each element in the value list
+        # is a dict with a 'key', 'stringValue'
+        parameter_values.extend(
+            _convert_single_parameter_value(parameter_id, value))
+    return parameter_values
+
+
+def _parse_each_field(key, value):
+    values = []
+    if isinstance(value, list):
+        for item in value:
+            values.append(_convert_single_field(key, item))
+    else:
+        values.append(_convert_single_field(key, value))
+    return values
 
 
 def _convert_single_field(key, value):
@@ -63,16 +125,24 @@ def _convert_single_field(key, value):
     return field
 
 
-def api_to_definition(api_response):
-    # When we're translating from api_response -> definition
-    # we have to be careful *not* to mutate the existing
-    # response as other code might need to the original
-    # api_response.
-    pipeline_objs = []
+def _convert_single_parameter_value(key, values):
+    parameter_values = []
+    if isinstance(values, list):
+        for each_value in values:
+            parameter_value = {'id': key, 'stringValue': each_value}
+            parameter_values.append(parameter_value)
+    else:
+        parameter_value = {'id': key, 'stringValue': values}
+        parameter_values.append(parameter_value)
+    return parameter_values
+
+
+def _api_to_objects_definition(api_response):
+    pipeline_objects = []
     for element in api_response:
         current = {
             'id': element['id'],
-            'name': element['name'],
+            'name': element['name']
         }
         for field in element['fields']:
             key = field['key']
@@ -80,14 +150,37 @@ def api_to_definition(api_response):
                 value = field['stringValue']
             else:
                 value = {'ref': field['refValue']}
-            if key not in current:
-                current[key] = value
-            elif isinstance(current[key], list):
-                # Dupe keys result in values aggregating
-                # into a list.
-                current[key].append(value)
-            else:
-                converted_list = [current[key], value]
-                current[key] = converted_list
-        pipeline_objs.append(current)
-    return {'objects': pipeline_objs}
+            _add_value(key, value, current)
+        pipeline_objects.append(current)
+    return pipeline_objects
+
+
+def _api_to_parameters_definition(api_response):
+    parameter_objects = []
+    for element in api_response:
+        current = {
+            'id': element['id']
+        }
+        for attribute in element['attributes']:
+            _add_value(attribute['key'], attribute['stringValue'], current)
+        parameter_objects.append(current)
+    return parameter_objects
+
+
+def _api_to_values_definition(api_response):
+    pipeline_values = {}
+    for element in api_response:
+        _add_value(element['id'], element['stringValue'], pipeline_values)
+    return [pipeline_values]
+
+
+def _add_value(key, value, current_map):
+    if key not in current_map:
+        current_map[key] = value
+    elif isinstance(current_map[key], list):
+        # Dupe keys result in values aggregating
+        # into a list.
+        current_map[key].append(value)
+    else:
+        converted_list = [current_map[key], value]
+        current_map[key] = converted_list

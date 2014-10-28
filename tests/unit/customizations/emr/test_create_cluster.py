@@ -1181,7 +1181,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'RetryPeriod=3,Args=[fs.s3.serverSideEncryptionAlgorithm=' +\
             'AES256,fs.s3.sleepTimeSeconds=30]'
         emf_fs_ba_config = \
-            {'Name': 'Enable Consistent View in EMR-FS',
+            {'Name': 'Setup EMRFS',
              'ScriptBootstrapAction':
                 {'Path': ('s3://us-east-1.elasticmapreduce/'
                           'bootstrap-actions/configure-hadoop'),

@@ -15,6 +15,10 @@ Output::
               "RegionName": "eu-west-1"
           },
           {
+              "Endpoint": "ec2.eu-central-1.amazonaws.com",
+              "RegionName": "eu-central-1"
+          },
+          {
               "Endpoint": "ec2.sa-east-1.amazonaws.com",
               "RegionName": "sa-east-1"
           },

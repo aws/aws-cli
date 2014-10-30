@@ -141,13 +141,16 @@ class CodeDeployClient:
     @staticmethod
     def _get_revision(parsed_args):
         revision = {
-            'bucket': parsed_args.bucket,
-            'key': parsed_args.key,
-            'bundleType': 'zip',
-            'eTag': parsed_args.eTag
+            'revisionType' : 'S3',
+            's3Location' : {
+                'bucket': parsed_args.bucket,
+                'key': parsed_args.key,
+                'bundleType': 'zip',
+                'eTag': parsed_args.eTag
+            }
         }
         if 'version' in parsed_args:
-            revision['version'] = parsed_args.version
+            revision['s3Location']['version'] = parsed_args.version
         return revision
 
     def register_revision(self, parsed_args):
@@ -315,15 +318,28 @@ class CodeDeployPush(CodeDeployBase):
                     )
                 )
         self.codedeploy.register_revision(parsed_args)
+
+        if 'version' in parsed_args:
+            version_string = ',"version":"{0}"'.format(parsed_args.version)
+        else:
+            version_string = ''
         s3location_string = (
-            '--revision bucket={0},key={1},bundleType=zip,eTag={2}'.format(
+            '--revision'
+            '{{'
+                '"revisionType":"S3",'
+                '"s3Location":{{'
+                    '"bucket":"{0}",'
+                    '"key":"{1}",'
+                    '"bundleType":"zip",'
+                    '"eTag":{2}{3}'
+                '}}'
+            '}}'.format(
                 parsed_args.bucket,
                 parsed_args.key,
-                parsed_args.eTag
+                parsed_args.eTag,
+                version_string
             )
         )
-        if 'version' in parsed_args:
-            s3location_string += (',version={0}'.format(parsed_args.version))
         output = (
             'To deploy with this revision, run:\n'
             'aws deploy create-deployment '

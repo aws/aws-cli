@@ -65,11 +65,14 @@ class CodeDeployTestCase(unittest.TestCase):
             'VersionId': self.version_id
         }
         self.revision = {
-            'bucket': self.bucket,
-            'key': self.key,
-            'bundleType': 'zip',
-            'eTag': self.eTag,
-            'version': self.version_id
+            'revisionType' : 'S3',
+            's3Location' : {
+                'bucket': self.bucket,
+                'key': self.key,
+                'bundleType': 'zip',
+                'eTag': self.eTag,
+                'version': self.version_id
+            }
         }
 
         self.bundle_mock = MagicMock()
@@ -266,20 +269,33 @@ class TestCodeDeployPush(CodeDeployTestCase):
         self.codedeploypush._compress = Mock(return_value=self.bundle_mock)
         self.codedeploypush._call(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
-        expected_output = (
-            'To deploy with this revision, run:\n'
-            'aws deploy create-deployment '
-            '--application-name {0} '
-            '--revision bucket={1},key={2},bundleType=zip,eTag={3},'
-            'version={4} '
-            '--deployment-group-name <deployment-group-name> '
-            '--deployment-config-name <deployment-config-name> '
-            '--description <description>'.format(
-                self.application_name,
+        expected_revision_output = (
+            '--revision '
+            '{{'
+                '"revisionType":"S3",'
+                '"s3Location":{{'
+                    '"bucket":"{0}",'
+                    '"key":"{1}",'
+                    '"bundleType":"zip",'
+                    '"eTag":{2},'
+                    '"version":"{3}"'
+                '}}'
+            '}}'.format(
                 self.bucket,
                 self.key,
                 self.eTag,
                 self.version_id
+            )
+        )
+        expected_output = (
+            'To deploy with this revision, run:\n'
+            'aws deploy create-deployment '
+            '--application-name {0} {1} '
+            '--deployment-group-name <deployment-group-name> '
+            '--deployment-config-name <deployment-config-name> '
+            '--description <description>'.format(
+                self.application_name,
+                expected_revision_output
             )
         )
         self.assertEquals(expected_output, output)

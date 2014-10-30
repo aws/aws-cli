@@ -26,10 +26,24 @@ specify a filename. You can optionally provide these in
 pipeline definition as well. Parameter values provided
 on command line would replace the one in definition.
 """
+INLINE_PARAMETER_VALUES_HELP_TEXT = """\
+The JSON parameter values. You can specify these as
+key-value pairs in the key=value format. Multiple parameters
+are separated by a space. For list type parameter values
+you can use the same key name and specify each value as
+a key value pair. e.g. arrayValue=value1 arrayValue=value2
+"""
 
 
 class DocSectionNotFoundError(Exception):
     pass
+
+
+class ParameterDefinitionError(Exception):
+    def __init__(self, msg):
+        full_msg = ("Error in parameter: %s\n" % msg)
+        super(ParameterDefinitionError, self).__init__(full_msg)
+        self.msg = msg
 
 
 def register_customizations(cli):
@@ -82,24 +96,43 @@ def add_pipeline_definition(argument_table, **kwargs):
     argument_table['pipeline-definition'] = PipelineDefinitionArgument(
         'pipeline-definition', required=True,
         help_text=DEFINITION_HELP_TEXT)
+
     argument_table['parameter-objects'] = ParameterObjectsArgument(
         'parameter-objects', required=False,
         help_text=PARAMETER_OBJECTS_HELP_TEXT)
-    argument_table['parameter-values'] = ParameterValuesArgument(
-        'parameter-values', required=False,
+
+    argument_table['parameter-values-uri'] = ParameterValuesArgument(
+        'parameter-values-uri',
+        required=False,
         help_text=PARAMETER_VALUES_HELP_TEXT)
+
+    # Need to use an argument model for inline parameters to accept a list
+    argument_table['parameter-values'] = ParameterValuesInlineArgument(
+        'parameter-values',
+        required=False,
+        nargs='+',
+        help_text=INLINE_PARAMETER_VALUES_HELP_TEXT)
 
     # The pipeline-objects is no longer needed required because
     # a user can provide a pipeline-definition instead.
     # get-pipeline-definition also displays the output in the
     # translated format.
+
     del argument_table['pipeline-objects']
 
 
 def activate_pipeline_definition(argument_table, **kwargs):
-    argument_table['parameter-values'] = ParameterValuesArgument(
-        'parameter-values', required=False,
+    argument_table['parameter-values-uri'] = ParameterValuesArgument(
+        'parameter-values-uri', required=False,
         help_text=PARAMETER_VALUES_HELP_TEXT)
+
+    # Need to use an argument model for inline parameters to accept a list
+    argument_table['parameter-values'] = ParameterValuesInlineArgument(
+        'parameter-values',
+        required=False,
+        nargs='+',
+        help_text=INLINE_PARAMETER_VALUES_HELP_TEXT,
+        )
 
 
 def translate_definition(parsed, **kwargs):
@@ -202,9 +235,11 @@ class PipelineDefinitionArgument(CustomArgument):
         parameter_values = translator.definition_to_parameter_values(parsed)
         parameters['pipelineObjects'] = api_objects
         # Use Parameter objects and values from def if not already provided
-        if 'parameterObjects' not in parameters:
+        if 'parameterObjects' not in parameters \
+                and parameter_objects is not None:
             parameters['parameterObjects'] = parameter_objects
-        if 'parameterValues' not in parameters:
+        if 'parameterValues' not in parameters \
+                and parameter_values is not None:
             parameters['parameterValues'] = parameter_values
 
 
@@ -219,9 +254,47 @@ class ParameterObjectsArgument(CustomArgument):
 
 class ParameterValuesArgument(CustomArgument):
     def add_to_params(self, parameters, value):
+
         if value is None:
             return
+
+        if parameters.get('parameterValues', None) is not None:
+            raise Exception(
+                "Only parameter-values or parameter-values-uri is allowed"
+            )
+
         parsed = json.loads(value)
+        parameter_values = translator.definition_to_parameter_values(parsed)
+        parameters['parameterValues'] = parameter_values
+
+
+class ParameterValuesInlineArgument(CustomArgument):
+    def add_to_params(self, parameters, value):
+
+        if value is None:
+            return
+
+        if parameters.get('parameterValues', None) is not None:
+            raise Exception(
+                "Only parameter-values or parameter-values-uri is allowed"
+            )
+
+        parameter_object = {}
+        # break string into = point
+        for argument in value:
+            try:
+                argument_components = argument.split('=', 1)
+                key = argument_components[0]
+                value = argument_components[1]
+                if key in parameter_object:
+                    parameter_object[key] = [parameter_object[key], value]
+                else:
+                    parameter_object[key] = value
+            except IndexError:
+                raise ParameterDefinitionError(
+                    "Invalid inline parameter format: %s" % argument
+                )
+        parsed = {'values': parameter_object}
         parameter_values = translator.definition_to_parameter_values(parsed)
         parameters['parameterValues'] = parameter_values
 
@@ -237,7 +310,8 @@ class ListRunsCommand(BasicCommand):
          'action': 'store', 'required': True, 'cli_type_name': 'string', },
         {'name': 'status',
          'help_text': (
-             'Filters the list to include only runs in the specified statuses. '
+             'Filters the list to include only runs in the '
+             'specified statuses. '
              'The valid statuses are as follows: waiting, pending, cancelled, '
              'running, finished, failed, waiting_for_runner, '
              'and waiting_on_dependencies. You can combine statuses as a '
@@ -285,13 +359,16 @@ class ListRunsCommand(BasicCommand):
         # Parse the status csv.
         if parsed_args.start_interval is not None:
             parsed_args.start_interval = [
-                arg.strip() for arg in parsed_args.start_interval.split(',')]
+                arg.strip() for arg in
+                parsed_args.start_interval.split(',')]
         if parsed_args.schedule_interval is not None:
             parsed_args.schedule_interval = [
-                arg.strip() for arg in parsed_args.schedule_interval.split(',')]
+                arg.strip() for arg in
+                parsed_args.schedule_interval.split(',')]
         if parsed_args.status is not None:
             parsed_args.status = [
-                arg.strip() for arg in parsed_args.status.split(',')]
+                arg.strip() for arg in
+                parsed_args.status.split(',')]
             self._validate_status_choices(parsed_args.status)
 
     def _validate_status_choices(self, statuses):

@@ -10,7 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.datapipeline.translator import PipelineDefinitionError
+from awscli.customizations.datapipeline.translator \
+    import PipelineDefinitionError
 from awscli.testutils import unittest
 
 from botocore.compat import OrderedDict, json
@@ -129,8 +130,8 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
                     {"key": "step", "stringValue": "s3://foo1"},
                     {"key": "step", "stringValue": "s3://foo2"},
                     {"key": "step", "stringValue": "s3://foo3"},
-                    {"key": "type", "stringValue": "EmrActivity"},
-        ]}]
+                    {"key": "type", "stringValue": "EmrActivity"}
+                ]}]
         self.assertEqual(actual, api)
 
     def test_value_with_refs(self):
@@ -148,13 +149,14 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
                     {"key": "step", "stringValue": "s3://foo1"},
                     {"key": "step", "refValue": "otherValue"},
                     {"key": "step", "stringValue": "s3://foo3"},
-                    {"key": "type", "stringValue": "EmrActivity"},
-        ]}]
+                    {"key": "type", "stringValue": "EmrActivity"}
+                ]}]
         self.assertEqual(actual, api)
 
     # These tests check the API -> DF conversion.
     def test_api_to_df(self):
-        api = {"pipelineObjects": [{"name": "S3ToS3Copy", "id": "S3ToS3Copy",
+        api = {"pipelineObjects": [
+            {"name": "S3ToS3Copy", "id": "S3ToS3Copy",
                 "fields": [{"key": "type", "stringValue": "CopyActivity"},
                            {"key": "schedule", "refValue": "CopyPeriod"},
                            {"key": "input", "refValue": "InputData"},
@@ -173,7 +175,8 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
 
     def test_api_to_df_with_dupe_keys(self):
         # Duplicate keys should be aggregated into a list.
-        api = {"pipelineObjects": [{"name": "S3ToS3Copy", "id": "S3ToS3Copy",
+        api = {"pipelineObjects": [
+            {"name": "S3ToS3Copy", "id": "S3ToS3Copy",
                 "fields": [{"key": "type", "stringValue": "CopyActivity"},
                            {"key": "schedule", "refValue": "CopyPeriod"},
                            {"key": "script", "stringValue": "value1"},
@@ -245,31 +248,15 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
         self.assertEqual(actual, api)
 
     def test_df_to_api_with_parameter_values(self):
-        definition = self.load_def("""{"values": [
-            {
+        definition = self.load_def("""{"values": {
               "myMaximumRetries":"2",
               "myOccurrenceNumber":"3"
             }
-            ]}""")
+            }""")
         actual = translator.definition_to_parameter_values(definition)
         api = [{"id": "myMaximumRetries", "stringValue": "2"},
                {"id": "myOccurrenceNumber", "stringValue": "3"}]
         self.assertEqual(actual, api)
-
-    def test_df_to_api_with_multiple_parameter_values(self):
-        # Only one section is allowed
-        definition = self.load_def("""{"values": [
-            {
-              "myMaximumRetries":"2",
-              "myOccurrenceNumber":"3"
-            },
-            {
-              "myMinimumRetries":"1",
-              "myMaxSections":"10"
-            }
-            ]}""")
-        with self.assertRaises(PipelineDefinitionError):
-            translator.definition_to_parameter_values(definition)
 
     def test_df_to_api_with_parameter_objects_array(self):
         definition = self.load_def("""{"parameters": [
@@ -295,12 +282,11 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
         self.assertEqual(actual, api)
 
     def test_df_to_api_with_parameter_values_array(self):
-        definition = self.load_def("""{"values": [
-            {
+        definition = self.load_def("""{"values": {
               "myMaximumRetries":["value1", "value2"],
               "myOccurrenceNumber":"3"
             }
-            ]}""")
+            }""")
         actual = translator.definition_to_parameter_values(definition)
         api = [{"id": "myMaximumRetries", "stringValue": "value1"},
                {"id": "myMaximumRetries", "stringValue": "value2"},
@@ -310,41 +296,41 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
     def test_api_to_df_with_parameter_objects_and_values(self):
         # Tests for proper handling of parameter value arrays as well
         api = {"parameterObjects": [
-                {"attributes": [
-                    {"key": "max", "stringValue": "24"},
-                    {"key": "description",
-                     "stringValue": "Number of pipeline runs"},
-                    {"key": "type", "stringValue": "Integer"}],
-                 "id": "myOccurrenceNumber"},
-                {"attributes": [
-                    {"key": "max", "stringValue": "3"},
-                    {"key": "description", "stringValue": "number of retires"},
-                    {"key": "type", "stringValue": "Integer"}],
-                 "id": "myMaximumRetries"}],
-               "parameterValues": [
-                   {"id": "myOccurrenceNumber", "stringValue": "4"},
-                   {"id": "myMaximumRetries", "stringValue": "2"},
-                   {"id": "myMaximumRetries", "stringValue": "3"}],
-               "pipelineObjects": [
-                   {"fields": [
-                       {"key": "startDateTime",
+            {"attributes": [
+                {"key": "max", "stringValue": "24"},
+                {"key": "description",
+                 "stringValue": "Number of pipeline runs"},
+                {"key": "type", "stringValue": "Integer"}],
+             "id": "myOccurrenceNumber"},
+            {"attributes": [
+                {"key": "max", "stringValue": "3"},
+                {"key": "description", "stringValue": "number of retires"},
+                {"key": "type", "stringValue": "Integer"}],
+             "id": "myMaximumRetries"}],
+            "parameterValues": [
+                {"id": "myOccurrenceNumber", "stringValue": "4"},
+                {"id": "myMaximumRetries", "stringValue": "2"},
+                {"id": "myMaximumRetries", "stringValue": "3"}],
+            "pipelineObjects": [
+                {"fields": [
+                    {"key": "startDateTime",
                         "stringValue": "2011-01-01T00:00:00"},
-                       {"key": "occurrences",
+                    {"key": "occurrences",
                         "stringValue": "#{myOccurrenceNumber}"},
-                       {"key": "period",
+                    {"key": "period",
                         "stringValue": "1 YEAR"},
-                       {"key": "type",
+                    {"key": "type",
                         "stringValue": "Schedule"}],
                     "id": "CopyPeriod",
                     "name": "CopyPeriod"},
-                   {"fields": [
-                       {"key": "schedule", "refValue": "CopyPeriod"},
-                       {"key": "retryDelay", "stringValue": "1 MINUTE"},
-                       {"key": "command", "stringValue": "false"},
-                       {"key": "maximumRetries",
+                {"fields": [
+                    {"key": "schedule", "refValue": "CopyPeriod"},
+                    {"key": "retryDelay", "stringValue": "1 MINUTE"},
+                    {"key": "command", "stringValue": "false"},
+                    {"key": "maximumRetries",
                         "stringValue": "#{myMaximumRetries}"},
-                       {"key": "workerGroup", "stringValue": "$PIPELINE_ID"},
-                       {"key": "type", "stringValue": "ShellCommandActivity"}],
+                    {"key": "workerGroup", "stringValue": "$PIPELINE_ID"},
+                    {"key": "type", "stringValue": "ShellCommandActivity"}],
                     "id": "ShellCommand",
                     "name": "ShellCommand"}]}
         expected = {"parameters": [
@@ -376,11 +362,11 @@ class TestTranslatePipelineDefinitions(unittest.TestCase):
                 "id": "ShellCommand",
                 "maximumRetries": "#{myMaximumRetries}"
             }
-        ], "values": [
+        ], "values":
             {
                 "myMaximumRetries": ["2", "3"],
                 "myOccurrenceNumber": "4"
             }
-        ]}
+        }
         actual = translator.api_to_definition(api)
         self.assertEqual(expected, actual)

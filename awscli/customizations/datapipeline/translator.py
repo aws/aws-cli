@@ -89,20 +89,13 @@ def definition_to_api_parameters(definition):
 
 
 def definition_to_parameter_values(definition):
-    if 'values' not in definition or definition['values'][0] is None:
+    if 'values' not in definition:
         return None
-    if definition['values'].__len__() is not 1:
-        error_message = ("All parameter values should be defined in one"
-                         " section. Found {} sections."
-                         .format(definition['values'].__len__()))
-        raise PipelineDefinitionError(error_message, definition)
     parameter_values = []
-    for parameter_id, value in definition['values'][0].items():
-        parameter_object = {'id': parameter_id}
-        # Now we need the attribute list.  Each element in the value list
-        # is a dict with a 'key', 'stringValue'
+    for key in definition['values']:
         parameter_values.extend(
-            _convert_single_parameter_value(parameter_id, value))
+            _convert_single_parameter_value(key, definition['values'][key]))
+
     return parameter_values
 
 
@@ -171,7 +164,7 @@ def _api_to_values_definition(api_response):
     pipeline_values = {}
     for element in api_response:
         _add_value(element['id'], element['stringValue'], pipeline_values)
-    return [pipeline_values]
+    return pipeline_values
 
 
 def _add_value(key, value, current_map):

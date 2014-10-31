@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:Pagination: Only display ``--page-size`` when an operation can be
+  paginated
+  (`issue 956 <https://github.com/aws/aws-cli/pull/956>`__)
 * feature:``--generate-cli-skeleton``: Generates a JSON skeleton to fill out
   and be used as input to ``--cli-input-json``.
   (`issue 963 <https://github.com/aws/aws-cli/pull/963>`_)

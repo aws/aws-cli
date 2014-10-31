@@ -61,24 +61,22 @@ class TestIntegGenerateCliSkeleton(unittest.TestCase):
         p = aws('s3api delete-object --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
         self.assertEqual(
-            p.stdout,
-            '{\n    "Bucket": "", \n    "Key": "", \n    "MFA": "", \n    '
-            '"VersionId": ""\n}\n'
+            json.loads(p.stdout),
+            {'Bucket': '','Key': '', 'MFA': '', 'VersionId': ''}
         )
 
     def test_generate_cli_skeleton_sqs(self):
         p = aws('sqs change-message-visibility --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
         self.assertEqual(
-            p.stdout,
-            '{\n    "QueueUrl": "", \n    "ReceiptHandle": "", \n    '
-            '"VisibilityTimeout": 0\n}\n'
+            json.loads(p.stdout),
+            {'QueueUrl': '', 'ReceiptHandle': '', 'VisibilityTimeout': 0}
         )
 
     def test_generate_cli_skeleton_iam(self):
         p = aws('iam create-group --generate-cli-skeleton')
         self.assertEqual(p.rc, 0)
         self.assertEqual(
-            p.stdout,
-            '{\n    "Path": "", \n    "GroupName": ""\n}\n'
+            json.loads(p.stdout),
+            {'Path': '', 'GroupName': ''}
         )

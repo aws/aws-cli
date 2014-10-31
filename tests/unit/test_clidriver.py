@@ -686,33 +686,6 @@ class TestCLIOperationCaller(BaseAWSCommandParamsTest):
         with self.assertRaises(NoCredentialsError):
             caller.invoke(None, None, None)
 
-    def test_invoke_with_page_size(self):
-        operation_object = mock.Mock()
-        paginate = operation_object.paginate
-        operation_object.can_paginate = True
-        parsed_globals = mock.Mock()
-        parsed_globals.paginate = True
-        parsed_globals.page_size = '10'
-        parameters = {}
-        caller = CLIOperationCaller(self.session)
-        with mock.patch('awscli.clidriver.CLIOperationCaller._display_response'):
-            caller.invoke(operation_object, parameters, parsed_globals)
-        self.assertEqual(paginate.call_args[1], {'page_size': u'10'})
-
-    def test_invoke_with_no_page_size(self):
-        operation_object = mock.Mock()
-        paginate = operation_object.paginate
-        operation_object.can_paginate = True
-        parsed_globals = mock.Mock()
-        parsed_globals.paginate = True
-        parsed_globals.page_size = None
-        parameters = {}
-        caller = CLIOperationCaller(self.session)
-        with mock.patch('awscli.clidriver.CLIOperationCaller._display_response'):
-            caller.invoke(operation_object, parameters, parsed_globals)
-        # No parameters were passed to it (i.e. only self and endpoint).
-        self.assertEqual(len(paginate.call_args), 2)
-
 
 class TestVerifyArgument(BaseAWSCommandParamsTest):
     def setUp(self):

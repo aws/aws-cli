@@ -440,6 +440,9 @@ class ServiceOperation(object):
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
+        event = 'before-building-argument-table-parser.%s.%s' % \
+            (self._parent_name, self._name)
+        self._emit(event, argument_table=self.arg_table, args=args)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
@@ -457,8 +460,32 @@ class ServiceOperation(object):
                    parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(parsed_args,
                                                       self.arg_table)
-        return self._operation_caller.invoke(
-            self._operation_object, call_parameters, parsed_globals)
+        event = 'calling-command.%s.%s' % (self._parent_name,
+                                           self._name)
+        override = self._emit_first_non_none_response(
+            event,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=parsed_globals
+        )
+        # There are two possible values for override. It can be some type
+        # of exception that will be raised if detected or it can represent
+        # the desired return code. Note that a return code of 0 represents
+        # a success.
+        if override is not None:
+            if isinstance(override, Exception):
+                # If the override value provided back is an exception then
+                # raise the exception
+                raise override
+            else:
+                # This is the value usually returned by the ``invoke()``
+                # method of the operation caller. It represents the return
+                # code of the operation.
+                return override
+        else:
+            # No override value was supplied.
+            return self._operation_caller.invoke(
+                self._operation_object, call_parameters, parsed_globals)
 
     def create_help_command(self):
         return OperationHelpCommand(
@@ -524,6 +551,10 @@ class ServiceOperation(object):
     def _emit(self, name, **kwargs):
         session = self._service_object.session
         return session.emit(name, **kwargs)
+
+    def _emit_first_non_none_response(self, name, **kwargs):
+        session = self._service_object.session
+        return session.emit_first_non_none_response(name, **kwargs)
 
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)

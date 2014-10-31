@@ -245,10 +245,12 @@ class TestCliDriverHooks(unittest.TestCase):
             'top-level-args-parsed',
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
+            'before-building-argument-table-parser.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
             'load-cli-arg.s3.list-objects.key',
+            'calling-command.s3.list-objects'
         ])
 
     def test_create_help_command(self):
@@ -618,6 +620,34 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             f.write.call_args_list[0][0][0],
             'Unable to locate credentials. '
             'You can configure credentials by running "aws configure".')
+
+    def test_override_calling_command(self):
+        self.driver = create_clidriver()
+
+        # Make a function that will return an override such that its value
+        # is used over whatever is returned by the invoker which is usually
+        # zero.
+        def override_with_rc(**kwargs):
+            return 20
+
+        self.driver.session.register('calling-command', override_with_rc)
+        rc = self.driver.main('ec2 describe-instances'.split())
+        # Check that the overriden rc is as expected.
+        self.assertEqual(rc, 20)
+
+    def test_override_calling_command_error(self):
+        self.driver = create_clidriver()
+
+        # Make a function that will return an error. The handler will cause
+        # an error to be returned and later raised.
+        def override_with_error(**kwargs):
+            return ValueError()
+
+        self.driver.session.register('calling-command', override_with_error)
+        # An exception should be thrown as a result of the handler, which
+        # will result in 255 rc.
+        rc = self.driver.main('ec2 describe-instances'.split())
+        self.assertEqual(rc, 255)
 
 
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):

@@ -48,6 +48,9 @@ from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.cloudsearchdomain import register_cloudsearchdomain
 from awscli.customizations.s3endpoint import register_s3_endpoint
 from awscli.customizations.s3errormsg import register_s3_error_msg
+from awscli.customizations.cliinputjson import register_cli_input_json
+from awscli.customizations.generatecliskeleton import \
+    register_generate_cli_skeleton
 
 
 def awscli_initialize(event_handlers):
@@ -70,6 +73,7 @@ def awscli_initialize(event_handlers):
 #                            param_shorthand.add_example_fn)
     event_handlers.register('doc-examples.*.*',
                             add_examples)
+    register_cli_input_json(event_handlers)
     event_handlers.register('building-argument-table.s3api.*',
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.run-instances',
@@ -100,3 +104,4 @@ def awscli_initialize(event_handlers):
     emr_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
+    register_generate_cli_skeleton(event_handlers)

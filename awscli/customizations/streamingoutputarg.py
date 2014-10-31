@@ -52,6 +52,7 @@ class StreamingOutputArgument(BaseCLIArgument):
         self._response_key = response_key
         self._output_file = None
         self._name = name
+        self._required = True
 
     @property
     def cli_name(self):
@@ -66,7 +67,11 @@ class StreamingOutputArgument(BaseCLIArgument):
 
     @property
     def required(self):
-        return True
+        return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
 
     @property
     def documentation(self):

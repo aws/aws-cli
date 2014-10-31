@@ -45,6 +45,7 @@ class LaunchKeyArgument(BaseCLIArgument):
         self._operation = operation
         self._name = name
         self._key_path = None
+        self._required = False
 
     @property
     def cli_type_name(self):
@@ -52,7 +53,11 @@ class LaunchKeyArgument(BaseCLIArgument):
 
     @property
     def required(self):
-        return False
+        return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
 
     @property
     def documentation(self):

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.5
+=====
 
 * bugfix:Pagination: Only display ``--page-size`` when an operation can be
   paginated

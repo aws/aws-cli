@@ -7,14 +7,15 @@ The following ``describe-adjustment types`` command describes the adjustment typ
 The output of this command is a JSON block that describes the adjustment types, similar to the following::
 
 	{
-		"AutoScalingInstances": [
+		"AdjustementTypes": [
 			{
-				"AvailabilityZone": "us-west-2c",
-				"InstanceId": "i-12cd901a",
-				"AutoScalingGroupName": "tags-auto-scaling-group",
-				"HealthStatus": "HEALTHY",
-				"LifecycleState": "InService",
-				"LaunchConfigurationName": "tags-auto-scaling-group"
+				"AdjustmentType": "ChangeInCapacity"
+			}
+			{
+				"AdjustmentType": "ExactCapcity"
+			}
+			{
+				"AdjustmentType": "PercentChangeInCapacity"
 			}
 		]
 	}

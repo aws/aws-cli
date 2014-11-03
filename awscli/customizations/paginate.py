@@ -47,6 +47,10 @@ max-items then a <code>NextToken</code> will
 be provided in the output that you can use to resume pagination.
 """
 
+PAGE_SIZE_HELP = """
+<p>The size of each page.<p>
+"""
+
 
 def register_pagination(event_handlers):
     event_handlers.register('building-argument-table',
@@ -78,6 +82,8 @@ def unify_paging_params(argument_table, operation, event_name, **kwargs):
             raise TypeError(('Unsupported pagination type {0} for operation {1}'
                             ' and parameter {2}').format(type_name, operation.name,
                                                          operation.pagination['limit_key']))
+        argument_table['page-size'] = PageArgument('page-size', PAGE_SIZE_HELP,
+                                                   operation, parse_type=type_name)
 
     argument_table['max-items'] = PageArgument('max-items', MAX_ITEMS_HELP,
                                                operation, parse_type=type_name)
@@ -140,6 +146,7 @@ class PageArgument(BaseCLIArgument):
         self._name = name
         self._documentation = documentation
         self._parse_type = parse_type
+        self._required = False
 
     @property
     def cli_name(self):
@@ -151,7 +158,11 @@ class PageArgument(BaseCLIArgument):
 
     @property
     def required(self):
-        return False
+        return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
 
     @property
     def documentation(self):

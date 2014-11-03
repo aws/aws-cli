@@ -1,16 +1,10 @@
 **To associate an Elastic IP addresses in EC2-Classic**
 
-This example associates an Elastic IP address with an instance in EC2-Classic.
+This example associates an Elastic IP address with an instance in EC2-Classic. If the command succeeds, no output is returned.
 
 Command::
 
   aws ec2 associate-address --instance-id i-5203422c --public-ip 198.51.100.0
-
-Output::
-
-  {
-      "return": "true"
-  }
 
 **To associate an Elastic IP address in EC2-VPC**
 
@@ -23,8 +17,7 @@ Command::
 Output::
 
   {
-      "AssociationId": "eipassoc-2bebb745",
-      "return": "true"
+      "AssociationId": "eipassoc-2bebb745"
   }
 
 This example associates an Elastic IP address with a network interface.

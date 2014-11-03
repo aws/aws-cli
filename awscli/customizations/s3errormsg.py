@@ -16,7 +16,7 @@ from awscli.customizations import utils
 
 
 REGION_ERROR_MSG = (
-    'You can fix this issue by explicity providing the correct region '
+    'You can fix this issue by explicitly providing the correct region '
     'location using the --region argument, the AWS_DEFAULT_REGION '
     'environment variable, or the region variable in the AWS CLI '
     "configuration file.  You can get the bucket's location by "

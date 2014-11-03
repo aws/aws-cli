@@ -80,7 +80,7 @@
 
 - Create an Amazon EMR cluster with MapR M7 edition::
 
-    aws emr create-cluster --applications Name=MapR,Args=--edition,m7,--version,3.0.2 --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --applications Name=MapR,Args=--edition,m7,--version,3.0.2 --ami-version 2.4.8 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 **11. Restore HBase data from backup when creating an Amazon EMR cluster**
 

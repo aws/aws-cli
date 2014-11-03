@@ -40,6 +40,7 @@ class CountArgument(BaseCLIArgument):
         self.argument_model = model.Shape('CountArgument', {'type': 'string'})
         self._operation = operation
         self._name = name
+        self._required = False
 
     @property
     def cli_name(self):
@@ -51,7 +52,11 @@ class CountArgument(BaseCLIArgument):
 
     @property
     def required(self):
-        return False
+        return self._required
+
+    @required.setter
+    def required(self, value):
+        self._required = value
 
     @property
     def documentation(self):

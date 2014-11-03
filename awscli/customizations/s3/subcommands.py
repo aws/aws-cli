@@ -205,11 +205,17 @@ EXPECTED_SIZE = {'name': 'expected-size',
                      'under these conditions may result in a failed upload. '
                      'due to too many parts in upload.')}
 
+
+PAGE_SIZE = {'name': 'page-size', 'help_text': 'The size of each page.',
+             'cli_type_name': 'integer'}
+
+
 TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
-                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS]
+                 CONTENT_LANGUAGE, EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS,
+                 PAGE_SIZE]
 
 
 def get_endpoint(service, region, endpoint_url, verify):
@@ -232,7 +238,8 @@ class ListCommand(S3Command):
                    "is ignored for this command.")
     USAGE = "<S3Path> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
-                  'positional_arg': True, 'synopsis': USAGE}, RECURSIVE]
+                  'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
+                 PAGE_SIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/ls.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -246,9 +253,9 @@ class ListCommand(S3Command):
         elif parsed_args.dir_op:
             # Then --recursive was specified.
             self._list_all_objects_recursive(bucket, key,
-                                             parsed_globals.page_size)
+                                             parsed_args.page_size)
         else:
-            self._list_all_objects(bucket, key, parsed_globals.page_size)
+            self._list_all_objects(bucket, key, parsed_args.page_size)
         return 0
 
     def _list_all_objects(self, bucket, key, page_size=None):
@@ -370,7 +377,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_region(parsed_globals)
         cmd_params.add_endpoint_url(parsed_globals)
         cmd_params.add_verify_ssl(parsed_globals)
-        cmd_params.add_page_size(parsed_globals)
+        cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
         cmd_params.check_force(parsed_globals)
         cmd = CommandArchitecture(self._session, self.NAME,
@@ -428,7 +435,7 @@ class RmCommand(S3TransferCommand):
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
-                 EXCLUDE, ONLY_SHOW_ERRORS]
+                 EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/rm.rst')
 
 
@@ -857,5 +864,5 @@ class CommandParameters(object):
     def add_verify_ssl(self, parsed_globals):
         self.parameters['verify_ssl'] = parsed_globals.verify_ssl
 
-    def add_page_size(self, parsed_globals):
-        self.parameters['page_size'] = parsed_globals.page_size
+    def add_page_size(self, parsed_args):
+        self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)

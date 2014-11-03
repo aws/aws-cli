@@ -10,8 +10,6 @@ Given an empty config file, the following commands::
 will produce the following config file::
 
     [default]
-    aws_access_key_id = default_access_key
-    aws_secret_access_key = default_secret_key
     region = us-west-2
 
     [profile testing]
@@ -22,3 +20,9 @@ will produce the following config file::
 
     [preview]
     cloudsearch = true
+
+and the following ``~/.aws/credentials`` file::
+
+    [default]
+    aws_access_key_id = default_access_key
+    aws_secret_access_key = default_secret_key

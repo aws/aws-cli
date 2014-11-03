@@ -38,9 +38,3 @@ get``, the currently specified profile is ignored.  Section names that have
 the format ``[profile profile-name]`` can be specified by using the
 ``profile.profile-name.config-name`` syntax, and the default profile can be
 specified using the ``default.config-name`` syntax.
-
-If you have a nested config value such as the Amazon S3 ``signature_version``
-config value, you can specify this value using either
-``default.s3.signature_version s3v4`` or
-``profile.name.s3.signature_version s3v4``.  You cannot set a nested config
-value using an unqualified name.

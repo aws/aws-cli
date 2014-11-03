@@ -23,7 +23,7 @@ The following configuration variables are supported in the config file:
 
 * **aws_access_key_id** - The AWS access key part of your credentials
 * **aws_secret_access_key** - The AWS secret access key part of your credentials
-* **aws_security_token** - The security token part of your credentials (session tokens only)
+* **aws_session_token** - The session token part of your credentials (session tokens only)
 * **metadata_service_timeout** - The number of seconds to wait until the metadata service
   request times out.  This is used if you are using an IAM role to provide
   your credentials.

@@ -211,7 +211,8 @@ class BasicCommand(CLICommand):
             subcommand_table[subcommand_name] = subcommand_class(self._session)
         self._session.emit('building-command-table.%s' % self.NAME,
                            command_table=subcommand_table,
-                           session=self._session)
+                           session=self._session,
+                           command_object=self)
         return subcommand_table
 
     def _display_help(self, parsed_args, parsed_globals):

@@ -51,6 +51,7 @@ from awscli.customizations.s3errormsg import register_s3_error_msg
 from awscli.customizations.cliinputjson import register_cli_input_json
 from awscli.customizations.generatecliskeleton import \
     register_generate_cli_skeleton
+from awscli.customizations.waiters import register_add_waiters
 
 
 def awscli_initialize(event_handlers):
@@ -105,3 +106,4 @@ def awscli_initialize(event_handlers):
     register_cloudsearchdomain(event_handlers)
     register_s3_endpoint(event_handlers)
     register_generate_cli_skeleton(event_handlers)
+    register_add_waiters(event_handlers)

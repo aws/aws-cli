@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws cloudfront``: Adds support for wildcard cookie names and
+  options caching.
+* feature:``aws route53``: Add further support for private dns and sigv4.
+* feature:``aws cognito-sync``: Add support for push sync.
+
+
 1.5.5
 =====
 

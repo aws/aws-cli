@@ -33,10 +33,8 @@ def do_operation(driver, service_path, operation_name, operation_command):
     help_command(None, None)
 
 
-def do_service(driver, ref_path, service_name, service_command,
-               is_top_level_service=True):
-    if is_top_level_service:
-        print('...%s' % service_name)
+def do_service(driver, ref_path, service_name, service_command):
+    print('...%s' % service_name)
     service_path = os.path.join(ref_path, service_name)
     if not os.path.isdir(service_path):
         os.mkdir(service_path)
@@ -52,16 +50,7 @@ def do_service(driver, ref_path, service_name, service_command,
         if operation_name == 'help':
             continue
         operation_command = help_command.command_table[operation_name]
-        subcommand_table = getattr(operation_command, 'subcommand_table', {})
-        # If the operation command has a subcommand table with commands
-        # in it, treat it as a service command as opposed to an operation
-        # command.
-        if (len(subcommand_table) > 0):
-            do_service(driver, service_path, operation_name,
-                       operation_command, False)
-        else:
-            do_operation(driver, service_path, operation_name,
-                         operation_command)
+        do_operation(driver, service_path, operation_name, operation_command)
 
 
 def do_provider(driver):

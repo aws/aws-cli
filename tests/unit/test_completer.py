@@ -98,7 +98,7 @@ COMPLETIONS = [
                           'modify-cluster-attributes', 'modify-instance-groups',
                           'put', 'remove-tags', 'restore-from-hbase-backup',
                           'schedule-hbase-backup', 'socks', 'ssh',
-                          'terminate-clusters', 'wait']))
+                          'terminate-clusters']))
     ]
 
 

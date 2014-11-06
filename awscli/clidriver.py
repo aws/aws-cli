@@ -117,8 +117,7 @@ class CLIDriver(object):
         command_table = self._build_builtin_commands(self.session)
         self.session.emit('building-command-table.main',
                           command_table=command_table,
-                          session=self.session,
-                          command_object=self)
+                          session=self.session)
         return command_table
 
     def _build_builtin_commands(self, session):
@@ -335,10 +334,6 @@ class ServiceCommand(CLICommand):
     def name(self, value):
         self._name = value
 
-    @property
-    def service_object(self):
-        return self._service_object
-
     def _get_command_table(self):
         if self._command_table is None:
             self._command_table = self._create_command_table()
@@ -371,8 +366,7 @@ class ServiceCommand(CLICommand):
                 service_object=service_object)
         self.session.emit('building-command-table.%s' % self._name,
                           command_table=command_table,
-                          session=self.session,
-                          command_object=self)
+                          session=self.session)
         return command_table
 
     def create_help_command(self):

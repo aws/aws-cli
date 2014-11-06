@@ -25,6 +25,9 @@ class TestAddWaiters(unittest.TestCase):
         self.session = mock.Mock()
         self.client = mock.Mock()
 
+        self.command_object = mock.Mock()
+        self.command_object.service_object = self.service_object
+
         # Set up the mock service object.
         self.service_object.session = self.session
 
@@ -36,7 +39,7 @@ class TestAddWaiters(unittest.TestCase):
 
     def test_add_waiters(self):
         command_table = {}
-        add_waiters(command_table, self.session, self.service_object)
+        add_waiters(command_table, self.session, self.command_object)
         # Make sure a wait command was added.
         self.assertIn('wait', command_table)
         self.assertIsInstance(command_table['wait'], WaitCommand)
@@ -44,14 +47,15 @@ class TestAddWaiters(unittest.TestCase):
     def test_add_waiters_no_waiter_names(self):
         self.client.waiter_names = []
         command_table = {}
-        add_waiters(command_table, self.session, self.service_object)
+        add_waiters(command_table, self.session, self.command_object)
         # Make sure that no wait command was added since the service object
         # has no waiters.
         self.assertEqual(command_table, {})
 
     def test_add_waiters_no_service_object(self):
         command_table = {}
-        add_waiters(command_table, self.session, None)
+        self.command_object.service_object = None
+        add_waiters(command_table, self.session, self.command_object)
         # Make sure that no wait command was added since no service object
         # was passed in.
         self.assertEqual(command_table, {})
@@ -280,7 +284,13 @@ class TestWaiterCaller(unittest.TestCase):
     def test_invoke(self):
         client = mock.Mock()
         waiter = mock.Mock()
+        waiter_name = 'my_waiter'
         operation_object = mock.Mock()
+
+        # Mock the clone of the client
+        cloned_client = mock.Mock()
+        cloned_client.get_waiter.return_value = waiter
+        client.clone_client.return_value = cloned_client
 
         parameters = {'Foo': 'bar', 'Baz': 'biz'}
         parsed_globals = mock.Mock()
@@ -288,7 +298,7 @@ class TestWaiterCaller(unittest.TestCase):
         parsed_globals.endpoint_url = 'myurl'
         parsed_globals.verify_ssl = True
 
-        waiter_caller = WaiterCaller(client, waiter)
+        waiter_caller = WaiterCaller(client, waiter_name)
         waiter_caller.invoke(operation_object, parameters, parsed_globals)
         # Make sure the endpoint was created properly
         operation_object.service.get_endpoint.assert_called_with(
@@ -296,6 +306,11 @@ class TestWaiterCaller(unittest.TestCase):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
+        # Ensure the client was cloned with using the new endpoint.
+        clone_kwargs = client.clone_client.call_args[1]
+        self.assertIn('endpoint', clone_kwargs)
+        # Ensure we get the waiter.
+        cloned_client.get_waiter.assert_called_with(waiter_name)
         # Ensure the wait command was called properly.
         waiter.wait.assert_called_with(
             Foo='bar', Baz='biz')

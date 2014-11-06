@@ -86,6 +86,28 @@ class TestGetChange(BaseAWSCommandParamsTest):
         self.assertEqual(self.last_kwargs['Id'], expected_id)
 
 
+class TestReusableDelegationSet(BaseAWSCommandParamsTest):
+
+    prefix = 'route53 get-reusable-delegation-set'
+
+    def setUp(self):
+        super(TestReusableDelegationSet, self).setUp()
+
+    def test_full_resource_id(self):
+        args = ' --id /delegationset/N9INWVYQ6Q0FN'
+        cmdline = self.prefix + args
+        expected_id = 'N9INWVYQ6Q0FN'
+        self.assert_params_for_cmd2(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
+                                    expected_rc=0)
+
+    def test_short_resource_id(self):
+        args = ' --id N9INWVYQ6Q0FN'
+        cmdline = self.prefix + args
+        expected_id = 'N9INWVYQ6Q0FN'
+        self.assert_params_for_cmd2(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
+                                    expected_rc=0)
+
+
 class TestMaxItems(BaseAWSCommandParamsTest):
 
     prefix = 'route53 list-resource-record-sets'

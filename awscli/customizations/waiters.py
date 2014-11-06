@@ -21,8 +21,11 @@ def register_add_waiters(cli):
     cli.register('building-command-table', add_waiters)
 
 
-def add_waiters(command_table, session, service_object=None, **kwargs):
-    # If a service object was passed in, try to add a wait command.
+def add_waiters(command_table, session, command_object, **kwargs):
+    # Check if the command object passed in has a ``service_object``. We
+    # only want to add wait commands to top level model-driven services.
+    # These require service objects.
+    service_object = getattr(command_object, 'service_object', None)
     if service_object is not None:
         # Get a client out of the service object.
         client = translate_service_object_to_client(service_object)
@@ -104,7 +107,7 @@ class WaiterStateCommandBuilder(object):
         waiter_state_command = WaiterStateCommand(
             name=waiter_cli_name, parent_name='wait',
             operation_object=operation_object,
-            operation_caller=WaiterCaller(self._client, waiter),
+            operation_caller=WaiterCaller(self._client, waiter_name),
             service_object=self._service_object
         )
         # Build the top level description for the waiter state command.
@@ -169,9 +172,9 @@ class WaiterStateDocBuilder(object):
 
 
 class WaiterCaller(object):
-    def __init__(self, client, waiter):
+    def __init__(self, client, waiter_name):
         self._client = client
-        self._waiter = waiter
+        self._waiter_name = waiter_name
 
     def invoke(self, operation_object, parameters, parsed_globals):
         # Create the endpoint based on the parsed globals
@@ -179,10 +182,10 @@ class WaiterCaller(object):
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        # Change the client's endpoint using the newly configured endpoint
-        self._client._endpoint = endpoint
-        # Call the waiter's wait method.
-        self._waiter.wait(**parameters)
+        # Make a clone of the client using the newly configured endpoint
+        client = self._client.clone_client(endpoint=endpoint)
+        # Make the waiter and call its wait method.
+        client.get_waiter(self._waiter_name).wait(**parameters)
         return 0
 
 

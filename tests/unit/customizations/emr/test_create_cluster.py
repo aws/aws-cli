@@ -364,10 +364,14 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['ServiceRole'] = 'ServiceRole'
         self.assert_params_for_cmd2(cmd, result)
 
-    def test_cluster_default_roles_overrides(self):
+    def test_mutual_exclusive_use_default_roles_and_service_role(self):
         cmd = (DEFAULT_CMD + '--service-role ServiceRole '
                '--ec2-attributes InstanceProfile=Ec2_InstanceProfile')
-        self.assert_params_for_cmd2(cmd, DEFAULT_RESULT)
+        expected_error_msg = (
+            '\naws: error: You cannot specify both --use-default-roles '
+            'and --service-role options together.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expected_error_msg, result[1])
 
     def test_cluster_name_no_space(self):
         cmd = DEFAULT_CMD + '--name MyCluster'

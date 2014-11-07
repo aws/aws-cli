@@ -107,6 +107,11 @@ class CreateCluster(BasicCommand):
         bootstrap_actions = []
         params['Name'] = parsed_args.name
 
+        if parsed_args.use_default_roles is True and \
+                parsed_args.service_role is not None:
+                raise exceptions.MutualExclusiveOptionError(
+                    option1="--use-default-roles", option2="--service-role")
+
         instances_config = {}
         instances_config['InstanceGroups'] = \
             instancegroupsutils.validate_and_build_instance_groups(

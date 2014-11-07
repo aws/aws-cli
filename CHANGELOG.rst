@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix issue where request was not properly signed
+  on retried requests for ``aws s3``
+  (`issue 986 <https://github.com/aws/aws-cli/issues/986>`__)
+
+
 1.5.6
 =====
 

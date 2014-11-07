@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.5.6
+=====
 
 * feature:``aws cloudfront``: Adds support for wildcard cookie names and
   options caching.

@@ -22,8 +22,8 @@ def register_resource_id(cli):
 
 
 def _check_for_resource_id(param, value, **kwargs):
-    if param.name == 'ResourceId':
+    if param.name in ['ResourceId', 'DelegationSetId']:
         orig_value = value
         value = value.split('/')[-1]
-        logger.debug('ResourceId %s -> %s', orig_value, value)
+        logger.debug('%s %s -> %s', param.name, orig_value, value)
         return value

@@ -235,12 +235,6 @@ class AssumeRoleProvider(credentials.CredentialProvider):
 
 
     def _create_creds_from_response(self, response):
-        #return credentials.Credentials(
-        #    access_key=response['Credentials']['AccessKeyId'],
-        #    secret_key=response['Credentials']['SecretAccessKey'],
-        #    token=response['Credentials']['SessionToken'],
-        #    method=self.METHOD,
-        #)
         config = self._get_role_config_values()
         return credentials.RefreshableCredentials(
             access_key=response['Credentials']['AccessKeyId'],

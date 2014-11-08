@@ -32,8 +32,14 @@ def inject_assume_role_provider(session, event_name, **kwargs):
         # before we start injecting things into the session.
         return
     provider = create_assume_role_provider(session)
-    session.get_component('credential_provider').insert_before(
-        'config-file', provider)
+    try:
+        session.get_component('credential_provider').insert_before(
+            'config-file', provider)
+    except Exception:
+        # This is ok, it just means that we couldn't create the credential
+        # provider object.
+        LOG.debug("Not registering assume-role provider, credential "
+                  "provider from session could not be created.")
 
 
 def create_assume_role_provider(session):

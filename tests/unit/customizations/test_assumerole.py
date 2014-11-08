@@ -55,6 +55,15 @@ class TestAssumeRolePlugin(unittest.TestCase):
         # be registered.
         session.get_component.assert_called_with('credential_provider')
 
+    def test_provider_not_registered_on_error(self):
+        session = mock.Mock()
+        session.get_component.side_effect = Exception(
+            "Couldn't get credential_provider.")
+        assumerole.inject_assume_role_provider(
+            session, event_name='building-command-table.foo')
+        self.assertFalse(
+            session.get_component.return_value.insert_before.called)
+
 
 class TestAssumeRoleCredentialProvider(unittest.TestCase):
 

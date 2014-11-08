@@ -2,6 +2,7 @@ import os
 import time
 import json
 import logging
+import getpass
 
 from dateutil.parser import parse
 from datetime import datetime
@@ -19,6 +20,10 @@ class InvalidConfigError(Exception):
     pass
 
 
+class RefreshWithMFAUnsupportedError(Exception):
+    pass
+
+
 def register_assume_role_provider(event_handlers):
     event_handlers.register('building-command-table.*',
                             inject_assume_role_provider,
@@ -31,10 +36,15 @@ def inject_assume_role_provider(session, event_name, **kwargs):
         # top level command table.  We want all the top level args processed
         # before we start injecting things into the session.
         return
-    provider = create_assume_role_provider(session)
+    provider = create_assume_role_provider(session, AssumeRoleProvider)
     try:
-        session.get_component('credential_provider').insert_before(
-            'config-file', provider)
+        # The final order will be:
+        # * env
+        # * assume-role
+        # * shared-credentials-file
+        # * ...
+        cred_chain = session.get_component('credential_provider')
+        cred_chain.insert_before('shared-credentials-file', provider)
     except Exception:
         # This is ok, it just means that we couldn't create the credential
         # provider object.
@@ -42,10 +52,10 @@ def inject_assume_role_provider(session, event_name, **kwargs):
                   "provider from session could not be created.")
 
 
-def create_assume_role_provider(session):
+def create_assume_role_provider(session, provider_cls):
     profile_name = session.get_config_variable('profile') or 'default'
     load_config = lambda: session.full_config
-    return AssumeRoleProvider(
+    return provider_cls(
         load_config=load_config,
         client_creator=session.create_client,
         cache=JSONFileCache(AssumeRoleProvider.CACHE_DIR),
@@ -68,6 +78,16 @@ def create_refresher_function(client, params):
             'expiry_time': credentials['Expiration'],
         }
     return refresh
+
+
+def create_mfa_serial_refresh():
+    def _refresher():
+        # We can explore an option in the future to support
+        # reprompting for MFA, but for now we just error out
+        # when the temp creds expire.
+        raise RefreshWithMFAUnsupportedError(
+            "Cannot refresh credentials: MFA token required.")
+    return _refresher
 
 
 class JSONFileCache(object):
@@ -121,9 +141,10 @@ class AssumeRoleProvider(credentials.CredentialProvider):
     # Credentials are considered expired (and will be refreshed) once the total
     # remaining time left until the credentials expires is less than the
     # EXPIRY_WINDOW.
-    EXPIRY_WINDOW_SECONDS = 60 * 5
+    EXPIRY_WINDOW_SECONDS = 60 * 15
 
-    def __init__(self, load_config, client_creator, cache, profile_name):
+    def __init__(self, load_config, client_creator, cache, profile_name,
+                 prompter=getpass.getpass):
         """
 
         :type load_config: callable
@@ -144,6 +165,10 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         :type profile_name: str
         :param profile_name: The name of the profile.
 
+        :type prompter: callable
+        :param prompter: A callable that returns input provided
+            by the user (i.e raw_input, getpass.getpass, etc.).
+
         """
         self._load_config = load_config
         # client_creator is a callable that creates function.
@@ -151,6 +176,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         self._client_creator = client_creator
         self._profile_name = profile_name
         self._cache = cache
+        self._prompter = prompter
         # The _loaded_config attribute will be populated from the
         # load_config() function once the configuration is actually
         # loaded.  The reason we go through all this instead of just
@@ -222,6 +248,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         try:
             source_profile = profiles[self._profile_name]['source_profile']
             role_arn = profiles[self._profile_name]['role_arn']
+            mfa_serial = profiles[self._profile_name].get('mfa_serial')
         except KeyError as e:
             raise PartialCredentialsError(provider=self.METHOD,
                                           cred_var=str(e))
@@ -236,22 +263,28 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             'role_arn': role_arn,
             'external_id': external_id,
             'source_profile': source_profile,
+            'mfa_serial': mfa_serial,
             'source_cred_values': source_cred_values,
         }
 
-
     def _create_creds_from_response(self, response):
         config = self._get_role_config_values()
+        if config.get('mfa_serial') is not None:
+            # MFA would require getting a new TokenCode which would require
+            # prompting the user for a new token, so we use a different
+            # refresh_func.
+            refresh_func = create_mfa_serial_refresh()
+        else:
+            refresh_func = create_refresher_function(
+                self._create_client_from_config(config),
+                self._assume_role_base_kwargs(config))
         return credentials.RefreshableCredentials(
             access_key=response['Credentials']['AccessKeyId'],
             secret_key=response['Credentials']['SecretAccessKey'],
             token=response['Credentials']['SessionToken'],
             method=self.METHOD,
             expiry_time=parse(response['Credentials']['Expiration']),
-            refresh_using=create_refresher_function(
-                self._create_client_from_config(config),
-                self._assume_role_base_kwargs(config)),
-        )
+            refresh_using=refresh_func)
 
     def _create_client_from_config(self, config):
         source_cred_values = config['source_cred_values']
@@ -261,12 +294,6 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             aws_session_token=source_cred_values.get('aws_session_token'),
         )
         return client
-
-    def _assume_role_base_kwargs(self, config):
-        assume_role_kwargs = {'RoleArn': config['role_arn']}
-        if config['external_id'] is not None:
-            assume_role_kwargs['ExternalId'] = config['external_id']
-        return assume_role_kwargs
 
     def _retrieve_temp_credentials(self):
         LOG.debug("Retrieving credentials via AssumeRole.")
@@ -280,3 +307,13 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         response = client.assume_role(**assume_role_kwargs)
         creds = self._create_creds_from_response(response)
         return creds, response
+
+    def _assume_role_base_kwargs(self, config):
+        assume_role_kwargs = {'RoleArn': config['role_arn']}
+        if config['external_id'] is not None:
+            assume_role_kwargs['ExternalId'] = config['external_id']
+        if config['mfa_serial'] is not None:
+            token_code = self._prompter("Enter MFA code: ")
+            assume_role_kwargs['SerialNumber'] = config['mfa_serial']
+            assume_role_kwargs['TokenCode'] = token_code
+        return assume_role_kwargs

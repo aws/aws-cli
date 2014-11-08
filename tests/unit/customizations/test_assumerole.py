@@ -33,7 +33,7 @@ class TestAssumeRolePlugin(unittest.TestCase):
         session.get_component.assert_called_with('credential_provider')
         credential_provider = session.get_component.return_value
         call_args = credential_provider.insert_before.call_args[0]
-        self.assertEqual(call_args[0], 'config-file')
+        self.assertEqual(call_args[0], 'shared-credentials-file')
         self.assertIsInstance(call_args[1], assumerole.AssumeRoleProvider)
 
     def test_assume_role_provider_not_injected_for_main_command_table(self):
@@ -193,6 +193,66 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         client = client_creator.return_value
         client.assume_role.assert_called_with(
             RoleArn='myrole', ExternalId='myid', RoleSessionName=mock.ANY)
+
+    def test_assume_role_with_mfa(self):
+        self.fake_config['profiles']['development']['mfa_serial'] = 'mfa'
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': datetime.now(tzlocal()).isoformat(),
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        prompter = mock.Mock(return_value='token-code')
+        provider = assumerole.AssumeRoleProvider(
+            self.create_config_loader(), client_creator,
+            cache={}, profile_name='development', prompter=prompter)
+
+        provider.load()
+
+        client = client_creator.return_value
+        # In addition to the normal assume role args, we should also
+        # inject the serial number from the config as well as the
+        # token code that comes from prompting the user (the prompter
+        # object).
+        client.assume_role.assert_called_with(
+            RoleArn='myrole', RoleSessionName=mock.ANY, SerialNumber='mfa',
+            TokenCode='token-code')
+
+    def test_assume_role_mfa_cannot_refresh_credentials(self):
+        # Note: we should look into supporting optional behavior
+        # in the future that allows for reprompting for credentials.
+        # But for now, if we get temp creds with MFA then when those
+        # creds expire, we can't refresh the credentials.
+        self.fake_config['profiles']['development']['mfa_serial'] = 'mfa'
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                # We're creating an expiry time in the past so as
+                # soon as we try to access the credentials, the
+                # refresh behavior will be triggered.
+                'Expiration': (
+                    datetime.now(tzlocal()) -
+                    timedelta(seconds=100)).isoformat(),
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        provider = assumerole.AssumeRoleProvider(
+            self.create_config_loader(), client_creator,
+            cache={}, profile_name='development',
+            prompter=mock.Mock(return_value='token-code'))
+
+        creds = provider.load()
+        with self.assertRaises(assumerole.RefreshWithMFAUnsupportedError):
+            # access_key is a property that will refresh credentials
+            # if they're expired.  Because we set the expiry time to
+            # something in the past, this will trigger the refresh
+            # behavior, with with MFA will currently raise an exception.
+            creds.access_key
 
     def test_no_config_is_noop(self):
         self.fake_config['profiles']['development'] = {

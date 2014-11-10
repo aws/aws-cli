@@ -15,7 +15,7 @@ from awscli.testutils import unittest
 import platform
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.filters import Filter
+from awscli.customizations.s3.filters import Filter, create_filter
 
 
 def platform_path(filepath):
@@ -50,13 +50,16 @@ class FiltersTest(unittest.TestCase):
                         last_update=0, src_type=src_type,
                         dest_type=dest_type, operation_name='')
 
-    def create_filter(self, filters=None, root=None, dst_root=None):
+    def create_filter(self, filters=None, root=None, dst_root=None,
+                      parameters=None):
         if root is None:
             root = os.getcwd()
         if filters is None:
             filters = {}
         if dst_root is None:
             dst_root = 'bucket'
+        if parameters is not None:
+            return create_filter(parameters)
         return Filter(filters, root, dst_root)
 
     def test_no_filter(self):
@@ -172,6 +175,32 @@ class FiltersTest(unittest.TestCase):
         filtered = list(local_filter.call(local_files))
         self.assertEqual(len(filtered), 1)
         self.assertEqual(filtered[0].src, p('/foo/bar/baz.txt'))
+
+    def test_create_root_s3_with_prefix(self):
+        parameters = {'filters': [['--exclude', 'test.txt']],
+                      'dir_op': True,
+                      'src': 's3://bucket/prefix/',
+                      'dest': 'prefix'}
+        s3_filter = self.create_filter(parameters=parameters)
+        s3_files = [
+            self.file_stat('bucket/prefix/test.txt', src_type='s3'),
+            self.file_stat('bucket/prefix/test2.txt', src_type='s3'),
+        ]
+        filtered = list(s3_filter.call(s3_files))
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0].src, 'bucket/prefix/test2.txt')
+
+    def test_create_root_s3_no_dir_op(self):
+        parameters = {'filters': [['--exclude', 'test.txt']],
+                      'dir_op': False,
+                      'src': 's3://bucket/test.txt',
+                      'dest': 'temp'}
+        s3_filter = self.create_filter(parameters=parameters)
+        s3_files = [
+            self.file_stat('bucket/test.txt', src_type='s3'),
+        ]
+        filtered = list(s3_filter.call(s3_files))
+        self.assertEqual(len(filtered), 0)
 
 
 if __name__ == "__main__":

@@ -12,10 +12,13 @@
 # language governing permissions and limitations under the License.
 import mock
 
+from botocore.waiter import WaiterModel
+from botocore.exceptions import DataNotFoundError
+
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
     BaseAWSCommandParamsTest
 from awscli.customizations.waiters import add_waiters, WaitCommand, \
-    translate_service_object_to_client, WaiterStateCommand, WaiterCaller, \
+    get_waiter_model_from_service_object, WaiterStateCommand, WaiterCaller, \
     WaiterStateDocBuilder, WaiterStateCommandBuilder
 
 
@@ -23,7 +26,6 @@ class TestAddWaiters(unittest.TestCase):
     def setUp(self):
         self.service_object = mock.Mock()
         self.session = mock.Mock()
-        self.client = mock.Mock()
 
         self.command_object = mock.Mock()
         self.command_object.service_object = self.service_object
@@ -32,10 +34,15 @@ class TestAddWaiters(unittest.TestCase):
         self.service_object.session = self.session
 
         # Set up the mock session.
-        self.session.create_client.return_value = self.client
+        self.session.get_waiter_model.return_value = WaiterModel(
+            {
+                'version': 2,
+                'waiters': {
+                    'FooExists': {},
+                }
+            }
+        )
 
-        # Set up the mock client.
-        self.client.waiter_names = ['waiter']
 
     def test_add_waiters(self):
         command_table = {}
@@ -45,7 +52,13 @@ class TestAddWaiters(unittest.TestCase):
         self.assertIsInstance(command_table['wait'], WaitCommand)
 
     def test_add_waiters_no_waiter_names(self):
-        self.client.waiter_names = []
+        self.session.get_waiter_model.return_value = WaiterModel(
+            {
+                'version': 2,
+                # No waiters are specified.
+                'waiters': {}
+            }
+        )
         command_table = {}
         add_waiters(command_table, self.session, self.command_object)
         # Make sure that no wait command was added since the service object
@@ -60,22 +73,49 @@ class TestAddWaiters(unittest.TestCase):
         # was passed in.
         self.assertEqual(command_table, {})
 
+    def test_add_waiter_no_waiter_config(self):
+        self.session.get_waiter_model.side_effect = DataNotFoundError(
+            data_path='foo')
+        command_table = {}
+        add_waiters(command_table, self.session, self.command_object)
+        self.assertEqual(command_table, {})
 
-class TestTranslateServiceObjectToClient(unittest.TestCase):
-    def test_translate_service_object_to_client(self):
+
+class TestServicetoWaiterModel(unittest.TestCase):
+    def test_service_object_to_waiter_model(self):
         service_object = mock.Mock()
         session = mock.Mock()
         service_object.session = session
         service_object.service_name = 'service'
-        translate_service_object_to_client(service_object)
-        session.create_client.assert_called_with('service')
+        service_object.api_version = '2014-01-01'
+        get_waiter_model_from_service_object(service_object)
+        session.get_waiter_model.assert_called_with('service', '2014-01-01')
+
+    def test_can_handle_data_errors(self):
+        service_object = mock.Mock()
+        session = mock.Mock()
+        service_object.session = session
+        service_object.service_name = 'service'
+        service_object.api_version = '2014-01-01'
+        session.get_waiter_model.side_effect = DataNotFoundError(
+            data_path='foo')
+        self.assertIsNone(
+            get_waiter_model_from_service_object(service_object))
 
 
 class TestWaitCommand(unittest.TestCase):
     def setUp(self):
-        self.client = mock.Mock()
+        self.model = WaiterModel({
+            'version': 2,
+            'waiters': {
+                'Foo': {
+                    'operation': 'foo', 'maxAttempts': 1, 'delay': 1,
+                    'acceptors': [],
+                }
+            }
+        })
         self.service_object = mock.Mock()
-        self.cmd = WaitCommand(self.client, self.service_object)
+        self.cmd = WaitCommand(self.model, self.service_object)
 
     def test_run_main_error(self):
         self.parsed_args = mock.Mock()
@@ -146,26 +186,29 @@ class TestWait(BaseAWSCommandParamsTest):
 
 class TestWaiterStateCommandBuilder(unittest.TestCase):
     def setUp(self):
-        self.client = mock.Mock()
         self.service_object = mock.Mock()
 
         # Create some waiters.
-        self.client.waiter_names = ['instance_running', 'bucket_exists']
-        self.instance_running_waiter = mock.Mock()
-        self.bucket_exists_waiter = mock.Mock()
-
-        # Make a mock waiter config.
-        self.waiter_config = mock.Mock()
-        self.waiter_config.operation = 'MyOperation'
-        self.waiter_config.description = 'my waiter description'
-        self.instance_running_waiter.config = self.waiter_config
-        self.bucket_exists_waiter.config = self.waiter_config
-
-        self.client.get_waiter.side_effect = [
-            self.instance_running_waiter, self.bucket_exists_waiter]
+        self.model = WaiterModel({
+            'version': 2,
+            'waiters': {
+                'InstanceRunning': {
+                    'description': 'my waiter description',
+                    'delay': 1,
+                    'maxAttempts': 10,
+                    'operation': 'MyOperation',
+                },
+                'BucketExists': {
+                    'description': 'my waiter description',
+                    'operation': 'MyOperation',
+                    'delay': 1,
+                    'maxAttempts': 10,
+                }
+            }
+        })
 
         self.waiter_builder = WaiterStateCommandBuilder(
-            self.client,
+            self.model,
             self.service_object
         )
 
@@ -191,11 +234,11 @@ class TestWaiterStateCommandBuilder(unittest.TestCase):
         # Check the descriptions are set correctly.
         self.assertEqual(
             instance_running_cmd.DESCRIPTION,
-            self.waiter_config.description
+            'my waiter description',
         )
         self.assertEqual(
             bucket_exists_cmd.DESCRIPTION,
-            self.waiter_config.description
+            'my waiter description',
         )
 
 
@@ -282,15 +325,10 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
 
 class TestWaiterCaller(unittest.TestCase):
     def test_invoke(self):
-        client = mock.Mock()
         waiter = mock.Mock()
         waiter_name = 'my_waiter'
         operation_object = mock.Mock()
-
-        # Mock the clone of the client
-        cloned_client = mock.Mock()
-        cloned_client.get_waiter.return_value = waiter
-        client.clone_client.return_value = cloned_client
+        operation_object.service.get_waiter.return_value = waiter
 
         parameters = {'Foo': 'bar', 'Baz': 'biz'}
         parsed_globals = mock.Mock()
@@ -298,7 +336,7 @@ class TestWaiterCaller(unittest.TestCase):
         parsed_globals.endpoint_url = 'myurl'
         parsed_globals.verify_ssl = True
 
-        waiter_caller = WaiterCaller(client, waiter_name)
+        waiter_caller = WaiterCaller(waiter_name)
         waiter_caller.invoke(operation_object, parameters, parsed_globals)
         # Make sure the endpoint was created properly
         operation_object.service.get_endpoint.assert_called_with(
@@ -306,11 +344,7 @@ class TestWaiterCaller(unittest.TestCase):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
-        # Ensure the client was cloned with using the new endpoint.
-        clone_kwargs = client.clone_client.call_args[1]
-        self.assertIn('endpoint', clone_kwargs)
-        # Ensure we get the waiter.
-        cloned_client.get_waiter.assert_called_with(waiter_name)
+
         # Ensure the wait command was called properly.
         waiter.wait.assert_called_with(
             Foo='bar', Baz='biz')

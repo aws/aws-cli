@@ -310,12 +310,11 @@ class CompleteDownloadTask(OrderableTask):
         self._context.wait_for_completion()
         last_update_tuple = self._filename.last_update.timetuple()
         mod_timestamp = time.mktime(last_update_tuple)
-        os.utime(self._filename.dest, (int(mod_timestamp), int(mod_timestamp)))
         message = print_operation(self._filename, False,
                                   self._parameters['dryrun'])
         print_task = {'message': message, 'error': False}
         self._result_queue.put(PrintTask(**print_task))
-        self._io_queue.put(IOCloseRequest(self._filename.dest))
+        self._io_queue.put(IOCloseRequest(self._filename.dest, int(mod_timestamp)))
 
 
 class DownloadPartTask(OrderableTask):

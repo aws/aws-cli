@@ -34,20 +34,31 @@ def create_filter(parameters):
         if source_location.startswith('s3://'):
             # This gives us (bucket, keyname) and we want
             # the bucket to be the root dir.
-            src_rootdir = _get_s3_root(source_location)
+            src_rootdir = _get_s3_root(source_location,
+                                       parameters['dir_op'])
             dst_rootdir = _get_local_root(parameters['dest'],
                                           parameters['dir_op'])
         else:
             src_rootdir = _get_local_root(parameters['src'], parameters['dir_op'])
-            dst_rootdir = _get_s3_root(parameters['dest'])
+            dst_rootdir = _get_s3_root(parameters['dest'],
+                                       parameters['dir_op'])
 
         return Filter(real_filters, src_rootdir, dst_rootdir)
     else:
         return Filter({}, None, None)
 
 
-def _get_s3_root(source_location):
-    return split_s3_bucket_key(source_location)[0]
+def _get_s3_root(source_location, dir_op):
+    # Obtain the bucket and the key.
+    bucket, key = split_s3_bucket_key(source_location)
+    if not dir_op and not key.endswith('/'):
+        # If we are not performing an operation on a directory and the key
+        # is of the form: ``prefix/key``. We only want ``prefix`` included in
+        # the the s3 root and not ``key``.
+        key = '/'.join(key.split('/')[:-1])
+    # Rejoin the bucket and key back together.
+    s3_path = '/'.join([bucket, key])
+    return s3_path
 
 
 def _get_local_root(source_location, dir_op):

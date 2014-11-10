@@ -18,6 +18,9 @@ Next Release (TBD)
   on retried requests for ``aws s3``
   (`issue 986 <https://github.com/aws/aws-cli/issues/986>`__,
    `botocore issue 375 <https://github.com/boto/botocore/pull/375>`__)
+* bugfix:``aws s3``: Fix issue where ``--exclude`` and ``--include`` were
+  not being properly applied when a s3 prefix was provided.
+  (`issue 993 <https://github.com/aws/aws-cli/pull/993>`__)
 
 
 1.5.6

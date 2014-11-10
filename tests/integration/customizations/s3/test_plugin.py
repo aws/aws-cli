@@ -1366,6 +1366,30 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
              "end, the 'bar.py' file was deleted even though"
              " it was excluded."))
 
+    def test_filter_s3_with_prefix(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, key_name='temp/test')
+        p = aws('s3 cp s3://%s/temp/ %s --recursive --exclude test --dryrun'
+                % (bucket_name, self.files.rootdir))
+        self.assert_no_files_would_be_uploaded(p)
+
+    def test_filter_no_resync(self):
+        # This specifically tests for the issue described here:
+        # https://github.com/aws/aws-cli/issues/794
+        bucket_name = self.create_bucket()
+        dir_name = os.path.join(self.files.rootdir, 'temp')
+        filename = self.files.create_file(os.path.join(dir_name, 'test.txt'),
+                                                       contents='foo')
+        # Sync a local directory to an s3 prefix.
+        p = aws('s3 sync %s s3://%s/temp' % (dir_name, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, key_name='temp/test.txt'))
+
+        # Nothing should be synced down if filters are used.
+        p = aws("s3 sync s3://%s/temp %s --exclude '*' --include test.txt"
+                % (bucket_name, dir_name))
+        self.assert_no_files_would_be_uploaded(p)
+
 
 class TestFileWithSpaces(BaseS3CLICommand):
     def test_upload_download_file_with_spaces(self):

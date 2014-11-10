@@ -232,7 +232,16 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitem(self, command_name, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.tocitem(command_name)
+        subcommand = help_command.command_table[command_name]
+        subcommand_table = getattr(subcommand, 'subcommand_table', {})
+        # If the subcommand table has commands in it,
+        # direct the subitem to the command's index because
+        # it has more subcommands to be documented.
+        if (len(subcommand_table) > 0):
+            file_name = '%s/index' % command_name
+            doc.style.tocitem(command_name, file_name=file_name)
+        else:
+            doc.style.tocitem(command_name)
 
 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):

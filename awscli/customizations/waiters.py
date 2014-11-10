@@ -42,7 +42,7 @@ def get_waiter_model_from_service_object(service_object):
     session = service_object.session
     try:
         model = session.get_waiter_model(service_object.service_name,
-                                        service_object.api_version)
+                                         service_object.api_version)
     except DataNotFoundError:
         return None
     return model

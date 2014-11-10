@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.0
+=====
 
 * feature:AssumeRole Credential Provider: Add support for assuming a role
   by configuring a ``role_arn`` and a ``source_profile`` in the AWS

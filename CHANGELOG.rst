@@ -5,9 +5,19 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:AssumeRole Credential Provider: Add support for assuming a role
+  by configuring a ``role_arn`` and a ``source_profile`` in the AWS
+  config file
+  (`issue 991 <https://github.com/aws/aws-cli/pull/991>`__,
+   `issue 990 <https://github.com/aws/aws-cli/pull/990>`__)
+* feature:Waiters: Add a ``wait`` subcommand that allows for a command
+  to block until an AWS resource reaches a given state
+  (`issue 992 <https://github.com/aws/aws-cli/pull/992>`__,
+   `issue 985 <https://github.com/aws/aws-cli/pull/985>`__)
 * bugfix:``aws s3``: Fix issue where request was not properly signed
   on retried requests for ``aws s3``
-  (`issue 986 <https://github.com/aws/aws-cli/issues/986>`__)
+  (`issue 986 <https://github.com/aws/aws-cli/issues/986>`__,
+   `botocore issue 375 <https://github.com/boto/botocore/pull/375>`__)
 
 
 1.5.6

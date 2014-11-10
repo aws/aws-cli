@@ -101,7 +101,8 @@ APPLICATIONS_SCHEMA = {
             "Name": {
                 "type": "string",
                 "description": "Application name.",
-                "enum": ["MapR", "HIVE", "PIG", "HBASE", "IMPALA", "GANGLIA"],
+                "enum": ["MapR", "HUE", "HIVE", "PIG", "HBASE",
+                         "IMPALA", "GANGLIA"],
                 "required": True
             },
             "Args": {

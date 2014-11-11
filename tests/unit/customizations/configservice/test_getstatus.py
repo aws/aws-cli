@@ -14,7 +14,7 @@ import mock
 import six
 
 from awscli.testutils import unittest
-from awscli.customizations.config.getstatus import GetStatusCommand
+from awscli.customizations.configservice.getstatus import GetStatusCommand
 
 
 class TestGetStatusCommand(unittest.TestCase):

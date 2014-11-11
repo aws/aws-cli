@@ -16,7 +16,7 @@ from awscli.customizations.commands import BasicCommand
 
 
 def register_get_status(cli):
-    cli.register('building-command-table.config', add_get_status)
+    cli.register('building-command-table.configservice', add_get_status)
 
 
 def add_get_status(command_table, session, **kwargs):

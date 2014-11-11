@@ -39,7 +39,7 @@ IAM_ROLE = {'name': 'iam-role', 'required': True,
 
 
 def register_subscribe(cli):
-    cli.register('building-command-table.config', add_subscribe)
+    cli.register('building-command-table.configservice', add_subscribe)
 
 
 def add_subscribe(command_table, session, **kwargs):

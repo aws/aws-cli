@@ -13,7 +13,7 @@
 import mock
 
 from awscli.testutils import unittest
-from awscli.customizations.config.subscribe import SubscribeCommand, \
+from awscli.customizations.configservice.subscribe import SubscribeCommand, \
     S3BucketHelper, SNSTopicHelper
 
 

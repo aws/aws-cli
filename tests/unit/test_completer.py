@@ -30,7 +30,7 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudsearch',
                       'cloudsearchdomain', 'cloudtrail', 'cloudwatch',
-                      'cognito-identity', 'cognito-sync', 'config',
+                      'cognito-identity', 'cognito-sync', 'configservice',
                       'configure', 'datapipeline', 'deploy', 'directconnect',
                       'dynamodb', 'ec2', 'elasticache', 'elasticbeanstalk',
                       'elastictranscoder', 'elb', 'emr', 'iam',

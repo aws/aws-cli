@@ -61,7 +61,7 @@ class TestGetStatusCommand(unittest.TestCase):
         self.cmd._run_main(self.parsed_args, self.parsed_globals)
         self.session.create_client.assert_called_with(
             'config',
-            use_ssl=self.parsed_globals.verify_ssl,
+            verify=self.parsed_globals.verify_ssl,
             region_name=self.parsed_globals.region,
             endpoint_url=self.parsed_globals.endpoint_url
         )

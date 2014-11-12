@@ -126,17 +126,17 @@ class TestSubscribeCommand(unittest.TestCase):
         # Check to see that the clients were created correctly
         self.session.create_client.assert_any_call(
             's3',
-            use_ssl=self.parsed_globals.verify_ssl,
+            verify=self.parsed_globals.verify_ssl,
             region_name=self.parsed_globals.region,
         )
         self.session.create_client.assert_any_call(
             'sns',
-            use_ssl=self.parsed_globals.verify_ssl,
+            verify=self.parsed_globals.verify_ssl,
             region_name=self.parsed_globals.region,
         )
         self.session.create_client.assert_any_call(
             'config',
-            use_ssl=self.parsed_globals.verify_ssl,
+            verify=self.parsed_globals.verify_ssl,
             region_name=self.parsed_globals.region,
             endpoint_url=self.parsed_globals.endpoint_url
         )

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.1
+=====
 * feature:``aws deploy``: Adds support for AWS CodeDeploy
 * feature:``aws configservice``: Adds support for AWS Config
 * feature:``aws kms``: Adds support AWS Key Management Service

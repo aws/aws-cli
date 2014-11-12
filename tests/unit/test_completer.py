@@ -22,6 +22,7 @@ from awscli.completer import Completer
 
 LOG = logging.getLogger(__name__)
 
+
 GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--output', '--profile', '--region', '--version', '--color',
               '--query', '--no-sign-request']
@@ -29,10 +30,11 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
 COMPLETIONS = [
     ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudsearch',
                       'cloudsearchdomain', 'cloudtrail', 'cloudwatch',
-                      'cognito-identity', 'cognito-sync', 'configure',
-                      'datapipeline', 'directconnect', 'dynamodb', 'ec2',
-                      'elasticache', 'elasticbeanstalk', 'elastictranscoder',
-                      'elb', 'emr', 'iam', 'importexport', 'kinesis', 'logs',
+                      'cognito-identity', 'cognito-sync', 'configservice',
+                      'configure', 'datapipeline', 'deploy', 'directconnect',
+                      'dynamodb', 'ec2', 'elasticache', 'elasticbeanstalk',
+                      'elastictranscoder', 'elb', 'emr', 'iam',
+                      'importexport', 'kinesis', 'kms', 'logs',
                       'opsworks', 'rds', 'redshift', 'route53',
                       'route53domains', 's3', 's3api', 'ses', 'sns', 'sqs',
                       'storagegateway', 'sts', 'support', 'swf'])),
@@ -98,8 +100,22 @@ COMPLETIONS = [
                           'modify-cluster-attributes', 'modify-instance-groups',
                           'put', 'remove-tags', 'restore-from-hbase-backup',
                           'schedule-hbase-backup', 'socks', 'ssh',
-                          'terminate-clusters', 'wait']))
-    ]
+                          'terminate-clusters', 'wait'])),
+    
+    ("aws deploy", -1, set([
+        'batch-get-applications', 'batch-get-deployments',
+        'create-application', 'create-deployment', 'create-deployment-config',
+        'create-deployment-group', 'delete-application',
+        'delete-deployment-config', 'delete-deployment-group',
+        'get-application', 'get-application-revision', 'get-deployment',
+        'get-deployment-config', 'get-deployment-group',
+        'get-deployment-instance', 'list-application-revisions',
+        'list-applications', 'list-deployment-configs',
+        'list-deployment-groups', 'list-deployment-instances',
+        'list-deployments', 'push', 'register-application-revision',
+        'stop-deployment', 'update-application', 'update-deployment-group'
+    ]))
+]
 
 
 def check_completer(cmdline, results, expected_results):

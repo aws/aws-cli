@@ -53,6 +53,11 @@ from awscli.customizations.generatecliskeleton import \
     register_generate_cli_skeleton
 from awscli.customizations.assumerole import register_assume_role_provider
 from awscli.customizations.waiters import register_add_waiters
+from awscli.customizations.codedeploy import initialize as codedeploy_init
+from awscli.customizations.configservice.subscribe import register_subscribe
+from awscli.customizations.configservice.getstatus import register_get_status
+from awscli.customizations.configservice.rename_cmd import \
+    register_rename_config
 
 
 def awscli_initialize(event_handlers):
@@ -109,3 +114,7 @@ def awscli_initialize(event_handlers):
     register_generate_cli_skeleton(event_handlers)
     register_assume_role_provider(event_handlers)
     register_add_waiters(event_handlers)
+    codedeploy_init(event_handlers)
+    register_subscribe(event_handlers)
+    register_get_status(event_handlers)
+    register_rename_config(event_handlers)

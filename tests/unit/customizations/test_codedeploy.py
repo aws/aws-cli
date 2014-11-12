@@ -495,9 +495,7 @@ class CodeDeployTestCase(unittest.TestCase):
         self.version_id = '12341234-1234-1234-1234-123412341234'
         self.upload_id = 'upload_id'
         self.region = 'us-east-1'
-        self.endpoint_url = 'https://codedeploy-{}.amazonaws.com'.format(
-            self.region
-        )
+        self.endpoint_url = 'https://codedeploy-%s.amazonaws.com' % self.region
 
         self.args = argparse.Namespace()
         self.args.application_name = self.application_name
@@ -534,7 +532,7 @@ class CodeDeployTestCase(unittest.TestCase):
 
         self.bundle_mock = MagicMock()
         self.bundle_mock.tell.return_value = (5 << 20)
-        self.bundle_mock.read.return_value = 'a' * (5 << 20)
+        self.bundle_mock.read.return_value = b'a' * (5 << 20)
         self.bundle_mock.__enter__.return_value = self.bundle_mock
         self.bundle_mock.__exit__.return_value = None
 
@@ -585,7 +583,7 @@ class TestS3Client(CodeDeployTestCase):
         self.args.bucket = self.bucket
         self.args.key = self.key
         self.bundle_mock.tell.return_value = (6 << 20)
-        self.bundle_mock.read.return_value = 'a' * (6 << 20)
+        self.bundle_mock.read.return_value = b'a' * (6 << 20)
         response = self.s3client.upload_to_s3(self.args, self.bundle_mock)
         self.assertDictEqual(self.upload_response, response)
 
@@ -613,7 +611,7 @@ class TestS3Client(CodeDeployTestCase):
         self.args.bucket = self.bucket
         self.args.key = self.key
         self.bundle_mock.tell.return_value = (6 << 20)
-        self.bundle_mock.read.return_value = 'a' * (6 << 20)
+        self.bundle_mock.read.return_value = b'a' * (6 << 20)
         self.s3client.s3.UploadPart.side_effect = RuntimeError('error')
 
         with self.assertRaises(RuntimeError) as error:

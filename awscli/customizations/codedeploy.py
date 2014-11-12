@@ -16,9 +16,10 @@ import re
 import os
 import zipfile
 import tempfile
-import io
 import contextlib
 from datetime import datetime
+
+import six
 
 from awscli.argprocess import unpack_cli_arg
 from awscli.arguments import CustomArgument
@@ -269,7 +270,7 @@ class S3Client:
                     key=parsed_args.key,
                     uploadId=upload_id,
                     partNumber=part_num,
-                    body=io.BytesIO(data)
+                    body=six.BytesIO(data)
                 )
                 multipart_list.append({
                     'PartNumber': part_num,
@@ -477,11 +478,10 @@ class CodeDeployPush(CodeDeployBase):
                     parsed_args.version = upload_response['VersionId']
             except Exception as e:
                 raise RuntimeError(
-                    'Failed to upload \'{0}\' to \'{1}\': {2}'.format(
-                        parsed_args.source,
-                        parsed_args.s3_location,
-                        e.message
-                    )
+                    'Failed to upload \'%s\' to \'%s\': %s' %
+                    (parsed_args.source,
+                     parsed_args.s3_location,
+                     str(e))
                 )
         self.codedeploy.register_revision(parsed_args)
 
@@ -515,7 +515,7 @@ class CodeDeployPush(CodeDeployBase):
     def _compress(self, source, ignore_hidden_files=False):
         source_path = os.path.abspath(source)
         appspec_path = os.path.sep.join([source_path, 'appspec.yml'])
-        with tempfile.TemporaryFile() as tf:
+        with tempfile.TemporaryFile('w+b') as tf:
             zf = zipfile.ZipFile(tf, 'w')
             # Using 'try'/'finally' instead of 'with' statement since ZipFile
             # does not have support context manager in Python 2.6.

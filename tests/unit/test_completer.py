@@ -28,15 +28,16 @@ GLOBALOPTS = ['--debug', '--endpoint-url', '--no-verify-ssl', '--no-paginate',
               '--query', '--no-sign-request']
 
 COMPLETIONS = [
-    ('aws ', -1, set([
-        'autoscaling', 'cloudformation', 'cloudsearch', 'cloudsearchdomain',
-        'cloudtrail', 'cloudwatch', 'cognito-identity', 'cognito-sync',
-        'configure', 'datapipeline', 'deploy', 'directconnect', 'dynamodb',
-        'ec2', 'elasticache', 'elasticbeanstalk', 'elastictranscoder', 'elb',
-        'emr', 'iam', 'importexport', 'kinesis', 'logs', 'opsworks', 'rds',
-        'redshift', 'route53', 'route53domains', 's3', 's3api', 'ses', 'sns',
-        'sqs', 'storagegateway', 'sts', 'support', 'swf'
-    ])),
+    ('aws ', -1, set(['autoscaling', 'cloudformation', 'cloudsearch',
+                      'cloudsearchdomain', 'cloudtrail', 'cloudwatch',
+                      'cognito-identity', 'cognito-sync', 'configservice',
+                      'configure', 'datapipeline', 'deploy', 'directconnect',
+                      'dynamodb', 'ec2', 'elasticache', 'elasticbeanstalk',
+                      'elastictranscoder', 'elb', 'emr', 'iam',
+                      'importexport', 'kinesis', 'kms', 'logs',
+                      'opsworks', 'rds', 'redshift', 'route53',
+                      'route53domains', 's3', 's3api', 'ses', 'sns', 'sqs',
+                      'storagegateway', 'sts', 'support', 'swf'])),
     ('aws cloud', -1, set(['cloudformation', 'cloudsearch',
                            'cloudsearchdomain', 'cloudtrail', 'cloudwatch'])),
     ('aws cloudf', -1, set(['cloudformation'])),

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.6.1
+=====
+* feature:``aws deploy``: Adds support for AWS CodeDeploy
+* feature:``aws configservice``: Adds support for AWS Config
+* feature:``aws kms``: Adds support AWS Key Management Service
+* feature:``aws s3api``: Adds support for S3 server-side encryption using
+  KMS
+* feature:``aws ec2``: Adds support for EBS encryption using KMS
+* feature:``aws cloudtrail``: Adds support for CloudWatch Logs delivery
+* feature:``aws cloudformation``: Adds support for template summary.
+
+
 1.6.0
 =====
 

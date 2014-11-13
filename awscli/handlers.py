@@ -81,7 +81,7 @@ def awscli_initialize(event_handlers):
     event_handlers.register('doc-examples.*.*',
                             add_examples)
     register_cli_input_json(event_handlers)
-    event_handlers.register('building-argument-table.s3api.*',
+    event_handlers.register('building-argument-table.*',
                             add_streaming_output_arg)
     event_handlers.register('building-argument-table.ec2.run-instances',
                             ec2_add_count)

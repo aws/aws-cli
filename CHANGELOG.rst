@@ -2,7 +2,6 @@
 CHANGELOG
 =========
 
-
 Next Release (TBD)
 ==================
 * feature:``aws lambda``: Add support for Amazon Lambda
@@ -12,6 +11,7 @@ Next Release (TBD)
   (`issue 998 <https://github.com/aws/aws-cli/pull/998>`__)
 * bugfix:``aws deploy push``: Fix some python compatibility issues
   (`issue 1000 <https://github.com/aws/aws-cli/pull/1000>`__)
+
 
 1.6.1
 =====

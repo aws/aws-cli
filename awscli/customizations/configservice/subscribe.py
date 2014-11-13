@@ -118,7 +118,7 @@ class SubscribeCommand(BasicCommand):
 
     def _setup_clients(self, parsed_globals):
         client_args = {
-            'use_ssl': parsed_globals.verify_ssl,
+            'verify': parsed_globals.verify_ssl,
             'region_name': parsed_globals.region
         }
         self._s3_client = self._session.create_client('s3', **client_args)

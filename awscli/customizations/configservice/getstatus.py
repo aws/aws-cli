@@ -40,7 +40,7 @@ class GetStatusCommand(BasicCommand):
 
     def _setup_client(self, parsed_globals):
         client_args = {
-            'use_ssl': parsed_globals.verify_ssl,
+            'verify': parsed_globals.verify_ssl,
             'region_name': parsed_globals.region,
             'endpoint_url': parsed_globals.endpoint_url
         }

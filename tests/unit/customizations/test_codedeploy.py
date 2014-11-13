@@ -595,15 +595,15 @@ class TestS3Client(CodeDeployTestCase):
         self.s3client.s3.UploadPart.assert_called_with(
             bucket=self.bucket,
             key=self.key,
-            uploadId=self.upload_id,
-            partNumber=1,
+            upload_id=self.upload_id,
+            part_number=1,
             body=ANY
         )
         self.s3client.s3.CompleteMultipartUpload.assert_called_with(
             bucket=self.bucket,
             key=self.key,
-            uploadId=self.upload_id,
-            multipartUpload={'Parts': [{'PartNumber': 1, 'ETag': self.eTag}]}
+            upload_id=self.upload_id,
+            multipart_upload={'Parts': [{'PartNumber': 1, 'ETag': self.eTag}]}
         )
         self.assertFalse(self.s3client.s3.AbortMultipartUpload.called)
 
@@ -627,7 +627,7 @@ class TestS3Client(CodeDeployTestCase):
         self.s3client.s3.AbortMultipartUpload.assert_called_with(
             bucket=self.bucket,
             key=self.key,
-            uploadId=self.upload_id
+            upload_id=self.upload_id
         )
 
 
@@ -648,7 +648,7 @@ class TestCodeDeployClient(CodeDeployTestCase):
         self.codedeployclient.register_revision(self.args)
         self.codedeployclient.codedeploy\
             .RegisterApplicationRevision.assert_called_with(
-                applicationName=self.application_name,
+                application_name=self.application_name,
                 description=self.description,
                 revision=self.revision
             )

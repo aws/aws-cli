@@ -5,6 +5,8 @@ CHANGELOG
 
 Next Release (TBD)
 ==================
+* feature:``aws lambda``: Add support for Amazon Lambda
+* feature:``aws s3``: Add support for S3 notifications
 * bugfix:``aws configservice get-status``: Fix connecting to endpoint without
   using ssl.
   (`issue 998 <https://github.com/aws/aws-cli/pull/998>`__)

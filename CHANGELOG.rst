@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.2
+=====
 * feature:``aws lambda``: Add support for Amazon Lambda
 * feature:``aws s3``: Add support for S3 notifications
 * bugfix:``aws configservice get-status``: Fix connecting to endpoint without

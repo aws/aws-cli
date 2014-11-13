@@ -34,7 +34,7 @@ COMPLETIONS = [
                       'configure', 'datapipeline', 'deploy', 'directconnect',
                       'dynamodb', 'ec2', 'elasticache', 'elasticbeanstalk',
                       'elastictranscoder', 'elb', 'emr', 'iam',
-                      'importexport', 'kinesis', 'kms', 'logs',
+                      'importexport', 'kinesis', 'kms', 'lambda', 'logs',
                       'opsworks', 'rds', 'redshift', 'route53',
                       'route53domains', 's3', 's3api', 'ses', 'sns', 'sqs',
                       'storagegateway', 'sts', 'support', 'swf'])),

@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+* bugfix:``aws deploy push``: Fix s3 multipart uploads
+
+
 1.6.2
 =====
 * feature:``aws lambda``: Add support for Amazon Lambda

@@ -74,29 +74,38 @@ class CloudTrailSubscribe(BasicCommand):
     UPDATE = False
 
     def _run_main(self, args, parsed_globals):
-        endpoint_args = {
-            'region_name': None,
-            'endpoint_url': None
-        }
-        if 'region' in parsed_globals:
-            endpoint_args['region_name'] = parsed_globals.region
-        if 'endpoint_url' in parsed_globals:
-            endpoint_args['endpoint_url'] = parsed_globals.endpoint_url
-
-        # Initialize services
-        LOG.debug('Initializing S3, SNS and CloudTrail...')
-        self.iam = Service('iam', session=self._session)
-        self.s3 = Service('s3', endpoint_args['region_name'],
-                          session=self._session)
-        self.sns = Service('sns', endpoint_args['region_name'],
-                           session=self._session)
-        self.cloudtrail = Service('cloudtrail', endpoint_args=endpoint_args,
-                                  session=self._session)
-
+        self.setup_services(args, parsed_globals)
         # Run the command and report success
         self._call(args, parsed_globals)
 
         return 1
+
+    def setup_services(self, args, parsed_globals):
+        endpoint_args = {
+            'region_name': None,
+            'endpoint_url': None,
+            'verify': None
+        }
+        if 'region' in parsed_globals:
+            endpoint_args['region_name'] = parsed_globals.region
+        if 'verify_ssl' in parsed_globals:
+            endpoint_args['verify'] = parsed_globals.verify_ssl
+
+        # Initialize services
+        LOG.debug('Initializing S3, SNS and CloudTrail...')
+        self.iam = Service('iam', endpoint_args=endpoint_args,
+                           session=self._session)
+        self.s3 = Service('s3', endpoint_args=endpoint_args,
+                          session=self._session)
+        self.sns = Service('sns', endpoint_args=endpoint_args,
+                           session=self._session)
+
+        # If the endpoint is specified, it is designated for the cloudtrail
+        # service. Not all of the other services will use it.
+        if 'endpoint_url' in parsed_globals:
+            endpoint_args['endpoint_url'] = parsed_globals.endpoint_url
+        self.cloudtrail = Service('cloudtrail', endpoint_args=endpoint_args,
+                                  session=self._session)
 
     def _call(self, options, parsed_globals):
         """

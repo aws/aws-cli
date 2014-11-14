@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
+import argparse
 import botocore.session
 import json
 import os
@@ -51,6 +51,47 @@ class TestCloudTrail(unittest.TestCase):
             return_value={'TopicArn': 'foo'})
         self.subscribe.sns.GetTopicAttributes = Mock(
             return_value={'Attributes': {'Policy': '{"Statement": []}'}})
+
+    def test_setup_services(self):
+        parsed_args = []
+        parsed_globals = argparse.Namespace()
+        parsed_globals.region = 'us-east-1'
+        parsed_globals.verify_ssl = 'foo'
+        parsed_globals.endpoint_url = 'https://cloudtrail.aws.com'
+
+        ref_args = {
+            'region_name': parsed_globals.region,
+            'verify': parsed_globals.verify_ssl,
+            'endpoint_url': None
+        }
+
+        # Reset some of the mocks because we need some introspection on the
+        # session.
+        fake_service = Mock()
+        self.session = Mock()
+        self.session.get_service.return_value = fake_service
+        self.subscribe = CloudTrailSubscribe(self.session)
+
+        self.subscribe.setup_services(parsed_args, parsed_globals)
+
+        get_service_call_args = self.session.get_service.call_args_list
+        endpoint_call_args = fake_service.get_endpoint.call_args_list
+
+        # Ensure all of the services got called.
+        self.assertEqual('iam', get_service_call_args[0][0][0])
+        self.assertEqual('s3', get_service_call_args[1][0][0])
+        self.assertEqual('sns', get_service_call_args[2][0][0])
+        self.assertEqual('cloudtrail', get_service_call_args[3][0][0])
+
+        # Make sure the endpoints were called correctly
+        # The order is iam, s3, sns, cloudtrail based on ``get_service`` calls
+        # from above.
+        self.assertEqual(endpoint_call_args[0][1], ref_args)
+        self.assertEqual(endpoint_call_args[1][1], ref_args)
+        self.assertEqual(endpoint_call_args[2][1], ref_args)
+        # CloudTrail should be using the endpoint.
+        ref_args['endpoint_url'] = parsed_globals.endpoint_url
+        self.assertEqual(endpoint_call_args[3][1], ref_args)
 
     def test_s3_create(self):
         iam = self.subscribe.iam

@@ -80,3 +80,12 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         result = {"VirtualMFADeviceName": 'fiebaz'}
         self.assert_params_for_cmd(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
+
+    def test_bad_relative_filename(self):
+        outfile = 'some/bad/filename.png'
+        self.addCleanup(self.remove_file_if_exists, outfile)
+        cmdline = self.prefix
+        cmdline += ' --virtual-mfa-device-name fiebaz'
+        cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
+        result = {}
+        self.assert_params_for_cmd(cmdline, result, expected_rc=255)

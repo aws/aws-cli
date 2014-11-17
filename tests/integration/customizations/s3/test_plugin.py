@@ -951,6 +951,30 @@ class TestLs(BaseS3CLICommand):
         self.assertEqual(p.rc, 0)
         self.assertIn('foo.txt', p.stdout)
 
+    def test_only_prefix(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'temp/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s/temp/foo.txt' % bucket_name)
+        self.assertEqual(p.rc, 0)
+        self.assertIn('foo.txt', p.stdout)
+
+    def test_ls_empty_bucket(self):
+        bucket_name = self.create_bucket()
+        p = aws('s3 ls %s' % bucket_name)
+        # There should not be an error thrown for checking the contents of
+        # an empty bucket because no key was specified.
+        self.assertEqual(p.rc, 0)
+
+    def test_ls_fail(self):
+        bucket_name = self.create_bucket()
+        p = aws('s3 ls s3://%s/foo' % bucket_name)
+        self.assertEqual(p.rc, 1)
+
+    def test_ls_fail_recursive(self):
+        bucket_name = self.create_bucket()
+        p = aws('s3 ls s3://%s/bar --recursive' % bucket_name)
+        self.assertEqual(p.rc, 1)
+
 
 class TestMbRb(BaseS3CLICommand):
     """

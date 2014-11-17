@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 * bugfix:``aws deploy push``: Fix s3 multipart uploads
+* bugfix:``aws s3 ls``: Fix return codes for non existing objects
+  (`issue 1008 <https://github.com/aws/aws-cli/pull/1008>`__)
 
 
 1.6.2

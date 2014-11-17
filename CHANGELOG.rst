@@ -4,9 +4,14 @@ CHANGELOG
 
 Next Release (TBD)
 ==================
+
 * bugfix:``aws deploy push``: Fix s3 multipart uploads
 * bugfix:``aws s3 ls``: Fix return codes for non existing objects
   (`issue 1008 <https://github.com/aws/aws-cli/pull/1008>`__)
+* bugfix:Retrying Signed Requests: Fix issue where requests using
+  Signature Version 4 signed with temporary credentials were not
+  being retried properly, resulting in auth errors
+  (`botocore issue 379 <https://github.com/boto/botocore/pull/379>`__)
 
 
 1.6.2

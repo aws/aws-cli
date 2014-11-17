@@ -244,6 +244,8 @@ class ListCommand(S3Command):
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
+        self._empty_result = False
+        self._at_first_page = True
         path = parsed_args.paths
         if path.startswith('s3://'):
             path = path[5:]
@@ -256,7 +258,19 @@ class ListCommand(S3Command):
                                              parsed_args.page_size)
         else:
             self._list_all_objects(bucket, key, parsed_args.page_size)
-        return 0
+        if key:
+            # User specified a key to look for. We should return an rc of one   
+            # if there are no matching keys and/or prefixes or return an rc
+            # of zero if there are matching keys or prefixes.
+            return self._check_no_objects()
+        else:
+            # This covers the case when user is trying to list all of of
+            # the buckets or is trying to list the objects of a bucket
+            # (without specifying a key). For both situations, a rc of 0
+            # should be returned because applicable errors are supplied by
+            # the server (i.e. bucket not existing). These errors will be
+            # thrown before reaching the automatic return of rc of zero.
+            return 0
 
     def _list_all_objects(self, bucket, key, page_size=None):
 
@@ -270,6 +284,9 @@ class ListCommand(S3Command):
     def _display_page(self, response_data, use_basename=True):
         common_prefixes = response_data.get('CommonPrefixes', [])
         contents = response_data.get('Contents', [])
+        if not contents and not common_prefixes:
+            self._empty_result = True
+            return
         for common_prefix in common_prefixes:
             prefix_components = common_prefix['Prefix'].split('/')
             prefix = prefix_components[-2]
@@ -287,6 +304,7 @@ class ListCommand(S3Command):
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
+        self._at_first_page = False
 
     def _list_all_buckets(self):
         operation = self.service.get_operation('ListBuckets')
@@ -303,6 +321,13 @@ class ListCommand(S3Command):
                                       prefix=key, page_size=page_size)
         for _, response_data in iterator:
             self._display_page(response_data, use_basename=False)
+
+    def _check_no_objects(self):
+        if self._empty_result and self._at_first_page:
+            # Nothing was returned in the first page of results when listing
+            # the objects.
+            return 1
+        return 0
 
     def _make_last_mod_str(self, last_mod):
         """

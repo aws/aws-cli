@@ -69,6 +69,53 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(call_args['MaxKeys'], 8)
         self.assertNotIn('delimiter', call_args)
 
+    def test_success_rc_has_prefixes_and_objects(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [
+            {"CommonPrefixes": [{"Prefix": "foo/"}],
+             "Contents": [{"Key": "foo/bar.txt", "Size": 100,
+                           "LastModified": time_utc}]}
+        ]
+        self.run_cmd('s3 ls s3://bucket/foo', expected_rc=0)
+
+    def test_success_rc_has_only_prefixes(self):
+        self.parsed_responses = [
+            {"CommonPrefixes": [{"Prefix": "foo/"}]}
+        ]
+        self.run_cmd('s3 ls s3://bucket/foo', expected_rc=0)
+
+    def test_success_rc_has_only_objects(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [
+            {"Contents": [{"Key": "foo/bar.txt", "Size": 100,
+             "LastModified": time_utc}]}
+        ]
+        self.run_cmd('s3 ls s3://bucket/foo', expected_rc=0)
+
+    def test_success_rc_with_pagination(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        # Pagination should not affect a successful return code of zero, even
+        # if there are no results on the second page because there were
+        # results in previous pages.
+        self.parsed_responses = [
+            {"CommonPrefixes": [{"Prefix": "foo/"}],
+             "Contents": [{"Key": "foo/bar.txt", "Size": 100,
+                           "LastModified": time_utc}]},
+            {}
+        ]
+        self.run_cmd('s3 ls s3://bucket/foo', expected_rc=0)
+
+    def test_success_rc_empty_bucket_no_key_given(self):
+        # If no key has been provdided and the bucket is empty, it should
+        # still return an rc of 0 since the user is not looking for an actual
+        # object.
+        self.parsed_responses = [{}]
+        self.run_cmd('s3 ls s3://bucket', expected_rc=0)
+
+    def test_fail_rc_no_objects_nor_prefixes(self):
+        self.parsed_responses = [{}]
+        self.run_cmd('s3 ls s3://bucket/foo', expected_rc=1)
+
 
 if __name__ == "__main__":
     unittest.main()

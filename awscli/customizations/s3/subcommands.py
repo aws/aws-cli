@@ -259,7 +259,7 @@ class ListCommand(S3Command):
         else:
             self._list_all_objects(bucket, key, parsed_args.page_size)
         if key:
-            # User specified a key to look for. We should return an rc of one   
+            # User specified a key to look for. We should return an rc of one
             # if there are no matching keys and/or prefixes or return an rc
             # of zero if there are matching keys or prefixes.
             return self._check_no_objects()
@@ -281,7 +281,7 @@ class ListCommand(S3Command):
         for _, response_data in iterator:
             self._display_page(response_data)
 
-    def _display_page(self, response_data, use_basename=True):
+    def _display_page(self, response_data, use_basename=True, key=''):
         common_prefixes = response_data.get('CommonPrefixes', [])
         contents = response_data.get('Contents', [])
         if not contents and not common_prefixes:
@@ -300,11 +300,36 @@ class ListCommand(S3Command):
                 filename_components = content['Key'].split('/')
                 filename = filename_components[-1]
             else:
-                filename = content['Key']
+                filename = self._get_relative_key_name(key, content['Key'])
             print_str = last_mod_str + ' ' + size_str + ' ' + \
                 filename + '\n'
             uni_print(print_str)
         self._at_first_page = False
+
+    def _get_relative_key_name(self, key, response_key):
+        key_prefixes = key.split('/')
+        num_prefixes = len(key_prefixes)
+        base_index = 0
+        # Check to see how many prefix components were in the original
+        # query. Only hit this if statement if there are more than one
+        # prefix component (i.e. the s3path supplied was not along the
+        # lines of s3://mybucket/ or s3://mybucket/foo). Notice the keys
+        # for these paths are '' and 'foo'. Therefore, no key name
+        # manipulating is required on the keys returned back to obtain
+        # a relative key name because the original query sourced from the
+        # top level of the s3 bucket.
+        if num_prefixes > 1:
+            # If the s3path has more than one prefix component we need to
+            # determine the spot in which the base prefix must be cut off
+            # in order to form the relative keys. This is typically based on
+            # the number of prefix components in the original s3path. So
+            # for example, if the s3path provided was s3://mybucket/myprefix/
+            # and the bucket has the object myprefix/foo. We want to cut off
+            # the myprefix from that key returned
+            base_index = num_prefixes - 1
+
+        response_key_prefixes = response_key.split('/')
+        return '/'.join(response_key_prefixes[base_index:])
 
     def _list_all_buckets(self):
         operation = self.service.get_operation('ListBuckets')
@@ -320,7 +345,7 @@ class ListCommand(S3Command):
         iterator = operation.paginate(self.endpoint, bucket=bucket,
                                       prefix=key, page_size=page_size)
         for _, response_data in iterator:
-            self._display_page(response_data, use_basename=False)
+            self._display_page(response_data, use_basename=False, key=key)
 
     def _check_no_objects(self):
         if self._empty_result and self._at_first_page:

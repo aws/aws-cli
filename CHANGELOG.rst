@@ -16,6 +16,9 @@ Next Release (TBD)
   bucket location for a bucket in eu-central-1 required specifying
   ``--region eu-central-1``
   (`botocore issue 380 <https://github.com/boto/botocore/pull/380>`__)
+* bugfix:Timestamp Input: Fix regression where timestamps without any timezone
+  information were not being handled properly
+  (`issue 982 <https://github.com/aws/aws-cli/issues/982>`__)
 
 
 1.6.2

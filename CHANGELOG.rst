@@ -19,6 +19,9 @@ Next Release (TBD)
 * bugfix:Timestamp Input: Fix regression where timestamps without any timezone
   information were not being handled properly
   (`issue 982 <https://github.com/aws/aws-cli/issues/982>`__)
+* bugfix:``aws s3 ls --recursive``: Fix issue where objects being listed
+  were not relative to S3 prefix provided.
+  (`issue 1009 <https://github.com/aws/aws-cli/pull/1009>`__)
 
 
 1.6.2

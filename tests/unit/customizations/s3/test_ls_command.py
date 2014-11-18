@@ -116,6 +116,41 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.parsed_responses = [{}]
         self.run_cmd('s3 ls s3://bucket/foo', expected_rc=1)
 
+    def test_recursive_ls_at_prefix(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [
+            {"Contents": [{"Key": "foo/bar/baz.txt", "Size": 100,
+                           "LastModified": time_utc},
+                          {"Key": "foo/test.txt", "Size": 100,
+                           "LastModified": time_utc}]}
+        ]
+        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/foo/ --recursive',
+                                    expected_rc=0)
+        # Should be listed as test.txt but not as foo/test.txt
+        self.assertIn('test.txt', stdout)
+        self.assertNotIn('foo/test.txt', stdout)
+        # Should be listed as bar/baz.txt but not as foo/bar/baz.txt
+        self.assertIn('bar/baz.txt', stdout)
+        self.assertNotIn('foo/bar/baz.txt', stdout)
+
+    def test_recursive_ls_at_top_level_bucket(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [
+            {"Contents": [{"Key": "foo/bar/baz.txt", "Size": 100,
+                           "LastModified": time_utc},
+                          {"Key": "foo/test.txt", "Size": 100,
+                           "LastModified": time_utc}]}
+        ]
+        stdout, _, _ = self.run_cmd('s3 ls s3://bucket --recursive',
+                                    expected_rc=0)
+        # Should be listed as foo/test.txt when listing from top level of
+        # bucket.
+        self.assertIn('foo/test.txt', stdout)
+        # Should be listed as foo/bar/baz.txt when listing from top level of
+        # bucket.
+        self.assertIn('foo/bar/baz.txt', stdout)
+
+
 
 if __name__ == "__main__":
     unittest.main()

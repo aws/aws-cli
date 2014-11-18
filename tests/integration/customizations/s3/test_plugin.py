@@ -975,6 +975,22 @@ class TestLs(BaseS3CLICommand):
         p = aws('s3 ls s3://%s/bar --recursive' % bucket_name)
         self.assertEqual(p.rc, 1)
 
+    def test_ls_recursive_at_bucket_root(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'temp/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s/ --recursive' % bucket_name)
+        self.assertEqual(p.rc, 0)
+        self.assertIn('temp/foo.txt', p.stdout)
+
+    def test_ls_recursive_at_bucket_root(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'temp/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s/temp/ --recursive' % bucket_name)
+        self.assertEqual(p.rc, 0)
+        self.assertIn('foo.txt', p.stdout)
+        # The temp prefix should be excluded when listing object temp/foo.txt.
+        self.assertNotIn('temp/foo.txt', p.stdout)
+
 
 class TestMbRb(BaseS3CLICommand):
     """

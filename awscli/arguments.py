@@ -435,8 +435,12 @@ class CLIArgument(BaseCLIArgument):
             # below.  Sometimes this can be more complicated, and subclasses
             # can customize as they need.
             unpacked = self._unpack_argument(value)
-            LOG.debug('Unpacked value of "%s" for parameter "%s": %s', value,
-                      self.py_name, unpacked)
+            try:
+                LOG.debug('Unpacked value of "%s" for parameter "%s": %s',
+                          value, self.py_name, unpacked)
+            except UnicodeDecodeError:
+                LOG.debug('Unpacked value of "%r" for parameter "%s": %r',
+                          value, self.py_name, unpacked)
             parameters[self._serialized_name] = unpacked
 
     def _unpack_argument(self, value):

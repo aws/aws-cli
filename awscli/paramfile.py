@@ -77,18 +77,19 @@ def get_paramfile(path):
     if isinstance(path, six.string_types):
         for prefix in PrefixMap:
             if path.startswith(prefix):
-                data = PrefixMap[prefix](prefix, path)
+                kwargs = KwargsMap.get(prefix, {})
+                data = PrefixMap[prefix](prefix, path, **kwargs)
     return data
 
 
-def get_file(prefix, path):
+def get_file(prefix, path, mode):
     file_path = path[len(prefix):]
     file_path = os.path.expanduser(file_path)
     file_path = os.path.expandvars(file_path)
     if not os.path.isfile(file_path):
         raise ResourceLoadingError("file does not exist: %s" % file_path)
     try:
-        with compat_open(file_path, 'r') as f:
+        with compat_open(file_path, mode) as f:
             return f.read()
     except (OSError, IOError) as e:
         raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
@@ -109,5 +110,11 @@ def get_uri(prefix, uri):
 
 
 PrefixMap = {'file://': get_file,
+             'fileb://': get_file,
              'http://': get_uri,
              'https://': get_uri}
+
+KwargsMap = {'file://': {'mode': 'r'},
+             'fileb://': {'mode': 'rb'},
+             'http://': {},
+             'https://': {}}

@@ -194,6 +194,8 @@ access_key            aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
 secret_key            aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
 ----------- --------- --------------------- --------------------- ----------------------------
 token                 aws_security_token    AWS_SECURITY_TOKEN    AWS Token (temp credentials)
+----------- --------- --------------------- --------------------- ----------------------------
+role_arn              role_arn              AWS_ASSUME_ROLE_ARN   AWS ARN for STS AssumeRole
 =========== ========= ===================== ===================== ============================
 
 ^^^^^^^^

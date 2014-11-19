@@ -19,6 +19,10 @@ Next Release (TBD)
 * bugfix:Timestamp Input: Fix regression where timestamps without any timezone
   information were not being handled properly
   (`issue 982 <https://github.com/aws/aws-cli/issues/982>`__)
+* bugfix:You can enable Signature Version 4 for Amazon S3 commands by
+  running ``aws configure set default.s3.signature_version s3v4``
+  (`issue 1006 <https://github.com/aws/aws-cli/issues/1006>`__,
+  `botocore issue 382 <https://github.com/boto/botocore/pull/382>`__)
 
 
 1.6.2

@@ -36,5 +36,5 @@ class TestParamFile(unittest.TestCase):
         filename = self.files.create_file('foo', contents)
         prefixed_filename = 'fileb://' + filename
         data = get_paramfile(prefixed_filename)
-        self.assertEqual(data, contents)
+        self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)

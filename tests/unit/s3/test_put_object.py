@@ -94,8 +94,8 @@ class TestPutObject(BaseAWSCommandParamsTest):
 
     def test_sse_key_with_binary_file(self):
         # Create contents that do not get mapped to ascii
-        contents = '\xc2'
-        filename = self.files.create_file('key', contents)
+        contents = b'\xc2'
+        filename = self.files.create_file('key', contents, mode='wb')
         cmdline = self.prefix
         cmdline += ' --bucket mybucket'
         cmdline += ' --key mykey'
@@ -105,7 +105,8 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'Bucket': 'mybucket',
             'Key': 'mykey',
             'SSECustomerAlgorithm': 'AES256',
-            'SSECustomerKey': contents
+            'SSECustomerKey': 'wg==',  # Note the key gets base64 encoded.
+            'SSECustomerKeyMD5': 'ZGXa0dMXUr4/MoPo9w/u9w=='
         }
         self.assert_params_for_cmd2(cmdline, expected)
 

@@ -88,7 +88,7 @@ class IAMVMFAWrapper(object):
         if method in parsed['VirtualMFADevice']:
             body = parsed['VirtualMFADevice'][method]
             with open(outfile, 'wb') as fp:
-                fp.write(base64.b64decode(body))
+                fp.write(body)
             for choice in CHOICES:
                 if choice in parsed['VirtualMFADevice']:
                     del parsed['VirtualMFADevice'][choice]

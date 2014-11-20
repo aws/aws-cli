@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws cloudtrail create-subscription``: Set a bucket config
+  location constraint on buckets created outside of us-east-1.
+  (`issue 1013 <https://github.com/aws/aws-cli/pull/1013>`__)
 * bugfix:``aws deploy push``: Fix s3 multipart uploads
 * bugfix:``aws s3 ls``: Fix return codes for non existing objects
   (`issue 1008 <https://github.com/aws/aws-cli/pull/1008>`__)

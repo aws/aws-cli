@@ -23,6 +23,9 @@ Next Release (TBD)
   running ``aws configure set default.s3.signature_version s3v4``
   (`issue 1006 <https://github.com/aws/aws-cli/issues/1006>`__,
   `botocore issue 382 <https://github.com/boto/botocore/pull/382>`__)
+* bugfix:Streaming Output File: Fix issue when streaming a response to a file
+  and an error response is returned
+  (`issue 1012 <https://github.com/aws/aws-cli/pull/1012>`__)
 
 
 1.6.2

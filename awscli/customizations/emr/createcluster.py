@@ -107,10 +107,24 @@ class CreateCluster(BasicCommand):
         bootstrap_actions = []
         params['Name'] = parsed_args.name
 
+        service_role_validation_message = (
+            " Either choose --use-default-roles or use both --service-role "
+            "<roleName> and --ec2-attributes InstanceProfile=<profileName>.")
+
         if parsed_args.use_default_roles is True and \
                 parsed_args.service_role is not None:
                 raise exceptions.MutualExclusiveOptionError(
-                    option1="--use-default-roles", option2="--service-role")
+                    option1="--use-default-roles",
+                    option2="--service-role",
+                    message=service_role_validation_message)
+
+        if parsed_args.use_default_roles is True and \
+                parsed_args.ec2_attributes is not None and \
+                'InstanceProfile' in parsed_args.ec2_attributes:
+                raise exceptions.MutualExclusiveOptionError(
+                    option1="--use-default-roles",
+                    option2="--ec2-attributes InstanceProfile",
+                    message=service_role_validation_message)
 
         instances_config = {}
         instances_config['InstanceGroups'] = \
@@ -127,6 +141,7 @@ class CreateCluster(BasicCommand):
         emrutils.apply_dict(
             params, 'AdditionalInfo', parsed_args.additional_info)
         emrutils.apply_dict(params, 'LogUri', parsed_args.log_uri)
+
         if parsed_args.use_default_roles is True:
             parsed_args.service_role = EMR_ROLE_NAME
             if parsed_args.ec2_attributes is None:

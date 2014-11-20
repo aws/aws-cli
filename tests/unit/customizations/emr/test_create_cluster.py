@@ -365,11 +365,24 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd2(cmd, result)
 
     def test_mutual_exclusive_use_default_roles_and_service_role(self):
+        cmd = (DEFAULT_CMD +
+               '--ec2-attributes InstanceProfile=Ec2_InstanceProfile')
+        expected_error_msg = (
+            '\naws: error: You cannot specify both --use-default-roles '
+            'and --ec2-attributes InstanceProfile options together. Either '
+            'choose --use-default-roles or use both --service-role <roleName>'
+            ' and --ec2-attributes InstanceProfile=<profileName>.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEquals(expected_error_msg, result[1])
+
+    def test_mutual_exclusive_use_default_roles_and_instance_profile(self):
         cmd = (DEFAULT_CMD + '--service-role ServiceRole '
                '--ec2-attributes InstanceProfile=Ec2_InstanceProfile')
         expected_error_msg = (
             '\naws: error: You cannot specify both --use-default-roles '
-            'and --service-role options together.\n')
+            'and --service-role options together. Either choose '
+            '--use-default-roles or use both --service-role <roleName> '
+            'and --ec2-attributes InstanceProfile=<profileName>.\n')
         result = self.run_cmd(cmd, 255)
         self.assertEquals(expected_error_msg, result[1])
 
@@ -672,9 +685,11 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd2(cmd, result)
 
     def test_ec2_attributes_no_az(self):
-        cmd = DEFAULT_CMD + (
-            '--ec2-attributes KeyName=testkey,SubnetId=subnet-123456,'
-            'InstanceProfile=EMR_EC2_DefaultRole')
+        cmd = ('emr create-cluster --ami-version 3.0.4 '
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +
+               ' --ec2-attributes KeyName=testkey,SubnetId=subnet-123456,'
+               'InstanceProfile=EMR_EC2_DefaultRole '
+               '--service-role EMR_DefaultRole')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['Ec2KeyName'] = 'testkey'
         result['Instances']['Ec2SubnetId'] = 'subnet-123456'
@@ -699,7 +714,10 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_ec2_attributes_with_subnet_from_json_file(self):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_ec2_attributes_with_subnet.json')
-        cmd = DEFAULT_CMD + ' --ec2-attributes file://' + data_path
+        cmd = ('emr create-cluster --ami-version 3.0.4 '
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +
+               ' --ec2-attributes file://' + data_path +
+               ' --service-role EMR_DefaultRole')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['Ec2KeyName'] = 'testkey'
         result['Instances']['Ec2SubnetId'] = 'subnet-123456'
@@ -709,7 +727,10 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_ec2_attributes_with_az_from_json_file(self):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_ec2_attributes_with_az.json')
-        cmd = DEFAULT_CMD + ' --ec2-attributes file://' + data_path
+        cmd = ('emr create-cluster --ami-version 3.0.4 '
+               '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG +
+               ' --ec2-attributes file://' + data_path +
+               ' --service-role EMR_DefaultRole')
         result = copy.deepcopy(DEFAULT_RESULT)
         result['Instances']['Ec2KeyName'] = 'testkey'
         result['Instances']['Placement'] = {'AvailabilityZone': 'us-east-1a'}

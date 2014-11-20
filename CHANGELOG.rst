@@ -35,6 +35,10 @@ Next Release (TBD)
 * bugfix:Streaming Output File: Fix issue when streaming a response to a file
   and an error response is returned
   (`issue 1012 <https://github.com/aws/aws-cli/pull/1012>`__)
+* bugfix:Binary Output: Fix regression where binary output was no longer
+  being base64 encoded
+  (`issue 1001 <https://github.com/aws/aws-cli/pull/1001>`__,
+  `issue 970 <https://github.com/aws/aws-cli/pull/970>`__)
 
 
 1.6.2

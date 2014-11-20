@@ -43,17 +43,6 @@ LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
 
-# NOTE: this is temporary.
-# Botocore now parsers timestamps to datetime.datetime objects.
-# The AWS CLI has historically not parsed timestamp objects and treated
-# them as strings.
-# We will eventually want to allow for users to specify how to parse
-# the timestamp formats, but for now, we set the default timestamp parser
-# to be a noop.
-# The eventual plan is to add a client option for providing a timestamp parser,
-# and once the CLI has switched over to client objects we can remove this
-# and set the timestamp parsing on a per client basis.
-parsers.DEFAULT_TIMESTAMP_PARSER = lambda x: x
 
 
 def main():

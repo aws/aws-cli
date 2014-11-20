@@ -5,6 +5,7 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws redshift``: Add support for integration with KMS
 * bugfix:``aws cloudtrail create-subscription``: Set a bucket config
   location constraint on buckets created outside of us-east-1.
   (`issue 1013 <https://github.com/aws/aws-cli/pull/1013>`__)

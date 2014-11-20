@@ -108,6 +108,24 @@ class TestCloudTrail(unittest.TestCase):
 
         s3.DeleteBucket.assert_not_called()
 
+        args, kwargs = s3.CreateBucket.call_args
+        self.assertNotIn('create_bucket_configuration', kwargs)
+
+    def test_s3_create_non_us_east_1(self):
+        # Because this is outside of us-east-1, it should create
+        # a bucket configuration with a location constraint.
+        s3 = self.subscribe.s3
+        s3.endpoint.region_name = 'us-west-2'
+
+        self.subscribe.setup_new_bucket('test', 'logs')
+
+        args, kwargs = s3.CreateBucket.call_args
+        self.assertIn('create_bucket_configuration', kwargs)
+
+        bucket_config = kwargs['create_bucket_configuration']
+        self.assertEqual(bucket_config['LocationConstraint'],
+                         'us-west-2')
+
     def test_s3_create_already_exists(self):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test2', 'logs')

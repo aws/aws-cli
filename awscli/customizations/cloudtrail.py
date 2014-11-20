@@ -231,7 +231,15 @@ class CloudTrailSubscribe(BasicCommand):
             raise Exception('Bucket {bucket} already exists.'.format(
                 bucket=bucket))
 
-        data = self.s3.CreateBucket(bucket=bucket)
+        # If we are not using the us-east-1 region, then we must set
+        # a location constraint on the new bucket.
+        region_name = self.s3.endpoint.region_name
+        params = {'bucket': bucket}
+        if region_name != 'us-east-1':
+            bucket_config = {'LocationConstraint': region_name}
+            params['create_bucket_configuration'] = bucket_config
+
+        data = self.s3.CreateBucket(**params)
 
         try:
             self.s3.PutBucketPolicy(bucket=bucket, policy=policy)

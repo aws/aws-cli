@@ -19,6 +19,7 @@ Next Release (TBD)
 * bugfix:Timestamp Input: Fix regression where timestamps without any timezone
   information were not being handled properly
   (`issue 982 <https://github.com/aws/aws-cli/issues/982>`__)
+<<<<<<< HEAD
 * bugfix:Signature Version 4: You can enable Signature Version 4 for Amazon S3
   commands by running ``aws configure set default.s3.signature_version s3v4``
   (`issue 1006 <https://github.com/aws/aws-cli/issues/1006>`__,
@@ -26,6 +27,9 @@ Next Release (TBD)
 * bugfix:``aws emr``: Fix issue where ``--ssh``, ``--get``, ``--put``
   would not work when the cluster was in a waiting state
   (`issue 1007 <https://github.com/aws/aws-cli/issues/1007>`__)
+* feature:Binary File Input: Add support for reading file contents as binary
+  by prepending the filename with ``fileb://``
+  (`issue 1010 <https://github.com/aws/aws-cli/pull/1010>`__)
 
 
 1.6.2

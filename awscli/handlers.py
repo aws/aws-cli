@@ -62,6 +62,7 @@ from awscli.customizations.scalarparse import register_scalar_parser
 
 
 def awscli_initialize(event_handlers):
+    register_scalar_parser(event_handlers)
     event_handlers.register('load-cli-arg', uri_param)
     param_shorthand = ParamShorthand()
     event_handlers.register('process-cli-arg', param_shorthand)
@@ -119,4 +120,3 @@ def awscli_initialize(event_handlers):
     register_subscribe(event_handlers)
     register_get_status(event_handlers)
     register_rename_config(event_handlers)
-    register_scalar_parser(event_handlers)

@@ -64,6 +64,7 @@ def inject_commands(command_table, session, **kwargs):
     """
     command_table['push'] = CodeDeployPush(session)
 
+
 S3_LOCATION_ARG_DESCRIPTION = {
     'name': 's3-location',
     'required': False,
@@ -144,14 +145,16 @@ def modify_revision_arguments(argument_table, operation, **kwargs):
         S3LocationArgument(
             argument_model=s3_model,
             session=session,
-            **S3_LOCATION_ARG_DESCRIPTION)
+            **S3_LOCATION_ARG_DESCRIPTION
+        )
     )
     github_model = create_argument_model_from_schema(GITHUB_LOCATION_SCHEMA)
     argument_table[GITHUB_LOCATION_ARG_DESCRIPTION['name']] = (
         GitHubLocationArgument(
             argument_model=github_model,
             session=session,
-            **GITHUB_LOCATION_ARG_DESCRIPTION)
+            **GITHUB_LOCATION_ARG_DESCRIPTION
+        )
     )
     argument_table['revision'].required = False
 
@@ -166,8 +169,11 @@ class CodeDeployCustomLocationArgument(CustomArgument):
             return
         parsed = self._session.emit_first_non_none_response(
             'process-cli-arg.codedeploy.%s' % self.name,
-            param=self.argument_model, cli_argument=self,
-            value=value, operation=None)
+            param=self.argument_model,
+            cli_argument=self,
+            value=value,
+            operation=None
+        )
         if parsed is None:
             parsed = unpack_cli_arg(self, value)
         parameters['revision'] = self.build_revision_location(parsed)
@@ -268,8 +274,8 @@ class S3Client:
                 upload_response = self.s3.UploadPart(
                     bucket=parsed_args.bucket,
                     key=parsed_args.key,
-                    uploadId=upload_id,
-                    partNumber=part_num,
+                    upload_id=upload_id,
+                    part_number=part_num,
                     body=six.BytesIO(data)
                 )
                 multipart_list.append({
@@ -281,14 +287,14 @@ class S3Client:
             return self.s3.CompleteMultipartUpload(
                 bucket=parsed_args.bucket,
                 key=parsed_args.key,
-                uploadId=upload_id,
-                multipartUpload={'Parts': multipart_list}
+                upload_id=upload_id,
+                multipart_upload={'Parts': multipart_list}
             )
         except Exception as e:
             self.s3.AbortMultipartUpload(
                 bucket=parsed_args.bucket,
                 key=parsed_args.key,
-                uploadId=upload_id
+                upload_id=upload_id
             )
             raise e
 
@@ -322,7 +328,7 @@ class CodeDeployClient:
 
     def register_revision(self, parsed_args):
         self.codedeploy.RegisterApplicationRevision(
-            applicationName=parsed_args.application_name,
+            application_name=parsed_args.application_name,
             revision=self._get_revision(parsed_args),
             description=parsed_args.description
         )

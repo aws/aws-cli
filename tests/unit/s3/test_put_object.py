@@ -15,7 +15,7 @@ import os
 import re
 import copy
 
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 import six
 
 import awscli.clidriver
@@ -30,15 +30,20 @@ except NameError:
     file_type = io.IOBase
 
 
-class TestGetObject(BaseAWSCommandParamsTest):
+class TestPutObject(BaseAWSCommandParamsTest):
 
     maxDiff = None
     prefix = 's3api put-object'
 
     def setUp(self):
-        super(TestGetObject, self).setUp()
+        super(TestPutObject, self).setUp()
         self.file_path = os.path.join(os.path.dirname(__file__),
                                       'test_put_object_data')
+        self.files = FileCreator()
+
+    def tearDown(self):
+        super(TestPutObject, self).tearDown()
+        self.files.remove_all()
 
     def test_simple(self):
         cmdline = self.prefix
@@ -84,6 +89,24 @@ class TestGetObject(BaseAWSCommandParamsTest):
             'Bucket': 'mybucket',
             'Key': 'mykey',
             'WebsiteRedirectLocation': 'http://www.example.com/'
+        }
+        self.assert_params_for_cmd2(cmdline, expected)
+
+    def test_sse_key_with_binary_file(self):
+        # Create contents that do not get mapped to ascii
+        contents = b'\xc2'
+        filename = self.files.create_file('key', contents, mode='wb')
+        cmdline = self.prefix
+        cmdline += ' --bucket mybucket'
+        cmdline += ' --key mykey'
+        cmdline += ' --sse-customer-algorithm AES256'
+        cmdline += ' --sse-customer-key fileb://%s' % filename
+        expected = {
+            'Bucket': 'mybucket',
+            'Key': 'mykey',
+            'SSECustomerAlgorithm': 'AES256',
+            'SSECustomerKey': 'wg==',  # Note the key gets base64 encoded.
+            'SSECustomerKeyMD5': 'ZGXa0dMXUr4/MoPo9w/u9w=='
         }
         self.assert_params_for_cmd2(cmdline, expected)
 

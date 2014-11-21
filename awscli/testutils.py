@@ -357,7 +357,7 @@ class FileCreator(object):
     def remove_all(self):
         shutil.rmtree(self.rootdir)
 
-    def create_file(self, filename, contents, mtime=None):
+    def create_file(self, filename, contents, mtime=None, mode='w'):
         """Creates a file in a tmpdir
 
         ``filename`` should be a relative path, e.g. "foo/bar/baz.txt"
@@ -367,13 +367,16 @@ class FileCreator(object):
         mtime will be set to the provided value (must be an epoch time).
         Otherwise the mtime is left untouched.
 
+        ``mode`` is the mode the file should be opened either as ``w`` or
+        `wb``.
+
         Returns the full path to the file.
 
         """
         full_path = os.path.join(self.rootdir, filename)
         if not os.path.isdir(os.path.dirname(full_path)):
             os.makedirs(os.path.dirname(full_path))
-        with open(full_path, 'w') as f:
+        with open(full_path, mode) as f:
             f.write(contents)
         current_time = os.path.getmtime(full_path)
         # Subtract a few years off the last modification date.

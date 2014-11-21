@@ -40,6 +40,7 @@ COMMANDS = [
     'emr list-clusters',
     'iam list-users',
     'kinesis list-streams',
+    'kms generate-random --number-of-bytes 128',
     'logs describe-log-groups',
     'opsworks describe-stacks',
     'rds describe-db-instances',

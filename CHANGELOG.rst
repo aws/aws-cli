@@ -2,6 +2,46 @@
 CHANGELOG
 =========
 
+1.6.3
+=====
+
+* feature:``aws redshift``: Add support for integration with KMS
+* bugfix:``aws cloudtrail create-subscription``: Set a bucket config
+  location constraint on buckets created outside of us-east-1.
+  (`issue 1013 <https://github.com/aws/aws-cli/pull/1013>`__)
+* bugfix:``aws deploy push``: Fix s3 multipart uploads
+* bugfix:``aws s3 ls``: Fix return codes for non existing objects
+  (`issue 1008 <https://github.com/aws/aws-cli/pull/1008>`__)
+* bugfix:Retrying Signed Requests: Fix issue where requests using
+  Signature Version 4 signed with temporary credentials were not
+  being retried properly, resulting in auth errors
+  (`botocore issue 379 <https://github.com/boto/botocore/pull/379>`__)
+* bugfix:``aws s3api get-bucket-location``: Fix issue where getting the
+  bucket location for a bucket in eu-central-1 required specifying
+  ``--region eu-central-1``
+  (`botocore issue 380 <https://github.com/boto/botocore/pull/380>`__)
+* bugfix:Timestamp Input: Fix regression where timestamps without any timezone
+  information were not being handled properly
+  (`issue 982 <https://github.com/aws/aws-cli/issues/982>`__)
+* bugfix:Signature Version 4: You can enable Signature Version 4 for Amazon S3
+  commands by running ``aws configure set default.s3.signature_version s3v4``
+  (`issue 1006 <https://github.com/aws/aws-cli/issues/1006>`__,
+  `botocore issue 382 <https://github.com/boto/botocore/pull/382>`__)
+* bugfix:``aws emr``: Fix issue where ``--ssh``, ``--get``, ``--put``
+  would not work when the cluster was in a waiting state
+  (`issue 1007 <https://github.com/aws/aws-cli/issues/1007>`__)
+* feature:Binary File Input: Add support for reading file contents as binary
+  by prepending the filename with ``fileb://``
+  (`issue 1010 <https://github.com/aws/aws-cli/pull/1010>`__)
+* bugfix:Streaming Output File: Fix issue when streaming a response to a file
+  and an error response is returned
+  (`issue 1012 <https://github.com/aws/aws-cli/pull/1012>`__)
+* bugfix:Binary Output: Fix regression where binary output was no longer
+  being base64 encoded
+  (`issue 1001 <https://github.com/aws/aws-cli/pull/1001>`__,
+  `issue 970 <https://github.com/aws/aws-cli/pull/970>`__)
+
+
 1.6.2
 =====
 * feature:``aws lambda``: Add support for Amazon Lambda
@@ -32,15 +72,15 @@ CHANGELOG
   by configuring a ``role_arn`` and a ``source_profile`` in the AWS
   config file
   (`issue 991 <https://github.com/aws/aws-cli/pull/991>`__,
-   `issue 990 <https://github.com/aws/aws-cli/pull/990>`__)
+  `issue 990 <https://github.com/aws/aws-cli/pull/990>`__)
 * feature:Waiters: Add a ``wait`` subcommand that allows for a command
   to block until an AWS resource reaches a given state
   (`issue 992 <https://github.com/aws/aws-cli/pull/992>`__,
-   `issue 985 <https://github.com/aws/aws-cli/pull/985>`__)
+  `issue 985 <https://github.com/aws/aws-cli/pull/985>`__)
 * bugfix:``aws s3``: Fix issue where request was not properly signed
   on retried requests for ``aws s3``
   (`issue 986 <https://github.com/aws/aws-cli/issues/986>`__,
-   `botocore issue 375 <https://github.com/boto/botocore/pull/375>`__)
+  `botocore issue 375 <https://github.com/boto/botocore/pull/375>`__)
 * bugfix:``aws s3``: Fix issue where ``--exclude`` and ``--include`` were
   not being properly applied when a s3 prefix was provided.
   (`issue 993 <https://github.com/aws/aws-cli/pull/993>`__)

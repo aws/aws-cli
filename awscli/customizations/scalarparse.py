@@ -28,7 +28,7 @@ in the future.
 
 """
 def register_scalar_parser(event_handlers):
-    event_handlers.register('building-command-table.main',
+    event_handlers.register('session-initialized',
                             add_scalar_parsers)
 
 

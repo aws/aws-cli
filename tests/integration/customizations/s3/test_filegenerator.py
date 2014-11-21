@@ -31,6 +31,11 @@ from tests.unit.customizations.s3 import make_s3_files, s3_cleanup, \
 class S3FileGeneratorIntTest(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
+        # Use the datetime and and blob parsing of the CLI
+        factory = self.session.get_component('response_parser_factory')
+        factory.set_parser_defaults(
+            blob_parser=lambda x: x,
+            timestamp_parser=lambda x: x)
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
         self.bucket = make_s3_files(self.session)

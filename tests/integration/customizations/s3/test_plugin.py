@@ -1557,8 +1557,9 @@ class TestLSWithProfile(BaseS3CLICommand):
                 f.write("aws_session_token=%s\n" % creds.token)
 
     def test_can_ls_with_profile(self):
-        p = aws('s3 ls s3:// --profile testprofile',
-                env_vars={'AWS_CONFIG_FILE': self.config_file})
+        env_vars = os.environ.copy()
+        env_vars['AWS_CONFIG_FILE'] = self.config_file
+        p = aws('s3 ls s3:// --profile testprofile', env_vars=env_vars)
         self.assert_no_errors(p)
 
 

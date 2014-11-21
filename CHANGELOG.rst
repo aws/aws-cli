@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix issue where datetime's were not being
+  parsed properly when a profile was specified
+  (`issue 1020 <https://github.com/aws/aws-cli/issues/1020>`__)
+
+
 1.6.3
 =====
 

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.3
+=====
 
 * feature:``aws redshift``: Add support for integration with KMS
 * bugfix:``aws cloudtrail create-subscription``: Set a bucket config

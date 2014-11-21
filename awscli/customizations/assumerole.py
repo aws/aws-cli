@@ -25,17 +25,12 @@ class RefreshWithMFAUnsupportedError(Exception):
 
 
 def register_assume_role_provider(event_handlers):
-    event_handlers.register('building-command-table.*',
+    event_handlers.register('session-initialized',
                             inject_assume_role_provider,
                             unique_id='inject_assume_role_cred_provider')
 
 
-def inject_assume_role_provider(session, event_name, **kwargs):
-    if event_name.endswith('.main'):
-        # Register the assume role provider only when we're not building the
-        # top level command table.  We want all the top level args processed
-        # before we start injecting things into the session.
-        return
+def inject_assume_role_provider(session, **kwargs):
     provider = create_assume_role_provider(session, AssumeRoleProvider)
     try:
         # The final order will be:

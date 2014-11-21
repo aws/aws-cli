@@ -36,20 +36,11 @@ class TestAssumeRolePlugin(unittest.TestCase):
         self.assertEqual(call_args[0], 'shared-credentials-file')
         self.assertIsInstance(call_args[1], assumerole.AssumeRoleProvider)
 
-    def test_assume_role_provider_not_injected_for_main_command_table(self):
-        session = mock.Mock()
-        # When the main/top-level command table is created, it's emitted with
-        # an event name of building-command-table.main.  We want to verify
-        # that the assumerole provider is not hooked up when that happens.
-        assumerole.inject_assume_role_provider(
-            session, event_name='building-command-table.main')
-        self.assertFalse(session.get_component.called)
-
     def test_assume_role_provider_registration(self):
         event_handlers = HierarchicalEmitter()
         assumerole.register_assume_role_provider(event_handlers)
         session = mock.Mock()
-        event_handlers.emit('building-command-table.foo', session=session)
+        event_handlers.emit('session-initialized', session=session)
         # Just verifying that anything on the session was called ensures
         # that our handler was called, as it's the only thing that should
         # be registered.

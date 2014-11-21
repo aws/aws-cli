@@ -28,8 +28,8 @@ in the future.
 
 """
 def register_scalar_parser(event_handlers):
-    event_handlers.register('session-initialized',
-                            add_scalar_parsers)
+    event_handlers.register_first(
+        'session-initialized', add_scalar_parsers)
 
 
 def identity(x):

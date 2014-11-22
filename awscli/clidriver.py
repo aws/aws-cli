@@ -193,6 +193,7 @@ class CLIDriver(object):
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
             self._handle_top_level_args(parsed_args)
+            self._emit_session_event()
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
             sys.stderr.write("\n")
@@ -214,6 +215,14 @@ class CLIDriver(object):
             sys.stderr.write("\n")
             sys.stderr.write("%s\n" % e)
             return 255
+
+    def _emit_session_event(self):
+        # This event is guaranteed to run after the session has been
+        # initialized and a profile has been set.  This was previously
+        # problematic because if something in CLIDriver caused the
+        # session components to be reset (such as session.profile = foo)
+        # then all the prior registered components would be removed.
+        self.session.emit('session-initialized', session=self.session)
 
     def _show_error(self, msg):
         LOG.debug(msg, exc_info=True)

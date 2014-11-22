@@ -1541,5 +1541,27 @@ class TestStreams(BaseS3CLICommand):
         self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
 
 
+class TestLSWithProfile(BaseS3CLICommand):
+    def extra_setup(self):
+        self.config_file = os.path.join(self.files.rootdir, 'tmpconfig')
+        with open(self.config_file, 'w') as f:
+            creds = self.session.get_credentials()
+            f.write(
+                "[profile testprofile]\n"
+                "aws_access_key_id=%s\n"
+                "aws_secret_access_key=%s\n" % (
+                    creds.access_key,
+                    creds.secret_key)
+            )
+            if creds.token is not None:
+                f.write("aws_session_token=%s\n" % creds.token)
+
+    def test_can_ls_with_profile(self):
+        env_vars = os.environ.copy()
+        env_vars['AWS_CONFIG_FILE'] = self.config_file
+        p = aws('s3 ls s3:// --profile testprofile', env_vars=env_vars)
+        self.assert_no_errors(p)
+
+
 if __name__ == "__main__":
     unittest.main()

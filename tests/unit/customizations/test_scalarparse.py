@@ -22,8 +22,8 @@ class TestScalarParse(unittest.TestCase):
     def test_register_scalar_parser(self):
         event_handers = mock.Mock()
         scalarparse.register_scalar_parser(event_handers)
-        event_handers.register.assert_called_with(
-            'building-command-table.main', scalarparse.add_scalar_parsers)
+        event_handers.register_first.assert_called_with(
+            'session-initialized', scalarparse.add_scalar_parsers)
 
     def test_identity(self):
         self.assertEqual(scalarparse.identity('foo'), 'foo')

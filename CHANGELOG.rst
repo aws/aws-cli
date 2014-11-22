@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.6.4
+=====
+
+* bugfix:``aws s3``: Fix issue where datetime's were not being
+  parsed properly when a profile was specified
+  (`issue 1020 <https://github.com/aws/aws-cli/issues/1020>`__)
+* bugfix:Assume Role Credential Provider: Fix issue with parsing
+  expiry time from assume role credential provider
+  (`botocore issue 387 <https://github.com/boto/botocore/pull/387>`__)
+
+
 1.6.3
 =====
 

@@ -243,6 +243,7 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table.main',
             'building-top-level-params',
             'top-level-args-parsed',
+            'session-initialized',
             'building-command-table.s3',
             'building-argument-table.s3.list-objects',
             'before-building-argument-table-parser.s3.list-objects',

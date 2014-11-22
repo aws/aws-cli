@@ -24,17 +24,16 @@ class TestSetQueueAttributes(BaseAWSCommandParamsTest):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attributes {"VisibilityTimeout":"15"}'
         result = {'QueueUrl': self.queue_url,
-                  'Attribute.1.Name': 'VisibilityTimeout',
-                  'Attribute.1.Value': '15'}
-        self.assert_params_for_cmd(cmdline, result)
+                  'Attributes': {
+                      'VisibilityTimeout': '15'}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_shorthand(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attributes VisibilityTimeout=15'
         result = {'QueueUrl': self.queue_url,
-                  'Attribute.1.Name': 'VisibilityTimeout',
-                  'Attribute.1.Value': '15'}
-        self.assert_params_for_cmd(cmdline, result)
+                  'Attributes': {'VisibilityTimeout': '15'}}
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

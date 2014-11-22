@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.4
+=====
 
 * bugfix:``aws s3``: Fix issue where datetime's were not being
   parsed properly when a profile was specified

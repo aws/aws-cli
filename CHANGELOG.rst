@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix issue where requests were not being
+  resigned correctly when using Signature Version 4
+  (`botocore issue 388 https://github.com/boto/botocore/pull/388>`__)
+
+
 1.6.4
 =====
 

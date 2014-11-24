@@ -35,6 +35,7 @@ def save_file(filename, response_data, last_update, is_stream=False):
     """
     body = response_data['Body']
     etag = response_data['ETag'][1:-1]
+    sse = response_data.get('ServerSideEncryption', None)
     if not is_stream:
         d = os.path.dirname(filename)
         try:
@@ -55,7 +56,7 @@ def save_file(filename, response_data, last_update, is_stream=False):
         with open(filename, 'wb') as out_file:
             write_to_file(out_file, etag, md5, file_chunks)
 
-    if not _is_multipart_etag(etag):
+    if not _is_multipart_etag(etag) and sse != 'aws:kms':
         if etag != md5.hexdigest():
             if not is_stream:
                 os.remove(filename)

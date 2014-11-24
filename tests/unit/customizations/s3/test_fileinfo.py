@@ -74,6 +74,26 @@ class TestSaveFile(unittest.TestCase):
             # Make sure nothing is written to stdout.
             self.assertEqual(mock_stdout.getvalue(), "")
 
+    def test_raise_md5_with_no_kms_sse(self):
+        # Ensure MD5 is checked if the sse algorithm is not kms.
+        self.response_data['ETag'] = '"0"'
+        self.response_data['ServerSideEncryption'] = 'AES256'
+        # Should raise a md5 error.
+        with self.assertRaises(MD5Error):
+            fileinfo.save_file(self.filename, self.response_data,
+                               self.last_update)
+        # The file should not have been saved.
+        self.assertFalse(os.path.isfile(self.filename))
+
+    def test_no_raise_md5_with_kms(self):
+        # Ensure MD5 is not checked when kms is used by providing a bad MD5.
+        self.response_data['ETag'] = '"0"'
+        self.response_data['ServerSideEncryption'] = 'aws:kms'
+        # Should not raise any md5 error.
+        fileinfo.save_file(self.filename, self.response_data, self.last_update)
+        # The file should have been saved.
+        self.assertTrue(os.path.isfile(self.filename))
+
 
 class TestSetSizeFromS3(unittest.TestCase):
     def test_set_size_from_s3(self):

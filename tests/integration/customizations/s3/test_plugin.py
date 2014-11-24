@@ -101,11 +101,16 @@ class BaseS3CLICommand(unittest.TestCase):
         self.addCleanup(self.delete_bucket, bucket_name)
         return bucket_name
 
-    def put_object(self, bucket_name, key_name, contents=''):
+    def put_object(self, bucket_name, key_name, contents='', extra_args=None):
         operation = self.service.get_operation('PutObject')
         endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        http = operation.call(endpoint, bucket=bucket_name,
-                              key=key_name, body=contents)[0]
+        call_args = {
+            'endpoint': endpoint, 'bucket': bucket_name,
+            'key': key_name, 'body': contents
+        }
+        if extra_args is not None:
+            call_args.update(extra_args)
+        http = operation.call(**call_args)[0]
         self.assertEqual(http.status_code, 200)
         self.addCleanup(self.delete_key, bucket_name, key_name)
 
@@ -471,6 +476,24 @@ class TestCp(BaseS3CLICommand):
             'A client error (NoSuchKey) occurred when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
         self.assertIn(expected_err_msg, p.stderr)
+
+    def test_download_encrypted_kms_object(self):
+        bucket_name = self.create_bucket(region='eu-central-1')
+        extra_args = {
+            'server_side_encryption': 'aws:kms',
+            'ssekms_key_id': 'alias/aws/s3'
+        }
+        object_name = 'foo.txt'
+        contents = 'this is foo.txt'
+        self.put_object(bucket_name, object_name, contents,
+                        extra_args=extra_args)
+        local_filename = self.files.full_path('foo.txt')
+        p = aws('s3 cp s3://%s/%s %s --region eu-central-1' %
+                (bucket_name, object_name, local_filename))
+        self.assertEqual(p.rc, 0)
+        # Assert that the file was downloaded properly.
+        with open(local_filename, 'r') as f:
+            self.assertEqual(f.read(), contents)
 
 
 class TestSync(BaseS3CLICommand):

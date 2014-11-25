@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.5
+=====
 
 * feature:``aws datapipeline``: Add support for using AWS Data Pipeline
   templates to create pipelines and bind values to parameters in the pipeline

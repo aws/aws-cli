@@ -74,6 +74,9 @@
 
     aws emr create-cluster --applications Name=Hive Name=Pig Name=HBase Name=Ganglia Name=Impala,Args=[IMPALA_BACKEND_PORT=22001,IMPALA_MEM_LIMIT=70%] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
+- Create an Amazon EMR cluster with Hue, Hive, and Pig installed::
+    aws emr create-cluster --ami-version=3.3.0 --applications Name=Hue Name=Hive Name=Pig --use-default-roles --ec2-attributes KeyName=myKey --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m1.large
+
 - Create an Amazon EMR cluster with Hive and Pig installed::
 
     aws emr create-cluster --applications Name=Hive Name=Pig --ami-version 2.4.2 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate

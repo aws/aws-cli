@@ -168,7 +168,7 @@ BOOTSTRAP_ACTIONS = (
     'and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 APPLICATIONS = (
-    '<p>Installs applications such as Hive, Pig, HBase, Ganglia and'
+    '<p>Installs applications such as Hue, Hive, Pig, HBase, Ganglia and'
     ' Impala  or the MapR distribution when creating a cluster. '
     'Each application takes the following'
     ' parameters: <code>Name</code> and <code>[Args]'

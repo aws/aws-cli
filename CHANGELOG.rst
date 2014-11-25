@@ -2,9 +2,13 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.5
+=====
 
+* feature:``aws datapipeline``: Add support for using AWS Data Pipeline
+  templates to create pipelines and bind values to parameters in the pipeline
+* feature:``aws elastictranscoder``: Add support for encryption of files in
+  Amazon S3
 * bugfix:``aws s3``: Fix issue where requests were not being
   resigned correctly when using Signature Version 4
   (`botocore issue 388 <https://github.com/boto/botocore/pull/388>`__)

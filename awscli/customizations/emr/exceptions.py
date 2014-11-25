@@ -191,9 +191,14 @@ class MutualExclusiveOptionError(EmrError):
 
     :ivar option1
     :ivar option2
+    :ivar message (optional)
     """
-    fmt = ('aws: error: You cannot specify both {option1} and {option2} '
-           'options together.')
+    def __init__(self, **kwargs):
+        msg = ('aws: error: You cannot specify both ' +
+               kwargs.get('option1', '') + ' and ' +
+               kwargs.get('option2', '') + ' options together.' +
+               kwargs.get('message', ''))
+        Exception.__init__(self, msg)
 
 
 class MissingApplicationsError(EmrError):

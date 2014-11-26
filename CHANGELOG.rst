@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Timestamp Arguments: Fix issue where certain timestamps were not
+  being accepted as valid input
+  (`botocore issue 389 <https://github.com/boto/botocore/pull/389>`__)
+
+
 1.6.5
 =====
 

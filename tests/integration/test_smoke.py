@@ -38,6 +38,8 @@ COMMANDS = [
     'elasticache describe-cache-clusters',
     'elb describe-load-balancers',
     'emr list-clusters',
+    # Smoke test for timestamp parsing.
+    'emr list-clusters --created-after 2014-11-24T00:00:00',
     'iam list-users',
     'kinesis list-streams',
     'kms generate-random --number-of-bytes 128',
@@ -54,6 +56,8 @@ COMMANDS = [
     'sqs list-queues',
     'storagegateway list-gateways',
     'swf list-domains --registration-status REGISTERED',
+    ('swf list-open-workflow-executions --domain foo '
+     '--start-time-filter oldestDate=1970-01-01'),
 ]
 
 

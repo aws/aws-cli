@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2013-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -17,10 +17,11 @@ from six.moves import cStringIO
 
 class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
 
-    prefix = 'ec2 authorize-security-group-ingress'
+    prefix = 'ec2 authorize-security-group-ingress '
 
     def test_simple_cidr(self):
-        args = ' --group-name foobar --protocol tcp --port 22-25 --cidr 0.0.0.0/0'
+        args = (
+            '--group-name foobar --protocol tcp --port 22-25 --cidr 0.0.0.0/0')
         args_list = (self.prefix + args).split()
         result =  {'GroupName': 'foobar',
                    'IpPermissions.1.FromPort': 22,
@@ -30,7 +31,8 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_all_port(self):
-        args = ' --group-name foobar --protocol tcp --port all --cidr 0.0.0.0/0'
+        args = (
+            '--group-name foobar --protocol tcp --port all --cidr 0.0.0.0/0')
         args_list = (self.prefix + args).split()
         result =  {'GroupName': 'foobar',
                    'IpPermissions.1.FromPort': -1,
@@ -40,7 +42,8 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_all_protocol(self):
-        args = ' --group-name foobar --protocol all --port all --cidr 0.0.0.0/0'
+        args = (
+            '--group-name foobar --protocol all --port all --cidr 0.0.0.0/0')
         args_list = (self.prefix + args).split()
         result =  {'GroupName': 'foobar',
                    'IpPermissions.1.FromPort': -1,
@@ -53,7 +56,8 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_numeric_protocol(self):
-        args = ' --group-name foobar --protocol 200 --cidr 0.0.0.0/0'
+        args = (
+            '--group-name foobar --protocol 200 --cidr 0.0.0.0/0')
         args_list = (self.prefix + args).split()
         result =  {'GroupName': 'foobar',
                    'IpPermissions.1.IpProtocol': '200',
@@ -61,7 +65,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_negative_one_protocol(self):
-        args = ' --group-name foobar --protocol -1 --cidr 0.0.0.0/0'
+        args = '--group-name foobar --protocol -1 --cidr 0.0.0.0/0'
         args_list = (self.prefix + args).split()
         result =  {'GroupName': 'foobar',
                    'IpPermissions.1.IpProtocol': '-1',
@@ -69,7 +73,9 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_classic_group(self):
-        args = ' --group-name foobar --protocol udp --source-group fiebaz --group-owner 11111111'
+        args = (
+            '--group-name foobar --protocol udp '
+            '--source-group fiebaz --group-owner 11111111')
         args_list = (self.prefix + args).split()
         result = {'GroupName': 'foobar',
                   'IpPermissions.1.Groups.1.GroupName': 'fiebaz',
@@ -78,7 +84,8 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_vpc_group(self):
-        args = ' --group-name foobar --protocol icmp --source-group sg-12345678'
+        args = (
+            '--group-name foobar --protocol icmp --source-group sg-12345678')
         args_list = (self.prefix + args).split()
         result = {'GroupName': 'foobar',
                   'IpPermissions.1.Groups.1.GroupId': 'sg-12345678',
@@ -86,8 +93,10 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_ip_permissions(self):
-        json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""
-        args = ' --group-name foobar --ip-permissions %s' % json
+        json = (
+            '[{"FromPort":8000,"ToPort":9000,'
+            '"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]')
+        args = '--group-name foobar --ip-permissions %s' % json
         args_list = (self.prefix + args).split()
         result = {'GroupName': 'foobar',
                   'IpPermissions.1.FromPort': 8000,
@@ -97,8 +106,10 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_ip_permissions_with_group_id(self):
-        json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""
-        args = ' --group-id sg-12345678 --ip-permissions %s' % json
+        json = (
+            '[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp",'
+            '"IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]')
+        args = '--group-id sg-12345678 --ip-permissions %s' % json
         args_list = (self.prefix + args).split()
         result = {'GroupId': 'sg-12345678',
                   'IpPermissions.1.FromPort': 8000,
@@ -109,8 +120,10 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
 
     def test_both(self):
         captured = cStringIO()
-        json = """[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp","IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]"""
-        args = ' --group-name foobar --port 100 --ip-permissions %s' % json
+        json = (
+            '[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp",'
+            '"IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]')
+        args = '--group-name foobar --port 100 --ip-permissions %s' % json
         args_list = (self.prefix + args).split()
         self.assert_params_for_cmd(args_list, {}, expected_rc=255)
 

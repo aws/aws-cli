@@ -111,3 +111,9 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
             '"IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]')
         args = self.prefix + '--group-name foobar --port 100 --ip-permissions %s' % json
         self.assert_params_for_cmd2(args, expected_rc=255)
+
+
+
+class TestRevokeSecurityGroupIngress(TestAuthorizeSecurityGroupIngress):
+
+    prefix = 'ec2 revoke-security-group-ingress '

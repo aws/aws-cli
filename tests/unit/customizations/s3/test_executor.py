@@ -23,6 +23,7 @@ from awscli.testutils import unittest, temporary_file
 from awscli.customizations.s3.executor import IOWriterThread
 from awscli.customizations.s3.executor import ShutdownThreadRequest
 from awscli.customizations.s3.executor import Executor, PrintThread
+from awscli.customizations.s3.filegenerator import FileDecodingError
 from awscli.customizations.s3.utils import IORequest, IOCloseRequest, \
     PrintTask
 
@@ -204,3 +205,16 @@ class TestPrintThread(unittest.TestCase):
                              quiet=False, only_show_errors=True)
         self.assert_expected_output(print_task, 'Bad File.', thread,
                                     'sys.stderr')
+
+    def test_print_decoding_error_message(self):
+        # This ensures that if the message being passed to the print string
+        # is from a decoding error. It can be outputted properly.
+        decoding_error = FileDecodingError('temp',
+                                           b'\xe2\x9c\x93')
+        print_task = PrintTask(message=decoding_error.error_message,
+                               warning=True)
+        thread = PrintThread(result_queue=self.result_queue,
+                             quiet=False, only_show_errors=False)
+        self.assert_expected_output(print_task,
+                                    decoding_error.error_message,
+                                    thread, 'sys.stderr')

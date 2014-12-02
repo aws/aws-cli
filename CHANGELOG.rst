@@ -13,6 +13,9 @@ Next Release (TBD)
 * bugfix:``aws kinesis put-record``: Fix issue where ``--data`` argument
   was not being base64 encoded
   (`issue 1033 <https://github.com/aws/aws-cli/issues/1033>`__)
+* bugfix:``aws cloudwatch put-metric-data``: Fix issue where the
+  values for ``--statistic-values`` were not being parsed properly
+  (`issue 1036 <https://github.com/aws/aws-cli/issues/1036>`__)
 
 
 1.6.5

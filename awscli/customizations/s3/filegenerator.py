@@ -85,9 +85,9 @@ class FileDecodingError(Exception):
         self.directory = directory
         self.file_name = filename
         self.error_message = (
-            'There was an error trying to decode the the file "%s" in '
-            'directory "%s". \n%s' % (self.file_name,
-                                      self.directory.encode('utf-8'),
+            'There was an error trying to decode the the file %s in '
+            'directory "%s". \n%s' % (repr(self.file_name),
+                                      self.directory,
                                       self.ADVICE)
         )
         super(FileDecodingError, self).__init__(self.error_message)
@@ -170,28 +170,30 @@ class FileGenerator(object):
                 # contents and adding the directory separator to any
                 # directories.  We can then sort the contents,
                 # and ensure byte order.
-                names = listdir(path)
-                self._check_paths_decoded(path, names)
-                for i, name in enumerate(names):
-                    file_path = join(path, name)
-                    if isdir(file_path):
-                        names[i] = name + os.path.sep
+                listdir_names = listdir(path)
+                names = []
+                for name in listdir_names:
+                    if not self.should_ignore_file_with_decoding_warnings(
+                            path, name):
+                        file_path = join(path, name)
+                        if isdir(file_path):
+                            name = name + os.path.sep
+                        names.append(name)
                 self.normalize_sort(names, os.sep, '/')
                 for name in names:
                     file_path = join(path, name)
-                    if not self.should_ignore_file(file_path):
-                        if isdir(file_path):
-                            # Anything in a directory will have a prefix of
-                            # this current directory and will come before the
-                            # remaining contents in this directory.  This
-                            # means we need to recurse into this sub directory
-                            # before yielding the rest of this directory's
-                            # contents.
-                            for x in self.list_files(file_path, dir_op):
-                                yield x
-                        else:
-                            size, last_update = get_file_stat(file_path)
-                            yield file_path, size, last_update
+                    if isdir(file_path):
+                        # Anything in a directory will have a prefix of
+                        # this current directory and will come before the
+                        # remaining contents in this directory.  This
+                        # means we need to recurse into this sub directory
+                        # before yielding the rest of this directory's
+                        # contents.
+                        for x in self.list_files(file_path, dir_op):
+                            yield x
+                    else:
+                        size, last_update = get_file_stat(file_path)
+                        yield file_path, size, last_update
 
     def normalize_sort(self, names, os_sep, character):
         """
@@ -202,16 +204,23 @@ class FileGenerator(object):
         """
         names.sort(key=lambda item: item.replace(os_sep, character))
 
-    def _check_paths_decoded(self, path, names):
-        # We can get a UnicodeDecodeError if we try to listdir(<unicode>) and
-        # can't decode the contents with sys.getfilesystemencoding().  In this
-        # case listdir() returns the bytestring, which means that
-        # join(<unicode>, <str>) could raise a UnicodeDecodeError.  When this
-        # happens we raise a FileDecodingError that provides more information
-        # into what's going on.
-        for name in names:
-            if not isinstance(name, six.text_type):
-                raise FileDecodingError(path, name)
+    def should_ignore_file_with_decoding_warnings(self, dirname, filename):
+        """
+        We can get a UnicodeDecodeError if we try to listdir(<unicode>) and
+        can't decode the contents with sys.getfilesystemencoding().  In this
+        case listdir() returns the bytestring, which means that
+        join(<unicode>, <str>) could raise a UnicodeDecodeError.  When this
+        happens we warn using a FileDecodingError that provides more
+        information into what's going on.
+        """
+        if not isinstance(filename, six.text_type):
+            decoding_error = FileDecodingError(dirname, filename)
+            warning = create_warning(repr(filename),
+                                     decoding_error.error_message)
+            self.result_queue.put(warning)
+            return True
+        path = os.path.join(dirname, filename)
+        return self.should_ignore_file(path)
 
     def should_ignore_file(self, path):
         """

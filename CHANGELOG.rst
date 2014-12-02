@@ -8,6 +8,9 @@ Next Release (TBD)
 * bugfix:Timestamp Arguments: Fix issue where certain timestamps were not
   being accepted as valid input
   (`botocore issue 389 <https://github.com/boto/botocore/pull/389>`__)
+* bugfix:``aws cloudwatch put-metric-data``: Fix issue where the
+  values for ``--statistic-values`` were not being parsed properly
+  (`issue 1036 <https://github.com/aws/aws-cli/issues/1036>`__)
 
 
 1.6.5

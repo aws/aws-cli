@@ -73,8 +73,9 @@
 - Create an Amazon EMR cluster with Hive, Pig, HBase, Ganglia, and Impala installed::
 
     aws emr create-cluster --applications Name=Hive Name=Pig Name=HBase Name=Ganglia Name=Impala,Args=[IMPALA_BACKEND_PORT=22001,IMPALA_MEM_LIMIT=70%] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
-
+  
 - Create an Amazon EMR cluster with Hue, Hive, and Pig installed::
+
     aws emr create-cluster --ami-version=3.3.0 --applications Name=Hue Name=Hive Name=Pig --use-default-roles --ec2-attributes KeyName=myKey --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m1.large
 
 - Create an Amazon EMR cluster with Hive and Pig installed::
@@ -109,7 +110,7 @@
 
 - Command::
 
-    aws emr create-cluster --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=-mapper,mymapper,-reducer,myreducer,-input,myinput,-output,myoutput Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=--files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+    aws emr create-cluster --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output] --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 - Streaming steps required parameters::
 
@@ -118,6 +119,23 @@
 - Streaming steps optional parameters::
 
     Name, ActionOnFailure
+
+- JSON equivalent (contents of step.json)::
+
+    [
+     {
+       "Name": "JSON Streaming Step",
+       "Args": ["-files","s3://elasticmapreduce/samples/wordcount/wordSplitter.py","-mapper","wordSplitter.py","-reducer","aggregate","-input","s3://elasticmapreduce/samples/wordcount/input","-output","s3://mybucket/wordcount/output"],
+       "ActionOnFailure": "CONTINUE",
+       "Type": "STREAMING"
+     }
+   ]
+
+NOTE: JSON arguments must include options and values as their own items in the list.
+
+- Command (using step.json)::
+
+    aws emr create-cluster --steps file://./step.json --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
 **14. To add Hive steps when creating an Amazon EMR cluster**
 

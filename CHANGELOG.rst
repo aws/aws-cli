@@ -10,6 +10,9 @@ Next Release (TBD)
   (`botocore issue 389 <https://github.com/boto/botocore/pull/389>`__)
 * bugfix:``aws s3``: Skip files whose names cannot be properly decoded
   (`issue 1038 <https://github.com/aws/aws-cli/pull/1038>`__)
+* bugfix:``aws kinesis put-record``: Fix issue where ``--data`` argument
+  was not being base64 encoded
+  (`issue 1033 <https://github.com/aws/aws-cli/issues/1033>`__)
 
 
 1.6.5

@@ -8,6 +8,8 @@ Next Release (TBD)
 * bugfix:Timestamp Arguments: Fix issue where certain timestamps were not
   being accepted as valid input
   (`botocore issue 389 <https://github.com/boto/botocore/pull/389>`__)
+* bugfix:``aws s3``: Skip files whose names cannot be properly decoded
+  (`issue 1038 <https://github.com/aws/aws-cli/pull/1038>`__)
 
 
 1.6.5

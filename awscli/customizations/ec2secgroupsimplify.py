@@ -29,16 +29,29 @@ def _add_params(argument_table, operation, **kwargs):
     arg = ProtocolArgument('protocol',
                            help_text=PROTOCOL_DOCS)
     argument_table['protocol'] = arg
+    argument_table['ip-protocol']._UNDOCUMENTED = True
+
     arg = PortArgument('port', help_text=PORT_DOCS)
     argument_table['port'] = arg
+    # Port handles both the from-port and to-port,
+    # we need to not document both args.
+    argument_table['from-port']._UNDOCUMENTED = True
+    argument_table['to-port']._UNDOCUMENTED = True
+
     arg = CidrArgument('cidr', help_text=CIDR_DOCS)
     argument_table['cidr'] = arg
+    argument_table['cidr-ip']._UNDOCUMENTED = True
+
+
     arg = SourceGroupArgument('source-group',
                               help_text=SOURCEGROUP_DOCS)
     argument_table['source-group'] = arg
+    argument_table['source-security-group-name']._UNDOCUMENTED = True
+
     arg = GroupOwnerArgument('group-owner',
                              help_text=GROUPOWNER_DOCS)
     argument_table['group-owner'] = arg
+    argument_table['source-security-group-owner-id']._UNDOCUMENTED = True
 
 
 def _check_args(parsed_args, **kwargs):

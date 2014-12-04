@@ -25,7 +25,7 @@ class TestPutMetricArgument(unittest.TestCase):
                                               help_text='metric-name')
         parameters = {}
         arg.add_to_params(parameters, 'MyMetricName')
-        self.assertEqual(parameters['metric_data'][0]['MetricName'],
+        self.assertEqual(parameters['MetricData'][0]['MetricName'],
                          'MyMetricName')
 
     def test_build_unit_arg(self):
@@ -33,7 +33,7 @@ class TestPutMetricArgument(unittest.TestCase):
                                               help_text='unit')
         parameters = {}
         arg.add_to_params(parameters, 'Percent')
-        self.assertEqual(parameters['metric_data'][0]['Unit'],
+        self.assertEqual(parameters['MetricData'][0]['Unit'],
                          'Percent')
 
     def test_value_arg(self):
@@ -41,7 +41,7 @@ class TestPutMetricArgument(unittest.TestCase):
                                               help_text='value')
         parameters = {}
         arg.add_to_params(parameters, '123.1')
-        self.assertEqual(parameters['metric_data'][0]['Value'],
+        self.assertEqual(parameters['MetricData'][0]['Value'],
                          decimal.Decimal('123.1'))
 
     def test_timestamp_arg(self):
@@ -49,7 +49,7 @@ class TestPutMetricArgument(unittest.TestCase):
                                               help_text='timestamp')
         parameters = {}
         arg.add_to_params(parameters, '2013-09-01')
-        self.assertEqual(parameters['metric_data'][0]['Timestamp'],
+        self.assertEqual(parameters['MetricData'][0]['Timestamp'],
                          '2013-09-01')
 
     def test_dimensions_arg(self):
@@ -57,7 +57,7 @@ class TestPutMetricArgument(unittest.TestCase):
                                               help_text='dimensions')
         parameters = {}
         arg.add_to_params(parameters, 'User=someuser,Stack=test')
-        self.assertEqual(parameters['metric_data'][0]['Dimensions'],
+        self.assertEqual(parameters['MetricData'][0]['Dimensions'],
                          [{"Name": "User", "Value": "someuser"},
                           {"Name": "Stack", "Value": "test"}])
 
@@ -67,9 +67,11 @@ class TestPutMetricArgument(unittest.TestCase):
         parameters = {}
         arg.add_to_params(parameters,
                           'Sum=250,Minimum=30,Maximum=70,SampleCount=5')
-        self.assertEqual(parameters['metric_data'][0]['StatisticValues'],
-                         {'Maximum': '70', 'Minimum': '30',
-                          'SampleCount': '5', 'Sum': '250'})
+        self.assertEqual(parameters['MetricData'][0]['StatisticValues'],
+                         {'Maximum': decimal.Decimal('70'),
+                          'Minimum': decimal.Decimal('30'),
+                          'SampleCount': decimal.Decimal('5'),
+                          'Sum': decimal.Decimal('250')})
 
     def test_parse_empty_value(self):
         arg = putmetricdata.PutMetricArgument('dimensions',

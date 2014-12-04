@@ -98,24 +98,24 @@ class PutMetricArgument(CustomArgument):
         method_name = '_add_param_%s' % self.name.replace('-', '_')
         return getattr(self, method_name)(parameters, value)
 
-    @insert_first_element('metric_data')
+    @insert_first_element('MetricData')
     def _add_param_metric_name(self, first_element, value):
         first_element['MetricName'] = value
 
-    @insert_first_element('metric_data')
+    @insert_first_element('MetricData')
     def _add_param_unit(self, first_element, value):
         first_element['Unit'] = value
 
-    @insert_first_element('metric_data')
+    @insert_first_element('MetricData')
     def _add_param_timestamp(self, first_element, value):
         first_element['Timestamp'] = value
 
-    @insert_first_element('metric_data')
+    @insert_first_element('MetricData')
     def _add_param_value(self, first_element, value):
         # Use a Decimal to avoid loss in precision.
         first_element['Value'] = decimal.Decimal(value)
 
-    @insert_first_element('metric_data')
+    @insert_first_element('MetricData')
     def _add_param_dimensions(self, first_element, value):
         # Dimensions needs a little more processing.  We support
         # the key=value,key2=value syntax so we need to parse
@@ -126,12 +126,15 @@ class PutMetricArgument(CustomArgument):
             dimensions.append({'Name': key, 'Value': value})
         first_element['Dimensions'] = dimensions
 
-    @insert_first_element('metric_data')
+    @insert_first_element('MetricData')
     def _add_param_statistic_values(self, first_element, value):
         # StatisticValues is a struct type so we are parsing
         # a csv keyval list into a dict.
         statistics = {}
         for pair in split_on_commas(value):
             key, value = pair.split('=')
-            statistics[key] = value
+            # There are four supported values: Maximum, Minimum, SampleCount,
+            # and Sum.  All of them are documented as a type double so we can
+            # convert these to a decimal value to preserve precision.
+            statistics[key] = decimal.Decimal(value)
         first_element['StatisticValues'] = statistics

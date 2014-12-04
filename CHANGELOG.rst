@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+1.6.6
+=====
+
+* feature:``aws kinesis put-records``: Add support for PutRecord operation. It
+  writes multiple data records from a producer into an Amazon Kinesis
+  stream in a single call
+* feature:``aws iam get-account-authorization-details``: Add support for
+  GetAccountAuthorizationDetails operation. It retrieves information about
+  all IAM users, groups, and roles in your account, including their
+  relationships to one another and their attached policies.
+* feature:``aws route53 update-hosted-zone-comment``: Add support for updating
+  the comment of a hosted zone.
+* bugfix:Timestamp Arguments: Fix issue where certain timestamps were not
+  being accepted as valid input
+  (`botocore issue 389 <https://github.com/boto/botocore/pull/389>`__)
+* bugfix:``aws s3``: Skip files whose names cannot be properly decoded
+  (`issue 1038 <https://github.com/aws/aws-cli/pull/1038>`__)
+* bugfix:``aws kinesis put-record``: Fix issue where ``--data`` argument
+  was not being base64 encoded
+  (`issue 1033 <https://github.com/aws/aws-cli/issues/1033>`__)
+* bugfix:``aws cloudwatch put-metric-data``: Fix issue where the
+  values for ``--statistic-values`` were not being parsed properly
+  (`issue 1036 <https://github.com/aws/aws-cli/issues/1036>`__)
+
+
 1.6.5
 =====
 

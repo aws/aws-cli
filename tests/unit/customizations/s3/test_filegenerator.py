@@ -415,8 +415,14 @@ class TestListFilesLocally(unittest.TestCase):
         file_generator = FileGenerator(None, None, None)
         # utf-8 encoding for U+2713.
         listdir_mock.return_value = [b'\xe2\x9c\x93']
-        with self.assertRaises(FileDecodingError):
-            list(file_generator.list_files(self.directory, dir_op=True))
+        list(file_generator.list_files(self.directory, dir_op=True))
+        # Ensure the message was added to the result queue and is
+        # being skipped.
+        self.assertFalse(file_generator.result_queue.empty())
+        warning_message = file_generator.result_queue.get()
+        self.assertIn("warning: Skipping file ", warning_message.message)
+        self.assertIn("Please check your locale settings.",
+                      warning_message.message)
 
     def test_list_files_is_in_sorted_order(self):
         p = os.path.join

@@ -315,3 +315,13 @@ class TestParametersCanBeHidden(BaseAWSHelpOutputTest):
                                      self.mark_as_undocumented)
         self.driver.main(['kinesis', 'get-shard-iterator', 'help'])
         self.assert_not_contains('--starting-sequence-number')
+
+
+class TestEC2AuthorizeSecurityGroupNotRendered(BaseAWSHelpOutputTest):
+    def test_deprecated_args_not_documented(self):
+        self.driver.main(['ec2', 'authorize-security-group-ingress', 'help'])
+        self.assert_not_contains('--ip-protocol')
+        self.assert_not_contains('--from-port')
+        self.assert_not_contains('--to-port')
+        self.assert_not_contains('--source-security-group-name')
+        self.assert_not_contains('--source-security-group-owner-id')

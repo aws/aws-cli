@@ -2,9 +2,18 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.6
+=====
 
+* feature:``aws kinesis put-records``: Add support for PutRecord operation. It
+  writes multiple data records from a producer into an Amazon Kinesis
+  stream in a single call
+* feature:``aws iam get-account-authorization-details``: Add support for
+  GetAccountAuthorizationDetails operation. It retrieves information about
+  all IAM users, groups, and roles in your account, including their
+  relationships to one another and their attached policies.
+* feature:``aws route53 update-hosted-zone-comment``: Add support for updating
+  the comment of a hosted zone.
 * bugfix:Timestamp Arguments: Fix issue where certain timestamps were not
   being accepted as valid input
   (`botocore issue 389 <https://github.com/boto/botocore/pull/389>`__)

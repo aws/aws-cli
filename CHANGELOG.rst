@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.6
+=====
 
 * feature:``aws kinesis put-records``: Add support for PutRecord operation. It
   writes multiple data records from a producer into an Amazon Kinesis

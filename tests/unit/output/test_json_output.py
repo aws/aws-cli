@@ -12,10 +12,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.compat import json
+import platform
 import mock
 import six
 
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.compat import get_stdout_text_writer
 
 
@@ -53,7 +54,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
                     "UserName": "testuser-51",
                     "Path": "/",
                     "CreateDate": "2012-10-14T23:53:39Z",
-                    "UserId": u"EXAMPLEUSERID\u2713",
+                    "UserId": u"EXAMPLEUSERID",
                     "Arn": "arn:aws:iam::123456:user/testuser2"
                 },
             ]
@@ -81,7 +82,10 @@ class TestListUsers(BaseAWSCommandParamsTest):
         self.environ['AWS_DEFAULT_OUTPUT'] = 'bad-output-type'
         self.run_cmd('iam list-users', expected_rc=255)
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                    'Encoding tests only supported on mac/linux')
     def test_json_prints_unicode_chars(self):
+        self.parsed_response['Users'][1]['UserId'] = u'\u2713'
         output = self.run_cmd('iam list-users', expected_rc=0)[0]
         with mock.patch('sys.stdout', six.StringIO()) as f:
             out = get_stdout_text_writer()

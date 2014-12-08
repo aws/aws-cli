@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import sys
-import json
+from botocore.compat import json
 
 from botocore.utils import set_value_from_jmespath
 
@@ -42,14 +42,7 @@ class Formatter(object):
                 del response_data['ResponseMetadata']
 
     def _get_default_stream(self):
-        if getattr(sys.stdout, 'encoding', None) is None:
-            # In python3, sys.stdout.encoding is always set.
-            # In python2, if you redirect to stdout, then
-            # encoding is not None.  In this case we'll default
-            # to utf-8.
-            return compat.get_stdout_text_writer()
-        else:
-            return sys.stdout
+        return compat.get_stdout_text_writer()
 
 
 class FullyBufferedFormatter(Formatter):
@@ -84,7 +77,8 @@ class JSONFormatter(FullyBufferedFormatter):
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
         if response:
-            json.dump(response, stream, indent=4, default=json_encoder)
+            json.dump(response, stream, indent=4, default=json_encoder,
+                      ensure_ascii=False)
             stream.write('\n')
 
 

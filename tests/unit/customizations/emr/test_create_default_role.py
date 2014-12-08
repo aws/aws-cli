@@ -13,7 +13,7 @@
 
 import mock
 import awscli.customizations.emr.emrutils as emrutils
-import json
+from botocore.compat import json
 from botocore.vendored import requests
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest

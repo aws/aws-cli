@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.7
+=====
 
 * feature:``aws sqs``: Add support for Amazon Simple Queue Service purge queue
   which allows users to delete the messages in their queue.

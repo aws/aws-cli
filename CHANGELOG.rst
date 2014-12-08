@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix issue with expired signatures when retrying
+  failed requests
+  (`botocore issue 399 <https://github.com/boto/botocore/pull/399>`__)
+* bugfix:``aws cloudformation get-template``: Fix error message when
+  template does not exist
+  (`issue 1044 <https://github.com/aws/aws-cli/issues/1044>`__)
+
+
 1.6.6
 =====
 

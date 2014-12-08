@@ -2,9 +2,17 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.7
+=====
 
+* feature:``aws sqs``: Add support for Amazon Simple Queue Service purge queue
+  which allows users to delete the messages in their queue.
+* feature:``aws opsworks``: Add AWS OpsWorks support for registering and
+  assigning existing Amazon EC2 instances and on-premises servers.
+* feature:``aws opsworks register``: Registers an EC2 instance or machine with
+  AWS OpsWorks. Registering a machine using this command will install the
+  AWS OpsWorks agent on the target machine and register it with an existing
+  OpsWorks stack.
 * bugfix:``aws s3``: Fix issue with expired signatures when retrying
   failed requests
   (`botocore issue 399 <https://github.com/boto/botocore/pull/399>`__)

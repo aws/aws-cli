@@ -25,7 +25,7 @@
 
 - Command::
 
-    aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=-mapper,mymapper,-reducer,myreducer,-input,myinput,-output,myoutput Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=--files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output
+    aws emr add-steps --cluster-id j-XXXXXXXX --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output]
 
 - Required parameters::
 
@@ -35,6 +35,23 @@
 
     Name, ActionOnFailure
 
+- JSON equivalent (contents of step.json)::
+
+    [
+     {
+       "Name": "JSON Streaming Step",
+       "Args": ["-files","s3://elasticmapreduce/samples/wordcount/wordSplitter.py","-mapper","wordSplitter.py","-reducer","aggregate","-input","s3://elasticmapreduce/samples/wordcount/input","-output","s3://mybucket/wordcount/output"],
+       "ActionOnFailure": "CONTINUE",
+       "Type": "STREAMING"
+     }
+   ]
+
+NOTE: JSON arguments must include options and values as their own items in the list. 
+
+- Command (using step.json)::
+
+    aws emr add-steps --cluster-id j-XXXXXXXX --steps file://./step.json
+
 - Output::
 
     {
@@ -43,7 +60,6 @@
             "s-YYYYYYYY"
         ]
     }
-
 
 **3. To add Hive steps to a cluster**
 

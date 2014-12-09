@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.6.8
+=====
+
+* bugfix:Non-ascii chars: Fix issue where escape sequences were being printed
+  instead of the non-ascii chars
+  (`issue 1048 <https://github.com/aws/aws-cli/issues/1048>`__)
+* bugfix:``aws iam create-virtual-mfa-device``:  Fix issue with ``--outfile``
+  not supporting relative paths
+  (`issue 1002 <https://github.com/aws/aws-cli/pull/1002>`__)
+
+
 1.6.7
 =====
 

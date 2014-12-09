@@ -449,6 +449,15 @@ class PrintTask(namedtuple('PrintTask',
 
 IORequest = namedtuple('IORequest',
                        ['filename', 'offset', 'data', 'is_stream'])
+
+
 # Used to signal that IO for the filename is finished, and that
 # any associated resources may be cleaned up.
-IOCloseRequest = namedtuple('IOCloseRequest', ['filename'])
+class IOCloseRequest(namedtuple('IOCloseRequest', ['filename', 'last_modified'])):
+    def __new__(cls, filename, last_modified=None):
+        """
+        :param filename: The filename to close
+        :param last_modified: Int timestamp or None.  If not none we will set the file mtime to this after we close the file.
+        """
+        return super(IOCloseRequest, cls).__new__(cls, filename, last_modified)
+

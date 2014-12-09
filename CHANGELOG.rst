@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Non-ascii chars: Fix issue where escape sequences were being printed
+  instead of the non-ascii chars
+  (`issue 1048 <https://github.com/aws/aws-cli/issues/1048>`__)
+
+
 1.6.7
 =====
 

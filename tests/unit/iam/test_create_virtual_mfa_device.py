@@ -13,10 +13,6 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 import os
-import re
-
-from six.moves import cStringIO
-import mock
 
 
 class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
@@ -27,9 +23,53 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         super(TestCreateVirtualMFADevice, self).setUp()
         self.parsed_response = {
             "VirtualMFADevice": {
-                "Base32StringSeed": "VFpYTVc2V1lIUFlFRFczSVhLUlpRUTJRVFdUSFRNRDNTQ0c3TkZDUVdQWDVETlNWM0IyUENaQVpWTEpQTlBOTA==",
+                "Base32StringSeed": (
+                    "VFpYTVc2V1lIUFlFRFczSVhLUlpRUTJRVFdUSFRNRDNTQ0c3"
+                    "TkZDUVdQWDVETlNWM0IyUENaQVpWTEpQTlBOTA=="),
                 "SerialNumber": "arn:aws:iam::419278470775:mfa/fiebaz",
-                "QRCodePNG": "iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAIAAAAHjs1qAAAFiElEQVR42u3bQW7jMBAEwPz/07vHvS0QeLpnZFVf7cgyWRTgJvPzR+Q1+TEEgrsI7iK4i+AugrsI7iK4i+AugrsI7iK4C+4iuIvgLoK7CO4iuIvgLoK7CO4iBe4/rfz/c391k7lLffK5v/r6tZu8Ofu444477rjjjjvuuOOOO+6xwcoZ/WTl5D53cNXlZqG2VPpXxh133HHHHXfccccdd9xxD09/rU7ZylZdVnvo5BY/7rjjjjvuuOOOO+64447713H/RFIOZW0944477rjjjjvuuOOOO+64417ZVM8ZPbLHXiOLO+6444477rjjjjvuuOP+fO5bC2lwMeQKoiN/ew0l7rjjjjvuuOOOO+644457uCLYGmivHuxeBmcfd6/ijrtXccfdq7jj7lXcH5han3Bkeedana9SgTvuuOOOO+6444477ri/hXttc7umMLc2tm5ycI4GnzJfWETijjvuuOOOO+6444477s9oZnKDlZvvGp2tnf/BNx8/NYA77rjjjjvuuOOOO+64v5V7rZkZHKzalXOwcg3J1qorFGK444477rjjjjvuuOOO+1u5fwLrSG9T6zEGxyr3FWqPwkeemcEdd9xxxx133HHHHXfcj3Kv4chNUo17rU7ZmtDjaxJ33HHHHXfccccdd9xxfw33rWYm12McOY/wBQupZgN33HHHHXfccccdd9xxx/2DwTpy0Pzm2sh9oyOgc+sZd9xxxx133HHHHXfcccc9liOVSE3SkYIot2KPFES444477rjjjjvuuOOO+/u4DzYzgxoGpyH35q3R2Nrb758awB133HHHHXfccccdd9zfyj23NmpX3jomkBuc3N7+4DIr+MYdd9xxxx133HHHHXfc38q91gkcUZi7jcGd/9xIHnkG4Y477rjjjjvuuOOOO+6430gOR20hbVUTW4cIrg0O7rjjjjvuuOOOO+644/4a7keKi8G+6At273Nv3vpc3HHHHXfccccdd9xxxx332LjXyocanUfgqJ0pqNU4uOOOO+6444477rjjjjvuS13E1l53jc5Ndjf144477rjjjjvuuOOOO+64x77Skf352mZ+7VhEbo62DiBE6jvccccdd9xxxx133HHHHffs9A8WNbnprz0atv7rYPDrP/IQAe6444477rjjjjvuuON+lPvguK//ci+TrS3RwZ7q5nMEd9xxxx133HHHHXfccce9VSDkippcY5A7nrBVaxyp2nDHHXfccccdd9xxxx133FuTVFs5tUttlVq5pZJ7cCy0arjjjjvuuOOOO+6444477tmd8K0SIDdnNXZHirj+YwV33HHHHXfccccdd9xxfw33mu+bHUiObK4By7E7jgF33HHHHXfccccdd9xxfw33Whcx+Kt/a1Zyn5tbZltkcccdd9xxxx133HHHHXfcb4DOnRp4YgeSQ/l9jRDuuOOOO+6444477rjjjntM4WCBMGhlcHByt1GrcbZOSeCOO+6444477rjjjjvuuD8htUMENcFbN1mrcXIfhDvuuOOOO+6444477rjjvvSrP3cbg3NWG7pcMTV4OuPtRSTuuOOOO+6444477rjjfoV7rXvZWjlbVr6+5CkUNbjjjjvuuOOOO+6444477qsacn+7VeMcaYRyVdsjDxHgjjvuuOOOO+6444477rinNNR6myfexlbXpJnBHXfccccdd9xxxx133J/PvbAFPT5nN4upLQy444477rjjjjvuuOOOO+4t7rWx27pybY/9iLMjvQ3uuOOOO+6444477rjjjvvSfB/Zr86t58H53qpxBpdoYZxxxx133HHHHXfccccd99dwF3lKcBfcRXAXwV0EdxHcRXAXwV0EdxHcRXAXwV1wF8FdBHcR3EVwF8FdBHcR3EVwF8Fd5F/+AgASajf850wfAAAAAElFTkSuQmCC",
+                "QRCodePNG": (
+                    "iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAIAAAAHjs1qAAAFi"
+                    "ElEQVR42u3bQW7jMBAEwPz/07vHvS0QeLpnZFVf7cgyWRTgJv"
+                    "PzR+Q1+TEEgrsI7iK4i+AugrsI7iK4i+AugrsI7iK4C+4iuIv"
+                    "gLoK7CO4iuIvgLoK7CO4iBe4/rfz/c391k7lLffK5v/r6tZu8"
+                    "Ofu444477rjjjjvuuOOOO+6xwcoZ/WTl5D53cNXlZqG2VPpXx"
+                    "h133HHHHXfccccdd9xxD09/rU7ZylZdVnvo5BY/7rjjjjvuuO"
+                    "OOO+64447713H/RFIOZW0944477rjjjjvuuOOOO+64417ZVM8"
+                    "ZPbLHXiOLO+6444477rjjjjvuuOP+fO5bC2lwMeQKoiN/ew0l"
+                    "7rjjjjvuuOOOO+644457uCLYGmivHuxeBmcfd6/ijrtXccfdq"
+                    "7jj7lXcH5han3Bkeedana9SgTvuuOOOO+6444477ri/hXttc7"
+                    "umMLc2tm5ycI4GnzJfWETijjvuuOOOO+6444477s9oZnKDlZv"
+                    "vGp2tnf/BNx8/NYA77rjjjjvuuOOOO+64v5V7rZkZHKzalXOw"
+                    "cg3J1qorFGK444477rjjjjvuuOOO+1u5fwLrSG9T6zEGxyr3F"
+                    "WqPwkeemcEdd9xxxx133HHHHXfcj3Kv4chNUo17rU7ZmtDjax"
+                    "J33HHHHXfccccdd9xxfw33rWYm12McOY/wBQupZgN33HHHHXf"
+                    "ccccdd9xxx/2DwTpy0Pzm2sh9oyOgc+sZd9xxxx133HHHHXfc"
+                    "ccc9liOVSE3SkYIot2KPFES444477rjjjjvuuOOO+/u4DzYzg"
+                    "xoGpyH35q3R2Nrb758awB133HHHHXfccccdd9zfyj23NmpX3j"
+                    "omkBuc3N7+4DIr+MYdd9xxxx133HHHHXfc38q91gkcUZi7jcG"
+                    "d/9xIHnkG4Y477rjjjjvuuOOOO+6430gOR20hbVUTW4cIrg0O"
+                    "7rjjjjvuuOOOO+644/4a7keKi8G+6At273Nv3vpc3HHHHXfcc"
+                    "ccdd9xxxx332LjXyocanUfgqJ0pqNU4uOOOO+6444477rjjjj"
+                    "vuS13E1l53jc5Ndjf144477rjjjjvuuOOOO+64x77Skf352mZ"
+                    "+7VhEbo62DiBE6jvccccdd9xxxx133HHHHffs9A8WNbnprz0a"
+                    "tv7rYPDrP/IQAe6444477rjjjjvuuON+lPvguK//ci+TrS3Rw"
+                    "Z7q5nMEd9xxxx133HHHHXfccce9VSDkippcY5A7nrBVaxyp2n"
+                    "DHHXfccccdd9xxxx133FuTVFs5tUttlVq5pZJ7cCy0arjjjjv"
+                    "uuOOOO+6444477tmd8K0SIDdnNXZHirj+YwV33HHHHXfccccd"
+                    "d9xxfw33mu+bHUiObK4By7E7jgF33HHHHXfccccdd9xxfw33W"
+                    "hcx+Kt/a1Zyn5tbZltkcccdd9xxxx133HHHHXfcb4DOnRp4Yg"
+                    "eSQ/l9jRDuuOOOO+6444477rjjjntM4WCBMGhlcHByt1GrcbZ"
+                    "OSeCOO+6444477rjjjjvuuD8htUMENcFbN1mrcXIfhDvuuOOO"
+                    "O+6444477rjjvvSrP3cbg3NWG7pcMTV4OuPtRSTuuOOOO+644"
+                    "4477rjjfoV7rXvZWjlbVr6+5CkUNbjjjjvuuOOOO+6444477q"
+                    "sacn+7VeMcaYRyVdsjDxHgjjvuuOOOO+6444477rinNNR6myf"
+                    "exlbXpJnBHXfccccdd9xxxx133J/PvbAFPT5nN4upLQy44447"
+                    "7rjjjjvuuOOOO+4t7rWx27pybY/9iLMjvQ3uuOOOO+6444477"
+                    "rjjjvvSfB/Zr86t58H53qpxBpdoYZxxxx133HHHHXfccccd99"
+                    "dwF3lKcBfcRXAXwV0EdxHcRXAXwV0EdxHcRXAXwV1wF8FdBHc"
+                    "R3EVwF8FdBHcR3EVwF8Fd5F/+AgASajf850wfAAAAAElFTkSu"
+                    "QmCC"
+                ),
             }
         }
 
@@ -46,9 +86,10 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.addCleanup(self.remove_file_if_exists, outfile)
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
-        cmdline += ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
+        cmdline += (
+            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile)
         result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
 
     def test_qrcode(self):
@@ -58,15 +99,31 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
         result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
 
     def test_bad_filename(self):
-        captured = cStringIO()
         outfile = '/some/bad/filename.png'
         self.addCleanup(self.remove_file_if_exists, outfile)
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
-        result = {}
-        self.assert_params_for_cmd(cmdline, result, expected_rc=255)
+        self.assert_params_for_cmd2(cmdline, expected_rc=255)
+
+    def test_relative_filename(self):
+        outfile = 'filename.png'
+        self.addCleanup(self.remove_file_if_exists, outfile)
+        cmdline = self.prefix
+        cmdline += ' --virtual-mfa-device-name fiebaz'
+        cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
+        result = {"VirtualMFADeviceName": 'fiebaz'}
+        self.assert_params_for_cmd2(cmdline, result)
+        self.assertTrue(os.path.exists(outfile))
+
+    def test_bad_relative_filename(self):
+        outfile = 'some/bad/filename.png'
+        self.addCleanup(self.remove_file_if_exists, outfile)
+        cmdline = self.prefix
+        cmdline += ' --virtual-mfa-device-name fiebaz'
+        cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
+        self.assert_params_for_cmd2(cmdline, expected_rc=255)

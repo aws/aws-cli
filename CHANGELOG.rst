@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.8
+=====
 
 * bugfix:Non-ascii chars: Fix issue where escape sequences were being printed
   instead of the non-ascii chars

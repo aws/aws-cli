@@ -40,7 +40,39 @@
 
 - Create an Amazon EMR cluster in an AvailabilityZone. For example, us-east-1b::
 
-    aws emr create-cluster --ec2-attributes AvailabilityZone=us-east-1b --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge 
+    aws emr create-cluster --ec2-attributes AvailabilityZone=us-east-1b --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
+
+- Create an Amazon EMR cluster specifying the Amazon EC2 security groups::
+
+	aws emr create-cluster --ami-version 3.3.1 --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=myRole,EmrManagedMasterSecurityGroup=sg-master1,EmrManagedSlaveSecurityGroup=sg-slave1,AdditionalMasterSecurityGroups=[sg-addMaster1,sg-addMaster2,sg-addMaster3,sg-addMaster4],AdditionalSlaveSecurityGroups=[sg-addSlave1,sg-addSlave2,sg-addSlave3,sg-addSlave4] --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
+
+- Create an Amazon EMR cluster specifying only the EMR managed Amazon EC2 security groups::
+
+	aws emr create-cluster --ami-version 3.3.1 --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=myRole,EmrManagedMasterSecurityGroup=sg-master1,EmrManagedSlaveSecurityGroup=sg-slave1 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
+
+- Create an Amazon EMR cluster specifying only the additional Amazon EC2 security groups::
+
+	aws emr create-cluster --ami-version 3.3.1 --service-role EMR_DefaultRole --ec2-attributes InstanceProfile=myRole,AdditionalMasterSecurityGroups=[sg-addMaster1,sg-addMaster2,sg-addMaster3,sg-addMaster4],AdditionalSlaveSecurityGroups=[sg-addSlave1,sg-addSlave2,sg-addSlave3,sg-addSlave4] --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
+
+- JSON equivalent (contents of ec2_attributes.json)::
+
+    [
+     {
+       "SubnetId": "subnet-xxxxx",
+       "KeyName": "myKey",
+       "InstanceProfile":"myRole",
+       "EmrManagedMasterSecurityGroup": "sg-master1",
+       "EmrManagedSlaveSecurityGroup": "sg-slave1",
+       "AdditionalMasterSecurityGroups": ["sg-addMaster1","sg-addMaster2","sg-addMaster3","sg-addMaster4"],
+       "AdditionalSlaveSecurityGroups": ["sg-addSlave1","sg-addSlave2","sg-addSlave3","sg-addSlave4"]
+     }
+   ]
+
+NOTE: JSON arguments must include options and values as their own items in the list.
+
+- Command (using ec2_attributes.json)::
+
+	aws emr create-cluster --ami-version 3.3.1 --service-role EMR_DefaultRole --ec2-attributes file://./ec2_attributes.json  --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
 
 **7. Enable debugging and specify a Log URI**
 
@@ -211,4 +243,3 @@ NOTE: JSON arguments must include options and values as their own items in the l
 - Command::
 
     aws emr create-cluster --instance-type m3.xlarge --ami-version 3.2.1 --emrfs SSE=true,Consistent=true,RetryCount=5,RetryPeriod=30,Args=[fs.s3.serverSideEncryptionAlgorithm=AES256]
-

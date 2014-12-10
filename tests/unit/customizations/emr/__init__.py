@@ -24,4 +24,5 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(EMRBaseAWSCommandParamsTest, self).setUp()
         # We actually will just disable preview mode completely.
-        self.driver.session.unregister('building-command-table.main', mark_as_preview)
+        self.driver.session.unregister('building-command-table.main',
+                                       mark_as_preview)

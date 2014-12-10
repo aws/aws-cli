@@ -302,6 +302,22 @@ class CreateCluster(BasicCommand):
             src_params=parsed_attrs, src_key='InstanceProfile',
             dest_params=cluster, dest_key='JobFlowRole')
 
+        emrutils.apply_params(
+            src_params=parsed_attrs, src_key='EmrManagedMasterSecurityGroup',
+            dest_params=instances, dest_key='EmrManagedMasterSecurityGroup')
+
+        emrutils.apply_params(
+            src_params=parsed_attrs, src_key='EmrManagedSlaveSecurityGroup',
+            dest_params=instances, dest_key='EmrManagedSlaveSecurityGroup')
+
+        emrutils.apply_params(
+            src_params=parsed_attrs, src_key='AdditionalMasterSecurityGroups',
+            dest_params=instances, dest_key='AdditionalMasterSecurityGroups')
+
+        emrutils.apply_params(
+            src_params=parsed_attrs, src_key='AdditionalSlaveSecurityGroups',
+            dest_params=instances, dest_key='AdditionalSlaveSecurityGroups')
+
         emrutils.apply(params=cluster, key='Instances', value=instances)
 
         return cluster

@@ -22,7 +22,7 @@ from awscli.customizations.s3.utils import BucketLister, create_warning, \
     find_dest_path_comp_key
 from awscli.errorhandler import ClientError
 from awscli.compat import six
-from six.moves import queue
+from awscli.compat import queue
 
 _open = open
 

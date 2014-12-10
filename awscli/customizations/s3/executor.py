@@ -17,8 +17,7 @@ import threading
 from awscli.customizations.s3.utils import uni_print, bytes_print, \
     IORequest, IOCloseRequest, StablePriorityQueue
 from awscli.customizations.s3.tasks import OrderableTask
-from awscli.compat import six
-from six.moves import queue
+from awscli.compat import queue
 
 
 LOGGER = logging.getLogger(__name__)

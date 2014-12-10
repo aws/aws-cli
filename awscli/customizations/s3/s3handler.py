@@ -23,7 +23,7 @@ from awscli.customizations.s3.utils import find_chunksize, \
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.compat import six
-from six.moves import queue
+from awscli.compat import queue
 
 
 LOGGER = logging.getLogger(__name__)

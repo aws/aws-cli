@@ -27,8 +27,7 @@ from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
-from awscli.compat import six
-from six import StringIO
+from awscli.compat import StringIO
 
 
 class FakeArgs(object):

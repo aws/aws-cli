@@ -13,12 +13,17 @@
 import sys
 
 from botocore.compat import six
-import botocore.compat
+#import botocore.compat
 
 # If you ever want to import from the vendored six. Add it here and then
-# import from awscli.compat
-shlex_quote = botocore.compat.six.moves.shlex_quote
-urlopen = botocore.compat.six.moves.urllib.request.urlopen
+# import from awscli.compat. Also try to keep it in alphabetical order.
+# This may get large.
+advance_iterator = six.advance_iterator
+PY3 = six.PY3
+queue = six.moves.queue
+shlex_quote = six.moves.shlex_quote
+StringIO = six.StringIO
+urlopen = six.moves.urllib.request.urlopen
 
 if six.PY3:
     import locale

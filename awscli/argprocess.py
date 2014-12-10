@@ -13,7 +13,7 @@
 """Module for processing CLI args."""
 import os
 import logging
-import six
+from awscli.compat import six
 
 from botocore import xform_name
 from botocore.compat import OrderedDict, json

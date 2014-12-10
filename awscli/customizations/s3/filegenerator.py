@@ -14,8 +14,6 @@ import os
 import sys
 import stat
 
-import six
-from six.moves import queue
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -23,7 +21,8 @@ from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning, \
     find_dest_path_comp_key
 from awscli.errorhandler import ClientError
-
+from awscli.compat import six
+from six.moves import queue
 
 _open = open
 

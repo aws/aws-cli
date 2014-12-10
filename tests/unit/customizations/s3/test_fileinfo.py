@@ -16,7 +16,7 @@ import shutil
 from datetime import datetime
 from hashlib import md5
 
-import six
+from awscli.compat import six
 import mock
 
 from awscli.testutils import unittest

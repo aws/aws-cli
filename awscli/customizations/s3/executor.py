@@ -11,13 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-from six.moves import queue
 import sys
 import threading
 
 from awscli.customizations.s3.utils import uni_print, bytes_print, \
     IORequest, IOCloseRequest, StablePriorityQueue
 from awscli.customizations.s3.tasks import OrderableTask
+from awscli.compat import six
+from six.moves import queue
 
 
 LOGGER = logging.getLogger(__name__)

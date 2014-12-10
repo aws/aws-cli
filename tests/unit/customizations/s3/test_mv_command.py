@@ -15,7 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 import re
 
 import mock
-import six
+from awscli.compat import six
 
 
 class TestMvCommand(BaseAWSCommandParamsTest):

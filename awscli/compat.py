@@ -11,7 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import six
+
+from botocore.compat import six
+import botocore.compat
+
+# If you ever want to import from the vendored six. Add it here and then
+# import from awscli.compat
+shlex_quote = botocore.compat.six.moves.shlex_quote
+urlopen = botocore.compat.six.moves.urllib.request.urlopen
 
 if six.PY3:
     import locale

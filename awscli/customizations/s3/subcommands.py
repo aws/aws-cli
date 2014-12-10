@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import six
-from six.moves import queue
 import sys
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
+from awscli.compat import six
+from six.moves import queue
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder

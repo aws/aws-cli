@@ -14,7 +14,7 @@ import argparse
 import botocore.session
 import json
 import os
-import six
+from awscli.compat import six
 
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service

@@ -14,8 +14,6 @@ from collections import namedtuple
 import logging
 import math
 import os
-import six
-from six.moves import queue
 import sys
 
 from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
@@ -24,6 +22,9 @@ from awscli.customizations.s3.utils import find_chunksize, \
     operate, find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
+from awscli.compat import six
+from six.moves import queue
+
 
 LOGGER = logging.getLogger(__name__)
 

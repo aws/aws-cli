@@ -13,6 +13,7 @@
 import hashlib
 from operator import itemgetter
 from botocore.vendored import requests
+from awscli.compat import six
 from six import text_type
 from six import StringIO
 from io import BytesIO

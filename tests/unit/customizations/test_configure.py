@@ -17,6 +17,7 @@ import shutil
 from awscli.testutils import unittest
 
 import mock
+from awscli.compat import six
 from six import StringIO
 from botocore.exceptions import ProfileNotFound
 

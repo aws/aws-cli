@@ -17,7 +17,7 @@ import awscli.customizations.ec2bundleinstance
 import datetime
 import base64
 
-import six
+from awscli.compat import six
 from six.moves import cStringIO
 import mock
 

@@ -42,7 +42,7 @@ except ImportError as e:
     # *uses* this module that isn't suppose to, that's s
     # different story.
     mock = None
-import six
+from awscli.compat import six
 from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
 import botocore.loaders

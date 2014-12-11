@@ -23,7 +23,7 @@ at the man output, we look one step before at the generated rst output
 """
 from awscli.testutils import BaseAWSHelpOutputTest
 
-import six
+from awscli.compat import six
 import mock
 
 

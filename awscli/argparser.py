@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import argparse
 import sys
-import six
+from awscli.compat import six
 from difflib import get_close_matches
 
 

@@ -15,7 +15,7 @@ import random
 from awscli.testutils import unittest
 import string
 
-import six
+from awscli.compat import six
 from mock import patch, Mock
 
 

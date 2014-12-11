@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-import six
+from awscli.compat import six
 import mock
 
 from awscli import text

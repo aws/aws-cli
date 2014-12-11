@@ -14,7 +14,7 @@
 from botocore.compat import json
 import platform
 import mock
-import six
+from awscli.compat import six
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.compat import get_stdout_text_writer

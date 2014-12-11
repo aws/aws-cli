@@ -19,8 +19,8 @@ import sys
 import re
 import locale
 
+from awscli.compat import six
 from six.moves import cStringIO
-import six
 import mock
 
 from awscli.formatter import Formatter

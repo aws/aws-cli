@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-from six import advance_iterator
+from awscli.compat import advance_iterator
 
 
 LOG = logging.getLogger(__name__)

@@ -14,7 +14,7 @@ import logging
 import os
 import base64
 import rsa
-import six
+from awscli.compat import six
 
 from botocore import model
 

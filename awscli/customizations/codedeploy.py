@@ -19,7 +19,7 @@ import tempfile
 import contextlib
 from datetime import datetime
 
-import six
+from awscli.compat import six
 
 from awscli.argprocess import unpack_cli_arg
 from awscli.arguments import CustomArgument

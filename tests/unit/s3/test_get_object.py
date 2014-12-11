@@ -15,7 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 import os
 import re
 
-import six
+from awscli.compat import six
 
 import awscli.clidriver
 

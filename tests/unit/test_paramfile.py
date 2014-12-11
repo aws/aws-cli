@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import six
+from awscli.compat import six
 
 from awscli.paramfile import get_paramfile
 from awscli.testutils import unittest, FileCreator

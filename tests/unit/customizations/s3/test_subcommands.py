@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import argparse
 import os
-from six import StringIO
 import sys
 
 import mock
@@ -28,6 +27,7 @@ from awscli.testutils import unittest, BaseAWSHelpOutputTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, S3HandlerBaseTest
 from tests.unit.customizations.s3.fake_session import FakeSession
+from awscli.compat import StringIO
 
 
 class FakeArgs(object):

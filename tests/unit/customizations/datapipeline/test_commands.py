@@ -14,7 +14,7 @@
 import copy
 import mock
 
-import six
+from awscli.compat import six
 from awscli.testutils import BaseAWSHelpOutputTest, BaseAWSCommandParamsTest, \
         unittest
 

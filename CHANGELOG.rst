@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.9
+=====
 
 * bugfix:``aws datapipeline get-pipeline-definition``: Rename operation
   parameter ``--version`` to ``--pipeline-version`` to avoid shadowing

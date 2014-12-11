@@ -26,7 +26,7 @@ import string
 import socket
 
 import botocore.session
-import six
+from awscli.compat import six
 
 from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws

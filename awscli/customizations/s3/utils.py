@@ -20,14 +20,15 @@ import sys
 from collections import namedtuple, deque
 from functools import partial
 
-from six import PY3
-from six.moves import queue
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 from botocore.compat import unquote_str
 
 from awscli.customizations.s3.constants import MAX_PARTS
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
+from awscli.compat import six
+from awscli.compat import PY3
+from awscli.compat import queue
 
 
 class AppendFilter(argparse.Action):

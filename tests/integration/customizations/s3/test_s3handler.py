@@ -20,11 +20,11 @@
 import os
 import datetime
 import random
-from six import StringIO
 import sys
 from awscli.testutils import unittest
 
 from awscli import EnvironmentVariables
+from awscli.compat import StringIO
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.fileinfo import FileInfo
 import botocore.session

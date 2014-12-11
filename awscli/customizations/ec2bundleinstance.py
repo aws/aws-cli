@@ -17,7 +17,7 @@ import hmac
 import base64
 import datetime
 
-import six
+from awscli.compat import six
 
 from awscli.arguments import CustomArgument
 

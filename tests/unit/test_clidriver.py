@@ -15,7 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 
 import mock
-import six
+from awscli.compat import six
 from botocore.vendored.requests import models
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict

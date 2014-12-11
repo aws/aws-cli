@@ -14,6 +14,7 @@
 import argparse
 
 from mock import Mock, ANY, patch, MagicMock
+from awscli.compat import six
 from six import StringIO
 
 from awscli.customizations.codedeploy import S3Client

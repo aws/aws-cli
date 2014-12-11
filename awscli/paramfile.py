@@ -16,7 +16,7 @@ import logging
 import os
 
 from botocore.vendored import requests
-import six
+from awscli.compat import six
 
 from awscli.compat import compat_open
 

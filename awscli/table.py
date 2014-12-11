@@ -15,7 +15,7 @@ import sys
 import struct
 
 import colorama
-import six
+from awscli.compat import six
 
 
 def determine_terminal_width(default_width=80):

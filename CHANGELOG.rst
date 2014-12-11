@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.6.9
+=====
+
+* bugfix:``aws datapipeline get-pipeline-definition``: Rename operation
+  parameter ``--version`` to ``--pipeline-version`` to avoid shadowing
+  a built in parameter
+  (`issue 1058 <https://github.com/aws/aws-cli/pull/1058>`__)
+* bugfix:pip installation: Fix issue where pip installations would cause
+  an error due to the system's python configuration
+  (`issue 1051 <https://github.com/aws/aws-cli/issues/1051>`__)
+* feature:``aws elastictranscoder``: Update the ``aws elastictranscoder``
+  command to the latest version
+
+
 1.6.8
 =====
 

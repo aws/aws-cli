@@ -13,7 +13,7 @@
 import csv
 import datetime
 
-import six
+from awscli.compat import six
 
 
 def split_on_commas(value):

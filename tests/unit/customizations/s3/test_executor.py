@@ -13,7 +13,7 @@
 import os
 import tempfile
 import shutil
-import six
+from awscli.compat import six
 from six.moves import queue
 import sys
 

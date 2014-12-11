@@ -15,7 +15,7 @@ import re
 import copy
 
 from awscli.testutils import BaseAWSCommandParamsTest
-import six
+from awscli.compat import six
 
 
 # file is gone in python3, so instead IOBase must be used.

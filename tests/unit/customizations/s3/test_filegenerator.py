@@ -18,7 +18,7 @@ import tempfile
 import shutil
 import socket
 
-import six
+from awscli.compat import six
 import mock
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \

@@ -21,9 +21,8 @@ import subprocess
 import sys
 import tempfile
 import textwrap
-from six.moves import shlex_quote
-from six.moves.urllib.request import urlopen
 
+from awscli.compat import shlex_quote, urlopen
 from awscli.customizations.commands import BasicCommand
 from awscli.errorhandler import ClientError
 

@@ -6,9 +6,8 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore>=0.78.0,<0.79.0',
+requires = ['botocore>=0.79.0,<0.80.0',
             'bcdoc>=0.12.0,<0.13.0',
-            'six>=1.8.0,<2.0.0',
             'colorama==0.2.5',
             'docutils>=0.10',
             'rsa==3.1.2']
@@ -58,7 +57,7 @@ if 'py2exe' in sys.argv:
             'optimize': 0,
             'skip_archive': True,
             'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
-                         'awscli', 'ConfigParser', 'xml.etree'],
+                         'awscli', 'ConfigParser', 'xml.etree', 'pipes'],
         }
     }
     setup_options['console'] = ['bin/aws']

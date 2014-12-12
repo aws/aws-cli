@@ -347,7 +347,7 @@ class CreateCluster(BasicCommand):
         return emrutils.build_step(
             name=constants.DEBUGGING_NAME,
             action_on_failure=constants.TERMINATE_CLUSTER,
-            jar=emrutils.get_script_runner(),
+            jar=emrutils.get_script_runner(parsed_globals.region),
             args=[emrutils.build_s3_link(
                 relative_path=constants.DEBUGGING_PATH,
                 region=parsed_globals.region)])

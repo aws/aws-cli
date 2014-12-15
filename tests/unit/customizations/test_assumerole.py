@@ -13,6 +13,7 @@
 import shutil
 import tempfile
 import os
+import platform
 from datetime import datetime, timedelta
 
 import mock
@@ -353,3 +354,10 @@ class TestJSONCache(unittest.TestCase):
     def test_key_error_raised_when_cache_key_does_not_exist(self):
         with self.assertRaises(KeyError):
             self.cache['foo']
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'File permissions tests not supported on Windows.')
+    def test_permissions_for_file_restricted(self):
+        self.cache['mykey'] = {'foo': 'bar'}
+        filename = os.path.join(self.tempdir, 'mykey.json')
+        self.assertEqual(os.stat(filename).st_mode & 0xFFF, 0o600)

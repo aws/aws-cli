@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:AssumeRole: Fix issue with cache filenames when assuming a role
+  on Windows
+  (`issue 1063 <https://github.com/aws/aws-cli/issues/1063>`__)
+
+
 1.6.9
 =====
 

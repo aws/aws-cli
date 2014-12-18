@@ -137,7 +137,34 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
     aws emr create-cluster --steps file://./step.json --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
 
-**14. To add Hive steps when creating an Amazon EMR cluster**
+**14. To use multiple files in a Streaming step (JSON only)**
+
+- JSON (multiplefiles.json)::
+
+   [
+     {
+        "Name": "JSON Streaming Step",
+        "Type": "STREAMING",
+        "ActionOnFailure": "CONTINUE",
+        "Args": [
+            "-files",
+            "s3://mybucket/mapper.py,s3://mybucket/reducer.py",
+            "-mapper",
+            "mapper.py",
+            "-reducer",
+            "reducer.py",
+            "-input",
+            "s3://mybucket/input",
+            "-output",
+            "s3://mybucket/output"]
+     }
+   ]
+
+- Command::
+
+    aws emr create-cluster --steps file://./multiplefiles.json --ami-version 3.3.1 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --auto-terminate
+
+**15. To add Hive steps when creating an Amazon EMR cluster**
 
 - Command::
 
@@ -151,7 +178,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
     Name, ActionOnFailure
 
-**15. To add Pig steps when creating an Amazon EMR cluster**
+**16. To add Pig steps when creating an Amazon EMR cluster**
 
 - Command::
 
@@ -165,7 +192,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
     Name, ActionOnFailure
 
-**16. To add Impala steps when creating an Amazon EMR cluster**
+**17. To add Impala steps when creating an Amazon EMR cluster**
 
 - Command::
 
@@ -179,7 +206,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
     Name, ActionOnFailure
 
-**17. To enable consistent view and server-side encryption in EMRFS when creating an Amazon EMR cluster and changing RetryCount, RetryPeriod, and encryption algorithm from default values**
+**18. To enable consistent view and server-side encryption in EMRFS when creating an Amazon EMR cluster and changing RetryCount, RetryPeriod, and encryption algorithm from default values**
 
 - Command::
 

@@ -61,7 +61,51 @@ NOTE: JSON arguments must include options and values as their own items in the l
         ]
     }
 
-**3. To add Hive steps to a cluster**
+**3. To add a Streaming step with multiple files to a cluster (JSON only)**
+
+- JSON (multiplefiles.json)::
+
+   [
+     {
+        "Name": "JSON Streaming Step",
+        "Type": "STREAMING",
+        "ActionOnFailure": "CONTINUE",
+        "Args": [
+            "-files",
+            "s3://mybucket/mapper.py,s3://mybucket/reducer.py",
+            "-mapper",
+            "mapper.py",
+            "-reducer",
+            "reducer.py",
+            "-input",
+            "s3://mybucket/input",
+            "-output",
+            "s3://mybucket/output"]
+     }
+   ]
+
+- Command::
+
+    aws emr add-steps --cluster-id j-XXXXXXXX  --steps file://./multiplefiles.json
+
+- Required parameters::
+
+    Type, Args
+
+- Optional parameters::
+
+    Name, ActionOnFailure
+
+- Output::
+
+    {
+        "StepIds":[
+            "s-XXXXXXXX",
+        ]
+    }
+
+
+**4. To add Hive steps to a cluster**
 
 - Command::
 
@@ -86,7 +130,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
     }
 
 
-**4. To add Pig steps to a cluster**
+**5. To add Pig steps to a cluster**
 
 - Command::
 
@@ -111,7 +155,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
     }
 
 
-**5. To add Impala steps to a cluster**
+**6. To add Impala steps to a cluster**
 
 - Command::
 

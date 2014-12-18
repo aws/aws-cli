@@ -504,6 +504,23 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result['Steps'] = debugging_config
         self.assert_params_for_cmd2(cmd, result)
 
+        cmd = DEFAULT_CMD + ('--log-uri s3://test/logs --enable-debugging '
+                             '--region us-west-2')
+        debugging_config = \
+            [{'Name': 'Setup Hadoop Debugging',
+              'ActionOnFailure': 'TERMINATE_CLUSTER',
+              'HadoopJarStep':
+                {'Args':
+                    [('s3://us-west-2.elasticmapreduce/libs/'
+                      'state-pusher/0.1/fetch')],
+                 'Jar':
+                    's3://us-west-2.elasticmapreduce/libs/' +
+                    'script-runner/script-runner.jar'
+                 }
+              }]
+        result['Steps'] = debugging_config
+        self.assert_params_for_cmd2(cmd, result)
+
     def test_enable_debugging_no_log_uri(self):
         cmd = DEFAULT_CMD + '--enable-debugging'
         expected_error_msg = (

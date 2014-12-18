@@ -117,8 +117,8 @@ def add_cli_sdist(scratch_dir):
     with cd(awscli_dir):
         run('python setup.py sdist')
         filename = os.listdir('dist')[0]
-        os.rename(os.path.join('dist', filename),
-                os.path.join(scratch_dir, filename))
+        shutil.move(os.path.join('dist', filename),
+                    os.path.join(scratch_dir, filename))
 
 
 def create_bootstrap_script(scratch_dir):
@@ -133,7 +133,7 @@ def zip_dir(scratch_dir):
     final_dir_name = os.path.join(dirname, 'awscli-bundle')
     if os.path.isdir(final_dir_name):
         shutil.rmtree(final_dir_name)
-    os.rename(scratch_dir, final_dir_name)
+    shutil.move(scratch_dir, final_dir_name)
     with cd(dirname):
         with zipfile.ZipFile(basename, 'w', zipfile.ZIP_DEFLATED) as zipped:
             for root, dirnames, filenames in os.walk('awscli-bundle'):

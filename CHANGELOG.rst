@@ -2,12 +2,22 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.10
+======
 
 * bugfix:AssumeRole: Fix issue with cache filenames when assuming a role
   on Windows
   (`issue 1063 <https://github.com/aws/aws-cli/issues/1063>`__)
+* bugfix:``aws s3 ls``: Fix issue when listing Amazon S3 objects containing
+  non-ascii characters in eu-central-1
+  (`issue 1046 <https://github.com/aws/aws-cli/issues/1046>`__)
+* feature:``aws storagegateway``: Update the ``aws storagegateway`` command
+  to the latest version
+* feature:``aws emr``: Update the ``aws emr`` command to the latest
+  version
+* bugfix:``aws emr create-cluster``: Fix script runnner jar to the current
+  region location when ``--enable-debugging`` is specified in the
+  ``aws emr create-cluster`` command
 
 
 1.6.9

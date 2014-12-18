@@ -13,6 +13,7 @@
 import shutil
 import tempfile
 import os
+import platform
 from datetime import datetime, timedelta
 
 import mock
@@ -131,6 +132,31 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         self.assertEqual(credentials.access_key, 'foo-cached')
         self.assertEqual(credentials.secret_key, 'bar-cached')
         self.assertEqual(credentials.token, 'baz-cached')
+
+    def test_cache_key_is_windows_safe(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': datetime.now(tzlocal()).isoformat()
+            },
+        }
+        cache = {}
+        self.fake_config['profiles']['development']['role_arn'] = (
+            'arn:aws:iam::foo-role')
+
+        client_creator = self.create_client_creator(with_response=response)
+        provider = assumerole.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator, cache=cache, profile_name='development')
+
+        provider.load()
+        # On windows, you cannot use a a ':' in the filename, so
+        # we need to do some small transformations on the filename
+        # to replace any ':' that come up.
+        self.assertEqual(cache['development--arn_aws_iam__foo-role'],
+                         response)
 
     def test_assume_role_in_cache_but_expired(self):
         expired_creds = datetime.utcnow()
@@ -328,3 +354,10 @@ class TestJSONCache(unittest.TestCase):
     def test_key_error_raised_when_cache_key_does_not_exist(self):
         with self.assertRaises(KeyError):
             self.cache['foo']
+
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'File permissions tests not supported on Windows.')
+    def test_permissions_for_file_restricted(self):
+        self.cache['mykey'] = {'foo': 'bar'}
+        filename = os.path.join(self.tempdir, 'mykey.json')
+        self.assertEqual(os.stat(filename).st_mode & 0xFFF, 0o600)

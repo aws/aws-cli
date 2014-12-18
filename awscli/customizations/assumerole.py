@@ -120,7 +120,8 @@ class JSONFileCache(object):
                              "JSON serializable: %s" % value)
         if not os.path.isdir(self._working_dir):
             os.makedirs(self._working_dir)
-        with open(full_key, 'w') as f:
+        with os.fdopen(os.open(full_key,
+                               os.O_WRONLY | os.O_CREAT, 0o600), 'w') as f:
             f.write(file_content)
 
     def _convert_cache_key(self, cache_key):
@@ -231,7 +232,10 @@ class AssumeRoleProvider(credentials.CredentialProvider):
 
     def _create_cache_key(self):
         role_config = self._get_role_config_values()
-        cache_key = '%s--%s' % (self._profile_name, role_config['role_arn'])
+        # On windows, ':' is not allowed in filenames, so we'll
+        # replace them with '_' instead.
+        role_arn = role_config['role_arn'].replace(':', '_')
+        cache_key = '%s--%s' % (self._profile_name, role_arn)
         return cache_key.replace('/', '-')
 
     def _write_cached_credentials(self, creds, cache_key):

@@ -1,0 +1,20 @@
+**To describe a cluster**
+
+This example command provides a description of the specified cluster in your default region.
+
+Command::
+
+  aws ecs describe-cluster --cluster default
+
+Output::
+
+	{
+	    "clusters": [
+	        {
+	            "clusterName": "default",
+	            "status": "ACTIVE",
+	            "clusterArn": "arn:aws:ecs:us-west-2:<aws_account_id>:cluster/default"
+	        }
+	    ],
+	    "failures": []
+	}

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.6.10
+======
 
 * bugfix:AssumeRole: Fix issue with cache filenames when assuming a role
   on Windows

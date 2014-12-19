@@ -8,6 +8,10 @@ Next Release (TBD)
 * bugfix:``aws ec2 run-instances``: Allow binary files to be passed to
   ``--user-data``
   (`botocore issue 416 <https://github.com/boto/botocore/pull/416>`_)
+* bugfix:``aws cloudsearchdomain suggest``: Add ``--suggest-query``
+  option to fix the argument being shadowed by the top level
+  ``--query`` option.
+  (`issue 1068 <https://github.com/aws/aws-cli/pull/1068>`__)
 
 
 1.6.10

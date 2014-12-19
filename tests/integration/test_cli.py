@@ -18,6 +18,49 @@ import shutil
 
 import botocore.session
 from awscli.testutils import unittest, aws
+from awscli.clidriver import create_clidriver
+
+
+def test_no_shadowed_builtins():
+    """Verify no command params are shadowed by the built in param.
+
+    The CLI parses all command line options into a single namespace.
+    This means that option names must be unique and cannot conflict
+    with the top level params.
+
+    For example, there's a top level param ``--version``.  If an
+    operation for a service also provides a ``--version`` option,
+    it can never be called because we'll assume the user meant
+    the top level ``--version`` param.
+
+    In order to ensure this doesn't happen, this test will go
+    through every command table and ensure we're not shadowing
+    any builtins.
+
+    Also, rather than being a test generator, we're going to just
+    aggregate all the failures in one pass and surface them as
+    a single test failure.
+
+    """
+    driver = create_clidriver()
+    help_command = driver.create_help_command()
+    top_level_params = set(driver.create_help_command().arg_table)
+    errors = []
+    for command_name, command_obj in help_command.command_table.items():
+        sub_help = command_obj.create_help_command()
+        if hasattr(sub_help, 'command_table'):
+            for sub_name, sub_command in sub_help.command_table.items():
+                op_help = sub_command.create_help_command()
+                arg_table = op_help.arg_table
+                for arg_name in arg_table:
+                    if arg_name in top_level_params:
+                        # Then we're shadowing a built in argument.
+                        errors.append(
+                            'Shadowing a top level option: %s.%s.%s' % (
+                                command_name, sub_name, arg_name))
+
+    if errors:
+        raise AssertionError('\n' + '\n'.join(errors))
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):

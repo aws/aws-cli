@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws ec2 run-instances``: Allow binary files to be passed to
+  ``--user-data``
+  (`botocore issue 416 <https://github.com/boto/botocore/pull/416>`_)
+
+
 1.6.10
 ======
 

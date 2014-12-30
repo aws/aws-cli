@@ -662,12 +662,12 @@ class TestSourceRegion(BaseS3CLICommand):
         # adding a .com at the end.
         for i in range(2):
             name_comp.append(''.join(random.sample(string.ascii_lowercase +
-                                                   string.digits,10)))
+                                                   string.digits, 10)))
         self.src_name = '.'.join(name_comp + ['com'])
         name_comp = []
         for i in range(2):
             name_comp.append(''.join(random.sample(string.ascii_lowercase +
-                                                   string.digits,10)))
+                                                   string.digits, 10)))
         self.dest_name = '.'.join(name_comp + ['com'])
         self.src_region = 'us-west-1'
         self.dest_region = 'us-east-1'
@@ -807,8 +807,8 @@ class TestSymlinks(BaseS3CLICommand):
                                                  'c-goodsymlink'))
 
     def test_no_follow_symlinks(self):
-        p = aws('s3 sync %s s3://%s/ --no-follow-symlinks' % (self.files.rootdir,
-                                                              self.bucket_name))
+        p = aws('s3 sync %s s3://%s/ --no-follow-symlinks' % (
+            self.files.rootdir, self.bucket_name))
         self.assert_no_errors(p)
         self.assertTrue(not self.key_exists(self.bucket_name,
                         'a-goodsymlink'))
@@ -1063,7 +1063,8 @@ class TestOutput(BaseS3CLICommand):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/ --only-show-errors' % (foo_txt, bucket_name))
+        p = aws('s3 cp %s s3://%s/ --only-show-errors' % (foo_txt,
+                                                          bucket_name))
         self.assertEqual(p.rc, 0)
         # Check that nothing was printed to stdout.
         self.assertEqual('', p.stdout)
@@ -1368,7 +1369,7 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
     def test_exclude_filter_with_delete(self):
         # Test for: https://github.com/aws/aws-cli/issues/778
         bucket_name = self.create_bucket()
-        first = self.files.create_file('foo.txt', 'contents')
+        self.files.create_file('foo.txt', 'contents')
         second = self.files.create_file('bar.py', 'contents')
         p = aws("s3 sync %s s3://%s/" % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
@@ -1396,7 +1397,7 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         # Same test as test_exclude_filter_with_delete, except we don't
         # use an absolute path on the source dir.
         bucket_name = self.create_bucket()
-        first = self.files.create_file('foo.txt', 'contents')
+        self.files.create_file('foo.txt', 'contents')
         second = self.files.create_file('bar.py', 'contents')
         p = aws("s3 sync %s s3://%s/" % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
@@ -1429,8 +1430,8 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
         # https://github.com/aws/aws-cli/issues/794
         bucket_name = self.create_bucket()
         dir_name = os.path.join(self.files.rootdir, 'temp')
-        filename = self.files.create_file(os.path.join(dir_name, 'test.txt'),
-                                                       contents='foo')
+        self.files.create_file(os.path.join(dir_name, 'test.txt'),
+                               contents='foo')
         # Sync a local directory to an s3 prefix.
         p = aws('s3 sync %s s3://%s/temp' % (dir_name, bucket_name))
         self.assert_no_errors(p)
@@ -1459,8 +1460,8 @@ class TestFileWithSpaces(BaseS3CLICommand):
     def test_sync_file_with_spaces(self):
         bucket_name = self.create_bucket()
         bucket_name = self.create_bucket()
-        filename = self.files.create_file(
-            'with space.txt', 'contents', mtime=time.time() - 300)
+        self.files.create_file('with space.txt',
+                               'contents', mtime=time.time() - 300)
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir,
                                          bucket_name))
         self.assert_no_errors(p)

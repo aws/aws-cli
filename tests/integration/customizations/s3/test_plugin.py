@@ -24,6 +24,8 @@ import stat
 import signal
 import string
 import socket
+import tempfile
+import shutil
 
 import botocore.session
 from awscli.compat import six
@@ -124,7 +126,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def remove_all_objects(self, bucket_name):
         operation = self.service.get_operation('ListObjects')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name]) 
+        endpoint = self.service.get_endpoint(self.regions[bucket_name])
         pages = operation.paginate(endpoint, bucket=bucket_name)
         parsed = pages.build_full_result()
         key_names = [obj['Key'] for obj in parsed['Contents']]
@@ -516,11 +518,11 @@ class TestSync(BaseS3CLICommand):
                 self.files.create_file('foo +%06d' % i,
                                        contents='',
                                        mtime=mtime))
-        p = aws('s3 sync %s s3://%s/ --page-size 2' % 
+        p = aws('s3 sync %s s3://%s/ --page-size 2' %
                 (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
         time.sleep(1)
-        p2 = aws('s3 sync %s s3://%s/ --page-size 2' 
+        p2 = aws('s3 sync %s s3://%s/ --page-size 2'
                  % (self.files.rootdir, bucket_name))
         self.assertNotIn('upload:', p2.stdout)
         self.assertEqual('', p2.stdout)
@@ -540,7 +542,7 @@ class TestSync(BaseS3CLICommand):
         for key in keynames:
             self.assertTrue(self.key_exists(bucket_name, key))
 
-        p = aws('s3 sync s3://%s/ s3://%s/ --page-size 2' % 
+        p = aws('s3 sync s3://%s/ s3://%s/ --page-size 2' %
                 (bucket_name, bucket_name_2))
         self.assert_no_errors(p)
         for key in keynames:
@@ -550,13 +552,13 @@ class TestSync(BaseS3CLICommand):
                  (bucket_name, bucket_name_2))
         self.assertNotIn('copy:', p2.stdout)
         self.assertEqual('', p2.stdout)
-    
+
     def test_sync_no_resync(self):
         self.files.create_file('xyz123456789', contents='test1')
         self.files.create_file(os.path.join('xyz1', 'test'), contents='test2')
         self.files.create_file(os.path.join('xyz', 'test'), contents='test3')
         bucket_name = self.create_bucket()
-        
+
         p = aws('s3 sync %s s3://%s' % (self.files.rootdir, bucket_name))
         self.assert_no_errors(p)
         time.sleep(2)
@@ -659,12 +661,12 @@ class TestSourceRegion(BaseS3CLICommand):
         # sequences of characters and joining them with a period and
         # adding a .com at the end.
         for i in range(2):
-            name_comp.append(''.join(random.sample(string.ascii_lowercase + 
+            name_comp.append(''.join(random.sample(string.ascii_lowercase +
                                                    string.digits,10)))
         self.src_name = '.'.join(name_comp + ['com'])
         name_comp = []
         for i in range(2):
-            name_comp.append(''.join(random.sample(string.ascii_lowercase + 
+            name_comp.append(''.join(random.sample(string.ascii_lowercase +
                                                    string.digits,10)))
         self.dest_name = '.'.join(name_comp + ['com'])
         self.src_region = 'us-west-1'
@@ -674,21 +676,21 @@ class TestSourceRegion(BaseS3CLICommand):
 
     def testFailWithoutRegion(self):
         self.files.create_file('foo.txt', 'foo')
-        p = aws('s3 sync %s s3://%s/ --region %s' % 
+        p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
         self.assert_no_errors(p)
-        p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s' % 
+        p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s' %
                  (self.src_bucket, self.dest_bucket, self.src_region))
         self.assertEqual(p2.rc, 1, p2.stdout)
         self.assertIn('PermanentRedirect', p2.stderr)
 
     def testCpRegion(self):
         self.files.create_file('foo.txt', 'foo')
-        p = aws('s3 sync %s s3://%s/ --region %s' % 
+        p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
         self.assert_no_errors(p)
         p2 = aws('s3 cp s3://%s/ s3://%s/ --region %s --source-region %s '
-                 '--recursive' % 
+                 '--recursive' %
                  (self.src_bucket, self.dest_bucket, self.dest_region,
                   self.src_region))
         self.assertEqual(p2.rc, 0, p2.stdout)
@@ -697,7 +699,7 @@ class TestSourceRegion(BaseS3CLICommand):
 
     def testSyncRegion(self):
         self.files.create_file('foo.txt', 'foo')
-        p = aws('s3 sync %s s3://%s/ --region %s' % 
+        p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
         self.assert_no_errors(p)
         p2 = aws('s3 sync s3://%s/ s3://%s/ --region %s --source-region %s ' %
@@ -709,11 +711,11 @@ class TestSourceRegion(BaseS3CLICommand):
 
     def testMvRegion(self):
         self.files.create_file('foo.txt', 'foo')
-        p = aws('s3 sync %s s3://%s/ --region %s' % 
+        p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
         self.assert_no_errors(p)
         p2 = aws('s3 mv s3://%s/ s3://%s/ --region %s --source-region %s '
-                 '--recursive' % 
+                 '--recursive' %
                  (self.src_bucket, self.dest_bucket, self.dest_region,
                   self.src_region))
         self.assertEqual(p2.rc, 0, p2.stdout)
@@ -743,12 +745,12 @@ class TestSourceRegion(BaseS3CLICommand):
 class TestWarnings(BaseS3CLICommand):
     def extra_setup(self):
         self.bucket_name = self.create_bucket()
-    
+
     def test_no_exist(self):
         filename = os.path.join(self.files.rootdir, "no-exists-file")
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
         self.assertEqual(p.rc, 2, p.stderr)
-        self.assertIn('warning: Skipping file %s. File does not exist.' % 
+        self.assertIn('warning: Skipping file %s. File does not exist.' %
                       filename, p.stderr)
 
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
@@ -759,7 +761,7 @@ class TestWarnings(BaseS3CLICommand):
         self.files.create_file('foo.txt', 'foo')
         filename = os.path.join(self.files.rootdir, 'foo.txt')
         permissions = stat.S_IMODE(os.stat(filename).st_mode)
-        # Remove read permissions 
+        # Remove read permissions
         permissions = permissions ^ stat.S_IREAD
         os.chmod(filename, permissions)
         p = aws('s3 cp %s s3://%s/' % (filename, self.bucket_name))
@@ -855,11 +857,11 @@ class TestSymlinks(BaseS3CLICommand):
         self.assertEqual(self.get_key_contents(self.bucket_name,
                                                key_name='realfiles/foo.txt'),
                          'foo.txt contents')
-    
+
     def test_bad_symlink(self):
         p = aws('s3 sync %s s3://%s/' % (self.files.rootdir, self.bucket_name))
         self.assertEqual(p.rc, 2, p.stderr)
-        self.assertIn('warning: Skipping file %s. File does not exist.' % 
+        self.assertIn('warning: Skipping file %s. File does not exist.' %
                       os.path.join(self.files.rootdir, 'b-badsymlink'),
                       p.stderr)
 
@@ -1009,7 +1011,7 @@ class TestMbRb(BaseS3CLICommand):
     def test_mb_rb(self):
         p = aws('s3 mb s3://%s' % self.bucket_name)
         self.assert_no_errors(p)
-        
+
         # Give the bucket time to form.
         time.sleep(1)
         response = self.list_buckets()
@@ -1311,7 +1313,9 @@ class TestIncludeExcludeFilters(BaseS3CLICommand):
 
     def test_cwd_doesnt_matter(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        with cd(os.path.expanduser('~')):
+        tempdir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tempdir)
+        with cd(tempdir):
             p = aws("s3 cp %s s3://random-bucket-name/ --dryrun --exclude '*'"
                     % full_path)
         self.assert_no_files_would_be_uploaded(p)

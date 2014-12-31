@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws cloudfront wait``: Fix issue where wait commands did not
+  stop waiting when a success state was reached.
+  (`botocore issue 426 <https://github.com/boto/botocore/pull/426>`_)
 * bugfix:``aws ec2 run-instances``: Allow binary files to be passed to
   ``--user-data``
   (`botocore issue 416 <https://github.com/boto/botocore/pull/416>`_)

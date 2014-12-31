@@ -15,6 +15,9 @@ Next Release (TBD)
   option to fix the argument being shadowed by the top level
   ``--query`` option.
   (`issue 1068 <https://github.com/aws/aws-cli/pull/1068>`__)
+* bugfix:``aws emr``: Fix issue with endpoints for ``eu-central-1`` and
+  ``cn-north-1``
+  (`botocore issue 423 <https://github.com/boto/botocore/pull/423>`__)
 
 
 1.6.10

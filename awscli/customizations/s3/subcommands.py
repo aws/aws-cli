@@ -96,7 +96,7 @@ ACL = {'name': 'acl', 'nargs': 1,
                    'authenticated-read', 'bucket-owner-read',
                    'bucket-owner-full-control', 'log-delivery-write'],
        'help_text': (
-           "Sets the ACl for the object when the command is "
+           "Sets the ACL for the object when the command is "
            "performed.  Only accepts values of ``private``, ``public-read``, "
            "``public-read-write``, ``authenticated-read``, "
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "

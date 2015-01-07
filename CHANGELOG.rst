@@ -18,6 +18,10 @@ Next Release (TBD)
 * bugfix:``aws emr``: Fix issue with endpoints for ``eu-central-1`` and
   ``cn-north-1``
   (`botocore issue 423 <https://github.com/boto/botocore/pull/423>`__)
+* bugfix:``aws s3``: Fix issue where empty XML nodes are now parsed
+  as an empty string ``""`` instead of ``null``, which allows for
+  round tripping ``aws s3 get/put-bucket-lifecycle``
+  (`issue 1076 <https://github.com/aws/aws-cli/issues/1076>`__)
 
 
 1.6.10

@@ -95,8 +95,9 @@ PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
                  '<p>Valid protocol values: <code>tcp</code>, '
                  '<code>udp</code>, <code>icmp</code></p>')
 PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
-             '  A single integer or a range (min-max). You can '
-             'specify <code>all</code> to mean all ports</p>')
+             '  A single integer or a range (min-max). A value of '
+             '<code>-1</code> indicates all ICMP codes for the '
+             'specified ICMP type.</p>')
 CIDR_DOCS = '<p>The CIDR IP range.</p>'
 SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group. '
                     'Cannot be used when specifying a CIDR IP address.')

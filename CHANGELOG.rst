@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+1.7.0
+=====
+
+* feature:``aws cloudhsm``: Add support for AWS CloudHSM. 
+* feature:``aws ecs``: Add support for ``aws ecs``, the Amazon EC2
+  Container Service (ECS)
+* feature:``aws rds``: Add Encryption at Rest and CloudHSM Support.
+* feature:``aws ec2``: Add Classic Link support
+* feature:``aws cloudsearch``: Update ``aws cloudsearch`` command
+  to latest version
+* bugfix:``aws cloudfront wait``: Fix issue where wait commands did not
+  stop waiting when a success state was reached.
+  (`botocore issue 426 <https://github.com/boto/botocore/pull/426>`_)
+* bugfix:``aws ec2 run-instances``: Allow binary files to be passed to
+  ``--user-data``
+  (`botocore issue 416 <https://github.com/boto/botocore/pull/416>`_)
+* bugfix:``aws cloudsearchdomain suggest``: Add ``--suggest-query``
+  option to fix the argument being shadowed by the top level
+  ``--query`` option.
+  (`issue 1068 <https://github.com/aws/aws-cli/pull/1068>`__)
+* bugfix:``aws emr``: Fix issue with endpoints for ``eu-central-1`` and
+  ``cn-north-1``
+  (`botocore issue 423 <https://github.com/boto/botocore/pull/423>`__)
+* bugfix:``aws s3``: Fix issue where empty XML nodes are now parsed
+  as an empty string ``""`` instead of ``null``, which allows for
+  round tripping ``aws s3 get/put-bucket-lifecycle``
+  (`issue 1076 <https://github.com/aws/aws-cli/issues/1076>`__)
+
+
 1.6.10
 ======
 

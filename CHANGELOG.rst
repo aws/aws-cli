@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.0
+=====
 
 * feature:``aws cloudhsm``: Add support for AWS CloudHSM. 
 * feature:``aws ecs``: Add support for ``aws ecs``, the Amazon EC2

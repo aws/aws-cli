@@ -2,9 +2,16 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.0
+=====
 
+* feature:``aws cloudhsm``: Add support for AWS CloudHSM. 
+* feature:``aws ecs``: Add support for ``aws ecs``, the Amazon EC2
+  Container Service (ECS)
+* feature:``aws rds``: Add Encryption at Rest and CloudHSM Support.
+* feature:``aws ec2``: Add Classic Link support
+* feature:``aws cloudsearch``: Update ``aws cloudsearch`` command
+  to latest version
 * bugfix:``aws cloudfront wait``: Fix issue where wait commands did not
   stop waiting when a success state was reached.
   (`botocore issue 426 <https://github.com/boto/botocore/pull/426>`_)

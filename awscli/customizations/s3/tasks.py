@@ -414,7 +414,7 @@ class DownloadPartTask(OrderableTask):
         # for only the remaining parts.  The other alternative, which is what
         # we do here, is to just request the entire chunk size write.
         self._context.wait_for_turn(self._part_number)
-        chunk = body.read(self._chunk_size)
+        chunk = body.read()
         offset = self._part_number * self._chunk_size
         LOGGER.debug("Submitting IORequest to write queue.")
         self._io_queue.put(

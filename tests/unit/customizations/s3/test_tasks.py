@@ -418,7 +418,7 @@ class TestDownloadPartTask(unittest.TestCase):
         self.assertEqual(len(call_args_list), 1)
         self.assertEqual(call_args_list[0],
                          mock.call(('local/file', 0, b'foobar', True)))
-        success_body.read.assert_called_with(constants.CHUNKSIZE)
+        success_body.read.assert_called_with()
 
 
 class TestMultipartDownloadContext(unittest.TestCase):

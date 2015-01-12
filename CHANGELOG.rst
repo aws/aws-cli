@@ -2,10 +2,18 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3 cp``: Fix issue with parts of a file being
+  downloaded more than once when streaming to stdout
+  (`issue 1087 <https://github.com/aws/aws-cli/pull/1087>`__)
+
+
 1.7.0
 =====
 
-* feature:``aws cloudhsm``: Add support for AWS CloudHSM. 
+* feature:``aws cloudhsm``: Add support for AWS CloudHSM.
 * feature:``aws ecs``: Add support for ``aws ecs``, the Amazon EC2
   Container Service (ECS)
 * feature:``aws rds``: Add Encryption at Rest and CloudHSM Support.

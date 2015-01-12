@@ -18,6 +18,7 @@ import socket
 
 from botocore.exceptions import IncompleteReadError
 
+from awscli.customizations.s3 import constants
 from awscli.customizations.s3.tasks import CreateLocalFileTask
 from awscli.customizations.s3.tasks import CompleteDownloadTask
 from awscli.customizations.s3.tasks import DownloadPartTask
@@ -394,6 +395,30 @@ class TestDownloadPartTask(unittest.TestCase):
         self.context.cancel.assert_called_with()
         self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
                          self.service.get_operation.call_count)
+
+    def test_retried_requests_dont_enqueue_writes_twice(self):
+        error_body = mock.Mock()
+        error_body.read.side_effect = socket.timeout
+        success_body = mock.Mock()
+        success_body.read.side_effect = [b'foobar', b'']
+
+        incomplete_read = (mock.Mock(), {'Body': error_body})
+        success_read = (mock.Mock(), {'Body': success_body})
+        self.service.get_operation.return_value.call.side_effect = [
+            # The first request results in an error when reading the request.
+            incomplete_read,
+            success_read,
+        ]
+        self.filename.is_stream = True
+        task = DownloadPartTask(0, constants.CHUNKSIZE, self.result_queue,
+                                self.service, self.filename, self.context,
+                                self.io_queue)
+        task()
+        call_args_list = self.io_queue.put.call_args_list
+        self.assertEqual(len(call_args_list), 1)
+        self.assertEqual(call_args_list[0],
+                         mock.call(('local/file', 0, b'foobar', True)))
+        success_body.read.assert_called_with(constants.CHUNKSIZE)
 
 
 class TestMultipartDownloadContext(unittest.TestCase):

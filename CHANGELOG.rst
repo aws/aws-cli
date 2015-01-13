@@ -8,6 +8,9 @@ Next Release (TBD)
 * bugfix:``aws s3 cp``: Fix issue with parts of a file being
   downloaded more than once when streaming to stdout
   (`issue 1087 <https://github.com/aws/aws-cli/pull/1087>`__)
+* bugfix:``--no-sign-request``: Fix issue where requests were still trying to
+  be signed even though user used the ``--no-sign-request`` flag.
+  (https://github.com/boto/botocore/pull/433)
 
 
 1.7.0

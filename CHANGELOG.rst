@@ -10,7 +10,10 @@ Next Release (TBD)
   (`issue 1087 <https://github.com/aws/aws-cli/pull/1087>`__)
 * bugfix:``--no-sign-request``: Fix issue where requests were still trying to
   be signed even though user used the ``--no-sign-request`` flag.
-  (https://github.com/boto/botocore/pull/433)
+  (`botocore issue 433 <https://github.com/boto/botocore/pull/433>`__)
+* bugfix:``aws cloudsearchdomain search``: Fix invalid signatures when
+  using the ``aws cloudsearchdomain search`` command
+  (`issue 976 <https://github.com/aws/aws-cli/issues/976>`__)
 
 
 1.7.0

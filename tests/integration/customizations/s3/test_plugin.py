@@ -1591,5 +1591,26 @@ class TestLSWithProfile(BaseS3CLICommand):
         self.assert_no_errors(p)
 
 
+class TestNoSignRequests(BaseS3CLICommand):
+    def test_no_sign_request(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo', contents='bar',
+                        extra_args={'acl': 'public-read-write'})
+        env_vars = os.environ.copy()
+        env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
+        env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'
+        p = aws('s3 cp s3://%s/foo %s/ --region %s' %
+                (bucket_name, self.files.rootdir, self.region),
+                env_vars=env_vars)
+        # Should have credential issues
+        self.assertEqual(p.rc, 1)
+
+        p = aws('s3 cp s3://%s/foo %s/ --region %s --no-sign-request' %
+                (bucket_name, self.files.rootdir, self.region),
+                env_vars=env_vars)
+        # Should be able to download the file when not signing the request.
+        self.assert_no_errors(p)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -401,10 +401,31 @@ class DownloadPartTask(OrderableTask):
                      self._part_number, self._filename.dest)
         iterate_chunk_size = self.ITERATE_CHUNK_SIZE
         body.set_socket_timeout(self.READ_TIMEOUT)
+        if self._filename.is_stream:
+            self._queue_writes_for_stream(body)
+        else:
+            self._queue_writes_in_chunks(body, iterate_chunk_size)
+
+    def _queue_writes_for_stream(self, body):
+        # We have to handle an output stream differently.  The main reason is
+        # that we cannot seek() in the output stream.  This means that we need
+        # to queue the writes in order.  If we queue IO writes in smaller than
+        # part size chunks, on the case of a retry we'll need to do a range GET
+        # for only the remaining parts.  The other alternative, which is what
+        # we do here, is to just request the entire chunk size write.
+        self._context.wait_for_turn(self._part_number)
+        chunk = body.read()
+        offset = self._part_number * self._chunk_size
+        LOGGER.debug("Submitting IORequest to write queue.")
+        self._io_queue.put(
+            IORequest(self._filename.dest, offset, chunk,
+                      self._filename.is_stream)
+        )
+        self._context.done_with_turn()
+
+    def _queue_writes_in_chunks(self, body, iterate_chunk_size):
         amount_read = 0
         current = body.read(iterate_chunk_size)
-        if self._filename.is_stream:
-            self._context.wait_for_turn(self._part_number)
         while current:
             offset = self._part_number * self._chunk_size + amount_read
             LOGGER.debug("Submitting IORequest to write queue.")
@@ -418,8 +439,6 @@ class DownloadPartTask(OrderableTask):
         # Change log message.
         LOGGER.debug("Done queueing writes for part number %s to file: %s",
                      self._part_number, self._filename.dest)
-        if self._filename.is_stream:
-            self._context.done_with_turn()
 
 
 class CreateMultipartUploadTask(BasicTask):

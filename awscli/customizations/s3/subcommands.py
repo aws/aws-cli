@@ -206,8 +206,11 @@ EXPECTED_SIZE = {'name': 'expected-size',
                      'due to too many parts in upload.')}
 
 
-PAGE_SIZE = {'name': 'page-size', 'help_text': 'The size of each page.',
-             'cli_type_name': 'integer'}
+PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
+			 'help_text': (
+				 'The number of results to return in each response to a list '
+				 'operation. The default value is 1000 (the maximum allowed). '
+				 'Using a lower value may help if an operation times out.')}
 
 
 TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.1
+=====
 
 * bugfix:``aws s3 cp``: Fix issue with parts of a file being
   downloaded more than once when streaming to stdout

@@ -255,11 +255,17 @@ class TestParamShorthand(BaseArgProcessTest):
         self.assertEqual(simplified, expected)
 
     def test_list_structure_list_multiple_scalar(self):
-        p = self.get_param_model('elastictranscoder.CreateJob.Playlists')
+        p = self.get_param_model(
+            'emr.ModifyInstanceGroups.InstanceGroups')
         returned = self.simplify(
-            p, ['Name=foo,Format=hslv3,OutputKeys=iphone1,iphone2'])
-        self.assertEqual(returned, [{'OutputKeys': ['iphone1', 'iphone2'],
-                                     'Name': 'foo', 'Format': 'hslv3'}])
+            p,
+            ['InstanceGroupId=foo,InstanceCount=3,'
+             'EC2InstanceIdsToTerminate=i-12345,i-67890'])
+        self.assertEqual(returned, [{'EC2InstanceIdsToTerminate': [
+                                         'i-12345', 'i-67890'
+                                     ],
+                                     'InstanceGroupId': 'foo',
+                                     'InstanceCount': 3}])
 
     def test_list_structure_scalars_2(self):
         p = self.get_param_model('elb.CreateLoadBalancer.Listeners')
@@ -505,12 +511,15 @@ class TestDocGen(BaseArgProcessTest):
         self.assertIn('SSLCertificateId=string', generated_example)
 
     def test_gen_list_structure_multiple_scalar_docs(self):
-        argument = self.get_param_model('elastictranscoder.CreateJob.Playlists')
+        argument = self.get_param_model(
+            'emr.ModifyInstanceGroups.InstanceGroups')
         expected = (
             'Key value pairs, where values are separated by commas, '
              'and multiple pairs are separated by spaces.\n'
-             '--playlists Name=string1,Format=string1,OutputKeys=string1,string2 '
-             'Name=string1,Format=string1,OutputKeys=string1,string2')
+             '--instance-groups InstanceGroupId=string1,'
+             'InstanceCount=integer1,EC2InstanceIdsToTerminate=string1,'
+             'string2 InstanceGroupId=string1,InstanceCount=integer1,'
+             'EC2InstanceIdsToTerminate=string1,string2')
         self.assert_generated_example_is(argument, expected)
 
     def test_gen_list_structure_list_scalar_scalar_docs(self):

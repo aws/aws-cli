@@ -452,4 +452,7 @@ IORequest = namedtuple('IORequest',
                        ['filename', 'offset', 'data', 'is_stream'])
 # Used to signal that IO for the filename is finished, and that
 # any associated resources may be cleaned up.
-IOCloseRequest = namedtuple('IOCloseRequest', ['filename'])
+_IOCloseRequest = namedtuple('IOCloseRequest', ['filename', 'desired_mtime'])
+class IOCloseRequest(_IOCloseRequest):
+    def __new__(cls, filename, desired_mtime=None):
+        return super(IOCloseRequest, cls).__new__(cls, filename, desired_mtime)

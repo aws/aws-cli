@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import logging
 import sys
 import threading
@@ -175,6 +176,9 @@ class IOWriterThread(threading.Thread):
                 if fileobj is not None:
                     fileobj.close()
                     del self.fd_descriptor_cache[task.filename]
+                if task.desired_mtime is not None:
+                    os.utime(task.filename, (task.desired_mtime,
+                                             task.desired_mtime))
 
     def _cleanup(self):
         for fileobj in self.fd_descriptor_cache.values():

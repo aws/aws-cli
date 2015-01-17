@@ -13,12 +13,13 @@
 import os
 import tempfile
 import shutil
-from awscli.compat import six
-from six.moves import queue
+import time
 import sys
 
 import mock
 
+from awscli.compat import six
+from six.moves import queue
 from awscli.testutils import unittest, temporary_file
 from awscli.customizations.s3.executor import IOWriterThread
 from awscli.customizations.s3.executor import ShutdownThreadRequest
@@ -73,6 +74,17 @@ class TestIOWriterThread(unittest.TestCase):
             self.assertEqual(f.read(), b'foobar')
         with open(second_file, 'rb') as f:
             self.assertEqual(f.read(), b'otherstuff')
+
+    def test_mtime_set_at_file_close_time(self):
+        # We're picking something other than the close time so that can verify
+        # that the IOCloseRequest can specify what the mtime should be.
+        now_time = int(time.time() - 100)
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
+        self.queue.put(IOCloseRequest(self.filename, now_time))
+        self.queue.put(ShutdownThreadRequest())
+        self.io_thread.run()
+        actual_mtime = int(os.stat(self.filename).st_mtime)
+        self.assertEqual(actual_mtime, now_time)
 
     def test_stream_requests(self):
         # Test that offset has no affect on the order in which requests

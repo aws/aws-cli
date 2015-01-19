@@ -116,6 +116,63 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         self.parsed_responses = [{}]
         self.run_cmd('s3 ls s3://bucket/foo', expected_rc=1)
 
+    def test_humanize_file_size(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
+            {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
+            {"Key": "onekilobyte.txt", "Size": 1000, "LastModified": time_utc},
+            {"Key": "onemegabyte.txt", "Size": 1000**2, "LastModified": time_utc},
+            {"Key": "onegigabyte.txt", "Size": 1000**3, "LastModified": time_utc},
+            {"Key": "oneterabyte.txt", "Size": 1000**4, "LastModified": time_utc},
+            {"Key": "onepetabyte.txt", "Size": 1000**5, "LastModified": time_utc} ]}]
+        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --humanize', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        # Time is stored in UTC timezone, but the actual time displayed
+        # is specific to your tzinfo, so shift the timezone to your local's.
+        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
+        self.assertIn('%s     1 Byte onebyte.txt\n' % time_fmt, stdout)
+        self.assertIn('%s     1.0 kB onekilobyte.txt\n' % time_fmt, stdout)
+        self.assertIn('%s     1.0 MB onemegabyte.txt\n' % time_fmt, stdout)
+        self.assertIn('%s     1.0 GB onegigabyte.txt\n' % time_fmt, stdout)
+        self.assertIn('%s     1.0 TB oneterabyte.txt\n' % time_fmt, stdout)
+        self.assertIn('%s     1.0 PB onepetabyte.txt\n' % time_fmt, stdout)
+
+    def test_summarize(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
+            {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
+            {"Key": "onekilobyte.txt", "Size": 1000, "LastModified": time_utc},
+            {"Key": "onemegabyte.txt", "Size": 1000**2, "LastModified": time_utc},
+            {"Key": "onegigabyte.txt", "Size": 1000**3, "LastModified": time_utc},
+            {"Key": "oneterabyte.txt", "Size": 1000**4, "LastModified": time_utc},
+            {"Key": "onepetabyte.txt", "Size": 1000**5, "LastModified": time_utc} ]}]
+        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --summarize', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        # Time is stored in UTC timezone, but the actual time displayed
+        # is specific to your tzinfo, so shift the timezone to your local's.
+        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
+        self.assertIn('Total Objects: 6\n', stdout)
+        self.assertIn('Total Size: 1001001001001001\n', stdout)
+
+    def test_summarize_with_humanize(self):
+        time_utc = "2014-01-09T20:45:49.000Z"
+        self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
+            {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
+            {"Key": "onekilobyte.txt", "Size": 1000, "LastModified": time_utc},
+            {"Key": "onemegabyte.txt", "Size": 1000**2, "LastModified": time_utc},
+            {"Key": "onegigabyte.txt", "Size": 1000**3, "LastModified": time_utc},
+            {"Key": "oneterabyte.txt", "Size": 1000**4, "LastModified": time_utc},
+            {"Key": "onepetabyte.txt", "Size": 1000**5, "LastModified": time_utc} ]}]
+        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --humanize --summarize', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        # Time is stored in UTC timezone, but the actual time displayed
+        # is specific to your tzinfo, so shift the timezone to your local's.
+        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
+        self.assertIn('Total Objects: 6\n', stdout)
+        self.assertIn('Total Size: 1.0 PB\n', stdout)
 
 if __name__ == "__main__":
     unittest.main()

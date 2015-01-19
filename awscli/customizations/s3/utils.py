@@ -456,3 +456,19 @@ _IOCloseRequest = namedtuple('IOCloseRequest', ['filename', 'desired_mtime'])
 class IOCloseRequest(_IOCloseRequest):
     def __new__(cls, filename, desired_mtime=None):
         return super(IOCloseRequest, cls).__new__(cls, filename, desired_mtime)
+
+
+
+humanize_suffixes = ('kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
+
+def humanize(value):
+    format='%.1f'
+    base = 1000
+    bytes = float(value)
+
+    if bytes == 1: return '1 Byte'
+    elif bytes < base: return '%d Bytes' % bytes
+
+    for i,sfx in enumerate(humanize_suffixes):
+        unit = base ** (i+2)
+        if bytes < unit: return (format + ' %s') % ((base * bytes / unit), sfx)

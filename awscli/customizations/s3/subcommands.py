@@ -27,7 +27,7 @@ from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
-    AppendFilter, find_dest_path_comp_key
+    AppendFilter, find_dest_path_comp_key, humanize
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 
@@ -37,6 +37,12 @@ RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
              'help_text': (
                  "Command is performed on all files or objects "
                  "under the specified directory or prefix.")}
+
+HUMANIZE = {'name': 'humanize', 'action': 'store_true', 'help_text': (
+                 "Displays file sizes in human readable format.")}
+
+SUMMARIZE = {'name': 'summarize', 'action': 'store_true', 'help_text': (
+                 "Displays summary information (number of objects, total size).")}
 
 DRYRUN = {'name': 'dryrun', 'action': 'store_true',
           'help_text': (
@@ -242,13 +248,16 @@ class ListCommand(S3Command):
     USAGE = "<S3Path> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE]
+                 PAGE_SIZE, HUMANIZE, SUMMARIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/ls.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
         self._empty_result = False
         self._at_first_page = True
+        self._total_size = 0
+        self._total_objects = 0
+        self._humanize = parsed_args.humanize
         path = parsed_args.paths
         if path.startswith('s3://'):
             path = path[5:]
@@ -261,6 +270,8 @@ class ListCommand(S3Command):
                                              parsed_args.page_size)
         else:
             self._list_all_objects(bucket, key, parsed_args.page_size)
+        if parsed_args.summarize:
+            self._print_summary()
         if key:
             # User specified a key to look for. We should return an rc of one   
             # if there are no matching keys and/or prefixes or return an rc
@@ -276,7 +287,6 @@ class ListCommand(S3Command):
             return 0
 
     def _list_all_objects(self, bucket, key, page_size=None):
-
         operation = self.service.get_operation('ListObjects')
         iterator = operation.paginate(self.endpoint, bucket=bucket,
                                       prefix=key, delimiter='/',
@@ -298,6 +308,8 @@ class ListCommand(S3Command):
             uni_print(print_str)
         for content in contents:
             last_mod_str = self._make_last_mod_str(content['LastModified'])
+            self._total_size += int(content['Size'])
+            self._total_objects += 1
             size_str = self._make_size_str(content['Size'])
             if use_basename:
                 filename_components = content['Key'].split('/')
@@ -343,7 +355,7 @@ class ListCommand(S3Command):
                         str(last_mod.day).zfill(2),
                         str(last_mod.hour).zfill(2),
                         str(last_mod.minute).zfill(2),
-                        str(last_mod.second).zfill(2))
+                       str(last_mod.second).zfill(2))
         last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
         return last_mod_str.ljust(19, ' ')
 
@@ -351,9 +363,17 @@ class ListCommand(S3Command):
         """
         This function creates the size string when objects are being listed.
         """
-        size_str = str(size)
+        size_str = humanize(size) if self._humanize else str(size)
         return size_str.rjust(10, ' ')
 
+    def _print_summary(self):
+        """
+        This function prints a summary of total objects and total bytes
+        """
+        print_str = str(self._total_objects)
+        uni_print("\nTotal Objects: ".rjust(15, ' ') + print_str + "\n")
+        print_str = humanize(self._total_size) if self._humanize else str(self._total_size)
+        uni_print("Total Size: ".rjust(15, ' ') + print_str + "\n")
 
 class WebsiteCommand(S3Command):
     NAME = 'website'

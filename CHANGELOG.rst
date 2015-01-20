@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.3
+=====
+
+* feature:``aws emr``: Add support for security groups.
+* feature:``aws cognitio-identity``: Enhance authentication flow by being able
+  to save associations of IAM roles with identity pools.
+
+
 1.7.2
 =====
 

@@ -61,7 +61,8 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
         cmd = self.prefix + ' Name=Task,InstanceType=m1.small,' +\
             'InstanceCount=5'
         result = self.run_cmd(cmd, 255)
-        self.assert_error_message_has_field_name(result[1], 'InstanceGroupType')
+        self.assert_error_message_has_field_name(result[1],
+                                                 'InstanceGroupType')
 
     def test_instance_groups_missing_instance_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceGroupType=Task,' +\

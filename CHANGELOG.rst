@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws autoscaling``: Add ClassicLink support.
+* bugfix:``aws s3``: Fix issue where mtime was set before file was finished
+  downloading.
+  (`issue 1102 <https://github.com/aws/aws-cli/pull/1102>`__)
+
+
 1.7.1
 =====
 

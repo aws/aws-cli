@@ -22,7 +22,7 @@ def build_applications(session,
     step_list = []
     ba_list = []
     region = parsed_globals.region if parsed_globals.region \
-                 else session.get_config_variable('region')
+        else session.get_config_variable('region')
 
     for app_config in parsed_applications:
         app_name = app_config['Name'].lower()

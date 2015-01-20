@@ -99,9 +99,12 @@ ADDITIONAL_INFO = (
 
 EC2_ATTRIBUTES = (
     '<p>Specifies the following Amazon EC2 attributes: KeyName,'
-    ' AvailabilityZone, SubnetId, and InstanceProfile. AvailabilityZone and '
-    'Subnet cannot be specified together. To create the default '
-    'instance profile <code>' + EC2_ROLE_NAME + '</code>,'
+    ' AvailabilityZone, SubnetId, InstanceProfile,'
+    ' EmrManagedMasterSecurityGroup, EmrManagedSlaveSecurityGroup,'
+    ' AdditionalMasterSecurityGroups and AdditionalSlaveSecurityGroups.'
+    ' AvailabilityZone and Subnet cannot be specified together.'
+    ' To create the default instance profile <code>'
+    + EC2_ROLE_NAME + '</code>,'
     ' use <code>aws emr create-default-roles</code> command. </p>'
     'This command will also create the default EMR service role '
     '<code>' + EMR_ROLE_NAME + '</code>.'
@@ -112,7 +115,16 @@ EC2_ATTRIBUTES = (
     '<li>SubnetId- Assign the EMR cluster to this Amazon VPC Subnet. </li>'
     '<li>InstanceProfile - Provides access to other AWS services such as S3,'
     ' DynamoDB from EC2 instances that are launched by EMR.. </li>'
-    )
+    '<li>EmrManagedMasterSecurityGroup - The identifier of the Amazon EC2'
+    ' security group (managed by Amazon Elastic MapReduce)'
+    ' for the master node. </li>'
+    '<li>EmrManagedSlaveSecurityGroup - The identifier of the Amazon EC2'
+    ' security group (managed by Amazon Elastic MapReduce)'
+    ' for the slave nodes.</li>'
+    '<li>AdditionalMasterSecurityGroups - A list of additional Amazon EC2'
+    ' security group IDs for the master node</li>'
+    '<li>AdditionalSlaveSecurityGroups - A list of additional Amazon EC2'
+    ' security group IDs for the slave nodes.</li>')
 
 AUTO_TERMINATE = (
     '<p>Specifies whether the cluster should terminate after'
@@ -227,3 +239,19 @@ LIST_CLUSTERS_CREATED_AFTER = (
 LIST_CLUSTERS_CREATED_BEFORE = (
     '<p>The creation date and time end value filter for '
     'listing clusters. For example, 2014-07-15T00:01:30. </p>')
+
+EMR_MANAGED_MASTER_SECURITY_GROUP = (
+    '<p>The identifier of the Amazon EC2 security group (managed by Amazon '
+    'Elastic MapReduce) for the master node.</p>')
+
+EMR_MANAGED_SLAVE_SECURITY_GROUP = (
+    '<p>The identifier of the Amazon EC2 security group (managed by Amazon '
+    'Elastic MapReduce) for the slave nodes.</p>')
+
+ADDITIONAL_MASTER_SECURITY_GROUPS = (
+    '<p> A list of additional Amazon EC2 security group IDs for '
+    'the master node</p>')
+
+ADDITIONAL_SLAVE_SECURITY_GROUPS = (
+    '<p>A list of additional Amazon EC2 security group IDs for '
+    'the slave nodes.</p>')

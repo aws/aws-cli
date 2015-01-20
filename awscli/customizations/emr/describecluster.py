@@ -77,7 +77,7 @@ class DescribeCluster(BasicCommand):
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
         http_response, response_data = operation_object.call(endpoint,
-                                                                 **parameters)
+                                                             **parameters)
         return response_data
 
     def _get_key_of_result(self, keys):

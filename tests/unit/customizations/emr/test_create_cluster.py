@@ -322,6 +322,16 @@ DEFAULT_RESULT = \
         'Tags': []
     }
 
+EMR_MANAGED_MASTER_SECURITY_GROUP = 'sg-master1'
+
+EMR_MANAGED_SLAVE_SECURITY_GROUP = 'sg-slave1'
+
+ADDITIONAL_MASTER_SECURITY_GROUPS = \
+    ['sg-addMaster1', 'sg-addMaster2', 'sg-addMaster3', 'sg-addMaster4']
+
+ADDITIONAL_SLAVE_SECURITY_GROUPS = \
+    ['sg-addSlave1', 'sg-addSlave2', 'sg-addSlave3', 'sg-addSlave4']
+
 
 class TestCreateCluster(BaseAWSCommandParamsTest):
     prefix = 'emr create-cluster '
@@ -1248,6 +1258,75 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_emr_fs.json')
         cmd = DEFAULT_CMD + '--emrfs file://' + data_path
+        self.assert_params_for_cmd2(cmd, result)
+
+    def test_all_security_groups(self):
+        cmd = DEFAULT_CMD + (
+            '--ec2-attributes EmrManagedMasterSecurityGroup=sg-master1,'
+            'EmrManagedSlaveSecurityGroup=sg-slave1,AdditionalMasterSecu'
+            'rityGroups=[sg-addMaster1,sg-addMaster2,sg-addMaster3,'
+            'sg-addMaster4],AdditionalSlaveSecurityGroups=[sg-addSlave1,'
+            'sg-addSlave2,sg-addSlave3,sg-addSlave4]')
+
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = result['Instances']
+        instances['EmrManagedMasterSecurityGroup'] = \
+            EMR_MANAGED_MASTER_SECURITY_GROUP
+        instances['EmrManagedSlaveSecurityGroup'] = \
+            EMR_MANAGED_SLAVE_SECURITY_GROUP
+        instances['AdditionalMasterSecurityGroups'] = \
+            ADDITIONAL_MASTER_SECURITY_GROUPS
+        instances['AdditionalSlaveSecurityGroups'] = \
+            ADDITIONAL_SLAVE_SECURITY_GROUPS
+
+        self.assert_params_for_cmd2(cmd, result)
+
+    def test_emr_managed_security_groups(self):
+        cmd = DEFAULT_CMD + (
+            '--ec2-attributes EmrManagedMasterSecurityGroup=sg-master1,'
+            'EmrManagedSlaveSecurityGroup=sg-slave1')
+
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = result['Instances']
+        instances['EmrManagedMasterSecurityGroup'] = \
+            EMR_MANAGED_MASTER_SECURITY_GROUP
+        instances['EmrManagedSlaveSecurityGroup'] = \
+            EMR_MANAGED_SLAVE_SECURITY_GROUP
+
+        self.assert_params_for_cmd2(cmd, result)
+
+    def test_additional_security_groups(self):
+        cmd = DEFAULT_CMD + (
+            '--ec2-attributes AdditionalMasterSecurityGroups=[sg-addMaster1'
+            ',sg-addMaster2,sg-addMaster3,sg-addMaster4],AdditionalSlaveSecu'
+            'rityGroups=[sg-addSlave1,sg-addSlave2,sg-addSlave3,sg-addSlave4]')
+
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = result['Instances']
+        instances['AdditionalMasterSecurityGroups'] = \
+            ADDITIONAL_MASTER_SECURITY_GROUPS
+        instances['AdditionalSlaveSecurityGroups'] = \
+            ADDITIONAL_SLAVE_SECURITY_GROUPS
+
+        self.assert_params_for_cmd2(cmd, result)
+
+    def test_security_groups_from_json_file(self):
+        data_path = os.path.join(
+            os.path.dirname(__file__),
+            'input_ec2_attributes_with_security_groups.json')
+        cmd = DEFAULT_CMD + '--ec2-attributes file://' + data_path
+
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = result['Instances']
+        instances['EmrManagedMasterSecurityGroup'] = \
+            EMR_MANAGED_MASTER_SECURITY_GROUP
+        instances['EmrManagedSlaveSecurityGroup'] = \
+            EMR_MANAGED_SLAVE_SECURITY_GROUP
+        instances['AdditionalMasterSecurityGroups'] = \
+            ADDITIONAL_MASTER_SECURITY_GROUPS
+        instances['AdditionalSlaveSecurityGroups'] = \
+            ADDITIONAL_SLAVE_SECURITY_GROUPS
+
         self.assert_params_for_cmd2(cmd, result)
 
 if __name__ == "__main__":

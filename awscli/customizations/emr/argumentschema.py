@@ -87,8 +87,29 @@ EC2_ATTRIBUTES_SCHEMA = {
                 EC2_ROLE_NAME + ". In order to use the default"
                 " role, you must have already created it using the "
                 "<code>create-default-roles</code> command. "
+        },
+        "EmrManagedMasterSecurityGroup": {
+            "type": "string",
+            "description": helptext.EMR_MANAGED_MASTER_SECURITY_GROUP
+        },
+        "EmrManagedSlaveSecurityGroup": {
+            "type": "string",
+            "description": helptext.EMR_MANAGED_SLAVE_SECURITY_GROUP
+        },
+        "AdditionalMasterSecurityGroups": {
+            "type": "array",
+            "description": helptext.ADDITIONAL_MASTER_SECURITY_GROUPS,
+            "items": {
+                "type": "string"
+            }
+        },
+        "AdditionalSlaveSecurityGroups": {
+            "type": "array",
+            "description": helptext.ADDITIONAL_SLAVE_SECURITY_GROUPS,
+            "items": {
+                "type": "string"
+            }
         }
-
     }
 }
 

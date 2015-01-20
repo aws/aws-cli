@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.2
+=====
 
 * feature:``aws autoscaling``: Add ClassicLink support.
 * bugfix:``aws s3``: Fix issue where mtime was set before file was finished

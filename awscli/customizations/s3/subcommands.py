@@ -27,7 +27,7 @@ from awscli.customizations.s3.fileinfo import TaskInfo, FileInfo
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
-    AppendFilter, find_dest_path_comp_key, humanize
+    AppendFilter, find_dest_path_comp_key, human_readable_size
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 
@@ -38,8 +38,8 @@ RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
                  "Command is performed on all files or objects "
                  "under the specified directory or prefix.")}
 
-HUMANIZE = {'name': 'humanize', 'action': 'store_true', 'help_text': (
-                 "Displays file sizes in human readable format.")}
+HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
+                  'help_text': "Displays file sizes in human readable format."}
 
 SUMMARIZE = {'name': 'summarize', 'action': 'store_true', 'help_text': (
                  "Displays summary information (number of objects, total size).")}
@@ -248,7 +248,7 @@ class ListCommand(S3Command):
     USAGE = "<S3Path> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMANIZE, SUMMARIZE]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/ls.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -257,7 +257,7 @@ class ListCommand(S3Command):
         self._at_first_page = True
         self._size_accumulator = 0
         self._total_objects = 0
-        self._humanize = parsed_args.humanize
+        self._human_readable = parsed_args.human_readable
         path = parsed_args.paths
         if path.startswith('s3://'):
             path = path[5:]
@@ -273,7 +273,7 @@ class ListCommand(S3Command):
         if parsed_args.summarize:
             self._print_summary()
         if key:
-            # User specified a key to look for. We should return an rc of one   
+            # User specified a key to look for. We should return an rc of one
             # if there are no matching keys and/or prefixes or return an rc
             # of zero if there are matching keys or prefixes.
             return self._check_no_objects()
@@ -363,7 +363,7 @@ class ListCommand(S3Command):
         """
         This function creates the size string when objects are being listed.
         """
-        size_str = humanize(size) if self._humanize else str(size)
+        size_str = human_readable_size(size) if self._human_readable else str(size)
         return size_str.rjust(10, ' ')
 
     def _print_summary(self):
@@ -372,8 +372,9 @@ class ListCommand(S3Command):
         """
         print_str = str(self._total_objects)
         uni_print("\nTotal Objects: ".rjust(15, ' ') + print_str + "\n")
-        print_str = humanize(self._size_accumulator) if self._humanize else str(self._size_accumulator)
+        print_str = human_readable_size(self._size_accumulator) if self._human_readable else str(self._size_accumulator)
         uni_print("Total Size: ".rjust(15, ' ') + print_str + "\n")
+
 
 class WebsiteCommand(S3Command):
     NAME = 'website'
@@ -573,7 +574,7 @@ class CommandArchitecture(object):
             return False
         else:
             return True
-    
+
     def choose_sync_strategies(self):
         """Determines the sync strategy for the command.
 
@@ -668,7 +669,7 @@ class CommandArchitecture(object):
                                      endpoint=self._endpoint,
                                      is_stream=True)]
         file_info_builder = FileInfoBuilder(self._service, self._endpoint,
-                                 self._source_endpoint, self.parameters) 
+                                 self._source_endpoint, self.parameters)
         s3handler = S3Handler(self.session, self.parameters,
                               result_queue=result_queue)
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
@@ -732,7 +733,7 @@ class CommandArchitecture(object):
         # tasks failed and the number of tasks warned.
         # This means that files[0] now contains a namedtuple with
         # the number of failed tasks and the number of warned tasks.
-        # In terms of the RC, we're keeping it simple and saying 
+        # In terms of the RC, we're keeping it simple and saying
         # that > 0 failed tasks will give a 1 RC and > 0 warned
         # tasks will give a 2 RC.  Otherwise a RC of zero is returned.
         rc = 0

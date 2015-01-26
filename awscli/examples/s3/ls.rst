@@ -48,16 +48,17 @@ Output::
     2013-09-02 21:32:57        189 foo/bar/.baz/hooks/foo
     2013-09-02 21:32:57        398 z.txt
 
-The following ``ls`` command demonstrates the same command using the --humanize and --summarize options. --humanize
-displays file size in Bytes/MB/KB/MB/GB/TB/PB/EB/ZB/YB. --summarize displays the total number of objects and total size
-at the end of the result listing::
+The following ``ls`` command demonstrates the same command using the --humanize
+and --summarize options. --humanize displays file size in
+Bytes/MiB/KiB/GiB/TiB/PiB/EiB. --summarize displays the total number of objects
+and total size at the end of the result listing::
 
     aws s3 ls s3://mybucket --recursive --humanize --summarize
 
 Output::
 
     2013-09-02 21:37:53   10 Bytes a.txt
-    2013-09-02 21:37:53     2.9 MB foo.zip
+    2013-09-02 21:37:53  2.9 MiB foo.zip
     2013-09-02 21:32:57   23 Bytes foo/bar/.baz/a
     2013-09-02 21:32:58   41 Bytes foo/bar/.baz/b
     2013-09-02 21:32:57  281 Bytes foo/bar/.baz/c
@@ -68,4 +69,4 @@ Output::
     2013-09-02 21:32:57  398 Bytes z.txt
 
     Total Objects: 10
-       Total Size: 2.9 MB
+       Total Size: 2.9 MiB

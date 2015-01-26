@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws s3 ls``: Add ``--human-readable`` and ``--summarize`` options
+  (`issue 1103 <https://github.com/aws/aws-cli/pull/1103>`__)
+
+
 1.7.3
 =====
 

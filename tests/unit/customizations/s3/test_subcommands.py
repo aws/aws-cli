@@ -58,7 +58,8 @@ class TestLSCommand(unittest.TestCase):
 
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False, page_size='5')
+        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False, page_size='5',
+                human_readable=False, summarize=False)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.get_service.return_value.get_operation\
@@ -78,7 +79,8 @@ class TestLSCommand(unittest.TestCase):
     def test_ls_command_with_no_args(self):
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region=None, endpoint_url=None, verify_ssl=None)
-        parsed_args = FakeArgs(dir_op=False, paths='s3://')
+        parsed_args = FakeArgs(dir_op=False, paths='s3://',
+                               human_readable=False, summarize=False)
         ls_command._run_main(parsed_args, parsed_global)
         # We should only be a single call.
         self.session.get_service.return_value.get_operation.assert_called_with(
@@ -98,7 +100,8 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region='us-west-2', endpoint_url=None,
                                  verify_ssl=False)
-        parsed_args = FakeArgs(paths='s3://', dir_op=False)
+        parsed_args = FakeArgs(paths='s3://', dir_op=False,
+                               human_readable=False, summarize=False)
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_endpoint
         get_endpoint = self.session.get_service.return_value.get_endpoint

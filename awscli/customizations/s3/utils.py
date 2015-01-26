@@ -31,29 +31,40 @@ from awscli.compat import PY3
 from awscli.compat import queue
 
 
-humanize_suffixes = ('kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
+humanize_suffixes = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 
 
 def human_readable_size(value):
     """Convert an size in bytes into a human readable format.
 
-    For example:
+    For example::
+
+        >>> human_readable_size(1)
+        '1 Byte'
+        >>> human_readable_size(10)
+        '10 Bytes'
+        >>> human_readable_size(1024)
+        '1.0 KiB'
+        >>> human_readable_size(1024 * 1024)
+        '1.0 MiB'
 
     :param value: The size in bytes
-    :return: The size in a human readable format
+    :return: The size in a human readable format based on base-2 units.
+
     """
+    one_decimal_point = '%.1f'
+    base = 1024
+    bytes_int = float(value)
 
-    format = '%.1f'
-    base = 1000
-    bytes = float(value)
+    if bytes_int == 1:
+        return '1 Byte'
+    elif bytes_int < base:
+        return '%d Bytes' % bytes_int
 
-    if bytes == 1: return '1 Byte'
-    elif bytes < base: return '%d Bytes' % bytes
-
-    for i,sfx in enumerate(humanize_suffixes):
+    for i, suffix in enumerate(humanize_suffixes):
         unit = base ** (i+2)
-        if bytes < unit:
-            return (format + ' %s') % ((base * bytes / unit), sfx)
+        if round((bytes_int / unit) * base) < base:
+            return '%.1f %s' % ((base * bytes_int / unit), suffix)
 
 
 class AppendFilter(argparse.Action):

@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.4
+=====
 
 * feature:``aws dynamodb``: Add support for online indexing.
 * feature:``aws importexport get-shipping-label``: Add support for

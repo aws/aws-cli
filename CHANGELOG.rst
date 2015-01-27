@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.7.4
+=====
+
+* feature:``aws dynamodb``: Add support for online indexing.
+* feature:``aws importexport get-shipping-label``: Add support for
+  ``get-shipping-label``.
+* feature:``aws s3 ls``: Add ``--human-readable`` and ``--summarize`` options
+  (`issue 1103 <https://github.com/aws/aws-cli/pull/1103>`__)
+* bugfix:``aws kinesis put-records``: Fix issue with base64 encoding for
+  blob types
+  (`botocore issue 413 <https://github.com/boto/botocore/pull/413>`__)
+
+
 1.7.3
 =====
 

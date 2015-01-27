@@ -9,6 +9,7 @@ import datetime
 
 import mock
 from dateutil.tz import tzlocal
+from nose.tools import assert_equal
 
 from botocore.hooks import HierarchicalEmitter
 from awscli.customizations.s3.utils import find_bucket_key, find_chunksize
@@ -19,8 +20,30 @@ from awscli.customizations.s3.utils import BucketLister
 from awscli.customizations.s3.utils import ScopedEventHandler
 from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.utils import AppendFilter
-from awscli.customizations.s3.utils import create_warning 
+from awscli.customizations.s3.utils import create_warning
+from awscli.customizations.s3.utils import human_readable_size
 from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
+
+
+def test_human_readable_size():
+    yield _test_human_size_matches, 1, '1 Byte'
+    yield _test_human_size_matches, 10, '10 Bytes'
+    yield _test_human_size_matches, 1000, '1000 Bytes'
+    yield _test_human_size_matches, 1024, '1.0 KiB'
+    yield _test_human_size_matches, 1024 ** 2, '1.0 MiB'
+    yield _test_human_size_matches, 1024 ** 2, '1.0 MiB'
+    yield _test_human_size_matches, 1024 ** 3, '1.0 GiB'
+    yield _test_human_size_matches, 1024 ** 4, '1.0 TiB'
+    yield _test_human_size_matches, 1024 ** 5, '1.0 PiB'
+    yield _test_human_size_matches, 1024 ** 6, '1.0 EiB'
+
+    # Round to the nearest block.
+    yield _test_human_size_matches, 1024 ** 2 - 1, '1.0 MiB'
+    yield _test_human_size_matches, 1024 ** 3 - 1, '1.0 GiB'
+
+
+def _test_human_size_matches(bytes_int, expected):
+    assert_equal(human_readable_size(bytes_int), expected)
 
 
 class AppendFilterTest(unittest.TestCase):

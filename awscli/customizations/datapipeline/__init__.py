@@ -220,7 +220,7 @@ class QueryArgBuilder(object):
             'fieldName': '@status',
             'operator': {
                 'type': 'EQ',
-                'values': parsed_args.status
+                'values': [status.upper() for status in parsed_args.status]
             }
         })
 
@@ -331,7 +331,7 @@ class ListRunsCommand(BasicCommand):
     ]
     VALID_STATUS = ['waiting', 'pending', 'cancelled', 'running',
                     'finished', 'failed', 'waiting_for_runner',
-                    'waiting_on_dependencies']
+                    'waiting_on_dependencies', 'shutting_down']
 
     def __init__(self, session, formatter=None):
         super(ListRunsCommand, self).__init__(session)

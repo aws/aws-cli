@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws datapipeline list-runs``: Fix issue where
+  ``--status`` values where not being serialized correctly
+  (`issue 1110 <https://github.com/aws/aws-cli/pull/1110>`__)
+
+
 1.7.4
 =====
 

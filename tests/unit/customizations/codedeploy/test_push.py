@@ -1,4 +1,4 @@
-# Copyright 2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -96,7 +96,7 @@ class TestPush(unittest.TestCase):
     def test_run_main_throws_on_invalid_args(self):
         self.push._validate_args = MagicMock()
         self.push._validate_args.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(RuntimeError) as error:
             self.push._run_main(self.args, self.globals)
 
     def test_run_main_creates_clients(self):
@@ -128,13 +128,13 @@ class TestPush(unittest.TestCase):
     ):
         self.args.s3_location = 's3:/foo/bar/baz'
         validate_s3_location.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(RuntimeError) as error:
             self.push._validate_args(self.args)
 
     def test_validate_args_throws_on_ignore_and_no_ignore_hidden_files(self):
         self.args.ignore_hidden_files = True
         self.args.no_ignore_hidden_files = True
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(RuntimeError) as error:
             self.push._validate_args(self.args)
 
     def test_validate_args_default_description(self):
@@ -151,7 +151,7 @@ class TestPush(unittest.TestCase):
         self.push._compress = MagicMock(return_value=self.bundle_mock)
         self.push._upload_to_s3 = MagicMock()
         self.push._upload_to_s3.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(RuntimeError) as error:
             self.push._push(self.args)
 
     @patch('sys.stdout', new_callable=StringIO)
@@ -196,10 +196,11 @@ class TestPush(unittest.TestCase):
         path.abspath.side_effect = [self.source, noappsec_path]
         tf.return_value = self.bundle_mock
         zf.return_value = self.zipfile_mock
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(RuntimeError) as error:
             with self.push._compress(
                     self.args.source,
-                    self.args.ignore_hidden_files):
+                    self.args.ignore_hidden_files
+            ) as bundle:
                 pass
 
     @patch('zipfile.ZipFile')
@@ -214,8 +215,9 @@ class TestPush(unittest.TestCase):
         tf.return_value = self.bundle_mock
         zf.return_value = self.zipfile_mock
         with self.push._compress(
-                self.args.source,
-                self.args.ignore_hidden_files):
+            self.args.source,
+            self.args.ignore_hidden_files
+        ) as bundle:
             zf().write.assert_called_with(
                 '/tmp/appspec.yml',
                 self.appspec
@@ -225,6 +227,7 @@ class TestPush(unittest.TestCase):
         self.args.bucket = self.bucket
         self.args.key = self.key
         response = self.push._upload_to_s3(self.args, self.bundle_mock)
+        print response
         self.assertDictEqual(self.upload_response, response)
         self.push.s3.put_object.assert_called_with(
             Bucket=self.bucket,
@@ -275,7 +278,7 @@ class TestPush(unittest.TestCase):
             operation_name='UploadPart',
             http_status_code=400
         )
-        with self.assertRaises(ClientError):
+        with self.assertRaises(ClientError) as error:
             self.push._upload_to_s3(self.args, self.bundle_mock)
         self.assertFalse(self.push.s3.put_object.called)
         self.push.s3.create_multipart_upload.assert_called_with(

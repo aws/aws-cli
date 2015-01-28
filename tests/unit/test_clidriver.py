@@ -422,11 +422,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
                                     endpoint_url=None)
 
     def test_aws_with_cacert_env_var(self):
-        with mock.patch('botocore.endpoint.Endpoint.__init__') as endpoint:
+        with mock.patch('botocore.endpoint.Endpoint') as endpoint:
             http_response = models.Response()
             http_response.status_code = 200
-            endpoint.return_value = None
-            endpoint.make_request.return_value = (
+            endpoint.return_value.host = ''
+            endpoint.return_value.make_request.return_value = (
                 http_response, {})
             self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
             self.assert_params_for_cmd(
@@ -436,11 +436,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
 
     def test_default_to_verifying_ssl(self):
-        with mock.patch('botocore.endpoint.Endpoint.__init__') as endpoint:
+        with mock.patch('botocore.endpoint.Endpoint') as endpoint:
             http_response = models.Response()
             http_response.status_code = 200
-            endpoint.return_value = None
-            endpoint.make_request.return_value = (
+            endpoint.return_value.host = ''
+            endpoint.return_value.make_request.return_value = (
                 http_response, {})
             self.assert_params_for_cmd(
                 'ec2 describe-instances --region us-east-1',

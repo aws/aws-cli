@@ -283,6 +283,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('iam list-users --output text')
         self.assertEqual(p.rc, 0)
 
+    def test_bad_lc_ctype_env_var_is_handled(self):
+        # Test for bad LC_CTYPE on Mac OS X.
+        base_env_vars = os.environ.copy()
+        base_env_vars['LC_CTYPE'] = 'UTF-8'
+        p = aws('iam list-users', env_vars=base_env_vars)
+        self.assertEqual(p.rc, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -238,8 +238,111 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
     Name, ActionOnFailure
 
-**18. To enable consistent view and server-side encryption in EMRFS when creating an Amazon EMR cluster and changing RetryCount, RetryPeriod, and encryption algorithm from default values**
+**18. To enable consistent view in EMRFS when creating an Amazon EMR cluster**
 
-- Command::
+- Command (Use Encryption=ServerSide)::
 
-    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.2.1 --emrfs SSE=true,Consistent=true,RetryCount=5,RetryPeriod=30,Args=[fs.s3.serverSideEncryptionAlgorithm=AES256]
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Consistent=true,RetryCount=5,RetryPeriod=30,Args=[key1=value1,key2=value2]
+
+- JSON equivalent (contents of emrfs.json)::
+
+    {
+      "Consistent": true,
+      "RetryCount": 5,
+      "RetryPeriod": 30,
+      "Args": ["key1=value1", "key2=value2"]
+    }
+
+- Command (Using emrfs.json)::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs file://emrfs.json
+
+**19. To enable server-side encryption in EMRFS when creating an Amazon EMR cluster**
+
+- Command (Use Encryption=ServerSide)::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Encryption=ServerSide,Args=[fs.s3.serverSideEncryptionAlgorithm=AES256]
+
+- Required parameters::
+
+    Encryption=ServerSide
+
+- Optional parameters::
+
+    Args
+
+- JSON equivalent (contents of emrfs.json)::
+
+    {
+      "Encryption": "ServerSide",
+      "Args": ["fs.s3.serverSideEncryptionAlgorithm=AES256"]
+    }
+
+**20. To enable EMRFS client-side encryption using a key managed by AWS Key Management Service (KMS) when creating an Amazon EMR cluster**
+
+- Command ::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Encryption=ClientSide,ProviderType=KMS,KeyId=myKMSKeyId
+
+- Required parameters::
+
+    Encryption=ClientSide, ProviderType=KMS, KeyId
+
+- Optional parameters::
+
+    Args
+
+- JSON equivalent (contents of emrfs.json)::
+
+    {
+      "Encryption": "ClientSide",
+      "ProviderType": "KMS",
+      "KeyId": "myKMSKeyId"
+    }
+
+**21. To enable EMRFS client-side encryption with RSA keys in EMRFS when creating an Amazon EMR cluster**
+
+- Command ::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Encryption=ClientSide,ProviderType=RSA,PrivateKey=s3://mybucket/myfolder/privatekey,PublicKey=s3://mybucket/myfolder/publickey, RSAKeyPairName=keypair
+
+- Required parameters::
+
+    Encryption=ClientSide, ProviderType=RSA, PrivateKey, PublicKey, RSAKeyPairName
+
+- Optional parameters::
+
+    Args
+
+- JSON equivalent (contents of emrfs.json)::
+
+    {
+      "Encryption": "ClientSide",
+      "ProviderType": "RSA",
+      "PrivateKey": "s3://mybucket/myfolder/privatekey",
+      "PublicKey": "s3://mybucket/myfolder/publickey", 
+      "RSAKeyPairName": "keypair"
+    }
+
+**22. To enable EMRFS client-side encryption with a custom encryption provider when creating an Amazon EMR cluster**
+
+- Command ::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Encryption=ClientSide,ProviderType=Custom,ProviderLocation=s3://mybucket/myfolder/provider.jar,ProviderClassName=classname
+
+- Required parameters::
+
+    Encryption=ClientSide, ProviderType=Custom, ProviderLocation, ProviderClassName
+
+- Optional parameters::
+
+    Args
+
+- JSON equivalent (contents of emrfs.json)::
+
+    {
+      "Encryption": "ClientSide",
+      "ProviderType": "Custom",
+      "ProviderLocation": "s3://mybucket/myfolder/provider.jar",
+      "ProviderClassName": "classname"
+    }

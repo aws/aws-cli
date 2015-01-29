@@ -32,7 +32,7 @@ class MissingParametersError(EmrError):
     """
     One or more required parameters were not supplied.
 
-    :ivar object: The object that has missing parameters.
+    :ivar object_name: The object that has missing parameters.
         This can be an operation or a parameter (in the
         case of inner params).  The str() of this object
         will be used so it doesn't need to implement anything
@@ -114,6 +114,17 @@ class UnknownIamEndpointError(EmrError):
     """
     fmt = 'IAM endpoint not known for region: {region}.' +\
           ' Specify the iam-endpoint using the --iam-endpoint option.'
+
+
+class UnknownCSEProviderTypeError(EmrError):
+    """
+    The provided EMRFS client-side encryption provider type is not supported.
+
+    :ivar provider_type: the provider_type provided.
+    """
+    fmt = ('aws: error: The encryption provider type "{provider_type}" is not '
+           'supported. You must specify one of the following client side '
+           'encryption types: KMS, RSA, or Custom.')
 
 
 class ResolveServicePrincipalError(EmrError):
@@ -245,3 +256,13 @@ class MissingClusterAttributesError(EmrError):
     fmt = ('aws: error: Must specify one of the following boolean options: '
            '--visible-to-all-users|--no-visible-to-all-users, '
            '--termination-protected|--no-termination-protected.')
+
+
+class InvalidEMRFSArgumentsError(EmrError):
+    """
+    The proivided arguments are invalid for the create-cluster --emrfs option
+
+    :ivar valid_options
+    """
+    fmt = ('aws: error: The parameters provided with the --emrfs option '
+           'are invalid. {valid_options}')

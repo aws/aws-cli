@@ -15,6 +15,7 @@
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import emrfsutils
 from awscli.customizations.emr import steputils
 from awscli.customizations.emr import hbaseutils
 from awscli.customizations.emr import argumentschema
@@ -234,17 +235,12 @@ class CreateCluster(BasicCommand):
                 parsed_boostrap_actions=parsed_args.bootstrap_actions)
 
         if parsed_args.emrfs is not None:
-            emr_fs_ba_args = self._build_emr_fs_args(parsed_args.emrfs)
-            emr_fs_ba_config = \
-                emrutils.build_bootstrap_action(
-                    path=emrutils.build_s3_link(
-                        relative_path=constants.CONFIG_HADOOP_PATH,
-                        region=parsed_globals.region),
-                    name=constants.EMR_FS_BA_NAME,
-                    args=emr_fs_ba_args)
+            emr_fs_ba_config_list = emrfsutils.build_emrfs_args(
+                parsed_globals, parsed_args.emrfs)
+
             self._update_cluster_dict(
                 cluster=params, key='BootstrapActions',
-                value=[emr_fs_ba_config])
+                value=emr_fs_ba_config_list)
 
         if parsed_args.steps is not None:
             steps_list = steputils.build_step_config_list(
@@ -409,36 +405,3 @@ class CreateCluster(BasicCommand):
                             step_type not in specified_apps:
                         missing_apps.add(step['Type'].title())
         return missing_apps
-
-    def _build_emr_fs_args(self, parsed_emr_fs):
-        args = []
-        if parsed_emr_fs.get('Consistent') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_CONSISTENT_KEY +
-                '=' + str(parsed_emr_fs.get('Consistent')).lower())
-
-        if parsed_emr_fs.get('SSE') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_SSE_KEY + '=' +
-                str(parsed_emr_fs.get('SSE')).lower())
-
-        if parsed_emr_fs.get('RetryCount') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_RETRY_COUNT_KEY + '=' +
-                str(parsed_emr_fs.get('RetryCount')))
-
-        if parsed_emr_fs.get('RetryPeriod') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_RETRY_PERIOD_KEY + '=' +
-                str(parsed_emr_fs.get('RetryPeriod')))
-
-        if parsed_emr_fs.get('Args') is not None:
-            for arg in parsed_emr_fs.get('Args'):
-                args.append(constants.EMR_FS_BA_ARG_KEY)
-                args.append(arg)
-
-        return args

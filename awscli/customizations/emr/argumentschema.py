@@ -265,6 +265,40 @@ EMR_FS_SCHEMA = {
             "items": {
                 "type": "string"
             }
+        },
+        "Encryption": {
+            "type": "string",
+            "description": "EMRFS encryption type.",
+            "enum": ["SERVERSIDE", "CLIENTSIDE"]
+        },
+        "ProviderType": {
+            "type": "string",
+            "description": "EMRFS client-side encryption provider type.",
+            "enum": ["KMS", "RSA", "CUSTOM"]
+        },
+        "KeyId": {
+            "type": "string",
+            "description": "AWS KMS's customer master key id.",
+        },
+        "PrivateKey": {
+            "type": "string",
+            "description": "RSA private key location."
+        },
+        "PublicKey": {
+            "type": "string",
+            "description": "RSA public key location."
+        },
+        "RSAKeyPairName": {
+            "type": "string",
+            "description": "RSA key pair name."
+        },
+        "ProviderLocation": {
+            "type": "string",
+            "description": "Custom encryption provider JAR location."
+        },
+        "ProviderClassName": {
+            "type": "string",
+            "description": "Custom encryption provider full class name."
         }
     }
 }

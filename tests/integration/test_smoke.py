@@ -58,6 +58,12 @@ COMMANDS = [
     'swf list-domains --registration-status REGISTERED',
     ('swf list-open-workflow-executions --domain foo '
      '--start-time-filter oldestDate=1970-01-01'),
+
+    # Verify waiters as well.  We're picking the
+    # "resource does not exist" type waiters so we can
+    # give an identifier that doesn't exist and verify we have
+    # a 0 rc.
+    'rds wait db-instance-deleted --db-instance-identifier foo-123',
 ]
 
 

@@ -11,6 +11,9 @@ Next Release (TBD)
 * bugfix:Output Formatting: Handle broken pipe errors when
   piping the output to another program
   (`issue 1113 <https://github.com/aws/aws-cli/pull/1113>`__)
+* bugfix:HTTP Proxy: Fix issue where ``aws s3/s3api`` commands would hang when
+  using an HTTP proxy
+  (`issue 1116 <https://github.com/aws/aws-cli/issues/1116>`__)
 
 
 1.7.4

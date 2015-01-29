@@ -14,6 +14,9 @@ Next Release (TBD)
 * bugfix:HTTP Proxy: Fix issue where ``aws s3/s3api`` commands would hang when
   using an HTTP proxy
   (`issue 1116 <https://github.com/aws/aws-cli/issues/1116>`__)
+* feature:``aws elasticache wait``: Add waiters for the
+  ``aws elasticache wait``
+  (`botocore issue 443 <https://github.com/boto/botocore/pull/443>`__)
 
 
 1.7.4

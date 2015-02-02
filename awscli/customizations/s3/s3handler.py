@@ -29,7 +29,7 @@ from awscli.compat import queue
 LOGGER = logging.getLogger(__name__)
 
 CommandResult = namedtuple('CommandResult',
-                           ['num_tasks_failed', 'num_tasks_warned']) 
+                           ['num_tasks_failed', 'num_tasks_warned'])
 
 
 class S3Handler(object):
@@ -111,7 +111,7 @@ class S3Handler(object):
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
-        
+
         return CommandResult(self.executor.num_tasks_failed,
                              self.executor.num_tasks_warned)
 
@@ -490,7 +490,7 @@ class S3StreamHandler(S3Handler):
                 task_class=task_class,
                 payload=payload
             )
-            num_uploads += 1 
+            num_uploads += 1
             if not is_remaining:
                 break
         # Once there is no more data left, announce to the context how

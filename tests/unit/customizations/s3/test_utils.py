@@ -22,7 +22,7 @@ from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
-from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
 
 
 def test_human_readable_size():
@@ -102,8 +102,10 @@ class FindChunksizeTest(unittest.TestCase):
         size because the original ``chunksize`` is too small.
         """
         chunksize = 7 * (1024 ** 2)
-        size = 8 * (1024 ** 3)
-        self.assertEqual(find_chunksize(size, chunksize), chunksize * 2)
+        size = 5 * (1024 ** 4)
+        # If we try to upload a 5TB file, we'll need to use 896MB part
+        # sizes.
+        self.assertEqual(find_chunksize(size, chunksize), 896 * (1024 ** 2))
 
     def test_super_chunk(self):
         """

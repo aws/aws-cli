@@ -18,7 +18,7 @@ import socket
 
 from botocore.exceptions import IncompleteReadError
 
-from awscli.customizations.s3 import constants
+from awscli.customizations.s3 import transferconfig
 from awscli.customizations.s3.tasks import CreateLocalFileTask
 from awscli.customizations.s3.tasks import CompleteDownloadTask
 from awscli.customizations.s3.tasks import DownloadPartTask
@@ -410,7 +410,7 @@ class TestDownloadPartTask(unittest.TestCase):
             success_read,
         ]
         self.filename.is_stream = True
-        task = DownloadPartTask(0, constants.CHUNKSIZE, self.result_queue,
+        task = DownloadPartTask(0, transferconfig.CHUNKSIZE, self.result_queue,
                                 self.service, self.filename, self.context,
                                 self.io_queue)
         task()

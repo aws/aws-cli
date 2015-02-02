@@ -862,14 +862,6 @@ class CommandParameters(object):
                     path += '/'
                     paths[i] = path
 
-    def _verify_bucket_exists(self, bucket_name):
-        session = self.session
-        service = session.get_service('s3')
-        endpoint = service.get_endpoint(self.parameters['region'])
-        operation = service.get_operation('ListObjects')
-        # This will raise an exception if the bucket does not exist.
-        operation.call(endpoint, bucket=bucket_name, max_keys=0)
-
     def check_path_type(self, paths):
         """
         This initial check ensures that the path types for the specified

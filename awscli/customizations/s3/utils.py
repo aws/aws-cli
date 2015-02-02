@@ -24,14 +24,17 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 from botocore.compat import unquote_str
 
-from awscli.customizations.s3.constants import MAX_PARTS
-from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
 
-humanize_suffixes = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
+HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
+MAX_PARTS = 10000
+# The maximum file size you can upload via S3 per request.
+# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
+# and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
+MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
 
 
 def human_readable_size(value):
@@ -61,7 +64,7 @@ def human_readable_size(value):
     elif bytes_int < base:
         return '%d Bytes' % bytes_int
 
-    for i, suffix in enumerate(humanize_suffixes):
+    for i, suffix in enumerate(HUMANIZE_SUFFIXES):
         unit = base ** (i+2)
         if round((bytes_int / unit) * base) < base:
             return '%.1f %s' % ((base * bytes_int / unit), suffix)

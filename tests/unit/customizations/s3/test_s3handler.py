@@ -23,6 +23,7 @@ from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask
+from awscli.customizations.s3.utils import MAX_PARTS
 from tests.unit.customizations.s3.fake_session import FakeSession
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets, \
@@ -697,7 +698,7 @@ class TestStreams(S3HandlerBaseTest):
         # UploadPartTasks.
         changed_chunk_size = submitted_tasks[1][0][0]._chunk_size
         # New chunksize should have a total parts under 1000.
-        self.assertTrue(100000/changed_chunk_size < 1000)
+        self.assertTrue(100000 / float(changed_chunk_size) <= MAX_PARTS)
 
     def test_upload_stream_enqueue_upload_task(self):
         s3handler = S3StreamHandler(self.session, self.params)

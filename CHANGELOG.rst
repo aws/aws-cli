@@ -17,6 +17,9 @@ Next Release (TBD)
 * feature:``aws elasticache wait``: Add waiters for the
   ``aws elasticache wait``
   (`botocore issue 443 <https://github.com/boto/botocore/pull/443>`__)
+* bugfix:Locale Settings: Fix issue when Mac OS X has an ``LC_CTYPE`` value
+  of ``UTF-8``
+  (`issue 945 <https://github.com/aws/aws-cli/issues/945>`__)
 
 
 1.7.4

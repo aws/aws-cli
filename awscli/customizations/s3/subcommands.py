@@ -32,31 +32,38 @@ from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 
 
-
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
              'help_text': (
                  "Command is performed on all files or objects "
                  "under the specified directory or prefix.")}
 
+
 HUMAN_READABLE = {'name': 'human-readable', 'action': 'store_true',
                   'help_text': "Displays file sizes in human readable format."}
 
-SUMMARIZE = {'name': 'summarize', 'action': 'store_true', 'help_text': (
-                 "Displays summary information (number of objects, total size).")}
+
+SUMMARIZE = {'name': 'summarize', 'action': 'store_true',
+             'help_text': (
+                 "Displays summary information "
+                 "(number of objects, total size).")}
+
 
 DRYRUN = {'name': 'dryrun', 'action': 'store_true',
           'help_text': (
               "Displays the operations that would be performed using the "
               "specified command without actually running them.")}
 
+
 QUIET = {'name': 'quiet', 'action': 'store_true',
          'help_text': (
              "Does not display the operations performed from the specified "
              "command.")}
 
+
 FORCE = {'name': 'force', 'action': 'store_true',
          'help_text': (
              "Deletes all objects in the bucket including the bucket itself.")}
+
 
 FOLLOW_SYMLINKS = {'name': 'follow-symlinks', 'action': 'store_true',
                    'default': True, 'group_name': 'follow_symlinks',
@@ -69,9 +76,11 @@ FOLLOW_SYMLINKS = {'name': 'follow-symlinks', 'action': 'store_true',
                        "nor ``--no-follow-symlinks`` is specifed, the default "
                        "is to follow symlinks.")}
 
+
 NO_FOLLOW_SYMLINKS = {'name': 'no-follow-symlinks', 'action': 'store_false',
                       'dest': 'follow_symlinks', 'default': True,
                       'group_name': 'follow_symlinks'}
+
 
 NO_GUESS_MIME_TYPE = {'name': 'no-guess-mime-type', 'action': 'store_false',
                       'dest': 'guess_mime_type', 'default': True,
@@ -80,10 +89,12 @@ NO_GUESS_MIME_TYPE = {'name': 'no-guess-mime-type', 'action': 'store_false',
                           "uploaded files.  By default the mime type of a "
                           "file is guessed when it is uploaded.")}
 
+
 CONTENT_TYPE = {'name': 'content-type', 'nargs': 1,
                 'help_text': (
                     "Specify an explicit content type for this operation.  "
                     "This value overrides any guessed mime types.")}
+
 
 EXCLUDE = {'name': 'exclude', 'action': AppendFilter, 'nargs': 1,
            'dest': 'filters',
@@ -91,11 +102,13 @@ EXCLUDE = {'name': 'exclude', 'action': AppendFilter, 'nargs': 1,
                "Exclude all files or objects from the command that matches "
                "the specified pattern.")}
 
+
 INCLUDE = {'name': 'include', 'action': AppendFilter, 'nargs': 1,
            'dest': 'filters',
            'help_text': (
                "Don't exclude files or objects "
                "in the command that match the specified pattern")}
+
 
 ACL = {'name': 'acl', 'nargs': 1,
        'choices': ['private', 'public-read', 'public-read-write',
@@ -108,31 +121,37 @@ ACL = {'name': 'acl', 'nargs': 1,
            "``bucket-owner-read``, ``bucket-owner-full-control`` and "
            "``log-delivery-write``.")}
 
-GRANTS = {'name': 'grants', 'nargs': '+',
-          'help_text': (
-              "Grant specific permissions to individual users or groups. You "
-              "can supply a list of grants of the form::<p/>  --grants "
-              "Permission=Grantee_Type=Grantee_ID [Permission=Grantee_Type="
-              "Grantee_ID ...]<p/>Each value contains the following elements:"
-              "<p/><ul><li><code>Permission</code> - Specifies "
-              "the granted permissions, and can be set to read, readacl, "
-              "writeacl, or full.</li><li><code>Grantee_Type</code> - "
-              "Specifies how the grantee is to be identified, and can be set "
-              "to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - "
-              "Specifies the grantee based on Grantee_Type.</li></ul>The "
-              "<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> "
-              "- The group's URI. For more information, see "
-              '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/ACLOverview.html#SpecifyingGrantee">'
-              "Who Is a Grantee?</a></li>"
-              "<li><b>emailaddress</b> - The account's email address.</li>"
-              "<li><b>id</b> - The account's canonical ID</li></ul>"
-              "</li></ul>"
-              "For more information on Amazon S3 access control, see "
-              '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAuthAccess.html">Access Control</a>')}
+
+GRANTS = {
+    'name': 'grants', 'nargs': '+',
+    'help_text': (
+        'Grant specific permissions to individual users or groups. You '
+        'can supply a list of grants of the form::<p/>  --grants '
+        'Permission=Grantee_Type=Grantee_ID [Permission=Grantee_Type='
+        'Grantee_ID ...]<p/>Each value contains the following elements:'
+        '<p/><ul><li><code>Permission</code> - Specifies '
+        'the granted permissions, and can be set to read, readacl, '
+        'writeacl, or full.</li><li><code>Grantee_Type</code> - '
+        'Specifies how the grantee is to be identified, and can be set '
+        'to uri, emailaddress, or id.</li><li><code>Grantee_ID</code> - '
+        'Specifies the grantee based on Grantee_Type.</li></ul>The '
+        '<code>Grantee_ID</code> value can be one of:<ul><li><b>uri</b> '
+        '- The group\'s URI. For more information, see '
+        '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
+        'ACLOverview.html#SpecifyingGrantee">'
+        'Who Is a Grantee?</a></li>'
+        '<li><b>emailaddress</b> - The account\'s email address.</li>'
+        '<li><b>id</b> - The account\'s canonical ID</li></ul>'
+        '</li></ul>'
+        'For more information on Amazon S3 access control, see '
+        '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/'
+        'UsingAuthAccess.html">Access Control</a>')}
+
 
 SSE = {'name': 'sse', 'action': 'store_true',
        'help_text': (
            "Enable Server Side Encryption of the object in S3")}
+
 
 STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
                  'choices': ['STANDARD', 'REDUCED_REDUNDANCY'],
@@ -140,6 +159,7 @@ STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,
                      "The type of storage to use for the object. "
                      "Valid choices are: STANDARD | REDUCED_REDUNDANCY. "
                      "Defaults to 'STANDARD'")}
+
 
 WEBSITE_REDIRECT = {'name': 'website-redirect', 'nargs': 1,
                     'help_text': (
@@ -149,15 +169,18 @@ WEBSITE_REDIRECT = {'name': 'website-redirect', 'nargs': 1,
                         "stores the value of this header in the object "
                         "metadata.")}
 
+
 CACHE_CONTROL = {'name': 'cache-control', 'nargs': 1,
                  'help_text': (
                      "Specifies caching behavior along the "
                      "request/reply chain.")}
 
+
 CONTENT_DISPOSITION = {'name': 'content-disposition', 'nargs': 1,
                        'help_text': (
                            "Specifies presentational information "
                            "for the object.")}
+
 
 CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
                     'help_text': (
@@ -166,8 +189,10 @@ CONTENT_ENCODING = {'name': 'content-encoding', 'nargs': 1,
                         "mechanisms must be applied to obtain the media-type "
                         "referenced by the Content-Type header field.")}
 
+
 CONTENT_LANGUAGE = {'name': 'content-language', 'nargs': 1,
                     'help_text': ("The language the content is in.")}
+
 
 SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
                  'help_text': (
@@ -179,8 +204,13 @@ SOURCE_REGION = {'name': 'source-region', 'nargs': 1,
                      "specified the region of the source will be the same "
                      "as the region of the destination bucket.")}
 
-EXPIRES = {'name': 'expires', 'nargs': 1, 'help_text': ("The date and time at "
-           "which the object is no longer cacheable.")}
+
+EXPIRES = {
+    'name': 'expires', 'nargs': 1,
+    'help_text': (
+        "The date and time at which the object is no longer cacheable.")
+}
+
 
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
@@ -192,15 +222,18 @@ INDEX_DOCUMENT = {'name': 'index-document',
                       'images/index.html) The suffix must not be empty and '
                       'must not include a slash character.')}
 
+
 ERROR_DOCUMENT = {'name': 'error-document',
                   'help_text': (
                       'The object key name to use when '
                       'a 4XX class error occurs.')}
 
+
 ONLY_SHOW_ERRORS = {'name': 'only-show-errors', 'action': 'store_true',
                     'help_text': (
                         'Only errors and warnings are displayed. All other '
                         'output is suppressed.')}
+
 
 EXPECTED_SIZE = {'name': 'expected-size',
                  'help_text': (
@@ -213,10 +246,10 @@ EXPECTED_SIZE = {'name': 'expected-size',
 
 
 PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
-			 'help_text': (
-				 'The number of results to return in each response to a list '
-				 'operation. The default value is 1000 (the maximum allowed). '
-				 'Using a lower value may help if an operation times out.')}
+             'help_text': (
+                 'The number of results to return in each response to a list '
+                 'operation. The default value is 1000 (the maximum allowed). '
+                 'Using a lower value may help if an operation times out.')}
 
 
 TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
@@ -355,7 +388,7 @@ class ListCommand(S3Command):
                         str(last_mod.day).zfill(2),
                         str(last_mod.hour).zfill(2),
                         str(last_mod.minute).zfill(2),
-                       str(last_mod.second).zfill(2))
+                        str(last_mod.second).zfill(2))
         last_mod_str = "%s-%s-%s %s:%s:%s" % last_mod_tup
         return last_mod_str.ljust(19, ' ')
 
@@ -363,7 +396,10 @@ class ListCommand(S3Command):
         """
         This function creates the size string when objects are being listed.
         """
-        size_str = human_readable_size(size) if self._human_readable else str(size)
+        if self._human_readable:
+            size_str = human_readable_size(size)
+        else:
+            size_str = str(size)
         return size_str.rjust(10, ' ')
 
     def _print_summary(self):
@@ -372,7 +408,10 @@ class ListCommand(S3Command):
         """
         print_str = str(self._total_objects)
         uni_print("\nTotal Objects: ".rjust(15, ' ') + print_str + "\n")
-        print_str = human_readable_size(self._size_accumulator) if self._human_readable else str(self._size_accumulator)
+        if self._human_readable:
+            print_str = human_readable_size(self._size_accumulator)
+        else:
+            print_str = str(self._size_accumulator)
         uni_print("Total Size: ".rjust(15, ' ') + print_str + "\n")
 
 
@@ -668,8 +707,9 @@ class CommandArchitecture(object):
                                      service=self._service,
                                      endpoint=self._endpoint,
                                      is_stream=True)]
-        file_info_builder = FileInfoBuilder(self._service, self._endpoint,
-                                 self._source_endpoint, self.parameters)
+        file_info_builder = FileInfoBuilder(
+            self._service, self._endpoint,
+            self._source_endpoint, self.parameters)
         s3handler = S3Handler(self.session, self.parameters,
                               result_queue=result_queue)
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
@@ -689,7 +729,7 @@ class CommandArchitecture(object):
                             's3_handler': [s3handler]}
         elif self.cmd == 'cp' and self.parameters['is_stream']:
             command_dict = {'setup': [stream_file_info],
-                             's3_handler': [s3_stream_handler]}
+                            's3_handler': [s3_stream_handler]}
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],

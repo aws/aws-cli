@@ -447,16 +447,14 @@ class CommandParametersTest(unittest.TestCase):
         self.environ = {}
         self.environ_patch = patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.session = FakeSession()
         self.mock = MagicMock()
         self.mock.get_config = MagicMock(return_value={'region': None})
         self.loc_files = make_loc_files()
-        self.bucket = make_s3_files(self.session)
+        self.bucket = 's3testbucket'
 
     def tearDown(self):
         self.environ_patch.stop()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_check_path_type_pass(self):
         # This tests the class's ability to determine whether the correct
@@ -477,7 +475,7 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(self.session, cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '')
             cmd_param.add_region(mock.Mock())
             correct_paths = cmds[cmd]
             for path_args in correct_paths:
@@ -505,7 +503,7 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(self.session, cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '')
             cmd_param.add_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
@@ -531,22 +529,13 @@ class CommandParametersTest(unittest.TestCase):
         parameters = {}
         for filename in files:
             parameters['dir_op'] = filename[1]
-            cmd_parameter = CommandParameters(self.session, 'put',
-                                              parameters, '')
+            cmd_parameter = CommandParameters('put', parameters, '')
             cmd_parameter.add_region(mock.Mock())
             cmd_parameter.check_src_path(filename[0])
 
-    def test_check_force(self):
-        # This checks to make sure that the force parameter is run. If
-        # successful. The delete command will fail as the bucket is empty
-        # and be caught by the exception.
-        cmd_params = CommandParameters(self.session, 'rb', {'force': True},'')
-        cmd_params.parameters['src'] = 's3://mybucket'
-        cmd_params.check_force(None)
-
     def test_validate_streaming_paths_upload(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params = CommandParameters('cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
@@ -554,7 +543,7 @@ class CommandParametersTest(unittest.TestCase):
 
     def test_validate_streaming_paths_download(self):
         parameters = {'src': 'localfile', 'dest': '-'}
-        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params = CommandParameters('cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
@@ -562,13 +551,13 @@ class CommandParametersTest(unittest.TestCase):
 
     def test_validate_no_streaming_paths(self):
         parameters = {'src': 'localfile', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params = CommandParameters('cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertFalse(cmd_params.parameters['is_stream'])
 
     def test_validate_streaming_paths_error(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters(self.session, 'sync', parameters, '')
+        cmd_params = CommandParameters('sync', parameters, '')
         with self.assertRaises(ValueError):
             cmd_params._validate_streaming_paths()
 

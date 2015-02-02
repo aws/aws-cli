@@ -460,14 +460,14 @@ class S3TransferCommand(S3Command):
         super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)
         self._convert_path_args(parsed_args)
         params = self._build_call_parameters(parsed_args, {})
-        cmd_params = CommandParameters(self._session, self.NAME, params,
+        cmd_params = CommandParameters(self.NAME, params,
                                        self.USAGE)
         cmd_params.add_region(parsed_globals)
         cmd_params.add_endpoint_url(parsed_globals)
         cmd_params.add_verify_ssl(parsed_globals)
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
-        cmd_params.check_force(parsed_globals)
+        self._handle_rm_force(parsed_globals, cmd_params.parameters)
         cmd = CommandArchitecture(self._session, self.NAME,
                                   cmd_params.parameters)
         cmd.set_endpoints()
@@ -493,6 +493,26 @@ class S3TransferCommand(S3Command):
                 enc_path = dec_path.encode('utf-8')
                 new_path = enc_path.decode('utf-8')
                 parsed_args.paths[i] = new_path
+
+    def _handle_rm_force(self, parsed_globals, parameters):
+        """
+        This function recursive deletes objects in a bucket if the force
+        parameters was thrown when using the remove bucket command.
+        """
+        # XXX: This shouldn't really be here.  This was originally moved from
+        # the CommandParameters class to here, but this is still not the ideal
+        # place for this code.  This should be moved
+        # to either the CommandArchitecture class, or the RbCommand class where
+        # the actual operations against S3 are performed.  This may require
+        # some refactoring though to move this to either of those classes.
+        # For now, moving this out of CommandParameters allows for that class
+        # to be kept simple.
+        if 'force' in parameters:
+            if parameters['force']:
+                bucket = find_bucket_key(parameters['src'][5:])[0]
+                path = 's3://' + bucket
+                del_objects = RmCommand(self._session)
+                del_objects([path, '--recursive'], parsed_globals)
 
 
 class CpCommand(S3TransferCommand):
@@ -789,12 +809,16 @@ class CommandParameters(object):
     This class is used to do some initial error based on the
     parameters and arguments passed to the command line.
     """
-    def __init__(self, session, cmd, parameters, usage):
+    def __init__(self, cmd, parameters, usage):
         """
         Stores command name and parameters.  Ensures that the ``dir_op`` flag
         is true if a certain command is being used.
+
+        :param cmd: The name of the command, e.g. "rm".
+        :param parameters: A dictionary of parameters.
+        :param usage: A usage string
+
         """
-        self.session = session
         self.cmd = cmd
         self.parameters = parameters
         self.usage = usage
@@ -913,21 +937,6 @@ class CommandParameters(object):
                     pass
             else:
                 raise Exception("Error: Local path does not exist")
-
-    def check_force(self, parsed_globals):
-        """
-        This function recursive deletes objects in a bucket if the force
-        parameters was thrown when using the remove bucket command.
-        """
-        if 'force' in self.parameters:
-            if self.parameters['force']:
-                bucket = find_bucket_key(self.parameters['src'][5:])[0]
-                path = 's3://' + bucket
-                try:
-                    del_objects = RmCommand(self.session)
-                    del_objects([path, '--recursive'], parsed_globals)
-                except:
-                    pass
 
     def add_region(self, parsed_globals):
         self.parameters['region'] = parsed_globals.region

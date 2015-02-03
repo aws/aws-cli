@@ -30,6 +30,7 @@ from awscli.customizations.s3.utils import find_bucket_key, uni_print, \
     AppendFilter, find_dest_path_comp_key, human_readable_size
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
+from awscli.customizations.s3 import transferconfig
 
 
 RECURSIVE = {'name': 'recursive', 'action': 'store_true', 'dest': 'dir_op',
@@ -468,8 +469,11 @@ class S3TransferCommand(S3Command):
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
         self._handle_rm_force(parsed_globals, cmd_params.parameters)
+        runtime_config = transferconfig.RuntimeConfig().build_config(
+            **self._session.get_scoped_config().get('s3', {}))
         cmd = CommandArchitecture(self._session, self.NAME,
-                                  cmd_params.parameters)
+                                  cmd_params.parameters,
+                                  runtime_config)
         cmd.set_endpoints()
         cmd.create_instructions()
         return cmd.run()
@@ -585,11 +589,12 @@ class CommandArchitecture(object):
     lsit of instructions to wire together an assortment of generators to
     perform the command.
     """
-    def __init__(self, session, cmd, parameters):
+    def __init__(self, session, cmd, parameters, runtime_config=None):
         self.session = session
         self.cmd = cmd
         self.parameters = parameters
         self.instructions = []
+        self._runtime_config = runtime_config
         self._service = self.session.get_service('s3')
         self._endpoint = None
         self._source_endpoint = None
@@ -731,6 +736,7 @@ class CommandArchitecture(object):
             self._service, self._endpoint,
             self._source_endpoint, self.parameters)
         s3handler = S3Handler(self.session, self.parameters,
+                              runtime_config=self._runtime_config,
                               result_queue=result_queue)
         s3_stream_handler = S3StreamHandler(self.session, self.parameters,
                                             result_queue=result_queue)

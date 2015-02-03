@@ -16,12 +16,11 @@ import math
 import os
 import sys
 
-from awscli.customizations.s3.transferconfig import MULTI_THRESHOLD, \
-    CHUNKSIZE, NUM_THREADS, MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import find_chunksize, \
     operate, find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.compat import six
 from awscli.compat import queue
 
@@ -42,12 +41,13 @@ class S3Handler(object):
     class pull tasks from to complete.
     """
     MAX_IO_QUEUE_SIZE = 20
-    MAX_EXECUTOR_QUEUE_SIZE = MAX_QUEUE_SIZE
-    EXECUTOR_NUM_THREADS = NUM_THREADS
 
     def __init__(self, session, params, result_queue=None,
-                 multi_threshold=MULTI_THRESHOLD, chunksize=CHUNKSIZE):
+                 runtime_config=None):
         self.session = session
+        if runtime_config is None:
+            runtime_config = RuntimeConfig.defaults()
+        self._runtime_config = runtime_config
         # The write_queue has potential for optimizations, so the constant
         # for maxsize is scoped to this class (as opposed to constants.py)
         # so we have the ability to change this value later.
@@ -68,14 +68,16 @@ class S3Handler(object):
         for key in self.params.keys():
             if key in params:
                 self.params[key] = params[key]
-        self.multi_threshold = multi_threshold
-        self.chunksize = chunksize
+        self.multi_threshold = self._runtime_config['multipart_threshold']
+        self.chunksize = self._runtime_config['multipart_chunksize']
+        LOGGER.debug("Using a multipart threshold of %s and a part size of %s",
+                     self.multi_threshold, self.chunksize)
         self.executor = Executor(
-            num_threads=self.EXECUTOR_NUM_THREADS,
+            num_threads=self._runtime_config['max_concurrent_requests'],
             result_queue=self.result_queue,
             quiet=self.params['quiet'],
             only_show_errors=self.params['only_show_errors'],
-            max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
+            max_queue_size=self._runtime_config['max_queue_size'],
             write_queue=self.write_queue
         )
         self._multipart_uploads = []

@@ -33,7 +33,7 @@ from awscli.compat import six
 from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
-from awscli.customizations.s3 import constants
+from awscli.customizations.s3.transferconfig import DEFAULTS
 
 
 @contextlib.contextmanager
@@ -1177,7 +1177,9 @@ class TestDryrun(BaseS3CLICommand):
 class TestMemoryUtilization(BaseS3CLICommand):
     # These tests verify the memory utilization and growth are what we expect.
     def extra_setup(self):
-        expected_memory_usage = constants.NUM_THREADS * constants.CHUNKSIZE
+        self.num_threads = DEFAULTS['max_concurrent_requests']
+        self.chunk_size = DEFAULTS['multipart_chunksize']
+        expected_memory_usage = self.num_threads * self.chunk_size
         # margin for things like python VM overhead, botocore service
         # objects, etc.  1.5 is really generous, perhaps over time this can be
         # lowered.
@@ -1234,7 +1236,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
         # is increased by two chunksizes because that is the maximum
         # amount of chunks that will be queued while not being operated on
         # by a thread when performing a streaming multipart upload.
-        max_mem_allowed = self.max_mem_allowed + 2 * constants.CHUNKSIZE
+        max_mem_allowed = self.max_mem_allowed + 2 * self.chunk_size
 
         full_command = 's3 cp - s3://%s/foo.txt' % bucket_name
         with open(foo_txt, 'rb') as f:

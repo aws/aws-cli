@@ -24,10 +24,15 @@ from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask
 from awscli.customizations.s3.utils import MAX_PARTS
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from tests.unit.customizations.s3.fake_session import FakeSession
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets, \
     S3HandlerBaseTest, MockStdIn
+
+
+def runtime_config(**kwargs):
+    return RuntimeConfig().build_config(**kwargs)
 
 
 class S3HandlerTestDeleteList(S3HandlerBaseTest):
@@ -147,9 +152,10 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
-        self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
-                                          chunksize=2,
-                                          params=params)
+        self.s3_handler_multi = S3Handler(
+            self.session, params=params,
+            runtime_config=runtime_config(
+                multipart_threshold=10, multipart_chunksize=2))
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -281,8 +287,10 @@ class S3HandlerExceptionMultiTaskTest(S3HandlerBaseTest):
         self.service = self.session.get_service('s3')
         self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'quiet': True}
-        self.s3_handler_multi = S3Handler(self.session, params,
-                                          multi_threshold=10, chunksize=2)
+        self.s3_handler_multi = S3Handler(
+            self.session, params,
+            runtime_config=runtime_config(
+                multipart_threshold=10, multipart_chunksize=2))
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -472,8 +480,10 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
-        self.s3_handler_multi = S3Handler(self.session, params,
-                                          multi_threshold=10, chunksize=2)
+        self.s3_handler_multi = S3Handler(
+            self.session, params,
+            runtime_config=runtime_config(multipart_threshold=10,
+                                          multipart_chunksize=2))
         self.bucket = make_s3_files(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
@@ -485,9 +495,11 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
 
         self.fail_session = FakeSession(connection_error=True)
         self.fail_session.s3 = self.session.s3
-        self.s3_handler_multi_except = S3Handler(self.fail_session, params,
-                                                 multi_threshold=10,
-                                                 chunksize=2)
+        self.s3_handler_multi_except = S3Handler(
+            self.fail_session, params,
+            runtime_config=runtime_config(
+                multipart_threshold=10,
+                multipart_chunksize=2))
 
     def tearDown(self):
         super(S3HandlerTestDownload, self).tearDown()
@@ -626,7 +638,9 @@ class TestStreams(S3HandlerBaseTest):
         self.params = {'is_stream': True, 'region': 'us-east-1'}
 
     def test_pull_from_stream(self):
-        s3handler = S3StreamHandler(self.session, self.params, chunksize=2)
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(multipart_chunksize=2))
         input_to_stdin = b'This is a test'
         size = len(input_to_stdin)
         # Retrieve the entire string.
@@ -667,8 +681,9 @@ class TestStreams(S3HandlerBaseTest):
                          b'bar')
 
     def test_upload_stream_is_multipart_task(self):
-        s3handler = S3StreamHandler(self.session, self.params,
-                                    multi_threshold=1)
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(multipart_threshold=1))
         s3handler.executor = mock.Mock()
         fileinfos = [FileInfo('filename', operation_name='upload',
                               is_stream=True, size=0)]
@@ -687,7 +702,9 @@ class TestStreams(S3HandlerBaseTest):
         self.params['expected_size'] = 100000
         # With this large of expected size, the chunksize of 2 will have
         # to change.
-        s3handler = S3StreamHandler(self.session, self.params, chunksize=2)
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(multipart_chunksize=2))
         s3handler.executor = mock.Mock()
         fileinfo = FileInfo('filename', operation_name='upload',
                             is_stream=True)
@@ -745,8 +762,9 @@ class TestStreams(S3HandlerBaseTest):
         This test ensures the right calls are made in ``_enqueue_tasks()``
         if the file should be a multipart download.
         """
-        s3handler = S3StreamHandler(self.session, self.params,
-                                    multi_threshold=5)
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(multipart_threshold=5))
         s3handler.executor = mock.Mock()
         fileinfo = FileInfo('filename', operation_name='download',
                             is_stream=True)
@@ -768,7 +786,9 @@ class TestStreams(S3HandlerBaseTest):
                 self.assertTrue(mock_enqueue_range_tasks.called)
 
     def test_enqueue_range_download_tasks_stream(self):
-        s3handler = S3StreamHandler(self.session, self.params, chunksize=100)
+        s3handler = S3StreamHandler(
+            self.session, self.params,
+            runtime_config=runtime_config(multipart_chunksize=100))
         s3handler.executor = mock.Mock()
         fileinfo = FileInfo('filename', operation_name='download',
                             is_stream=True, size=100)
@@ -777,6 +797,42 @@ class TestStreams(S3HandlerBaseTest):
         submitted_tasks = s3handler.executor.submit.call_args_list
         self.assertNotEqual(type(submitted_tasks[0][0][0]),
                             CreateLocalFileTask)
+
+
+class TestS3HandlerInitialization(unittest.TestCase):
+    def setUp(self):
+        self.arbitrary_params = {'region': 'us-west-2'}
+
+    def test_num_threads_is_plumbed_through(self):
+        num_threads_override = 20
+
+        config = runtime_config(max_concurrent_requests=num_threads_override)
+        handler = S3Handler(session=None, params=self.arbitrary_params,
+                            runtime_config=config)
+
+        self.assertEqual(handler.executor.num_threads, num_threads_override)
+
+    def test_queue_size_is_plumbed_through(self):
+        max_queue_size_override = 10000
+
+        config = runtime_config(max_queue_size=max_queue_size_override)
+        handler = S3Handler(session=None, params=self.arbitrary_params,
+                            runtime_config=config)
+
+        self.assertEqual(handler.executor.queue.maxsize,
+                         max_queue_size_override)
+
+    def test_runtime_config_from_attrs(self):
+        # These are attrs that are set directly on S3Handler,
+        # not on some dependent object
+        config = runtime_config(
+            multipart_chunksize=1000,
+            multipart_threshold=10000)
+        handler = S3Handler(session=None, params=self.arbitrary_params,
+                            runtime_config=config)
+
+        self.assertEqual(handler.chunksize, 1000)
+        self.assertEqual(handler.multi_threshold, 10000)
 
 
 if __name__ == "__main__":

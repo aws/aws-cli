@@ -19,16 +19,7 @@ DEFAULTS = {
     'multipart_chunksize': 8 * (1024 ** 2),
     'max_concurrent_requests': 10,
     'max_queue_size': 1000,
-    # TODO: do we need this now that we have sentinels?  Need to double check.
-    # I think this was exposed before because you'd have a 0.2s delay when
-    # running some of the S3 tests.
-    'queue_timeout_wait': 0.2,
 }
-MULTI_THRESHOLD = 8 * (1024 ** 2)
-CHUNKSIZE = 7 * (1024 ** 2)
-NUM_THREADS = 10
-QUEUE_TIMEOUT_WAIT = 0.2
-MAX_QUEUE_SIZE = 1000
 
 
 class InvalidConfigError(Exception):

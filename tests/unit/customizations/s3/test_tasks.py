@@ -410,9 +410,10 @@ class TestDownloadPartTask(unittest.TestCase):
             success_read,
         ]
         self.filename.is_stream = True
-        task = DownloadPartTask(0, transferconfig.CHUNKSIZE, self.result_queue,
-                                self.service, self.filename, self.context,
-                                self.io_queue)
+        task = DownloadPartTask(
+            0, transferconfig.DEFAULTS['multipart_chunksize'],
+            self.result_queue, self.service,
+            self.filename, self.context, self.io_queue)
         task()
         call_args_list = self.io_queue.put.call_args_list
         self.assertEqual(len(call_args_list), 1)

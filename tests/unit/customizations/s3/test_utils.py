@@ -22,6 +22,7 @@ from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
+from awscli.customizations.s3.utils import human_readable_to_bytes
 from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
 
 
@@ -44,6 +45,20 @@ def test_human_readable_size():
 
 def _test_human_size_matches(bytes_int, expected):
     assert_equal(human_readable_size(bytes_int), expected)
+
+
+def test_convert_human_readable_to_bytes():
+    yield _test_convert_human_readable_to_bytes, "1", 1
+    yield _test_convert_human_readable_to_bytes, "1024", 1024
+    yield _test_convert_human_readable_to_bytes, "1KB", 1024
+    yield _test_convert_human_readable_to_bytes, "1kb", 1024
+    yield _test_convert_human_readable_to_bytes, "1MB", 1024 ** 2
+    yield _test_convert_human_readable_to_bytes, "1GB", 1024 ** 3
+    yield _test_convert_human_readable_to_bytes, "1TB", 1024 ** 4
+
+
+def _test_convert_human_readable_to_bytes(size_str, expected):
+    assert_equal(human_readable_to_bytes(size_str), expected)
 
 
 class AppendFilterTest(unittest.TestCase):

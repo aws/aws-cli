@@ -35,6 +35,13 @@ MAX_PARTS = 10000
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
 # and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
 MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
+SIZE_SUFFIX = {
+    'kb': 1024,
+    'mb': 1024 ** 2,
+    'gb': 1024 ** 3,
+    'tb': 1024 ** 4,
+}
+
 
 
 def human_readable_size(value):
@@ -68,6 +75,28 @@ def human_readable_size(value):
         unit = base ** (i+2)
         if round((bytes_int / unit) * base) < base:
             return '%.1f %s' % ((base * bytes_int / unit), suffix)
+
+
+def human_readable_to_bytes(value):
+    """Converts a human readable size to bytes.
+
+    :param value: A string such as "10MB".  If a suffix is not included,
+        then the value is assumed to be an integer representing the size
+        in bytes.
+    :returns: The converted value in bytes as an integer
+
+    """
+    suffix = value[-2:].lower()
+    has_size_identifier = (
+        len(value) >= 2 and suffix in SIZE_SUFFIX)
+    if not has_size_identifier:
+        try:
+            return int(value)
+        except ValueError:
+            raise ValueError("Invalid size value: %s" % value)
+    else:
+        multiplier = SIZE_SUFFIX[suffix]
+        return int(value[:-2]) * multiplier
 
 
 class AppendFilter(argparse.Action):

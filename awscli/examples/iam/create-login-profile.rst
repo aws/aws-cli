@@ -24,4 +24,3 @@ the login profile (``delete-login-profile``) and then create a new login profile
 
 For more information, see `Managing Passwords`_ in the *Using IAM* guide.
 
-.. _`Managing Passwords`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Credentials-ManagingPasswords.html

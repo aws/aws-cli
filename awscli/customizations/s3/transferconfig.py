@@ -44,7 +44,7 @@ class RuntimeConfig(object):
         that use this runtime config.
 
         :param kwargs:  Any key in the ``DEFAULTS`` dict.
-        :return: A dictionar of the merged and converted values.
+        :return: A dictionary of the merged and converted values.
 
         """
         runtime_config = DEFAULTS.copy()

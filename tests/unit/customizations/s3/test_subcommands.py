@@ -20,7 +20,8 @@ from mock import patch, Mock, MagicMock
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
-    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
+    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint, \
+    RbCommand
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
@@ -34,6 +35,9 @@ class FakeArgs(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
+    def __contains__(self, key):
+        return key in self.__dict__
+
 
 class TestGetEndpoint(unittest.TestCase):
     def test_endpoint(self):
@@ -45,6 +49,28 @@ class TestGetEndpoint(unittest.TestCase):
         self.assertEqual(endpoint.region_name, 'us-west-1')
         self.assertEqual(endpoint.endpoint_url, 'URL')
         self.assertTrue(endpoint.verify)
+
+
+class TestRbCommand(unittest.TestCase):
+    def test_rb_command_with_force_deletes_objects_in_bucket(self):
+        self.session = mock.Mock()
+        self.session.get_scoped_config.return_value = {}
+        rb_command = RbCommand(self.session)
+        parsed_args = FakeArgs(paths='s3://mybucket/',
+                               force=True,
+                               dir_op=False)
+        parsed_globals = FakeArgs(region=None, endpoint_url=None,
+                                  verify_ssl=None)
+        cmd_name = 'awscli.customizations.s3.subcommands.RmCommand'
+        arch_name = 'awscli.customizations.s3.subcommands.CommandArchitecture'
+        with mock.patch(cmd_name) as rm_command:
+            with mock.patch(arch_name):
+                rb_command._run_main(parsed_args,
+                                    parsed_globals=parsed_globals)
+            # Because of --force we should have called the
+            # rm_command with the --recursive option.
+            rm_command.return_value.assert_called_with(
+                ['s3://mybucket', '--recursive'], mock.ANY)
 
 
 class TestLSCommand(unittest.TestCase):

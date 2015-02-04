@@ -56,6 +56,14 @@ def test_convert_human_readable_to_bytes():
     yield _test_convert_human_readable_to_bytes, "1GB", 1024 ** 3
     yield _test_convert_human_readable_to_bytes, "1TB", 1024 ** 4
 
+    # Also because of the "ls" output for s3, we support
+    # the IEC "mebibyte" format (MiB).
+    yield _test_convert_human_readable_to_bytes, "1KiB", 1024
+    yield _test_convert_human_readable_to_bytes, "1kib", 1024
+    yield _test_convert_human_readable_to_bytes, "1MiB", 1024 ** 2
+    yield _test_convert_human_readable_to_bytes, "1GiB", 1024 ** 3
+    yield _test_convert_human_readable_to_bytes, "1TiB", 1024 ** 4
+
 
 def _test_convert_human_readable_to_bytes(size_str, expected):
     assert_equal(human_readable_to_bytes(size_str), expected)

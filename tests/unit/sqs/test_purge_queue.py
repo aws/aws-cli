@@ -15,7 +15,7 @@ from awscli.testutils import BaseAWSCommandParamsTest
 import awscli.clidriver
 
 
-class TestCreateQueue(BaseAWSCommandParamsTest):
+class TestPurgeQueue(BaseAWSCommandParamsTest):
 
     prefix = 'sqs purge-queue'
 

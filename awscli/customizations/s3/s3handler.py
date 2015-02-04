@@ -355,11 +355,22 @@ class S3StreamHandler(S3Handler):
     involves a stream since the logic is different when uploading and
     downloading streams.
     """
-
     # This ensures that the number of multipart chunks waiting in the
     # executor queue and in the threads is limited.
     MAX_EXECUTOR_QUEUE_SIZE = 2
     EXECUTOR_NUM_THREADS = 6
+
+    def __init__(self, session, params, result_queue=None,
+                 runtime_config=None):
+        if runtime_config is None:
+            # Rather than using the .defaults(), streaming
+            # has different default values so that it does not
+            # consume large amounts of memory.
+            runtime_config = RuntimeConfig().build_config(
+                max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
+                max_concurrent_requests=self.EXECUTOR_NUM_THREADS)
+        super(S3StreamHandler, self).__init__(session, params, result_queue,
+                                              runtime_config)
 
     def _enqueue_tasks(self, files):
         total_files = 0

@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.7.5
+=====
+
+* bugfix:``aws datapipeline list-runs``: Fix issue where
+  ``--status`` values where not being serialized correctly
+  (`issue 1110 <https://github.com/aws/aws-cli/pull/1110>`__)
+* bugfix:Output Formatting: Handle broken pipe errors when
+  piping the output to another program
+  (`issue 1113 <https://github.com/aws/aws-cli/pull/1113>`__)
+* bugfix:HTTP Proxy: Fix issue where ``aws s3/s3api`` commands would hang when
+  using an HTTP proxy
+  (`issue 1116 <https://github.com/aws/aws-cli/issues/1116>`__)
+* feature:``aws elasticache wait``: Add waiters for the
+  ``aws elasticache wait``
+  (`botocore issue 443 <https://github.com/boto/botocore/pull/443>`__)
+* bugfix:Locale Settings: Fix issue when Mac OS X has an ``LC_CTYPE`` value
+  of ``UTF-8``
+  (`issue 945 <https://github.com/aws/aws-cli/issues/945>`__)
+
+
 1.7.4
 =====
 

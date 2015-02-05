@@ -44,6 +44,12 @@ class Formatter(object):
     def _get_default_stream(self):
         return compat.get_stdout_text_writer()
 
+    def _flush_stream(self, stream):
+        try:
+            stream.flush()
+        except IOError:
+            pass
+
 
 class FullyBufferedFormatter(Formatter):
     def __call__(self, operation, response, stream=None):
@@ -58,15 +64,19 @@ class FullyBufferedFormatter(Formatter):
             response_data = response.build_full_result()
         else:
             response_data = response
+        self._remove_request_id(response_data)
+        if self._args.query is not None:
+            response_data = self._args.query.search(response_data)
         try:
-            self._remove_request_id(response_data)
-            if self._args.query is not None:
-                response_data = self._args.query.search(response_data)
             self._format_response(operation, response_data, stream)
+        except IOError as e:
+            # If the reading end of our stdout stream has closed the file
+            # we can just exit.
+            pass
         finally:
             # flush is needed to avoid the "close failed in file object
             # destructor" in python2.x (see http://bugs.python.org/issue11380).
-            stream.flush()
+            self._flush_stream(stream)
 
 
 class JSONFormatter(FullyBufferedFormatter):
@@ -238,7 +248,7 @@ class TextFormatter(Formatter):
         finally:
             # flush is needed to avoid the "close failed in file object
             # destructor" in python2.x (see http://bugs.python.org/issue11380).
-            stream.flush()
+            self._flush_stream(stream)
 
     def _format_response(self, response, stream):
         if self._args.query is not None:

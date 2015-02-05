@@ -15,6 +15,7 @@ from botocore.compat import json
 import platform
 import mock
 from awscli.compat import six
+from awscli.formatter import JSONFormatter
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.compat import get_stdout_text_writer
@@ -95,3 +96,18 @@ class TestListUsers(BaseAWSCommandParamsTest):
         # It should be encoded into the default encoding.
         self.assertNotIn('\\u2713', output)
         self.assertIn(expected, output)
+
+
+class TestFormattersHandleClosedPipes(unittest.TestCase):
+    def test_fully_buffered_handles_io_error(self):
+        args = mock.Mock(query=None)
+        operation = mock.Mock(can_paginate=False)
+        response = '{"Foo": "Bar"}'
+        fake_closed_stream = mock.Mock(spec=six.StringIO)
+        fake_closed_stream.flush.side_effect = IOError
+        formatter = JSONFormatter(args)
+        formatter(operation, response, fake_closed_stream)
+        # We should not have let the IOError propogate, but
+        # we still should have called the flush() on the
+        # stream.
+        fake_closed_stream.flush.assert_called_with()

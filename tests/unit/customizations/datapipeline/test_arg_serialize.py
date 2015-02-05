@@ -171,7 +171,7 @@ class TestCLIArgumentSerialize(unittest.TestCase):
                 'fieldName': '@status',
                  'operator': {
                      'type': 'EQ',
-                     'values': ['pending']
+                     'values': ['PENDING']
                  }
             },
             ]
@@ -197,7 +197,7 @@ class TestCLIArgumentSerialize(unittest.TestCase):
                 'fieldName': '@status',
                  'operator': {
                      'type': 'EQ',
-                     'values': ['pending', 'waiting_on_dependencies']
+                     'values': ['PENDING', 'WAITING_ON_DEPENDENCIES']
                  }
             },
             ]
@@ -235,7 +235,7 @@ class TestCLIArgumentSerialize(unittest.TestCase):
                 'fieldName': '@status',
                  'operator': {
                      'type': 'EQ',
-                     'values': ['pending', 'waiting_on_dependencies']
+                     'values': ['PENDING', 'WAITING_ON_DEPENDENCIES']
                  }
             },]
         })

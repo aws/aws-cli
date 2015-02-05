@@ -117,6 +117,12 @@ class TestWaitCommand(unittest.TestCase):
         self.service_object = mock.Mock()
         self.cmd = WaitCommand(self.model, self.service_object)
 
+    def test_passes_on_lineage(self):
+        child_cmd = self.cmd.subcommand_table['foo']
+        self.assertEqual(len(child_cmd.lineage), 2)
+        self.assertEqual(child_cmd.lineage[0], self.cmd) 
+        self.assertIsInstance(child_cmd.lineage[1], WaiterStateCommand)
+
     def test_run_main_error(self):
         self.parsed_args = mock.Mock()
         self.parsed_args.subcommand = None

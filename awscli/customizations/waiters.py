@@ -69,6 +69,7 @@ class WaitCommand(BasicCommand):
     def _build_subcommand_table(self):
         subcommand_table = super(WaitCommand, self)._build_subcommand_table()
         self.waiter_cmd_builder.build_all_waiter_state_cmds(subcommand_table)
+        self._add_lineage(subcommand_table)
         return subcommand_table
 
     def create_help_command(self):

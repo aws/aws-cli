@@ -13,6 +13,7 @@
 import sys
 import os
 
+import botocore
 import jmespath
 
 from awscli.compat import urlparse
@@ -75,4 +76,4 @@ def no_sign_request(parsed_args, session, **kwargs):
 
 
 def disable_signing(service, **kwargs):
-    service.signature_version = None
+    service.signature_version = botocore.UNSIGNED

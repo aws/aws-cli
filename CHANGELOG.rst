@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.5
+=====
 
 * bugfix:``aws datapipeline list-runs``: Fix issue where
   ``--status`` values where not being serialized correctly

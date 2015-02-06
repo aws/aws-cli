@@ -25,6 +25,9 @@ from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
 from awscli.clidriver import CLIOperationCaller
+from awscli.clidriver import CLICommand
+from awscli.clidriver import ServiceCommand
+from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from botocore.hooks import HierarchicalEmitter
@@ -710,6 +713,65 @@ class TestFormatter(BaseAWSCommandParamsTest):
     def test_bad_output(self):
         with self.assertRaises(ValueError):
             formatter.get_formatter('bad-type', None)
+
+
+class TestCLICommand(unittest.TestCase):
+    def setUp(self):
+        self.cmd = CLICommand()
+
+    def test_name(self):
+        with self.assertRaises(NotImplementedError):
+            self.cmd.name
+        with self.assertRaises(NotImplementedError):
+            self.cmd.name = 'foo'
+
+    def test_lineage(self):
+        self.assertEqual(self.cmd.lineage, [self.cmd])
+
+    def test_arg_table(self):
+        self.assertEqual(self.cmd.arg_table, {})
+
+
+class TestServiceCommand(unittest.TestCase):
+    def setUp(self):
+        self.name = 'foo'
+        self.session = FakeSession()
+        self.cmd = ServiceCommand(self.name, self.session)
+
+    def test_name(self):
+        self.assertEqual(self.cmd.name, self.name)
+        self.cmd.name = 'bar'
+        self.assertEqual(self.cmd.name, 'bar')
+
+    def test_lineage(self):
+        self.assertEqual(self.cmd.lineage, [self.cmd])
+        self.cmd.lineage = ['foo']
+        self.assertEqual(self.cmd.lineage, ['foo'])
+
+    def test_pass_lineage_to_child(self):
+        # In order to introspect the service command's subcommands
+        # we introspect the subcommand via the help command since
+        # a service command's command table is not public.
+        help_command = self.cmd.create_help_command()
+        child_cmd = help_command.command_table['list-objects']
+        self.assertEqual(child_cmd.lineage,
+                         [self.cmd, child_cmd])
+
+
+class TestServiceOperation(unittest.TestCase):
+    def setUp(self):
+        self.name = 'foo'
+        self.cmd = ServiceOperation(self.name, None, None, None, None)
+
+    def test_name(self):
+        self.assertEqual(self.cmd.name, self.name)
+        self.cmd.name = 'bar'
+        self.assertEqual(self.cmd.name, 'bar')
+
+    def test_lineage(self):
+        self.assertEqual(self.cmd.lineage, [self.cmd])
+        self.cmd.lineage = ['foo']
+        self.assertEqual(self.cmd.lineage, ['foo'])
 
 
 if __name__ == '__main__':

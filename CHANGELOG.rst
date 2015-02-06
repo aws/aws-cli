@@ -8,6 +8,9 @@ Next Release (TBD)
 * bugfix:``aws sqs purge-queue``: Fix issue with the processing
   of the ``--queue-url`` parameter
   (`issue 1126 <https://github.com/aws/aws-cli/issues/1126>`__)
+* feature:``aws s3``: Add support for config variable for changing
+  S3 runtime values
+  (`issue 1122 <https://github.com/aws/aws-cli/pull/1122>`__)
 
 
 1.7.5

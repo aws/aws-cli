@@ -34,8 +34,8 @@ class TestTopicTagDB(unittest.TestCase):
         self.topic_tag_db = TopicTagDB()
         self.file_creator = FileCreator()
 
-        # In python 3, order matters when calling assertEqual when
-        # comparing lists and dictionaries with lists. Therefore,
+        # In python 3, order matters when calling assertEqual to
+        # compare lists and dictionaries with lists. Therefore,
         # assertItemsEqual needs to be used but it is renamed to
         # assertCountEqual in python 3.
         if six.PY3:

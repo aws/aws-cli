@@ -62,8 +62,8 @@ class TopicTagDB(object):
 
     The keys of the dictionary are the CLI command names of the topics. These
     names are based off the name of the reStructed text file that corresponds
-    to the topic. The value of these keys are dictionary of tags, where the
-    tags are keys and their values is a list of values for that tag. Note
+    to the topic. The value of these keys are dictionaries of tags, where the
+    tags are keys and their value is a list of values for that tag. Note
     that all tag values for a specific tag of a specific topic are unique.
     """
 
@@ -169,8 +169,8 @@ class TopicTagDB(object):
 
     def _retrieve_values_from_tag(self, line, tag):
         # This method retrieves the value from a tag. Tags with multiple
-        # values will be seperated by commas. All values will be returned
-        # as a list.
+        # values will have their values seperated by commas.
+        # All values will be returned as a list.
 
         # First remove the tag.
         line = line[len(tag):]
@@ -179,7 +179,7 @@ class TopicTagDB(object):
         # Find all values associated to the tag. Values are seperated by
         # commas.
         values = line.split(',')
-        # Strip the white space from each of these values.
+        # Strip the white space around each of these values.
         for i in range(len(values)):
             values[i] = values[i].strip()
         return values
@@ -197,7 +197,7 @@ class TopicTagDB(object):
         # If there are existing values associated to the tag it will add
         # only values that previously did not exist in the list.
 
-        # Check if the topic is in the topic tag dictionary
+        # Add topic to the topic tag dictionary if needed.
         self._add_topic_name_to_dict(topic_name)
         # Get all of a topics tags
         topic_tags = self._tag_dictionary[topic_name]
@@ -219,15 +219,16 @@ class TopicTagDB(object):
         """Groups topics by a specific tag and/or tag value.
 
         :param tag: The name of the tag to query for.
-        :param values: A list of tag values to include.
+        :param values: A list of tag values to only include in query.
+            If no value is provided, all possible tag values will be returned
 
         :rtype: dictionary
         :returns: A dictionary whose keys are all possible tag values and the
             keys' values are all of the topic names that had that tag value
             in its source file. For example, if ``topic-name-1`` had the tag
             ``:category: foo, bar`` and ``topic-name-2`` had the tag
-            ``:category: foo`` and we queried based on :category:, the returned
-            dictionary would be:
+            ``:category: foo`` and we queried based on ``:category:``,
+            the returned dictionary would be:
 
             {
              'foo': ['topic-name-1', 'topic-name-2'],
@@ -261,9 +262,3 @@ class TopicTagDB(object):
         if topic_name in self._tag_dictionary:
             return self._tag_dictionary[topic_name].get(tag, default_value)
         return default_value
-
-    def _line_has_tag(self, line):
-        for valid_tag in self.VALID_TAGS:
-            if line.startswith(valid_tag):
-                return True
-        return False

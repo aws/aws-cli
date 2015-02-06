@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws sqs purge-queue``: Fix issue with the processing
+  of the ``--queue-url`` parameter
+  (`issue 1126 <https://github.com/aws/aws-cli/issues/1126>`__)
+
+
 1.7.5
 =====
 
@@ -20,9 +28,6 @@ CHANGELOG
 * bugfix:Locale Settings: Fix issue when Mac OS X has an ``LC_CTYPE`` value
   of ``UTF-8``
   (`issue 945 <https://github.com/aws/aws-cli/issues/945>`__)
-* bugfix:``aws sqs purge-queue``: Fix issue with the processing
-  of the ``--queue-url`` parameter
-  (`issue 1126 <https://github.com/aws/aws-cli/issues/1126>`__)
 
 
 1.7.4

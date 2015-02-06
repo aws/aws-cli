@@ -1,15 +1,24 @@
-# Copyright 2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright (c) 2015 Amazon.com, Inc. or its affiliates.  All Rights Reserved
 #
-# Licensed under the Apache License, Version 2.0 (the "License"). You
-# may not use this file except in compliance with the License. A copy of
-# the License is located at
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish, dis-
+# tribute, sublicense, and/or sell copies of the Software, and to permit
+# persons to whom the Software is furnished to do so, subject to the fol-
+# lowing conditions:
 #
-#     http://aws.amazon.com/apache2.0/
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
 #
-# or in the "license" file accompanying this file. This file is
-# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# ANY KIND, either express or implied. See the License for the specific
-# language governing permissions and limitations under the License.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABIL-
+# ITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+# SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+#
 import os
 import json
 import math
@@ -64,13 +73,15 @@ class TopicTagDB(object):
     # The default directory to look for topics.
     TOPIC_DIR = os.path.join(
         os.path.dirname(
-                os.path.abspath(__file__)), 'topics')
+            os.path.abspath(__file__)), 'topics')
 
     # The default JSON index to load.
     JSON_INDEX = os.path.join(TOPIC_DIR, 'topic-tags.json')
 
-    def __init__(self):
-        self._tag_dictionary = {}
+    def __init__(self, tag_dictionary=None):
+        self._tag_dictionary = tag_dictionary
+        if self._tag_dictionary is None:
+            self._tag_dictionary = {}
 
     def load_json_index(self, index_file=None):
         """Loads a JSON file into the tag dictionary.
@@ -101,7 +112,7 @@ class TopicTagDB(object):
 
     def get_all_topic_names(self):
         """Retrieves all of the topic names of the loaded JSON index"""
-        return self._tag_dictionary.keys()
+        return list(self._tag_dictionary.keys())
 
     def get_all_topic_src_files(self):
         """Retrieves the file paths of all the topics in directory"""
@@ -162,7 +173,7 @@ class TopicTagDB(object):
         # as a list.
 
         # First remove the tag.
-        line = line.lstrip(tag)
+        line = line[len(tag):]
         # Remove surrounding whitespace from value
         line = line.strip()
         # Find all values associated to the tag. Values are seperated by
@@ -202,7 +213,7 @@ class TopicTagDB(object):
             dictionary[key] = []
         for value in values:
             if value not in dictionary[key]:
-                dictionary[key].append(value) 
+                dictionary[key].append(value)
 
     def query(self, tag, values=None):
         """Groups topics by a specific tag and/or tag value.
@@ -237,8 +248,7 @@ class TopicTagDB(object):
                         self._add_key_values(query_dict,
                                              key=tag_value,
                                              values=[topic_name])
-        return query_dict 
-        
+        return query_dict
 
     def get_tag_value(self, topic_name, tag, default_value=None):
         """Get a value of a tag for a topic

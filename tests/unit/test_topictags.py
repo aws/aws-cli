@@ -49,10 +49,10 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
     def test_get_all_topic_names(self):
         tag_dict = {
             'topic-name-1': {
-                ':title:': ['My First Topic Title'],
+                'title': ['My First Topic Title'],
             },
             'topic-name-2': {
-                ':title:': ['My Second Topic Title'],
+                'title': ['My Second Topic Title'],
             }
         }
         reference_topic_list = ['topic-name-1', 'topic-name-2']
@@ -96,64 +96,64 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         topic_name = 'topic-name-1'
         tag_dict = {
             topic_name: {
-                ':title:': ['My First Topic Title'],
-                ':description:': ['This describes my first topic'],
-                ':category:': ['General Topics'],
-                ':related command:': ['aws s3'],
-                ':related topic:': ['topic-name-2']
+                'title': ['My First Topic Title'],
+                'description': ['This describes my first topic'],
+                'category': ['General Topics'],
+                'related command': ['aws s3'],
+                'related topic': ['topic-name-2']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
 
         # Check the title get tag value
-        value = self.topic_tag_db.get_tag_value(topic_name, ':title:')
+        value = self.topic_tag_db.get_tag_value(topic_name, 'title')
         self.assertEqual(value, ['My First Topic Title'])
 
         # Check the description get tag value
-        value = self.topic_tag_db.get_tag_value(topic_name, ':description:')
+        value = self.topic_tag_db.get_tag_value(topic_name, 'description')
         self.assertEqual(value, ['This describes my first topic'])
 
         # Check the category get tag value
-        value = self.topic_tag_db.get_tag_value(topic_name, ':category:')
+        value = self.topic_tag_db.get_tag_value(topic_name, 'category')
         self.assertEqual(value, ['General Topics'])
 
         # Check the related command get tag value
         value = self.topic_tag_db.get_tag_value(topic_name,
-                                                ':related command:')
+                                                'related command')
         self.assertEqual(value, ['aws s3'])
 
         # Check the related topic get tag value
-        value = self.topic_tag_db.get_tag_value(topic_name, ':related topic:')
+        value = self.topic_tag_db.get_tag_value(topic_name, 'related topic')
         self.assertEqual(value, ['topic-name-2'])
 
     def test_get_tag_multi_value(self):
         topic_name = 'topic-name-1'
         tag_dict = {
             topic_name: {
-                ':related topic:': ['foo', 'bar']
+                'related topic': ['foo', 'bar']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
         # Check the related topic get tag value
-        value = self.topic_tag_db.get_tag_value(topic_name, ':related topic:')
+        value = self.topic_tag_db.get_tag_value(topic_name, 'related topic')
         self.assertEqual(value, ['foo', 'bar'])
 
     def test_get_tag_topic_no_exists(self):
         topic_name = 'topic-name-1'
         tag_dict = {
             topic_name: {
-                ':related topic:': ['foo']
+                'related topic': ['foo']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        value = self.topic_tag_db.get_tag_value('no-exist', ':related topic:')
+        value = self.topic_tag_db.get_tag_value('no-exist', 'related topic')
         self.assertEqual(value, None)
 
     def test_get_tag_no_exist_tag(self):
         topic_name = 'topic-name-1'
         tag_dict = {
             topic_name: {
-                ':related topic:': ['foo']
+                'related topic': ['foo']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
@@ -164,7 +164,7 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         topic_name = 'topic-name-1'
         tag_dict = {
             topic_name: {
-                ':related topic:': ['foo']
+                'related topic': ['foo']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
@@ -174,17 +174,17 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
     def test_load_and_save_json_index(self):
         tag_dict = {
             'topic-name-1': {
-                ':title:': ['My First Topic Title'],
-                ':description:': ['This describes my first topic'],
-                ':category:': ['General Topics', 'S3'],
-                ':related command:': ['aws s3'],
-                ':related topic:': ['topic-name-2']
+                'title': ['My First Topic Title'],
+                'description': ['This describes my first topic'],
+                'category': ['General Topics', 'S3'],
+                'related command': ['aws s3'],
+                'related topic': ['topic-name-2']
             },
             'topic-name-2': {
-                ':title:': ['My Second Topic Title'],
-                ':description:': ['This describes my second topic'],
-                ':category:': ['General Topics'],
-                ':related topic:': ['topic-name-1']
+                'title': ['My Second Topic Title'],
+                'description': ['This describes my second topic'],
+                'category': ['General Topics'],
+                'related topic': ['topic-name-1']
             }
         }
 
@@ -209,87 +209,87 @@ class TestTopicTagDBQuery(TestTopicTagDB):
     def test_query_all_tags_single_topic(self):
         tag_dict = {
             'topic-name-1': {
-                ':title:': ['My First Topic Title'],
-                ':description:': ['This describes my first topic'],
-                ':category:': ['General Topics'],
-                ':related command:': ['aws s3'],
-                ':related topic:': ['topic-name-2']
+                'title': ['My First Topic Title'],
+                'description': ['This describes my first topic'],
+                'category': ['General Topics'],
+                'related command': ['aws s3'],
+                'related topic': ['topic-name-2']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
 
         # Check title query
-        query_dict = self.topic_tag_db.query(':title:')
+        query_dict = self.topic_tag_db.query('title')
         self.assertEqual(query_dict,
                          {'My First Topic Title': ['topic-name-1']})
 
         # Check the description query
-        query_dict = self.topic_tag_db.query(':description:')
+        query_dict = self.topic_tag_db.query('description')
         self.assertEqual(query_dict,
                          {'This describes my first topic': ['topic-name-1']})
 
         # Check the category query
-        query_dict = self.topic_tag_db.query(':category:')
+        query_dict = self.topic_tag_db.query('category')
         self.assertEqual(query_dict,
                          {'General Topics': ['topic-name-1']})
 
         # Check the related command query
-        query_dict = self.topic_tag_db.query(':related command:')
+        query_dict = self.topic_tag_db.query('related command')
         self.assertEqual(query_dict,
                          {'aws s3': ['topic-name-1']})
 
         # Check the description query
-        query_dict = self.topic_tag_db.query(':related topic:')
+        query_dict = self.topic_tag_db.query('related topic')
         self.assertEqual(query_dict,
                          {'topic-name-2': ['topic-name-1']})
 
     def test_query_tag_multi_values(self):
         tag_dict = {
             'topic-name-1': {
-                ':related topic:': ['foo', 'bar']
+                'related topic': ['foo', 'bar']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':related topic:')
+        query_dict = self.topic_tag_db.query('related topic')
         self.assertEqual(query_dict,
                          {'foo': ['topic-name-1'], 'bar': ['topic-name-1']})
 
     def test_query_tag_multi_values(self):
         tag_dict = {
             'topic-name-1': {
-                ':related topic:': ['foo', 'bar']
+                'related topic': ['foo', 'bar']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':related topic:')
+        query_dict = self.topic_tag_db.query('related topic')
         self.assertEqual(query_dict,
                          {'foo': ['topic-name-1'], 'bar': ['topic-name-1']})
 
     def test_query_multiple_topics(self):
         tag_dict = {
             'topic-name-1': {
-                ':category:': ['foo']
+                'category': ['foo']
             },
             'topic-name-2': {
-                ':category:': ['bar']
+                'category': ['bar']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':category:')
+        query_dict = self.topic_tag_db.query('category')
         self.assertEqual(query_dict,
                          {'foo': ['topic-name-1'], 'bar': ['topic-name-2']})
 
     def test_query_multiple_topics_with_multi_values(self):
         tag_dict = {
             'topic-name-1': {
-                ':category:': ['foo', 'bar']
+                'category': ['foo', 'bar']
             },
             'topic-name-2': {
-                ':category:': ['baz', 'biz']
+                'category': ['baz', 'biz']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':category:')
+        query_dict = self.topic_tag_db.query('category')
         self.assertEqual(query_dict,
                          {'foo': ['topic-name-1'], 'bar': ['topic-name-1'],
                           'baz': ['topic-name-2'], 'biz': ['topic-name-2']})
@@ -297,14 +297,14 @@ class TestTopicTagDBQuery(TestTopicTagDB):
     def test_query_multiple_topics_with_overlap_values(self):
         tag_dict = {
             'topic-name-1': {
-                ':category:': ['foo', 'bar']
+                'category': ['foo', 'bar']
             },
             'topic-name-2': {
-                ':category:': ['bar', 'biz']
+                'category': ['bar', 'biz']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':category:')
+        query_dict = self.topic_tag_db.query('category')
         self.assertItemsEqual(
             query_dict, {'foo': ['topic-name-1'], 'biz': ['topic-name-2'],
                          'bar': ['topic-name-1', 'topic-name-2']})
@@ -312,28 +312,28 @@ class TestTopicTagDBQuery(TestTopicTagDB):
     def test_query_with_limit_single_value(self):
         tag_dict = {
             'topic-name-1': {
-                ':category:': ['foo', 'bar']
+                'category': ['foo', 'bar']
             },
             'topic-name-2': {
-                ':category:': ['bar', 'biz']
+                'category': ['bar', 'biz']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':category:', ['bar'])
+        query_dict = self.topic_tag_db.query('category', ['bar'])
         self.assertItemsEqual(query_dict,
                               {'bar': ['topic-name-1', 'topic-name-2']})
 
     def test_query_with_limit_multi_value(self):
         tag_dict = {
             'topic-name-1': {
-                ':category:': ['foo', 'bar']
+                'category': ['foo', 'bar']
             },
             'topic-name-2': {
-                ':category:': ['bar', 'biz']
+                'category': ['bar', 'biz']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
-        query_dict = self.topic_tag_db.query(':category:', ['foo', 'bar'])
+        query_dict = self.topic_tag_db.query('category', ['foo', 'bar'])
         self.assertItemsEqual(query_dict,
                               {'foo': ['topic-name-1'],
                                'bar': ['topic-name-1', 'topic-name-2']})
@@ -341,7 +341,7 @@ class TestTopicTagDBQuery(TestTopicTagDB):
     def topic_query_with_non_existant_tag(self):
         tag_dict = {
             'topic-name-1': {
-                ':category:': ['foo']
+                'category': ['foo']
             }
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
@@ -377,11 +377,11 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':description:': ['This is a description'],
-                ':title:': ['Title'],
-                ':category:': ['Foo'],
-                ':related topic:': ['Bar'],
-                ':related command:': ['ec2']
+                'description': ['This is a description'],
+                'title': ['Title'],
+                'category': ['Foo'],
+                'related topic': ['Bar'],
+                'related command': ['ec2']
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -400,9 +400,9 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':description:': ['This is a description'],
-                ':title:': ['Title'],
-                ':category:': ['Foo'],
+                'description': ['This is a description'],
+                'title': ['Title'],
+                'category': ['Foo'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -428,7 +428,7 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':category:': ['Foo', 'Bar'],
+                'category': ['Foo', 'Bar'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -444,8 +444,8 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':title:': ['Title'],
-                ':category:': ['Foo', 'Bar'],
+                'title': ['Title'],
+                'category': ['Foo', 'Bar'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -460,7 +460,7 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':category:': ['Foo', 'Bar'],
+                'category': ['Foo', 'Bar'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -475,7 +475,7 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':category:': ['Foo', 'Bar'],
+                'category': ['Foo', 'Bar'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -484,13 +484,13 @@ class TestTopicDBScan(TestTopicTagDB):
 
     def test_scan_tags_with_multi_values_no_space(self):
         tags = [
-            ':category:Foo,Bar',
+            ':category: Foo,Bar',
         ]
         topic_name = 'my-topic'
 
         reference_tag_dict = {
             topic_name: {
-                ':category:': ['Foo', 'Bar'],
+                'category': ['Foo', 'Bar'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -505,7 +505,7 @@ class TestTopicDBScan(TestTopicTagDB):
 
         reference_tag_dict = {
             topic_name: {
-                ':category:': ['Foo Bar', 'Baz'],
+                'category': ['Foo Bar', 'Baz'],
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
@@ -527,11 +527,11 @@ class TestTopicDBScan(TestTopicTagDB):
             ]
 
             reference_tag_dict[topic_name] = {
-                ':description:': ['This is about %s' % topic_name],
-                ':title:': ['Title'],
-                ':category:': ['Foo'],
-                ':related topic:': ['Bar'],
-                ':related command:': ['ec2']
+                'description': ['This is about %s' % topic_name],
+                'title': ['Title'],
+                'category': ['Foo'],
+                'related topic': ['Bar'],
+                'related command': ['ec2']
             }
             topic_files.append(self.create_topic_src_file(topic_name, tags))
         self.topic_tag_db.scan(topic_files)

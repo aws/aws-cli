@@ -21,7 +21,7 @@
 #
 import os
 import json
-import math
+import docutils.core
 
 
 class TopicTagDB(object):
@@ -51,11 +51,11 @@ class TopicTagDB(object):
     The structure of the database can be viewed as a python dictionary:
 
     {'topic-name-1': {
-        ':title:': ['My First Topic Title'],
-        ':description:': ['This describes my first topic'],
-        ':category:': ['General Topics', 'S3'],
-        ':related command:': ['aws s3'],
-        ':related topic:': ['topic-name-2']
+        'title': ['My First Topic Title'],
+        'description': ['This describes my first topic'],
+        'category': ['General Topics', 'S3'],
+        'related command': ['aws s3'],
+        'related topic': ['topic-name-2']
      },
      'topic-name-2': { .....
     }
@@ -67,8 +67,8 @@ class TopicTagDB(object):
     that all tag values for a specific tag of a specific topic are unique.
     """
 
-    VALID_TAGS = [':category:', ':description:', ':title:', ':related topic:',
-                  ':related command:']
+    VALID_TAGS = ['category', 'description', 'title', 'related topic',
+                  'related command']
 
     # The default directory to look for topics.
     TOPIC_DIR = os.path.join(
@@ -142,14 +142,11 @@ class TopicTagDB(object):
                 topic_name = self._find_topic_name(topic_file)
                 # Add the topic to the dictionary if it does not exist
                 self._add_topic_name_to_dict(topic_name)
-                for line in f.readlines():
-                    # Iterate over each line, detect if the line
-                    # is a tag, and retrieve the tag and value if is.
-                    tag, values = self._retrieve_tag_and_values(line)
-                    if tag is not None:
-                        # Add the tag and value to the dictionary if
-                        # a tag is detected.
-                        self._add_tag_to_dict(topic_name, tag, values)
+                # Read the file
+                topic_content = f.read()
+                # Record the tags and the values
+                self._add_tag_and_values_from_content(
+                    topic_name, topic_content)
 
     def _find_topic_name(self, topic_src_file):
         # Get the name of each of these files
@@ -157,32 +154,25 @@ class TopicTagDB(object):
         # Strip of the .rst extension from the files
         return topic_name_with_ext[:-4]
 
-    def _retrieve_tag_and_values(self, line):
-        # This method retrieves the tag and associated value of a line. If
-        # the line is not a tag, ``None`` is returned for both.
-
-        for valid_tag in self.VALID_TAGS:
-            if line.startswith(valid_tag):
-                value = self._retrieve_values_from_tag(line, valid_tag)
-                return valid_tag, value
-        return None, None
-
-    def _retrieve_values_from_tag(self, line, tag):
-        # This method retrieves the value from a tag. Tags with multiple
-        # values will have their values seperated by commas.
-        # All values will be returned as a list.
-
-        # First remove the tag.
-        line = line[len(tag):]
-        # Remove surrounding whitespace from value
-        line = line.strip()
-        # Find all values associated to the tag. Values are seperated by
-        # commas.
-        values = line.split(',')
-        # Strip the white space around each of these values.
-        for i in range(len(values)):
-            values[i] = values[i].strip()
-        return values
+    def _add_tag_and_values_from_content(self, topic_name, content):
+        # Retrieves tags and values and adds from content of topic file
+        # to the dictionary.
+        doctree = docutils.core.publish_doctree(content).asdom()
+        fields = doctree.getElementsByTagName('field')
+        for field in fields:
+            field_name = field.getElementsByTagName('field_name')[0]
+            field_body = field.getElementsByTagName('field_body')[0]
+            # Get the tag.
+            tag = field_name.firstChild.nodeValue
+            if tag in self.VALID_TAGS:
+                # Get the value of the tag.
+                values = field_body.childNodes[0].firstChild.nodeValue
+                # Seperate values into a list by splitting at commas
+                tag_values = values.split(',')
+                # Strip the white space around each of these values.
+                for i in range(len(tag_values)):
+                    tag_values[i] = tag_values[i].strip()
+                self._add_tag_to_dict(topic_name, tag, tag_values) 
 
     def _add_topic_name_to_dict(self, topic_name):
         # This method adds a topic name to the dictionary if it does not

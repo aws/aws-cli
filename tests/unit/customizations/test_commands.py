@@ -55,3 +55,18 @@ class TestBasicCommand(unittest.TestCase):
         # Ensure the ``subcommand_table`` is not built again if
         # ``subcommand_table`` property is called again.
         self.assertIs(orig_subcommand_table, self.command.subcommand_table)
+
+    def test_load_lineage(self):
+        self.assertEqual(self.command.lineage, [self.command])
+
+    def test_pass_lineage_to_child_command(self):
+        class MockCustomCommand(BasicCommand):
+            NAME = 'mock'
+
+            SUBCOMMANDS = [{'name': 'basic', 'command_class': BasicCommand}]
+
+        self.command = MockCustomCommand(self.session)
+        lineage = self.command.subcommand_table['basic'].lineage
+        self.assertEqual(len(lineage), 2)
+        self.assertEqual(lineage[0], self.command)
+        self.assertIsInstance(lineage[1], BasicCommand)

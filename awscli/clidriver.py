@@ -269,6 +269,13 @@ class CLICommand(object):
         # Subclasses must implement setting/changing the cmd name.
         raise NotImplementedError("name")
 
+    @property
+    def lineage(self):
+        # Represents how to get to a specific command using the CLI.
+        # It includes all commands that came before it and itself in
+        # a list.
+        return [self]
+
     def __call__(self, args, parsed_globals):
         """Invoke CLI operation.
 
@@ -324,6 +331,7 @@ class ServiceCommand(CLICommand):
             self._service_name = cli_name
         else:
             self._service_name = service_name
+        self._lineage = [self]
 
     @property
     def name(self):
@@ -336,6 +344,14 @@ class ServiceCommand(CLICommand):
     @property
     def service_object(self):
         return self._service_object
+
+    @property
+    def lineage(self):
+        return self._lineage
+
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
 
     def _get_command_table(self):
         if self._command_table is None:
@@ -371,7 +387,13 @@ class ServiceCommand(CLICommand):
                           command_table=command_table,
                           session=self.session,
                           command_object=self)
+        self._add_lineage(command_table)
         return command_table
+
+    def _add_lineage(self, command_table):
+        for command in command_table:
+            command_obj = command_table[command]
+            command_obj.lineage = self.lineage + [command_obj]
 
     def create_help_command(self):
         command_table = self._get_command_table()
@@ -434,6 +456,23 @@ class ServiceOperation(object):
         self._operation_object = operation_object
         self._operation_caller = operation_caller
         self._service_object = service_object
+        self._lineage = [self]
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def lineage(self):
+        return self._lineage
+
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
 
     @property
     def arg_table(self):

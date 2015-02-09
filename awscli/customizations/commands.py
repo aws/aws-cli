@@ -122,6 +122,7 @@ class BasicCommand(CLICommand):
         self._session = session
         self._arg_table = None
         self._subcommand_table = None
+        self._lineage = [self]
 
     def __call__(self, args, parsed_globals):
         # args is the remaining unparsed args.
@@ -213,6 +214,7 @@ class BasicCommand(CLICommand):
                            command_table=subcommand_table,
                            session=self._session,
                            command_object=self)
+        self._add_lineage(subcommand_table)        
         return subcommand_table
 
     def _display_help(self, parsed_args, parsed_globals):
@@ -234,6 +236,7 @@ class BasicCommand(CLICommand):
         commands = {}
         for command in self.SUBCOMMANDS:
             commands[command['name']] = command['command_class'](self._session)
+        self._add_lineage(commands)
         return commands
 
     def _build_arg_table(self):
@@ -252,6 +255,11 @@ class BasicCommand(CLICommand):
 
             arg_table[arg_data['name']] = custom_argument
         return arg_table
+
+    def _add_lineage(self, command_table):
+        for command in command_table:
+            command_obj = command_table[command]
+            command_obj.lineage = self.lineage + [command_obj]
 
     @property
     def arg_table(self):
@@ -272,6 +280,14 @@ class BasicCommand(CLICommand):
     @property
     def name(self):
         return self.NAME
+
+    @property
+    def lineage(self):
+        return self._lineage
+
+    @lineage.setter
+    def lineage(self, value):
+        self._lineage = value
 
 
 class BasicHelp(HelpCommand):

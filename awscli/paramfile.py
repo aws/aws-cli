@@ -37,6 +37,10 @@ PARAMFILE_DISABLED = set([
     'cloudformation.update-stack.stack-policy-url',
     'cloudformation.set-stack-policy.stack-policy-url',
 
+    'custom.cp.website-redirect',
+    'custom.mv.website-redirect',
+    'custom.sync.website-redirect',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',

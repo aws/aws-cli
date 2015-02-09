@@ -60,12 +60,13 @@ class TestBasicCommand(unittest.TestCase):
         self.assertEqual(self.command.lineage, [self.command])
 
     def test_pass_lineage_to_child_command(self):
-        subcommands = [{'name': 'bar', 'command_class': BasicCommand}]
-        basic_command_class = 'awscli.customizations.commands.BasicCommand'
-        subcommand_patch = basic_command_class + '.SUBCOMMANDS'
-        with mock.patch(subcommand_patch, subcommands):
-            lineage = self.command.subcommand_table['bar'].lineage
-            self.assertEqual(len(lineage), 2)
-            self.assertEqual(lineage[0], self.command)
-            self.assertIsInstance(lineage[1], BasicCommand)
+        class MockCustomCommand(BasicCommand):
+            NAME = 'mock'
 
+            SUBCOMMANDS = [{'name': 'basic', 'command_class': BasicCommand}]
+
+        self.command = MockCustomCommand(self.session)
+        lineage = self.command.subcommand_table['basic'].lineage
+        self.assertEqual(len(lineage), 2)
+        self.assertEqual(lineage[0], self.command)
+        self.assertIsInstance(lineage[1], BasicCommand)

@@ -236,6 +236,7 @@ class BasicCommand(CLICommand):
         commands = {}
         for command in self.SUBCOMMANDS:
             commands[command['name']] = command['command_class'](self._session)
+        self._add_lineage(commands)
         return commands
 
     def _build_arg_table(self):

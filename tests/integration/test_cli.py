@@ -291,5 +291,55 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.rc, 0)
 
 
+class TestCommandLineage(unittest.TestCase):
+    def setUp(self):
+        self.driver = create_clidriver()
+        self.top_help = self.driver.create_help_command()
+
+    def assert_lineage_names(self, ref_lineage_names):
+        command_table = self.top_help.command_table
+        for i, cmd_name in enumerate(ref_lineage_names):
+            command = command_table[cmd_name]
+            help_command = command.create_help_command()
+            command_table = help_command.command_table
+
+        actual_lineage_names = []
+        for cmd in command.lineage:
+            actual_lineage_names.append(cmd.name)
+
+        self.assertEqual(actual_lineage_names, ref_lineage_names)
+
+    def test_service_level_commands(self):
+        # Check a normal unchanged service command
+        self.assert_lineage_names(['ec2'])
+
+        # Check a service that had its name changed.
+        self.assert_lineage_names(['s3api'])
+
+        # Check a couple custom service level commands.
+        self.assert_lineage_names(['s3'])
+        self.assert_lineage_names(['configure'])
+
+    def test_operation_level_commands(self):
+        # Check a normal unchanged service and operation command
+        self.assert_lineage_names(['dynamodb', 'create-table'])
+
+        # Check an operation commands with a service that had its name changed.
+        self.assert_lineage_names(['s3api', 'list-objects'])
+
+        # Check a custom operation level command with no
+        # custom service command.
+        self.assert_lineage_names(['emr', 'create-cluster'])
+
+        # Check a couple of operation level commands that
+        # are based off a custom service command
+        self.assert_lineage_names(['configure', 'set'])
+        self.assert_lineage_names(['s3', 'cp'])
+
+    def test_wait_commands(self):
+        self.assert_lineage_names(['ec2', 'wait'])
+        self.assert_lineage_names(['ec2', 'wait', 'instance-running'])
+
+
 if __name__ == '__main__':
     unittest.main()

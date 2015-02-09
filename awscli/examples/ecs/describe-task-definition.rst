@@ -4,40 +4,27 @@ This example command provides a description of the specified task definition.
 
 Command::
 
-  aws ecs describe-task-definition --task-definition wordpress:6
+  aws ecs describe-task-definition --task-definition hello_world:8
 
 Output::
 
 	{
 	    "taskDefinition": {
-	        "taskDefinitionArn": "arn:aws:ecs:us-west-2:<aws_account_id>:task-definition/wordpress:6",
+	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/hello_world:8",
 	        "containerDefinitions": [
 	            {
-	                "environment": [
-	                    {
-	                        "name": "DB_USER",
-	                        "value": "root"
-	                    },
-	                    {
-	                        "name": "DB_PASS",
-	                        "value": "pass"
-	                    }
-	                ],
+	                "environment": [],
 	                "name": "wordpress",
 	                "links": [
-	                    "db"
+	                    "mysql"
 	                ],
-	                "image": "tutum/wordpress-stackable",
+	                "image": "wordpress",
 	                "essential": true,
 	                "portMappings": [
 	                    {
 	                        "containerPort": 80,
 	                        "hostPort": 80
 	                    }
-	                ],
-	                "entryPoint": [
-	                    "/bin/sh",
-	                    "-c"
 	                ],
 	                "memory": 500,
 	                "cpu": 10
@@ -46,21 +33,18 @@ Output::
 	                "environment": [
 	                    {
 	                        "name": "MYSQL_ROOT_PASSWORD",
-	                        "value": "pass"
+	                        "value": "password"
 	                    }
 	                ],
-	                "name": "db",
+	                "name": "mysql",
 	                "image": "mysql",
 	                "cpu": 10,
 	                "portMappings": [],
-	                "entryPoint": [
-	                    "/entrypoint.sh"
-	                ],
 	                "memory": 500,
 	                "essential": true
 	            }
 	        ],
-	        "family": "wordpress",
-	        "revision": 6
+	        "family": "hello_world",
+	        "revision": 8
 	    }
 	}

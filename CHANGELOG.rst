@@ -11,6 +11,9 @@ Next Release (TBD)
 * feature:``aws s3``: Add support for config variable for changing
   S3 runtime values
   (`issue 1122 <https://github.com/aws/aws-cli/pull/1122>`__)
+* bugfix:Proxies: Fix issue with SSL certificate validation when
+  using proxies and python 2.7.9
+  (`botocore issue 451 <https://github.com/boto/botocore/pull/451>`__)
 
 
 1.7.5

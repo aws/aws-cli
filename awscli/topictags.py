@@ -83,45 +83,38 @@ class TopicTagDB(object):
         if self._tag_dictionary is None:
             self._tag_dictionary = {}
 
-    def load_json_index(self, index_file=None):
+    def load_json_index(self, index_file=JSON_INDEX):
         """Loads a JSON file into the tag dictionary.
 
         :param index_file: The path to a specific JSON index to load.
             If nothing is specified it will default to the default JSON
             index at ``JSON_INDEX``.
         """
-        index_filepath = self.JSON_INDEX
-        if index_file is not None:
-            index_filepath = index_file
-        with open(index_filepath, 'r') as f:
-            index = f.read()
-            self._tag_dictionary = json.loads(index)
+        with open(index_file, 'r') as f:
+            self._tag_dictionary = json.load(f)
 
-    def save_to_json_index(self, index_file=None):
+    def save_to_json_index(self, index_file=JSON_INDEX):
         """Writes the loaded data back out to the JSON index.
 
         :param index_file: The path to a specific JSON index to load.
             If nothing is specified it will default to the the default
             JSON index at ``JSON_INDEX``.
         """
-        index_filepath = self.JSON_INDEX
-        if index_file is not None:
-            index_filepath = index_file
-        with open(index_filepath, 'w') as f:
+        with open(index_file, 'w') as f:
             f.write(json.dumps(self._tag_dictionary, indent=4, sort_keys=True))
 
     def get_all_topic_names(self):
         """Retrieves all of the topic names of the loaded JSON index"""
-        return list(self._tag_dictionary.keys())
+        return list(self._tag_dictionary)
 
-    def get_all_topic_src_files(self):
+    def get_all_topic_src_files(self, topic_dir=TOPIC_DIR):
         """Retrieves the file paths of all the topics in directory"""
         topic_full_paths = []
-        topic_names = os.listdir(self.TOPIC_DIR)
+        topic_names = os.listdir(topic_dir)
         for topic_name in topic_names:
             # Do not try to load hidden files.
             if not topic_name.startswith('.'):
-                topic_full_path = os.path.join(self.TOPIC_DIR, topic_name)
+                topic_full_path = os.path.join(topic_dir, topic_name)
                 # Ignore the JSON Index as it is stored with topic files.
                 if topic_full_path != self.JSON_INDEX:
                     topic_full_paths.append(topic_full_path)
@@ -142,7 +135,6 @@ class TopicTagDB(object):
                 topic_name = self._find_topic_name(topic_file)
                 # Add the topic to the dictionary if it does not exist
                 self._add_topic_name_to_dict(topic_name)
-                # Read the file
                 topic_content = f.read()
                 # Record the tags and the values
                 self._add_tag_and_values_from_content(

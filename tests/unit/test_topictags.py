@@ -65,10 +65,11 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         for i in range(5):
             topic_name = 'topic-name-' + str(i)
             source_files.append(self.file_creator.create_file(topic_name, ''))
-        topic_dir_patch = 'awscli.topictags.TopicTagDB.TOPIC_DIR'
-        with mock.patch(topic_dir_patch, self.file_creator.rootdir):
-            self.assertEqual(self.topic_tag_db.get_all_topic_src_files(),
-                             source_files)
+            topic_dir = self.file_creator.rootdir
+            self.assertEqual(
+                self.topic_tag_db.get_all_topic_src_files(topic_dir),
+                source_files
+            )
 
     def test_get_all_topic_source_files_ignore_index(self):
         topic_filename = 'mytopic'
@@ -76,10 +77,11 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         source_files = []
         source_files.append(self.file_creator.create_file(topic_filename, ''))
         self.file_creator.create_file(index_filename, '')
-        topic_dir_patch = 'awscli.topictags.TopicTagDB.TOPIC_DIR'
-        with mock.patch(topic_dir_patch, self.file_creator.rootdir):
-            self.assertEqual(self.topic_tag_db.get_all_topic_src_files(),
-                             source_files)
+        topic_dir = self.file_creator.rootdir
+        self.assertEqual(
+            self.topic_tag_db.get_all_topic_src_files(topic_dir),
+            source_files
+        )
 
     def test_get_all_topic_source_files_ignore_hidden(self):
         topic_filename = 'mytopic'
@@ -87,10 +89,11 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         source_files = []
         source_files.append(self.file_creator.create_file(topic_filename, ''))
         self.file_creator.create_file(hidden_filename, '')
-        topic_dir_patch = 'awscli.topictags.TopicTagDB.TOPIC_DIR'
-        with mock.patch(topic_dir_patch, self.file_creator.rootdir):
-            self.assertEqual(self.topic_tag_db.get_all_topic_src_files(),
-                             source_files)
+        topic_dir = self.file_creator.rootdir
+        self.assertEqual(
+            self.topic_tag_db.get_all_topic_src_files(topic_dir),
+            source_files
+        )
 
     def test_get_tag_value_all_tags(self):
         topic_name = 'topic-name-1'

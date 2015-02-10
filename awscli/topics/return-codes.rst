@@ -12,7 +12,16 @@ of a CLI command:
 * ``1`` -- Limited to ``s3`` commands, at least one or more s3 transfers
   failed for the command executed.
 
-* ``2`` -- Limited to ``s3`` commands, at least one or more files marked
+* ``2`` -- The meaning of this return code depends on the command being run.
+
+  The primary meaning is that the command entered on the command
+  line failed to be parsed. Parsing failures can be caused by,
+  but are not limted to, misspelling commands, missing any required
+  subcommands or argument, or using any unknown commands or arguments.
+  Note that this return code meaning is applicable to all CLI commands.
+
+  The other meaning is only applicable to ``s3`` commands.
+  It can mean at least one or more files marked
   for transfer were skipped during the transfer process. However, all
   other files marked for transfer were successfully transferred.
   Files that are skipped during the transfer process include:
@@ -29,6 +38,14 @@ running a CLI command. Note that this will work only on POSIX systems::
 
   $ echo $?
 
+
+Output (if successful)::
+
+  0
+
+On Windows PowerShell, the return code can be determined by running::
+
+  > echo $lastexitcode
 
 Output (if successful)::
 

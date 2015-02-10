@@ -27,9 +27,14 @@ from awscli import EnvironmentVariables
 from awscli.compat import StringIO
 from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.fileinfo import FileInfo
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 import botocore.session
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets
+
+
+def runtime_config(**kwargs):
+    return RuntimeConfig().build_config(**kwargs)
 
 
 class S3HandlerTestDeleteList(unittest.TestCase):
@@ -155,9 +160,10 @@ class S3HandlerTestUpload(unittest.TestCase):
         self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private']}
         self.s3_handler = S3Handler(self.session, params)
-        self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
-                                          chunksize=2,
-                                          params=params)
+        self.s3_handler_multi = S3Handler(
+            self.session, params=params,
+            runtime_config=runtime_config(
+                multipart_threshold=10, multipart_chunksize=2))
         self.bucket = create_bucket(self.session)
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
@@ -298,8 +304,10 @@ class S3HandlerTestDownload(unittest.TestCase):
         self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
-        self.s3_handler_multi = S3Handler(self.session, multi_threshold=10,
-                                          chunksize=2, params=params)
+        self.s3_handler_multi = S3Handler(
+            self.session, params,
+            runtime_config=runtime_config(multipart_threshold=10,
+                                          multipart_chunksize=2))
         self.bucket = make_s3_files(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']

@@ -22,7 +22,8 @@ from awscli.customizations.s3.utils import get_file_stat
 from awscli.customizations.s3.utils import AppendFilter
 from awscli.customizations.s3.utils import create_warning
 from awscli.customizations.s3.utils import human_readable_size
-from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
+from awscli.customizations.s3.utils import human_readable_to_bytes
+from awscli.customizations.s3.utils import MAX_SINGLE_UPLOAD_SIZE
 
 
 def test_human_readable_size():
@@ -44,6 +45,28 @@ def test_human_readable_size():
 
 def _test_human_size_matches(bytes_int, expected):
     assert_equal(human_readable_size(bytes_int), expected)
+
+
+def test_convert_human_readable_to_bytes():
+    yield _test_convert_human_readable_to_bytes, "1", 1
+    yield _test_convert_human_readable_to_bytes, "1024", 1024
+    yield _test_convert_human_readable_to_bytes, "1KB", 1024
+    yield _test_convert_human_readable_to_bytes, "1kb", 1024
+    yield _test_convert_human_readable_to_bytes, "1MB", 1024 ** 2
+    yield _test_convert_human_readable_to_bytes, "1GB", 1024 ** 3
+    yield _test_convert_human_readable_to_bytes, "1TB", 1024 ** 4
+
+    # Also because of the "ls" output for s3, we support
+    # the IEC "mebibyte" format (MiB).
+    yield _test_convert_human_readable_to_bytes, "1KiB", 1024
+    yield _test_convert_human_readable_to_bytes, "1kib", 1024
+    yield _test_convert_human_readable_to_bytes, "1MiB", 1024 ** 2
+    yield _test_convert_human_readable_to_bytes, "1GiB", 1024 ** 3
+    yield _test_convert_human_readable_to_bytes, "1TiB", 1024 ** 4
+
+
+def _test_convert_human_readable_to_bytes(size_str, expected):
+    assert_equal(human_readable_to_bytes(size_str), expected)
 
 
 class AppendFilterTest(unittest.TestCase):
@@ -102,8 +125,10 @@ class FindChunksizeTest(unittest.TestCase):
         size because the original ``chunksize`` is too small.
         """
         chunksize = 7 * (1024 ** 2)
-        size = 8 * (1024 ** 3)
-        self.assertEqual(find_chunksize(size, chunksize), chunksize * 2)
+        size = 5 * (1024 ** 4)
+        # If we try to upload a 5TB file, we'll need to use 896MB part
+        # sizes.
+        self.assertEqual(find_chunksize(size, chunksize), 896 * (1024 ** 2))
 
     def test_super_chunk(self):
         """

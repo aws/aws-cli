@@ -20,7 +20,8 @@ from mock import patch, Mock, MagicMock
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
-    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint
+    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint, \
+    RbCommand
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
@@ -34,6 +35,9 @@ class FakeArgs(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
+    def __contains__(self, key):
+        return key in self.__dict__
+
 
 class TestGetEndpoint(unittest.TestCase):
     def test_endpoint(self):
@@ -45,6 +49,28 @@ class TestGetEndpoint(unittest.TestCase):
         self.assertEqual(endpoint.region_name, 'us-west-1')
         self.assertEqual(endpoint.endpoint_url, 'URL')
         self.assertTrue(endpoint.verify)
+
+
+class TestRbCommand(unittest.TestCase):
+    def test_rb_command_with_force_deletes_objects_in_bucket(self):
+        self.session = mock.Mock()
+        self.session.get_scoped_config.return_value = {}
+        rb_command = RbCommand(self.session)
+        parsed_args = FakeArgs(paths='s3://mybucket/',
+                               force=True,
+                               dir_op=False)
+        parsed_globals = FakeArgs(region=None, endpoint_url=None,
+                                  verify_ssl=None)
+        cmd_name = 'awscli.customizations.s3.subcommands.RmCommand'
+        arch_name = 'awscli.customizations.s3.subcommands.CommandArchitecture'
+        with mock.patch(cmd_name) as rm_command:
+            with mock.patch(arch_name):
+                rb_command._run_main(parsed_args,
+                                    parsed_globals=parsed_globals)
+            # Because of --force we should have called the
+            # rm_command with the --recursive option.
+            rm_command.return_value.assert_called_with(
+                ['s3://mybucket', '--recursive'], mock.ANY)
 
 
 class TestLSCommand(unittest.TestCase):
@@ -447,16 +473,14 @@ class CommandParametersTest(unittest.TestCase):
         self.environ = {}
         self.environ_patch = patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.session = FakeSession()
         self.mock = MagicMock()
         self.mock.get_config = MagicMock(return_value={'region': None})
         self.loc_files = make_loc_files()
-        self.bucket = make_s3_files(self.session)
+        self.bucket = 's3testbucket'
 
     def tearDown(self):
         self.environ_patch.stop()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_check_path_type_pass(self):
         # This tests the class's ability to determine whether the correct
@@ -477,7 +501,7 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(self.session, cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '')
             cmd_param.add_region(mock.Mock())
             correct_paths = cmds[cmd]
             for path_args in correct_paths:
@@ -505,7 +529,7 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(self.session, cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '')
             cmd_param.add_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
@@ -531,22 +555,13 @@ class CommandParametersTest(unittest.TestCase):
         parameters = {}
         for filename in files:
             parameters['dir_op'] = filename[1]
-            cmd_parameter = CommandParameters(self.session, 'put',
-                                              parameters, '')
+            cmd_parameter = CommandParameters('put', parameters, '')
             cmd_parameter.add_region(mock.Mock())
             cmd_parameter.check_src_path(filename[0])
 
-    def test_check_force(self):
-        # This checks to make sure that the force parameter is run. If
-        # successful. The delete command will fail as the bucket is empty
-        # and be caught by the exception.
-        cmd_params = CommandParameters(self.session, 'rb', {'force': True},'')
-        cmd_params.parameters['src'] = 's3://mybucket'
-        cmd_params.check_force(None)
-
     def test_validate_streaming_paths_upload(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params = CommandParameters('cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
@@ -554,7 +569,7 @@ class CommandParametersTest(unittest.TestCase):
 
     def test_validate_streaming_paths_download(self):
         parameters = {'src': 'localfile', 'dest': '-'}
-        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params = CommandParameters('cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertTrue(cmd_params.parameters['is_stream'])
         self.assertTrue(cmd_params.parameters['only_show_errors'])
@@ -562,13 +577,13 @@ class CommandParametersTest(unittest.TestCase):
 
     def test_validate_no_streaming_paths(self):
         parameters = {'src': 'localfile', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters(self.session, 'cp', parameters, '')
+        cmd_params = CommandParameters('cp', parameters, '')
         cmd_params._validate_streaming_paths()
         self.assertFalse(cmd_params.parameters['is_stream'])
 
     def test_validate_streaming_paths_error(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
-        cmd_params = CommandParameters(self.session, 'sync', parameters, '')
+        cmd_params = CommandParameters('sync', parameters, '')
         with self.assertRaises(ValueError):
             cmd_params._validate_streaming_paths()
 

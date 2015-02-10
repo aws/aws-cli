@@ -16,20 +16,22 @@ import math
 import os
 import sys
 
-from awscli.customizations.s3.constants import MULTI_THRESHOLD, CHUNKSIZE, \
-    NUM_THREADS, MAX_UPLOAD_SIZE, MAX_QUEUE_SIZE
 from awscli.customizations.s3.utils import find_chunksize, \
     operate, find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
+from awscli.customizations.s3.transferconfig import RuntimeConfig
 from awscli.compat import six
 from awscli.compat import queue
 
 
 LOGGER = logging.getLogger(__name__)
+# Maximum object size allowed in S3.
+# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
+MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
 
 CommandResult = namedtuple('CommandResult',
-                           ['num_tasks_failed', 'num_tasks_warned']) 
+                           ['num_tasks_failed', 'num_tasks_warned'])
 
 
 class S3Handler(object):
@@ -39,12 +41,13 @@ class S3Handler(object):
     class pull tasks from to complete.
     """
     MAX_IO_QUEUE_SIZE = 20
-    MAX_EXECUTOR_QUEUE_SIZE = MAX_QUEUE_SIZE
-    EXECUTOR_NUM_THREADS = NUM_THREADS
 
     def __init__(self, session, params, result_queue=None,
-                 multi_threshold=MULTI_THRESHOLD, chunksize=CHUNKSIZE):
+                 runtime_config=None):
         self.session = session
+        if runtime_config is None:
+            runtime_config = RuntimeConfig.defaults()
+        self._runtime_config = runtime_config
         # The write_queue has potential for optimizations, so the constant
         # for maxsize is scoped to this class (as opposed to constants.py)
         # so we have the ability to change this value later.
@@ -65,14 +68,16 @@ class S3Handler(object):
         for key in self.params.keys():
             if key in params:
                 self.params[key] = params[key]
-        self.multi_threshold = multi_threshold
-        self.chunksize = chunksize
+        self.multi_threshold = self._runtime_config['multipart_threshold']
+        self.chunksize = self._runtime_config['multipart_chunksize']
+        LOGGER.debug("Using a multipart threshold of %s and a part size of %s",
+                     self.multi_threshold, self.chunksize)
         self.executor = Executor(
-            num_threads=self.EXECUTOR_NUM_THREADS,
+            num_threads=self._runtime_config['max_concurrent_requests'],
             result_queue=self.result_queue,
             quiet=self.params['quiet'],
             only_show_errors=self.params['only_show_errors'],
-            max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
+            max_queue_size=self._runtime_config['max_queue_size'],
             write_queue=self.write_queue
         )
         self._multipart_uploads = []
@@ -111,7 +116,7 @@ class S3Handler(object):
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
-        
+
         return CommandResult(self.executor.num_tasks_failed,
                              self.executor.num_tasks_warned)
 
@@ -350,11 +355,22 @@ class S3StreamHandler(S3Handler):
     involves a stream since the logic is different when uploading and
     downloading streams.
     """
-
     # This ensures that the number of multipart chunks waiting in the
     # executor queue and in the threads is limited.
     MAX_EXECUTOR_QUEUE_SIZE = 2
     EXECUTOR_NUM_THREADS = 6
+
+    def __init__(self, session, params, result_queue=None,
+                 runtime_config=None):
+        if runtime_config is None:
+            # Rather than using the .defaults(), streaming
+            # has different default values so that it does not
+            # consume large amounts of memory.
+            runtime_config = RuntimeConfig().build_config(
+                max_queue_size=self.MAX_EXECUTOR_QUEUE_SIZE,
+                max_concurrent_requests=self.EXECUTOR_NUM_THREADS)
+        super(S3StreamHandler, self).__init__(session, params, result_queue,
+                                              runtime_config)
 
     def _enqueue_tasks(self, files):
         total_files = 0
@@ -490,7 +506,7 @@ class S3StreamHandler(S3Handler):
                 task_class=task_class,
                 payload=payload
             )
-            num_uploads += 1 
+            num_uploads += 1
             if not is_remaining:
                 break
         # Once there is no more data left, announce to the context how

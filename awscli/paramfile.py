@@ -37,6 +37,12 @@ PARAMFILE_DISABLED = set([
     'cloudformation.update-stack.stack-policy-url',
     'cloudformation.set-stack-policy.stack-policy-url',
 
+    # We will want to change the event name to ``s3`` as opposed to
+    # custom in the near future along with ``s3`` to ``s3api``.
+    'custom.cp.website-redirect',
+    'custom.mv.website-redirect',
+    'custom.sync.website-redirect',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',
@@ -50,6 +56,7 @@ PARAMFILE_DISABLED = set([
     'sqs.send-message.queue-url',
     'sqs.send-message-batch.queue-url',
     'sqs.set-queue-attributes.queue-url',
+    'sqs.purge-queue.queue-url',
 
     's3.copy-object.website-redirect-location',
     's3.create-multipart-upload.website-redirect-location',

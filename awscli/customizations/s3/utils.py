@@ -24,14 +24,28 @@ from dateutil.parser import parse
 from dateutil.tz import tzlocal
 from botocore.compat import unquote_str
 
-from awscli.customizations.s3.constants import MAX_PARTS
-from awscli.customizations.s3.constants import MAX_SINGLE_UPLOAD_SIZE
 from awscli.compat import six
 from awscli.compat import PY3
 from awscli.compat import queue
 
 
-humanize_suffixes = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
+HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
+MAX_PARTS = 10000
+# The maximum file size you can upload via S3 per request.
+# See: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
+# and: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
+MAX_SINGLE_UPLOAD_SIZE = 5 * (1024 ** 3)
+SIZE_SUFFIX = {
+    'kb': 1024,
+    'mb': 1024 ** 2,
+    'gb': 1024 ** 3,
+    'tb': 1024 ** 4,
+    'kib': 1024,
+    'mib': 1024 ** 2,
+    'gib': 1024 ** 3,
+    'tib': 1024 ** 4,
+}
+
 
 
 def human_readable_size(value):
@@ -61,10 +75,37 @@ def human_readable_size(value):
     elif bytes_int < base:
         return '%d Bytes' % bytes_int
 
-    for i, suffix in enumerate(humanize_suffixes):
+    for i, suffix in enumerate(HUMANIZE_SUFFIXES):
         unit = base ** (i+2)
         if round((bytes_int / unit) * base) < base:
             return '%.1f %s' % ((base * bytes_int / unit), suffix)
+
+
+def human_readable_to_bytes(value):
+    """Converts a human readable size to bytes.
+
+    :param value: A string such as "10MB".  If a suffix is not included,
+        then the value is assumed to be an integer representing the size
+        in bytes.
+    :returns: The converted value in bytes as an integer
+
+    """
+    value = value.lower()
+    if value[-2:] == 'ib':
+        # Assume IEC suffix.
+        suffix = value[-3:].lower()
+    else:
+        suffix = value[-2:].lower()
+    has_size_identifier = (
+        len(value) >= 2 and suffix in SIZE_SUFFIX)
+    if not has_size_identifier:
+        try:
+            return int(value)
+        except ValueError:
+            raise ValueError("Invalid size value: %s" % value)
+    else:
+        multiplier = SIZE_SUFFIX[suffix]
+        return int(value[:-len(suffix)]) * multiplier
 
 
 class AppendFilter(argparse.Action):

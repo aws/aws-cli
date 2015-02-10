@@ -16,12 +16,12 @@ JSON file format::
       "cpu": 10,
       "portMappings": [],
       "entryPoint": [
-        "/bin/sh"
+        "/bin/sh",
+        "-c"
       ],
       "memory": 10,
       "command": [
-        "sleep",
-        "360"
+        "sleep 360"
       ],
       "essential": true
     }
@@ -31,7 +31,7 @@ Output::
 
 	{
 	    "taskDefinition": {
-	        "taskDefinitionArn": "arn:aws:ecs:us-west-2:<aws_account_id>:task-definition/sleep360:2",
+	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:10",
 	        "containerDefinitions": [
 	            {
 	                "environment": [],
@@ -40,18 +40,18 @@ Output::
 	                "cpu": 10,
 	                "portMappings": [],
 	                "entryPoint": [
-	                    "/bin/sh"
+	                    "/bin/sh",
+	                    "-c"
 	                ],
 	                "memory": 10,
 	                "command": [
-	                    "sleep",
-	                    "360"
+	                    "sleep 360"
 	                ],
 	                "essential": true
 	            }
 	        ],
 	        "family": "sleep360",
-	        "revision": 2
+	        "revision": 10
 	    }
 	}
 
@@ -61,13 +61,13 @@ This example registers a the same task definition from the previous example, but
 
 Command::
 
-  aws ecs register-task-definition --family sleep360 --container-definitions "[{\"environment\":[],\"name\":\"sleep\",\"image\":\"busybox\",\"cpu\":10,\"portMappings\":[],\"entryPoint\":[\"/bin/sh\"],\"memory\":10,\"command\":[\"sleep\",\"360\"],\"essential\":true}]"
+  aws ecs register-task-definition --family sleep360 --container-definitions "[{\"environment\":[],\"name\":\"sleep\",\"image\":\"busybox\",\"cpu\":10,\"portMappings\":[],\"entryPoint\":[\"/bin/sh\",\"-c\"],\"memory\":10,\"command\":[\"sleep 360\"],\"essential\":true}]"
 
 Output::
 
 	{
 	    "taskDefinition": {
-	        "taskDefinitionArn": "arn:aws:ecs:us-west-2:<aws_account_id>:task-definition/sleep360:3",
+	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:11",
 	        "containerDefinitions": [
 	            {
 	                "environment": [],
@@ -76,17 +76,17 @@ Output::
 	                "cpu": 10,
 	                "portMappings": [],
 	                "entryPoint": [
-	                    "/bin/sh"
+	                    "/bin/sh",
+	                    "-c"
 	                ],
 	                "memory": 10,
 	                "command": [
-	                    "sleep",
-	                    "360"
+	                    "sleep 360"
 	                ],
 	                "essential": true
 	            }
 	        ],
 	        "family": "sleep360",
-	        "revision": 3
+	        "revision": 11
 	    }
 	}

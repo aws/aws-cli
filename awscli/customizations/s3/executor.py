@@ -44,6 +44,8 @@ class Executor(object):
     def __init__(self, num_threads, result_queue, quiet,
                  only_show_errors, max_queue_size, write_queue):
         self._max_queue_size = max_queue_size
+        LOGGER.debug("Using max queue size for s3 tasks of: %s",
+                     self._max_queue_size)
         self.queue = StablePriorityQueue(maxsize=self._max_queue_size,
                                          max_priority=20)
         self.num_threads = num_threads
@@ -78,6 +80,7 @@ class Executor(object):
         # explicit about it rather than relying on the threads_list order.
         # See .join() for more info.
         self.print_thread.start()
+        LOGGER.debug("Using a threadpool size of: %s", self.num_threads)
         for i in range(self.num_threads):
             worker = Worker(queue=self.queue)
             worker.setDaemon(True)

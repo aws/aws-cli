@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.7.6
+=====
+
+* feature:``aws dynamodb``: Add support for index scan
+* bugfix:``aws s3``: Fix issue where literal value for ``--website-redirect``
+  was not being used.
+  (`issue 1137 <https://github.com/aws/aws-cli/pull/1137>`__)
+* bugfix:``aws sqs purge-queue``: Fix issue with the processing
+  of the ``--queue-url`` parameter
+  (`issue 1126 <https://github.com/aws/aws-cli/issues/1126>`__)
+* feature:``aws s3``: Add support for config variable for changing
+  S3 runtime values
+  (`issue 1122 <https://github.com/aws/aws-cli/pull/1122>`__)
+* bugfix:Proxies: Fix issue with SSL certificate validation when
+  using proxies and python 2.7.9
+  (`botocore issue 451 <https://github.com/boto/botocore/pull/451>`__)
+
+
 1.7.5
 =====
 

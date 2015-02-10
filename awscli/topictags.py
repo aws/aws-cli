@@ -39,11 +39,11 @@ class TopicTagDB(object):
     :related topic:     A related topic                 No
     :related command:   A related command               No
 
-    To see examples of how to specify tags looks in the directory
+    To see examples of how to specify tags, look in the directory
     awscli/topics. Note that tags can have multiple values by delimiting
     values with commas. All tags must be on their own line in the file.
 
-    This class can load a JSON index represeting all of topics and their tags,
+    This class can load a JSON index represeting all topics and their tags,
     scan all of the topics and store the values of their tags, retrieve the
     tag value for a particular topic, query for all the topics with a specific
     tag and/or value, and save the loaded data back out to a JSON index.

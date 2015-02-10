@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue where literal value for ``--website-redirect``
+  was not being used.
+  (`issue 1137 <https://github.com/aws/aws-cli/pull/1137>`__)
 * bugfix:``aws sqs purge-queue``: Fix issue with the processing
   of the ``--queue-url`` parameter
   (`issue 1126 <https://github.com/aws/aws-cli/issues/1126>`__)

@@ -162,12 +162,16 @@ class BaseS3CLICommand(unittest.TestCase):
         return parsed['Buckets']
 
     def content_type_for_key(self, bucket_name, key_name):
+        parsed = self.head_object(bucket_name, key_name)
+        return parsed['ContentType']
+
+    def head_object(self, bucket_name, key_name):
         operation = self.service.get_operation('HeadObject')
         endpoint = self.service.get_endpoint(self.regions[bucket_name])
         http, parsed = operation.call(
             endpoint, bucket=bucket_name, key=key_name)
         self.assertEqual(http.status_code, 200)
-        return parsed['ContentType']
+        return parsed
 
     def assert_no_errors(self, p):
         self.assertEqual(
@@ -496,6 +500,19 @@ class TestCp(BaseS3CLICommand):
         # Assert that the file was downloaded properly.
         with open(local_filename, 'r') as f:
             self.assertEqual(f.read(), contents)
+
+    def test_website_redirect_ignore_paramfile(self):
+        bucket_name = self.create_bucket()
+        foo_txt = self.files.create_file('foo.txt', 'bar')
+        website_redirect = 'http://someserver'
+        p = aws('s3 cp %s s3://%s/foo.txt --website-redirect %s' %
+                (foo_txt, bucket_name, website_redirect))
+        self.assert_no_errors(p)
+
+        # Ensure that the web address is used as opposed to the contents
+        # of the web address. We can check via a head object.
+        response = self.head_object(bucket_name, 'foo.txt')
+        self.assertEqual(response['WebsiteRedirectLocation'], website_redirect)
 
 
 class TestSync(BaseS3CLICommand):

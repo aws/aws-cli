@@ -41,6 +41,20 @@ class TestMvCommand(BaseAWSCommandParamsTest):
         stderr = self.run_cmd(cmdline, expected_rc=255)[1]
         self.assertIn('Cannot mv a file onto itself', stderr)
 
+    def test_website_redirect_ignore_paramfile(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/key.txt --website-redirect %s' % \
+            (self.prefix, full_path, 'http://someserver')
+        self.parsed_responses = [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        # Make sure that the specified web address is used as opposed to the
+        # contents of the web address.
+        self.assertEqual(
+            self.operations_called[0][1]['website_redirect_location'],
+            'http://someserver'
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

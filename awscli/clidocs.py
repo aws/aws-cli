@@ -485,3 +485,95 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._doc_member_for_output(doc, '', member_shape.member, stack)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+
+class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
+    def __init__(self, help_command):
+        self.help_command = help_command
+        self.register(help_command.session, help_command.event_class)
+        self.help_command.doc.translation_map = self.build_translation_map()
+
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            doc.write('[ ')
+            doc.style.ref('aws', '../reference/index')
+            doc.write(' ]')
+
+    def doc_title(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h1(help_command.title)
+
+    def doc_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Description')
+        doc.include_doc_string(help_command.description)
+        doc.style.new_paragraph()
+
+    def doc_synopsis_start(self, help_command, **kwargs):
+        pass
+
+    def doc_synopsis_option(self, arg_name, help_command, **kwargs):
+        pass
+
+    def doc_synopsis_end(self, help_command, **kwargs):
+        pass
+
+    def doc_options_start(self, help_command, **kwargs):
+        pass
+
+    def doc_option(self, arg_name, help_command, **kwargs):
+        pass
+
+    def doc_option_example(self, arg_name, help_command, **kwargs):
+        pass
+
+    def doc_options_end(self, help_command, **kwargs):
+        pass
+
+    def doc_subitems_start(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Available Topics')
+
+        categories = help_command.categories
+        entries = help_command.entries
+        # Sort the categories
+        category_names = sorted(categories.keys())
+        for category_name in category_names:
+            doc.style.h3(category_name)
+            doc.style.new_paragraph()
+            # For each topics under the category, list the topic's entry.
+            for topic_name in sorted(categories[category_name]):
+                doc.style.li(entries[topic_name])
+        # Make a hidden toctree in order to link the topics files
+        # with the rest of CLI documents without actaully showing it
+        # in the man or html pages
+        self.make_hidden_toctree(help_command.doc, help_command.topic_names)
+
+    def make_hidden_toctree(self, doc, items):
+        if doc.target == 'html':
+            doc.write('\n.. toctree::\n')
+            doc.write(' :maxdepth: 1\n')
+            doc.write(' :hidden:\n\n')
+            for item in items:
+                doc.writeln(' %s' % item)
+
+
+class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
+
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            doc.write('[ ')
+            doc.style.ref('aws', '../reference/index')
+            doc.write(' . ')
+            doc.style.ref('topics', 'index')
+            doc.write(' ]')
+
+    def doc_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.writeln(help_command.contents)
+        doc.style.new_paragraph()
+
+    def doc_subitems_start(self, help_command, **kwargs):
+        pass

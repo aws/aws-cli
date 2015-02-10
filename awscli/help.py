@@ -26,7 +26,11 @@ from bcdoc.textwriter import TextWriter
 from awscli.clidocs import ProviderDocumentEventHandler
 from awscli.clidocs import ServiceDocumentEventHandler
 from awscli.clidocs import OperationDocumentEventHandler
+from awscli.clidocs import TopicListerDocumentEventHandler
+from awscli.clidocs import TopicDocumentEventHandler
 from awscli.argprocess import ParamShorthand
+from awscli.argparser import ArgTableArgParser
+from awscli.topictags import TopicTagDB
 
 
 LOG = logging.getLogger('awscli.help')
@@ -239,6 +243,11 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
+        self.topic_table = {}
+
+        self._topic_tag_db = TopicTagDB()
+        self._topic_tag_db.load_json_index()
+        self._create_topic_table()
 
     @property
     def event_class(self):
@@ -247,6 +256,28 @@ class ProviderHelpCommand(HelpCommand):
     @property
     def name(self):
         return self.obj.name
+
+    def _create_topic_table(self):
+        # Add the ``aws help topics`` command to the ``topic_table``
+        topic_lister_command = TopicListerCommand(
+            self.session, self._topic_tag_db)
+        self.topic_table['topics'] = topic_lister_command
+        topic_names = self._topic_tag_db.get_all_topic_names()
+
+        # Add all of the possible topics to the ``topic_table``
+        for topic_name in topic_names:
+            topic_help_command = TopicHelpCommand(
+                self.session, topic_name, self._topic_tag_db)
+            self.topic_table[topic_name] = topic_help_command
+
+    def __call__(self, args, parsed_globals):
+        if args:
+            topic_parser = ArgTableArgParser({}, self.topic_table)
+            parsed_topic, remaining = topic_parser.parse_known_args(args)
+            self.topic_table[parsed_topic.subcommand].__call__(
+                args, parsed_globals)
+        else:
+            super(ProviderHelpCommand, self).__call__(args, parsed_globals)
 
 
 class ServiceHelpCommand(HelpCommand):
@@ -298,3 +329,135 @@ class OperationHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._name
+
+
+class TopicListerCommand(HelpCommand):
+    EventHandlerClass = TopicListerDocumentEventHandler
+
+    DESCRIPTION = (
+        'This is the AWS CLI Topic Guide. It gives access to a set '
+        'of topics that provide a deeper understanding of the CLI. To access '
+        'the list of topics from the command line, run ``aws help topics``. '
+        'To access a specific topic from the command line, run '
+        '``aws help [topicname]``, where ``topicname`` is the name of the '
+        'topic as it appears in the output from ``aws help topics``.')
+
+    def __init__(self, session, topic_tag_db):
+        super(TopicListerCommand, self).__init__(session, None, {}, {})
+        self._topic_tag_db = topic_tag_db
+        self._categories = None
+        self._entries = None
+
+    @property
+    def event_class(self):
+        return 'topics'
+
+    @property
+    def name(self):
+        return 'topics'
+
+    @property
+    def title(self):
+        return 'AWS CLI Topic Guide'
+
+    @property
+    def description(self):
+        return self.DESCRIPTION
+
+    @property
+    def categories(self):
+        """
+        :returns: A dictionary where the keys are all of the possible
+            topic categories and the values are all of the topics that
+            are grouped in that category
+        """
+        if self._categories is None:
+            self._categories = self._topic_tag_db.query('category')
+        return self._categories
+
+    @property
+    def topic_names(self):
+        """
+        :returns: A list of all of the topic names.
+        """
+        return self._topic_tag_db.get_all_topic_names()
+
+    @property
+    def entries(self):
+        """
+        :returns: A dictionary where the keys are the names of all topics
+            and the values are the respective entries that appears in the
+            catagory that a topic belongs to
+        """
+        if self._entries is None:
+            topic_entry_template = '`%s <%s.html>`_: %s'
+            topic_entries = {}
+            for topic_name in self.topic_names:
+                # Get the description of the topic.
+                sentence_description = self._topic_tag_db.get_tag_value(
+                    topic_name, 'description')[0]
+                # Create the full entry description.
+                full_description = topic_entry_template % (
+                    topic_name, topic_name, sentence_description)
+                # Add the entry to the dictionary.
+                topic_entries[topic_name] = full_description
+            self._entries = topic_entries
+        return self._entries
+
+
+class TopicHelpCommand(HelpCommand):
+    EventHandlerClass = TopicDocumentEventHandler
+
+    def __init__(self, session, topic_name, topic_tag_db):
+        super(TopicHelpCommand, self).__init__(session, None, {}, {})
+        self._topic_tag_db = topic_tag_db
+        self._topic_name = topic_name
+        self._contents = None
+
+    @property
+    def event_class(self):
+        return 'topic'
+
+    @property
+    def name(self):
+        return self._topic_name
+
+    @property
+    def title(self):
+        return self._topic_tag_db.get_tag_value(self._topic_name, 'title')[0]
+
+    @property
+    def contents(self):
+        """
+        :returns: The contents of the topic source file with all of its tags
+            excluded.
+        """
+        if self._contents is None:
+            topic_filename = os.path.join(self._topic_tag_db.topic_dir,
+                                          self.name+'.rst')
+            self._contents = self._remove_tags_from_content(topic_filename)
+        return self._contents
+
+    def _remove_tags_from_content(self, filename):
+        # Open the file and save its contents.
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+
+        # Iterate through each line and remove each line that does not
+        # begin with a valid tag.
+        content_begin_index = 0
+        for i, line in enumerate(lines):
+            # If a line is encountered that does not begin with the tag
+            # end the search for tags and mark where tags end.
+            if not self._line_has_tag(line):
+                content_begin_index = i
+                break
+
+        # Join all of the non-tagged lines back together.
+        return ''.join(lines[i:])
+
+    def _line_has_tag(self, line):
+        for tag in self._topic_tag_db.valid_tags:
+            if line.startswith(':'+tag+':'):
+                return True
+        return False

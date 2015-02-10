@@ -43,6 +43,7 @@ help:
 clean:
 	-rm -rf $(BUILDDIR)/*
 	-rm -rf $(SOURCEDIR)/reference
+	-rm -rf $(SOURCEDIR)/topic
 	-rm -rf $(SOURCEDIR)/tutorial/services.rst
 
 html:

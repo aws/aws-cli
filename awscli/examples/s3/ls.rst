@@ -48,12 +48,12 @@ Output::
     2013-09-02 21:32:57        189 foo/bar/.baz/hooks/foo
     2013-09-02 21:32:57        398 z.txt
 
-The following ``ls`` command demonstrates the same command using the --humanize
-and --summarize options. --humanize displays file size in
+The following ``ls`` command demonstrates the same command using the --human-readable
+and --summarize options. --human-readable displays file size in
 Bytes/MiB/KiB/GiB/TiB/PiB/EiB. --summarize displays the total number of objects
 and total size at the end of the result listing::
 
-    aws s3 ls s3://mybucket --recursive --humanize --summarize
+    aws s3 ls s3://mybucket --recursive --human-readable --summarize
 
 Output::
 

@@ -243,11 +243,8 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
-        self.topic_table = {}
-
-        self._topic_tag_db = TopicTagDB()
-        self._topic_tag_db.load_json_index()
-        self._create_topic_table()
+        self._topic_table = None
+        self._topic_tag_db = None
 
     @property
     def event_class(self):
@@ -257,18 +254,30 @@ class ProviderHelpCommand(HelpCommand):
     def name(self):
         return self.obj.name
 
+    @property
+    def topic_table(self):
+        if self._topic_table is None:
+            if self._topic_tag_db is None:
+                self._topic_tag_db = TopicTagDB()
+            self._topic_tag_db.load_json_index()
+            self._topic_table = self._create_topic_table()
+        return self._topic_table
+
+
     def _create_topic_table(self):
+        topic_table = {}
         # Add the ``aws help topics`` command to the ``topic_table``
         topic_lister_command = TopicListerCommand(
             self.session, self._topic_tag_db)
-        self.topic_table['topics'] = topic_lister_command
+        topic_table['topics'] = topic_lister_command
         topic_names = self._topic_tag_db.get_all_topic_names()
 
         # Add all of the possible topics to the ``topic_table``
         for topic_name in topic_names:
             topic_help_command = TopicHelpCommand(
                 self.session, topic_name, self._topic_tag_db)
-            self.topic_table[topic_name] = topic_help_command
+            topic_table[topic_name] = topic_help_command
+        return topic_table
 
     def __call__(self, args, parsed_globals):
         if args:
@@ -394,8 +403,8 @@ class TopicListerCommand(HelpCommand):
             topic_entries = {}
             for topic_name in self.topic_names:
                 # Get the description of the topic.
-                sentence_description = self._topic_tag_db.get_tag_value(
-                    topic_name, 'description')[0]
+                sentence_description = self._topic_tag_db.get_tag_single_value(
+                    topic_name, 'description')
                 # Create the full entry description.
                 full_description = topic_entry_template % (
                     topic_name, topic_name, sentence_description)
@@ -424,7 +433,8 @@ class TopicHelpCommand(HelpCommand):
 
     @property
     def title(self):
-        return self._topic_tag_db.get_tag_value(self._topic_name, 'title')[0]
+        return self._topic_tag_db.get_tag_single_value(
+            self._topic_name, 'title')
 
     @property
     def contents(self):

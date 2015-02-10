@@ -548,9 +548,9 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         # Make a hidden toctree in order to link the topics files
         # with the rest of CLI documents without actaully showing it
         # in the man or html pages
-        self.make_hidden_toctree(help_command.doc, help_command.topic_names)
+        self._make_hidden_toctree(help_command.doc, help_command.topic_names)
 
-    def make_hidden_toctree(self, doc, items):
+    def _make_hidden_toctree(self, doc, items):
         if doc.target == 'html':
             doc.write('\n.. toctree::\n')
             doc.write(' :maxdepth: 1\n')

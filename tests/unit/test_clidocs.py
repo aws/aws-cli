@@ -10,11 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+from awscli.testutils import unittest, FileCreator
 
 from awscli.clidocs import OperationDocumentEventHandler, \
-    CLIDocumentEventHandler
-from awscli.help import ServiceHelpCommand
+    CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
+    TopicDocumentEventHandler
+
+from awscli.help import ServiceHelpCommand, TopicListerCommand, \
+    TopicHelpCommand
+from awscli.topictags import TopicTagDB
 from botocore.model import ShapeResolver, StructureShape
 
 import mock
@@ -152,3 +156,121 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             ('[ :ref:`aws <cli:aws>` . :ref:`s3api <cli:aws s3api>`'
              ' . :ref:`wait <cli:aws s3api wait>` ]')
         )
+
+
+class TestTopicListerDocumentEventHandler(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.file_creator = FileCreator()
+        self.descriptions = [
+            'This describes the first topic',
+            'This describes the second topic'
+        ]
+        self.tags_dict = {
+            'topic-name-1': {
+                'title': ['The first topic title'],
+                'description': [self.descriptions[0]],
+                'category': ['General Topics', 'Troubleshooting']
+            },
+            'topic-name-2': {
+                'title': ['The second topic title'],
+                'description': [self.descriptions[1]],
+                'category': ['General Topics']
+            }
+        }
+        self.topic_tag_db = TopicTagDB(self.tags_dict)
+        self.cmd = TopicListerCommand(self.session, self.topic_tag_db)
+        self.doc_handler = TopicListerDocumentEventHandler(self.cmd)
+
+    def tearDown(self):
+        self.file_creator.remove_all()
+
+    def test_breadcrumbs(self):
+        self.doc_handler.doc_breadcrumbs(self.cmd)
+        self.assertEqual(self.cmd.doc.getvalue(), '')
+        self.cmd.doc.target = 'html'
+        self.doc_handler.doc_breadcrumbs(self.cmd)
+        self.assertEqual(
+            '[ :doc:`aws <../reference/index>` ]',
+            self.cmd.doc.getvalue()
+        )
+
+    def test_title(self):
+        self.doc_handler.doc_title(self.cmd)
+        self.assertIn(self.cmd.title, self.cmd.doc.getvalue())
+
+    def test_description(self):
+        self.doc_handler.doc_description(self.cmd)
+        self.assertIn(self.cmd.description, self.cmd.doc.getvalue())
+
+    def _assert_categories_and_topics(self, contents):
+        for category in self.cmd.categories:
+            self.assertIn(category, contents)
+        for entry in self.cmd.entries:
+            self.assertIn('* '+self.cmd.entries[entry], contents)
+
+    def test_subitems_start(self):
+        self.doc_handler.doc_subitems_start(self.cmd)
+        contents = self.cmd.doc.getvalue()
+        self._assert_categories_and_topics(contents)
+
+        # Make sure the toctree is not in the man page
+        self.assertNotIn('.. toctree::', contents)
+
+    def test_subitems_start_html(self):
+        self.cmd.doc.target = 'html'
+        self.doc_handler.doc_subitems_start(self.cmd)
+        contents = self.cmd.doc.getvalue()
+        self._assert_categories_and_topics(contents)
+
+        # Make sure the hidd toctree is in the html
+        self.assertIn('.. toctree::', contents)
+        self.assertIn(':hidden:', contents)
+
+
+class TestTopicDocumentEventHandler(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.file_creator = FileCreator()
+
+        self.name = 'topic-name-1'
+        self.title = 'The first topic title'
+        self.topic_body = 'Hello World!'
+
+        self.tags_dict = {
+            self.name: {
+                'title': [self.title],
+            }
+        }
+        self.topic_tag_db = TopicTagDB(self.tags_dict)
+        self.cmd = TopicHelpCommand(self.session, self.name, self.topic_tag_db)
+        self.dir_patch = mock.patch('awscli.topictags.TopicTagDB.topic_dir',
+                                    self.file_creator.rootdir)
+        self.doc_handler = TopicDocumentEventHandler(self.cmd)
+        self.dir_patch.start()
+
+    def tearDown(self):
+        self.dir_patch.stop()
+        self.file_creator.remove_all()
+
+    def test_breadcrumbs(self):
+        self.doc_handler.doc_breadcrumbs(self.cmd)
+        self.assertEqual(self.cmd.doc.getvalue(), '')
+        self.cmd.doc.target = 'html'
+        self.doc_handler.doc_breadcrumbs(self.cmd)
+        self.assertEqual(
+            '[ :doc:`aws <../reference/index>` . :doc:`topics <index>` ]',
+            self.cmd.doc.getvalue()
+        )
+
+    def test_description(self):
+        lines = [
+            ':title: ' + self.title,
+            self.topic_body
+        ]
+        body = '\n'.join(lines)
+        self.file_creator.create_file(self.name+'.rst', body)
+        self.doc_handler.doc_description(self.cmd)
+        contents = self.cmd.doc.getvalue()
+        self.assertIn(self.topic_body, contents)
+        self.assertNotIn(':title '+self.title, contents)

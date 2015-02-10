@@ -37,6 +37,25 @@ class TestTopicTagDB(unittest.TestCase):
 
 
 class TestTopicTagDBGeneral(TestTopicTagDB):
+    def test_valid_tags(self):
+        self.assertCountEqual(
+            self.topic_tag_db.valid_tags,
+            ['title', 'description', 'category', 'related command',
+             'related topic']
+        )
+
+    def test_topic_dir(self):
+        self.topic_tag_db = TopicTagDB(topic_dir='foo')
+        self.assertEqual(self.topic_tag_db.topic_dir, 'foo')
+        self.topic_tag_db.topic_dir = 'bar'
+        self.assertEqual(self.topic_tag_db.topic_dir, 'bar')
+
+    def test_index_file(self):
+        self.topic_tag_db = TopicTagDB(index_file='foo')
+        self.assertEqual(self.topic_tag_db.index_file, 'foo')
+        self.topic_tag_db.index_file = 'bar'
+        self.assertEqual(self.topic_tag_db.index_file, 'bar')
+
     def test_get_all_topic_names(self):
         tag_dict = {
             'topic-name-1': {

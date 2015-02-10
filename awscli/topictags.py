@@ -115,6 +115,10 @@ class TopicTagDB(object):
     def topic_dir(self, value):
         self._topic_dir = value
 
+    @property
+    def valid_tags(self):
+        return self.VALID_TAGS
+
     def load_json_index(self):
         """Loads a JSON file into the tag dictionary."""
         with open(self.index_file, 'r') as f:

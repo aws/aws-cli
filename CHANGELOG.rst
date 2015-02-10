@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.6
+=====
 
 * feature:``aws dynamodb``: Add support for index scan
 * bugfix:``aws s3``: Fix issue where literal value for ``--website-redirect``

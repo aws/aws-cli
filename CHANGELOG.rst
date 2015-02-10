@@ -5,6 +5,7 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws dynamodb``: Add support for index scan
 * bugfix:``aws s3``: Fix issue where literal value for ``--website-redirect``
   was not being used.
   (`issue 1137 <https://github.com/aws/aws-cli/pull/1137>`__)

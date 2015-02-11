@@ -19,6 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
+import os.path
 import json
 
 from nose.tools import assert_equal
@@ -66,7 +67,7 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
 
     def test_get_all_topic_source_files_ignore_index(self):
         topic_filename = 'mytopic'
-        index_filename = TopicTagDB.JSON_INDEX
+        index_filename = os.path.basename(TopicTagDB.JSON_INDEX)
         source_files = []
         source_files.append(self.file_creator.create_file(topic_filename, ''))
         self.file_creator.create_file(index_filename, '')

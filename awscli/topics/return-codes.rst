@@ -16,8 +16,8 @@ of a CLI command:
 
   The primary meaning is that the command entered on the command
   line failed to be parsed. Parsing failures can be caused by,
-  but are not limted to, misspelling commands, missing any required
-  subcommands or argument, or using any unknown commands or arguments.
+  but are not limted to, missing any required subcommands or arguments
+  or using any unknown commands or arguments.
   Note that this return code meaning is applicable to all CLI commands.
 
   The other meaning is only applicable to ``s3`` commands.

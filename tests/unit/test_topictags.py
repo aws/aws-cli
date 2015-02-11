@@ -167,6 +167,40 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         value = self.topic_tag_db.get_tag_value('no-exist', ':foo:', [])
         self.assertEqual(value, [])
 
+    def test_get_tag_single_value(self):
+        topic_name = 'topic-name-1'
+        tag_dict = {
+            topic_name: {
+                'title': ['foo']
+            }
+        }
+        self.topic_tag_db = TopicTagDB(tag_dict)
+        value = self.topic_tag_db.get_tag_single_value('topic-name-1', 'title')
+        self.assertEqual(value, 'foo')
+
+    def test_get_tag_single_value_exception(self):
+        topic_name = 'topic-name-1'
+        tag_dict = {
+            topic_name: {
+                'title': ['foo', 'bar']
+            }
+        }
+        self.topic_tag_db = TopicTagDB(tag_dict)
+        with self.assertRaises(ValueError):
+            self.topic_tag_db.get_tag_single_value('topic-name-1', 'title')
+
+    def test_get_tag_single_value_no_exists(self):
+        topic_name = 'topic-name-1'
+        tag_dict = {
+            topic_name: {
+                'title': ['foo']
+            }
+        }
+        self.topic_tag_db = TopicTagDB(tag_dict)
+        value = self.topic_tag_db.get_tag_single_value(
+            'topic-name-1', ':title:')
+        self.assertEqual(value, None)
+
     def test_load_and_save_json_index(self):
         tag_dict = {
             'topic-name-1': {

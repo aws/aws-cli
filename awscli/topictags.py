@@ -249,3 +249,21 @@ class TopicTagDB(object):
         if topic_name in self._tag_dictionary:
             return self._tag_dictionary[topic_name].get(tag, default_value)
         return default_value
+
+    def get_tag_single_value(self, topic_name, tag):
+        """Get the value of a tag for a topic (i.e. not wrapped in a list)
+
+        :param topic_name: The name of the topic
+        :param tag: The name of the tag to retrieve
+        :raises VauleError: Raised if there is not exactly one value
+            in the list value.
+        """
+        value = self.get_tag_value(topic_name, tag)
+        if value is not None:
+            if len(value) != 1:
+                raise ValueError(
+                    'Tag %s for topic %s has value %. Expected a single '
+                    'element in list.' % (tag, topic_name, value)
+                )
+            value = value[0]
+        return value

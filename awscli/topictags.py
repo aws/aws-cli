@@ -164,7 +164,12 @@ class TopicTagDB(object):
                 # Strip the white space around each of these values.
                 for i in range(len(tag_values)):
                     tag_values[i] = tag_values[i].strip()
-                self._add_tag_to_dict(topic_name, tag, tag_values) 
+                self._add_tag_to_dict(topic_name, tag, tag_values)
+            else:
+                raise ValueError(
+                    "Tag %s found under topic %s is not supported."
+                    % (tag, topic_name)
+                )
 
     def _add_topic_name_to_dict(self, topic_name):
         # This method adds a topic name to the dictionary if it does not

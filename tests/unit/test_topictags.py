@@ -384,26 +384,18 @@ class TestTopicDBScan(TestTopicTagDB):
         self.topic_tag_db.scan([topic_filepath])
         self.assert_json_index(reference_tag_dict)
 
-    def test_scan_some_valid_tags(self):
+    def test_scan_invalid_tag(self):
         tags = [
             ':description: This is a description',
             ':title: Title',
             ':category: Foo',
             ':related_topic: Bar',
-            ':related_command: ec2'
         ]
         topic_name = 'my-topic'
 
-        reference_tag_dict = {
-            topic_name: {
-                'description': ['This is a description'],
-                'title': ['Title'],
-                'category': ['Foo'],
-            }
-        }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        with self.assertRaises(ValueError):
+            self.topic_tag_db.scan([topic_filepath])
 
     def test_scan_no_tags(self):
         tags = []

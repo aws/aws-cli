@@ -34,13 +34,6 @@ class TestTopicTagDB(unittest.TestCase):
         self.topic_tag_db = TopicTagDB()
         self.file_creator = FileCreator()
 
-        # In python 3, order matters when calling assertEqual to
-        # compare lists and dictionaries with lists. Therefore,
-        # assertItemsEqual needs to be used but it is renamed to
-        # assertCountEqual in python 3.
-        if six.PY3:
-            self.assertItemsEqual = self.assertCountEqual
-
     def tearDown(self):
         self.file_creator.remove_all()
 
@@ -57,7 +50,7 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         }
         reference_topic_list = ['topic-name-1', 'topic-name-2']
         self.topic_tag_db = TopicTagDB(tag_dict)
-        self.assertItemsEqual(self.topic_tag_db.get_all_topic_names(),
+        self.assertCountEqual(self.topic_tag_db.get_all_topic_names(),
                               reference_topic_list)
 
     def test_get_all_topic_source_files(self):
@@ -308,7 +301,7 @@ class TestTopicTagDBQuery(TestTopicTagDB):
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
         query_dict = self.topic_tag_db.query('category')
-        self.assertItemsEqual(
+        self.assertCountEqual(
             query_dict, {'foo': ['topic-name-1'], 'biz': ['topic-name-2'],
                          'bar': ['topic-name-1', 'topic-name-2']})
 
@@ -323,7 +316,7 @@ class TestTopicTagDBQuery(TestTopicTagDB):
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
         query_dict = self.topic_tag_db.query('category', ['bar'])
-        self.assertItemsEqual(query_dict,
+        self.assertCountEqual(query_dict,
                               {'bar': ['topic-name-1', 'topic-name-2']})
 
     def test_query_with_limit_multi_value(self):
@@ -337,7 +330,7 @@ class TestTopicTagDBQuery(TestTopicTagDB):
         }
         self.topic_tag_db = TopicTagDB(tag_dict)
         query_dict = self.topic_tag_db.query('category', ['foo', 'bar'])
-        self.assertItemsEqual(query_dict,
+        self.assertCountEqual(query_dict,
                               {'foo': ['topic-name-1'],
                                'bar': ['topic-name-1', 'topic-name-2']})
 

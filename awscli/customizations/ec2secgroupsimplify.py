@@ -154,7 +154,11 @@ class PortArgument(CustomArgument):
                     fromstr = '-1'
                     tostr = '-1'
                 elif '-' in value:
-                    fromstr, tostr = value.split('-')
+                    # We can get away with simple logic here because
+                    # argparse will not allow values such as
+                    # "-1-8", and these aren't actually valid
+                    # values any from from/to ports.
+                    fromstr, tostr = value.split('-', 1)
                 else:
                     fromstr, tostr = (value, value)
                 _build_ip_permissions(parameters, 'FromPort', int(fromstr))

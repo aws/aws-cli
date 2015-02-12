@@ -56,7 +56,3 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                   'Parameters': [{'ParameterKey': 'foo',
                                   'ParameterValue': 'one,two'}]}
         self.assert_params_for_cmd2(cmdline, result)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -19,15 +19,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import os.path
 import json
 
-from nose.tools import assert_equal
 import mock
 
 from awscli.testutils import unittest, FileCreator
 from awscli.topictags import TopicTagDB
-from awscli.compat import six
 
 
 class TestTopicTagDB(unittest.TestCase):
@@ -69,7 +66,7 @@ class TestTopicTagDBGeneral(TestTopicTagDB):
 
     def test_get_all_topic_source_files_ignore_index(self):
         topic_filename = 'mytopic'
-        index_filename = os.path.basename(TopicTagDB.JSON_INDEX)
+        index_filename = 'topic-tags.json'
         source_files = []
         source_files.append(self.file_creator.create_file(topic_filename, ''))
         index_file = self.file_creator.create_file(index_filename, '')

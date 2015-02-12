@@ -78,7 +78,8 @@ class TopicTagDB(object):
     # The default JSON index to load.
     JSON_INDEX = os.path.join(TOPIC_DIR, 'topic-tags.json')
 
-    def __init__(self, tag_dictionary=None, index_file=None, topic_dir=None):
+    def __init__(self, tag_dictionary=None, index_file=JSON_INDEX,
+                 topic_dir=TOPIC_DIR):
         """
         :param index_file: The path to a specific JSON index to load.
             If nothing is specified it will default to the default JSON
@@ -95,13 +96,24 @@ class TopicTagDB(object):
         if self._tag_dictionary is None:
             self._tag_dictionary = {}
 
-        self.index_file = index_file
-        if self.index_file is None:
-            self.index_file = self.JSON_INDEX
+        self._index_file = index_file
+        self._topic_dir = topic_dir
 
-        self.topic_dir = topic_dir
-        if self.topic_dir is None:
-            topic_dir = self.TOPIC_DIR
+    @property
+    def index_file(self):
+        return self._index_file
+
+    @index_file.setter
+    def index_file(self, value):
+        self._index_file = value
+
+    @property
+    def topic_dir(self):
+        return self._topic_dir
+
+    @topic_dir.setter
+    def topic_dir(self, value):
+        self._topic_dir = value
 
     def load_json_index(self):
         """Loads a JSON file into the tag dictionary."""

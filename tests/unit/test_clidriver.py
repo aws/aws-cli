@@ -389,7 +389,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 'ec2 describe-instances --endpoint-url https://foobar.com/',
                 expected_rc=0)
         endpoint.assert_called_with(region_name=None,
@@ -402,7 +402,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 'ec2 describe-instances --region us-east-1',
                 expected_rc=0)
         endpoint.assert_called_with(region_name='us-east-1',
@@ -415,7 +415,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 'ec2 describe-instances --region us-east-1 --no-verify-ssl',
                 expected_rc=0)
         # Because we used --no-verify-ssl, get_endpoint should be
@@ -432,7 +432,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
             self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 'ec2 describe-instances --region us-east-1',
                 expected_rc=0)
         call_args = endpoint.call_args
@@ -445,7 +445,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             endpoint.return_value.host = ''
             endpoint.return_value.make_request.return_value = (
                 http_response, {})
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 'ec2 describe-instances --region us-east-1',
                 expected_rc=0)
         call_args = endpoint.call_args
@@ -457,7 +457,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {'CommonPrefixes': [], 'Contents': []})
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
                 expected_rc=0)
         endpoint.assert_called_with(region_name='us-east-1',
@@ -470,7 +470,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             http_response.status_code = 200
             endpoint.return_value.make_request.return_value = (
                 http_response, {'CommonPrefixes': [], 'Contents': []})
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 's3 ls s3://test --no-verify-ssl',
                 expected_rc=0)
         endpoint.assert_called_with(region_name=None,
@@ -599,7 +599,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         # Simulates the equivalent in bash: --identifies ""
         cmd = 'ses get-identity-dkim-attributes --identities'.split()
         cmd.append('')
-        self.assert_params_for_cmd(cmd,expected_rc=0)
+        self.assert_params_for_cmd2(cmd,expected_rc=0)
 
     def test_file_param_does_not_exist(self):
         driver = create_clidriver()
@@ -672,7 +672,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
                      "received non 200 status code of 404")
         with mock.patch('botocore.vendored.requests.get') as get:
             get.return_value.status_code = 404
-            self.assert_params_for_cmd(
+            self.assert_params_for_cmd2(
                 'ec2 describe-instances --filters http://does/not/exist.json',
                 expected_rc=255, stderr_contains=error_msg)
 
@@ -701,11 +701,11 @@ class TestVerifyArgument(BaseAWSCommandParamsTest):
         self.recorded_args = parsed_args
 
     def test_no_verify_argument(self):
-        self.assert_params_for_cmd('s3api list-buckets --no-verify-ssl'.split())
+        self.assert_params_for_cmd2('s3api list-buckets --no-verify-ssl'.split())
         self.assertFalse(self.recorded_args.verify_ssl)
 
     def test_verify_argument_is_none_by_default(self):
-        self.assert_params_for_cmd('s3api list-buckets'.split())
+        self.assert_params_for_cmd2('s3api list-buckets'.split())
         self.assertIsNone(self.recorded_args.verify_ssl)
 
 

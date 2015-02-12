@@ -25,10 +25,9 @@ class TestCloudSearchDefineExpression(BaseAWSCommandParamsTest):
         cmdline += ' --expression 10'
         result = {
             'DomainName': 'abc123',
-            'Expression.ExpressionName': 'foo',
-            'Expression.ExpressionValue': '10'
-        }
-        self.assert_params_for_cmd(cmdline, result)
+            'expression': {'ExpressionName': 'foo',
+                           'ExpressionValue': '10'}}
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
@@ -44,12 +43,11 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
         cmdline += ' --search-enabled false'
         result = {
             'DomainName': 'abc123',
-            'IndexField.IndexFieldName': 'foo',
-            'IndexField.IndexFieldType': 'int',
-            'IndexField.IntOptions.DefaultValue': 10,
-            'IndexField.IntOptions.SearchEnabled': 'false'
-        }
-        self.assert_params_for_cmd(cmdline, result)
+            'index_field': {'IndexFieldName': 'foo',
+                            'IndexFieldType': 'int',
+                            'IntOptions': {'DefaultValue': 10,
+                                           'SearchEnabled': False}}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_latlon(self):
         cmdline = self.prefix
@@ -60,8 +58,10 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
         cmdline += ' --search-enabled false'
         result = {
             'DomainName': 'abc123',
-            'IndexField.IndexFieldName': 'foo',
-            'IndexField.IndexFieldType': 'int',
-            'IndexField.LatLonOptions.DefaultValue': 10,
-            'IndexField.LatLonOptions.SearchEnabled': 'false'
-        }
+            'index_field': {
+                'IndexFieldName': 'foo',
+                'IndexFieldType': 'latlon',
+                'LatLonOptions': {
+                    'DefaultValue': '10', 'SearchEnabled': False}}}
+        self.assert_params_for_cmd2(cmdline, result)
+

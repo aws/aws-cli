@@ -37,7 +37,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         args = ' --instance-id i-12345678'
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
-        output = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
+        output = self.assert_params_for_cmd2(cmdline, result, expected_rc=0)[0]
         self.assertIn('"InstanceId": "i-12345678"', output)
         self.assertIn('"Timestamp": "2013-07-27T18:29:23.000Z"', output)
         self.assertIn('"PasswordData": "%s"' % PASSWORD_DATA, output)
@@ -45,9 +45,8 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
     def test_nonexistent_priv_launch_key(self):
         args = ' --instance-id i-12345678 --priv-launch-key foo.pem'
         cmdline = self.prefix + args
-        result = {}
-        error_msg = self.assert_params_for_cmd(
-            cmdline, result, expected_rc=255)[1]
+        error_msg = self.assert_params_for_cmd2(
+            cmdline, expected_rc=255)[1]
         self.assertIn('priv-launch-key should be a path to '
                       'the local SSH private key file used '
                       'to launch the instance.\n', error_msg)
@@ -58,7 +57,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         args = ' --instance-id i-12345678 --priv-launch-key %s' % key_path
         cmdline = self.prefix + args
         result = {'InstanceId': 'i-12345678'}
-        output = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
+        output = self.assert_params_for_cmd2(cmdline, result, expected_rc=0)[0]
         self.assertIn('"InstanceId": "i-12345678"', output)
         self.assertIn('"Timestamp": "2013-07-27T18:29:23.000Z"', output)
         self.assertIn('"PasswordData": "=mG8.r$o-s"', output)

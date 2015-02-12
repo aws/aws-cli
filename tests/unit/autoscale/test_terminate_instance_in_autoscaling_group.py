@@ -13,8 +13,6 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 
-import awscli.clidriver
-
 
 class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
 
@@ -25,16 +23,16 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --should-decrement-desired-capacity'
         params = {'InstanceId': 'i-12345678',
-                  'ShouldDecrementDesiredCapacity': 'true'}
-        self.assert_params_for_cmd(cmdline, params)
+                  'ShouldDecrementDesiredCapacity': True}
+        self.assert_params_for_cmd2(cmdline, params)
 
     def test_false(self):
         cmdline = self.PREFIX
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --no-should-decrement-desired-capacity'
         params = {'InstanceId': 'i-12345678',
-                  'ShouldDecrementDesiredCapacity': 'false'}
-        self.assert_params_for_cmd(cmdline, params)
+                  'ShouldDecrementDesiredCapacity': False}
+        self.assert_params_for_cmd2(cmdline, params)
 
     def test_last_arg_wins(self):
         cmdline = self.PREFIX
@@ -44,9 +42,5 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
         # Since the --no-should-decrement-desired-capacity was
         # was added last, it wins.
         params = {'InstanceId': 'i-12345678',
-                  'ShouldDecrementDesiredCapacity': 'false'}
-        self.assert_params_for_cmd(cmdline, params)
-
-
-if __name__ == "__main__":
-    unittest.main()
+                  'ShouldDecrementDesiredCapacity': False}
+        self.assert_params_for_cmd2(cmdline, params)

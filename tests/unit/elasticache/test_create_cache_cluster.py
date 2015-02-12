@@ -30,17 +30,16 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                 '--auto-minor-version-upgrade '
                 '--preferred-maintenance-window fri:08:00-fri:09:00')
         cmdline = self.prefix + args
-        result = {'AutoMinorVersionUpgrade': 'true',
+        result = {'AutoMinorVersionUpgrade': True,
                   'CacheClusterId': 'cachecluster-us-east-1c',
                   'CacheNodeType': 'cache.m1.small',
-                  'CacheSecurityGroupNames.member.1': 'group1',
-                  'CacheSecurityGroupNames.member.2': 'group2',
+                  'CacheSecurityGroupNames': ['group1', 'group2'],
                   'Engine': 'memcached',
                   'EngineVersion': '1.4.5',
                   'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_create_cache_cluster_no_auto_minor_upgrade(self):
         args = ('--cache-cluster-id cachecluster-us-east-1c '
@@ -53,17 +52,16 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                 '--no-auto-minor-version-upgrade '
                 '--preferred-maintenance-window fri:08:00-fri:09:00')
         cmdline = self.prefix + args
-        result = {'AutoMinorVersionUpgrade': 'false',
+        result = {'AutoMinorVersionUpgrade': False,
                   'CacheClusterId': 'cachecluster-us-east-1c',
                   'CacheNodeType': 'cache.m1.small',
-                  'CacheSecurityGroupNames.member.1': 'group1',
-                  'CacheSecurityGroupNames.member.2': 'group2',
+                  'CacheSecurityGroupNames': ['group1', 'group2'],
                   'Engine': 'memcached',
                   'EngineVersion': '1.4.5',
                   'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_minor_upgrade_arg_not_specified(self):
         args = ('--cache-cluster-id cachecluster-us-east-1c '
@@ -80,15 +78,10 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
         # AutoMinorVersionUpgrade is not in the result dict.
         result = {'CacheClusterId': 'cachecluster-us-east-1c',
                   'CacheNodeType': 'cache.m1.small',
-                  'CacheSecurityGroupNames.member.1': 'group1',
-                  'CacheSecurityGroupNames.member.2': 'group2',
+                  'CacheSecurityGroupNames': ['group1', 'group2'],
                   'Engine': 'memcached',
                   'EngineVersion': '1.4.5',
                   'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
-        self.assert_params_for_cmd(cmdline, result)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        self.assert_params_for_cmd2(cmdline, result)

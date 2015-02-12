@@ -158,8 +158,9 @@ class TestWait(BaseAWSCommandParamsTest):
         cmdline = 'ec2 wait instance-running'
         cmdline += ' --instance-ids i-12345678 i-87654321'
         cmdline += """ --filters {"Name":"group-name","Values":["foobar"]}"""
-        result = {'Filter.1.Value.1': 'foobar', 'Filter.1.Name': 'group-name',
-                  'InstanceId.1': 'i-12345678', 'InstanceId.2': 'i-87654321'}
+        result = {'Filters': [{'Name': 'group-name',
+                               'Values': ['foobar']}],
+                  'InstanceIds': ['i-12345678', 'i-87654321']}
         self.parsed_response = {
             'Reservations': [{
                 'Instances': [{
@@ -169,14 +170,14 @@ class TestWait(BaseAWSCommandParamsTest):
                 }]
             }]
         }
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_dynamodb_table_exists(self):
         cmdline = 'dynamodb wait table-exists'
         cmdline += ' --table-name mytable'
-        result = '{"TableName": "mytable"}'
+        result = {"TableName": "mytable"}
         self.parsed_response = {'Table': {'TableStatus': 'ACTIVE'}}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_elastictranscoder_jobs_complete(self):
         cmdline = 'rds wait db-instance-available'
@@ -187,7 +188,7 @@ class TestWait(BaseAWSCommandParamsTest):
                 'DBInstanceStatus': 'available'
             }]
         }
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 class TestWaiterStateCommandBuilder(unittest.TestCase):

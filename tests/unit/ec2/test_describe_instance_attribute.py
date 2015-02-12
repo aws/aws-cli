@@ -25,7 +25,7 @@ class TestDescribeInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline += ' --attribute blockDeviceMapping'
         result = {'InstanceId': 'i-12345678',
                   'Attribute': 'blockDeviceMapping'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

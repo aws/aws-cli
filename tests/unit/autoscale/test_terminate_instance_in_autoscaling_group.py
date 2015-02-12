@@ -13,8 +13,6 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 
-import awscli.clidriver
-
 
 class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
 
@@ -46,7 +44,3 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
         params = {'InstanceId': 'i-12345678',
                   'ShouldDecrementDesiredCapacity': False}
         self.assert_params_for_cmd2(cmdline, params)
-
-
-if __name__ == "__main__":
-    unittest.main()

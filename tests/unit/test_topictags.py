@@ -39,7 +39,7 @@ class TestTopicTagDB(unittest.TestCase):
         self.file_creator.remove_all()
 
 
-class TestTopicTagDBTopicGeneral(TestTopicTagDB):
+class TestTopicTagDBGeneral(TestTopicTagDB):
     def test_get_all_topic_names(self):
         tag_dict = {
             'topic-name-1': {
@@ -56,24 +56,28 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
 
     def test_get_all_topic_source_files(self):
         source_files = []
+        topic_dir = self.file_creator.rootdir
+        self.topic_tag_db = TopicTagDB(topic_dir=topic_dir)
         for i in range(5):
             topic_name = 'topic-name-' + str(i)
             source_files.append(self.file_creator.create_file(topic_name, ''))
-            topic_dir = self.file_creator.rootdir
-            self.assertEqual(
-                self.topic_tag_db.get_all_topic_src_files(topic_dir),
-                source_files
-            )
+
+        self.assertEqual(
+            self.topic_tag_db.get_all_topic_src_files(),
+            source_files
+        )
 
     def test_get_all_topic_source_files_ignore_index(self):
         topic_filename = 'mytopic'
         index_filename = os.path.basename(TopicTagDB.JSON_INDEX)
         source_files = []
         source_files.append(self.file_creator.create_file(topic_filename, ''))
-        self.file_creator.create_file(index_filename, '')
+        index_file = self.file_creator.create_file(index_filename, '')
         topic_dir = self.file_creator.rootdir
+        self.topic_tag_db = TopicTagDB(index_file=index_file,
+                                       topic_dir=topic_dir)
         self.assertEqual(
-            self.topic_tag_db.get_all_topic_src_files(topic_dir),
+            self.topic_tag_db.get_all_topic_src_files(),
             source_files
         )
 
@@ -84,8 +88,9 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
         source_files.append(self.file_creator.create_file(topic_filename, ''))
         self.file_creator.create_file(hidden_filename, '')
         topic_dir = self.file_creator.rootdir
+        self.topic_tag_db = TopicTagDB(topic_dir=topic_dir)
         self.assertEqual(
-            self.topic_tag_db.get_all_topic_src_files(topic_dir),
+            self.topic_tag_db.get_all_topic_src_files(),
             source_files
         )
 
@@ -227,11 +232,14 @@ class TestTopicTagDBTopicGeneral(TestTopicTagDB):
             f.write(tag_json)
 
         # Load the JSON index.
-        self.topic_tag_db.load_json_index(json_index)
+        self.topic_tag_db = TopicTagDB(index_file=json_index)
+        self.topic_tag_db.load_json_index()
 
         # Write the loaded json to disk and ensure it is as expected.
         saved_json_index = self.file_creator.create_file('index2.json', '')
-        self.topic_tag_db.save_to_json_index(saved_json_index)
+        self.topic_tag_db.index_file = saved_json_index
+
+        self.topic_tag_db.save_to_json_index()
         with open(saved_json_index, 'r') as f:
             self.assertEqual(f.read(), tag_json)
 
@@ -388,10 +396,12 @@ class TestTopicDBScan(TestTopicTagDB):
         topic_filepath = self.file_creator.create_file(topic_name, content)
         return topic_filepath
 
-    def assert_json_index(self, reference_tag_dict):
+    def assert_json_index(self, file_paths, reference_tag_dict):
         """Asserts the scanned tags by checking the saved JSON index"""
         json_index = self.file_creator.create_file('index.json', '')
-        self.topic_tag_db.save_to_json_index(json_index)
+        self.topic_tag_db = TopicTagDB(index_file=json_index)
+        self.topic_tag_db.scan(file_paths)
+        self.topic_tag_db.save_to_json_index()
         with open(json_index, 'r') as f:
             saved_index = json.loads(f.read())
             self.assertEqual(saved_index, reference_tag_dict)
@@ -416,8 +426,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_invalid_tag(self):
         tags = [
@@ -440,8 +449,7 @@ class TestTopicDBScan(TestTopicTagDB):
             topic_name: {}
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_tags_with_multi_values(self):
         tags = [
@@ -455,8 +463,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_tags_with_single_and_multi_values(self):
         tags = [
@@ -472,8 +479,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_tags_with_multi_duplicate_values(self):
         tags = [
@@ -487,8 +493,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_tags_with_multi_values_extra_space(self):
         tags = [
@@ -502,8 +507,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_tags_with_multi_values_no_space(self):
         tags = [
@@ -517,8 +521,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_tags_with_multi_preserve_space(self):
         tags = [
@@ -532,8 +535,7 @@ class TestTopicDBScan(TestTopicTagDB):
             }
         }
         topic_filepath = self.create_topic_src_file(topic_name, tags)
-        self.topic_tag_db.scan([topic_filepath])
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index([topic_filepath], reference_tag_dict)
 
     def test_scan_multiple_files(self):
         topic_base = 'my-topic'
@@ -557,5 +559,4 @@ class TestTopicDBScan(TestTopicTagDB):
                 'related command': ['ec2']
             }
             topic_files.append(self.create_topic_src_file(topic_name, tags))
-        self.topic_tag_db.scan(topic_files)
-        self.assert_json_index(reference_tag_dict)
+        self.assert_json_index(topic_files, reference_tag_dict)

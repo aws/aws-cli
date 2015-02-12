@@ -12,7 +12,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
-import awscli.clidriver
 
 
 class TestDescribeInstances(BaseAWSCommandParamsTest):
@@ -23,7 +22,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_create_stack_string_params(self):
         cmdline = self.prefix
@@ -31,11 +30,11 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         cmdline += ' --parameters ParameterKey=foo,ParameterValue=bar'
         cmdline += ' ParameterKey=foo2,ParameterValue=bar2'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
-                  'Parameters.member.1.ParameterKey': 'foo',
-                  'Parameters.member.1.ParameterValue': 'bar',
-                  'Parameters.member.2.ParameterKey': 'foo2',
-                  'Parameters.member.2.ParameterValue': 'bar2'}
-        self.assert_params_for_cmd(cmdline, result)
+                  'Parameters': [
+                      {'ParameterKey': 'foo', 'ParameterValue': 'bar'},
+                      {'ParameterKey': 'foo2', 'ParameterValue': 'bar2'},
+                  ]}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_create_stack_for_csv_params_escaping(self):
         # If a template is specified as a comma delimited list,
@@ -44,10 +43,9 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         cmdline += ' --stack-name test-stack --template-url http://foo'
         cmdline += ' --parameters ParameterKey=foo,ParameterValue=one\,two'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
-                  'Parameters.member.1.ParameterKey': 'foo',
-                  'Parameters.member.1.ParameterValue': 'one,two',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'Parameters': [{'ParameterKey': 'foo',
+                                  'ParameterValue': 'one,two'}]}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_create_stack_for_csv_with_quoting(self):
         cmdline = self.prefix
@@ -55,11 +53,6 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         # Note how we're quoting the value of parameter_value.
         cmdline += ' --parameters ParameterKey=foo,ParameterValue="one,two"'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
-                  'Parameters.member.1.ParameterKey': 'foo',
-                  'Parameters.member.1.ParameterValue': 'one,two',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
-
-
-if __name__ == "__main__":
-    unittest.main()
+                  'Parameters': [{'ParameterKey': 'foo',
+                                  'ParameterValue': 'one,two'}]}
+        self.assert_params_for_cmd2(cmdline, result)

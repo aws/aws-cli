@@ -20,7 +20,7 @@ CHANGEBATCH_JSON = ('{"Comment":"string","Changes":['
                     '"Type":"CNAME",'
                     '"TTL":300,'
                     '"ResourceRecords":['
-                    '{"Value":"foo-bar-com.us-west-1.elb.amazonaws.com"}'
+                    '{"Value":"foo-bar-com"}'
                     ']}}]}')
 
 
@@ -34,16 +34,15 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --id /hostedzone/ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
-        expected_id = 'ZD3IYMVP1KDDM'
-        self.assert_params_for_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.last_kwargs['Id'], expected_id)
+        self.assert_params_for_cmd2(
+            cmdline, {'Id': 'ZD3IYMVP1KDDM'}, expected_rc=0)
 
     def test_short_resource_id(self):
         args = ' --id ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
-        expected_id = 'ZD3IYMVP1KDDM'
-        self.assert_params_for_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.last_kwargs['Id'], expected_id)
+        self.assert_params_for_cmd2(
+            cmdline, {'Id': 'ZD3IYMVP1KDDM'},
+            expected_rc=0)
 
 
 class TestChangeResourceRecord(BaseAWSCommandParamsTest):
@@ -57,11 +56,28 @@ class TestChangeResourceRecord(BaseAWSCommandParamsTest):
         args = ' --hosted-zone-id /change/ZD3IYMVP1KDDM'
         args += ' --change-batch %s' % CHANGEBATCH_JSON
         cmdline = self.prefix + args
-        expected_hosted_zone = 'ZD3IYMVP1KDDM'
-        self.assert_params_for_cmd2(cmdline, expected_rc=0)
-        # Verify that we used the correct value for HostedZoneId.
-        self.assertEqual(self.last_kwargs['HostedZoneId'],
-                         expected_hosted_zone)
+        expected = {
+            "HostedZoneId": "ZD3IYMVP1KDDM",
+            "ChangeBatch": {
+                "Comment": "string",
+                "Changes": [
+                    {
+                        "Action": "CREATE",
+                        "ResourceRecordSet": {
+                            "Name": "test-foo.bar.com",
+                            "Type": "CNAME",
+                            "TTL": 300,
+                            "ResourceRecords": [
+                                {
+                                    "Value": "foo-bar-com"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
 
 
 class TestGetChange(BaseAWSCommandParamsTest):
@@ -74,16 +90,14 @@ class TestGetChange(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --id /change/ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
-        expected_id = 'ZD3IYMVP1KDDM'
-        self.assert_params_for_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.last_kwargs['Id'], expected_id)
+        expected = {'Id': 'ZD3IYMVP1KDDM'}
+        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
 
     def test_short_resource_id(self):
         args = ' --id ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
-        expected_id = 'ZD3IYMVP1KDDM'
-        self.assert_params_for_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.last_kwargs['Id'], expected_id)
+        expected = {'Id': 'ZD3IYMVP1KDDM'}
+        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
 
 
 class TestReusableDelegationSet(BaseAWSCommandParamsTest):
@@ -96,14 +110,12 @@ class TestReusableDelegationSet(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --id /delegationset/N9INWVYQ6Q0FN'
         cmdline = self.prefix + args
-        expected_id = 'N9INWVYQ6Q0FN'
         self.assert_params_for_cmd2(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
                                     expected_rc=0)
 
     def test_short_resource_id(self):
         args = ' --id N9INWVYQ6Q0FN'
         cmdline = self.prefix + args
-        expected_id = 'N9INWVYQ6Q0FN'
         self.assert_params_for_cmd2(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
                                     expected_rc=0)
 
@@ -115,8 +127,5 @@ class TestMaxItems(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --hosted-zone-id /hostedzone/ABCD --max-items 1'
         cmdline = self.prefix + args
-        expected_hosted_zone = 'ABCD'
-        self.assert_params_for_cmd2(cmdline, expected_rc=0)
-        # Verify that we used the correct value for HostedZoneId.
-        self.assertEqual(self.last_kwargs['HostedZoneId'],
-                         expected_hosted_zone)
+        expected = {'HostedZoneId': 'ABCD'}
+        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)

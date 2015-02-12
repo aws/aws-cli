@@ -345,8 +345,9 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         stdout = captured_stdout.getvalue()
         self.assertEqual(
             rc, expected_rc,
-            "Unexpected rc (expected: %s, actual: %s) for command: %s" % (
-                expected_rc, rc, cmd))
+            "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
+            "stdout:\n%sstderr:\n%s" % (
+                expected_rc, rc, cmd, stdout, stderr))
         return stdout, stderr, rc
 
 

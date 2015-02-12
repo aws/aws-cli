@@ -121,8 +121,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read:bob'
-        self.assert_params_for_cmd(cmdline, expected_rc=1,
-                                   ignore_params=['payload'])
+        self.assert_params_for_cmd2(cmdline, expected_rc=1,
+                                    ignore_params=['payload'])
 
     def test_content_type(self):
         cmdline = self.prefix

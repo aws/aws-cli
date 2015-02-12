@@ -27,11 +27,9 @@ class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
         cmdline += 'PlatformPrincipal=bar'
         result = {'Name': 'gcmpushapp',
                   'Platform': 'GCM',
-                  'Attributes.entry.1.key': 'PlatformCredential',
-                  'Attributes.entry.1.value': 'foo',
-                  'Attributes.entry.2.key': 'PlatformPrincipal',
-                  'Attributes.entry.2.value': 'bar'}
-        self.assert_params_for_cmd(cmdline, result)
+                  'Attributes': {'PlatformCredential': 'foo',
+                                 'PlatformPrincipal': 'bar'}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_gcm_json(self):
         cmdline = self.prefix
@@ -40,13 +38,14 @@ class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
         cmdline += ' --attributes '
         cmdline += ('{"PlatformCredential":"AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo",'
                     '"PlatformPrincipal":"There+is+no+principal+for+GCM"}')
-        result = {'Name': 'gcmpushapp',
-                  'Platform': 'GCM',
-                  'Attributes.entry.1.key': 'PlatformCredential',
-                  'Attributes.entry.1.value': 'AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo',
-                  'Attributes.entry.2.key': 'PlatformPrincipal',
-                  'Attributes.entry.2.value': 'There+is+no+principal+for+GCM'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'Name': 'gcmpushapp',
+            'Platform': 'GCM',
+            'Attributes': {
+              'PlatformCredential': 'AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo',
+              'PlatformPrincipal': 'There+is+no+principal+for+GCM'}
+        }
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

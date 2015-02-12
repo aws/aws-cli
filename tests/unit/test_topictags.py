@@ -59,7 +59,7 @@ class TestTopicTagDBGeneral(TestTopicTagDB):
             topic_name = 'topic-name-' + str(i)
             source_files.append(self.file_creator.create_file(topic_name, ''))
 
-        self.assertCountEqual(
+        self.assertEqual(
             self.topic_tag_db.get_all_topic_src_files(),
             source_files
         )
@@ -73,7 +73,7 @@ class TestTopicTagDBGeneral(TestTopicTagDB):
         topic_dir = self.file_creator.rootdir
         self.topic_tag_db = TopicTagDB(index_file=index_file,
                                        topic_dir=topic_dir)
-        self.assertCountEqual(
+        self.assertEqual(
             self.topic_tag_db.get_all_topic_src_files(),
             source_files
         )
@@ -86,7 +86,7 @@ class TestTopicTagDBGeneral(TestTopicTagDB):
         self.file_creator.create_file(hidden_filename, '')
         topic_dir = self.file_creator.rootdir
         self.topic_tag_db = TopicTagDB(topic_dir=topic_dir)
-        self.assertCountEqual(
+        self.assertEqual(
             self.topic_tag_db.get_all_topic_src_files(),
             source_files
         )

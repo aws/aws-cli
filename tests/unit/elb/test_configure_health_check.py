@@ -11,7 +11,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
@@ -54,9 +53,11 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
     def test_shorthand_with_multiple_equals_for_value(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
-        cmdline += (' --health-check Target="HTTP:80/weather/us/wa/seattle?a=b"'
-                    ',Interval=300,Timeout=60,UnhealthyThreshold=5,'
-                    'HealthyThreshold=9')
+        cmdline += (
+            ' --health-check Target="HTTP:80/weather/us/wa/seattle?a=b"'
+            ',Interval=300,Timeout=60,UnhealthyThreshold=5,'
+            'HealthyThreshold=9'
+        )
         result = {
             'HealthCheck': {
                 'HealthyThreshold': 9,
@@ -66,7 +67,3 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
                 'UnhealthyThreshold': 5},
             'LoadBalancerName': 'my-lb'}
         self.assert_params_for_cmd2(cmdline, result)
-
-
-if __name__ == "__main__":
-    unittest.main()

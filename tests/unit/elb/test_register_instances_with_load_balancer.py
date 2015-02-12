@@ -77,7 +77,3 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances i-12345678 i-87654321'
         self.assert_params_for_cmd2(cmdline, TWO_INSTANCE_EXPECTED)
-
-
-if __name__ == "__main__":
-    unittest.main()

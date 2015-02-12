@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws ec2 revoke-security-group-ingress``: Fix parsing
+  of a ``--port`` value of ICMP echo request
+  (`issue 1075 <https://github.com/aws/aws-cli/issues/1075>`__)
+
+
 1.7.6
 =====
 

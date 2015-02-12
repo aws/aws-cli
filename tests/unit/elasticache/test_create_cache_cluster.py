@@ -85,7 +85,3 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
         self.assert_params_for_cmd2(cmdline, result)
-
-
-if __name__ == "__main__":
-    unittest.main()

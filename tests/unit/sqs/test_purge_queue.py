@@ -24,7 +24,7 @@ class TestPurgeQueue(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --queue-url %s' % url
         result = {'QueueUrl': url}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

@@ -25,9 +25,10 @@ class TestCreateTags(BaseAWSCommandParamsTest):
     def test_create_tag_normal(self):
         cmdline = self.prefix
         cmdline += ' --resources i-12345678 --tags Key=Name,Value=bar'
-        result = {'ResourceId.1': 'i-12345678', 'Tag.1.Key': 'Name',
-                  'Tag.1.Value': 'bar'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'Resources': ['i-12345678'],
+            'Tags': [{'Key': 'Name', 'Value': 'bar'}]}
+        self.assert_params_for_cmd2(cmdline, result)
 
     @unittest.skipIf(
         six.PY3, 'Unicode cmd line test only is relevant to python2.')
@@ -38,6 +39,7 @@ class TestCreateTags(BaseAWSCommandParamsTest):
         if encoding is None:
             encoding = 'utf-8'
         cmdline = cmdline.encode(encoding)
-        result = {'ResourceId.1': 'i-12345678', 'Tag.1.Key': 'Name',
-                  'Tag.1.Value': u'\u6211'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'Resources': ['i-12345678'],
+            'Tags': [{'Key': 'Name', 'Value': u'\u6211'}]}
+        self.assert_params_for_cmd2(cmdline, result)

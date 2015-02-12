@@ -26,16 +26,16 @@ class TestAddOptionGroup(BaseAWSCommandParamsTest):
         args = ('--option-group-name myoptiongroup2 '
                 '--options {"OptionName":"TDE"}')
         cmdline = self.prefix + args
-        result = {'OptionsToInclude.member.1.OptionName': 'TDE',
+        result = {'OptionsToInclude': [{'OptionName': 'TDE'}],
                   'OptionGroupName': 'myoptiongroup2'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_option_to_remove_is_not_allowed(self):
         args = ('--option-group-name myoptiongroup2 '
                 '--options-to-remove foo')
         cmdline = self.prefix + args
-        self.assert_params_for_cmd(
-            cmdline, {}, 255,
+        self.assert_params_for_cmd2(
+            cmdline, expected_rc=255,
             stderr_contains='Unknown options: --options-to-remove')
 
 
@@ -47,20 +47,14 @@ class TestRemoveOptionGroup(BaseAWSCommandParamsTest):
         args = ('--option-group-name myoptiongroup2 '
                 '--options TDE')
         cmdline = self.prefix + args
-        result = {'OptionsToRemove.member.1': 'TDE',
+        result = {'OptionsToRemove': ['TDE'],
                   'OptionGroupName': 'myoptiongroup2'}
-        self.assert_params_for_cmd(cmdline, result)
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_option_to_add_is_not_allowed(self):
         args = ('--option-group-name myoptiongroup2 '
                 '--options-to-include {"OptionName":"TDE"}')
         cmdline = self.prefix + args
-        result = {'OptionsToInclude.member.1.OptionName': 'TDE',
-                  'OptionGroupName': 'myoptiongroup2'}
-        self.assert_params_for_cmd(
-            cmdline, {}, 255,
+        self.assert_params_for_cmd2(
+            cmdline, expected_rc=255,
             stderr_contains='Unknown options: --options-to-include')
-
-
-if __name__ == "__main__":
-    unittest.main()

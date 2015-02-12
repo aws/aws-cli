@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2013-2014 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -26,24 +26,25 @@ class TestSendEmail(BaseAWSCommandParamsTest):
         args = (' --subject This_is_a_test --from foo@bar.com'
                 ' --to fie@baz.com --text This_is_the_message')
         args_list = (self.prefix + args).split()
-        result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Text.Data': 'This_is_the_message'}
-
-        self.assert_params_for_cmd(args_list, result)
+        result = {
+            'Source': 'foo@bar.com',
+            'destination': {'ToAddresses': ['fie@baz.com']},
+            'message': {'Body': {'Text': {'Data': 'This_is_the_message'}},
+                        'Subject': {'Data': 'This_is_a_test'}}}
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_plain_text_multiple_to(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
                 ' --to fie1@baz.com fie2@baz.com --text This_is_the_message')
         args_list = (self.prefix + args).split()
         result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie1@baz.com',
-                  'Destination.ToAddresses.member.2': 'fie2@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Text.Data': 'This_is_the_message'}
+                  'destination': {
+                      'ToAddresses': ['fie1@baz.com', 'fie2@baz.com']},
+                  'message': {
+                      'Body': {'Text': {'Data': 'This_is_the_message'}},
+                      'Subject': {'Data': 'This_is_a_test'}}}
 
-        self.assert_params_for_cmd(args_list, result)
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_plain_text_multiple_cc(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -51,14 +52,14 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 ' --cc fie3@baz.com fie4@baz.com')
         args_list = (self.prefix + args).split()
         result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie1@baz.com',
-                  'Destination.ToAddresses.member.2': 'fie2@baz.com',
-                  'Destination.CcAddresses.member.1': 'fie3@baz.com',
-                  'Destination.CcAddresses.member.2': 'fie4@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Text.Data': 'This_is_the_message'}
+                  'destination': {
+                      'CcAddresses': ['fie3@baz.com', 'fie4@baz.com'],
+                      'ToAddresses': ['fie1@baz.com', 'fie2@baz.com']},
+                  'message': {
+                      'Body': {'Text': {'Data': 'This_is_the_message'}},
+                      'Subject': {'Data': 'This_is_a_test'}}}
 
-        self.assert_params_for_cmd(args_list, result)
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_plain_text_multiple_bcc(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -66,68 +67,76 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 ' --cc fie3@baz.com fie4@baz.com'
                 ' --bcc fie5@baz.com fie6@baz.com')
         args_list = (self.prefix + args).split()
-        result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie1@baz.com',
-                  'Destination.ToAddresses.member.2': 'fie2@baz.com',
-                  'Destination.CcAddresses.member.1': 'fie3@baz.com',
-                  'Destination.CcAddresses.member.2': 'fie4@baz.com',
-                  'Destination.BccAddresses.member.1': 'fie5@baz.com',
-                  'Destination.BccAddresses.member.2': 'fie6@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Text.Data': 'This_is_the_message'}
 
-        self.assert_params_for_cmd(args_list, result)
+        result = {
+            'Source': 'foo@bar.com',
+            'destination': {'BccAddresses': ['fie5@baz.com', 'fie6@baz.com'],
+                            'CcAddresses': ['fie3@baz.com', 'fie4@baz.com'],
+                            'ToAddresses': ['fie1@baz.com', 'fie2@baz.com']},
+            'message': {
+                'Body': {'Text': {'Data': 'This_is_the_message'}},
+                'Subject': {'Data': 'This_is_a_test'}}}
+
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_html_text(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
                 ' --to fie@baz.com --html This_is_the_html_message')
         args_list = (self.prefix + args).split()
-        result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Html.Data': 'This_is_the_html_message'}
+        result = {
+            'Source': 'foo@bar.com',
+            'destination': {'ToAddresses': ['fie@baz.com']},
+            'message': {'Subject': {'Data': 'This_is_a_test'},
+                        'Body': {
+                            'Html': {'Data': 'This_is_the_html_message'}}}}
 
-        self.assert_params_for_cmd(args_list, result)
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_html_both(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
                 ' --to fie@baz.com --html This_is_the_html_message'
                 ' --text This_is_the_text_message')
         args_list = (self.prefix + args).split()
-        result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Text.Data': 'This_is_the_text_message',
-                  'Message.Body.Html.Data': 'This_is_the_html_message'}
-
-        self.assert_params_for_cmd(args_list, result)
+        result = {
+            'Source': 'foo@bar.com',
+            'destination': {'ToAddresses': ['fie@baz.com']},
+            'message': {
+                'Subject': {'Data': 'This_is_a_test'},
+                'Body': {
+                    'Text': {'Data': 'This_is_the_text_message'},
+                    'Html': {'Data': 'This_is_the_html_message'}}}}
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_using_json(self):
-        args = (' --message {"Subject":{"Data":"This_is_a_test"},"Body":{"Text":{"Data":"This_is_the_message"}}}'
+        args = (' --message {"Subject":{"Data":"This_is_a_test"},'
+                '"Body":{"Text":{"Data":"This_is_the_message"}}}'
                 ' --from foo@bar.com'
                 ' --destination {"ToAddresses":["fie@baz.com"]}')
         args_list = (self.prefix + args).split()
-        result = {'Source': 'foo@bar.com',
-                  'Destination.ToAddresses.member.1': 'fie@baz.com',
-                  'Message.Subject.Data': 'This_is_a_test',
-                  'Message.Body.Text.Data': 'This_is_the_message'}
+        result = {'Destination': {'ToAddresses': ['fie@baz.com']},
+                  'Message': {
+                      'Subject': {
+                          'Data': 'This_is_a_test'},
+                      'Body': {
+                          'Text': {'Data': 'This_is_the_message'}}},
+                  'Source': 'foo@bar.com'}
 
-        self.assert_params_for_cmd(args_list, result)
+        self.assert_params_for_cmd2(args_list, result)
 
     def test_both_destination_and_to(self):
-        captured = cStringIO()
-        args = (' --message {"Subject":{"Data":"This_is_a_test"},"Body":{"Text":{"Data":"This_is_the_message"}}}'
+        args = (' --message {"Subject":{"Data":"This_is_a_test"},'
+                '"Body":{"Text":{"Data":"This_is_the_message"}}}'
                 ' --from foo@bar.com'
                 ' --destination {"ToAddresses":["fie@baz.com"]}'
                 ' --to fie2@baz.com')
         args_list = (self.prefix + args).split()
-        self.assert_params_for_cmd(args_list, {}, expected_rc=255)
+        self.run_cmd(args_list, expected_rc=255)
 
     def test_both_message_and_text(self):
-        captured = cStringIO()
-        args = (' --message {"Subject":{"Data":"This_is_a_test"},"Body":{"Text":{"Data":"This_is_the_message"}}}'
+        args = (' --message {"Subject":{"Data":"This_is_a_test"},'
+                '"Body":{"Text":{"Data":"This_is_the_message"}}}'
                 ' --from foo@bar.com'
                 ' --destination {"ToAddresses":["fie@baz.com"]}'
                 ' --text This_is_another_body')
         args_list = (self.prefix + args).split()
-        self.assert_params_for_cmd(args_list, {}, expected_rc=255)
+        self.run_cmd(args_list, expected_rc=255)

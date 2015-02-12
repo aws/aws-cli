@@ -22,20 +22,20 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         super(TestModifyInstanceAttribute, self).setUp()
         self.expected_result = {
             'InstanceId': 'i-1234',
-            'InstanceInitiatedShutdownBehavior.Value': 'terminate',
+            'InstanceInitiatedShutdownBehavior': {'Value': 'terminate'}
         }
 
     def test_json_version(self):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--instance-initiated-shutdown-behavior {"Value":"terminate"}'
-        self.assert_params_for_cmd(cmdline, self.expected_result)
+        self.assert_params_for_cmd2(cmdline, self.expected_result)
 
     def test_shorthand_version(self):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--instance-initiated-shutdown-behavior Value=terminate'
-        self.assert_params_for_cmd(cmdline, self.expected_result)
+        self.assert_params_for_cmd2(cmdline, self.expected_result)
 
     def test_value_not_needed(self):
         # For structs of a single param value, you can skip the keep name,
@@ -43,7 +43,7 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--instance-initiated-shutdown-behavior terminate'
-        self.assert_params_for_cmd(cmdline, self.expected_result)
+        self.assert_params_for_cmd2(cmdline, self.expected_result)
 
     def test_boolean_value_in_top_level_true(self):
         # Just like everything else in argparse, the last value provided
@@ -52,18 +52,16 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline += '--instance-id i-1234 '
         cmdline += '--ebs-optimized Value=true'
         result = {'InstanceId': 'i-1234',
-                  'EbsOptimized.Value': 'true',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'ebs_optimized': {'Value': True}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_boolean_value_is_top_level_false(self):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--ebs-optimized Value=false'
         result = {'InstanceId': 'i-1234',
-                  'EbsOptimized.Value': 'false',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'ebs_optimized': {'Value': False}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_boolean_value_in_top_level_true_json(self):
         # Just like everything else in argparse, the last value provided
@@ -72,36 +70,32 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline += '--instance-id i-1234 '
         cmdline += '--ebs-optimized {"Value":true}'
         result = {'InstanceId': 'i-1234',
-                  'EbsOptimized.Value': 'true',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'ebs_optimized': {'Value': True}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_boolean_value_is_top_level_false_json(self):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--ebs-optimized {"Value":false}'
         result = {'InstanceId': 'i-1234',
-                  'EbsOptimized.Value': 'false',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'ebs_optimized': {'Value': False}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_boolean_param_top_level_true_no_value(self):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--ebs-optimized'
         result = {'InstanceId': 'i-1234',
-                  'EbsOptimized.Value': 'true',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'ebs_optimized': {'Value': True}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_boolean_param_top_level_false_no_value(self):
         cmdline = self.prefix
         cmdline += '--instance-id i-1234 '
         cmdline += '--no-ebs-optimized'
         result = {'InstanceId': 'i-1234',
-                  'EbsOptimized.Value': 'false',
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'ebs_optimized': {'Value': False}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_mix_value_non_value_boolean_param(self):
         cmdline = self.prefix
@@ -109,8 +103,8 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         # Can't mix non-value + value version of the arg.
         cmdline += '--no-ebs-optimized '
         cmdline += '--ebs-optimized Value=true'
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
-                                   stderr_contains='Cannot specify both')
+        self.assert_params_for_cmd2(cmdline, expected_rc=255,
+                                    stderr_contains='Cannot specify both')
 
     def test_mix_non_value_bools_not_allowed(self):
         cmdline = self.prefix
@@ -118,8 +112,8 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         # Can't mix non-value + value version of the arg.
         cmdline += '--no-ebs-optimized '
         cmdline += '--ebs-optimized '
-        self.assert_params_for_cmd(cmdline, expected_rc=255,
-                                   stderr_contains='Cannot specify both')
+        self.assert_params_for_cmd2(cmdline, expected_rc=255,
+                                    stderr_contains='Cannot specify both')
 
 
 if __name__ == "__main__":

@@ -31,12 +31,10 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'RuleNumber': 100,
                   'Protocol': '6',
                   'RuleAction': 'allow',
-                  'Egress': 'false',
+                  'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
-                  'PortRange.From': 22,
-                  'PortRange.To': 22
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'PortRange': {'From': 22, 'To': 22}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_udp(self):
         cmdline = self.prefix
@@ -51,12 +49,10 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'RuleNumber': 100,
                   'Protocol': '17',
                   'RuleAction': 'allow',
-                  'Egress': 'false',
+                  'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
-                  'PortRange.From': 22,
-                  'PortRange.To': 22
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'PortRange': {'From': 22, 'To': 22}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_icmp(self):
         cmdline = self.prefix
@@ -71,12 +67,10 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'RuleNumber': 100,
                   'Protocol': '1',
                   'RuleAction': 'allow',
-                  'Egress': 'false',
+                  'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
-                  'PortRange.From': 22,
-                  'PortRange.To': 22
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'PortRange': {'From': 22, 'To': 22}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_all(self):
         cmdline = self.prefix
@@ -91,12 +85,10 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'RuleNumber': 100,
                   'Protocol': '-1',
                   'RuleAction': 'allow',
-                  'Egress': 'false',
+                  'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
-                  'PortRange.From': 22,
-                  'PortRange.To': 22
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'PortRange': {'From': 22, 'To': 22}}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_number(self):
         cmdline = self.prefix
@@ -111,10 +103,8 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'RuleNumber': 100,
                   'Protocol': '99',
                   'RuleAction': 'allow',
-                  'Egress': 'false',
+                  'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
-                  'PortRange.From': 22,
-                  'PortRange.To': 22
-                  }
-        self.assert_params_for_cmd(cmdline, result)
+                  'PortRange': {'From': 22, 'To': 22}}
+        self.assert_params_for_cmd2(cmdline, result)
 

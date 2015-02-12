@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.7.7
+=====
+
+* bugfix:``aws ec2 revoke-security-group-ingress``: Fix parsing
+  of a ``--port`` value of ICMP echo request
+  (`issue 1075 <https://github.com/aws/aws-cli/issues/1075>`__)
+* feature:``aws iam``: Add support for managed policies
+* feature:``aws elasticache``: Add support for tagging
+* feature:``aws route53domains``: Add support for tagging of domains
+
+
 1.7.6
 =====
 

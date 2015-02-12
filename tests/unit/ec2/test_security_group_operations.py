@@ -36,6 +36,17 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                                        'ToPort': -1}]}
         self.assert_params_for_cmd2(args, result)
 
+    def test_icmp_echo_request(self):
+        # This corresponds to a from port of 8 and a to port of -1, i.e
+        # --port 8--1.
+        args = self.prefix + (
+            '--group-name foobar --protocol tcp --port 8--1 --cidr 0.0.0.0/0')
+        result = {'GroupName': 'foobar',
+                  'ip_permissions': [{'FromPort': 8, 'IpProtocol': 'tcp',
+                                      'IpRanges': [{'CidrIp': '0.0.0.0/0'}],
+                                      'ToPort': -1}]}
+        self.assert_params_for_cmd2(args, result)
+
     def test_all_protocol(self):
         args = self.prefix + (
             '--group-name foobar --protocol all --port all --cidr 0.0.0.0/0')

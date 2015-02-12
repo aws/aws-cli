@@ -25,13 +25,15 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
         cmdline += (' --health-check Target=HTTP:80/weather/us/wa/seattle,'
                     'Interval=300,Timeout=60,UnhealthyThreshold=5,'
                     'HealthyThreshold=9')
-        result = {'HealthCheck.HealthyThreshold': 9,
-                  'HealthCheck.Interval': 300,
-                  'HealthCheck.Target': 'HTTP:80/weather/us/wa/seattle',
-                  'HealthCheck.Timeout': 60,
-                  'HealthCheck.UnhealthyThreshold': 5,
-                  'LoadBalancerName': 'my-lb'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'HealthCheck': {
+                'HealthyThreshold': 9,
+                'Interval': 300,
+                'Target': 'HTTP:80/weather/us/wa/seattle',
+                'Timeout': 60,
+                'UnhealthyThreshold': 5},
+            'LoadBalancerName': 'my-lb'}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_json(self):
         cmdline = self.prefix
@@ -39,13 +41,15 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
         cmdline += ('--health-check {"Target":"HTTP:80/weather/us/wa/seattle'
                     '?a=b","Interval":300,"Timeout":60,'
                     '"UnhealthyThreshold":5,"HealthyThreshold":9}')
-        result = {'HealthCheck.HealthyThreshold': 9,
-                  'HealthCheck.Interval': 300,
-                  'HealthCheck.Target': 'HTTP:80/weather/us/wa/seattle?a=b',
-                  'HealthCheck.Timeout': 60,
-                  'HealthCheck.UnhealthyThreshold': 5,
-                  'LoadBalancerName': 'my-lb'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'HealthCheck': {
+                'HealthyThreshold': 9,
+                'Interval': 300,
+                'Target': 'HTTP:80/weather/us/wa/seattle?a=b',
+                'Timeout': 60,
+                'UnhealthyThreshold': 5},
+            'LoadBalancerName': 'my-lb'}
+        self.assert_params_for_cmd2(cmdline, result)
 
     def test_shorthand_with_multiple_equals_for_value(self):
         cmdline = self.prefix
@@ -53,13 +57,15 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
         cmdline += (' --health-check Target="HTTP:80/weather/us/wa/seattle?a=b"'
                     ',Interval=300,Timeout=60,UnhealthyThreshold=5,'
                     'HealthyThreshold=9')
-        result = {'HealthCheck.HealthyThreshold': 9,
-                  'HealthCheck.Interval': 300,
-                  'HealthCheck.Target': 'HTTP:80/weather/us/wa/seattle?a=b',
-                  'HealthCheck.Timeout': 60,
-                  'HealthCheck.UnhealthyThreshold': 5,
-                  'LoadBalancerName': 'my-lb'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'HealthCheck': {
+                'HealthyThreshold': 9,
+                'Interval': 300,
+                'Target': 'HTTP:80/weather/us/wa/seattle?a=b',
+                'Timeout': 60,
+                'UnhealthyThreshold': 5},
+            'LoadBalancerName': 'my-lb'}
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

@@ -27,16 +27,18 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
         cmdline += ' --template-name x86_64_m1_medium_config'
         cmdline += ' --option-settings file://%s' % data_path
         cmdline += ' --description This_is_a_test'
-        result = {'ApplicationName': 'FooBar',
-                  'TemplateName': 'x86_64_m1_medium_config',
-                  'Description': 'This_is_a_test',
-                  'OptionSettings.member.1.Namespace': 'aws:autoscaling:launchconfiguration',
-                  'OptionSettings.member.1.OptionName': 'EC2KeyName',
-                  'OptionSettings.member.1.Value': 'webapps',
-                  'OptionSettings.member.2.Namespace': 'aws:elasticbeanstalk:container:tomcat:jvmoptions',
-                  'OptionSettings.member.2.OptionName': 'Xms',
-                  'OptionSettings.member.2.Value': '1256m'}
-        self.assert_params_for_cmd(cmdline, result)
+        result = {
+            'ApplicationName': 'FooBar',
+            'TemplateName': 'x86_64_m1_medium_config',
+            'Description': 'This_is_a_test',
+            'OptionSettings': [
+                {'Namespace': 'aws:autoscaling:launchconfiguration',
+                 'OptionName': 'EC2KeyName',
+                 'Value': 'webapps'},
+                {'Namespace': 'aws:elasticbeanstalk:container:tomcat:jvmoptions',
+                 'OptionName': 'Xms',
+                 'Value': '1256m'}]}
+        self.assert_params_for_cmd2(cmdline, result)
 
 
 if __name__ == "__main__":

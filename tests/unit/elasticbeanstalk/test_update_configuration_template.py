@@ -39,7 +39,3 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
                  'OptionName': 'Xms',
                  'Value': '1256m'}]}
         self.assert_params_for_cmd2(cmdline, result)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -23,7 +23,7 @@ DOCS = ('<p>Checks whether you have the required permissions for the '
 
 
 def register_dryrun_docs(cli):
-    cli.register('doc-option-example.ec2.*.dry-run', add_docs)
+    cli.register('doc-option-example.ec2.*.*.dry-run', add_docs)
 
 
 def add_docs(help_command, **kwargs):

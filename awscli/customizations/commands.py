@@ -291,8 +291,6 @@ class BasicCommand(CLICommand):
 
 
 class BasicHelp(HelpCommand):
-    event_class = 'command'
-
     def __init__(self, session, command_object, command_table, arg_table,
                  event_handler_class=None):
         super(BasicHelp, self).__init__(session, command_object,
@@ -324,6 +322,10 @@ class BasicHelp(HelpCommand):
     @property
     def examples(self):
         return self._get_doc_contents('_examples')
+
+    @property
+    def event_class(self):
+        return '.'.join(self.obj.lineage_names)
 
     def _get_doc_contents(self, attr_name):
         value = getattr(self, attr_name)

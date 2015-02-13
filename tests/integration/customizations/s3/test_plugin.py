@@ -514,6 +514,21 @@ class TestCp(BaseS3CLICommand):
         response = self.head_object(bucket_name, 'foo.txt')
         self.assertEqual(response['WebsiteRedirectLocation'], website_redirect)
 
+    def test_copy_large_file_signature_v4(self):
+        # Just verify that we can upload a large file to a region
+        # that uses signature version 4.
+        bucket_name = self.create_bucket(region='eu-central-1')
+        num_mb = 200
+        foo_txt = self.files.create_file('foo.txt', '')
+        with open(foo_txt, 'wb') as f:
+            for i in range(num_mb):
+                f.write(b'a' * 1024 * 1024)
+
+        p = aws('s3 cp %s s3://%s/ --region eu-central-1' % (
+            foo_txt, bucket_name))
+        self.assert_no_errors(p)
+        self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
+
 
 class TestSync(BaseS3CLICommand):
     def test_sync_with_plus_chars_paginate(self):

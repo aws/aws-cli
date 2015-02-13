@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3``: Fix auth errors when uploading large files
+  to the ``eu-central-1`` and ``cn-north-1`` regions
+  (`botocore issue 462 <https://github.com/boto/botocore/pull/462>`__)
+
+
 1.7.7
 =====
 

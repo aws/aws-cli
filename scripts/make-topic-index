@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+"""This is a script to generate a JSON index for the CLI Topic Guide
+
+Whenever a new topic is added to the awscli/topics directory or a tag
+has been modified in a current topic in that directory, this script
+**must** be run. The script will scan through all of the topics in the
+directory and generate a JSON index that is used by the CLI to link related
+topics and commands.
+"""
+
+import awscli
+from awscli.topictags import TopicTagDB
+
+
+def main():
+    topic_tag_db = TopicTagDB()
+    src_files = topic_tag_db.get_all_topic_src_files()
+    topic_tag_db.scan(src_files)
+    topic_tag_db.save_to_json_index()
+
+
+if __name__ == '__main__':
+    main()

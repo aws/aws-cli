@@ -728,6 +728,10 @@ class TestCLICommand(unittest.TestCase):
     def test_lineage(self):
         self.assertEqual(self.cmd.lineage, [self.cmd])
 
+    def test_lineage_names(self):
+        with self.assertRaises(NotImplementedError):
+            self.cmd.lineage_names
+
     def test_arg_table(self):
         self.assertEqual(self.cmd.arg_table, {})
 
@@ -748,6 +752,9 @@ class TestServiceCommand(unittest.TestCase):
         self.cmd.lineage = ['foo']
         self.assertEqual(self.cmd.lineage, ['foo'])
 
+    def test_lineage_names(self):
+        self.assertEqual(self.cmd.lineage_names, ['foo'])
+
     def test_pass_lineage_to_child(self):
         # In order to introspect the service command's subcommands
         # we introspect the subcommand via the help command since
@@ -756,6 +763,7 @@ class TestServiceCommand(unittest.TestCase):
         child_cmd = help_command.command_table['list-objects']
         self.assertEqual(child_cmd.lineage,
                          [self.cmd, child_cmd])
+        self.assertEqual(child_cmd.lineage_names, ['foo', 'list-objects'])
 
 
 class TestServiceOperation(unittest.TestCase):
@@ -772,6 +780,9 @@ class TestServiceOperation(unittest.TestCase):
         self.assertEqual(self.cmd.lineage, [self.cmd])
         self.cmd.lineage = ['foo']
         self.assertEqual(self.cmd.lineage, ['foo'])
+
+    def test_lineage_names(self):
+        self.assertEqual(self.cmd.lineage_names, ['foo'])
 
 
 if __name__ == '__main__':

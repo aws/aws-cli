@@ -276,6 +276,14 @@ class CLICommand(object):
         # a list.
         return [self]
 
+    @property
+    def lineage_names(self):
+        # Represents the lineage of a command in terms of command ``name``
+        lineage_names = []
+        for cmd in self.lineage:
+            lineage_names.append(cmd.name)
+        return lineage_names
+
     def __call__(self, args, parsed_globals):
         """Invoke CLI operation.
 
@@ -473,6 +481,14 @@ class ServiceOperation(object):
     @lineage.setter
     def lineage(self, value):
         self._lineage = value
+
+    @property
+    def lineage_names(self):
+        # Represents the lineage of a command in terms of command ``name``
+        lineage_names = []
+        for cmd in self.lineage:
+            lineage_names.append(cmd.name)
+        return lineage_names
 
     @property
     def arg_table(self):

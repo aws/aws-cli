@@ -157,6 +157,12 @@ class TestProviderHelpCommand(TestHelpCommandBase):
         self.json_patch.stop()
         super(TestProviderHelpCommand, self).tearDown()
 
+    def test_related_items(self):
+        self.assertEqual(
+            self.cmd.related_items,
+            ['AWS CLI Topic Guide (`aws help topics <../topic/index.html>`_)']
+        )
+
     def test_topic_table(self):
         topic_table = self.cmd.topic_table
 
@@ -238,6 +244,12 @@ class TestTopicListerCommand(TestHelpCommandBase):
 
     def test_description(self):
         self.assertIn('This is the AWS CLI Topic Guide', self.cmd.description)
+
+    def test_related_items(self):
+        self.assertEqual(
+            self.cmd.related_items,
+            ['AWS CLI Reference Guide (`aws help <../reference/index.html>`_)']
+        )
 
     def test_topic_names(self):
         self.assertEqual(

@@ -161,6 +161,15 @@ class CLIDocumentEventHandler(object):
         doc.style.dedent()
         doc.style.new_paragraph()
 
+    def doc_relateditems_start(self, help_command, **kwargs):
+        if help_command.related_items:
+            doc = help_command.doc
+            doc.style.h2('See Also')
+
+    def doc_relateditem(self, help_command, related_item, **kwargs):
+        doc = help_command.doc
+        doc.style.li(related_item)
+
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 

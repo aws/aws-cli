@@ -188,7 +188,7 @@ class HelpCommand(object):
         if arg_table is None:
             arg_table = {}
         self.arg_table = arg_table
-        self.related_items = []
+        self._related_items = []
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
 
@@ -216,6 +216,11 @@ class HelpCommand(object):
         the ``name`` to be inserted into the event, as shown above.
         """
         pass
+
+    @property
+    def related_items(self):
+        """This is list of items that are related to the help command"""
+        return self._related_items
 
     def __call__(self, args, parsed_globals):
         # Create an event handler for a Provider Document
@@ -245,6 +250,8 @@ class ProviderHelpCommand(HelpCommand):
         self.help_usage = usage
         self._topic_table = None
         self._topic_tag_db = None
+        self._related_items = [
+            'AWS CLI Topic Guide (`aws help topics <../topic/index.html>`_)']
 
     @property
     def event_class(self):
@@ -355,6 +362,8 @@ class TopicListerCommand(HelpCommand):
         self._topic_tag_db = topic_tag_db
         self._categories = None
         self._entries = None
+        self._related_items = [
+            'AWS CLI Reference Guide (`aws help <../reference/index.html>`_)']
 
     @property
     def event_class(self):

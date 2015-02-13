@@ -50,6 +50,9 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('* ec2')
         self.assert_contains('* s3api')
         self.assert_contains('* sts')
+        # Make sure it its a related item
+        self.assert_contains('========\nSee Also\n========')
+        self.assert_contains('AWS CLI Topic Guide')
 
     def test_service_help_output(self):
         self.driver.main(['ec2', 'help'])
@@ -122,6 +125,9 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
             '---------------\nTroubleshooting\n---------------',
             starting_from='--\nS3\n--'
         )
+        # Make sure it its a related item
+        self.assert_contains('========\nSee Also\n========')
+        self.assert_contains('AWS CLI Reference Guide')
 
     def test_topic_help_command(self):
         self.driver.main(['help', 'return-codes'])

@@ -85,6 +85,50 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('.. _cli:aws s3 ls:')
         self.assert_contains('List S3 objects')
         self.assert_contains('--summarize')
+    
+    def test_topic_list_help_output(self):
+        self.driver.main(['help', 'topics'])
+        # Should contain the title
+        self.assert_contains(
+            '*******************\nAWS CLI Topic Guide\n*******************'
+        )
+        # Should contain the description
+        self.assert_contains('This is the AWS CLI Topic Guide.')
+        # Should contain the available topics section
+        self.assert_contains('Available Topics')
+        # Assert the general order of topic categories.
+        self.assert_text_order(
+            '--------------\nGeneral Topics\n--------------',
+            '--\nS3\n--',
+            '---------------\nTroubleshooting\n---------------',
+            starting_from='Available Topics'
+        )
+        # Make sure that the topic elements elements show up as well.
+        self.assert_contains(
+            '* `return-codes <return-codes.html>`_: Describes'
+        )
+        # Make sure the topic elements are underneath the categories as well
+        # and they get added to each category they fall beneath
+        self.assert_text_order(
+            '--------------\nGeneral Topics\n--------------',
+            '* `return-codes <return-codes.html>`_: Describes',
+            '--\nS3\n--',
+            starting_from='--------------\nGeneral Topics\n--------------'
+        )
+
+        self.assert_text_order(
+            '--\nS3\n--',
+            '* `return-codes <return-codes.html>`_: Describes',
+            '---------------\nTroubleshooting\n---------------',
+            starting_from='--\nS3\n--'
+        )
+
+    def test_topic_help_command(self):
+        self.driver.main(['help', 'return-codes'])
+        self.assert_contains(
+            '********************\nAWS CLI Return Codes\n********************'
+        )
+        self.assert_contains('These are the following return codes')
 
     def test_arguments_with_example_json_syntax(self):
         self.driver.main(['ec2', 'run-instances', 'help'])

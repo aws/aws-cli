@@ -30,6 +30,8 @@ import mock
 class TestHelpOutput(BaseAWSHelpOutputTest):
     def test_output(self):
         self.driver.main(['help'])
+        # Check for the reference label.
+        self.assert_contains('.. _aws:')
         self.assert_contains('***\naws\n***')
         self.assert_contains(
             'The AWS Command Line Interface is a unified tool '
@@ -51,6 +53,8 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
 
     def test_service_help_output(self):
         self.driver.main(['ec2', 'help'])
+        # Check for the reference label.
+        self.assert_contains('.. _aws ec2:')
         # We should see the section title for the service.
         self.assert_contains('***\nec2\n***')
         # With a description header.
@@ -62,11 +66,25 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
 
     def test_operation_help_output(self):
         self.driver.main(['ec2', 'run-instances', 'help'])
+        # Check for the reference label.
+        self.assert_contains('.. _aws ec2 run-instances:')
         # Should see the title with the operation name
         self.assert_contains('*************\nrun-instances\n*************')
         # Should contain part of the help text from the model.
         self.assert_contains('Launches the specified number of instances')
         self.assert_contains('``--count`` (string)')
+
+    def test_custom_service_help_output(self):
+        self.driver.main(['s3', 'help'])
+        self.assert_contains('.. _aws s3:')
+        self.assert_contains('high-level S3 commands')
+        self.assert_contains('* cp')
+
+    def test_custom_operation_help_output(self):
+        self.driver.main(['s3', 'ls', 'help'])
+        self.assert_contains('.. _aws s3 ls:')
+        self.assert_contains('List S3 objects')
+        self.assert_contains('--summarize')
 
     def test_arguments_with_example_json_syntax(self):
         self.driver.main(['ec2', 'run-instances', 'help'])

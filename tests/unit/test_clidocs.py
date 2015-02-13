@@ -187,21 +187,24 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
 
     def test_breadcrumbs(self):
         self.doc_handler.doc_breadcrumbs(self.cmd)
-        self.assertEqual(self.cmd.doc.getvalue(), '')
+        self.assertEqual(self.cmd.doc.getvalue().decode('utf-8'), '')
         self.cmd.doc.target = 'html'
         self.doc_handler.doc_breadcrumbs(self.cmd)
         self.assertEqual(
             '[ :doc:`aws <../reference/index>` ]',
-            self.cmd.doc.getvalue()
+            self.cmd.doc.getvalue().decode('utf-8')
         )
 
     def test_title(self):
         self.doc_handler.doc_title(self.cmd)
-        self.assertIn(self.cmd.title, self.cmd.doc.getvalue())
+        self.assertIn(self.cmd.title, self.cmd.doc.getvalue().decode('utf-8'))
 
     def test_description(self):
         self.doc_handler.doc_description(self.cmd)
-        self.assertIn(self.cmd.description, self.cmd.doc.getvalue())
+        self.assertIn(
+            self.cmd.description,
+            self.cmd.doc.getvalue().decode('utf-8')
+        )
 
     def _assert_categories_and_topics(self, contents):
         for category in self.cmd.categories:
@@ -211,7 +214,7 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
 
     def test_subitems_start(self):
         self.doc_handler.doc_subitems_start(self.cmd)
-        contents = self.cmd.doc.getvalue()
+        contents = self.cmd.doc.getvalue().decode('utf-8')
         self._assert_categories_and_topics(contents)
 
         # Make sure the toctree is not in the man page
@@ -220,7 +223,7 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
     def test_subitems_start_html(self):
         self.cmd.doc.target = 'html'
         self.doc_handler.doc_subitems_start(self.cmd)
-        contents = self.cmd.doc.getvalue()
+        contents = self.cmd.doc.getvalue().decode('utf-8')
         self._assert_categories_and_topics(contents)
 
         # Make sure the hidd toctree is in the html
@@ -255,13 +258,17 @@ class TestTopicDocumentEventHandler(unittest.TestCase):
 
     def test_breadcrumbs(self):
         self.doc_handler.doc_breadcrumbs(self.cmd)
-        self.assertEqual(self.cmd.doc.getvalue(), '')
+        self.assertEqual(self.cmd.doc.getvalue().decode('utf-8'), '')
         self.cmd.doc.target = 'html'
         self.doc_handler.doc_breadcrumbs(self.cmd)
         self.assertEqual(
             '[ :doc:`aws <../reference/index>` . :doc:`topics <index>` ]',
-            self.cmd.doc.getvalue()
+            self.cmd.doc.getvalue().decode('utf-8')
         )
+
+    def test_title(self):
+        self.doc_handler.doc_title(self.cmd)
+        self.assertIn(self.cmd.title, self.cmd.doc.getvalue().decode('utf-8'))
 
     def test_description(self):
         lines = [
@@ -271,6 +278,6 @@ class TestTopicDocumentEventHandler(unittest.TestCase):
         body = '\n'.join(lines)
         self.file_creator.create_file(self.name+'.rst', body)
         self.doc_handler.doc_description(self.cmd)
-        contents = self.cmd.doc.getvalue()
+        contents = self.cmd.doc.getvalue().decode('utf-8')
         self.assertIn(self.topic_body, contents)
         self.assertNotIn(':title '+self.title, contents)

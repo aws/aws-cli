@@ -263,7 +263,6 @@ class ProviderHelpCommand(HelpCommand):
             self._topic_table = self._create_topic_table()
         return self._topic_table
 
-
     def _create_topic_table(self):
         topic_table = {}
         # Add the ``aws help topics`` command to the ``topic_table``
@@ -449,12 +448,9 @@ class TopicHelpCommand(HelpCommand):
         return self._contents
 
     def _remove_tags_from_content(self, filename):
-        # Open the file and save its contents.
         with open(filename, 'r') as f:
             lines = f.readlines()
 
-        # Iterate through each line and remove each line that does not
-        # begin with a valid tag.
         content_begin_index = 0
         for i, line in enumerate(lines):
             # If a line is encountered that does not begin with the tag

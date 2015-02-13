@@ -137,18 +137,18 @@ class TestProviderHelpCommand(TestHelpCommandBase):
         self.synopsis = None
         self.usage = None
 
+        # Create a temporary index file for ``aws help [command]`` to use.
         self.tags_dict = {
             'topic-name-1': {},
             'topic-name-2': {}
         }
         json_index = self.file_creator.create_file('index.json', '')
-        tags_json = json.dumps(self.tags_dict, indent=4, sort_keys=True)
-        print(tags_json)
         with open(json_index, 'w') as f:
-            f.write(tags_json)
+            json.dump(self.tags_dict, f, indent=4, sort_keys=True)
         self.json_patch = mock.patch(
             'awscli.topictags.TopicTagDB.index_file', json_index)
         self.json_patch.start()
+
         self.cmd = ProviderHelpCommand(self.session, self.command_table,
                                        self.arg_table, self.description,
                                        self.synopsis, self.usage)

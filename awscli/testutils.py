@@ -63,6 +63,14 @@ else:
     import unittest
 
 
+# In python 3, order matters when calling assertEqual to
+# compare lists and dictionaries with lists. Therefore,
+# assertItemsEqual needs to be used but it is renamed to
+# assertCountEqual in python 3.
+if six.PY2:
+    unittest.TestCase.assertCountEqual = unittest.TestCase.assertItemsEqual
+
+
 _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None

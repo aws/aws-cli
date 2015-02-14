@@ -195,6 +195,7 @@ class HelpCommand(object):
         if arg_table is None:
             arg_table = {}
         self.arg_table = arg_table
+        self.related_items = []
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
 

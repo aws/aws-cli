@@ -41,8 +41,8 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
         'help_text': 'Performs service operation based on the JSON string '
                      'provided. The JSON string follows the format provided '
                      'by ``--generate-cli-skeleton``. If other arguments are '
-                     'provided on the command line, it will not clobber their '
-                     'values.'
+                     'provided on the command line, the CLI values will override '
+                     'the JSON-provided values.'
     }
 
     def __init__(self, operation_object):

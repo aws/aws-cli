@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.8
+=====
 
 * bugfix:``aws s3``: Fix auth errors when uploading large files
   to the ``eu-central-1`` and ``cn-north-1`` regions

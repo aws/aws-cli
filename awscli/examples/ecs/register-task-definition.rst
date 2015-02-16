@@ -28,7 +28,7 @@ Output::
 
 	{
 	    "taskDefinition": {
-	        "taskDefinitionArn": "arn:aws:ec2:us-east-1:<aws_account_id>:task-definition/sleep360:1",
+	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:1",
 	        "containerDefinitions": [
 	            {
 	                "environment": [],
@@ -61,7 +61,7 @@ Output::
 
 	{
 	    "taskDefinition": {
-	        "taskDefinitionArn": "arn:aws:ec2:us-east-1:<aws_account_id>:task-definition/sleep360:1",
+	        "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:1",
 	        "containerDefinitions": [
 	            {
 	                "environment": [],

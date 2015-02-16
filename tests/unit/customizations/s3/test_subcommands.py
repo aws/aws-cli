@@ -21,7 +21,7 @@ import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
     CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint, \
-    RbCommand
+    RbCommand, get_client
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest
@@ -51,6 +51,16 @@ class TestGetEndpoint(unittest.TestCase):
         self.assertTrue(endpoint.verify)
 
 
+class TestGetClient(unittest.TestCase):
+    def test_client(self):
+        session = Mock()
+        endpoint = get_client(session, region='us-west-1', endpoint_url='URL',
+                              verify=True)
+        session.create_client.assert_called_with('s3', region_name='us-west-1',
+                                                 endpoint_url='URL',
+                                                 verify=True)
+
+
 class TestRbCommand(unittest.TestCase):
     def test_rb_command_with_force_deletes_objects_in_bucket(self):
         self.session = mock.Mock()
@@ -76,50 +86,49 @@ class TestRbCommand(unittest.TestCase):
 class TestLSCommand(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
-        self.session.get_service.return_value.get_operation.return_value\
-                .call.return_value = (None, {'Buckets': []})
-        self.session.get_service.return_value.get_operation.return_value\
+        self.session.create_client.return_value.list_buckets.return_value\
+            = {'Buckets': []}
+        self.session.create_client.return_value.get_paginator.return_value\
                 .paginate.return_value = [
-                    (None, {'Contents': [], 'CommonPrefixes': []})]
+                    {'Contents': [], 'CommonPrefixes': []}]
 
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False, page_size='5',
-                human_readable=False, summarize=False)
+        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
+                               page_size='5', human_readable=False,
+                               summarize=False)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
-        call = self.session.get_service.return_value.get_operation\
-                .return_value.call
-        paginate = self.session.get_service.return_value.get_operation\
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
                 .return_value.paginate
         # We should make no operation calls.
         self.assertEqual(call.call_count, 0)
         # And only a single pagination call to ListObjects.
-        self.session.get_service.return_value.get_operation.assert_called_with(
-            'ListObjects')
-        self.assertEqual(
-            paginate.call_args[1], {'bucket': u'mybucket',
-                                    'delimiter': '/', 'prefix': u'',
-                                    'page_size': u'5'})
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_objects')
+        ref_call_args = {'Bucket': u'mybucket', 'Delimiter': '/',
+                         'Prefix': u'', 'page_size': u'5'}
+
+        paginate.assert_called_with(**ref_call_args)
 
     def test_ls_command_with_no_args(self):
         ls_command = ListCommand(self.session)
-        parsed_global = FakeArgs(region=None, endpoint_url=None, verify_ssl=None)
+        parsed_global = FakeArgs(region=None, endpoint_url=None,
+                                 verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3://',
                                human_readable=False, summarize=False)
         ls_command._run_main(parsed_args, parsed_global)
         # We should only be a single call.
-        self.session.get_service.return_value.get_operation.assert_called_with(
-            'ListBuckets')
-        call = self.session.get_service.return_value.get_operation\
-                .return_value.call
+        call = self.session.create_client.return_value.list_buckets
+        self.assertTrue(call.called)
         self.assertEqual(call.call_count, 1)
         self.assertEqual(call.call_args[1], {})
-        # Verify get_endpoint
-        get_endpoint = self.session.get_service.return_value.get_endpoint
-        args = get_endpoint.call_args
-        self.assertEqual(args, mock.call(region_name=None, endpoint_url=None,
-                                         verify=None))
+        # Verify get_client
+        get_client = self.session.create_client
+        args = get_client.call_args
+        self.assertEqual(args, mock.call('s3', region_name=None,
+                                         endpoint_url=None, verify=None))
 
     def test_ls_with_verify_argument(self):
         options = {'default': 's3://', 'nargs': '?'}
@@ -129,12 +138,11 @@ class TestLSCommand(unittest.TestCase):
         parsed_args = FakeArgs(paths='s3://', dir_op=False,
                                human_readable=False, summarize=False)
         ls_command._run_main(parsed_args, parsed_global)
-        # Verify get_endpoint
-        get_endpoint = self.session.get_service.return_value.get_endpoint
-        args = get_endpoint.call_args
-        self.assertEqual(args, mock.call(region_name='us-west-2',
-                                         endpoint_url=None,
-                                         verify=False))
+        # Verify get_client
+        get_client = self.session.create_client
+        args = get_client.call_args
+        self.assertEqual(args, mock.call('s3', region_name='us-west-2',
+                                         endpoint_url=None, verify=False))
 
 
 class CommandArchitectureTest(S3HandlerBaseTest):

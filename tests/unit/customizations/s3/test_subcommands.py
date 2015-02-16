@@ -193,6 +193,40 @@ class CommandArchitectureTest(S3HandlerBaseTest):
         self.assertEqual(endpoint.region_name, 'us-west-1')
         self.assertEqual(source_endpoint.region_name, 'us-west-2')
 
+    def test_set_client_no_source(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
+                                      {'region': 'us-west-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None,
+                                       'source_region': None})
+        cmd_arc.set_clients()
+        session.create_client.called_once_with(
+            's3', region_name='us-west-1', endpoint_url=None, verify=None
+        )
+
+
+    def test_set_client_with_source(self):
+        session = Mock()
+        cmd_arc = CommandArchitecture(session, 'sync',
+                                      {'region': 'us-west-1',
+                                       'endpoint_url': None,
+                                       'verify_ssl': None,
+                                       'paths_type': 's3s3',
+                                       'source_region': ['us-west-2']})
+        cmd_arc.set_clients()
+        create_client_args = session.create_client.call_args_list
+        # Assert that two clients were created
+        self.assertEqual(len(create_client_args), 2)
+        self.assertEqual(
+            create_client_args[0][1],
+            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None}
+        )
+        self.assertEqual(
+            create_client_args[1][1],
+            {'region_name': 'us-west-2', 'verify': None, 'endpoint_url': None}
+        )
+
     def test_create_instructions(self):
         """
         This tests to make sure the instructions for any command is generated

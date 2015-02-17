@@ -24,9 +24,9 @@ from awscli.customizations.s3.subcommands import CommandParameters, \
     RbCommand, get_client
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
-from awscli.testutils import unittest, BaseAWSHelpOutputTest
-from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    make_s3_files, s3_cleanup, S3HandlerBaseTest
+from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
+    BaseAWSCommandParamsTest
+from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
 from tests.unit.customizations.s3.fake_session import FakeSession
 from awscli.compat import StringIO
 
@@ -145,11 +145,11 @@ class TestLSCommand(unittest.TestCase):
                                          endpoint_url=None, verify=False))
 
 
-class CommandArchitectureTest(S3HandlerBaseTest):
+class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(CommandArchitectureTest, self).setUp()
-        self.session = FakeSession()
-        self.bucket = make_s3_files(self.session)
+        self.session = self.driver.session
+        self.bucket = 'mybucket'
         self.loc_files = make_loc_files()
         self.output = StringIO()
         self.err_output = StringIO()
@@ -166,7 +166,6 @@ class CommandArchitectureTest(S3HandlerBaseTest):
 
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_set_endpoint_no_source(self):
         cmd_arc = CommandArchitecture(self.session, 'sync',
@@ -338,6 +337,7 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'is_stream': False}
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -352,14 +352,21 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.http_response.status_code = 400
+        self.parsed_responses = [{'Error': {
+                                  'Code': 'BucketNotExists',
+                                  'Message': 'Bucket does not exist'}}]
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc.set_clients()
+        cmd_arc.set_endpoints()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         # Also, we need to verify that the error message is on the *same* line
         # as the upload failed line, to make it easier to track.
         output_str = (
-            "upload failed: %s to %s Error: Bucket does not exist\n" % (
+            "upload failed: %s to %s A client error" % (
                 rel_local_file, s3_file))
         self.assertIn(output_str, self.err_output.getvalue())
 
@@ -376,9 +383,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3local', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) download: %s to %s" % (s3_file, rel_local_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -394,9 +405,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) copy: %s to %s" % (s3_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -412,9 +427,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'mv', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) move: %s to %s" % (s3_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -430,9 +449,13 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 's3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': None}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
         cmd_arc = CommandArchitecture(self.session, 'rm', params)
+        cmd_arc.set_clients()
         cmd_arc.create_instructions()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) delete: %s" % s3_file
         self.assertIn(output_str, self.output.getvalue())
@@ -452,9 +475,16 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False}
+                  'is_stream': False, 'source_region': 'us-west-2'}
+        self.parsed_responses = [
+            {"CommonPrefixes": [], "Contents": [
+                {"Key": "text1.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"}]},
+            {"CommonPrefixes": [], "Contents": []}]
         cmd_arc = CommandArchitecture(self.session, 'sync', params)
         cmd_arc.create_instructions()
+        cmd_arc.set_clients()
+        self.patch_make_request()
         cmd_arc.run()
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
@@ -484,9 +514,10 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'src': s3_prefix, 'dest': s3_prefix, 'paths_type': 's3',
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
-                  'page_size': None, 'is_stream': False}
+                  'page_size': None, 'is_stream': False, 'source_region': None}
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
+        self.patch_make_request()
         rc = cmd_arc.run()
         output_str = "(dryrun) remove_bucket: %s" % s3_prefix
         self.assertIn(output_str, self.output.getvalue())
@@ -502,8 +533,10 @@ class CommandArchitectureTest(S3HandlerBaseTest):
                   'region': 'us-east-1', 'endpoint_url': None,
                   'verify_ssl': None, 'follow_symlinks': True,
                   'page_size': None, 'is_stream': False}
+        self.http_response.status_code = 400
         cmd_arc = CommandArchitecture(self.session, 'rb', params)
         cmd_arc.create_instructions()
+        self.patch_make_request()
         rc = cmd_arc.run()
         output_str = "remove_bucket failed: %s" % s3_prefix
         self.assertIn(output_str, self.err_output.getvalue())

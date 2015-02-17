@@ -276,35 +276,33 @@ class TestStablePriorityQueue(unittest.TestCase):
 
 class TestBucketList(unittest.TestCase):
     def setUp(self):
-        self.operation = mock.Mock()
+        self.client = mock.Mock()
         self.emitter = HierarchicalEmitter()
-        self.operation.session.register = self.emitter.register
-        self.operation.session.unregister = self.emitter.unregister
-        self.endpoint = mock.sentinel.endpoint
+        self.client.meta.events = self.emitter
         self.date_parser = mock.Mock()
         self.date_parser.return_value = mock.sentinel.now
         self.responses = []
 
     def fake_paginate(self, *args, **kwargs):
         for response in self.responses:
-            self.emitter.emit('after-call.s3.ListObjects', parsed=response[1])
+            self.emitter.emit('after-call.s3.ListObjects', parsed=response)
         return self.responses
 
     def test_list_objects(self):
         now = mock.sentinel.now
-        self.operation.paginate = self.fake_paginate
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
         self.responses = [
-            (None, {'Contents': [
+            {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
                  'Key': 'a', 'Size': 1},
                 {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'b', 'Size': 2},]}),
-            (None, {'Contents': [
+                 'Key': 'b', 'Size': 2},]},
+            {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
                  'Key': 'c', 'Size': 3},
-            ]}),
+             ]},
         ]
-        lister = BucketLister(self.operation, self.endpoint, self.date_parser)
+        lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
         self.assertEqual(objects, [('foo/a', 1, now), ('foo/b', 2, now),
                                    ('foo/c', 3, now)])
@@ -315,49 +313,50 @@ class TestBucketList(unittest.TestCase):
         # them before yielding them.  For example, note the %0D
         # in bar.txt:
         now = mock.sentinel.now
-        self.operation.paginate = self.fake_paginate
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
         self.responses = [
-            (None, {'Contents': [
+            {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'bar%0D.txt', 'Size': 1}]}),
+                 'Key': 'bar%0D.txt', 'Size': 1}]},
         ]
-        lister = BucketLister(self.operation, self.endpoint, self.date_parser)
+        lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
         self.assertEqual(objects, [('foo/bar\r.txt', 1, now)])
 
     def test_urlencoded_with_unicode_keys(self):
         now = mock.sentinel.now
-        self.operation.paginate = self.fake_paginate
+        self.client.get_paginator.return_value.paginate = self.fake_paginate
         self.responses = [
-            (None, {'Contents': [
+            {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': '%E2%9C%93', 'Size': 1}]}),
+                 'Key': '%E2%9C%93', 'Size': 1}]},
         ]
-        lister = BucketLister(self.operation, self.endpoint, self.date_parser)
+        lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
         # And note how it's been converted to '\r'.
         self.assertEqual(objects, [(u'foo/\u2713', 1, now)])
 
 
 class TestScopedEventHandler(unittest.TestCase):
-    def test_scoped_session_handler(self):
-        session = mock.Mock()
-        scoped = ScopedEventHandler(session, 'eventname', 'handler')
+    def test_scoped_event_handler(self):
+        event_emitter = mock.Mock()
+        scoped = ScopedEventHandler(event_emitter, 'eventname', 'handler')
         with scoped:
-            session.register.assert_called_with('eventname', 'handler', None,
-                                                False)
-        session.unregister.assert_called_with('eventname', 'handler', None,
-                                              False)
+            event_emitter.register.assert_called_with(
+                'eventname', 'handler', None, False)
+        event_emitter.unregister.assert_called_with(
+            'eventname', 'handler', None, False)
 
-    def test_scoped_session_unique(self):
-        session = mock.Mock()
-        scoped = ScopedEventHandler(session, 'eventname', 'handler', 'unique')
+    def test_scoped_event_unique(self):
+        event_emitter = mock.Mock()
+        scoped = ScopedEventHandler(
+            event_emitter, 'eventname', 'handler', 'unique')
         with scoped:
-            session.register.assert_called_with('eventname', 'handler',
-                                                'unique', False)
-        session.unregister.assert_called_with('eventname', 'handler', 'unique',
-                                              False)
+            event_emitter.register.assert_called_with(
+                'eventname', 'handler', 'unique', False)
+        event_emitter.unregister.assert_called_with(
+            'eventname', 'handler', 'unique', False)
 
 
 class TestGetFileStat(unittest.TestCase):

@@ -13,7 +13,7 @@ Output::
 	        {
 	            "clusterName": "default",
 	            "status": "ACTIVE",
-	            "clusterArn": "arn:aws:ecs:us-west-2:<aws_account_id>:cluster/default"
+	            "clusterArn": "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/default"
 	        }
 	    ],
 	    "failures": []

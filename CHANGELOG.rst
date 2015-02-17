@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.9
+=====
+
+* feature:``aws cloudfront``: Update to latest API
+* feature:``aws sts``: Add support for STS regionalized calls
+* feature:``aws ssm``: Add support for Amazon Simple Systems Management Service (SSM)
+
+
 1.7.8
 =====
 

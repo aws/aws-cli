@@ -45,7 +45,7 @@ Output::
 	                    "doubleValue": 0.0
 	                }
 	            ],
-	            "containerInstanceArn": "arn:aws:ecs:us-west-2:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
+	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
 	            "ec2InstanceId": "i-0f51df05"
 	        }
 	    ]

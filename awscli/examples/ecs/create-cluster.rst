@@ -12,6 +12,6 @@ Output::
 	    "cluster": {
 	        "clusterName": "my_cluster",
 	        "status": "ACTIVE",
-	        "clusterArn": "arn:aws:ecs:us-west-2:<aws_account_id>:cluster/my_cluster"
+	        "clusterArn": "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/my_cluster"
 	    }
 	}

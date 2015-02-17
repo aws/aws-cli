@@ -36,8 +36,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         factory.set_parser_defaults(
             blob_parser=lambda x: x,
             timestamp_parser=lambda x: x)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
+        self.client = self.session.create_client('s3', region_name='us-east-1')
         self.bucket = make_s3_files(self.session)
         self.file1 = self.bucket + '/' + 'text1.txt'
         self.file2 = self.bucket + '/' + 'another_directory/text2.txt'
@@ -55,8 +54,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                          'dir_op': False, 'use_src_name': False}
         expected_file_size = 15
         result_list = list(
-            FileGenerator(self.service, self.endpoint, '').call(
-                input_s3_file))
+            FileGenerator(self.client, '').call(input_s3_file))
         file_stat = FileStat(src=self.file1, dest='text1.txt',
                              compare_key='text1.txt',
                              size=expected_file_size,
@@ -78,8 +76,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         result_list = list(
-            FileGenerator(self.service, self.endpoint, '').call(
-                input_s3_file))
+            FileGenerator(self.client, '').call(input_s3_file))
         file_stat = FileStat(src=self.file2,
                              dest='another_directory' + os.sep + 'text2.txt',
                              compare_key='another_directory/text2.txt',
@@ -110,9 +107,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
         result_list = list(
-            FileGenerator(self.service, self.endpoint,
-                          'delete').call(
-                input_s3_file))
+            FileGenerator(self.client, 'delete').call(input_s3_file))
 
         file_stat1 = FileStat(
             src=self.bucket + '/another_directory/',
@@ -149,7 +144,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         input_s3_file = {'src': {'path': self.bucket+'/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
                          'dir_op': True, 'use_src_name': True}
-        file_gen = FileGenerator(self.service, self.endpoint, '',
+        file_gen = FileGenerator(self.client, '',
                                  page_size=1).call(input_s3_file)
         limited_file_gen = itertools.islice(file_gen, 1)
         result_list = list(limited_file_gen)

@@ -38,7 +38,7 @@ COMPLETIONS = [
                       'importexport', 'kinesis', 'kms', 'lambda', 'logs',
                       'opsworks', 'rds', 'redshift', 'route53',
                       'route53domains', 's3', 's3api', 'ses', 'sns', 'sqs',
-                      'storagegateway', 'sts', 'support', 'swf'])),
+                      'storagegateway', 'sts', 'ssm', 'support', 'swf'])),
     ('aws cloud', -1, set(['cloudformation', 'cloudhsm', 'cloudsearch',
                            'cloudsearchdomain', 'cloudtrail', 'cloudwatch'])),
     ('aws cloudf', -1, set(['cloudformation'])),

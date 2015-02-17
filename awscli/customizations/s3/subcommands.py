@@ -663,7 +663,7 @@ class CommandArchitecture(object):
         self._source_client = self._client
         if self.parameters['source_region']:
             if self.parameters['paths_type'] == 's3s3':
-                self._source_endpoint = get_client(
+                self._source_client = get_client(
                     self.session,
                     region=self.parameters['source_region'][0],
                     endpoint_url=None,
@@ -761,13 +761,12 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
-        file_generator = FileGenerator(self._service,
-                                       self._source_endpoint,
+        file_generator = FileGenerator(self._source_client,
                                        operation_name,
                                        self.parameters['follow_symlinks'],
                                        self.parameters['page_size'],
                                        result_queue=result_queue)
-        rev_generator = FileGenerator(self._service, self._endpoint, '',
+        rev_generator = FileGenerator(self._client, '',
                                       self.parameters['follow_symlinks'],
                                       self.parameters['page_size'],
                                       result_queue=result_queue)

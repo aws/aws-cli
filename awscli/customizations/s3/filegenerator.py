@@ -114,10 +114,9 @@ class FileGenerator(object):
     under the same common prefix.  The generator yields corresponding
     ``FileInfo`` objects to send to a ``Comparator`` or ``S3Handler``.
     """
-    def __init__(self, service, endpoint, operation_name,
-                 follow_symlinks=True, page_size=None, result_queue=None):
-        self._service = service
-        self._endpoint = endpoint
+    def __init__(self, client, operation_name, follow_symlinks=True,
+                 page_size=None, result_queue=None):
+        self._client = client
         self.operation_name = operation_name
         self.follow_symlinks = follow_symlinks
         self.page_size = page_size
@@ -279,8 +278,7 @@ class FileGenerator(object):
         if not dir_op and prefix:
             yield self._list_single_object(s3_path)
         else:
-            operation = self._service.get_operation('ListObjects')
-            lister = BucketLister(operation, self._endpoint)
+            lister = BucketLister(self._client)
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size):
                 source_path, size, last_update = key
@@ -304,10 +302,8 @@ class FileGenerator(object):
         # IAM policies with the smallest set of permissions needed) and
         # instead use a HeadObject request.
         bucket, key = find_bucket_key(s3_path)
-        operation = self._service.get_operation('HeadObject')
         try:
-            response = operation.call(
-                self._endpoint, bucket=bucket, key=key)[1]
+            response = self._client.head_object(Bucket=bucket, Key=key)
         except ClientError as e:
             # We want to try to give a more helpful error message.
             # This is what the customer is going to see so we want to

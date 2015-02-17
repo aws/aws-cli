@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.9
+=====
 
 * feature:``aws cloudfront``: Update to latest API
 * feature:``aws sts``: Add support for STS regionalized calls

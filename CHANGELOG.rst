@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.7.10
+======
+
+* bugfix:``aws sts``: Fix regression where if a region was not activated for STS it would
+raise an error if call was made to that region..
+
+
+1.7.9
+=====
+
+* feature:``aws cloudfront``: Update to latest API
+* feature:``aws sts``: Add support for STS regionalized calls
+* feature:``aws ssm``: Add support for Amazon Simple Systems Management Service (SSM)
+
+
 1.7.8
 =====
 

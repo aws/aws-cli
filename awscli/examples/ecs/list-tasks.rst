@@ -10,8 +10,8 @@ Output::
 
 	{
 	    "taskArns": [
-	        "arn:aws:ecs:us-west-2:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
-	        "arn:aws:ecs:us-west-2:<aws_account_id>:task/6b809ef6-c67e-4467-921f-ee261c15a0a1"
+	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
+	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/6b809ef6-c67e-4467-921f-ee261c15a0a1"
 	    ]
 	}
 
@@ -27,6 +27,6 @@ Output::
 
 	{
 	    "taskArns": [
-	        "arn:aws:ecs:us-west-2:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84"
+	        "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84"
 	    ]
 	}

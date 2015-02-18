@@ -748,9 +748,10 @@ class TestServiceCommand(unittest.TestCase):
         self.assertEqual(self.cmd.name, 'bar')
 
     def test_lineage(self):
+        cmd = CLICommand()
         self.assertEqual(self.cmd.lineage, [self.cmd])
-        self.cmd.lineage = ['foo']
-        self.assertEqual(self.cmd.lineage, ['foo'])
+        self.cmd.lineage = [cmd]
+        self.assertEqual(self.cmd.lineage, [cmd])
 
     def test_lineage_names(self):
         self.assertEqual(self.cmd.lineage_names, ['foo'])
@@ -777,9 +778,10 @@ class TestServiceOperation(unittest.TestCase):
         self.assertEqual(self.cmd.name, 'bar')
 
     def test_lineage(self):
+        cmd = CLICommand()
         self.assertEqual(self.cmd.lineage, [self.cmd])
-        self.cmd.lineage = ['foo']
-        self.assertEqual(self.cmd.lineage, ['foo'])
+        self.cmd.lineage = [cmd]
+        self.assertEqual(self.cmd.lineage, [cmd])
 
     def test_lineage_names(self):
         self.assertEqual(self.cmd.lineage_names, ['foo'])

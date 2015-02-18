@@ -17,8 +17,8 @@ import logging
 
 from botocore.exceptions import ProfileNotFound
 
-from awscli.customizations.commands import BasicCommand
 from awscli.compat import raw_input
+from awscli.customizations.commands import BasicCommand
 
 
 logger = logging.getLogger(__name__)
@@ -31,6 +31,7 @@ def register_configure_cmd(cli):
 
 
 class ConfigValue(object):
+
     def __init__(self, value, config_type, config_variable):
         self.value = value
         self.config_type = config_type
@@ -54,6 +55,7 @@ def _mask_value(current_value):
 
 
 class InteractivePrompter(object):
+
     def get_value(self, current_value, config_name, prompt_text=''):
         if config_name in ('aws_access_key_id', 'aws_secret_access_key'):
             current_value = _mask_value(current_value)
@@ -218,6 +220,10 @@ class ConfigFileWriter(object):
                 # write out all the values now.
                 self._insert_new_values(i - 1, contents, values, '    ')
                 break
+        else:
+            if starting_indent != current_indent:
+                # The option is the last option in the file
+                self._insert_new_values(i, contents, values, '    ')
         return i
 
     def _insert_new_values(self, line_number, contents, new_values, indent=''):

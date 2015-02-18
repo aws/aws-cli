@@ -14,21 +14,24 @@
 import logging
 import re
 
+
 import botocore.exceptions
 from botocore import xform_name
 
-from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import constants
+from awscli.customizations.emr import configutils
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
+from awscli.customizations.emr.command import Command
+from awscli.customizations.emr.constants import EC2
+from awscli.customizations.emr.constants import EC2_ROLE_NAME
+from awscli.customizations.emr.constants import EMR
+from awscli.customizations.emr.constants import EMR_ROLE_NAME
+from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 
 
 LOG = logging.getLogger(__name__)
 
-
-EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
-EMR_ROLE_NAME = "EMR_DefaultRole"
 
 EC2_ROLE_POLICY = {
     "Statement": [
@@ -100,11 +103,11 @@ def assume_role_policy(serviceprincipal):
 
 
 def get_service_principal(service, endpoint_host):
-    return service+'.'+_get_suffix(endpoint_host)
+    return service + '.' + _get_suffix(endpoint_host)
 
 
 def _get_suffix(endpoint_host):
-        return _get_suffix_from_endpoint_host(endpoint_host)
+    return _get_suffix_from_endpoint_host(endpoint_host)
 
 
 def _get_suffix_from_endpoint_host(endpoint_host):
@@ -131,7 +134,7 @@ def _get_regex_match_from_endpoint_host(endpoint_host):
     return regex_match
 
 
-class CreateDefaultRoles(BasicCommand):
+class CreateDefaultRoles(Command):
     NAME = "create-default-roles"
     DESCRIPTION = ('Creates the default IAM role ' +
                    EC2_ROLE_NAME + ' and ' +
@@ -147,7 +150,7 @@ class CreateDefaultRoles(BasicCommand):
     ]
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-default-roles.rst')
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         ec2_result = None
         emr_result = None
         self.iam_endpoint_url = parsed_args.iam_endpoint
@@ -172,7 +175,7 @@ class CreateDefaultRoles(BasicCommand):
             LOG.debug('Role ' + role_name + ' does not exist.'
                       ' Creating default role for EC2: ' + role_name)
             ec2_result = self._create_role_with_role_policy(
-                role_name, role_name, constants.EC2,
+                role_name, role_name, EC2,
                 emrutils.dict_to_string(EC2_ROLE_POLICY),
                 parsed_globals)
 
@@ -197,9 +200,11 @@ class CreateDefaultRoles(BasicCommand):
             LOG.debug('Role ' + role_name + ' does not exist.'
                       ' Creating default role for EMR: ' + role_name)
             emr_result = self._create_role_with_role_policy(
-                role_name, role_name, constants.EMR,
+                role_name, role_name, EMR,
                 emrutils.dict_to_string(EMR_ROLE_POLICY),
                 parsed_globals)
+
+        configutils.update_roles(self._session)
 
         emrutils.display_response(
             self._session,
@@ -228,7 +233,7 @@ class CreateDefaultRoles(BasicCommand):
             self, list, response, role_policy):
         if response is not None and response[1] is not None:
             list.append({'Role': response[1]['Role'],
-                        'RolePolicy': role_policy})
+                         'RolePolicy': role_policy})
             return list
 
     def _get_region(self, parsed_globals):

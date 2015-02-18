@@ -317,3 +317,11 @@ class BothSseAndEncryptionConfiguredError(EmrError):
 
     fmt = ('aws: error: Both SSE={sse} and Encryption={encryption} are '
            'configured for --emrfs. You must specify only one of the two.')
+
+
+class InvalidBooleanConfigError(EmrError):
+
+    fmt = ("aws: error: {config_value} for {config_key} in the config file is "
+           "invalid. The value should be either 'True' or 'False'. Use "
+           "'aws configure set {profile_var_name}.emr.{config_key} <value>' "
+           "command to set a valid value.")

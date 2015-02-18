@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-
 import re
 
 from awscli.customizations.commands import BasicCommand
@@ -25,11 +24,12 @@ from awscli.customizations.emr import hbaseutils
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr import instancegroupsutils
 from awscli.customizations.emr import steputils
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
-from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
+from awscli.customizations.emr.command import Command
+from awscli.customizations.emr.constants import EC2_ROLE_NAME
+from awscli.customizations.emr.constants import EMR_ROLE_NAME
 
 
-class CreateCluster(BasicCommand):
+class CreateCluster(Command):
     NAME = 'create-cluster'
     DESCRIPTION = (
         'Creates and starts running an EMR cluster.\n'
@@ -103,7 +103,7 @@ class CreateCluster(BasicCommand):
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         params = {}
         bootstrap_actions = []
         params['Name'] = parsed_args.name
@@ -406,3 +406,11 @@ class CreateCluster(BasicCommand):
                             step_type not in specified_apps:
                         missing_apps.add(step['Type'].title())
         return missing_apps
+
+    def _filter_configurations_in_special_cases(self, configurations,
+                                                parsed_args, parsed_configs):
+        if parsed_args.use_default_roles:
+            configurations = [x for x in configurations
+                              if x.name is not 'service_role'
+                              and x.name is not 'instance_profile']
+        return configurations

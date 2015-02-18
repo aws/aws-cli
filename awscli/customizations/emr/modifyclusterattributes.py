@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import helptext
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr.command import Command
 
 
-class ModifyClusterAttr(BasicCommand):
+class ModifyClusterAttr(Command):
     NAME = 'modify-cluster-attributes'
     DESCRIPTION = ("Modifies the cluster attributes 'visible-to-all-users' and"
                    " 'termination-protected'.")
@@ -38,7 +38,7 @@ class ModifyClusterAttr(BasicCommand):
             'help_text': 'Set termination protection on or off'},
     ]
 
-    def _run_main(self, args, parsed_globals):
+    def _run_main_command(self, args, parsed_globals):
 
         if (args.visible_to_all_users and args.no_visible_to_all_users):
             raise exceptions.MutualExclusiveOptionError(

@@ -17,12 +17,11 @@ import tempfile
 
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import sshutils
-from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr.command import Command
 
 
-class Socks(BasicCommand):
+class Socks(Command):
     NAME = 'socks'
     DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine \
                    to the master.')
@@ -33,7 +32,7 @@ class Socks(BasicCommand):
          'help_text': 'Private key file to use for login'},
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         try:
             master_dns = sshutils.validate_and_find_master_dns(
                 session=self._session,
@@ -62,7 +61,7 @@ class Socks(BasicCommand):
             return 0
 
 
-class SSH(BasicCommand):
+class SSH(Command):
     NAME = 'ssh'
     DESCRIPTION = ('SSH into master node of the cluster.')
     ARG_TABLE = [
@@ -73,8 +72,7 @@ class SSH(BasicCommand):
         {'name': 'command', 'help_text': 'Command to execute on Master Node'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
-
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -107,7 +105,7 @@ class SSH(BasicCommand):
         return rc
 
 
-class Put(BasicCommand):
+class Put(Command):
     NAME = 'put'
     DESCRIPTION = ('Put file onto the master node.')
     ARG_TABLE = [
@@ -120,7 +118,7 @@ class Put(BasicCommand):
         {'name': 'dest', 'help_text': 'Destination file path on remote host'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -147,7 +145,7 @@ class Put(BasicCommand):
         return rc
 
 
-class Get(BasicCommand):
+class Get(Command):
     NAME = 'get'
     DESCRIPTION = ('Get file from master node.')
     ARG_TABLE = [
@@ -160,7 +158,7 @@ class Get(BasicCommand):
         {'name': 'dest', 'help_text': 'Destination file path on your machine'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,

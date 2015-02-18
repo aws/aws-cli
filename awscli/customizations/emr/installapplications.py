@@ -12,15 +12,15 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import argumentschema
 from awscli.customizations.emr import applicationutils
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr.command import Command
 
 
-class InstallApplications(BasicCommand):
+class InstallApplications(Command):
     NAME = 'install-applications'
     DESCRIPTION = ('Installs applications on a running cluster. Currently only'
                    ' Hive and Pig can be installed using this command.')
@@ -34,7 +34,7 @@ class InstallApplications(BasicCommand):
     # Applications supported by the install-applications command.
     supported_apps = ['HIVE', 'PIG']
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
 
         parameters = {'JobFlowId': parsed_args.cluster_id}
 

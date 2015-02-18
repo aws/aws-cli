@@ -13,6 +13,8 @@
 
 # Declare all the constants used by EMR in this file.
 
+EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
+EMR_ROLE_NAME = "EMR_DefaultRole"
 
 # Action on failure
 CONTINUE = 'CONTINUE'

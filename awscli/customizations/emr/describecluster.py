@@ -12,13 +12,14 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import helptext
-from awscli.customizations.emr import constants
+from awscli.customizations.emr.command import Command
 from botocore.exceptions import NoCredentialsError
 
 
-class DescribeCluster(BasicCommand):
+class DescribeCluster(Command):
     NAME = 'describe-cluster'
     DESCRIPTION = ('Provides  cluster-level details including status, hardware'
                    ' and software configuration, VPC settings, bootstrap'
@@ -30,12 +31,12 @@ class DescribeCluster(BasicCommand):
     ]
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'describe-cluster.rst')
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'ClusterId': parsed_args.cluster_id}
 
         describe_cluster_result = self._call(
             self._session, 'describe_cluster', parameters, parsed_globals)
-        
+
         list_instance_groups_result = self._call(
             self._session, 'list_instance_groups', parameters, parsed_globals)
 

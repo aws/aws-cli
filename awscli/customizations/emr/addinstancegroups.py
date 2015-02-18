@@ -12,14 +12,14 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.emr import emrutils
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import helptext
 from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr.command import Command
 
 
-class AddInstanceGroups(BasicCommand):
+class AddInstanceGroups(Command):
     NAME = 'add-instance-groups'
     DESCRIPTION = 'Adds an instance group to a running cluster.'
     ARG_TABLE = [
@@ -30,7 +30,7 @@ class AddInstanceGroups(BasicCommand):
          'schema': argumentschema.INSTANCE_GROUPS_SCHEMA}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'JobFlowId': parsed_args.cluster_id}
         parameters['InstanceGroups'] = \
             instancegroupsutils.build_instance_groups(
@@ -52,9 +52,9 @@ class AddInstanceGroups(BasicCommand):
         jobFlowId = None
         instanceGroupIds = None
         if add_instance_groups_result is not None:
-                jobFlowId = add_instance_groups_result.get('JobFlowId')
-                instanceGroupIds = add_instance_groups_result.get(
-                    'InstanceGroupIds')
+            jobFlowId = add_instance_groups_result.get('JobFlowId')
+            instanceGroupIds = add_instance_groups_result.get(
+                'InstanceGroupIds')
 
         if jobFlowId is not None and instanceGroupIds is not None:
             return {'ClusterId': jobFlowId,

@@ -79,9 +79,6 @@ class FakeSession(object):
                    unique_id_uses_call=False):
         pass
 
-    def create_client(self, **kwargs):
-        pass
-
 
 class FakeService(object):
     """

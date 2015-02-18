@@ -96,7 +96,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
         self.local_dir = six.text_type(os.path.abspath('.') +
                                        os.sep + 'some_directory' +
                                        os.sep)
-        self.client = mock.Mock()
+        self.client = None
         self.files = make_loc_files()
 
     def tearDown(self):
@@ -136,7 +136,7 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 's3'},
                            'dir_op': True, 'use_src_name': True}
         params = {'region': 'us-east-1'}
-        files = FileGenerator(self.client,'').call(input_local_dir)
+        files = FileGenerator(self.client, '').call(input_local_dir)
         result_list = []
         for filename in files:
             result_list.append(filename)
@@ -168,7 +168,7 @@ class TestIgnoreFilesLocally(unittest.TestCase):
     skipping symlink when desired.
     """
     def setUp(self):
-        self.client = mock.Mock()
+        self.client = None
         self.files = FileCreator()
 
     def tearDown(self):
@@ -216,7 +216,7 @@ class TestThrowsWarning(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
         self.root = self.files.rootdir
-        self.client = mock.Mock()
+        self.client = None
 
     def tearDown(self):
         self.files.remove_all()
@@ -279,7 +279,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
     broken symlinks fail.
     """
     def setUp(self):
-        self.client = mock.Mock()
+        self.client = None
         self.files = FileCreator()
         # List of local filenames.
         self.filenames = []
@@ -461,7 +461,7 @@ class TestNormalizeSort(unittest.TestCase):
         filegenerator.normalize_sort(names, os.path.sep, '/')
         for i in range(len(ref_names)):
             self.assertEqual(ref_names[i], names[i])
-    
+
     def test_normalize_sort_backslash(self):
         names = ['xyz123456789',
                  'xyz1\\test',

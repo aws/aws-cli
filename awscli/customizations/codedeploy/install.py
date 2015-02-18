@@ -183,6 +183,8 @@ class Install(BasicCommand):
                 subprocess.check_call(
                     'powershell.exe -Command Stop-Service'
                     ' -Name codedeployagent',
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                     shell=True
                 )
             except CalledProcessError:

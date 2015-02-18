@@ -76,7 +76,7 @@ class TestRbCommand(unittest.TestCase):
         with mock.patch(cmd_name) as rm_command:
             with mock.patch(arch_name):
                 rb_command._run_main(parsed_args,
-                                    parsed_globals=parsed_globals)
+                                     parsed_globals=parsed_globals)
             # Because of --force we should have called the
             # rm_command with the --recursive option.
             rm_command.return_value.assert_called_with(
@@ -89,8 +89,7 @@ class TestLSCommand(unittest.TestCase):
         self.session.create_client.return_value.list_buckets.return_value\
             = {'Buckets': []}
         self.session.create_client.return_value.get_paginator.return_value\
-                .paginate.return_value = [
-                    {'Contents': [], 'CommonPrefixes': []}]
+            .paginate.return_value = [{'Contents': [], 'CommonPrefixes': []}]
 
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
@@ -101,7 +100,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
         paginate = self.session.create_client.return_value.get_paginator\
-                .return_value.paginate
+            .return_value.paginate
         # We should make no operation calls.
         self.assertEqual(call.call_count, 0)
         # And only a single pagination call to ListObjects.
@@ -203,7 +202,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         session.create_client.called_once_with(
             's3', region_name='us-west-1', endpoint_url=None, verify=None
         )
-
 
     def test_set_client_with_source(self):
         session = Mock()
@@ -395,9 +393,9 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         self.assertIn(output_str, self.output.getvalue())
 
     def test_run_cp_copy(self):
-        # This ensures that the architecture sets up correctly for a ``cp`` copy
-        # command.  It is just just a dry run, but all of the components need
-        # to be wired correctly for it to work.
+        # This ensures that the architecture sets up correctly for a ``cp``
+        # copy command.  It is just just a dry run, but all of the
+        # components need to be wired correctly for it to work.
         s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
         filters = [['--include', '*']]
         params = {'dir_op': False, 'dryrun': True, 'quiet': False,
@@ -681,7 +679,9 @@ class HelpDocTest(BaseAWSHelpOutputTest):
         parsed_global = parser.parse_args(['--paginate'])
         help_command = s3.create_help_command()
         help_command([], parsed_global)
-        self.assert_contains("This section explains prominent concepts and notations in the set of high-level S3 commands provided.")
+        self.assert_contains(
+            "This section explains prominent concepts "
+            "and notations in the set of high-level S3 commands provided.")
         self.assert_contains("Every command takes one or two positional")
         self.assert_contains("* rb")
 

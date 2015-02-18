@@ -296,11 +296,10 @@ class TestBucketList(unittest.TestCase):
                 {'LastModified': '2014-02-27T04:20:38.000Z',
                  'Key': 'a', 'Size': 1},
                 {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'b', 'Size': 2},]},
+                 'Key': 'b', 'Size': 2}]},
             {'Contents': [
                 {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'c', 'Size': 3},
-             ]},
+                 'Key': 'c', 'Size': 3}]}
         ]
         lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
@@ -379,8 +378,7 @@ class TestGetFileStat(unittest.TestCase):
                 f.fromtimestamp.side_effect = ValueError(
                     "timestamp out of range for platform "
                     "localtime()/gmtime() function")
-                with self.assertRaisesRegexp(
-                    ValueError, 'myfilename\.txt'):
+                with self.assertRaisesRegexp(ValueError, 'myfilename\.txt'):
                     get_file_stat('myfilename.txt')
 
 

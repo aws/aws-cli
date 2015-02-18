@@ -306,8 +306,13 @@ class TestCommandLineage(unittest.TestCase):
         actual_lineage_names = []
         for cmd in command.lineage:
             actual_lineage_names.append(cmd.name)
-
+        
+        # Assert the actual names of each command in a lineage is as expected.
         self.assertEqual(actual_lineage_names, ref_lineage_names)
+
+        # Assert that ``lineage_names`` for each command is in sync with what
+        # is actually in the command's ``lineage``.
+        self.assertEqual(command.lineage_names, actual_lineage_names)
 
     def test_service_level_commands(self):
         # Check a normal unchanged service command

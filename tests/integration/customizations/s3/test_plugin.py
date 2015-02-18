@@ -113,8 +113,6 @@ class BaseS3CLICommand(unittest.TestCase):
         if extra_args is not None:
             call_args.update(extra_args)
         response = client.put_object(**call_args)
-        status_code = response['ResponseMetadata']['HTTPStatusCode']
-        self.assertEqual(status_code, 200)
         self.addCleanup(self.delete_key, bucket_name, key_name)
 
     def delete_bucket(self, bucket_name):
@@ -123,8 +121,6 @@ class BaseS3CLICommand(unittest.TestCase):
             's3', region_name=self.regions[bucket_name])
         response = client.delete_bucket(Bucket=bucket_name)
         del self.regions[bucket_name]
-        status_code = response['ResponseMetadata']['HTTPStatusCode']
-        self.assertEqual(status_code, 204, response)
 
     def remove_all_objects(self, bucket_name):
         client = self.session.create_client(
@@ -141,31 +137,24 @@ class BaseS3CLICommand(unittest.TestCase):
         client = self.session.create_client(
             's3', region_name=self.regions[bucket_name])
         response = client.delete_object(Bucket=bucket_name, Key=key_name)
-        status_code = response['ResponseMetadata']['HTTPStatusCode']
-        self.assertEqual(status_code, 204)
 
     def get_key_contents(self, bucket_name, key_name):
         client = self.session.create_client(
             's3', region_name=self.regions[bucket_name])
         response = client.get_object(Bucket=bucket_name, Key=key_name)
-        status_code = response['ResponseMetadata']['HTTPStatusCode']
-        self.assertEqual(status_code, 200)
         return response['Body'].read().decode('utf-8')
 
     def key_exists(self, bucket_name, key_name):
         client = self.session.create_client(
             's3', region_name=self.regions[bucket_name])
         try:
-            response = client.head_object(Bucket=bucket_name, Key=key_name)
-            status_code = response['ResponseMetadata']['HTTPStatusCode']
-            return status_code == 200
+            client.head_object(Bucket=bucket_name, Key=key_name)
+            return True
         except ClientError:
             return False
 
     def list_buckets(self):
         response = self.client.list_buckets()
-        status_code = response['ResponseMetadata']['HTTPStatusCode']
-        self.assertEqual(status_code, 200)
         return response['Buckets']
 
     def content_type_for_key(self, bucket_name, key_name):
@@ -176,8 +165,6 @@ class BaseS3CLICommand(unittest.TestCase):
         client = self.session.create_client(
             's3', region_name=self.regions[bucket_name])
         response = client.head_object(Bucket=bucket_name, Key=key_name)
-        status_code = response['ResponseMetadata']['HTTPStatusCode']
-        self.assertEqual(status_code, 200)
         return response
 
     def assert_no_errors(self, p):

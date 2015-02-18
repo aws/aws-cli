@@ -5,8 +5,8 @@ CHANGELOG
 1.7.10
 ======
 
-* bugfix:``aws sts``: Fix regression where if a region was not activated for STS it would
-raise an error if call was made to that region..
+* bugfix:``aws sts``: Fix regression where if a region was not activated for
+  STS it would raise an error if call was made to that region.
 
 
 1.7.9

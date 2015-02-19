@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws sts``: Allow calling ``assume-role-with-saml`` without
+  credentials.
 * bugfix:``aws sts``: Allow users to make regionalized STS calls by specifying
   the STS endpoint with ``--endpoint-url`` and the region with ``--region``.
   (`botocore issue 464 <https://github.com/boto/botocore/pull/464>`__)

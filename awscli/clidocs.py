@@ -79,13 +79,13 @@ class CLIDocumentEventHandler(object):
         if doc.target != 'man':
             cmd_names = help_command.event_class.split('.')
             doc.write('[ ')
-            doc.write(':ref:`aws <aws>`')
+            doc.write(':ref:`aws <cli:aws>`')
             full_cmd_list = ['aws']
             for cmd in cmd_names[:-1]:
                 doc.write(' . ')
                 full_cmd_list.append(cmd)
                 full_cmd_name = ' '.join(full_cmd_list)
-                doc.write(':ref:`%s <%s>`' % (cmd, full_cmd_name))
+                doc.write(':ref:`%s <cli:%s>`' % (cmd, full_cmd_name))
             doc.write(' ]')
 
     def doc_title(self, help_command, **kwargs):
@@ -94,7 +94,7 @@ class CLIDocumentEventHandler(object):
         reference = help_command.event_class.replace('.', ' ')
         if reference != 'aws':
             reference = 'aws ' + reference
-        doc.writeln('.. _%s:' % reference)
+        doc.writeln('.. _cli:%s:' % reference)
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):

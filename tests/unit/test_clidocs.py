@@ -108,7 +108,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <aws>` ]'
+            '[ :ref:`aws <cli:aws>` ]'
         )
 
     def test_breadcrumbs_service_command_html(self):
@@ -121,7 +121,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <aws>` ]'
+            '[ :ref:`aws <cli:aws>` ]'
         )
 
     def test_breadcrumbs_operation_command_html(self):
@@ -134,7 +134,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <aws>` . :ref:`ec2 <aws ec2>` ]'
+            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]'
         )
 
     def test_breadcrumbs_wait_command_html(self):
@@ -147,6 +147,6 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            ('[ :ref:`aws <aws>` . :ref:`s3api <aws s3api>`'
-             ' . :ref:`wait <aws s3api wait>` ]')
+            ('[ :ref:`aws <cli:aws>` . :ref:`s3api <cli:aws s3api>`'
+             ' . :ref:`wait <cli:aws s3api wait>` ]')
         )

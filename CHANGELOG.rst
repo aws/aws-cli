@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.11
+======
 
 * bugfix:``aws sts``: Allow calling ``assume-role-with-saml`` without
   credentials.

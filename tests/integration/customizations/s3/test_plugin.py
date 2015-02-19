@@ -475,7 +475,7 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
-            'A client error (NoSuchKey) occurred when calling the '
+            'A client error (404) occurred when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
         self.assertIn(expected_err_msg, p.stderr)
 
@@ -520,7 +520,7 @@ class TestCp(BaseS3CLICommand):
             for i in range(num_mb):
                 f.write(b'a' * 1024 * 1024)
 
-        p = aws('s3 cp %s s3://%s/ --region eu-central-1' % (
+        p = aws('s3 cp %s s3://%s/ --region eu-central-1 --debug' % (
             foo_txt, bucket_name))
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))

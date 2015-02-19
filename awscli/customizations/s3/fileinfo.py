@@ -114,31 +114,29 @@ class TaskInfo(object):
     Note that a local file will always have its absolute path, and a s3 file
     will have its path in the form of bucket/key
     """
-    def __init__(self, src, src_type, operation_name, service, endpoint):
+    def __init__(self, src, src_type, operation_name, client):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
-        self.service = service
-        self.endpoint = endpoint
+        self.client = client
 
     def make_bucket(self):
         """
         This opereation makes a bucket.
         """
         bucket, key = find_bucket_key(self.src)
-        bucket_config = {'LocationConstraint': self.endpoint.region_name}
-        params = {'endpoint': self.endpoint, 'bucket': bucket}
-        if self.endpoint.region_name != 'us-east-1':
-            params['create_bucket_configuration'] = bucket_config
-        response_data, http = operate(self.service, 'CreateBucket', params)
+        bucket_config = {'LocationConstraint': self.client.meta.region_name}
+        params = {'Bucket': bucket}
+        if self.client.meta.region_name != 'us-east-1':
+            params['CreateBucketConfiguration'] = bucket_config
+        self.client.create_bucket(**params)
 
     def remove_bucket(self):
         """
         This operation removes a bucket.
         """
         bucket, key = find_bucket_key(self.src)
-        params = {'endpoint': self.endpoint, 'bucket': bucket}
-        response_data, http = operate(self.service, 'DeleteBucket', params)
+        self.client.delete_bucket(Bucket=bucket)
 
 
 class FileInfo(TaskInfo):
@@ -166,12 +164,11 @@ class FileInfo(TaskInfo):
     """
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, service=None, endpoint=None,
-                 parameters=None, source_endpoint=None, is_stream=False):
+                 operation_name=None, client=None, parameters=None,
+                 source_client=None, is_stream=False):
         super(FileInfo, self).__init__(src, src_type=src_type,
                                        operation_name=operation_name,
-                                       service=service,
-                                       endpoint=endpoint)
+                                       client=client)
         self.dest = dest
         self.dest_type = dest_type
         self.compare_key = compare_key
@@ -183,7 +180,7 @@ class FileInfo(TaskInfo):
         else:
             self.parameters = {'acl': None,
                                'sse': None}
-        self.source_endpoint = source_endpoint
+        self.source_client = source_client
         self.is_stream = is_stream
 
     def set_size_from_s3(self):
@@ -191,27 +188,26 @@ class FileInfo(TaskInfo):
         This runs a ``HeadObject`` on the s3 object and sets the size.
         """
         bucket, key = find_bucket_key(self.src)
-        params = {'endpoint': self.endpoint,
-                  'bucket': bucket,
-                  'key': key}
-        response_data, http = operate(self.service, 'HeadObject', params)
+        params = {'Bucket': bucket,
+                  'Key': key}
+        response_data = self.client.head_object(**params)
         self.size = int(response_data['ContentLength'])
 
     def _permission_to_param(self, permission):
         if permission == 'read':
-            return 'grant_read'
+            return 'GrantRead'
         if permission == 'full':
-            return 'grant_full_control'
+            return 'GrantFullControl'
         if permission == 'readacl':
-            return 'grant_read_acp'
+            return 'GrantReadACP'
         if permission == 'writeacl':
-            return 'grant_write_acp'
+            return 'GrantWriteACP'
         raise ValueError('permission must be one of: '
                          'read|readacl|writeacl|full')
 
     def _handle_object_params(self, params):
         if self.parameters['acl']:
-            params['acl'] = self.parameters['acl'][0]
+            params['ACL'] = self.parameters['acl'][0]
         if self.parameters['grants']:
             for grant in self.parameters['grants']:
                 try:
@@ -221,27 +217,27 @@ class FileInfo(TaskInfo):
                                      'permission=principal')
                 params[self._permission_to_param(permission)] = grantee
         if self.parameters['sse']:
-            params['server_side_encryption'] = 'AES256'
+            params['ServerSideEncryption'] = 'AES256'
         if self.parameters['storage_class']:
-            params['storage_class'] = self.parameters['storage_class'][0]
+            params['StorageClass'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:
-            params['website_redirect_location'] = \
+            params['WebsiteRedirectLocation'] = \
                     self.parameters['website_redirect'][0]
         if self.parameters['guess_mime_type']:
             self._inject_content_type(params, self.src)
         if self.parameters['content_type']:
-            params['content_type'] = self.parameters['content_type'][0]
+            params['ContentType'] = self.parameters['content_type'][0]
         if self.parameters['cache_control']:
-            params['cache_control'] = self.parameters['cache_control'][0]
+            params['CacheControl'] = self.parameters['cache_control'][0]
         if self.parameters['content_disposition']:
-            params['content_disposition'] = \
+            params['ContentDisposition'] = \
                     self.parameters['content_disposition'][0]
         if self.parameters['content_encoding']:
-            params['content_encoding'] = self.parameters['content_encoding'][0]
+            params['ContentEncoding'] = self.parameters['content_encoding'][0]
         if self.parameters['content_language']:
-            params['content_language'] = self.parameters['content_language'][0]
+            params['ContentLanguage'] = self.parameters['content_language'][0]
         if self.parameters['expires']:
-            params['expires'] = self.parameters['expires'][0]
+            params['Expires'] = self.parameters['expires'][0]
 
     def _handle_metadata_directive(self, params):
         if self.parameters['metadata_directive']:
@@ -262,13 +258,12 @@ class FileInfo(TaskInfo):
     def _handle_upload(self, body):
         bucket, key = find_bucket_key(self.dest)
         params = {
-            'endpoint': self.endpoint,
-            'bucket': bucket,
-            'key': key,
-            'body': body,
+            'Bucket': bucket,
+            'Key': key,
+            'Body': body,
         }
         self._handle_object_params(params)
-        response_data, http = operate(self.service, 'PutObject', params)
+        response_data = self.client.put_object(**params)
         etag = response_data['ETag'][1:-1]
         body.seek(0)
         check_etag(etag, body)
@@ -277,7 +272,7 @@ class FileInfo(TaskInfo):
         # Add a content type param if we can guess the type.
         guessed_type = guess_content_type(filename)
         if guessed_type is not None:
-            params['content_type'] = guessed_type
+            params['ContentType'] = guessed_type
 
     def download(self):
         """
@@ -285,8 +280,8 @@ class FileInfo(TaskInfo):
         large.  If it is small enough, it gets the file as an object from s3.
         """
         bucket, key = find_bucket_key(self.src)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
-        response_data, http = operate(self.service, 'GetObject', params)
+        params = {'Bucket': bucket, 'Key': key}
+        response_data = self.client.get_object(**params)
         save_file(self.dest, response_data, self.last_update,
                   self.is_stream)
 
@@ -296,11 +291,11 @@ class FileInfo(TaskInfo):
         """
         copy_source = self.src
         bucket, key = find_bucket_key(self.dest)
-        params = {'endpoint': self.endpoint, 'bucket': bucket,
-                  'copy_source': copy_source, 'key': key}
+        params = {'Bucket': bucket,
+                  'CopySource': copy_source, 'Key': key}
         self._handle_object_params(params)
         self._handle_metadata_directive(params)
-        response_data, http = operate(self.service, 'CopyObject', params)
+        self.client.copy_object(**params)
 
     def delete(self):
         """
@@ -309,10 +304,8 @@ class FileInfo(TaskInfo):
         """
         if (self.src_type == 's3'):
             bucket, key = find_bucket_key(self.src)
-            params = {'endpoint': self.source_endpoint, 'bucket': bucket,
-                      'key': key}
-            response_data, http = operate(self.service, 'DeleteObject',
-                                          params)
+            params = {'Bucket': bucket, 'Key': key}
+            self.source_client.delete_object(**params)
         else:
             os.remove(self.src)
 
@@ -334,9 +327,8 @@ class FileInfo(TaskInfo):
 
     def create_multipart_upload(self):
         bucket, key = find_bucket_key(self.dest)
-        params = {'endpoint': self.endpoint, 'bucket': bucket, 'key': key}
+        params = {'Bucket': bucket, 'Key': key}
         self._handle_object_params(params)
-        response_data, http = operate(self.service, 'CreateMultipartUpload',
-                                      params)
+        response_data = self.client.create_multipart_upload(**params)
         upload_id = response_data['UploadId']
         return upload_id

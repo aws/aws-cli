@@ -163,14 +163,12 @@ class S3Handler(object):
     def _cancel_upload(self, upload_id, filename):
         bucket, key = find_bucket_key(filename.dest)
         params = {
-            'bucket': bucket,
-            'key': key,
-            'upload_id': upload_id,
-            'endpoint': filename.endpoint,
+            'Bucket': bucket,
+            'Key': key,
+            'UploadId': upload_id,
         }
         LOGGER.debug("Aborting multipart upload for: %s", key)
-        response_data, http = operate(
-            filename.service, 'AbortMultipartUpload', params)
+        response_data = filename.client.abort_multipart_upload(**params)
 
     def _enqueue_tasks(self, files):
         total_files = 0
@@ -271,8 +269,8 @@ class S3Handler(object):
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
-                result_queue=self.result_queue, service=filename.service,
-                filename=filename, context=context, io_queue=self.write_queue)
+                result_queue=self.result_queue, filename=filename,
+                context=context, io_queue=self.write_queue)
             self.executor.submit(task)
 
     def _enqueue_multipart_upload_tasks(self, filename,

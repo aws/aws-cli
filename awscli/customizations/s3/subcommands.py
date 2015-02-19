@@ -777,8 +777,7 @@ class CommandArchitecture(object):
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
-                             service=self._service,
-                             endpoint=self._endpoint)]
+                             client=self._client)]
         stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
         stream_file_info = [FileInfo(src=files['src']['path'],
                                      dest=stream_dest_path,
@@ -786,12 +785,10 @@ class CommandArchitecture(object):
                                      src_type=files['src']['type'],
                                      dest_type=files['dest']['type'],
                                      operation_name=operation_name,
-                                     service=self._service,
-                                     endpoint=self._endpoint,
+                                     client=self._client,
                                      is_stream=True)]
         file_info_builder = FileInfoBuilder(
-            self._service, self._endpoint,
-            self._source_endpoint, self.parameters)
+            self._client, self._source_client, self.parameters)
         s3handler = S3Handler(self.session, self.parameters,
                               runtime_config=self._runtime_config,
                               result_queue=result_queue)

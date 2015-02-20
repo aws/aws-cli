@@ -660,7 +660,7 @@ class CommandArchitecture(object):
             endpoint_url=self.parameters['endpoint_url'],
             verify=self.parameters['verify_ssl']
         )
-        self._source_client = self._client
+        self._source_client = self._client.clone_client()
         if self.parameters['source_region']:
             if self.parameters['paths_type'] == 's3s3':
                 self._source_client = get_client(

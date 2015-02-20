@@ -343,9 +343,9 @@ class TestScopedEventHandler(unittest.TestCase):
         scoped = ScopedEventHandler(event_emitter, 'eventname', 'handler')
         with scoped:
             event_emitter.register.assert_called_with(
-                'eventname', 'handler', None, False)
+                'eventname', 'handler', None)
         event_emitter.unregister.assert_called_with(
-            'eventname', 'handler', None, False)
+            'eventname', 'handler', None)
 
     def test_scoped_event_unique(self):
         event_emitter = mock.Mock()
@@ -353,9 +353,9 @@ class TestScopedEventHandler(unittest.TestCase):
             event_emitter, 'eventname', 'handler', 'unique')
         with scoped:
             event_emitter.register.assert_called_with(
-                'eventname', 'handler', 'unique', False)
+                'eventname', 'handler', 'unique')
         event_emitter.unregister.assert_called_with(
-            'eventname', 'handler', 'unique', False)
+            'eventname', 'handler', 'unique')
 
 
 class TestGetFileStat(unittest.TestCase):

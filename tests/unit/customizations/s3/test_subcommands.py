@@ -202,6 +202,10 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         session.create_client.called_once_with(
             's3', region_name='us-west-1', endpoint_url=None, verify=None
         )
+        # The client also should have been cloned for the source client
+        # since no source region was provided.
+        self.assertEqual(
+            session.create_client.return_value.clone_client.call_count, 1)
 
     def test_set_client_with_source(self):
         session = Mock()

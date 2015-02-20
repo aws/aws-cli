@@ -26,8 +26,8 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         call_args = self.operations_called[0][1]
         # We should not be calling the args with any delimiter because we
         # want a recursive listing.
-        self.assertEqual(call_args['prefix'], '')
-        self.assertEqual(call_args['bucket'], 'bucket')
+        self.assertEqual(call_args['Prefix'], '')
+        self.assertEqual(call_args['Bucket'], 'bucket')
         self.assertNotIn('delimiter', call_args)
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
@@ -49,8 +49,8 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         call_args = self.operations_called[0][1]
         # We should not be calling the args with any delimiter because we
         # want a recursive listing.
-        self.assertEqual(call_args['prefix'], '')
-        self.assertEqual(call_args['bucket'], 'bucket')
+        self.assertEqual(call_args['Prefix'], '')
+        self.assertEqual(call_args['Bucket'], 'bucket')
         # The page size gets translated to ``MaxKeys`` in the s3 model
         self.assertEqual(call_args['MaxKeys'], 8)
 
@@ -63,11 +63,11 @@ class TestLSCommand(BaseAWSCommandParamsTest):
         call_args = self.operations_called[0][1]
         # We should not be calling the args with any delimiter because we
         # want a recursive listing.
-        self.assertEqual(call_args['prefix'], '')
-        self.assertEqual(call_args['bucket'], 'bucket')
+        self.assertEqual(call_args['Prefix'], '')
+        self.assertEqual(call_args['Bucket'], 'bucket')
         # The page size gets translated to ``MaxKeys`` in the s3 model
         self.assertEqual(call_args['MaxKeys'], 8)
-        self.assertNotIn('delimiter', call_args)
+        self.assertNotIn('Delimiter', call_args)
 
     def test_success_rc_has_prefixes_and_objects(self):
         time_utc = "2014-01-09T20:45:49.000Z"

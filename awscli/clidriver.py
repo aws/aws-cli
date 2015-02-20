@@ -407,7 +407,7 @@ class ServiceCommand(CLICommand):
                                   obj=service_object,
                                   command_table=command_table,
                                   arg_table=None,
-                                  event_class='Operation',
+                                  event_class='.'.join(self.lineage_names),
                                   name=self._name)
 
     def _create_parser(self):
@@ -544,7 +544,7 @@ class ServiceOperation(object):
         return OperationHelpCommand(
             self._service_object.session, self._service_object,
             self._operation_object, arg_table=self.arg_table,
-            name=self._name, event_class=self._parent_name)
+            name=self._name, event_class='.'.join(self.lineage_names))
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from

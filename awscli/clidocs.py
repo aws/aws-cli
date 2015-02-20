@@ -74,8 +74,27 @@ class CLIDocumentEventHandler(object):
 
     # These are default doc handlers that apply in the general case.
 
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            cmd_names = help_command.event_class.split('.')
+            doc.write('[ ')
+            doc.write(':ref:`aws <cli:aws>`')
+            full_cmd_list = ['aws']
+            for cmd in cmd_names[:-1]:
+                doc.write(' . ')
+                full_cmd_list.append(cmd)
+                full_cmd_name = ' '.join(full_cmd_list)
+                doc.write(':ref:`%s <cli:%s>`' % (cmd, full_cmd_name))
+            doc.write(' ]')
+
     def doc_title(self, help_command, **kwargs):
         doc = help_command.doc
+        doc.style.new_paragraph()
+        reference = help_command.event_class.replace('.', ' ')
+        if reference != 'aws':
+            reference = 'aws ' + reference
+        doc.writeln('.. _cli:%s:' % reference)
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
@@ -143,6 +162,9 @@ class CLIDocumentEventHandler(object):
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
+
+    def doc_breadcrumbs(self, help_command, event_name, **kwargs):
+        pass
 
     def doc_synopsis_start(self, help_command, **kwargs):
         doc = help_command.doc
@@ -215,10 +237,6 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
     def doc_options_end(self, help_command, **kwargs):
         pass
 
-    def doc_title(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h1(help_command.name)
-
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
         service = help_command.obj
@@ -255,22 +273,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         for operation in operation.service.operations:
             d[operation.name] = operation.cli_name
         return d
-
-    def doc_breadcrumbs(self, help_command, event_name, **kwargs):
-        doc = help_command.doc
-        if doc.target != 'man':
-            l = event_name.split('.')
-            if len(l) > 1:
-                service_name = l[1]
-                doc.write('[ ')
-                doc.style.ref('aws', '../index')
-                doc.write(' . ')
-                doc.style.ref(service_name, 'index')
-                doc.write(' ]')
-
-    def doc_title(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc

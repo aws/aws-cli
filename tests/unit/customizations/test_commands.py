@@ -16,6 +16,12 @@ import mock
 from awscli.customizations.commands import BasicHelp, BasicCommand
 
 
+class MockCustomCommand(BasicCommand):
+        NAME = 'mock'
+
+        SUBCOMMANDS = [{'name': 'basic', 'command_class': BasicCommand}]
+
+
 class TestCommandLoader(unittest.TestCase):
 
     def test_basic_help_with_contents(self):
@@ -61,11 +67,6 @@ class TestBasicCommand(unittest.TestCase):
         self.assertEqual(self.command.lineage_names, [self.command.name])
 
     def test_pass_lineage_to_child_command(self):
-        class MockCustomCommand(BasicCommand):
-            NAME = 'mock'
-
-            SUBCOMMANDS = [{'name': 'basic', 'command_class': BasicCommand}]
-
         self.command = MockCustomCommand(self.session)
         subcommand = self.command.subcommand_table['basic']
         lineage = subcommand.lineage
@@ -76,3 +77,14 @@ class TestBasicCommand(unittest.TestCase):
             subcommand.lineage_names,
             [self.command.name, subcommand.name]
         )
+
+    def test_event_class(self):
+        self.command = MockCustomCommand(self.session)
+        help_command = self.command.create_help_command()
+        self.assertEqual(help_command.event_class, 'mock')
+        subcommand = self.command.subcommand_table['basic']
+        sub_help_command = subcommand.create_help_command()
+        # Note that the name of this Subcommand was never changed even
+        # though it was put into the table as ``basic``. If no name
+        # is overriden it uses the name ``commandname``.
+        self.assertEqual(sub_help_command.event_class, 'mock.commandname')

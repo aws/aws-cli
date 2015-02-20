@@ -59,7 +59,7 @@ def register_customizations(cli):
     cli.register(
         'building-command-table.datapipeline',
         register_commands)
-    cli.register(
+    cli.register_last(
         'doc-output.datapipeline.get-pipeline-definition',
         document_translation)
 

@@ -297,7 +297,7 @@ class TestTopicHelpCommand(TestHelpCommandBase):
         super(TestTopicHelpCommand, self).tearDown()
 
     def test_event_class(self):
-        self.assertEqual(self.cmd.event_class, 'topic')
+        self.assertEqual(self.cmd.event_class, 'topics.topic-name-1')
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)

@@ -496,12 +496,12 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     def doc_breadcrumbs(self, help_command, **kwargs):
         doc = help_command.doc
         if doc.target != 'man':
-            doc.write('[ ')
-            doc.style.ref('aws', '../reference/index')
-            doc.write(' ]')
+            doc.write('[ :ref:`aws <cli:aws>` ]')
 
     def doc_title(self, help_command, **kwargs):
         doc = help_command.doc
+        doc.style.new_paragraph()
+        doc.writeln('.. _cli:aws help %s:' % self.help_command.name)
         doc.style.h1(help_command.title)
 
     def doc_description(self, help_command, **kwargs):
@@ -564,11 +564,9 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
     def doc_breadcrumbs(self, help_command, **kwargs):
         doc = help_command.doc
         if doc.target != 'man':
-            doc.write('[ ')
-            doc.style.ref('aws', '../reference/index')
-            doc.write(' . ')
-            doc.style.ref('topics', 'index')
-            doc.write(' ]')
+            doc.write(
+                '[ :ref:`aws <cli:aws>` . '
+                ':ref:`topics <cli:aws help topics>` ]')
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc

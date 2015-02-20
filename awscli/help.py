@@ -424,7 +424,7 @@ class TopicHelpCommand(HelpCommand):
 
     @property
     def event_class(self):
-        return 'topic'
+        return 'topics.' + self.name
 
     @property
     def name(self):

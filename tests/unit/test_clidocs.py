@@ -191,7 +191,7 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
         self.cmd.doc.target = 'html'
         self.doc_handler.doc_breadcrumbs(self.cmd)
         self.assertEqual(
-            '[ :doc:`aws <../reference/index>` ]',
+            '[ :ref:`aws <cli:aws>` ]',
             self.cmd.doc.getvalue().decode('utf-8')
         )
 
@@ -262,7 +262,7 @@ class TestTopicDocumentEventHandler(unittest.TestCase):
         self.cmd.doc.target = 'html'
         self.doc_handler.doc_breadcrumbs(self.cmd)
         self.assertEqual(
-            '[ :doc:`aws <../reference/index>` . :doc:`topics <index>` ]',
+            '[ :ref:`aws <cli:aws>` . :ref:`topics <cli:aws help topics>` ]',
             self.cmd.doc.getvalue().decode('utf-8')
         )
 

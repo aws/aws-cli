@@ -28,6 +28,7 @@ import tempfile
 import shutil
 
 import botocore.session
+from botocore.exceptions import ClientError
 from awscli.compat import six
 
 from awscli.testutils import unittest, FileCreator, get_stdout_encoding
@@ -66,10 +67,9 @@ class BaseS3CLICommand(unittest.TestCase):
     def setUp(self):
         self.files = FileCreator()
         self.session = botocore.session.get_session()
-        self.service = self.session.get_service('s3')
         self.regions = {}
         self.region = 'us-west-2'
-        self.endpoint = self.service.get_endpoint(self.region)
+        self.client = self.session.create_client('s3', region_name=self.region)
         self.extra_setup()
 
     def extra_setup(self):
@@ -104,74 +104,68 @@ class BaseS3CLICommand(unittest.TestCase):
         return bucket_name
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
-        operation = self.service.get_operation('PutObject')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
         call_args = {
-            'endpoint': endpoint, 'bucket': bucket_name,
-            'key': key_name, 'body': contents
+            'Bucket': bucket_name,
+            'Key': key_name, 'Body': contents
         }
         if extra_args is not None:
             call_args.update(extra_args)
-        http = operation.call(**call_args)[0]
-        self.assertEqual(http.status_code, 200)
+        response = client.put_object(**call_args)
         self.addCleanup(self.delete_key, bucket_name, key_name)
 
     def delete_bucket(self, bucket_name):
         self.remove_all_objects(bucket_name)
-        operation = self.service.get_operation('DeleteBucket')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        response = operation.call(endpoint, bucket=bucket_name)[0]
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.delete_bucket(Bucket=bucket_name)
         del self.regions[bucket_name]
-        self.assertEqual(response.status_code, 204, response.content)
 
     def remove_all_objects(self, bucket_name):
-        operation = self.service.get_operation('ListObjects')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        pages = operation.paginate(endpoint, bucket=bucket_name)
-        parsed = pages.build_full_result()
-        key_names = [obj['Key'] for obj in parsed['Contents']]
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        paginator = client.get_paginator('list_objects')
+        pages = paginator.paginate(Bucket=bucket_name)
+        key_names = []
+        for page in pages:
+            key_names += [obj['Key'] for obj in page.get('Contents', [])]
         for key_name in key_names:
             self.delete_key(bucket_name, key_name)
 
     def delete_key(self, bucket_name, key_name):
-        operation = self.service.get_operation('DeleteObject')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        response = operation.call(endpoint, bucket=bucket_name,
-                                  key=key_name)[0]
-        self.assertEqual(response.status_code, 204)
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.delete_object(Bucket=bucket_name, Key=key_name)
 
     def get_key_contents(self, bucket_name, key_name):
-        operation = self.service.get_operation('GetObject')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        http, parsed = operation.call(
-            endpoint, bucket=bucket_name, key=key_name)
-        self.assertEqual(http.status_code, 200)
-        return parsed['Body'].read().decode('utf-8')
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.get_object(Bucket=bucket_name, Key=key_name)
+        return response['Body'].read().decode('utf-8')
 
     def key_exists(self, bucket_name, key_name):
-        operation = self.service.get_operation('HeadObject')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        http, parsed = operation.call(
-            endpoint, bucket=bucket_name, key=key_name)
-        return http.status_code == 200
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        try:
+            client.head_object(Bucket=bucket_name, Key=key_name)
+            return True
+        except ClientError:
+            return False
 
     def list_buckets(self):
-        operation = self.service.get_operation('ListBuckets')
-        http, parsed = operation.call(self.endpoint)
-        self.assertEqual(http.status_code, 200)
-        return parsed['Buckets']
+        response = self.client.list_buckets()
+        return response['Buckets']
 
     def content_type_for_key(self, bucket_name, key_name):
         parsed = self.head_object(bucket_name, key_name)
         return parsed['ContentType']
 
     def head_object(self, bucket_name, key_name):
-        operation = self.service.get_operation('HeadObject')
-        endpoint = self.service.get_endpoint(self.regions[bucket_name])
-        http, parsed = operation.call(
-            endpoint, bucket=bucket_name, key=key_name)
-        self.assertEqual(http.status_code, 200)
-        return parsed
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.head_object(Bucket=bucket_name, Key=key_name)
+        return response
 
     def assert_no_errors(self, p):
         self.assertEqual(
@@ -486,8 +480,8 @@ class TestCp(BaseS3CLICommand):
     def test_download_encrypted_kms_object(self):
         bucket_name = self.create_bucket(region='eu-central-1')
         extra_args = {
-            'server_side_encryption': 'aws:kms',
-            'ssekms_key_id': 'alias/aws/s3'
+            'ServerSideEncryption': 'aws:kms',
+            'SSEKMSKeyId': 'alias/aws/s3'
         }
         object_name = 'foo.txt'
         contents = 'this is foo.txt'
@@ -1296,9 +1290,7 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
         # Verify we have a bucket website configured.
-        operation = self.service.get_operation('GetBucketWebsite')
-        parsed = operation.call(
-            self.endpoint, bucket=bucket_name)[1]
+        parsed = self.client.get_bucket_website(Bucket=bucket_name)
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
         self.assertNotIn('ErrorDocument', parsed)
         self.assertNotIn('RoutingRules', parsed)
@@ -1312,9 +1304,7 @@ class TestWebsiteConfiguration(BaseS3CLICommand):
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
         # Verify we have a bucket website configured.
-        operation = self.service.get_operation('GetBucketWebsite')
-        parsed = operation.call(
-            self.endpoint, bucket=bucket_name)[1]
+        parsed = self.client.get_bucket_website(Bucket=bucket_name)
         self.assertEqual(parsed['IndexDocument']['Suffix'], 'index.html')
         self.assertEqual(parsed['ErrorDocument']['Key'], 'error.html')
         self.assertNotIn('RoutingRules', parsed)
@@ -1629,7 +1619,7 @@ class TestNoSignRequests(BaseS3CLICommand):
     def test_no_sign_request(self):
         bucket_name = self.create_bucket()
         self.put_object(bucket_name, 'foo', contents='bar',
-                        extra_args={'acl': 'public-read-write'})
+                        extra_args={'ACL': 'public-read-write'})
         env_vars = os.environ.copy()
         env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
         env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'

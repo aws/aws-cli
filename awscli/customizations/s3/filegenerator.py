@@ -314,7 +314,6 @@ class FileGenerator(object):
             if e.http_status_code == 404:
                 # The key does not exist so we'll raise a more specific
                 # error message here.
-                copy_fields['error_code'] = 'NoSuchKey'
                 copy_fields['error_message'] = 'Key "%s" does not exist' % key
             else:
                 reason = six.moves.http_client.responses[

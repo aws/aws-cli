@@ -36,6 +36,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains(
             'The AWS Command Line Interface is a unified tool '
             'to manage your AWS services.')
+        self.assert_contains('Use *aws help topics* to view')
         # Verify we see the docs for top level params, so pick
         # a few representative types of params.
         self.assert_contains('``--endpoint-url``')

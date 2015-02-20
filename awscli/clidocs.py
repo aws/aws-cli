@@ -522,19 +522,10 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     def doc_synopsis_start(self, help_command, **kwargs):
         pass
 
-    def doc_synopsis_option(self, arg_name, help_command, **kwargs):
-        pass
-
     def doc_synopsis_end(self, help_command, **kwargs):
         pass
 
     def doc_options_start(self, help_command, **kwargs):
-        pass
-
-    def doc_option(self, arg_name, help_command, **kwargs):
-        pass
-
-    def doc_option_example(self, arg_name, help_command, **kwargs):
         pass
 
     def doc_options_end(self, help_command, **kwargs):

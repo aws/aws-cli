@@ -186,17 +186,15 @@ class TestProviderHelpCommand(TestHelpCommandBase):
             self.cmd(['topic-name-1'], None)
             mock_call.assert_called()
 
-    def test_regular_call(self):
-        with mock.patch('awscli.help.TopicListerCommand.__call__') \
-                as topics_call:
-            with mock.patch('awscli.help.TopicHelpCommand.__call__') \
-                    as topic_call:
-                with mock.patch('awscli.help.HelpCommand.__call__') \
-                        as mock_call:
-                    self.cmd([], None)
-                    mock_call.assert_called()
-                    self.assertFalse(topics_call.called)
-                    self.assertFalse(topic_call.called)
+    @mock.patch('awscli.help.TopicListerCommand.__call__')
+    @mock.patch('awscli.help.TopicHelpCommand.__call__')
+    @mock.patch('awscli.help.HelpCommand.__call__')
+    def test_regular_call(self, help_command, topic_help_command,
+                         topic_lister_command):
+        self.cmd([], None)
+        help_command.assert_called()
+        self.assertFalse(topic_lister_command.called)
+        self.assertFalse(topic_help_command.called)
 
     def test_invalid_topic_name(self):
         # This sole purpose of this patch is to remove errors from being
@@ -314,7 +312,7 @@ class TestTopicHelpCommand(TestHelpCommandBase):
             self.topic_body
         ]
         body = '\n'.join(lines)
-        self.file_creator.create_file(self.name+'.rst', body)
+        self.file_creator.create_file(self.name + '.rst', body)
         self.assertEqual(self.cmd.contents, self.topic_body)
 
     def test_contents_no_tags(self):
@@ -322,7 +320,7 @@ class TestTopicHelpCommand(TestHelpCommandBase):
             self.topic_body
         ]
         body = '\n'.join(lines)
-        self.file_creator.create_file(self.name+'.rst', body)
+        self.file_creator.create_file(self.name + '.rst', body)
         self.assertEqual(self.cmd.contents, self.topic_body)
 
     def test_contents_tags_in_body(self):
@@ -338,5 +336,5 @@ class TestTopicHelpCommand(TestHelpCommandBase):
         ]
         body = '\n'.join(lines + body_lines)
         ref_body = '\n'.join(body_lines)
-        self.file_creator.create_file(self.name+'.rst', body)
+        self.file_creator.create_file(self.name + '.rst', body)
         self.assertEqual(self.cmd.contents, ref_body)

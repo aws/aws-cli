@@ -443,7 +443,7 @@ class TopicHelpCommand(HelpCommand):
         """
         if self._contents is None:
             topic_filename = os.path.join(self._topic_tag_db.topic_dir,
-                                          self.name+'.rst')
+                                          self.name + '.rst')
             self._contents = self._remove_tags_from_content(topic_filename)
         return self._contents
 
@@ -464,6 +464,6 @@ class TopicHelpCommand(HelpCommand):
 
     def _line_has_tag(self, line):
         for tag in self._topic_tag_db.valid_tags:
-            if line.startswith(':'+tag+':'):
+            if line.startswith(':' + tag + ':'):
                 return True
         return False

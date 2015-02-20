@@ -210,7 +210,7 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
         for category in self.cmd.categories:
             self.assertIn(category, contents)
         for entry in self.cmd.entries:
-            self.assertIn('* '+self.cmd.entries[entry], contents)
+            self.assertIn('* ' + self.cmd.entries[entry], contents)
 
     def test_subitems_start(self):
         self.doc_handler.doc_subitems_start(self.cmd)
@@ -226,7 +226,7 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
         contents = self.cmd.doc.getvalue().decode('utf-8')
         self._assert_categories_and_topics(contents)
 
-        # Make sure the hidd toctree is in the html
+        # Make sure the hidden toctree is in the html
         self.assertIn('.. toctree::', contents)
         self.assertIn(':hidden:', contents)
 
@@ -276,8 +276,8 @@ class TestTopicDocumentEventHandler(unittest.TestCase):
             self.topic_body
         ]
         body = '\n'.join(lines)
-        self.file_creator.create_file(self.name+'.rst', body)
+        self.file_creator.create_file(self.name + '.rst', body)
         self.doc_handler.doc_description(self.cmd)
         contents = self.cmd.doc.getvalue().decode('utf-8')
         self.assertIn(self.topic_body, contents)
-        self.assertNotIn(':title '+self.title, contents)
+        self.assertNotIn(':title ' + self.title, contents)

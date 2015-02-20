@@ -22,16 +22,17 @@ class TestWebsiteCommand(BaseAWSCommandParamsTest):
     def test_index_document(self):
         cmdline = self.prefix + 's3://mybucket --index-document index.html'
         result = {
-            'website_configuration':
-                {'IndexDocument': {'Suffix': 'index.html'}}, 'bucket': u'mybucket'}
+            'WebsiteConfiguration':
+                {'IndexDocument': {'Suffix': 'index.html'}},
+                 'Bucket': u'mybucket'}
 
         self.assert_params_for_cmd2(cmdline, result)
 
     def test_error_document(self):
         cmdline = self.prefix + 's3://mybucket --error-document mykey'
         result = {
-            'website_configuration': {
-                'ErrorDocument': {'Key': 'mykey'}}, 'bucket': u'mybucket'}
+            'WebsiteConfiguration': {
+                'ErrorDocument': {'Key': 'mykey'}}, 'Bucket': u'mybucket'}
         self.assert_params_for_cmd2(cmdline, result)
 
 

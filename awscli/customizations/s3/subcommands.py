@@ -432,11 +432,10 @@ class WebsiteCommand(S3Command):
 
     def _run_main(self, parsed_args, parsed_globals):
         super(WebsiteCommand, self)._run_main(parsed_args, parsed_globals)
-        operation = self.service.get_operation('PutBucketWebsite')
         bucket = self._get_bucket_name(parsed_args.paths[0])
         website_configuration = self._build_website_configuration(parsed_args)
-        operation.call(self.endpoint, bucket=bucket,
-                       website_configuration=website_configuration)
+        self.client.put_bucket_website(
+            Bucket=bucket, WebsiteConfiguration=website_configuration)
         return 0
 
     def _build_website_configuration(self, parsed_args):

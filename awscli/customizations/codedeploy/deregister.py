@@ -91,7 +91,7 @@ class Deregister(BasicCommand):
                 'Please manually deregister the on-premises instance by '
                 'following the instructions at {1}.\n'.format(
                     e,
-                    'https://docs.aws.amazon.com/codedeploy/...'
+                    'http://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-configure-on-premises-host.html'
                 )
             )
 

@@ -81,7 +81,8 @@ class TestUninstall(unittest.TestCase):
         self.uninstall._uninstall_agent(self.args)
         check_call.assert_has_calls([
             call(
-                'powershell.exe -Command Stop-Service -Name codedeployagent',
+                r'wmic product where name="CodeDeploy Host Agent" call uninstall /nointeractive',
+                stdout=-1,
                 shell=True
             )
         ])

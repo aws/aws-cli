@@ -35,8 +35,8 @@ class Uninstall(BasicCommand):
         params = parsed_args
 
         try:
-            self._uninstall_agent(params)
             self._delete_config_file()
+            self._uninstall_agent(params)
         except Exception as e:
             sys.stdout.write(
                 'ERROR\n'
@@ -73,12 +73,15 @@ class Uninstall(BasicCommand):
         elif sys.platform == 'win32':
             try:
                 subprocess.check_call(
-                    'powershell.exe -Command Stop-Service'
-                    ' -Name codedeployagent',
+                    r'wmic product where name="CodeDeploy Host Agent" call uninstall /nointeractive',
+                    stdout=subprocess.PIPE,
                     shell=True
                 )
             except CalledProcessError:
-                pass
+                raise RuntimeError(
+                    'Failed to uninstall the CodeDeploy Host Agent.'
+                )
+
         sys.stdout.write('DONE\n')
 
     @staticmethod

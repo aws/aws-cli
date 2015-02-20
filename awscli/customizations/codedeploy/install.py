@@ -16,6 +16,7 @@ import os
 import sys
 import shutil
 import subprocess
+import shlex
 from subprocess import CalledProcessError
 
 from awscli.customizations.commands import BasicCommand
@@ -157,6 +158,8 @@ class Install(BasicCommand):
             try:
                 subprocess.check_call(
                     'sudo service codedeploy-agent stop',
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                     shell=True
                 )
             except CalledProcessError:
@@ -179,16 +182,18 @@ class Install(BasicCommand):
                 shell=True
             )
         elif sys.platform == 'win32':
-            try:
-                subprocess.check_call(
-                    'powershell.exe -Command Stop-Service'
-                    ' -Name codedeployagent',
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=True
-                )
-            except CalledProcessError:
-                pass
+            args = ["powershell.exe", "-Command", "Stop-Service", "-Name", "codedeployagent"]
+            output = subprocess.Popen(
+                args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True
+            )
+
+            if output.returncode != 0:
+                if "Cannot find any service with service name 'codedeployagent'" not in output.communicate()[1]:
+                    sys.stderr.write(output.communicate()[1])
+
             subprocess.check_call(
                 r'powershell.exe -Command New-Item'
                 r' -Path "c:\temp"'
@@ -219,4 +224,18 @@ class Install(BasicCommand):
                 ' -Name codedeployagent',
                 shell=True
             )
+
+            args = ["powershell.exe", "-Command", "Get-Service", "-Name", "codedeployagent"]
+            output = subprocess.Popen(
+                args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True
+            ).communicate()
+
+            if "Running" not in output[0]:
+                raise RuntimeError(
+                    'CodeDeploy Agent did not start up correctly after installation.'
+                )
+
         sys.stdout.write('... DONE\n')

@@ -308,7 +308,12 @@ class TestInstall(unittest.TestCase):
         check_call.assert_has_calls([
             call('sudo apt-get -y update', shell=True),
             call('sudo apt-get -y install ruby2.0', shell=True),
-            call('sudo service codedeploy-agent stop', shell=True),
+            call(
+                'sudo service codedeploy-agent stop',
+                stdout=-1,
+                stderr=-1,
+                shell=True
+            ),
             call(
                 'aws s3 cp s3://{0}/{1} ./{2} --region {3}'.format(
                     self.bucket,
@@ -333,7 +338,12 @@ class TestInstall(unittest.TestCase):
         self.install._install_agent(self.args)
         check_call.assert_has_calls([
             call('sudo yum -y update', shell=True),
-            call('sudo service codedeploy-agent stop', shell=True),
+            call(
+                'sudo service codedeploy-agent stop',
+                stdout=-1,
+                stderr=-1,
+                shell=True
+            ),
             call(
                 'aws s3 cp s3://{0}/{1} ./{2} --region {3}'.format(
                     self.bucket,
@@ -348,17 +358,21 @@ class TestInstall(unittest.TestCase):
         ])
 
     @patch('subprocess.check_call')
-    def test_install_agent_windows(self, check_call):
+    @patch('subprocess.Popen')
+    def test_install_agent_windows(self, popen, check_call):
         sys.platform = 'win32'
         self.args.bucket = self.bucket
         self.args.key = self.key
         self.args.installer = self.installer
+        self.args.region = self.region
+
+        check_call.return_value.returncode = 0
+        popen.return_value.returncode = 0
+        popen.return_value.communicate.return_value = ["Running", None]
+
         self.install._install_agent(self.args)
+
         check_call.assert_has_calls([
-            call(
-                'powershell.exe -Command Stop-Service -Name codedeployagent',
-                shell=True
-            ),
             call(
                 r'powershell.exe -Command New-Item'
                 r' -Path "c:\temp"'
@@ -389,6 +403,14 @@ class TestInstall(unittest.TestCase):
                 ' -Name codedeployagent',
                 shell=True
             )
+        ])
+
+        stop_args = ["powershell.exe", "-Command", "Stop-Service", "-Name", "codedeployagent"]
+        get_args = ["powershell.exe", "-Command", "Get-Service", "-Name", "codedeployagent"]
+        popen.assert_has_calls([
+            call(stop_args, stdout=-1, stderr=-1, shell=True),
+            call(get_args, stdout=-1, stderr=-1, shell=True),
+            call().communicate()
         ])
 
 

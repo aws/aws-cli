@@ -253,7 +253,7 @@ PAGE_SIZE = {'name': 'page-size', 'cli_type_name': 'integer',
                  'Using a lower value may help if an operation times out.')}
 
 
-TRANSFER_ARGS = [DRYRUN, QUIET, RECURSIVE, INCLUDE, EXCLUDE, ACL,
+TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, STORAGE_CLASS, GRANTS, WEBSITE_REDIRECT, CONTENT_TYPE,
                  CACHE_CONTROL, CONTENT_DISPOSITION, CONTENT_ENCODING,
@@ -526,7 +526,8 @@ class CpCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS + [EXPECTED_SIZE]
+                  'synopsis': USAGE}] + TRANSFER_ARGS + \
+                [EXPECTED_SIZE, RECURSIVE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/cp.rst')
 
 
@@ -537,7 +538,7 @@ class MvCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [RECURSIVE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/mv.rst')
 
 

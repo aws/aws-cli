@@ -191,12 +191,13 @@ class CloudTrailSubscribe(BasicCommand):
             data = self.s3.GetObject(
                 bucket='awscloudtrail-policy-' + self.region_name,
                 key=key_name)
+            policy = data['Body'].read().decode('utf-8')
         except Exception:
             LOG.error('Unable to get regional policy template for'
                       ' region %s: %s', self.region_name, key_name)
             raise
 
-        return data['Body'].read().decode('utf-8')
+        return policy
 
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """

@@ -16,6 +16,7 @@ import json
 import os
 from awscli.compat import six
 
+from awscli.customizations import cloudtrail
 from awscli.customizations.cloudtrail import CloudTrailSubscribe
 from awscli.customizations.service import Service
 from mock import ANY, Mock, patch
@@ -157,14 +158,41 @@ class TestCloudTrail(unittest.TestCase):
 
         s3.PutBucketPolicy = orig
 
-    def test_get_policy_fail(self):
-        orig = self.subscribe.s3.GetObject
+    def test_s3_get_policy_fail(self):
         self.subscribe.s3.GetObject = Mock(side_effect=Exception('Error!'))
 
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test', 'logs')
 
-        self.subscribe.s3.GetObject = orig
+    def test_s3_get_policy_logs_messages(self):
+        cloudtrail.LOG = Mock()
+        self.subscribe.s3.GetObject = Mock(side_effect=Exception('Error!'))
+
+        try:
+            self.subscribe.setup_new_bucket('test', 'logs')
+        except:
+            pass
+
+        self.assertIn(
+            'Unable to get regional policy template for region',
+            cloudtrail.LOG.error.call_args[0][0])
+        self.assertEqual('us-east-1', cloudtrail.LOG.error.call_args[0][1])
+
+    def test_get_policy_read_timeout(self):
+        response = {
+            'Body': Mock()
+        }
+        response['Body'].read.side_effect = Exception('Error!')
+        self.subscribe.s3.GetObject.return_value = response
+
+        with self.assertRaises(Exception):
+            self.subscribe.setup_new_bucket('test', 'logs')
+
+    def test_sns_get_policy_fail(self):
+        self.subscribe.s3.GetObject = Mock(side_effect=Exception('Error!'))
+
+        with self.assertRaises(Exception):
+            self.subscribe.setup_new_bucket('test', 'logs')
 
     def test_sns_create(self):
         s3 = self.subscribe.s3

@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws datapipeline``: Add support for tagging.
+* feature:``aws route53``: Add support for listing hosted zones by name and
+  getting the hosted zone count.
 * bugfix:``aws s3 sync``: Remove ``--recursive`` parameter. The ``sync``
   command is always a recursive operation meaning the inclusion or
   exclusion of ``--recursive`` had no effect on the ``sync`` command.

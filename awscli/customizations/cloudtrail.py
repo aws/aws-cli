@@ -186,6 +186,18 @@ class CloudTrailSubscribe(BasicCommand):
                 'Logs will be delivered to {bucket}:{prefix}\n'.format(
                     bucket=bucket, prefix=options.s3_prefix or ''))
 
+    def _get_policy(self, key_name):
+        try:
+            data = self.s3.GetObject(
+                bucket='awscloudtrail-policy-' + self.region_name,
+                key=key_name)
+        except Exception:
+            LOG.error('Unable to get regional policy template for'
+                      ' region %s: %s', self.region_name, key_name)
+            raise
+
+        return data['Body'].read().decode('utf-8')
+
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """
         Creates a new S3 bucket with an appropriate policy to let CloudTrail
@@ -206,10 +218,7 @@ class CloudTrailSubscribe(BasicCommand):
         if policy_url:
             policy = requests.get(policy_url).text
         else:
-            data = self.s3.GetObject(
-                bucket='awscloudtrail-policy-' + self.region_name,
-                key=S3_POLICY_TEMPLATE)
-            policy = data['Body'].read().decode('utf-8')
+            policy = self._get_policy(S3_POLICY_TEMPLATE)
 
         policy = policy.replace('<BucketName>', bucket)\
                        .replace('<CustomerAccountID>', account_id)
@@ -284,10 +293,7 @@ class CloudTrailSubscribe(BasicCommand):
         if policy_url:
             policy = requests.get(policy_url).text
         else:
-            data = self.s3.GetObject(
-                bucket='awscloudtrail-policy-' + self.region_name,
-                key=SNS_POLICY_TEMPLATE)
-            policy = data['Body'].read().decode('utf-8')
+            policy = self._get_policy(SNS_POLICY_TEMPLATE)
 
         policy = policy.replace('<Region>', region)\
                        .replace('<SNSTopicOwnerAccountId>', account_id)\

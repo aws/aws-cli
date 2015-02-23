@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws s3 sync``: Remove ``--recursive`` parameter. The ``sync``
+  command is always a recursive operation meaning the inclusion or
+  exclusion of ``--recursive`` had no effect on the ``sync`` command.
+  (`issue 1171 <https://github.com/aws/aws-cli/pull/1168>`__)
+
+
 1.7.11
 ======
 

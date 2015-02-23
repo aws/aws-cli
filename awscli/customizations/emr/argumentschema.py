@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 from awscli.customizations.emr import helptext
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
+
 
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
@@ -201,7 +202,7 @@ STEPS_SCHEMA = {
                     "A list of command line arguments to pass to the step.",
                 "items": {
                         "type": "string"
-                    }
+                }
             },
             "MainClass": {
                 "type": "string",
@@ -274,29 +275,17 @@ EMR_FS_SCHEMA = {
         "ProviderType": {
             "type": "string",
             "description": "EMRFS client-side encryption provider type.",
-            "enum": ["KMS", "RSA", "CUSTOM"]
+            "enum": ["KMS", "CUSTOM"]
         },
-        "KeyId": {
+        "KMSKeyId": {
             "type": "string",
-            "description": "AWS KMS's customer master key id.",
+            "description": "AWS KMS's customer master key identifier",
         },
-        "PrivateKey": {
-            "type": "string",
-            "description": "RSA private key location."
-        },
-        "PublicKey": {
-            "type": "string",
-            "description": "RSA public key location."
-        },
-        "RSAKeyPairName": {
-            "type": "string",
-            "description": "RSA key pair name."
-        },
-        "ProviderLocation": {
+        "CustomProviderLocation": {
             "type": "string",
             "description": "Custom encryption provider JAR location."
         },
-        "ProviderClassName": {
+        "CustomProviderClass": {
             "type": "string",
             "description": "Custom encryption provider full class name."
         }

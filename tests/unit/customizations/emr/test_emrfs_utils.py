@@ -11,351 +11,296 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
 import copy
 import os
-import json
-from mock import patch
-from botocore.vendored import requests
+
+from awscli.customizations.emr.emrfsutils import CONSISTENT_OPTION_NAME
+from awscli.customizations.emr.emrfsutils import CSE_CUSTOM_OPTION_NAME
+from awscli.customizations.emr.emrfsutils import CSE_KMS_OPTION_NAME
+from awscli.customizations.emr.emrfsutils import CSE_OPTION_NAME
+from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
+    BaseAWSCommandParamsTest
 
 
-DEFAULT_INSTANCES = {'KeepJobFlowAliveWhenNoSteps': True,
-                     'TerminationProtected': False,
-                     'InstanceGroups': [
-                         {'InstanceRole': 'MASTER',
-                          'InstanceCount': 1,
-                          'Name': 'MASTER',
-                          'Market': 'ON_DEMAND',
-                          'InstanceType': 'm1.large'
-                          }]
-                     }
+DEFAULT_INSTANCES = {
+    'KeepJobFlowAliveWhenNoSteps': True,
+    'TerminationProtected': False,
+    'InstanceGroups': [{
+        'InstanceRole': 'MASTER',
+        'InstanceCount': 1,
+        'Name': 'MASTER',
+        'Market': 'ON_DEMAND',
+        'InstanceType': 'm1.large'
+    }]
+}
 
 DEFAULT_CMD = ('emr create-cluster --ami-version 3.4 --use-default-roles'
                ' --instance-type m1.large ')
-DEFAULT_RESULT = \
-    {
-        'Name': "Development Cluster",
-        'Instances': DEFAULT_INSTANCES,
-        'AmiVersion': '3.4',
-        'VisibleToAllUsers': True,
-        'JobFlowRole': "EMR_EC2_DefaultRole",
-        'ServiceRole': "EMR_DefaultRole",
-        'Tags': []
-    }
+DEFAULT_RESULT = {
+    'Name': "Development Cluster",
+    'Instances': DEFAULT_INSTANCES,
+    'AmiVersion': '3.4',
+    'VisibleToAllUsers': True,
+    'JobFlowRole': "EMR_EC2_DefaultRole",
+    'ServiceRole': "EMR_DefaultRole",
+    'Tags': []
+}
 
 
 class TestEmrfsUtils(BaseAWSCommandParamsTest):
-    def test_emrfs_server_side_encryption(self):
-        # Use SSE shortcut
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Consistent=true,SSE=false,RetryCount=10,'
-             'RetryPeriod=3,Args=[fs.s3.serverSideEncryptionAlgorithm='
-             'AES256,fs.s3.sleepTimeSeconds=30]')
-        emf_fs_ba_config = \
-            {'Name': 'Setup EMRFS',
-             'ScriptBootstrapAction':
-                {'Path': ('s3://us-east-1.elasticmapreduce/'
-                          'bootstrap-actions/configure-hadoop'),
-                 'Args': ['-e',
-                          'fs.s3.enableServerSideEncryption=false',
-                          '-e',
-                          'fs.s3.consistent=true',
-                          '-e',
-                          'fs.s3.consistent.retryCount=10',
-                          '-e',
-                          'fs.s3.consistent.retryPeriodSeconds=3',
-                          '-e',
-                          'fs.s3.serverSideEncryptionAlgorithm=AES256',
-                          '-e',
-                          'fs.s3.sleepTimeSeconds=30']
-                 }
-             }
-        result = copy.deepcopy(DEFAULT_RESULT)
-        result['BootstrapActions'] = [emf_fs_ba_config]
-        self.assert_params_for_cmd2(cmd, result)
 
+    def test_consistent(self):
+        emrfs_option_value = 'Consistent=true'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.consistent=true'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values)
+
+    def test_consistent_w_optional_args(self):
+        emrfs_option_value = 'Consistent=true,RetryCount=5,RetryPeriod=30'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.consistent=true', 'fs.s3.consistent.retryCount=5',
+            'fs.s3.consistent.retryPeriodSeconds=30'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values)
+
+    def test_consistent_false_w_optional_args(self):
+        emrfs_option_value = 'Consistent=false,RetryCount=5'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.consistent=false', 'fs.s3.consistent.retryCount=5'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values)
+
+    def test_sse(self):
+        emrfs_option_value = 'SSE=true'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.enableServerSideEncryption=true'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values)
+
+        emrfs_option_value = 'Encryption=ServerSide'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.enableServerSideEncryption=true'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values)
+
+    def test_cse_kms(self):
+        emrfs_option_value = 'Encryption=ClientSide,ProviderType=KMS,' \
+            'KMSKeyId=my_key'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.cse.enabled=true', 'fs.s3.cse.encryptionMaterialsProvider='
+            'com.amazon.ws.emr.hadoop.fs.cse.KMSEncryptionMaterialsProvider',
+            'fs.s3.cse.kms.keyId=my_key'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values)
+
+    def test_cse_custom(self):
+        emrfs_option_value = 'Encryption=ClientSide,ProviderType=Custom,' \
+            'CustomProviderLocation=my_location,CustomProviderClass=my_class'
+        setup_emrfs_ba_key_values = [
+            'fs.s3.cse.enabled=true', 'fs.s3.cse.encryptionMaterialsProvider='
+            'my_class'
+        ]
+        self._assert_bootstrap_actions(
+            emrfs_option_value, setup_emrfs_ba_key_values, 'my_location')
+
+    def test_sse_and_consistent(self):
+        self._assert_bootstrap_actions(
+            emrfs_option_value='SSE=true,Consistent=true',
+            setup_emrfs_ba_key_values=[
+                'fs.s3.consistent=true', 'fs.s3.enableServerSideEncryption=true'
+            ])
+
+        self._assert_bootstrap_actions(
+            emrfs_option_value='Consistent=false,Encryption=serVERSIde',
+            setup_emrfs_ba_key_values=[
+                'fs.s3.consistent=false', 'fs.s3.enableServerSideEncryption=true'
+            ])
+
+    def test_cse_and_consistent(self):
+        self._assert_bootstrap_actions(
+            emrfs_option_value='Encryption=ClientSide,ProviderType=KMS,'
+            'KMSKeyId=my_key,Consistent=true',
+            setup_emrfs_ba_key_values=[
+                'fs.s3.consistent=true', 'fs.s3.cse.enabled=true',
+                'fs.s3.cse.encryptionMaterialsProvider=com.amazon.ws.emr.'
+                'hadoop.fs.cse.KMSEncryptionMaterialsProvider',
+                'fs.s3.cse.kms.keyId=my_key'
+            ])
+
+    def test_args_and_sse(self):
+        self._assert_bootstrap_actions(
+            emrfs_option_value='SSE=true,'
+            'Args=[fs.s3.serverSideEncryptionAlgorithm=AES256]',
+            setup_emrfs_ba_key_values=[
+                'fs.s3.enableServerSideEncryption=true',
+                'fs.s3.serverSideEncryptionAlgorithm=AES256'
+            ])
+
+    def test_args_and_cse(self):
+        self._assert_bootstrap_actions(
+            emrfs_option_value='Encryption=ClientSide,ProviderType=KMS,'
+            'KMSKeyId=my_key,Args=[k1=v1]',
+            setup_emrfs_ba_key_values=[
+                'fs.s3.cse.enabled=true',
+                'fs.s3.cse.encryptionMaterialsProvider=com.amazon.ws.emr.'
+                'hadoop.fs.cse.KMSEncryptionMaterialsProvider',
+                'fs.s3.cse.kms.keyId=my_key', 'k1=v1'
+            ])
+
+    def test_args_and_consistent(self):
+        self._assert_bootstrap_actions(
+            emrfs_option_value='Consistent=true,Args=[k1=v1,k2=v2]',
+            setup_emrfs_ba_key_values=[
+                'fs.s3.consistent=true', 'k1=v1', 'k2=v2'
+            ])
+
+    def test_only_args(self):
+        self._assert_bootstrap_actions(
+            emrfs_option_value='Args=[k1=v1,k2=v2]',
+            setup_emrfs_ba_key_values=['k1=v1', 'k2=v2'])
+
+    def test_using_json_file(self):
         data_path = os.path.join(
             os.path.dirname(__file__), 'input_emr_fs.json')
-        cmd = DEFAULT_CMD + '--emrfs file://' + data_path
-        self.assert_params_for_cmd2(cmd, result)
+        self._assert_bootstrap_actions(
+            emrfs_option_value='file://%s' % data_path,
+            setup_emrfs_ba_key_values=[
+                'fs.s3.consistent=true',
+                'fs.s3.consistent.retryCount=10',
+                'fs.s3.consistent.retryPeriodSeconds=3',
+                'fs.s3.enableServerSideEncryption=false',
+                'fs.s3.serverSideEncryptionAlgorithm=AES256',
+                'fs.s3.sleepTimeSeconds=30'
+            ])
 
-        # Use Encryption type
-        cmd = DEFAULT_CMD +\
-            '--emrfs Consistent=true,Encryption=ServerSide,RetryCount=10'
-        emf_fs_ba_config = \
-            {'Name': 'Setup EMRFS',
-             'ScriptBootstrapAction':
-                {'Path': ('s3://us-east-1.elasticmapreduce/'
-                          'bootstrap-actions/configure-hadoop'),
-                 'Args': ['-e',
-                          'fs.s3.enableServerSideEncryption=true',
-                          '-e',
-                          'fs.s3.consistent=true',
-                          '-e',
-                          'fs.s3.consistent.retryCount=10']
-                 }
-             }
-        result['BootstrapActions'] = [emf_fs_ba_config]
-        self.assert_params_for_cmd2(cmd, result)
+    def test_only_one_encryption_type(self):
+        self._assert_error_msg(
+            emrfs_option_value='SSE=true,Encryption=ClientSide,'
+            'ProviderType=KMS,KMSKeyId=k1',
+            exception_class_name='BothSseAndEncryptionConfiguredError',
+            error_msg_kwargs={'sse': 'True', 'encryption': 'ClientSide'}
+        )
 
-    def test_emrfs_invalid_encryption_types(self):
-        # When no encryption type is specified, only common parameters
-        # ['RetryCount', 'RetryPeriod', 'Consistent', 'Args'] are valid
-        cmd = DEFAULT_CMD +\
-            ('--emrfs RetryCount=5,RetryPeriod=3,Consistent=True,'
-             'Args=[fs.s3.sleepTimeSeconds=30],ProviderType=KMS')
-        error_msg = ('\naws: error: The parameters provided with the --emrfs '
-                     'option are invalid. \n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def test_cse_missing_provider_type(self):
+        self._assert_error_msg(
+            emrfs_option_value='Encryption=ClientSide',
+            exception_class_name='MissingParametersError',
+            error_msg_kwargs={'object_name': CSE_OPTION_NAME,
+                              'missing': 'ProviderType'}
+        )
 
-        # Cannot specify both SSE and Encryption Type
-        cmd = DEFAULT_CMD + '--emrfs SSE=True,Encryption=ServerSide'
-        error_msg = ('\naws: error: The parameters provided with the --emrfs '
-                     'option are invalid. \n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def test_cse_kms_missing_key_id(self):
+        self._assert_error_msg(
+            emrfs_option_value='Encryption=ClientSide,ProviderType=KMS',
+            exception_class_name='MissingParametersError',
+            error_msg_kwargs={'object_name': CSE_KMS_OPTION_NAME,
+                              'missing': 'KMSKeyId'}
+        )
 
-        cmd = DEFAULT_CMD + '--emrfs SSE=True,Encryption=ClientSide'
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def test_cse_custom_missing_all(self):
+        self._assert_error_msg(
+            emrfs_option_value='Encryption=ClientSide,ProviderType=Custom',
+            exception_class_name='MissingParametersError',
+            error_msg_kwargs={'object_name': CSE_CUSTOM_OPTION_NAME,
+                              'missing': 'CustomProviderLocation and '
+                              'CustomProviderClass'}
+        )
 
-        # Invalid encryption types
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=blahblah')
-        error_msg = ('\naws: error: The parameters provided with the --emrfs'
-                     ' option are invalid. Encryption type must be either '
-                     '"ServerSide" or "ClientSide".\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def test_cse_custom_missing_class(self):
+        self._assert_error_msg(
+            emrfs_option_value='Encryption=ClientSide,ProviderType=Custom,'
+            'CustomProviderLocation=my_location',
+            exception_class_name='MissingParametersError',
+            error_msg_kwargs={'object_name': CSE_CUSTOM_OPTION_NAME,
+                              'missing': 'CustomProviderClass'}
+        )
 
-    def test_emrfs_cse_unkown_prodiver(self):
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=blah')
-        error_msg = ('\naws: error: The encryption provider type "blah" is '
-                     'not supported. You must specify one of the following '
-                     'client side encryption types: KMS, RSA, or Custom.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def test_valid_encryption(self):
+        self._assert_error_msg(
+            emrfs_option_value='Encryption=ClientSide1',
+            exception_class_name='UnknownEncryptionTypeError',
+            error_msg_kwargs={'encryption': 'ClientSide1'}
+        )
 
-    def test_emrfs_cse_missing_provider(self):
-        cmd = DEFAULT_CMD + '--emrfs Encryption=ClientSide'
-        error_msg = ('\naws: error: The following required parameters are '
-                     'missing for --emrfs Encryption=ClientSide: '
-                     'ProviderType.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def test_valid_cse_provider_type(self):
+        self._assert_error_msg(
+            emrfs_option_value='Encryption=ClientSide,ProviderType=KMS1',
+            exception_class_name='UnknownCseProviderTypeError',
+            error_msg_kwargs={'provider_type': 'KMS1'}
+        )
 
-    def test_emrfs_cse_kms(self):
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=kMs,'
-             'KeyId=testKMSkey,Consistent=true,RetryCount=3,RetryPeriod=5,'
-             'Args=[fs.s3.sleepTimeSeconds=30]')
+    def test_valid_consistent_args(self):
+        self._assert_error_msg(
+            emrfs_option_value='SSE=true,RetryCount=5',
+            exception_class_name='InvalidEmrFsArgumentsError',
+            error_msg_kwargs={'invalid': 'RetryCount',
+                              'parent_object_name': CONSISTENT_OPTION_NAME}
+        )
+
+    def test_valid_cse_kms_args(self):
+        self._assert_error_msg(
+            emrfs_option_value='Consistent=true,KMSKeyId=k1',
+            exception_class_name='InvalidEmrFsArgumentsError',
+            error_msg_kwargs={'invalid': 'KMSKeyId',
+                              'parent_object_name': CSE_KMS_OPTION_NAME}
+        )
+
+    def test_valid_cse_custom_args(self):
+        self._assert_error_msg(
+            emrfs_option_value='Consistent=true,CustomProviderLocation=loc',
+            exception_class_name='InvalidEmrFsArgumentsError',
+            error_msg_kwargs={'invalid': 'CustomProviderLocation',
+                              'parent_object_name': CSE_CUSTOM_OPTION_NAME}
+        )
+
+    def _assert_error_msg(self, emrfs_option_value,
+                          exception_class_name, error_msg_kwargs):
+        self.assert_error_msg(
+            cmd="%s --emrfs %s" % (DEFAULT_CMD, emrfs_option_value),
+            exception_class_name=exception_class_name,
+            error_msg_kwargs=error_msg_kwargs)
+
+    def _assert_bootstrap_actions(self, emrfs_option_value,
+                                  setup_emrfs_ba_key_values,
+                                  provider_location=None):
+        cmd = "%s --emrfs %s" % (DEFAULT_CMD, emrfs_option_value)
         result = copy.deepcopy(DEFAULT_RESULT)
-        emf_fs_ba_config = \
-            {'Name': 'Setup EMRFS',
-             'ScriptBootstrapAction':
-                {'Path': ('s3://us-east-1.elasticmapreduce/'
-                          'bootstrap-actions/configure-hadoop'),
-                 'Args': ['-e',
-                          'fs.s3.cse.enabled=true',
-                          '-e',
-                          'fs.s3.cse.encryptionMaterialsProvider='
-                          'com.amazon.ws.emr.hadoop.fs.cse.'
-                          'KMSEncryptionMaterialsProvider',
-                          '-e',
-                          'fs.s3.cse.kms.keyId=testKMSkey',
-                          '-e',
-                          'fs.s3.consistent=true',
-                          '-e',
-                          'fs.s3.consistent.retryCount=3',
-                          '-e',
-                          'fs.s3.consistent.retryPeriodSeconds=5',
-                          '-e',
-                          'fs.s3.sleepTimeSeconds=30']
-                 }
-             }
-        result['BootstrapActions'] = [emf_fs_ba_config]
+        result['BootstrapActions'] = [self._create_s3_get_ba_config(
+            provider_location)] if provider_location is not None else []
+        result['BootstrapActions'] += [self._create_setup_emrfs_ba_config(
+            setup_emrfs_ba_key_values)]
+
         self.assert_params_for_cmd2(cmd, result)
 
-    def test_emrfs_cse_kms_parameter_validation(self):
-        # Validate KMS provider required parameters
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=kMS')
-        error_msg = ('\naws: error: The following required parameters '
-                     'are missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=KMS: KeyId.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def _create_setup_emrfs_ba_config(self, ba_arg_values):
+        ba_arg_keys = ['-e' for x in ba_arg_values]
+        ba_args = [x for pair in zip(ba_arg_keys, ba_arg_values) for x in pair]
 
-        # Validate KMS provider related parameters
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=kms,'
-             'KeyId=testkey,RSAKeyPairName=blah')
-        error_msg = ('\naws: error: The parameters provided with the --emrfs '
-                     'option are invalid. You must specify an AWS KMS KeyId '
-                     'when using EMRFS client-side encryption with '
-                     'ProviderType=KMS.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+        return {
+            'Name': 'Setup EMRFS',
+            'ScriptBootstrapAction': {
+                'Path': ('s3://us-east-1.elasticmapreduce/'
+                         'bootstrap-actions/configure-hadoop'),
+                'Args': ba_args
+            }
+        }
 
-    def test_emrfs_cse_rsa(self):
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=Rsa,'
-             'PrivateKey=s3://mytest/privatekey,PublicKey='
-             's3://mytest/publickey,RSAKeyPairName=myrsakeypair,'
-             'Consistent=true,RetryCount=3,RetryPeriod=5,'
-             'Args=[fs.s3.sleepTimeSeconds=30]')
-        result = copy.deepcopy(DEFAULT_RESULT)
-        emf_fs_ba_config = \
-            {'Name': 'Setup EMRFS',
-             'ScriptBootstrapAction':
-                {'Path': ('s3://us-east-1.elasticmapreduce/'
-                          'bootstrap-actions/configure-hadoop'),
-                 'Args': ['-e',
-                          'fs.s3.cse.enabled=true',
-                          '-e',
-                          'fs.s3.cse.encryptionMaterialsProvider='
-                          'com.amazon.ws.emr.hadoop.fs.cse.'
-                          'RSAEncryptionMaterialsProvider',
-                          '-e',
-                          'fs.s3.cse.rsa.private=s3://mytest/privatekey',
-                          '-e',
-                          'fs.s3.cse.rsa.public=s3://mytest/publickey',
-                          '-e',
-                          'fs.s3.cse.rsa.name=myrsakeypair',
-                          '-e',
-                          'fs.s3.consistent=true',
-                          '-e',
-                          'fs.s3.consistent.retryCount=3',
-                          '-e',
-                          'fs.s3.consistent.retryPeriodSeconds=5',
-                          '-e',
-                          'fs.s3.sleepTimeSeconds=30']
-                 }
-             }
-        result['BootstrapActions'] = [emf_fs_ba_config]
-        self.assert_params_for_cmd2(cmd, result)
-
-    def test_emrfs_cse_rsa_validation(self):
-        # Validate required parameters
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=rsa')
-        error_msg = ('\naws: error: The following required parameters are '
-                     'missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=RSA: PrivateKey.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-        cmd = DEFAULT_CMD + ('--emrfs Encryption=ClientSide,ProviderType=RSA,'
-                             'PrivateKey=s3://test/privatekey')
-        error_msg = ('\naws: error: The following required parameters are '
-                     'missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=RSA: PublicKey.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-        cmd = DEFAULT_CMD + ('--emrfs Encryption=ClientSide,ProviderType=RSA,'
-                             'PrivateKey=s3://test/privatekey,'
-                             'PublicKey=s3://test/publickey')
-        error_msg = ('\naws: error: The following required parameters are '
-                     'missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=RSA: RSAKeyPairName.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-        # Validate RSA provider related parameters
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=Rsa,PrivateKey='
-             's3://test/privatekey,PublicKey=s3://test/publickey,'
-             'RSAKeyPairName=rsaKey,KeyId=blah')
-        error_msg = ('\naws: error: The parameters provided with the --emrfs '
-                     'option are invalid. You must specify a PrivateKey, '
-                     'PublicKey and RSAKeyPairName when using EMRFS '
-                     'client-side encryption with ProviderType=RSA.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-    def test_emrfs_cse_custom(self):
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=cusTOM,'
-             'ProviderLocation=s3://test/provider,ProviderClassName'
-             '=customproviderclass,Consistent=true,RetryCount=3,RetryPeriod=5,'
-             'Args=[fs.s3.sleepTimeSeconds=30]')
-        result = copy.deepcopy(DEFAULT_RESULT)
-        result['BootstrapActions'] = \
-            [{'Name': 'S3 get',
-              'ScriptBootstrapAction':
-                {'Path': 'file:/usr/share/aws/emr/scripts/s3get',
-                 'Args': ['-s',
-                          's3://test/provider',
-                          '-d',
-                          '/usr/share/aws/emr/auxlib',
-                          '-f'
-                          ]
-                 }
-
-              },
-             {'Name': 'Setup EMRFS',
-              'ScriptBootstrapAction':
-                {'Path': ('s3://us-east-1.elasticmapreduce/'
-                          'bootstrap-actions/configure-hadoop'),
-                 'Args': ['-e',
-                          'fs.s3.cse.enabled=true',
-                          '-e',
-                          'fs.s3.cse.encryptionMaterialsProvider'
-                          '=customproviderclass',
-                          '-e',
-                          'fs.s3.consistent=true',
-                          '-e',
-                          'fs.s3.consistent.retryCount=3',
-                          '-e',
-                          'fs.s3.consistent.retryPeriodSeconds=5',
-                          '-e',
-                          'fs.s3.sleepTimeSeconds=30']
-                 }
-              }
-             ]
-        self.assert_params_for_cmd2(cmd, result)
-
-    def test_emrfs_cse_custom_validations(self):
-        # Validate CUSTOM provider required parameters
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=Custom')
-        error_msg = ('\naws: error: The following required parameters '
-                     'are missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=CUSTOM: ProviderLocation.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=Custom,'
-             'ProviderClassName=providerclass')
-        error_msg = ('\naws: error: The following required parameters '
-                     'are missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=CUSTOM: ProviderLocation.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=Custom,'
-             'ProviderLocation=s3://test/customprovider')
-        error_msg = ('\naws: error: The following required parameters are '
-                     'missing for --emrfs Encryption=ClientSide,'
-                     'ProviderType=CUSTOM: ProviderClassName.\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
-
-        # Validate CUSTOM provider related parameters
-        cmd = DEFAULT_CMD +\
-            ('--emrfs Encryption=ClientSide,ProviderType=cuSTOM,'
-             'ProviderLocation=s3://test/customprovider,'
-             'ProviderClassName=providerclassPrivateKey='
-             's3://test/privatekey,PublicKey=s3://test/publickey')
-        error_msg = ('\naws: error: The parameters provided with the --emrfs '
-                     'option are invalid. You must specify a ProviderLocation'
-                     ' and ProviderClassName when using EMRFS client-side '
-                     'encryption with ProviderType=CUSTOM\n')
-        result = self.run_cmd(cmd, 255)
-        self.assertEquals(error_msg, result[1])
+    def _create_s3_get_ba_config(self, provider_location):
+        return {
+            'Name': 'S3 get',
+            'ScriptBootstrapAction': {
+                'Path': 'file:/usr/share/aws/emr/scripts/s3get',
+                'Args': [
+                    '-s', provider_location,
+                    '-d', '/usr/share/aws/emr/auxlib',
+                    '-f'
+                ]
+            }
+        }

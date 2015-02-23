@@ -11,17 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import logging
 import json
+import logging
 import os
 
-from botocore import xform_name
 
+from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import exceptions
-from botocore.exceptions import WaiterError
-from awscli.clidriver import CLIOperationCaller
-
+from botocore.exceptions import WaiterError, NoCredentialsError
+from botocore import xform_name
 
 LOG = logging.getLogger(__name__)
 
@@ -156,6 +155,12 @@ def check_empty_string_list(name, value):
 
 def call(session, operation_name, parameters, region_name=None,
          endpoint_url=None, verify=None):
+    # We could get an error from get_endpoint() about not having
+    # a region configured.  Before this happens we want to check
+    # for credentials so we can give a good error message.
+    if session.get_credentials() is None:
+        raise NoCredentialsError()
+
     client = session.create_client(
         'emr', region_name=region_name, endpoint_url=endpoint_url,
         verify=verify)
@@ -238,15 +243,31 @@ def which(program):
 
 def call_and_display_response(session, operation_name, parameters,
                               parsed_globals):
-        cli_operation_caller = CLIOperationCaller(session)
-        cli_operation_caller.invoke(
-            'emr', operation_name,
-            parameters, parsed_globals)
+    cli_operation_caller = CLIOperationCaller(session)
+    cli_operation_caller.invoke(
+        'emr', operation_name,
+        parameters, parsed_globals)
 
 
 def display_response(session, operation_name, result, parsed_globals):
-        cli_operation_caller = CLIOperationCaller(session)
-        # Calling a private method. Should be changed after the functionality
-        # is moved outside CliOperationCaller.
-        cli_operation_caller._display_response(
-            operation_name, result, parsed_globals)
+    cli_operation_caller = CLIOperationCaller(session)
+    # Calling a private method. Should be changed after the functionality
+    # is moved outside CliOperationCaller.
+    cli_operation_caller._display_response(
+        operation_name, result, parsed_globals)
+
+
+def join(values, separator=',', lastSeparator='and'):
+    """
+    Helper method to print a list of values
+    [1,2,3] -> '1, 2 and 3'
+    """
+    values = [str(x) for x in values]
+    if len(values) < 1:
+        return ""
+    elif len(values) is 1:
+        return values[0]
+    else:
+        separator = '%s ' % separator
+        return ' '.join([separator.join(values[:-1]),
+                         lastSeparator, values[-1]])

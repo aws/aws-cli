@@ -43,13 +43,8 @@ EMRFS_CONSISTENT_KEY = 'fs.s3.consistent'
 EMRFS_SSE_KEY = 'fs.s3.enableServerSideEncryption'
 EMRFS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
 EMRFS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
-EMRFS_CSE_ENABLED = 'fs.s3.cse.enabled'
-EMRFS_CSE_KMS_KEY_ID = 'fs.s3.cse.kms.keyId'
-EMRFS_CSE_RSA_PRIVATE_KEY = 'fs.s3.cse.rsa.private'
-EMRFS_CSE_RSA_PUBLIC_KEY = 'fs.s3.cse.rsa.public'
-EMRFS_CSE_RSA_KEY_PAIR_NAME = 'fs.s3.cse.rsa.name'
-EMRFS_CSE_RSA_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
-                                          'RSAEncryptionMaterialsProvider')
+EMRFS_CSE_KEY = 'fs.s3.cse.enabled'
+EMRFS_CSE_KMS_KEY_ID_KEY = 'fs.s3.cse.kms.keyId'
 EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = \
     'fs.s3.cse.encryptionMaterialsProvider'
 EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
@@ -60,9 +55,7 @@ EMRFS_CUSTOM_DEST_PATH = '/usr/share/aws/emr/auxlib'
 EMRFS_SERVER_SIDE = 'SERVERSIDE'
 EMRFS_CLIENT_SIDE = 'CLIENTSIDE'
 EMRFS_KMS = 'KMS'
-EMRFS_RSA = 'RSA'
 EMRFS_CUSTOM = 'CUSTOM'
-
 
 MAX_BOOTSTRAP_ACTION_NUMBER = 16
 BOOTSTRAP_ACTION_NAME = 'Bootstrap action'

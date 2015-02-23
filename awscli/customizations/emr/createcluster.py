@@ -12,20 +12,21 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import emrfsutils
-from awscli.customizations.emr import steputils
-from awscli.customizations.emr import hbaseutils
-from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import exceptions
-from awscli.customizations.emr import applicationutils
-from awscli.customizations.emr import instancegroupsutils
-from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 import re
+
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import applicationutils
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import constants
+from awscli.customizations.emr import emrfsutils
+from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import hbaseutils
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr import steputils
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
+from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
 
 
 class CreateCluster(BasicCommand):
@@ -113,18 +114,18 @@ class CreateCluster(BasicCommand):
 
         if parsed_args.use_default_roles is True and \
                 parsed_args.service_role is not None:
-                raise exceptions.MutualExclusiveOptionError(
-                    option1="--use-default-roles",
-                    option2="--service-role",
-                    message=service_role_validation_message)
+            raise exceptions.MutualExclusiveOptionError(
+                option1="--use-default-roles",
+                option2="--service-role",
+                message=service_role_validation_message)
 
         if parsed_args.use_default_roles is True and \
                 parsed_args.ec2_attributes is not None and \
                 'InstanceProfile' in parsed_args.ec2_attributes:
-                raise exceptions.MutualExclusiveOptionError(
-                    option1="--use-default-roles",
-                    option2="--ec2-attributes InstanceProfile",
-                    message=service_role_validation_message)
+            raise exceptions.MutualExclusiveOptionError(
+                option1="--use-default-roles",
+                option2="--ec2-attributes InstanceProfile",
+                message=service_role_validation_message)
 
         instances_config = {}
         instances_config['InstanceGroups'] = \
@@ -235,7 +236,7 @@ class CreateCluster(BasicCommand):
                 parsed_boostrap_actions=parsed_args.bootstrap_actions)
 
         if parsed_args.emrfs is not None:
-            emr_fs_ba_config_list = emrfsutils.build_emrfs_args(
+            emr_fs_ba_config_list = emrfsutils.build_bootstrap_action_configs(
                 parsed_globals, parsed_args.emrfs)
 
             self._update_cluster_dict(
@@ -265,7 +266,7 @@ class CreateCluster(BasicCommand):
     def _construct_result(self, run_job_flow_result):
         jobFlowId = None
         if run_job_flow_result is not None:
-                jobFlowId = run_job_flow_result.get('JobFlowId')
+            jobFlowId = run_job_flow_result.get('JobFlowId')
 
         if jobFlowId is not None:
             return {'ClusterId': jobFlowId}

@@ -11,211 +11,194 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import copy
+
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
 
 
-def build_emrfs_args(parsed_globals, parsed_emrfs):
-    """
-    Parse parameters of create-cluster --emrfs option
-    and build bootstrap_actions to configurate EMRFS
-    """
+CONSISTENT_OPTIONAL_KEYS = ['RetryCount', 'RetryPeriod']
+CSE_KMS_REQUIRED_KEYS = ['KMSKeyId']
+CSE_CUSTOM_REQUIRED_KEYS = ['CustomProviderLocation', 'CustomProviderClass']
+CSE_PROVIDER_TYPES = [constants.EMRFS_KMS, constants.EMRFS_CUSTOM]
+ENCRYPTION_TYPES = [constants.EMRFS_CLIENT_SIDE, constants.EMRFS_SERVER_SIDE]
+
+CONSISTENT_OPTION_NAME = "--emrfs Consistent=true/false"
+CSE_OPTION_NAME = '--emrfs Encryption=ClientSide'
+CSE_KMS_OPTION_NAME = '--emrfs Encryption=ClientSide,ProviderType=KMS'
+CSE_CUSTOM_OPTION_NAME = '--emrfs Encryption=ClientSide,ProviderType=Custom'
+
+
+def build_bootstrap_action_configs(parsed_globals, emrfs_args):
     bootstrap_actions = []
-    args = []
-    common_keys = ['RetryCount', 'RetryPeriod', 'Consistent', 'Args']
-    cse_common_keys = common_keys + ['Encryption', 'ProviderType']
 
-    if parsed_emrfs.get('SSE') is None and \
-            parsed_emrfs.get('Encryption') is None:
-        _validate_expected_keys(
-            expected_keys=common_keys,
-            actual_keys=parsed_emrfs.keys(),
-            whitelisted_keys=[],
-            exception=exceptions.InvalidEMRFSArgumentsError(
-                valid_options=''))
-    elif parsed_emrfs.get('SSE') is not None:
-        validate = _validate_expected_keys(
-            expected_keys=['SSE'],
-            actual_keys=parsed_emrfs.keys(),
-            whitelisted_keys=common_keys,
-            exception=exceptions.InvalidEMRFSArgumentsError(
-                valid_options=''))
-        args.append(constants.EMRFS_BA_ARG_KEY)
-        args.append(
-            constants.EMRFS_SSE_KEY + '=' +
-            str(parsed_emrfs.get('SSE')).lower())
-    elif parsed_emrfs.get('Encryption') is not None:
-        encryption_type = parsed_emrfs.get('Encryption').upper()
+    _verify_emrfs_args(emrfs_args)
 
-        if encryption_type == constants.EMRFS_SERVER_SIDE:
-            _validate_expected_keys(
-                expected_keys=['Encryption'],
-                actual_keys=parsed_emrfs.keys(),
-                whitelisted_keys=common_keys,
-                exception=exceptions.InvalidEMRFSArgumentsError(
-                    valid_options=(
-                        'You can specify the following parameters when'
-                        ' using server-side encryption: RetryCount, '
-                        'RetryPeriod, Consistent, and Args.')))
-            args.append(constants.EMRFS_BA_ARG_KEY)
-            args.append(constants.EMRFS_SSE_KEY + '=true')
-        elif encryption_type == constants.EMRFS_CLIENT_SIDE:
-            args.append(constants.EMRFS_BA_ARG_KEY)
-            args.append(constants.EMRFS_CSE_ENABLED + '=true')
+    if _need_to_configure_cse(emrfs_args, 'CUSTOM'):
+        # Download custom encryption provider from Amazon S3 to EMR Cluster
+        bootstrap_actions.append(
+            emrutils.build_bootstrap_action(
+                path=constants.EMRFS_CSE_CUSTOM_S3_GET_BA_PATH,
+                name=constants.S3_GET_BA_NAME,
+                args=[constants.S3_GET_BA_SRC,
+                      emrfs_args.get('CustomProviderLocation'),
+                      constants.S3_GET_BA_DEST,
+                      constants.EMRFS_CUSTOM_DEST_PATH,
+                      constants.S3_GET_BA_FORCE]))
 
-            provider_type = parsed_emrfs.get('ProviderType')
-            if provider_type is None:
-                raise exceptions.MissingParametersError(
-                    object_name='--emrfs Encryption=ClientSide',
-                    missing='ProviderType')
-
-            elif provider_type.upper() == 'KMS':
-                _validate_required_keys(
-                    required_keys=['KeyId'],
-                    actual_keys=parsed_emrfs.keys(),
-                    structure='--emrfs Encryption=ClientSide,ProviderType=KMS')
-                _validate_expected_keys(
-                    expected_keys=['KeyId'],
-                    actual_keys=parsed_emrfs.keys(),
-                    whitelisted_keys=cse_common_keys,
-                    exception=exceptions.InvalidEMRFSArgumentsError(
-                        valid_options=(
-                            'You must specify an AWS KMS KeyId when '
-                            'using EMRFS client-side encryption with '
-                            'ProviderType=KMS.')))
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(
-                    constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY +
-                    '=' + constants.EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME)
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(constants.EMRFS_CSE_KMS_KEY_ID + '=' +
-                            str(parsed_emrfs.get('KeyId')))
-
-            elif provider_type.upper() == 'RSA':
-                _validate_required_keys(
-                    required_keys=['PrivateKey', 'PublicKey',
-                                   'RSAKeyPairName'],
-                    actual_keys=parsed_emrfs.keys(),
-                    structure='--emrfs Encryption=ClientSide,ProviderType=RSA')
-                _validate_expected_keys(
-                    expected_keys=['PrivateKey', 'PublicKey',
-                                   'RSAKeyPairName'],
-                    actual_keys=parsed_emrfs.keys(),
-                    whitelisted_keys=cse_common_keys,
-                    exception=exceptions.InvalidEMRFSArgumentsError(
-                        valid_options=(
-                            'You must specify a PrivateKey, PublicKey and '
-                            'RSAKeyPairName when using EMRFS client-side '
-                            'encryption with ProviderType=RSA.')))
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(
-                    constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY +
-                    '=' + constants.EMRFS_CSE_RSA_PROVIDER_FULL_CLASS_NAME)
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(constants.EMRFS_CSE_RSA_PRIVATE_KEY + '=' +
-                            str(parsed_emrfs.get('PrivateKey')))
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(constants.EMRFS_CSE_RSA_PUBLIC_KEY + '=' +
-                            str(parsed_emrfs.get('PublicKey')))
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(constants.EMRFS_CSE_RSA_KEY_PAIR_NAME + '=' +
-                            str(parsed_emrfs.get('RSAKeyPairName')))
-
-            elif provider_type.upper() == 'CUSTOM':
-                _validate_required_keys(
-                    required_keys=['ProviderLocation', 'ProviderClassName'],
-                    actual_keys=parsed_emrfs.keys(),
-                    structure=('--emrfs Encryption=ClientSide,'
-                               'ProviderType=CUSTOM'))
-                _validate_expected_keys(
-                    expected_keys=['ProviderLocation', 'ProviderClassName'],
-                    actual_keys=parsed_emrfs.keys(),
-                    whitelisted_keys=cse_common_keys,
-                    exception=exceptions.InvalidEMRFSArgumentsError(
-                        valid_options=(
-                            'You must specify a ProviderLocation and '
-                            'ProviderClassName when using EMRFS client-side '
-                            'encryption with ProviderType=CUSTOM')))
-                # Download custom encryption provider
-                # from Amazon S3 to EMR Cluster
-                bootstrap_actions.append(
-                    emrutils.build_bootstrap_action(
-                        path=constants.EMRFS_CSE_CUSTOM_S3_GET_BA_PATH,
-                        name=constants.S3_GET_BA_NAME,
-                        args=[constants.S3_GET_BA_SRC,
-                              parsed_emrfs.get('ProviderLocation'),
-                              constants.S3_GET_BA_DEST,
-                              constants.EMRFS_CUSTOM_DEST_PATH,
-                              constants.S3_GET_BA_FORCE]))
-
-                args.append(constants.EMRFS_BA_ARG_KEY)
-                args.append(
-                    constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY +
-                    '=' + str(parsed_emrfs.get('ProviderClassName')))
-
-            else:
-                raise exceptions.UnknownCSEProviderTypeError(
-                    provider_type=provider_type)
-        else:
-            raise exceptions.InvalidEMRFSArgumentsError(
-                valid_options=('Encryption type must be either '
-                               '"ServerSide" or "ClientSide".'))
-
-    # Common configuration options
-    if parsed_emrfs.get('Consistent') is not None:
-        args.append(constants.EMRFS_BA_ARG_KEY)
-        args.append(
-            constants.EMRFS_CONSISTENT_KEY +
-            '=' + str(parsed_emrfs.get('Consistent')).lower())
-
-    if parsed_emrfs.get('RetryCount') is not None:
-        args.append(constants.EMRFS_BA_ARG_KEY)
-        args.append(
-            constants.EMRFS_RETRY_COUNT_KEY + '=' +
-            str(parsed_emrfs.get('RetryCount')))
-
-    if parsed_emrfs.get('RetryPeriod') is not None:
-        args.append(constants.EMRFS_BA_ARG_KEY)
-        args.append(
-            constants.EMRFS_RETRY_PERIOD_KEY + '=' +
-            str(parsed_emrfs.get('RetryPeriod')))
-
-    if parsed_emrfs.get('Args') is not None:
-        for arg in parsed_emrfs.get('Args'):
-            args.append(constants.EMRFS_BA_ARG_KEY)
-            args.append(arg)
-
+    emrfs_setup_ba_args = _build_ba_args_to_setup_emrfs(emrfs_args)
     bootstrap_actions.append(
         emrutils.build_bootstrap_action(
             path=emrutils.build_s3_link(
                 relative_path=constants.CONFIG_HADOOP_PATH,
                 region=parsed_globals.region),
             name=constants.EMRFS_BA_NAME,
-            args=args))
+            args=emrfs_setup_ba_args))
 
     return bootstrap_actions
 
 
-def _validate_expected_keys(
-        expected_keys, actual_keys,
-        whitelisted_keys, exception):
-    """
-    Utility method to validate if actual_keys is a subset of
-    the union of expected_keys and whitelisted_keys
-    """
-    if not set(actual_keys).issubset(
-            set(expected_keys + whitelisted_keys)):
-        raise exception
-    else:
-        return True
+def _verify_emrfs_args(emrfs_args):
+    # Encryption should have a valid value
+    if 'Encryption' in emrfs_args \
+            and emrfs_args['Encryption'].upper() not in ENCRYPTION_TYPES:
+        raise exceptions.UnknownEncryptionTypeError(
+            encryption=emrfs_args['Encryption'])
 
+    # Only one of SSE and Encryption should be configured
+    if 'SSE' in emrfs_args and 'Encryption' in emrfs_args:
+        raise exceptions.BothSseAndEncryptionConfiguredError(
+            sse=emrfs_args['SSE'], encryption=emrfs_args['Encryption'])
 
-def _validate_required_keys(required_keys, actual_keys, structure='--emrfs'):
-    for required_key in required_keys:
-        if required_key not in actual_keys:
+    # CSE should be configured correctly
+    # ProviderType should be present and should have valid value
+    # Given the type, the required parameters should be present
+    if 'Encryption' in emrfs_args \
+            and emrfs_args['Encryption'].upper() == constants.EMRFS_CLIENT_SIDE:
+        if 'ProviderType' not in emrfs_args:
             raise exceptions.MissingParametersError(
-                object_name=structure,
-                missing=required_key)
+                object_name=CSE_OPTION_NAME, missing='ProviderType')
+        elif emrfs_args['ProviderType'].upper() not in CSE_PROVIDER_TYPES:
+            raise exceptions.UnknownCseProviderTypeError(
+                provider_type=emrfs_args['ProviderType'])
+        elif emrfs_args['ProviderType'].upper() == 'KMS':
+            _verify_required_args(emrfs_args.keys(), CSE_KMS_REQUIRED_KEYS,
+                                  CSE_KMS_OPTION_NAME)
+        elif emrfs_args['ProviderType'].upper() == 'CUSTOM':
+            _verify_required_args(emrfs_args.keys(), CSE_CUSTOM_REQUIRED_KEYS,
+                                  CSE_CUSTOM_OPTION_NAME)
 
-    return True
+    # No child attributes should be present if the parent feature is not
+    # configured
+    if 'Consistent' not in emrfs_args:
+        _verify_child_args(emrfs_args.keys(), CONSISTENT_OPTIONAL_KEYS,
+                           CONSISTENT_OPTION_NAME)
+    if not _need_to_configure_cse(emrfs_args, 'KMS'):
+        _verify_child_args(emrfs_args.keys(), CSE_KMS_REQUIRED_KEYS,
+                           CSE_KMS_OPTION_NAME)
+    if not _need_to_configure_cse(emrfs_args, 'CUSTOM'):
+        _verify_child_args(emrfs_args.keys(), CSE_CUSTOM_REQUIRED_KEYS,
+                           CSE_CUSTOM_OPTION_NAME)
+
+
+def _verify_required_args(actual_keys, required_keys, object_name):
+    if any(x not in actual_keys for x in required_keys):
+        missing_keys = set(required_keys).difference(set(actual_keys))
+        raise exceptions.MissingParametersError(
+            object_name=object_name, missing=emrutils.join(missing_keys))
+
+
+def _verify_child_args(actual_keys, child_keys, parent_object_name):
+    if any(x in actual_keys for x in child_keys):
+        invalid_keys = set(child_keys).intersection(set(actual_keys))
+        raise exceptions.InvalidEmrFsArgumentsError(
+            invalid=emrutils.join(invalid_keys),
+            parent_object_name=parent_object_name)
+
+
+def _build_ba_args_to_setup_emrfs(emrfs_args):
+    """
+    Assumption: emrfs_args is valid i.e. all required attributes are present
+    """
+    ba_args = []
+
+    if _need_to_configure_consistent_view(emrfs_args):
+        _update_ba_args_for_consistent_view(ba_args, emrfs_args)
+
+    if _need_to_configure_sse(emrfs_args):
+        _update_ba_args_for_sse(ba_args, emrfs_args)
+
+    if _need_to_configure_cse(emrfs_args, 'KMS'):
+        _update_ba_args_for_cse(ba_args, emrfs_args, 'KMS')
+
+    if _need_to_configure_cse(emrfs_args, 'CUSTOM'):
+        _update_ba_args_for_cse(ba_args, emrfs_args, 'CUSTOM')
+
+    if 'Args' in emrfs_args:
+        for arg_value in emrfs_args.get('Args'):
+            _update_ba_args_main(ba_args, arg_value)
+
+    return ba_args
+
+
+def _need_to_configure_consistent_view(emrfs_args):
+    return 'Consistent' in emrfs_args
+
+
+def _need_to_configure_sse(emrfs_args):
+    return 'SSE' in emrfs_args \
+        or ('Encryption' in emrfs_args
+            and emrfs_args['Encryption'].upper() == constants.EMRFS_SERVER_SIDE)
+
+
+def _need_to_configure_cse(emrfs_args, cse_type):
+    return ('Encryption' in emrfs_args
+            and emrfs_args['Encryption'].upper() == constants.EMRFS_CLIENT_SIDE
+            and 'ProviderType' in emrfs_args
+            and emrfs_args['ProviderType'].upper() == cse_type)
+
+
+def _update_ba_args_for_consistent_view(ba_args, emrfs_args):
+    _update_ba_args(ba_args,
+                    constants.EMRFS_CONSISTENT_KEY,
+                    str(emrfs_args['Consistent']).lower())
+
+    if 'RetryCount' in emrfs_args:
+        _update_ba_args(ba_args, constants.EMRFS_RETRY_COUNT_KEY,
+                        str(emrfs_args['RetryCount']))
+
+    if 'RetryPeriod' in emrfs_args:
+        _update_ba_args(ba_args, constants.EMRFS_RETRY_PERIOD_KEY,
+                        str(emrfs_args['RetryPeriod']))
+
+
+def _update_ba_args_for_sse(ba_args, emrfs_args):
+    sse_value = emrfs_args['SSE'] if 'SSE' in emrfs_args else True
+    # if 'SSE' is not in emrfs_args then 'Encryption' must be 'ServerSide'
+
+    _update_ba_args(
+        ba_args, constants.EMRFS_SSE_KEY, str(sse_value).lower())
+
+
+def _update_ba_args_for_cse(ba_args, emrfs_args, cse_type):
+    _update_ba_args(ba_args, constants.EMRFS_CSE_KEY, 'true')
+    if cse_type == 'KMS':
+        _update_ba_args(ba_args,
+                        constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY,
+                        constants.EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME)
+        _update_ba_args(
+            ba_args, constants.EMRFS_CSE_KMS_KEY_ID_KEY, emrfs_args['KMSKeyId'])
+    elif cse_type == 'CUSTOM':
+        _update_ba_args(ba_args,
+                        constants.EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY,
+                        emrfs_args['CustomProviderClass'])
+
+
+def _update_ba_args_main(ba_args, key_value):
+    ba_args.append(constants.EMRFS_BA_ARG_KEY)
+    ba_args.append(key_value)
+
+
+def _update_ba_args(ba_args, key, value):
+    _update_ba_args_main(ba_args, "%s=%s" % (key, value))

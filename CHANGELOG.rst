@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.12
+======
 
 * feature:``aws datapipeline``: Add support for tagging.
 * feature:``aws route53``: Add support for listing hosted zones by name and

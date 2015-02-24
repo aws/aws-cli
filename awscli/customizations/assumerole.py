@@ -11,6 +11,7 @@ from dateutil.tz import tzlocal
 from botocore import credentials
 from botocore.compat import total_seconds
 from botocore.exceptions import PartialCredentialsError
+from botocore.utils import InstanceMetadataFetcher
 
 
 LOG = logging.getLogger(__name__)
@@ -287,11 +288,20 @@ class AssumeRoleProvider(credentials.CredentialProvider):
 
     def _create_client_from_config(self, config):
         source_cred_values = config['source_cred_values']
-        client = self._client_creator(
-            'sts', aws_access_key_id=source_cred_values['aws_access_key_id'],
-            aws_secret_access_key=source_cred_values['aws_secret_access_key'],
-            aws_session_token=source_cred_values.get('aws_session_token'),
-        )
+        if 'aws_access_key_id' in source_cred_values:
+            client = self._client_creator(
+                'sts', aws_access_key_id=source_cred_values['aws_access_key_id'],
+                aws_secret_access_key=source_cred_values['aws_secret_access_key'],
+                aws_session_token=source_cred_values.get('aws_session_token'),
+                )
+        else:
+            fetcher=InstanceMetadataFetcher()
+            metadata = fetcher.retrieve_iam_role_credentials()
+            client = self._client_creator(
+                'sts', aws_access_key_id=metadata['access_key'],
+                aws_secret_access_key=metadata['secret_key'],
+                aws_session_token=metadata['token'],
+                )
         return client
 
     def _retrieve_temp_credentials(self):

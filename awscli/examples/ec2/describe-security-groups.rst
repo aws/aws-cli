@@ -1,4 +1,4 @@
-**To display information about a security group for EC2-Classic**
+**To describe a security group for EC2-Classic**
 
 This example displays information about the security group named ``MySecurityGroup``.
 
@@ -33,7 +33,7 @@ Output::
       ]
   }
 
-**To display information about a security group for EC2-VPC**
+**To describe a security group for EC2-VPC**
 
 This example displays information about the security group with the ID sg-903004f8. Note that you can't reference a security group for EC2-VPC by name.
 
@@ -78,6 +78,49 @@ Output::
           }
       ]
   }
+
+**To describe security groups that have a specific rule**
+
+(EC2-VPC only) This example uses filters to describe security groups that have a rule that allows SSH traffic (port 22) from all IP addresses (``0.0.0.0/0``). The output is filtered to display only the names of the security groups.
+
+Command::
+
+  aws ec2 describe-security-groups --filters Name=ip-permission.from-port,Values=22 Name=ip-permission.to-port,Values=22 Name=ip-permission.cidr,Values='0.0.0.0/0' --query 'SecurityGroups[*].{Name:GroupName}'
+
+Output::
+
+   [
+     {
+        "Name": "default"
+     }, 
+     {
+        "Name": "Test SG"
+     }, 
+     {
+        "Name": "SSH-Access-Group"
+     }
+   ]
+
+**To describe tagged security groups**
+
+This example describes all security groups that include ``test`` in the security group name, and that have the tag ``Test=To-delete``. The output is filtered to display only the names and IDs of the security groups.
+
+Command::
+
+  aws ec2 describe-security-groups --filters Name=group-name,Values='*test*' Name=tag-key,Values=Test Name=tag-value,Values=To-delete --query 'SecurityGroups[*].{Name:GroupName,ID:GroupId}'
+  
+Output::
+
+   [
+     {
+        "Name": "testfornewinstance", 
+        "ID": "sg-33bb22aa"
+     }, 
+     {
+        "Name": "newgrouptest", 
+        "ID": "sg-1a2b3c4d"
+     }
+   ]
 
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 

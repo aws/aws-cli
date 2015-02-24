@@ -766,6 +766,15 @@ class TestServiceCommand(unittest.TestCase):
                          [self.cmd, child_cmd])
         self.assertEqual(child_cmd.lineage_names, ['foo', 'list-objects'])
 
+    def test_help_event_class(self):
+        # Ensures it sends the right event name to the help command
+        help_command = self.cmd.create_help_command()
+        self.assertEqual(help_command.event_class, 'foo')
+        child_cmd = help_command.command_table['list-objects']
+        # Check the ``ServiceOperation`` class help command as well
+        child_help_cmd = child_cmd.create_help_command()
+        self.assertEqual(child_help_cmd.event_class, 'foo.list-objects')
+
 
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):

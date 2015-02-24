@@ -137,12 +137,14 @@ class TestWaitHelpOutput(BaseAWSHelpOutputTest):
 
     def test_wait_help_command(self):
         self.driver.main(['ec2', 'wait', 'help'])
+        self.assert_contains('.. _cli:aws ec2 wait:')
         self.assert_contains('Wait until a particular condition is satisfied.')
         self.assert_contains('* instance-running')
         self.assert_contains('* vpc-available')
 
     def test_wait_state_help_command(self):
         self.driver.main(['ec2', 'wait', 'instance-running', 'help'])
+        self.assert_contains('.. _cli:aws ec2 wait instance-running:')
         self.assert_contains('``describe-instances``')
         self.assert_contains('[--filters <value>]')
         self.assert_contains('``--filters`` (list)')

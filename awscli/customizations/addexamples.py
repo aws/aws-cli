@@ -39,9 +39,8 @@ def add_examples(help_command, **kwargs):
             os.path.dirname(
                 os.path.abspath(__file__))), 'examples')
     doc_path = os.path.join(doc_path,
-                            help_command.event_class)
-    file_name = '%s.rst' % (help_command.name)
-    doc_path = os.path.join(doc_path, file_name)
+                            help_command.event_class.replace('.', os.path.sep))
+    doc_path = doc_path + '.rst'
     LOG.debug("Looking for example file at: %s", doc_path)
     if os.path.isfile(doc_path):
         help_command.doc.style.h2('Examples')

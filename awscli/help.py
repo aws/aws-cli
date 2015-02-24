@@ -253,7 +253,7 @@ class ProviderHelpCommand(HelpCommand):
 
     @property
     def event_class(self):
-        return 'Provider'
+        return 'aws'
 
     @property
     def name(self):

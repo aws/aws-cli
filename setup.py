@@ -6,11 +6,11 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore>=0.92.0,<0.93.0',
-            'bcdoc>=0.12.0,<0.13.0',
-            'colorama==0.2.5',
+requires = ['botocore>=0.93.0,<0.94.0',
+            'bcdoc>=0.13.0,<0.14.0',
+            'colorama>=0.2.5,<=0.3.3',
             'docutils>=0.10',
-            'rsa==3.1.2']
+            'rsa>=3.1.2,<=3.1.4']
 
 if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it

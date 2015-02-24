@@ -24,6 +24,10 @@ S3_POLICY_TEMPLATE = 'policy/S3/AWSCloudTrail-S3BucketPolicy-2014-12-17.json'
 SNS_POLICY_TEMPLATE = 'policy/SNS/AWSCloudTrail-SnsTopicPolicy-2014-12-17.json'
 
 
+class CloudTrailError(Exception):
+    pass
+
+
 def initialize(cli):
     """
     The entry point for CloudTrail high level commands.
@@ -191,13 +195,11 @@ class CloudTrailSubscribe(BasicCommand):
             data = self.s3.GetObject(
                 bucket='awscloudtrail-policy-' + self.region_name,
                 key=key_name)
-            policy = data['Body'].read().decode('utf-8')
-        except Exception:
-            LOG.error('Unable to get regional policy template for'
-                      ' region %s: %s', self.region_name, key_name)
-            raise
-
-        return policy
+            return data['Body'].read().decode('utf-8')
+        except Exception as e:
+            raise CloudTrailError(
+                'Unable to get regional policy template for'
+                ' region %s: %s. Error: %s', self.region_name, key_name, e)
 
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """

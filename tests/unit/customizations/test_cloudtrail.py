@@ -16,8 +16,8 @@ import json
 import os
 from awscli.compat import six
 
-from awscli.customizations import cloudtrail
-from awscli.customizations.cloudtrail import CloudTrailSubscribe
+from awscli.customizations.cloudtrail import CloudTrailError, \
+                                             CloudTrailSubscribe
 from awscli.customizations.service import Service
 from mock import ANY, Mock, patch
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -159,24 +159,15 @@ class TestCloudTrail(unittest.TestCase):
         s3.PutBucketPolicy = orig
 
     def test_s3_get_policy_fail(self):
-        self.subscribe.s3.GetObject = Mock(side_effect=Exception('Error!'))
+        self.subscribe.s3.GetObject = Mock(side_effect=Exception('Foo!'))
 
-        with self.assertRaises(Exception):
+        with self.assertRaises(CloudTrailError) as cm:
             self.subscribe.setup_new_bucket('test', 'logs')
 
-    def test_s3_get_policy_logs_messages(self):
-        cloudtrail.LOG = Mock()
-        self.subscribe.s3.GetObject = Mock(side_effect=Exception('Error!'))
-
-        try:
-            self.subscribe.setup_new_bucket('test', 'logs')
-        except:
-            pass
-
-        self.assertIn(
-            'Unable to get regional policy template for region',
-            cloudtrail.LOG.error.call_args[0][0])
-        self.assertEqual('us-east-1', cloudtrail.LOG.error.call_args[0][1])
+        # Exception should contain its custom message, the region
+        # where there is an issue, and the original exception message.
+        self.assertIn('us-east-1', str(cm.exception))
+        self.assertIn('Foo!', str(cm.exception))
 
     def test_get_policy_read_timeout(self):
         response = {
@@ -185,7 +176,7 @@ class TestCloudTrail(unittest.TestCase):
         response['Body'].read.side_effect = Exception('Error!')
         self.subscribe.s3.GetObject.return_value = response
 
-        with self.assertRaises(Exception):
+        with self.assertRaises(CloudTrailError):
             self.subscribe.setup_new_bucket('test', 'logs')
 
     def test_sns_get_policy_fail(self):

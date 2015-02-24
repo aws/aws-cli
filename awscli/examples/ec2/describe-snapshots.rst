@@ -47,3 +47,20 @@ Output::
            }
        ]
    }
+
+**To describe tagged snapshots and filter the output**
+
+This example command describes all snapshots that have the tag ``Group=Prod``. The output is filtered to display only the snapshot IDs and the time the snapshot was started.
+
+Command::
+
+  aws ec2 describe-snapshots --filters Name=tag-key,Values="Group" Name=tag-value,Values="Prod" --query 'Snapshots[*].{ID:SnapshotId,Time:StartTime}'
+
+Output::
+
+   [
+     {
+        "ID": "snap-12345abc", 
+        "Time": "2014-08-04T12:48:18.000Z"
+     }
+   ]

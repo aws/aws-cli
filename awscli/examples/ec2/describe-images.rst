@@ -47,3 +47,22 @@ This example describes Windows AMIs provided by Amazon that are backed by Amazon
 Command::
 
   aws ec2 describe-images --owners amazon --filters "Name=platform,Values=windows" "Name=root-device-type,Values=ebs"
+
+**To describe tagged AMIs**
+
+This example describes all AMIs that have the tag ``Custom=Linux1`` or ``Custom=Ubuntu1``. The output is filtered to display only the AMI IDs.
+
+Command::
+
+  aws ec2 describe-images --filters Name=tag-key,Values=Custom Name=tag-value,Values=Linux1,Ubuntu1 --query 'Images[*].{ID:ImageId}'
+
+Output::
+
+   [
+     {
+        "ID": "ami-1a2b3c4d"
+     }, 
+     {
+        "ID": "ami-ab12cd34"
+     }
+   ]

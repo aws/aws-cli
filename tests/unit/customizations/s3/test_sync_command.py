@@ -49,3 +49,8 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
             self.operations_called[1][1]['website_redirect_location'],
             'http://someserver'
         )
+
+    def test_no_recursive_option(self):
+        cmdline = '. s3://mybucket --recursive'
+        # Return code will be 2 for invalid parameter ``--recursive``
+        self.run_cmd(cmdline, expected_rc=2)

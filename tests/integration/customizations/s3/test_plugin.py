@@ -1636,5 +1636,25 @@ class TestNoSignRequests(BaseS3CLICommand):
         self.assert_no_errors(p)
 
 
+class TestHonorsEndpointUrl(BaseS3CLICommand):
+    def test_verify_endpoint_url_is_used(self):
+        # We're going to verify this indirectly by looking at the
+        # debug logs.  The endpoint url we specify should be in the
+        # debug logs, and the endpoint url that botocore would have
+        # used if we didn't provide the endpoint-url should not
+        # be in the debug logs.  The other alternative is to actually
+        # watch what connections are made in the process, which is not
+        # easy.
+        p = aws('s3 ls s3://dnscompat/ '
+                '--endpoint-url http://localhost:51515 '
+                '--debug')
+        debug_logs = p.stderr
+        original_hostname = 'dnscompat.s3.amazonaws.com'
+        expected = 'localhost'
+        self.assertNotIn(original_hostname, debug_logs,
+                         '--endpoint-url is being ignored in s3 commands.')
+        self.assertIn(expected, debug_logs)
+
+
 if __name__ == "__main__":
     unittest.main()

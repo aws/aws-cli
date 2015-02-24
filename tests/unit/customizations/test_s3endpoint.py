@@ -25,7 +25,7 @@ class TestS3EndpointURL(unittest.TestCase):
         args.command = 's3'
         event_handler = mock.Mock()
         on_top_level_args_parsed(args, event_handler)
-        event_handler.unregister.assert_called_with('before-auth.s3', fix_s3_host)
+        event_handler.unregister.assert_called_with('before-sign.s3', fix_s3_host)
 
     def test_unregister_not_called_for_no_endpoint(self):
         args = mock.Mock()

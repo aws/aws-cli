@@ -85,7 +85,7 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
         except StopIteration:
             raise ValueError(value)
         chunks.append(current.replace(replace_char, ''))
-        if end_char in current:
+        if end_char == current[-1]:
             break
     return ','.join(chunks)
 

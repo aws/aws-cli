@@ -16,9 +16,10 @@ import json
 import os
 from awscli.compat import six
 
-from awscli.customizations.cloudtrail import CloudTrailSubscribe
+from awscli.customizations.cloudtrail import CloudTrailError, \
+                                             CloudTrailSubscribe
 from awscli.customizations.service import Service
-from mock import Mock, patch
+from mock import ANY, Mock, patch
 from awscli.testutils import BaseAWSCommandParamsTest
 from tests.unit.test_clidriver import FakeSession
 from awscli.testutils import unittest
@@ -28,6 +29,7 @@ class TestCloudTrail(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession({'config_file': 'myconfigfile'})
         self.subscribe = CloudTrailSubscribe(self.session)
+        self.subscribe.region_name = 'us-east-1'
 
         self.subscribe.iam = Mock()
         self.subscribe.iam.GetUser = Mock(
@@ -93,6 +95,10 @@ class TestCloudTrail(unittest.TestCase):
         ref_args['endpoint_url'] = parsed_globals.endpoint_url
         self.assertEqual(endpoint_call_args[3][1], ref_args)
 
+        # Ensure a region name was set on the command class
+        self.assertEqual(self.subscribe.region_name,
+                         fake_service.get_endpoint.return_value.region_name)
+
     def test_s3_create(self):
         iam = self.subscribe.iam
         s3 = self.subscribe.s3
@@ -111,11 +117,19 @@ class TestCloudTrail(unittest.TestCase):
         args, kwargs = s3.CreateBucket.call_args
         self.assertNotIn('create_bucket_configuration', kwargs)
 
+    def test_s3_uses_regionalized_policy(self):
+        s3 = self.subscribe.s3
+
+        self.subscribe.setup_new_bucket('test', 'logs')
+
+        s3.GetObject.assert_called_with(
+            bucket='awscloudtrail-policy-us-east-1', key=ANY)
+
     def test_s3_create_non_us_east_1(self):
         # Because this is outside of us-east-1, it should create
         # a bucket configuration with a location constraint.
         s3 = self.subscribe.s3
-        s3.endpoint.region_name = 'us-west-2'
+        self.subscribe.region_name = 'us-west-2'
 
         self.subscribe.setup_new_bucket('test', 'logs')
 
@@ -144,14 +158,32 @@ class TestCloudTrail(unittest.TestCase):
 
         s3.PutBucketPolicy = orig
 
-    def test_get_policy_fail(self):
-        orig = self.subscribe.s3.GetObject
+    def test_s3_get_policy_fail(self):
+        self.subscribe.s3.GetObject = Mock(side_effect=Exception('Foo!'))
+
+        with self.assertRaises(CloudTrailError) as cm:
+            self.subscribe.setup_new_bucket('test', 'logs')
+
+        # Exception should contain its custom message, the region
+        # where there is an issue, and the original exception message.
+        self.assertIn('us-east-1', str(cm.exception))
+        self.assertIn('Foo!', str(cm.exception))
+
+    def test_get_policy_read_timeout(self):
+        response = {
+            'Body': Mock()
+        }
+        response['Body'].read.side_effect = Exception('Error!')
+        self.subscribe.s3.GetObject.return_value = response
+
+        with self.assertRaises(CloudTrailError):
+            self.subscribe.setup_new_bucket('test', 'logs')
+
+    def test_sns_get_policy_fail(self):
         self.subscribe.s3.GetObject = Mock(side_effect=Exception('Error!'))
 
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test', 'logs')
-
-        self.subscribe.s3.GetObject = orig
 
     def test_sns_create(self):
         s3 = self.subscribe.s3
@@ -165,6 +197,14 @@ class TestCloudTrail(unittest.TestCase):
         sns.SetTopicAttributes.assert_called()
 
         sns.DeleteTopic.assert_not_called()
+
+    def test_sns_uses_regionalized_policy(self):
+        s3 = self.subscribe.s3
+
+        self.subscribe.setup_new_topic('test')
+
+        s3.GetObject.assert_called_with(
+            bucket='awscloudtrail-policy-us-east-1', key=ANY)
 
     def test_sns_create_already_exists(self):
         with self.assertRaises(Exception):

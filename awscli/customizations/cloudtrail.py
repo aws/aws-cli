@@ -20,8 +20,12 @@ from botocore.vendored import requests
 
 
 LOG = logging.getLogger(__name__)
-S3_POLICY_TEMPLATE = 'policy/S3/AWSCloudTrail-S3BucketPolicy-2013-11-01.json'
-SNS_POLICY_TEMPLATE = 'policy/SNS/AWSCloudTrail-SnsTopicPolicy-2013-11-01.json'
+S3_POLICY_TEMPLATE = 'policy/S3/AWSCloudTrail-S3BucketPolicy-2014-12-17.json'
+SNS_POLICY_TEMPLATE = 'policy/SNS/AWSCloudTrail-SnsTopicPolicy-2014-12-17.json'
+
+
+class CloudTrailError(Exception):
+    pass
 
 
 def initialize(cli):
@@ -99,6 +103,8 @@ class CloudTrailSubscribe(BasicCommand):
                           session=self._session)
         self.sns = Service('sns', endpoint_args=endpoint_args,
                            session=self._session)
+
+        self.region_name = self.s3.endpoint.region_name
 
         # If the endpoint is specified, it is designated for the cloudtrail
         # service. Not all of the other services will use it.
@@ -184,6 +190,17 @@ class CloudTrailSubscribe(BasicCommand):
                 'Logs will be delivered to {bucket}:{prefix}\n'.format(
                     bucket=bucket, prefix=options.s3_prefix or ''))
 
+    def _get_policy(self, key_name):
+        try:
+            data = self.s3.GetObject(
+                bucket='awscloudtrail-policy-' + self.region_name,
+                key=key_name)
+            return data['Body'].read().decode('utf-8')
+        except Exception as e:
+            raise CloudTrailError(
+                'Unable to get regional policy template for'
+                ' region %s: %s. Error: %s', self.region_name, key_name, e)
+
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """
         Creates a new S3 bucket with an appropriate policy to let CloudTrail
@@ -204,9 +221,7 @@ class CloudTrailSubscribe(BasicCommand):
         if policy_url:
             policy = requests.get(policy_url).text
         else:
-            data = self.s3.GetObject(bucket='awscloudtrail',
-                                     key=S3_POLICY_TEMPLATE)
-            policy = data['Body'].read().decode('utf-8')
+            policy = self._get_policy(S3_POLICY_TEMPLATE)
 
         policy = policy.replace('<BucketName>', bucket)\
                        .replace('<CustomerAccountID>', account_id)
@@ -233,10 +248,9 @@ class CloudTrailSubscribe(BasicCommand):
 
         # If we are not using the us-east-1 region, then we must set
         # a location constraint on the new bucket.
-        region_name = self.s3.endpoint.region_name
         params = {'bucket': bucket}
-        if region_name != 'us-east-1':
-            bucket_config = {'LocationConstraint': region_name}
+        if self.region_name != 'us-east-1':
+            bucket_config = {'LocationConstraint': self.region_name}
             params['create_bucket_configuration'] = bucket_config
 
         data = self.s3.CreateBucket(**params)
@@ -282,9 +296,7 @@ class CloudTrailSubscribe(BasicCommand):
         if policy_url:
             policy = requests.get(policy_url).text
         else:
-            data = self.s3.GetObject(bucket='awscloudtrail',
-                                     key=SNS_POLICY_TEMPLATE)
-            policy = data['Body'].read().decode('utf-8')
+            policy = self._get_policy(SNS_POLICY_TEMPLATE)
 
         policy = policy.replace('<Region>', region)\
                        .replace('<SNSTopicOwnerAccountId>', account_id)\

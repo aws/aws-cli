@@ -4,9 +4,9 @@
 :related command: s3 cp, s3 sync, s3 mv, s3 rm
 
 The ``aws s3`` transfer commands, which include the ``cp``, ``sync``, ``mv``,
-and ``rm`` commands, have additional configuration you can use to control
-S3 transfers.  This topic guide discusses these parameters as well as best
-practices and guidelines for setting these values.
+and ``rm`` commands, have additional configuration values you can use to
+control S3 transfers.  This topic guide discusses these parameters as well as
+best practices and guidelines for setting these values.
 
 Before discussing the specifics of these values, note that these values are
 entirely optional.  You should be able to use the ``aws s3`` transfer commands
@@ -23,10 +23,10 @@ These are the configuration values you can set for S3:
 
 * ``max_concurrent_requests`` - The maximum number of concurrent requests.
 * ``max_queue_size`` - The maximum number of tasks in the task queue.
-* ``multipart_threshold`` - The size threshold where the CLI uses multipart
-  transfers.
+* ``multipart_threshold`` - The size threshold the CLI uses for multipart
+  transfers of individual files.
 * ``multipart_chunksize`` - When using multipart transfers, this is the chunk
-  size that will be used.
+  size that the CLI uses for multipart transfers of individual files.
 
 These values must be set under the top level ``s3`` key in the AWS Config File,
 which has a default location of ``~/.aws/config``.  Below is an example
@@ -89,19 +89,20 @@ max_queue_size
 
 The AWS CLI internally uses a producer consumer model, where we queue up S3
 tasks that are then executed by consumers, which in this case utilize a bound
-thread pool, controlled by ``max_concurrent_requests``.  The enqueuing rate
-can be much faster than the rate at which consumers are executing tasks.
-To avoid unbounded growth, the task queue size is capped to a specific size.
-This configuration value changes the value of that maximum number.
+thread pool, controlled by ``max_concurrent_requests``.  A task generally maps
+to a single S3 operation.  For example, as task could be a ``PutObjectTask``,
+or a ``GetObjectTask``, or an ``UploadPartTask``.  The enqueuing rate can be
+much faster than the rate at which consumers are executing tasks.  To avoid
+unbounded growth, the task queue size is capped to a specific size.  This
+configuration value changes the value of that maximum number.
 
-You generally will not need to change this value.  This value also
-corresponds to the number of tasks we are aware of that need to be
-executed.  This means that by default we can only see 1000 tasks ahead.
-Until the S3 command knows the total number of tasks executed, the
-progress line will show a total of ``...``.  Increasing this value
-means that we will be able to more quickly know the total number of
-tasks needed, assuming that the enqueuing rate is quicker than the
-rate of task consumption.  The tradeoff is that a larger max queue
+You generally will not need to change this value.  This value also corresponds
+to the number of tasks we are aware of that need to be executed.  This means
+that by default we can only see 1000 tasks ahead.  Until the S3 command knows
+the total number of tasks executed, the progress line will show a total of
+``...``.  Increasing this value means that we will be able to more quickly know
+the total number of tasks needed, assuming that the enqueuing rate is quicker
+than the rate of task consumption.  The tradeoff is that a larger max queue
 size will require more memory.
 
 

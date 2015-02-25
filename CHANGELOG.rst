@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws cloudtrail``: Add support for regionalized policy templates
+  for the ``create-subscription`` and ``update-subscription`` commands.
+  (`issue 1167 <https://github.com/aws/aws-cli/pull/1167>`__)
+
 1.7.12
 ======
 

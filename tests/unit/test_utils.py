@@ -82,3 +82,7 @@ class TestCSVSplit(unittest.TestCase):
     def test_bracket_in_middle(self):
         self.assertEqual(split_on_commas('foo,bar=a[b][c],baz'),
                          ['foo', 'bar=a[b][c]', 'baz'])
+
+    def test_end_bracket_in_value(self):
+        self.assertEqual(split_on_commas('foo,bar=[foo,*[biz]*,baz]'),
+                         ['foo', 'bar=foo,*[biz]*,baz'])

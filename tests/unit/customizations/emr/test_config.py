@@ -5,6 +5,7 @@ from awscli.customizations.emr.ssh import Get
 from awscli.customizations.emr.ssh import Put
 from awscli.customizations.emr.ssh import SSH
 from awscli.customizations.emr.ssh import Socks
+from awscli.testutils import BaseAWSHelpOutputTest
 import mock
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
@@ -211,6 +212,16 @@ class TestSSHBasedCommands(BaseAWSCommandParamsTest):
         call_args = mock_run_main_command.call_args
         self.assertEqual(
             call_args[0][0].key_pair_file, key_pair_file_to_assert)
+
+
+class TestHelpOutput(BaseAWSHelpOutputTest):
+
+    def test_not_override_required_options(self):
+        scoped_config = self.session.get_scoped_config()
+        scoped_config['emr'] = DEFAULT_CONFIGS
+        self.driver.main(['emr', 'ssh', 'help'])
+        self.assert_contains('--key-pair-file <value>')
+        self.assert_not_contains('[--key-pair-file <value>]')
 
 
 class TestCreateDefaultRoles(BaseAWSCommandParamsTest):

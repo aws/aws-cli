@@ -91,11 +91,17 @@ class Command(BasicCommand):
         # explicitly specified on the CLI
         raise NotImplementedError("_run_main_command")
 
-    def override_args_required_option(self, arg_table, **kwargs):
+    def override_args_required_option(self, arg_table, args, **kwargs):
         # This function overrides the 'required' property of an argument
         # if a value corresponding to that argument is present in the config
         # file
-        parsed_configs = configutils.get_configs(self._session)
-        for arg_name in arg_table.keys():
-            if arg_name.replace('-', '_') in parsed_configs:
-                arg_table[arg_name].required = False
+        # We don't want to override when user is viewing the help so that we
+        # can show the required options correctly in the help
+        need_to_override = False if len(args) == 1 and args[0] == 'help' \
+            else True
+
+        if need_to_override:
+            parsed_configs = configutils.get_configs(self._session)
+            for arg_name in arg_table.keys():
+                if arg_name.replace('-', '_') in parsed_configs:
+                    arg_table[arg_name].required = False

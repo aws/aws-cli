@@ -2,6 +2,7 @@
 :description: Configuration Variables for the AWS CLI
 :category: General
 :related command: configure, configure get, configure set
+:related topic: s3-config
 
 Configuration values for the AWS CLI can come from several sources:
 
@@ -62,7 +63,7 @@ The AWS CLI has a few general options:
 =========== ========= ===================== ===================== ============================
 Variable    Option    Config Entry          Environment Variable  Description
 =========== ========= ===================== ===================== ============================
-profile     --profile profile               AWS_DEFAULT_PROFILE   Default profile name
+profile     --profile N/A                   AWS_DEFAULT_PROFILE   Default profile name
 ----------- --------- --------------------- --------------------- ----------------------------
 region      --region  region                AWS_DEFAULT_REGION    Default AWS Region
 ----------- --------- --------------------- --------------------- ----------------------------
@@ -71,7 +72,7 @@ output      --output  output                AWS_DEFAULT_OUTPUT    Default output
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
 config file.  By default, this location is ``~/.aws/config``.  If you need to
-change this value, you can specify the ``AWS_CONFIG_FILE`` environment variable
+change this value, you can set the ``AWS_CONFIG_FILE`` environment variable
 to change this location.
 
 The valid values of the ``output`` configuration variable are:
@@ -79,6 +80,22 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+
+When you specify a profile, either using ``--profile profile-name`` or by
+setting a value for the ``AWS_DEFAULT_PROFILE`` environment variable, profile
+name you provide is used to find the corresponding section in the AWS CLI
+config file.  For example, specifying ``--profile development`` will instruct
+the AWS CLI to look for a section in the AWS CLI config file of
+``[profile development]``.
+
+Precedence
+----------
+
+The above configuration values have the following precedence:
+
+* Command line options
+* Environment variables
+* Configuration file
 
 
 Credentials
@@ -112,7 +129,22 @@ The shared credentials file has a fixed location of
 corresponding to profiles.  With each section, the three configuration
 variables shown above can be specified: ``aws_access_key_id``,
 ``aws_secret_access_key``, ``aws_session_token``.  **These are the only
-supported values in the shared credential file.**
+supported values in the shared credential file.**  Also note that the
+section names are different than the AWS CLI config file (``~/.aws/config``).
+In the AWS CLI config file, you create a new profile by creating a section of
+``[profile profile-name]``, for example::
+
+    [profile development]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+
+In the shared credentials file, profiles are not prefixed with ``profile``,
+for example::
+
+    [development]
+    aws_access_key_id=foo
+    aws_secret_access_key=bar
+
 
 Precedence
 ----------
@@ -126,10 +158,17 @@ file.
 Using AWS IAM Roles
 -------------------
 
+If you are on an Amazon EC2 instance that was launched with an IAM role, the
+AWS CLI will automatically retrieve credentials for you.  You do not need
+to configure any credentials.
+
+Additionally, you can specify a role for the AWS CLI to assume, and the AWS
+CLI will automatically make the corresponding ``AssumeRole`` calls for you.
 Note that configuration variables for using IAM roles can only be in the AWS
 CLI config file.
 
-You can specify the following configuration values in the AWS CLI config file:
+You can specify the following configuration values for configuring an IAM role
+in the AWS CLI config file:
 
 * ``role_arn`` - The ARN of the role you want to assume.
 * ``source_profile`` - The AWS CLI profile that contains credentials we should
@@ -142,7 +181,7 @@ You can specify the following configuration values in the AWS CLI config file:
   trust policy of the role being assumed includes a condition that requires MFA
   authentication. The value is either the serial number for a hardware device
   (such as GAHT12345678) or an Amazon Resource Name (ARN) for a virtual device
-  (such as arn:aws:iam::123456789012:mfa/user).  
+  (such as arn:aws:iam::123456789012:mfa/user).
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and a ``source_profile``.
@@ -203,7 +242,6 @@ Example config::
       multipart_threshold = 64MB
       multipart_chunksize = 16MB
 
-.. I know I'll need to add a proper xref to the s3-config topic.
 
 For a more in depth discussion of these S3 configuration values, see ``aws help
 s3-config``.

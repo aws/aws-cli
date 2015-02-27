@@ -78,7 +78,8 @@ COMPLETIONS = [
                              '--content-disposition', '--source-region',
                              '--content-encoding', '--content-language',
                              '--expires', '--grants', '--only-show-errors',
-                             '--expected-size', '--page-size']
+                             '--expected-size', '--page-size',
+                             '--metadata-directive']
                             + GLOBALOPTS)),
     ('aws s3 cp --quiet -', -1, set(['--no-guess-mime-type', '--dryrun',
                                      '--recursive', '--content-type',
@@ -88,7 +89,7 @@ COMPLETIONS = [
                                      '--expires', '--website-redirect', '--acl',
                                      '--storage-class', '--sse',
                                      '--exclude', '--include',
-                                     '--source-region',
+                                     '--source-region', '--metadata-directive',
                                      '--grants', '--only-show-errors',
                                      '--expected-size', '--page-size']
                                     + GLOBALOPTS)),

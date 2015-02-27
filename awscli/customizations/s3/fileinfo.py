@@ -243,6 +243,11 @@ class FileInfo(TaskInfo):
         if self.parameters['expires']:
             params['expires'] = self.parameters['expires'][0]
 
+    def _handle_metadata_directive(self, params):
+        if self.parameters['metadata_directive']:
+            params['metadata_directive'] = \
+                self.parameters['metadata_directive'][0]
+
     def upload(self, payload=None):
         """
         Redirects the file to the multipart upload function if the file is
@@ -294,6 +299,7 @@ class FileInfo(TaskInfo):
         params = {'endpoint': self.endpoint, 'bucket': bucket,
                   'copy_source': copy_source, 'key': key}
         self._handle_object_params(params)
+        self._handle_metadata_directive(params)
         response_data, http = operate(self.service, 'CopyObject', params)
 
     def delete(self):

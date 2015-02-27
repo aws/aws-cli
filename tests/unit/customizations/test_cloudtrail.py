@@ -10,12 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import json
-import argparse
 
-from mock import ANY, Mock, patch, call
-import botocore.session
+from mock import ANY, Mock, call
 from botocore.client import ClientError
 
 from tests.unit.test_clidriver import FakeSession
@@ -151,7 +148,6 @@ class TestCloudTrailCommand(unittest.TestCase):
         self.subscribe.region_name = 'us-west-2'
         s3.head_bucket.side_effect = ClientError(
             {'Error': {'Code': '404', 'Message': ''}}, 'HeadBucket')
-
 
         self.subscribe.setup_new_bucket('test', 'logs')
 

@@ -23,7 +23,7 @@ class TestDescribeLayers(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --stack-id 35959772-cd1e-4082-8346-79096d4179f2'
         result = {'StackId': '35959772-cd1e-4082-8346-79096d4179f2'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

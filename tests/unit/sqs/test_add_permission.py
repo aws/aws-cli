@@ -30,7 +30,7 @@ class TestAddPermission(BaseAWSCommandParamsTest):
                   'Actions': ['SendMessage'],
                   'AWSAccountIds': ['888888888888'],
                   'Label': 'FooBarLabel'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_accounts(self):
         cmdline = self.prefix
@@ -42,7 +42,7 @@ class TestAddPermission(BaseAWSCommandParamsTest):
                   'Actions': ['SendMessage'],
                   'AWSAccountIds': ['888888888888', '999999999999'],
                   'Label': 'FooBarLabel'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_actions(self):
         cmdline = self.prefix
@@ -54,7 +54,7 @@ class TestAddPermission(BaseAWSCommandParamsTest):
                   'Actions': ['SendMessage', 'ReceiveMessage'],
                   'AWSAccountIds': ['888888888888'],
                   'Label': 'FooBarLabel'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

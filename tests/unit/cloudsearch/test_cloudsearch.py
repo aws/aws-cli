@@ -27,7 +27,7 @@ class TestCloudSearchDefineExpression(BaseAWSCommandParamsTest):
             'DomainName': 'abc123',
             'expression': {'ExpressionName': 'foo',
                            'ExpressionValue': '10'}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
@@ -47,7 +47,7 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
                             'IndexFieldType': 'int',
                             'IntOptions': {'DefaultValue': 10,
                                            'SearchEnabled': False}}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_latlon(self):
         cmdline = self.prefix
@@ -63,5 +63,5 @@ class TestCloudSearchDefineIndexField(BaseAWSCommandParamsTest):
                 'IndexFieldType': 'latlon',
                 'LatLonOptions': {
                     'DefaultValue': '10', 'SearchEnabled': False}}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 

@@ -44,7 +44,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_etag(self):
         cmd = self.prefix + (
@@ -62,7 +62,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_version(self):
         cmd = self.prefix + (
@@ -80,7 +80,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_etag_and_version(self):
         cmd = self.prefix + (
@@ -99,7 +99,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_json(self):
         cmd = self.prefix + (
@@ -118,7 +118,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_missing_bucket(self):
         cmd = self.prefix + (
@@ -146,7 +146,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_github_location_json(self):
         cmd = self.prefix + (
@@ -162,7 +162,7 @@ class GetApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_github_location_missing_repository(self):
         cmd = self.prefix + (
@@ -193,7 +193,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_etag(self):
         cmd = self.prefix + (
@@ -211,7 +211,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_version(self):
         cmd = self.prefix + (
@@ -229,7 +229,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_etag_and_version(self):
         cmd = self.prefix + (
@@ -248,7 +248,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_json(self):
         cmd = self.prefix + (
@@ -267,7 +267,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_missing_bucket(self):
         cmd = self.prefix + (
@@ -295,7 +295,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_github_location_json(self):
         cmd = self.prefix + (
@@ -311,7 +311,7 @@ class RegisterApplicationRevisionLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_github_location_missing_repository(self):
         cmd = self.prefix + (
@@ -345,7 +345,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_etag(self):
         cmd = self.prefix + (
@@ -364,7 +364,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_version(self):
         cmd = self.prefix + (
@@ -383,7 +383,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_with_etag_and_version(self):
         cmd = self.prefix + (
@@ -403,7 +403,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_json(self):
         cmd = self.prefix + (
@@ -423,7 +423,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_s3_location_missing_bucket(self):
         cmd = self.prefix + (
@@ -452,7 +452,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_github_location_json(self):
         cmd = self.prefix + (
@@ -469,7 +469,7 @@ class CreateDpeloymentLocationArgumentsTestCase(
                 }
             }
         }
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_github_location_missing_repository(self):
         cmd = self.prefix + (

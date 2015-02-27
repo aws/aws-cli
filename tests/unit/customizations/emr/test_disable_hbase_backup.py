@@ -41,7 +41,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'].append(self.DISABLE_FULL_BACKUP)
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
 
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_disable_hbase_backups_incremental(self):
         args = ' --cluster-id j-ABCD --incremental'
@@ -51,7 +51,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'].append(self.DISABLE_INCR_BACKUP)
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
 
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_disable_hbase_backups_both(self):
         args = ' --cluster-id j-ABCD --full --incremental'
@@ -62,7 +62,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
         steps[0]['HadoopJarStep']['Args'].append(self.DISABLE_INCR_BACKUP)
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
 
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_disable_hbase_backups_none(self):
         args = ' --cluster-id j-ABCD'

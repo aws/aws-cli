@@ -29,7 +29,7 @@ class TestChangeMessageVisibility(BaseAWSCommandParamsTest):
         result = {'QueueUrl': self.queue_url,
                   'ReceiptHandle': self.receipt_handle,
                   'VisibilityTimeout': 30}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

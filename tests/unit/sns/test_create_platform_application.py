@@ -29,7 +29,7 @@ class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
                   'Platform': 'GCM',
                   'Attributes': {'PlatformCredential': 'foo',
                                  'PlatformPrincipal': 'bar'}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_gcm_json(self):
         cmdline = self.prefix
@@ -45,7 +45,7 @@ class TestCreatePlatformApplication(BaseAWSCommandParamsTest):
               'PlatformCredential': 'AIzaSyClE2lcV2zEKTLYYo645zfk2jhQPFeyxDo',
               'PlatformPrincipal': 'There+is+no+principal+for+GCM'}
         }
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

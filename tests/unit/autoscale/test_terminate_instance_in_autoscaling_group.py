@@ -24,7 +24,7 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
         cmdline += ' --should-decrement-desired-capacity'
         params = {'InstanceId': 'i-12345678',
                   'ShouldDecrementDesiredCapacity': True}
-        self.assert_params_for_cmd2(cmdline, params)
+        self.assert_params_for_cmd(cmdline, params)
 
     def test_false(self):
         cmdline = self.PREFIX
@@ -32,7 +32,7 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
         cmdline += ' --no-should-decrement-desired-capacity'
         params = {'InstanceId': 'i-12345678',
                   'ShouldDecrementDesiredCapacity': False}
-        self.assert_params_for_cmd2(cmdline, params)
+        self.assert_params_for_cmd(cmdline, params)
 
     def test_last_arg_wins(self):
         cmdline = self.PREFIX
@@ -43,4 +43,4 @@ class TestTerminateInstanceInAutoscalingGroup(BaseAWSCommandParamsTest):
         # was added last, it wins.
         params = {'InstanceId': 'i-12345678',
                   'ShouldDecrementDesiredCapacity': False}
-        self.assert_params_for_cmd2(cmdline, params)
+        self.assert_params_for_cmd(cmdline, params)

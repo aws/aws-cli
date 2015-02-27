@@ -272,40 +272,6 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         if stderr_contains is not None:
             self.assertIn(stderr_contains, stderr)
         if params is not None:
-            last_params = self.last_params
-            if isinstance(last_params, dict):
-                last_params = copy.copy(self.last_params)
-                extra_params_to_ignore = ['Action', 'Version']
-                if ignore_params is None:
-                    ignore_params = extra_params_to_ignore
-                else:
-                    ignore_params.extend(extra_params_to_ignore)
-                for key in ignore_params:
-                    try:
-                        del last_params[key]
-                    except KeyError:
-                        pass
-            if params != last_params:
-                self.fail("Actual params did not match expected params.\n"
-                          "Expected:\n\n"
-                          "%s\n"
-                          "Actual:\n\n%s\n" % (
-                              pformat(params), pformat(last_params)))
-        return stdout, stderr, rc
-
-    def assert_params_for_cmd2(self, cmd, params=None, expected_rc=0,
-                               stderr_contains=None, ignore_params=None):
-        # XXX: This has a terrible name because it's intended to be
-        # temporary.  I want to switch everything off of
-        # assert_params_for_cmd and then I'll rename this to
-        # assert_params_for_cmd2.  The difference between this command
-        # and the other one is that we verify the kwargs that are sent
-        # to botocore's Operation.call(), *not* the serialized parameters
-        # onto the HTTP request.  We're one level up from that.
-        stdout, stderr, rc = self.run_cmd(cmd, expected_rc)
-        if stderr_contains is not None:
-            self.assertIn(stderr_contains, stderr)
-        if params is not None:
             # The last kwargs of Operation.call() in botocore.
             last_kwargs = copy.copy(self.last_kwargs)
             if ignore_params is not None:

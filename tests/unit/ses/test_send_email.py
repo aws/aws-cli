@@ -31,7 +31,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
             'destination': {'ToAddresses': ['fie@baz.com']},
             'message': {'Body': {'Text': {'Data': 'This_is_the_message'}},
                         'Subject': {'Data': 'This_is_a_test'}}}
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_plain_text_multiple_to(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -44,7 +44,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                       'Body': {'Text': {'Data': 'This_is_the_message'}},
                       'Subject': {'Data': 'This_is_a_test'}}}
 
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_plain_text_multiple_cc(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -59,7 +59,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                       'Body': {'Text': {'Data': 'This_is_the_message'}},
                       'Subject': {'Data': 'This_is_a_test'}}}
 
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_plain_text_multiple_bcc(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -77,7 +77,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 'Body': {'Text': {'Data': 'This_is_the_message'}},
                 'Subject': {'Data': 'This_is_a_test'}}}
 
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_html_text(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -90,7 +90,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                         'Body': {
                             'Html': {'Data': 'This_is_the_html_message'}}}}
 
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_html_both(self):
         args = (' --subject This_is_a_test --from foo@bar.com'
@@ -105,7 +105,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 'Body': {
                     'Text': {'Data': 'This_is_the_text_message'},
                     'Html': {'Data': 'This_is_the_html_message'}}}}
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_using_json(self):
         args = (' --message {"Subject":{"Data":"This_is_a_test"},'
@@ -121,7 +121,7 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                           'Text': {'Data': 'This_is_the_message'}}},
                   'Source': 'foo@bar.com'}
 
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_both_destination_and_to(self):
         args = (' --message {"Subject":{"Data":"This_is_a_test"},'

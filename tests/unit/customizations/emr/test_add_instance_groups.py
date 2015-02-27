@@ -55,7 +55,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
         result = {'JobFlowId': 'J-ABCD',
                   'InstanceGroups': DEFAULT_INSTANCE_GROUPS}
 
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def test_instance_groups_missing_instance_group_type_error(self):
         cmd = self.prefix + ' Name=Task,InstanceType=m1.small,' +\
@@ -108,7 +108,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
         result = {'JobFlowId': 'J-ABCD',
                   'InstanceGroups': expected_instance_groups}
 
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     @patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):

@@ -38,4 +38,4 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
                 {'Namespace': 'aws:elasticbeanstalk:container:tomcat:jvmoptions',
                  'OptionName': 'Xms',
                  'Value': '1256m'}]}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)

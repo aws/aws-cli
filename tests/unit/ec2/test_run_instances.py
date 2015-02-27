@@ -29,7 +29,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_count_scalar(self):
         args = ' --image-id ami-foobar --count 2'
@@ -39,7 +39,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 2,
             'min_count': 2
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_user_data(self):
         return
@@ -56,7 +56,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                           'min_count': 1,
                           # base64 encoded content of utf-8 encoding of data.
                           'UserData': 'OQ=='}
-            self.assert_params_for_cmd2(args, result)
+            self.assert_params_for_cmd(args, result)
 
     def test_count_range(self):
         args = ' --image-id ami-foobar --count 5:10'
@@ -66,7 +66,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 10,
             'min_count': 5
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_block_device_mapping(self):
         args = ' --image-id ami-foobar --count 1'
@@ -87,7 +87,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_secondary_ip_address(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -109,7 +109,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                      {'Primary': False, 'PrivateIpAddress': '10.0.2.106'}]}],
             'max_count': 1,
             'min_count': 1}
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_secondary_ip_addresses(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -124,7 +124,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                      {'Primary': False, 'PrivateIpAddress': u'10.0.2.107'}]}],
             'max_count': 1,
             'min_count': 1}
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_secondary_ip_address_count(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -137,7 +137,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_associate_public_ip_address(self):
         args = ' --image-id ami-foobar --count 1 --subnet-id subnet-12345678 '
@@ -153,7 +153,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_associate_public_ip_address_switch_order(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -169,7 +169,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_no_associate_public_ip_address(self):
         args = ' --image-id ami-foobar --count 1  --subnet-id subnet-12345678 '
@@ -182,7 +182,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                                    'SubnetId': 'subnet-12345678'}],
             'max_count': 1,
             'min_count': 1}
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_subnet_alone(self):
         args = ' --image-id ami-foobar --count 1 --subnet-id subnet-12345678'
@@ -193,7 +193,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_associate_public_ip_address_and_group_id(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -211,7 +211,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_group_id_alone(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -223,7 +223,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_associate_public_ip_address_and_private_ip_address(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -243,7 +243,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_private_ip_address_alone(self):
         args = ' --image-id ami-foobar --count 1 '
@@ -255,5 +255,5 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'max_count': 1,
             'min_count': 1
         }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 

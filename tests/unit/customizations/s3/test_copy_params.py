@@ -43,7 +43,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         self.parsed_response = {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',}
 
     def assert_params(self, cmdline, result):
-        foo = self.assert_params_for_cmd2(cmdline, result, expected_rc=0,
+        foo = self.assert_params_for_cmd(cmdline, result, expected_rc=0,
                                           ignore_params=['body'])
 
     def test_simple(self):
@@ -121,7 +121,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read:bob'
-        self.assert_params_for_cmd2(cmdline, expected_rc=1,
+        self.assert_params_for_cmd(cmdline, expected_rc=1,
                                     ignore_params=['payload'])
 
     def test_content_type(self):

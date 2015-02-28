@@ -39,7 +39,7 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_create_cache_cluster_no_auto_minor_upgrade(self):
         args = ('--cache-cluster-id cachecluster-us-east-1c '
@@ -61,7 +61,7 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_minor_upgrade_arg_not_specified(self):
         args = ('--cache-cluster-id cachecluster-us-east-1c '
@@ -84,4 +84,4 @@ class TestCreateCacheCluster(BaseAWSCommandParamsTest):
                   'NumCacheNodes': 1,
                   'PreferredAvailabilityZone': 'us-east-1c',
                   'PreferredMaintenanceWindow': 'fri:08:00-fri:09:00'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)

@@ -64,7 +64,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
                            'UploadPolicySignature': self.POLICY_SIGNATURE}
                        }
                    }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
 
     def test_policy_provided(self):
@@ -85,14 +85,14 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
                            'UploadPolicySignature': policy_signature}
                        }
                    }
-        self.assert_params_for_cmd2(args_list, result)
+        self.assert_params_for_cmd(args_list, result)
 
     def test_both(self):
         captured = cStringIO()
         json = """{"S3":{"Bucket":"foobar","Prefix":"fiebaz"}}"""
         args = ' --instance-id i-12345678 --owner-aki blah --owner-sak blah --storage %s' % json
         args_list = (self.prefix + args).split()
-        self.assert_params_for_cmd2(args_list, expected_rc=255)
+        self.assert_params_for_cmd(args_list, expected_rc=255)
 
 
 if __name__ == "__main__":

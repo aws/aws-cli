@@ -35,7 +35,7 @@ class TestSearchCommand(BaseAWSCommandParamsTest):
             'query': u'George Lucas',
             'queryOptions': u'{"defaultOperator":"and","fields":["directors^10"]}'
         }
-        self.assert_params_for_cmd2(cmd, expected)
+        self.assert_params_for_cmd(cmd, expected)
 
     def test_endpoint_is_required(self):
         cmd = self.prefix.split()

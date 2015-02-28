@@ -57,7 +57,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'Bucket': 'mybucket',
             'Key': 'mykey'
         }
-        self.assert_params_for_cmd2(cmdline, expected, ignore_params=['Body'])
+        self.assert_params_for_cmd(cmdline, expected, ignore_params=['Body'])
         self.assertEqual(self.last_kwargs['Body'].name, self.file_path)
 
     def test_headers(self):
@@ -75,7 +75,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'ContentType': 'text/plain',
             'Key': 'mykey'
         }
-        self.assert_params_for_cmd2(cmdline, expected, ignore_params=['Body'])
+        self.assert_params_for_cmd(cmdline, expected, ignore_params=['Body'])
         self.assertEqual(self.last_kwargs['Body'].name, self.file_path)
 
     def test_website_redirect(self):
@@ -90,7 +90,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'Key': 'mykey',
             'WebsiteRedirectLocation': 'http://www.example.com/'
         }
-        self.assert_params_for_cmd2(cmdline, expected)
+        self.assert_params_for_cmd(cmdline, expected)
 
     def test_sse_key_with_binary_file(self):
         # Create contents that do not get mapped to ascii
@@ -108,7 +108,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'SSECustomerKey': 'wg==',  # Note the key gets base64 encoded.
             'SSECustomerKeyMD5': 'ZGXa0dMXUr4/MoPo9w/u9w=='
         }
-        self.assert_params_for_cmd2(cmdline, expected)
+        self.assert_params_for_cmd(cmdline, expected)
 
 
 if __name__ == "__main__":

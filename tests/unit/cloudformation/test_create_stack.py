@@ -22,7 +22,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --stack-name test-stack --template-url http://foo'
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_create_stack_string_params(self):
         cmdline = self.prefix
@@ -34,7 +34,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                       {'ParameterKey': 'foo', 'ParameterValue': 'bar'},
                       {'ParameterKey': 'foo2', 'ParameterValue': 'bar2'},
                   ]}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_create_stack_for_csv_params_escaping(self):
         # If a template is specified as a comma delimited list,
@@ -45,7 +45,7 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters': [{'ParameterKey': 'foo',
                                   'ParameterValue': 'one,two'}]}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_create_stack_for_csv_with_quoting(self):
         cmdline = self.prefix
@@ -55,4 +55,4 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         result = {'StackName': 'test-stack', 'TemplateURL': 'http://foo',
                   'Parameters': [{'ParameterKey': 'foo',
                                   'ParameterValue': 'one,two'}]}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)

@@ -36,7 +36,7 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
                 '"Timestamp":"2013-08-22T10:58:12.283Z",'
                 '"Value":9130160128}]')
         cmdline = self.prefix + args
-        self.assert_params_for_cmd2(cmdline, self.expected_output)
+        self.assert_params_for_cmd(cmdline, self.expected_output)
 
     def test_using_promoted_params(self):
         # This is equivalent to the json version in test_using_json
@@ -47,7 +47,7 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
                 '--timestamp 2013-08-22T10:58:12.283Z '
                 '--value 9130160128')
         cmdline = self.prefix + args
-        self.assert_params_for_cmd2(cmdline, self.expected_output)
+        self.assert_params_for_cmd(cmdline, self.expected_output)
 
     def test_using_shorthand_syntax(self):
         args = (
@@ -69,4 +69,4 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
             ],
             'Namespace': 'MyService'
         }
-        self.assert_params_for_cmd2(cmdline, expected)
+        self.assert_params_for_cmd(cmdline, expected)

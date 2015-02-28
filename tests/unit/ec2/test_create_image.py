@@ -26,4 +26,4 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         cmdline += ' --reboot'
         result = {'InstanceId': 'i-12345678', 'Description': 'foo',
                   'Name': 'bar', 'NoReboot': False}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)

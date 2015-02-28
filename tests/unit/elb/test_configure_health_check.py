@@ -32,7 +32,7 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
                 'Timeout': 60,
                 'UnhealthyThreshold': 5},
             'LoadBalancerName': 'my-lb'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_json(self):
         cmdline = self.prefix
@@ -48,7 +48,7 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
                 'Timeout': 60,
                 'UnhealthyThreshold': 5},
             'LoadBalancerName': 'my-lb'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_shorthand_with_multiple_equals_for_value(self):
         cmdline = self.prefix
@@ -66,4 +66,4 @@ class TestConfigureHealthCheck(BaseAWSCommandParamsTest):
                 'Timeout': 60,
                 'UnhealthyThreshold': 5},
             'LoadBalancerName': 'my-lb'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)

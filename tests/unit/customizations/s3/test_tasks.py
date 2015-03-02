@@ -17,6 +17,8 @@ import mock
 import socket
 
 from botocore.exceptions import IncompleteReadError
+from botocore.vendored.requests.packages.urllib3.exceptions import \
+    ReadTimeoutError
 
 from awscli.customizations.s3 import transferconfig
 from awscli.customizations.s3.tasks import CreateLocalFileTask
@@ -387,6 +389,18 @@ class TestDownloadPartTask(unittest.TestCase):
     def test_incomplete_read_is_retried(self):
         self.service.get_operation.return_value.call.side_effect = \
                 IncompleteReadError(actual_bytes=1, expected_bytes=2)
+        task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
+                                self.service, self.filename,
+                                self.context, self.io_queue)
+        with self.assertRaises(RetriesExeededError):
+            task()
+        self.context.cancel.assert_called_with()
+        self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
+                         self.service.get_operation.call_count)
+
+    def test_readtimeout_is_retried(self):
+        self.service.get_operation.return_value.call.side_effect = \
+            ReadTimeoutError(None, None, None)
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
                                 self.service, self.filename,
                                 self.context, self.io_queue)

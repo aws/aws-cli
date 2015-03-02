@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws s3``: Fix issue where read timeouts were not retried.
+  (`issue 1191 <https://github.com/aws/aws-cli/pull/1191>`__)
 * feature:``aws cloudtrail``: Add support for regionalized policy templates
   for the ``create-subscription`` and ``update-subscription`` commands.
   (`issue 1167 <https://github.com/aws/aws-cli/pull/1167>`__)

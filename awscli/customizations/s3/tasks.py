@@ -7,6 +7,8 @@ import threading
 
 from botocore.vendored import requests
 from botocore.exceptions import IncompleteReadError
+from botocore.vendored.requests.packages.urllib3.exceptions import \
+    ReadTimeoutError
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
     operate, ReadFileChunk, relative_path, IORequest, IOCloseRequest, \
@@ -383,8 +385,8 @@ class DownloadPartTask(OrderableTask):
                 self._result_queue.put(PrintTask(**result))
                 LOGGER.debug("Task complete: %s", self)
                 return
-            except (socket.timeout, socket.error) as e:
-                LOGGER.debug("Socket timeout caught, retrying request, "
+            except (socket.timeout, socket.error, ReadTimeoutError) as e:
+                LOGGER.debug("Timeout error caught, retrying request, "
                              "(attempt %s / %s)", i, self.TOTAL_ATTEMPTS,
                              exc_info=True)
                 continue

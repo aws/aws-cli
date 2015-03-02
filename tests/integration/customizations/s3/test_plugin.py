@@ -438,10 +438,10 @@ class TestCp(BaseS3CLICommand):
                       (bucket_name, local_foo_txt), wait_for_finish=False)
         # Give it some time to start up and enter it's main task loop.
         time.sleep(1)
-        # The process has 30 seconds to finish after being sent a Ctrl+C,
+        # The process has 60 seconds to finish after being sent a Ctrl+C,
         # otherwise the test fails.
         process.send_signal(signal.SIGINT)
-        deadline = time.time() + 30
+        deadline = time.time() + 60
         while time.time() < deadline:
             rc = process.poll()
             if rc is not None:

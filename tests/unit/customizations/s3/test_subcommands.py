@@ -199,13 +199,19 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                        'verify_ssl': None,
                                        'source_region': None})
         cmd_arc.set_clients()
-        session.create_client.called_once_with(
-            's3', region_name='us-west-1', endpoint_url=None, verify=None
-        )
-        # The client also should have been cloned for the source client
-        # since no source region was provided.
+        self.assertEqual( session.create_client.call_count, 2)
         self.assertEqual(
-            session.create_client.return_value.clone_client.call_count, 1)
+            session.create_client.call_args_list[0],
+            mock.call(
+             's3', region_name='us-west-1', endpoint_url=None, verify=None)
+        )
+        # A client created with the same arguments as the first should be used
+        # for the source client since no source region was provided.
+        self.assertEqual(
+            session.create_client.call_args_list[1],
+            mock.call(
+             's3', region_name='us-west-1', endpoint_url=None, verify=None)
+        )
 
     def test_set_client_with_source(self):
         session = Mock()
@@ -218,13 +224,19 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         cmd_arc.set_clients()
         create_client_args = session.create_client.call_args_list
         # Assert that two clients were created
-        self.assertEqual(len(create_client_args), 2)
+        self.assertEqual(len(create_client_args), 3)
         self.assertEqual(
             create_client_args[0][1],
             {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None}
         )
         self.assertEqual(
             create_client_args[1][1],
+            {'region_name': 'us-west-1', 'verify': None, 'endpoint_url': None}
+        )
+        # Assert override the second client created with the one needed for the
+        # source region.
+        self.assertEqual(
+            create_client_args[2][1],
             {'region_name': 'us-west-2', 'verify': None, 'endpoint_url': None}
         )
 

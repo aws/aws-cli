@@ -96,20 +96,6 @@ class PosixHelpRenderer(HelpRenderer):
         p4.communicate(input=groff_output)
         sys.exit(1)
 
-    def _get_rst2man_name(self):
-        if self._exists_on_path('rst2man.py'):
-            return 'rst2man.py'
-        elif self._exists_on_path('rst2man'):
-            # Some distros like ubuntu will rename rst2man.py to rst2man
-            # if you install their version (i.e. "apt-get install
-            # python-docutils").  Though they could technically rename
-            # this to anything we'll support it renamed to 'rst2man' by
-            # explicitly checking for this case ourself.
-            return 'rst2man'
-        else:
-            # Give them the original name as set from docutils.
-            raise ExecutableNotFoundError('rst2man.py')
-
     def _exists_on_path(self, name):
         # Since we're only dealing with POSIX systems, we can
         # ignore things like PATHEXT.

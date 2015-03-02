@@ -15,6 +15,7 @@ import logging
 import os
 import platform
 import shlex
+import pydoc
 from subprocess import Popen, PIPE
 
 from docutils.core import publish_string
@@ -59,12 +60,22 @@ class HelpRenderer(object):
     """
 
     def render(self, contents):
+        output = self.format(contents)
+        self.get_pager_cmdline()
+        pydoc.pager(output)
+        sys.exit(1)
+    
+    def format(self, contents):
         """
         Each implementation of HelpRenderer must implement this
-        render method.
+        format method unless it implements render.
         """
         pass
 
+    def get_pager_cmdline(self):
+        if 'MANPAGER' in os.environ:
+            # pydoc doesnt use MANPAGER, so we need to check for it
+            os.environ['PAGER'] = os.environ['MANPAGER']
 
 class PosixHelpRenderer(HelpRenderer):
     """
@@ -72,44 +83,18 @@ class PosixHelpRenderer(HelpRenderer):
     Linux and MacOS X.
     """
 
-    PAGER = 'less -R'
-
-    def get_pager_cmdline(self):
-        pager = self.PAGER
-        if 'MANPAGER' in os.environ:
-            pager = os.environ['MANPAGER']
-        elif 'PAGER' in os.environ:
-            pager = os.environ['PAGER']
-        return shlex.split(pager)
-
-    def render(self, contents):
+    def format(self, contents):
         man_contents = publish_string(contents, writer=manpage.Writer())
         if not self._exists_on_path('groff'):
             raise ExecutableNotFoundError('groff')
         cmdline = ['groff', '-man', '-T', 'ascii']
         LOG.debug("Running command: %s", cmdline)
         p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        groff_output = p3.communicate(input=man_contents)[0]
-        cmdline = self.get_pager_cmdline()
-        LOG.debug("Running command: %s", cmdline)
-        p4 = self._popen(cmdline, stdin=PIPE)
-        p4.communicate(input=groff_output)
-        sys.exit(1)
-
-    def _get_rst2man_name(self):
-        if self._exists_on_path('rst2man.py'):
-            return 'rst2man.py'
-        elif self._exists_on_path('rst2man'):
-            # Some distros like ubuntu will rename rst2man.py to rst2man
-            # if you install their version (i.e. "apt-get install
-            # python-docutils").  Though they could technically rename
-            # this to anything we'll support it renamed to 'rst2man' by
-            # explicitly checking for this case ourself.
-            return 'rst2man'
-        else:
-            # Give them the original name as set from docutils.
-            raise ExecutableNotFoundError('rst2man.py')
-
+        result = p3.communicate(input=man_contents)[0]
+        if sys.version_info[0] >= 3:
+            result = result.decode()
+        return result
+        
     def _exists_on_path(self, name):
         # Since we're only dealing with POSIX systems, we can
         # ignore things like PATHEXT.
@@ -125,12 +110,10 @@ class WindowsHelpRenderer(HelpRenderer):
     Render help content on a Windows platform.
     """
 
-    def render(self, contents):
+    def format(self, contents):
         text_output = publish_string(contents,
                                      writer=TextWriter())
-        sys.stdout.write(text_output.decode('utf-8'))
-        sys.exit(1)
-
+        return text_output.decode('utf-8')
 
 class RawRenderer(HelpRenderer):
     """

@@ -24,8 +24,8 @@ import itertools
 import botocore.session
 from awscli import EnvironmentVariables
 from awscli.customizations.s3.filegenerator import FileGenerator, FileStat
-from tests.unit.customizations.s3 import make_s3_files, s3_cleanup, \
-    compare_files
+from tests.unit.customizations.s3 import compare_files
+from tests.integration.customizations.s3 import make_s3_files, s3_cleanup
 
 
 class S3FileGeneratorIntTest(unittest.TestCase):
@@ -36,7 +36,7 @@ class S3FileGeneratorIntTest(unittest.TestCase):
         factory.set_parser_defaults(
             blob_parser=lambda x: x,
             timestamp_parser=lambda x: x)
-        self.client = self.session.create_client('s3', region_name='us-east-1')
+        self.client = self.session.create_client('s3', region_name='us-west-2')
         self.bucket = make_s3_files(self.session)
         self.file1 = self.bucket + '/' + 'text1.txt'
         self.file2 = self.bucket + '/' + 'another_directory/text2.txt'

@@ -47,8 +47,8 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # The only operation we should have called is PutObject.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertEqual(self.operations_called[0][1]['key'], 'foo.txt')
-        self.assertEqual(self.operations_called[0][1]['bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
 
     def test_trailing_slash_appended(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -60,8 +60,8 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # The only operation we should have called is PutObject.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertEqual(self.operations_called[0][1]['key'], 'foo.txt')
-        self.assertEqual(self.operations_called[0][1]['bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
 
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
@@ -97,7 +97,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # Make sure that the specified web address is used as opposed to the
         # contents of the web address.
         self.assertEqual(
-            self.operations_called[0][1]['website_redirect_location'],
+            self.operations_called[0][1]['WebsiteRedirectLocation'],
             'http://someserver'
         )
 

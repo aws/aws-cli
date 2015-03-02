@@ -34,7 +34,7 @@ from awscli.compat import six
 
 from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
-from tests.unit.customizations.s3 import create_bucket as _create_bucket
+from tests.integration.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3.transferconfig import DEFAULTS
 from awscli.customizations.scalarparse import add_scalar_parsers
 

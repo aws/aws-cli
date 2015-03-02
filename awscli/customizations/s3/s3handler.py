@@ -116,7 +116,6 @@ class S3Handler(object):
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
-
         return CommandResult(self.executor.num_tasks_failed,
                              self.executor.num_tasks_warned)
 

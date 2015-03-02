@@ -17,42 +17,39 @@ import sys
 
 import mock
 
-from awscli.testutils import unittest
+from awscli.testutils import unittest, BaseAWSCommandParamsTest
 from awscli import EnvironmentVariables
+from awscli.compat import six
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.tasks import CreateMultipartUploadTask, \
     UploadPartTask, CreateLocalFileTask
 from awscli.customizations.s3.utils import MAX_PARTS
 from awscli.customizations.s3.transferconfig import RuntimeConfig
-from tests.unit.customizations.s3.fake_session import FakeSession
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets, \
-    S3HandlerBaseTest, MockStdIn
+    MockStdIn, S3HandlerBaseTest
 
 
 def runtime_config(**kwargs):
     return RuntimeConfig().build_config(**kwargs)
 
 
-class S3HandlerTestDeleteList(S3HandlerBaseTest):
+class S3HandlerTestDelete(S3HandlerBaseTest):
     """
     This tests the ability to delete both files locally and in s3.
     """
     def setUp(self):
-        super(S3HandlerTestDeleteList, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
+        super(S3HandlerTestDelete, self).setUp()
         params = {'region': 'us-east-1'}
-        self.s3_handler = S3Handler(self.session, params)
-        self.bucket = make_s3_files(self.session)
+        self.s3_handler = S3Handler(self.session, params,
+                                    runtime_config=runtime_config(
+                                        max_concurrent_requests=1))
         self.loc_files = make_loc_files()
+        self.bucket = 'mybucket'
 
     def tearDown(self):
-        super(S3HandlerTestDeleteList, self).tearDown()
+        super(S3HandlerTestDelete, self).tearDown()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_loc_delete(self):
         """
@@ -66,8 +63,10 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
             tasks.append(FileInfo(
                 src=filename, src_type='local',
                 dest_type='s3', operation_name='delete', size=0,
-                service=self.service, endpoint=self.endpoint))
-        self.s3_handler.call(tasks)
+                client=self.client))
+        ref_calls = []
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
         for filename in files:
             self.assertFalse(os.path.exists(filename))
 
@@ -85,45 +84,26 @@ class S3HandlerTestDeleteList(S3HandlerBaseTest):
                 src=key, src_type='s3',
                 dest_type='local', operation_name='delete',
                 size=0,
-                service=self.service,
-                endpoint=self.endpoint))
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 3)
-        self.s3_handler.call(tasks)
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
-
-    def test_list_objects(self):
-        """
-        Tests the ability to list objects, common prefixes, and buckets.
-        If an error occurs the test fails as this is only a printing
-        operation
-        """
-        prefix_name = self.bucket + '/'
-        file_info = FileInfo(
-            src=prefix_name, operation_name='list_objects', size=0,
-            service=self.service, endpoint=self.endpoint)
-        params = {'region': 'us-east-1'}
-        s3_handler = S3Handler(self.session, params)
-        s3_handler.call([file_info])
-        file_info = FileInfo(
-            src='', operation_name='list_objects', size=0,
-            service=self.service, endpoint=self.endpoint)
-        s3_handler = S3Handler(self.session, params)
-        s3_handler.call([file_info])
+                client=self.client,
+                source_client=self.source_client))
+        ref_calls = [
+            ('DeleteObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt'}),
+            ('DeleteObject',
+             {'Bucket': self.bucket, 'Key': 'text1.txt'}),
+            ('DeleteObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/'})
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
 
 
 class S3HandlerTestURLEncodeDeletes(S3HandlerBaseTest):
     def setUp(self):
         super(S3HandlerTestURLEncodeDeletes, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
         self.s3_handler = S3Handler(self.session, params)
-        self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
-
-    def tearDown(self):
-        super(S3HandlerTestURLEncodeDeletes, self).tearDown()
-        s3_cleanup(self.bucket, self.session)
+        self.bucket = 'mybucket'
 
     def test_s3_delete_url_encode(self):
         """
@@ -134,10 +114,12 @@ class S3HandlerTestURLEncodeDeletes(S3HandlerBaseTest):
         tasks = [FileInfo(
             src=key, src_type='s3', dest_type='local',
             operation_name='delete', size=0,
-            service=self.service, endpoint=self.endpoint)]
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
-        self.s3_handler.call(tasks)
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+            client=self.client, source_client=self.source_client)]
+        ref_calls = [
+            ('DeleteObject', {'Bucket': self.bucket, 'Key': 'a+b/foo'})
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
 
 
 class S3HandlerTestUpload(S3HandlerBaseTest):
@@ -147,16 +129,16 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestUpload, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
-        self.s3_handler = S3Handler(self.session, params)
+        self.s3_handler = S3Handler(
+            self.session, params, runtime_config=runtime_config(
+                max_concurrent_requests=1))
         self.s3_handler_multi = S3Handler(
             self.session, params=params,
             runtime_config=runtime_config(
-                multipart_threshold=10, multipart_chunksize=2))
-        self.bucket = create_bucket(self.session)
+                multipart_threshold=10, multipart_chunksize=10,
+                max_concurrent_requests=1))
+        self.bucket = 'mybucket'
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
@@ -164,11 +146,8 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
     def tearDown(self):
         super(S3HandlerTestUpload, self).tearDown()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_upload(self):
-        # Confirm there are no objects in the bucket.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
         # Create file info objects to perform upload.
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
@@ -177,23 +156,30 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
                 src=self.loc_files[i],
                 dest=self.s3_files[i],
                 operation_name='upload', size=0,
-                service=self.service, endpoint=self.endpoint))
+                client=self.client))
         # Perform the upload.
-        self.s3_handler.call(tasks)
-        # Confirm the files were uploaded.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
-        # Verify the guessed content type.
-        self.assertEqual(
-            self.session.s3[self.bucket][
-                'another_directory/text2.txt']['ContentType'],
-            'text/plain')
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}
+        ]
+        stdout, stderr, rc = self.run_s3_handler(self.s3_handler, tasks)
+        self.assertEqual(rc.num_tasks_failed, 0)
+        ref_calls = [
+            ('PutObject',
+             {'Bucket': self.bucket, 'Key': 'text1.txt', 'Body': mock.ANY,
+              'ContentType': 'text/plain',  'ACL': 'private'}),
+            ('PutObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt',
+              'ContentType': 'text/plain', 'Body': mock.ANY, 'ACL': 'private'})
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
 
     def test_upload_fail(self):
         """
         One of the uploads will fail to upload in this test as
         the second s3 destination's bucket does not exist.
         """
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
         fail_s3_files = [self.bucket + '/text1.txt',
                          self.bucket[:-1] + '/another_directory/text2.txt']
         files = [self.loc_files[0], self.loc_files[1]]
@@ -207,11 +193,14 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
                 dest_type='s3',
                 operation_name='upload', size=0,
                 last_update=None,
-                service=self.service,
-                endpoint=self.endpoint))
-        self.s3_handler.call(tasks)
-        # Confirm only one of the files was uploaded.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+                client=self.client))
+        # Since there is only one parsed response. The process will fail
+        # becasue it is expecting one more response.
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
+        ]
+        stdout, stderr, rc = self.run_s3_handler(self.s3_handler, tasks)
+        self.assertEqual(rc.num_tasks_failed, 1)
 
     def test_multi_upload(self):
         """
@@ -219,101 +208,63 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
         It confirms that the parts are properly formatted but does not
         perform any tests past checking the parts are uploaded correctly.
         """
-        files = [self.loc_files[0], self.loc_files[1]]
+        files = [self.loc_files[0]]
         tasks = []
         for i in range(len(files)):
             tasks.append(FileInfo(
                 src=self.loc_files[i],
                 dest=self.s3_files[i], size=15,
                 operation_name='upload',
-                service=self.service,
-                endpoint=self.endpoint))
-        self.s3_handler_multi.call(tasks)
-        self.assertEqual(
-            self.session.s3[self.bucket][
-                'another_directory/text2.txt']['ContentType'],
-            'text/plain')
+                client=self.client))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
+            {}
+        ]
+        ref_calls = [
+            ('CreateMultipartUpload',
+             {'Bucket': 'mybucket', 'ContentType': 'text/plain',
+              'Key': 'text1.txt', 'ACL': 'private'}),
+            ('UploadPart',
+             {'Body': mock.ANY, 'Bucket': 'mybucket', 'PartNumber': 1,
+              'UploadId': 'foo', 'Key': 'text1.txt'}),
+            ('UploadPart',
+             {'Body': mock.ANY, 'Bucket': 'mybucket', 'PartNumber': 2,
+              'UploadId': 'foo', 'Key': 'text1.txt'}),
+            ('CompleteMultipartUpload',
+             {'MultipartUpload': {'Parts': [{'PartNumber': 1,
+                                             'ETag': mock.ANY},
+                                            {'PartNumber': 2,
+                                             'ETag': mock.ANY}]},
+              'Bucket': 'mybucket', 'UploadId': 'foo', 'Key': 'text1.txt'})
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler_multi, tasks,
+                                              ref_calls)
 
-
-class S3HandlerExceptionSingleTaskTest(S3HandlerBaseTest):
-    """
-    This tests the ability to handle connection and md5 exceptions.
-    The command used in this general test is a put command.
-    """
-    def setUp(self):
-        super(S3HandlerExceptionSingleTaskTest, self).setUp()
-        self.session = FakeSession(True, True)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1'}
-        self.s3_handler = S3Handler(self.session, params)
-        self.bucket = create_bucket(self.session)
-        self.loc_files = make_loc_files()
-        self.s3_files = [self.bucket + '/text1.txt',
-                         self.bucket + '/another_directory/text2.txt']
-
-    def tearDown(self):
-        super(S3HandlerExceptionSingleTaskTest, self).tearDown()
-        clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
-
-    def test_upload(self):
-        # Confirm there are no objects in the bucket.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
-        # Create file info objects to perform upload.
-        files = [self.loc_files[0], self.loc_files[1]]
-        tasks = []
-        for i in range(len(files)):
-            tasks.append(FileInfo(src=self.loc_files[i],
-                                  dest=self.s3_files[i],
-                                  operation_name='upload', size=0,
-                                  service=self.service,
-                                  endpoint=self.endpoint))
-        # Perform the upload.
-        self.s3_handler.call(tasks)
-        # Confirm despite the exceptions, the files were uploaded.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
-
-
-class S3HandlerExceptionMultiTaskTest(S3HandlerBaseTest):
-    """
-    This tests the ability to handle multipart upload exceptions.
-    This includes a standard error stemming from an operation on
-    a nonexisting bucket, connection error, and md5 error.
-    """
-    def setUp(self):
-        super(S3HandlerExceptionMultiTaskTest, self).setUp()
-        self.session = FakeSession(True, True)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1', 'quiet': True}
-        self.s3_handler_multi = S3Handler(
-            self.session, params,
-            runtime_config=runtime_config(
-                multipart_threshold=10, multipart_chunksize=2))
-        self.bucket = create_bucket(self.session)
-        self.loc_files = make_loc_files()
-        self.s3_files = [self.bucket + '/text1.txt',
-                         self.bucket + '/another_directory/text2.txt']
-
-    def tearDown(self):
-        super(S3HandlerExceptionMultiTaskTest, self).tearDown()
-        clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
-
-    def test_multi_upload(self):
-        files = [self.loc_files[0], self.loc_files[1]]
-        fail_s3_files = [self.bucket + '/text1.txt',
-                         self.bucket[:-1] + '/another_directory/text2.txt']
+    def test_multiupload_fail(self):
+        """
+        This tests the ability to handle multipart upload exceptions.
+        This includes a standard error stemming from an operation on
+        a nonexisting bucket, connection error, and md5 error.
+        """
+        files = [self.loc_files[0]]
         tasks = []
         for i in range(len(files)):
             tasks.append(FileInfo(
                 src=self.loc_files[i],
-                dest=fail_s3_files[i], size=15,
+                dest=self.s3_files[i], size=15,
                 operation_name='upload',
-                service=self.service,
-                endpoint=self.endpoint))
-        self.s3_handler_multi.call(tasks)
+                client=self.client))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
+            # This will cause a failure for the second part upload because
+            # it does not have an ETag.
+            {},
+        ]
+        stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
+        self.assertEqual(rc.num_tasks_failed, 1)
 
 
 class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
@@ -323,12 +274,11 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestMvLocalS3, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
-        self.s3_handler = S3Handler(self.session, params)
-        self.bucket = create_bucket(self.session)
+        self.s3_handler = S3Handler(self.session, params,
+                                    runtime_config=runtime_config(
+                                        max_concurrent_requests=1))
+        self.bucket = 'mybucket'
         self.loc_files = make_loc_files()
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
@@ -336,21 +286,6 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
     def tearDown(self):
         super(S3HandlerTestMvLocalS3, self).tearDown()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
-
-    def test_move_unicode(self):
-        self.bucket2 = make_s3_files(self.session, key1=u'\u2713')
-        tasks = [FileInfo(
-            src=self.bucket2 + '/' + u'\u2713',
-            src_type='s3',
-            dest=self.bucket + '/' + u'\u2713',
-            dest_type='s3', operation_name='move',
-            size=0,
-            service=self.service,
-            endpoint=self.endpoint,
-        )]
-        self.s3_handler.call(tasks)
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
 
     def test_move(self):
         # Create file info objects to perform move.
@@ -361,12 +296,23 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
                 src=self.loc_files[i], src_type='local',
                 dest=self.s3_files[i], dest_type='s3',
                 operation_name='move', size=0,
-                service=self.service,
-                endpoint=self.endpoint))
+                client=self.client))
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}
+        ]
+
+        ref_calls = [
+            ('PutObject',
+             {'Bucket': self.bucket, 'Key': 'text1.txt', 'Body': mock.ANY,
+              'ContentType': 'text/plain', 'ACL': 'private'}),
+            ('PutObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt',
+              'ContentType': 'text/plain', 'Body': mock.ANY, 'ACL': 'private'})
+        ]
         # Perform the move.
-        self.s3_handler.call(tasks)
-        # Confirm the files were uploaded.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
         # Confirm local files do not exist.
         for filename in files:
             self.assertFalse(os.path.exists(filename))
@@ -379,26 +325,18 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestMvS3S3, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1', 'acl': ['private']}
-        self.s3_handler = S3Handler(self.session, params)
-        self.bucket = make_s3_files(self.session)
-        self.bucket2 = create_bucket(self.session)
+        self.s3_handler = S3Handler(self.session, params,
+                                    runtime_config=runtime_config(
+                                        max_concurrent_requests=1))
+        self.bucket = 'mybucket'
+        self.bucket2 = 'mybucket2'
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
         self.s3_files2 = [self.bucket2 + '/text1.txt',
                           self.bucket2 + '/another_directory/text2.txt']
 
-    def tearDown(self):
-        super(S3HandlerTestMvS3S3, self).tearDown()
-        s3_cleanup(self.bucket, self.session)
-        s3_cleanup(self.bucket2, self.session)
-
     def test_move(self):
-        # Confirm there are no objects in the bucket.
-        self.assertEqual(len(list_contents(self.bucket2, self.session)), 0)
         # Create file info objects to perform move.
         tasks = []
         for i in range(len(self.s3_files)):
@@ -406,14 +344,44 @@ class S3HandlerTestMvS3S3(S3HandlerBaseTest):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.s3_files2[i], dest_type='s3',
                 operation_name='move', size=0,
-                service=self.service,
-                endpoint=self.endpoint))
+                client=self.client, source_client=self.source_client))
+        ref_calls = [
+            ('CopyObject',
+             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+              'CopySource': self.bucket + '/text1.txt', 'ACL': 'private',
+              'ContentType': 'text/plain'}),
+            ('DeleteObject', {'Bucket': self.bucket, 'Key': 'text1.txt'}),
+            ('CopyObject',
+             {'Bucket': self.bucket2, 'Key': 'another_directory/text2.txt',
+              'CopySource': self.bucket + '/another_directory/text2.txt',
+              'ACL': 'private', 'ContentType': 'text/plain'}),
+            ('DeleteObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt'}),
+        ]
         # Perform the move.
-        self.s3_handler.call(tasks)
-        # Confirm the files were moved.  The origial bucket had three
-        # objects. Only two were moved.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
-        self.assertEqual(len(list_contents(self.bucket2, self.session)), 2)
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
+
+    def test_move_unicode(self):
+        tasks = [FileInfo(
+            src=self.bucket2 + '/' + u'\u2713',
+            src_type='s3',
+            dest=self.bucket + '/' + u'\u2713',
+            dest_type='s3', operation_name='move',
+            size=0,
+            client=self.client,
+            source_client=self.source_client
+        )]
+
+        ref_calls = [
+            ('CopyObject',
+             {'Bucket': self.bucket, 'Key': u'\u2713',
+              'CopySource': self.bucket2 + '/' + u'\u2713', 'ACL': 'private'}),
+            ('DeleteObject',
+             {'Bucket': self.bucket2, 'Key': u'\u2713'})
+        ]
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
 
 
 class S3HandlerTestMvS3Local(S3HandlerBaseTest):
@@ -423,12 +391,11 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestMvS3Local, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
-        self.s3_handler = S3Handler(self.session, params)
-        self.bucket = make_s3_files(self.session)
+        self.s3_handler = S3Handler(self.session, params,
+                                    runtime_config=runtime_config(
+                                        max_concurrent_requests=1))
+        self.bucket = 'mybucket'
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
         directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
@@ -440,7 +407,6 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
     def tearDown(self):
         super(S3HandlerTestMvS3Local, self).tearDown()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_move(self):
         # Create file info objects to perform move.
@@ -451,11 +417,27 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.loc_files[i], dest_type='local',
                 last_update=time, operation_name='move',
-                size=0,
-                service=self.service,
-                endpoint=self.endpoint))
+                size=0, client=self.client, source_client=self.source_client))
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': six.BytesIO(b'This is a test.')},
+            {},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': six.BytesIO(b'This is a test.')},
+            {}
+        ]
+        ref_calls = [
+            ('GetObject', {'Bucket': self.bucket, 'Key': 'text1.txt'}),
+            ('DeleteObject', {'Bucket': self.bucket, 'Key': 'text1.txt'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt'}),
+            ('DeleteObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt'}),
+        ]
         # Perform the move.
-        self.s3_handler.call(tasks)
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
+
         # Confirm that the files now exist.
         for filename in self.loc_files:
             self.assertTrue(os.path.exists(filename))
@@ -463,9 +445,7 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:
-            self.assertEqual(filename.read(), b'This is another test.')
-        # Ensure the objects are no longer in the bucket.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+            self.assertEqual(filename.read(), b'This is a test.')
 
 
 class S3HandlerTestDownload(S3HandlerBaseTest):
@@ -475,16 +455,16 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestDownload, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         params = {'region': 'us-east-1'}
-        self.s3_handler = S3Handler(self.session, params)
+        self.s3_handler = S3Handler(self.session, params,
+                                    runtime_config=runtime_config(
+                                        max_concurrent_requests=1))
         self.s3_handler_multi = S3Handler(
             self.session, params,
             runtime_config=runtime_config(multipart_threshold=10,
-                                          multipart_chunksize=2))
-        self.bucket = make_s3_files(self.session)
+                                          multipart_chunksize=5,
+                                          max_concurrent_requests=1))
+        self.bucket = 'mybucket'
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
         directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
@@ -493,23 +473,11 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         filename2 = directory2 + "text2.txt"
         self.loc_files = [filename1, filename2]
 
-        self.fail_session = FakeSession(connection_error=True)
-        self.fail_session.s3 = self.session.s3
-        self.s3_handler_multi_except = S3Handler(
-            self.fail_session, params,
-            runtime_config=runtime_config(
-                multipart_threshold=10,
-                multipart_chunksize=2))
-
     def tearDown(self):
         super(S3HandlerTestDownload, self).tearDown()
         clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session)
 
     def test_download(self):
-        # Confirm that the files do not exist.
-        for filename in self.loc_files:
-            self.assertFalse(os.path.exists(filename))
         # Create file info objects to perform download.
         tasks = []
         time = datetime.datetime.now()
@@ -518,11 +486,21 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.loc_files[i], dest_type='local',
                 last_update=time, operation_name='download',
-                size=0,
-                service=self.service,
-                endpoint=self.endpoint))
+                size=0, client=self.client))
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': six.BytesIO(b'This is a test.')},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': six.BytesIO(b'This is a test.')},
+        ]
+        ref_calls = [
+            ('GetObject', {'Bucket': self.bucket, 'Key': 'text1.txt'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt'}),
+        ]
         # Perform the download.
-        self.s3_handler.call(tasks)
+        self.assert_operations_for_s3_handler(self.s3_handler, tasks,
+                                              ref_calls)
         # Confirm that the files now exist.
         for filename in self.loc_files:
             self.assertTrue(os.path.exists(filename))
@@ -530,7 +508,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:
-            self.assertEqual(filename.read(), b'This is another test.')
+            self.assertEqual(filename.read(), b'This is a test.')
 
     def test_multi_download(self):
         tasks = []
@@ -540,12 +518,49 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.loc_files[i], dest_type='local',
                 last_update=time, operation_name='download',
-                size=15,
-                service=self.service,
-                endpoint=self.endpoint,
-            ))
+                size=15, client=self.client))
+        mock_stream = mock.Mock()
+        mock_stream.read.side_effect = [
+            'This ', '', 'is a ', '', 'test.', '',
+            'This ', '', 'is a ', '', 'test.', ''
+        ]
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream}
+        ]
+        ref_calls = [
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'text1.txt',
+              'Range': 'bytes=0-4'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'text1.txt',
+              'Range': 'bytes=5-9'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'text1.txt',
+              'Range': 'bytes=10-'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt',
+              'Range': 'bytes=0-4'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt',
+              'Range': 'bytes=5-9'}),
+            ('GetObject',
+             {'Bucket': self.bucket, 'Key': 'another_directory/text2.txt',
+              'Range': 'bytes=10-'}),
+        ]
         # Perform the multipart  download.
-        self.s3_handler_multi.call(tasks)
+        self.assert_operations_for_s3_handler(self.s3_handler_multi, tasks,
+                                              ref_calls)
         # Confirm that the files now exist.
         for filename in self.loc_files:
             self.assertTrue(os.path.exists(filename))
@@ -553,7 +568,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         with open(self.loc_files[0], 'rb') as filename:
             self.assertEqual(filename.read(), b'This is a test.')
         with open(self.loc_files[1], 'rb') as filename:
-            self.assertEqual(filename.read(), b'This is another test.')
+            self.assertEqual(filename.read(), b'This is a test.')
 
     def test_multi_download_fail(self):
         """
@@ -571,12 +586,26 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
                 src=wrong_s3_files[i], src_type='s3',
                 dest=self.loc_files[i], dest_type='local',
                 last_update=time, operation_name='download',
-                size=15,
-                service=self.service,
-                endpoint=self.endpoint
-            ))
+                size=15, client=self.client))
+        mock_stream = mock.Mock()
+        mock_stream.read.side_effect = [
+            'This ', '', 'is a ', '', 'test.', '',
+        ]
+        self.parsed_responses = [
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
+             'Body': mock_stream},
+            # Response with no body will throw an error for the second
+            # multipart download.
+            {},
+            {},
+            {}
+        ]
         # Perform the multipart  download.
-        self.s3_handler_multi.call(tasks)
+        stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
         # Confirm that the files now exist.
         self.assertTrue(os.path.exists(self.loc_files[0]))
         # The second file should not exist.
@@ -592,49 +621,37 @@ class S3HandlerTestBucket(S3HandlerBaseTest):
     """
     def setUp(self):
         super(S3HandlerTestBucket, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         self.params = {'region': 'us-east-1'}
-        self.bucket = None
+        self.bucket = 'mybucket'
 
-    def tearDown(self):
-        super(S3HandlerTestBucket, self).tearDown()
-        s3_cleanup(self.bucket, self.session)
-
-    def test_bucket(self):
-        rand1 = random.randrange(5000)
-        rand2 = random.randrange(5000)
-        self.bucket = str(rand1) + 'mybucket' + str(rand2) + '/'
-        orig_number_buckets = len(list_buckets(self.session))
-
+    def test_make_bucket(self):
         file_info = FileInfo(
             src=self.bucket,
             operation_name='make_bucket',
-            size=0,
-            service=self.service,
-            endpoint=self.endpoint)
-        S3Handler(self.session, self.params).call([file_info])
-        number_buckets = len(list_buckets(self.session))
-        self.assertEqual(orig_number_buckets + 1, number_buckets)
+            size=0, client=self.client, source_client=self.source_client)
+        s3_handler = S3Handler(self.session, self.params)
+        ref_calls = [
+            ('CreateBucket', {'Bucket': self.bucket})
+        ]
+        self.assert_operations_for_s3_handler(s3_handler, [file_info],
+                                              ref_calls)
 
+    def test_remove_bucket(self):
         file_info = FileInfo(
             src=self.bucket,
             operation_name='remove_bucket',
-            size=0,
-            service=self.service,
-            endpoint=self.endpoint)
-        S3Handler(self.session, self.params).call([file_info])
-        number_buckets = len(list_buckets(self.session))
-        self.assertEqual(orig_number_buckets, number_buckets)
+            size=0, client=self.client)
+        s3_handler = S3Handler(self.session, self.params)
+        ref_calls = [
+            ('DeleteBucket', {'Bucket': self.bucket})
+        ]
+        self.assert_operations_for_s3_handler(s3_handler, [file_info],
+                                              ref_calls)
 
 
 class TestStreams(S3HandlerBaseTest):
     def setUp(self):
         super(TestStreams, self).setUp()
-        self.session = FakeSession()
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
         self.params = {'is_stream': True, 'region': 'us-east-1'}
 
     def test_pull_from_stream(self):

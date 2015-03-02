@@ -29,23 +29,24 @@ from awscli.customizations.s3.s3handler import S3Handler
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.transferconfig import RuntimeConfig
 import botocore.session
-from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    make_s3_files, s3_cleanup, create_bucket, list_contents, list_buckets
+from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
+from tests.integration.customizations.s3 import make_s3_files, s3_cleanup, \
+    create_bucket
 
 
 def runtime_config(**kwargs):
     return RuntimeConfig().build_config(**kwargs)
 
 
-class S3HandlerTestDeleteList(unittest.TestCase):
+class S3HandlerTestDelete(unittest.TestCase):
     """
     This tests the ability to delete both files locally and in s3
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1'}
+        self.client = self.session.create_client('s3', 'us-west-2')
+        self.source_client = self.session.create_client('s3', 'us-west-2')
+        params = {'region': 'us-west-2'}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.loc_files = make_loc_files()
@@ -67,8 +68,7 @@ class S3HandlerTestDeleteList(unittest.TestCase):
                 src=filename, src_type='local',
                 dest_type='s3', operation_name='delete',
                 size=0,
-                service=self.service,
-                endpoint=self.endpoint))
+                client=self.client))
         self.s3_handler.call(tasks)
         for filename in files:
             self.assertFalse(os.path.exists(filename))
@@ -86,67 +86,29 @@ class S3HandlerTestDeleteList(unittest.TestCase):
             tasks.append(FileInfo(
                 src=key, src_type='s3',
                 dest_type='local', operation_name='delete',
-                size=0,
-                service=self.service,
-                endpoint=self.endpoint,
-                source_endpoint=self.endpoint
+                size=0, client=self.client,
+                source_client=self.source_client
             ))
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 3)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response.get('Contents', [])), 3)
         self.s3_handler.call(tasks)
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
-
-    def test_list_objects(self):
-        """
-        Tests the ability to list objects, common prefixes, and buckets.
-        If an error occurs the test fails as this is only a printing
-        operation
-        """
-        prefix_name = self.bucket + '/'
-        file_info = FileInfo(
-            src=prefix_name,
-            operation_name='list_objects',
-            size=0,
-            service=self.service,
-            endpoint=self.endpoint,
-        )
-        params = {'region': 'us-east-1'}
-        s3_handler = S3Handler(self.session, params)
-        s3_handler.call([file_info])
-
-        file_info = FileInfo(
-            src='', operation_name='list_objects', size=0,
-            service=self.service,
-            endpoint=self.endpoint,
-        )
-        params = {'region': 'us-east-1'}
-        s3_handler = S3Handler(self.session, params)
-        s3_handler.call([file_info])
-
-class S3HandlerTestDeleteList(unittest.TestCase):
-    def setUp(self):
-        self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1'}
-        self.s3_handler = S3Handler(self.session, params)
-        self.bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
-        self.loc_files = make_loc_files()
-
-    def tearDown(self):
-        clean_loc_files(self.loc_files)
-        s3_cleanup(self.bucket, self.session, key1='a+b/foo', key2=None)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response.get('Contents', [])), 0)
 
     def test_delete_url_encode(self):
-        key = self.bucket + '/a+b/foo'
+        bucket = make_s3_files(self.session, key1='a+b/foo', key2=None)
+        self.addCleanup(s3_cleanup, bucket, self.session)
+        key = bucket + '/a+b/foo'
         tasks = [FileInfo(
             src=key, src_type='s3',
             dest_type='local', operation_name='delete', size=0,
-            service=self.service, endpoint=self.endpoint,
-            source_endpoint=self.endpoint
+            client=self.client, source_client=self.source_client
         )]
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
+        response = self.client.list_objects(Bucket=bucket)
+        self.assertEqual(len(response.get('Contents', [])), 1)
         self.s3_handler.call(tasks)
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+        response = self.client.list_objects(Bucket=bucket)
+        self.assertEqual(len(response.get('Contents', [])), 0)
 
 
 class S3HandlerTestUpload(unittest.TestCase):
@@ -156,9 +118,8 @@ class S3HandlerTestUpload(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.client = self.session.create_client('s3', 'us-west-2')
+        params = {'region': 'us-west-2', 'acl': ['private']}
         self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(
             self.session, params=params,
@@ -180,7 +141,8 @@ class S3HandlerTestUpload(unittest.TestCase):
 
     def test_upload(self):
         # Confirm there are no objects in the bucket.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 0)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response.get('Contents', [])), 0)
         # Create file info objects to perform upload.
         files = [self.loc_files[0], self.loc_files[1]]
         tasks = []
@@ -189,13 +151,13 @@ class S3HandlerTestUpload(unittest.TestCase):
                 src=self.loc_files[i],
                 dest=self.s3_files[i],
                 operation_name='upload', size=0,
-                service=self.service,
-                endpoint=self.endpoint,
+                client=self.client,
             ))
         # Perform the upload.
         self.s3_handler.call(tasks)
         # Confirm the files were uploaded.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 2)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response.get('Contents', [])), 2)
 
     def test_multi_upload(self):
         files = [self.loc_files[0], self.loc_files[1]]
@@ -205,23 +167,22 @@ class S3HandlerTestUpload(unittest.TestCase):
                 src=self.loc_files[i],
                 dest=self.s3_files[i], size=15,
                 operation_name='upload',
-                service=self.service,
-                endpoint=self.endpoint,
+                client=self.client,
             ))
 
         # Note nothing is uploaded because the file is too small
         # a print statement will show up if it fails.
         self.s3_handler_multi.call(tasks)
-        print_op = "Error: Your proposed upload is smaller than the minimum"
+        print_op = "Your proposed upload is smaller than the minimum"
         self.assertIn(print_op, self.output.getvalue())
 
 
 class S3HandlerTestUnicodeMove(unittest.TestCase):
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1', 'acl': ['private'], 'quiet': True}
+        self.client = self.session.create_client('s3', 'us-west-2')
+        self.source_client = self.session.create_client('s3', 'us-west-2')
+        params = {'region': 'us-west-2', 'acl': ['private'], 'quiet': True}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session, key1=u'\u2713')
         self.bucket2 = create_bucket(self.session)
@@ -229,12 +190,12 @@ class S3HandlerTestUnicodeMove(unittest.TestCase):
         self.s3_files2 = [self.bucket2 + '/' + u'\u2713']
 
     def tearDown(self):
-        s3_cleanup(self.bucket, self.session, key1=u'\u2713')
-        s3_cleanup(self.bucket2, self.session, key1=u'\u2713')
+        s3_cleanup(self.bucket, self.session)
+        s3_cleanup(self.bucket2, self.session)
 
     def test_move_unicode(self):
-        # Confirm there are no objects in the bucket.
-        self.assertEqual(len(list_contents(self.bucket2, self.session)), 0)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response.get('Contents', [])), 3)
         # Create file info objects to perform move.
         tasks = []
         for i in range(len(self.s3_files)):
@@ -242,11 +203,12 @@ class S3HandlerTestUnicodeMove(unittest.TestCase):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.s3_files2[i], dest_type='s3',
                 operation_name='move', size=0,
-                service=self.service, endpoint=self.endpoint
+                client=self.client, source_client=self.source_client
             ))
         # Perform the move.
         self.s3_handler.call(tasks)
-        self.assertEqual(len(list_contents(self.bucket2, self.session)), 1)
+        response = self.client.list_objects(Bucket=self.bucket2)
+        self.assertEqual(len(response.get('Contents', [])), 1)
 
 
 class S3HandlerTestMove(unittest.TestCase):
@@ -257,9 +219,9 @@ class S3HandlerTestMove(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1', 'acl': ['private']}
+        self.client = self.session.create_client('s3', 'us-west-2')
+        self.source_client = self.session.create_client('s3', 'us-west-2')
+        params = {'region': 'us-west-2', 'acl': ['private']}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
         self.bucket2 = create_bucket(self.session)
@@ -273,8 +235,8 @@ class S3HandlerTestMove(unittest.TestCase):
         s3_cleanup(self.bucket2, self.session)
 
     def test_move(self):
-        # Confirm there are no objects in the bucket.
-        self.assertEqual(len(list_contents(self.bucket2, self.session)), 0)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response['Contents']), 3)
         # Create file info objects to perform move.
         tasks = []
         for i in range(len(self.s3_files)):
@@ -282,15 +244,17 @@ class S3HandlerTestMove(unittest.TestCase):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.s3_files2[i], dest_type='s3',
                 operation_name='move', size=0,
-                service=self.service, endpoint=self.endpoint,
-                source_endpoint = self.endpoint
+                client=self.client,
+                source_client = self.client
             ))
         # Perform the move.
         self.s3_handler.call(tasks)
         # Confirm the files were moved.  The origial bucket had three
         # objects. Only two were moved.
-        self.assertEqual(len(list_contents(self.bucket, self.session)), 1)
-        self.assertEqual(len(list_contents(self.bucket2, self.session)), 2)
+        response = self.client.list_objects(Bucket=self.bucket)
+        self.assertEqual(len(response['Contents']), 1)
+        response = self.client.list_objects(Bucket=self.bucket2)
+        self.assertEqual(len(response['Contents']), 2)
 
 
 class S3HandlerTestDownload(unittest.TestCase):
@@ -300,9 +264,8 @@ class S3HandlerTestDownload(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        params = {'region': 'us-east-1'}
+        self.client = self.session.create_client('s3', 'us-west-2')
+        params = {'region': 'us-west-2'}
         self.s3_handler = S3Handler(self.session, params)
         self.s3_handler_multi = S3Handler(
             self.session, params,
@@ -333,9 +296,7 @@ class S3HandlerTestDownload(unittest.TestCase):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.loc_files[i], dest_type='local',
                 last_update=time, operation_name='download',
-                size=0,
-                service=self.service,
-                endpoint=self.endpoint
+                size=0, client=self.client
             ))
         # Perform the download.
         self.s3_handler.call(tasks)
@@ -356,9 +317,7 @@ class S3HandlerTestDownload(unittest.TestCase):
                 src=self.s3_files[i], src_type='s3',
                 dest=self.loc_files[i], dest_type='local',
                 last_update=time, operation_name='download',
-                size=15,
-                service=self.service,
-                endpoint=self.endpoint,
+                size=15, client=self.client,
             ))
         # Perform the multipart  download.
         self.s3_handler_multi.call(tasks)
@@ -378,9 +337,9 @@ class S3HandlerTestBucket(unittest.TestCase):
     """
     def setUp(self):
         self.session = botocore.session.get_session(EnvironmentVariables)
-        self.service = self.session.get_service('s3')
-        self.endpoint = self.service.get_endpoint('us-east-1')
-        self.params = {'region': 'us-east-1'}
+        self.client = self.session.create_client('s3', 'us-west-2')
+        self.source_client = self.session.create_client('s3', 'us-west-2')
+        self.params = {'region': 'us-west-2'}
         self.s3_handler = S3Handler(self.session, self.params)
         self.bucket = None
 
@@ -394,21 +353,20 @@ class S3HandlerTestBucket(unittest.TestCase):
 
         file_info = FileInfo(
             src=self.bucket, operation_name='make_bucket', size=0,
-            service=self.service,
-            endpoint=self.endpoint,
+            client=self.client, source_client=self.source_client
         )
         S3Handler(self.session, self.params).call([file_info])
         buckets_list = []
-        for bucket in list_buckets(self.session):
+        for bucket in self.client.list_buckets().get('Buckets', []):
             buckets_list.append(bucket['Name'])
         self.assertIn(self.bucket[:-1], buckets_list)
 
         file_info = FileInfo(
             src=self.bucket, operation_name='remove_bucket', size=0,
-            service=self.service, endpoint=self.endpoint)
+            client=self.client, source_client=self.source_client)
         S3Handler(self.session, self.params).call([file_info])
         buckets_list = []
-        for bucket in list_buckets(self.session):
+        for bucket in self.client.list_buckets().get('Buckets', []):
             buckets_list.append(bucket['Name'])
         self.assertNotIn(self.bucket[:-1], buckets_list)
 

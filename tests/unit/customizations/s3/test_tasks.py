@@ -330,21 +330,21 @@ class TestDownloadPartTask(unittest.TestCase):
     def setUp(self):
         self.result_queue = mock.Mock()
         self.io_queue = mock.Mock()
-        self.service = mock.Mock()
+        self.client = mock.Mock()
         self.filename = mock.Mock()
         self.filename.size = 10 * 1024 * 1024
         self.filename.src = 'bucket/key'
         self.filename.dest = 'local/file'
         self.filename.is_stream = False
-        self.filename.service = self.service
+        self.filename.client = self.client
         self.filename.operation_name = 'download'
         self.context = mock.Mock()
         self.open = mock.MagicMock()
 
     def test_socket_timeout_is_retried(self):
-        self.service.get_operation.return_value.call.side_effect = socket.error
+        self.client.get_object.side_effect = socket.error
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
-                                self.service, self.filename, self.context,
+                                self.filename, self.context,
                                 self.io_queue)
         # The mock is configured to keep raising a socket.error
         # so we should cancel the download.
@@ -353,30 +353,28 @@ class TestDownloadPartTask(unittest.TestCase):
         self.context.cancel.assert_called_with()
         # And we retried the request multiple times.
         self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
-                         self.service.get_operation.call_count)
+                         self.client.get_object.call_count)
 
     def test_download_succeeds(self):
         body = mock.Mock()
         body.read.return_value = b''
-        self.service.get_operation.return_value.call.side_effect = [
-            socket.error, (mock.Mock(), {'Body': body})]
+        self.client.get_object.side_effect = [
+            socket.error, {'Body': body}]
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
-                                self.service, self.filename, self.context,
+                                self.filename, self.context,
                                 self.io_queue)
         task()
         self.assertEqual(self.result_queue.put.call_count, 1)
         # And we tried twice, the first one failed, the second one
         # succeeded.
-        self.assertEqual(self.service.get_operation.call_count, 2)
+        self.assertEqual(self.client.get_object.call_count, 2)
 
     def test_download_queues_io_properly(self):
         body = mock.Mock()
         body.read.side_effect = [b'foobar', b'morefoobar', b'']
-        self.service.get_operation.return_value.call.side_effect = [
-            (mock.Mock(), {'Body': body}),
-        ]
+        self.client.get_object.side_effect = [{'Body': body}]
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
-                                self.service, self.filename, self.context,
+                                self.filename, self.context,
                                 self.io_queue)
         task()
         call_args_list = self.io_queue.put.call_args_list
@@ -387,16 +385,16 @@ class TestDownloadPartTask(unittest.TestCase):
                          mock.call(('local/file', 6, b'morefoobar', False)))
 
     def test_incomplete_read_is_retried(self):
-        self.service.get_operation.return_value.call.side_effect = \
+        self.client.get_object.side_effect = \
                 IncompleteReadError(actual_bytes=1, expected_bytes=2)
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
-                                self.service, self.filename,
+                                self.filename,
                                 self.context, self.io_queue)
         with self.assertRaises(RetriesExeededError):
             task()
         self.context.cancel.assert_called_with()
         self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
-                         self.service.get_operation.call_count)
+                         self.client.get_object.call_count)
 
     def test_readtimeout_is_retried(self):
         self.service.get_operation.return_value.call.side_effect = \
@@ -416,9 +414,9 @@ class TestDownloadPartTask(unittest.TestCase):
         success_body = mock.Mock()
         success_body.read.side_effect = [b'foobar', b'']
 
-        incomplete_read = (mock.Mock(), {'Body': error_body})
-        success_read = (mock.Mock(), {'Body': success_body})
-        self.service.get_operation.return_value.call.side_effect = [
+        incomplete_read = {'Body': error_body}
+        success_read = {'Body': success_body}
+        self.client.get_object.side_effect = [
             # The first request results in an error when reading the request.
             incomplete_read,
             success_read,
@@ -426,8 +424,7 @@ class TestDownloadPartTask(unittest.TestCase):
         self.filename.is_stream = True
         task = DownloadPartTask(
             0, transferconfig.DEFAULTS['multipart_chunksize'],
-            self.result_queue, self.service,
-            self.filename, self.context, self.io_queue)
+            self.result_queue, self.filename, self.context, self.io_queue)
         task()
         call_args_list = self.io_queue.put.call_args_list
         self.assertEqual(len(call_args_list), 1)
@@ -504,7 +501,7 @@ class TestTaskOrdering(unittest.TestCase):
         return CompleteDownloadTask(None, None, None, None, None)
 
     def download_task(self):
-        return DownloadPartTask(None, None, None, None, mock.Mock(), None, None)
+        return DownloadPartTask(None, None, None, mock.Mock(), None, None)
 
     def shutdown_task(self, priority=None):
         return ShutdownThreadRequest(priority)

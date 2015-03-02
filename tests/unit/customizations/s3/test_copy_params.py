@@ -44,13 +44,13 @@ class TestGetObject(BaseAWSCommandParamsTest):
 
     def assert_params(self, cmdline, result):
         foo = self.assert_params_for_cmd(cmdline, result, expected_rc=0,
-                                          ignore_params=['body'])
+                                          ignore_params=['Body'])
 
     def test_simple(self):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        result = {'bucket': u'mybucket', 'key': u'mykey'}
+        result = {'Bucket': u'mybucket', 'Key': u'mykey'}
         self.assert_params(cmdline, result)
 
     def test_sse(self):
@@ -58,8 +58,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --sse'
-        result = {'bucket': u'mybucket', 'key': u'mykey',
-                  'server_side_encryption': 'AES256'}
+        result = {'Bucket': u'mybucket', 'Key': u'mykey',
+                  'ServerSideEncryption': 'AES256'}
         self.assert_params(cmdline, result)
 
     def test_storage_class(self):
@@ -67,8 +67,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class REDUCED_REDUNDANCY'
-        result = {'bucket': u'mybucket', 'key': u'mykey',
-                  'storage_class': u'REDUCED_REDUNDANCY'}
+        result = {'Bucket': u'mybucket', 'Key': u'mykey',
+                  'StorageClass': u'REDUCED_REDUNDANCY'}
         self.assert_params(cmdline, result)
 
     def test_website_redirect(self):
@@ -76,9 +76,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --website-redirect /foobar'
-        result = {'bucket': u'mybucket',
-                  'key': u'mykey',
-                  'website_redirect_location': u'/foobar'}
+        result = {'Bucket': u'mybucket',
+                  'Key': u'mykey',
+                  'WebsiteRedirectLocation': u'/foobar'}
         self.assert_params(cmdline, result)
 
     def test_acl(self):
@@ -86,7 +86,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --acl public-read'
-        result = {'bucket': 'mybucket', 'key': 'mykey', 'acl': 'public-read'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey', 'ACL': 'public-read'}
         self.assert_params(cmdline, result)
 
     def test_content_params(self):
@@ -97,11 +97,11 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --content-language piglatin'
         cmdline += ' --cache-control max-age=3600,must-revalidate'
         cmdline += ' --content-disposition attachment;filename="fname.ext"'
-        result = {'bucket': 'mybucket', 'key': 'mykey',
-                  'content_encoding': 'x-gzip',
-                  'content_language': 'piglatin',
-                  'content_disposition': 'attachment;filename="fname.ext"',
-                  'cache_control': 'max-age=3600,must-revalidate'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey',
+                  'ContentEncoding': 'x-gzip',
+                  'ContentLanguage': 'piglatin',
+                  'ContentDisposition': 'attachment;filename="fname.ext"',
+                  'CacheControl': 'max-age=3600,must-revalidate'}
         self.assert_params(cmdline, result)
 
     def test_grants(self):
@@ -110,10 +110,10 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read=bob'
         cmdline += ' full=alice'
-        result = {'bucket': u'mybucket',
-                  'grant_full_control': u'alice',
-                  'grant_read': u'bob',
-                  'key': u'mykey'}
+        result = {'Bucket': u'mybucket',
+                  'GrantFullControl': u'alice',
+                  'GrantRead': u'bob',
+                  'Key': u'mykey'}
         self.assert_params(cmdline, result)
 
     def test_grants_bad(self):
@@ -122,15 +122,15 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read:bob'
         self.assert_params_for_cmd(cmdline, expected_rc=1,
-                                    ignore_params=['payload'])
+                                    ignore_params=['Payload'])
 
     def test_content_type(self):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --content-type text/xml'
-        result = {'bucket': u'mybucket', 'content_type': u'text/xml',
-                  'key': u'mykey'}
+        result = {'Bucket': u'mybucket', 'ContentType': u'text/xml',
+                  'Key': u'mykey'}
         self.assert_params(cmdline, result)
 
 

@@ -51,7 +51,7 @@ class TestMvCommand(BaseAWSCommandParamsTest):
         # Make sure that the specified web address is used as opposed to the
         # contents of the web address.
         self.assertEqual(
-            self.operations_called[0][1]['website_redirect_location'],
+            self.operations_called[0][1]['WebsiteRedirectLocation'],
             'http://someserver'
         )
 

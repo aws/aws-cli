@@ -97,8 +97,8 @@ class TestSaveFile(unittest.TestCase):
 
 class TestSetSizeFromS3(unittest.TestCase):
     def test_set_size_from_s3(self):
-        file_info = FileInfo(src="bucket/key", endpoint=None)
-        with mock.patch('awscli.customizations.s3.fileinfo.operate') as op_mock:
-            op_mock.return_value = ({'ContentLength': 5}, None)
-            file_info.set_size_from_s3()
+        client = mock.Mock()
+        client.head_object.return_value = {'ContentLength': 5}
+        file_info = FileInfo(src="bucket/key", client=client)
+        file_info.set_size_from_s3()
         self.assertEqual(file_info.size, 5)

@@ -21,7 +21,7 @@ import os
 import datetime
 import random
 import sys
-from awscli.testutils import unittest
+from awscli.testutils import unittest, FileCreator
 
 from awscli import EnvironmentVariables
 from awscli.compat import StringIO
@@ -49,10 +49,11 @@ class S3HandlerTestDelete(unittest.TestCase):
         params = {'region': 'us-west-2'}
         self.s3_handler = S3Handler(self.session, params)
         self.bucket = make_s3_files(self.session)
-        self.loc_files = make_loc_files()
+        self.file_creator = FileCreator()
+        self.loc_files = make_loc_files(self.file_creator)
 
     def tearDown(self):
-        clean_loc_files(self.loc_files)
+        clean_loc_files(self.file_creator)
         s3_cleanup(self.bucket, self.session)
 
     def test_loc_delete(self):
@@ -126,7 +127,8 @@ class S3HandlerTestUpload(unittest.TestCase):
             runtime_config=runtime_config(
                 multipart_threshold=10, multipart_chunksize=2))
         self.bucket = create_bucket(self.session)
-        self.loc_files = make_loc_files()
+        self.file_creator = FileCreator()
+        self.loc_files = make_loc_files(self.file_creator)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
         self.output = StringIO()
@@ -136,7 +138,7 @@ class S3HandlerTestUpload(unittest.TestCase):
     def tearDown(self):
         self.output.close()
         sys.stderr = self.saved_stderr
-        clean_loc_files(self.loc_files)
+        clean_loc_files(self.file_creator)
         s3_cleanup(self.bucket, self.session)
 
     def test_upload(self):
@@ -274,14 +276,16 @@ class S3HandlerTestDownload(unittest.TestCase):
         self.bucket = make_s3_files(self.session)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
-        directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
+        self.file_creator = FileCreator()
+        directory1 = self.file_creator.rootdir + os.sep + 'some_directory' + \
+            os.sep
         filename1 = directory1 + "text1.txt"
         directory2 = directory1 + 'another_directory' + os.sep
         filename2 = directory2 + "text2.txt"
         self.loc_files = [filename1, filename2]
 
     def tearDown(self):
-        clean_loc_files(self.loc_files)
+        clean_loc_files(self.file_creator)
         s3_cleanup(self.bucket, self.session)
 
     def test_download(self):

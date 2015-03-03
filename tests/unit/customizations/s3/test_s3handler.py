@@ -44,12 +44,8 @@ class S3HandlerTestDelete(S3HandlerBaseTest):
         self.s3_handler = S3Handler(self.session, params,
                                     runtime_config=runtime_config(
                                         max_concurrent_requests=1))
-        self.loc_files = make_loc_files()
+        self.loc_files = make_loc_files(self.file_creator)
         self.bucket = 'mybucket'
-
-    def tearDown(self):
-        super(S3HandlerTestDelete, self).tearDown()
-        clean_loc_files(self.loc_files)
 
     def test_loc_delete(self):
         """
@@ -139,13 +135,9 @@ class S3HandlerTestUpload(S3HandlerBaseTest):
                 multipart_threshold=10, multipart_chunksize=10,
                 max_concurrent_requests=1))
         self.bucket = 'mybucket'
-        self.loc_files = make_loc_files()
+        self.loc_files = make_loc_files(self.file_creator)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
-
-    def tearDown(self):
-        super(S3HandlerTestUpload, self).tearDown()
-        clean_loc_files(self.loc_files)
 
     def test_upload(self):
         # Create file info objects to perform upload.
@@ -279,13 +271,9 @@ class S3HandlerTestMvLocalS3(S3HandlerBaseTest):
                                     runtime_config=runtime_config(
                                         max_concurrent_requests=1))
         self.bucket = 'mybucket'
-        self.loc_files = make_loc_files()
+        self.loc_files = make_loc_files(self.file_creator)
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
-
-    def tearDown(self):
-        super(S3HandlerTestMvLocalS3, self).tearDown()
-        clean_loc_files(self.loc_files)
 
     def test_move(self):
         # Create file info objects to perform move.
@@ -398,15 +386,12 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
         self.bucket = 'mybucket'
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
-        directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
+        directory1 = self.file_creator.rootdir + os.sep + 'some_directory' \
+            + os.sep
         filename1 = directory1 + "text1.txt"
         directory2 = directory1 + 'another_directory' + os.sep
         filename2 = directory2 + "text2.txt"
         self.loc_files = [filename1, filename2]
-
-    def tearDown(self):
-        super(S3HandlerTestMvS3Local, self).tearDown()
-        clean_loc_files(self.loc_files)
 
     def test_move(self):
         # Create file info objects to perform move.
@@ -467,15 +452,12 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
         self.bucket = 'mybucket'
         self.s3_files = [self.bucket + '/text1.txt',
                          self.bucket + '/another_directory/text2.txt']
-        directory1 = os.path.abspath('.') + os.sep + 'some_directory' + os.sep
+        directory1 = self.file_creator.rootdir + os.sep + 'some_directory' \
+            + os.sep
         filename1 = directory1 + "text1.txt"
         directory2 = directory1 + 'another_directory' + os.sep
         filename2 = directory2 + "text2.txt"
         self.loc_files = [filename1, filename2]
-
-    def tearDown(self):
-        super(S3HandlerTestDownload, self).tearDown()
-        clean_loc_files(self.loc_files)
 
     def test_download(self):
         # Create file info objects to perform download.
@@ -521,8 +503,8 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
                 size=15, client=self.client))
         mock_stream = mock.Mock()
         mock_stream.read.side_effect = [
-            'This ', '', 'is a ', '', 'test.', '',
-            'This ', '', 'is a ', '', 'test.', ''
+            b'This ', b'', b'is a ', b'', b'test.', b'',
+            b'This ', b'', b'is a ', b'', b'test.', b''
         ]
         self.parsed_responses = [
             {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',
@@ -589,7 +571,7 @@ class S3HandlerTestDownload(S3HandlerBaseTest):
                 size=15, client=self.client))
         mock_stream = mock.Mock()
         mock_stream.read.side_effect = [
-            'This ', '', 'is a ', '', 'test.', '',
+            b'This ', b'', b'is a ', b'', b'test.', b''
         ]
         self.parsed_responses = [
             {'ETag': '"120ea8a25e5d487bf68b5f7096440019"',

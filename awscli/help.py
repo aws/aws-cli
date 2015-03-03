@@ -1,4 +1,4 @@
-# Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import logging
 import os
 import platform
@@ -50,29 +49,16 @@ def get_renderer():
         return PosixHelpRenderer()
 
 
-class HelpRenderer(object):
+class PagingHelpRenderer(object):
     """
     Interface for a help renderer.
 
     The renderer is responsible for displaying the help content on
     a particular platform.
+
     """
 
-    def render(self, contents):
-        """
-        Each implementation of HelpRenderer must implement this
-        render method.
-        """
-        pass
-
-
-class PosixHelpRenderer(HelpRenderer):
-    """
-    Render help content on a Posix-like system.  This includes
-    Linux and MacOS X.
-    """
-
-    PAGER = 'less -R'
+    PAGER = None
 
     def get_pager_cmdline(self):
         pager = self.PAGER
@@ -83,6 +69,35 @@ class PosixHelpRenderer(HelpRenderer):
         return shlex.split(pager)
 
     def render(self, contents):
+        """
+        Each implementation of HelpRenderer must implement this
+        render method.
+        """
+        converted_content = self._convert_doc_content(contents)
+        self._send_output_to_pager(converted_content)
+
+    def _send_output_to_pager(self, output):
+        cmdline = self.get_pager_cmdline()
+        LOG.debug("Running command: %s", cmdline)
+        p = self._popen(cmdline, stdin=PIPE)
+        p.communicate(input=output)
+
+    def _popen(self, *args, **kwargs):
+        return Popen(*args, **kwargs)
+
+    def _convert_doc_content(self, contents):
+        return contents
+
+
+class PosixHelpRenderer(PagingHelpRenderer):
+    """
+    Render help content on a Posix-like system.  This includes
+    Linux and MacOS X.
+    """
+
+    PAGER = 'less -R'
+
+    def _convert_doc_content(self, contents):
         man_contents = publish_string(contents, writer=manpage.Writer())
         if not self._exists_on_path('groff'):
             raise ExecutableNotFoundError('groff')
@@ -90,11 +105,7 @@ class PosixHelpRenderer(HelpRenderer):
         LOG.debug("Running command: %s", cmdline)
         p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         groff_output = p3.communicate(input=man_contents)[0]
-        cmdline = self.get_pager_cmdline()
-        LOG.debug("Running command: %s", cmdline)
-        p4 = self._popen(cmdline, stdin=PIPE)
-        p4.communicate(input=groff_output)
-        sys.exit(1)
+        return groff_output
 
     def _exists_on_path(self, name):
         # Since we're only dealing with POSIX systems, we can
@@ -102,30 +113,22 @@ class PosixHelpRenderer(HelpRenderer):
         return any([os.path.exists(os.path.join(p, name))
                     for p in os.environ.get('PATH', '').split(os.pathsep)])
 
-    def _popen(self, *args, **kwargs):
-        return Popen(*args, **kwargs)
 
+class WindowsHelpRenderer(PagingHelpRenderer):
+    """Render help content on a Windows platform."""
 
-class WindowsHelpRenderer(HelpRenderer):
-    """
-    Render help content on a Windows platform.
-    """
+    PAGER = 'more'
 
-    def render(self, contents):
+    def _convert_doc_content(self, contents):
         text_output = publish_string(contents,
                                      writer=TextWriter())
-        sys.stdout.write(text_output.decode('utf-8'))
-        sys.exit(1)
+        return text_output
 
-
-class RawRenderer(HelpRenderer):
-    """
-    Render help as the raw ReST document.
-    """
-
-    def render(self, contents):
-        sys.stdout.write(contents)
-        sys.exit(1)
+    def _popen(self, *args, **kwargs):
+        # Also set the shell value to True.  To get any of the
+        # piping to a pager to work, we need to use shell=True.
+        kwargs['shell'] = True
+        return Popen(*args, **kwargs)
 
 
 class HelpCommand(object):

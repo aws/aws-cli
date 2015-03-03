@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.help import HelpRenderer
+from awscli.help import PagingHelpRenderer
 from awscli.customizations.cloudsearchdomain import validate_endpoint_url
 
 import mock
@@ -46,7 +46,7 @@ class TestSearchCommand(BaseAWSCommandParamsTest):
     def test_endpoint_not_required_for_help(self):
         cmd = self.prefix + 'help'
         with mock.patch('awscli.help.get_renderer') as get_renderer:
-            mock_render = mock.Mock(spec=HelpRenderer)
+            mock_render = mock.Mock(spec=PagingHelpRenderer)
             get_renderer.return_value = mock_render
             stdout, stderr, rc = self.run_cmd(cmd, expected_rc=None)
             # If we get this far we've succeeded, but we can do

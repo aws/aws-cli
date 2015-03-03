@@ -20,14 +20,13 @@ from mock import patch, Mock, MagicMock
 import botocore.session
 from awscli.customizations.s3.s3 import S3
 from awscli.customizations.s3.subcommands import CommandParameters, \
-    CommandArchitecture, CpCommand, SyncCommand, ListCommand, get_endpoint, \
+    CommandArchitecture, CpCommand, SyncCommand, ListCommand, \
     RbCommand, get_client
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
     BaseAWSCommandParamsTest
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
-from tests.unit.customizations.s3.fake_session import FakeSession
 from awscli.compat import StringIO
 
 
@@ -37,18 +36,6 @@ class FakeArgs(object):
 
     def __contains__(self, key):
         return key in self.__dict__
-
-
-class TestGetEndpoint(unittest.TestCase):
-    def test_endpoint(self):
-        session = FakeSession()
-        endpoint = get_endpoint(session.service,
-                                region='us-west-1',
-                                endpoint_url='URL',
-                                verify=True)
-        self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(endpoint.endpoint_url, 'URL')
-        self.assertTrue(endpoint.verify)
 
 
 class TestGetClient(unittest.TestCase):
@@ -165,31 +152,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
 
         super(CommandArchitectureTest, self).tearDown()
         clean_loc_files(self.loc_files)
-
-    def test_set_endpoint_no_source(self):
-        cmd_arc = CommandArchitecture(self.session, 'sync',
-                                      {'region': 'us-west-1',
-                                       'endpoint_url': None,
-                                       'verify_ssl': None,
-                                       'source_region': None})
-        cmd_arc.set_endpoints()
-        endpoint = cmd_arc._endpoint
-        source_endpoint = cmd_arc._source_endpoint
-        self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(source_endpoint.region_name, 'us-west-1')
-
-    def test_set_endpoint_with_source(self):
-        cmd_arc = CommandArchitecture(self.session, 'sync',
-                                      {'region': 'us-west-1',
-                                       'endpoint_url': None,
-                                       'verify_ssl': None,
-                                       'paths_type': 's3s3',
-                                       'source_region': ['us-west-2']})
-        cmd_arc.set_endpoints()
-        endpoint = cmd_arc._endpoint
-        source_endpoint = cmd_arc._source_endpoint
-        self.assertEqual(endpoint.region_name, 'us-west-1')
-        self.assertEqual(source_endpoint.region_name, 'us-west-2')
 
     def test_set_client_no_source(self):
         session = Mock()
@@ -373,7 +335,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                                   'Message': 'Bucket does not exist'}}]
         cmd_arc = CommandArchitecture(self.session, 'cp', params)
         cmd_arc.set_clients()
-        cmd_arc.set_endpoints()
         cmd_arc.create_instructions()
         self.patch_make_request()
         cmd_arc.run()

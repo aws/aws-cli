@@ -265,17 +265,6 @@ def check_etag(etag, fileobj):
             raise MD5Error
 
 
-def check_error(response_data):
-    """
-    A helper function that prints out the error message recieved in the
-    response_data and raises an error when there is an error.
-    """
-    if response_data:
-        if 'Error' in response_data:
-            error = response_data['Error']
-            raise Exception("Error: %s\n" % error['Message'])
-
-
 def create_warning(path, error_message):
     """
     This creates a ``PrintTask`` for whenever a warning is to be thrown.
@@ -286,18 +275,6 @@ def create_warning(path, error_message):
     warning_message = PrintTask(message=print_string, error=False,
                                 warning=True)
     return warning_message
-
-
-def operate(service, cmd, kwargs):
-    """
-    A helper function that universally calls any command by taking in the
-    service, name of the command, and any additional parameters required in
-    the call.
-    """
-    operation = service.get_operation(cmd)
-    http_response, response_data = operation.call(**kwargs)
-    check_error(response_data)
-    return response_data, http_response
 
 
 def find_chunksize(size, current_chunksize):

@@ -10,8 +10,7 @@ from dateutil.tz import tzlocal
 
 from botocore.compat import quote
 from awscli.customizations.s3.utils import find_bucket_key, \
-        check_etag, check_error, operate, uni_print, \
-        guess_content_type, MD5Error, bytes_print
+    check_etag, uni_print, guess_content_type, MD5Error, bytes_print
 
 
 class CreateDirectoryError(Exception):

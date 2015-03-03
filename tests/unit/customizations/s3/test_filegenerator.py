@@ -91,17 +91,14 @@ class TestIsReadable(unittest.TestCase):
 
 class LocalFileGeneratorTest(unittest.TestCase):
     def setUp(self):
-        self.local_file = six.text_type(os.path.abspath('.') +
-                                        os.sep + 'some_directory' +
-                                        os.sep + 'text1.txt')
-        self.local_dir = six.text_type(os.path.abspath('.') +
-                                       os.sep + 'some_directory' +
-                                       os.sep)
         self.client = None
-        self.files = make_loc_files()
+        self.file_creator = FileCreator()
+        self.files = make_loc_files(self.file_creator)
+        self.local_file = self.files[0]
+        self.local_dir = self.files[3] + os.sep
 
     def tearDown(self):
-        clean_loc_files(self.files)
+        clean_loc_files(self.file_creator)
 
     def test_local_file(self):
         """

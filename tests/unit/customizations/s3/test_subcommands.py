@@ -25,7 +25,7 @@ from awscli.customizations.s3.subcommands import CommandParameters, \
 from awscli.customizations.s3.syncstrategy.base import \
     SizeAndLastModifiedSync, NeverSync, MissingFileSync
 from awscli.testutils import unittest, BaseAWSHelpOutputTest, \
-    BaseAWSCommandParamsTest
+    BaseAWSCommandParamsTest, FileCreator
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
 from awscli.compat import StringIO
 
@@ -136,7 +136,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         super(CommandArchitectureTest, self).setUp()
         self.session = self.driver.session
         self.bucket = 'mybucket'
-        self.loc_files = make_loc_files()
+        self.file_creator = FileCreator()
+        self.loc_files = make_loc_files(self.file_creator)
         self.output = StringIO()
         self.err_output = StringIO()
         self.saved_stdout = sys.stdout
@@ -151,7 +152,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         sys.stderr = self.saved_stderr
 
         super(CommandArchitectureTest, self).tearDown()
-        clean_loc_files(self.loc_files)
+        clean_loc_files(self.file_creator)
 
     def test_set_client_no_source(self):
         session = Mock()
@@ -525,12 +526,13 @@ class CommandParametersTest(unittest.TestCase):
         self.environ_patch.start()
         self.mock = MagicMock()
         self.mock.get_config = MagicMock(return_value={'region': None})
-        self.loc_files = make_loc_files()
+        self.file_creator = FileCreator()
+        self.loc_files = make_loc_files(self.file_creator)
         self.bucket = 's3testbucket'
 
     def tearDown(self):
         self.environ_patch.stop()
-        clean_loc_files(self.loc_files)
+        clean_loc_files(self.file_creator)
 
     def test_check_path_type_pass(self):
         # This tests the class's ability to determine whether the correct

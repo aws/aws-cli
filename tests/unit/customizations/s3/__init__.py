@@ -16,7 +16,7 @@ import mock
 from mock import patch, Mock
 
 from awscli.compat import six
-from awscli.testutils import unittest, BaseAWSCommandParamsTest
+from awscli.testutils import unittest, BaseAWSCommandParamsTest, FileCreator
 
 
 class S3HandlerBaseTest(BaseAWSCommandParamsTest):
@@ -28,6 +28,11 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
                                      self.before_parameter_build)
         self.client = self.session.create_client('s3', 'us-east-1')
         self.source_client = self.session.create_client('s3', 'us-east-1')
+        self.file_creator = FileCreator()
+
+    def tearDown(self):
+        super(S3HandlerBaseTest, self).tearDown()
+        clean_loc_files(self.file_creator)
 
     def run_s3_handler(self, s3_handler, tasks):
         self.patch_make_request()
@@ -66,43 +71,30 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
             self.assertEqual(self.operations_called[i][1], ref_operation[1])
 
 
-def make_loc_files():
+def make_loc_files(file_creator):
     """
     This sets up the test by making a directory named some_directory.  It
     has the file text1.txt and the directory another_directory inside.  Inside
     of another_directory it creates the file text2.txt.
     """
-    directory1 = six.text_type(
-        os.path.abspath('.') + os.sep + 'some_directory' + os.sep)
-    if not os.path.exists(directory1):
-        os.mkdir(directory1)
+    body = 'This is a test.'
 
-    body = b"This is a test."
-    filename1 = directory1 + u"text1.txt"
-    with open(filename1, 'wb') as file1:
-        file1.write(body)
+    filename1 = file_creator.create_file(
+        os.path.join('some_directory','text1.txt'), body)
 
-    directory2 = directory1 + u'another_directory' + os.sep
-    if not os.path.exists(directory2):
-        os.mkdir(directory2)
-
-    filename2 = directory2 + u"text2.txt"
-    with open(filename2, 'wb') as file2:
-        file2.write(body)
-
-    return [filename1, filename2, directory2,  directory1]
+    filename2 = file_creator.create_file(
+        os.path.join('some_directory', 'another_directory', 'text2.txt'), body)
+    filename1 = six.text_type(filename1)
+    filename2 = six.text_type(filename2)
+    return [filename1, filename2, os.path.dirname(filename2),
+            os.path.dirname(filename1)]
 
 
-def clean_loc_files(files):
+def clean_loc_files(file_creator):
     """
     Removes all of the local files made.
     """
-    for filename in files:
-        if os.path.exists(filename):
-            if os.path.isfile(filename):
-                os.remove(filename)
-            else:
-                os.rmdir(filename)
+    file_creator.remove_all()
 
 
 def compare_files(self, result_file, ref_file):

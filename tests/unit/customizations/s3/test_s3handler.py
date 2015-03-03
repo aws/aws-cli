@@ -433,6 +433,106 @@ class S3HandlerTestMvS3Local(S3HandlerBaseTest):
             self.assertEqual(filename.read(), b'This is a test.')
 
 
+class S3HandlerTestCpS3S3(S3HandlerBaseTest):
+    """
+    This class tests the ability to move s3 objects.  The move
+    operation uses a copy then delete.
+    """
+    def setUp(self):
+        super(S3HandlerTestCpS3S3, self).setUp()
+        params = {'region': 'us-east-1'}
+        self.s3_handler = S3Handler(self.session, params,
+                                    runtime_config=runtime_config(
+                                        max_concurrent_requests=1))
+        self.s3_handler_multi = S3Handler(
+            self.session, params=params,
+            runtime_config=runtime_config(
+                multipart_threshold=10, multipart_chunksize=5,
+                max_concurrent_requests=1))
+        self.bucket = 'mybucket'
+        self.bucket2 = 'mybucket2'
+        self.s3_files = [self.bucket + '/text1.txt',
+                         self.bucket + '/another_directory/text2.txt']
+        self.s3_files2 = [self.bucket2 + '/text1.txt',
+                          self.bucket2 + '/another_directory/text2.txt']
+
+    def test_multi_copy(self):
+        # Create file info objects to perform move.
+        tasks = []
+        tasks.append(FileInfo(src=self.s3_files[0], src_type='s3',
+                              dest=self.s3_files2[0], dest_type='s3',
+                              operation_name='copy', size=15,
+                              client=self.client,
+                              source_client=self.source_client))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'CopyPartResult': {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}},
+            {'CopyPartResult': {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}},
+            {'CopyPartResult': {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}},
+            {}
+        ]
+
+        ref_calls = [
+            ('CreateMultipartUpload',
+             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+              'ContentType': 'text/plain'}),
+            ('UploadPartCopy',
+             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+              'PartNumber': 1, 'UploadId': 'foo',
+              'CopySourceRange': 'bytes=0-4',
+              'CopySource': self.bucket + '/text1.txt'}),
+            ('UploadPartCopy',
+             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+              'PartNumber': 2, 'UploadId': 'foo',
+              'CopySourceRange': 'bytes=5-9',
+              'CopySource': self.bucket + '/text1.txt'}),
+            ('UploadPartCopy',
+             {'Bucket': self.bucket2, 'Key': 'text1.txt',
+              'PartNumber': 3, 'UploadId': 'foo',
+              'CopySourceRange': 'bytes=10-14',
+              'CopySource': self.bucket + '/text1.txt'}),
+            ('CompleteMultipartUpload',
+             {'MultipartUpload': {'Parts': [{'PartNumber': 1,
+                                             'ETag': mock.ANY},
+                                            {'PartNumber': 2,
+                                             'ETag': mock.ANY},
+                                            {'PartNumber': 3,
+                                             'ETag': mock.ANY}]},
+              'Bucket': self.bucket2, 'UploadId': 'foo', 'Key': 'text1.txt'})
+        ]
+
+        # Perform the copy.
+        self.assert_operations_for_s3_handler(self.s3_handler_multi, tasks,
+                                              ref_calls)
+
+    def test_multi_copy_fail(self):
+        # Create file info objects to perform move.
+        tasks = []
+        for i in range(len(self.s3_files)):
+            tasks.append(FileInfo(src=self.s3_files[i], src_type='s3',
+                                  dest=self.s3_files2[i], dest_type='s3',
+                                  operation_name='copy', size=15,
+                                  client=self.client,
+                                  source_client=self.source_client))
+
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'CopyPartResult': {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}},
+            {'CopyPartResult': {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}},
+            {'CopyPartResult': {'ETag': '"120ea8a25e5d487bf68b5f7096440019"'}},
+            {},
+            {'UploadId': 'bar'},
+            # This will fail because some response is expected for multipart
+            # upload copies.
+            {},
+            {},
+            {},
+            {}
+        ]
+        stdout, stderr, rc = self.run_s3_handler(self.s3_handler_multi, tasks)
+        self.assertEqual(rc.num_tasks_failed, 1)
+
+
 class S3HandlerTestDownload(S3HandlerBaseTest):
     """
     This class tests the ability to download s3 objects locally as well

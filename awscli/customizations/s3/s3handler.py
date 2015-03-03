@@ -17,7 +17,7 @@ import os
 import sys
 
 from awscli.customizations.s3.utils import find_chunksize, \
-    operate, find_bucket_key, relative_path, PrintTask, create_warning
+    find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig

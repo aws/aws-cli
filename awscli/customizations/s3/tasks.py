@@ -11,8 +11,7 @@ from botocore.vendored.requests.packages.urllib3.exceptions import \
     ReadTimeoutError
 
 from awscli.customizations.s3.utils import find_bucket_key, MD5Error, \
-    operate, ReadFileChunk, relative_path, IORequest, IOCloseRequest, \
-    PrintTask
+    ReadFileChunk, relative_path, IORequest, IOCloseRequest, PrintTask
 
 
 LOGGER = logging.getLogger(__name__)

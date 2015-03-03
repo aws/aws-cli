@@ -286,11 +286,6 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  PAGE_SIZE]
 
 
-def get_endpoint(service, region, endpoint_url, verify):
-    return service.get_endpoint(region_name=region, endpoint_url=endpoint_url,
-                                verify=verify)
-
-
 def get_client(session, region, endpoint_url, verify):
     return session.create_client('s3', region_name=region,
                                  endpoint_url=endpoint_url, verify=verify)
@@ -298,10 +293,6 @@ def get_client(session, region, endpoint_url, verify):
 
 class S3Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
-        self.service = self._session.get_service('s3')
-        self.endpoint = get_endpoint(self.service, parsed_globals.region,
-                                     parsed_globals.endpoint_url,
-                                     parsed_globals.verify_ssl)
         self.client = get_client(self._session, parsed_globals.region,
                                  parsed_globals.endpoint_url,
                                  parsed_globals.verify_ssl)
@@ -505,7 +496,6 @@ class S3TransferCommand(S3Command):
         cmd = CommandArchitecture(self._session, self.NAME,
                                   cmd_params.parameters,
                                   runtime_config)
-        cmd.set_endpoints()
         cmd.set_clients()
         cmd.create_instructions()
         return cmd.run()
@@ -634,23 +624,6 @@ class CommandArchitecture(object):
         self._source_endpoint = None
         self._client = None
         self._source_client = None
-
-    def set_endpoints(self):
-        self._endpoint = get_endpoint(
-            self._service,
-            region=self.parameters['region'],
-            endpoint_url=self.parameters['endpoint_url'],
-            verify=self.parameters['verify_ssl']
-        )
-        self._source_endpoint = self._endpoint
-        if self.parameters['source_region']:
-            if self.parameters['paths_type'] == 's3s3':
-                self._source_endpoint = get_endpoint(
-                    self._service,
-                    region=self.parameters['source_region'][0],
-                    endpoint_url=None,
-                    verify=self.parameters['verify_ssl']
-                )
 
     def set_clients(self):
         self._client = get_client(

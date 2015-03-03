@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:Help Paging: Support paging through ``more`` when running
+  help commands on windows
+  (`issue 1195 <https://github.com/aws/aws-cli/pull/1195>`__)
 * bugfix:``aws s3``: Fix issue where read timeouts were not retried.
   (`issue 1191 <https://github.com/aws/aws-cli/pull/1191>`__)
 * feature:``aws cloudtrail``: Add support for regionalized policy templates

@@ -247,7 +247,7 @@ class S3HandlerTestMove(unittest.TestCase):
                 dest=self.s3_files2[i], dest_type='s3',
                 operation_name='move', size=0,
                 client=self.client,
-                source_client = self.client
+                source_client=self.client
             ))
         # Perform the move.
         self.s3_handler.call(tasks)

@@ -17,7 +17,7 @@ import sys
 
 import mock
 
-from awscli.testutils import unittest, BaseAWSCommandParamsTest
+from awscli.testutils import unittest
 from awscli import EnvironmentVariables
 from awscli.compat import six
 from awscli.customizations.s3.s3handler import S3Handler, S3StreamHandler

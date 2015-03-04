@@ -16,7 +16,7 @@ import mock
 from mock import patch, Mock
 
 from awscli.compat import six
-from awscli.testutils import unittest, BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class S3HandlerBaseTest(BaseAWSCommandParamsTest):
@@ -80,7 +80,7 @@ def make_loc_files(file_creator):
     body = 'This is a test.'
 
     filename1 = file_creator.create_file(
-        os.path.join('some_directory','text1.txt'), body)
+        os.path.join('some_directory', 'text1.txt'), body)
 
     filename2 = file_creator.create_file(
         os.path.join('some_directory', 'another_directory', 'text2.txt'), body)

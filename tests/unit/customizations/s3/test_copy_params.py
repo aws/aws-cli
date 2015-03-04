@@ -44,7 +44,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
 
     def assert_params(self, cmdline, result):
         foo = self.assert_params_for_cmd(cmdline, result, expected_rc=0,
-                                          ignore_params=['Body'])
+                                         ignore_params=['Body'])
 
     def test_simple(self):
         cmdline = self.prefix
@@ -122,7 +122,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read:bob'
         self.assert_params_for_cmd(cmdline, expected_rc=1,
-                                    ignore_params=['Payload'])
+                                   ignore_params=['Payload'])
 
     def test_content_type(self):
         cmdline = self.prefix

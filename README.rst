@@ -33,6 +33,7 @@ The currently supported services include:
 * Amazon ElastiCache
 * Amazon Elastic Compute Cloud
 * Amazon Elastic MapReduce (Preview)
+* Amazon Elastic Container Service (Preview)
 * Amazon Elastic Transcoder
 * Amazon Kinesis
 * Amazon Redshift

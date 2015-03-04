@@ -167,7 +167,7 @@ class S3Handler(object):
             'UploadId': upload_id,
         }
         LOGGER.debug("Aborting multipart upload for: %s", key)
-        response_data = filename.client.abort_multipart_upload(**params)
+        filename.client.abort_multipart_upload(**params)
 
     def _enqueue_tasks(self, files):
         total_files = 0

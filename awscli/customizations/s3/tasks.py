@@ -471,7 +471,7 @@ class RemoveRemoteObjectTask(OrderableTask):
         self._context.wait_for_completion()
         bucket, key = find_bucket_key(self._filename.src)
         params = {'Bucket': bucket, 'Key': key}
-        response_data = operate = self._filename.source_client.delete_object(**params)
+        self._filename.source_client.delete_object(**params)
 
 
 class CompleteMultipartUploadTask(BasicTask):

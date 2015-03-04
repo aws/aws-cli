@@ -55,6 +55,7 @@ def make_s3_files(session, key1='text1.txt', key2='text2.txt'):
                           Body=string2)
     return bucket
 
+
 def s3_cleanup(bucket, session):
     """
     Function to cleanup generated s3 bucket and files.
@@ -63,7 +64,7 @@ def s3_cleanup(bucket, session):
     client = session.create_client('s3', region_name=region)
     try:
         client.head_bucket(Bucket=bucket)
-    except ClientError as e:
+    except ClientError:
         return
     response = client.list_objects(Bucket=bucket)
     contents = response.get('Contents', {})

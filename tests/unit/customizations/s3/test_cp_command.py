@@ -63,6 +63,43 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
         self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
 
+    def test_upload_grants(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --grants read=id=foo '
+                   'full=id=bar readacl=id=biz writeacl=id=baz' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The only operation we should have called is PutObject.
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'key.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['GrantRead'], 'id=foo')
+        self.assertEqual(self.operations_called[0][1]['GrantFullControl'],
+                         'id=bar')
+        self.assertEqual(self.operations_called[0][1]['GrantReadACP'],
+                         'id=biz')
+        self.assertEqual(self.operations_called[0][1]['GrantWriteACP'],
+                         'id=baz')
+
+    def test_upload_expires(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --expires 90' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The only operation we should have called is PutObject.
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'key.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['Expires'], '90')
+
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},

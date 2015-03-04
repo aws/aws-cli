@@ -5,6 +5,13 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws cloudsearch``: Update ``aws cloudsearch`` command
+  to the latest model
+* feature:``aws cognito-sync``:  Update ``aws cognito-sync`` command
+  to allow customers to receive near-realtime updates
+  as their data changes as well as exporting historical data. Customers
+  configure an Amazon Kinesis stream to receive the data which can then be
+  processed and exported to other data stores such as Amazon Redshift.
 * bugfix:``aws opsworks``: Fix issue with platform detection on
   linux systems with python3.3 and higher
   (`issue 1199 <https://github.com/aws/aws-cli/pull/1199>`__)

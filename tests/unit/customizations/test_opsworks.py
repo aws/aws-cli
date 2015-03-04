@@ -83,11 +83,11 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             mock.call("opsworks", endpoint_url="http://xxx/"),
         ])
 
-    @mock.patch.object(opsworks, "sys")
-    def test_prevalidate_arguments_invalid_hostnames(self, mock_sys):
+    @mock.patch.object(opsworks, "platform")
+    def test_prevalidate_arguments_invalid_hostnames(self, mock_platform):
         """Should only accept valid hostnames."""
 
-        mock_sys.platform = "linux2"
+        mock_platform.system.return_value = "Linux"
         self.register.prevalidate_arguments(
             self._build_args(
                 infrastructure_class="on-premises",
@@ -115,11 +115,11 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                     hostname="f.q.d.n",
                     local=True))
 
-    @mock.patch.object(opsworks, "sys")
-    def test_prevalidate_arguments_local_vs_remote(self, mock_sys):
+    @mock.patch.object(opsworks, "platform")
+    def test_prevalidate_arguments_local_vs_remote(self, mock_platform):
         """Shouldn't allow local and remote mode at the same time."""
 
-        mock_sys.platform = "linux2"
+        mock_platform.system.return_value = "Linux"
         with self.assertRaises(ValueError):
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="on-premises",
@@ -150,15 +150,15 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             infrastructure_class="ec2",
             hostname=None, target=None, local=True))
 
-    @mock.patch.object(opsworks, "sys")
-    def test_prevalidate_arguments_local_linux_only(self, mock_sys):
+    @mock.patch.object(opsworks, "platform")
+    def test_prevalidate_arguments_local_linux_only(self, mock_platform):
         """Shouldn't allow local and remote mode at the same time."""
 
-        mock_sys.platform = "linux2"
+        mock_platform.system.return_value = "Linux"
         self.register.prevalidate_arguments(self._build_args(
             infrastructure_class="on-premises", target=None, local=True))
         with self.assertRaises(ValueError):
-            mock_sys.platform = "win32"
+            mock_platform.system.return_value = "Windows"
             self.register.prevalidate_arguments(self._build_args(
                 infrastructure_class="on-premises", target=None, local=True))
 
@@ -311,14 +311,14 @@ class TestOpsWorksRegister(TestOpsWorksBase):
                     mock.Mock(hostname="DUPliCATED-HOSTNAME"))
 
     @mock.patch.object(opsworks, "tempfile")
-    @mock.patch.object(opsworks, "sys")
+    @mock.patch.object(opsworks, "platform")
     @mock.patch.object(opsworks, "subprocess")
     @mock.patch.object(opsworks, "os")
     def test_ssh_windows(
-            self, mock_os, mock_subprocess, mock_sys, mock_tempfile):
+            self, mock_os, mock_subprocess, mock_platform, mock_tempfile):
         """Should use plink on Windows correctly."""
 
-        mock_sys.platform = "win32"
+        mock_platform.system.return_value = "Windows"
         self.register._use_address = "ip"
         mock_file = mock.Mock()
         mock_tempfile.NamedTemporaryFile.return_value = mock_file
@@ -346,12 +346,12 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         mock_subprocess.check_call.assert_called_with(
             'plink -agent ip -m "tmpfilename"', shell=True)
 
-    @mock.patch.object(opsworks, "sys")
+    @mock.patch.object(opsworks, "platform")
     @mock.patch.object(opsworks, "subprocess")
-    def test_ssh_nix(self, mock_subprocess, mock_sys):
+    def test_ssh_nix(self, mock_subprocess, mock_platform):
         """Should use ssh on non-windows correctly."""
 
-        mock_sys.platform = "linux2"
+        mock_platform.system.return_value = "Linux"
         self.register._use_address = "ip"
 
         self.register.ssh(self._build_args(), "script")
@@ -408,12 +408,13 @@ class TestOpsWorksRegister(TestOpsWorksBase):
             }
         )
 
-    @mock.patch.object(opsworks, "sys")
+    @mock.patch.object(opsworks, "platform")
     @mock.patch.object(opsworks, "subprocess")
-    def test_setup_target_machine_remote_nix(self, mock_subprocess, mock_sys):
+    def test_setup_target_machine_remote_nix(
+            self, mock_subprocess, mock_platform):
         """Should setup a remote machine from a non-Windows host correctly."""
 
-        mock_sys.platform = "linux2"
+        mock_platform.system.return_value = "Linux"
         args = self._build_args(
             infrastructure_class="ec2", hostname="HOSTNAME", local=False
         )
@@ -437,13 +438,13 @@ class TestOpsWorksRegister(TestOpsWorksBase):
         self.assertEqual(cmd[2], "ip")
         self.assertRegexpMatches(cmd[3], r"/bin/sh -c ")
 
-    @mock.patch.object(opsworks, "sys")
+    @mock.patch.object(opsworks, "platform")
     @mock.patch.object(opsworks, "subprocess")
     def test_setup_target_machine_remote_windows(
-            self, mock_subprocess, mock_sys):
+            self, mock_subprocess, mock_platform):
         """Should setup a remote machine from a Windows host correctly."""
 
-        mock_sys.platform = "win32"
+        mock_platform.system.return_value = "Windows"
         args = self._build_args(
             infrastructure_class="ec2", hostname="HOSTNAME", local=False
         )
@@ -616,9 +617,9 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
     @mock.patch.object(opsworks, "urlopen")
     @mock.patch.object(opsworks, "subprocess")
     @mock.patch.object(opsworks, "socket")
-    @mock.patch.object(opsworks, "sys")
+    @mock.patch.object(opsworks, "platform")
     def test_run_main_local(
-            self, mock_sys, mock_socket, mock_subprocess, mock_urlopen):
+            self, mock_platform, mock_socket, mock_subprocess, mock_urlopen):
         """Flow test w/ all the expected side-effects for a local instance."""
 
         args = self._build_args(stack_id="STACKID", target=None,
@@ -627,7 +628,7 @@ class TestOpsWorksRegisterEc2(TestOpsWorksBase):
         mock_ec2 = mock.Mock()
         mock_iam = mock.Mock()
         mock_opsworks = mock.Mock()
-        mock_sys.platform = "linux2"
+        mock_platform.system.return_value = "Linux"
         self.mock_session.create_client.side_effect = lambda name, **_: \
             dict(ec2=mock_ec2, iam=mock_iam, opsworks=mock_opsworks)[name]
 

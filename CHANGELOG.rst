@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws opsworks``: Fix issue with platform detection on
+  linux systems with python3.3 and higher
+  (`issue 1199 <https://github.com/aws/aws-cli/pull/1199>`__)
 * feature:Help Paging: Support paging through ``more`` when running
   help commands on windows
   (`issue 1195 <https://github.com/aws/aws-cli/pull/1195>`__)

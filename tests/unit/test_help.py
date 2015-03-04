@@ -17,19 +17,29 @@ import os
 import mock
 
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
+from awscli.help import WindowsHelpRenderer
 
 
-class FakePosixHelpRenderer(PosixHelpRenderer):
+class HelpSpyMixin(object):
     def __init__(self):
         self.exists_on_path = {}
         self.popen_calls = []
+        self.mock_popen = mock.Mock()
 
     def _exists_on_path(self, name):
         return self.exists_on_path.get(name)
 
     def _popen(self, *args, **kwargs):
         self.popen_calls.append((args, kwargs))
-        return mock.Mock()
+        return self.mock_popen
+
+
+class FakePosixHelpRenderer(HelpSpyMixin, PosixHelpRenderer):
+    pass
+
+
+class FakeWindowsHelpRenderer(HelpSpyMixin, WindowsHelpRenderer):
+    pass
 
 
 class TestHelpPager(unittest.TestCase):
@@ -78,10 +88,8 @@ class TestHelpPager(unittest.TestCase):
                          pager_cmd.split())
 
     @unittest.skipIf(sys.platform.startswith('win'), "requires posix system")
-    @mock.patch('sys.exit', mock.Mock())
     def test_no_groff_exists(self):
         renderer = FakePosixHelpRenderer()
-        # Simulate neither rst2man.py nor rst2man existing on the path.
         renderer.exists_on_path['groff'] = False
         with self.assertRaisesRegexp(ExecutableNotFoundError,
                                      'Could not find executable named "groff"'):
@@ -92,3 +100,16 @@ class TestHelpPager(unittest.TestCase):
         os.environ['PAGER'] = pager_cmd
         self.assertEqual(self.renderer.get_pager_cmdline(),
                          ['/bin/sh', '-c', "col -bx | vim -c 'set ft=man' -"])
+
+    def test_can_render_contents(self):
+        renderer = FakePosixHelpRenderer()
+        renderer.exists_on_path['groff'] = True
+        renderer.mock_popen.communicate.return_value = ('rendered', '')
+        renderer.render('foo')
+        self.assertEqual(renderer.popen_calls[-1][0], (['less', '-R'],))
+
+    def test_can_page_output_on_windows(self):
+        renderer = FakeWindowsHelpRenderer()
+        renderer.mock_popen.communicate.return_value = ('rendered', '')
+        renderer.render('foo')
+        self.assertEqual(renderer.popen_calls[-1][0], (['more'],))

@@ -12,11 +12,11 @@
 # language governing permissions and limitations under the License.
 import os
 
-import mock
 from mock import patch, Mock
 
 from awscli.compat import six
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, \
+    capture_output
 
 
 class S3HandlerBaseTest(BaseAWSCommandParamsTest):
@@ -36,20 +36,17 @@ class S3HandlerBaseTest(BaseAWSCommandParamsTest):
 
     def run_s3_handler(self, s3_handler, tasks):
         self.patch_make_request()
-        captured_stderr = six.StringIO()
-        captured_stdout = six.StringIO()
-        with mock.patch('sys.stderr', captured_stderr):
-            with mock.patch('sys.stdout', captured_stdout):
-                try:
-                    rc = s3_handler.call(tasks)
-                except SystemExit as e:
-                    # We need to catch SystemExit so that we
-                    # can get a proper rc and still present the
-                    # stdout/stderr to the test runner so we can
-                    # figure out what went wrong.
-                    rc = e.code
-        stderr = captured_stderr.getvalue()
-        stdout = captured_stdout.getvalue()
+        with capture_output() as captured:
+            try:
+                rc = s3_handler.call(tasks)
+            except SystemExit as e:
+                # We need to catch SystemExit so that we
+                # can get a proper rc and still present the
+                # stdout/stderr to the test runner so we can
+                # figure out what went wrong.
+                rc = e.code
+        stderr = captured.stderr.getvalue()
+        stdout = captured.stdout.getvalue()
         return stdout, stderr, rc
 
     def assert_operations_for_s3_handler(self, s3_handler, tasks,

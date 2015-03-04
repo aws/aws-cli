@@ -33,6 +33,7 @@ import contextlib
 from pprint import pformat
 from subprocess import Popen, PIPE
 
+
 try:
     import mock
 except ImportError as e:
@@ -217,6 +218,21 @@ class CapturedRenderer(object):
         self.rendered_contents = contents.decode('utf-8')
 
 
+class CapturedOutput(object):
+    def __init__(self, stdout, stderr):
+        self.stdout = stdout
+        self.stderr = stderr
+
+
+@contextlib.contextmanager
+def capture_output():
+    stderr = six.StringIO()
+    stdout = six.StringIO()
+    with mock.patch('sys.stderr', stderr):
+        with mock.patch('sys.stdout', stdout):
+            yield CapturedOutput(stdout, stderr)
+
+
 class BaseAWSCommandParamsTest(unittest.TestCase):
     maxDiff = None
 
@@ -303,20 +319,17 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         else:
             cmdlist = cmd
 
-        captured_stderr = six.StringIO()
-        captured_stdout = six.StringIO()
-        with mock.patch('sys.stderr', captured_stderr):
-            with mock.patch('sys.stdout', captured_stdout):
-                try:
-                    rc = self.driver.main(cmdlist)
-                except SystemExit as e:
-                    # We need to catch SystemExit so that we
-                    # can get a proper rc and still present the
-                    # stdout/stderr to the test runner so we can
-                    # figure out what went wrong.
-                    rc = e.code
-        stderr = captured_stderr.getvalue()
-        stdout = captured_stdout.getvalue()
+        with capture_output() as captured:
+            try:
+                rc = self.driver.main(cmdlist)
+            except SystemExit as e:
+                # We need to catch SystemExit so that we
+                # can get a proper rc and still present the
+                # stdout/stderr to the test runner so we can
+                # figure out what went wrong.
+                rc = e.code
+        stderr = captured.stderr.getvalue()
+        stdout = captured.stdout.getvalue()
         self.assertEqual(
             rc, expected_rc,
             "Unexpected rc (expected: %s, actual: %s) for command: %s\n"

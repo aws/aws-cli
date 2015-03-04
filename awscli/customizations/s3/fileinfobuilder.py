@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import copy
-
 from awscli.customizations.s3.fileinfo import FileInfo
 
 
@@ -23,8 +21,8 @@ class FileInfoBuilder(object):
     def __init__(self, client, source_client=None,
                  parameters = None, is_stream=False):
         self._client = client
-        self._source_client = copy.copy(client)
-        if source_client:
+        self._source_client = client
+        if source_client is not None:
             self._source_client = source_client
         self._parameters = parameters
         self._is_stream = is_stream 

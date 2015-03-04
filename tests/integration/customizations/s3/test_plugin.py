@@ -520,7 +520,7 @@ class TestCp(BaseS3CLICommand):
             for i in range(num_mb):
                 f.write(b'a' * 1024 * 1024)
 
-        p = aws('s3 cp %s s3://%s/ --region eu-central-1 --debug' % (
+        p = aws('s3 cp %s s3://%s/ --region eu-central-1' % (
             foo_txt, bucket_name))
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))

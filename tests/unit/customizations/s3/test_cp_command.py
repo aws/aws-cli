@@ -75,15 +75,13 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1,
                          self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertEqual(self.operations_called[0][1]['Key'], 'key.txt')
-        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
-        self.assertEqual(self.operations_called[0][1]['GrantRead'], 'id=foo')
-        self.assertEqual(self.operations_called[0][1]['GrantFullControl'],
-                         'id=bar')
-        self.assertEqual(self.operations_called[0][1]['GrantReadACP'],
-                         'id=biz')
-        self.assertEqual(self.operations_called[0][1]['GrantWriteACP'],
-                         'id=baz')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': u'key.txt', 'Bucket': u'bucket', 'GrantRead': u'id=foo',
+             'GrantFullControl': u'id=bar', 'GrantReadACP': u'id=biz',
+             'GrantWriteACP': u'id=baz', 'ContentType': u'text/plain',
+             'Body': mock.ANY}
+        )
 
     def test_upload_expires(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')

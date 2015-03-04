@@ -14,11 +14,11 @@ import datetime
 import json
 import logging
 import os
+import platform
 import re
 import shlex
 import socket
 import subprocess
-import sys
 import tempfile
 import textwrap
 
@@ -156,7 +156,7 @@ class OpsWorksRegister(BasicCommand):
             raise ValueError(
                 "Arguments target and --local are mutually exclusive.")
 
-        if args.local and sys.platform != 'linux2':
+        if args.local and platform.system() != 'Linux':
             raise ValueError(
                 "Non-Linux instances are not supported by AWS OpsWorks.")
 
@@ -404,7 +404,7 @@ class OpsWorksRegister(BasicCommand):
         Runs a (sh) script on a remote machine via SSH.
         """
 
-        if sys.platform == 'win32':
+        if platform.system() == 'Windows':
             try:
                 script_file = tempfile.NamedTemporaryFile("wt", delete=False)
                 script_file.write(remote_script)

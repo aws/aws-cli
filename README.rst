@@ -11,49 +11,14 @@ aws-cli
   :target: https://coveralls.io/r/aws/aws-cli
 
 
-This package provides a unified command line interface to many
-Amazon Web Services.
-
-The currently supported services include:
-
-* AWS CloudFormation
-* AWS Data Pipeline
-* AWS Direct Connect
-* AWS Elastic Beanstalk
-* AWS Identity and Access Management
-* AWS Import/Export
-* AWS OpsWorks
-* AWS Security Token Service
-* AWS Storage Gateway
-* AWS Support
-* Amazon CloudFront (Preview)
-* Amazon CloudSearch
-* Amazon CloudWatch
-* Amazon DynamoDB
-* Amazon EC2 Container Service
-* Amazon ElastiCache
-* Amazon Elastic Compute Cloud
-* Amazon Elastic MapReduce
-* Amazon Elastic Transcoder
-* Amazon Kinesis
-* Amazon Redshift
-* Amazon Relational Database Service (Beta)
-* Amazon Route 53
-* Amazon Simple Email Service
-* Amazon Simple Notification Service
-* Amazon Simple Queue Service
-* Amazon Storage Gateway
-* Amazon Simple Storage Service
-* Amazon Simple Workflow Service
-* Auto Scaling
-* Elastic Load Balancing
-
+This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:
 
 * 2.6.5 and greater
 * 2.7.x and greater
 * 3.3.x and greater
+* 3.4.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the

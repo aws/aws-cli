@@ -216,6 +216,28 @@ EXPIRES = {
 }
 
 
+METADATA_DIRECTIVE = {
+    'name': 'metadata-directive', 'nargs': 1, 'choices': ['COPY', 'REPLACE'],
+    'help_text': (
+        'Specifies whether the metadata is copied from the source object '
+        'or replaced with metadata provided when copying S3 objects. '
+        'Note that if the object is copied over in parts, the source '
+        'object\'s metadata will not be copied over, no matter the value for '
+        '``--metadata-directive``, and instead the desired metadata values '
+        'must be specified as parameters on the command line. '
+        'Valid values are ``COPY`` and ``REPLACE``. If this parameter is not '
+        'specified, ``COPY`` will be used by default. If ``REPLACE`` is used, '
+        'the copied object will only have the metadata values that were'
+        ' specified by the CLI command. Note that if you are '
+        'using any of the following parameters: ``--content-type``, '
+        '``content-language``, ``--content-encoding``, '
+        '``--content-disposition``, ``-cache-control``, or ``--expires``, you '
+        'will need to specify ``--metadata-directive REPLACE`` for '
+        'non-multipart copies if you want the copied objects to have the '
+        'specified metadata values.')
+}
+
+
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
                       'A suffix that is appended to a request that is for '
@@ -530,7 +552,7 @@ class CpCommand(S3TransferCommand):
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [EXPECTED_SIZE, RECURSIVE]
+                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/cp.rst')
 
 
@@ -541,7 +563,8 @@ class MvCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS + [RECURSIVE]
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
+                                                         RECURSIVE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/mv.rst')
 
 

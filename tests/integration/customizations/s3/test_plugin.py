@@ -26,6 +26,7 @@ import string
 import socket
 import tempfile
 import shutil
+import copy
 
 import botocore.session
 from botocore.exceptions import ClientError
@@ -35,6 +36,7 @@ from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
 from tests.unit.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3.transferconfig import DEFAULTS
+from awscli.customizations.scalarparse import add_scalar_parsers
 
 
 @contextlib.contextmanager
@@ -522,6 +524,55 @@ class TestCp(BaseS3CLICommand):
             foo_txt, bucket_name))
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
+
+    def test_copy_metadata_directive(self):
+        # Copy the same style of parsing as the CLI session. This is needed
+        # For comparing expires timestamp.
+        add_scalar_parsers(self.session)
+        bucket_name = self.create_bucket()
+        original_key = 'foo.txt'
+        new_key = 'bar.txt'
+        metadata = {
+            'ContentType': 'foo',
+            'ContentDisposition': 'foo',
+            'ContentEncoding': 'foo',
+            'ContentLanguage': 'foo',
+            'CacheControl': '90',
+            'Expires': '0'
+        }
+        self.put_object(bucket_name, original_key, contents='foo',
+                        extra_args=metadata)
+        p = aws('s3 cp s3://%s/%s s3://%s/%s' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # These values should have the metadata of the source object
+        metadata_ref = copy.copy(metadata)
+        metadata_ref['Expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+        for name, value in metadata_ref.items():
+            self.assertEqual(response[name], value)
+
+        # Use REPLACE to wipe out all of the metadata.
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # Make sure all of the original metadata is gone.
+        for name, value in metadata_ref.items():
+            self.assertNotEqual(response.get(name), value)
+
+        # Use REPLACE to wipe out all of the metadata but include a new
+        # metadata value.
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE '
+                '--content-type bar' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # Make sure the content type metadata is included
+        self.assertEqual(response['ContentType'], 'bar')
+        # Make sure all of the original metadata is gone.
+        for name, value in metadata_ref.items():
+            self.assertNotEqual(response.get(name), value)
 
 
 class TestSync(BaseS3CLICommand):

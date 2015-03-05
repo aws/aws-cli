@@ -34,7 +34,7 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
                   'PortRange': {'From': 22, 'To': 22}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_udp(self):
         cmdline = self.prefix
@@ -52,7 +52,7 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
                   'PortRange': {'From': 22, 'To': 22}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_icmp(self):
         cmdline = self.prefix
@@ -70,7 +70,7 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
                   'PortRange': {'From': 22, 'To': 22}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_all(self):
         cmdline = self.prefix
@@ -88,7 +88,7 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
                   'PortRange': {'From': 22, 'To': 22}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_number(self):
         cmdline = self.prefix
@@ -106,5 +106,5 @@ class TestReplaceNetworkACLEntry(BaseAWSCommandParamsTest):
                   'Egress': False,
                   'CidrBlock': '0.0.0.0/0',
                   'PortRange': {'From': 22, 'To': 22}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 

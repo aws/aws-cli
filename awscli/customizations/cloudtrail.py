@@ -15,13 +15,17 @@ import logging
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.service import Service
 from botocore.vendored import requests
+from botocore.exceptions import ClientError
 
 
 LOG = logging.getLogger(__name__)
-S3_POLICY_TEMPLATE = 'policy/S3/AWSCloudTrail-S3BucketPolicy-2013-11-01.json'
-SNS_POLICY_TEMPLATE = 'policy/SNS/AWSCloudTrail-SnsTopicPolicy-2013-11-01.json'
+S3_POLICY_TEMPLATE = 'policy/S3/AWSCloudTrail-S3BucketPolicy-2014-12-17.json'
+SNS_POLICY_TEMPLATE = 'policy/SNS/AWSCloudTrail-SnsTopicPolicy-2014-12-17.json'
+
+
+class CloudTrailError(Exception):
+    pass
 
 
 def initialize(cli):
@@ -78,34 +82,37 @@ class CloudTrailSubscribe(BasicCommand):
         # Run the command and report success
         self._call(args, parsed_globals)
 
-        return 1
+        return 0
 
     def setup_services(self, args, parsed_globals):
-        endpoint_args = {
+        client_args = {
             'region_name': None,
-            'endpoint_url': None,
             'verify': None
         }
-        if 'region' in parsed_globals:
-            endpoint_args['region_name'] = parsed_globals.region
-        if 'verify_ssl' in parsed_globals:
-            endpoint_args['verify'] = parsed_globals.verify_ssl
+        if parsed_globals.region is not None:
+            client_args['region_name'] = parsed_globals.region
+        if parsed_globals.verify_ssl is not None:
+            client_args['verify'] = parsed_globals.verify_ssl
 
         # Initialize services
         LOG.debug('Initializing S3, SNS and CloudTrail...')
-        self.iam = Service('iam', endpoint_args=endpoint_args,
-                           session=self._session)
-        self.s3 = Service('s3', endpoint_args=endpoint_args,
-                          session=self._session)
-        self.sns = Service('sns', endpoint_args=endpoint_args,
-                           session=self._session)
+        self.iam = self._session.create_client('iam', **client_args)
+        self.s3 = self._session.create_client('s3', **client_args)
+        self.sns = self._session.create_client('sns', **client_args)
+        # This unregister call will go away once the client switchover
+        # is done, but for now we're relying on S3 catching a ClientError
+        # when we check if a bucket exists, so we need to ensure the
+        # botocore ClientError is raised instead of the CLI's error handler.
+        self.s3.meta.events.unregister('after-call',
+                                       unique_id='awscli-error-handler')
+
+        self.region_name = self.s3.meta.region_name
 
         # If the endpoint is specified, it is designated for the cloudtrail
         # service. Not all of the other services will use it.
-        if 'endpoint_url' in parsed_globals:
-            endpoint_args['endpoint_url'] = parsed_globals.endpoint_url
-        self.cloudtrail = Service('cloudtrail', endpoint_args=endpoint_args,
-                                  session=self._session)
+        if parsed_globals.endpoint_url is not None:
+            client_args['endpoint_url'] = parsed_globals.endpoint_url
+        self.cloudtrail = self._session.create_client('cloudtrail', **client_args)
 
     def _call(self, options, parsed_globals):
         """
@@ -130,8 +137,8 @@ class CloudTrailSubscribe(BasicCommand):
             if self.UPDATE and options.s3_prefix is None:
                 # Prefix was not passed and this is updating the S3 bucket,
                 # so let's find the existing prefix and use that if possible
-                res = self.cloudtrail.DescribeTrails(
-                    trail_name_list=[options.name])
+                res = self.cloudtrail.describe_trails(
+                    trailNameList=[options.name])
                 trail_info = res['trailList'][0]
 
                 if 'S3KeyPrefix' in trail_info:
@@ -153,7 +160,7 @@ class CloudTrailSubscribe(BasicCommand):
             except Exception:
                 # Roll back any S3 bucket creation
                 if options.s3_new_bucket:
-                    self.s3.DeleteBucket(bucket=options.s3_new_bucket)
+                    self.s3.delete_bucket(Bucket=options.s3_new_bucket)
                 raise
 
         try:
@@ -167,9 +174,9 @@ class CloudTrailSubscribe(BasicCommand):
         except Exception:
             # Roll back any S3 bucket / SNS topic creations
             if options.s3_new_bucket:
-                self.s3.DeleteBucket(bucket=options.s3_new_bucket)
+                self.s3.delete_bucket(Bucket=options.s3_new_bucket)
             if options.sns_new_topic:
-                self.sns.DeleteTopic(topic_arn=topic_result['TopicArn'])
+                self.sns.delete_topic(TopicArn=topic_result['TopicArn'])
             raise
 
         sys.stdout.write('CloudTrail configuration:\n{config}\n'.format(
@@ -184,6 +191,17 @@ class CloudTrailSubscribe(BasicCommand):
                 'Logs will be delivered to {bucket}:{prefix}\n'.format(
                     bucket=bucket, prefix=options.s3_prefix or ''))
 
+    def _get_policy(self, key_name):
+        try:
+            data = self.s3.get_object(
+                Bucket='awscloudtrail-policy-' + self.region_name,
+                Key=key_name)
+            return data['Body'].read().decode('utf-8')
+        except Exception as e:
+            raise CloudTrailError(
+                'Unable to get regional policy template for'
+                ' region %s: %s. Error: %s', self.region_name, key_name, e)
+
     def setup_new_bucket(self, bucket, prefix, policy_url=None):
         """
         Creates a new S3 bucket with an appropriate policy to let CloudTrail
@@ -193,7 +211,7 @@ class CloudTrailSubscribe(BasicCommand):
             'Setting up new S3 bucket {bucket}...\n'.format(bucket=bucket))
 
         # Who am I?
-        response = self.iam.GetUser()
+        response = self.iam.get_user()
         account_id = response['User']['Arn'].split(':')[4]
 
         # Clean up the prefix - it requires a trailing slash if set
@@ -204,9 +222,7 @@ class CloudTrailSubscribe(BasicCommand):
         if policy_url:
             policy = requests.get(policy_url).text
         else:
-            data = self.s3.GetObject(bucket='awscloudtrail',
-                                     key=S3_POLICY_TEMPLATE)
-            policy = data['Body'].read().decode('utf-8')
+            policy = self._get_policy(S3_POLICY_TEMPLATE)
 
         policy = policy.replace('<BucketName>', bucket)\
                        .replace('<CustomerAccountID>', account_id)
@@ -218,34 +234,29 @@ class CloudTrailSubscribe(BasicCommand):
 
         LOG.debug('Bucket policy:\n{0}'.format(policy))
 
-        # Make sure bucket doesn't already exist
-        # Warn but do not fail if ListBucket permissions
-        # are missing from the IAM role
         try:
-            buckets = self.s3.ListBuckets()['Buckets']
-        except Exception:
-            buckets = []
-            LOG.warn('Unable to list buckets, continuing...')
-
-        if [b for b in buckets if b['Name'] == bucket]:
+            self.s3.head_bucket(Bucket=bucket)
+        except ClientError:
+            # The bucket does not exists.  This is what we want.
+            pass
+        else:
             raise Exception('Bucket {bucket} already exists.'.format(
                 bucket=bucket))
 
         # If we are not using the us-east-1 region, then we must set
         # a location constraint on the new bucket.
-        region_name = self.s3.endpoint.region_name
-        params = {'bucket': bucket}
-        if region_name != 'us-east-1':
-            bucket_config = {'LocationConstraint': region_name}
-            params['create_bucket_configuration'] = bucket_config
+        params = {'Bucket': bucket}
+        if self.region_name != 'us-east-1':
+            bucket_config = {'LocationConstraint': self.region_name}
+            params['CreateBucketConfiguration'] = bucket_config
 
-        data = self.s3.CreateBucket(**params)
+        data = self.s3.create_bucket(**params)
 
         try:
-            self.s3.PutBucketPolicy(bucket=bucket, policy=policy)
-        except Exception:
-            # Roll back bucket creation
-            self.s3.DeleteBucket(bucket=bucket)
+            self.s3.put_bucket_policy(Bucket=bucket, Policy=policy)
+        except ClientError:
+            # Roll back bucket creation.
+            self.s3.delete_bucket(Bucket=bucket)
             raise
 
         return data
@@ -259,14 +270,14 @@ class CloudTrailSubscribe(BasicCommand):
             'Setting up new SNS topic {topic}...\n'.format(topic=topic))
 
         # Who am I?
-        response = self.iam.GetUser()
+        response = self.iam.get_user()
         account_id = response['User']['Arn'].split(':')[4]
 
         # Make sure topic doesn't already exist
         # Warn but do not fail if ListTopics permissions
         # are missing from the IAM role?
         try:
-            topics = self.sns.ListTopics()['Topics']
+            topics = self.sns.list_topics()['Topics']
         except Exception:
             topics = []
             LOG.warn('Unable to list topics, continuing...')
@@ -275,27 +286,25 @@ class CloudTrailSubscribe(BasicCommand):
             raise Exception('Topic {topic} already exists.'.format(
                 topic=topic))
 
-        region = self.sns.endpoint.region_name
+        region = self.sns.meta.region_name
 
         # Get the SNS topic policy information to allow CloudTrail
         # write-access.
         if policy_url:
             policy = requests.get(policy_url).text
         else:
-            data = self.s3.GetObject(bucket='awscloudtrail',
-                                     key=SNS_POLICY_TEMPLATE)
-            policy = data['Body'].read().decode('utf-8')
+            policy = self._get_policy(SNS_POLICY_TEMPLATE)
 
         policy = policy.replace('<Region>', region)\
                        .replace('<SNSTopicOwnerAccountId>', account_id)\
                        .replace('<SNSTopicName>', topic)
 
-        topic_result = self.sns.CreateTopic(name=topic)
+        topic_result = self.sns.create_topic(Name=topic)
 
         try:
             # Merge any existing topic policy with our new policy statements
-            topic_attr = self.sns.GetTopicAttributes(
-                topic_arn=topic_result['TopicArn'])
+            topic_attr = self.sns.get_topic_attributes(
+                TopicArn=topic_result['TopicArn'])
 
             policy = self.merge_sns_policy(topic_attr['Attributes']['Policy'],
                                            policy)
@@ -303,12 +312,12 @@ class CloudTrailSubscribe(BasicCommand):
             LOG.debug('Topic policy:\n{0}'.format(policy))
 
             # Set the topic policy
-            self.sns.SetTopicAttributes(topic_arn=topic_result['TopicArn'],
-                                        attribute_name='Policy',
-                                        attribute_value=policy)
+            self.sns.set_topic_attributes(TopicArn=topic_result['TopicArn'],
+                                          AttributeName='Policy',
+                                          AttributeValue=policy)
         except Exception:
             # Roll back topic creation
-            self.sns.DeleteTopic(topic_arn=topic_result['TopicArn'])
+            self.sns.delete_topic(TopicArn=topic_result['TopicArn'])
             raise
 
         return topic_result
@@ -330,9 +339,7 @@ class CloudTrailSubscribe(BasicCommand):
         """
         left_parsed = json.loads(left)
         right_parsed = json.loads(right)
-
         left_parsed['Statement'] += right_parsed['Statement']
-
         return json.dumps(left_parsed)
 
     def upsert_cloudtrail_config(self, name, bucket, prefix, topic, gse):
@@ -342,34 +349,28 @@ class CloudTrailSubscribe(BasicCommand):
         """
         sys.stdout.write('Creating/updating CloudTrail configuration...\n')
         config = {
-            'name': name
+            'Name': name
         }
-
         if bucket is not None:
-            config['s3_bucket_name'] = bucket
-
+            config['S3BucketName'] = bucket
         if prefix is not None:
-            config['s3_key_prefix'] = prefix
-
+            config['S3KeyPrefix'] = prefix
         if topic is not None:
-            config['sns_topic_name'] = topic
-
+            config['SnsTopicName'] = topic
         if gse is not None:
-            config['include_global_service_events'] = gse
-
+            config['IncludeGlobalServiceEvents'] = gse
         if not self.UPDATE:
-            self.cloudtrail.CreateTrail(**config)
+            self.cloudtrail.create_trail(**config)
         else:
-            self.cloudtrail.UpdateTrail(**config)
-
-        return self.cloudtrail.DescribeTrails()
+            self.cloudtrail.update_trail(**config)
+        return self.cloudtrail.describe_trails()
 
     def start_cloudtrail(self, name):
         """
         Start the CloudTrail service, which begins logging.
         """
         sys.stdout.write('Starting CloudTrail service...\n')
-        return self.cloudtrail.StartLogging(name=name)
+        return self.cloudtrail.start_logging(Name=name)
 
 
 class CloudTrailUpdate(CloudTrailSubscribe):

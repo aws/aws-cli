@@ -23,7 +23,7 @@ class TestAssociateAddress(BaseAWSCommandParamsTest):
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --public-ip 192.168.0.0'
         result = {'InstanceId': 'i-12345678', 'PublicIp': '192.168.0.0'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_vpc_basic(self):
         cmdline = self.prefix
@@ -35,7 +35,7 @@ class TestAssociateAddress(BaseAWSCommandParamsTest):
                   'PublicIp': '192.168.0.0',
                   'AllowReassociation': True,
                   'AllocationId': 'eipalloc-12345678'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

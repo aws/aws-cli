@@ -69,7 +69,8 @@ def awscli_initialize(event_handlers):
     # generic error handler.
     register_s3_error_msg(event_handlers)
     error_handler = ErrorHandler()
-    event_handlers.register('after-call', error_handler)
+    event_handlers.register('after-call', error_handler,
+                            unique_id='awscli-error-handler')
 #    # The following will get fired for every option we are
 #    # documenting.  It will attempt to add an example_fn on to
 #    # the parameter object if the parameter supports shorthand

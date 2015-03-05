@@ -30,25 +30,25 @@ class TestListClusters(BaseAWSCommandParamsTest):
                                     'TERMINATING'
                                     ]
                   }
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_list_terminated_clusters(self):
         args = '--terminated'
         cmdline = self.prefix + args
         result = {'ClusterStates': ['TERMINATED']}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_list_failed_clusters(self):
         args = '--failed'
         cmdline = self.prefix + args
         result = {'ClusterStates': ['TERMINATED_WITH_ERRORS']}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_list_multiple_states(self):
         args = '--cluster-states RUNNING WAITING TERMINATED'
         cmdline = self.prefix + args
         result = {'ClusterStates': ['RUNNING', 'WAITING', 'TERMINATED']}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_exclusive_states_filters(self):
         args = '--active --failed'

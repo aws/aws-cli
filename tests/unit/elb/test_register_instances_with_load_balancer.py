@@ -32,7 +32,7 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline += ' --instances {"InstanceId":"i-12345678"}'
         result = {'LoadBalancerName': 'my-lb',
                   'Instances': [{'InstanceId': 'i-12345678'}]}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_shorthand(self):
         cmdline = self.prefix
@@ -40,21 +40,21 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline += ' --instances i-12345678'
         result = {'LoadBalancerName': 'my-lb',
                   'Instances': [{'InstanceId': 'i-12345678'}]}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_two_instance(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances {"InstanceId":"i-12345678"}'
         cmdline += ' {"InstanceId":"i-87654321"}'
-        self.assert_params_for_cmd2(cmdline, TWO_INSTANCE_EXPECTED)
+        self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_as_json(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances [{"InstanceId":"i-12345678"},'
         cmdline += '{"InstanceId":"i-87654321"}]'
-        self.assert_params_for_cmd2(cmdline, TWO_INSTANCE_EXPECTED)
+        self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_from_file(self):
         data_path = os.path.join(os.path.dirname(__file__),
@@ -62,7 +62,7 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances file://%s' % data_path
-        self.assert_params_for_cmd2(cmdline, TWO_INSTANCE_EXPECTED)
+        self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_json_file_with_spaces(self):
         data_path = os.path.join(os.path.dirname(__file__),
@@ -70,10 +70,10 @@ class TestRegisterInstancesWithLoadBalancer(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances file://%s' % data_path
-        self.assert_params_for_cmd2(cmdline, TWO_INSTANCE_EXPECTED)
+        self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)
 
     def test_two_instance_shorthand(self):
         cmdline = self.prefix
         cmdline += ' --load-balancer-name my-lb'
         cmdline += ' --instances i-12345678 i-87654321'
-        self.assert_params_for_cmd2(cmdline, TWO_INSTANCE_EXPECTED)
+        self.assert_params_for_cmd(cmdline, TWO_INSTANCE_EXPECTED)

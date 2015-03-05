@@ -34,13 +34,13 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --id /hostedzone/ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
-        self.assert_params_for_cmd2(
+        self.assert_params_for_cmd(
             cmdline, {'Id': 'ZD3IYMVP1KDDM'}, expected_rc=0)
 
     def test_short_resource_id(self):
         args = ' --id ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
-        self.assert_params_for_cmd2(
+        self.assert_params_for_cmd(
             cmdline, {'Id': 'ZD3IYMVP1KDDM'},
             expected_rc=0)
 
@@ -77,7 +77,7 @@ class TestChangeResourceRecord(BaseAWSCommandParamsTest):
                 ]
             }
         }
-        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected, expected_rc=0)
 
 
 class TestGetChange(BaseAWSCommandParamsTest):
@@ -91,13 +91,13 @@ class TestGetChange(BaseAWSCommandParamsTest):
         args = ' --id /change/ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
         expected = {'Id': 'ZD3IYMVP1KDDM'}
-        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected, expected_rc=0)
 
     def test_short_resource_id(self):
         args = ' --id ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
         expected = {'Id': 'ZD3IYMVP1KDDM'}
-        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected, expected_rc=0)
 
 
 class TestReusableDelegationSet(BaseAWSCommandParamsTest):
@@ -110,13 +110,13 @@ class TestReusableDelegationSet(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --id /delegationset/N9INWVYQ6Q0FN'
         cmdline = self.prefix + args
-        self.assert_params_for_cmd2(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
+        self.assert_params_for_cmd(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
                                     expected_rc=0)
 
     def test_short_resource_id(self):
         args = ' --id N9INWVYQ6Q0FN'
         cmdline = self.prefix + args
-        self.assert_params_for_cmd2(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
+        self.assert_params_for_cmd(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
                                     expected_rc=0)
 
 
@@ -128,4 +128,4 @@ class TestMaxItems(BaseAWSCommandParamsTest):
         args = ' --hosted-zone-id /hostedzone/ABCD --max-items 1'
         cmdline = self.prefix + args
         expected = {'HostedZoneId': 'ABCD'}
-        self.assert_params_for_cmd2(cmdline, expected, expected_rc=0)
+        self.assert_params_for_cmd(cmdline, expected, expected_rc=0)

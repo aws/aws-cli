@@ -52,7 +52,7 @@ class TestPutBucketTagging(BaseAWSCommandParamsTest):
                 ]
             }
         }
-        self.assert_params_for_cmd2(cmdline, expected)
+        self.assert_params_for_cmd(cmdline, expected)
 
 
 if __name__ == "__main__":

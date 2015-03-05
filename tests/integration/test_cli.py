@@ -94,18 +94,18 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_help_output(self):
         p = aws('help')
-        self.assertEqual(p.rc, 1)
+        self.assertEqual(p.rc, 0)
         self.assertIn('AWS', p.stdout)
         self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')
-        self.assertEqual(p.rc, 1)
+        self.assertEqual(p.rc, 0)
         self.assertIn('Amazon EC2', p.stdout)
 
     def test_operation_help_output(self):
         p = aws('ec2 describe-instances help')
-        self.assertEqual(p.rc, 1)
+        self.assertEqual(p.rc, 0)
         # XXX: This is a rendering bug that needs to be fixed in bcdoc.  In
         # the RST version there are multiple spaces between certain words.
         # For now we're making the test less strict about formatting, but
@@ -116,7 +116,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_operation_help_with_required_arg(self):
         p = aws('s3api get-object help')
-        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertEqual(p.rc, 0, p.stderr)
         self.assertIn('get-object', p.stdout)
 
     def test_service_help_with_required_option(self):
@@ -124,21 +124,21 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         # We want to make sure if you're just getting help tex
         # that we don't trigger that validation.
         p = aws('cloudsearchdomain help')
-        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertEqual(p.rc, 0, p.stderr)
         self.assertIn('cloudsearchdomain', p.stdout)
         # And nothing on stderr about missing options.
         self.assertEqual(p.stderr, '')
 
     def test_operation_help_with_required_option(self):
         p = aws('cloudsearchdomain search help')
-        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertEqual(p.rc, 0, p.stderr)
         self.assertIn('search', p.stdout)
         # And nothing on stderr about missing options.
         self.assertEqual(p.stderr, '')
 
     def test_help_with_warning_blocks(self):
         p = aws('elastictranscoder create-pipeline help')
-        self.assertEqual(p.rc, 1, p.stderr)
+        self.assertEqual(p.rc, 0, p.stderr)
         # Check text that appears in the warning block to ensure
         # the block was actually rendered.
         self.assertRegexpMatches(p.stdout, 'To\s+receive\s+notifications')

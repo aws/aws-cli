@@ -26,7 +26,7 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         result = {'ImageId': 'ami-d00dbeef',
                   'OperationType': 'add',
                   'UserIds': ['0123456789012']}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_two(self):
         cmdline = self.prefix
@@ -40,14 +40,14 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
                 'Remove': [{'Group': 'all'}],
             }
         }
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_assert_error_in_bad_json_path(self):
         cmdline = self.prefix
         cmdline += ' --image-id ami-d00dbeef'
         cmdline += ' --launch-permission THISISNOTJSON'
         # The arg name should be in the error message.
-        self.assert_params_for_cmd2(cmdline, expected_rc=255,
+        self.assert_params_for_cmd(cmdline, expected_rc=255,
                                    stderr_contains='launch-permission')
 
 

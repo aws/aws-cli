@@ -24,7 +24,7 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --application-name FooBar'
         result = {'ApplicationName': 'FooBar',}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     @unittest.skipIf(
         six.PY3, 'Unicode cmd line test only is relevant to python2.')
@@ -42,4 +42,4 @@ class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
             encoding = 'utf-8'
         cmdline = cmdline.encode(encoding)
         result = {'ApplicationName': u'\u2713',}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)

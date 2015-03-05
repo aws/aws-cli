@@ -69,14 +69,14 @@ class TestPutPipelineDefinition(BaseAWSCommandParamsTest):
                        },
                      ]}]
             }
-            self.assert_params_for_cmd2(cmdline, result)
+            self.assert_params_for_cmd(cmdline, result)
 
 
 class TestErrorMessages(BaseAWSCommandParamsTest):
     prefix = 'datapipeline list-runs'
 
     def test_unknown_status(self):
-        self.assert_params_for_cmd2(
+        self.assert_params_for_cmd(
             self.prefix + ' --pipeline-id foo --status foo',
             expected_rc=255,
             stderr_contains=('Invalid status: foo, must be one of: waiting, '

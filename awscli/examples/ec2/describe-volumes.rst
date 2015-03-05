@@ -1,4 +1,4 @@
-**To view information on all volumes**
+**To describe all volumes**
 
 This example command describes all of your volumes in the default region.
 
@@ -43,7 +43,7 @@ Output::
        ]
    }
 
-**To view filtered information on all volumes**
+**To describe volumes that are attached to a specific instance**
 
 This example command describes all volumes that are both attached to the instance with the ID i-abe041d4 and set to delete when the instance terminates.
 
@@ -76,3 +76,35 @@ Output::
            }
        ]
    }
+ 
+ **To describe tagged volumes and filter the output **
+
+This example command describes all volumes that have the tag key ``Name`` and a value that begins with ``Test``. The output is filtered to display only the tags and IDs of the volumes. 
+
+Command::
+
+  aws ec2 describe-volumes --filters Name=tag-key,Values="Name" Name=tag-value,Values="Test*" --query 'Volumes[*].{ID:VolumeId,Tag:Tags}'
+
+Output::
+
+   [
+     {
+        "Tag": [
+            {
+                "Value": "Test2", 
+                "Key": "Name"
+            }
+        ], 
+        "ID": "vol-9de9e9d9"
+    }, 
+    {
+        "Tag": [
+            {
+                "Value": "Test1", 
+                "Key": "Name"
+            }
+        ], 
+        "ID": "vol-b2242df9"
+     }
+   ]
+

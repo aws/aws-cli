@@ -22,12 +22,12 @@ class TestListQueues(BaseAWSCommandParamsTest):
     def test_no_param(self):
         cmdline = self.prefix
         result = {}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_prefix(self):
         cmdline = self.prefix + ' --queue-name-prefix test'
         result = {'QueueNamePrefix': 'test'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

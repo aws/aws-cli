@@ -89,7 +89,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline += (
             ' --outfile %s --bootstrap-method Base32StringSeed' % outfile)
         result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
 
     def test_qrcode(self):
@@ -99,7 +99,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
         result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
 
     def test_bad_filename(self):
@@ -108,7 +108,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
-        self.assert_params_for_cmd2(cmdline, expected_rc=255)
+        self.assert_params_for_cmd(cmdline, expected_rc=255)
 
     def test_relative_filename(self):
         outfile = 'filename.png'
@@ -117,7 +117,7 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
         result = {"VirtualMFADeviceName": 'fiebaz'}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
 
     def test_bad_relative_filename(self):
@@ -126,4 +126,4 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += ' --outfile %s --bootstrap-method QRCodePNG' % outfile
-        self.assert_params_for_cmd2(cmdline, expected_rc=255)
+        self.assert_params_for_cmd(cmdline, expected_rc=255)

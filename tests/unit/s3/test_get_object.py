@@ -38,7 +38,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --key mykey'
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd2(cmdline, {'Bucket': 'mybucket',
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
                                               'Key': 'mykey'})
 
     def test_range(self):
@@ -48,7 +48,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --range bytes=0-499'
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd2(cmdline, {'Bucket': 'mybucket',
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
                                               'Key': 'mykey',
                                               'Range': 'bytes=0-499'})
 
@@ -60,7 +60,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --response-content-encoding x-gzip'
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd2(
+        self.assert_params_for_cmd(
             cmdline, {
                 'Bucket': 'mybucket', 'Key': 'mykey',
                 'ResponseCacheControl': 'No-cache',
@@ -83,7 +83,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --key mykey'
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
-        self.assert_params_for_cmd2(
+        self.assert_params_for_cmd(
             cmdline, {'Bucket': 'mybucket', 'Key': 'mykey'})
 
 

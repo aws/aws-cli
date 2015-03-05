@@ -172,14 +172,14 @@ class TestWait(BaseAWSCommandParamsTest):
                 }]
             }]
         }
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_dynamodb_table_exists(self):
         cmdline = 'dynamodb wait table-exists'
         cmdline += ' --table-name mytable'
         result = {"TableName": "mytable"}
         self.parsed_response = {'Table': {'TableStatus': 'ACTIVE'}}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
     def test_elastictranscoder_jobs_complete(self):
         cmdline = 'rds wait db-instance-available'
@@ -190,7 +190,7 @@ class TestWait(BaseAWSCommandParamsTest):
                 'DBInstanceStatus': 'available'
             }]
         }
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 class TestWaiterStateCommandBuilder(unittest.TestCase):

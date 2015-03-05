@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+1.7.13
+======
+
+* feature:``aws cloudsearch``: Update ``aws cloudsearch`` command
+  to the latest model
+* feature:``aws cognito-sync``:  Update ``aws cognito-sync`` command
+  to allow customers to receive near-realtime updates
+  as their data changes as well as exporting historical data. Customers
+  configure an Amazon Kinesis stream to receive the data which can then be
+  processed and exported to other data stores such as Amazon Redshift.
+* bugfix:``aws opsworks``: Fix issue with platform detection on
+  linux systems with python3.3 and higher
+  (`issue 1199 <https://github.com/aws/aws-cli/pull/1199>`__)
+* feature:Help Paging: Support paging through ``more`` when running
+  help commands on windows
+  (`issue 1195 <https://github.com/aws/aws-cli/pull/1195>`__)
+* bugfix:``aws s3``: Fix issue where read timeouts were not retried.
+  (`issue 1191 <https://github.com/aws/aws-cli/pull/1191>`__)
+* feature:``aws cloudtrail``: Add support for regionalized policy templates
+  for the ``create-subscription`` and ``update-subscription`` commands.
+  (`issue 1167 <https://github.com/aws/aws-cli/pull/1167>`__)
+* bugfix:parsing: Fix issue where if there is a square bracket inside one
+  of the values of a list, the end character would get removed.
+  (`issue 1183 <https://github.com/aws/aws-cli/pull/1183>`__)
+
+
 1.7.12
 ======
 

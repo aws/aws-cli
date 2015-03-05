@@ -24,7 +24,7 @@ class TestCreateQueue(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --queue-name %s' % self.queue_name
         result = {'QueueName': self.queue_name}
-        self.assert_params_for_cmd2(cmdline, result)
+        self.assert_params_for_cmd(cmdline, result)
 
 
 if __name__ == "__main__":

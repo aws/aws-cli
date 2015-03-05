@@ -32,7 +32,7 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
         args = ' --group-name foo --user-name bar'
         cmdline = self.prefix + args
         result = {'GroupName': 'foo', 'UserName': 'bar'}
-        stdout = self.assert_params_for_cmd2(cmdline, result, expected_rc=0)[0]
+        stdout = self.assert_params_for_cmd(cmdline, result, expected_rc=0)[0]
         # We should have printed nothing because the parsed response
         # is an empty dict: {}.
         self.assertEqual(stdout, '')

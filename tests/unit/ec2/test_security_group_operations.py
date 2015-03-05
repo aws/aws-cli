@@ -25,7 +25,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                   'ip_permissions': [{'FromPort': 22, 'IpProtocol': 'tcp',
                                       'IpRanges': [{'CidrIp': '0.0.0.0/0'}],
                                       'ToPort': 25}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_all_port(self):
         args = self.prefix + (
@@ -34,7 +34,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                    'ip_permissions': [{'FromPort': -1, 'IpProtocol': 'tcp',
                                        'IpRanges': [{'CidrIp': '0.0.0.0/0'}],
                                        'ToPort': -1}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_icmp_echo_request(self):
         # This corresponds to a from port of 8 and a to port of -1, i.e
@@ -45,7 +45,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                   'ip_permissions': [{'FromPort': 8, 'IpProtocol': 'tcp',
                                       'IpRanges': [{'CidrIp': '0.0.0.0/0'}],
                                       'ToPort': -1}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_all_protocol(self):
         args = self.prefix + (
@@ -58,7 +58,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                                        'IpRanges': [{'CidrIp': '0.0.0.0/0'}],
                                        'ToPort': -1}]}
 
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_numeric_protocol(self):
         args = self.prefix + (
@@ -66,7 +66,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         result = {'GroupName': 'foobar',
                    'ip_permissions': [{'IpProtocol': '200', 'IpRanges':
                                        [{'CidrIp': '0.0.0.0/0'}]}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_negative_one_protocol(self):
         args = self.prefix + (
@@ -74,7 +74,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         result = {'GroupName': 'foobar',
                    'ip_permissions': [{'IpProtocol': '-1', 'IpRanges':
                                        [{'CidrIp': '0.0.0.0/0'}]}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_classic_group(self):
         args = self.prefix + (
@@ -84,7 +84,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                    'ip_permissions': [{'IpProtocol': 'udp', 'UserIdGroupPairs':
                                        [{'GroupName': 'fiebaz', 'UserId':
                                          '11111111'}]}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_vpc_group(self):
         args = self.prefix + (
@@ -92,7 +92,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
         result = {'GroupName': 'foobar',
                   'ip_permissions': [{'IpProtocol': 'icmp', 'UserIdGroupPairs':
                                       [{'GroupId': 'sg-12345678'}]}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_ip_permissions(self):
         json = (
@@ -103,7 +103,7 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                    'IpPermissions': [{'FromPort': 8000, 'ToPort': 9000,
                                       'IpProtocol': 'tcp', 'IpRanges':
                                       [{'CidrIp': '192.168.100.0/24'}]}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_ip_permissions_with_group_id(self):
         json = (
@@ -114,14 +114,14 @@ class TestAuthorizeSecurityGroupIngress(BaseAWSCommandParamsTest):
                   'IpPermissions': [{'FromPort': 8000, 'ToPort': 9000,
                                      'IpProtocol': 'tcp', 'IpRanges':
                                      [{'CidrIp': '192.168.100.0/24'}]}]}
-        self.assert_params_for_cmd2(args, result)
+        self.assert_params_for_cmd(args, result)
 
     def test_both(self):
         json = (
             '[{"FromPort":8000,"ToPort":9000,"IpProtocol":"tcp",'
             '"IpRanges":[{"CidrIp":"192.168.100.0/24"}]}]')
         args = self.prefix + '--group-name foobar --port 100 --ip-permissions %s' % json
-        self.assert_params_for_cmd2(args, expected_rc=255)
+        self.assert_params_for_cmd(args, expected_rc=255)
 
 
 

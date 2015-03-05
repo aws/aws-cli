@@ -11,48 +11,14 @@ aws-cli
   :target: https://coveralls.io/r/aws/aws-cli
 
 
-This package provides a unified command line interface to many
-Amazon Web Services.
-
-The currently supported services include:
-
-* AWS CloudFormation
-* AWS Data Pipeline (Preview)
-* AWS Direct Connect
-* AWS Elastic Beanstalk
-* AWS Identity and Access Management
-* AWS Import/Export
-* AWS OpsWorks
-* AWS Security Token Service
-* AWS Storage Gateway
-* AWS Support
-* Amazon CloudFront (Preview)
-* Amazon CloudSearch
-* Amazon CloudWatch
-* Amazon DynamoDB
-* Amazon ElastiCache
-* Amazon Elastic Compute Cloud
-* Amazon Elastic MapReduce (Preview)
-* Amazon Elastic Transcoder
-* Amazon Kinesis
-* Amazon Redshift
-* Amazon Relational Database Service (Beta)
-* Amazon Route 53
-* Amazon Simple Email Service
-* Amazon Simple Notification Service
-* Amazon Simple Queue Service
-* Amazon Storage Gateway
-* Amazon Simple Storage Service
-* Amazon Simple Workflow Service
-* Auto Scaling
-* Elastic Load Balancing
-
+This package provides a unified command line interface to Amazon Web Services.
 
 The aws-cli package works on Python versions:
 
 * 2.6.5 and greater
 * 2.7.x and greater
 * 3.3.x and greater
+* 3.4.x and greater
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -131,6 +97,14 @@ can do this in several ways:
 * Config file
 * IAM Role
 
+The quickest way to get started is to run the ``aws configure`` command::
+
+    $ aws configure
+    AWS Access Key ID: foo
+    AWS Secret Access Key: bar
+    Default region name [us-west-2]: us-west-2
+    Default output format [None]: json
+
 To use environment variables, do the following::
 
     $ export AWS_ACCESS_KEY_ID=<access_key>
@@ -193,7 +167,7 @@ access_key            aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
 ----------- --------- --------------------- --------------------- ----------------------------
 secret_key            aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
 ----------- --------- --------------------- --------------------- ----------------------------
-token                 aws_security_token    AWS_SECURITY_TOKEN    AWS Token (temp credentials)
+token                 aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
 =========== ========= ===================== ===================== ============================
 
 ^^^^^^^^
@@ -212,7 +186,7 @@ To include it in your config file::
     [default]
     aws_access_key_id=<default access key>
     aws_secret_access_key=<default secret key>
-    region=us-west-1  # This will be used as the default
+    region=us-west-1
 
 Similarly, the ``profile`` variable can be used to specify which profile to use
 if one is not explicitly specified on the command line via the
@@ -228,8 +202,7 @@ purpose.
 Accessing Services With Global Endpoints
 ----------------------------------------
 
-Some services, such as AWS Identity and Access Management (IAM),
-AWS Security Token Service (STS), and Amazon Simple Email Service (SES)
+Some services, such as AWS Identity and Access Management (IAM)
 have a single, global endpoint rather than different endpoints for
 each region.
 
@@ -307,14 +280,38 @@ the same except the prefix used is ``https://`` or ``http://``::
 Command Output
 --------------
 
-The default output for commands is currently JSON.  This may change in the
-future but for now it provides the most complete output.  You may find the
-`jq <http://stedolan.github.com/jq/>`_ tool useful in processing the JSON
-output for other uses.
+The default output for commands is currently JSON.  You can use the
+``--query`` option to extract the output elements from this JSON document.
+For more information on the expression language used for the ``--query``
+argument, you can read the
+`JMESPath Tutorial <http://jmespath.org/tutorial.html>`__.
 
-There is also an ASCII table format available.  You can select this
-style with the ``--output`` option or you can make this style your default
-output style via environment variable or config file entry as described above.
+^^^^^^^^
+Examples
+^^^^^^^^
+
+Get a list of IAM user names::
+
+    $ aws iam list-users --query Users[].UserName
+
+Get a list of key names and their sizes in an S3 bucket::
+
+    $ aws s3api list-objects --bucket b --query Contents[].[Key,Size]
+
+Get a list of all EC2 instances and include their Instance ID, State Name,
+and their Name (if they've been tagged with a Name)::
+
+    $ $ aws ec2 describe-instances --query \
+        'Reservations[].Instances[].[InstanceId,State.Name,Tags[?Key==`Name`] | [0].Value]'
+
+
+You may also find the `jq <http://stedolan.github.com/jq/>`_ tool useful in
+processing the JSON output for other uses.
+
+There is also an ASCII table format available.  You can select this style with
+the ``--output table`` option or you can make this style your default output
+style via environment variable or config file entry as described above.
+Try adding ``--output table`` to the above commands.
 
 
 ---------------

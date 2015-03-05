@@ -221,6 +221,10 @@ METADATA_DIRECTIVE = {
     'help_text': (
         'Specifies whether the metadata is copied from the source object '
         'or replaced with metadata provided when copying S3 objects. '
+        'Note that if the object is copied over in parts, the source '
+        'object\'s metadata will not be copied over, no matter the value for '
+        '``--metadata-directive``, and instead the desired metadata values '
+        'must be specified as parameters on the command line. '
         'Valid values are ``COPY`` and ``REPLACE``. If this parameter is not '
         'specified, ``COPY`` will be used by default. If ``REPLACE`` is used, '
         'the copied object will only have the metadata values that were'
@@ -228,8 +232,9 @@ METADATA_DIRECTIVE = {
         'using any of the following parameters: ``--content-type``, '
         '``content-language``, ``--content-encoding``, '
         '``--content-disposition``, ``-cache-control``, or ``--expires``, you '
-        'will need to specify ``--metadata-directive REPLACE`` if you want '
-        'the copied object to have the specified metadata value.')
+        'will need to specify ``--metadata-directive REPLACE`` for '
+        'non-multipart copies if you want the copied objects to have the '
+        'specified metadata values.')
 }
 
 

@@ -544,6 +544,7 @@ class TestCp(BaseS3CLICommand):
                         extra_args=metadata)
         p = aws('s3 cp s3://%s/%s s3://%s/%s' %
                 (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
         response = self.head_object(bucket_name, new_key)
         # These values should have the metadata of the source object
         metadata_ref = copy.copy(metadata)
@@ -554,6 +555,7 @@ class TestCp(BaseS3CLICommand):
         # Use REPLACE to wipe out all of the metadata.
         p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE' %
                 (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
         response = self.head_object(bucket_name, new_key)
         # Make sure all of the original metadata is gone.
         for name, value in metadata_ref.items():
@@ -564,6 +566,7 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE '
                 '--content-type bar' %
                 (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
         response = self.head_object(bucket_name, new_key)
         # Make sure the content type metadata is included
         self.assertEqual(response['ContentType'], 'bar')

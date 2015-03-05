@@ -148,7 +148,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
                          self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
         self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
-        self.assertEqual(self.operations_called[1][1]['metadata_directive'],
+        self.assertEqual(self.operations_called[1][1]['MetadataDirective'],
                          'REPLACE')
 
     def test_no_metadata_directive_for_non_copy(self):
@@ -161,7 +161,7 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(self.operations_called), 1,
                          self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertNotIn('metadata_directive', self.operations_called[0][1])
+        self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
 
 if __name__ == "__main__":

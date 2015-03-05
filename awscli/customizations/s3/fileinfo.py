@@ -240,7 +240,7 @@ class FileInfo(TaskInfo):
 
     def _handle_metadata_directive(self, params):
         if self.parameters['metadata_directive']:
-            params['metadata_directive'] = \
+            params['MetadataDirective'] = \
                 self.parameters['metadata_directive'][0]
 
     def upload(self, payload=None):

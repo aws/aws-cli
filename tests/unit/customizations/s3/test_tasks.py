@@ -397,16 +397,16 @@ class TestDownloadPartTask(unittest.TestCase):
                          self.client.get_object.call_count)
 
     def test_readtimeout_is_retried(self):
-        self.service.get_operation.return_value.call.side_effect = \
+        self.client.get_object.side_effect = \
             ReadTimeoutError(None, None, None)
         task = DownloadPartTask(0, 1024 * 1024, self.result_queue,
-                                self.service, self.filename,
+                                self.filename,
                                 self.context, self.io_queue)
         with self.assertRaises(RetriesExeededError):
             task()
         self.context.cancel.assert_called_with()
         self.assertEqual(DownloadPartTask.TOTAL_ATTEMPTS,
-                         self.service.get_operation.call_count)
+                         self.client.get_object.call_count)
 
     def test_retried_requests_dont_enqueue_writes_twice(self):
         error_body = mock.Mock()

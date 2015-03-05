@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.13
+======
 
 * feature:``aws cloudsearch``: Update ``aws cloudsearch`` command
   to the latest model

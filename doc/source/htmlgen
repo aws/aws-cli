@@ -78,17 +78,17 @@ def do_provider(driver):
     help_command.renderer = FileRenderer(os.path.join(REF_PATH, 'index.rst'))
     help_command(None, None)
 
-    topic_help_command = help_command.topic_table['topics']
+    topic_help_command = help_command.subcommand_table['topics']
     topic_help_command.renderer = FileRenderer(os.path.join(TOPIC_PATH,
                                                             'index.rst'))
     topic_help_command.doc.target = 'html'
     help_command(['topics'], None)
-    topics = help_command.topic_table
+    topics = help_command.subcommand_table
     print('Writing topics:')
     for topic in topics:
         if topic == 'topics':
             continue
-        topic_help_command = help_command.topic_table[topic]
+        topic_help_command = help_command.subcommand_table[topic]
         do_topic(driver, TOPIC_PATH, topic_help_command)
 
     services = sorted(help_command.command_table)

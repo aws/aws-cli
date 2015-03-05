@@ -188,6 +188,7 @@ class HelpCommand(object):
         if arg_table is None:
             arg_table = {}
         self.arg_table = arg_table
+        self._subcommand_table = {}
         self._related_items = []
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
@@ -218,11 +219,23 @@ class HelpCommand(object):
         pass
 
     @property
+    def subcommand_table(self):
+        """These are the commands that may follow after the help command"""
+        return self._subcommand_table 
+
+    @property
     def related_items(self):
         """This is list of items that are related to the help command"""
         return self._related_items
 
     def __call__(self, args, parsed_globals):
+        if args:
+            subcommand_parser = ArgTableArgParser({}, self.subcommand_table)
+            parsed, remaining = subcommand_parser.parse_known_args(args)
+            if getattr(parsed, 'subcommand', None) is not None:
+               return self.subcommand_table[parsed.subcommand](remaining,
+                                                               parsed_globals)
+
         # Create an event handler for a Provider Document
         instance = self.EventHandlerClass(self)
         # Now generate all of the events for a Provider document.
@@ -248,10 +261,9 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
-        self._topic_table = None
+        self._subcommand_table = None
         self._topic_tag_db = None
-        self._related_items = [
-            'AWS CLI Topic Guide (`aws help topics <../topic/index.html>`_)']
+        self._related_items = ['aws help topics']
 
     @property
     def event_class(self):
@@ -262,37 +274,28 @@ class ProviderHelpCommand(HelpCommand):
         return self.obj.name
 
     @property
-    def topic_table(self):
-        if self._topic_table is None:
+    def subcommand_table(self):
+        if self._subcommand_table is None:
             if self._topic_tag_db is None:
                 self._topic_tag_db = TopicTagDB()
             self._topic_tag_db.load_json_index()
-            self._topic_table = self._create_topic_table()
-        return self._topic_table
+            self._subcommand_table = self._create_subcommand_table()
+        return self._subcommand_table
 
-    def _create_topic_table(self):
-        topic_table = {}
+    def _create_subcommand_table(self):
+        subcommand_table = {}
         # Add the ``aws help topics`` command to the ``topic_table``
         topic_lister_command = TopicListerCommand(
             self.session, self._topic_tag_db)
-        topic_table['topics'] = topic_lister_command
+        subcommand_table['topics'] = topic_lister_command
         topic_names = self._topic_tag_db.get_all_topic_names()
 
         # Add all of the possible topics to the ``topic_table``
         for topic_name in topic_names:
             topic_help_command = TopicHelpCommand(
                 self.session, topic_name, self._topic_tag_db)
-            topic_table[topic_name] = topic_help_command
-        return topic_table
-
-    def __call__(self, args, parsed_globals):
-        if args:
-            topic_parser = ArgTableArgParser({}, self.topic_table)
-            parsed_topic, remaining = topic_parser.parse_known_args(args)
-            self.topic_table[parsed_topic.subcommand].__call__(
-                args, parsed_globals)
-        else:
-            super(ProviderHelpCommand, self).__call__(args, parsed_globals)
+            subcommand_table[topic_name] = topic_help_command
+        return subcommand_table
 
 
 class ServiceHelpCommand(HelpCommand):
@@ -349,21 +352,11 @@ class OperationHelpCommand(HelpCommand):
 class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
 
-    DESCRIPTION = (
-        'This is the AWS CLI Topic Guide. It gives access to a set '
-        'of topics that provide a deeper understanding of the CLI. To access '
-        'the list of topics from the command line, run ``aws help topics``. '
-        'To access a specific topic from the command line, run '
-        '``aws help [topicname]``, where ``topicname`` is the name of the '
-        'topic as it appears in the output from ``aws help topics``.')
-
     def __init__(self, session, topic_tag_db):
         super(TopicListerCommand, self).__init__(session, None, {}, {})
         self._topic_tag_db = topic_tag_db
         self._categories = None
         self._entries = None
-        self._related_items = [
-            'AWS CLI Reference Guide (`aws help <../reference/index.html>`_)']
 
     @property
     def event_class(self):
@@ -372,54 +365,6 @@ class TopicListerCommand(HelpCommand):
     @property
     def name(self):
         return 'topics'
-
-    @property
-    def title(self):
-        return 'AWS CLI Topic Guide'
-
-    @property
-    def description(self):
-        return self.DESCRIPTION
-
-    @property
-    def categories(self):
-        """
-        :returns: A dictionary where the keys are all of the possible
-            topic categories and the values are all of the topics that
-            are grouped in that category
-        """
-        if self._categories is None:
-            self._categories = self._topic_tag_db.query('category')
-        return self._categories
-
-    @property
-    def topic_names(self):
-        """
-        :returns: A list of all of the topic names.
-        """
-        return self._topic_tag_db.get_all_topic_names()
-
-    @property
-    def entries(self):
-        """
-        :returns: A dictionary where the keys are the names of all topics
-            and the values are the respective entries that appears in the
-            catagory that a topic belongs to
-        """
-        if self._entries is None:
-            topic_entry_template = '`%s <%s.html>`_: %s'
-            topic_entries = {}
-            for topic_name in self.topic_names:
-                # Get the description of the topic.
-                sentence_description = self._topic_tag_db.get_tag_single_value(
-                    topic_name, 'description')
-                # Create the full entry description.
-                full_description = topic_entry_template % (
-                    topic_name, topic_name, sentence_description)
-                # Add the entry to the dictionary.
-                topic_entries[topic_name] = full_description
-            self._entries = topic_entries
-        return self._entries
 
 
 class TopicHelpCommand(HelpCommand):
@@ -438,41 +383,3 @@ class TopicHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._topic_name
-
-    @property
-    def title(self):
-        return self._topic_tag_db.get_tag_single_value(
-            self._topic_name, 'title')
-
-    @property
-    def contents(self):
-        """
-        :returns: The contents of the topic source file with all of its tags
-            excluded.
-        """
-        if self._contents is None:
-            topic_filename = os.path.join(self._topic_tag_db.topic_dir,
-                                          self.name + '.rst')
-            self._contents = self._remove_tags_from_content(topic_filename)
-        return self._contents
-
-    def _remove_tags_from_content(self, filename):
-        with open(filename, 'r') as f:
-            lines = f.readlines()
-
-        content_begin_index = 0
-        for i, line in enumerate(lines):
-            # If a line is encountered that does not begin with the tag
-            # end the search for tags and mark where tags end.
-            if not self._line_has_tag(line):
-                content_begin_index = i
-                break
-
-        # Join all of the non-tagged lines back together.
-        return ''.join(lines[i:])
-
-    def _line_has_tag(self, line):
-        for tag in self._topic_tag_db.valid_tags:
-            if line.startswith(':' + tag + ':'):
-                return True
-        return False

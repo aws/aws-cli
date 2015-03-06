@@ -89,7 +89,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('.. _cli:aws s3 ls:')
         self.assert_contains('List S3 objects')
         self.assert_contains('--summarize')
-    
+
     def test_topic_list_help_output(self):
         self.driver.main(['help', 'topics'])
         # Should contain the title

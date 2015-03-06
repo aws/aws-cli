@@ -21,7 +21,6 @@ from awscli.clidocs import OperationDocumentEventHandler, \
     TopicDocumentEventHandler
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand
-from awscli.topictags import TopicTagDB
 
 
 class TestRecursiveShapes(unittest.TestCase):
@@ -241,9 +240,9 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
 
     def test_subitems_start(self):
         ref_output = [
-             '-------\nGeneral\n-------',
+            '-------\nGeneral\n-------',
             ('* topic-name-1: %s\n'
-             '* topic-name-3: %s\n' % 
+             '* topic-name-3: %s\n' %
              (self.descriptions[0], self.descriptions[2])),
             '--\nS3\n--',
             '* topic-name-2: %s\n' % self.descriptions[1]
@@ -260,9 +259,9 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def test_subitems_start_html(self):
         self.cmd.doc.target = 'html'
         ref_output = [
-             '-------\nGeneral\n-------',
+            '-------\nGeneral\n-------',
             ('* :ref:`topic-name-1 <cli:aws help topic-name-1>`: %s\n'
-             '* :ref:`topic-name-3 <cli:aws help topic-name-3>`: %s\n' % 
+             '* :ref:`topic-name-3 <cli:aws help topic-name-3>`: %s\n' %
              (self.descriptions[0], self.descriptions[2])),
             '--\nS3\n--',
             ('* :ref:`topic-name-2 <cli:aws help topic-name-2>`: %s\n' %
@@ -271,7 +270,7 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
 
         self.doc_handler.doc_subitems_start(self.cmd)
         contents = self.cmd.doc.getvalue().decode('utf-8')
-        
+
         for line in ref_output:
             self.assertIn(line, contents)
         # Make sure the hidden toctree is in the html

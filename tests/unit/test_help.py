@@ -20,7 +20,6 @@ import mock
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
 from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
 from awscli.help import TopicListerCommand, TopicHelpCommand
-from awscli.topictags import TopicTagDB
 
 
 class HelpSpyMixin(object):
@@ -125,6 +124,7 @@ class TestHelpCommandBase(unittest.TestCase):
 
     def tearDown(self):
         self.file_creator.remove_all()
+
 
 class TestHelpCommand(TestHelpCommandBase):
     """Test some of the deeper functionality of the HelpCommand

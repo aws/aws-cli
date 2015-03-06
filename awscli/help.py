@@ -221,7 +221,7 @@ class HelpCommand(object):
     @property
     def subcommand_table(self):
         """These are the commands that may follow after the help command"""
-        return self._subcommand_table 
+        return self._subcommand_table
 
     @property
     def related_items(self):
@@ -233,8 +233,8 @@ class HelpCommand(object):
             subcommand_parser = ArgTableArgParser({}, self.subcommand_table)
             parsed, remaining = subcommand_parser.parse_known_args(args)
             if getattr(parsed, 'subcommand', None) is not None:
-               return self.subcommand_table[parsed.subcommand](remaining,
-                                                               parsed_globals)
+                return self.subcommand_table[parsed.subcommand](remaining,
+                                                                parsed_globals)
 
         # Create an event handler for a Provider Document
         instance = self.EventHandlerClass(self)

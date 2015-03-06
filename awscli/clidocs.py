@@ -629,7 +629,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
                 break
 
         # Join all of the non-tagged lines back together.
-        return ''.join(lines[i:])
+        return ''.join(lines[content_begin_index:])
 
     def _line_has_tag(self, line):
         for tag in self._topic_tag_db.valid_tags:

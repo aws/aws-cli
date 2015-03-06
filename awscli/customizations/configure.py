@@ -24,6 +24,8 @@ from awscli.customizations.commands import BasicCommand
 logger = logging.getLogger(__name__)
 NOT_SET = '<not set>'
 
+PREDEFINED_SECTION_NAMES = ('preview', 'plugin')
+ADDITIONAL_LIST_CONFIG = ('emr',)
 
 def register_configure_cmd(cli):
     cli.register('building-command-table.main',
@@ -300,9 +302,27 @@ class ConfigureListCommand(BasicCommand):
 
         region = self._lookup_config('region')
         self._display_config_value(region, 'region')
+        self._display_additional_config()
+
+    def _display_additional_config(self):
+        if self._session.profile is None:
+            curprofile = self._session.get_config_variable('profile')
+            if curprofile is None:
+                curprofile = 'default'
+        else:
+            curprofile = self._session.profile
+        curconfig = self._session._build_profile_map().get(curprofile)
+        if curconfig is not None:
+            for config in ADDITIONAL_LIST_CONFIG:
+                value = curconfig.get(config)
+                if value is not None:
+                    for k, v in value.iteritems():
+                        cv = ConfigValue(v, 'config-file',
+                                         self._session.get_config_variable('config_file'))
+                        self._display_config_value(cv, '%s.%s' % (config, k))
 
     def _display_config_value(self, config_value, config_name):
-        self._stream.write('%10s %24s %16s    %s\n' % (
+        self._stream.write('%20s %24s %16s    %s\n' % (
             config_name, config_value.value, config_value.config_type,
             config_value.config_variable))
 
@@ -409,6 +429,16 @@ class ConfigureSetCommand(BasicCommand):
                 varname = remaining[0]
                 if len(remaining) == 2:
                     value = {remaining[1]: value}
+            elif parts[0] not in PREDEFINED_SECTION_NAMES:
+                if self._session.profile is not None:
+                    section = 'profile %s' % self._session.profile
+                else:
+                    profile_name = self._session.get_config_variable('profile')
+                    if profile_name is not None:
+                        section = profile_name
+                varname = parts[0]
+                if len(parts) == 2:
+                    value = {parts[1]: value}
             elif len(parts) == 2:
                 # Otherwise it's something like "set preview.service true"
                 # of something in the [plugin] section.
@@ -460,9 +490,10 @@ class ConfigureGetCommand(BasicCommand):
             return 1
 
     def _get_dotted_config_value(self, varname):
-        value = None
+        parts = varname.split('.')
         num_dots = varname.count('.')
-        if num_dots == 1:
+        # Logic to deal with predefined sections like [preview], [plugin] and etc.
+        if num_dots == 1 and parts[0] in PREDEFINED_SECTION_NAMES:
             full_config = self._session.full_config
             section, config_name = varname.split('.')
             value = full_config.get(section, {}).get(config_name)
@@ -470,28 +501,29 @@ class ConfigureGetCommand(BasicCommand):
                 # Try to retrieve it from the profile config.
                 value = full_config['profiles'].get(
                     section, {}).get(config_name)
-        elif varname.startswith(('default', 'profile')):
-            # We're hard coding logic for profiles here.  Really
-            # we could support any generic format of [section subsection],
-            # but we'd need some botocore.session changes for that,
-            # and nothing would immediately use that feature.
-            parts = varname.split('.')
-            if parts[0] == 'default':
-                profile_name = 'default'
-                config_name = parts[1]
-                remaining = parts[2:]
-            else:
-                # ['profile', 'profname', 'foo', ...]
-                profile_name = parts[1]
-                config_name = parts[2]
-                remaining = parts[3:]
-            self._session.profile = profile_name
-            value = self._session.get_scoped_config().get(config_name)
-            if len(remaining) == 1:
-                try:
-                    value = value.get(remaining[-1])
-                except AttributeError:
-                    value = None
+            return value
+        if parts[0] == 'profile':
+            profile_name = parts[1]
+            config_name = parts[2]
+            remaining = parts[3:]
+        # Check if varname starts with 'default' profile (e.g. default.emr-dev.emr.instance_profile)
+        # If not, go further to check if varname starts with a known profile name
+        elif parts[0] == 'default' or (parts[0] in self._session._build_profile_map()):
+            profile_name = parts[0]
+            config_name = parts[1]
+            remaining = parts[2:]
+        else:
+            profile_name = self._session.get_config_variable('profile')
+            config_name = parts[0]
+            remaining = parts[1:]
+
+        self._session.profile = profile_name
+        value = self._session.get_scoped_config().get(config_name)
+        if len(remaining) == 1:
+            try:
+                value = value.get(remaining[-1])
+            except AttributeError:
+                value = None
         return value
 
 

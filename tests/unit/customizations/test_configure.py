@@ -94,6 +94,11 @@ class FakeSession(object):
     def emit_first_non_none_response(self, *args, **kwargs):
         pass
 
+    def _build_profile_map(self):
+        if self.full_config is None:
+            return None
+        return self.full_config['profiles']
+
 
 class TestConfigureCommand(unittest.TestCase):
 
@@ -599,6 +604,8 @@ class TestConfigureListCommand(unittest.TestCase):
         # Test the case where the user only wants to change a single_value.
         session = FakeSession(
             all_variables={'config_file': '/config/location'})
+        session.full_config = {
+            'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -616,6 +623,8 @@ class TestConfigureListCommand(unittest.TestCase):
             all_variables={'config_file': '/config/location'},
             environment_vars=env_vars)
         session.session_var_map = {'profile': (None, "PROFILE_ENV_VAR")}
+        session.full_config = {
+            'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -631,6 +640,8 @@ class TestConfigureListCommand(unittest.TestCase):
             all_variables={'config_file': '/config/location'},
             config_file_vars=config_file_vars)
         session.session_var_map = {'region': ('region', "AWS_REGION")}
+        session.full_config = {
+            'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -660,6 +671,8 @@ class TestConfigureListCommand(unittest.TestCase):
         session.session_var_map = {
             'region': ('region', 'AWS_REGION'),
             'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
+        session.full_config = {
+            'profiles': {'default': {'region': 'AWS_REGION'}}}
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -677,6 +690,27 @@ class TestConfigureListCommand(unittest.TestCase):
             rendered, r'access_key\s+\*+_key\s+iam-role')
         self.assertRegexpMatches(
             rendered, r'secret_key\s+\*+_key\s+iam-role')
+
+    def test_configure_display_additional_config(self):
+        config_file_vars = {
+            'region': 'us-west-2'
+        }
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'},
+            config_file_vars=config_file_vars)
+        session.session_var_map = {'region': ('region', "AWS_REGION")}
+        session.full_config = {'profiles': {'emr-dev': {'emr': {
+            'instance_profile': 'EMR_EC2_DefaultRole',
+            'service_role': 'EMR_DefaultRole'}}}}
+        session.profile = 'emr-dev'
+        stream = StringIO()
+        self.configure_list = configure.ConfigureListCommand(session, stream)
+        self.configure_list(args=[], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertRegexpMatches(
+            rendered, 'emr\.instance_profile\s+EMR_EC2_DefaultRole\s+config-file\s+/config/location')
+        self.assertRegexpMatches(
+            rendered, 'emr\.service_role\s+EMR_DefaultRole\s+config-file\s+/config/location')
 
 
 class TestConfigureGetCommand(unittest.TestCase):
@@ -710,6 +744,17 @@ class TestConfigureGetCommand(unittest.TestCase):
         config_get(args=['preview.emr'], parsed_globals=None)
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'true')
+
+    def test_dotted_get_with_profile(self):
+        session = FakeSession({})
+        session.full_config = {'profiles': {'emr-dev': {
+            'emr': {'instance_profile': 'my_ip'}}}}
+        session.config = {'emr': {'instance_profile': 'my_ip'}}
+        stream = StringIO()
+        config_get = configure.ConfigureGetCommand(session, stream)
+        config_get(args=['emr-dev.emr.instance_profile'], parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'my_ip')
 
     def test_get_from_profile(self):
         session = FakeSession({})
@@ -781,6 +826,25 @@ class TestConfigureSetCommand(unittest.TestCase):
         set_command(args=['preview.emr', 'true'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'preview', 'emr': 'true'}, 'myconfigfile')
+
+    def test_configure_set_command_dotted_with_default_profile(self):
+        self.session.variables['profile'] = 'default'
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['emr.instance_profile', 'my_ip_emr'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'default',
+             'emr': {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
+
+    def test_configure_set_command_dotted_with_profile(self):
+        self.session.profile = 'emr-dev'
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['emr.instance_profile', 'my_ip_emr'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'profile emr-dev', 'emr': {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
 
     def test_configure_set_with_profile(self):
         self.session.profile = 'testing'

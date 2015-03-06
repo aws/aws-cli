@@ -10,18 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, FileCreator
+import json
 
+import mock
+from botocore.model import ShapeResolver, StructureShape
+
+from awscli.testutils import unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
     TopicDocumentEventHandler
-
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand
 from awscli.topictags import TopicTagDB
-from botocore.model import ShapeResolver, StructureShape
-
-import mock
 
 
 class TestRecursiveShapes(unittest.TestCase):
@@ -158,32 +158,63 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         )
 
 
-class TestTopicListerDocumentEventHandler(unittest.TestCase):
+class TestTopicDocumentEventHandlerBase(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
         self.file_creator = FileCreator()
+
+        self.tags_dict = {}
+
+        # Make a temporary json index to base information on
+        self.json_index = self.file_creator.create_file('index.json', '')
+        with open(self.json_index, 'w') as f:
+            json.dump(self.tags_dict, f, indent=4, sort_keys=True)
+
+        self.index_patch = mock.patch('awscli.topictags.TopicTagDB.index_file',
+                                      self.json_index)
+        self.dir_patch = mock.patch('awscli.topictags.TopicTagDB.topic_dir',
+                                    self.file_creator.rootdir)
+        self.index_patch.start()
+        self.dir_patch.start()
+
+    def tearDown(self):
+        self.dir_patch.stop()
+        self.index_patch.stop()
+        self.file_creator.remove_all()
+
+
+class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
+    def setUp(self):
+        super(TestTopicListerDocumentEventHandler, self).setUp()
         self.descriptions = [
             'This describes the first topic',
-            'This describes the second topic'
+            'This describes the second topic',
+            'This describes the third topic'
         ]
         self.tags_dict = {
             'topic-name-1': {
                 'title': ['The first topic title'],
                 'description': [self.descriptions[0]],
-                'category': ['General Topics', 'Troubleshooting']
+                'category': ['General']
             },
             'topic-name-2': {
                 'title': ['The second topic title'],
                 'description': [self.descriptions[1]],
-                'category': ['General Topics']
+                'category': ['S3']
+            },
+            'topic-name-3': {
+                'title': ['The third topic title'],
+                'description': [self.descriptions[2]],
+                'category': ['General']
             }
-        }
-        self.topic_tag_db = TopicTagDB(self.tags_dict)
-        self.cmd = TopicListerCommand(self.session, self.topic_tag_db)
-        self.doc_handler = TopicListerDocumentEventHandler(self.cmd)
 
-    def tearDown(self):
-        self.file_creator.remove_all()
+        }
+
+        with open(self.json_index, 'w') as f:
+            json.dump(self.tags_dict, f, indent=4, sort_keys=True)
+
+        self.cmd = TopicListerCommand(self.session)
+        self.doc_handler = TopicListerDocumentEventHandler(self.cmd)
 
     def test_breadcrumbs(self):
         self.doc_handler.doc_breadcrumbs(self.cmd)
@@ -197,64 +228,82 @@ class TestTopicListerDocumentEventHandler(unittest.TestCase):
 
     def test_title(self):
         self.doc_handler.doc_title(self.cmd)
-        self.assertIn(self.cmd.title, self.cmd.doc.getvalue().decode('utf-8'))
+        title_contents = self.cmd.doc.getvalue().decode('utf-8')
+        self.assertIn('.. _cli:aws help %s:' % self.cmd.name, title_contents)
+        self.assertIn('AWS CLI Topic Guide', title_contents)
 
     def test_description(self):
         self.doc_handler.doc_description(self.cmd)
         self.assertIn(
-            self.cmd.description,
+            'This is the AWS CLI Topic Guide',
             self.cmd.doc.getvalue().decode('utf-8')
         )
 
-    def _assert_categories_and_topics(self, contents):
-        for category in self.cmd.categories:
-            self.assertIn(category, contents)
-        for entry in self.cmd.entries:
-            self.assertIn('* ' + self.cmd.entries[entry], contents)
-
     def test_subitems_start(self):
+        ref_output = [
+             '-------\nGeneral\n-------',
+            ('* topic-name-1: %s\n'
+             '* topic-name-3: %s\n' % 
+             (self.descriptions[0], self.descriptions[2])),
+            '--\nS3\n--',
+            '* topic-name-2: %s\n' % self.descriptions[1]
+        ]
+
         self.doc_handler.doc_subitems_start(self.cmd)
         contents = self.cmd.doc.getvalue().decode('utf-8')
-        self._assert_categories_and_topics(contents)
 
+        for line in ref_output:
+            self.assertIn(line, contents)
         # Make sure the toctree is not in the man page
         self.assertNotIn('.. toctree::', contents)
 
     def test_subitems_start_html(self):
         self.cmd.doc.target = 'html'
+        ref_output = [
+             '-------\nGeneral\n-------',
+            ('* :ref:`topic-name-1 <cli:aws help topic-name-1>`: %s\n'
+             '* :ref:`topic-name-3 <cli:aws help topic-name-3>`: %s\n' % 
+             (self.descriptions[0], self.descriptions[2])),
+            '--\nS3\n--',
+            ('* :ref:`topic-name-2 <cli:aws help topic-name-2>`: %s\n' %
+             self.descriptions[1])
+        ]
+
         self.doc_handler.doc_subitems_start(self.cmd)
         contents = self.cmd.doc.getvalue().decode('utf-8')
-        self._assert_categories_and_topics(contents)
-
+        
+        for line in ref_output:
+            self.assertIn(line, contents)
         # Make sure the hidden toctree is in the html
         self.assertIn('.. toctree::', contents)
         self.assertIn(':hidden:', contents)
 
 
-class TestTopicDocumentEventHandler(unittest.TestCase):
+class TestTopicDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def setUp(self):
-        self.session = mock.Mock()
-        self.file_creator = FileCreator()
-
+        super(TestTopicDocumentEventHandler, self).setUp()
         self.name = 'topic-name-1'
         self.title = 'The first topic title'
+        self.description = 'This is about the first topic'
+        self.category = 'General'
+        self.related_command = 'foo'
+        self.related_topic = 'topic-name-2'
         self.topic_body = 'Hello World!'
 
         self.tags_dict = {
             self.name: {
                 'title': [self.title],
+                'description': [self.description],
+                'category': [self.category],
+                'related topic': [self.related_topic],
+                'related command': [self.related_command]
             }
         }
-        self.topic_tag_db = TopicTagDB(self.tags_dict)
-        self.cmd = TopicHelpCommand(self.session, self.name, self.topic_tag_db)
-        self.dir_patch = mock.patch('awscli.topictags.TopicTagDB.topic_dir',
-                                    self.file_creator.rootdir)
-        self.doc_handler = TopicDocumentEventHandler(self.cmd)
-        self.dir_patch.start()
+        with open(self.json_index, 'w') as f:
+            json.dump(self.tags_dict, f, indent=4, sort_keys=True)
 
-    def tearDown(self):
-        self.dir_patch.stop()
-        self.file_creator.remove_all()
+        self.cmd = TopicHelpCommand(self.session, self.name)
+        self.doc_handler = TopicDocumentEventHandler(self.cmd)
 
     def test_breadcrumbs(self):
         self.doc_handler.doc_breadcrumbs(self.cmd)
@@ -268,11 +317,17 @@ class TestTopicDocumentEventHandler(unittest.TestCase):
 
     def test_title(self):
         self.doc_handler.doc_title(self.cmd)
-        self.assertIn(self.cmd.title, self.cmd.doc.getvalue().decode('utf-8'))
+        title_contents = self.cmd.doc.getvalue().decode('utf-8')
+        self.assertIn('.. _cli:aws help %s:' % self.name, title_contents)
+        self.assertIn(self.title, title_contents)
 
     def test_description(self):
         lines = [
             ':title: ' + self.title,
+            ':description: ' + self.description,
+            ':category:' + self.category,
+            ':related command: ' + self.related_command,
+            ':related topic: ' + self.related_topic,
             self.topic_body
         ]
         body = '\n'.join(lines)
@@ -281,3 +336,31 @@ class TestTopicDocumentEventHandler(unittest.TestCase):
         contents = self.cmd.doc.getvalue().decode('utf-8')
         self.assertIn(self.topic_body, contents)
         self.assertNotIn(':title ' + self.title, contents)
+
+    def test_description_no_tags(self):
+        lines = [
+            self.topic_body
+        ]
+        body = '\n'.join(lines)
+        self.file_creator.create_file(self.name + '.rst', body)
+        self.doc_handler.doc_description(self.cmd)
+        contents = self.cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(self.topic_body, contents)
+
+    def test_description_tags_in_body(self):
+        lines = [
+            ':title: ' + self.title,
+            ':description: ' + self.description,
+            ':related command: ' + self.related_command
+        ]
+        body_lines = [
+            ':related_topic: ' + self.related_topic,
+            self.topic_body,
+            ':foo: bar'
+        ]
+        body = '\n'.join(lines + body_lines)
+        ref_body = '\n'.join(body_lines)
+        self.file_creator.create_file(self.name + '.rst', body)
+        self.doc_handler.doc_description(self.cmd)
+        contents = self.cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(ref_body, contents)

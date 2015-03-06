@@ -604,6 +604,8 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
             link='')
         title = self._topic_tag_db.get_tag_single_value(
             help_command.name, 'title')
+        print(title)
+        print('here')
         doc.style.h1(title)
 
     def doc_description(self, help_command, **kwargs):

@@ -285,15 +285,13 @@ class ProviderHelpCommand(HelpCommand):
     def _create_subcommand_table(self):
         subcommand_table = {}
         # Add the ``aws help topics`` command to the ``topic_table``
-        topic_lister_command = TopicListerCommand(
-            self.session, self._topic_tag_db)
+        topic_lister_command = TopicListerCommand(self.session)
         subcommand_table['topics'] = topic_lister_command
         topic_names = self._topic_tag_db.get_all_topic_names()
 
         # Add all of the possible topics to the ``topic_table``
         for topic_name in topic_names:
-            topic_help_command = TopicHelpCommand(
-                self.session, topic_name, self._topic_tag_db)
+            topic_help_command = TopicHelpCommand(self.session, topic_name)
             subcommand_table[topic_name] = topic_help_command
         return subcommand_table
 
@@ -352,11 +350,8 @@ class OperationHelpCommand(HelpCommand):
 class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
 
-    def __init__(self, session, topic_tag_db):
+    def __init__(self, session):
         super(TopicListerCommand, self).__init__(session, None, {}, {})
-        self._topic_tag_db = topic_tag_db
-        self._categories = None
-        self._entries = None
 
     @property
     def event_class(self):
@@ -370,11 +365,9 @@ class TopicListerCommand(HelpCommand):
 class TopicHelpCommand(HelpCommand):
     EventHandlerClass = TopicDocumentEventHandler
 
-    def __init__(self, session, topic_name, topic_tag_db):
+    def __init__(self, session, topic_name):
         super(TopicHelpCommand, self).__init__(session, None, {}, {})
-        self._topic_tag_db = topic_tag_db
         self._topic_name = topic_name
-        self._contents = None
 
     @property
     def event_class(self):

@@ -18,7 +18,7 @@ import os
 import mock
 
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
-from awscli.help import WindowsHelpRenderer, ProviderHelpCommand,
+from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
 from awscli.help import TopicListerCommand, TopicHelpCommand
 from awscli.topictags import TopicTagDB
 
@@ -126,6 +126,47 @@ class TestHelpCommandBase(unittest.TestCase):
     def tearDown(self):
         self.file_creator.remove_all()
 
+class TestHelpCommand(TestHelpCommandBase):
+    """Test some of the deeper functionality of the HelpCommand
+
+    We do this by subclassing from HelpCommand and ensure it is behaving
+    as expected.
+    """
+    def setUp(self):
+        super(TestHelpCommand, self).setUp()
+        self.doc_handler_mock = mock.Mock()
+        self.subcommand_mock = mock.Mock()
+        self.renderer = mock.Mock()
+
+        class SampleHelpCommand(HelpCommand):
+            EventHandlerClass = self.doc_handler_mock
+
+            @property
+            def subcommand_table(sample_help_cmd_self):
+                return {'mycommand': self.subcommand_mock}
+
+        self.cmd = SampleHelpCommand(self.session, None, None, None)
+        self.cmd.renderer = self.renderer
+
+    def test_subcommand_call(self):
+        self.cmd(['mycommand'], None)
+        self.subcommand_mock.assert_called_with([], None)
+        self.assertFalse(self.doc_handler_mock.called)
+
+    def test_regular_call(self):
+        self.cmd([], None)
+        self.assertFalse(self.subcommand_mock.called)
+        self.doc_handler_mock.assert_called_with(self.cmd)
+        self.assertTrue(self.renderer.render.called)
+
+    def test_invalid_subcommand(self):
+        # This sole purpose of this patch is to remove errors from being
+        # printed to screen even when the test passes when running the test
+        # suite.
+        with mock.patch('sys.stderr'):
+            with self.assertRaises(SystemExit):
+                self.cmd(['no-exist-command'], None)
+
 
 class TestProviderHelpCommand(TestHelpCommandBase):
     def setUp(self):
@@ -158,80 +199,34 @@ class TestProviderHelpCommand(TestHelpCommandBase):
         super(TestProviderHelpCommand, self).tearDown()
 
     def test_related_items(self):
-        self.assertEqual(
-            self.cmd.related_items,
-            ['AWS CLI Topic Guide (`aws help topics <../topic/index.html>`_)']
-        )
+        self.assertEqual(self.cmd.related_items, ['aws help topics'])
 
-    def test_topic_table(self):
-        topic_table = self.cmd.topic_table
+    def test_subcommand_table(self):
+        subcommand_table = self.cmd.subcommand_table
 
-        self.assertEqual(len(topic_table), 3)
+        self.assertEqual(len(subcommand_table), 3)
 
         # Ensure there is a topics command
-        self.assertIn('topics', topic_table)
-        self.assertIsInstance(topic_table['topics'], TopicListerCommand)
+        self.assertIn('topics', subcommand_table)
+        self.assertIsInstance(subcommand_table['topics'], TopicListerCommand)
 
         # Ensure the topics are there as well
-        self.assertIn('topic-name-1', topic_table)
-        self.assertIsInstance(topic_table['topic-name-1'], TopicHelpCommand)
-        self.assertEqual(topic_table['topic-name-1'].name, 'topic-name-1')
+        self.assertIn('topic-name-1', subcommand_table)
+        self.assertIsInstance(subcommand_table['topic-name-1'],
+                              TopicHelpCommand)
+        self.assertEqual(subcommand_table['topic-name-1'].name, 'topic-name-1')
 
-        self.assertIn('topic-name-2', topic_table)
-        self.assertIsInstance(topic_table['topic-name-2'], TopicHelpCommand)
-        self.assertEqual(topic_table['topic-name-2'].name, 'topic-name-2')
-
-    def test_topics_call(self):
-        with mock.patch('awscli.help.TopicListerCommand.__call__') \
-                as mock_call:
-            self.cmd(['topics'], None)
-            mock_call.assert_called()
-
-    def test_topic_call(self):
-        with mock.patch('awscli.help.TopicHelpCommand.__call__') as mock_call:
-            self.cmd(['topic-name-1'], None)
-            mock_call.assert_called()
-
-    @mock.patch('awscli.help.TopicListerCommand.__call__')
-    @mock.patch('awscli.help.TopicHelpCommand.__call__')
-    @mock.patch('awscli.help.HelpCommand.__call__')
-    def test_regular_call(self, help_command, topic_help_command,
-                         topic_lister_command):
-        self.cmd([], None)
-        help_command.assert_called()
-        self.assertFalse(topic_lister_command.called)
-        self.assertFalse(topic_help_command.called)
-
-    def test_invalid_topic_name(self):
-        # This sole purpose of this patch is to remove errors from being
-        # printed to screen even when the test passes when running the test
-        # suite.
-        with mock.patch('sys.stderr'):
-            with self.assertRaises(SystemExit):
-                self.cmd(['topic-foo'], None)
+        self.assertIn('topic-name-2', subcommand_table)
+        self.assertIsInstance(subcommand_table['topic-name-2'],
+                              TopicHelpCommand)
+        self.assertEqual(subcommand_table['topic-name-2'].name,
+                         'topic-name-2')
 
 
 class TestTopicListerCommand(TestHelpCommandBase):
     def setUp(self):
         super(TestTopicListerCommand, self).setUp()
-        self.descriptions = [
-            'This describes the first topic',
-            'This describes the second topic'
-        ]
-        self.tags_dict = {
-            'topic-name-1': {
-                'title': ['The first topic title'],
-                'description': [self.descriptions[0]],
-                'category': ['General Topics', 'Troubleshooting']
-            },
-            'topic-name-2': {
-                'title': ['The second topic title'],
-                'description': [self.descriptions[1]],
-                'category': ['General Topics']
-            }
-        }
-        self.topic_tag_db = TopicTagDB(self.tags_dict)
-        self.cmd = TopicListerCommand(self.session, self.topic_tag_db)
+        self.cmd = TopicListerCommand(self.session)
 
     def test_event_class(self):
         self.assertEqual(self.cmd.event_class, 'topics')
@@ -239,114 +234,15 @@ class TestTopicListerCommand(TestHelpCommandBase):
     def test_name(self):
         self.assertEqual(self.cmd.name, 'topics')
 
-    def test_title(self):
-        self.assertEqual(self.cmd.title, 'AWS CLI Topic Guide')
-
-    def test_description(self):
-        self.assertIn('This is the AWS CLI Topic Guide', self.cmd.description)
-
-    def test_related_items(self):
-        self.assertEqual(
-            self.cmd.related_items,
-            ['AWS CLI Reference Guide (`aws help <../reference/index.html>`_)']
-        )
-
-    def test_topic_names(self):
-        self.assertEqual(
-            sorted(self.cmd.topic_names), ['topic-name-1', 'topic-name-2'])
-
-    def test_categories(self):
-        self.assertCountEqual(
-            self.cmd.categories,
-            {'General Topics':
-                ['topic-name-1', 'topic-name-2'],
-             'Troubleshooting':
-                ['topic-name-1']}
-        )
-
-    def test_entries(self):
-        ref_entries = {
-            'topic-name-1': (
-                '`topic-name-1 <topic-name-1.html>`_: %s' 
-                % self.descriptions[0]),
-            'topic-name-2': (
-                '`topic-name-2 <topic-name-2.html>`_: %s'
-                % self.descriptions[1])
-        }
-        self.assertCountEqual(self.cmd.entries, ref_entries)
-
 
 class TestTopicHelpCommand(TestHelpCommandBase):
     def setUp(self):
         super(TestTopicHelpCommand, self).setUp()
         self.name = 'topic-name-1'
-        self.title = 'The first topic title'
-        self.description = 'This describes the first topic'
-        self.category = 'General Topics'
-        self.related_command = 's3'
-        self.related_topic = 'foo'
-        self.topic_body = 'Hello World!'
-
-        self.tags_dict = {
-            self.name: {
-                'title': [self.title],
-                'description': [self.description],
-                'category': [self.category],
-                'related command': [self.related_command],
-                'related topic': [self.related_topic]
-            }
-        }
-        self.topic_tag_db = TopicTagDB(self.tags_dict)
-        self.cmd = TopicHelpCommand(self.session, self.name, self.topic_tag_db)
-        self.dir_patch = mock.patch('awscli.topictags.TopicTagDB.topic_dir',
-                                    self.file_creator.rootdir)
-        self.dir_patch.start()
-
-    def tearDown(self):
-        self.dir_patch.stop()
-        super(TestTopicHelpCommand, self).tearDown()
+        self.cmd = TopicHelpCommand(self.session, self.name)
 
     def test_event_class(self):
         self.assertEqual(self.cmd.event_class, 'topics.topic-name-1')
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
-
-    def test_title(self):
-        self.assertEqual(self.cmd.title, self.title)
-
-    def test_contents(self):
-        lines = [
-            ':title: ' + self.title,
-            ':description: ' + self.description,
-            ':related command: ' + self.related_command,
-            ':related topic: ' + self.related_topic,
-            self.topic_body
-        ]
-        body = '\n'.join(lines)
-        self.file_creator.create_file(self.name + '.rst', body)
-        self.assertEqual(self.cmd.contents, self.topic_body)
-
-    def test_contents_no_tags(self):
-        lines = [
-            self.topic_body
-        ]
-        body = '\n'.join(lines)
-        self.file_creator.create_file(self.name + '.rst', body)
-        self.assertEqual(self.cmd.contents, self.topic_body)
-
-    def test_contents_tags_in_body(self):
-        lines = [
-            ':title: ' + self.title,
-            ':description: ' + self.description,
-            ':related command: ' + self.related_command
-        ]
-        body_lines = [
-            ':related_topic: ' + self.related_topic,
-            self.topic_body,
-            ':foo: bar'
-        ]
-        body = '\n'.join(lines + body_lines)
-        ref_body = '\n'.join(body_lines)
-        self.file_creator.create_file(self.name + '.rst', body)
-        self.assertEqual(self.cmd.contents, ref_body)

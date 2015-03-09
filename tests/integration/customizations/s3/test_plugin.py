@@ -34,7 +34,7 @@ from awscli.compat import six
 
 from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
-from tests.unit.customizations.s3 import create_bucket as _create_bucket
+from tests.integration.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3.transferconfig import DEFAULTS
 from awscli.customizations.scalarparse import add_scalar_parsers
 
@@ -481,7 +481,7 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
-            'A client error (NoSuchKey) occurred when calling the '
+            'A client error (404) occurred when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
         self.assertIn(expected_err_msg, p.stderr)
 

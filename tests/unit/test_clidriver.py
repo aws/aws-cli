@@ -452,30 +452,30 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(call_args[1]['verify'], True)
 
     def test_s3_with_region_and_endpoint_url(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {'CommonPrefixes': [], 'Contents': []})
+        with mock.patch('botocore.session.Session.create_client') as client:
+            self.parsed_responses = [
+                {'CommonPrefixes': [], 'Contents': []}
+            ]
+            self.patch_make_request()
             self.assert_params_for_cmd(
                 's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
                 expected_rc=0)
-        endpoint.assert_called_with(region_name='us-east-1',
-                                    endpoint_url='https://foobar.com/',
-                                    verify=None)
+        client.assert_called_with('s3', region_name='us-east-1',
+                                  endpoint_url='https://foobar.com/',
+                                  verify=None)
 
     def test_s3_with_no_verify_ssl(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {'CommonPrefixes': [], 'Contents': []})
+        with mock.patch('botocore.session.Session.create_client') as client:
+            self.parsed_responses = [
+                {'CommonPrefixes': [], 'Contents': []}
+            ]
+            self.patch_make_request()
             self.assert_params_for_cmd(
                 's3 ls s3://test --no-verify-ssl',
                 expected_rc=0)
-        endpoint.assert_called_with(region_name=None,
-                                    endpoint_url=None,
-                                    verify=False)
+        client.assert_called_with('s3', region_name=None,
+                                  endpoint_url=None,
+                                  verify=False)
 
     def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()

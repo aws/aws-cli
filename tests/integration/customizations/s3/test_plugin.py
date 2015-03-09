@@ -59,6 +59,12 @@ def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True,
                 input_file=input_file)
 
 
+def _running_on_rhel():
+    return (
+        hasattr(platform, 'linux_distribution') and
+        platform.linux_distribution()[0] == 'Red Hat Enterprise Linux Server')
+
+
 class BaseS3CLICommand(unittest.TestCase):
     """Base class for aws s3 command.
 
@@ -1291,6 +1297,13 @@ class TestMemoryUtilization(BaseS3CLICommand):
         self.assert_max_memory_used(p, self.max_mem_allowed,
                                     download_full_command)
 
+    # Some versions of RHEL allocate memory in a way where free'd memory isn't
+    # given back to the OS.  We haven't seen behavior as bad as RHEL's to the
+    # point where this test fails on other distros, so for now we're disabling
+    # the test on RHEL until we come up with a better way to collect
+    # memory usage.
+    @unittest.skipIf(_running_on_rhel(),
+                     'Streaming memory tests no supported on RHEL.')
     def test_stream_large_file(self):
         """
         This tests to ensure that streaming files for both uploads and

@@ -5,6 +5,8 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws configure set``: Fix issue when setting nested configuration
+  values
 * feature:``aws s3``: Add support for ``--metadata-directive`` that allows
   metadata to be copied or replaced for single part copies.
   (`issue 1188 <https://github.com/aws/aws-cli/pull/1188>`__)

@@ -13,7 +13,7 @@
 import sys
 import os
 
-import botocore
+from botocore.handlers import disable_signing
 import jmespath
 
 from awscli.compat import urlparse
@@ -72,8 +72,4 @@ def no_sign_request(parsed_args, session, **kwargs):
         # we need to set the signature_version to None for
         # any service created.  This ensures that get_endpoint()
         # will not look for auth.
-        session.register('service-created', disable_signing)
-
-
-def disable_signing(service, **kwargs):
-    service.signature_version = botocore.UNSIGNED
+        session.register('choose-signer', disable_signing)

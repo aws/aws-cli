@@ -16,11 +16,12 @@ import sys
 import tempfile
 
 from awscli.compat import six
-from awscli.customizations import configure
-from awscli.testutils import unittest
 from botocore.exceptions import ProfileNotFound
 import mock
 from six import StringIO
+
+from awscli.customizations import configure
+from awscli.testutils import unittest
 
 
 class PrecannedPrompter(object):

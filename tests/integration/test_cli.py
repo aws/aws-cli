@@ -70,19 +70,20 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     test to verify basic CLI functionality isn't entirely broken.
     """
 
-    def put_object(self, bucket, key, content):
+    def put_object(self, bucket, key, content, extra_args=None):
         session = botocore.session.get_session()
-        service = session.get_service('s3')
-        endpoint = service.get_endpoint('us-east-1')
-        http, response = service.get_operation(
-            'CreateBucket').call(endpoint, bucket=bucket)
+        client = session.create_client('s3', 'us-east-1')
+        response = client.create_bucket(Bucket=bucket)
         time.sleep(5)
-        self.addCleanup(service.get_operation('DeleteBucket').call,
-                        endpoint, bucket=bucket)
-        http, response = service.get_operation('PutObject').call(
-            endpoint, bucket=bucket, key=key, body=content)
-        self.addCleanup(service.get_operation('DeleteObject').call,
-                        endpoint, bucket=bucket, key=key)
+        self.addCleanup(client.delete_bucket, Bucket=bucket)
+        call_args = {
+            'Bucket': bucket,
+            'Key': key, 'Body': content
+        }
+        if extra_args is not None:
+            call_args.update(extra_args)
+        response = client.put_object(**call_args)
+        self.addCleanup(client.delete_object, Bucket=bucket, Key=key)
 
     def test_ec2_describe_instances(self):
         # Verify we can make a call and get output.
@@ -189,6 +190,35 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         with open(os.path.join(d, 'foobar')) as f:
             contents = f.read()
         self.assertEqual(contents, 'foobar contents')
+
+    def test_no_sign_request(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d)
+
+        env_vars = os.environ.copy()
+        env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
+        env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'
+
+        bucket_name = 'nosign' + str(
+            int(time.time())) + str(random.randint(1, 100))
+        self.put_object(bucket_name, 'foo', content='bar',
+                        extra_args={'ACL': 'public-read-write'})
+
+        p = aws('s3api get-object --bucket %s --key foo %s' % (
+            bucket_name, os.path.join(d, 'foo')), env_vars=env_vars)
+        # Should have credential issues.
+        self.assertEqual(p.rc, 255)
+
+        p = aws('s3api get-object --bucket %s --key foo '
+                '%s --no-sign-request' % (bucket_name, os.path.join(d, 'foo')),
+                env_vars=env_vars)
+
+        # Should be able to download the file when not signing.
+        self.assertEqual(p.rc, 0)
+
+        with open(os.path.join(d, 'foo')) as f:
+            contents = f.read()
+        self.assertEqual(contents, 'bar')
 
     def test_no_paginate_arg(self):
         d = tempfile.mkdtemp()

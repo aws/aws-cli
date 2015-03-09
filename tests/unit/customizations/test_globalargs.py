@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.handlers import disable_signing
+
 from awscli.testutils import unittest
 from awscli.compat import six
 import mock
@@ -68,7 +70,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         session = mock.Mock()
 
         globalargs.no_sign_request(args, session)
-        session.register.assert_called_with('service-created', mock.ANY)
+        session.register.assert_called_with('choose-signer', disable_signing)
 
     def test_request_signed_by_default(self):
         args = FakeParsedArgs(sign_request=True)
@@ -76,12 +78,6 @@ class TestGlobalArgsCustomization(unittest.TestCase):
 
         globalargs.no_sign_request(args, session)
         self.assertFalse(session.register.called)
-
-    def test_disable_signing(self):
-        service = mock.Mock()
-        service.signature_version = 'v4'
-        globalargs.disable_signing(service)
-        service.signature_version = None
 
     def test_invalid_endpoint_url(self):
         # Invalid jmespath expression.

@@ -52,7 +52,8 @@ from awscli.customizations.generatecliskeleton import \
     register_generate_cli_skeleton
 from awscli.customizations.assumerole import register_assume_role_provider
 from awscli.customizations.waiters import register_add_waiters
-from awscli.customizations.codedeploy import initialize as codedeploy_init
+from awscli.customizations.codedeploy.codedeploy import initialize \
+    as codedeploy_init
 from awscli.customizations.configservice.subscribe import register_subscribe
 from awscli.customizations.configservice.getstatus import register_get_status
 from awscli.customizations.configservice.rename_cmd import \

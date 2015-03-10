@@ -231,6 +231,9 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('s3api list-objects --bucket %s --no-paginate' % bucket_name)
         self.assertEqual(p.rc, 0, p.stdout + p.stderr)
 
+        p = aws('s3api list-objects --bucket %s' % bucket_name)
+        self.assertEqual(p.rc, 0, p.stdout + p.stderr)
+
     def test_top_level_options_debug(self):
         p = aws('ec2 describe-instances --debug')
         self.assertEqual(p.rc, 0)

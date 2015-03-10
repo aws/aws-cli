@@ -13,229 +13,108 @@
 
 import errno
 import os
-import sys
 import shutil
-import subprocess
-import shlex
-from subprocess import CalledProcessError
+import sys
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import \
-    validate_region, validate_s3_location, config_path, create_config_file, \
-    validate_iam_user_arn, validate_instance, REGION_ARG, IAM_USER_ARN_ARG
+    validate_region, validate_s3_location, validate_instance
 
 
 class Install(BasicCommand):
     NAME = 'install'
 
     DESCRIPTION = (
-        'The AWS CodeDeploy install command configures and installs the '
-        'codedeploy-agent on the on-premises instance.'
+        'Configures and installs the AWS CodeDeploy Agent on the on-premises '
+        'instance.'
     )
 
     ARG_TABLE = [
+        {
+            'name': 'config-file',
+            'synopsis': '--config-file <path>',
+            'required': True,
+            'help_text': (
+                'Required. The path to the on-premises instance configuration '
+                'file.'
+            )
+        },
         {
             'name': 'override-config',
             'action': 'store_true',
             'default': False,
             'help_text': (
-                'Optional. Specify --override-config flag to override the '
-                'on-premises config file.'
+                'Optional. Overrides the on-premises instance configuration '
+                'file.'
             )
         },
-        {
-            'name': 'config-file',
-            'synopsis': '--config-file <path>',
-            'required': False,
-            'help_text': (
-                'Optional. The path to the on-premises config file.'
-            )
-        },
-        IAM_USER_ARN_ARG,
-        REGION_ARG,
         {
             'name': 'agent-installer',
             'synopsis': '--agent-installer <s3-location>',
             'required': False,
             'help_text': (
-                'Optional. The codedeploy-agent installer file.'
+                'Optional. The AWS CodeDeploy Agent installer file.'
             )
         }
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        parsed_args.region = validate_region(parsed_globals, self._session)
-        validate_instance(parsed_args)
-        self._validate_config(parsed_args)
-        validate_iam_user_arn(parsed_args)
-        self._validate_agent_installer(parsed_args)
         params = parsed_args
+        params.session = self._session
+        validate_region(params, parsed_globals)
+        validate_instance(params)
+        params.system.validate_administrator()
+        self._validate_override_config(params)
+        self._validate_agent_installer(params)
 
         try:
             self._create_config(params)
             self._install_agent(params)
         except Exception as e:
-            sys.stdout.write(
+            sys.stdout.flush()
+            sys.stderr.write(
                 'ERROR\n'
                 '{0}\n'
-                'Please manually install the codedeploy-agent on the '
-                'on-premises instance by following the instructions at '
-                '{1}\n'.format(
-                    e,
-                    'http://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-configure-on-premises-host.html'
-                )
+                'Install the AWS CodeDeploy Agent on the on-premises instance '
+                'by following the instructions in "Configure Existing '
+                'On-Premises Instances by Using AWS CodeDeploy" in the AWS '
+                'CodeDeploy User Guide.\n'.format(e)
             )
 
-    @staticmethod
-    def _validate_config(parsed_args):
-        if parsed_args.config_file and parsed_args.iam_user_arn:
+    def _validate_override_config(self, params):
+        if os.path.isfile(params.system.CONFIG_PATH) and \
+                not params.override_config:
             raise RuntimeError(
-                'You cannot specify both --config-file and --iam-user-arn'
+                'The on-premises instance configuration file already exists. '
+                'Specify --override-config to update the existing on-premises '
+                'instance configuration file.'
             )
 
-    @staticmethod
-    def _validate_agent_installer(parsed_args):
-        validate_s3_location(parsed_args, 'agent_installer')
-        if 'bucket' not in parsed_args:
-            parsed_args.bucket = 'aws-codedeploy-{0}'.format(
-                parsed_args.region
-            )
-        if 'key' not in parsed_args:
-            if sys.platform == 'linux2':
-                parsed_args.installer = 'install'
-            elif sys.platform == 'win32':
-                parsed_args.installer = 'codedeploy-agent.msi'
-            parsed_args.key = 'latest/{0}'.format(parsed_args.installer)
+    def _validate_agent_installer(self, params):
+        validate_s3_location(params, 'agent_installer')
+        if 'bucket' not in params:
+            params.bucket = 'aws-codedeploy-{0}'.format(params.region)
+        if 'key' not in params:
+            params.key = 'latest/{0}'.format(params.system.INSTALLER)
+            params.installer = params.system.INSTALLER
         else:
-            start = parsed_args.key.rfind('/') + 1
-            parsed_args.installer = parsed_args.key[start:]
+            start = params.key.rfind('/') + 1
+            params.installer = params.key[start:]
 
-    @staticmethod
-    def _create_config(params):
-        sys.stdout.write('Creating on-premises config file... ')
-        if os.path.isfile(config_path()) and not params.override_config:
-            raise RuntimeError(
-                'On-premises config file already exists. Please specify '
-                '--override-config to update the existing config file.'
-            )
-
+    def _create_config(self, params):
+        sys.stdout.write(
+            'Creating the on-premises instance configuration file... '
+        )
         try:
-            os.makedirs(os.path.dirname(config_path()))
+            os.makedirs(params.system.CONFIG_DIR)
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise e
-
-        if params.config_file and params.config_file != config_path():
-            shutil.copyfile(params.config_file, config_path())
-        else:
-            sys.stdout.write('\n')
-            if not params.iam_user_arn:
-                params.iam_user_arn = raw_input('Enter IAM User ARN: ')
-            params.access_key_id = raw_input('Enter Access Key ID: ')
-            params.secret_access_key = raw_input('Enter Secret Access Key: ')
-            sys.stdout.write('... ')
-            create_config_file(config_path(), params)
+        if params.config_file != params.system.CONFIG_PATH:
+            shutil.copyfile(params.config_file, params.system.CONFIG_PATH)
         sys.stdout.write('DONE\n')
 
-    @staticmethod
-    def _install_agent(params):
-        sys.stdout.write('Installing codedeploy-agent... ')
-        if sys.platform == 'linux2':
-            if params.system == 'ubuntu':
-                subprocess.check_call(
-                    'sudo apt-get -y update',
-                    shell=True
-                )
-                subprocess.check_call(
-                    'sudo apt-get -y install ruby2.0',
-                    shell=True
-                )
-            elif params.system == 'redhat':
-                subprocess.check_call(
-                    'sudo yum -y update',
-                    shell=True
-                )
-            try:
-                subprocess.check_call(
-                    'sudo service codedeploy-agent stop',
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=True
-                )
-            except CalledProcessError:
-                pass
-            subprocess.check_call(
-                'aws s3 cp s3://{0}/{1} ./{2} --region {3}'.format(
-                    params.bucket,
-                    params.key,
-                    params.installer,
-                    params.region
-                ),
-                shell=True
-            )
-            subprocess.check_call(
-                'sudo chmod +x ./{0}'.format(params.installer),
-                shell=True
-            )
-            subprocess.check_call(
-                'sudo ./{0} auto'.format(params.installer),
-                shell=True
-            )
-        elif sys.platform == 'win32':
-            args = ["powershell.exe", "-Command", "Stop-Service", "-Name", "codedeployagent"]
-            output = subprocess.Popen(
-                args,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True
-            )
-
-            if output.returncode != 0:
-                if "Cannot find any service with service name 'codedeployagent'" not in output.communicate()[1]:
-                    sys.stderr.write(output.communicate()[1])
-
-            subprocess.check_call(
-                r'powershell.exe -Command New-Item'
-                r' -Path "c:\temp"'
-                r' -ItemType Directory'
-                r' -Force',
-                shell=True
-            )
-            subprocess.check_call(
-                r'powershell.exe -Command Read-S3Object'
-                r' -BucketName {0} -Key {1}'
-                r' -File c:\temp\{2}'.format(
-                    params.bucket,
-                    params.key,
-                    params.installer
-                ),
-                shell=True
-            )
-            subprocess.check_call(
-                r'c:\temp\{0}'
-                r' /quiet'
-                r' /l c:\temp\codedeploy-agent-install-log.txt'.format(
-                    params.installer
-                ),
-                shell=True
-            )
-            subprocess.check_call(
-                'powershell.exe -Command Restart-Service'
-                ' -Name codedeployagent',
-                shell=True
-            )
-
-            args = ["powershell.exe", "-Command", "Get-Service", "-Name", "codedeployagent"]
-            output = subprocess.Popen(
-                args,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True
-            ).communicate()
-
-            if "Running" not in output[0]:
-                raise RuntimeError(
-                    'CodeDeploy Agent did not start up correctly after installation.'
-                )
-
-        sys.stdout.write('... DONE\n')
+    def _install_agent(self, params):
+        sys.stdout.write('Installing the AWS CodeDeploy Agent... ')
+        params.system.install(params)
+        sys.stdout.write('DONE\n')

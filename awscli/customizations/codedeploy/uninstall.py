@@ -12,13 +12,11 @@
 # language governing permissions and limitations under the License.
 
 import os
-import subprocess
-from subprocess import CalledProcessError
 import sys
 import errno
 
-from awscli.customizations.codedeploy.utils import config_path, \
-    validate_instance
+from awscli.customizations.codedeploy.utils import validate_instance, \
+    validate_region
 from awscli.customizations.commands import BasicCommand
 
 
@@ -26,69 +24,39 @@ class Uninstall(BasicCommand):
     NAME = 'uninstall'
 
     DESCRIPTION = (
-        'The AWS CodeDeploy uninstall command uninstalls the codedeploy-agent '
-        'from the on-premises instance.'
+        'Uninstalls the AWS CodeDeploy Agent from the on-premises instance.'
     )
 
     def _run_main(self, parsed_args, parsed_globals):
-        validate_instance(parsed_args)
         params = parsed_args
+        params.session = self._session
+        validate_region(params, parsed_globals)
+        validate_instance(params)
+        params.system.validate_administrator()
 
         try:
-            self._delete_config_file()
             self._uninstall_agent(params)
+            self._delete_config_file(params)
         except Exception as e:
-            sys.stdout.write(
+            sys.stdout.flush()
+            sys.stderr.write(
                 'ERROR\n'
                 '{0}\n'
-                'Please manually uninstall the codedeploy-agent on the '
-                'on-premises instance by following the instructions at '
-                '{1}\n'.format(
-                    e,
-                    'http://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-configure-on-premises-host.html'
-                )
+                'Uninstall the AWS CodeDeploy Agent on the on-premises '
+                'instance by following the instructions in "Configure '
+                'Existing On-Premises Instances by Using AWS CodeDeploy" in '
+                'the AWS CodeDeploy User Guide.\n'.format(e)
             )
 
-    @staticmethod
-    def _uninstall_agent(params):
-        sys.stdout.write('Uninstalling codedeploy-agent... ')
-        if sys.platform == 'linux2':
-            try:
-                subprocess.check_call(
-                    'sudo service codedeploy-agent stop',
-                    shell=True
-                )
-            except CalledProcessError:
-                pass
-            if params.system == 'ubuntu':
-                subprocess.check_call(
-                    'sudo dpkg -r codedeploy-agent',
-                    shell=True
-                )
-            elif params.system == 'redhat':
-                subprocess.check_call(
-                    'sudo yum -y erase codedeploy-agent',
-                    shell=True
-                )
-        elif sys.platform == 'win32':
-            try:
-                subprocess.check_call(
-                    r'wmic product where name="CodeDeploy Host Agent" call uninstall /nointeractive',
-                    stdout=subprocess.PIPE,
-                    shell=True
-                )
-            except CalledProcessError:
-                raise RuntimeError(
-                    'Failed to uninstall the CodeDeploy Host Agent.'
-                )
-
+    def _uninstall_agent(self, params):
+        sys.stdout.write('Uninstalling the AWS CodeDeploy Agent... ')
+        params.system.uninstall(params)
         sys.stdout.write('DONE\n')
 
-    @staticmethod
-    def _delete_config_file():
-        sys.stdout.write('Deleting on-premises config file... ')
+    def _delete_config_file(self, params):
+        sys.stdout.write('Deleting the on-premises instance configuration... ')
         try:
-            os.remove(config_path())
+            os.remove(params.system.CONFIG_PATH)
         except OSError as e:
             if e.errno != errno.ENOENT:
                 raise e

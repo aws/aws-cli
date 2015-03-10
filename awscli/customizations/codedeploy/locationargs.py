@@ -30,12 +30,12 @@ S3_LOCATION_SCHEMA = {
     "properties": {
         "bucket": {
             "type": "string",
-            "description": "The Amazon S3 bucket name",
+            "description": "The Amazon S3 bucket name.",
             "required": True
         },
         "key": {
             "type": "string",
-            "description": "The Amazon S3 object key name",
+            "description": "The Amazon S3 object key name.",
             "required": True
         },
         "bundleType": {
@@ -46,12 +46,12 @@ S3_LOCATION_SCHEMA = {
         },
         "eTag": {
             "type": "string",
-            "description": "The Amazon S3 object eTag",
+            "description": "The Amazon S3 object eTag.",
             "required": False
         },
         "version": {
             "type": "string",
-            "description": "The Amazon S3 object version",
+            "description": "The Amazon S3 object version.",
             "required": False
         }
     }
@@ -74,14 +74,15 @@ GITHUB_LOCATION_SCHEMA = {
     "properties": {
         "repository": {
             "type": "string",
-            "description":
+            "description": (
                 "The GitHub account or organization and repository. Specify "
-                "as GitHub-account/repository or GitHub-org/repository.",
+                "as GitHub-account/repository or GitHub-org/repository."
+            ),
             "required": True
         },
         "commitId": {
             "type": "string",
-            "description": "SHA1 Git commit reference.",
+            "description": "The SHA1 Git commit reference.",
             "required": True
         }
     }
@@ -141,7 +142,7 @@ class S3LocationArgument(LocationArgument):
         valid = lambda k: value_dict.get(k, False)
         if not all(map(valid, required)):
             raise RuntimeError(
-                '--s3-location must specify bucket, key, and bundleType'
+                '--s3-location must specify bucket, key and bundleType.'
             )
         revision = {
             "revisionType": "S3",
@@ -164,7 +165,7 @@ class GitHubLocationArgument(LocationArgument):
         valid = lambda k: value_dict.get(k, False)
         if not all(map(valid, required)):
             raise RuntimeError(
-                '--github-location must specify repository and commitId'
+                '--github-location must specify repository and commitId.'
             )
         return {
             "revisionType": "GitHub",

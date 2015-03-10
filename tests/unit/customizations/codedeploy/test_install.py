@@ -11,407 +11,181 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import awscli
 import sys
 
 from argparse import Namespace
-from mock import MagicMock, patch, call
 from awscli.customizations.codedeploy.install import Install
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows
 from awscli.testutils import unittest
+from mock import MagicMock, patch, mock_open
+from socket import timeout
 
 
 class TestInstall(unittest.TestCase):
     def setUp(self):
-        self.saved_sys_platform = sys.platform
-        self.iam_user_arn = 'arn:aws:iam::012345678912:user/foo'
         self.region = 'us-east-1'
-        self.config_dir = '/etc/codedeploy-agent/conf'
-        self.config_file = 'codedeploy.onpremises.yml'
-        self.config_path = '{0}/{1}'.format(self.config_dir, self.config_file)
+        self.config_file = 'config-file'
         self.installer = 'install'
         self.bucket = 'aws-codedeploy-{0}'.format(self.region)
         self.key = 'latest/{0}'.format(self.installer)
         self.agent_installer = 's3://{0}/{1}'.format(self.bucket, self.key)
 
+        self.system_patcher = patch('platform.system')
+        self.system = self.system_patcher.start()
+        self.system.return_value = 'Linux'
+
+        self.linux_distribution_patcher = patch('platform.linux_distribution')
+        self.linux_distribution = self.linux_distribution_patcher.start()
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
+
+        self.urlopen_patcher = patch(
+            'awscli.customizations.codedeploy.utils.urlopen'
+        )
+        self.urlopen = self.urlopen_patcher.start()
+        self.urlopen.side_effect = timeout('Not EC2 instance')
+
+        self.geteuid_patcher = patch('os.geteuid')
+        self.geteuid = self.geteuid_patcher.start()
+        self.geteuid.return_value = 0
+
+        self.isfile_patcher = patch('os.path.isfile')
+        self.isfile = self.isfile_patcher.start()
+        self.isfile.return_value = False
+
+        self.makedirs_patcher = patch('os.makedirs')
+        self.makedirs = self.makedirs_patcher.start()
+
+        self.copyfile_patcher = patch('shutil.copyfile')
+        self.copyfile = self.copyfile_patcher.start()
+
+        self.open_patcher = patch(
+            'awscli.customizations.codedeploy.systems.open',
+            mock_open(), create=True
+        )
+        self.open = self.open_patcher.start()
+
         self.args = Namespace()
         self.args.override_config = False
-        self.args.config_file = None
-        self.args.iam_user_arn = None
+        self.args.config_file = self.config_file
         self.args.agent_installer = None
 
         self.globals = Namespace()
         self.globals.region = self.region
 
-        self.session = MagicMock()
+        self.body = 'install-script'
+        self.reader = MagicMock()
+        self.reader.read.return_value = self.body
+        self.s3 = MagicMock()
+        self.s3.get_object.return_value = {'Body': self.reader}
 
+        self.session = MagicMock()
+        self.session.create_client.return_value = self.s3
         self.install = Install(self.session)
 
     def tearDown(self):
-        sys.platform = self.saved_sys_platform
+        self.system_patcher.stop()
+        self.linux_distribution_patcher.stop()
+        self.urlopen_patcher.stop()
+        self.geteuid_patcher.stop()
+        self.isfile_patcher.stop()
+        self.makedirs_patcher.stop()
+        self.copyfile_patcher.stop()
+        self.open_patcher.stop()
 
-    @patch.object(awscli.customizations.codedeploy.install, 'validate_region')
-    def test_run_main_throws_on_invalid_region(self, validate_region):
-        validate_region.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
+    def test_install_throws_on_invalid_region(self):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
             self.install._run_main(self.args, self.globals)
-        validate_region.assert_called_with(self.globals, self.session)
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_instance'
-    )
-    def test_run_main_throws_on_invalid_instance(self, validate_instance):
-        validate_instance.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
+    def test_install_throws_on_unsupported_system(self):
+        self.system.return_value = 'Unsupported'
+        with self.assertRaisesRegexp(
+                RuntimeError,
+                'Only Ubuntu Server and Windows Server operating systems are '
+                'supported.'):
             self.install._run_main(self.args, self.globals)
-        validate_instance.assert_called_with(self.args)
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_instance'
-    )
-    def test_run_main_throws_on_invalid_config(self, validate_instance):
-        self.install._validate_config = MagicMock()
-        self.install._validate_config.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
+    def test_install_throws_on_ec2_instance(self):
+        self.urlopen.side_effect = None
+        with self.assertRaisesRegexp(
+                RuntimeError, 'Amazon EC2 instances are not supported.'):
             self.install._run_main(self.args, self.globals)
-        self.install._validate_config.assert_called_with(self.args)
+        self.assertIn('system', self.args)
+        self.assertTrue(isinstance(self.args.system, Ubuntu))
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_instance'
-    )
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_iam_user_arn'
-    )
-    def test_run_main_throws_on_invalid_iam_user_arn(
-        self, validate_iam_user_arn, validate_instance
-    ):
-        validate_iam_user_arn.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
+    def test_install_throws_on_non_administrator(self):
+        self.geteuid.return_value = 1
+        with self.assertRaisesRegexp(
+                RuntimeError, 'You must run this command as sudo.'):
             self.install._run_main(self.args, self.globals)
-        validate_iam_user_arn.assert_called_with(self.args)
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_instance'
-    )
-    def test_run_main_throws_on_invalid_agent_installer(
-        self, validate_instance
-    ):
-        self.install._validate_agent_installer = MagicMock()
-        self.install._validate_agent_installer.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
+    def test_install_throws_on_no_override_config(self):
+        self.isfile.return_value = True
+        self.args.override_config = False
+        with self.assertRaisesRegexp(
+                RuntimeError,
+                'The on-premises instance configuration file already exists. '
+                'Specify --override-config to update the existing on-premises '
+                'instance configuration file.'):
             self.install._run_main(self.args, self.globals)
-        self.install._validate_agent_installer.assert_called_with(self.args)
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_instance'
-    )
-    def test_run_main(
-        self, validate_instance
-    ):
-        self.install._validate_agent_installer = MagicMock()
-        self.install._create_config = MagicMock()
-        self.install._install_agent = MagicMock()
+    def test_install_throws_on_invalid_agent_installer(self):
+        self.args.agent_installer = 'invalid-s3-location'
+        with self.assertRaisesRegexp(
+                ValueError,
+                '--agent-installer must specify the Amazon S3 URL format as '
+                's3://<bucket>/<key>.'):
+            self.install._run_main(self.args, self.globals)
+
+    @patch.object(Ubuntu, 'install')
+    def test_install_with_agent_installer(self, install):
+        self.args.agent_installer = self.agent_installer
         self.install._run_main(self.args, self.globals)
-        self.install._create_config.assert_called_with(self.args)
-        self.install._install_agent.assert_called_with(self.args)
-
-    def test_validate_config_with_installer_and_iam_user_arn(self):
-        self.args.config_file = self.config_file
-        self.args.iam_user_arn = self.iam_user_arn
-        with self.assertRaises(RuntimeError) as error:
-            self.install._validate_config(self.args)
-
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_s3_location'
-    )
-    def test_validate_agent_installer_throws_on_invalid_s3_location(
-        self, validate_s3_location
-    ):
-        validate_s3_location.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
-            self.install._validate_agent_installer(self.args)
-
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_s3_location'
-    )
-    def test_validate_agent_installer_with_s3_location(
-        self, validate_s3_location
-    ):
-        self.args.bucket = self.bucket
-        self.args.key = self.key
-        self.install._validate_agent_installer(self.args)
+        self.assertIn('bucket', self.args)
+        self.assertEqual(self.bucket, self.args.bucket)
+        self.assertIn('key', self.args)
+        self.assertEqual(self.key, self.args.key)
         self.assertIn('installer', self.args)
-        self.assertEquals(self.installer, self.args.installer)
+        self.assertEqual(self.installer, self.args.installer)
+        install.assert_called_with(self.args)
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_s3_location'
-    )
-    def test_validate_agent_installer_for_linux(
-        self, validate_s3_location
-    ):
-        sys.platform = 'linux2'
-        self.args.region = self.region
-        self.install._validate_agent_installer(self.args)
+    @patch.object(Ubuntu, 'install')
+    def test_install_for_ubuntu(self, install):
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
+        self.install._run_main(self.args, self.globals)
         self.assertIn('bucket', self.args)
         self.assertEquals(self.bucket, self.args.bucket)
         self.assertIn('key', self.args)
         self.assertEquals('latest/install', self.args.key)
         self.assertIn('installer', self.args)
         self.assertEquals('install', self.args.installer)
+        self.makedirs.assert_called_with('/etc/codedeploy-agent/conf')
+        self.copyfile.assset_called_with(
+            'codedeploy.onpremises.yml',
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
+        )
+        install.assert_called_with(self.args)
 
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'validate_s3_location'
-    )
-    def test_validate_agent_installer_for_windows(
-        self, validate_s3_location
-    ):
-        sys.platform = 'win32'
-        self.args.region = self.region
-        self.install._validate_agent_installer(self.args)
+    @patch.object(Windows, 'install')
+    @patch.object(Windows, 'validate_administrator')
+    def test_install_for_windows(self, validate_administrator, install):
+        self.system.return_value = 'Windows'
+        self.install._run_main(self.args, self.globals)
         self.assertIn('bucket', self.args)
         self.assertEquals(self.bucket, self.args.bucket)
         self.assertIn('key', self.args)
         self.assertEquals('latest/codedeploy-agent.msi', self.args.key)
         self.assertIn('installer', self.args)
         self.assertEquals('codedeploy-agent.msi', self.args.installer)
-
-    @patch('os.path')
-    @patch.object(awscli.customizations.codedeploy.install, 'config_path')
-    def test_create_config_throws_on_existing_config_file(
-        self, config_path, path
-    ):
-        config_path.return_value = self.config_file
-        path.isfile.return_value = True
-        with self.assertRaises(RuntimeError) as error:
-            self.install._create_config(self.args)
-
-    @patch('os.makedirs')
-    @patch('os.path')
-    @patch('__builtin__.raw_input')
-    @patch.object(awscli.customizations.codedeploy.install, 'config_path')
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'create_config_file'
-    )
-    def test_create_config_with_override_existing_config_file(
-        self, create_config_file, config_path, raw_input, path, makedirs
-    ):
-        self.args.override_config = True
-        config_path.return_value = self.config_path
-        path.isfile.return_value = True
-        path.dirname.return_value = self
-        self.install._create_config(self.args)
-        create_config_file.assert_called_with(self.config_path, self.args)
-
-    @patch('shutil.copyfile')
-    @patch('os.makedirs')
-    @patch('os.path')
-    @patch('__builtin__.raw_input')
-    @patch.object(awscli.customizations.codedeploy.install, 'config_path')
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'create_config_file'
-    )
-    def test_create_config_with_new_config_file(
-        self, create_config_file, config_path, raw_input, path, makedirs,
-        copyfile
-    ):
-        self.args.config_file = self.config_file
-        config_path.return_value = self.config_path
-        path.isfile.return_value = False
-        self.install._create_config(self.args)
-        copyfile.assert_called_with(self.config_file, self.config_path)
-
-    @patch('shutil.copyfile')
-    @patch('os.makedirs')
-    @patch('os.path')
-    @patch('__builtin__.raw_input')
-    @patch.object(awscli.customizations.codedeploy.install, 'config_path')
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'create_config_file'
-    )
-    def test_create_config_with_same_config_file(
-        self, create_config_file, config_path, raw_input, path, makedirs,
-        copyfile
-    ):
-        self.args.config_file = self.config_path
-        config_path.return_value = self.config_path
-        path.isfile.return_value = False
-        self.install._create_config(self.args)
-        self.assertFalse(copyfile.called)
-
-    @patch('os.makedirs')
-    @patch('os.path')
-    @patch('__builtin__.raw_input')
-    @patch.object(awscli.customizations.codedeploy.install, 'config_path')
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'create_config_file'
-    )
-    def test_create_config_with_iam_user_arn(
-        self, create_config_file, config_path, raw_input, path, makedirs,
-    ):
-        self.args.iam_user_arn = self.iam_user_arn
-        config_path.return_value = self.config_path
-        path.isfile.return_value = False
-        self.install._create_config(self.args)
-        raw_input.assert_has_calls([
-            call('Enter Access Key ID: '),
-            call('Enter Secret Access Key: ')
-        ])
-        create_config_file.assert_called_with(self.config_path, self.args)
-        self.assertIn('access_key_id', self.args)
-        self.assertIn('secret_access_key', self.args)
-
-    @patch('os.makedirs')
-    @patch('os.path')
-    @patch('__builtin__.raw_input')
-    @patch.object(awscli.customizations.codedeploy.install, 'config_path')
-    @patch.object(
-        awscli.customizations.codedeploy.install,
-        'create_config_file'
-    )
-    def test_create_config_with_no_iam_user_arn(
-        self, create_config_file, config_path, raw_input, path, makedirs,
-    ):
-        config_path.return_value = self.config_path
-        path.isfile.return_value = False
-        self.install._create_config(self.args)
-        raw_input.assert_has_calls([
-            call('Enter IAM User ARN: '),
-            call('Enter Access Key ID: '),
-            call('Enter Secret Access Key: ')
-        ])
-        create_config_file.assert_called_with(self.config_path, self.args)
-        self.assertIn('access_key_id', self.args)
-        self.assertIn('secret_access_key', self.args)
-
-    @patch('subprocess.check_call')
-    def test_install_agent_ubuntu(self, check_call):
-        sys.platform = 'linux2'
-        self.args.system = 'ubuntu'
-        self.args.bucket = self.bucket
-        self.args.key = self.key
-        self.args.installer = self.installer
-        self.args.region = self.region
-        self.install._install_agent(self.args)
-        check_call.assert_has_calls([
-            call('sudo apt-get -y update', shell=True),
-            call('sudo apt-get -y install ruby2.0', shell=True),
-            call(
-                'sudo service codedeploy-agent stop',
-                stdout=-1,
-                stderr=-1,
-                shell=True
-            ),
-            call(
-                'aws s3 cp s3://{0}/{1} ./{2} --region {3}'.format(
-                    self.bucket,
-                    self.key,
-                    self.installer,
-                    self.region
-                ),
-                shell=True
-            ),
-            call('sudo chmod +x ./{0}'.format(self.installer), shell=True),
-            call('sudo ./{0} auto'.format(self.installer), shell=True)
-        ])
-
-    @patch('subprocess.check_call')
-    def test_install_agent_redhat(self, check_call):
-        sys.platform = 'linux2'
-        self.args.system = 'redhat'
-        self.args.bucket = self.bucket
-        self.args.key = self.key
-        self.args.installer = self.installer
-        self.args.region = self.region
-        self.install._install_agent(self.args)
-        check_call.assert_has_calls([
-            call('sudo yum -y update', shell=True),
-            call(
-                'sudo service codedeploy-agent stop',
-                stdout=-1,
-                stderr=-1,
-                shell=True
-            ),
-            call(
-                'aws s3 cp s3://{0}/{1} ./{2} --region {3}'.format(
-                    self.bucket,
-                    self.key,
-                    self.installer,
-                    self.region
-                ),
-                shell=True
-            ),
-            call('sudo chmod +x ./{0}'.format(self.installer), shell=True),
-            call('sudo ./{0} auto'.format(self.installer), shell=True)
-        ])
-
-    @patch('subprocess.check_call')
-    @patch('subprocess.Popen')
-    def test_install_agent_windows(self, popen, check_call):
-        sys.platform = 'win32'
-        self.args.bucket = self.bucket
-        self.args.key = self.key
-        self.args.installer = self.installer
-        self.args.region = self.region
-
-        check_call.return_value.returncode = 0
-        popen.return_value.returncode = 0
-        popen.return_value.communicate.return_value = ["Running", None]
-
-        self.install._install_agent(self.args)
-
-        check_call.assert_has_calls([
-            call(
-                r'powershell.exe -Command New-Item'
-                r' -Path "c:\temp"'
-                r' -ItemType Directory'
-                r' -Force',
-                shell=True
-            ),
-            call(
-                r'powershell.exe -Command Read-S3Object'
-                r' -BucketName {0} -Key {1}'
-                r' -File c:\temp\{2}'.format(
-                    self.bucket,
-                    self.key,
-                    self.installer
-                ),
-                shell=True
-            ),
-            call(
-                r'c:\temp\{0}'
-                r' /quiet'
-                r' /l c:\temp\codedeploy-agent-install-log.txt'.format(
-                    self.installer
-                ),
-                shell=True
-            ),
-            call(
-                'powershell.exe -Command Restart-Service'
-                ' -Name codedeployagent',
-                shell=True
-            )
-        ])
-
-        stop_args = ["powershell.exe", "-Command", "Stop-Service", "-Name", "codedeployagent"]
-        get_args = ["powershell.exe", "-Command", "Get-Service", "-Name", "codedeployagent"]
-        popen.assert_has_calls([
-            call(stop_args, stdout=-1, stderr=-1, shell=True),
-            call(get_args, stdout=-1, stderr=-1, shell=True),
-            call().communicate()
-        ])
+        self.makedirs.assert_called_with(r'C:\ProgramData\Amazon\CodeDeploy')
+        self.copyfile.assset_called_with(
+            'conf.onpremises.yml',
+            r'C:\ProgramData\Amazon\CodeDeploy\conf.onpremises.yml'
+        )
+        validate_administrator.assert_called_with()
+        install.assert_called_with(self.args)
 
 
 if __name__ == "__main__":

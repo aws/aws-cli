@@ -15,8 +15,7 @@ import sys
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import \
-    validate_region, validate_instance_name, \
-    INSTANCE_NAME_ARG, REGION_ARG
+    validate_region, validate_instance_name, INSTANCE_NAME_ARG
 from awscli.errorhandler import ClientError, ServerError
 
 
@@ -24,50 +23,39 @@ class Deregister(BasicCommand):
     NAME = 'deregister'
 
     DESCRIPTION = (
-        'The AWS CodeDeploy deregister command removes any tags from the '
-        'on-premises instance; deregisters the on-premises instance from AWS '
-        'CodeDeploy; and, unless requested otherwise, deletes the IAM user '
-        'for the on-premises instance.'
+        'Removes any tags from the on-premises instance; deregisters the '
+        'on-premises instance from AWS CodeDeploy; and, unless requested '
+        'otherwise, deletes the IAM user for the on-premises instance.'
     )
 
     ARG_TABLE = [
         INSTANCE_NAME_ARG,
         {
-            'name': 'delete-iam-user',
-            'action': 'store_true',
-            'default': False,
-            'group_name': 'delete-iam-user',
-            'help_text': (
-                'Optional. Set the --delete-iam-user (the default) flag to '
-                'delete the IAM user for the registered on-premises instance; '
-                'otherwise, set the --no-delete-iam-user flag to not delete '
-                'the IAM user for the registered on-premises instance.'
-            )
-        },
-        {
             'name': 'no-delete-iam-user',
             'action': 'store_true',
             'default': False,
-            'group_name': 'delete-iam-user'
-        },
-        REGION_ARG
+            'help_text': (
+                'Optional. Do not delete the IAM user for the registered '
+                'on-premises instance.'
+            )
+        }
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        parsed_args.region = validate_region(parsed_globals, self._session)
-        validate_instance_name(parsed_args)
-        self._validate_delete_iam_user(parsed_args)
         params = parsed_args
+        params.session = self._session
+        validate_region(params, parsed_globals)
+        validate_instance_name(params)
 
         self.codedeploy = self._session.create_client(
             'codedeploy',
-            region_name=parsed_args.region,
+            region_name=params.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
         self.iam = self._session.create_client(
             'iam',
-            region_name=parsed_args.region
+            region_name=params.region
         )
 
         try:
@@ -75,36 +63,24 @@ class Deregister(BasicCommand):
             if params.tags:
                 self._remove_tags(params)
             self._deregister_instance(params)
-            if params.delete_iam_user:
+            if not params.no_delete_iam_user:
                 self._delete_user_policy(params)
                 self._delete_access_key(params)
                 self._delete_iam_user(params)
             sys.stdout.write(
-                'Please execute the following command on the on-premises '
-                'instance to uninstall the codedeploy-agent:\n'
+                'Run the following command on the on-premises instance to '
+                'uninstall the codedeploy-agent:\n'
                 'aws deploy uninstall\n'
             )
         except Exception as e:
-            sys.stdout.write(
+            sys.stdout.flush()
+            sys.stderr.write(
                 'ERROR\n'
                 '{0}\n'
-                'Please manually deregister the on-premises instance by '
-                'following the instructions at {1}.\n'.format(
-                    e,
-                    'http://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-configure-on-premises-host.html'
-                )
-            )
-
-    @staticmethod
-    def _validate_delete_iam_user(parsed_args):
-        if not parsed_args.delete_iam_user \
-                and not parsed_args.no_delete_iam_user:
-            parsed_args.delete_iam_user = True
-        elif parsed_args.delete_iam_user \
-                and parsed_args.no_delete_iam_user:
-            raise RuntimeError(
-                'You cannot specify both --delete-iam-user and '
-                '--no-delete-iam-user'
+                'Deregister the on-premises instance by following the '
+                'instructions in "Configure Existing On-Premises Instances by '
+                'Using AWS CodeDeploy" in the AWS CodeDeploy User '
+                'Guide.\n'.format(e)
             )
 
     def _get_instance_info(self, params):
@@ -113,7 +89,8 @@ class Deregister(BasicCommand):
             instanceName=params.instance_name
         )
         params.iam_user_arn = response['instanceInfo']['iamUserArn']
-        params.user_name = self._user_name(params.iam_user_arn)
+        start = params.iam_user_arn.rfind('/') + 1
+        params.user_name = params.iam_user_arn[start:]
         params.tags = response['instanceInfo']['tags']
         sys.stdout.write(
             'DONE\n'
@@ -125,17 +102,9 @@ class Deregister(BasicCommand):
             sys.stdout.write('Tags:')
             for tag in params.tags:
                 sys.stdout.write(
-                    ' Key={0},Value={1}'.format(
-                        tag['Key'],
-                        tag['Value']
-                    )
+                    ' Key={0},Value={1}'.format(tag['Key'], tag['Value'])
                 )
             sys.stdout.write('\n')
-
-    @staticmethod
-    def _user_name(iam_user_arn):
-        start = iam_user_arn.rfind('/') + 1
-        return iam_user_arn[start:]
 
     def _remove_tags(self, params):
         sys.stdout.write('Removing tags from the on-premises instance... ')
@@ -157,8 +126,7 @@ class Deregister(BasicCommand):
         list_user_policies = self.iam.get_paginator('list_user_policies')
         try:
             for response in list_user_policies.paginate(
-                    UserName=params.user_name
-            ):
+                    UserName=params.user_name):
                 for policy_name in response['PolicyNames']:
                     self.iam.delete_user_policy(
                         UserName=params.user_name,
@@ -174,8 +142,7 @@ class Deregister(BasicCommand):
         list_access_keys = self.iam.get_paginator('list_access_keys')
         try:
             for response in list_access_keys.paginate(
-                    UserName=params.user_name
-            ):
+                    UserName=params.user_name):
                 for access_key in response['AccessKeyMetadata']:
                     self.iam.delete_access_key(
                         UserName=params.user_name,
@@ -187,9 +154,9 @@ class Deregister(BasicCommand):
         sys.stdout.write('DONE\n')
 
     def _delete_iam_user(self, params):
-        sys.stdout.write(
-            'Deleting the IAM user ({0})... '.format(params.user_name)
-        )
+        sys.stdout.write('Deleting the IAM user ({0})... '.format(
+            params.user_name
+        ))
         try:
             self.iam.delete_user(UserName=params.user_name)
         except (ServerError, ClientError) as e:

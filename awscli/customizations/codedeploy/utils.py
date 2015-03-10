@@ -13,15 +13,18 @@
 
 import platform
 import re
-import sys
 
-from socket import timeout
 from awscli.compat import urlopen, URLError
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows
+from socket import timeout
 
 MAX_INSTANCE_NAME_LENGTH = 100
+MAX_TAGS_PER_INSTANCE = 10
+MAX_TAG_KEY_LENGTH = 128
+MAX_TAG_VALUE_LENGTH = 256
 
 INSTANCE_NAME_PATTERN = r'^[A-Za-z0-9+=,.@_-]+$'
-IAM_USER_ARN_PATTERN = r'^arn:aws:iam::[0-9]{12}:user/[A-Za-z0-9+=,.@_-]+$'
+IAM_USER_ARN_PATTERN = r'^arn:aws:iam::[0-9]{12}:user/[A-Za-z0-9/+=,.@_-]+$'
 
 INSTANCE_NAME_ARG = {
     'name': 'instance-name',
@@ -41,114 +44,90 @@ IAM_USER_ARN_ARG = {
     )
 }
 
-REGION_ARG = {
-    'name': 'region',
-    'synopsis': '--region <value>',
-    'required': False,
-    'help_text': (
-        'Optional. The region where the on-premises instance is registered. '
-        'Defaults to configured region, if not provided.'
-    )
-}
 
-
-def validate_region(parsed_globals, session):
+def validate_region(params, parsed_globals):
     if parsed_globals.region:
-        region = parsed_globals.region
+        params.region = parsed_globals.region
     else:
-        region = session.get_config_variable('region')
-    if not region:
+        params.region = params.session.get_config_variable('region')
+    if not params.region:
         raise RuntimeError('Region not specified.')
-    return region
 
 
-def validate_instance_name(parsed_args):
-    if parsed_args.instance_name:
-        if not re.match(INSTANCE_NAME_PATTERN, parsed_args.instance_name):
-            raise RuntimeError('Instance name contains invalid characters.')
-        if parsed_args.instance_name.startswith('i-'):
-            raise RuntimeError('Instance name cannot start with \'i-\'.')
-        if len(parsed_args.instance_name) > MAX_INSTANCE_NAME_LENGTH:
-            raise RuntimeError(
+def validate_instance_name(params):
+    if params.instance_name:
+        if not re.match(INSTANCE_NAME_PATTERN, params.instance_name):
+            raise ValueError('Instance name contains invalid characters.')
+        if params.instance_name.startswith('i-'):
+            raise ValueError('Instance name cannot start with \'i-\'.')
+        if len(params.instance_name) > MAX_INSTANCE_NAME_LENGTH:
+            raise ValueError(
                 'Instance name cannot be longer than {0} characters.'.format(
                     MAX_INSTANCE_NAME_LENGTH
                 )
             )
 
 
-def validate_s3_location(parsed_args, arg_name):
-    arg_name = arg_name.replace('-', '_')
-    if arg_name in parsed_args:
-        s3_location = getattr(parsed_args, arg_name)
-        if s3_location:
-            matcher = re.match('s3://(.+?)/(.+)', s3_location)
-            if matcher:
-                parsed_args.bucket = matcher.group(1)
-                parsed_args.key = matcher.group(2)
-            else:
-                raise RuntimeError(
-                    '--{0} must specify the Amazon S3 URL format as '
-                    's3://<bucket>/<key>'.format(
-                        arg_name.replace('_', '-')
+def validate_tags(params):
+    if params.tags:
+        if len(params.tags) > MAX_TAGS_PER_INSTANCE:
+            raise ValueError(
+                'Instances can only have a maximum of {0} tags.'.format(
+                    MAX_TAGS_PER_INSTANCE
+                )
+            )
+        for tag in params.tags:
+            if len(tag['Key']) > MAX_TAG_KEY_LENGTH:
+                raise ValueError(
+                    'Tag Key cannot be longer than {0} characters.'.format(
+                        MAX_TAG_KEY_LENGTH
+                    )
+                )
+            if len(tag['Value']) > MAX_TAG_KEY_LENGTH:
+                raise ValueError(
+                    'Tag Value cannot be longer than {0} characters.'.format(
+                        MAX_TAG_VALUE_LENGTH
                     )
                 )
 
 
-def validate_iam_user_arn(parsed_args):
-    if (
-        parsed_args.iam_user_arn
-        and not re.match(IAM_USER_ARN_PATTERN, parsed_args.iam_user_arn)
-    ):
-        raise RuntimeError('Invalid IAM user ARN.')
+def validate_iam_user_arn(params):
+    if params.iam_user_arn and \
+            not re.match(IAM_USER_ARN_PATTERN, params.iam_user_arn):
+        raise ValueError('Invalid IAM user ARN.')
 
 
-def validate_instance(parsed_args):
-    if sys.platform == 'linux2':
+def validate_instance(params):
+    if platform.system() == 'Linux':
         if 'Ubuntu' in platform.linux_distribution()[0]:
-            parsed_args.system = 'ubuntu'
-        elif 'Red Hat' in platform.linux_distribution()[0]:
-            parsed_args.system = 'redhat'
-    elif sys.platform == 'win32':
-        parsed_args.system = 'windows'
-    if (
-        'system' not in parsed_args
-        or parsed_args.system not in ['ubuntu', 'redhat', 'windows']
-    ):
+            params.system = Ubuntu(params)
+    elif platform.system() == 'Windows':
+        params.system = Windows(params)
+    if 'system' not in params:
         raise RuntimeError(
-            'Only Ubuntu, Red Hat or Windows systems are supported.'
+            'Only Ubuntu Server and Windows Server operating systems are '
+            'supported.'
         )
     try:
         urlopen('http://169.254.169.254/latest/meta-data/', timeout=1)
-        raise RuntimeError('EC2 instances are not supported.')
+        raise RuntimeError('Amazon EC2 instances are not supported.')
     except (URLError, timeout):
         pass
 
 
-def config_file():
-    if sys.platform == 'win32':
-        return 'conf.onpremises.yml'
-    else:
-        return 'codedeploy.onpremises.yml'
-
-
-def config_path():
-    if sys.platform == 'win32':
-        return 'C:\\ProgramData\\Amazon\\CodeDeploy\\{0}'.format(config_file())
-    else:
-        return '/etc/codedeploy-agent/conf/{0}'.format(config_file())
-
-
-def create_config_file(path, params):
-    with open(path, 'w') as f:
-        f.write(
-            '---\n'
-            'region: {0}\n'
-            'iam_user_arn: {1}\n'
-            'aws_access_key_id: {2}\n'
-            'aws_secret_access_key: {3}\n'.format(
-                params.region,
-                params.iam_user_arn,
-                params.access_key_id,
-                params.secret_access_key
-            )
-        )
+def validate_s3_location(params, arg_name):
+    arg_name = arg_name.replace('-', '_')
+    if arg_name in params:
+        s3_location = getattr(params, arg_name)
+        if s3_location:
+            matcher = re.match('s3://(.+?)/(.+)', str(s3_location))
+            if matcher:
+                params.bucket = matcher.group(1)
+                params.key = matcher.group(2)
+            else:
+                raise ValueError(
+                    '--{0} must specify the Amazon S3 URL format as '
+                    's3://<bucket>/<key>.'.format(
+                        arg_name.replace('_', '-')
+                    )
+                )

@@ -11,28 +11,23 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import re
 import sys
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.codedeploy.systems import DEFAULT_CONFIG_FILE
 from awscli.customizations.codedeploy.utils import \
-    validate_region, validate_instance_name, create_config_file, config_file, \
-    validate_iam_user_arn, INSTANCE_NAME_ARG, REGION_ARG, IAM_USER_ARN_ARG
-
-
-MAX_TAGS_PER_INSTANCE = 10
-MAX_TAG_KEY_LENGTH = 128
-MAX_TAG_VALUE_LENGTH = 256
+    validate_region, validate_instance_name, validate_tags, \
+    validate_iam_user_arn, INSTANCE_NAME_ARG, IAM_USER_ARN_ARG
 
 
 class Register(BasicCommand):
     NAME = 'register'
 
     DESCRIPTION = (
-        'The AWS CodeDeploy register command creates an IAM user for the '
-        'on-premises instance, if not provided; registers the on-premises '
-        'instance with AWS CodeDeploy; and optionally, adds tags to the '
-        'on-premises instance.'
+        "Creates an IAM user for the on-premises instance, if not provided, "
+        "and saves the user's credentials to an on-premises instance "
+        "configuration file; registers the on-premises instance with AWS "
+        "CodeDeploy; and optionally adds tags to the on-premises instance."
     )
 
     TAGS_SCHEMA = {
@@ -67,35 +62,26 @@ class Register(BasicCommand):
                 'instance.'
             )
         },
-        IAM_USER_ARN_ARG,
-        REGION_ARG,
-        {
-            'name': 'create-config',
-            'action': 'store_true',
-            'default': False,
-            'help_text': (
-                'Optional. Specify --create-config flag to create the '
-                'on-premises config file.'
-            )
-        }
+        IAM_USER_ARN_ARG
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        parsed_args.region = validate_region(parsed_globals, self._session)
-        validate_instance_name(parsed_args)
-        self._validate_tags(parsed_args)
-        validate_iam_user_arn(parsed_args)
         params = parsed_args
+        params.session = self._session
+        validate_region(params, parsed_globals)
+        validate_instance_name(params)
+        validate_tags(params)
+        validate_iam_user_arn(params)
 
         self.codedeploy = self._session.create_client(
             'codedeploy',
-            region_name=parsed_args.region,
+            region_name=params.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
         self.iam = self._session.create_client(
             'iam',
-            region_name=parsed_args.region
+            region_name=params.region
         )
 
         try:
@@ -103,66 +89,29 @@ class Register(BasicCommand):
                 self._create_iam_user(params)
                 self._create_access_key(params)
                 self._create_user_policy(params)
+                self._create_config(params)
             self._register_instance(params)
             if params.tags:
                 self._add_tags(params)
-            if params.create_config:
-                self._create_config(params)
-                sys.stdout.write(
-                    'Please copy the {0} config file to the on-premises '
-                    'instance; and execute the following command on the '
-                    'on-premises instance to configure and install the '
-                    'codedeploy-agent:\n'
-                    'aws deploy install --config-file {0}\n'.format(
-                        config_file()
-                    )
-                )
-            else:
-                sys.stdout.write(
-                    'Please note the AccessKeyId and SecretAccessKey; and '
-                    'execute the following command on the on-premises '
-                    'instance to configure and install the codedeploy-agent:\n'
-                    'aws deploy install'
-                    ' --iam-user-arn {0}'
-                    ' --region {1}\n'.format(
-                        params.iam_user_arn,
-                        params.region
-                    )
-                )
-        except Exception as e:
             sys.stdout.write(
-                'ERROR\n'
-                '{0}\n'
-                'Please manually register the on-premises instance by '
-                'following the instructions at {1}\n'.format(
-                    e,
-                    'http://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-configure-on-premises-host.html'
+                'Copy the on-premises configuration file named {0} to the '
+                'on-premises instance, and run the following command on the '
+                'on-premises instance to install and configure the AWS '
+                'CodeDeploy Agent:\n'
+                'aws deploy install --config-file {0}\n'.format(
+                    DEFAULT_CONFIG_FILE
                 )
             )
-
-    @staticmethod
-    def _validate_tags(parsed_args):
-        if parsed_args.tags:
-            if len(parsed_args.tags) > MAX_TAGS_PER_INSTANCE:
-                raise RuntimeError(
-                    'Instances can only have a maximum of {0} tags.'.format(
-                        MAX_TAGS_PER_INSTANCE
-                    )
-                )
-            for tag in parsed_args.tags:
-                if len(tag['Key']) > MAX_TAG_KEY_LENGTH:
-                    raise RuntimeError(
-                        'Tag Key cannot be longer than {0} characters.'.format(
-                            MAX_TAG_KEY_LENGTH
-                        )
-                    )
-                if len(tag['Value']) > MAX_TAG_KEY_LENGTH:
-                    raise RuntimeError(
-                        'Tag Value cannot be longer than {0} '
-                        'characters.'.format(
-                            MAX_TAG_VALUE_LENGTH
-                        )
-                    )
+        except Exception as e:
+            sys.stdout.flush()
+            sys.stderr.write(
+                'ERROR\n'
+                '{0}\n'
+                'Register the on-premises instance by following the '
+                'instructions in "Configure Existing On-Premises Instances by '
+                'Using AWS CodeDeploy" in the AWS CodeDeploy User '
+                'Guide.\n'.format(e)
+            )
 
     def _create_iam_user(self, params):
         sys.stdout.write('Creating the IAM user... ')
@@ -222,6 +171,26 @@ class Register(BasicCommand):
             )
         )
 
+    def _create_config(self, params):
+        sys.stdout.write(
+            'Creating the on-premises instance configuration file named {0}'
+            '...'.format(DEFAULT_CONFIG_FILE)
+        )
+        with open(DEFAULT_CONFIG_FILE, 'w') as f:
+            f.write(
+                '---\n'
+                'region: {0}\n'
+                'iam_user_arn: {1}\n'
+                'aws_access_key_id: {2}\n'
+                'aws_secret_access_key: {3}\n'.format(
+                    params.region,
+                    params.iam_user_arn,
+                    params.access_key_id,
+                    params.secret_access_key
+                )
+            )
+        sys.stdout.write('DONE\n')
+
     def _register_instance(self, params):
         sys.stdout.write('Registering the on-premises instance... ')
         self.codedeploy.register_on_premises_instance(
@@ -236,10 +205,4 @@ class Register(BasicCommand):
             tags=params.tags,
             instanceNames=[params.instance_name]
         )
-        sys.stdout.write('DONE\n')
-
-    @staticmethod
-    def _create_config(params):
-        sys.stdout.write('Creating {0} config file... '.format(config_file()))
-        create_config_file(config_file(), params)
         sys.stdout.write('DONE\n')

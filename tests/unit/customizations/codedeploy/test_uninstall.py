@@ -11,88 +11,102 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import awscli
 import sys
 
 from argparse import Namespace
-from mock import MagicMock, patch, call
+from awscli.customizations.codedeploy.systems import Ubuntu, Windows
 from awscli.customizations.codedeploy.uninstall import Uninstall
 from awscli.testutils import unittest
+from mock import MagicMock, patch
+from socket import timeout
 
 
 class TestUninstall(unittest.TestCase):
     def setUp(self):
         self.region = 'us-east-1'
-        self.config_dir = '/etc/codedeploy-agent/conf'
-        self.config_file = 'codedeploy.onpremises.yml'
-        self.config_path = '{0}/{1}'.format(self.config_dir, self.config_file)
+
+        self.system_patcher = patch('platform.system')
+        self.system = self.system_patcher.start()
+        self.system.return_value = 'Linux'
+
+        self.linux_distribution_patcher = patch('platform.linux_distribution')
+        self.linux_distribution = self.linux_distribution_patcher.start()
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
+
+        self.urlopen_patcher = patch(
+            'awscli.customizations.codedeploy.utils.urlopen'
+        )
+        self.urlopen = self.urlopen_patcher.start()
+        self.urlopen.side_effect = timeout('Not EC2 instance')
+
+        self.geteuid_patcher = patch('os.geteuid')
+        self.geteuid = self.geteuid_patcher.start()
+        self.geteuid.return_value = 0
+
+        self.remove_patcher = patch('os.remove')
+        self.remove = self.remove_patcher.start()
 
         self.args = Namespace()
         self.globals = Namespace()
-
+        self.globals.region = self.region
         self.session = MagicMock()
-
         self.uninstall = Uninstall(self.session)
 
-    @patch.object(
-        awscli.customizations.codedeploy.uninstall,
-        'validate_instance'
-    )
-    def test_run_main_throws_on_invalid_instance(self, validate_instance):
-        validate_instance.side_effect = RuntimeError()
-        with self.assertRaises(RuntimeError) as error:
+    def tearDown(self):
+        self.system_patcher.stop()
+        self.linux_distribution_patcher.stop()
+        self.urlopen_patcher.stop()
+        self.geteuid_patcher.stop()
+        self.remove_patcher.stop()
+
+    def test_uninstall_throws_on_invalid_region(self):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        with self.assertRaisesRegexp(RuntimeError, 'Region not specified.'):
             self.uninstall._run_main(self.args, self.globals)
-        validate_instance.assert_called_with(self.args)
 
-    @patch.object(
-        awscli.customizations.codedeploy.uninstall,
-        'validate_instance'
-    )
-    def test_run_main(self, validate_instance):
-        self.uninstall._uninstall_agent = MagicMock()
-        self.uninstall._delete_config_file = MagicMock()
+    def test_uninstall_throws_on_unsupported_system(self):
+        self.system.return_value = 'Unsupported'
+        with self.assertRaisesRegexp(
+                RuntimeError,
+                'Only Ubuntu Server and Windows Server operating systems are '
+                'supported.'):
+            self.uninstall._run_main(self.args, self.globals)
+
+    def test_uninstall_throws_on_ec2_instance(self):
+        self.urlopen.side_effect = None
+        with self.assertRaisesRegexp(
+                RuntimeError, 'Amazon EC2 instances are not supported.'):
+            self.uninstall._run_main(self.args, self.globals)
+        self.assertIn('system', self.args)
+        self.assertTrue(isinstance(self.args.system, Ubuntu))
+
+    def test_uninstall_throws_on_non_administrator(self):
+        self.geteuid.return_value = 1
+        with self.assertRaisesRegexp(
+                RuntimeError, 'You must run this command as sudo.'):
+            self.uninstall._run_main(self.args, self.globals)
+
+    @patch.object(Ubuntu, 'uninstall')
+    def test_uninstall_for_ubuntu(self, uninstall):
+        self.system.return_value = 'Linux'
+        self.linux_distribution.return_value = ('Ubuntu', '', '')
         self.uninstall._run_main(self.args, self.globals)
-        self.uninstall._uninstall_agent.assert_called_with(self.args)
-        self.uninstall._delete_config_file.assert_called_with()
+        uninstall.assert_called_with(self.args)
+        self.remove.assert_called_with(
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
+        )
 
-    @patch('subprocess.check_call')
-    def test_uninstall_agent_ubuntu(self, check_call):
-        sys.platform = 'linux2'
-        self.args.system = 'ubuntu'
-        self.uninstall._uninstall_agent(self.args)
-        check_call.assert_has_calls([
-            call('sudo service codedeploy-agent stop', shell=True),
-            call('sudo dpkg -r codedeploy-agent', shell=True)
-        ])
-
-    @patch('subprocess.check_call')
-    def test_uninstall_agent_redhat(self, check_call):
-        sys.platform = 'linux2'
-        self.args.system = 'redhat'
-        self.uninstall._uninstall_agent(self.args)
-        check_call.assert_has_calls([
-            call('sudo service codedeploy-agent stop', shell=True),
-            call('sudo yum -y erase codedeploy-agent', shell=True)
-        ])
-
-    @patch('subprocess.check_call')
-    def test_uninstall_agent_windows(self, check_call):
-        sys.platform = 'win32'
-        self.uninstall._uninstall_agent(self.args)
-        check_call.assert_has_calls([
-            call(
-                r'wmic product where name="CodeDeploy Host Agent" call uninstall /nointeractive',
-                stdout=-1,
-                shell=True
-            )
-        ])
-
-    @patch('os.remove')
-    @patch.object(awscli.customizations.codedeploy.uninstall, 'config_path')
-    def test_delete_config_file(self, config_path, remove):
-        config_path.return_value = self.config_path
-        self.uninstall._delete_config_file()
-        remove.assert_called_with(self.config_path)
+    @patch.object(Windows, 'uninstall')
+    @patch.object(Windows, 'validate_administrator')
+    def test_uninstall_for_windows(self, validate_administrator, uninstall):
+        self.system.return_value = 'Windows'
+        self.uninstall._run_main(self.args, self.globals)
+        validate_administrator.assert_called_with()
+        uninstall.assert_called_with(self.args)
+        self.remove.assert_called_with(
+            r'C:\ProgramData\Amazon\CodeDeploy\conf.onpremises.yml'
+        )
 
 
 if __name__ == "__main__":

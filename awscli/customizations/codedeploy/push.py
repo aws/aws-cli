@@ -120,14 +120,13 @@ class Push(BasicCommand):
 
         self._push(parsed_args)
 
-    @staticmethod
-    def _validate_args(parsed_args):
+    def _validate_args(self, parsed_args):
         validate_s3_location(parsed_args, 's3_location')
         if parsed_args.ignore_hidden_files \
                 and parsed_args.no_ignore_hidden_files:
             raise RuntimeError(
                 'You cannot specify both --ignore-hidden-files and '
-                '--no-ignore-hidden-files'
+                '--no-ignore-hidden-files.'
             )
         if not parsed_args.description:
             parsed_args.description = (
@@ -224,8 +223,7 @@ class Push(BasicCommand):
                 size_remaining
             )
 
-    @staticmethod
-    def _bundle_size(bundle):
+    def _bundle_size(self, bundle):
         bundle.seek(0, 2)
         size = bundle.tell()
         bundle.seek(0)

@@ -35,14 +35,14 @@ class DescribeCluster(BasicCommand):
         describe_cluster = emr.get_operation('DescribeCluster')
         parameters = {'ClusterId': parsed_args.cluster_id}
 
-        describe_cluster_result = self._call(describe_cluster, parameters,
-                                             parsed_globals)
+        describe_cluster_result = self._call(
+            self._session, 'describe_cluster', parameters, parsed_globals)
+        
         list_instance_groups_result = self._call(
-            emr.get_operation('ListInstanceGroups'), parameters,
-            parsed_globals)
+            self._session, 'list_instance_groups', parameters, parsed_globals)
 
         list_bootstrap_actions_result = self._call(
-            emr.get_operation('ListBootstrapActions'),
+            self._session, 'list_bootstrap_actions',
             parameters, parsed_globals)
 
         master_public_dns = self._find_master_public_dns(
@@ -65,20 +65,12 @@ class DescribeCluster(BasicCommand):
             session=self._session, cluster_id=cluster_id,
             parsed_globals=parsed_globals)
 
-    def _call(self, operation_object, parameters, parsed_globals):
-        # We could get an error from get_endpoint() about not having
-        # a region configured.  Before this happens we want to check
-        # for credentials so we can give a good error message.
-        result = []
-        if not self._session.get_credentials():
-            raise NoCredentialsError()
-        endpoint = operation_object.service.get_endpoint(
+    def _call(self, session, operation_name, parameters, parsed_globals):
+        return emrutils.call(
+            session, operation_name, parameters,
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        http_response, response_data = operation_object.call(endpoint,
-                                                             **parameters)
-        return response_data
 
     def _get_key_of_result(self, keys):
         # Return the first key that is not "Marker"

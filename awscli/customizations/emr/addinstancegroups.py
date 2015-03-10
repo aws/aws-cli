@@ -39,12 +39,12 @@ class AddInstanceGroups(BasicCommand):
             parsed_args.instance_groups)
 
         add_instance_groups_response = emrutils.call(
-            self._session, add_instance_groups, parameters,
+            self._session, 'add_instance_groups', parameters,
             parsed_globals.region, parsed_globals.endpoint_url,
             parsed_globals.verify_ssl)
 
         constructed_result = self._construct_result(
-            add_instance_groups_response[1])
+            add_instance_groups_response)
 
         emrutils.display_response(self._session, add_instance_groups,
                                   constructed_result, parsed_globals)

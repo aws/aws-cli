@@ -37,12 +37,10 @@ def validate_and_find_master_dns(session, parsed_globals, cluster_id):
     if cluster_state in constants.TERMINATED_STATES:
         raise exceptions.ClusterTerminatedError
 
-    emr = session.get_service('emr')
-    endpoint = emrutils.get_endpoint(emr, parsed_globals)
+    emr = emrutils.get_client(session, parsed_globals)
 
     try:
-        cluster_running_waiter = emr.get_waiter('ClusterRunning',
-                                                endpoint)
+        cluster_running_waiter = emr.get_waiter('cluster_running')
         if cluster_state in constants.STARTING_STATES:
             print("Waiting for the cluster to start.")
         cluster_running_waiter.wait(ClusterId=cluster_id)

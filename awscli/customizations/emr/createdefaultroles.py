@@ -15,6 +15,7 @@ import logging
 import re
 
 import botocore.exceptions
+from botocore import xform_name
 
 from awscli.customizations.emr.exceptions import ResolveServicePrincipalError
 from awscli.customizations.commands import BasicCommand
@@ -310,7 +311,7 @@ class CreateDefaultRoles(BasicCommand):
                                  parsed_globals)
 
     def _call_iam_operation(self, operation_name, parameters, parsed_globals):
-        operation_object = self.iam.get_operation(operation_name)
-        return emrutils.call(
-            self._session, operation_object, parameters, parsed_globals.region,
+        client = self._session.create_client(
+            'iam', parsed_globals.region,
             self.iam_endpoint_url, parsed_globals.verify_ssl)
+        return getattr(client, xform_name(operation_name))(**parameters)

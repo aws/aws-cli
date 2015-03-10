@@ -23,17 +23,15 @@ class TestSSHUtils(unittest.TestCase):
     def test_validate_and_find_master_dns_waits(self, emrutils):
         emrutils.get_cluster_state.return_value = 'STARTING'
         session = mock.Mock()
-        fake_endpoint = mock.sentinel.fake_endpoint
-        emrutils.get_endpoint.return_value = fake_endpoint
+        client = mock.Mock()
+        emrutils.get_client.return_value = client
 
         sshutils.validate_and_find_master_dns(session, None, 'cluster-id')
 
         # We should have:
         # 1. Waiter for the cluster to be running.
-        session.get_service.return_value.get_waiter.assert_called_with(
-            'ClusterRunning', fake_endpoint)
-        service = session.get_service.return_value
-        service.get_waiter.return_value.wait.assert_called_with(
+        client.get_waiter.assert_called_with('cluster_running')
+        client.get_waiter.return_value.wait.assert_called_with(
             ClusterId='cluster-id')
 
         # 2. Found the master public DNS

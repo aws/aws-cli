@@ -132,8 +132,8 @@ class TestFlattenCommands(unittest.TestCase):
 
     def test_flatten_modify_args(self):
         # Mock operation, arguments, and members for a service
-        operation = mock.Mock(spec=Operation)
-        operation.cli_name = 'command-name'
+        command = mock.Mock()
+        command.name = 'command-name'
 
         argument_model1 = mock.Mock()
         argument_model1.required_members = []
@@ -188,7 +188,7 @@ class TestFlattenCommands(unittest.TestCase):
         # Create the flattened argument table
         cli = mock.Mock()
         flatten = FlattenArguments('my-service', FLATTEN_CONFIG)
-        flatten.flatten_args(operation, argument_table)
+        flatten.flatten_args(command, argument_table)
 
         # Make sure new arguments and any with keep=True are there
         self.assertIn('foo', argument_table)

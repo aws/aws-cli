@@ -337,6 +337,7 @@ class ServiceCommand(CLICommand):
         else:
             self._service_name = service_name
         self._lineage = [self]
+        self._service_model = None
 
     @property
     def name(self):
@@ -368,6 +369,11 @@ class ServiceCommand(CLICommand):
             self._service_object = self.session.get_service(self._service_name)
         return self._service_object
 
+    def _get_service_model(self):
+        if self._service_model is None:
+            self._service_model = self.session.get_service_model(self._service_name)
+        return self._service_model
+
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a service for this operation
         # we can go ahead and create the parser for it.  We
@@ -380,12 +386,16 @@ class ServiceCommand(CLICommand):
     def _create_command_table(self):
         command_table = OrderedDict()
         service_object = self._get_service_object()
+        service_model = self._get_service_model()
         for operation_object in service_object.operations:
             cli_name = xform_name(operation_object.name, '-')
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
                 parent_name=self._name,
+                session=self.session,
                 operation_object=operation_object,
+                operation_model=service_model.operation_model(
+                    operation_object.name),
                 operation_caller=CLIOperationCaller(self.session),
                 service_object=service_object)
         self.session.emit('building-command-table.%s' % self._name,
@@ -433,7 +443,7 @@ class ServiceOperation(object):
     DEFAULT_ARG_CLASS = CLIArgument
 
     def __init__(self, name, parent_name, operation_object, operation_caller,
-                 service_object):
+                 service_object, operation_model, session):
         """
 
         :type name: str
@@ -462,6 +472,8 @@ class ServiceOperation(object):
         self._operation_caller = operation_caller
         self._service_object = service_object
         self._lineage = [self]
+        self._operation_model = operation_model
+        self._session = session
 
     @property
     def name(self):
@@ -598,6 +610,9 @@ class ServiceOperation(object):
         self._emit('building-argument-table.%s.%s' % (self._parent_name,
                                                       self._name),
                    operation=self._operation_object,
+                   operation_model=self._operation_model,
+                   session=self._session,
+                   command=self,
                    argument_table=argument_table)
         return argument_table
 

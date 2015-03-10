@@ -367,7 +367,9 @@ class TestWaiterStateCommand(unittest.TestCase):
             name='wait-state', parent_name='wait',
             operation_object=operation_object,
             operation_caller=mock.Mock(),
-            service_object=mock.Mock()
+            service_object=mock.Mock(),
+            session=None,
+            operation_model=None
         )
         cmd.DESCRIPTION = 'mydescription'
         cmd.create_help_command()

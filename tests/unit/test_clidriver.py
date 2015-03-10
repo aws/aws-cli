@@ -151,6 +151,9 @@ class FakeSession(object):
         operation.service.session = self
         return service
 
+    def get_service_model(self, name):
+        return mock.Mock()
+
     def user_agent(self):
         return 'user_agent'
 
@@ -779,7 +782,7 @@ class TestServiceCommand(unittest.TestCase):
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
-        self.cmd = ServiceOperation(self.name, None, None, None, None)
+        self.cmd = ServiceOperation(self.name, None, None, None, None, None, None)
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)

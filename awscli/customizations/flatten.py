@@ -166,14 +166,14 @@ class FlattenArguments(object):
                                                                   operation),
                          self.flatten_args)
 
-    def flatten_args(self, operation, argument_table, **kwargs):
+    def flatten_args(self, command, argument_table, **kwargs):
         # For each argument with a bag of parameters
-        for name, argument in self.configs[operation.cli_name].items():
+        for name, argument in self.configs[command.name].items():
             argument_from_table = argument_table[name]
             overwritten = False
 
             LOG.debug('Flattening {0} argument {1} into {2}'.format(
-                operation, name,
+                command.name, name,
                 ', '.join([v['name'] for k, v in argument['flatten'].items()])
             ))
 

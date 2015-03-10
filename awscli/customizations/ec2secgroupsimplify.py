@@ -25,7 +25,7 @@ authorize operations:
 from awscli.arguments import CustomArgument
 
 
-def _add_params(argument_table, operation, **kwargs):
+def _add_params(argument_table, **kwargs):
     arg = ProtocolArgument('protocol',
                            help_text=PROTOCOL_DOCS)
     argument_table['protocol'] = arg
@@ -41,7 +41,6 @@ def _add_params(argument_table, operation, **kwargs):
     arg = CidrArgument('cidr', help_text=CIDR_DOCS)
     argument_table['cidr'] = arg
     argument_table['cidr-ip']._UNDOCUMENTED = True
-
 
     arg = SourceGroupArgument('source-group',
                               help_text=SOURCEGROUP_DOCS)
@@ -67,6 +66,7 @@ def _check_args(parsed_args, **kwargs):
                        'with the --ip-permissions option ') % key
                 raise ValueError(msg)
 
+
 def _add_docs(help_command, **kwargs):
     doc = help_command.doc
     doc.style.new_paragraph()
@@ -78,11 +78,14 @@ def _add_docs(help_command, **kwargs):
 
 
 EVENTS = [
-    ('building-argument-table.ec2.authorize-security-group-ingress', _add_params),
-    ('building-argument-table.ec2.authorize-security-group-egress', _add_params),
+    ('building-argument-table.ec2.authorize-security-group-ingress',
+     _add_params),
+    ('building-argument-table.ec2.authorize-security-group-egress',
+     _add_params),
     ('building-argument-table.ec2.revoke-security-group-ingress', _add_params),
     ('building-argument-table.ec2.revoke-security-group-egress', _add_params),
-    ('operation-args-parsed.ec2.authorize-security-group-ingress', _check_args),
+    ('operation-args-parsed.ec2.authorize-security-group-ingress',
+     _check_args),
     ('operation-args-parsed.ec2.authorize-security-group-egress', _check_args),
     ('operation-args-parsed.ec2.revoke-security-group-ingress', _check_args),
     ('operation-args-parsed.ec2.revoke-security-group-egress', _check_args),
@@ -90,7 +93,7 @@ EVENTS = [
     ('doc-description.ec2.authorize-security-group-egress', _add_docs),
     ('doc-description.ec2.revoke-security-group-ingress', _add_docs),
     ('doc-description.ec2.revoke-security-groupdoc-ingress', _add_docs),
-    ]
+]
 PROTOCOL_DOCS = ('<p>The IP protocol of this permission.</p>'
                  '<p>Valid protocol values: <code>tcp</code>, '
                  '<code>udp</code>, <code>icmp</code></p>')
@@ -104,6 +107,7 @@ SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group. '
 GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
                    'group. Cannot be used when specifying a CIDR IP '
                    'address.</p>')
+
 
 def register_secgroup(event_handler):
     for event, handler in EVENTS:

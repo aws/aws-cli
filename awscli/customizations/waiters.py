@@ -111,10 +111,15 @@ class WaiterStateCommandBuilder(object):
         # operation object is used to generate the arguments for the waiter
         # state command.
         operation_object = self._service_object.get_operation(operation_name)
+        session = operation_object.session
+        operation_model = session.get_service_model(
+            self._service_object.service_name).operation_model(operation_name)
         waiter_state_command = WaiterStateCommand(
             name=waiter_cli_name, parent_name='wait',
             operation_object=operation_object,
             operation_caller=WaiterCaller(waiter_name),
+            session=operation_object.session,
+            operation_model=operation_model,
             service_object=self._service_object
         )
         # Build the top level description for the waiter state command.

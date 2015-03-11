@@ -125,19 +125,6 @@ class CLIDriver(object):
         cli_arguments = cli_data.get('options', None)
         for option in cli_arguments:
             option_params = copy_kwargs(cli_arguments[option])
-            # Special case the 'choices' param.  Allows choices
-            # to reference a variable from the session.
-            if 'choices' in option_params:
-                choices = option_params['choices']
-                if not isinstance(choices, list):
-                    # Assume it's a reference like
-                    # "{provider}/_foo", so first resolve
-                    # the provider.
-                    provider = self.session.get_config_variable('provider')
-                    # The grab the var from the session
-                    choices_path = choices.format(provider=provider)
-                    choices = list(self.session.get_data(choices_path))
-                option_params['choices'] = choices
             cli_argument = self._create_cli_argument(option, option_params)
             cli_argument.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers

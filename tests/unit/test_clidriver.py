@@ -82,8 +82,6 @@ GET_DATA = {
             },
         }
     },
-    'aws/_services': {'s3':{}},
-    'aws/_regions': {},
 }
 
 GET_VARIABLE = {

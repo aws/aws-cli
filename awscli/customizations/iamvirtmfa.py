@@ -65,7 +65,6 @@ class IAMVMFAWrapper(object):
 
     def __init__(self, event_handler):
         self._event_handler = event_handler
-        self._operation = None
         self._outfile = FileArgument(
             'outfile', help_text=OUTPUT_HELP, required=True)
         self._method = StatefulArgument(
@@ -77,8 +76,7 @@ class IAMVMFAWrapper(object):
         self._event_handler.register(
             'after-call.iam.CreateVirtualMFADevice', self._save_file)
 
-    def _add_options(self, argument_table, operation, **kwargs):
-        self._operation = operation
+    def _add_options(self, argument_table, **kwargs):
         argument_table['outfile'] = self._outfile
         argument_table['bootstrap-method'] = self._method
 

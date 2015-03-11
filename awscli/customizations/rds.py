@@ -61,9 +61,13 @@ def _building_command_table(command_table, session, **kwargs):
         parent_name='rds', name='add-option-to-option-group',
         operation_object=modify_operation,
         operation_caller=CLIOperationCaller(session),
+        session=session,
+        operation_model=modify_operation.model,
         service_object=rds_service)
     command_table['remove-option-from-option-group'] = ServiceOperation(
         parent_name='rds', name='remove-option-from-option-group',
         operation_object=modify_operation,
+        session=session,
+        operation_model=modify_operation.model,
         operation_caller=CLIOperationCaller(session),
         service_object=rds_service)

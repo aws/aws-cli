@@ -52,10 +52,10 @@ GET_DATA = {
                 "metavar": "output_format"
             },
             "query": {
-                "help": "<p>A JMESPath query to use in filtering the response data.</p>"
+                "help": ""
             },
             "profile": {
-                "help": "Use a specific profile from your credential file",
+                "help": "",
                 "metavar": "profile_name"
             },
             "region": {
@@ -63,22 +63,22 @@ GET_DATA = {
                 "metavar": "region_name"
             },
             "endpoint-url": {
-                "help": "Override service's default URL with the given URL",
+                "help": "",
                 "metavar": "endpoint_url"
             },
             "no-verify-ssl": {
                 "action": "store_false",
                 "dest": "verify_ssl",
-                "help": "Override default behavior of verifying SSL certificates"
+                "help": "",
             },
             "no-paginate": {
                 "action": "store_false",
-                "help": "Disable automatic pagination",
+                "help": "",
                 "dest": "paginate"
             },
             "page-size": {
-            "type": "int",
-            "help": "<p>Specifies the page size when paginating.</p>"
+                "type": "int",
+                "help": "",
             },
         }
     },
@@ -150,6 +150,9 @@ class FakeSession(object):
         operation.service = service
         operation.service.session = self
         return service
+
+    def get_service_model(self, name):
+        return mock.Mock()
 
     def user_agent(self):
         return 'user_agent'
@@ -779,7 +782,7 @@ class TestServiceCommand(unittest.TestCase):
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
-        self.cmd = ServiceOperation(self.name, None, None, None, None)
+        self.cmd = ServiceOperation(self.name, None, None, None, None, None, None)
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)

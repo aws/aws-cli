@@ -15,15 +15,16 @@ from botocore.model import Shape
 from awscli.arguments import BaseCLIArgument
 
 
-def add_streaming_output_arg(argument_table, operation, **kwargs):
+def add_streaming_output_arg(argument_table, operation_model,
+                             session, **kwargs):
     # Implementation detail:  hooked up to 'building-argument-table'
     # event.
-    model = operation.model
-    if _has_streaming_output(model):
-        streaming_argument_name = _get_streaming_argument_name(model)
+    if _has_streaming_output(operation_model):
+        streaming_argument_name = _get_streaming_argument_name(operation_model)
         argument_table['outfile'] = StreamingOutputArgument(
-            response_key=streaming_argument_name, operation=operation,
-            name='outfile')
+            response_key=streaming_argument_name,
+            operation_model=operation_model,
+            session=session, name='outfile')
 
 
 def _has_streaming_output(model):
@@ -39,20 +40,22 @@ class StreamingOutputArgument(BaseCLIArgument):
     BUFFER_SIZE = 32768
     HELP = 'Filename where the content will be saved'
 
-    def __init__(self, response_key, operation, name, buffer_size=None):
+    def __init__(self, response_key, operation_model, name,
+                 session, buffer_size=None):
         self._name = name
         self.argument_model = Shape('StreamingOutputArgument',
                                     {'type': 'string'})
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size
-        self._operation = operation
         # This is the key in the response body where we can find the
         # streamed contents.
         self._response_key = response_key
         self._output_file = None
         self._name = name
         self._required = True
+        self._operation_model = operation_model
+        self._session = session
 
     @property
     def cli_name(self):
@@ -83,9 +86,9 @@ class StreamingOutputArgument(BaseCLIArgument):
 
     def add_to_params(self, parameters, value):
         self._output_file = value
-        service_name = self._operation.service.endpoint_prefix
-        operation_name = self._operation.name
-        self._operation.session.register('after-call.%s.%s' % (
+        service_name = self._operation_model.service_model.endpoint_prefix
+        operation_name = self._operation_model.name
+        self._session.register('after-call.%s.%s' % (
             service_name, operation_name), self.save_file)
 
     def save_file(self, parsed, **kwargs):

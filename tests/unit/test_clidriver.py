@@ -182,6 +182,12 @@ class FakeSession(object):
         if name == 'event_emitter':
             return self.emitter
 
+    def create_client(self, *args, **kwargs):
+        client = mock.Mock()
+        client.list_objects.return_value = {}
+        client.can_paginate.return_value = False
+        return client
+
     def get_available_services(self):
         return ['s3']
 
@@ -349,21 +355,6 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-command-table.s3',
         ])
 
-    def test_cli_driver_changes_args(self):
-        emitter = HierarchicalEmitter()
-        emitter.register('process-cli-arg.s3.list-objects', self.serialize_param)
-        self.session.emitter = emitter
-        driver = CLIDriver(session=self.session)
-        driver.main('s3 list-objects --bucket foo'.split())
-        self.assertIn(mock.call.paginate(mock.ANY, Bucket='foo-altered!'),
-                      self.session.operation.method_calls)
-
-    def test_unknown_params_raises_error(self):
-        driver = CLIDriver(session=self.session)
-        rc = driver.main('s3 list-objects --bucket foo --unknown-arg foo'.split())
-        self.assertEqual(rc, 255)
-        self.assertIn('Unknown options', self.stderr.getvalue())
-
     def test_unknown_command_suggests_help(self):
         driver = CLIDriver(session=self.session)
         # We're catching SystemExit here because this is raised from the bowels
@@ -454,100 +445,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         ]
 
         command_table['foo'] = command
-
-    def test_aws_with_endpoint_url(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --endpoint-url https://foobar.com/',
-                expected_rc=0)
-        endpoint.assert_called_with(region_name=None,
-                                    verify=None,
-                                    endpoint_url='https://foobar.com/')
-
-    def test_aws_with_region(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1',
-                expected_rc=0)
-        endpoint.assert_called_with(region_name='us-east-1',
-                                    verify=None,
-                                    endpoint_url=None)
-
-    def test_aws_with_verify_false(self):
-        with mock.patch('botocore.service.Service.get_endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1 --no-verify-ssl',
-                expected_rc=0)
-        # Because we used --no-verify-ssl, get_endpoint should be
-        # called with verify=False
-        endpoint.assert_called_with(region_name='us-east-1',
-                                    verify=False,
-                                    endpoint_url=None)
-
-    def test_aws_with_cacert_env_var(self):
-        with mock.patch('botocore.endpoint.Endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.host = ''
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1',
-                expected_rc=0)
-        call_args = endpoint.call_args
-        self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
-
-    def test_default_to_verifying_ssl(self):
-        with mock.patch('botocore.endpoint.Endpoint') as endpoint:
-            http_response = models.Response()
-            http_response.status_code = 200
-            endpoint.return_value.host = ''
-            endpoint.return_value.make_request.return_value = (
-                http_response, {})
-            self.assert_params_for_cmd(
-                'ec2 describe-instances --region us-east-1',
-                expected_rc=0)
-        call_args = endpoint.call_args
-        self.assertEqual(call_args[1]['verify'], True)
-
-    def test_s3_with_region_and_endpoint_url(self):
-        with mock.patch('botocore.session.Session.create_client') as client:
-            self.parsed_responses = [
-                {'CommonPrefixes': [], 'Contents': []}
-            ]
-            self.patch_make_request()
-            self.assert_params_for_cmd(
-                's3 ls s3://test --region us-east-1 --endpoint-url https://foobar.com/',
-                expected_rc=0)
-        client.assert_called_with('s3', region_name='us-east-1',
-                                  endpoint_url='https://foobar.com/',
-                                  verify=None)
-
-    def test_s3_with_no_verify_ssl(self):
-        with mock.patch('botocore.session.Session.create_client') as client:
-            self.parsed_responses = [
-                {'CommonPrefixes': [], 'Contents': []}
-            ]
-            self.patch_make_request()
-            self.assert_params_for_cmd(
-                's3 ls s3://test --no-verify-ssl',
-                expected_rc=0)
-        client.assert_called_with('s3', region_name=None,
-                                  endpoint_url=None,
-                                  verify=False)
 
     def test_event_emission_for_top_level_params(self):
         driver = create_clidriver()
@@ -726,6 +623,62 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 255)
 
 
+class TestHowClientIsCreated(BaseAWSCommandParamsTest):
+    def setUp(self):
+        super(TestHowClientIsCreated, self).setUp()
+        self.endpoint_creator_patch = mock.patch(
+            'botocore.client.EndpointCreator')
+        self.endpoint_creator = self.endpoint_creator_patch.start()
+        self.create_endpoint = \
+                self.endpoint_creator.return_value.create_endpoint
+        self.endpoint = self.create_endpoint.return_value
+        # Have the endpoint give a dummy empty response.
+        http_response = models.Response()
+        http_response.status_code = 200
+        self.endpoint.make_request.return_value = (
+            http_response, {})
+
+    def tearDown(self):
+        super(TestHowClientIsCreated, self).tearDown()
+        self.endpoint_creator_patch.stop()
+
+    def test_aws_with_endpoint_url(self):
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --endpoint-url https://foobar.com/',
+            expected_rc=0)
+        self.create_endpoint.assert_called_with(
+            mock.ANY, 'us-east-1', verify=None, endpoint_url='https://foobar.com/',
+            is_secure=True, response_parser_factory=mock.ANY)
+
+    def test_aws_with_region(self):
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --region us-west-2',
+            expected_rc=0)
+        self.create_endpoint.assert_called_with(
+            mock.ANY, 'us-west-2', verify=None, endpoint_url=None,
+            is_secure=True, response_parser_factory=mock.ANY)
+
+    def test_aws_with_verify_false(self):
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --region us-east-1 --no-verify-ssl',
+            expected_rc=0)
+        # Because we used --no-verify-ssl, get_endpoint should be
+        # called with verify=False
+        self.create_endpoint.assert_called_with(
+            mock.ANY, 'us-east-1', verify=False, endpoint_url=None,
+            is_secure=True, response_parser_factory=mock.ANY)
+
+    def test_aws_with_cacert_env_var(self):
+        self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
+        self.assert_params_for_cmd(
+            'ec2 describe-instances --region us-east-1',
+            expected_rc=0)
+        self.create_endpoint.assert_called_with(
+            mock.ANY, 'us-east-1', verify='/path/cacert.pem',
+            endpoint_url=None, is_secure=True,
+            response_parser_factory=mock.ANY)
+
+
 class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
 
     def setUp(self):
@@ -747,20 +700,6 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
             self.assert_params_for_cmd(
                 'ec2 describe-instances --filters http://does/not/exist.json',
                 expected_rc=255, stderr_contains=error_msg)
-
-
-class TestCLIOperationCaller(BaseAWSCommandParamsTest):
-    def setUp(self):
-        super(TestCLIOperationCaller, self).setUp()
-        self.session = mock.Mock()
-
-    def test_invoke_with_no_credentials(self):
-        # This is what happens you have no credentials.
-        # get_credentials() return None.
-        self.session.get_credentials.return_value = None
-        caller = CLIOperationCaller(self.session)
-        with self.assertRaises(NoCredentialsError):
-            caller.invoke(None, None, None)
 
 
 class TestVerifyArgument(BaseAWSCommandParamsTest):

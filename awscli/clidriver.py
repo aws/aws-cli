@@ -339,6 +339,10 @@ class ServiceCommand(CLICommand):
         return self._service_object
 
     @property
+    def service_model(self):
+        return self._get_service_model()
+
+    @property
     def lineage(self):
         return self._lineage
 

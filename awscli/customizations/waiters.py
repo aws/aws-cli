@@ -26,23 +26,24 @@ def add_waiters(command_table, session, command_object, **kwargs):
     # Check if the command object passed in has a ``service_object``. We
     # only want to add wait commands to top level model-driven services.
     # These require service objects.
-    service_object = getattr(command_object, 'service_object', None)
-    if service_object is not None:
+    service_model = getattr(command_object, 'service_model', None)
+    if service_model is not None:
         # Get a client out of the service object.
-        waiter_model = get_waiter_model_from_service_object(service_object)
+        waiter_model = get_waiter_model_from_service_model(session,
+                                                           service_model)
         if waiter_model is None:
             return
         waiter_names = waiter_model.waiter_names
         # If there are waiters make a wait command.
         if waiter_names:
-            command_table['wait'] = WaitCommand(waiter_model, service_object)
+            command_table['wait'] = WaitCommand(
+                session, waiter_model, service_model)
 
 
-def get_waiter_model_from_service_object(service_object):
-    session = service_object.session
+def get_waiter_model_from_service_model(session, service_model):
     try:
-        model = session.get_waiter_model(service_object.service_name,
-                                         service_object.api_version)
+        model = session.get_waiter_model(service_model.service_name,
+                                         service_model.api_version)
     except DataNotFoundError:
         return None
     return model
@@ -52,14 +53,15 @@ class WaitCommand(BasicCommand):
     NAME = 'wait'
     DESCRIPTION = 'Wait until a particular condition is satisfied.'
 
-    def __init__(self, waiter_model, service_object):
+    def __init__(self, session, waiter_model, service_model):
         self._model = waiter_model
-        self._service_object = service_object
+        self._service_model = service_model
         self.waiter_cmd_builder = WaiterStateCommandBuilder(
+            session=session,
             model=self._model,
-            service_object=self._service_object
+            service_model=self._service_model
         )
-        super(WaitCommand, self).__init__(self._service_object.session)
+        super(WaitCommand, self).__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
@@ -80,9 +82,10 @@ class WaitCommand(BasicCommand):
 
 
 class WaiterStateCommandBuilder(object):
-    def __init__(self, model, service_object):
+    def __init__(self, session, model, service_model):
+        self._session = session
         self._model = model
-        self._service_object = service_object
+        self._service_model = service_model
 
     def build_all_waiter_state_cmds(self, subcommand_table):
         """This adds waiter state commands to the subcommand table passed in.
@@ -110,17 +113,21 @@ class WaiterStateCommandBuilder(object):
         # Create an operation object to make a command for the waiter. The
         # operation object is used to generate the arguments for the waiter
         # state command.
-        operation_object = self._service_object.get_operation(operation_name)
-        session = operation_object.session
-        operation_model = session.get_service_model(
-            self._service_object.service_name).operation_model(operation_name)
+        operation_model = self._service_model.operation_model(operation_name)
+
+        # TODO: REMOVE Operation and Service Object!!!!!
+        service_object = self._session.get_service(
+            self._service_model.service_name)
+        operation_object = service_object.get_operation(
+            operation_name)
+
         waiter_state_command = WaiterStateCommand(
             name=waiter_cli_name, parent_name='wait',
             operation_object=operation_object,
-            operation_caller=WaiterCaller(waiter_name),
-            session=operation_object.session,
+            operation_caller=WaiterCaller(self._session, waiter_name),
+            session=self._session,
             operation_model=operation_model,
-            service_object=self._service_object
+            service_object=service_object
         )
         # Build the top level description for the waiter state command.
         # Most waiters do not have a description so they need to be generated
@@ -184,18 +191,18 @@ class WaiterStateDocBuilder(object):
 
 
 class WaiterCaller(object):
-    def __init__(self, waiter_name):
+    def __init__(self, session, waiter_name):
+        self._session = session
         self._waiter_name = waiter_name
 
-    def invoke(self, operation_object, parameters, parsed_globals):
-        # Create the endpoint based on the parsed globals
-        service_object = operation_object.service
-        endpoint = service_object.get_endpoint(
-            region_name=parsed_globals.region,
+    def invoke(self, service_name, operation_name, parameters, parsed_globals):
+        self._session.unregister(
+            'after-call', unique_id='awscli-error-handler')
+        client = self._session.create_client(
+            service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        waiter = service_object.get_waiter(
-            self._waiter_name, endpoint)
+        waiter = client.get_waiter(xform_name(self._waiter_name))
         waiter.wait(**parameters)
         return 0
 
@@ -207,9 +214,10 @@ class WaiterStateCommand(ServiceOperation):
         help_command = super(WaiterStateCommand, self).create_help_command()
         # Change the operation object's description by changing it to the
         # description for a waiter state command.
-        self._operation_object.documentation = self.DESCRIPTION
+        self._legacy_params['operation_object'].documentation = \
+            self.DESCRIPTION
         # Change the output shape because waiters provide no output.
-        self._operation_object.model.output_shape = None
+        self._legacy_params['operation_object'].model.output_shape = None
         return help_command
 
 

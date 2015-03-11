@@ -691,27 +691,6 @@ class TestConfigureListCommand(unittest.TestCase):
         self.assertRegexpMatches(
             rendered, r'secret_key\s+\*+_key\s+iam-role')
 
-    def test_configure_display_additional_config(self):
-        config_file_vars = {
-            'region': 'us-west-2'
-        }
-        session = FakeSession(
-            all_variables={'config_file': '/config/location'},
-            config_file_vars=config_file_vars)
-        session.session_var_map = {'region': ('region', "AWS_REGION")}
-        session.full_config = {'profiles': {'emr-dev': {'emr': {
-            'instance_profile': 'EMR_EC2_DefaultRole',
-            'service_role': 'EMR_DefaultRole'}}}}
-        session.profile = 'emr-dev'
-        stream = StringIO()
-        self.configure_list = configure.ConfigureListCommand(session, stream)
-        self.configure_list(args=[], parsed_globals=None)
-        rendered = stream.getvalue()
-        self.assertRegexpMatches(
-            rendered, 'emr\.instance_profile\s+EMR_EC2_DefaultRole\s+config-file\s+/config/location')
-        self.assertRegexpMatches(
-            rendered, 'emr\.service_role\s+EMR_DefaultRole\s+config-file\s+/config/location')
-
 
 class TestConfigureGetCommand(unittest.TestCase):
 

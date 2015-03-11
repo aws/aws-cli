@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 NOT_SET = '<not set>'
 
 PREDEFINED_SECTION_NAMES = ('preview', 'plugin')
-ADDITIONAL_LIST_CONFIG = ('emr',)
 
 def register_configure_cmd(cli):
     cli.register('building-command-table.main',
@@ -302,27 +301,9 @@ class ConfigureListCommand(BasicCommand):
 
         region = self._lookup_config('region')
         self._display_config_value(region, 'region')
-        self._display_additional_config()
-
-    def _display_additional_config(self):
-        if self._session.profile is None:
-            curprofile = self._session.get_config_variable('profile')
-            if curprofile is None:
-                curprofile = 'default'
-        else:
-            curprofile = self._session.profile
-        curconfig = self._session._build_profile_map().get(curprofile)
-        if curconfig is not None:
-            for config in ADDITIONAL_LIST_CONFIG:
-                value = curconfig.get(config)
-                if value is not None:
-                    for k, v in value.iteritems():
-                        cv = ConfigValue(v, 'config-file',
-                                         self._session.get_config_variable('config_file'))
-                        self._display_config_value(cv, '%s.%s' % (config, k))
 
     def _display_config_value(self, config_value, config_name):
-        self._stream.write('%20s %24s %16s    %s\n' % (
+        self._stream.write('%10s %24s %16s    %s\n' % (
             config_name, config_value.value, config_value.config_type,
             config_value.config_variable))
 
@@ -508,7 +489,7 @@ class ConfigureGetCommand(BasicCommand):
             remaining = parts[3:]
         # Check if varname starts with 'default' profile (e.g. default.emr-dev.emr.instance_profile)
         # If not, go further to check if varname starts with a known profile name
-        elif parts[0] == 'default' or (parts[0] in self._session._build_profile_map()):
+        elif parts[0] == 'default' or (parts[0] in self._session.full_config['profiles']):
             profile_name = parts[0]
             config_name = parts[1]
             remaining = parts[2:]

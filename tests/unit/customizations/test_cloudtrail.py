@@ -19,7 +19,7 @@ from tests.unit.test_clidriver import FakeSession
 from awscli.compat import six
 from awscli.customizations import cloudtrail
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import unittest
+from awscli.testutils import unittest, temporary_file
 
 
 class TestCloudTrailPlumbing(unittest.TestCase):
@@ -45,6 +45,14 @@ class TestCreateSubscription(BaseAWSCommandParamsTest):
         # We don't want to overspecify here, but we'll do a quick check to make
         # sure it says log delivery is happening.
         self.assertIn('Logs will be delivered to foo', stdout)
+
+    def test_policy_from_paramfile(self):
+        with temporary_file('w') as f:
+            f.write('{"Statement": []}')
+            command = (
+                'cloudtrail create-subscription --s3-use-bucket foo '
+                '--name bar --s3-custom-policy file://{0}'.format(f.name))
+            self.run_cmd(command, expected_rc=0)
 
 
 class TestCloudTrailCommand(unittest.TestCase):

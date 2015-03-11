@@ -65,13 +65,15 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
                 # one that supports --option and --option <some value>
                 # and another arg of --no-option.
                 new_arg = PositiveBooleanArgument(
-                    value.name, arg_model, value.operation_object,
-                    value.name)
+                    value.name, arg_model, value._operation_model,
+                    value._event_emitter,
+                    group_name=value.name)
                 argument_table[value.name] = new_arg
                 negative_name = 'no-%s' % value.name
                 negative_arg = NegativeBooleanParameter(
                     negative_name, new_arg.py_name,
-                    arg_model, value.operation_object,
+                    arg_model, value._operation_model,
+                    value._event_emitter,
                     action='store_true', dest='no_%s' % new_arg.py_name,
                     group_name=value.name)
                 argument_table[negative_name] = negative_arg
@@ -94,9 +96,10 @@ def validate_boolean_mutex_groups(boolean_pairs, parsed_args, **kwargs):
 
 
 class PositiveBooleanArgument(arguments.CLIArgument):
-    def __init__(self, name, argument_model, operation_object, group_name):
+    def __init__(self, name, argument_model, operation_model,
+                 event_emitter, group_name):
         super(PositiveBooleanArgument, self).__init__(
-            name, argument_model, operation_object)
+            name, argument_model, operation_model, event_emitter)
         self._group_name = group_name
 
     @property
@@ -131,10 +134,11 @@ class PositiveBooleanArgument(arguments.CLIArgument):
 
 class NegativeBooleanParameter(arguments.BooleanArgument):
     def __init__(self, name, positive_py_name,
-                 argument_model, operation_object,
+                 argument_model, operation_model, event_emitter,
                  action='store_true', dest=None, group_name=None):
         super(NegativeBooleanParameter, self).__init__(
-            name, argument_model, operation_object, default=_NOT_SPECIFIED)
+            name, argument_model, operation_model, event_emitter,
+            default=_NOT_SPECIFIED)
         self._group_name = group_name
         self._positive_py_name = positive_py_name
 

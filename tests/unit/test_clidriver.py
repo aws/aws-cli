@@ -19,6 +19,7 @@ from awscli.compat import six
 from botocore.vendored.requests import models
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
+import botocore.model
 
 import awscli
 from awscli.clidriver import CLIDriver
@@ -90,6 +91,70 @@ GET_VARIABLE = {
 }
 
 
+MINI_SERVICE = {
+  "metadata":{
+    "apiVersion":"2006-03-01",
+    "endpointPrefix":"s3",
+    "globalEndpoint":"s3.amazonaws.com",
+    "signatureVersion":"s3",
+    "protocol":"rest-xml"
+  },
+  "operations":{
+    "ListObjects":{
+      "name":"ListObjects",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}"
+      },
+      "input":{"shape":"ListObjectsRequest"},
+      "output":{"shape":"ListObjectsOutput"},
+    },
+  },
+  "shapes":{
+    "ListObjectsOutput":{
+      "type":"structure",
+      "members":{
+        "IsTruncated":{
+          "shape":"IsTruncated",
+          "documentation":""
+        },
+        "NextMarker":{
+          "shape":"NextMarker",
+        },
+        "Contents":{"shape":"Contents"},
+      }
+    },
+    "ListObjectsRequest":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "Marker":{
+          "shape":"Marker",
+          "location":"querystring",
+          "locationName":"marker",
+        },
+        "MaxKeys":{
+          "shape":"MaxKeys",
+          "location":"querystring",
+          "locationName":"max-keys",
+        }
+      }
+    },
+    "BucketName":{"type":"string"},
+    "MaxKeys":{"type":"integer"},
+    "Marker":{"type":"string"},
+    "IsTruncated":{"type":"boolean"},
+    "NextMarker":{"type":"string"},
+    "Contents":{"type":"string"},
+  }
+}
+
+
 class FakeSession(object):
     def __init__(self, emitter=None):
         self.operation = None
@@ -112,6 +177,10 @@ class FakeSession(object):
         for _, response in responses:
             if response is not None:
                 return response
+
+    def get_component(self, name):
+        if name == 'event_emitter':
+            return self.emitter
 
     def get_available_services(self):
         return ['s3']
@@ -150,7 +219,8 @@ class FakeSession(object):
         return service
 
     def get_service_model(self, name):
-        return mock.Mock()
+        return botocore.model.ServiceModel(MINI_SERVICE,
+                                           service_name='s3')
 
     def user_agent(self):
         return 'user_agent'
@@ -252,9 +322,10 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-argument-table.s3.list-objects',
             'before-building-argument-table-parser.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
+            'load-cli-arg.s3.list-objects.marker',
+            'load-cli-arg.s3.list-objects.max-keys',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
-            'load-cli-arg.s3.list-objects.key',
             'calling-command.s3.list-objects'
         ])
 

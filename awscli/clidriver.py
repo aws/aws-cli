@@ -372,19 +372,23 @@ class ServiceCommand(CLICommand):
 
     def _create_command_table(self):
         command_table = OrderedDict()
-        service_object = self._get_service_object()
+        legacy_params = {
+            'service_object': self._get_service_object()
+        }
         service_model = self._get_service_model()
-        for operation_object in service_object.operations:
-            cli_name = xform_name(operation_object.name, '-')
+        for operation_name in service_model.operation_names:
+            cli_name = xform_name(operation_name, '-')
+            operation_model = service_model.operation_model(operation_name)
+            legacy_params['operation_object'] = legacy_params['service_object']\
+                    .get_operation(operation_name)
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
                 parent_name=self._name,
                 session=self.session,
-                operation_object=operation_object,
-                operation_model=service_model.operation_model(
-                    operation_object.name),
+                operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
-                service_object=service_object)
+                **legacy_params
+            )
         self.session.emit('building-command-table.%s' % self._name,
                           command_table=command_table,
                           session=self.session,
@@ -398,6 +402,7 @@ class ServiceCommand(CLICommand):
             command_obj.lineage = self.lineage + [command_obj]
 
     def create_help_command(self):
+        # TODO: Help commands are not switched over.
         command_table = self._get_command_table()
         service_object = self._get_service_object()
         return ServiceHelpCommand(session=self.session,
@@ -455,12 +460,14 @@ class ServiceOperation(object):
         # These is used so we can figure out what the proper event
         # name should be <parent name>.<name>.
         self._parent_name = parent_name
-        self._operation_object = operation_object
         self._operation_caller = operation_caller
-        self._service_object = service_object
         self._lineage = [self]
         self._operation_model = operation_model
         self._session = session
+        self._legacy_params = {
+            'service_object': service_object,
+            'operation_object': operation_object
+        }
 
     @property
     def name(self):
@@ -537,12 +544,14 @@ class ServiceOperation(object):
         else:
             # No override value was supplied.
             return self._operation_caller.invoke(
-                self._operation_object, call_parameters, parsed_globals)
+                self._legacy_params['operation_object'],
+                call_parameters, parsed_globals)
 
     def create_help_command(self):
         return OperationHelpCommand(
-            self._service_object.session, self._service_object,
-            self._operation_object, arg_table=self.arg_table,
+            self._session, self._legacy_params['service_object'],
+            self._legacy_params['operation_object'],
+            arg_table=self.arg_table,
             name=self._name, event_class='.'.join(self.lineage_names))
 
     def _add_help(self, parser):
@@ -569,34 +578,39 @@ class ServiceOperation(object):
     def _unpack_arg(self, cli_argument, value):
         # Unpacks a commandline argument into a Python value by firing the
         # load-cli-arg.service-name.operation-name event.
-        session = self._service_object.session
-        service_name = self._service_object.endpoint_prefix
-        operation_name = xform_name(self._operation_object.name, '-')
+        session = self._session
+        service_name = self._operation_model.service_model.endpoint_prefix
+        operation_name = xform_name(self._name, '-')
 
         return unpack_argument(session, service_name, operation_name,
                                cli_argument, value)
 
     def _create_argument_table(self):
         argument_table = OrderedDict()
-        input_shape = self._operation_object.model.input_shape
+        input_shape = self._operation_model.input_shape
         required_arguments = []
         arg_dict = {}
         if input_shape is not None:
             required_arguments = input_shape.required_members
-            arg_dict = self._operation_object.model.input_shape.members
+            arg_dict = input_shape.members
         for arg_name, arg_shape in arg_dict.items():
             cli_arg_name = xform_name(arg_name, '-')
             arg_class = self.ARG_TYPES.get(arg_shape.type_name,
                                            self.DEFAULT_ARG_CLASS)
             is_required = arg_name in required_arguments
-            arg_object = arg_class(cli_arg_name, arg_shape,
-                                   self._operation_object, is_required,
-                                   serialized_name=arg_name)
+            event_emitter = self._session.get_component('event_emitter')
+            arg_object = arg_class(
+                name=cli_arg_name,
+                argument_model=arg_shape,
+                is_required=is_required,
+                operation_model=self._operation_model,
+                serialized_name=arg_name,
+                event_emitter=event_emitter)
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
         self._emit('building-argument-table.%s.%s' % (self._parent_name,
                                                       self._name),
-                   operation=self._operation_object,
+                   operation=self._legacy_params['operation_object'],
                    operation_model=self._operation_model,
                    session=self._session,
                    command=self,
@@ -604,12 +618,11 @@ class ServiceOperation(object):
         return argument_table
 
     def _emit(self, name, **kwargs):
-        session = self._service_object.session
-        return session.emit(name, **kwargs)
+        return self._session.emit(name, **kwargs)
 
     def _emit_first_non_none_response(self, name, **kwargs):
-        session = self._service_object.session
-        return session.emit_first_non_none_response(name, **kwargs)
+        return self._session.emit_first_non_none_response(
+            name, **kwargs)
 
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)

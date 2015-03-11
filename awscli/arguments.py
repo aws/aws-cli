@@ -39,7 +39,7 @@ Arguments generally fall into one of several categories:
 import logging
 
 from botocore import xform_name
-#from botocore.parameters import ListParameter, StructParameter
+from botocore.hooks import first_non_none_response
 
 from awscli.argprocess import unpack_cli_arg
 from awscli.schema import SchemaTransformer
@@ -351,8 +351,9 @@ class CLIArgument(BaseCLIArgument):
         'blob': str
     }
 
-    def __init__(self, name, argument_model, operation_object,
-                 is_required=False, serialized_name=None):
+    def __init__(self, name, argument_model, operation_model,
+                 event_emitter, is_required=False,
+                 serialized_name=None):
         """
 
         :type name: str
@@ -361,10 +362,6 @@ class CLIArgument(BaseCLIArgument):
 
         :type argument_model: ``botocore.model.Shape``
         :param argument_model: The shape object that models the argument.
-
-        :type operation_object: ``botocore.operation.Operation``
-        :param operation_object: The operation object associated with
-            this object.
 
         :type is_required: boolean
         :param is_required: Indicates if this parameter is required or not.
@@ -379,8 +376,9 @@ class CLIArgument(BaseCLIArgument):
             serialized_name = name
         self._serialized_name = serialized_name
         self.argument_model = argument_model
-        self.operation_object = operation_object
         self._required = is_required
+        self._operation_model = operation_model
+        self._event_emitter = event_emitter
 
     @property
     def py_name(self):
@@ -440,11 +438,11 @@ class CLIArgument(BaseCLIArgument):
             parameters[self._serialized_name] = unpacked
 
     def _unpack_argument(self, value):
-        service_name = self.operation_object.service.endpoint_prefix
-        operation_name = xform_name(self.operation_object.name, '-')
+        service_name = self._operation_model.service_model.endpoint_prefix
+        operation_name = xform_name(self._operation_model.name, '-')
         override = self._emit_first_response('process-cli-arg.%s.%s' % (
             service_name, operation_name), param=self.argument_model,
-            cli_argument=self, value=value, operation=self.operation_object)
+            cli_argument=self, value=value)
         if override is not None:
             # A plugin supplied an alternate conversion,
             # use it instead.
@@ -454,12 +452,11 @@ class CLIArgument(BaseCLIArgument):
             return unpack_cli_arg(self, value)
 
     def _emit(self, name, **kwargs):
-        session = self.operation_object.service.session
-        return session.emit(name, **kwargs)
+        return self._event_emitter.emit(name, **kwargs)
 
     def _emit_first_response(self, name, **kwargs):
-        session = self.operation_object.service.session
-        return session.emit_first_non_none_response(name, **kwargs)
+        responses = self._emit(name, **kwargs)
+        return first_non_none_response(responses)
 
 
 class ListArgument(CLIArgument):
@@ -489,13 +486,15 @@ class BooleanArgument(CLIArgument):
 
     """
 
-    def __init__(self, name, argument_model, operation_object,
+    def __init__(self, name, argument_model, operation_model,
+                 event_emitter,
                  is_required=False, action='store_true', dest=None,
                  group_name=None, default=None,
                  serialized_name=None):
         super(BooleanArgument, self).__init__(name,
                                               argument_model,
-                                              operation_object,
+                                              operation_model,
+                                              event_emitter,
                                               is_required,
                                               serialized_name=serialized_name)
         self._mutex_group = None
@@ -528,7 +527,8 @@ class BooleanArgument(CLIArgument):
         argument_table[self.name] = self
         negative_name = 'no-%s' % self.name
         negative_version = self.__class__(
-            negative_name, self.argument_model, self.operation_object,
+            negative_name, self.argument_model,
+            self._operation_model, self._event_emitter,
             action='store_false', dest=self._destination,
             group_name=self.group_name, serialized_name=self._serialized_name)
         argument_table[negative_name] = negative_version

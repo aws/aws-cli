@@ -162,6 +162,16 @@ class TestCloudTrailCommand(unittest.TestCase):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test2', 'logs')
 
+    def test_s3_custom_policy(self):
+        s3 = self.subscribe.s3
+        s3.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': '404', 'Message': ''}}, 'HeadBucket')
+
+        self.subscribe.setup_new_bucket('test', 'logs', custom_policy='{}')
+
+        s3.get_object.assert_not_called()
+        s3.put_bucket_policy.assert_called_with(Bucket='test', Policy='{}')
+
     def test_s3_create_set_policy_fail(self):
         s3 = self.subscribe.s3
         orig = s3.put_bucket_policy
@@ -223,6 +233,23 @@ class TestCloudTrailCommand(unittest.TestCase):
 
         s3.get_object.assert_called_with(
             Bucket='awscloudtrail-policy-us-east-1', Key=ANY)
+
+    def test_sns_custom_policy(self):
+        s3 = self.subscribe.s3
+        sns = self.subscribe.sns
+        sns.get_topic_attributes.return_value = {
+            'Attributes': {
+                'Policy': '{"Statement": []}'
+            }
+        }
+
+        policy = '{"Statement": []}'
+
+        self.subscribe.setup_new_topic('test', custom_policy=policy)
+
+        s3.get_object.assert_not_called()
+        sns.set_topic_attributes.assert_called_with(
+          TopicArn=ANY, AttributeName='Policy', AttributeValue=policy)
 
     def test_sns_create_already_exists(self):
         with self.assertRaises(Exception):

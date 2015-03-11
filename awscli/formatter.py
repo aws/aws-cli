@@ -52,7 +52,8 @@ class Formatter(object):
 
 
 class FullyBufferedFormatter(Formatter):
-    def __call__(self, operation, response, stream=None):
+    def __call__(self, command_name, response,
+                 is_response_paginated=False, stream=None):
         if stream is None:
             # Retrieve stdout on invocation instead of at import time
             # so that if anything wraps stdout we'll pick up those changes
@@ -60,7 +61,7 @@ class FullyBufferedFormatter(Formatter):
             stream = self._get_default_stream()
         # I think the interfaces between non-paginated
         # and paginated responses can still be cleaned up.
-        if operation.can_paginate and self._args.paginate:
+        if is_response_paginated:
             response_data = response.build_full_result()
         else:
             response_data = response
@@ -68,7 +69,7 @@ class FullyBufferedFormatter(Formatter):
         if self._args.query is not None:
             response_data = self._args.query.search(response_data)
         try:
-            self._format_response(operation, response_data, stream)
+            self._format_response(command_name, response_data, stream)
         except IOError as e:
             # If the reading end of our stdout stream has closed the file
             # we can just exit.
@@ -81,7 +82,7 @@ class FullyBufferedFormatter(Formatter):
 
 class JSONFormatter(FullyBufferedFormatter):
 
-    def _format_response(self, operation, response, stream):
+    def _format_response(self, command_name, response, stream):
         # For operations that have no response body (e.g. s3 put-object)
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
@@ -116,8 +117,8 @@ class TableFormatter(FullyBufferedFormatter):
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 
-    def _format_response(self, operation, response, stream):
-        if self._build_table(operation.name, response):
+    def _format_response(self, command_name, response, stream):
+        if self._build_table(command_name, response):
             try:
                 self.table.render(stream)
             except IOError:
@@ -220,13 +221,14 @@ class TableFormatter(FullyBufferedFormatter):
 
 class TextFormatter(Formatter):
 
-    def __call__(self, operation, response, stream=None):
+    def __call__(self, command_name, response,
+                 is_response_paginated=False, stream=None):
         if stream is None:
             stream = self._get_default_stream()
         try:
-            if operation.can_paginate and self._args.paginate:
+            if is_response_paginated:
                 result_keys = response.result_keys
-                for _, page in response:
+                for page in response:
                     current = {}
                     for result_key in result_keys:
                         data = result_key.search(page)

@@ -544,7 +544,8 @@ class ServiceOperation(object):
         else:
             # No override value was supplied.
             return self._operation_caller.invoke(
-                self._legacy_params['operation_object'],
+                self._operation_model.service_model.service_name,
+                self._operation_model.name,
                 call_parameters, parsed_globals)
 
     def create_help_command(self):
@@ -642,30 +643,28 @@ class CLIOperationCaller(object):
     def __init__(self, session):
         self._session = session
 
-    def invoke(self, operation_object, parameters, parsed_globals):
-        # We could get an error from get_endpoint() about not having
-        # a region configured.  Before this happens we want to check
-        # for credentials so we can give a good error message.
-        if not self._session.get_credentials():
-            raise NoCredentialsError()
-        endpoint = operation_object.service.get_endpoint(
-            region_name=parsed_globals.region,
+    def invoke(self, service_name, operation_name, parameters, parsed_globals):
+        client = self._session.create_client(
+            service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
-        if operation_object.can_paginate and parsed_globals.paginate:
-            pages = operation_object.paginate(endpoint, **parameters)
-            self._display_response(operation_object, pages,
-                                   parsed_globals)
+        py_operation_name = xform_name(operation_name)
+        if client.can_paginate(py_operation_name) and parsed_globals.paginate:
+            paginator = client.get_paginator(py_operation_name)
+            pages = paginator.paginate(**parameters)
+            self._display_response(operation_name, pages, True, parsed_globals)
         else:
-            http_response, response_data = operation_object.call(endpoint,
-                                                                 **parameters)
-            self._display_response(operation_object, response_data,
-                                   parsed_globals)
+            response_data = getattr(client, xform_name(operation_name))(
+                **parameters)
+            self._display_response(
+                operation_name, response_data, False,
+                parsed_globals)
         return 0
 
-    def _display_response(self, operation, response, args):
-        output = args.output
+    def _display_response(self, command_name, response,
+                          is_response_paginated, parsed_globals):
+        output = parsed_globals.output
         if output is None:
             output = self._session.get_config_variable('output')
-        formatter = get_formatter(output, args)
-        formatter(operation, response)
+        formatter = get_formatter(output, parsed_globals)
+        formatter(command_name, response, is_response_paginated)

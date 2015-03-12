@@ -406,11 +406,10 @@ class ServiceCommand(CLICommand):
             command_obj.lineage = self.lineage + [command_obj]
 
     def create_help_command(self):
-        # TODO: Help commands are not switched over.
         command_table = self._get_command_table()
         service_object = self._get_service_object()
         return ServiceHelpCommand(session=self.session,
-                                  obj=service_object,
+                                  obj=self._get_service_model(),
                                   command_table=command_table,
                                   arg_table=None,
                                   event_class='.'.join(self.lineage_names),
@@ -469,7 +468,6 @@ class ServiceOperation(object):
         self._operation_model = operation_model
         self._session = session
         self._legacy_params = {
-            'service_object': service_object,
             'operation_object': operation_object
         }
 
@@ -554,8 +552,8 @@ class ServiceOperation(object):
 
     def create_help_command(self):
         return OperationHelpCommand(
-            self._session, self._legacy_params['service_object'],
-            self._legacy_params['operation_object'],
+            self._session,
+            operation_model=self._operation_model,
             arg_table=self.arg_table,
             name=self._name, event_class='.'.join(self.lineage_names))
 

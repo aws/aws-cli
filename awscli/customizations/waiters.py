@@ -214,10 +214,9 @@ class WaiterStateCommand(ServiceOperation):
         help_command = super(WaiterStateCommand, self).create_help_command()
         # Change the operation object's description by changing it to the
         # description for a waiter state command.
-        self._legacy_params['operation_object'].documentation = \
-            self.DESCRIPTION
+        self._operation_model.documentation = self.DESCRIPTION
         # Change the output shape because waiters provide no output.
-        self._legacy_params['operation_object'].model.output_shape = None
+        self._operation_model.output_shape = None
         return help_command
 
 

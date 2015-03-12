@@ -26,6 +26,7 @@ import string
 import socket
 import tempfile
 import shutil
+import copy
 
 import botocore.session
 from botocore.exceptions import ClientError
@@ -33,8 +34,9 @@ from awscli.compat import six
 
 from awscli.testutils import unittest, FileCreator, get_stdout_encoding
 from awscli.testutils import aws as _aws
-from tests.unit.customizations.s3 import create_bucket as _create_bucket
+from tests.integration.customizations.s3 import create_bucket as _create_bucket
 from awscli.customizations.s3.transferconfig import DEFAULTS
+from awscli.customizations.scalarparse import add_scalar_parsers
 
 
 @contextlib.contextmanager
@@ -55,6 +57,12 @@ def aws(command, collect_memory=False, env_vars=None, wait_for_finish=True,
     return _aws(command, collect_memory=collect_memory, env_vars=env_vars,
                 wait_for_finish=wait_for_finish, input_data=input_data,
                 input_file=input_file)
+
+
+def _running_on_rhel():
+    return (
+        hasattr(platform, 'linux_distribution') and
+        platform.linux_distribution()[0] == 'Red Hat Enterprise Linux Server')
 
 
 class BaseS3CLICommand(unittest.TestCase):
@@ -473,7 +481,7 @@ class TestCp(BaseS3CLICommand):
         p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
-            'A client error (NoSuchKey) occurred when calling the '
+            'A client error (404) occurred when calling the '
             'HeadObject operation: Key "foo.txt" does not exist')
         self.assertIn(expected_err_msg, p.stderr)
 
@@ -522,6 +530,55 @@ class TestCp(BaseS3CLICommand):
             foo_txt, bucket_name))
         self.assert_no_errors(p)
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
+
+    def test_copy_metadata_directive(self):
+        # Copy the same style of parsing as the CLI session. This is needed
+        # For comparing expires timestamp.
+        add_scalar_parsers(self.session)
+        bucket_name = self.create_bucket()
+        original_key = 'foo.txt'
+        new_key = 'bar.txt'
+        metadata = {
+            'ContentType': 'foo',
+            'ContentDisposition': 'foo',
+            'ContentEncoding': 'foo',
+            'ContentLanguage': 'foo',
+            'CacheControl': '90',
+            'Expires': '0'
+        }
+        self.put_object(bucket_name, original_key, contents='foo',
+                        extra_args=metadata)
+        p = aws('s3 cp s3://%s/%s s3://%s/%s' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # These values should have the metadata of the source object
+        metadata_ref = copy.copy(metadata)
+        metadata_ref['Expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+        for name, value in metadata_ref.items():
+            self.assertEqual(response[name], value)
+
+        # Use REPLACE to wipe out all of the metadata.
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # Make sure all of the original metadata is gone.
+        for name, value in metadata_ref.items():
+            self.assertNotEqual(response.get(name), value)
+
+        # Use REPLACE to wipe out all of the metadata but include a new
+        # metadata value.
+        p = aws('s3 cp s3://%s/%s s3://%s/%s --metadata-directive REPLACE '
+                '--content-type bar' %
+                (bucket_name, original_key, bucket_name, new_key))
+        self.assert_no_errors(p)
+        response = self.head_object(bucket_name, new_key)
+        # Make sure the content type metadata is included
+        self.assertEqual(response['ContentType'], 'bar')
+        # Make sure all of the original metadata is gone.
+        for name, value in metadata_ref.items():
+            self.assertNotEqual(response.get(name), value)
 
 
 class TestSync(BaseS3CLICommand):
@@ -1240,6 +1297,13 @@ class TestMemoryUtilization(BaseS3CLICommand):
         self.assert_max_memory_used(p, self.max_mem_allowed,
                                     download_full_command)
 
+    # Some versions of RHEL allocate memory in a way where free'd memory isn't
+    # given back to the OS.  We haven't seen behavior as bad as RHEL's to the
+    # point where this test fails on other distros, so for now we're disabling
+    # the test on RHEL until we come up with a better way to collect
+    # memory usage.
+    @unittest.skipIf(_running_on_rhel(),
+                     'Streaming memory tests no supported on RHEL.')
     def test_stream_large_file(self):
         """
         This tests to ensure that streaming files for both uploads and

@@ -47,8 +47,8 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # The only operation we should have called is PutObject.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertEqual(self.operations_called[0][1]['key'], 'foo.txt')
-        self.assertEqual(self.operations_called[0][1]['bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
 
     def test_trailing_slash_appended(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
@@ -60,8 +60,43 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # The only operation we should have called is PutObject.
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertEqual(self.operations_called[0][1]['key'], 'foo.txt')
-        self.assertEqual(self.operations_called[0][1]['bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'foo.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
+
+    def test_upload_grants(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --grants read=id=foo '
+                   'full=id=bar readacl=id=biz writeacl=id=baz' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The only operation we should have called is PutObject.
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertDictEqual(
+            self.operations_called[0][1],
+            {'Key': u'key.txt', 'Bucket': u'bucket', 'GrantRead': u'id=foo',
+             'GrantFullControl': u'id=bar', 'GrantReadACP': u'id=biz',
+             'GrantWriteACP': u'id=baz', 'ContentType': u'text/plain',
+             'Body': mock.ANY}
+        )
+
+    def test_upload_expires(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = ('%s %s s3://bucket/key.txt --expires 90' %
+                   (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        # The only operation we should have called is PutObject.
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['Key'], 'key.txt')
+        self.assertEqual(self.operations_called[0][1]['Bucket'], 'bucket')
+        self.assertEqual(self.operations_called[0][1]['Expires'], '90')
 
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
@@ -97,9 +132,36 @@ class TestCPCommand(BaseAWSCommandParamsTest):
         # Make sure that the specified web address is used as opposed to the
         # contents of the web address.
         self.assertEqual(
-            self.operations_called[0][1]['website_redirect_location'],
+            self.operations_called[0][1]['WebsiteRedirectLocation'],
             'http://someserver'
         )
+
+    def test_metadata_directive_copy(self):
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+        ]
+        cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
+                   ' --metadata-directive REPLACE' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['MetadataDirective'],
+                         'REPLACE')
+
+    def test_no_metadata_directive_for_non_copy(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket --metadata-directive REPLACE' % \
+            (self.prefix, full_path)
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
 
 if __name__ == "__main__":

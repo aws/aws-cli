@@ -340,15 +340,14 @@ class ListRunsCommand(BasicCommand):
         self._formatter = formatter
 
     def _run_main(self, parsed_args, parsed_globals, **kwargs):
-        self._set_session_objects(parsed_globals)
+        self._set_client(parsed_globals)
         self._parse_type_args(parsed_args)
         self._list_runs(parsed_args)
 
-    def _set_session_objects(self, parsed_globals):
+    def _set_client(self, parsed_globals):
         # This is called from _run_main and is used to ensure that we have
         # a service/endpoint object to work with.
-        self.service = self._session.get_service('datapipeline')
-        self.endpoint = self.service.get_endpoint(
+        self.client = self._session.create_client('datapipeline',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
@@ -389,15 +388,13 @@ class ListRunsCommand(BasicCommand):
         self._formatter.display_objects_to_user(converted)
 
     def _describe_objects(self, pipeline_id, object_ids):
-        operation = self.service.get_operation('DescribeObjects')
-        http_parsed, parsed = operation.call(
-            self.endpoint, pipeline_id=pipeline_id, object_ids=object_ids)
+        parsed = self.client.describe_objects(
+            pipelineId=pipeline_id, objectIds=object_ids)
         return parsed
 
     def _query_objects(self, pipeline_id, query):
-        operation = self.service.get_operation('QueryObjects')
-        paginator = operation.paginate(
-            self.endpoint, pipeline_id=pipeline_id,
+        paginator = self.client.get_paginator('query_objects').paginate(
+            pipelineId=pipeline_id,
             sphere='INSTANCE', query=query)
         parsed = paginator.build_full_result()
         return parsed['ids']

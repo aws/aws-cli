@@ -46,7 +46,7 @@ class TestSyncCommand(BaseAWSCommandParamsTest):
         # Make sure that the specified web address is used as opposed to the
         # contents of the web address when uploading the object
         self.assertEqual(
-            self.operations_called[1][1]['website_redirect_location'],
+            self.operations_called[1][1]['WebsiteRedirectLocation'],
             'http://someserver'
         )
 

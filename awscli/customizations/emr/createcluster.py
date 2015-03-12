@@ -102,7 +102,6 @@ class CreateCluster(BasicCommand):
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         params = {}
         bootstrap_actions = []
         params['Name'] = parsed_args.name

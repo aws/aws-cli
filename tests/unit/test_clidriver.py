@@ -398,10 +398,6 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         super(TestAWSCommand, self).tearDown()
         self.stderr_patch.stop()
 
-    def record_get_endpoint_args(self, *args, **kwargs):
-        self.get_endpoint_args = (args, kwargs)
-        self.real_get_endpoint(*args, **kwargs)
-
     def inject_new_param(self, argument_table, **kwargs):
         argument = CustomArgument('unknown-arg', {})
         argument.add_to_arg_table(argument_table)
@@ -661,7 +657,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             'ec2 describe-instances --region us-east-1 --no-verify-ssl',
             expected_rc=0)
-        # Because we used --no-verify-ssl, get_endpoint should be
+        # Because we used --no-verify-ssl, create_endpoint should be
         # called with verify=False
         self.create_endpoint.assert_called_with(
             mock.ANY, 'us-east-1', verify=False, endpoint_url=None,

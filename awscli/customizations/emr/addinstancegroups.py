@@ -31,7 +31,6 @@ class AddInstanceGroups(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         parameters = {'JobFlowId': parsed_args.cluster_id}
         parameters['InstanceGroups'] = \
             instancegroupsutils.build_instance_groups(

@@ -89,8 +89,7 @@ GITHUB_LOCATION_SCHEMA = {
 }
 
 
-def modify_revision_arguments(argument_table, operation, **kwargs):
-    session = operation.session
+def modify_revision_arguments(argument_table, session, **kwargs):
     s3_model = create_argument_model_from_schema(S3_LOCATION_SCHEMA)
     argument_table[S3_LOCATION_ARG_DESCRIPTION['name']] = (
         S3LocationArgument(
@@ -123,7 +122,7 @@ class LocationArgument(CustomArgument):
             param=self.argument_model,
             cli_argument=self,
             value=value,
-            operation=None
+            operation_name=self.name
         )
         if parsed is None:
             parsed = unpack_cli_arg(self, value)

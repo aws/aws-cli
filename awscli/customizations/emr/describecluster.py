@@ -31,7 +31,6 @@ class DescribeCluster(BasicCommand):
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'describe-cluster.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
-        emr = self._session.get_service('emr')
         parameters = {'ClusterId': parsed_args.cluster_id}
 
         describe_cluster_result = self._call(

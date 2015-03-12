@@ -55,19 +55,15 @@ def _building_command_table(command_table, session, **kwargs):
     del command_table['modify-option-group']
     # We're going to replace modify-option-group with two commands:
     # add-option-group and remove-option-group
-    rds_service = session.get_service('rds')
-    modify_operation = rds_service.get_operation('modify-option-group')
+    rds_model = session.get_service_model('rds')
+    modify_operation_model = rds_model.operation_model('ModifyOptionGroup')
     command_table['add-option-to-option-group'] = ServiceOperation(
         parent_name='rds', name='add-option-to-option-group',
-        operation_object=modify_operation,
         operation_caller=CLIOperationCaller(session),
         session=session,
-        operation_model=modify_operation.model,
-        service_object=rds_service)
+        operation_model=modify_operation_model)
     command_table['remove-option-from-option-group'] = ServiceOperation(
         parent_name='rds', name='remove-option-from-option-group',
-        operation_object=modify_operation,
         session=session,
-        operation_model=modify_operation.model,
-        operation_caller=CLIOperationCaller(session),
-        service_object=rds_service)
+        operation_model=modify_operation_model,
+        operation_caller=CLIOperationCaller(session))

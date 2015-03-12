@@ -196,33 +196,6 @@ class FakeSession(object):
     def get_config_variable(self, name):
         return GET_VARIABLE[name]
 
-    def get_service(self, name):
-        # Get service returns a service object,
-        # so we'll just return a Mock object with
-        # enough of the "right stuff".
-        service = mock.Mock()
-        operation = mock.Mock()
-        operation.model.input_shape.members = OrderedDict([
-            ('Bucket', mock.Mock()),
-            ('Key', mock.Mock()),
-        ])
-        operation.model.input_shape.required_members = ['Bucket']
-        operation.cli_name = 'list-objects'
-        operation.name = 'ListObjects'
-        operation.is_streaming.return_value = False
-        operation.paginate.return_value.build_full_result.return_value = {
-            'foo': 'paginate'}
-        operation.call.return_value = (mock.Mock(), {'foo': 'bar'})
-        self.operation = operation
-        service.operations = [operation]
-        service.name = 's3'
-        service.cli_name = 's3'
-        service.endpoint_prefix = 's3'
-        service.get_operation.return_value = operation
-        operation.service = service
-        operation.service.session = self
-        return service
-
     def get_service_model(self, name):
         return botocore.model.ServiceModel(MINI_SERVICE,
                                            service_name='s3')
@@ -785,7 +758,7 @@ class TestServiceCommand(unittest.TestCase):
 class TestServiceOperation(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
-        self.cmd = ServiceOperation(self.name, None, None, None, None, None, None)
+        self.cmd = ServiceOperation(self.name, None, None, None, None)
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)

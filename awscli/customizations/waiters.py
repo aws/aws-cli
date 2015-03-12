@@ -115,19 +115,11 @@ class WaiterStateCommandBuilder(object):
         # state command.
         operation_model = self._service_model.operation_model(operation_name)
 
-        # TODO: REMOVE Operation and Service Object!!!!!
-        service_object = self._session.get_service(
-            self._service_model.service_name)
-        operation_object = service_object.get_operation(
-            operation_name)
-
         waiter_state_command = WaiterStateCommand(
             name=waiter_cli_name, parent_name='wait',
-            operation_object=operation_object,
             operation_caller=WaiterCaller(self._session, waiter_name),
             session=self._session,
             operation_model=operation_model,
-            service_object=service_object
         )
         # Build the top level description for the waiter state command.
         # Most waiters do not have a description so they need to be generated

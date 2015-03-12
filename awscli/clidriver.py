@@ -316,7 +316,6 @@ class ServiceCommand(CLICommand):
         self._name = cli_name
         self.session = session
         self._command_table = None
-        self._service_object = None
         if service_name is None:
             # Then default to using the cli name.
             self._service_name = cli_name
@@ -332,10 +331,6 @@ class ServiceCommand(CLICommand):
     @name.setter
     def name(self, value):
         self._name = value
-
-    @property
-    def service_object(self):
-        return self._service_object
 
     @property
     def service_model(self):
@@ -354,11 +349,6 @@ class ServiceCommand(CLICommand):
             self._command_table = self._create_command_table()
         return self._command_table
 
-    def _get_service_object(self):
-        if self._service_object is None:
-            self._service_object = self.session.get_service(self._service_name)
-        return self._service_object
-
     def _get_service_model(self):
         if self._service_model is None:
             self._service_model = self.session.get_service_model(
@@ -376,23 +366,16 @@ class ServiceCommand(CLICommand):
 
     def _create_command_table(self):
         command_table = OrderedDict()
-        legacy_params = {
-            'service_object': self._get_service_object()
-        }
         service_model = self._get_service_model()
         for operation_name in service_model.operation_names:
             cli_name = xform_name(operation_name, '-')
             operation_model = service_model.operation_model(operation_name)
-            legacy_params['operation_object'] = \
-                legacy_params['service_object'].get_operation(
-                    operation_name)
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
                 parent_name=self._name,
                 session=self.session,
                 operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
-                **legacy_params
             )
         self.session.emit('building-command-table.%s' % self._name,
                           command_table=command_table,
@@ -437,8 +420,8 @@ class ServiceOperation(object):
     }
     DEFAULT_ARG_CLASS = CLIArgument
 
-    def __init__(self, name, parent_name, operation_object, operation_caller,
-                 service_object, operation_model, session):
+    def __init__(self, name, parent_name, operation_caller,
+                 operation_model, session):
         """
 
         :type name: str
@@ -447,15 +430,16 @@ class ServiceOperation(object):
         :type parent_name: str
         :param parent_name: The name of the parent command.
 
-        :type operation_object: ``botocore.operation.Operation``
-        :param operation_object: The operation associated with this subcommand.
+        :type operation_model: ``botocore.model.OperationModel``
+        :param operation_object: The operation model
+            associated with this subcommand.
 
         :type operation_caller: ``CLIOperationCaller``
         :param operation_caller: An object that can properly call the
             operation.
 
-        :type service_object: ``botocore.service.Service``
-        :param service_object: The service associated wtih the object.
+        :type session: ``botocore.session.Session``
+        :param session: The session object.
 
         """
         self._arg_table = None
@@ -467,9 +451,6 @@ class ServiceOperation(object):
         self._lineage = [self]
         self._operation_model = operation_model
         self._session = session
-        self._legacy_params = {
-            'operation_object': operation_object
-        }
 
     @property
     def name(self):

@@ -67,15 +67,16 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
                 new_arg = PositiveBooleanArgument(
                     value.name, arg_model, value._operation_model,
                     value._event_emitter,
-                    group_name=value.name)
+                    group_name=value.name,
+                    serialized_name=value._serialized_name)
                 argument_table[value.name] = new_arg
                 negative_name = 'no-%s' % value.name
                 negative_arg = NegativeBooleanParameter(
-                    negative_name, new_arg.py_name,
-                    arg_model, value._operation_model,
+                    negative_name, arg_model, value._operation_model,
                     value._event_emitter,
                     action='store_true', dest='no_%s' % new_arg.py_name,
-                    group_name=value.name)
+                    group_name=value.name,
+                    serialized_name=value._serialized_name)
                 argument_table[negative_name] = negative_arg
                 # If we've pulled up a structure(scalar) arg
                 # into a pair of top level boolean args, we need
@@ -97,9 +98,10 @@ def validate_boolean_mutex_groups(boolean_pairs, parsed_args, **kwargs):
 
 class PositiveBooleanArgument(arguments.CLIArgument):
     def __init__(self, name, argument_model, operation_model,
-                 event_emitter, group_name):
+                 event_emitter, serialized_name, group_name):
         super(PositiveBooleanArgument, self).__init__(
-            name, argument_model, operation_model, event_emitter)
+            name, argument_model, operation_model, event_emitter,
+            serialized_name=serialized_name)
         self._group_name = group_name
 
     @property
@@ -125,23 +127,22 @@ class PositiveBooleanArgument(arguments.CLIArgument):
             # e.g. --boolean-parameter
             # which means we should add a true value
             # to the parameters dict.
-            parameters[self.py_name] = {'Value': True}
+            parameters[self._serialized_name] = {'Value': True}
         else:
             # Otherwise the arg was specified with a value.
-            parameters[self.py_name] = self._unpack_argument(
+            parameters[self._serialized_name] = self._unpack_argument(
                 value)
 
 
 class NegativeBooleanParameter(arguments.BooleanArgument):
-    def __init__(self, name, positive_py_name,
-                 argument_model, operation_model, event_emitter,
-                 action='store_true', dest=None, group_name=None):
+    def __init__(self, name, argument_model, operation_model,
+                 event_emitter, serialized_name, action='store_true',
+                 dest=None, group_name=None):
         super(NegativeBooleanParameter, self).__init__(
             name, argument_model, operation_model, event_emitter,
-            default=_NOT_SPECIFIED)
+            default=_NOT_SPECIFIED, serialized_name=serialized_name)
         self._group_name = group_name
-        self._positive_py_name = positive_py_name
 
     def add_to_params(self, parameters, value):
         if value is not _NOT_SPECIFIED and value:
-            parameters[self._positive_py_name] = {'Value': False}
+            parameters[self._serialized_name] = {'Value': False}

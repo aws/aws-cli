@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.14
+======
 
 * feature:``aws logs``: Update ``aws logs`` command to the latest model.
 * feature:``aws ec2``: Add paginators for the ``describe-snapshots``

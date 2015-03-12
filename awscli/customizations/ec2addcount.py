@@ -28,17 +28,16 @@ interpreted as the minimum number of instances to launch and the second
 is interpreted as the maximum number of instances to launch.</p>"""
 
 
-def ec2_add_count(argument_table, operation, **kwargs):
-    argument_table['count'] = CountArgument(operation, 'count')
+def ec2_add_count(argument_table, **kwargs):
+    argument_table['count'] = CountArgument('count')
     del argument_table['min-count']
     del argument_table['max-count']
 
 
 class CountArgument(BaseCLIArgument):
 
-    def __init__(self, operation, name):
+    def __init__(self, name):
         self.argument_model = model.Shape('CountArgument', {'type': 'string'})
-        self._operation = operation
         self._name = name
         self._required = False
 

@@ -29,20 +29,23 @@ the instance (e.g. windows-keypair.pem).  If this is supplied, the
 password data sent from EC2 will be decrypted before display.</p>"""
 
 
-def ec2_add_priv_launch_key(argument_table, operation, **kwargs):
+def ec2_add_priv_launch_key(argument_table, operation_model, session,
+                            **kwargs):
     """
     This handler gets called after the argument table for the
     operation has been created.  It's job is to add the
     ``priv-launch-key`` parameter.
     """
-    argument_table['priv-launch-key'] = LaunchKeyArgument(operation,
+    argument_table['priv-launch-key'] = LaunchKeyArgument(session,
+                                                          operation_model,
                                                           'priv-launch-key')
 
 class LaunchKeyArgument(BaseCLIArgument):
 
-    def __init__(self, operation, name):
+    def __init__(self, session, operation_model, name):
+        self._session = session
         self.argument_model = model.Shape('LaunchKeyArgument', {'type': 'string'})
-        self._operation = operation
+        self._operation_model = operation_model
         self._name = name
         self._key_path = None
         self._required = False
@@ -79,11 +82,11 @@ class LaunchKeyArgument(BaseCLIArgument):
             path = os.path.expanduser(path)
             if os.path.isfile(path):
                 self._key_path = path
-                service_name = self._operation.service.endpoint_prefix
+                service_name = \
+                    self._operation_model.service_model.service_name
                 event = 'after-call.%s.%s' % (service_name,
-                                              self._operation.name)
-                self._operation.session.register(event,
-                                                 self._decrypt_password_data)
+                                              self._operation_model.name)
+                self._session.register(event, self._decrypt_password_data)
             else:
                 msg = ('priv-launch-key should be a path to the '
                        'local SSH private key file used to launch '

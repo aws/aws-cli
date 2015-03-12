@@ -27,6 +27,7 @@ import logging
 from functools import partial
 
 from botocore import xform_name
+from botocore.exceptions import DataNotFoundError
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
@@ -57,36 +58,56 @@ def register_pagination(event_handlers):
                             unify_paging_params)
 
 
-def unify_paging_params(argument_table, operation, event_name, **kwargs):
-    if not operation.can_paginate:
+def get_paginator_config(session, service_name, operation_name):
+    try:
+        paginator_model = session.get_paginator_model(service_name)
+    except DataNotFoundError:
+        return None
+    try:
+        operation_paginator_config = paginator_model.get_paginator(
+            operation_name)
+    except ValueError:
+        return None
+    return operation_paginator_config
+
+
+def unify_paging_params(argument_table, operation_model, event_name,
+                        session, **kwargs):
+
+    paginator_config = get_paginator_config(
+        session, operation_model.service_model.service_name,
+        operation_model.name)
+    if paginator_config is None:
         # We only apply these customizations to paginated responses.
         return
-    logger.debug("Modifying paging parameters for operation: %s", operation)
-    _remove_existing_paging_arguments(argument_table, operation)
+    logger.debug("Modifying paging parameters for operation: %s",
+                 operation_model.name)
+    _remove_existing_paging_arguments(argument_table, paginator_config)
     parsed_args_event = event_name.replace('building-argument-table.',
                                            'operation-args-parsed.')
-    operation.session.register(
+    session.register(
         parsed_args_event,
         partial(check_should_enable_pagination,
-                list(_get_all_cli_input_tokens(operation))))
+                list(_get_all_cli_input_tokens(paginator_config))))
     argument_table['starting-token'] = PageArgument('starting-token',
                                                     STARTING_TOKEN_HELP,
-                                                    operation,
                                                     parse_type='string')
-    input_members = operation.model.input_shape.members
+    input_members = operation_model.input_shape.members
     type_name = 'integer'
-    if 'limit_key' in operation.pagination:
-        limit_key_shape = input_members[operation.pagination['limit_key']]
+    if 'limit_key' in paginator_config:
+        limit_key_shape = input_members[paginator_config['limit_key']]
         type_name = limit_key_shape.type_name
         if type_name not in PageArgument.type_map:
-            raise TypeError(('Unsupported pagination type {0} for operation {1}'
-                            ' and parameter {2}').format(type_name, operation.name,
-                                                         operation.pagination['limit_key']))
-        argument_table['page-size'] = PageArgument('page-size', PAGE_SIZE_HELP,
-                                                   operation, parse_type=type_name)
+            raise TypeError(
+                ('Unsupported pagination type {0} for operation {1}'
+                 ' and parameter {2}').format(
+                    type_name, operation_model.name,
+                    paginator_config['limit_key']))
+        argument_table['page-size'] = PageArgument(
+            'page-size', PAGE_SIZE_HELP, parse_type=type_name)
 
     argument_table['max-items'] = PageArgument('max-items', MAX_ITEMS_HELP,
-                                               operation, parse_type=type_name)
+                                               parse_type=type_name)
 
 
 def check_should_enable_pagination(input_tokens, parsed_args, parsed_globals,
@@ -103,27 +124,26 @@ def check_should_enable_pagination(input_tokens, parsed_args, parsed_globals,
             parsed_globals.paginate = False
 
 
-def _remove_existing_paging_arguments(argument_table, operation):
-    for cli_name in _get_all_cli_input_tokens(operation):
+def _remove_existing_paging_arguments(argument_table, pagination_config):
+    for cli_name in _get_all_cli_input_tokens(pagination_config):
         argument_table[cli_name]._UNDOCUMENTED = True
 
 
-def _get_all_cli_input_tokens(operation):
+def _get_all_cli_input_tokens(pagination_config):
     # Get all input tokens including the limit_key
     # if it exists.
-    tokens = _get_input_tokens(operation)
+    tokens = _get_input_tokens(pagination_config)
     for token_name in tokens:
         cli_name = xform_name(token_name, '-')
         yield cli_name
-    if 'limit_key' in operation.pagination:
-        key_name = operation.pagination['limit_key']
+    if 'limit_key' in pagination_config:
+        key_name = pagination_config['limit_key']
         cli_name = xform_name(key_name, '-')
         yield cli_name
 
 
-def _get_input_tokens(operation):
-    config = operation.pagination
-    tokens = config['input_token']
+def _get_input_tokens(pagination_config):
+    tokens = pagination_config['input_token']
     if not isinstance(tokens, list):
         return [tokens]
     return tokens
@@ -141,7 +161,7 @@ class PageArgument(BaseCLIArgument):
         'integer': int,
     }
 
-    def __init__(self, name, documentation, operation, parse_type):
+    def __init__(self, name, documentation, parse_type):
         self.argument_model = model.Shape('PageArgument', {'type': 'string'})
         self._name = name
         self._documentation = documentation

@@ -613,7 +613,6 @@ class ServiceOperation(object):
         LOG.debug(argument_table)
         self._emit('building-argument-table.%s.%s' % (self._parent_name,
                                                       self._name),
-                   operation=self._legacy_params['operation_object'],
                    operation_model=self._operation_model,
                    session=self._session,
                    command=self,

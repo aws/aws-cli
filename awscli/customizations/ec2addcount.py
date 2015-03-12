@@ -73,8 +73,8 @@ class CountArgument(BaseCLIArgument):
                 minstr, maxstr = value.split(':')
             else:
                 minstr, maxstr = (value, value)
-            parameters['min_count'] = int(minstr)
-            parameters['max_count'] = int(maxstr)
+            parameters['MinCount'] = int(minstr)
+            parameters['MaxCount'] = int(maxstr)
         except:
             msg = ('count parameter should be of '
                    'form min[:max] (e.g. 1 or 1:10)')

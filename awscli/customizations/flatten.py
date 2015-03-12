@@ -51,7 +51,7 @@ class FlattenedArgument(CustomArgument):
         TODO: This does not hydrate nested structures (``XmlName1.XmlName2``)!
               To do this for now you must provide your own ``hydrate`` method.
         """
-        container = self._container.py_name
+        container = self._container.argument_model.name
         cli_type = self._container.cli_type_name
         key = self._property
 

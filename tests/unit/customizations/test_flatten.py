@@ -63,8 +63,10 @@ FLATTEN_CONFIG = {
 
 class TestFlattenedArgument(unittest.TestCase):
     def test_basic_argument(self):
+        container = mock.Mock()
+        container.argument_model.name = 'bag'
         kwargs = {
-            'container': mock.Mock(),
+            'container': container,
             'prop': 'ArgumentFoo'
         }
         kwargs['container'].py_name = 'bag'
@@ -81,8 +83,10 @@ class TestFlattenedArgument(unittest.TestCase):
         self.assertEqual('value', params['bag']['ArgumentFoo'])
 
     def test_hydrate_value_argument(self):
+        container = mock.Mock()
+        container.argument_model.name = 'bag'
         kwargs = {
-            'container': mock.Mock(),
+            'container': container,
             'prop': 'ArgumentBar'
         }
         kwargs['container'].py_name = 'bag'
@@ -100,8 +104,10 @@ class TestFlattenedArgument(unittest.TestCase):
         self.assertEqual('VALUE', params['bag'][0]['ArgumentBar'])
 
     def test_hydrate_function_argument(self):
+        container = mock.Mock()
+        container.argument_model.name = 'bag'
         kwargs = {
-            'container': mock.Mock(),
+            'container': container,
             'prop': 'ArgumentBaz:SomeValue'
         }
         kwargs['container'].py_name = 'bag'

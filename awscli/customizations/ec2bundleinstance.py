@@ -143,7 +143,7 @@ def _generate_signature(params):
 def _check_params(params, **kwargs):
     # Called just before call but prior to building the params.
     # Adds information not supplied by the user.
-    storage = params['storage']['S3']
+    storage = params['Storage']['S3']
     if 'UploadPolicy' not in storage:
         _generate_policy(storage)
     if 'UploadPolicySignature' not in storage:
@@ -171,9 +171,9 @@ class BundleArgument(CustomArgument):
 
     def _build_storage(self, params, value):
         # Build up the Storage data structure
-        if 'storage' not in params:
-            params['storage'] = {'S3': {}}
-        params['storage']['S3'][self._storage_param] = value
+        if 'Storage' not in params:
+            params['Storage'] = {'S3': {}}
+        params['Storage']['S3'][self._storage_param] = value
 
     def add_to_params(self, parameters, value):
         if value:

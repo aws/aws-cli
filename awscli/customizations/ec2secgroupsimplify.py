@@ -115,18 +115,18 @@ def register_secgroup(event_handler):
 
 
 def _build_ip_permissions(params, key, value):
-    if 'ip_permissions' not in params:
-        params['ip_permissions'] = [{}]
+    if 'IpPermissions' not in params:
+        params['IpPermissions'] = [{}]
     if key == 'CidrIp':
         if 'IpRanges' not in params['ip_permissions'][0]:
-            params['ip_permissions'][0]['IpRanges'] = []
-        params['ip_permissions'][0]['IpRanges'].append(value)
+            params['IpPermissions'][0]['IpRanges'] = []
+        params['IpPermissions'][0]['IpRanges'].append(value)
     elif key in ('GroupId', 'GroupName', 'UserId'):
-        if 'UserIdGroupPairs' not in params['ip_permissions'][0]:
-            params['ip_permissions'][0]['UserIdGroupPairs'] = [{}]
-        params['ip_permissions'][0]['UserIdGroupPairs'][0][key] = value
+        if 'UserIdGroupPairs' not in params['IpPermissions'][0]:
+            params['IpPermissions'][0]['UserIdGroupPairs'] = [{}]
+        params['IpPermissions'][0]['UserIdGroupPairs'][0][key] = value
     else:
-        params['ip_permissions'][0][key] = value
+        params['IpPermissions'][0][key] = value
 
 
 class ProtocolArgument(CustomArgument):

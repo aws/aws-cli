@@ -127,23 +127,23 @@ MINI_SERVICE = {
     "ListObjectsRequest":{
       "type":"structure",
       "required":["Bucket"],
-      "members":{
-        "Bucket":{
+      "members":  OrderedDict([
+        ("Bucket", {
           "shape":"BucketName",
           "location":"uri",
           "locationName":"Bucket"
-        },
-        "Marker":{
+        }),
+        ("Marker", {
           "shape":"Marker",
           "location":"querystring",
           "locationName":"marker",
-        },
-        "MaxKeys":{
+        }),
+        ("MaxKeys", {
           "shape":"MaxKeys",
           "location":"querystring",
           "locationName":"max-keys",
-        }
-      }
+        }),
+      ]),
     },
     "BucketName":{"type":"string"},
     "MaxKeys":{"type":"integer"},
@@ -328,10 +328,10 @@ class TestCliDriverHooks(unittest.TestCase):
             'building-argument-table.s3.list-objects',
             'before-building-argument-table-parser.s3.list-objects',
             'operation-args-parsed.s3.list-objects',
-            'load-cli-arg.s3.list-objects.marker',
-            'load-cli-arg.s3.list-objects.max-keys',
             'load-cli-arg.s3.list-objects.bucket',
             'process-cli-arg.s3.list-objects',
+            'load-cli-arg.s3.list-objects.marker',
+            'load-cli-arg.s3.list-objects.max-keys',
             'calling-command.s3.list-objects'
         ])
 

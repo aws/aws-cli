@@ -15,6 +15,8 @@ import logging
 import json
 import os
 
+from botocore import xform_name
+
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import exceptions
 from botocore.exceptions import WaiterError
@@ -238,13 +240,13 @@ def call_and_display_response(session, operation_name, parameters,
                               parsed_globals):
         cli_operation_caller = CLIOperationCaller(session)
         cli_operation_caller.invoke(
-            session.get_service('emr').get_operation(operation_name),
+            'emr', xform_name(operation_name),
             parameters, parsed_globals)
 
 
-def display_response(session, operation, result, parsed_globals):
+def display_response(session, operation_name, result, parsed_globals):
         cli_operation_caller = CLIOperationCaller(session)
         # Calling a private method. Should be changed after the functionality
         # is moved outside CliOperationCaller.
-        cli_operation_caller._display_response(operation, result,
+        cli_operation_caller._display_response(operation_name, result, False,
                                                parsed_globals)

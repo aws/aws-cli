@@ -32,7 +32,6 @@ class DescribeCluster(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         emr = self._session.get_service('emr')
-        describe_cluster = emr.get_operation('DescribeCluster')
         parameters = {'ClusterId': parsed_args.cluster_id}
 
         describe_cluster_result = self._call(
@@ -55,7 +54,7 @@ class DescribeCluster(BasicCommand):
             list_bootstrap_actions_result,
             master_public_dns)
 
-        emrutils.display_response(self._session, describe_cluster,
+        emrutils.display_response(self._session, 'describe_cluster',
                                   constructed_result, parsed_globals)
 
         return 0

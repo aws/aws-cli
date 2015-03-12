@@ -150,16 +150,15 @@ class CreateDefaultRoles(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         ec2_result = None
         emr_result = None
-        self.iam = self._session.get_service('iam')
         self.iam_endpoint_url = parsed_args.iam_endpoint
         region = self._get_region(parsed_globals)
 
-        self._check_for_iam_endpoint(region, self.iam_endpoint_url)
         self.emr_endpoint_url = \
-            self._session.get_service('emr').get_endpoint(
+            self._session.create_client(
+                'emr',
                 region_name=parsed_globals.region,
                 endpoint_url=parsed_globals.endpoint_url,
-                verify=parsed_globals.verify_ssl).host
+                verify=parsed_globals.verify_ssl).meta.endpoint_url
 
         LOG.debug('elasticmapreduce endpoint used for resolving'
                   ' service principal: ' + self.emr_endpoint_url)
@@ -203,18 +202,11 @@ class CreateDefaultRoles(BasicCommand):
 
         emrutils.display_response(
             self._session,
-            self._session.get_service('iam').get_operation('CreateRole'),
+            'create_role',
             self._construct_result(ec2_result, emr_result),
             parsed_globals)
 
         return 0
-
-    def _check_for_iam_endpoint(self, region, iam_endpoint):
-        try:
-            self._session.get_service('emr').get_endpoint(region)
-        except botocore.exceptions.UnknownEndpointError:
-            if iam_endpoint is None:
-                raise exceptions.UnknownIamEndpointError(region=region)
 
     def _construct_result(self, ec2_response, emr_response):
         result = []

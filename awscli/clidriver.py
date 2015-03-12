@@ -20,7 +20,6 @@ from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
 from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import NoRegionError
-from botocore import parsers
 
 from awscli import EnvironmentVariables, __version__
 from awscli.formatter import get_formatter
@@ -42,7 +41,6 @@ from awscli.argprocess import unpack_argument
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
-
 
 
 def main():
@@ -136,7 +134,8 @@ class CLIDriver(object):
     def _create_cli_argument(self, option_name, option_params):
         return CustomArgument(
             option_name, help_text=option_params.get('help', ''),
-            dest=option_params.get('dest'),default=option_params.get('default'),
+            dest=option_params.get('dest'),
+            default=option_params.get('default'),
             action=option_params.get('action'),
             required=option_params.get('required'),
             choices=option_params.get('choices'))
@@ -362,7 +361,8 @@ class ServiceCommand(CLICommand):
 
     def _get_service_model(self):
         if self._service_model is None:
-            self._service_model = self.session.get_service_model(self._service_name)
+            self._service_model = self.session.get_service_model(
+                self._service_name)
         return self._service_model
 
     def __call__(self, args, parsed_globals):
@@ -383,8 +383,9 @@ class ServiceCommand(CLICommand):
         for operation_name in service_model.operation_names:
             cli_name = xform_name(operation_name, '-')
             operation_model = service_model.operation_model(operation_name)
-            legacy_params['operation_object'] = legacy_params['service_object']\
-                    .get_operation(operation_name)
+            legacy_params['operation_object'] = \
+                legacy_params['service_object'].get_operation(
+                    operation_name)
             command_table[cli_name] = ServiceOperation(
                 name=cli_name,
                 parent_name=self._name,
@@ -407,7 +408,6 @@ class ServiceCommand(CLICommand):
 
     def create_help_command(self):
         command_table = self._get_command_table()
-        service_object = self._get_service_object()
         return ServiceHelpCommand(session=self.session,
                                   obj=self._get_service_model(),
                                   command_table=command_table,
@@ -570,7 +570,7 @@ class ServiceOperation(object):
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.
         parsed_args = vars(args)
-        for arg_name, arg_object in arg_table.items():
+        for _, arg_object in arg_table.items():
             py_name = arg_object.py_name
             if py_name in parsed_args:
                 value = parsed_args[py_name]

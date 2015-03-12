@@ -25,7 +25,6 @@ import awscli
 from awscli.clidriver import CLIDriver
 from awscli.clidriver import create_clidriver
 from awscli.clidriver import CustomArgument
-from awscli.clidriver import CLIOperationCaller
 from awscli.clidriver import CLICommand
 from awscli.clidriver import ServiceCommand
 from awscli.clidriver import ServiceOperation

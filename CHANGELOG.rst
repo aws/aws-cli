@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.7.14
+======
+
+* feature:``aws logs``: Update ``aws logs`` command to the latest model.
+* feature:``aws ec2``: Add paginators for the ``describe-snapshots``
+  sub-command.
+* feature:``aws cloudtrail``: Add support for the new ``lookup-events``
+  sub-command.
+* bugfix:``aws configure set``: Fix issue when setting nested configuration
+  values
+* feature:``aws s3``: Add support for ``--metadata-directive`` that allows
+  metadata to be copied or replaced for single part copies.
+  (`issue 1188 <https://github.com/aws/aws-cli/pull/1188>`__)
+
+
 1.7.13
 ======
 

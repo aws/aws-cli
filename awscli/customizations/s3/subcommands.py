@@ -216,6 +216,28 @@ EXPIRES = {
 }
 
 
+METADATA_DIRECTIVE = {
+    'name': 'metadata-directive', 'nargs': 1, 'choices': ['COPY', 'REPLACE'],
+    'help_text': (
+        'Specifies whether the metadata is copied from the source object '
+        'or replaced with metadata provided when copying S3 objects. '
+        'Note that if the object is copied over in parts, the source '
+        'object\'s metadata will not be copied over, no matter the value for '
+        '``--metadata-directive``, and instead the desired metadata values '
+        'must be specified as parameters on the command line. '
+        'Valid values are ``COPY`` and ``REPLACE``. If this parameter is not '
+        'specified, ``COPY`` will be used by default. If ``REPLACE`` is used, '
+        'the copied object will only have the metadata values that were'
+        ' specified by the CLI command. Note that if you are '
+        'using any of the following parameters: ``--content-type``, '
+        '``content-language``, ``--content-encoding``, '
+        '``--content-disposition``, ``-cache-control``, or ``--expires``, you '
+        'will need to specify ``--metadata-directive REPLACE`` for '
+        'non-multipart copies if you want the copied objects to have the '
+        'specified metadata values.')
+}
+
+
 INDEX_DOCUMENT = {'name': 'index-document',
                   'help_text': (
                       'A suffix that is appended to a request that is for '
@@ -264,17 +286,16 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  PAGE_SIZE]
 
 
-def get_endpoint(service, region, endpoint_url, verify):
-    return service.get_endpoint(region_name=region, endpoint_url=endpoint_url,
-                                verify=verify)
+def get_client(session, region, endpoint_url, verify):
+    return session.create_client('s3', region_name=region,
+                                 endpoint_url=endpoint_url, verify=verify)
 
 
 class S3Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
-        self.service = self._session.get_service('s3')
-        self.endpoint = get_endpoint(self.service, parsed_globals.region,
-                                     parsed_globals.endpoint_url,
-                                     parsed_globals.verify_ssl)
+        self.client = get_client(self._session, parsed_globals.region,
+                                 parsed_globals.endpoint_url,
+                                 parsed_globals.verify_ssl)
 
 
 class ListCommand(S3Command):
@@ -324,11 +345,11 @@ class ListCommand(S3Command):
             return 0
 
     def _list_all_objects(self, bucket, key, page_size=None):
-        operation = self.service.get_operation('ListObjects')
-        iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                      prefix=key, delimiter='/',
+        paginator = self.client.get_paginator('list_objects')
+        iterator = paginator.paginate(Bucket=bucket,
+                                      Prefix=key, Delimiter='/',
                                       page_size=page_size)
-        for _, response_data in iterator:
+        for response_data in iterator:
             self._display_page(response_data)
 
     def _display_page(self, response_data, use_basename=True):
@@ -359,8 +380,7 @@ class ListCommand(S3Command):
         self._at_first_page = False
 
     def _list_all_buckets(self):
-        operation = self.service.get_operation('ListBuckets')
-        response_data = operation.call(self.endpoint)[1]
+        response_data = self.client.list_buckets()
         buckets = response_data['Buckets']
         for bucket in buckets:
             last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
@@ -368,10 +388,10 @@ class ListCommand(S3Command):
             uni_print(print_str)
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None):
-        operation = self.service.get_operation('ListObjects')
-        iterator = operation.paginate(self.endpoint, bucket=bucket,
-                                      prefix=key, page_size=page_size)
-        for _, response_data in iterator:
+        paginator = self.client.get_paginator('list_objects')
+        iterator = paginator.paginate(Bucket=bucket,
+                                      Prefix=key, page_size=page_size)
+        for response_data in iterator:
             self._display_page(response_data, use_basename=False)
 
     def _check_no_objects(self):
@@ -428,11 +448,10 @@ class WebsiteCommand(S3Command):
 
     def _run_main(self, parsed_args, parsed_globals):
         super(WebsiteCommand, self)._run_main(parsed_args, parsed_globals)
-        operation = self.service.get_operation('PutBucketWebsite')
         bucket = self._get_bucket_name(parsed_args.paths[0])
         website_configuration = self._build_website_configuration(parsed_args)
-        operation.call(self.endpoint, bucket=bucket,
-                       website_configuration=website_configuration)
+        self.client.put_bucket_website(
+            Bucket=bucket, WebsiteConfiguration=website_configuration)
         return 0
 
     def _build_website_configuration(self, parsed_args):
@@ -477,7 +496,7 @@ class S3TransferCommand(S3Command):
         cmd = CommandArchitecture(self._session, self.NAME,
                                   cmd_params.parameters,
                                   runtime_config)
-        cmd.set_endpoints()
+        cmd.set_clients()
         cmd.create_instructions()
         return cmd.run()
 
@@ -530,7 +549,7 @@ class CpCommand(S3TransferCommand):
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
-                [EXPECTED_SIZE, RECURSIVE]
+                [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/cp.rst')
 
 
@@ -541,7 +560,8 @@ class MvCommand(S3TransferCommand):
     USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
             "or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
-                  'synopsis': USAGE}] + TRANSFER_ARGS + [RECURSIVE]
+                  'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
+                                                         RECURSIVE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/mv.rst')
 
 
@@ -602,19 +622,26 @@ class CommandArchitecture(object):
         self._service = self.session.get_service('s3')
         self._endpoint = None
         self._source_endpoint = None
+        self._client = None
+        self._source_client = None
 
-    def set_endpoints(self):
-        self._endpoint = get_endpoint(
-            self._service,
+    def set_clients(self):
+        self._client = get_client(
+            self.session,
             region=self.parameters['region'],
             endpoint_url=self.parameters['endpoint_url'],
             verify=self.parameters['verify_ssl']
         )
-        self._source_endpoint = self._endpoint
+        self._source_client = get_client(
+            self.session,
+            region=self.parameters['region'],
+            endpoint_url=self.parameters['endpoint_url'],
+            verify=self.parameters['verify_ssl']
+        )
         if self.parameters['source_region']:
             if self.parameters['paths_type'] == 's3s3':
-                self._source_endpoint = get_endpoint(
-                    self._service,
+                self._source_client = get_client(
+                    self.session,
                     region=self.parameters['source_region'][0],
                     endpoint_url=None,
                     verify=self.parameters['verify_ssl']
@@ -711,21 +738,19 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type][self.cmd]
-        file_generator = FileGenerator(self._service,
-                                       self._source_endpoint,
+        file_generator = FileGenerator(self._source_client,
                                        operation_name,
                                        self.parameters['follow_symlinks'],
                                        self.parameters['page_size'],
                                        result_queue=result_queue)
-        rev_generator = FileGenerator(self._service, self._endpoint, '',
+        rev_generator = FileGenerator(self._client, '',
                                       self.parameters['follow_symlinks'],
                                       self.parameters['page_size'],
                                       result_queue=result_queue)
         taskinfo = [TaskInfo(src=files['src']['path'],
                              src_type='s3',
                              operation_name=operation_name,
-                             service=self._service,
-                             endpoint=self._endpoint)]
+                             client=self._client)]
         stream_dest_path, stream_compare_key = find_dest_path_comp_key(files)
         stream_file_info = [FileInfo(src=files['src']['path'],
                                      dest=stream_dest_path,
@@ -733,12 +758,10 @@ class CommandArchitecture(object):
                                      src_type=files['src']['type'],
                                      dest_type=files['dest']['type'],
                                      operation_name=operation_name,
-                                     service=self._service,
-                                     endpoint=self._endpoint,
+                                     client=self._client,
                                      is_stream=True)]
         file_info_builder = FileInfoBuilder(
-            self._service, self._endpoint,
-            self._source_endpoint, self.parameters)
+            self._client, self._source_client, self.parameters)
         s3handler = S3Handler(self.session, self.parameters,
                               runtime_config=self._runtime_config,
                               result_queue=result_queue)

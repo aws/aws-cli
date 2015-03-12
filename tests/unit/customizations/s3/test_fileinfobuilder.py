@@ -20,8 +20,8 @@ from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 
 class TestFileInfoBuilder(unittest.TestCase):
     def test_info_setter(self):
-        info_setter = FileInfoBuilder(service='service', endpoint='endpoint',
-                                      source_endpoint='source_endpoint',
+        info_setter = FileInfoBuilder(client='client',
+                                      source_client='source_client',
                                       parameters='parameters',
                                       is_stream='is_stream')
         files = [FileStat(src='src', dest='dest', compare_key='compare_key',

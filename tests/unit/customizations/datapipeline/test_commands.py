@@ -191,32 +191,26 @@ class TestCommandsRunProperly(BaseAWSCommandParamsTest):
         super(TestCommandsRunProperly, self).setUp()
         self.query_objects = mock.Mock()
         self.describe_objects = mock.Mock()
-
-    def get_service(self, name):
-        if name == 'QueryObjects':
-            return self.query_objects
-        elif name== 'DescribeObjects':
-            return self.describe_objects
+        self.client = mock.Mock()
+        self.client.get_paginator.return_value = self.query_objects
+        self.client.describe_objects = self.describe_objects
 
     def test_list_runs(self):
         self.driver.session = mock.Mock()
         self.driver.session.emit_first_non_none_response.return_value = None
-        self.driver.session.get_service.return_value.get_endpoint.return_value = \
-                mock.sentinel.endpoint
-        self.driver.session.get_service.return_value.get_operation = self.get_service
-        self.query_objects.paginate.return_value.build_full_result.return_value = {
-            'ids': ['object-ids']}
-        self.describe_objects.call.return_value = (
-            None, {'pipelineObjects': [
-                {'fields': [], 'id': 'id', 'name': 'name'}]})
+        self.driver.session.create_client.return_value = self.client
+        self.query_objects.paginate.return_value.build_full_result.\
+            return_value = {
+                'ids': ['object-ids']}
+        self.describe_objects.return_value = {'pipelineObjects': [
+            {'fields': [], 'id': 'id', 'name': 'name'}]}
 
         command = ListRunsCommand(self.driver.session, formatter=mock.Mock())
         command(['--pipeline-id', 'my-pipeline-id'],
                 parsed_globals=FakeParsedArgs(region='us-east-1'))
         self.assertTrue(self.query_objects.paginate.called)
-        self.describe_objects.call.assert_called_with(
-            mock.sentinel.endpoint, pipeline_id='my-pipeline-id',
-            object_ids=['object-ids'])
+        self.describe_objects.assert_called_with(
+            pipelineId='my-pipeline-id', objectIds=['object-ids'])
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):

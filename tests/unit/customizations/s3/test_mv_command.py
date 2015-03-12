@@ -51,10 +51,38 @@ class TestMvCommand(BaseAWSCommandParamsTest):
         # Make sure that the specified web address is used as opposed to the
         # contents of the web address.
         self.assertEqual(
-            self.operations_called[0][1]['website_redirect_location'],
+            self.operations_called[0][1]['WebsiteRedirectLocation'],
             'http://someserver'
         )
 
+    def test_metadata_directive_copy(self):
+        self.parsed_responses = [
+            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {'ETag': '"foo-1"'},
+            {'ETag': '"foo-2"'}
+        ]
+        cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
+                   ' --metadata-directive REPLACE' % self.prefix)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 3,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[2][0].name, 'DeleteObject')
+        self.assertEqual(self.operations_called[1][1]['MetadataDirective'],
+                         'REPLACE')
+
+    def test_no_metadata_directive_for_non_copy(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket --metadata-directive REPLACE' % \
+            (self.prefix, full_path)
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertNotIn('MetadataDirective', self.operations_called[0][1])
 
 if __name__ == "__main__":
     unittest.main()

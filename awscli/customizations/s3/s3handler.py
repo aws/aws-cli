@@ -17,7 +17,7 @@ import os
 import sys
 
 from awscli.customizations.s3.utils import find_chunksize, \
-    operate, find_bucket_key, relative_path, PrintTask, create_warning
+    find_bucket_key, relative_path, PrintTask, create_warning
 from awscli.customizations.s3.executor import Executor
 from awscli.customizations.s3 import tasks
 from awscli.customizations.s3.transferconfig import RuntimeConfig
@@ -63,7 +63,7 @@ class S3Handler(object):
                        'content_language': None, 'expires': None,
                        'grants': None, 'only_show_errors': False,
                        'is_stream': False, 'paths_type': None,
-                       'expected_size': None}
+                       'expected_size': None, 'metadata_directive': None}
         self.params['region'] = params['region']
         for key in self.params.keys():
             if key in params:
@@ -116,7 +116,6 @@ class S3Handler(object):
                 priority=self.executor.IMMEDIATE_PRIORITY)
             self._shutdown()
             self.executor.wait_until_shutdown()
-
         return CommandResult(self.executor.num_tasks_failed,
                              self.executor.num_tasks_warned)
 
@@ -163,14 +162,12 @@ class S3Handler(object):
     def _cancel_upload(self, upload_id, filename):
         bucket, key = find_bucket_key(filename.dest)
         params = {
-            'bucket': bucket,
-            'key': key,
-            'upload_id': upload_id,
-            'endpoint': filename.endpoint,
+            'Bucket': bucket,
+            'Key': key,
+            'UploadId': upload_id,
         }
         LOGGER.debug("Aborting multipart upload for: %s", key)
-        response_data, http = operate(
-            filename.service, 'AbortMultipartUpload', params)
+        filename.client.abort_multipart_upload(**params)
 
     def _enqueue_tasks(self, files):
         total_files = 0
@@ -271,8 +268,8 @@ class S3Handler(object):
         for i in range(num_downloads):
             task = tasks.DownloadPartTask(
                 part_number=i, chunk_size=chunksize,
-                result_queue=self.result_queue, service=filename.service,
-                filename=filename, context=context, io_queue=self.write_queue)
+                result_queue=self.result_queue, filename=filename,
+                context=context, io_queue=self.write_queue)
             self.executor.submit(task)
 
     def _enqueue_multipart_upload_tasks(self, filename,

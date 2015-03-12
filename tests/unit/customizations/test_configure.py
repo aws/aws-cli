@@ -10,22 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import os
-import tempfile
 import shutil
-from awscli.testutils import unittest
+import sys
+import tempfile
 
-import mock
 from awscli.compat import six
-from six import StringIO
 from botocore.exceptions import ProfileNotFound
+import mock
+from six import StringIO
 
 from awscli.customizations import configure
-
+from awscli.testutils import unittest
 
 
 class PrecannedPrompter(object):
+
     def __init__(self, value):
         self._value = value
 
@@ -34,11 +34,13 @@ class PrecannedPrompter(object):
 
 
 class EchoPrompter(object):
+
     def get_value(self, current_value, logical_name, prompt_text=''):
         return current_value
 
 
 class KeyValuePrompter(object):
+
     def __init__(self, mapping):
         self.mapping = mapping
 
@@ -47,6 +49,7 @@ class KeyValuePrompter(object):
 
 
 class FakeSession(object):
+
     def __init__(self, all_variables, profile_does_not_exist=False,
                  config_file_vars=None, environment_vars=None,
                  credentials=None):
@@ -93,6 +96,7 @@ class FakeSession(object):
 
 
 class TestConfigureCommand(unittest.TestCase):
+
     def setUp(self):
         self.writer = mock.Mock()
         self.global_args = mock.Mock()
@@ -202,6 +206,7 @@ class TestConfigureCommand(unittest.TestCase):
 
 
 class TestInteractivePrompter(unittest.TestCase):
+
     def setUp(self):
         self.patch = mock.patch('awscli.customizations.configure.raw_input')
         self.mock_raw_input = self.patch.start()
@@ -268,6 +273,7 @@ class TestInteractivePrompter(unittest.TestCase):
 
 
 class TestConfigFileWriter(unittest.TestCase):
+
     def setUp(self):
         self.dirname = tempfile.mkdtemp()
         self.config_filename = os.path.join(self.dirname, 'config')
@@ -492,7 +498,8 @@ class TestConfigFileWriter(unittest.TestCase):
             'bar = 1\n'
         )
         self.assert_update_config(
-            original, {'foo': 'newvalue', '__section__': 'profile two  spaces'},
+            original, {
+                'foo': 'newvalue', '__section__': 'profile two  spaces'},
             '[profile "two  spaces"]\n'
             'foo = newvalue\n'
             'bar = 1\n'
@@ -507,7 +514,7 @@ class TestConfigFileWriter(unittest.TestCase):
             's3 =\n'
             '    signature_version = s3v4\n')
 
-    def test_add_to_end_of_nested(self):
+    def test_add_to_nested_with_nested_in_the_middle(self):
         original = (
             '[default]\n'
             's3 =\n'
@@ -522,6 +529,20 @@ class TestConfigFileWriter(unittest.TestCase):
             '    other = foo\n'
             '    signature_version = newval\n'
             'ec2 = bar\n')
+
+    def test_add_to_nested_with_nested_in_the_end(self):
+        original = (
+            '[default]\n'
+            's3 =\n'
+            '    other = foo\n'
+        )
+        self.assert_update_config(
+            original, {'__section__': 'default',
+                       's3': {'signature_version': 'newval'}},
+            '[default]\n'
+            's3 =\n'
+            '    other = foo\n'
+            '    signature_version = newval\n')
 
     def test_update_nested_attribute(self):
         original = (
@@ -576,7 +597,8 @@ class TestConfigureListCommand(unittest.TestCase):
 
     def test_configure_list_command_nothing_set(self):
         # Test the case where the user only wants to change a single_value.
-        session = FakeSession(all_variables={'config_file': '/config/location'})
+        session = FakeSession(
+            all_variables={'config_file': '/config/location'})
         stream = StringIO()
         self.configure_list = configure.ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
@@ -738,6 +760,7 @@ class TestConfigureGetCommand(unittest.TestCase):
 
 
 class TestConfigureSetCommand(unittest.TestCase):
+
     def setUp(self):
         self.session = FakeSession({'config_file': 'myconfigfile'})
         self.fake_credentials_filename = os.path.expanduser(
@@ -746,36 +769,41 @@ class TestConfigureSetCommand(unittest.TestCase):
         self.config_writer = mock.Mock()
 
     def test_configure_set_command(self):
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['region', 'us-west-2'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'default', 'region': 'us-west-2'}, 'myconfigfile')
 
     def test_configure_set_command_dotted(self):
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['preview.emr', 'true'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'preview', 'emr': 'true'}, 'myconfigfile')
 
     def test_configure_set_with_profile(self):
         self.session.profile = 'testing'
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['region', 'us-west-2'], parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'profile testing', 'region': 'us-west-2'}, 'myconfigfile')
 
     def test_configure_set_triple_dotted(self):
         # aws configure set default.s3.signature_version s3v4
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['default.s3.signature_version', 's3v4'],
                     parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
             {'__section__': 'default', 's3': {'signature_version': 's3v4'}},
-             'myconfigfile')
+            'myconfigfile')
 
     def test_configure_set_with_profile_nested(self):
         # aws configure set default.s3.signature_version s3v4
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['profile.foo.s3.signature_version', 's3v4'],
                     parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
@@ -783,7 +811,8 @@ class TestConfigureSetCommand(unittest.TestCase):
              's3': {'signature_version': 's3v4'}}, 'myconfigfile')
 
     def test_access_key_written_to_shared_credentials_file(self):
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['aws_access_key_id', 'foo'],
                     parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
@@ -791,7 +820,8 @@ class TestConfigureSetCommand(unittest.TestCase):
              'aws_access_key_id': 'foo'}, self.fake_credentials_filename)
 
     def test_secret_key_written_to_shared_credentials_file(self):
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['aws_secret_access_key', 'foo'],
                     parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
@@ -799,7 +829,8 @@ class TestConfigureSetCommand(unittest.TestCase):
              'aws_secret_access_key': 'foo'}, self.fake_credentials_filename)
 
     def test_session_token_written_to_shared_credentials_file(self):
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['aws_session_token', 'foo'],
                     parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
@@ -807,7 +838,8 @@ class TestConfigureSetCommand(unittest.TestCase):
              'aws_session_token': 'foo'}, self.fake_credentials_filename)
 
     def test_access_key_written_to_shared_credentials_file_profile(self):
-        set_command = configure.ConfigureSetCommand(self.session, self.config_writer)
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
         set_command(args=['profile.foo.aws_access_key_id', 'bar'],
                     parsed_globals=None)
         self.config_writer.update_config.assert_called_with(
@@ -816,6 +848,7 @@ class TestConfigureSetCommand(unittest.TestCase):
 
 
 class TestConfigValueMasking(unittest.TestCase):
+
     def test_config_value_is_masked(self):
         config_value = configure.ConfigValue(
             'fake_access_key', 'config_file', 'aws_access_key_id')

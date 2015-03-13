@@ -12,8 +12,9 @@
 # language governing permissions and limitations under the License.
 import json
 
-from mock import ANY, Mock, call
+from mock import ANY, Mock, call, patch
 from botocore.client import ClientError
+from botocore.session import Session
 
 from tests.unit.test_clidriver import FakeSession
 from awscli.compat import six
@@ -46,13 +47,31 @@ class TestCreateSubscription(BaseAWSCommandParamsTest):
         # sure it says log delivery is happening.
         self.assertIn('Logs will be delivered to foo', stdout)
 
-    def test_policy_from_paramfile(self):
+    @patch.object(Session, 'create_client')
+    def test_policy_from_paramfile(self, create_client_mock):
+        client = Mock()
+        # S3 mock calls
+        client.get_user.return_value = {'User': {'Arn': ':::::'}}
+        client.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': 404, 'Message': ''}}, 'HeadBucket')
+        # CloudTrail mock call
+        client.describe_trails.return_value = {}
+        create_client_mock.return_value = client
+
+        policy = '{"Statement": []}'
+
         with temporary_file('w') as f:
-            f.write('{"Statement": []}')
+            f.write(policy)
+            f.flush()
             command = (
-                'cloudtrail create-subscription --s3-use-bucket foo '
+                'cloudtrail create-subscription --s3-new-bucket foo '
                 '--name bar --s3-custom-policy file://{0}'.format(f.name))
             self.run_cmd(command, expected_rc=0)
+
+        # Ensure that the *contents* of the file are sent as the policy
+        # parameter to S3.
+        client.put_bucket_policy.assert_called_with(
+            Bucket='foo', Policy=policy)
 
 
 class TestCloudTrailCommand(unittest.TestCase):

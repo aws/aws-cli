@@ -21,12 +21,6 @@ LOG = logging.getLogger(__name__)
 
 class Command(BasicCommand):
 
-    def __init__(self, session):
-        super(Command, self).__init__(session)
-
-        session.register('before-building-arg-table-parser.%s' % self.NAME,
-                         self.override_args_required_option)
-
     def supports_arg(self, name):
         return any((x['name'] == name for x in self.ARG_TABLE))
 
@@ -36,8 +30,6 @@ class Command(BasicCommand):
         return self._run_main_command(parsed_args, parsed_globals)
 
     def _apply_configs(self, parsed_args, parsed_configs):
-        parsed_configs = configutils.get_configs(self._session)
-
         applicable_configurations = \
             self._get_applicable_configurations(parsed_args, parsed_configs)
 
@@ -91,17 +83,18 @@ class Command(BasicCommand):
         # explicitly specified on the CLI
         raise NotImplementedError("_run_main_command")
 
-    def override_args_required_option(self, arg_table, args, **kwargs):
-        # This function overrides the 'required' property of an argument
-        # if a value corresponding to that argument is present in the config
-        # file
-        # We don't want to override when user is viewing the help so that we
-        # can show the required options correctly in the help
-        need_to_override = False if len(args) == 1 and args[0] == 'help' \
-            else True
 
-        if need_to_override:
-            parsed_configs = configutils.get_configs(self._session)
-            for arg_name in arg_table.keys():
-                if arg_name.replace('-', '_') in parsed_configs:
-                    arg_table[arg_name].required = False
+def override_args_required_option(argument_table, args, session, **kwargs):
+    # This function overrides the 'required' property of an argument
+    # if a value corresponding to that argument is present in the config
+    # file
+    # We don't want to override when user is viewing the help so that we
+    # can show the required options correctly in the help
+    need_to_override = False if len(args) == 1 and args[0] == 'help' \
+        else True
+
+    if need_to_override:
+        parsed_configs = configutils.get_configs(session)
+        for arg_name in argument_table.keys():
+            if arg_name.replace('-', '_') in parsed_configs:
+                argument_table[arg_name].required = False

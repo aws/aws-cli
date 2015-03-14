@@ -80,7 +80,9 @@ class FullyBufferedFormatter(Formatter):
 
 
 class JSONFormatter(FullyBufferedFormatter):
-
+    """
+    Formatter to output JSON with ident of 4 spaces
+    """
     def _format_response(self, operation, response, stream):
         # For operations that have no response body (e.g. s3 put-object)
         # the response will be an empty string.  We don't want to print
@@ -90,6 +92,22 @@ class JSONFormatter(FullyBufferedFormatter):
             json.dump(response, stream, indent=4, default=json_encoder,
                       ensure_ascii=False)
             stream.write('\n')
+
+
+class ColorizedJSONFormatter(JSONFormatter):
+    """
+    Formatter to output colorized JSON using Pygments
+    """
+    def _format_response(self, operation, response, stream):
+        js = json.dumps(response, indent=4)
+        if stream.isatty():
+            import pygments.lexers
+            lexer = pygments.lexers.get_lexer_by_name('json')  # Returns an instance
+            from pygments.formatters import TerminalFormatter
+            from pygments import highlight
+            stream.write(highlight(js, lexer, TerminalFormatter()))
+        else:
+            stream.write(js)
 
 
 class TableFormatter(FullyBufferedFormatter):
@@ -259,8 +277,19 @@ class TextFormatter(Formatter):
 
 def get_formatter(format_type, args):
     if format_type == 'json':
-        return JSONFormatter(args)
-    elif format_type == 'text':
+        #Try to see if we have pygments installed
+        try:
+            #Ensure pygments is installed
+            import pygments.lexers
+            #Also ensure the JSON lexer is installed.
+            #Old versions of pygments don't have this installed,
+            #it's available separately as pygments-json
+            lexer = pygments.lexers.get_lexer_by_name('json')
+            return ColorizedJSONFormatter(args)
+        except Exception,e:
+            #Default to JSONFormatter if pygments not avail
+            return JSONFormatter(args)
+    if format_type == 'text':
         return TextFormatter(args)
     elif format_type == 'table':
         return TableFormatter(args)

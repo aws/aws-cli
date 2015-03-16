@@ -248,5 +248,5 @@ def display_response(session, operation_name, result, parsed_globals):
         cli_operation_caller = CLIOperationCaller(session)
         # Calling a private method. Should be changed after the functionality
         # is moved outside CliOperationCaller.
-        cli_operation_caller._display_response(operation_name, result, False,
-                                               parsed_globals)
+        cli_operation_caller._display_response(
+            operation_name, result, parsed_globals)

@@ -15,6 +15,7 @@ import sys
 from botocore.compat import json
 
 from botocore.utils import set_value_from_jmespath
+from botocore.paginate import PageIterator
 
 from awscli.table import MultiTable, Styler, ColorizedStyler
 from awscli import text
@@ -23,6 +24,10 @@ from awscli.utils import json_encoder
 
 
 LOG = logging.getLogger(__name__)
+
+
+def is_response_paginated(response):
+    return isinstance(response, PageIterator)
 
 
 class Formatter(object):
@@ -52,8 +57,7 @@ class Formatter(object):
 
 
 class FullyBufferedFormatter(Formatter):
-    def __call__(self, command_name, response,
-                 is_response_paginated=False, stream=None):
+    def __call__(self, command_name, response, stream=None):
         if stream is None:
             # Retrieve stdout on invocation instead of at import time
             # so that if anything wraps stdout we'll pick up those changes
@@ -61,7 +65,7 @@ class FullyBufferedFormatter(Formatter):
             stream = self._get_default_stream()
         # I think the interfaces between non-paginated
         # and paginated responses can still be cleaned up.
-        if is_response_paginated:
+        if is_response_paginated(response):
             response_data = response.build_full_result()
         else:
             response_data = response
@@ -221,12 +225,11 @@ class TableFormatter(FullyBufferedFormatter):
 
 class TextFormatter(Formatter):
 
-    def __call__(self, command_name, response,
-                 is_response_paginated=False, stream=None):
+    def __call__(self, command_name, response, stream=None):
         if stream is None:
             stream = self._get_default_stream()
         try:
-            if is_response_paginated:
+            if is_response_paginated(response):
                 result_keys = response.result_keys
                 for page in response:
                     current = {}

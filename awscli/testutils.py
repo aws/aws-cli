@@ -30,6 +30,7 @@ import logging
 import tempfile
 import platform
 import contextlib
+import string
 from pprint import pformat
 from subprocess import Popen, PIPE
 
@@ -46,6 +47,7 @@ except ImportError as e:
 from awscli.compat import six
 from botocore.hooks import HierarchicalEmitter
 from botocore.session import Session
+from botocore.exceptions import ClientError
 import botocore.loaders
 from botocore.vendored import requests
 
@@ -138,6 +140,27 @@ def temporary_file(mode):
             yield f
     finally:
         shutil.rmtree(temporary_directory)
+
+
+def create_bucket(session, name=None, region=None):
+    """
+    Creates a bucket
+    :returns: the name of the bucket created
+    """
+    if not region:
+        region = 'us-west-2'
+    client = session.create_client('s3', region_name=region)
+    if name:
+        bucket_name = name
+    else:
+        rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits,
+                                      10))
+        bucket_name = 'awscli-s3test-' + str(rand1)
+    params = {'Bucket': bucket_name}
+    if region != 'us-east-1':
+        params['CreateBucketConfiguration'] = {'LocationConstraint': region}
+    client.create_bucket(**params)
+    return bucket_name
 
 
 class BaseCLIDriverTest(unittest.TestCase):
@@ -484,7 +507,7 @@ def aws(command, collect_memory=False, env_vars=None,
     memory = None
     if not collect_memory:
         kwargs = {}
-        if input_data:  
+        if input_data:
             kwargs = {'input': input_data}
         stdout, stderr = process.communicate(**kwargs)
     else:
@@ -539,3 +562,123 @@ def _get_memory_with_ps(pid):
         # USER       PID  %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
         # user     47102   0.0  0.1  2437000   4496 s002  S+    7:04PM   0:00.12 python2.6
         return int(stdout.splitlines()[1].split()[5]) * 1024
+
+
+class BaseS3CLICommand(unittest.TestCase):
+    """Base class for aws s3 command.
+
+    This contains convenience functions to make writing these tests easier
+    and more streamlined.
+
+    """
+    def setUp(self):
+        self.files = FileCreator()
+        self.session = botocore.session.get_session()
+        self.regions = {}
+        self.region = 'us-west-2'
+        self.client = self.session.create_client('s3', region_name=self.region)
+        self.extra_setup()
+
+    def extra_setup(self):
+        # Subclasses can use this to define extra setup steps.
+        pass
+
+    def tearDown(self):
+        self.files.remove_all()
+        self.extra_teardown()
+
+    def extra_teardown(self):
+        # Subclasses can use this to define extra teardown steps.
+        pass
+
+    def assert_key_contents_equal(self, bucket, key, expected_contents):
+        if isinstance(expected_contents, six.BytesIO):
+            expected_contents = expected_contents.getvalue().decode('utf-8')
+        actual_contents = self.get_key_contents(bucket, key)
+        # The contents can be huge so we try to give helpful error messages
+        # without necessarily printing the actual contents.
+        self.assertEqual(len(actual_contents), len(expected_contents))
+        if actual_contents != expected_contents:
+            self.fail("Contents for %s/%s do not match (but they "
+                      "have the same length)" % (bucket, key))
+
+    def create_bucket(self, name=None, region=None):
+        if not region:
+            region = self.region
+        bucket_name = create_bucket(self.session, name, region)
+        self.regions[bucket_name] = region
+        self.addCleanup(self.delete_bucket, bucket_name)
+        return bucket_name
+
+    def put_object(self, bucket_name, key_name, contents='', extra_args=None):
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        call_args = {
+            'Bucket': bucket_name,
+            'Key': key_name, 'Body': contents
+        }
+        if extra_args is not None:
+            call_args.update(extra_args)
+        response = client.put_object(**call_args)
+        self.addCleanup(self.delete_key, bucket_name, key_name)
+
+    def delete_bucket(self, bucket_name):
+        self.remove_all_objects(bucket_name)
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.delete_bucket(Bucket=bucket_name)
+        del self.regions[bucket_name]
+
+    def remove_all_objects(self, bucket_name):
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        paginator = client.get_paginator('list_objects')
+        pages = paginator.paginate(Bucket=bucket_name)
+        key_names = []
+        for page in pages:
+            key_names += [obj['Key'] for obj in page.get('Contents', [])]
+        for key_name in key_names:
+            self.delete_key(bucket_name, key_name)
+
+    def delete_key(self, bucket_name, key_name):
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.delete_object(Bucket=bucket_name, Key=key_name)
+
+    def get_key_contents(self, bucket_name, key_name):
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.get_object(Bucket=bucket_name, Key=key_name)
+        return response['Body'].read().decode('utf-8')
+
+    def key_exists(self, bucket_name, key_name):
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        try:
+            client.head_object(Bucket=bucket_name, Key=key_name)
+            return True
+        except ClientError:
+            return False
+
+    def list_buckets(self):
+        response = self.client.list_buckets()
+        return response['Buckets']
+
+    def content_type_for_key(self, bucket_name, key_name):
+        parsed = self.head_object(bucket_name, key_name)
+        return parsed['ContentType']
+
+    def head_object(self, bucket_name, key_name):
+        client = self.session.create_client(
+            's3', region_name=self.regions[bucket_name])
+        response = client.head_object(Bucket=bucket_name, Key=key_name)
+        return response
+
+    def assert_no_errors(self, p):
+        self.assertEqual(
+            p.rc, 0,
+            "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr))
+        self.assertNotIn("Error:", p.stderr)
+        self.assertNotIn("failed:", p.stderr)
+        self.assertNotIn("client error", p.stderr)
+        self.assertNotIn("server error", p.stderr)

@@ -17,7 +17,7 @@ import random
 import shutil
 
 import botocore.session
-from awscli.testutils import unittest, aws
+from awscli.testutils import unittest, aws, BaseS3CLICommand
 from awscli.clidriver import create_clidriver
 
 
@@ -339,7 +339,7 @@ class TestCommandLineage(unittest.TestCase):
         actual_lineage_names = []
         for cmd in command.lineage:
             actual_lineage_names.append(cmd.name)
-        
+
         # Assert the actual names of each command in a lineage is as expected.
         self.assertEqual(actual_lineage_names, ref_lineage_names)
 
@@ -377,6 +377,71 @@ class TestCommandLineage(unittest.TestCase):
     def test_wait_commands(self):
         self.assert_lineage_names(['ec2', 'wait'])
         self.assert_lineage_names(['ec2', 'wait', 'instance-running'])
+
+
+# We're using BaseS3CLICommand because we need a service to use
+# for testing the global arguments.  We're picking S3 here because
+# the BaseS3CLICommand has a lot of utility functions that help
+# with this.
+class TestGlobalArgs(BaseS3CLICommand):
+
+    def test_endpoint_url(self):
+        p = aws('s3api list-objects --bucket dnscompat '
+                '--endpoint-url http://localhost:51515 '
+                '--debug')
+        debug_logs = p.stderr
+        original_hostname = 'dnscompat.s3.amazonaws.com'
+        expected = 'localhost'
+        self.assertNotIn(original_hostname, debug_logs,
+                         '--endpoint-url is being ignored.')
+        self.assertIn(expected, debug_logs)
+
+    def test_no_pagination(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--no-paginate --output json' % bucket_name)
+        # A really simple way to check that --no-paginate was
+        # honored is to see if we have all the mirrored input
+        # arguments in the response json.  These normally aren't
+        # present when the response is paginated.
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertIn('IsTruncated', response_json)
+        self.assertIn('Name', response_json)
+
+    def test_no_paginate_and_original_args(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--max-keys 1 --no-paginate --output json' % bucket_name)
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertEqual(len(response_json['Contents']), 1)
+
+    def test_max_items(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo2.txt', contents=b'bar')
+        self.put_object(bucket_name, 'foo3.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--max-items 1 --output json' % bucket_name)
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertEqual(len(response_json['Contents']), 1)
+
+    def test_query(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'foo.txt', contents=b'bar')
+        p = aws('s3api list-objects --bucket %s '
+                '--query "Contents[].Key" --output json' % bucket_name)
+        self.assert_no_errors(p)
+        response_json = p.json
+        self.assertEqual(response_json, ['foo.txt'])
 
 
 if __name__ == '__main__':

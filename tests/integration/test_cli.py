@@ -443,6 +443,27 @@ class TestGlobalArgs(BaseS3CLICommand):
         response_json = p.json
         self.assertEqual(response_json, ['foo.txt'])
 
+    def test_no_sign_requests(self):
+        bucket_name = self.create_bucket()
+        self.put_object(bucket_name, 'public', contents=b'bar',
+                        extra_args={'ACL': 'public-read'})
+        self.put_object(bucket_name, 'private', contents=b'bar')
+        env = os.environ.copy()
+        # Set the env vars to bad values so if we do actually
+        # try to sign the request, we'll get an auth error.
+        env['AWS_ACCESS_KEY_ID'] = 'foo'
+        env['AWS_SECRET_ACCESS_KEY'] = 'bar'
+        p = aws('s3api head-object --bucket %s --key public --no-sign-request'
+                % bucket_name, env_vars=env)
+        self.assert_no_errors(p)
+        self.assertIn('ETag', p.json)
+
+        # Should fail because we're not signing the request but the object is
+        # private.
+        p = aws('s3api head-object --bucket %s --key private --no-sign-request'
+                % bucket_name, env_vars=env)
+        self.assertEqual(p.rc, 255)
+
 
 if __name__ == '__main__':
     unittest.main()

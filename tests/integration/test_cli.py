@@ -323,6 +323,16 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('iam list-users', env_vars=base_env_vars)
         self.assertEqual(p.rc, 0)
 
+    def test_error_msg_with_no_region_configured(self):
+        environ = os.environ.copy()
+        try:
+            del environ['AWS_DEFAULT_REGION']
+        except KeyError:
+            pass
+        environ['AWS_CONFIG_FILE'] = 'nowhere-foo'
+        p = aws('ec2 describe-instances', env_vars=environ)
+        self.assertIn('must specify a region', p.stderr)
+
 
 class TestCommandLineage(unittest.TestCase):
     def setUp(self):

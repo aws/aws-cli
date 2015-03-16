@@ -82,9 +82,9 @@ class LaunchKeyArgument(BaseCLIArgument):
             path = os.path.expanduser(path)
             if os.path.isfile(path):
                 self._key_path = path
-                service_name = \
-                    self._operation_model.service_model.service_name
-                event = 'after-call.%s.%s' % (service_name,
+                endpoint_prefix = \
+                    self._operation_model.service_model.endpoint_prefix
+                event = 'after-call.%s.%s' % (endpoint_prefix,
                                               self._operation_model.name)
                 self._session.register(event, self._decrypt_password_data)
             else:

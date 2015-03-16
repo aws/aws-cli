@@ -73,7 +73,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def put_object(self, bucket, key, content, extra_args=None):
         session = botocore.session.get_session()
         client = session.create_client('s3', 'us-east-1')
-        response = client.create_bucket(Bucket=bucket)
+        client.create_bucket(Bucket=bucket)
         time.sleep(5)
         self.addCleanup(client.delete_bucket, Bucket=bucket)
         call_args = {
@@ -82,7 +82,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         }
         if extra_args is not None:
             call_args.update(extra_args)
-        response = client.put_object(**call_args)
+        client.put_object(**call_args)
         self.addCleanup(client.delete_object, Bucket=bucket, Key=key)
 
     def test_ec2_describe_instances(self):
@@ -97,7 +97,8 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         p = aws('help')
         self.assertEqual(p.rc, 0)
         self.assertIn('AWS', p.stdout)
-        self.assertRegexpMatches(p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
+        self.assertRegexpMatches(
+            p.stdout, 'The\s+AWS\s+Command\s+Line\s+Interface')
 
     def test_service_help_output(self):
         p = aws('ec2 help')

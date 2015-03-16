@@ -613,19 +613,35 @@ class ServiceOperation(object):
 
 
 class CLIOperationCaller(object):
-    """
-    Call an AWS operation and format the response.
-
-    This class handles the non-error path.  If an HTTP error occurs
-    on the call to the service operation, it will be detected and
-    handled by the :class:`awscli.errorhandler.ErrorHandler` which
-    is registered on the ``after-call`` event.
-    """
+    """Call an AWS operation and format the response."""
 
     def __init__(self, session):
         self._session = session
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
+        """Invoke an operation and format the response.
+
+        :type service_name: str
+        :param service_name: The name of the service.  Note this is the service name,
+            not the endpoint prefix (e.g. ``ses`` not ``email``).
+
+        :type operation_name: str
+        :param operation_name: The operation name of the service.  The casing
+            of the operation name should match the exact casing used by the service,
+            e.g. ``DescribeInstances``, not ``describe-instances`` or
+            ``describe_instances``.
+
+        :type parameters: dict
+        :param parameters: The parameters for the operation call.  Again, these values
+            have the same casing used by the service.
+
+        :type parsed_globals: Namespace
+        :param parsed_globals: The parsed globals from the command line.
+
+        :return: None, the result is displayed through a formatter, but no
+            value is returned.
+
+        """
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

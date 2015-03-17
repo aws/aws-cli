@@ -154,13 +154,13 @@ def check_empty_string_list(name, value):
         raise exceptions.EmptyListError(param=name)
 
 
-def call(session, operation, parameters, region_name=None,
+def call(session, operation_name, parameters, region_name=None,
          endpoint_url=None, verify=None):
-        client = session.create_client(
-            'emr', region_name=region_name, endpoint_url=endpoint_url,
-            verify=verify)
-        LOG.debug('Calling ' + str(operation))
-        return getattr(client, operation)(**parameters)
+    client = session.create_client(
+        'emr', region_name=region_name, endpoint_url=endpoint_url,
+        verify=verify)
+    LOG.debug('Calling ' + str(operation_name))
+    return getattr(client, operation_name)(**parameters)
 
 
 def get_example_file(command):

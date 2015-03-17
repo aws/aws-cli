@@ -363,6 +363,15 @@ class CLIArgument(BaseCLIArgument):
         :type argument_model: ``botocore.model.Shape``
         :param argument_model: The shape object that models the argument.
 
+        :type argument_model: ``botocore.model.OperationModel``
+        :param argument_model: The object that models the associated operation.
+
+        :type event_emitter: ``botocore.hooks.BaseEventHooks``
+        :param event_emitter: The event emitter to use when emitting events.
+            This class will emit events during parts of the argument
+            parsing process.  This event emitter is what is used to emit
+            such events.
+
         :type is_required: boolean
         :param is_required: Indicates if this parameter is required or not.
 

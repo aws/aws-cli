@@ -551,7 +551,7 @@ class ServiceOperation(object):
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.
         parsed_args = vars(args)
-        for _, arg_object in arg_table.items():
+        for arg_object in arg_table.values():
             py_name = arg_object.py_name
             if py_name in parsed_args:
                 value = parsed_args[py_name]

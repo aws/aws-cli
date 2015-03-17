@@ -11,8 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import mock
+from botocore.exceptions import ClientError
 
 from awscli.testutils import unittest
+from awscli.compat import StringIO
 from awscli.customizations.configservice.subscribe import SubscribeCommand, \
     S3BucketHelper, SNSTopicHelper
 
@@ -21,6 +23,16 @@ class TestS3BucketHelper(unittest.TestCase):
     def setUp(self):
         self.s3_client = mock.Mock()
         self.helper = S3BucketHelper(self.s3_client)
+        self.error_response = {
+            'Error': {
+                'Code': '404',
+                'Message': 'Not Found'
+            }
+        }
+        self.bucket_no_exists_error = ClientError(
+            self.error_response,
+            'HeadBucket'
+        )
 
     def test_correct_prefix_returned(self):
         name = 'MyBucket/MyPrefix'
@@ -40,7 +52,7 @@ class TestS3BucketHelper(unittest.TestCase):
 
     def test_bucket_no_exist(self):
         name = 'MyBucket/MyPrefix'
-        self.s3_client.head_bucket.side_effect = Exception()
+        self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
         self.s3_client._endpoint.region_name = 'us-east-1'
         bucket, prefix = self.helper.prepare_bucket(name)
         # Ensure that the create bucket was called with the proper args.
@@ -53,7 +65,7 @@ class TestS3BucketHelper(unittest.TestCase):
 
     def test_bucket_no_exist_with_location_constraint(self):
         name = 'MyBucket/MyPrefix'
-        self.s3_client.head_bucket.side_effect = Exception()
+        self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
         self.s3_client._endpoint.region_name = 'us-west-2'
         bucket, prefix = self.helper.prepare_bucket(name)
         # Ensure that the create bucket was called with the proper args.
@@ -64,6 +76,39 @@ class TestS3BucketHelper(unittest.TestCase):
         # Ensure the returned bucket and key are as expected
         self.assertEqual(bucket, 'MyBucket')
         self.assertEqual(prefix, 'MyPrefix')
+
+    def test_bucket_client_exception_non_404(self):
+        name = 'MyBucket/MyPrefix'
+        self.error_response['Error']['Code'] = '403'
+        self.error_response['Error']['Message'] = 'Forbidden'
+        forbidden_error = ClientError(self.error_response, 'HeadBucket')
+        self.s3_client.head_bucket.side_effect = forbidden_error
+        self.s3_client._endpoint.region_name = 'us-east-1'
+        bucket, prefix = self.helper.prepare_bucket(name)
+        # A new bucket should not have been created because a 404 error
+        # was not thrown
+        self.assertFalse(self.s3_client.create_bucket.called)
+        # Ensure the returned bucket and key are as expected
+        self.assertEqual(bucket, 'MyBucket')
+        self.assertEqual(prefix, 'MyPrefix')
+
+    def test_output_use_existing_bucket(self):
+        name = 'MyBucket/MyPrefix'
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
+            self.helper.prepare_bucket(name)
+            self.assertIn(
+                'Using existing S3 bucket: MyBucket',
+                mock_stdout.getvalue())
+
+    def test_output_create_bucket(self):
+        name = 'MyBucket/MyPrefix'
+        self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
+        self.s3_client._endpoint.region_name = 'us-east-1'
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
+            self.helper.prepare_bucket(name)
+            self.assertIn(
+                'Using new S3 bucket: MyBucket',
+                mock_stdout.getvalue())
 
 
 class TestSNSTopicHelper(unittest.TestCase):
@@ -85,6 +130,23 @@ class TestSNSTopicHelper(unittest.TestCase):
         # Ensure that the topic was not created and returned the expected arn
         self.assertFalse(self.sns_client.create_topic.called)
         self.assertEqual(sns_arn, name)
+
+    def test_output_existing_topic(self):
+        name = 'mysnstopic'
+        self.sns_client.create_topic.return_value = {'TopicArn': 'myARN'}
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
+            self.helper.prepare_topic(name)
+            self.assertIn(
+                'Using new SNS topic: myARN',
+                mock_stdout.getvalue())
+
+    def test_output_new_topic(self):
+        name = 'arn:aws:sns:us-east-1:934212987125:config'
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
+            self.helper.prepare_topic(name)
+            self.assertIn(
+                'Using existing SNS topic: %s' % name,
+                mock_stdout.getvalue())
 
 
 class TestSubscribeCommand(unittest.TestCase):

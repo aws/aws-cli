@@ -240,7 +240,7 @@ def call_and_display_response(session, operation_name, parameters,
                               parsed_globals):
         cli_operation_caller = CLIOperationCaller(session)
         cli_operation_caller.invoke(
-            'emr', xform_name(operation_name),
+            'emr', operation_name,
             parameters, parsed_globals)
 
 

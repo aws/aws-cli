@@ -28,8 +28,8 @@ class TestSendEmail(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'Source': 'foo@bar.com',
-            'destination': {'ToAddresses': ['fie@baz.com']},
-            'message': {'Body': {'Text': {'Data': 'This_is_the_message'}},
+            'Destination': {'ToAddresses': ['fie@baz.com']},
+            'Message': {'Body': {'Text': {'Data': 'This_is_the_message'}},
                         'Subject': {'Data': 'This_is_a_test'}}}
         self.assert_params_for_cmd(args_list, result)
 
@@ -38,9 +38,9 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 ' --to fie1@baz.com fie2@baz.com --text This_is_the_message')
         args_list = (self.prefix + args).split()
         result = {'Source': 'foo@bar.com',
-                  'destination': {
+                  'Destination': {
                       'ToAddresses': ['fie1@baz.com', 'fie2@baz.com']},
-                  'message': {
+                  'Message': {
                       'Body': {'Text': {'Data': 'This_is_the_message'}},
                       'Subject': {'Data': 'This_is_a_test'}}}
 
@@ -52,10 +52,10 @@ class TestSendEmail(BaseAWSCommandParamsTest):
                 ' --cc fie3@baz.com fie4@baz.com')
         args_list = (self.prefix + args).split()
         result = {'Source': 'foo@bar.com',
-                  'destination': {
+                  'Destination': {
                       'CcAddresses': ['fie3@baz.com', 'fie4@baz.com'],
                       'ToAddresses': ['fie1@baz.com', 'fie2@baz.com']},
-                  'message': {
+                  'Message': {
                       'Body': {'Text': {'Data': 'This_is_the_message'}},
                       'Subject': {'Data': 'This_is_a_test'}}}
 
@@ -70,10 +70,10 @@ class TestSendEmail(BaseAWSCommandParamsTest):
 
         result = {
             'Source': 'foo@bar.com',
-            'destination': {'BccAddresses': ['fie5@baz.com', 'fie6@baz.com'],
+            'Destination': {'BccAddresses': ['fie5@baz.com', 'fie6@baz.com'],
                             'CcAddresses': ['fie3@baz.com', 'fie4@baz.com'],
                             'ToAddresses': ['fie1@baz.com', 'fie2@baz.com']},
-            'message': {
+            'Message': {
                 'Body': {'Text': {'Data': 'This_is_the_message'}},
                 'Subject': {'Data': 'This_is_a_test'}}}
 
@@ -85,8 +85,8 @@ class TestSendEmail(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'Source': 'foo@bar.com',
-            'destination': {'ToAddresses': ['fie@baz.com']},
-            'message': {'Subject': {'Data': 'This_is_a_test'},
+            'Destination': {'ToAddresses': ['fie@baz.com']},
+            'Message': {'Subject': {'Data': 'This_is_a_test'},
                         'Body': {
                             'Html': {'Data': 'This_is_the_html_message'}}}}
 
@@ -99,8 +99,8 @@ class TestSendEmail(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'Source': 'foo@bar.com',
-            'destination': {'ToAddresses': ['fie@baz.com']},
-            'message': {
+            'Destination': {'ToAddresses': ['fie@baz.com']},
+            'Message': {
                 'Subject': {'Data': 'This_is_a_test'},
                 'Body': {
                     'Text': {'Data': 'This_is_the_text_message'},

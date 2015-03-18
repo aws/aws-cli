@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 from bcdoc.docevents import DOC_EVENTS
+from botocore import xform_name
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
@@ -210,8 +211,9 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     def build_translation_map(self):
         d = {}
-        for op in self.help_command.obj.operations:
-            d[op.name] = op.cli_name
+        service_model = self.help_command.obj
+        for operation_name in service_model.operation_names:
+            d[operation_name] = xform_name(operation_name, '-')
         return d
 
     # A service document has no synopsis.
@@ -239,9 +241,10 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
-        service = help_command.obj
+        service_model = help_command.obj
         doc.style.h2('Description')
-        doc.include_doc_string(service.documentation)
+        # TODO: need a documentation attribute.
+        doc.include_doc_string(service_model.documentation)
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
@@ -265,20 +268,20 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     def build_translation_map(self):
-        operation = self.help_command.obj
+        operation_model = self.help_command.obj
         d = {}
         for cli_name, cli_argument in self.help_command.arg_table.items():
             if cli_argument.argument_model is not None:
                 d[cli_argument.argument_model.name] = cli_name
-        for operation in operation.service.operations:
-            d[operation.name] = operation.cli_name
+        for operation_name in operation_model.service_model.operation_names:
+            d[operation_name] = xform_name(operation_name, '-')
         return d
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
-        operation = help_command.obj
+        operation_model = help_command.obj
         doc.style.h2('Description')
-        doc.include_doc_string(operation.documentation)
+        doc.include_doc_string(operation_model.documentation)
 
     def _json_example_value_name(self, argument_model, include_enum_values=True):
         # If include_enum_values is True, then the valid enum values
@@ -434,8 +437,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc
         doc.style.h2('Output')
-        operation = help_command.obj
-        output_shape = operation.model.output_shape
+        operation_model = help_command.obj
+        output_shape = operation_model.output_shape
         if output_shape is None:
             doc.write('None')
         else:

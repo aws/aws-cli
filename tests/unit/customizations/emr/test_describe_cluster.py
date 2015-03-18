@@ -285,13 +285,13 @@ class TestDescribeCluster(BaseAWSCommandParamsTest):
 
 
 def side_effect_of_call(*args, **kwargs):
-    if args[0].name == 'DescribeCluster':
+    if args[1] == 'describe_cluster':
         return describe_cluster_result_mock
-    elif args[0].name == 'ListInstanceGroups':
+    elif args[1] == 'list_instance_groups':
         return list_instance_groups_result_mock
-    elif args[0].name == 'ListBootstrapActions':
+    elif args[1] == 'list_bootstrap_actions':
         return list_bootstrap_actions_result_mock
-    elif args[0].name == 'ListInstances':
+    elif args[1] == 'list_instances':
         return list_instances_result_mock
 
 

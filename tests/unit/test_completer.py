@@ -102,21 +102,7 @@ COMPLETIONS = [
                           'modify-cluster-attributes', 'modify-instance-groups',
                           'put', 'remove-tags', 'restore-from-hbase-backup',
                           'schedule-hbase-backup', 'socks', 'ssh',
-                          'terminate-clusters', 'wait'])),
-    
-    ("aws deploy", -1, set([
-        'batch-get-applications', 'batch-get-deployments',
-        'create-application', 'create-deployment', 'create-deployment-config',
-        'create-deployment-group', 'delete-application',
-        'delete-deployment-config', 'delete-deployment-group',
-        'get-application', 'get-application-revision', 'get-deployment',
-        'get-deployment-config', 'get-deployment-group',
-        'get-deployment-instance', 'list-application-revisions',
-        'list-applications', 'list-deployment-configs',
-        'list-deployment-groups', 'list-deployment-instances',
-        'list-deployments', 'push', 'register-application-revision',
-        'stop-deployment', 'update-application', 'update-deployment-group'
-    ]))
+                          'terminate-clusters', 'wait']))
 ]
 
 

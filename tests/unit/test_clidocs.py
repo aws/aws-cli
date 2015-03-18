@@ -26,7 +26,9 @@ class TestRecursiveShapes(unittest.TestCase):
         self.help_command = mock.Mock()
         self.help_command.event_class = 'custom'
         self.help_command.arg_table = self.arg_table
-        self.help_command.obj.service.operations = []
+        self.operation_model = mock.Mock()
+        self.operation_model.service_model.operation_names = []
+        self.help_command.obj = self.operation_model
         self.operation_handler = OperationDocumentEventHandler(
             self.help_command)
 
@@ -69,9 +71,9 @@ class TestRecursiveShapes(unittest.TestCase):
         shape = StructureShape('RecursiveStruct', shape_map['RecursiveStruct'],
                                ShapeResolver(shape_map))
 
-        operation = mock.Mock()
-        operation.model.output_shape = shape
-        self.help_command.obj = operation
+        operation_model = mock.Mock()
+        operation_model.output_shape = shape
+        self.help_command.obj = operation_model
         self.operation_handler.doc_output(self.help_command, 'event-name')
         self.assert_rendered_docs_contain('( ... recursive ... )')
 

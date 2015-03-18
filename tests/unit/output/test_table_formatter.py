@@ -381,8 +381,7 @@ class TestTableFormatter(unittest.TestCase):
         self.stream = six.StringIO()
 
     def assert_data_renders_to(self, data, table):
-        self.formatter(Object(name='OperationName', can_paginate=False),
-                              data, self.stream)
+        self.formatter('OperationName', data, stream=self.stream)
         rendered = self.stream.getvalue()
         if rendered != table:
             error_message = ['Expected table rendering does not match '

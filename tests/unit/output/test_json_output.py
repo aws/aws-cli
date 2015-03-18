@@ -106,7 +106,7 @@ class TestFormattersHandleClosedPipes(unittest.TestCase):
         fake_closed_stream = mock.Mock(spec=six.StringIO)
         fake_closed_stream.flush.side_effect = IOError
         formatter = JSONFormatter(args)
-        formatter(operation, response, fake_closed_stream)
+        formatter('command_name', response, stream=fake_closed_stream)
         # We should not have let the IOError propogate, but
         # we still should have called the flush() on the
         # stream.

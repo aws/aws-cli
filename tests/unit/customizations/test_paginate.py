@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
 
+from botocore.exceptions import DataNotFoundError
 import mock
 
 from awscli.customizations import paginate
@@ -20,8 +21,17 @@ from awscli.customizations import paginate
 class TestPaginateBase(unittest.TestCase):
 
     def setUp(self):
-        self.operation = mock.Mock()
-        self.operation.can_paginate = True
+        self.session = mock.Mock()
+        self.paginator_model = mock.Mock()
+        self.pagination_config = {
+            'input_token': 'Foo',
+            'limit_key': 'Bar',
+        }
+        self.paginator_model.get_paginator.return_value = \
+            self.pagination_config
+        self.session.get_paginator_model.return_value = self.paginator_model
+
+        self.operation_model = mock.Mock()
         self.foo_param = mock.Mock()
         self.foo_param.name = 'Foo'
         self.foo_param.type_name = 'string'
@@ -29,11 +39,7 @@ class TestPaginateBase(unittest.TestCase):
         self.bar_param.type_name = 'string'
         self.bar_param.name = 'Bar'
         self.params = [self.foo_param, self.bar_param]
-        self.operation.pagination = {
-            'input_token': 'Foo',
-            'limit_key': 'Bar',
-        }
-        self.operation.model.input_shape.members = {"Foo": self.foo_param,
+        self.operation_model.input_shape.members = {"Foo": self.foo_param,
                                                     "Bar": self.bar_param}
 
 
@@ -44,8 +50,9 @@ class TestArgumentTableModifications(TestPaginateBase):
             'foo': mock.Mock(),
             'bar': mock.Mock(),
         }
-        paginate.unify_paging_params(argument_table, self.operation,
-                                     'building-argument-table.foo.bar')
+        paginate.unify_paging_params(argument_table, self.operation_model,
+                                     'building-argument-table.foo.bar',
+                                     self.session)
         # We should mark the built in input_token as 'hidden'.
         self.assertTrue(argument_table['foo']._UNDOCUMENTED)
         # Also need to hide the limit key.
@@ -64,14 +71,29 @@ class TestArgumentTableModifications(TestPaginateBase):
 
     def test_operation_with_no_paginate(self):
         # Operations that don't paginate are left alone.
-        self.operation.can_paginate = False
+        self.paginator_model.get_paginator.side_effect = ValueError()
         argument_table = {
             'foo': 'FakeArgObject',
             'bar': 'FakeArgObject',
         }
         starting_table = argument_table.copy()
-        paginate.unify_paging_params(argument_table, self.operation,
-                                     'building-argument-table.foo.bar')
+        paginate.unify_paging_params(argument_table, self.operation_model,
+                                     'building-argument-table.foo.bar',
+                                     self.session)
+        self.assertEqual(starting_table, argument_table)
+
+    def test_service_with_no_paginate(self):
+        # Operations that don't paginate are left alone.
+        self.session.get_paginator_model.side_effect = \
+            DataNotFoundError(data_path='foo.paginators.json')
+        argument_table = {
+            'foo': 'FakeArgObject',
+            'bar': 'FakeArgObject',
+        }
+        starting_table = argument_table.copy()
+        paginate.unify_paging_params(argument_table, self.operation_model,
+                                     'building-argument-table.foo.bar',
+                                     self.session)
         self.assertEqual(starting_table, argument_table)
 
 
@@ -86,8 +108,9 @@ class TestStringLimitKey(TestPaginateBase):
             'foo': mock.Mock(),
             'bar': mock.Mock(),
         }
-        paginate.unify_paging_params(argument_table, self.operation,
-                                     'building-argument-table.foo.bar')
+        paginate.unify_paging_params(argument_table, self.operation_model,
+                                     'building-argument-table.foo.bar',
+                                     self.session)
         # Max items should be the same type as bar, which may not be an int
         self.assertEqual('string', argument_table['max-items'].cli_type_name)
 
@@ -103,8 +126,9 @@ class TestIntegerLimitKey(TestPaginateBase):
             'foo': mock.Mock(),
             'bar': mock.Mock(),
         }
-        paginate.unify_paging_params(argument_table, self.operation,
-                                     'building-argument-table.foo.bar')
+        paginate.unify_paging_params(argument_table, self.operation_model,
+                                     'building-argument-table.foo.bar',
+                                     self.session)
         # Max items should be the same type as bar, which may not be an int
         self.assertEqual('integer', argument_table['max-items'].cli_type_name)
 
@@ -121,8 +145,9 @@ class TestBadLimitKey(TestPaginateBase):
             'bar': mock.Mock(),
         }
         with self.assertRaises(TypeError):
-            paginate.unify_paging_params(argument_table, self.operation,
-                                         'building-argument-table.foo.bar')
+            paginate.unify_paging_params(argument_table, self.operation_model,
+                                         'building-argument-table.foo.bar',
+                                         self.session)
 
 
 class TestShouldEnablePagination(TestPaginateBase):

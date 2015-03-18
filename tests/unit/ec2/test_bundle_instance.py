@@ -55,7 +55,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         args += ' --bucket mybucket --prefix foobar'
         args_list = (self.prefix + args).split()
         result =  {'InstanceId': 'i-12345678',
-                   'storage': {
+                   'Storage': {
                        'S3': {
                            'Bucket': 'mybucket',
                            'Prefix': 'foobar',
@@ -76,7 +76,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         args += ' --bucket mybucket --prefix foobar --policy %s' % policy
         args_list = (self.prefix + args).split()
         result =  {'InstanceId': 'i-12345678',
-                   'storage': {
+                   'Storage': {
                        'S3': {
                            'Bucket': 'mybucket',
                            'Prefix': 'foobar',

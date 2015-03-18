@@ -15,9 +15,10 @@ import logging
 import json
 import os
 
+from botocore import xform_name
+
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import exceptions
-from botocore.exceptions import NoCredentialsError
 from botocore.exceptions import WaiterError
 from awscli.clidriver import CLIOperationCaller
 
@@ -153,20 +154,13 @@ def check_empty_string_list(name, value):
         raise exceptions.EmptyListError(param=name)
 
 
-def call(session, operation_object, parameters, region_name=None,
+def call(session, operation_name, parameters, region_name=None,
          endpoint_url=None, verify=None):
-        # We could get an error from get_endpoint() about not having
-        # a region configured.  Before this happens we want to check
-        # for credentials so we can give a good error message.
-        if session.get_credentials() is None:
-            raise NoCredentialsError()
-
-        endpoint = operation_object.service.get_endpoint(
-            region_name=region_name, endpoint_url=endpoint_url,
-            verify=verify)
-        LOG.debug('Calling ' + str(operation_object) + ' with endpoint: ' +
-                  endpoint.host)
-        return operation_object.call(endpoint, **parameters)
+    client = session.create_client(
+        'emr', region_name=region_name, endpoint_url=endpoint_url,
+        verify=verify)
+    LOG.debug('Calling ' + str(operation_name))
+    return getattr(client, operation_name)(**parameters)
 
 
 def get_example_file(command):
@@ -177,8 +171,9 @@ def dict_to_string(dict, indent=2):
     return json.dumps(dict, indent=indent)
 
 
-def get_endpoint(service, parsed_globals):
-    return service.get_endpoint(
+def get_client(session, parsed_globals):
+    return session.create_client(
+        'emr',
         region_name=parsed_globals.region,
         endpoint_url=parsed_globals.endpoint_url,
         verify=parsed_globals.verify_ssl)
@@ -192,7 +187,7 @@ def _find_most_recently_created(pages):
     """ Find instance which is most recently created. """
     most_recently_created = None
     for page in pages:
-        for instance in page[1]['Instances']:
+        for instance in page['Instances']:
             if (not most_recently_created or
                     _get_creation_date_time(most_recently_created) <
                     _get_creation_date_time(instance)):
@@ -201,10 +196,8 @@ def _find_most_recently_created(pages):
 
 
 def get_cluster_state(session, parsed_globals, cluster_id):
-    emr = session.get_service('emr')
-    endpoint = get_endpoint(emr, parsed_globals)
-    describe_cluster_op = emr.get_operation('DescribeCluster')
-    http, data = describe_cluster_op.call(endpoint, ClusterId=cluster_id)
+    client = get_client(session, parsed_globals)
+    data = client.describe_cluster(ClusterId=cluster_id)
     return data['Cluster']['Status']['State']
 
 
@@ -214,11 +207,10 @@ def _find_master_instance(session, parsed_globals, cluster_id):
     If the master instance is not available yet,
      the method will return None.
     """
-    emr = session.get_service('emr')
-    endpoint = get_endpoint(emr, parsed_globals)
-    operation_object = emr.get_operation('ListInstances')
-    pages = operation_object.paginate(
-        endpoint, ClusterId=cluster_id, InstanceGroupTypes=['MASTER'])
+    client = get_client(session, parsed_globals)
+    paginator = client.get_paginator('list_instances')
+    pages = paginator.paginate(
+        ClusterId=cluster_id, InstanceGroupTypes=['MASTER'])
     return _find_most_recently_created(pages)
 
 
@@ -248,13 +240,13 @@ def call_and_display_response(session, operation_name, parameters,
                               parsed_globals):
         cli_operation_caller = CLIOperationCaller(session)
         cli_operation_caller.invoke(
-            session.get_service('emr').get_operation(operation_name),
+            'emr', operation_name,
             parameters, parsed_globals)
 
 
-def display_response(session, operation, result, parsed_globals):
+def display_response(session, operation_name, result, parsed_globals):
         cli_operation_caller = CLIOperationCaller(session)
         # Calling a private method. Should be changed after the functionality
         # is moved outside CliOperationCaller.
-        cli_operation_caller._display_response(operation, result,
-                                               parsed_globals)
+        cli_operation_caller._display_response(
+            operation_name, result, parsed_globals)

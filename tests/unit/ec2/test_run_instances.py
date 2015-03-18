@@ -26,8 +26,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -36,8 +36,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'ImageId': 'ami-foobar',
-            'max_count': 2,
-            'min_count': 2
+            'MaxCount': 2,
+            'MinCount': 2
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -52,8 +52,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                     self.prefix +
                     ' --image-id foo --user-data file://%s' % f.name)
                 result = {'ImageId': 'foo',
-                          'max_count': 1,
-                          'min_count': 1,
+                          'MaxCount': 1,
+                          'MinCount': 1,
                           # base64 encoded content of utf-8 encoding of data.
                           'UserData': 'OQ=='}
             self.assert_params_for_cmd(args, result)
@@ -63,8 +63,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         args_list = (self.prefix + args).split()
         result = {
             'ImageId': 'ami-foobar',
-            'max_count': 10,
-            'min_count': 5
+            'MaxCount': 10,
+            'MinCount': 5
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -84,8 +84,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                  'Ebs': {'VolumeSize': 20}},
             ],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -98,8 +98,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'NetworkInterface.1.PrivateIpAddresses.1.Primary': 'false',
             'NetworkInterface.1.PrivateIpAddresses.1.PrivateIpAddress': '10.0.2.106',
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         result = {
             'ImageId': 'ami-foobar',
@@ -107,8 +107,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                 {'DeviceIndex': 0,
                  'PrivateIpAddresses': [
                      {'Primary': False, 'PrivateIpAddress': '10.0.2.106'}]}],
-            'max_count': 1,
-            'min_count': 1}
+            'MaxCount': 1,
+            'MinCount': 1}
         self.assert_params_for_cmd(args_list, result)
 
     def test_secondary_ip_addresses(self):
@@ -122,8 +122,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                  'PrivateIpAddresses': [
                      {'Primary': False, 'PrivateIpAddress': u'10.0.2.106'},
                      {'Primary': False, 'PrivateIpAddress': u'10.0.2.107'}]}],
-            'max_count': 1,
-            'min_count': 1}
+            'MaxCount': 1,
+            'MinCount': 1}
         self.assert_params_for_cmd(args_list, result)
 
     def test_secondary_ip_address_count(self):
@@ -134,8 +134,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'NetworkInterfaces': [{'DeviceIndex': 0,
                                    'SecondaryPrivateIpAddressCount': 4}],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -150,8 +150,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                  'SubnetId': 'subnet-12345678'},
             ],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -166,8 +166,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                  'SubnetId': 'subnet-12345678'}
             ],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -180,8 +180,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
             'NetworkInterfaces': [{'AssociatePublicIpAddress': False,
                                    'DeviceIndex': 0,
                                    'SubnetId': 'subnet-12345678'}],
-            'max_count': 1,
-            'min_count': 1}
+            'MaxCount': 1,
+            'MinCount': 1}
         self.assert_params_for_cmd(args_list, result)
 
     def test_subnet_alone(self):
@@ -190,8 +190,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         result = {
             'SubnetId': 'subnet-12345678',
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -208,8 +208,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                  'Groups': ['sg-12345678']}
             ],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -220,8 +220,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         result = {
             'SecurityGroupIds': ['sg-12345678'],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -240,8 +240,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
                      'Primary': True}],
             }],
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 
@@ -252,8 +252,8 @@ class TestDescribeInstances(BaseAWSCommandParamsTest):
         result = {
             'PrivateIpAddress': '10.0.0.200',
             'ImageId': 'ami-foobar',
-            'max_count': 1,
-            'min_count': 1
+            'MaxCount': 1,
+            'MinCount': 1
         }
         self.assert_params_for_cmd(args_list, result)
 

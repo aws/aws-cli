@@ -153,6 +153,7 @@ class CreateDefaultRoles(BasicCommand):
         self.iam_endpoint_url = parsed_args.iam_endpoint
         region = self._get_region(parsed_globals)
 
+        self._check_for_iam_endpoint(region, self.iam_endpoint_url)
         self.emr_endpoint_url = \
             self._session.create_client(
                 'emr',
@@ -207,6 +208,13 @@ class CreateDefaultRoles(BasicCommand):
             parsed_globals)
 
         return 0
+
+    def _check_for_iam_endpoint(self, region, iam_endpoint):
+        try:
+            self._session.create_client('emr', region)
+        except botocore.exceptions.UnknownEndpointError:
+            if iam_endpoint is None:
+                raise exceptions.UnknownIamEndpointError(region=region)
 
     def _construct_result(self, ec2_response, emr_response):
         result = []

@@ -449,7 +449,7 @@ class TestGlobalArgs(BaseS3CLICommand):
         bucket_name = self.create_bucket()
         self.put_object(bucket_name, 'foo.txt', contents=b'bar')
         p = aws('s3api list-objects --bucket %s '
-                '--query "Contents[].Key" --output json' % bucket_name)
+                '--query Contents[].Key --output json' % bucket_name)
         self.assert_no_errors(p)
         response_json = p.json
         self.assertEqual(response_json, ['foo.txt'])

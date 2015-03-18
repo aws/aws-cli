@@ -142,7 +142,7 @@ class TestCLIArgumentSerialize(unittest.TestCase):
         query = builder.build_query(parsed_args)
         self.assertEqual(query, {
             'selectors': [{
-                'fieldName': '@scheduleStartTime',
+                'fieldName': '@scheduledStartTime',
                  'operator': {
                      'type': 'BETWEEN',
                      'values': ['2014-02-01T00:00:00',
@@ -225,7 +225,7 @@ class TestCLIArgumentSerialize(unittest.TestCase):
                                 '2014-02-04T00:00:00',],
                  }
             }, {
-                'fieldName': '@scheduleStartTime',
+                'fieldName': '@scheduledStartTime',
                  'operator': {
                      'type': 'BETWEEN',
                      'values': ['2014-02-05T00:00:00',

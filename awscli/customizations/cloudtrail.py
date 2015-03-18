@@ -15,7 +15,6 @@ import logging
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from botocore.vendored import requests
 from botocore.exceptions import ClientError
 
 
@@ -70,9 +69,9 @@ class CloudTrailSubscribe(BasicCommand):
         {'name': 'include-global-service-events',
          'help_text': 'Whether to include global service events'},
         {'name': 's3-custom-policy',
-         'help_text': 'Optional URL to a custom S3 policy template'},
+         'help_text': 'Custom S3 policy template or URL'},
         {'name': 'sns-custom-policy',
-         'help_text': 'Optional URL to a custom SNS policy template'}
+         'help_text': 'Custom SNS policy template or URL'}
     ]
 
     UPDATE = False
@@ -202,7 +201,7 @@ class CloudTrailSubscribe(BasicCommand):
                 'Unable to get regional policy template for'
                 ' region %s: %s. Error: %s', self.region_name, key_name, e)
 
-    def setup_new_bucket(self, bucket, prefix, policy_url=None):
+    def setup_new_bucket(self, bucket, prefix, custom_policy=None):
         """
         Creates a new S3 bucket with an appropriate policy to let CloudTrail
         write to the prefix path.
@@ -219,8 +218,8 @@ class CloudTrailSubscribe(BasicCommand):
             prefix += '/'
 
         # Fetch policy data from S3 or a custom URL
-        if policy_url:
-            policy = requests.get(policy_url).text
+        if custom_policy is not None:
+            policy = custom_policy
         else:
             policy = self._get_policy(S3_POLICY_TEMPLATE)
 
@@ -261,7 +260,7 @@ class CloudTrailSubscribe(BasicCommand):
 
         return data
 
-    def setup_new_topic(self, topic, policy_url=None):
+    def setup_new_topic(self, topic, custom_policy=None):
         """
         Creates a new SNS topic with an appropriate policy to let CloudTrail
         post messages to the topic.
@@ -290,8 +289,8 @@ class CloudTrailSubscribe(BasicCommand):
 
         # Get the SNS topic policy information to allow CloudTrail
         # write-access.
-        if policy_url:
-            policy = requests.get(policy_url).text
+        if custom_policy is not None:
+            policy = custom_policy
         else:
             policy = self._get_policy(SNS_POLICY_TEMPLATE)
 

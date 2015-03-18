@@ -208,7 +208,7 @@ class QueryArgBuilder(object):
             start_time_str = parsed_args.schedule_interval[0]
             end_time_str = parsed_args.schedule_interval[1]
             selectors.append({
-                'fieldName': '@scheduleStartTime',
+                'fieldName': '@scheduledStartTime',
                 'operator': {
                     'type': 'BETWEEN',
                     'values': [start_time_str, end_time_str]

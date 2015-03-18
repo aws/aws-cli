@@ -5,6 +5,9 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* bugfix:``aws datapipeline list-runs``: Fix issue with
+  ``--schedule-interval`` parameter.
+  (`issue 1225 <https://github.com/aws/aws-cli/pull/1225>`__)
 * bugfix:``aws configservice subscribe``: Fix issue where users could not
   subscribe to a s3 bucket that they had no HeadBucket permissions to.
   (`issue 1223 <https://github.com/aws/aws-cli/pull/1223>`__)

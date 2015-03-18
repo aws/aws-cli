@@ -15,6 +15,7 @@ import logging
 import sys
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import s3_bucket_exists
 from botocore.exceptions import ClientError
 
 
@@ -232,13 +233,8 @@ class CloudTrailSubscribe(BasicCommand):
             policy = policy.replace('<Prefix>', prefix or '')
 
         LOG.debug('Bucket policy:\n{0}'.format(policy))
-
-        try:
-            self.s3.head_bucket(Bucket=bucket)
-        except ClientError:
-            # The bucket does not exists.  This is what we want.
-            pass
-        else:
+        bucket_exists = s3_bucket_exists(self.s3, bucket)
+        if bucket_exists:
             raise Exception('Bucket {bucket} already exists.'.format(
                 bucket=bucket))
 

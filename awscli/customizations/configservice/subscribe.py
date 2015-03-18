@@ -13,9 +13,8 @@
 import json
 import sys
 
-from botocore.exceptions import ClientError
-
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import s3_bucket_exists
 from awscli.customizations.s3.utils import find_bucket_key
 
 
@@ -146,20 +145,10 @@ class S3BucketHelper(object):
         return bucket, key
 
     def _check_bucket_exists(self, bucket):
-        bucket_exists = True
         self._s3_client.meta.events.unregister(
             'after-call',
             unique_id='awscli-error-handler')
-        try:
-            # See if the bucket exists by running a head bucket
-            self._s3_client.head_bucket(Bucket=bucket)
-        except ClientError as e:
-            # If a client error is thrown. Check that it was a 404 error.
-            # If it was a 404 error, than the bucket does not exist.
-            error_code = int(e.response['Error']['Code'])
-            if error_code == 404:
-                bucket_exists = False
-        return bucket_exists
+        return s3_bucket_exists(self._s3_client, bucket)
 
     def _create_bucket(self, bucket):
         region_name = self._s3_client._endpoint.region_name

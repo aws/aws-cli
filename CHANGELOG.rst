@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.15
+======
 
 * feature:``aws elastictranscoder``: Add support for Applied Color
   SpaceConversion.

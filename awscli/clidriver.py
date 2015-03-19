@@ -232,6 +232,8 @@ class CLIDriver(object):
             LOG.debug("CLI version: %s, botocore version: %s",
                       self.session.user_agent(),
                       botocore_version)
+            LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
+
         else:
             self.session.set_stream_logger(logger_name='awscli',
                                            log_level=logging.ERROR)

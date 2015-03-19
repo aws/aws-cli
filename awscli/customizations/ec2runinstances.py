@@ -42,7 +42,7 @@ ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS = (
     '[EC2-VPC] If specified a public IP address will be assigned '
     'to the new instance in a VPC.')
 
-def _add_params(argument_table, operation, **kwargs):
+def _add_params(argument_table, **kwargs):
     arg = SecondaryPrivateIpAddressesArgument(
         name='secondary-private-ip-addresses',
         help_text=SECONDARY_PRIVATE_IP_ADDRESSES_DOCS)

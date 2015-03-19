@@ -14,27 +14,7 @@ import random
 import string
 
 from botocore.exceptions import ClientError
-
-
-def create_bucket(session, name=None, region=None):
-    """
-    Creates a bucket
-    :returns: the name of the bucket created
-    """
-    if not region:
-        region = 'us-west-2'
-    client = session.create_client('s3', region_name=region)
-    if name:
-        bucket_name = name
-    else:
-        rand1 = ''.join(random.sample(string.ascii_lowercase + string.digits,
-                                      10))
-        bucket_name = 'awscli-s3test-' + str(rand1)
-    params = {'Bucket': bucket_name}
-    if region != 'us-east-1':
-        params['CreateBucketConfiguration'] = {'LocationConstraint': region}
-    client.create_bucket(**params)
-    return bucket_name
+from awscli.testutils import create_bucket
 
 
 def make_s3_files(session, key1='text1.txt', key2='text2.txt'):

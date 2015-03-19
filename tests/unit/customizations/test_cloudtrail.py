@@ -12,14 +12,15 @@
 # language governing permissions and limitations under the License.
 import json
 
-from mock import ANY, Mock, call
+from mock import ANY, Mock, call, patch
 from botocore.client import ClientError
+from botocore.session import Session
 
 from tests.unit.test_clidriver import FakeSession
 from awscli.compat import six
 from awscli.customizations import cloudtrail
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import unittest
+from awscli.testutils import unittest, temporary_file
 
 
 class TestCloudTrailPlumbing(unittest.TestCase):
@@ -45,6 +46,32 @@ class TestCreateSubscription(BaseAWSCommandParamsTest):
         # We don't want to overspecify here, but we'll do a quick check to make
         # sure it says log delivery is happening.
         self.assertIn('Logs will be delivered to foo', stdout)
+
+    @patch.object(Session, 'create_client')
+    def test_policy_from_paramfile(self, create_client_mock):
+        client = Mock()
+        # S3 mock calls
+        client.get_user.return_value = {'User': {'Arn': ':::::'}}
+        client.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': 404, 'Message': ''}}, 'HeadBucket')
+        # CloudTrail mock call
+        client.describe_trails.return_value = {}
+        create_client_mock.return_value = client
+
+        policy = '{"Statement": []}'
+
+        with temporary_file('w') as f:
+            f.write(policy)
+            f.flush()
+            command = (
+                'cloudtrail create-subscription --s3-new-bucket foo '
+                '--name bar --s3-custom-policy file://{0}'.format(f.name))
+            self.run_cmd(command, expected_rc=0)
+
+        # Ensure that the *contents* of the file are sent as the policy
+        # parameter to S3.
+        client.put_bucket_policy.assert_called_with(
+            Bucket='foo', Policy=policy)
 
 
 class TestCloudTrailCommand(unittest.TestCase):
@@ -162,6 +189,16 @@ class TestCloudTrailCommand(unittest.TestCase):
         with self.assertRaises(Exception):
             self.subscribe.setup_new_bucket('test2', 'logs')
 
+    def test_s3_custom_policy(self):
+        s3 = self.subscribe.s3
+        s3.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': '404', 'Message': ''}}, 'HeadBucket')
+
+        self.subscribe.setup_new_bucket('test', 'logs', custom_policy='{}')
+
+        s3.get_object.assert_not_called()
+        s3.put_bucket_policy.assert_called_with(Bucket='test', Policy='{}')
+
     def test_s3_create_set_policy_fail(self):
         s3 = self.subscribe.s3
         orig = s3.put_bucket_policy
@@ -223,6 +260,23 @@ class TestCloudTrailCommand(unittest.TestCase):
 
         s3.get_object.assert_called_with(
             Bucket='awscloudtrail-policy-us-east-1', Key=ANY)
+
+    def test_sns_custom_policy(self):
+        s3 = self.subscribe.s3
+        sns = self.subscribe.sns
+        sns.get_topic_attributes.return_value = {
+            'Attributes': {
+                'Policy': '{"Statement": []}'
+            }
+        }
+
+        policy = '{"Statement": []}'
+
+        self.subscribe.setup_new_topic('test', custom_policy=policy)
+
+        s3.get_object.assert_not_called()
+        sns.set_topic_attributes.assert_called_with(
+          TopicArn=ANY, AttributeName='Policy', AttributeValue=policy)
 
     def test_sns_create_already_exists(self):
         with self.assertRaises(Exception):

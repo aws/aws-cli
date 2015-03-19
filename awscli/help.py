@@ -284,10 +284,9 @@ class OperationHelpCommand(HelpCommand):
     """
     EventHandlerClass = OperationDocumentEventHandler
 
-    def __init__(self, session, service, operation, arg_table, name,
+    def __init__(self, session, operation_model, arg_table, name,
                  event_class):
-        HelpCommand.__init__(self, session, operation, None, arg_table)
-        self.service = service
+        HelpCommand.__init__(self, session, operation_model, None, arg_table)
         self.param_shorthand = ParamShorthand()
         self._name = name
         self._event_class = event_class

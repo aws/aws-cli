@@ -17,8 +17,6 @@ import json
 from mock import patch
 from botocore.vendored import requests
 
-http_response = requests.models.Response()
-http_response.status_code = 200
 
 DEFAULT_INSTANCE_GROUPS = [{'InstanceRole': 'TASK',
                             'InstanceCount': 10,
@@ -112,7 +110,7 @@ class TestAddInstanceGroups(BaseAWSCommandParamsTest):
 
     @patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):
-        call_patch.return_value = (http_response, ADD_INSTANCE_GROUPS_RESULT)
+        call_patch.return_value = ADD_INSTANCE_GROUPS_RESULT
         cmd = self.prefix
         cmd += ' InstanceGroupType=TASK,InstanceCount=10,InstanceType=m2.large'
 

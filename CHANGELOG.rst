@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.7.15
+======
+
+* feature:``aws elastictranscoder``: Add support for Applied Color
+  SpaceConversion.
+* bugfix:``aws --profile``: Fix issue where explicitly specifying profile
+  did not override credential environment variables.
+  (`botocore issue 486 <https://github.com/boto/botocore/pull/486>`__)
+* bugfix:``aws datapipeline list-runs``: Fix issue with
+  ``--schedule-interval`` parameter.
+  (`issue 1225 <https://github.com/aws/aws-cli/pull/1225>`__)
+* bugfix:``aws configservice subscribe``: Fix issue where users could not
+  subscribe to a s3 bucket that they had no HeadBucket permissions to.
+  (`issue 1223 <https://github.com/aws/aws-cli/pull/1223>`__)
+* bugfix:``aws cloudtrail create-subscription``: Fix issue where command would
+  try to fetch the contents at a url using the contents of the custom policy
+  as the url.
+  (`issue 1216 <https://github.com/aws/aws-cli/pull/1216/files>`__)
+
+
 1.7.14
 ======
 

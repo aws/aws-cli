@@ -22,11 +22,12 @@ def register_generate_cli_skeleton(cli):
     cli.register('building-argument-table', add_generate_skeleton)
 
 
-def add_generate_skeleton(operation, argument_table, **kwargs):
+def add_generate_skeleton(session, operation_model, argument_table, **kwargs):
     # This argument cannot support operations with streaming output which
     # is designated by the argument name `outfile`.
     if 'outfile' not in argument_table:
-        generate_cli_skeleton_argument = GenerateCliSkeletonArgument(operation)
+        generate_cli_skeleton_argument = GenerateCliSkeletonArgument(
+            session, operation_model)
         generate_cli_skeleton_argument.add_to_arg_table(argument_table)
 
 
@@ -49,13 +50,12 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         'group_name': 'generate_cli_skeleton'
     }
 
-    def __init__(self, operation_object):
-        self._operation_object = operation_object
-        super(GenerateCliSkeletonArgument, self).__init__(
-            self._operation_object.session)
+    def __init__(self, session, operation_model):
+        super(GenerateCliSkeletonArgument, self).__init__(session)
+        self._operation_model = operation_model
 
     def _register_argument_action(self):
-        self._operation_object.session.register(
+        self._session.register(
             'calling-command.*', self.generate_json_skeleton)
         super(GenerateCliSkeletonArgument, self)._register_argument_action()
 
@@ -67,7 +67,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         if getattr(parsed_args, 'generate_cli_skeleton', False):
 
             # Obtain the model of the operation
-            operation_model = self._operation_object.model
+            operation_model = self._operation_model
 
             # Generate the skeleton based on the ``input_shape``.
             argument_generator = ArgumentGenerator()

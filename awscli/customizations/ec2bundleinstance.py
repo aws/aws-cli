@@ -41,18 +41,20 @@ PREFIX_DOCS = ('The prefix for the image component names being stored '
 OWNER_AKID_DOCS = 'The access key ID of the owner of the Amazon S3 bucket.'
 
 # --policy
-POLICY_DOCS = ("An Amazon S3 upload policy that gives "
-               "Amazon EC2 permission to upload items into Amazon S3 "
-               "on the user's behalf. If you provide this parameter, "
-               "you must also provide "
-               "your secret access key, so we can create a policy "
-               "signature for you (the secret access key is not passed "
-               "to Amazon EC2). If you do not provide this parameter, "
-               "we generate an upload policy for you automatically. "
-               "For more information about upload policies see the "
-               "sections about policy construction and signatures in the "
-               '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/HTTPPOSTForms.html">'
-               'Amazon Simple Storage Service Developer Guide</a>.')
+POLICY_DOCS = (
+    "An Amazon S3 upload policy that gives "
+    "Amazon EC2 permission to upload items into Amazon S3 "
+    "on the user's behalf. If you provide this parameter, "
+    "you must also provide "
+    "your secret access key, so we can create a policy "
+    "signature for you (the secret access key is not passed "
+    "to Amazon EC2). If you do not provide this parameter, "
+    "we generate an upload policy for you automatically. "
+    "For more information about upload policies see the "
+    "sections about policy construction and signatures in the "
+    '<a href="http://docs.aws.amazon.com/AmazonS3/latest/dev'
+    '/HTTPPOSTForms.html">'
+    'Amazon Simple Storage Service Developer Guide</a>.')
 
 # --owner-sak
 OWNER_SAK_DOCS = ('The AWS secret access key for the owner of the '
@@ -61,7 +63,7 @@ OWNER_SAK_DOCS = ('The AWS secret access key for the owner of the '
                   'signature can be computed for the policy.')
 
 
-def _add_params(argument_table, operation, **kwargs):
+def _add_params(argument_table, **kwargs):
     # Add the scalar parameters and also change the complex storage
     # param to not be required so the user doesn't get an error from
     # argparse if they only supply scalar params.
@@ -141,7 +143,7 @@ def _generate_signature(params):
 def _check_params(params, **kwargs):
     # Called just before call but prior to building the params.
     # Adds information not supplied by the user.
-    storage = params['storage']['S3']
+    storage = params['Storage']['S3']
     if 'UploadPolicy' not in storage:
         _generate_policy(storage)
     if 'UploadPolicySignature' not in storage:
@@ -152,7 +154,7 @@ EVENTS = [
     ('building-argument-table.ec2.bundle-instance', _add_params),
     ('operation-args-parsed.ec2.bundle-instance', _check_args),
     ('before-parameter-build.ec2.BundleInstance', _check_params),
-    ]
+]
 
 
 def register_bundleinstance(event_handler):
@@ -169,10 +171,9 @@ class BundleArgument(CustomArgument):
 
     def _build_storage(self, params, value):
         # Build up the Storage data structure
-        if 'storage' not in params:
-            params['storage'] = {'S3': {}}
-        params['storage']['S3'][self._storage_param] = value
-
+        if 'Storage' not in params:
+            params['Storage'] = {'S3': {}}
+        params['Storage']['S3'][self._storage_param] = value
 
     def add_to_params(self, parameters, value):
         if value:

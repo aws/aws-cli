@@ -14,6 +14,7 @@ from awscli.testutils import unittest
 from awscli.testutils import BaseAWSHelpOutputTest
 
 import mock
+from botocore.exceptions import ClientError
 
 from awscli.customizations import utils
 
@@ -63,3 +64,36 @@ class TestValidateMututuallyExclusiveGroups(unittest.TestCase):
         parsed = FakeParsedArgs(foo='one', bar=None, qux='three')
         with self.assertRaises(ValueError):
             utils.validate_mutually_exclusive(parsed, *groups)
+
+
+class TestS3BucketExists(unittest.TestCase):
+    def setUp(self):
+        self.s3_client = mock.Mock()
+        self.bucket_name = 'mybucket'
+        self.error_response = {
+            'Error': {
+                'Code': '404',
+                'Message': 'Not Found'
+            }
+        }
+        self.bucket_no_exists_error = ClientError(
+            self.error_response,
+            'HeadBucket'
+        )
+
+    def test_bucket_exists(self):
+        self.assertTrue(
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+
+    def test_bucket_not_exists(self):
+        self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
+        self.assertFalse(
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+
+    def test_bucket_exists_with_non_404(self):
+        self.error_response['Error']['Code'] = '403'
+        self.error_response['Error']['Message'] = 'Forbidden'
+        forbidden_error = ClientError(self.error_response, 'HeadBucket')
+        self.s3_client.head_bucket.side_effect = forbidden_error
+        self.assertTrue(
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name))

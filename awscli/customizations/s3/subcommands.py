@@ -619,7 +619,6 @@ class CommandArchitecture(object):
         self.parameters = parameters
         self.instructions = []
         self._runtime_config = runtime_config
-        self._service = self.session.get_service('s3')
         self._endpoint = None
         self._source_endpoint = None
         self._client = None

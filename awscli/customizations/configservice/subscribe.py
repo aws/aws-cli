@@ -14,6 +14,7 @@ import json
 import sys
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import s3_bucket_exists
 from awscli.customizations.s3.utils import find_bucket_key
 
 
@@ -138,17 +139,16 @@ class S3BucketHelper(object):
         bucket_exists = self._check_bucket_exists(bucket)
         if not bucket_exists:
             self._create_bucket(bucket)
+            sys.stdout.write('Using new S3 bucket: %s\n' % bucket)
+        else:
+            sys.stdout.write('Using existing S3 bucket: %s\n' % bucket)
         return bucket, key
 
     def _check_bucket_exists(self, bucket):
-        bucket_exists = True
-        try:
-            # See if the bucket exists by running a head bucket
-            self._s3_client.head_bucket(Bucket=bucket)
-        except Exception:
-            # If a client error is thrown than the bucket does not exist.
-            bucket_exists = False
-        return bucket_exists
+        self._s3_client.meta.events.unregister(
+            'after-call',
+            unique_id='awscli-error-handler')
+        return s3_bucket_exists(self._s3_client, bucket)
 
     def _create_bucket(self, bucket):
         region_name = self._s3_client._endpoint.region_name
@@ -171,6 +171,9 @@ class SNSTopicHelper(object):
         if not self._check_is_arn(sns_topic):
             response = self._sns_client.create_topic(Name=sns_topic)
             sns_topic_arn = response['TopicArn']
+            sys.stdout.write('Using new SNS topic: %s\n' % sns_topic_arn)
+        else:
+            sys.stdout.write('Using existing SNS topic: %s\n' % sns_topic_arn)
         return sns_topic_arn
 
     def _check_is_arn(self, sns_topic):

@@ -277,7 +277,7 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
         result['BootstrapActions'] += [self._create_setup_emrfs_ba_config(
             setup_emrfs_ba_key_values)]
 
-        self.assert_params_for_cmd2(cmd, result)
+        self.assert_params_for_cmd(cmd, result)
 
     def _create_setup_emrfs_ba_config(self, ba_arg_values):
         ba_arg_keys = ['-e' for x in ba_arg_values]

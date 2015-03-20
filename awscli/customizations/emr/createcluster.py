@@ -206,9 +206,8 @@ class CreateCluster(Command):
 
         if parsed_args.applications is not None:
             app_list, ba_list, step_list = applicationutils.build_applications(
-                session=self._session,
+                region=self.region,
                 parsed_applications=parsed_args.applications,
-                parsed_globals=parsed_globals,
                 ami_version=params['AmiVersion'])
             self._update_cluster_dict(
                 params, 'NewSupportedProducts', app_list)
@@ -237,7 +236,7 @@ class CreateCluster(Command):
 
         if parsed_args.emrfs is not None:
             emr_fs_ba_config_list = emrfsutils.build_bootstrap_action_configs(
-                parsed_globals, parsed_args.emrfs)
+                self.region, parsed_args.emrfs)
 
             self._update_cluster_dict(
                 cluster=params, key='BootstrapActions',
@@ -246,16 +245,15 @@ class CreateCluster(Command):
         if parsed_args.steps is not None:
             steps_list = steputils.build_step_config_list(
                 parsed_step_list=parsed_args.steps,
-                region=parsed_globals.region)
+                region=self.region)
             self._update_cluster_dict(
                 cluster=params, key='Steps', value=steps_list)
 
         self._validate_required_applications(parsed_args)
 
         run_job_flow_response = emrutils.call(
-            self._session, 'run_job_flow', params,
-            parsed_globals.region, parsed_globals.endpoint_url,
-            parsed_globals.verify_ssl)
+            self._session, 'run_job_flow', params, self.region,
+            parsed_globals.endpoint_url, parsed_globals.verify_ssl)
 
         constructed_result = self._construct_result(run_job_flow_response)
         emrutils.display_response(self._session, 'run_job_flow',
@@ -358,10 +356,10 @@ class CreateCluster(Command):
         return emrutils.build_step(
             name=constants.DEBUGGING_NAME,
             action_on_failure=constants.TERMINATE_CLUSTER,
-            jar=emrutils.get_script_runner(parsed_globals.region),
+            jar=emrutils.get_script_runner(self.region),
             args=[emrutils.build_s3_link(
                 relative_path=constants.DEBUGGING_PATH,
-                region=parsed_globals.region)])
+                region=self.region)])
 
     def _update_cluster_dict(self, cluster, key, value):
         if key in cluster.keys():

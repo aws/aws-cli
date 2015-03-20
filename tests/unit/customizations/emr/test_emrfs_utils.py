@@ -14,12 +14,16 @@
 import copy
 import os
 
+from awscli.customizations.emr.emrfsutils import build_bootstrap_action_configs
 from awscli.customizations.emr.emrfsutils import CONSISTENT_OPTION_NAME
 from awscli.customizations.emr.emrfsutils import CSE_CUSTOM_OPTION_NAME
 from awscli.customizations.emr.emrfsutils import CSE_KMS_OPTION_NAME
 from awscli.customizations.emr.emrfsutils import CSE_OPTION_NAME
+
+
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
+import argparse
 
 
 DEFAULT_INSTANCES = {

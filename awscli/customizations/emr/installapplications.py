@@ -40,7 +40,7 @@ class InstallApplications(Command):
 
         self._check_for_supported_apps(parsed_args.applications)
         parameters['Steps'] = applicationutils.build_applications(
-            self._session, parsed_args.applications, parsed_globals)[2]
+            self.region, parsed_args.applications)[2]
 
         emrutils.call_and_display_response(self._session, 'AddJobFlowSteps',
                                            parameters, parsed_globals)

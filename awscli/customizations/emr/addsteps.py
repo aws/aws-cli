@@ -38,7 +38,7 @@ class AddSteps(Command):
     def _run_main_command(self, parsed_args, parsed_globals):
         parsed_steps = parsed_args.steps
         step_list = steputils.build_step_config_list(
-            parsed_step_list=parsed_steps, region=parsed_globals.region)
+            parsed_step_list=parsed_steps, region=self.region)
         parameters = {
             'JobFlowId': parsed_args.cluster_id,
             'Steps': step_list

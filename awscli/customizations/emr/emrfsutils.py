@@ -30,7 +30,7 @@ CSE_KMS_OPTION_NAME = '--emrfs Encryption=ClientSide,ProviderType=KMS'
 CSE_CUSTOM_OPTION_NAME = '--emrfs Encryption=ClientSide,ProviderType=Custom'
 
 
-def build_bootstrap_action_configs(parsed_globals, emrfs_args):
+def build_bootstrap_action_configs(region, emrfs_args):
     bootstrap_actions = []
 
     _verify_emrfs_args(emrfs_args)
@@ -52,7 +52,7 @@ def build_bootstrap_action_configs(parsed_globals, emrfs_args):
         emrutils.build_bootstrap_action(
             path=emrutils.build_s3_link(
                 relative_path=constants.CONFIG_HADOOP_PATH,
-                region=parsed_globals.region),
+                region=region),
             name=constants.EMRFS_BA_NAME,
             args=emrfs_setup_ba_args))
 

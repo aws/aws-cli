@@ -154,13 +154,12 @@ class CreateDefaultRoles(Command):
         ec2_result = None
         emr_result = None
         self.iam_endpoint_url = parsed_args.iam_endpoint
-        region = self._get_region(parsed_globals)
 
-        self._check_for_iam_endpoint(region, self.iam_endpoint_url)
+        self._check_for_iam_endpoint(self.region, self.iam_endpoint_url)
         self.emr_endpoint_url = \
             self._session.create_client(
                 'emr',
-                region_name=parsed_globals.region,
+                region_name=self.region,
                 endpoint_url=parsed_globals.endpoint_url,
                 verify=parsed_globals.verify_ssl).meta.endpoint_url
 
@@ -236,14 +235,6 @@ class CreateDefaultRoles(Command):
                          'RolePolicy': role_policy})
             return list
 
-    def _get_region(self, parsed_globals):
-        region = self._session.get_config_variable('region')
-
-        if parsed_globals.region is not None:
-            region = parsed_globals.region
-
-        return region
-
     def _check_if_role_exists(self, role_name, parsed_globals):
         parameters = {'RoleName': role_name}
         try:
@@ -317,6 +308,6 @@ class CreateDefaultRoles(Command):
 
     def _call_iam_operation(self, operation_name, parameters, parsed_globals):
         client = self._session.create_client(
-            'iam', parsed_globals.region,
-            self.iam_endpoint_url, parsed_globals.verify_ssl)
+            'iam', self.region, self.iam_endpoint_url,
+            parsed_globals.verify_ssl)
         return getattr(client, xform_name(operation_name))(**parameters)

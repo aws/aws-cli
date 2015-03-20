@@ -67,7 +67,7 @@ class DescribeCluster(Command):
     def _call(self, session, operation_name, parameters, parsed_globals):
         return emrutils.call(
             session, operation_name, parameters,
-            region_name=parsed_globals.region,
+            region_name=self.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
 

@@ -15,11 +15,13 @@ import logging
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.emr import config
 from awscli.customizations.emr import configutils
+from awscli.customizations.emr import emrutils
 
 LOG = logging.getLogger(__name__)
 
 
 class Command(BasicCommand):
+    region = None
 
     def supports_arg(self, name):
         return any((x['name'] == name for x in self.ARG_TABLE))
@@ -27,6 +29,7 @@ class Command(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         self._apply_configs(parsed_args,
                             configutils.get_configs(self._session))
+        self.region = emrutils.get_region(self._session, parsed_globals)
         return self._run_main_command(parsed_args, parsed_globals)
 
     def _apply_configs(self, parsed_args, parsed_configs):

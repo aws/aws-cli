@@ -179,7 +179,7 @@ def dict_to_string(dict, indent=2):
 def get_client(session, parsed_globals):
     return session.create_client(
         'emr',
-        region_name=parsed_globals.region,
+        region_name=get_region(session, parsed_globals),
         endpoint_url=parsed_globals.endpoint_url,
         verify=parsed_globals.verify_ssl)
 
@@ -255,6 +255,13 @@ def display_response(session, operation_name, result, parsed_globals):
     # is moved outside CliOperationCaller.
     cli_operation_caller._display_response(
         operation_name, result, parsed_globals)
+
+
+def get_region(session, parsed_globals):
+    region = parsed_globals.region
+    if region is None:
+        region = session.get_config_variable('region')
+    return region
 
 
 def join(values, separator=',', lastSeparator='and'):

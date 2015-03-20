@@ -530,7 +530,7 @@ class ServiceOperation(object):
             # No override value was supplied.
             return self._operation_caller.invoke(
                 self._operation_model.service_model.service_name,
-                self._operation_model.name,
+                self._operation_model.api_name,
                 call_parameters, parsed_globals)
 
     def create_help_command(self):

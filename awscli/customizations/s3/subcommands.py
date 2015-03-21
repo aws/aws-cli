@@ -398,7 +398,7 @@ class ListCommand(S3Command):
     DESCRIPTION = ("List S3 objects and common prefixes under a prefix or "
                    "all S3 buckets. Note that the --output argument "
                    "is ignored for this command.")
-    USAGE = "<S3Path> or NONE"
+    USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
                  PAGE_SIZE, HUMAN_READABLE, SUMMARIZE]
@@ -537,7 +537,7 @@ class ListCommand(S3Command):
 class WebsiteCommand(S3Command):
     NAME = 'website'
     DESCRIPTION = 'Set the website configuration for a bucket.'
-    USAGE = '<S3Path>'
+    USAGE = '<S3Uri>'
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, INDEX_DOCUMENT, ERROR_DOCUMENT]
 
@@ -645,8 +645,8 @@ class CpCommand(S3TransferCommand):
     NAME = 'cp'
     DESCRIPTION = "Copies a local file or S3 object to another location " \
                   "locally or in S3."
-    USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-            "or <S3Path> <S3Path>"
+    USAGE = "<LocalPath> <S3Uri> or <S3Uri> <LocalPath> " \
+            "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
                 [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
@@ -656,8 +656,8 @@ class MvCommand(S3TransferCommand):
     NAME = 'mv'
     DESCRIPTION = "Moves a local file or S3 object to " \
                   "another location locally or in S3."
-    USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-            "or <S3Path> <S3Path>"
+    USAGE = "<LocalPath> <S3Uri> or <S3Uri> <LocalPath> " \
+            "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
                                                          RECURSIVE]
@@ -665,7 +665,7 @@ class MvCommand(S3TransferCommand):
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
     DESCRIPTION = "Deletes an S3 object."
-    USAGE = "<S3Path>"
+    USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
                  EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
@@ -677,8 +677,8 @@ class SyncCommand(S3TransferCommand):
                   "new and updated files from the source directory to " \
                   "the destination. Only creates folders in the destination " \
                   "if they contain one or more files."
-    USAGE = "<LocalPath> <S3Path> or <S3Path> " \
-            "<LocalPath> or <S3Path> <S3Path>"
+    USAGE = "<LocalPath> <S3Uri> or <S3Uri> " \
+            "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS
 
@@ -686,7 +686,7 @@ class SyncCommand(S3TransferCommand):
 class MbCommand(S3TransferCommand):
     NAME = 'mb'
     DESCRIPTION = "Creates an S3 bucket."
-    USAGE = "<S3Path>"
+    USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}]
 
@@ -700,7 +700,7 @@ class RbCommand(S3TransferCommand):
         "the non-versioned objects in the bucket before the bucket is "
         "deleted."
     )
-    USAGE = "<S3BucketPath>"
+    USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]
 
@@ -1132,11 +1132,11 @@ class CommandParameters(object):
                     'It %s is specified, %s must be specified '
                     'as well.' % (sse_c_key_type_param, sse_c_type_param)
                 )
-        
+
     def _validate_sse_c_copy_source_for_paths(self):
         if self.parameters.get('sse_c_copy_source'):
             if self.parameters['paths_type'] != 's3s3':
                 raise ValueError(
                     '--sse-c-copy-source is only supported for '
                     'copy operations.'
-                )      
+                )

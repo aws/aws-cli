@@ -303,7 +303,7 @@ class ListCommand(S3Command):
     DESCRIPTION = ("List S3 objects and common prefixes under a prefix or "
                    "all S3 buckets. Note that the --output argument "
                    "is ignored for this command.")
-    USAGE = "<S3Path> or NONE"
+    USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
                  PAGE_SIZE, HUMAN_READABLE, SUMMARIZE]
@@ -442,7 +442,7 @@ class ListCommand(S3Command):
 class WebsiteCommand(S3Command):
     NAME = 'website'
     DESCRIPTION = 'Set the website configuration for a bucket.'
-    USAGE = '<S3Path>'
+    USAGE = '<S3Uri>'
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, INDEX_DOCUMENT, ERROR_DOCUMENT]
 
@@ -545,8 +545,8 @@ class CpCommand(S3TransferCommand):
     NAME = 'cp'
     DESCRIPTION = "Copies a local file or S3 object to another location " \
                   "locally or in S3."
-    USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-            "or <S3Path> <S3Path>"
+    USAGE = "<LocalPath> <S3Uri> or <S3Uri> <LocalPath> " \
+            "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
                 [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
@@ -557,8 +557,8 @@ class MvCommand(S3TransferCommand):
     NAME = 'mv'
     DESCRIPTION = "Moves a local file or S3 object to " \
                   "another location locally or in S3."
-    USAGE = "<LocalPath> <S3Path> or <S3Path> <LocalPath> " \
-            "or <S3Path> <S3Path>"
+    USAGE = "<LocalPath> <S3Uri> or <S3Uri> <LocalPath> " \
+            "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
                                                          RECURSIVE]
@@ -568,7 +568,7 @@ class MvCommand(S3TransferCommand):
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
     DESCRIPTION = "Deletes an S3 object."
-    USAGE = "<S3Path>"
+    USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
                  EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
@@ -578,8 +578,8 @@ class RmCommand(S3TransferCommand):
 class SyncCommand(S3TransferCommand):
     NAME = 'sync'
     DESCRIPTION = "Syncs directories and S3 prefixes."
-    USAGE = "<LocalPath> <S3Path> or <S3Path> " \
-            "<LocalPath> or <S3Path> <S3Path>"
+    USAGE = "<LocalPath> <S3Uri> or <S3Uri> " \
+            "<LocalPath> or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS
     EXAMPLES = BasicCommand.FROM_FILE('s3/sync.rst')
@@ -588,7 +588,7 @@ class SyncCommand(S3TransferCommand):
 class MbCommand(S3TransferCommand):
     NAME = 'mb'
     DESCRIPTION = "Creates an S3 bucket."
-    USAGE = "<S3Path>"
+    USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}]
     EXAMPLES = BasicCommand.FROM_FILE('s3/mb.rst')
@@ -597,7 +597,7 @@ class MbCommand(S3TransferCommand):
 class RbCommand(S3TransferCommand):
     NAME = 'rb'
     DESCRIPTION = "Deletes an S3 bucket."
-    USAGE = "<S3Path>"
+    USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]
     EXAMPLES = BasicCommand.FROM_FILE('s3/rb.rst')

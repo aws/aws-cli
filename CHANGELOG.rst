@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Tab Completion: Fix issue where tab completion could not
+  handle an ``LC_CTYPE`` of ``UTF-8``
+  (`issue 1233 <https://github.com/aws/aws-cli/pull/1233>`__)
+
+
 1.7.15
 ======
 

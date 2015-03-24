@@ -73,5 +73,5 @@ else:
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.
         if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
+            encoding = locale.getpreferredencoding(do_setlocale=False)
         return io.open(filename, mode, encoding=encoding)

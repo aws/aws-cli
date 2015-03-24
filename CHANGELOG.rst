@@ -2,9 +2,19 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.16
+======
 
+* feature:``aws ec2 wait image-available``:  Add support for polling
+  until an EC2 image is available
+  (`issue 1105 <https://github.com/aws/aws-cli/issues/1105>`__)
+* feature:``aws ec2 wait``: Add support for additional EC2 waiters
+  including ``instance-status-ok``, ``password-data-available``,
+  ``spot-instance-request-fulfilled``, and ``system-status-ok``
+* feature:``aws s3api``: Add support for Amazon S3 cross region
+  replication
+* feature:``aws s3api``:  Add support for Amazon S3 requester pays
+  (`issue 797 <https://github.com/aws/aws-cli/issues/797>`__)
 * bugfix:Tab Completion: Fix issue where tab completion could not
   handle an ``LC_CTYPE`` of ``UTF-8``
   (`issue 1233 <https://github.com/aws/aws-cli/pull/1233>`__)
@@ -13,7 +23,11 @@ Next Release (TBD)
   (`botocore issue 495 <https://github.com/boto/botocore/pull/495>`__)
 * bugfix:``aws cloudfront``: Fix issue when calling cloudfront
   commands
-  (`botocore issue 497 <https://github.com/boto/botocore/pull/497>`__)
+  (`issue 1234 <https://github.com/aws/aws-cli/issues/1234>`__)
+* bugfix:``aws ec2 copy-snapshot``: Fix issue with the
+  ``aws ec2 copy-snapshot`` command not correctly generating the
+  presigned url argument
+  (`botocore issue 498 <https://github.com/boto/botocore/pull/498>`__)
 
 
 1.7.15

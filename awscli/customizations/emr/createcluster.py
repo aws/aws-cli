@@ -35,7 +35,11 @@ class CreateCluster(Command):
         'Creates and starts running an EMR cluster.\n'
         '\nQuick start:\n'
         '\naws emr create-cluster --ami-version <ami-version> --instance-type'
-        ' <instance-type> [--instance-count <instance-count>]\n')
+        ' <instance-type> [--instance-count <instance-count>]\n'
+        '\nValues for variables Instance Profile (under EC2 Attributes), '
+        'Service Role, Log URI, and Key Name (under EC2 Attributes) can be '
+        'set in the AWS CLI config file using the "aws configure set" '
+        'command.\n')
     ARG_TABLE = [
         {'name': 'ami-version',
          'help_text': helptext.AMI_VERSION,

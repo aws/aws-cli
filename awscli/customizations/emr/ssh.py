@@ -20,11 +20,15 @@ from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import sshutils
 from awscli.customizations.emr.command import Command
 
+KEY_PAIR_FILE_HELP_TEXT = '\nA value for the variable Key Pair File ' \
+    'can be set in the AWS CLI config file using the "aws configure set" ' \
+    'command.\n'
+
 
 class Socks(Command):
     NAME = 'socks'
-    DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine \
-                   to the master.')
+    DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine '
+                   'to the master.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -63,7 +67,8 @@ class Socks(Command):
 
 class SSH(Command):
     NAME = 'ssh'
-    DESCRIPTION = ('SSH into master node of the cluster.')
+    DESCRIPTION = ('SSH into master node of the cluster.\n%s' %
+                   KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -107,7 +112,8 @@ class SSH(Command):
 
 class Put(Command):
     NAME = 'put'
-    DESCRIPTION = ('Put file onto the master node.')
+    DESCRIPTION = ('Put file onto the master node.\n%s' %
+                   KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to put file onto'},
@@ -147,7 +153,7 @@ class Put(Command):
 
 class Get(Command):
     NAME = 'get'
-    DESCRIPTION = ('Get file from master node.')
+    DESCRIPTION = ('Get file from master node.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to get file from'},

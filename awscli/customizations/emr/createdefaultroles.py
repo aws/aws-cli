@@ -139,7 +139,17 @@ class CreateDefaultRoles(Command):
     DESCRIPTION = ('Creates the default IAM role ' +
                    EC2_ROLE_NAME + ' and ' +
                    EMR_ROLE_NAME + ' which can be used when'
-                   ' creating the cluster using the create-cluster command.')
+                   ' creating the cluster using the create-cluster command.\n'
+                   '\nIf you do not have a Service Role and Instance Profile '
+                   'variable set for your create-cluster command in the AWS '
+                   'CLI config file, create-default-roles will automatically '
+                   'set the values for these variables with these default '
+                   'roles. If you have already set a value for Service Role '
+                   'or Instance Profile, create-default-roles will not '
+                   'automatically set the defaults for these variables in the '
+                   'AWS CLI config file. You can view settings for variables '
+                   'in the config file using the "aws configure get" command.'
+                   '\n')
     ARG_TABLE = [
         {'name': 'iam-endpoint',
          'no_paramfile': True,

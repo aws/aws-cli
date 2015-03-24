@@ -8,6 +8,9 @@ Next Release (TBD)
 * bugfix:Tab Completion: Fix issue where tab completion could not
   handle an ``LC_CTYPE`` of ``UTF-8``
   (`issue 1233 <https://github.com/aws/aws-cli/pull/1233>`__)
+* bugfix:``aws s3api put-bucket-notification``: Fix issue where
+  an empty notification configuration could not be specified
+  (`botocore issue 495 <https://github.com/boto/botocore/pull/495>`__)
 
 
 1.7.15

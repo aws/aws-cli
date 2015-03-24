@@ -46,7 +46,7 @@ if six.PY3:
 
         """
         if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
+            encoding = locale.getpreferredencoding(do_setlocale=False)
         return open(filename, mode, encoding=encoding)
 
 else:
@@ -68,7 +68,7 @@ else:
         # unicode to the returned stream.  Note that get_stdout_text_writer
         # just returns sys.stdout in the PY3 section above because python3
         # handles this.
-        return codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+        return codecs.getwriter(locale.getpreferredencoding(do_setlocale=False))(sys.stdout)
 
     def compat_open(filename, mode='r', encoding=None):
         # See docstring for compat_open in the PY3 section above.

@@ -13,7 +13,11 @@ Next Release (TBD)
   (`botocore issue 495 <https://github.com/boto/botocore/pull/495>`__)
 * bugfix:``aws cloudfront``: Fix issue when calling cloudfront
   commands
-  (`botocore issue 497 <https://github.com/boto/botocore/pull/497>`__)
+  (`issue 1234 <https://github.com/aws/aws-cli/issues/1234>`__)
+* bugfix:``aws ec2 copy-snapshot``: Fix issue with the
+  ``aws ec2 copy-snapshot`` command not correctly generating the
+  presigned url argument
+  (`botocore issue 498 <https://github.com/boto/botocore/pull/498>`__)
 
 
 1.7.15

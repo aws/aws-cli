@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.16
+======
 
 * feature:``aws ec2 wait image-available``:  Add support for polling
   until an EC2 image is available

@@ -14,11 +14,11 @@ from awscli.testutils import BaseAWSPreviewCommandParamsTest as \
     BaseAWSCommandParamsTest
 
 
-class TestListDistributions(BaseAWSCommandParamsTest):
+class TestGetDistributionConfig(BaseAWSCommandParamsTest):
 
     prefix = 'cloudfront get-distribution-config'
 
-    def test_list_distributions(self):
+    def test_get_distribution_config(self):
         cmdline = self.prefix
         cmdline += ' --id foo'
         result = {'Id': 'foo'}

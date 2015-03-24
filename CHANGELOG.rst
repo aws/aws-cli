@@ -11,6 +11,9 @@ Next Release (TBD)
 * bugfix:``aws s3api put-bucket-notification``: Fix issue where
   an empty notification configuration could not be specified
   (`botocore issue 495 <https://github.com/boto/botocore/pull/495>`__)
+* bugfix:``aws cloudfront``: Fix issue when calling cloudfront
+  commands
+  (`botocore issue 497 <https://github.com/boto/botocore/pull/497>`__)
 
 
 1.7.15

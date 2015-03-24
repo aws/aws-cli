@@ -285,7 +285,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
  
     aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs file://emrfs.json
 
-**20. To enable server-side encryption in EMRFS when creating an Amazon EMR cluster**
+**20. To enable Amazon S3 server-side encryption in EMRFS when creating an Amazon EMR cluster**
  
 - Command (Use Encryption=ServerSide)::
 
@@ -306,7 +306,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
       "Args": ["fs.s3.serverSideEncryptionAlgorithm=AES256"]
     }
  
-**21. To enable EMRFS client-side encryption using a key managed by AWS Key Management Service (KMS) when creating an Amazon EMR cluster**
+**21. To enable Amazon S3 client-side encryption using a key managed by AWS Key Management Service (KMS) in EMRFS when creating an Amazon EMR cluster**
  
 - Command::
  
@@ -328,7 +328,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
       "KMSKeyId": "myKMSKeyId"
     }
  
-**22. To enable EMRFS client-side encryption with a custom encryption provider when creating an Amazon EMR cluster**
+**22. To enable Amazon S3 client-side encryption with a custom encryption provider in EMRFS when creating an Amazon EMR cluster**
  
 - Command::
  
@@ -351,7 +351,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
       "CustomProviderClass": "classname"
     }
 
-**23. To enable EMRFS client-side encryption with a custom encryption provider and passing arguments expected by the class**
+**23. To enable Amazon S3 client-side encryption with a custom encryption provider in EMRFS and passing arguments expected by the class**
  
 - Command::
 

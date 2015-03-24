@@ -5,6 +5,16 @@ CHANGELOG
 Next Release (TBD)
 ==================
 
+* feature:``aws ec2 wait image-available``:  Add support for polling
+  until an EC2 image is available
+  (`issue 1105 <https://github.com/aws/aws-cli/issues/1105>`__)
+* feature:``aws ec2 wait``: Add support for additional EC2 waiters
+  including ``instance-status-ok``, ``password-data-available``,
+  ``spot-instance-request-fulfilled``, and ``system-status-ok``
+* feature:``aws s3api``: Add support for Amazon S3 cross region
+  replication
+* feature:``aws s3api``:  Add support for Amazon S3 requester pays
+  (`issue 797 <https://github.com/aws/aws-cli/issues/797>`__)
 * bugfix:Tab Completion: Fix issue where tab completion could not
   handle an ``LC_CTYPE`` of ``UTF-8``
   (`issue 1233 <https://github.com/aws/aws-cli/pull/1233>`__)

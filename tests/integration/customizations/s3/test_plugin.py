@@ -335,6 +335,7 @@ class TestCp(BaseS3CLICommand):
             rc = process.poll()
             if rc is not None:
                 break
+            time.sleep(1)
         else:
             process.kill()
             self.fail("CLI did not exist within 30 seconds of "

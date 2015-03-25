@@ -15,6 +15,7 @@ from awscli.customizations.emr import constants
 
 
 class EmrError(Exception):
+
     """
     The base exception class for Emr exceptions.
 
@@ -29,10 +30,11 @@ class EmrError(Exception):
 
 
 class MissingParametersError(EmrError):
+
     """
     One or more required parameters were not supplied.
 
-    :ivar object: The object that has missing parameters.
+    :ivar object_name: The object that has missing parameters.
         This can be an operation or a parameter (in the
         case of inner params).  The str() of this object
         will be used so it doesn't need to implement anything
@@ -44,6 +46,7 @@ class MissingParametersError(EmrError):
 
 
 class EmptyListError(EmrError):
+
     """
     The provided list is empty.
 
@@ -53,6 +56,7 @@ class EmptyListError(EmrError):
 
 
 class MissingRequiredInstanceGroupsError(EmrError):
+
     """
     In create-cluster command, none of --instance-group,
     --instance-count nor --instance-type were not supplied.
@@ -63,6 +67,7 @@ class MissingRequiredInstanceGroupsError(EmrError):
 
 
 class InstanceGroupsValidationError(EmrError):
+
     """
     --instance-type and --instance-count are shortcut option
     for --instance-groups and they cannot be specified
@@ -75,6 +80,7 @@ class InstanceGroupsValidationError(EmrError):
 
 
 class InvalidAmiVersionError(EmrError):
+
     """
     The supplied ami-version is invalid.
     :ivar ami_version: The provided ami_version.
@@ -87,6 +93,7 @@ class InvalidAmiVersionError(EmrError):
 
 
 class MissingBooleanOptionsError(EmrError):
+
     """
     Required boolean options are not supplied.
 
@@ -98,6 +105,7 @@ class MissingBooleanOptionsError(EmrError):
 
 
 class UnknownStepTypeError(EmrError):
+
     """
     The provided step type is not supported.
 
@@ -107,6 +115,7 @@ class UnknownStepTypeError(EmrError):
 
 
 class UnknownIamEndpointError(EmrError):
+
     """
     The IAM endpoint is not known for the specified region.
 
@@ -117,6 +126,7 @@ class UnknownIamEndpointError(EmrError):
 
 
 class ResolveServicePrincipalError(EmrError):
+
     """
     The service principal could not be resolved from the region or the
     endpoint.
@@ -126,6 +136,7 @@ class ResolveServicePrincipalError(EmrError):
 
 
 class LogUriError(EmrError):
+
     """
     The LogUri is not specified and debugging is enabled for the cluster.
     """
@@ -134,6 +145,7 @@ class LogUriError(EmrError):
 
 
 class MasterDNSNotAvailableError(EmrError):
+
     """
     Cannot get public dns of master node on the cluster.
     """
@@ -142,6 +154,7 @@ class MasterDNSNotAvailableError(EmrError):
 
 
 class WrongPuttyKeyError(EmrError):
+
     """
     A wrong key has been used with a compatible program.
     """
@@ -151,6 +164,7 @@ class WrongPuttyKeyError(EmrError):
 
 
 class WrongSSHKeyError(EmrError):
+
     """
     A wrong key has been used with a compatible program.
     """
@@ -160,6 +174,7 @@ class WrongSSHKeyError(EmrError):
 
 
 class SSHNotFoundError(EmrError):
+
     """
     SSH or Putty not available.
     """
@@ -169,6 +184,7 @@ class SSHNotFoundError(EmrError):
 
 
 class SCPNotFoundError(EmrError):
+
     """
     SCP or Pscp not available.
     """
@@ -178,6 +194,7 @@ class SCPNotFoundError(EmrError):
 
 
 class SubnetAndAzValidationError(EmrError):
+
     """
     SubnetId and AvailabilityZone are mutual exclusive in --ec2-attributes.
     """
@@ -186,6 +203,7 @@ class SubnetAndAzValidationError(EmrError):
 
 
 class MutualExclusiveOptionError(EmrError):
+
     """
     The provided option1 and option2 are mutually exclusive.
 
@@ -193,6 +211,7 @@ class MutualExclusiveOptionError(EmrError):
     :ivar option2
     :ivar message (optional)
     """
+
     def __init__(self, **kwargs):
         msg = ('aws: error: You cannot specify both ' +
                kwargs.get('option1', '') + ' and ' +
@@ -202,6 +221,7 @@ class MutualExclusiveOptionError(EmrError):
 
 
 class MissingApplicationsError(EmrError):
+
     """
     The application required for a step is not installed when creating a
     cluster.
@@ -218,6 +238,7 @@ class MissingApplicationsError(EmrError):
 
 
 class ClusterTerminatedError(EmrError):
+
     """
     The cluster is terminating or has already terminated.
     """
@@ -225,6 +246,7 @@ class ClusterTerminatedError(EmrError):
 
 
 class ClusterStatesFilterValidationError(EmrError):
+
     """
     In the list-clusters command, customers can specify only one
     of the following states filters:
@@ -236,6 +258,7 @@ class ClusterStatesFilterValidationError(EmrError):
 
 
 class MissingClusterAttributesError(EmrError):
+
     """
     In the modify-cluster-attributes command, customers need to provide
     at least one of the following cluster attributes: --visible-to-all-users,
@@ -245,3 +268,60 @@ class MissingClusterAttributesError(EmrError):
     fmt = ('aws: error: Must specify one of the following boolean options: '
            '--visible-to-all-users|--no-visible-to-all-users, '
            '--termination-protected|--no-termination-protected.')
+
+
+class InvalidEmrFsArgumentsError(EmrError):
+
+    """
+    The provided EMRFS parameters are invalid as parent feature e.g.,
+    Consistent View, CSE, SSE is not configured
+
+    :ivar invalid: Invalid parameters
+    :ivar parent_object_name: Parent feature name
+    """
+
+    fmt = ('aws: error: {parent_object_name} is not specified. Thus, '
+           ' following parameters are invalid: {invalid}')
+
+
+class UnknownCseProviderTypeError(EmrError):
+
+    """
+    The provided EMRFS client-side encryption provider type is not supported.
+
+    :ivar provider_type: the provider_type provided.
+    """
+    fmt = ('aws: error: The client side encryption type "{provider_type}" is '
+           'not supported. You must specify either KMS or Custom')
+
+
+class UnknownEncryptionTypeError(EmrError):
+
+    """
+    The provided encryption type is not supported.
+
+    :ivar provider_type: the provider_type provided.
+    """
+    fmt = ('aws: error: The encryption type "{encryption}" is invalid. '
+           'You must specify either ServerSide or ClientSide')
+
+
+class BothSseAndEncryptionConfiguredError(EmrError):
+
+    """
+    Only one of SSE or Encryption can be configured.
+
+    :ivar sse: Value for SSE
+    :ivar encryption: Value for encryption
+    """
+
+    fmt = ('aws: error: Both SSE={sse} and Encryption={encryption} are '
+           'configured for --emrfs. You must specify only one of the two.')
+
+
+class InvalidBooleanConfigError(EmrError):
+
+    fmt = ("aws: error: {config_value} for {config_key} in the config file is "
+           "invalid. The value should be either 'True' or 'False'. Use "
+           "'aws configure set {profile_var_name}.emr.{config_key} <value>' "
+           "command to set a valid value.")

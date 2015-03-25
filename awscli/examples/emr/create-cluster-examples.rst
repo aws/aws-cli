@@ -201,7 +201,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 - Command::
 
     aws emr create-cluster --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] --applications Name=Hive --ami-version 3.1.0 --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
-
+      
 - Hive steps required parameters::
 
     Type, Args
@@ -238,8 +238,138 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
     Name, ActionOnFailure
 
-**18. To enable consistent view and server-side encryption in EMRFS when creating an Amazon EMR cluster and changing RetryCount, RetryPeriod, and encryption algorithm from default values**
+
+**18. To enable consistent view in EMRFS when creating an Amazon EMR cluster**
 
 - Command::
 
-    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.2.1 --emrfs SSE=true,Consistent=true,RetryCount=5,RetryPeriod=30,Args=[fs.s3.serverSideEncryptionAlgorithm=AES256]
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Consistent=true,RetryCount=5,RetryPeriod=30
+ 
+- Required parameters::
+    
+    Consistent=true
+
+- JSON equivalent (contents of emrfs.json)::
+ 
+    {
+      "Consistent": true,
+      "RetryCount": 5,
+      "RetryPeriod": 30
+    }
+ 
+- Command (Using emrfs.json)::
+ 
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs file://emrfs.json
+
+
+**19. To enable consistent view with arguments e.g. change the DynamoDB read and write capacity when creating an Amazon EMR cluster**
+
+- Command::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Consistent=true,RetryCount=5,RetryPeriod=30,Args=[fs.s3.consistent.metadata.read.capacity=600,fs.s3.consistent.metadata.write.capacity=300]
+
+- Required parameters::
+    
+    Consistent=true
+
+- JSON equivalent (contents of emrfs.json)::
+ 
+    {
+      "Consistent": true,
+      "RetryCount": 5,
+      "RetryPeriod": 30,
+      "Args":["fs.s3.consistent.metadata.read.capacity=600", "fs.s3.consistent.metadata.write.capacity=300"]
+    }
+
+- Command (Using emrfs.json)::
+ 
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs file://emrfs.json
+
+**20. To enable Amazon S3 server-side encryption in EMRFS when creating an Amazon EMR cluster**
+ 
+- Command (Use Encryption=ServerSide)::
+
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.4 --emrfs Encryption=ServerSide
+ 
+- Required parameters::
+ 
+    Encryption=ServerSide
+ 
+- Optional parameters::
+ 
+    Args
+ 
+- JSON equivalent (contents of emrfs.json)::
+ 
+    {
+      "Encryption": "ServerSide",
+      "Args": ["fs.s3.serverSideEncryptionAlgorithm=AES256"]
+    }
+ 
+**21. To enable Amazon S3 client-side encryption using a key managed by AWS Key Management Service (KMS) in EMRFS when creating an Amazon EMR cluster**
+ 
+- Command::
+ 
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.6.0 --emrfs Encryption=ClientSide,ProviderType=KMS,KMSKeyId=myKMSKeyId
+ 
+- Required parameters::
+ 
+    Encryption=ClientSide, ProviderType=KMS, KMSKeyId
+ 
+- Optional parameters::
+ 
+    Args
+ 
+- JSON equivalent (contents of emrfs.json)::
+ 
+    {
+      "Encryption": "ClientSide",
+      "ProviderType": "KMS",
+      "KMSKeyId": "myKMSKeyId"
+    }
+ 
+**22. To enable Amazon S3 client-side encryption with a custom encryption provider in EMRFS when creating an Amazon EMR cluster**
+ 
+- Command::
+ 
+    aws emr create-cluster --instance-type m3.xlarge --ami-version 3.6.0 --emrfs Encryption=ClientSide,ProviderType=Custom,CustomProviderLocation=s3://mybucket/myfolder/provider.jar,CustomProviderClass=classname
+ 
+- Required parameters::
+ 
+    Encryption=ClientSide, ProviderType=Custom, CustomProviderLocation, CustomProviderClass
+ 
+- Optional parameters::
+ 
+    Args
+ 
+- JSON equivalent (contents of emrfs.json)::
+ 
+    {
+      "Encryption": "ClientSide",
+      "ProviderType": "Custom",
+      "CustomProviderLocation": "s3://mybucket/myfolder/provider.jar",
+      "CustomProviderClass": "classname"
+    }
+
+**23. To enable Amazon S3 client-side encryption with a custom encryption provider in EMRFS and passing arguments expected by the class**
+ 
+- Command::
+
+    aws emr create-cluster --ami-version 3.6.0 --instance-type m3.xlarge --instance-count 2 --emrfs Encryption=ClientSide,ProviderName=myProvider,CustomProviderLocation=s3://mybucket/myfolder/myprovider.jar,CustomProviderClass=classname --bootstrap-action Path=s3://elasticmapreduce/bootstrap-actions/configure-hadoop,Args=[-e,myProvider.arg1=value1,-e,myProvider.arg2=value2]
+ 
+- Required parameters::
+ 
+    Encryption=ClientSide, ProviderType=Custom, CustomProviderLocation, CustomProviderClass
+ 
+- Optional parameters::
+ 
+    Args (expected by CustomProviderClass, passed to emrfs-site.xml using configure-hadoop bootstrap action)
+ 
+- JSON equivalent (contents of emrfs.json)::
+ 
+    {
+      "Encryption": "ClientSide",
+      "ProviderType": "Custom",
+      "CustomProviderLocation": "s3://mybucket/myfolder/provider.jar",
+      "CustomProviderClass": "classname"
+    }

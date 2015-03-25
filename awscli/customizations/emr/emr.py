@@ -24,6 +24,7 @@ from awscli.customizations.emr.terminateclusters import TerminateClusters
 from awscli.customizations.emr.addtags import modify_tags_argument
 from awscli.customizations.emr.listclusters \
     import modify_list_clusters_argument
+from awscli.customizations.emr.command import override_args_required_option
 
 
 def emr_initialize(cli):
@@ -35,6 +36,8 @@ def emr_initialize(cli):
     cli.register(
         'building-argument-table.emr.list-clusters',
         modify_list_clusters_argument)
+    cli.register('before-building-argument-table-parser.emr.*',
+                 override_args_required_option)
 
 
 def register_commands(command_table, session, **kwargs):

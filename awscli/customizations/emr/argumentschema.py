@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 from awscli.customizations.emr import helptext
+from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
+
 
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
@@ -201,7 +202,7 @@ STEPS_SCHEMA = {
                     "A list of command line arguments to pass to the step.",
                 "items": {
                         "type": "string"
-                    }
+                }
             },
             "MainClass": {
                 "type": "string",
@@ -265,6 +266,28 @@ EMR_FS_SCHEMA = {
             "items": {
                 "type": "string"
             }
+        },
+        "Encryption": {
+            "type": "string",
+            "description": "EMRFS encryption type.",
+            "enum": ["SERVERSIDE", "CLIENTSIDE"]
+        },
+        "ProviderType": {
+            "type": "string",
+            "description": "EMRFS client-side encryption provider type.",
+            "enum": ["KMS", "CUSTOM"]
+        },
+        "KMSKeyId": {
+            "type": "string",
+            "description": "AWS KMS's customer master key identifier",
+        },
+        "CustomProviderLocation": {
+            "type": "string",
+            "description": "Custom encryption provider JAR location."
+        },
+        "CustomProviderClass": {
+            "type": "string",
+            "description": "Custom encryption provider full class name."
         }
     }
 }

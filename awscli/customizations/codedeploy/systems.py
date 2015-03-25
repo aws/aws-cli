@@ -70,23 +70,15 @@ class Windows(System):
                 'Failed to stop the AWS CodeDeploy Agent:\n{0}'.format(error)
             )
 
-        subprocess.check_call([
-            'powershell.exe',
-            '-Command', 'New-Item',
-            '-Path', r'c:\temp',
-            '-ItemType', 'Directory',
-            '-Force'
-        ])
-
         response = self.s3.get_object(Bucket=params.bucket, Key=params.key)
         with open(self.INSTALLER, 'wb') as f:
             f.write(response['Body'].read())
 
         subprocess.check_call(
             [
-                r'c:\temp\{0}'.format(self.INSTALLER),
+                r'.\{0}'.format(self.INSTALLER),
                 '/quiet',
-                '/l', r'c:\temp\codedeploy-agent-install-log.txt'
+                '/l', r'.\codedeploy-agent-install-log.txt'
             ],
             shell=True
         )

@@ -104,18 +104,11 @@ class TestWindows(unittest.TestCase):
             call().communicate()
         ])
         self.check_call.assert_has_calls([
-            call([
-                'powershell.exe',
-                '-Command', 'New-Item',
-                '-Path', r'c:\temp',
-                '-ItemType', 'Directory',
-                '-Force'
-            ]),
             call(
                 [
-                    r'c:\temp\{0}'.format(self.installer),
+                    r'.\{0}'.format(self.installer),
                     '/quiet',
-                    '/l', r'c:\temp\codedeploy-agent-install-log.txt'
+                    '/l', r'.\codedeploy-agent-install-log.txt'
                 ],
                 shell=True
             ),

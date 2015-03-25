@@ -104,7 +104,8 @@ def _verify_emrfs_args(emrfs_args):
 
 def _verify_required_args(actual_keys, required_keys, object_name):
     if any(x not in actual_keys for x in required_keys):
-        missing_keys = set(required_keys).difference(set(actual_keys))
+        missing_keys = list(
+            sorted(set(required_keys).difference(set(actual_keys))))
         raise exceptions.MissingParametersError(
             object_name=object_name, missing=emrutils.join(missing_keys))
 

@@ -213,8 +213,8 @@ class TestEmrfsUtils(BaseAWSCommandParamsTest):
             emrfs_option_value='Encryption=ClientSide,ProviderType=Custom',
             exception_class_name='MissingParametersError',
             error_msg_kwargs={'object_name': CSE_CUSTOM_OPTION_NAME,
-                              'missing': 'CustomProviderLocation and '
-                              'CustomProviderClass'}
+                              'missing': 'CustomProviderClass and '
+                              'CustomProviderLocation'}
         )
 
     def test_cse_custom_missing_class(self):

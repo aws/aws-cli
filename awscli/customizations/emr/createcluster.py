@@ -11,29 +11,35 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import constants
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import steputils
-from awscli.customizations.emr import hbaseutils
-from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import exceptions
-from awscli.customizations.emr import applicationutils
-from awscli.customizations.emr import instancegroupsutils
-from awscli.customizations.emr.createdefaultroles import EMR_ROLE_NAME
-from awscli.customizations.emr.createdefaultroles import EC2_ROLE_NAME
 import re
 
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr import applicationutils
+from awscli.customizations.emr import argumentschema
+from awscli.customizations.emr import constants
+from awscli.customizations.emr import emrfsutils
+from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import exceptions
+from awscli.customizations.emr import hbaseutils
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr import steputils
+from awscli.customizations.emr.command import Command
+from awscli.customizations.emr.constants import EC2_ROLE_NAME
+from awscli.customizations.emr.constants import EMR_ROLE_NAME
 
-class CreateCluster(BasicCommand):
+
+class CreateCluster(Command):
     NAME = 'create-cluster'
     DESCRIPTION = (
         'Creates and starts running an EMR cluster.\n'
         '\nQuick start:\n'
         '\naws emr create-cluster --ami-version <ami-version> --instance-type'
-        ' <instance-type> [--instance-count <instance-count>]\n')
+        ' <instance-type> [--instance-count <instance-count>]\n'
+        '\nValues for variables Instance Profile (under EC2 Attributes), '
+        'Service Role, Log URI, and Key Name (under EC2 Attributes) can be '
+        'set in the AWS CLI config file using the "aws configure set" '
+        'command.\n')
     ARG_TABLE = [
         {'name': 'ami-version',
          'help_text': helptext.AMI_VERSION,
@@ -101,7 +107,7 @@ class CreateCluster(BasicCommand):
     SYNOPSIS = BasicCommand.FROM_FILE('emr', 'create-cluster-synopsis.rst')
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-cluster-examples.rst')
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         params = {}
         bootstrap_actions = []
         params['Name'] = parsed_args.name
@@ -112,18 +118,18 @@ class CreateCluster(BasicCommand):
 
         if parsed_args.use_default_roles is True and \
                 parsed_args.service_role is not None:
-                raise exceptions.MutualExclusiveOptionError(
-                    option1="--use-default-roles",
-                    option2="--service-role",
-                    message=service_role_validation_message)
+            raise exceptions.MutualExclusiveOptionError(
+                option1="--use-default-roles",
+                option2="--service-role",
+                message=service_role_validation_message)
 
         if parsed_args.use_default_roles is True and \
                 parsed_args.ec2_attributes is not None and \
                 'InstanceProfile' in parsed_args.ec2_attributes:
-                raise exceptions.MutualExclusiveOptionError(
-                    option1="--use-default-roles",
-                    option2="--ec2-attributes InstanceProfile",
-                    message=service_role_validation_message)
+            raise exceptions.MutualExclusiveOptionError(
+                option1="--use-default-roles",
+                option2="--ec2-attributes InstanceProfile",
+                message=service_role_validation_message)
 
         instances_config = {}
         instances_config['InstanceGroups'] = \
@@ -204,9 +210,8 @@ class CreateCluster(BasicCommand):
 
         if parsed_args.applications is not None:
             app_list, ba_list, step_list = applicationutils.build_applications(
-                session=self._session,
+                region=self.region,
                 parsed_applications=parsed_args.applications,
-                parsed_globals=parsed_globals,
                 ami_version=params['AmiVersion'])
             self._update_cluster_dict(
                 params, 'NewSupportedProducts', app_list)
@@ -234,31 +239,25 @@ class CreateCluster(BasicCommand):
                 parsed_boostrap_actions=parsed_args.bootstrap_actions)
 
         if parsed_args.emrfs is not None:
-            emr_fs_ba_args = self._build_emr_fs_args(parsed_args.emrfs)
-            emr_fs_ba_config = \
-                emrutils.build_bootstrap_action(
-                    path=emrutils.build_s3_link(
-                        relative_path=constants.CONFIG_HADOOP_PATH,
-                        region=parsed_globals.region),
-                    name=constants.EMR_FS_BA_NAME,
-                    args=emr_fs_ba_args)
+            emr_fs_ba_config_list = emrfsutils.build_bootstrap_action_configs(
+                self.region, parsed_args.emrfs)
+
             self._update_cluster_dict(
                 cluster=params, key='BootstrapActions',
-                value=[emr_fs_ba_config])
+                value=emr_fs_ba_config_list)
 
         if parsed_args.steps is not None:
             steps_list = steputils.build_step_config_list(
                 parsed_step_list=parsed_args.steps,
-                region=parsed_globals.region)
+                region=self.region)
             self._update_cluster_dict(
                 cluster=params, key='Steps', value=steps_list)
 
         self._validate_required_applications(parsed_args)
 
         run_job_flow_response = emrutils.call(
-            self._session, 'run_job_flow', params,
-            parsed_globals.region, parsed_globals.endpoint_url,
-            parsed_globals.verify_ssl)
+            self._session, 'run_job_flow', params, self.region,
+            parsed_globals.endpoint_url, parsed_globals.verify_ssl)
 
         constructed_result = self._construct_result(run_job_flow_response)
         emrutils.display_response(self._session, 'run_job_flow',
@@ -269,7 +268,7 @@ class CreateCluster(BasicCommand):
     def _construct_result(self, run_job_flow_result):
         jobFlowId = None
         if run_job_flow_result is not None:
-                jobFlowId = run_job_flow_result.get('JobFlowId')
+            jobFlowId = run_job_flow_result.get('JobFlowId')
 
         if jobFlowId is not None:
             return {'ClusterId': jobFlowId}
@@ -361,10 +360,10 @@ class CreateCluster(BasicCommand):
         return emrutils.build_step(
             name=constants.DEBUGGING_NAME,
             action_on_failure=constants.TERMINATE_CLUSTER,
-            jar=emrutils.get_script_runner(parsed_globals.region),
+            jar=emrutils.get_script_runner(self.region),
             args=[emrutils.build_s3_link(
                 relative_path=constants.DEBUGGING_PATH,
-                region=parsed_globals.region)])
+                region=self.region)])
 
     def _update_cluster_dict(self, cluster, key, value):
         if key in cluster.keys():
@@ -410,35 +409,10 @@ class CreateCluster(BasicCommand):
                         missing_apps.add(step['Type'].title())
         return missing_apps
 
-    def _build_emr_fs_args(self, parsed_emr_fs):
-        args = []
-        if parsed_emr_fs.get('Consistent') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_CONSISTENT_KEY +
-                '=' + str(parsed_emr_fs.get('Consistent')).lower())
-
-        if parsed_emr_fs.get('SSE') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_SSE_KEY + '=' +
-                str(parsed_emr_fs.get('SSE')).lower())
-
-        if parsed_emr_fs.get('RetryCount') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_RETRY_COUNT_KEY + '=' +
-                str(parsed_emr_fs.get('RetryCount')))
-
-        if parsed_emr_fs.get('RetryPeriod') is not None:
-            args.append(constants.EMR_FS_BA_ARG_KEY)
-            args.append(
-                constants.EMR_FS_RETRY_PERIOD_KEY + '=' +
-                str(parsed_emr_fs.get('RetryPeriod')))
-
-        if parsed_emr_fs.get('Args') is not None:
-            for arg in parsed_emr_fs.get('Args'):
-                args.append(constants.EMR_FS_BA_ARG_KEY)
-                args.append(arg)
-
-        return args
+    def _filter_configurations_in_special_cases(self, configurations,
+                                                parsed_args, parsed_configs):
+        if parsed_args.use_default_roles:
+            configurations = [x for x in configurations
+                              if x.name is not 'service_role'
+                              and x.name is not 'instance_profile']
+        return configurations

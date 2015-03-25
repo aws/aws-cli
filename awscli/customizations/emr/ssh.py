@@ -17,15 +17,18 @@ import tempfile
 
 from awscli.customizations.emr import constants
 from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import exceptions
 from awscli.customizations.emr import sshutils
-from awscli.customizations.commands import BasicCommand
+from awscli.customizations.emr.command import Command
+
+KEY_PAIR_FILE_HELP_TEXT = '\nA value for the variable Key Pair File ' \
+    'can be set in the AWS CLI config file using the "aws configure set" ' \
+    'command.\n'
 
 
-class Socks(BasicCommand):
+class Socks(Command):
     NAME = 'socks'
-    DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine \
-                   to the master.')
+    DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine '
+                   'to the master.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -33,7 +36,7 @@ class Socks(BasicCommand):
          'help_text': 'Private key file to use for login'},
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         try:
             master_dns = sshutils.validate_and_find_master_dns(
                 session=self._session,
@@ -62,9 +65,10 @@ class Socks(BasicCommand):
             return 0
 
 
-class SSH(BasicCommand):
+class SSH(Command):
     NAME = 'ssh'
-    DESCRIPTION = ('SSH into master node of the cluster.')
+    DESCRIPTION = ('SSH into master node of the cluster.\n%s' %
+                   KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -73,8 +77,7 @@ class SSH(BasicCommand):
         {'name': 'command', 'help_text': 'Command to execute on Master Node'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
-
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -107,9 +110,10 @@ class SSH(BasicCommand):
         return rc
 
 
-class Put(BasicCommand):
+class Put(Command):
     NAME = 'put'
-    DESCRIPTION = ('Put file onto the master node.')
+    DESCRIPTION = ('Put file onto the master node.\n%s' %
+                   KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to put file onto'},
@@ -120,7 +124,7 @@ class Put(BasicCommand):
         {'name': 'dest', 'help_text': 'Destination file path on remote host'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -147,9 +151,9 @@ class Put(BasicCommand):
         return rc
 
 
-class Get(BasicCommand):
+class Get(Command):
     NAME = 'get'
-    DESCRIPTION = ('Get file from master node.')
+    DESCRIPTION = ('Get file from master node.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to get file from'},
@@ -160,7 +164,7 @@ class Get(BasicCommand):
         {'name': 'dest', 'help_text': 'Destination file path on your machine'}
     ]
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         master_dns = sshutils.validate_and_find_master_dns(
             session=self._session,
             parsed_globals=parsed_globals,

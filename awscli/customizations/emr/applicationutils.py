@@ -16,13 +16,11 @@ from awscli.customizations.emr import emrutils
 from awscli.customizations.emr import exceptions
 
 
-def build_applications(session,
-                       parsed_applications, parsed_globals, ami_version=None):
+def build_applications(region,
+                       parsed_applications, ami_version=None):
     app_list = []
     step_list = []
     ba_list = []
-    region = parsed_globals.region if parsed_globals.region \
-        else session.get_config_variable('region')
 
     for app_config in parsed_applications:
         app_name = app_config['Name'].lower()

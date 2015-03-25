@@ -13,6 +13,8 @@
 
 # Declare all the constants used by EMR in this file.
 
+EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
+EMR_ROLE_NAME = "EMR_DefaultRole"
 
 # Action on failure
 CONTINUE = 'CONTINUE'
@@ -30,12 +32,32 @@ DEBUGGING_NAME = 'Setup Hadoop Debugging'
 
 CONFIG_HADOOP_PATH = '/bootstrap-actions/configure-hadoop'
 
-EMR_FS_BA_NAME = 'Setup EMRFS'
-EMR_FS_BA_ARG_KEY = '-e'
-EMR_FS_CONSISTENT_KEY = 'fs.s3.consistent'
-EMR_FS_SSE_KEY = 'fs.s3.enableServerSideEncryption'
-EMR_FS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
-EMR_FS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
+# S3 copy bootstrap action
+S3_GET_BA_NAME = 'S3 get'
+S3_GET_BA_SRC = '-s'
+S3_GET_BA_DEST = '-d'
+S3_GET_BA_FORCE = '-f'
+
+# EMRFS
+EMRFS_BA_NAME = 'Setup EMRFS'
+EMRFS_BA_ARG_KEY = '-e'
+EMRFS_CONSISTENT_KEY = 'fs.s3.consistent'
+EMRFS_SSE_KEY = 'fs.s3.enableServerSideEncryption'
+EMRFS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
+EMRFS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
+EMRFS_CSE_KEY = 'fs.s3.cse.enabled'
+EMRFS_CSE_KMS_KEY_ID_KEY = 'fs.s3.cse.kms.keyId'
+EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = \
+    'fs.s3.cse.encryptionMaterialsProvider'
+EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
+                                          'KMSEncryptionMaterialsProvider')
+EMRFS_CSE_CUSTOM_S3_GET_BA_PATH = 'file:/usr/share/aws/emr/scripts/s3get'
+EMRFS_CUSTOM_DEST_PATH = '/usr/share/aws/emr/auxlib'
+
+EMRFS_SERVER_SIDE = 'SERVERSIDE'
+EMRFS_CLIENT_SIDE = 'CLIENTSIDE'
+EMRFS_KMS = 'KMS'
+EMRFS_CUSTOM = 'CUSTOM'
 
 MAX_BOOTSTRAP_ACTION_NUMBER = 16
 BOOTSTRAP_ACTION_NAME = 'Bootstrap action'

@@ -112,7 +112,7 @@ EC2_ATTRIBUTES = (
     'to launch the cluster.</li>'
     '<li>AvailabilityZone - An isolated resource '
     'location within a region.</li>'
-    '<li>SubnetId- Assign the EMR cluster to this Amazon VPC Subnet. </li>'
+    '<li>SubnetId - Assign the EMR cluster to this Amazon VPC Subnet. </li>'
     '<li>InstanceProfile - Provides access to other AWS services such as S3,'
     ' DynamoDB from EC2 instances that are launched by EMR.. </li>'
     '<li>EmrManagedMasterSecurityGroup - The identifier of the Amazon EC2'
@@ -189,8 +189,26 @@ APPLICATIONS = (
     ' and/or key-value pairs (e.g. Args=[arg1,arg2=arg3,arg4]).</p>')
 
 EMR_FS = (
-    '<p>Configures certain features in EMRFS like consistent '
-    'view and server-side encryption.</p>')
+    '<p>Configures certain features in EMRFS like consistent'
+    ' view, Amazon S3 client-side and server-side encryption.</p>'
+    '<li>Encryption - enables Amazon S3 server-side encryption or'
+    ' Amazon S3 client-side encryption and takes the mutually exclusive'
+    ' values, ServerSide or ClientSide.</li>'
+    '<li>ProviderType - the encryption ProviderType, which is either Custom or KMS</li> '
+    '<li>KMSKeyId - the AWS KMS KeyId, the alias'
+    ' you mapped to the KeyId, or the full ARN of the key that'
+    ' includes the region, account ID, and the KeyId.</li>'
+    '<li>CustomProviderLocation - the S3 URI of'
+    ' the custom EncryptionMaterialsProvider class.</li>'
+    '<li>CustomProviderClass - the name of the'
+    ' custom EncryptionMaterialsProvider class you are using.</li>'
+    '<li>Consistent - setting to true enables consistent view.</li>'
+    '<li>RetryCount - the number of times EMRFS consistent view will check'
+    ' for list consistency before returning an error.</li>'
+    '<li>RetryPeriod - the interval at which EMRFS consistent view will'
+    ' recheck for consistency of objects it tracks.</li>'
+    '<li>SSE - deprecated in favor of Encryption=ServerSide</li>'
+    '<li>Args - optional arguments you can supply in configuring EMRFS.</li>')
 
 RESTORE_FROM_HBASE = (
     '<p>Launches a new HBase cluster and populates it with'

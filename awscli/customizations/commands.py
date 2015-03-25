@@ -2,25 +2,25 @@ import logging
 import os
 
 import bcdoc.docevents
-from botocore.compat import OrderedDict
 from botocore import model
+from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli
-from awscli.clidocs import OperationDocumentEventHandler
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import unpack_argument, unpack_cli_arg
-from awscli.clidriver import CLICommand
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
+from awscli.clidocs import OperationDocumentEventHandler
+from awscli.clidriver import CLICommand
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
-
 
 LOG = logging.getLogger(__name__)
 _open = open
 
 
 class _FromFile(object):
+
     def __init__(self, *paths, **kwargs):
         """
         ``**kwargs`` can contain a ``root_module`` argument
@@ -40,6 +40,7 @@ class _FromFile(object):
 
 
 class BasicCommand(CLICommand):
+
     """Basic top level command with no subcommands.
 
     If you want to create a new command, subclass this and
@@ -130,6 +131,10 @@ class BasicCommand(CLICommand):
         # an arg parser and parse them.
         self._subcommand_table = self._build_subcommand_table()
         self._arg_table = self._build_arg_table()
+        event = 'before-building-argument-table-parser.%s' % \
+            ".".join(self.lineage_names)
+        self._session.emit(event, argument_table=self._arg_table, args=args,
+                           session=self._session)
         parser = ArgTableArgParser(self.arg_table, self.subcommand_table)
         parsed_args, remaining = parser.parse_known_args(args)
 
@@ -189,7 +194,7 @@ class BasicCommand(CLICommand):
 
     def _should_allow_plugins_override(self, param, value):
         if (param and param.argument_model is not None and
-            value is not None):
+                value is not None):
             return True
         return False
 
@@ -214,7 +219,7 @@ class BasicCommand(CLICommand):
                            command_table=subcommand_table,
                            session=self._session,
                            command_object=self)
-        self._add_lineage(subcommand_table)        
+        self._add_lineage(subcommand_table)
         return subcommand_table
 
     def _display_help(self, parsed_args, parsed_globals):
@@ -291,6 +296,7 @@ class BasicCommand(CLICommand):
 
 
 class BasicHelp(HelpCommand):
+
     def __init__(self, session, command_object, command_table, arg_table,
                  event_handler_class=None):
         super(BasicHelp, self).__init__(session, command_object,
@@ -336,8 +342,8 @@ class BasicHelp(HelpCommand):
                 trailing_path = os.path.join(self.name, attr_name + '.rst')
             root_module = value.root_module
             doc_path = os.path.join(
-                os.path.abspath(os.path.dirname(root_module.__file__)), 'examples',
-                trailing_path)
+                os.path.abspath(os.path.dirname(root_module.__file__)),
+                'examples', trailing_path)
             with _open(doc_path) as f:
                 return f.read()
         else:
@@ -355,6 +361,7 @@ class BasicHelp(HelpCommand):
 
 
 class BasicDocHandler(OperationDocumentEventHandler):
+
     def __init__(self, help_command):
         super(BasicDocHandler, self).__init__(help_command)
         self.doc = help_command.doc

@@ -100,6 +100,18 @@ class TestIOWriterThread(unittest.TestCase):
             self.io_thread.run()
             self.assertEqual(mock_stdout.getvalue(), 'foobarotherstuff')
 
+    def test_io_thread_moves_on_after_failed_task(self):
+        # This first request will fail because 'unknown-file' does not exist.
+        self.queue.put(IORequest('unknown-file', 0, b'foobar', False))
+        # But the IO thread should move on to these requests and not
+        # exit it's run loop.
+        self.queue.put(IORequest(self.filename, 0, b'foobar', False))
+        self.queue.put(IOCloseRequest(self.filename))
+        self.queue.put(ShutdownThreadRequest())
+        self.io_thread.run()
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(f.read(), b'foobar')
+
 
 class TestExecutor(unittest.TestCase):
     def test_shutdown_does_not_hang(self):

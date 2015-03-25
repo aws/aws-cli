@@ -31,6 +31,7 @@ import copy
 import botocore.session
 from botocore.exceptions import ClientError
 from awscli.compat import six
+from nose.plugins.attrib import attr
 
 from awscli.testutils import unittest, get_stdout_encoding
 from awscli.testutils import aws as _aws
@@ -106,6 +107,7 @@ class TestMoveCommand(BaseS3CLICommand):
         # And verify that the object no longer exists in the from_bucket.
         self.assertTrue(not self.key_exists(from_bucket, key_name='foo.txt'))
 
+    @attr('slow')
     def test_mv_s3_to_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
@@ -147,6 +149,7 @@ class TestMoveCommand(BaseS3CLICommand):
         self.assert_key_contents_equal(to_bucket, 'largefile',
                                        large_file_contents)
 
+    @attr('slow')
     def test_mv_with_large_file(self):
         bucket_name = self.create_bucket()
         # 40MB will force a multipart upload.
@@ -279,6 +282,7 @@ class TestCp(BaseS3CLICommand):
             self.get_key_contents(bucket_name, key_name='foo.txt'),
             'this is foo.txt')
 
+    @attr('slow')
     def test_cp_s3_s3_multipart(self):
         from_bucket = self.create_bucket()
         to_bucket = self.create_bucket()
@@ -303,6 +307,7 @@ class TestCp(BaseS3CLICommand):
             self.content_type_for_key(bucket_name, key_name='bar.jpeg'),
             'image/jpeg')
 
+    @attr('slow')
     def test_download_large_file(self):
         # This will force a multipart download.
         bucket_name = self.create_bucket()
@@ -315,6 +320,7 @@ class TestCp(BaseS3CLICommand):
         self.assertEqual(os.path.getsize(local_foo_txt),
                          len(foo_contents.getvalue()))
 
+    @attr('slow')
     @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
                      'SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
@@ -398,6 +404,7 @@ class TestCp(BaseS3CLICommand):
         response = self.head_object(bucket_name, 'foo.txt')
         self.assertEqual(response['WebsiteRedirectLocation'], website_redirect)
 
+    @attr('slow')
     def test_copy_large_file_signature_v4(self):
         # Just verify that we can upload a large file to a region
         # that uses signature version 4.
@@ -639,7 +646,7 @@ class TestSourceRegion(BaseS3CLICommand):
         self.src_bucket = self.create_bucket(self.src_name, self.src_region)
         self.dest_bucket = self.create_bucket(self.dest_name, self.dest_region)
 
-    def testFailWithoutRegion(self):
+    def test_fail_without_region(self):
         self.files.create_file('foo.txt', 'foo')
         p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
@@ -649,7 +656,7 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertEqual(p2.rc, 1, p2.stdout)
         self.assertIn('PermanentRedirect', p2.stderr)
 
-    def testCpRegion(self):
+    def test_cp_region(self):
         self.files.create_file('foo.txt', 'foo')
         p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
@@ -662,7 +669,7 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertTrue(
             self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
 
-    def testSyncRegion(self):
+    def test_sync_region(self):
         self.files.create_file('foo.txt', 'foo')
         p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
@@ -674,7 +681,7 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertTrue(
             self.key_exists(bucket_name=self.dest_bucket, key_name='foo.txt'))
 
-    def testMvRegion(self):
+    def test_mv_region(self):
         self.files.create_file('foo.txt', 'foo')
         p = aws('s3 sync %s s3://%s/ --region %s' %
                 (self.files.rootdir, self.src_bucket, self.src_region))
@@ -689,7 +696,8 @@ class TestSourceRegion(BaseS3CLICommand):
         self.assertFalse(
             self.key_exists(bucket_name=self.src_bucket, key_name='foo.txt'))
 
-    def testMvLargeFileRegion(self):
+    @attr('slow')
+    def test_mv_large_file_region(self):
         foo_txt = self.files.create_file('foo.txt', 'a' * 1024 * 1024 * 10)
         p = aws('s3 cp %s s3://%s/foo.txt --region %s' %
                 (foo_txt, self.src_bucket, self.src_region))
@@ -1161,6 +1169,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
                                  peak_memory / 1024.0 / 1024.0))
             self.fail(failure_message)
 
+    @attr('slow')
     def test_transfer_single_large_file(self):
         # 40MB will force a multipart upload.
         bucket_name = self.create_bucket()
@@ -1184,6 +1193,7 @@ class TestMemoryUtilization(BaseS3CLICommand):
     # point where this test fails on other distros, so for now we're disabling
     # the test on RHEL until we come up with a better way to collect
     # memory usage.
+    @attr('slow')
     @unittest.skipIf(_running_on_rhel(),
                      'Streaming memory tests no supported on RHEL.')
     def test_stream_large_file(self):
@@ -1472,6 +1482,7 @@ class TestStreams(BaseS3CLICommand):
         self.assertEqual(self.get_key_contents(bucket_name, 'stream'),
                          unicode_str)
 
+    @attr('slow')
     def test_multipart_upload(self):
         """
         This tests the ability to multipart upload streams from stdin.
@@ -1518,6 +1529,7 @@ class TestStreams(BaseS3CLICommand):
         self.assert_no_errors(p)
         self.assertEqual(p.stdout, data_encoded.decode(get_stdout_encoding()))
 
+    @attr('slow')
     def test_multipart_download(self):
         """
         This tests the ability to multipart download streams to stdout.

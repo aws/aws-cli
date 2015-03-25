@@ -12,13 +12,14 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emr import steputils
 from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import helptext
 from awscli.customizations.emr import emrutils
+from awscli.customizations.emr import helptext
+from awscli.customizations.emr import steputils
+from awscli.customizations.emr.command import Command
 
 
-class AddSteps(BasicCommand):
+class AddSteps(Command):
     NAME = 'add-steps'
     DESCRIPTION = ('Add a list of steps to a cluster.')
     ARG_TABLE = [
@@ -34,10 +35,10 @@ class AddSteps(BasicCommand):
     ]
     EXAMPLES = BasicCommand.FROM_FILE('emr', 'add-steps.rst')
 
-    def _run_main(self, parsed_args, parsed_globals):
+    def _run_main_command(self, parsed_args, parsed_globals):
         parsed_steps = parsed_args.steps
         step_list = steputils.build_step_config_list(
-            parsed_step_list=parsed_steps, region=parsed_globals.region)
+            parsed_step_list=parsed_steps, region=self.region)
         parameters = {
             'JobFlowId': parsed_args.cluster_id,
             'Steps': step_list

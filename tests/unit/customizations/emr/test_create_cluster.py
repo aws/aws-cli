@@ -706,7 +706,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                  'BidPrice': '3.45',
                  'InstanceType': 'm1.xlarge'
                  }
-            ]
+        ]
         self.assert_params_for_cmd(cmd, result)
 
     def test_ec2_attributes_no_az(self):
@@ -815,7 +815,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                  'ScriptBootstrapAction':
                     {'Path': 's3://test/ba2'}
                  }
-            ]
+        ]
         self.assert_params_for_cmd(cmd, result)
 
     def test_bootstrap_actions_from_json_file(self):
@@ -835,7 +835,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                     {"Path": "s3://mybucket/test2",
                      "Args": ["arg1", "arg2"]}
                  }
-            ]
+        ]
         self.assert_params_for_cmd(cmd, result)
 
     # Applications test cases
@@ -914,7 +914,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             [
                 {'Name': 'mapr',
                  'Args': []}
-            ]
+        ]
         self.assert_params_for_cmd(cmd, result)
 
     def test_supported_products(self):
@@ -1224,39 +1224,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, expected_rc=0)
         result_json = json.loads(result[0])
         self.assertEquals(result_json, CONSTRUCTED_RESULT)
-
-    def test_emr_fs_config(self):
-        cmd = DEFAULT_CMD + \
-            '--emrfs Consistent=true,SSE=false,RetryCount=10,' +\
-            'RetryPeriod=3,Args=[fs.s3.serverSideEncryptionAlgorithm=' +\
-            'AES256,fs.s3.sleepTimeSeconds=30]'
-        emf_fs_ba_config = \
-            {'Name': 'Setup EMRFS',
-             'ScriptBootstrapAction':
-                {'Path': ('s3://us-east-1.elasticmapreduce/'
-                          'bootstrap-actions/configure-hadoop'),
-                 'Args': ['-e',
-                          'fs.s3.consistent=true',
-                          '-e',
-                          'fs.s3.enableServerSideEncryption=false',
-                          '-e',
-                          'fs.s3.consistent.retryCount=10',
-                          '-e',
-                          'fs.s3.consistent.retryPeriodSeconds=3',
-                          '-e',
-                          'fs.s3.serverSideEncryptionAlgorithm=AES256',
-                          '-e',
-                          'fs.s3.sleepTimeSeconds=30']
-                 }
-             }
-        result = copy.deepcopy(DEFAULT_RESULT)
-        result['BootstrapActions'] = [emf_fs_ba_config]
-        self.assert_params_for_cmd(cmd, result)
-
-        data_path = os.path.join(
-            os.path.dirname(__file__), 'input_emr_fs.json')
-        cmd = DEFAULT_CMD + '--emrfs file://' + data_path
-        self.assert_params_for_cmd(cmd, result)
 
     def test_all_security_groups(self):
         cmd = DEFAULT_CMD + (

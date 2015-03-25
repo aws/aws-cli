@@ -240,6 +240,7 @@ class CLIDriver(object):
 
 
 class CLICommand(object):
+
     """Interface for a CLI command.
 
     This class represents a top level CLI command
@@ -297,6 +298,7 @@ class CLICommand(object):
 
 
 class ServiceCommand(CLICommand):
+
     """A service command for the CLI.
 
     For example, ``aws ec2 ...`` we'd create a ServiceCommand
@@ -409,6 +411,7 @@ class ServiceCommand(CLICommand):
 
 
 class ServiceOperation(object):
+
     """A single operation of a service.
 
     This class represents a single operation for a service, for
@@ -486,7 +489,8 @@ class ServiceOperation(object):
         # of a service we can go ahead and load the parameters.
         event = 'before-building-argument-table-parser.%s.%s' % \
             (self._parent_name, self._name)
-        self._emit(event, argument_table=self.arg_table, args=args)
+        self._emit(event, argument_table=self.arg_table, args=args,
+                   session=self._session)
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
@@ -615,6 +619,7 @@ class ServiceOperation(object):
 
 
 class CLIOperationCaller(object):
+
     """Call an AWS operation and format the response."""
 
     def __init__(self, session):

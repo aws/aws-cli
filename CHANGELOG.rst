@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Pagination: Fix issue where disabling pagination did not
+  work when shadowing arguments.  Affects commands such as
+  ``aws route53 list-resource-record-sets``.
+
+
+1.7.17
+======
+
+* feature:``aws emr``: Adds support for Amazon S3 client-side encryption in
+  Amazon EMR and setting configuration values for several variables in the
+  ``create-cluster`` and ``ssh`` commands. Also, the
+  ``create-default-roles`` command will now auto-populate the Service Role and
+  Instance Profile variables in the configuration file with the default roles
+  after they are created.
+
+
 1.7.16
 ======
 

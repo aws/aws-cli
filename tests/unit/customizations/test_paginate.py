@@ -166,7 +166,7 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.parsed_args.foo = None
         self.parsed_args.bar = 10
         paginate.check_should_enable_pagination(
-            input_tokens, self.parsed_args, self.parsed_globals)
+            input_tokens, {}, {}, self.parsed_args, self.parsed_globals)
         # We should have turned paginate off because the
         # user specified --bar 10
         self.assertFalse(self.parsed_globals.paginate)
@@ -178,7 +178,7 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.parsed_args.foo = None
         self.parsed_args.bar = None
         paginate.check_should_enable_pagination(
-            input_tokens, self.parsed_args, self.parsed_globals)
+            input_tokens, {}, {}, self.parsed_args, self.parsed_globals)
         # We should have turned paginate off because the
         # user specified --bar 10
         self.assertTrue(self.parsed_globals.paginate)
@@ -195,6 +195,22 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.parsed_args.foo = None
         self.parsed_args.max_items = 10
         paginate.check_should_enable_pagination(
-            input_tokens, self.parsed_args, self.parsed_globals)
+            input_tokens, {}, {}, self.parsed_args, self.parsed_globals)
         self.assertTrue(self.parsed_globals.paginate,
                         "Pagination was not enabled.")
+
+    def test_shadowed_args_are_replaced_when_pagination_off(self):
+        input_tokens = ['foo', 'bar']
+        self.parsed_globals.paginate = True
+        # Corresponds to --bar 10
+        self.parsed_args.foo = None
+        self.parsed_args.bar = 10
+        shadowed_args = {'foo': mock.sentinel.ORIGINAL_ARG}
+        arg_table = {'foo': mock.sentinel.PAGINATION_ARG}
+        paginate.check_should_enable_pagination(
+            input_tokens, shadowed_args, arg_table,
+            self.parsed_args, self.parsed_globals)
+        # We should have turned paginate off because the
+        # user specified --bar 10
+        self.assertFalse(self.parsed_globals.paginate)
+        self.assertEqual(arg_table['foo'], mock.sentinel.ORIGINAL_ARG)

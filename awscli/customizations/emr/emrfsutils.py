@@ -104,14 +104,16 @@ def _verify_emrfs_args(emrfs_args):
 
 def _verify_required_args(actual_keys, required_keys, object_name):
     if any(x not in actual_keys for x in required_keys):
-        missing_keys = set(required_keys).difference(set(actual_keys))
+        missing_keys = list(
+            sorted(set(required_keys).difference(set(actual_keys))))
         raise exceptions.MissingParametersError(
             object_name=object_name, missing=emrutils.join(missing_keys))
 
 
 def _verify_child_args(actual_keys, child_keys, parent_object_name):
     if any(x in actual_keys for x in child_keys):
-        invalid_keys = set(child_keys).intersection(set(actual_keys))
+        invalid_keys = list(
+            sorted(set(child_keys).intersection(set(actual_keys))))
         raise exceptions.InvalidEmrFsArgumentsError(
             invalid=emrutils.join(invalid_keys),
             parent_object_name=parent_object_name)

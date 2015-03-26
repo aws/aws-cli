@@ -10,8 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
 import random
+
+from nose.plugins.attrib import attr
+import botocore.session
 
 from awscli.testutils import unittest, aws
 
@@ -21,6 +23,7 @@ class TestDynamoDBWait(unittest.TestCase):
         self.session = botocore.session.get_session()
         self.client = self.session.create_client('dynamodb', 'us-west-2')
 
+    @attr('slow')
     def test_wait_table_exists(self):
         # Create a table.
         table_name = 'awscliddb-%s' % random.randint(1, 10000)

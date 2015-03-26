@@ -24,6 +24,7 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
         super(EMRBaseAWSCommandParamsTest, self).setUp()
 
         # Do not use any emr-specific configs for the test cases
+        self.get_scoped_config_mock = mock.Mock()
         self.set_configs({})
 
         # Do not write or update the config (~/.aws/config) file
@@ -32,8 +33,8 @@ class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):
         self.mock_update_config = self.patcher_update_config.start()
 
     def set_configs(self, configs):
-        scoped_config = self.driver.session.get_scoped_config()
-        scoped_config['emr'] = configs
+        self.driver.session.get_scoped_config = self.get_scoped_config_mock
+        self.get_scoped_config_mock.return_value = {'emr': configs}
 
     def tearDown(self):
         super(EMRBaseAWSCommandParamsTest, self).tearDown()

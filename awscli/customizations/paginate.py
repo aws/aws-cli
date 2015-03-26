@@ -73,7 +73,6 @@ def get_paginator_config(session, service_name, operation_name):
 
 def unify_paging_params(argument_table, operation_model, event_name,
                         session, **kwargs):
-
     paginator_config = get_paginator_config(
         session, operation_model.service_model.service_name,
         operation_model.name)
@@ -85,13 +84,11 @@ def unify_paging_params(argument_table, operation_model, event_name,
     _remove_existing_paging_arguments(argument_table, paginator_config)
     parsed_args_event = event_name.replace('building-argument-table.',
                                            'operation-args-parsed.')
-    session.register(
-        parsed_args_event,
-        partial(check_should_enable_pagination,
-                list(_get_all_cli_input_tokens(paginator_config))))
-    argument_table['starting-token'] = PageArgument('starting-token',
-                                                    STARTING_TOKEN_HELP,
-                                                    parse_type='string')
+    shadowed_args = {}
+    add_paging_argument(argument_table, 'starting-token',
+                        PageArgument('starting-token', STARTING_TOKEN_HELP,
+                                     parse_type='string'),
+                        shadowed_args)
     input_members = operation_model.input_shape.members
     type_name = 'integer'
     if 'limit_key' in paginator_config:
@@ -103,15 +100,35 @@ def unify_paging_params(argument_table, operation_model, event_name,
                  ' and parameter {2}').format(
                     type_name, operation_model.name,
                     paginator_config['limit_key']))
-        argument_table['page-size'] = PageArgument(
-            'page-size', PAGE_SIZE_HELP, parse_type=type_name)
+        add_paging_argument(argument_table, 'page-size',
+                            PageArgument('page-size', PAGE_SIZE_HELP,
+                                         parse_type=type_name),
+                            shadowed_args)
 
-    argument_table['max-items'] = PageArgument('max-items', MAX_ITEMS_HELP,
-                                               parse_type=type_name)
+    add_paging_argument(argument_table, 'max-items',
+                        PageArgument('max-items', MAX_ITEMS_HELP,
+                                     parse_type=type_name),
+                        shadowed_args)
+    session.register(
+        parsed_args_event,
+        partial(check_should_enable_pagination,
+                list(_get_all_cli_input_tokens(paginator_config)),
+                shadowed_args, argument_table))
 
 
-def check_should_enable_pagination(input_tokens, parsed_args, parsed_globals,
-                                   **kwargs):
+def add_paging_argument(argument_table, arg_name, argument, shadowed_args):
+    if arg_name in argument_table:
+        # If there's already an entry in the arg table for this argument,
+        # this means we're shadowing an argument for this operation.  We
+        # need to store this later in case pagination is turned off because
+        # we put these arguments back.
+        # See the comment in check_should_enable_pagination() for more info.
+        shadowed_args[arg_name] = argument_table[arg_name]
+    argument_table[arg_name] = argument
+
+
+def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
+                                   parsed_args, parsed_globals, **kwargs):
     normalized_paging_args = ['start_token', 'max_items']
     for token in input_tokens:
         py_name = token.replace('-', '_')
@@ -122,6 +139,16 @@ def check_should_enable_pagination(input_tokens, parsed_args, parsed_globals,
             logger.debug("User has specified a manual pagination arg. "
                          "Automatically setting --no-paginate.")
             parsed_globals.paginate = False
+            # Because we've now disabled pagination, there's a chance that
+            # we were shadowing arguments.  For example, we inject a
+            # --max-items argument in unify_paging_params().  If the
+            # the operation also provides its own MaxItems (which we
+            # expose as --max-items) then our custom pagination arg
+            # was shadowing the customers arg.  When we turn pagination
+            # off we need to put back the original argument which is
+            # what we're doing here.
+            for key, value in shadowed_args.items():
+                argument_table[key] = value
 
 
 def _remove_existing_paging_arguments(argument_table, pagination_config):

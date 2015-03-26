@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.18
+======
 
 * bugfix:Pagination: Fix issue where disabling pagination did not
   work when shadowing arguments.  Affects commands such as

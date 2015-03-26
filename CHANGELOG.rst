@@ -8,6 +8,12 @@ Next Release (TBD)
 * bugfix:Pagination: Fix issue where disabling pagination did not
   work when shadowing arguments.  Affects commands such as
   ``aws route53 list-resource-record-sets``.
+* feature:``aws elastictranscoder``: Add support for job timing and
+  input/output metadata
+* feature:``aws iam``: Add NamedPolicy to GetAccountAuthorization
+  details
+* feature:``aws opsworks``: Allow for BlockDeviceMapping on EC2 instances
+  launched through OpsWorks
 
 
 1.7.17

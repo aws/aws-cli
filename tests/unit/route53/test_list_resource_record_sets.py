@@ -37,7 +37,9 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
             ' --max-items 1'
             ' --start-record-name foo')
         cmdline = self.prefix + args
-        # We don't map to the service's max-items
+        # Here we _should_ be mapping to the service's arguments
+        # because --start-record-name triggered the disabling of
+        # pagination.
         self.assert_params_for_cmd(
             cmdline, {'HostedZoneId': 'ZD3IYMVP1KDDM',
                       'StartRecordName': 'foo',

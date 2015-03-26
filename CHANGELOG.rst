@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+1.7.18
+======
+
+* bugfix:Pagination: Fix issue where disabling pagination did not
+  work when shadowing arguments.  Affects commands such as
+  ``aws route53 list-resource-record-sets``.
+* feature:``aws elastictranscoder``: Add support for job timing and
+  input/output metadata
+* feature:``aws iam``: Add NamedPolicy to GetAccountAuthorization
+  details
+* feature:``aws opsworks``: Allow for BlockDeviceMapping on EC2 instances
+  launched through OpsWorks
+
+
+1.7.17
+======
+
+* feature:``aws emr``: Adds support for Amazon S3 client-side encryption in
+  Amazon EMR and setting configuration values for several variables in the
+  ``create-cluster`` and ``ssh`` commands. Also, the
+  ``create-default-roles`` command will now auto-populate the Service Role and
+  Instance Profile variables in the configuration file with the default roles
+  after they are created.
+
+
 1.7.16
 ======
 

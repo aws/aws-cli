@@ -59,7 +59,7 @@ class ErrorHandler(object):
         if http_response.status_code >= 500:
             error_type = 'server'
             error_class = ServerError
-        if http_response.status_code >= 400 or http_response.status_code == 301:
+        elif http_response.status_code >= 400 or http_response.status_code == 301:
             error_type = 'client'
             error_class = ClientError
         if error_class is not None:

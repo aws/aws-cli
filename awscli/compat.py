@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
+import os
 
 from botocore.compat import six
 #import botocore.compat
@@ -24,6 +25,21 @@ queue = six.moves.queue
 shlex_quote = six.moves.shlex_quote
 StringIO = six.StringIO
 urlopen = six.moves.urllib.request.urlopen
+
+
+class BinaryStdout(object):
+    def __enter__(self):
+        if sys.platform == "win32":
+            import msvcrt
+            self.previous_mode = msvcrt.setmode(sys.stdout.fileno(),
+                                                os.O_BINARY)
+        return sys.stdout
+
+    def __exit__(self, type, value, traceback):
+        if sys.platform == "win32":
+            import msvcrt
+            msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)                
+
 
 if six.PY3:
     import locale

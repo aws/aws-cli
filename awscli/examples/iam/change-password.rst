@@ -1,13 +1,22 @@
-**To change the password for an IAM user**
+**To change the password for your IAM user**
 
-The following ``change-password`` command lets an IAM user change his or her own password::
+To change the password for your IAM user, we recommend using the ``--cli-input-json`` parameter to pass a JSON file that contains your old and new passwords. Using this method, you can use strong passwords with non-alphanumeric characters. It can be difficult to use passwords with non-alphanumeric characters when you pass them as command line parameters. To use the ``--cli-input-json`` parameter, start by using the ``change-password`` command with the ``--generate-cli-skeleton`` parameter, as in the following example::
 
-  aws iam change-password --old-password <password> --new-password <password>
+  aws iam change-password --generate-cli-skeleton > change-password.json
 
-To set a password policy for the account, use the ``update-account-password-policy`` command. If the new password
-violates the account password policy, the command returns a ``PasswordPolicyViolation`` error.
+The previous command creates a JSON file called change-password.json that you can use to fill in your old and new passwords. For example, the file might look like this::
 
-If this command is called using account (root) credentials, the command returns an ``InvalidUserType`` error.
+  {
+      "OldPassword": "3s0K_;xh4~8XXI",
+      "NewPassword": "]35d/{pB9Fo9wJ"
+  }
 
-For more information, see `Managing Passwords`_ in the *Using IAM* guide.
+Next, to change your password, use the ``change-password`` command again, this time passing the ``--cli-input-json`` parameter to specify your JSON file. The following ``change-password`` command uses the ``--cli-input-json`` parameter with a JSON file called change-password.json::
 
+  aws iam change-password --cli-input-json file://change-password.json
+
+This command can be called by IAM users only. If this command is called using AWS account (root) credentials, the command returns an ``InvalidUserType`` error.
+
+For more information, see `How IAM Users Change Their Own Password`_ in the *Using IAM* guide.
+
+.. _`How IAM Users Change Their Own Password`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingUserPwdSelf.html

@@ -30,6 +30,15 @@ Command::
 
   aws ec2 authorize-security-group-ingress --group-id sg-111aaa22 --protocol tcp --port 80 --source-group sg-1a2b3c4d
 
+**[EC2-VPC] To add a custom ICMP rule**
+
+This example uses the ``ip-permissions`` parameter to add an inbound rule that allows the ICMP message ``Destination Unreachable: Fragmentation Needed and Don't Fragment was Set`` (Type 3, Code 4) from anywhere. If the command succeeds, no output is returned. For more information about quoting JSON-formatted parameters, see `Quoting Strings`_.
+
+Command::
+
+  aws ec2 authorize-security-group-ingress --group-id sg-123abc12 --ip-permissions '[{"IpProtocol": "icmp", "FromPort": 3, "ToPort": 4, "IpRanges": [{"CidrIp": "0.0.0.0/0"}]}]' 
+
 For more information, see `Using Security Groups`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Security Groups`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-sg.html
+.. _`Quoting Strings`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#quoting-strings

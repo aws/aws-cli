@@ -3,7 +3,7 @@
      --instance-type <value> | --instance-groups <value>
      --instance-count <value>
      [--auto-terminate | --no-auto-terminate]
-     [--use-default-role]
+     [--use-default-roles]
      [--service-role <value>]
      [--name <value>]
      [--log-uri <value>]

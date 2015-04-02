@@ -15,6 +15,10 @@ from awscli.customizations import utils
 from awscli.customizations.codedeploy.locationargs import \
     modify_revision_arguments
 from awscli.customizations.codedeploy.push import Push
+from awscli.customizations.codedeploy.register import Register
+from awscli.customizations.codedeploy.deregister import Deregister
+from awscli.customizations.codedeploy.install import Install
+from awscli.customizations.codedeploy.uninstall import Uninstall
 
 
 def initialize(cli):
@@ -55,3 +59,7 @@ def inject_commands(command_table, session, **kwargs):
     Inject custom 'aws deploy' commands.
     """
     command_table['push'] = Push(session)
+    command_table['register'] = Register(session)
+    command_table['deregister'] = Deregister(session)
+    command_table['install'] = Install(session)
+    command_table['uninstall'] = Uninstall(session)

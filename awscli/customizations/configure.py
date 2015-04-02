@@ -24,7 +24,7 @@ from awscli.customizations.commands import BasicCommand
 logger = logging.getLogger(__name__)
 NOT_SET = '<not set>'
 
-PREDEFINED_SECTION_NAMES = ('preview', 'plugin')
+PREDEFINED_SECTION_NAMES = ('preview', 'plugins')
 
 def register_configure_cmd(cli):
     cli.register('building-command-table.main',

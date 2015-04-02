@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.7.19
+======
+
+* feature:``aws codedeploy``: Add ``register``, ``deregister``,
+  ``install``, and ``uninstall`` commands and update to the latest
+  AWS CodeDeploy API.
+* feature:``aws rds``: Add support for ``describe-certificates``.
+* feature:``aws elastictranscoder``: Add support for PlayReady DRM.
+* feature:``aws ec2``: Add support for D2 instances.
+
 1.7.18
 ======
 

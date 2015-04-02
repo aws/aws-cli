@@ -29,6 +29,8 @@ if six.PY3:
     import locale
     import urllib.parse as urlparse
 
+    from urllib.error import URLError
+
     raw_input = input
 
     def get_stdout_text_writer():
@@ -54,6 +56,8 @@ else:
     import locale
     import io
     import urlparse
+
+    from urllib2 import URLError
 
     raw_input = raw_input
 

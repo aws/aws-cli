@@ -122,7 +122,7 @@ class LocationArgument(CustomArgument):
             param=self.argument_model,
             cli_argument=self,
             value=value,
-            operation_name=self.name
+            operation=None
         )
         if parsed is None:
             parsed = unpack_cli_arg(self, value)

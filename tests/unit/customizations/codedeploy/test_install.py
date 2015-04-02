@@ -44,7 +44,7 @@ class TestInstall(unittest.TestCase):
         self.urlopen = self.urlopen_patcher.start()
         self.urlopen.side_effect = timeout('Not EC2 instance')
 
-        self.geteuid_patcher = patch('os.geteuid')
+        self.geteuid_patcher = patch('os.geteuid', create=True)
         self.geteuid = self.geteuid_patcher.start()
         self.geteuid.return_value = 0
 

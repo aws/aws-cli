@@ -91,7 +91,7 @@ class SSH(Command):
             command = ['ssh', '-o', 'StrictHostKeyChecking=no', '-o',
                        'ServerAliveInterval=10', '-i',
                        parsed_args.key_pair_file, constants.SSH_USER +
-                       '@' + master_dns]
+                       '@' + master_dns, '-t']
             if parsed_args.command:
                 command.append(parsed_args.command)
         else:

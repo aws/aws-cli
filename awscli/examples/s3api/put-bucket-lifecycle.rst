@@ -26,4 +26,6 @@ The file ``lifecycle.json`` is a JSON document in the current folder that specif
     ]
   }
 
-The first rule moves files to Amazon Glacier after sixty days. The second rule deletes files from Amazon S3 on the specified date.
+The first rule moves files to Amazon Glacier after sixty days. The second rule deletes files from Amazon S3 on the specified date. For information on acceptable timestamp formats, see `Specifying Parameter Values`_ in the *AWS CLI User Guide*.
+
+.. _`Specifying Parameter Values`: http://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html

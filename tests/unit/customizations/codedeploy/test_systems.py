@@ -228,7 +228,7 @@ class TestUbuntu(unittest.TestCase):
     def test_installer(self):
         self.assertEquals(self.installer, self.ubuntu.INSTALLER)
 
-    @patch('os.geteuid')
+    @patch('os.geteuid', create=True)
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
         with self.assertRaisesRegexp(

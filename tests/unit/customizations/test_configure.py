@@ -816,6 +816,16 @@ class TestConfigureSetCommand(unittest.TestCase):
             {'__section__': 'default',
              'emr': {'instance_profile': 'my_ip_emr'}}, 'myconfigfile')
 
+    def test_configure_set_handles_predefined_plugins_section(self):
+        self.session.variables['profile'] = 'default'
+        set_command = configure.ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(
+            args=['plugins.foo', 'mypackage'], parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'plugins',
+             'foo': 'mypackage'}, 'myconfigfile')
+
     def test_configure_set_command_dotted_with_profile(self):
         self.session.profile = 'emr-dev'
         set_command = configure.ConfigureSetCommand(

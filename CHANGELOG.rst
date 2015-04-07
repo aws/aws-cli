@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.20
+======
+
+* feature:``aws datapipeline``: Add support for deactivating pipelines.
+* feature:``aws elasticbeanstalk``: Add support for cancelling in-progress
+  environment updates or application version deployment.
+
+
 1.7.19
 ======
 

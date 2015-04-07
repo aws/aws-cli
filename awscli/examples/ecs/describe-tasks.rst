@@ -4,7 +4,7 @@ This example command provides a description of the specified task, using the tas
 
 Command::
 
-  aws ecs describe-task --cluster default --task 0cc43cdb-3bee-4407-9c26-c0e6ea5bee84
+  aws ecs describe-tasks --tasks 68ef0f55-2ac3-420a-962f-a64d587fd38d
 
 Output::
 
@@ -12,24 +12,41 @@ Output::
 	    "failures": [],
 	    "tasks": [
 	        {
-	            "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
+	            "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/68ef0f55-2ac3-420a-962f-a64d587fd38d",
 	            "overrides": {
 	                "containerOverrides": [
 	                    {
-	                        "name": "sleep"
+	                        "name": "timer"
+	                    },
+	                    {
+	                        "name": "web"
 	                    }
 	                ]
 	            },
-	            "lastStatus": "PENDING",
-	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
+	            "lastStatus": "RUNNING",
+	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/22878e8e-25f1-4868-8bee-6a36a8bee7c1",
 	            "desiredStatus": "RUNNING",
-	            "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/sleep360:1",
+	            "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/web-timer:2",
 	            "containers": [
 	                {
-	                    "containerArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container/291bb057-f49c-4bd7-9b50-9c891359083b",
-	                    "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/0cc43cdb-3bee-4407-9c26-c0e6ea5bee84",
-	                    "lastStatus": "PENDING",
-	                    "name": "sleep"
+	                    "containerArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container/87539a7c-5769-4860-863c-e0d48da8a855",
+	                    "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/68ef0f55-2ac3-420a-962f-a64d587fd38d",
+	                    "lastStatus": "RUNNING",
+	                    "name": "timer",
+	                    "networkBindings": []
+	                },
+	                {
+	                    "containerArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container/8e899803-b471-4d74-a9d9-3081c76b23fd",
+	                    "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/68ef0f55-2ac3-420a-962f-a64d587fd38d",
+	                    "lastStatus": "RUNNING",
+	                    "name": "web",
+	                    "networkBindings": [
+	                        {
+	                            "bindIP": "0.0.0.0",
+	                            "containerPort": 80,
+	                            "hostPort": 80
+	                        }
+	                    ]
 	                }
 	            ]
 	        }

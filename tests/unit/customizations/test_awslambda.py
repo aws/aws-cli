@@ -10,14 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import tempfile
-import sys
-import os
-import shutil
-
-from awscli.compat import six
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import FileCreator
 
 
 class TestCreateFunction(BaseAWSCommandParamsTest):
@@ -28,15 +23,14 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
         super(TestCreateFunction, self).setUp()
 
         # Make a temporary file
-        self.temp_dir = tempfile.mkdtemp()
-        self.temp_file = os.path.join(self.temp_dir, 'foo.json')
-        self.contents_of_file = 'myzip'
-        with open(self.temp_file, 'w') as f:
-            f.write(self.contents_of_file)
+        self.files = FileCreator()
+        self.contents_of_file = 'myzipcontents'
+        self.temp_file = self.files.create_file(
+            'foo', self.contents_of_file)
 
     def tearDown(self):
         super(TestCreateFunction, self).tearDown()
-        shutil.rmtree(self.temp_dir)
+        self.files.remove_all()
 
     def test_create_function(self):
         cmdline = self.prefix
@@ -61,7 +55,7 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
             'Runtime': 'myruntime',
             'Role': 'myrole',
             'Handler': 'myhandler',
-            'Code': {'ZipFile': 'myzip'}
+            'Code': {'ZipFile': self.contents_of_file}
         }
         self.assert_params_for_cmd(cmdline, result)
 

@@ -4,7 +4,7 @@ This example command provides a description of the specified container instance 
 
 Command::
 
-  aws ecs describe-container-instance --cluster default --container-instance f6bbb147-5370-4ace-8c73-c7181ded911f
+  aws ecs describe-container-instance --cluster default --container-instances f2756532-8f13-4d53-87c9-aed50dc94cd7
 
 Output::
 
@@ -13,40 +13,70 @@ Output::
 	    "containerInstances": [
 	        {
 	            "status": "ACTIVE",
-	            "remainingResources": [
-	                {
-	                    "integerValue": 32748,
-	                    "longValue": 0,
-	                    "type": "INTEGER",
-	                    "name": "CPU",
-	                    "doubleValue": 0.0
-	                },
-	                {
-	                    "integerValue": 60377,
-	                    "longValue": 0,
-	                    "type": "INTEGER",
-	                    "name": "MEMORY",
-	                    "doubleValue": 0.0
-	                }
-	            ],
 	            "registeredResources": [
 	                {
-	                    "integerValue": 32768,
+	                    "integerValue": 2048,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "CPU",
 	                    "doubleValue": 0.0
 	                },
 	                {
-	                    "integerValue": 60397,
+	                    "integerValue": 3768,
 	                    "longValue": 0,
 	                    "type": "INTEGER",
 	                    "name": "MEMORY",
 	                    "doubleValue": 0.0
+	                },
+	                {
+	                    "name": "PORTS",
+	                    "longValue": 0,
+	                    "doubleValue": 0.0,
+	                    "stringSetValue": [
+	                        "2376",
+	                        "22",
+	                        "51678",
+	                        "2375"
+	                    ],
+	                    "type": "STRINGSET",
+	                    "integerValue": 0
 	                }
 	            ],
-	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/f6bbb147-5370-4ace-8c73-c7181ded911f",
-	            "ec2InstanceId": "i-0f51df05"
+	            "ec2InstanceId": "i-807f3249",
+	            "agentConnected": true,
+	            "containerInstanceArn": "arn:aws:ecs:<region>:<aws_account_id>:container-instance/f2756532-8f13-4d53-87c9-aed50dc94cd7",
+	            "pendingTasksCount": 0,
+	            "remainingResources": [
+	                {
+	                    "integerValue": 1948,
+	                    "longValue": 0,
+	                    "type": "INTEGER",
+	                    "name": "CPU",
+	                    "doubleValue": 0.0
+	                },
+	                {
+	                    "integerValue": 3668,
+	                    "longValue": 0,
+	                    "type": "INTEGER",
+	                    "name": "MEMORY",
+	                    "doubleValue": 0.0
+	                },
+	                {
+	                    "name": "PORTS",
+	                    "longValue": 0,
+	                    "doubleValue": 0.0,
+	                    "stringSetValue": [
+	                        "2376",
+	                        "22",
+	                        "80",
+	                        "51678",
+	                        "2375"
+	                    ],
+	                    "type": "STRINGSET",
+	                    "integerValue": 0
+	                }
+	            ],
+	            "runningTasksCount": 1
 	        }
 	    ]
 	}

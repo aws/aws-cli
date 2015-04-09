@@ -60,6 +60,7 @@ from awscli.customizations.configservice.rename_cmd import \
     register_rename_config
 from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.opsworks import initialize as opsworks_init
+from awscli.customizations.awslambda import register_lambda_create_function
 
 
 def awscli_initialize(event_handlers):
@@ -122,3 +123,4 @@ def awscli_initialize(event_handlers):
     register_rename_config(event_handlers)
     register_scalar_parser(event_handlers)
     opsworks_init(event_handlers)
+    register_lambda_create_function(event_handlers)

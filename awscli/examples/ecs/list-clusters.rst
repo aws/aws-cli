@@ -11,7 +11,6 @@ Output::
 	{
 	    "clusterArns": [
 	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/test",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/default",
-	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/My test cluster"
+	        "arn:aws:ecs:us-east-1:<aws_account_id>:cluster/default"
 	    ]
 	}

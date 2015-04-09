@@ -4,7 +4,7 @@ This example command provides a description of the specified task, using the tas
 
 Command::
 
-  aws ecs describe-tasks --tasks 68ef0f55-2ac3-420a-962f-a64d587fd38d
+  aws ecs describe-tasks --tasks c5cba4eb-5dad-405e-96db-71ef8eefe6a8
 
 Output::
 
@@ -12,34 +12,26 @@ Output::
 	    "failures": [],
 	    "tasks": [
 	        {
-	            "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/68ef0f55-2ac3-420a-962f-a64d587fd38d",
+	            "taskArn": "arn:aws:ecs:<region>:<aws_account_id>:task/c5cba4eb-5dad-405e-96db-71ef8eefe6a8",
 	            "overrides": {
 	                "containerOverrides": [
 	                    {
-	                        "name": "timer"
-	                    },
-	                    {
-	                        "name": "web"
+	                        "name": "ecs-demo"
 	                    }
 	                ]
 	            },
 	            "lastStatus": "RUNNING",
-	            "containerInstanceArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container-instance/22878e8e-25f1-4868-8bee-6a36a8bee7c1",
+	            "containerInstanceArn": "arn:aws:ecs:<region>:<aws_account_id>:container-instance/18f9eda5-27d7-4c19-b133-45adc516e8fb",
+	            "clusterArn": "arn:aws:ecs:<region>:<aws_account_id>:cluster/default",
 	            "desiredStatus": "RUNNING",
-	            "taskDefinitionArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task-definition/web-timer:2",
+	            "taskDefinitionArn": "arn:aws:ecs:<region>:<aws_account_id>:task-definition/amazon-ecs-sample:1",
+	            "startedBy": "ecs-svc/9223370608528463088",
 	            "containers": [
 	                {
-	                    "containerArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container/87539a7c-5769-4860-863c-e0d48da8a855",
-	                    "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/68ef0f55-2ac3-420a-962f-a64d587fd38d",
+	                    "containerArn": "arn:aws:ecs:<region>:<aws_account_id>:container/7c01765b-c588-45b3-8290-4ba38bd6c5a6",
+	                    "taskArn": "arn:aws:ecs:<region>:<aws_account_id>:task/c5cba4eb-5dad-405e-96db-71ef8eefe6a8",
 	                    "lastStatus": "RUNNING",
-	                    "name": "timer",
-	                    "networkBindings": []
-	                },
-	                {
-	                    "containerArn": "arn:aws:ecs:us-east-1:<aws_account_id>:container/8e899803-b471-4d74-a9d9-3081c76b23fd",
-	                    "taskArn": "arn:aws:ecs:us-east-1:<aws_account_id>:task/68ef0f55-2ac3-420a-962f-a64d587fd38d",
-	                    "lastStatus": "RUNNING",
-	                    "name": "web",
+	                    "name": "ecs-demo",
 	                    "networkBindings": [
 	                        {
 	                            "bindIP": "0.0.0.0",

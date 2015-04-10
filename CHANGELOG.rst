@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+1.7.22
+======
+
+* bugfix:``aws ecs``: Minor documentation fixes.
+
 1.7.20
 ======
 

@@ -21,7 +21,8 @@ def register_lambda_create_function(cli):
 
 def _flatten_code_argument(argument_table, **kwargs):
     argument_table['zip-file'] = ZipFileArgument(
-        'zip-file', help_text='The zip file of the code you are uploading.',
+        'zip-file', help_text=('The path to the zip file of the code you '
+                               'are uploading. Example: fileb://code.zip'),
         cli_type_name='blob', required=True)
     del argument_table['code']
 

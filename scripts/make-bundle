@@ -12,6 +12,7 @@ interface for those not familiar with the python
 ecosystem.
 
 """
+import functools
 import os
 import sys
 import time
@@ -155,13 +156,14 @@ def verify_preconditions():
 def _min_version_required(min_version, actual_version, name):
     # precondition: min_version is major.minor.patch
     #               actual_version is major.minor.patch
-    min_split = min_version.split('.')
-    actual_split = actual_version.split('.')
-    for minimum, actual in zip(min_split, actual_split):
-        if int(actual) < int(minimum):
-            raise ValueError("%s requires at least version %s, but "
-                             "version %s was found." % (name, min_version,
-                                                        actual_version))
+    min_split = map(int, min_version.split('.'))
+    actual_split = map(int, actual_version.split('.'))
+    comp = map(cmp, actual_split, min_split)
+    result = functools.reduce((lambda x, y: x*2 + y), comp)
+    if result < 0:
+        raise ValueError("%s requires at least version %s, but "
+                         "version %s was found." % (name, min_version,
+                                                    actual_version))
 
 
 def main():

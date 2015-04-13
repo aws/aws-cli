@@ -1,13 +1,8 @@
-**To create listeners on a load balancer**
+**To create listeners for a load balancer**
 
-This example creates listeners on your load balancer at the specified ports using specified protocols.
-
+This example creates a listener for your load balancer at port 80 using the HTTP protocol.
 
 Command::
 
-     aws elb create-load-balancer-listeners --load-balancer-name MyHTTPSLoadBalancer --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80
-
-Output::
-
-      {}
+     aws elb create-load-balancer-listeners --load-balancer-name my-load-balancer --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80"
 

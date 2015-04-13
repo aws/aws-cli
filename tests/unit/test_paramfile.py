@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import mock
 from awscli.compat import six
+from awscli.testutils import unittest, FileCreator
 
 from awscli.paramfile import get_paramfile, ResourceLoadingError
-from awscli.testutils import unittest, FileCreator
 
 
 class TestParamFile(unittest.TestCase):
@@ -45,3 +46,46 @@ class TestParamFile(unittest.TestCase):
         prefixed_filename = 'file://' + filename
         with self.assertRaises(ResourceLoadingError):
             get_paramfile(prefixed_filename)
+
+    def test_file_does_not_exist_raises_error(self):
+        with self.assertRaises(ResourceLoadingError):
+            get_paramfile('file://file/does/not/existsasdf.txt')
+
+    def test_no_match_uris_returns_none(self):
+        self.assertIsNone(get_paramfile('foobar://somewhere.bar'))
+
+    def test_non_string_type_returns_none(self):
+        self.assertIsNone(get_paramfile(100))
+
+
+class TestHTTPBasedResourceLoading(unittest.TestCase):
+    def setUp(self):
+        self.requests_patch = mock.patch('awscli.paramfile.requests')
+        self.requests_mock = self.requests_patch.start()
+        self.response = mock.Mock(status_code=200)
+        self.requests_mock.get.return_value = self.response
+
+    def tearDown(self):
+        self.requests_patch.stop()
+
+    def test_resource_from_http(self):
+        self.response.text = 'http contents'
+        loaded = get_paramfile('http://foo.bar.baz')
+        self.assertEqual(loaded, 'http contents')
+        self.requests_mock.get.assert_called_with('http://foo.bar.baz')
+
+    def test_resource_from_https(self):
+        self.response.text = 'http contents'
+        loaded = get_paramfile('https://foo.bar.baz')
+        self.assertEqual(loaded, 'http contents')
+        self.requests_mock.get.assert_called_with('https://foo.bar.baz')
+
+    def test_non_200_raises_error(self):
+        self.response.status_code = 500
+        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
+            get_paramfile('https://foo.bar.baz')
+
+    def test_connection_error_raises_error(self):
+        self.requests_mock.get.side_effect = Exception("Connection error.")
+        with self.assertRaisesRegexp(ResourceLoadingError, 'foo\.bar\.baz'):
+            get_paramfile('https://foo.bar.baz')

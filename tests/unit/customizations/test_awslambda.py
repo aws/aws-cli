@@ -59,19 +59,23 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
         self.assertIn('Unknown options: --code', stderr)
 
-    def test_create_function_with_invalid_file(self):
+    def test_create_function_with_invalid_file_contents(self):
         cmdline = self.prefix
         cmdline += ' --function-name myfunction --runtime myruntime'
         cmdline += ' --role myrole --handler myhandler'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
-        result = {
-            'FunctionName': 'myfunction',
-            'Runtime': 'myruntime',
-            'Role': 'myrole',
-            'Handler': 'myhandler',
-            'Code': {'ZipFile': self.zip_file_contents}
-        }
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
         self.assertIn('does not contain zip file content', stderr)
         # Should also give a pointer to fileb:// for them.
+        self.assertIn('fileb://', stderr)
+
+    def test_not_using_fileb_prefix(self):
+        cmdline = self.prefix
+        cmdline += ' --function-name myfunction --runtime myruntime'
+        cmdline += ' --role myrole --handler myhandler'
+        # Note file:// instead of fileb://
+        cmdline += ' --zip-file file://%s' % self.zip_file
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        # Ensure we mention fileb:// to give the user an idea of
+        # where to go next.
         self.assertIn('fileb://', stderr)

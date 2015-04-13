@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.compat import six
 
-from awscli.paramfile import get_paramfile
+from awscli.paramfile import get_paramfile, ResourceLoadingError
 from awscli.testutils import unittest, FileCreator
 
 
@@ -38,3 +38,10 @@ class TestParamFile(unittest.TestCase):
         data = get_paramfile(prefixed_filename)
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
+
+    def test_cannot_load_text_file(self):
+        contents = b'\xbfX\xac\xbe'
+        filename = self.files.create_file('foo', contents, mode='wb')
+        prefixed_filename = 'file://' + filename
+        with self.assertRaises(ResourceLoadingError):
+            get_paramfile(prefixed_filename)

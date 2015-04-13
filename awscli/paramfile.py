@@ -98,8 +98,14 @@ def get_file(prefix, path, mode):
     if not os.path.isfile(file_path):
         raise ResourceLoadingError("file does not exist: %s" % file_path)
     try:
-        with compat_open(file_path, mode) as f:
-            return f.read()
+        try:
+            with compat_open(file_path, mode) as f:
+                return f.read()
+        except UnicodeDecodeError:
+            raise ResourceLoadingError(
+                'Unable to load paramfile (%s), text contents could '
+                'not be decoded.  If this is a binary file, please use the '
+                'fileb:// prefix instead of the file:// prefix.' % file_path)
     except (OSError, IOError) as e:
         raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
             path, e))

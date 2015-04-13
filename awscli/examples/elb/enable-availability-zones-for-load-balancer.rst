@@ -1,17 +1,17 @@
-**To enable availability zone for your load balancer**
+**To enable Availability Zones for a load balancer**
 
-This example adds specified availability zone to your load balancer.
+This example adds the specified Availability Zone to the specified load balancer.
 
 Command::
 
-    aws elb enable-availability-zones-for-load-balancer --load-balancer-name MyLoadBalancer  --availability-zones us-east-1a
+    aws elb enable-availability-zones-for-load-balancer --load-balancer-name my-load-balancer --availability-zones us-west-2b
 
 Output::
 
     {
-      "AvailabilityZones": [
-        "us-east-1a",
-        "us-east-1b"
-      ]
+        "AvailabilityZones": [
+            "us-west-2a",
+            "us-west-2b"
+        ]
     }
 

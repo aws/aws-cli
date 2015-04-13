@@ -1,60 +1,35 @@
-**To describe all the policies associated with a load balancer**
+**To describe all policies associated with a load balancer**
 
-This example describes all the policies associated with a specified load balancer.
+This example describes all of the policies associated with the specified load balancer.
 
 Command::
 
-  aws elb describe-load-balancer-policies --load-balancer-name MyLoadBalancer
+  aws elb describe-load-balancer-policies --load-balancer-name my-load-balancer
 
 Output::
 
   {
     "PolicyDescriptions": [
-      {
-        "PolicyAttributeDescriptions": [
-          {
-            "AttributeName": "CookieExpirationPeriod",
-            "AttributeValue": "60"
-          }
-        ],
-        "PolicyName": "MyDurationStickyPolicy",
-        "PolicyTypeName": "LBCookieStickinessPolicyType"
-      },
       {
         "PolicyAttributeDescriptions": [
           {
             "AttributeName": "ProxyProtocol",
-            "AttributeValue": "True"
+            "AttributeValue": "true"
           }
         ],
-        "PolicyName": "EnableProxyProtocol",
+        "PolicyName": "my-ProxyProtocol-policy",
         "PolicyTypeName": "ProxyProtocolPolicyType"
       },
       {
-        "PolicyAttributeDescriptions": [
-          {
-            "AttributeName": "CookieName",
-            "AttributeValue": "MyAppCookie"
-          }
-        ],
-        "PolicyName": "MyAppStickyPolicy",
-        "PolicyTypeName": "AppCookieStickinessPolicyType"
-      }
-    ]
-  }
-
-**To describe a specified policy associated with a load balancer**
-
-This example describes a specified policy associated with a specified load balancer.
-
-Command::
-
-  aws elb describe-load-balancer-policies --load-balancer-name MyLoadBalancer  --policy-name MyDurationStickyPolicy
-
-Output::
-
-  {
-    "PolicyDescriptions": [
+          "PolicyAttributeDescriptions": [
+              {
+                  "AttributeName": "CookieName",
+                  "AttributeValue": "my-app-cookie"
+              }
+          ],
+          "PolicyName": "my-app-cookie-policy",
+          "PolicyTypeName": "AppCookieStickinessPolicyType"
+      },
       {
         "PolicyAttributeDescriptions": [
           {
@@ -62,9 +37,36 @@ Output::
             "AttributeValue": "60"
           }
         ],
-        "PolicyName": "MyDurationStickyPolicy",
+        "PolicyName": "my-duration-cookie-policy",
         "PolicyTypeName": "LBCookieStickinessPolicyType"
-      }
+      },
+      .
+      .
+      .
     ]
   }
 
+**To describe a specific policy associated with a load balancer**
+
+This example describes the specified policy associated with the specified load balancer.
+
+Command::
+
+  aws elb describe-load-balancer-policies --load-balancer-name my-load-balancer --policy-name my-authentication-policy
+
+Output::
+
+  {
+    "PolicyDescriptions": [
+        {
+            "PolicyAttributeDescriptions": [
+                {
+                    "AttributeName": "PublicKeyPolicyName",
+                    "AttributeValue": "my-PublicKey-policy"
+                }
+            ],
+            "PolicyName": "my-authentication-policy",
+            "PolicyTypeName": "BackendServerAuthenticationPolicyType"
+        }
+    ]
+  }

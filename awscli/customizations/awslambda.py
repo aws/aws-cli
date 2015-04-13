@@ -10,6 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import zipfile
+
+from botocore.vendored import six
+
 from awscli.arguments import CustomArgument
 from awscli.customizations import utils
 
@@ -29,5 +33,14 @@ def _flatten_code_argument(argument_table, **kwargs):
 
 class ZipFileArgument(CustomArgument):
     def add_to_params(self, parameters, value):
+        fileobj = six.BytesIO(value)
+        try:
+            with zipfile.ZipFile(fileobj) as f:
+                f.infolist()
+        except zipfile.BadZipfile:
+            raise ValueError(
+                "--zip-file does not contain zip file content.\n"
+                "Example usage:  --zip-file fileb://path/to/file.zip"
+            )
         zip_file_param = {'ZipFile': value}
         parameters['Code'] = zip_file_param

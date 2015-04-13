@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:Parsing: Treat empty XML nodes in a response as an empty
+  string instead of ``None`` if the underlying structure member
+  is a string. This fixes the broken ``password-data-available``
+  Amazon EC2 waiter. **Note**: this changes the output of the CLI
+  and may affect filtering with the ``--query`` parameter.
+  (`issue 1252 <https://github.com/aws/aws-cli/issues/1252>`__,
+  `botocore issue 506 <https://github.com/boto/botocore/pull/506>`__)
+
 1.7.22
 ======
 

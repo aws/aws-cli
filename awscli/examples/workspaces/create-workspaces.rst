@@ -4,7 +4,7 @@ This example creates a WorkSpace for user ``jimsmith`` in the specified director
 
 Command::
 
-  aws workspaces create-workspaces --cli-input-json file:create-workspaces.json
+  aws workspaces create-workspaces --cli-input-json file://create-workspaces.json
 
 Input::
 

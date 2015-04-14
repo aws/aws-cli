@@ -91,7 +91,7 @@ def download_cli_deps(scratch_dir):
     # the awscli as tarballs.
     # So here's what we do.
     # Step one create a virtualenv.
-    venv_dir = '/tmp/venv-%s' % str(int(time.time()))
+    venv_dir = tempfile.mkdtemp()
     run('virtualenv %s' % venv_dir)
     pip = os.path.join(venv_dir, 'bin', 'pip')
     assert os.path.isfile(pip)

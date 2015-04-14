@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import zipfile
+from contextlib import closing
 
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -28,7 +29,7 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
         self.temp_file = self.files.create_file(
             'foo', 'mycontents')
         self.zip_file = os.path.join(self.files.rootdir, 'foo.zip')
-        with zipfile.ZipFile(self.zip_file, 'w') as f:
+        with closing(zipfile.ZipFile(self.zip_file, 'w')) as f:
             f.write(self.temp_file)
         with open(self.zip_file, 'rb') as f:
             self.zip_file_contents = f.read()

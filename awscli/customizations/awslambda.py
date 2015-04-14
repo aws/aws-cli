@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import zipfile
+from contextlib import closing
 
 from botocore.vendored import six
 
@@ -35,7 +36,7 @@ class ZipFileArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         fileobj = six.BytesIO(value)
         try:
-            with zipfile.ZipFile(fileobj) as f:
+            with closing(zipfile.ZipFile(fileobj)) as f:
                 f.infolist()
         except zipfile.BadZipfile:
             raise ValueError(

@@ -43,6 +43,8 @@ PARAMFILE_DISABLED = set([
     'custom.mv.website-redirect',
     'custom.sync.website-redirect',
 
+    'machinelearning.predict.predict-endpoint',
+
     'sqs.add-permission.queue-url',
     'sqs.change-message-visibility.queue-url',
     'sqs.change-message-visibility-batch.queue-url',

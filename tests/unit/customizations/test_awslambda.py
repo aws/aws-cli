@@ -19,12 +19,10 @@ from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import FileCreator
 
 
-class TestCreateFunction(BaseAWSCommandParamsTest):
-
-    prefix = 'lambda create-function'
+class BaseLambdaTests(BaseAWSCommandParamsTest):
 
     def setUp(self):
-        super(TestCreateFunction, self).setUp()
+        super(BaseLambdaTests, self).setUp()
         self.files = FileCreator()
         self.temp_file = self.files.create_file(
             'foo', 'mycontents')
@@ -35,8 +33,13 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
             self.zip_file_contents = f.read()
 
     def tearDown(self):
-        super(TestCreateFunction, self).tearDown()
+        super(BaseLambdaTests, self).tearDown()
         self.files.remove_all()
+
+
+class TestCreateFunction(BaseLambdaTests):
+
+    prefix = 'lambda create-function'
 
     def test_create_function_with_file(self):
         cmdline = self.prefix
@@ -66,7 +69,7 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
         cmdline += ' --role myrole --handler myhandler'
         cmdline += ' --zip-file filename_instead_of_contents.zip'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
-        self.assertIn('does not contain zip file content', stderr)
+        self.assertIn('must be a file with the fileb:// prefix', stderr)
         # Should also give a pointer to fileb:// for them.
         self.assertIn('fileb://', stderr)
 
@@ -80,3 +83,27 @@ class TestCreateFunction(BaseAWSCommandParamsTest):
         # Ensure we mention fileb:// to give the user an idea of
         # where to go next.
         self.assertIn('fileb://', stderr)
+
+
+class TestUpdateFunctionCode(BaseLambdaTests):
+
+    prefix = 'lambda update-function-code'
+
+    def test_not_using_fileb_prefix(self):
+        cmdline = self.prefix + ' --function-name foo'
+        cmdline += ' --zip-file filename_instead_of_contents.zip'
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self.assertIn('must be a file with the fileb:// prefix', stderr)
+        # Should also give a pointer to fileb:// for them.
+        self.assertIn('fileb://', stderr)
+
+    def test_using_fileb_prefix_succeeds(self):
+        cmdline = self.prefix
+        cmdline += ' --function-name myfunction'
+        cmdline += ' --zip-file fileb://%s' % self.zip_file
+        result = {
+            'FunctionName': 'myfunction',
+            'ZipFile': self.zip_file_contents,
+        }
+        self.assert_params_for_cmd(cmdline, result)
+

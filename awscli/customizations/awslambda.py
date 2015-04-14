@@ -33,15 +33,22 @@ def _flatten_code_argument(argument_table, **kwargs):
 
 
 class ZipFileArgument(CustomArgument):
+    ERROR_MSG = (
+        "--zip-file does not contain zip file content.\n"
+        "Example usage:  --zip-file fileb://path/to/file.zip")
+
     def add_to_params(self, parameters, value):
+        if not isinstance(value, bytes):
+            # If it's not bytes it's basically impossible for
+            # this to be valid zip content, but we'll at least
+            # still try to load the contents as a zip file
+            # to be absolutely sure.
+            value = value.encode('utf-8')
         fileobj = six.BytesIO(value)
         try:
             with closing(zipfile.ZipFile(fileobj)) as f:
                 f.infolist()
         except zipfile.BadZipfile:
-            raise ValueError(
-                "--zip-file does not contain zip file content.\n"
-                "Example usage:  --zip-file fileb://path/to/file.zip"
-            )
+            raise ValueError(self.ERROR_MSG)
         zip_file_param = {'ZipFile': value}
         parameters['Code'] = zip_file_param

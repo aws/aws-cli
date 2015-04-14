@@ -34,7 +34,7 @@ def _flatten_code_argument(argument_table, **kwargs):
 
 class ZipFileArgument(CustomArgument):
     ERROR_MSG = (
-        "--zip-file does not contain zip file content.\n"
+        "--zip-file must be a file with the fileb:// prefix.\n"
         "Example usage:  --zip-file fileb://path/to/file.zip")
 
     def add_to_params(self, parameters, value):

@@ -13,10 +13,23 @@ Next Release (TBD)
   (`issue 1252 <https://github.com/aws/aws-cli/issues/1252>`__,
   `botocore issue 506 <https://github.com/boto/botocore/pull/506>`__)
 
+
 1.7.22
 ======
 
 * bugfix:``aws ecs``: Minor documentation fixes.
+
+
+1.7.21
+======
+
+* feature:``aws workspaces``: Add support for Amazon WorkSpaces.
+* feature:``aws machinelearning``: Add support for Amazon Machine Learning.
+* feature:``aws s3api``: Add support for specifying Lambda bucket notifications
+  without needing to specify an invocation role.
+* feature:``aws lambda``: Update to latest api.
+* feature:``aws ecs``: Add support for Amazon ECS Service scheduler.
+
 
 1.7.20
 ======

@@ -2,9 +2,10 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.23
+======
 
+* feature:``aws cognito-sync``: Add support for Amazon Cognito Events.
 * bugfix:Parsing: Treat empty XML nodes in a response as an empty
   string instead of ``None`` if the underlying structure member
   is a string. This fixes the broken ``password-data-available``

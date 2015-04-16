@@ -351,3 +351,11 @@ class TestKMSCreateGrant(BaseAWSHelpOutputTest):
         # Ensure that the proper casing is used for this command's docs.
         self.assert_not_contains('generate-data-key')
         self.assert_contains('GenerateDataKey')
+
+
+class TestRoute53CreateHostedZone(BaseAWSHelpOutputTest):
+    def test_proper_casing(self):
+        self.driver.main(['route53', 'create-hosted-zone', 'help'])
+        # Ensure that the proper casing is used for this command's docs.
+        self.assert_contains(
+            'do **not** include ``PrivateZone`` in this input structure')

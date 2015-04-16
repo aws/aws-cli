@@ -26,7 +26,11 @@ from bcdoc.textwriter import TextWriter
 from awscli.clidocs import ProviderDocumentEventHandler
 from awscli.clidocs import ServiceDocumentEventHandler
 from awscli.clidocs import OperationDocumentEventHandler
+from awscli.clidocs import TopicListerDocumentEventHandler
+from awscli.clidocs import TopicDocumentEventHandler
 from awscli.argprocess import ParamShorthand
+from awscli.argparser import ArgTableArgParser
+from awscli.topictags import TopicTagDB
 
 
 LOG = logging.getLogger('awscli.help')
@@ -184,7 +188,8 @@ class HelpCommand(object):
         if arg_table is None:
             arg_table = {}
         self.arg_table = arg_table
-        self.related_items = []
+        self._subcommand_table = {}
+        self._related_items = []
         self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
 
@@ -213,7 +218,24 @@ class HelpCommand(object):
         """
         pass
 
+    @property
+    def subcommand_table(self):
+        """These are the commands that may follow after the help command"""
+        return self._subcommand_table
+
+    @property
+    def related_items(self):
+        """This is list of items that are related to the help command"""
+        return self._related_items
+
     def __call__(self, args, parsed_globals):
+        if args:
+            subcommand_parser = ArgTableArgParser({}, self.subcommand_table)
+            parsed, remaining = subcommand_parser.parse_known_args(args)
+            if getattr(parsed, 'subcommand', None) is not None:
+                return self.subcommand_table[parsed.subcommand](remaining,
+                                                                parsed_globals)
+
         # Create an event handler for a Provider Document
         instance = self.EventHandlerClass(self)
         # Now generate all of the events for a Provider document.
@@ -239,6 +261,9 @@ class ProviderHelpCommand(HelpCommand):
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
+        self._subcommand_table = None
+        self._topic_tag_db = None
+        self._related_items = ['aws help topics']
 
     @property
     def event_class(self):
@@ -247,6 +272,28 @@ class ProviderHelpCommand(HelpCommand):
     @property
     def name(self):
         return self.obj.name
+
+    @property
+    def subcommand_table(self):
+        if self._subcommand_table is None:
+            if self._topic_tag_db is None:
+                self._topic_tag_db = TopicTagDB()
+            self._topic_tag_db.load_json_index()
+            self._subcommand_table = self._create_subcommand_table()
+        return self._subcommand_table
+
+    def _create_subcommand_table(self):
+        subcommand_table = {}
+        # Add the ``aws help topics`` command to the ``topic_table``
+        topic_lister_command = TopicListerCommand(self.session)
+        subcommand_table['topics'] = topic_lister_command
+        topic_names = self._topic_tag_db.get_all_topic_names()
+
+        # Add all of the possible topics to the ``topic_table``
+        for topic_name in topic_names:
+            topic_help_command = TopicHelpCommand(self.session, topic_name)
+            subcommand_table[topic_name] = topic_help_command
+        return subcommand_table
 
 
 class ServiceHelpCommand(HelpCommand):
@@ -298,3 +345,34 @@ class OperationHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._name
+
+
+class TopicListerCommand(HelpCommand):
+    EventHandlerClass = TopicListerDocumentEventHandler
+
+    def __init__(self, session):
+        super(TopicListerCommand, self).__init__(session, None, {}, {})
+
+    @property
+    def event_class(self):
+        return 'topics'
+
+    @property
+    def name(self):
+        return 'topics'
+
+
+class TopicHelpCommand(HelpCommand):
+    EventHandlerClass = TopicDocumentEventHandler
+
+    def __init__(self, session, topic_name):
+        super(TopicHelpCommand, self).__init__(session, None, {}, {})
+        self._topic_name = topic_name
+
+    @property
+    def event_class(self):
+        return 'topics.' + self.name
+
+    @property
+    def name(self):
+        return self._topic_name

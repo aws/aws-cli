@@ -10,14 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+from awscli.testutils import unittest, FileCreator
+import json
 import sys
 import os
 
 import mock
 
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
-from awscli.help import WindowsHelpRenderer
+from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
+from awscli.help import TopicListerCommand, TopicHelpCommand
 
 
 class HelpSpyMixin(object):
@@ -113,3 +115,134 @@ class TestHelpPager(unittest.TestCase):
         renderer.mock_popen.communicate.return_value = ('rendered', '')
         renderer.render('foo')
         self.assertEqual(renderer.popen_calls[-1][0], (['more'],))
+
+
+class TestHelpCommandBase(unittest.TestCase):
+    def setUp(self):
+        self.session = mock.Mock()
+        self.file_creator = FileCreator()
+
+    def tearDown(self):
+        self.file_creator.remove_all()
+
+
+class TestHelpCommand(TestHelpCommandBase):
+    """Test some of the deeper functionality of the HelpCommand
+
+    We do this by subclassing from HelpCommand and ensure it is behaving
+    as expected.
+    """
+    def setUp(self):
+        super(TestHelpCommand, self).setUp()
+        self.doc_handler_mock = mock.Mock()
+        self.subcommand_mock = mock.Mock()
+        self.renderer = mock.Mock()
+
+        class SampleHelpCommand(HelpCommand):
+            EventHandlerClass = self.doc_handler_mock
+
+            @property
+            def subcommand_table(sample_help_cmd_self):
+                return {'mycommand': self.subcommand_mock}
+
+        self.cmd = SampleHelpCommand(self.session, None, None, None)
+        self.cmd.renderer = self.renderer
+
+    def test_subcommand_call(self):
+        self.cmd(['mycommand'], None)
+        self.subcommand_mock.assert_called_with([], None)
+        self.assertFalse(self.doc_handler_mock.called)
+
+    def test_regular_call(self):
+        self.cmd([], None)
+        self.assertFalse(self.subcommand_mock.called)
+        self.doc_handler_mock.assert_called_with(self.cmd)
+        self.assertTrue(self.renderer.render.called)
+
+    def test_invalid_subcommand(self):
+        # This sole purpose of this patch is to remove errors from being
+        # printed to screen even when the test passes when running the test
+        # suite.
+        with mock.patch('sys.stderr'):
+            with self.assertRaises(SystemExit):
+                self.cmd(['no-exist-command'], None)
+
+
+class TestProviderHelpCommand(TestHelpCommandBase):
+    def setUp(self):
+        super(TestProviderHelpCommand, self).setUp()
+        self.session.provider = None
+        self.command_table = {}
+        self.arg_table = {}
+        self.description = None
+        self.synopsis = None
+        self.usage = None
+
+        # Create a temporary index file for ``aws help [command]`` to use.
+        self.tags_dict = {
+            'topic-name-1': {},
+            'topic-name-2': {}
+        }
+        json_index = self.file_creator.create_file('index.json', '')
+        with open(json_index, 'w') as f:
+            json.dump(self.tags_dict, f, indent=4, sort_keys=True)
+        self.json_patch = mock.patch(
+            'awscli.topictags.TopicTagDB.index_file', json_index)
+        self.json_patch.start()
+
+        self.cmd = ProviderHelpCommand(self.session, self.command_table,
+                                       self.arg_table, self.description,
+                                       self.synopsis, self.usage)
+
+    def tearDown(self):
+        self.json_patch.stop()
+        super(TestProviderHelpCommand, self).tearDown()
+
+    def test_related_items(self):
+        self.assertEqual(self.cmd.related_items, ['aws help topics'])
+
+    def test_subcommand_table(self):
+        subcommand_table = self.cmd.subcommand_table
+
+        self.assertEqual(len(subcommand_table), 3)
+
+        # Ensure there is a topics command
+        self.assertIn('topics', subcommand_table)
+        self.assertIsInstance(subcommand_table['topics'], TopicListerCommand)
+
+        # Ensure the topics are there as well
+        self.assertIn('topic-name-1', subcommand_table)
+        self.assertIsInstance(subcommand_table['topic-name-1'],
+                              TopicHelpCommand)
+        self.assertEqual(subcommand_table['topic-name-1'].name, 'topic-name-1')
+
+        self.assertIn('topic-name-2', subcommand_table)
+        self.assertIsInstance(subcommand_table['topic-name-2'],
+                              TopicHelpCommand)
+        self.assertEqual(subcommand_table['topic-name-2'].name,
+                         'topic-name-2')
+
+
+class TestTopicListerCommand(TestHelpCommandBase):
+    def setUp(self):
+        super(TestTopicListerCommand, self).setUp()
+        self.cmd = TopicListerCommand(self.session)
+
+    def test_event_class(self):
+        self.assertEqual(self.cmd.event_class, 'topics')
+
+    def test_name(self):
+        self.assertEqual(self.cmd.name, 'topics')
+
+
+class TestTopicHelpCommand(TestHelpCommandBase):
+    def setUp(self):
+        super(TestTopicHelpCommand, self).setUp()
+        self.name = 'topic-name-1'
+        self.cmd = TopicHelpCommand(self.session, self.name)
+
+    def test_event_class(self):
+        self.assertEqual(self.cmd.event_class, 'topics.topic-name-1')
+
+    def test_name(self):
+        self.assertEqual(self.cmd.name, self.name)

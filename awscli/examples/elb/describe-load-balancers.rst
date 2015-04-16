@@ -1,80 +1,107 @@
-**To get description of the load balancers**
+**To describe your load balancers**
 
-This example describes a specified load balancer.
+This example describes all of your load balancers.
 
 Command::
 
-  aws elb describe-load-balancers --load-balancer-name MyHTTPSLoadBalancer
+  aws elb describe-load-balancers
+
+**To describe one of your load balancers**
+
+This example describes the specified load balancer. 
+
+Command::
+
+  aws elb describe-load-balancers --load-balancer-name my-load-balancer
+
+The following example response is for an HTTPS load balancer in a VPC.
 
 Output::
 
   {
     "LoadBalancerDescriptions": [
       {
-        "Subnets": [],
-        "CanonicalHostedZoneNameID": "Z3DZXE0Q79N41H",
-        "CanonicalHostedZoneName": "MyHTTPSLoadBalancer-12345678.us-east-1.elb.amazonaws.com",
+        "Subnets": [
+            "subnet-15aaab61"
+        ],
+        "CanonicalHostedZoneNameID": "Z3DZXE0EXAMPLE",
+        "CanonicalHostedZoneName": "my-load-balancer-1234567890.us-west-2.elb.amazonaws.com",
         "ListenerDescriptions": [
-          {
-            "Listener": {
-              "InstancePort": 443,
-              "Protocol": "HTTPS",
-              "LoadBalancerPort": 443,
-              "SSLCertificateId": "arn:aws:iam::012345678901:server-certificate/scert",
-              "InstanceProtocol": "HTTPS"
+            {
+                "Listener": {
+                    "InstancePort": 80,
+                    "LoadBalancerPort": 80,
+                    "Protocol": "HTTP",
+                    "InstanceProtocol": "HTTP"
+                },
+                "PolicyNames": []
             },
-            "PolicyNames": [
-              "ELBSecurityPolicy-2014-01"
-            ]
-          },
-          {
-            "Listener": {
-              "InstancePort": 80,
-              "LoadBalancerPort": 80,
-              "Protocol": "HTTP",
-              "InstanceProtocol": "HTTP"
-            },
-            "PolicyNames": []
-          }
+            {
+                "Listener": {
+                    "InstancePort": 443,
+                    "SSLCertificateId": "arn:aws:iam::123456789012:server-certificate/my-server-cert",
+                    "LoadBalancerPort": 443,
+                    "Protocol": "HTTPS",
+                    "InstanceProtocol": "HTTPS"
+                },
+                "PolicyNames": [
+                    "ELBSecurityPolicy-2015-03"
+                ]
+            }
         ],
         "HealthCheck": {
-          "HealthyThreshold": 10,
-          "Interval": 30,
-          "Target": "HTTP:80/",
-          "Timeout": 5,
-          "UnhealthyThreshold": 2
+            "HealthyThreshold": 2,
+            "Interval": 30,
+            "Target": "HTTP:80/png",
+            "Timeout": 3,
+            "UnhealthyThreshold": 2
         },
+        "VPCId": "vpc-a01106c2",
         "BackendServerDescriptions": [
-          {
-            "InstancePort": 80,
-            "PolicyNames": [
-              "EnableProxyProtocol"
-            ]
-          }
+            {
+                "InstancePort": 80,
+                "PolicyNames": [
+                    "my-ProxyProtocol-policy"
+                ]
+            }
         ],
-        "Instances": [],
-        "DNSName": "MyHTTPSLoadBalancer-12345678.us-east-1.elb.amazonaws.com",
-        "SecurityGroups": [],
+        "Instances": [
+            {
+                "InstanceId": "i-207d9717"
+            },
+            {
+                "InstanceId": "i-afefb49b"
+            }
+        ],
+        "DNSName": "my-load-balancer-1234567890.us-west-2.elb.amazonaws.com",
+        "SecurityGroups": [
+            "sg-a61988c3"
+        ],
         "Policies": {
-          "LBCookieStickinessPolicies": [],
-          "AppCookieStickinessPolicies": [],
-          "OtherPolicies": [
-            "AWSConsole-SSLNegotiationPolicy-MyHTTPSLoadBalancer-1395199443332",
-            "ELBSecurityPolicy-2014-01",
-            "AWSConsole-SSLNegotiationPolicy-MyHTTPSLoadBalancer-1401221052287",
-            "EnableProxyProtocol",
-            "MySSLNegotiationPolicy"
-          ]
+            "LBCookieStickinessPolicies": [
+                {
+                    "PolicyName": "my-duration-cookie-policy",
+                    "CookieExpirationPeriod": 60
+                }
+            ],
+            "AppCookieStickinessPolicies": [],
+            "OtherPolicies": [
+                "my-PublicKey-policy",
+                "my-authentication-policy",
+                "my-SSLNegotiation-policy",
+                "my-ProxyProtocol-policy",
+                "ELBSecurityPolicy-2015-03"
+            ]
         },
-        "LoadBalancerName": "MyHTTPSLoadBalancer",
-        "CreatedTime": "2014-03-19T03:24:02.650Z",
+        "LoadBalancerName": "my-load-balancer",
+        "CreatedTime": "2015-03-19T03:24:02.650Z",
         "AvailabilityZones": [
-          "us-east-1a"
+            "us-west-2a"
         ],
         "Scheme": "internet-facing",
         "SourceSecurityGroup": {
-          "OwnerAlias": "amazon-elb",
-          "GroupName": "amazon-elb-sg"
+            "OwnerAlias": "123456789012",
+            "GroupName": "my-elb-sg"
         }
       }
     ]

@@ -2,10 +2,35 @@
 CHANGELOG
 =========
 
+1.7.23
+======
+
+* feature:``aws cognito-sync``: Add support for Amazon Cognito Events.
+* bugfix:Parsing: Treat empty XML nodes in a response as an empty
+  string instead of ``None`` if the underlying structure member
+  is a string. This fixes the broken ``password-data-available``
+  Amazon EC2 waiter. **Note**: this changes the output of the CLI
+  and may affect filtering with the ``--query`` parameter.
+  (`issue 1252 <https://github.com/aws/aws-cli/issues/1252>`__,
+  `botocore issue 506 <https://github.com/boto/botocore/pull/506>`__)
+
+
 1.7.22
 ======
 
 * bugfix:``aws ecs``: Minor documentation fixes.
+
+
+1.7.21
+======
+
+* feature:``aws workspaces``: Add support for Amazon WorkSpaces.
+* feature:``aws machinelearning``: Add support for Amazon Machine Learning.
+* feature:``aws s3api``: Add support for specifying Lambda bucket notifications
+  without needing to specify an invocation role.
+* feature:``aws lambda``: Update to latest api.
+* feature:``aws ecs``: Add support for Amazon ECS Service scheduler.
+
 
 1.7.20
 ======

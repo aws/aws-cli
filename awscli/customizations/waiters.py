@@ -159,6 +159,8 @@ class WaiterStateDocBuilder(object):
             # Include what operation is being used.
             description += self._build_operation_description(
                 self._waiter_config.operation)
+        description += self._build_polling_description(
+            self._waiter_config.delay, self._waiter_config.max_attempts)
         return description
 
     def _build_success_description(self, acceptor):
@@ -180,6 +182,13 @@ class WaiterStateDocBuilder(object):
     def _build_operation_description(self, operation):
         operation_name = xform_name(operation).replace('_', '-')
         return u'when polling with ``%s``.' % operation_name
+
+    def _build_polling_description(self, delay, max_attempts):
+        description = (
+            ' It will poll every %s seconds until a successful state '
+            'has been reached. An error is thrown after %s failed checks.'
+            % (delay, max_attempts))
+        return description
 
 
 class WaiterCaller(object):

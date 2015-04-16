@@ -62,6 +62,7 @@ from awscli.customizations.scalarparse import register_scalar_parser
 from awscli.customizations.opsworks import initialize as opsworks_init
 from awscli.customizations.awslambda import register_lambda_create_function
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
+from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
 
 
 def awscli_initialize(event_handlers):
@@ -126,3 +127,4 @@ def awscli_initialize(event_handlers):
     opsworks_init(event_handlers)
     register_lambda_create_function(event_handlers)
     register_fix_kms_create_grant_docs(event_handlers)
+    register_create_hosted_zone_doc_fix(event_handlers)

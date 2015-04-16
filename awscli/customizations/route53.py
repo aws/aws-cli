@@ -13,8 +13,9 @@
 
 
 def register_create_hosted_zone_doc_fix(cli):
-    # Docs may actually refer to actual api name (not the CLI command).
-    # In that case we want to remove the translation map.
+    # We can remove this customization once we begin documenting
+    # members of complex parameters because the member's docstring
+    # has the necessary documentation.
     cli.register(
         'doc-option.route53.create-hosted-zone.hosted-zone-config',
         add_private_zone_note)

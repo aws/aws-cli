@@ -142,6 +142,8 @@ class TestWaitHelpOutput(BaseAWSHelpOutputTest):
         self.assert_contains('.. _cli:aws ec2 wait instance-running:')
         self.assert_contains(
             'Wait until JMESPath query Reservations[].Instances[].State.Name')
+        self.assert_contains('poll every')
+        self.assert_contains('This will exit with a return code of 255 after')
         self.assert_contains('``describe-instances``')
         self.assert_contains('[--filters <value>]')
         self.assert_contains('``--filters`` (list)')
@@ -201,13 +203,13 @@ class TestWaiterStateCommandBuilder(unittest.TestCase):
             'version': 2,
             'waiters': {
                 'InstanceRunning': {
-                    'description': 'my waiter description',
+                    'description': 'My waiter description.',
                     'delay': 1,
                     'maxAttempts': 10,
                     'operation': 'MyOperation',
                 },
                 'BucketExists': {
-                    'description': 'my waiter description',
+                    'description': 'My waiter description.',
                     'operation': 'MyOperation',
                     'delay': 1,
                     'maxAttempts': 10,
@@ -243,11 +245,15 @@ class TestWaiterStateCommandBuilder(unittest.TestCase):
         # Check the descriptions are set correctly.
         self.assertEqual(
             instance_running_cmd.DESCRIPTION,
-            'my waiter description',
+            'My waiter description. It will poll every 1 seconds until '
+            'a successful state has been reached. This will exit with a '
+            'return code of 255 after 10 failed checks.'
         )
         self.assertEqual(
             bucket_exists_cmd.DESCRIPTION,
-            'my waiter description',
+            'My waiter description. It will poll every 1 seconds until '
+            'a successful state has been reached. This will exit with a '
+            'return code of 255 after 10 failed checks.'
         )
 
 
@@ -256,6 +262,8 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.waiter_config = mock.Mock()
         self.waiter_config.description = ''
         self.waiter_config.operation = 'MyOperation'
+        self.waiter_config.delay = 5
+        self.waiter_config.max_attempts = 20
 
         # Set up the acceptors.
         self.success_acceptor = mock.Mock()
@@ -274,9 +282,13 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
 
     def test_config_provided_description(self):
         # Description is provided by the config file
-        self.waiter_config.description = 'my description'
+        self.waiter_config.description = 'My description.'
         description = self.doc_builder.build_waiter_state_description()
-        self.assertEqual(description, 'my description')
+        self.assertEqual(
+            description,
+            'My description. It will poll every 5 seconds until a '
+            'successful state has been reached. This will exit with a '
+            'return code of 255 after 20 failed checks.')
 
     def test_error_acceptor(self):
         self.success_acceptor.matcher = 'error'
@@ -285,7 +297,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.assertEqual(
             description,
             'Wait until MyException is thrown when polling with '
-            '``my-operation``.'
+            '``my-operation``. It will poll every 5 seconds until a '
+            'successful state has been reached. This will exit with a '
+            'return code of 255 after 20 failed checks.'
         )
 
     def test_status_acceptor(self):
@@ -295,7 +309,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.assertEqual(
             description,
             'Wait until 200 response is received when polling with '
-            '``my-operation``.'
+            '``my-operation``. It will poll every 5 seconds until a '
+            'successful state has been reached. This will exit with a '
+            'return code of 255 after 20 failed checks.'
         )
 
     def test_path_acceptor(self):
@@ -306,7 +322,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.assertEqual(
             description,
             'Wait until JMESPath query MyResource.name returns running when '
-            'polling with ``my-operation``.'
+            'polling with ``my-operation``. It will poll every 5 seconds '
+            'until a successful state has been reached. This will exit with '
+            'a return code of 255 after 20 failed checks.'
         )
 
     def test_path_all_acceptor(self):
@@ -317,7 +335,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.assertEqual(
             description,
             'Wait until JMESPath query MyResource[].name returns running for '
-            'all elements when polling with ``my-operation``.'
+            'all elements when polling with ``my-operation``. It will poll '
+            'every 5 seconds until a successful state has been reached. '
+            'This will exit with a return code of 255 after 20 failed checks.'
         )
 
     def test_path_any_acceptor(self):
@@ -328,7 +348,9 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.assertEqual(
             description,
             'Wait until JMESPath query MyResource[].name returns running for '
-            'any element when polling with ``my-operation``.'
+            'any element when polling with ``my-operation``. It will poll '
+            'every 5 seconds until a successful state has been reached. '
+            'This will exit with a return code of 255 after 20 failed checks.'
         )
 
 

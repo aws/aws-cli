@@ -118,7 +118,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_topic_list_help_output(self):
         p = aws('help topics')
-        self.assertEqual(p.rc, 1)
+        self.assertEqual(p.rc, 0)
         self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Topic\s+Guide')
         self.assertRegexpMatches(
             p.stdout,
@@ -127,7 +127,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
 
     def test_topic_help_output(self):
         p = aws('help return-codes')
-        self.assertEqual(p.rc, 1)
+        self.assertEqual(p.rc, 0)
         self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Return\s+Codes')
         self.assertRegexpMatches(
             p.stdout,

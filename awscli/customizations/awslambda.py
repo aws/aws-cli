@@ -60,6 +60,8 @@ def _should_contain_zip_content(value):
 
 class ZipFileArgument(CustomArgument):
     def add_to_params(self, parameters, value):
+        if value is None:
+            return
         _should_contain_zip_content(value)
         zip_file_param = {'ZipFile': value}
         parameters['Code'] = zip_file_param

@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import platform
+
 import mock
 from awscli.compat import six
 from awscli.testutils import unittest, FileCreator
@@ -40,6 +42,9 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
 
+    @unittest.skipIf(platform.system() not in ['Darwin', 'Linux'],
+                     'Binary content error only occurs on '
+                     'non-Windows platforms.')
     def test_cannot_load_text_file(self):
         contents = b'\xbfX\xac\xbe'
         filename = self.files.create_file('foo', contents, mode='wb')

@@ -301,8 +301,8 @@ Get a list of key names and their sizes in an S3 bucket::
 Get a list of all EC2 instances and include their Instance ID, State Name,
 and their Name (if they've been tagged with a Name)::
 
-    $ $ aws ec2 describe-instances --query \
-        'Reservations[].Instances[].[InstanceId,State.Name,Tags[?Key==`Name`] | [0].Value]'
+    $ aws ec2 describe-instances --query \
+      'Reservations[].Instances[].[InstanceId,State.Name,Tags[?Key==`Name`] | [0].Value]'
 
 
 You may also find the `jq <http://stedolan.github.com/jq/>`_ tool useful in

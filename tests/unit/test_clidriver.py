@@ -543,9 +543,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         rc = driver.main('ec2 describe-instances '
                          '--filters file://does/not/exist.json'.split())
         self.assertEqual(rc, 255)
+        error_msg = self.stderr.getvalue()
         self.assertIn("Error parsing parameter '--filters': "
-                      "file does not exist: does/not/exist.json",
-                      self.stderr.getvalue())
+                      "Unable to load paramfile file://does/not/exist.json",
+                      error_msg)
+        self.assertIn("No such file or directory", error_msg)
 
     def test_aws_configure_in_error_message_no_credentials(self):
         driver = create_clidriver()

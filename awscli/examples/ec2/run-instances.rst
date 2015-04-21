@@ -6,7 +6,7 @@ The key pair and security group, named ``MyKeyPair`` and ``MySecurityGroup``, mu
 
 Command::
 
-  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t1.micro --key-name MyKeyPair --security-groups MySecurityGroup
+  aws ec2 run-instances --image-id ami-1a2b3c4d --count 1 --instance-type t1.micro --key-name MyKeyPair --security-groups MySecurityGroup
 
 Output::
 
@@ -25,7 +25,7 @@ Output::
                   "State": "disabled"
               },
               "PublicDnsName": null,
-              "Platform": "windows",
+              "RootDeviceType": "ebs",
               "State": {
                   "Code": 0,
                   "Name": "pending"
@@ -33,8 +33,9 @@ Output::
               "EbsOptimized": false,
               "LaunchTime": "2013-07-19T02:42:39.000Z",
               "ProductCodes": [],
-              "InstanceId": "i-5203422c",
-              "ImageId": "ami-c3b8d6aa",
+              "StateTransitionReason": null, 
+              "InstanceId": "i-123abc45",
+              "ImageId": "ami-1a2b3c4d",
               "PrivateDnsName": null,
               "KeyName": "MyKeyPair",
               "SecurityGroups": [
@@ -52,17 +53,7 @@ Output::
                   "AvailabilityZone": "us-east-1b"
               },
               "Hypervisor": "xen",
-              "BlockDeviceMappings": [
-                  {
-                      "DeviceName": "/dev/sda1",
-                      "Ebs": {
-                          "Status": "attached",
-                          "DeleteOnTermination": true,
-                          "VolumeId": "vol-877166c8",
-                          "AttachTime": "2013-07-19T02:42:39.000Z"
-                      }
-                  }
-              ],
+              "BlockDeviceMappings": [],
               "Architecture": "x86_64",
               "StateReason": {
                   "Message": "pending",
@@ -70,13 +61,6 @@ Output::
               },
               "RootDeviceName": "/dev/sda1",
               "VirtualizationType": "hvm",
-              "RootDeviceType": "ebs",
-              "Tags": [
-                  {
-                      "Value": "MyInstance",
-                      "Key": "Name"
-                  }
-              ],
               "AmiLaunchIndex": 0
           }
       ]
@@ -84,32 +68,27 @@ Output::
 
 **To launch an instance in EC2-VPC**
 
-This example launches a single instance of type ``t1.micro`` into the specified subnet.
+This example launches a single instance of type ``t2.micro`` into the specified subnet.
 
 The key pair named ``MyKeyPair`` and the security group sg-903004f8 must exist.
 
 Command::
 
-  aws ec2 run-instances --image-id ami-c3b8d6aa --count 1 --instance-type t1.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e
+  aws ec2 run-instances --image-id ami-abc12345 --count 1 --instance-type t2.micro --key-name MyKeyPair --security-group-ids sg-903004f8 --subnet-id subnet-6e7f829e
 
 Output::
 
   {
       "OwnerId": "123456789012",
       "ReservationId": "r-5875ca20",
-      "Groups": [
-          {
-              "GroupName": "MySecurityGroup",
-              "GroupId": "sg-903004f8"
-          }
-      ],
+      "Groups": [],
       "Instances": [
           {
               "Monitoring": {
                   "State": "disabled"
               },
               "PublicDnsName": null,
-              "Platform": "windows",
+              "RootDeviceType": "ebs",
               "State": {
                   "Code": 0,
                   "Name": "pending"
@@ -120,7 +99,7 @@ Output::
               "ProductCodes": [],
               "VpcId": "vpc-1a2b3c4d",
               "InstanceId": "i-5203422c",
-              "ImageId": "ami-c3b8d6aa",
+              "ImageId": "ami-abc12345",
               "PrivateDnsName": "ip-10-0-1-114.ec2.internal",
               "KeyName": "MyKeyPair",
               "SecurityGroups": [
@@ -131,13 +110,14 @@ Output::
               ],
               "ClientToken": null,
               "SubnetId": "subnet-6e7f829e",
-              "InstanceType": "t1.micro",
+              "InstanceType": "t2.micro",
               "NetworkInterfaces": [
                   {
                       "Status": "in-use",
+                      "MacAddress": "0e:ad:05:3b:60:52",
                       "SourceDestCheck": true,
                       "VpcId": "vpc-1a2b3c4d",
-                      "Description": "Primary network interface",
+                      "Description": "null",
                       "NetworkInterfaceId": "eni-a7edb1c9",
                       "PrivateIpAddresses": [
                           {
@@ -172,17 +152,7 @@ Output::
                   "AvailabilityZone": "us-east-1b"
               },
               "Hypervisor": "xen",
-              "BlockDeviceMappings": [
-                  {
-                      "DeviceName": "/dev/sda1",
-                      "Ebs": {
-                          "Status": "attached",
-                          "DeleteOnTermination": true,
-                          "VolumeId": "vol-877166c8",
-                          "AttachTime": "2013-07-19T02:42:39.000Z"
-                      }
-                  }
-              ],
+              "BlockDeviceMappings": [],
               "Architecture": "x86_64",
               "StateReason": {
                   "Message": "pending",
@@ -190,13 +160,6 @@ Output::
               },
               "RootDeviceName": "/dev/sda1",
               "VirtualizationType": "hvm",
-              "RootDeviceType": "ebs",
-              "Tags": [
-                  {
-                      "Value": "MyInstance",
-                      "Key": "Name"
-                  }
-              ],
               "AmiLaunchIndex": 0
           }
       ]

@@ -4,15 +4,12 @@ python:
   - "2.6"
   - "2.7"
   - "3.3"
+  - "3.4"
 
 sudo: false
 
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install -r requirements26.txt; fi
-  - pip install -r requirements.txt
-  - python setup.py develop
-  - pip install coverage python-coveralls
-
-script: nosetests tests/unit --cover-erase --with-coverage --cover-package awscli
-
-after_success: coveralls
+  - python scripts/ci/install
+script: python scripts/ci/run-tests
+after_success:
+  - pip install python-coveralls && cd tests && coveralls

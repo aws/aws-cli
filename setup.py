@@ -31,7 +31,8 @@ setup_options = dict(
     packages=find_packages('.', exclude=['tests*']),
     package_dir={'awscli': 'awscli'},
     package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
-                             'examples/*/*/*.rst']},
+                             'examples/*/*/*.rst', 'topics/*.rst',
+                             'topics/*.json']},
     install_requires=requires,
     license="Apache License 2.0",
     classifiers=(

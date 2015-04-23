@@ -43,3 +43,18 @@ class TestSSHUtils(unittest.TestCase):
         with self.assertRaises(exceptions.ClusterTerminatedError):
             sshutils.validate_and_find_master_dns(
                 mock.Mock(), None, 'cluster-id')
+
+    @mock.patch('awscli.customizations.emr.sshutils.emrutils')
+    def test_ssh_scp_key_file_format(self, emrutils):
+        def which_side_effect(program):
+            if program == 'ssh' or program == 'scp':
+                return '/some/path'
+        emrutils.which.side_effect = which_side_effect
+
+        key_file1 = 'key.abc'
+        sshutils.validate_ssh_with_key_file(key_file1)
+        sshutils.validate_scp_with_key_file(key_file1)
+
+        key_file2 = 'key'
+        sshutils.validate_ssh_with_key_file(key_file2)
+        sshutils.validate_scp_with_key_file(key_file2)

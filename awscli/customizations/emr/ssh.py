@@ -46,8 +46,7 @@ class Socks(Command):
             key_file = parsed_args.key_pair_file
             sshutils.validate_ssh_with_key_file(key_file)
             f = tempfile.NamedTemporaryFile(delete=False)
-            if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                    (emrutils.which('ssh') or emrutils.which('ssh.exe'))):
+            if (emrutils.which('ssh') or emrutils.which('ssh.exe')):
                 command = ['ssh', '-o', 'StrictHostKeyChecking=no', '-o',
                            'ServerAliveInterval=10', '-ND', '8157', '-i',
                            parsed_args.key_pair_file, constants.SSH_USER +
@@ -86,8 +85,7 @@ class SSH(Command):
         key_file = parsed_args.key_pair_file
         sshutils.validate_ssh_with_key_file(key_file)
         f = tempfile.NamedTemporaryFile(delete=False)
-        if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                (emrutils.which('ssh') or emrutils.which('ssh.exe'))):
+        if (emrutils.which('ssh') or emrutils.which('ssh.exe')):
             command = ['ssh', '-o', 'StrictHostKeyChecking=no', '-o',
                        'ServerAliveInterval=10', '-i',
                        parsed_args.key_pair_file, constants.SSH_USER +
@@ -132,8 +130,7 @@ class Put(Command):
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)
-        if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                (emrutils.which('scp') or emrutils.which('scp.exe'))):
+        if (emrutils.which('scp') or emrutils.which('scp.exe')):
             command = ['scp', '-r', '-o StrictHostKeyChecking=no',
                        '-i', parsed_args.key_pair_file, parsed_args.src,
                        constants.SSH_USER + '@' + master_dns]
@@ -172,8 +169,7 @@ class Get(Command):
 
         key_file = parsed_args.key_pair_file
         sshutils.validate_scp_with_key_file(key_file)
-        if (sshutils.check_command_key_format(key_file, ['cer', 'pem']) and
-                (emrutils.which('scp') or emrutils.which('scp.exe'))):
+        if (emrutils.which('scp') or emrutils.which('scp.exe')):
             command = ['scp', '-r', '-o StrictHostKeyChecking=no', '-i',
                        parsed_args.key_pair_file, constants.SSH_USER + '@' +
                        master_dns + ':' + parsed_args.src]

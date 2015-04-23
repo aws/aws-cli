@@ -163,16 +163,6 @@ class WrongPuttyKeyError(EmrError):
           'ElasticMapReduce/latest/DeveloperGuide/EMR_SetUp_SSH.html. '
 
 
-class WrongSSHKeyError(EmrError):
-
-    """
-    A wrong key has been used with a compatible program.
-    """
-    fmt = 'Key file file format is incorrect. SSH expects a cer or pem file. '\
-          'Please refer to documentation at http://docs.aws.amazon.com/'\
-          'ElasticMapReduce/latest/DeveloperGuide/EMR_SetUp_SSH.html '
-
-
 class SSHNotFoundError(EmrError):
 
     """

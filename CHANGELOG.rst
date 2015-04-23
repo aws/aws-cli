@@ -10,6 +10,9 @@ Next Release (TBD)
 * feature:``aws help return-codes``: Add help topic for return codes.
 * feature:``aws help s3-config``: Add help topic for configuration of s3
   commands.
+* bugfix:``aws lambda create-function/update-function-code``: Improve
+  error message when invalid ``--zip-file`` values are provided
+  (`issue 1296 <https://github.com/aws/aws-cli/pull/1296>`__)
 
 
 1.7.23

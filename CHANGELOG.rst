@@ -13,6 +13,10 @@ Next Release (TBD)
 * bugfix:``aws lambda create-function/update-function-code``: Improve
   error message when invalid ``--zip-file`` values are provided
   (`issue 1296 <https://github.com/aws/aws-cli/pull/1296>`__)
+* feature:``aws ec2``: Add support for new VM Import APIs, including
+  ``import-image``.  The new APIs provide support for importing
+  multi-volume VMs to Amazon EC2 and other enhancements.
+* feature:``aws iam``: Update AWS IAM command to latest version
 
 
 1.7.23

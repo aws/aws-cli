@@ -1,6 +1,6 @@
 :title: AWS CLI Return Codes
 :description: Describes the various return codes of the AWS CLI
-:category: General Topics, S3, Troubleshooting
+:category: General
 :related command: s3, s3 cp, s3 sync, s3 mv, s3 rm
 
 These are the following return codes returned at the end of execution

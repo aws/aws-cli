@@ -10,3 +10,4 @@ interface for interacting with all parts of AWS.
   :titlesonly:
 
   Command Reference <reference/index>
+  Topic Guide <topic/index>

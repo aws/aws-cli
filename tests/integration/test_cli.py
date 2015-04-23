@@ -116,6 +116,24 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertRegexpMatches(p.stdout,
                                  '\s+Describes\s+one\s+or\s+more')
 
+    def test_topic_list_help_output(self):
+        p = aws('help topics')
+        self.assertEqual(p.rc, 0)
+        self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Topic\s+Guide')
+        self.assertRegexpMatches(
+            p.stdout,
+            '\s+This\s+is\s+the\s+AWS\s+CLI\s+Topic\s+Guide'
+        )
+
+    def test_topic_help_output(self):
+        p = aws('help return-codes')
+        self.assertEqual(p.rc, 0)
+        self.assertRegexpMatches(p.stdout, '\s+AWS\s+CLI\s+Return\s+Codes')
+        self.assertRegexpMatches(
+            p.stdout,
+            'These\s+are\s+the\s+following\s+return\s+codes'
+        )
+
     def test_operation_help_with_required_arg(self):
         p = aws('s3api get-object help')
         self.assertEqual(p.rc, 0, p.stderr)

@@ -11,11 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import os
 from bcdoc.docevents import DOC_EVENTS
 from botocore import xform_name
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
+from awscli.topictags import TopicTagDB
 
 LOG = logging.getLogger(__name__)
 
@@ -160,6 +162,20 @@ class CLIDocumentEventHandler(object):
         doc.include_doc_string(argument.documentation)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+    def doc_relateditems_start(self, help_command, **kwargs):
+        if help_command.related_items:
+            doc = help_command.doc
+            doc.style.h2('See Also')
+
+    def doc_relateditem(self, help_command, related_item, **kwargs):
+        doc = help_command.doc
+        doc.write('* ')
+        doc.style.sphinx_reference_label(
+            label='cli:%s' % related_item,
+            text=related_item
+        )
+        doc.write('\n')
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
@@ -485,3 +501,139 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             self._doc_member_for_output(doc, '', member_shape.member, stack)
         doc.style.dedent()
         doc.style.new_paragraph()
+
+
+class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
+    DESCRIPTION = (
+        'This is the AWS CLI Topic Guide. It gives access to a set '
+        'of topics that provide a deeper understanding of the CLI. To access '
+        'the list of topics from the command line, run ``aws help topics``. '
+        'To access a specific topic from the command line, run '
+        '``aws help [topicname]``, where ``topicname`` is the name of the '
+        'topic as it appears in the output from ``aws help topics``.')
+
+    def __init__(self, help_command):
+        self.help_command = help_command
+        self.register(help_command.session, help_command.event_class)
+        self.help_command.doc.translation_map = self.build_translation_map()
+        self._topic_tag_db = TopicTagDB()
+        self._topic_tag_db.load_json_index()
+
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            doc.write('[ ')
+            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
+            doc.write(' ]')
+
+    def doc_title(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.new_paragraph()
+        doc.style.link_target_definition(
+            refname='cli:aws help %s' % self.help_command.name,
+            link='')
+        doc.style.h1('AWS CLI Topic Guide')
+
+    def doc_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Description')
+        doc.include_doc_string(self.DESCRIPTION)
+        doc.style.new_paragraph()
+
+    def doc_synopsis_start(self, help_command, **kwargs):
+        pass
+
+    def doc_synopsis_end(self, help_command, **kwargs):
+        pass
+
+    def doc_options_start(self, help_command, **kwargs):
+        pass
+
+    def doc_options_end(self, help_command, **kwargs):
+        pass
+
+    def doc_subitems_start(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.h2('Available Topics')
+
+        categories = self._topic_tag_db.query('category')
+        topic_names = self._topic_tag_db.get_all_topic_names()
+
+        # Sort the categories
+        category_names = sorted(categories.keys())
+        for category_name in category_names:
+            doc.style.h3(category_name)
+            doc.style.new_paragraph()
+            # Write out the topic and a description for each topic under
+            # each category.
+            for topic_name in sorted(categories[category_name]):
+                description = self._topic_tag_db.get_tag_single_value(
+                    topic_name, 'description')
+                doc.write('* ')
+                doc.style.sphinx_reference_label(
+                    label='cli:aws help %s' % topic_name,
+                    text=topic_name
+                )
+                doc.write(': %s\n' % description)
+        # Add a hidden toctree to make sure everything is connected in
+        # the document.
+        doc.style.hidden_toctree()
+        for topic_name in topic_names:
+            doc.style.hidden_tocitem(topic_name)
+
+
+class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
+
+    def doc_breadcrumbs(self, help_command, **kwargs):
+        doc = help_command.doc
+        if doc.target != 'man':
+            doc.write('[ ')
+            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
+            doc.write(' . ')
+            doc.style.sphinx_reference_label(
+                label='cli:aws help topics',
+                text='topics'
+            )
+            doc.write(' ]')
+
+    def doc_title(self, help_command, **kwargs):
+        doc = help_command.doc
+        doc.style.new_paragraph()
+        doc.style.link_target_definition(
+            refname='cli:aws help %s' % self.help_command.name,
+            link='')
+        title = self._topic_tag_db.get_tag_single_value(
+            help_command.name, 'title')
+        doc.style.h1(title)
+
+    def doc_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        topic_filename = os.path.join(self._topic_tag_db.topic_dir,
+                                      help_command.name + '.rst')
+        contents = self._remove_tags_from_content(topic_filename)
+        doc.writeln(contents)
+        doc.style.new_paragraph()
+
+    def _remove_tags_from_content(self, filename):
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+
+        content_begin_index = 0
+        for i, line in enumerate(lines):
+            # If a line is encountered that does not begin with the tag
+            # end the search for tags and mark where tags end.
+            if not self._line_has_tag(line):
+                content_begin_index = i
+                break
+
+        # Join all of the non-tagged lines back together.
+        return ''.join(lines[content_begin_index:])
+
+    def _line_has_tag(self, line):
+        for tag in self._topic_tag_db.valid_tags:
+            if line.startswith(':' + tag + ':'):
+                return True
+        return False
+
+    def doc_subitems_start(self, help_command, **kwargs):
+        pass

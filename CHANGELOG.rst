@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.24
+======
 
 * feature:``aws help topics``: Add support for listing available help topics.
 * feature:``aws help config-vars``: Add help topic for configuration variables.

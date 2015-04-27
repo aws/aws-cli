@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-=================
+1.7.25
+======
 
 * feature:``aws dynamodb query``: Add support for KeyConditonExpression.
 

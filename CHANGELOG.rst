@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* bugfix:``aws workspaces``: Fix issue where throttling errors were not
+  being retried
+  (`botocore issue 529 <https://github.com/boto/botocore/pull/529>`__)
+
+
 1.7.25
 ======
 

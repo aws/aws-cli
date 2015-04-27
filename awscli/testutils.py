@@ -82,8 +82,10 @@ AWS_CMD = None
 def create_clidriver():
     driver = awscli.clidriver.create_clidriver()
     session = driver.session
-    data_path = session.get_config_variable('data_path')
-    _LOADER.data_path = data_path or ''
+    data_path = session.get_config_variable('data_path').split(os.pathsep)
+    if not data_path:
+        data_path = []
+    _LOADER.search_paths.extend(data_path)
     session.register_component('data_loader', _LOADER)
     return driver
 

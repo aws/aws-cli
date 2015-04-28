@@ -353,9 +353,10 @@ class TestSearchPath(unittest.TestCase):
         # we have to force a reimport of the module to test our changes.
         six.moves.reload_module(awscli)
         # Our two overrides should be the last two elements in the search path.
-        search_path = driver.session.get_component(
-            'data_loader').get_search_paths()[:-2]
-        self.assertEqual(search_path, ['c:\\foo', 'c:\\bar'])
+        search_paths = driver.session.get_component(
+            'data_loader').search_paths
+        self.assertIn('c:\\foo', search_paths)
+        self.assertIn('c:\\bar', search_paths)
 
 
 class TestAWSCommand(BaseAWSCommandParamsTest):

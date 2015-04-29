@@ -76,8 +76,6 @@ class ScheduleHBaseBackup(Command):
                       ' during the backup process.</p>'}
     ]
 
-    EXAMPLES = BasicCommand.FROM_FILE('emr', 'schedule-hbase-backup.rst')
-
     def _run_main_command(self, parsed_args, parsed_globals):
         steps = []
         self._check_type(parsed_args.type)

@@ -29,7 +29,6 @@ class DescribeCluster(Command):
         {'name': 'cluster-id', 'required': True,
          'help_text': helptext.CLUSTER_ID}
     ]
-    EXAMPLES = BasicCommand.FROM_FILE('emr', 'describe-cluster.rst')
 
     def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'ClusterId': parsed_args.cluster_id}

@@ -307,7 +307,6 @@ class ListCommand(S3Command):
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
                  PAGE_SIZE, HUMAN_READABLE, SUMMARIZE]
-    EXAMPLES = BasicCommand.FROM_FILE('s3/ls.rst')
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -550,7 +549,6 @@ class CpCommand(S3TransferCommand):
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + \
                 [METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
-    EXAMPLES = BasicCommand.FROM_FILE('s3/cp.rst')
 
 
 class MvCommand(S3TransferCommand):
@@ -562,8 +560,6 @@ class MvCommand(S3TransferCommand):
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS + [METADATA_DIRECTIVE,
                                                          RECURSIVE]
-    EXAMPLES = BasicCommand.FROM_FILE('s3/mv.rst')
-
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -572,7 +568,6 @@ class RmCommand(S3TransferCommand):
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, DRYRUN, QUIET, RECURSIVE, INCLUDE,
                  EXCLUDE, ONLY_SHOW_ERRORS, PAGE_SIZE]
-    EXAMPLES = BasicCommand.FROM_FILE('s3/rm.rst')
 
 
 class SyncCommand(S3TransferCommand):
@@ -582,7 +577,6 @@ class SyncCommand(S3TransferCommand):
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS
-    EXAMPLES = BasicCommand.FROM_FILE('s3/sync.rst')
 
 
 class MbCommand(S3TransferCommand):
@@ -591,7 +585,6 @@ class MbCommand(S3TransferCommand):
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}]
-    EXAMPLES = BasicCommand.FROM_FILE('s3/mb.rst')
 
 
 class RbCommand(S3TransferCommand):
@@ -600,7 +593,6 @@ class RbCommand(S3TransferCommand):
     USAGE = "<S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 1, 'positional_arg': True,
                   'synopsis': USAGE}, FORCE]
-    EXAMPLES = BasicCommand.FROM_FILE('s3/rb.rst')
 
 
 class CommandArchitecture(object):

@@ -33,7 +33,6 @@ class AddSteps(Command):
          'help_text': helptext.STEPS
          }
     ]
-    EXAMPLES = BasicCommand.FROM_FILE('emr', 'add-steps.rst')
 
     def _run_main_command(self, parsed_args, parsed_globals):
         parsed_steps = parsed_args.steps

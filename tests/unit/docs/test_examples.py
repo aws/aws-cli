@@ -53,6 +53,6 @@ def verify_has_examples(command, subcommand):
     t.setUp()
     try:
         t.driver.main([command, subcommand, 'help'])
-        t.assert_contains('========\nExamples\n========')
+        t.assert_contains_with_count('========\nExamples\n========', 1)
     finally:
         t.tearDown()

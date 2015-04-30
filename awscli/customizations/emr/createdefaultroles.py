@@ -158,7 +158,6 @@ class CreateDefaultRoles(Command):
                       ' custom endpoint should be called for IAM operations'
                       '.</p>'}
     ]
-    EXAMPLES = BasicCommand.FROM_FILE('emr', 'create-default-roles.rst')
 
     def _run_main_command(self, parsed_args, parsed_globals):
         ec2_result = None

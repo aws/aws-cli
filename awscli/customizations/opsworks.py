@@ -72,7 +72,6 @@ class OpsWorksRegister(BasicCommand):
         agent on the target machine and register it with an existing OpsWorks
         stack.
     """).strip()
-    EXAMPLES = BasicCommand.FROM_FILE('opsworks/register.rst')
 
     ARG_TABLE = [
         {'name': 'stack-id', 'required': True,

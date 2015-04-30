@@ -34,6 +34,8 @@ COMMAND_EXAMPLES = {
     'ec2': ['run-instances', 'start-instances', 'stop-instances'],
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],
+    'emr': ['add-steps', 'create-default-roles', 'describe-cluster', 'schedule-hbase-backup'],
+    'opsworks': ['register'],
 }
 
 
@@ -53,6 +55,6 @@ def verify_has_examples(command, subcommand):
     t.setUp()
     try:
         t.driver.main([command, subcommand, 'help'])
-        t.assert_contains('========\nExamples\n========')
+        t.assert_contains_with_count('========\nExamples\n========', 1)
     finally:
         t.tearDown()

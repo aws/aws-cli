@@ -34,6 +34,8 @@ COMMAND_EXAMPLES = {
     'ec2': ['run-instances', 'start-instances', 'stop-instances'],
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],
+    'emr': ['add-steps', 'create-default-roles', 'describe-cluster', 'schedule-hbase-backup'],
+    'opsworks': ['register'],
 }
 
 

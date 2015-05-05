@@ -74,11 +74,6 @@ def check_scp_key_format(key_file):
             (emrutils.which('scp.exe') or emrutils.which('scp')) is None):
         if check_command_key_format(key_file, ['ppk']) is False:
             raise exceptions.WrongPuttyKeyError
-    # If only scp is present and the file format is incorrect
-    elif (emrutils.which('pscp.exe') is None and
-            (emrutils.which('scp.exe') or emrutils.which('scp')) is not None):
-        if check_command_key_format(key_file, ['cer', 'pem']) is False:
-            raise exceptions.WrongSSHKeyError
     else:
         pass
 
@@ -89,11 +84,6 @@ def check_ssh_key_format(key_file):
             (emrutils.which('ssh.exe') or emrutils.which('ssh')) is None):
         if check_command_key_format(key_file, ['ppk']) is False:
             raise exceptions.WrongPuttyKeyError
-    # If only ssh is present and the file format is incorrect
-    elif (emrutils.which('putty.exe') is None and
-            (emrutils.which('ssh.exe') or emrutils.which('ssh')) is not None):
-        if check_command_key_format(key_file, ['cer', 'pem']) is False:
-            raise exceptions.WrongSSHKeyError
     else:
         pass
 

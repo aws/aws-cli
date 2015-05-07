@@ -2,9 +2,10 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.26
+======
 
+* feature:``aws glacier``: Add support for vault policies.
 * bugfix:``aws iam create-open-id-connect-provider``: Fix issue where the
   ``--url`` parameter would try to retrieve the contents from the url instead
   of use the url as its value.

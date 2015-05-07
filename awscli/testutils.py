@@ -82,8 +82,10 @@ AWS_CMD = None
 def create_clidriver():
     driver = awscli.clidriver.create_clidriver()
     session = driver.session
-    data_path = session.get_config_variable('data_path')
-    _LOADER.data_path = data_path or ''
+    data_path = session.get_config_variable('data_path').split(os.pathsep)
+    if not data_path:
+        data_path = []
+    _LOADER.search_paths.extend(data_path)
     session.register_component('data_loader', _LOADER)
     return driver
 
@@ -207,6 +209,14 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
             self.fail("The expected contents:\n%s\nwere not in the "
                       "actual rendered contents:\n%s" % (
                           contains, self.renderer.rendered_contents))
+
+    def assert_contains_with_count(self, contains, count):
+        r_count = self.renderer.rendered_contents.count(contains)
+        if r_count != count:
+            self.fail("The expected contents:\n%s\n, with the "
+                      "count:\n%d\nwere not in the actual rendered "
+                      " contents:\n%s\nwith count:\n%d" % (
+                          contains, count, self.renderer.rendered_contents, r_count))
 
     def assert_not_contains(self, contents):
         if contents in self.renderer.rendered_contents:

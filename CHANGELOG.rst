@@ -2,8 +2,21 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-=================
+1.7.26
+======
+
+* feature:``aws glacier``: Add support for vault policies.
+* bugfix:``aws iam create-open-id-connect-provider``: Fix issue where the
+  ``--url`` parameter would try to retrieve the contents from the url instead
+  of use the url as its value.
+  (`issue 1317 <https://github.com/aws/aws-cli/pull/1317>`__)
+* bugfix:``aws workspaces``: Fix issue where throttling errors were not
+  being retried
+  (`botocore issue 529 <https://github.com/boto/botocore/pull/529>`__)
+
+
+1.7.25
+======
 
 * feature:``aws dynamodb query``: Add support for KeyConditonExpression.
 

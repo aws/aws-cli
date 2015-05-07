@@ -42,6 +42,8 @@ PARAMFILE_DISABLED = set([
     'custom.mv.website-redirect',
     'custom.sync.website-redirect',
 
+    'iam.create-open-id-connect-provider.url',
+
     'machinelearning.predict.predict-endpoint',
 
     'sqs.add-permission.queue-url',

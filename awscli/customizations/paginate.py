@@ -46,6 +46,8 @@ MAX_ITEMS_HELP = """
 of items available is more than the value specified in
 max-items then a <code>NextToken</code> will
 be provided in the output that you can use to resume pagination.
+This <code>NextToken</code> response element should <b>not</b> be
+used directly outside of the AWS CLI.</p>
 """
 
 PAGE_SIZE_HELP = """

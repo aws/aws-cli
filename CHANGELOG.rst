@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.27
+======
 
 * feature:``aws ds``: Add support for AWS Directory Service.
 * feature:``aws ec2``: Add support for VPC endpoints for Amazon S3.

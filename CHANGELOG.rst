@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:``aws ds``: Add support for AWS Directory Service.
+* feature:``aws ec2``: Add support for VPC endpoints for Amazon S3.
+* feature:``aws ec2``: Add support for EIP Migration.
+* feature:``aws logs``: Add support for filtering log events.
+
+
 1.7.26
 ======
 

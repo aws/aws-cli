@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.7.28
+======
+
+* feature:``aws ec2``: Add support for Spot Fleet.
+* feature:``aws opsworks``: Add support for custom AutoScaling.
+* feature:``aws elasticbeanstalk``: Update model to latest version.
+
+
 1.7.27
 ======
 

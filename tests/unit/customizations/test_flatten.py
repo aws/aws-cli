@@ -18,8 +18,6 @@ from awscli.arguments import CLIArgument
 from awscli.customizations import utils
 from awscli.customizations.flatten import FlattenedArgument, FlattenArguments
 
-from botocore.operation import Operation
-
 
 def _hydrate(params, container, cli_type, key, value):
     """

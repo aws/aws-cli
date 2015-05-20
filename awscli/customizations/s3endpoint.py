@@ -26,7 +26,7 @@ that messes with endpoint url.
 """
 from functools import partial
 
-from botocore.handlers import fix_s3_host
+from botocore.utils import fix_s3_host
 
 
 def register_s3_endpoint(cli):

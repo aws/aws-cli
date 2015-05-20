@@ -13,7 +13,7 @@
 from awscli.testutils import unittest
 from awscli.customizations.s3endpoint import on_top_level_args_parsed
 
-from botocore.handlers import fix_s3_host
+from botocore.utils import fix_s3_host
 
 import mock
 

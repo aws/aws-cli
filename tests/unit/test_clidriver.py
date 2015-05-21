@@ -603,6 +603,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.create_endpoint = \
                 self.endpoint_creator.return_value.create_endpoint
         self.endpoint = self.create_endpoint.return_value
+        self.endpoint.host = 'https://example.com'
         # Have the endpoint give a dummy empty response.
         http_response = models.Response()
         http_response.status_code = 200

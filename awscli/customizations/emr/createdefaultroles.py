@@ -61,8 +61,6 @@ def _get_policy_arn_suffix(region):
         return "aws-cn"
     elif region_string.startswith("us-gov"):
         return "aws-us-gov"
-    elif region_string.startswith("us-iso"):
-        return "aws-iso"
     else:
         return "aws"
 
@@ -105,7 +103,7 @@ class CreateDefaultRoles(Command):
                    EMR_ROLE_NAME + ' which can be used when'
                    ' creating the cluster using the create-cluster command.'
                    ' The default roles for EMR use managed policies, which'
-                   ' are updated automatically to support future EMR functionality\n'
+                   ' are updated automatically to support future EMR functionality.\n'
                    '\nIf you do not have a Service Role and Instance Profile '
                    'variable set for your create-cluster command in the AWS '
                    'CLI config file, create-default-roles will automatically '
@@ -252,13 +250,9 @@ class CreateDefaultRoles(Command):
         policy_details = self._call_iam_operation('GetPolicy',
                                                    parameters,
                                                    parsed_globals)
-        if "Policy" in policy_details:
-            policy_version = policy_details["Policy"]["DefaultVersionId"]
-            if policy_version is not None:
-                parameters["VersionId"] = policy_version
-                policy_version_details = self._call_iam_operation('GetPolicyVersion', parameters, parsed_globals)
-                if policy_version_details["PolicyVersion"] is not None:
-                    return policy_version_details["PolicyVersion"]["Document"]
+        parameters["VersionId"] = policy_details["Policy"]["DefaultVersionId"]
+        policy_version_details = self._call_iam_operation('GetPolicyVersion', parameters, parsed_globals)
+        return policy_version_details["PolicyVersion"]["Document"]
 
     def _create_role_with_role_policy(
             self, role_name, service_name, role_arn, parsed_globals):

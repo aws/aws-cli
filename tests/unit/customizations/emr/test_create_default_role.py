@@ -128,9 +128,13 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                 'CreateDefaultRoles._check_if_instance_profile_exists')
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._check_if_role_exists')
-    def test_default_roles_not_exist(self, role_exists_patch,
+    @mock.patch('awscli.customizations.emr.emr.'
+                'CreateDefaultRoles._get_role_policy')
+    def test_default_roles_not_exist(self, get_rp_patch,
+                                     role_exists_patch,
                                      instance_profile_exists_patch,
                                      construct_result_patch):
+        get_rp_patch.return_value = False
         role_exists_patch.return_value = False
         instance_profile_exists_patch.return_value = False
         construct_result_patch.return_value = []
@@ -141,7 +145,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
 
         # Only 8 operations will be called as we are mocking
         # _check_if_role_exists and _check_if_instance_profile_exists methods.
-        self.assertEqual(len(self.operations_called), 8)
+        self.assertEqual(len(self.operations_called), 6)
 
         self.assertEqual(self.operations_called[0][0].name, 'CreateRole')
         self.assertEqual(self.operations_called[0][1]['RoleName'],
@@ -158,33 +162,28 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                          EC2_ROLE_NAME)
 
         self.assertEqual(self.operations_called[2][0].name,
-                         'GetPolicy')
-        self.assertEqual(self.operations_called[2][1]['PolicyArn'],
-                         "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
+                         'CreateInstanceProfile')
+        self.assertEqual(self.operations_called[2][1]['InstanceProfileName'],
+                         EC2_ROLE_NAME)
 
         self.assertEqual(self.operations_called[3][0].name,
-                         'CreateInstanceProfile')
+                         'AddRoleToInstanceProfile')
         self.assertEqual(self.operations_called[3][1]['InstanceProfileName'],
                          EC2_ROLE_NAME)
-
-        self.assertEqual(self.operations_called[4][0].name,
-                         'AddRoleToInstanceProfile')
-        self.assertEqual(self.operations_called[4][1]['InstanceProfileName'],
+        self.assertEqual(self.operations_called[3][1]['RoleName'],
                          EC2_ROLE_NAME)
+
+        self.assertEqual(self.operations_called[4][0].name, 'CreateRole')
         self.assertEqual(self.operations_called[4][1]['RoleName'],
-                         EC2_ROLE_NAME)
-
-        self.assertEqual(self.operations_called[5][0].name, 'CreateRole')
-        self.assertEqual(self.operations_called[5][1]['RoleName'],
                          EMR_ROLE_NAME)
         self.assertEqual(
-            self.operations_called[5][1]['AssumeRolePolicyDocument'],
+            self.operations_called[4][1]['AssumeRolePolicyDocument'],
             emrutils.dict_to_string(self.emr_role_policy_document))
 
-        self.assertEqual(self.operations_called[6][0].name, 'AttachRolePolicy')
-        self.assertEqual(self.operations_called[6][1]['PolicyArn'],
+        self.assertEqual(self.operations_called[5][0].name, 'AttachRolePolicy')
+        self.assertEqual(self.operations_called[5][1]['PolicyArn'],
                          "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
-        self.assertEqual(self.operations_called[6][1]['RoleName'],
+        self.assertEqual(self.operations_called[5][1]['RoleName'],
                          EMR_ROLE_NAME)
 
 
@@ -196,10 +195,14 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
                 'CreateDefaultRoles._check_if_instance_profile_exists')
     @mock.patch('awscli.customizations.emr.emr.'
                 'CreateDefaultRoles._check_if_role_exists')
-    def test_get_service_principal_parameters(self, role_exists_patch,
+    @mock.patch('awscli.customizations.emr.emr.'
+                'CreateDefaultRoles._get_role_policy')
+    def test_get_service_principal_parameters(self, get_rp_patch,
+                                              role_exists_patch,
                                               instance_profile_exists_patch,
                                               get_sp_patch,
                                               construct_result_patch):
+        get_rp_patch.return_value = "blah"
         get_sp_patch.return_value = 'elasticmapreduce.amazonaws.abc'
         role_exists_patch.return_value = False
         instance_profile_exists_patch.return_value = False
@@ -257,16 +260,12 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
     def test_policy_arn_construction(self):
         self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("cn-north-1"),
                           "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
-        self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("us-iso-east-1"),
-                          "arn:aws-iso:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
         self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("us-gov-west-1"),
                           "arn:aws-us-gov:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
         self.assertEquals(createdefaultroles.get_ec2_role_policy_arn("eu-west-1"),
                           "arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role")
         self.assertEquals(createdefaultroles.get_service_role_policy_arn("cn-north-1"),
                           "arn:aws-cn:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
-        self.assertEquals(createdefaultroles.get_service_role_policy_arn("us-iso-east-1"),
-                          "arn:aws-iso:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
         self.assertEquals(createdefaultroles.get_service_role_policy_arn("us-gov-west-1"),
                           "arn:aws-us-gov:iam::aws:policy/service-role/AmazonElasticMapReduceRole")
         self.assertEquals(createdefaultroles.get_service_role_policy_arn("eu-west-1"),

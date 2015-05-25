@@ -15,6 +15,8 @@
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
+EC2_ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
+EMR_ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
 
 # Action on failure
 CONTINUE = 'CONTINUE'

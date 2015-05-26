@@ -57,6 +57,7 @@ This service is only available as a preview service.
 PREVIEW_SERVICES = {
     'cloudfront': GENERAL_HELP,
     'sdb': GENERAL_HELP,
+    'efs': GENERAL_HELP,
 }
 
 

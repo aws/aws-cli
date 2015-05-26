@@ -2,6 +2,27 @@
 CHANGELOG
 =========
 
+1.7.30
+======
+
+* feature:``aws efs``: Add support for ``aws efs``
+* feature:``aws ecs``: Add paginators and waiters for
+  ``aws ecs``
+
+
+1.7.29
+======
+
+* feature:``aws kinesis``: The ``get-records`` command now returns a new value
+  MillisBehindLatest: the number of milliseconds the ``get-records`` response is
+  from the end of the stream, indicating how far behind real time a consumer
+  is.
+* feature:``aws kms``: Add update-alias command
+* feature:``aws elastictranscoder``: Update the aws elastictranscoder command
+  to include support for additional formats, including MXF, FLAC, and OGA, and
+  additional flexibility for your output audio.
+
+
 1.7.28
 ======
 

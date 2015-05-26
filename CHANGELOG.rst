@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.30
+======
 
 * feature:``aws efs``: Add support for ``aws efs``
 * feature:``aws ecs``: Add paginators and waiters for

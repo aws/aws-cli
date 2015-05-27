@@ -40,14 +40,28 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         # ever mark cloudfront as not being a preview service
         # by default.
         self.assertIn('cloudfront', preview.PREVIEW_SERVICES)
-        rc = self.driver.main('cloudfront help'.split())
+        rc = self.driver.main('cloudfront list-distributions'.split())
         self.assertEqual(rc, 1)
-        self.assertIn(preview.PREVIEW_SERVICES['cloudfront'],
+        self.assertIn(preview.PreviewModeCommandMixin.HELP_SNIPPET,
                       self.stderr.getvalue())
 
-    @mock.patch('awscli.help.get_renderer')
-    def test_preview_service_off(self, get_renderer):
+    def test_preview_service_not_true(self):
+        # If it's not "true" then we still make it a preview service.
+        self.full_config['preview'] = {'cloudfront': 'false'}
+        rc = self.driver.main('cloudfront list-distributions'.split())
+        self.assertEqual(rc, 1)
+        self.assertIn(preview.PreviewModeCommandMixin.HELP_SNIPPET,
+                      self.stderr.getvalue())
+
+    def test_preview_service_enabled_makes_call(self):
         self.full_config['preview'] = {'cloudfront': 'true'}
+        self.assert_params_for_cmd('cloudfront list-distributions', params={})
+
+    @mock.patch('awscli.help.get_renderer')
+    def test_can_still_document_preview_service(self, get_renderer):
+        # Even if a service is still marked as being in preview,
+        # you can still pull up its documentation.
+        self.full_config['preview'] = {'cloudfront': 'false'}
         renderer = mock.Mock()
         get_renderer.return_value = renderer
         self.driver.main('cloudfront help'.split())
@@ -55,18 +69,10 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         # and we check that we rendered the contents.
         self.assertTrue(renderer.render.called)
 
-    def test_preview_service_not_true(self):
-        # If it's not "true" then we still make it a preview service.
-        self.full_config['preview'] = {'cloudfront': 'false'}
-        rc = self.driver.main('cloudfront help'.split())
-        self.assertEqual(rc, 1)
-        self.assertIn(preview.PREVIEW_SERVICES['cloudfront'],
-                      self.stderr.getvalue())
-
     @mock.patch('awscli.help.get_renderer')
-    def test_preview_mode_not_in_provider_help(self, renderer):
+    def test_preview_mode_is_in_provider_help(self, renderer):
         self.driver.main(['help'])
-        contents = renderer.return_value.render.call_args
-        # The preview services should not be in the help output.
+        contents = renderer.return_value.render.call_args[0][0]
+        # The preview services should still be in the help output.
         for service in preview.PREVIEW_SERVICES:
-            self.assertNotIn(service, contents)
+            self.assertIn(service, contents.decode('utf-8'))

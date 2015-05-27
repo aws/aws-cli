@@ -119,11 +119,14 @@ class PreviewModeCommandMixin(object):
         super(PreviewModeCommandMixin, self).__init__(*args, **kwargs)
 
     def __call__(self, args, parsed_globals):
-        if self._is_enabled:
+        if self._is_enabled or self._is_help_command(args):
             return super(PreviewModeCommandMixin, self).__call__(
                 args, parsed_globals)
         else:
             return self._display_opt_in_message()
+
+    def _is_help_command(self, args):
+        return args and args[-1] == 'help'
 
     def _display_opt_in_message(self):
         sys.stderr.write(self.HELP_SNIPPET)

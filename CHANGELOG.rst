@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+==================
+
+* feature:Preview Services: Preview services are now documented
+  and will also show up in the list of available services
+  (`issue 1345 <https://github.com/aws/aws-cli/pull/1345>`__)
+
+
 1.7.30
 ======
 

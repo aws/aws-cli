@@ -80,4 +80,4 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         contents = renderer.return_value.render.call_args[0][0]
         # The preview services should still be in the help output.
         for service in preview.PREVIEW_SERVICES:
-            self.assertIn(service, contents)
+            self.assertIn(service, contents.decode('utf-8'))

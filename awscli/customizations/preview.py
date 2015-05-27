@@ -38,22 +38,13 @@ from awscli.clidriver import CLICommand
 
 logger = logging.getLogger(__name__)
 
-# Mapping of service name to help text to print
-# when a user tries to invoke a service marked as preview.
-CLOUDSEARCH_HELP = """
-CloudSearch has a specialized command line tool available at
-http://aws.amazon.com/tools#cli. The AWS CLI does not yet
-support all of the features of the CloudSearch CLI. Until these features
-are added to the AWS CLI, you may have a more complete
-experience using the CloudSearch CLI.
-"""
-
-
 GENERAL_HELP = """
 This service is only available as a preview service.
 """
 
 
+# Mapping of service name to help text to print
+# when a user tries to invoke a service marked as preview.
 PREVIEW_SERVICES = {
     'cloudfront': GENERAL_HELP,
     'sdb': GENERAL_HELP,

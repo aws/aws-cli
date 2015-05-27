@@ -33,8 +33,6 @@ import logging
 import sys
 import textwrap
 
-from awscli.clidriver import CLICommand
-
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +68,7 @@ def mark_as_preview(command_table, session, **kwargs):
         command_table[preview_service] = preview_cls(
             cli_name=original_command.name,
             session=session,
-            service_name=original_command._service_name,
+            service_name=original_command.service_model.service_name,
             is_enabled=is_enabled)
         # We also want to register a handler that will update the
         # description in the docs to say that this is a preview service.
@@ -82,7 +80,20 @@ def mark_as_preview(command_table, session, **kwargs):
 def update_description_with_preview(help_command, **kwargs):
     style = help_command.doc.style
     style.start_note()
-    style.bold("The service is currently in preview.")
+    style.bold(PreviewModeCommandMixin.HELP_SNIPPET.strip())
+    # bcdoc does not currently allow for what I'd like to do
+    # which is have a code block like:
+    #
+    # ::
+    #    [preview]
+    #    service=true
+    #
+    #    aws configure set preview.service true
+    #
+    # So for now we're just going to add the configure command
+    # to enable this.
+    style.doc.write("You can enable this service by running: ")
+    style.code("aws configure set preview.%s true" % help_command.name)
     style.end_note()
 
 

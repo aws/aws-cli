@@ -55,12 +55,7 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
 
     def test_preview_service_enabled_makes_call(self):
         self.full_config['preview'] = {'cloudfront': 'true'}
-        # Registering this handler will prevent the actual service
-        # call to cloudfront.
-        self.driver.session.register('calling-command.cloudfront',
-                                     lambda **kwargs: 0)
-        rc = self.driver.main('cloudfront list-distributions'.split())
-        self.assertEqual(rc, 0)
+        self.assert_params_for_cmd('cloudfront list-distributions', params={})
 
     @mock.patch('awscli.help.get_renderer')
     def test_can_still_document_preview_service(self, get_renderer):

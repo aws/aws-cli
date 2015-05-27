@@ -42,7 +42,7 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         self.assertIn('cloudfront', preview.PREVIEW_SERVICES)
         rc = self.driver.main('cloudfront help'.split())
         self.assertEqual(rc, 1)
-        self.assertIn(preview.PREVIEW_SERVICES['cloudfront'],
+        self.assertIn(preview.PreviewModeCommandMixin.HELP_SNIPPET,
                       self.stderr.getvalue())
 
     @mock.patch('awscli.help.get_renderer')
@@ -60,7 +60,7 @@ class TestPreviewMode(BaseAWSCommandParamsTest):
         self.full_config['preview'] = {'cloudfront': 'false'}
         rc = self.driver.main('cloudfront help'.split())
         self.assertEqual(rc, 1)
-        self.assertIn(preview.PREVIEW_SERVICES['cloudfront'],
+        self.assertIn(preview.PreviewModeCommandMixin.HELP_SNIPPET,
                       self.stderr.getvalue())
 
     @mock.patch('awscli.help.get_renderer')

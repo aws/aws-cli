@@ -38,18 +38,12 @@ from awscli.clidriver import CLICommand
 
 logger = logging.getLogger(__name__)
 
-GENERAL_HELP = """
-This service is only available as a preview service.
-"""
 
-
-# Mapping of service name to help text to print
-# when a user tries to invoke a service marked as preview.
-PREVIEW_SERVICES = {
-    'cloudfront': GENERAL_HELP,
-    'sdb': GENERAL_HELP,
-    'efs': GENERAL_HELP,
-}
+PREVIEW_SERVICES = [
+    'cloudfront',
+    'sdb',
+    'efs',
+]
 
 
 def register_preview_commands(events):
@@ -61,15 +55,35 @@ def mark_as_preview(command_table, session, **kwargs):
     # explicitly enabled in the config file.
     allowed_services = _get_allowed_services(session)
     for preview_service in PREVIEW_SERVICES:
+        is_enabled = False
         if preview_service in allowed_services:
             # Then we don't need to swap it as a preview
             # service, the user has specifically asked to
             # enable this service.
             logger.debug("Preview service enabled through config file: %s",
                          preview_service)
-            continue
-        command_table[preview_service] = PreviewModeCommand(
-            preview_service, PREVIEW_SERVICES[preview_service])
+            is_enabled = True
+        original_command = command_table[preview_service]
+        preview_cls = type(
+            'PreviewCommand',
+            (PreviewModeCommandMixin, original_command.__class__), {})
+        command_table[preview_service] = preview_cls(
+            cli_name=original_command.name,
+            session=session,
+            service_name=original_command._service_name,
+            is_enabled=is_enabled)
+        # We also want to register a handler that will update the
+        # description in the docs to say that this is a preview service.
+        session.get_component('event_emitter').register_last(
+            'doc-description.%s' % preview_service,
+            update_description_with_preview)
+
+
+def update_description_with_preview(help_command, **kwargs):
+    style = help_command.doc.style
+    style.start_note()
+    style.bold("The service is currently in preview.")
+    style.end_note()
 
 
 def _get_allowed_services(session):
@@ -84,14 +98,9 @@ def _get_allowed_services(session):
     return allowed
 
 
-class PreviewModeCommand(CLICommand):
-    # This is a hidden attribute that tells the doc system
-    # not to document this command in the provider help.
-    # This is an internal implementation detail.
-    _UNDOCUMENTED = True
-
+class PreviewModeCommandMixin(object):
     ENABLE_DOCS = textwrap.dedent("""\
-    However, if you'd like to use a basic set of {service} commands with the
+    However, if you'd like to use the "aws {service}" commands with the
     AWS CLI, you can enable this service by adding the following to your CLI
     config file:
 
@@ -103,13 +112,21 @@ class PreviewModeCommand(CLICommand):
         aws configure set preview.{service} true
 
     """)
+    HELP_SNIPPET = "This service is only available as a preview service.\n"
 
-    def __init__(self, service_name, service_help):
-        self._service_name = service_name
-        self._service_help = service_help
+    def __init__(self, *args, **kwargs):
+        self._is_enabled = kwargs.pop('is_enabled')
+        super(PreviewModeCommandMixin, self).__init__(*args, **kwargs)
 
     def __call__(self, args, parsed_globals):
-        sys.stderr.write(self._service_help)
+        if self._is_enabled:
+            return super(PreviewModeCommandMixin, self).__call__(
+                args, parsed_globals)
+        else:
+            return self._display_opt_in_message()
+
+    def _display_opt_in_message(self):
+        sys.stderr.write(self.HELP_SNIPPET)
         sys.stderr.write("\n")
         # Then let them know how to enable this service.
         sys.stderr.write(self.ENABLE_DOCS.format(service=self._service_name))

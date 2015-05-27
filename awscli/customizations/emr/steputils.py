@@ -35,6 +35,8 @@ def build_step_config_list(parsed_step_list, region):
             step_config = build_pig_step(parsed_step=step, region=region)
         elif step_type == constants.IMPALA:
             step_config = build_impala_step(parsed_step=step, region=region)
+        elif step_type == constants.SPARK_SUBMIT:
+            step_config = build_spark_step(parsed_step=step, region=region)
         else:
             raise exceptions.UnknownStepTypeError(step_type=step_type)
 
@@ -163,6 +165,23 @@ def build_impala_step(parsed_step, region):
         name=name,
         action_on_failure=action_on_failure)
 
+
+def build_spark_step(parsed_step, region):
+    name = _apply_default_value(
+        arg=parsed_step.get('Name'),
+        value=constants.DEFAULT_SPARK_STEP_NAME)
+    action_on_failure = _apply_default_value(
+        arg=parsed_step.get('ActionOnFailure'),
+        value=constants.DEFAULT_FAILURE_ACTION)
+    args_list=[constants.SPARK_SUBMIT_COMMAND]
+    args = parsed_step.get('Args')
+    if args is not None:
+        args_list += args
+    return emrutils.build_step(
+        jar=emrutils.get_script_runner(region),
+        args=args_list,
+        name=name,
+        action_on_failure=action_on_failure)
 
 def _apply_default_value(arg, value):
     if arg is None:

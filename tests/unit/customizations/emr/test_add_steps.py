@@ -95,6 +95,30 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              ]
          }
 
+    SPARK_SUBMIT_BASIC_ARGS = 'Args=' + \
+    '[--deploy-mode,' + \
+    'cluster,' + \
+    '--conf,' + \
+    'k1=v1,' + \
+    's3://mybucket/myfolder/app.jar,' + \
+    'k2=v2]'
+
+    SPARK_SUBMIT_STEP = \
+        {
+         'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
+         'Args':
+            ['/home/hadoop/spark/bin/spark-submit',
+             '--deploy-mode',
+             'cluster',
+             '--conf',
+             'k1=v1',
+             's3://mybucket/myfolder/app.jar',
+             'k2=v2'
+             ]
+        }
+
     def test_unknown_step_type(self):
         cmd = self.prefix + 'Type=unknown'
         expect_error_msg = '\naws: error: ' + \
@@ -269,6 +293,19 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                 {'Name': 'Impala program',
                  'ActionOnFailure': 'CONTINUE',
                  'HadoopJarStep': self.IMPALA_BASIC_HADOOP_JAR_STEP
+                 }]
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_spark_submit_step(self):
+        cmd = self.prefix + 'Type=SPARK_SUBMIT,' + \
+            self.SPARK_SUBMIT_BASIC_ARGS
+        result = {
+            'JobFlowId': 'j-ABC',
+            'Steps':    [
+                {'Name': 'Spark program',
+                 'ActionOnFailure': 'CONTINUE',
+                 'HadoopJarStep': self.SPARK_SUBMIT_STEP
                  }]
         }
         self.assert_params_for_cmd(cmd, result)

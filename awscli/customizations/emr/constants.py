@@ -109,12 +109,14 @@ IMPALA = 'impala'
 STREAMING = 'streaming'
 GANGLIA = 'ganglia'
 HBASE = 'hbase'
+SPARK_SUBMIT = 'spark_submit'
 
 DEFAULT_CUSTOM_JAR_STEP_NAME = 'Custom JAR'
 DEFAULT_STREAMING_STEP_NAME = 'Streaming program'
 DEFAULT_HIVE_STEP_NAME = 'Hive program'
 DEFAULT_PIG_STEP_NAME = 'Pig program'
 DEFAULT_IMPALA_STEP_NAME = 'Impala program'
+DEFAULT_SPARK_STEP_NAME = 'Spark program'
 
 ARGS = '--args'
 RUN_HIVE_SCRIPT = '--run-hive-script'
@@ -124,6 +126,7 @@ RUN_PIG_SCRIPT = '--run-pig-script'
 PIG_VERSIONS = '--pig-versions'
 PIG_STEP_CONFIG = 'PigStepConfig'
 RUN_IMPALA_SCRIPT = '--run-impala-script'
+SPARK_SUBMIT_COMMAND = '/home/hadoop/spark/bin/spark-submit'
 IMPALA_STEP_CONFIG = 'ImpalaStepConfig'
 STREAMING_STEP_CONFIG = 'StreamingStepConfig'
 CUSTOM_JAR_STEP_CONFIG = 'CustomJARStepConfig'
@@ -159,7 +162,7 @@ EMR = 'elasticmapreduce'
 
 LATEST = 'latest'
 
-APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "MAPR",
+APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "SPARK", "MAPR",
                 "MAPR_M3", "MAPR_M5", "MAPR_M7"]
 
 SSH_USER = 'hadoop'

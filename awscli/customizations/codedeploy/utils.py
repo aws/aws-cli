@@ -15,7 +15,7 @@ import platform
 import re
 
 from awscli.compat import urlopen, URLError
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows
+from awscli.customizations.codedeploy.systems import System, Ubuntu, Windows, RHEL
 from socket import timeout
 
 MAX_INSTANCE_NAME_LENGTH = 100
@@ -101,12 +101,13 @@ def validate_instance(params):
     if platform.system() == 'Linux':
         if 'Ubuntu' in platform.linux_distribution()[0]:
             params.system = Ubuntu(params)
+        if 'Red Hat Enterprise Linux Server' in platform.linux_distribution()[0]:
+            params.system = RHEL(params)
     elif platform.system() == 'Windows':
         params.system = Windows(params)
     if 'system' not in params:
         raise RuntimeError(
-            'Only Ubuntu Server and Windows Server operating systems are '
-            'supported.'
+            System.UNSUPPORTED_SYSTEM_MSG
         )
     try:
         urlopen('http://169.254.169.254/latest/meta-data/', timeout=1)

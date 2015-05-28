@@ -11,11 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import zipfile
+import copy
 from contextlib import closing
 
 from botocore.vendored import six
 
-from awscli.arguments import CustomArgument
+from awscli.arguments import CustomArgument, CLIArgument
 from awscli.customizations import utils
 
 ERROR_MSG = (
@@ -25,7 +26,7 @@ ERROR_MSG = (
 
 def register_lambda_create_function(cli):
     cli.register('building-argument-table.lambda.create-function',
-                 _flatten_code_argument)
+                 _extract_code_and_zip_file_arguments)
     cli.register('process-cli-arg.lambda.update-function-code',
                  validate_is_zip_file)
 
@@ -35,12 +36,22 @@ def validate_is_zip_file(cli_argument, value, **kwargs):
         _should_contain_zip_content(value)
 
 
-def _flatten_code_argument(argument_table, **kwargs):
+def _extract_code_and_zip_file_arguments(session, argument_table, **kwargs):
     argument_table['zip-file'] = ZipFileArgument(
         'zip-file', help_text=('The path to the zip file of the code you '
                                'are uploading. Example: fileb://code.zip'),
-        cli_type_name='blob', required=True)
-    del argument_table['code']
+        cli_type_name='blob')
+    code_argument = argument_table['code']
+    code_model = copy.deepcopy(code_argument.argument_model)
+    del code_model.members['ZipFile']
+    argument_table['code'] = CodeArgument(
+        name='code',
+        argument_model=code_model,
+        operation_model=code_argument._operation_model,
+        is_required=False,
+        event_emitter=session.get_component('event_emitter'),
+        serialized_name='Code'
+    )
 
 
 def _should_contain_zip_content(value):
@@ -64,4 +75,18 @@ class ZipFileArgument(CustomArgument):
             return
         _should_contain_zip_content(value)
         zip_file_param = {'ZipFile': value}
-        parameters['Code'] = zip_file_param
+        if parameters.get('Code'):
+            parameters['Code'].update(zip_file_param)
+        else:
+            parameters['Code'] = zip_file_param
+
+
+class CodeArgument(CLIArgument):
+    def add_to_params(self, parameters, value):
+        if value is None:
+            return
+        unpacked = self._unpack_argument(value)
+        if parameters.get('Code'):
+            parameters['Code'].update(unpacked)
+        else:
+            parameters['Code'] = unpacked

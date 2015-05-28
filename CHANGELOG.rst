@@ -2,9 +2,11 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.31
+======
 
+* feature:``aws lambda create-function``: Add support for uploading code
+  using Amazon S3.
 * feature:Preview Services: Preview services are now documented
   and will also show up in the list of available services
   (`issue 1345 <https://github.com/aws/aws-cli/pull/1345>`__)

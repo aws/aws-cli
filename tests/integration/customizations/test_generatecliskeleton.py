@@ -16,12 +16,16 @@ from nose.tools import assert_equal
 
 from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest, aws
+from awscli.customizations.preview import PREVIEW_SERVICES
 
 
 def test_can_generate_skeletons_for_all_service_comands():
     driver = create_clidriver()
     help_command = driver.create_help_command()
     for command_name, command_obj in help_command.command_table.items():
+        if command_name in PREVIEW_SERVICES:
+            # Skip over any preview services for now.
+            continue
         sub_help = command_obj.create_help_command()
         # This avoids command objects like ``PreviewModeCommand`` that
         # do not exhibit any visible functionality (i.e. provides a command

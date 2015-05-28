@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.31
+======
 
 * feature:``aws lambda create-function``: Add support for uploading code
   using Amazon S3.

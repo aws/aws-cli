@@ -89,6 +89,15 @@ class TestCreateFunction(BaseLambdaTests):
         }
         self.assert_params_for_cmd(cmdline, result)
 
+    def test_create_function_with_zip_file_in_code_argument(self):
+        cmdline = self.prefix
+        cmdline += ' --function-name myfunction --runtime myruntime'
+        cmdline += ' --role myrole --handler myhandler'
+        cmdline += ' --code S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs,'
+        cmdline += 'ZipFile=foo'
+        stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
+        self.assertIn('Unknown key \'ZipFile\'', stderr)
+
     def test_create_function_with_invalid_file_contents(self):
         cmdline = self.prefix
         cmdline += ' --function-name myfunction --runtime myruntime'

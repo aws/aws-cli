@@ -23,7 +23,8 @@ The output for the get-status command looks like the following::
       stateOrProvince: WA
       postalCode: 91011-1111
       country:USA
-      phoneNumber:206-555-1111    0       EX1ID   Import  NotReceived     AWS has not received your device.       Pending The specified job has not started.
+      phoneNumber:206-555-1111
+  0       EX1ID   Import  NotReceived     AWS has not received your device.       Pending The specified job has not started.
   ktKDXpdbEXAMPLEyGFJmQO744UHw=    version:2.0
   signingMethod:HmacSHA1
   jobId:EX1ID

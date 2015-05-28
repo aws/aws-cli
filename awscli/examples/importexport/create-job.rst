@@ -1,6 +1,6 @@
 The following command creates an import job from a manifest file::
 
-  aws importexport create-job --job-type import --manifest file://manifest
+  aws importexport create-job --job-type import --manifest file://manifest --no-validate-only
 
 The file ``manifest`` is a YAML formatted text file in the current directory with the following content::
 

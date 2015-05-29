@@ -43,9 +43,9 @@ LOG_FORMAT = (
     '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
 
 
-def main():
+def main(args=None):
     driver = create_clidriver()
-    return driver.main()
+    return driver.main(args)
 
 
 def create_clidriver():

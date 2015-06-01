@@ -298,17 +298,24 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmd, result)
 
     def test_spark_submit_step(self):
-        cmd = self.prefix + 'Type=SPARK_SUBMIT,' + \
+        cmd = self.prefix + 'Type=SPARK,' + \
             self.SPARK_SUBMIT_BASIC_ARGS
         result = {
             'JobFlowId': 'j-ABC',
             'Steps':    [
-                {'Name': 'Spark program',
+                {'Name': 'Spark application',
                  'ActionOnFailure': 'CONTINUE',
                  'HadoopJarStep': self.SPARK_SUBMIT_STEP
                  }]
         }
         self.assert_params_for_cmd(cmd, result)
+
+    def test_spark_missing_arg(self):
+        cmd = self.prefix + 'Type=SPARK'
+        expect_error_msg = '\naws: error: The following ' + \
+            'required parameters are missing for SparkStepConfig: Args.\n'
+        result = self.run_cmd(cmd, 255)
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_impala_missing_args(self):
         cmd = self.prefix + 'Type=Impala'

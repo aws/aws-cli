@@ -1,8 +1,8 @@
-**To describe apps**
+**To describe a stack's elastic load balancers**
 
-The following ``describe-apps`` command describes the apps in a specified stack.  ::
+The following ``describe-elastic-load-balancers`` command describes a specified stack's load balancers.  ::
 
-  aws opsworks --region us-east-1 describe-apps --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
+  aws opsworks --region us-west-1 describe-elastic-load-balancers --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06
 
 **Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
 

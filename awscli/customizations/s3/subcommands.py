@@ -572,7 +572,10 @@ class RmCommand(S3TransferCommand):
 
 class SyncCommand(S3TransferCommand):
     NAME = 'sync'
-    DESCRIPTION = "Syncs directories and S3 prefixes."
+    DESCRIPTION = "Syncs directories and S3 prefixes. Recursively copies " \
+                  "new and updated files from the source directory to " \
+		  "the destination. Only creates folders in the destination" \
+		  "if they contain one or more files."
     USAGE = "<LocalPath> <S3Path> or <S3Path> " \
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,

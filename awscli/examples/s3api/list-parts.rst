@@ -2,6 +2,8 @@ The following command lists all of the parts that have been uploaded for a multi
 
   aws s3api list-parts --bucket my-bucket --key 'multipart/01' --upload-id dfRtDYU0WWCCcH43C3WFbkRONycyCpTJJvxu2i5GYkZljF.Yxwh6XG7WfS2vC4to6HiV6Yjlx.cph0gtNBtJ8P3URCSbB7rjxI5iEwVDmgaXZOGgkk5nVTW16HOQ5l0R
 
+Output::
+
   {
       "Owner": {
           "DisplayName": "aws-account-name",

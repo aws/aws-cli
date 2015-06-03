@@ -228,6 +228,5 @@ class PageArgument(BaseCLIArgument):
     def add_to_params(self, parameters, value):
         if value is not None:
             pagination_config = parameters.get('PaginationConfig', {})
-            pagination_option = {self._serialized_name: value}
-            pagination_config.update(pagination_option)
+            pagination_config[self._serialized_name] = value
             parameters['PaginationConfig'] = pagination_config

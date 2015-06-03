@@ -439,7 +439,7 @@ class BucketLister(object):
 
     def list_objects(self, bucket, prefix=None, page_size=None):
         kwargs = {'Bucket': bucket, 'EncodingType': 'url',
-                  'page_size': page_size}
+                  'PaginationConfig': {'PageSize': page_size}}
         if prefix is not None:
             kwargs['Prefix'] = prefix
         # This event handler is needed because we use encoding_type url and

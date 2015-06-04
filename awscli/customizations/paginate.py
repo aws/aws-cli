@@ -89,7 +89,8 @@ def unify_paging_params(argument_table, operation_model, event_name,
     shadowed_args = {}
     add_paging_argument(argument_table, 'starting-token',
                         PageArgument('starting-token', STARTING_TOKEN_HELP,
-                                     parse_type='string'),
+                                     parse_type='string',
+                                     serialized_name='StartingToken'),
                         shadowed_args)
     input_members = operation_model.input_shape.members
     type_name = 'integer'
@@ -104,12 +105,14 @@ def unify_paging_params(argument_table, operation_model, event_name,
                     paginator_config['limit_key']))
         add_paging_argument(argument_table, 'page-size',
                             PageArgument('page-size', PAGE_SIZE_HELP,
-                                         parse_type=type_name),
+                                         parse_type=type_name,
+                                         serialized_name='PageSize'),
                             shadowed_args)
 
     add_paging_argument(argument_table, 'max-items',
                         PageArgument('max-items', MAX_ITEMS_HELP,
-                                     parse_type=type_name),
+                                     parse_type=type_name,
+                                     serialized_name='MaxItems'),
                         shadowed_args)
     session.register(
         parsed_args_event,
@@ -190,9 +193,10 @@ class PageArgument(BaseCLIArgument):
         'integer': int,
     }
 
-    def __init__(self, name, documentation, parse_type):
+    def __init__(self, name, documentation, parse_type, serialized_name):
         self.argument_model = model.Shape('PageArgument', {'type': 'string'})
         self._name = name
+        self._serialized_name = serialized_name
         self._documentation = documentation
         self._parse_type = parse_type
         self._required = False
@@ -223,4 +227,6 @@ class PageArgument(BaseCLIArgument):
 
     def add_to_params(self, parameters, value):
         if value is not None:
-            parameters[self.py_name] = value
+            pagination_config = parameters.get('PaginationConfig', {})
+            pagination_config[self._serialized_name] = value
+            parameters['PaginationConfig'] = pagination_config

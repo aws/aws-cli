@@ -94,7 +94,8 @@ class TestLSCommand(unittest.TestCase):
         self.session.create_client.return_value.get_paginator.\
             assert_called_with('list_objects')
         ref_call_args = {'Bucket': u'mybucket', 'Delimiter': '/',
-                         'Prefix': u'', 'page_size': u'5'}
+                         'Prefix': u'',
+                         'PaginationConfig': {'PageSize': u'5'}}
 
         paginate.assert_called_with(**ref_call_args)
 

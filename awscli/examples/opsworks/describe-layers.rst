@@ -4,9 +4,9 @@ The following ``describe-layers`` commmand describes the layers in a specified s
 
   aws opsworks --region us-east-1 describe-layers --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
 
-**Note**: OpsWorks CLI commands should set the region to us-east-1, regardless of the stack's location.
+**Note**: AWS OpsWorks CLI commands should set the region to ``us-east-1`` regardless of the stack's location.
 
-Output::
+*Output*::
 
   {
     "Layers": [
@@ -165,7 +165,9 @@ Output::
     ]
   }
 
-For more information, see Layers_ in the *OpsWorks User Guide*.
+**More Information**
+
+For more information, see Layers_ in the *AWS OpsWorks User Guide*.
 
 .. _Layers: http://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers.html
 

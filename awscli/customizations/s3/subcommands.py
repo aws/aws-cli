@@ -347,7 +347,7 @@ class ListCommand(S3Command):
         paginator = self.client.get_paginator('list_objects')
         iterator = paginator.paginate(Bucket=bucket,
                                       Prefix=key, Delimiter='/',
-                                      page_size=page_size)
+                                      PaginationConfig={'PageSize': page_size})
         for response_data in iterator:
             self._display_page(response_data)
 
@@ -389,7 +389,8 @@ class ListCommand(S3Command):
     def _list_all_objects_recursive(self, bucket, key, page_size=None):
         paginator = self.client.get_paginator('list_objects')
         iterator = paginator.paginate(Bucket=bucket,
-                                      Prefix=key, page_size=page_size)
+                                      Prefix=key,
+                                      PaginationConfig={'PageSize': page_size})
         for response_data in iterator:
             self._display_page(response_data, use_basename=False)
 
@@ -572,7 +573,10 @@ class RmCommand(S3TransferCommand):
 
 class SyncCommand(S3TransferCommand):
     NAME = 'sync'
-    DESCRIPTION = "Syncs directories and S3 prefixes."
+    DESCRIPTION = "Syncs directories and S3 prefixes. Recursively copies " \
+                  "new and updated files from the source directory to " \
+                  "the destination. Only creates folders in the destination" \
+                  "if they contain one or more files."
     USAGE = "<LocalPath> <S3Path> or <S3Path> " \
             "<LocalPath> or <S3Path> <S3Path>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,

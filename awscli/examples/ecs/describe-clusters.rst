@@ -4,7 +4,7 @@ This example command provides a description of the specified cluster in your def
 
 Command::
 
-  aws ecs describe-cluster --cluster default
+  aws ecs describe-clusters --cluster default
 
 Output::
 

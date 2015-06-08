@@ -12,11 +12,6 @@ requires = ['botocore==1.0.0b1',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.1.4']
 
-if sys.version_info[:2] == (2, 6):
-    # For python2.6 we have to require argparse since it
-    # was not in stdlib until 2.7.
-    requires.append('argparse>=1.1')
-
 
 setup_options = dict(
     name='awscli',
@@ -34,6 +29,11 @@ setup_options = dict(
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
     install_requires=requires,
+    extras_require={
+        ':python_version=="2.6"': [
+            'argparse>=1.1',
+        ]
+    },
     license="Apache License 2.0",
     classifiers=(
         'Development Status :: 5 - Production/Stable',

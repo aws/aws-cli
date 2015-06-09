@@ -22,13 +22,13 @@ from awscli.compat import urlparse
 def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_types)
     cli.register('top-level-args-parsed', no_sign_request)
+    cli.register('top-level-args-parsed', resolve_verify_ssl)
 
 
 def resolve_types(parsed_args, **kwargs):
     # This emulates the "type" arg from argparse, but does so in a way
     # that plugins can also hook into this process.
     _resolve_arg(parsed_args, 'query')
-    _resolve_arg(parsed_args, 'verify_ssl')
     _resolve_arg(parsed_args, 'endpoint_url')
 
 
@@ -46,15 +46,6 @@ def _resolve_query(value):
         raise ValueError("Bad value for --query %s: %s" % (value, str(e)))
 
 
-def _resolve_verify_ssl(value):
-    verify = None
-    if not value:
-        verify = False
-    else:
-        verify = os.environ.get('AWS_CA_BUNDLE')
-    return verify
-
-
 def _resolve_endpoint_url(value):
     parsed = urlparse.urlparse(value)
     # Our http library requires you specify an endpoint url
@@ -64,6 +55,19 @@ def _resolve_endpoint_url(value):
                          'missing.  Must be of the form '
                          'http://<hostname>/ or https://<hostname>/' % value)
     return value
+
+
+def resolve_verify_ssl(parsed_args, session, **kwargs):
+    arg_name = 'verify_ssl'
+    arg_value = getattr(parsed_args, arg_name, None)
+    if arg_value is not None:
+        verify = None
+        if not arg_value:
+            verify = False
+        else:
+            verify = getattr(parsed_args, 'ca_bundle', None) or \
+                        session.get_config_variable('ca_bundle')
+        setattr(parsed_args, arg_name, verify)
 
 
 def no_sign_request(parsed_args, session, **kwargs):

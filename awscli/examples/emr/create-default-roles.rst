@@ -21,6 +21,19 @@
                             "dynamodb:*",
                             "ec2:Describe*",
                             "elasticmapreduce:Describe*",
+                            "elasticmapreduce:ListBootstrapActions",
+                            "elasticmapreduce:ListClusters",
+                            "elasticmapreduce:ListInstanceGroups",
+                            "elasticmapreduce:ListInstances",
+                            "elasticmapreduce:ListSteps",
+                            "kinesis:CreateStream",
+                            "kinesis:DeleteStream",
+                            "kinesis:DescribeStream",
+                            "kinesis:GetRecords",
+                            "kinesis:GetShardIterator",
+                            "kinesis:MergeShards",
+                            "kinesis:PutRecord",
+                            "kinesis:SplitShard",
                             "rds:Describe*",
                             "s3:*",
                             "sdb:*",
@@ -46,8 +59,8 @@
                         }
                     ]
                 },
-                "RoleId": "AROAI4UCKMKI24S7TF3C2",
-                "CreateDate": "2015-05-13T00:24:23.922Z",
+                "RoleId": "AROAIQ5SIQUGL5KMYBJX6",
+                "CreateDate": "2015-06-09T17:09:04.602Z",
                 "RoleName": "EMR_EC2_DefaultRole",
                 "Path": "/",
                 "Arn": "arn:aws:iam::176430881729:role/EMR_EC2_DefaultRole"
@@ -67,13 +80,17 @@
                             "ec2:DescribeAvailabilityZones",
                             "ec2:DescribeAccountAttributes",
                             "ec2:DescribeInstances",
+                            "ec2:DescribeInstanceStatus",
                             "ec2:DescribeKeyPairs",
+                            "ec2:DescribePrefixLists",
                             "ec2:DescribeRouteTables",
                             "ec2:DescribeSecurityGroups",
                             "ec2:DescribeSpotInstanceRequests",
                             "ec2:DescribeSpotPriceHistory",
                             "ec2:DescribeSubnets",
-                            "ec2:DescribeVpcAttributes",
+                            "ec2:DescribeVpcAttribute",
+                            "ec2:DescribeVpcEndpoints",
+                            "ec2:DescribeVpcEndpointServices",
                             "ec2:DescribeVpcs",
                             "ec2:ModifyImageAttribute",
                             "ec2:ModifyInstanceAttribute",
@@ -89,7 +106,11 @@
                             "s3:Get*",
                             "s3:List*",
                             "sdb:BatchPutAttributes",
-                            "sdb:Select"
+                            "sdb:Select",
+                            "sqs:CreateQueue",
+                            "sqs:Delete*",
+                            "sqs:GetQueue*",
+                            "sqs:ReceiveMessage"
                         ],
                         "Resource": "*",
                         "Effect": "Allow"
@@ -110,8 +131,8 @@
                         }
                     ]
                 },
-                "RoleId": "AROAJV5OECHP5UQDEGBQ6",
-                "CreateDate": "2015-05-13T00:24:27.048Z",
+                "RoleId": "AROAI3SRVPPVSRDLARBPY",
+                "CreateDate": "2015-06-09T17:09:10.401Z",
                 "RoleName": "EMR_DefaultRole",
                 "Path": "/",
                 "Arn": "arn:aws:iam::176430881729:role/EMR_DefaultRole"

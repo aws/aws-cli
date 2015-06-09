@@ -103,7 +103,9 @@ class CreateDefaultRoles(Command):
     DESCRIPTION = ('Creates the default IAM role ' +
                    EC2_ROLE_NAME + ' and ' +
                    EMR_ROLE_NAME + ' which can be used when'
-                   ' creating the cluster using the create-cluster command.\n'
+                   ' creating the cluster using the create-cluster command.'
+                   ' The default roles for EMR use managed policies, which'
+                   ' are updated automatically to support future EMR functionality\n'
                    '\nIf you do not have a Service Role and Instance Profile '
                    'variable set for your create-cluster command in the AWS '
                    'CLI config file, create-default-roles will automatically '

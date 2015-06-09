@@ -275,6 +275,7 @@ class ConfigureListCommand(BasicCommand):
         '  access_key     ****************ABCD      config_file    ~/.aws/config\n'
         '  secret_key     ****************ABCD      config_file    ~/.aws/config\n'
         '      region                us-west-2              env    AWS_DEFAULT_REGION\n'
+        '   ca_bundle                <not set>             None    None\n'
         '\n'
     )
 
@@ -301,6 +302,9 @@ class ConfigureListCommand(BasicCommand):
 
         region = self._lookup_config('region')
         self._display_config_value(region, 'region')
+
+        ca_bundle = self._lookup_config('ca_bundle')
+        self._display_config_value(ca_bundle, 'ca_bundle')
 
     def _display_config_value(self, config_value, config_name):
         self._stream.write('%10s %24s %16s    %s\n' % (
@@ -520,6 +524,7 @@ class ConfigureCommand(BasicCommand):
         '    AWS Secret Access Key [None]: secretkey\n'
         '    Default region name [None]: us-west-2\n'
         '    Default output format [None]:\n'
+        '    CA certificate bundle [None]: /etc/pki/tls/certs/ca-bundle.crt\n'
         '\n'
         'To update just the region name::\n'
         '\n'
@@ -528,6 +533,7 @@ class ConfigureCommand(BasicCommand):
         '    AWS Secret Access Key [****]:\n'
         '    Default region name [us-west-1]: us-west-2\n'
         '    Default output format [None]:\n'
+        '    CA certificate bundle [None]:\n'
     )
     SUBCOMMANDS = [
         {'name': 'list', 'command_class': ConfigureListCommand},
@@ -542,6 +548,7 @@ class ConfigureCommand(BasicCommand):
         ('aws_secret_access_key', "AWS Secret Access Key"),
         ('region', "Default region name"),
         ('output', "Default output format"),
+        ('ca_bundle', "CA certificate bundle"),
     ]
 
     def __init__(self, session, prompter=None, config_writer=None):

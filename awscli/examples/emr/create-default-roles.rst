@@ -48,9 +48,9 @@
                 },
                 "RoleId": "AROAI4UCKMKI24S7TF3C2",
                 "CreateDate": "2015-05-13T00:24:23.922Z",
-                "RoleName": "josvijay_EMR_EC2_DefaultRole",
+                "RoleName": "EMR_EC2_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/josvijay_EMR_EC2_DefaultRole"
+                "Arn": "arn:aws:iam::176430881729:role/EMR_EC2_DefaultRole"
             }
         },
         {
@@ -112,9 +112,9 @@
                 },
                 "RoleId": "AROAJV5OECHP5UQDEGBQ6",
                 "CreateDate": "2015-05-13T00:24:27.048Z",
-                "RoleName": "josvijay_EMR_DefaultRole",
+                "RoleName": "EMR_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/josvijay_EMR_DefaultRole"
+                "Arn": "arn:aws:iam::176430881729:role/EMR_DefaultRole"
             }
         }
     ]

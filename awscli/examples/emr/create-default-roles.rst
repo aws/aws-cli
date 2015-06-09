@@ -13,6 +13,7 @@
     [
         {
             "RolePolicy": {
+                "Version": "2012-10-17",
                 "Statement": [
                     {
                         "Action": [
@@ -26,9 +27,7 @@
                             "sns:*",
                             "sqs:*"
                         ],
-                        "Resource": [
-                            "*"
-                        ],
+                        "Resource": "*",
                         "Effect": "Allow"
                     }
                 ]
@@ -47,11 +46,11 @@
                         }
                     ]
                 },
-                "RoleId": "AROAIQJBZNQ73P4JJZ7QK",
-                "CreateDate": "2015-05-12T20:13:36.943Z",
-                "RoleName": "EMR_EC2_DefaultRole",
+                "RoleId": "AROAI4UCKMKI24S7TF3C2",
+                "CreateDate": "2015-05-13T00:24:23.922Z",
+                "RoleName": "josvijay_EMR_EC2_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/EMR_EC2_DefaultRole"
+                "Arn": "arn:aws:iam::176430881729:role/josvijay_EMR_EC2_DefaultRole"
             }
         },
         {
@@ -64,21 +63,31 @@
                             "ec2:CancelSpotInstanceRequests",
                             "ec2:CreateSecurityGroup",
                             "ec2:CreateTags",
-                            "ec2:Describe*",
                             "ec2:DeleteTags",
+                            "ec2:DescribeAvailabilityZones",
+                            "ec2:DescribeAccountAttributes",
+                            "ec2:DescribeInstances",
+                            "ec2:DescribeKeyPairs",
+                            "ec2:DescribeRouteTables",
+                            "ec2:DescribeSecurityGroups",
+                            "ec2:DescribeSpotInstanceRequests",
+                            "ec2:DescribeSpotPriceHistory",
+                            "ec2:DescribeSubnets",
+                            "ec2:DescribeVpcAttributes",
+                            "ec2:DescribeVpcs",
                             "ec2:ModifyImageAttribute",
                             "ec2:ModifyInstanceAttribute",
                             "ec2:RequestSpotInstances",
                             "ec2:RunInstances",
                             "ec2:TerminateInstances",
-                            "iam:PassRole",
-                            "iam:ListRolePolicies",
                             "iam:GetRole",
                             "iam:GetRolePolicy",
                             "iam:ListInstanceProfiles",
+                            "iam:ListRolePolicies",
+                            "iam:PassRole",
+                            "s3:CreateBucket",
                             "s3:Get*",
                             "s3:List*",
-                            "s3:CreateBucket",
                             "sdb:BatchPutAttributes",
                             "sdb:Select"
                         ],
@@ -101,11 +110,11 @@
                         }
                     ]
                 },
-                "RoleId": "AROAJ5CUKI3UFE5DZH7HK",
-                "CreateDate": "2015-05-12T20:13:39.092Z",
-                "RoleName": "EMR_DefaultRole",
+                "RoleId": "AROAJV5OECHP5UQDEGBQ6",
+                "CreateDate": "2015-05-13T00:24:27.048Z",
+                "RoleName": "josvijay_EMR_DefaultRole",
                 "Path": "/",
-                "Arn": "arn:aws:iam::176430881729:role/EMR_DefaultRole"
+                "Arn": "arn:aws:iam::176430881729:role/josvijay_EMR_DefaultRole"
             }
         }
     ]

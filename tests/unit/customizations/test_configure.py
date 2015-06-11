@@ -129,7 +129,8 @@ class TestConfigureCommand(unittest.TestCase):
         # Non-credentials config is written to the config file.
         self.writer.update_config.assert_called_with(
             {'region': 'new_value',
-             'output': 'new_value'}, 'myconfigfile')
+             'output': 'new_value',
+			 'ca_bundle': 'new_value'}, 'myconfigfile')
 
     def test_same_values_are_not_changed(self):
         # If the user enters the same value as the current value, we don't need
@@ -186,7 +187,8 @@ class TestConfigureCommand(unittest.TestCase):
         self.writer.update_config.assert_called_with(
             {'__section__': 'profile myname',
              'region': 'new_value',
-             'output': 'new_value'}, 'myconfigfile')
+             'output': 'new_value',
+			 'ca_bundle': 'new_value'}, 'myconfigfile')
 
     def test_session_says_profile_does_not_exist(self):
         # Whenever you try to get a config value from botocore,
@@ -207,7 +209,8 @@ class TestConfigureCommand(unittest.TestCase):
         self.writer.update_config.assert_called_with(
             {'__section__': 'profile profile-does-not-exist',
              'region': 'new_value',
-             'output': 'new_value'}, 'myconfigfile')
+             'output': 'new_value',
+			 'ca_bundle': 'new_value'}, 'myconfigfile')
 
 
 class TestInteractivePrompter(unittest.TestCase):

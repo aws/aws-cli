@@ -61,6 +61,7 @@ if 'py2exe' in sys.argv:
         'py2exe': {
             'optimize': 0,
             'skip_archive': True,
+            'dll_excludes': ['crypt32.dll'],
             'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
                          'awscli', 'ConfigParser', 'xml.etree', 'pipes'],
         }

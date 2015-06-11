@@ -15,6 +15,8 @@
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
+EC2_ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role"
+EMR_ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/AmazonElasticMapReduceRole"
 
 # Action on failure
 CONTINUE = 'CONTINUE'
@@ -109,12 +111,14 @@ IMPALA = 'impala'
 STREAMING = 'streaming'
 GANGLIA = 'ganglia'
 HBASE = 'hbase'
+SPARK = 'spark'
 
 DEFAULT_CUSTOM_JAR_STEP_NAME = 'Custom JAR'
 DEFAULT_STREAMING_STEP_NAME = 'Streaming program'
 DEFAULT_HIVE_STEP_NAME = 'Hive program'
 DEFAULT_PIG_STEP_NAME = 'Pig program'
 DEFAULT_IMPALA_STEP_NAME = 'Impala program'
+DEFAULT_SPARK_STEP_NAME = 'Spark application'
 
 ARGS = '--args'
 RUN_HIVE_SCRIPT = '--run-hive-script'
@@ -124,7 +128,9 @@ RUN_PIG_SCRIPT = '--run-pig-script'
 PIG_VERSIONS = '--pig-versions'
 PIG_STEP_CONFIG = 'PigStepConfig'
 RUN_IMPALA_SCRIPT = '--run-impala-script'
+SPARK_SUBMIT_COMMAND = '/home/hadoop/spark/bin/spark-submit'
 IMPALA_STEP_CONFIG = 'ImpalaStepConfig'
+SPARK_STEP_CONFIG = 'SparkStepConfig'
 STREAMING_STEP_CONFIG = 'StreamingStepConfig'
 CUSTOM_JAR_STEP_CONFIG = 'CustomJARStepConfig'
 
@@ -159,7 +165,7 @@ EMR = 'elasticmapreduce'
 
 LATEST = 'latest'
 
-APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "MAPR",
+APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "SPARK", "MAPR",
                 "MAPR_M3", "MAPR_M5", "MAPR_M7"]
 
 SSH_USER = 'hadoop'

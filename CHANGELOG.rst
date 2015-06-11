@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+1.7.33
+======
+
+* feature:``aws autoscaling``: Add support for attachinga and describing
+  load balancers.
+* feature:``aws ec2``: Add support for VPC flow logs and M4 instances.
+* feature:``aws emr``: Add Spark support and managed policy support.
+* feature:``aws ecs``: Add support for updating container agent.
+
+
+1.7.32
+======
+
+* feature:``aws logs``: Add support for ``put-subscription-filter``,
+  ``describe-subscription-filters``, and ``delete-subscription-filters``
+* feature:``aws storagegateway``: Add support for ``list-volume-initiators``
+* feature:``aws cognito-identity``: Add support for ``delete-identities``
+  and hiding disabled identities with the ``list-identities`` API operation
+
+
 1.7.31
 ======
 

@@ -95,6 +95,30 @@ class TestAddSteps(BaseAWSCommandParamsTest):
              ]
          }
 
+    SPARK_SUBMIT_BASIC_ARGS = 'Args=' + \
+    '[--deploy-mode,' + \
+    'cluster,' + \
+    '--conf,' + \
+    'k1=v1,' + \
+    's3://mybucket/myfolder/app.jar,' + \
+    'k2=v2]'
+
+    SPARK_SUBMIT_STEP = \
+        {
+         'Jar':
+            ('s3://us-east-1.elasticmapreduce/libs/'
+             'script-runner/script-runner.jar'),
+         'Args':
+            ['/home/hadoop/spark/bin/spark-submit',
+             '--deploy-mode',
+             'cluster',
+             '--conf',
+             'k1=v1',
+             's3://mybucket/myfolder/app.jar',
+             'k2=v2'
+             ]
+        }
+
     def test_unknown_step_type(self):
         cmd = self.prefix + 'Type=unknown'
         expect_error_msg = '\naws: error: ' + \
@@ -272,6 +296,26 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                  }]
         }
         self.assert_params_for_cmd(cmd, result)
+
+    def test_spark_submit_step(self):
+        cmd = self.prefix + 'Type=SPARK,' + \
+            self.SPARK_SUBMIT_BASIC_ARGS
+        result = {
+            'JobFlowId': 'j-ABC',
+            'Steps':    [
+                {'Name': 'Spark application',
+                 'ActionOnFailure': 'CONTINUE',
+                 'HadoopJarStep': self.SPARK_SUBMIT_STEP
+                 }]
+        }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_spark_missing_arg(self):
+        cmd = self.prefix + 'Type=SPARK'
+        expect_error_msg = '\naws: error: The following ' + \
+            'required parameters are missing for SparkStepConfig: Args.\n'
+        result = self.run_cmd(cmd, 255)
+        self.assertEqual(expect_error_msg, result[1])
 
     def test_impala_missing_args(self):
         cmd = self.prefix + 'Type=Impala'

@@ -6,16 +6,11 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore==1.0.0b1',
-            'bcdoc>=0.15.0,<0.16.0',
+requires = ['botocore==1.0.0b2',
+            'bcdoc>=0.16.0,<0.17.0',
             'colorama>=0.2.5,<=0.3.3',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.1.4']
-
-if sys.version_info[:2] == (2, 6):
-    # For python2.6 we have to require argparse since it
-    # was not in stdlib until 2.7.
-    requires.append('argparse>=1.1')
 
 
 setup_options = dict(
@@ -23,17 +18,20 @@ setup_options = dict(
     version=awscli.__version__,
     description='Universal Command Line Environment for AWS.',
     long_description=open('README.rst').read(),
-    author='Mitch Garnaat',
-    author_email='garnaat@amazon.com',
+    author='Amazon Web Services',
     url='http://aws.amazon.com/cli/',
     scripts=['bin/aws', 'bin/aws.cmd',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh'],
-    packages=find_packages('.', exclude=['tests*']),
-    package_dir={'awscli': 'awscli'},
+    packages=find_packages(exclude=['tests*']),
     package_data={'awscli': ['data/*.json', 'examples/*/*.rst',
                              'examples/*/*/*.rst', 'topics/*.rst',
                              'topics/*.json']},
     install_requires=requires,
+    extras_require={
+        ':python_version=="2.6"': [
+            'argparse>=1.1',
+        ]
+    },
     license="Apache License 2.0",
     classifiers=(
         'Development Status :: 5 - Production/Stable',
@@ -46,6 +44,7 @@ setup_options = dict(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
     ),
 )
 

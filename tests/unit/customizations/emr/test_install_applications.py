@@ -106,7 +106,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
 
         expected_error_msg = "\naws: error: Unknown application: unknown." +\
             " 'Name' should be one of the following: HIVE, PIG, HBASE," +\
-            " GANGLIA, IMPALA, MAPR, MAPR_M3, MAPR_M5, MAPR_M7\n"
+            " GANGLIA, IMPALA, SPARK, MAPR, MAPR_M3, MAPR_M5, MAPR_M7\n"
         result = self.run_cmd(cmdline, 255)
         self.assertEqual(result[1], expected_error_msg)
 

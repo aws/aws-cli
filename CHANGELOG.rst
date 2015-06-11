@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.33
+======
 
 * feature:``aws autoscaling``: Add support for attachinga and describing
   load balancers.

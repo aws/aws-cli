@@ -13,6 +13,12 @@ requires = ['botocore==1.0.0b2',
             'rsa>=3.1.2,<=3.1.4']
 
 
+if sys.version_info[:2] == (2, 6):
+    # For python2.6 we have to require argparse since it
+    # was not in stdlib until 2.7.
+    requires.append('argparse>=1.1')
+
+
 setup_options = dict(
     name='awscli',
     version=awscli.__version__,

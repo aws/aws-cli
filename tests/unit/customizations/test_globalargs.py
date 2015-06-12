@@ -152,6 +152,22 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             globalargs.resolve_verify_ssl(parsed_args, session)
             self.assertEqual(parsed_args.verify_ssl, '/path/to/cli_bundle.pem')
 
+    def test_no_verify_ssl_overrides_cli_cert_bundle(self):
+        environ = {
+            'AWS_CA_BUNDLE': '/path/to/env_bundle.pem',
+        }
+        with mock.patch('os.environ', environ):
+            parsed_args = FakeParsedArgs(
+                verify_ssl=False, 
+                ca_bundle='/path/to/cli_bundle.pem')
+            config_file_vars = {}
+            session_var_map = {'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE')}
+            session = FakeSession(
+                session_vars=session_var_map, 
+                config_file_vars=config_file_vars)
+            globalargs.resolve_verify_ssl(parsed_args, session)
+            self.assertFalse(parsed_args.verify_ssl)
+
     def test_no_sign_request_if_option_specified(self):
         args = FakeParsedArgs(sign_request=False)
         session = mock.Mock()

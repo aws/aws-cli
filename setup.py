@@ -17,7 +17,7 @@ if sys.version_info[:2] == (2, 6):
     # For python2.6 we have to require argparse since it
     # was not in stdlib until 2.7.
     requires.append('argparse>=1.1')
-
+    requires.append('simplejson')
 
 setup_options = dict(
     name='awscli',
@@ -36,6 +36,7 @@ setup_options = dict(
     extras_require={
         ':python_version=="2.6"': [
             'argparse>=1.1',
+            'simplejson'
         ]
     },
     license="Apache License 2.0",

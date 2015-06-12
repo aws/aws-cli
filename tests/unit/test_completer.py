@@ -131,6 +131,7 @@ def test_completions():
         'AWS_DEFAULT_REGION': 'us-east-1',
         'AWS_ACCESS_KEY_ID': 'access_key',
         'AWS_SECRET_ACCESS_KEY': 'secret_key',
+        'AWS_CA_BUNDLE': 'ca_bundle',
         'AWS_CONFIG_FILE': '',
     }
     with mock.patch('os.environ', environ):

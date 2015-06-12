@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+Next Release (TBD)
+===================
+
+* bugfix:Installation: Fix bundled installer when running
+  python 2.6
+  (`issue 1381 https://github.com/aws/aws-cli/pull/1381`)
+* bugfix:Installation: Fix minimum required version of pip
+  to install the AWS CLI using python2.6
+  (`issue 1383 https://github.com/aws/aws-cli/pull/1382`)
+
+
 1.7.33
 ======
 

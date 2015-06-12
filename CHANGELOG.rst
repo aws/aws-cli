@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-===================
+1.7.34
+=======
 
 * bugfix:Installation: Fix bundled installer when running
   python 2.6

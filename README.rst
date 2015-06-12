@@ -104,6 +104,7 @@ The quickest way to get started is to run the ``aws configure`` command::
     AWS Secret Access Key: bar
     Default region name [us-west-2]: us-west-2
     Default output format [None]: json
+    CA certificate bundle [None]: /path/to/ca-bundle.pem
 
 To use environment variables, do the following::
 
@@ -117,6 +118,8 @@ To use a config file, create a configuration file like this::
     aws_secret_access_key=<default secret key>
     # Optional, to define default region for this profile.
     region=us-west-1
+    # Optional, define the default CA certificate bundle.
+    ca_bundle=/path/to/ca-bundle.pem
 
     [profile testing]
     aws_access_key_id=<testing access key>
@@ -152,23 +155,25 @@ In addition to credentials, a number of other variables can be
 configured either with environment variables, configuration file
 entries or both.  The following table documents these.
 
-=========== ========= ===================== ===================== ============================
-Variable    Option    Config Entry          Environment Variable  Description
-=========== ========= ===================== ===================== ============================
-profile     --profile profile               AWS_DEFAULT_PROFILE   Default profile name
------------ --------- --------------------- --------------------- ----------------------------
-region      --region  region                AWS_DEFAULT_REGION    Default AWS Region
------------ --------- --------------------- --------------------- ----------------------------
-config_file                                 AWS_CONFIG_FILE       Alternate location of config
------------ --------- --------------------- --------------------- ----------------------------
-output      --output  output                AWS_DEFAULT_OUTPUT    Default output style
------------ --------- --------------------- --------------------- ----------------------------
-access_key            aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
------------ --------- --------------------- --------------------- ----------------------------
-secret_key            aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
------------ --------- --------------------- --------------------- ----------------------------
-token                 aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
-=========== ========= ===================== ===================== ============================
+=========== =========== ===================== ===================== ============================
+Variable    Option      Config Entry          Environment Variable  Description
+=========== =========== ===================== ===================== ============================
+profile     --profile   profile               AWS_DEFAULT_PROFILE   Default profile name
+----------- ----------- --------------------- --------------------- ----------------------------
+region      --region    region                AWS_DEFAULT_REGION    Default AWS Region
+----------- ----------- --------------------- --------------------- ----------------------------
+config_file                                   AWS_CONFIG_FILE       Alternate location of config
+----------- ----------- --------------------- --------------------- ----------------------------
+output      --output    output                AWS_DEFAULT_OUTPUT    Default output style
+----------- ----------- --------------------- --------------------- ----------------------------
+ca_bundle   --ca-bundle ca_bundle             AWS_CA_BUNDLE         CA Certificate Bundle
+----------- ----------- --------------------- --------------------- ----------------------------
+access_key              aws_access_key_id     AWS_ACCESS_KEY_ID     AWS Access Key
+----------- ----------- --------------------- --------------------- ----------------------------
+secret_key              aws_secret_access_key AWS_SECRET_ACCESS_KEY AWS Secret Key
+----------- ----------- --------------------- --------------------- ----------------------------
+token                   aws_session_token     AWS_SESSION_TOKEN     AWS Token (temp credentials)
+=========== =========== ===================== ===================== ============================
 
 ^^^^^^^^
 Examples

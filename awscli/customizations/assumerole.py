@@ -60,8 +60,6 @@ def create_assume_role_provider(session, provider_cls):
 
 def create_refresher_function(client, params):
     def refresh():
-        role_session_name = 'AWS-CLI-session-%s' % (int(time.time()))
-        params['RoleSessionName'] = role_session_name
         response = client.assume_role(**params)
         credentials = response['Credentials']
         # We need to normalize the credential names to
@@ -252,6 +250,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             raise PartialCredentialsError(provider=self.METHOD,
                                           cred_var=str(e))
         external_id = profiles[self._profile_name].get('external_id')
+        role_session_name = profiles[self._profile_name].get('role_session_name')
         if source_profile not in profiles:
             raise InvalidConfigError(
                 'The source_profile "%s" referenced in '
@@ -264,6 +263,7 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             'source_profile': source_profile,
             'mfa_serial': mfa_serial,
             'source_cred_values': source_cred_values,
+            'role_session_name': role_session_name
         }
 
     def _create_creds_from_response(self, response):
@@ -300,8 +300,9 @@ class AssumeRoleProvider(credentials.CredentialProvider):
         client = self._create_client_from_config(config)
 
         assume_role_kwargs = self._assume_role_base_kwargs(config)
-        role_session_name = 'AWS-CLI-session-%s' % (int(time.time()))
-        assume_role_kwargs['RoleSessionName'] = role_session_name
+        if assume_role_kwargs.get('RoleSessionName') is None:
+            role_session_name = 'AWS-CLI-session-%s' % (int(time.time()))
+            assume_role_kwargs['RoleSessionName'] = role_session_name
 
         response = client.assume_role(**assume_role_kwargs)
         creds = self._create_creds_from_response(response)
@@ -315,4 +316,6 @@ class AssumeRoleProvider(credentials.CredentialProvider):
             token_code = self._prompter("Enter MFA code: ")
             assume_role_kwargs['SerialNumber'] = config['mfa_serial']
             assume_role_kwargs['TokenCode'] = token_code
+        if config['role_session_name'] is not None:
+            assume_role_kwargs['RoleSessionName'] = config['role_session_name']
         return assume_role_kwargs

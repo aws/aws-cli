@@ -35,11 +35,9 @@ os.environ['AWS_DATA_PATH'] = os.pathsep.join(_awscli_data_path)
 
 
 EnvironmentVariables = {
-    'profile': (None, 'AWS_DEFAULT_PROFILE', None),
-    'region': ('region', 'AWS_DEFAULT_REGION', None),
-    'data_path': ('data_path', 'AWS_DATA_PATH', None),
-    'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json'),
-    }
+    'output': ('output', 'AWS_DEFAULT_OUTPUT', 'json', None),
+}
+
 
 SCALAR_TYPES = set([
     'string', 'float', 'integer', 'long', 'boolean', 'double',

@@ -186,6 +186,11 @@ in the AWS CLI config file:
   authentication. The value is either the serial number for a hardware device
   (such as GAHT12345678) or an Amazon Resource Name (ARN) for a virtual device
   (such as arn:aws:iam::123456789012:mfa/user).
+* ``role_session_name`` - The name applied to this assume-role session. This 
+  value affects the assumed role user ARN  (such as 
+  arn:aws:sts::123456789012:assumed-role/role_name/role_session_name). This
+  maps to the ``RoleSessionName`` parameter in the ``AssumeRole`` operation. 
+  This is an optional parameter.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and a ``source_profile``.

@@ -189,6 +189,27 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         self.assertEqual(credentials.access_key, 'foo')
         self.assertEqual(credentials.secret_key, 'bar')
         self.assertEqual(credentials.token, 'baz')
+        
+    def test_role_session_name_provided(self):
+        self.fake_config['profiles']['development']['role_session_name'] = 'myname'
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': datetime.now(tzlocal()).isoformat(),
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        provider = assumerole.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator, cache={}, profile_name='development')
+
+        provider.load()
+
+        client = client_creator.return_value
+        client.assume_role.assert_called_with(
+            RoleArn='myrole', RoleSessionName='myname')
 
     def test_external_id_provided(self):
         self.fake_config['profiles']['development']['external_id'] = 'myid'

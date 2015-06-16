@@ -216,7 +216,10 @@ class FileInfo(TaskInfo):
                                      'permission=principal')
                 params[self._permission_to_param(permission)] = grantee
         if self.parameters['sse']:
-            params['ServerSideEncryption'] = 'AES256'
+            sse = self.parameters['sse'][0]
+            if sse == 'aws:kms':
+                self.client._client_config.signature_version = 's3v4'
+            params['ServerSideEncryption'] = sse
         if self.parameters['storage_class']:
             params['StorageClass'] = self.parameters['storage_class'][0]
         if self.parameters['website_redirect']:

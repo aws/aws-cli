@@ -152,9 +152,12 @@ GRANTS = {
         'UsingAuthAccess.html">Access Control</a>')}
 
 
-SSE = {'name': 'sse', 'action': 'store_true',
+SSE = {'name': 'sse', 'nargs': 1,
+       'choices': ['AES256', 'aws:kms'],
        'help_text': (
-           "Enable Server Side Encryption of the object in S3")}
+           "Enable Server Side Encryption of the object in S3. "
+           "Valid choices are: AES256 | aws:kms"
+           "Defaults to 'AES256")}
 
 
 STORAGE_CLASS = {'name': 'storage-class', 'nargs': 1,

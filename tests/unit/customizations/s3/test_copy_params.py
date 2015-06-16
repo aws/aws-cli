@@ -57,7 +57,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        cmdline += ' --sse'
+        cmdline += ' --sse=AES256'
         result = {'Bucket': u'mybucket', 'Key': u'mykey',
                   'ServerSideEncryption': 'AES256'}
         self.assert_params(cmdline, result)

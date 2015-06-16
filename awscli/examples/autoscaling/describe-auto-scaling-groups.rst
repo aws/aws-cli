@@ -1,15 +1,15 @@
 **To get a description of an Auto Scaling group**
 
-The following ``describe-auto-scaling-groups`` command describes the specified Auto Scaling group::
+This example describes the specified Auto Scaling group::
 
-    aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name my-test-asg
+    aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name my-asg
 
-The output of this command is a JSON block that describes the Auto Scaling group, similar to the following::
+The following is example output::
 
     {
         "AutoScalingGroups": [
            {
-              "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:803981987763:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-test-asg",
+              "AutoScalingGroupARN": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:930d940e-891e-4781-a11a-7b0acd480f03:autoScalingGroupName/my-asg",
               "HealthCheckGracePeriod": 0,
               "SuspendedProcesses": [],
               "DesiredCapacity": 1,
@@ -47,11 +47,6 @@ To return a specific number of Auto Scaling groups with this command, use the ``
 
     aws autoscaling describe-auto-scaling-groups --max-items 1
 
-This command returns a JSON block that includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional Auto Scaling groups::
+If the output for this command includes a ``NextToken`` field, it indicates that there are more groups. You can use the value of this field with the ``starting-token`` parameter to return additional groups::
 
     aws autoscaling describe-auto-scaling-groups --starting-token None___1
-
-For more information, see `Basic Auto Scaling Configuration`_ in the *Auto Scaling Developer Guide*.
-
-.. _`Basic Auto Scaling Configuration`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/US_BasicSetup.html
-

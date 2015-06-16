@@ -1,17 +1,17 @@
 **To describe Auto Scaling launch configurations**
 
-The following ``describe-launch-configurations`` command returns information about a specific launch configuration::
+This example returns information about the specified launch configuration::
 
 	aws autoscaling describe-launch-configurations --launch-configuration-names "basic-launch-config"
 
-The output of this command is a JSON block that describes the launch configuration, similar to the following::
+The following is example output for this command::
 
 	{
 		"LaunchConfigurations": [
 			{
 				"UserData": null,
 				"EbsOptimized": false,
-				"LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:896650972448:launchConfiguration:98d3b196-4cf9-4e88-8ca1-8547c24ced8b:launchConfigurationName/basic-launch-config",
+				"LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:98d3b196-4cf9-4e88-8ca1-8547c24ced8b:launchConfigurationName/basic-launch-config",
 				"InstanceMonitoring": {
 					"Enabled": true
 				},
@@ -35,9 +35,7 @@ To return a specific number of launch configurations with this command, use the 
 
 	aws autoscaling describe-launch-configurations --max-items 1
 
-In this example, the output of this command is a JSON block that describes the first launch configuration:
-
-::
+The following is example output for this command::
 
 	{
 		"NextToken": "None___1",
@@ -45,7 +43,7 @@ In this example, the output of this command is a JSON block that describes the f
 			{
 				"UserData": null,
 				"EbsOptimized": false,
-				"LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:896650972448:launchConfiguration:98d3b196-4cf9-4e88-8ca1-8547c24ced8b:launchConfigurationName/basic-launch-config",
+				"LaunchConfigurationARN": "arn:aws:autoscaling:us-west-2:123456789012:launchConfiguration:98d3b196-4cf9-4e88-8ca1-8547c24ced8b:launchConfigurationName/basic-launch-config",
 				"InstanceMonitoring": {
 					"Enabled": true
 				},
@@ -65,11 +63,6 @@ In this example, the output of this command is a JSON block that describes the f
 		]
 	}
 
-This JSON block includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional launch configurations::
+The output includes a ``NextToken`` field. You can use the value of this field with the ``starting-token`` parameter to return additional launch configurations in a subsequent call::
 
     aws autoscaling describe-launch-configurations --starting-token None___1
-
-For more information, see `Launch Configurations`_ in the *Auto Scaling Developer Guide*.
-
-.. _`Launch Configurations`: http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/WorkingWithLaunchConfig.html
-

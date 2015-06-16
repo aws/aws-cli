@@ -47,7 +47,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
 
     def tearDown(self):
         super(TestBundleInstance, self).tearDown()
-        self.datetime_patcher.stop
+        self.datetime_patcher.stop()
 
     def test_no_policy_provided(self):
         args = ' --instance-id i-12345678 --owner-akid AKIAIOSFODNN7EXAMPLE'

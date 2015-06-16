@@ -218,7 +218,7 @@ class FileInfo(TaskInfo):
         if self.parameters['sse']:
             sse = self.parameters['sse'][0]
             if sse == 'aws:kms':
-                self.client._client_config.signature_version = 's3v4'
+                self.client._request_signer._signature_version = 's3v4'
             params['ServerSideEncryption'] = sse
         if self.parameters['storage_class']:
             params['StorageClass'] = self.parameters['storage_class'][0]

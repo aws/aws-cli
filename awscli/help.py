@@ -19,9 +19,9 @@ from subprocess import Popen, PIPE
 from docutils.core import publish_string
 from docutils.writers import manpage
 
-import bcdoc.docevents
-from bcdoc.restdoc import ReSTDocument
-from bcdoc.textwriter import TextWriter
+from botocore.docs.bcdoc import docevents
+from botocore.docs.bcdoc.restdoc import ReSTDocument
+from botocore.docs.bcdoc.textwriter import TextWriter
 
 from awscli.clidocs import ProviderDocumentEventHandler
 from awscli.clidocs import ServiceDocumentEventHandler
@@ -241,7 +241,7 @@ class HelpCommand(object):
         # Now generate all of the events for a Provider document.
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
-        bcdoc.docevents.generate_events(self.session, self)
+        docevents.generate_events(self.session, self)
         self.renderer.render(self.doc.getvalue())
         instance.unregister()
 

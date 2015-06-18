@@ -77,7 +77,7 @@ Output::
        ]
    }
  
-**To describe tagged volumes and filter the output **
+**To describe tagged volumes and filter the output**
 
 This example command describes all volumes that have the tag key ``Name`` and a value that begins with ``Test``. The output is filtered to display only the tags and IDs of the volumes. 
 

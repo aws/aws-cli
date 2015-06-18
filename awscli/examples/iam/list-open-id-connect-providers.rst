@@ -5,13 +5,14 @@ This example returns a list of ARNS of all the OpenID Connect providers that are
   aws iam list-open-id-connect-providers 
 
 Output::
-{
-	"OpenIDConnectProviderList": [
-		{
-			"Arn": "arn:aws:iam::123456789012:oidc-provider/example.oidcprovider.com"
-		}
-	]
-}
+
+  {
+    "OpenIDConnectProviderList": [
+      {
+        "Arn": "arn:aws:iam::123456789012:oidc-provider/example.oidcprovider.com"
+      }
+    ]
+  }
 
 For more information, see `Using OpenID Connect Identity Providers`_ in the *Using IAM* guide.
 

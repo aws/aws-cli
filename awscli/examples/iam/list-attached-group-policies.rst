@@ -5,19 +5,20 @@ This example returns the names and ARNs of the managed policies that are attache
   aws iam list-attached-group-policies --group-name Admins
 
 Output::
-{
-	"AttachedPolicies": [
-		{
-			"PolicyName": "AdministratorAccess",
-			"PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
-		},
-		{
-			"PolicyName": "SecurityAudit",
-			"PolicyArn": "arn:aws:iam::aws:policy/SecurityAudit"
-		}
-	],
-	"IsTruncated": false
-}  
+
+  {
+    "AttachedPolicies": [
+      {
+        "PolicyName": "AdministratorAccess",
+        "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+      },
+      {
+        "PolicyName": "SecurityAudit",
+        "PolicyArn": "arn:aws:iam::aws:policy/SecurityAudit"
+      }
+    ],
+    "IsTruncated": false
+  }
 
 For more information, see `Overview of IAM Policies`_ in the *Using IAM* guide.
 

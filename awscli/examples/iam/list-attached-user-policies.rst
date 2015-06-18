@@ -5,19 +5,20 @@ This command returns the names and ARNs of the managed policies for the IAM user
   aws iam list-attached-user-policies --user-name Bob
 
 Output::
-{
-	"AttachedPolicies": [
-		{
-			"PolicyName": "AdministratorAccess",
-			"PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
-		},
-		{
-			"PolicyName": "SecurityAudit",
-			"PolicyArn": "arn:aws:iam::aws:policy/SecurityAudit"
-		}
-	],
-	"IsTruncated": false
-}  
+
+  {
+    "AttachedPolicies": [
+      {
+        "PolicyName": "AdministratorAccess",
+        "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+      },
+      {
+        "PolicyName": "SecurityAudit",
+        "PolicyArn": "arn:aws:iam::aws:policy/SecurityAudit"
+      }
+    ],
+    "IsTruncated": false
+  }
 
 For more information, see `Overview of IAM Policies`_ in the *Using IAM* guide.
 

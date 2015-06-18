@@ -5,10 +5,10 @@ This example updates the SAML provider in IAM whose ARN is ``arn:aws:iam::123456
   aws iam update-saml-provider --saml-metadata-document file://SAMLMetaData.xml --saml-provider-arn arn:aws:iam::123456789012:saml-provider/SAMLADFS 
 
 Output::
-{
-	"SAMLProviderArn": "arn:aws:iam::123456789012:saml-provider/SAMLADFS"
-}
 
+  {
+    "SAMLProviderArn": "arn:aws:iam::123456789012:saml-provider/SAMLADFS"
+  }
 
 For more information, see `Using SAML Providers`_ in the *Using IAM* guide.
 

@@ -6,15 +6,15 @@ This example retrieves the list of SAML 2.0 providers created in the current AWS
 
 Output::
 
-{
-	"SAMLProviderList": [
-		{
-			"CreateDate": "2015-06-05T22:45:14Z",
-			"ValidUntil": "2015-06-05T22:45:14Z",
-			"Arn": "arn:aws:iam::123456789012:saml-provider/SAMLADFS"
-		}
-	]
-}
+  {
+    "SAMLProviderList": [
+      {
+        "CreateDate": "2015-06-05T22:45:14Z",
+        "ValidUntil": "2015-06-05T22:45:14Z",
+        "Arn": "arn:aws:iam::123456789012:saml-provider/SAMLADFS"
+      }
+    ]
+  }
 
 For more information, see `Using SAML Providers`_ in the *Using IAM* guide.
 

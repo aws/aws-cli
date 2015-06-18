@@ -5,15 +5,16 @@ This command returns the names and ARNs of the managed policies attached to the 
   aws iam list-attached-role-policies --role-name SecurityAuditRole
 
 Output::
-{
-	"AttachedPolicies": [
-		{
-			"PolicyName": "SecurityAudit",
-			"PolicyArn": "arn:aws:iam::aws:policy/SecurityAudit"
-		}
-	],
-	"IsTruncated": false
-}  
+
+  {
+    "AttachedPolicies": [
+      {
+        "PolicyName": "SecurityAudit",
+        "PolicyArn": "arn:aws:iam::aws:policy/SecurityAudit"
+      }
+    ],
+    "IsTruncated": false
+  }
 
 For more information, see `Overview of IAM Policies`_ in the *Using IAM* guide.
 

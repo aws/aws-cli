@@ -5,24 +5,25 @@ This example returns a list of IAM groups, roles, and users who have the policy 
   aws iam list-entities-for-policy --policy-arn arn:aws:iam::123456789012:policy/TestPolicy 
 
 Output::
-{
-	"PolicyGroups": [
-		{
-			"GroupName": "Admins"
-		}
-	],
-	"PolicyUsers": [
-		{
-			"UserName": "Bob"
-		}
-	],
-	"PolicyRoles": [
-		{
-			"RoleName": "testRole"
-		}
-	],
-	"IsTruncated": false
-}  
+
+  {
+    "PolicyGroups": [
+      {
+        "GroupName": "Admins"
+      }
+    ],
+    "PolicyUsers": [
+      {
+        "UserName": "Bob"
+      }
+    ],
+    "PolicyRoles": [
+      {
+        "RoleName": "testRole"
+      }
+    ],
+    "IsTruncated": false
+  }
 
 For more information, see `Overview of IAM Policies`_ in the *Using IAM* guide.
 

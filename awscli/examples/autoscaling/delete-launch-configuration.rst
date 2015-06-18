@@ -1,8 +1,8 @@
-**To delete an Auto Scaling launch configuration**
+**To delete a launch configuration**
 
-The following ``delete-launch-configuration`` command deletes an Auto Scaling launch configuration::
+This example deletes the specified launch configuration::
 
-	aws autoscaling delete-launch-configuration --launch-configuration-name test
+	aws autoscaling delete-launch-configuration --launch-configuration-name my-lc
 
 For more information, see `Shut Down Your Auto Scaling Process`_ in the *Auto Scaling Developer Guide*.
 

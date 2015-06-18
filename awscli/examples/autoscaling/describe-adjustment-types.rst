@@ -1,24 +1,24 @@
 **To describe the Auto Scaling adjustment types**
 
-The following ``describe-adjustment types`` command describes the adjustment types available for Auto Scaling groups::
+This example describes the adjustment types available for your Auto Scaling groups::
 
 	aws autoscaling describe-adjustment-types
 
-The output of this command is a JSON block that describes the adjustment types, similar to the following::
+The following is example output::
 
-	{
-		"AdjustementTypes": [
-			{
-				"AdjustmentType": "ChangeInCapacity"
-			}
-			{
-				"AdjustmentType": "ExactCapcity"
-			}
-			{
-				"AdjustmentType": "PercentChangeInCapacity"
-			}
-		]
-	}
+  {
+    "AdjustmentTypes": [
+      {
+        "AdjustmentType": "ChangeInCapacity"
+      }
+      {
+        "AdjustmentType": "ExactCapcity"
+      }
+      {
+        "AdjustmentType": "PercentChangeInCapacity"
+      }
+    ]
+  }
 
 For more information, see `Dynamic Scaling`_ in the *Auto Scaling Developer Guide*.
 

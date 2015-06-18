@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 import awscli
 
 
-requires = ['botocore==1.0.0b3',
+requires = ['botocore==1.0.0rc1',
             'colorama>=0.2.5,<=0.3.3',
             'docutils>=0.10',
             'rsa>=3.1.2,<=3.1.4']
@@ -61,6 +61,7 @@ if 'py2exe' in sys.argv:
         'py2exe': {
             'optimize': 0,
             'skip_archive': True,
+            'dll_excludes': ['crypt32.dll'],
             'packages': ['docutils', 'urllib', 'httplib', 'HTMLParser',
                          'awscli', 'ConfigParser', 'xml.etree', 'pipes'],
         }

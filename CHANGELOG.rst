@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-Next Release (TBD)
-==================
+1.7.35
+======
 
 * feature:``aws ecs``: Add support for DeregisterTaskDefintion and environment
   variable overrides.
